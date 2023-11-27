@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, SafeAreaView, View, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { blue } from "@radix-ui/colors";
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,7 @@ function IntroScreen() {
       <Pressable
         onPress={() => {}}
         style={{
-          backgroundColor: "blue",
+          backgroundColor: blue["blue9"],
           padding: 10,
           borderRadius: 5,
         }}
