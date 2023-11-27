@@ -3,8 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, SafeAreaView, View, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { blue } from "@radix-ui/colors";
-
+import { blue } from "./themes";
 const Stack = createStackNavigator();
 
 export const AuthContext = React.createContext({
@@ -15,7 +14,7 @@ export const AuthContext = React.createContext({
 function IntroScreen() {
   return (
     <>
-      <Text>Welcome to Dysperse</Text>
+      <Text>Welcome to Dysperse!</Text>
       {/* Add 2 buttons */}
       <Pressable
         onPress={() => {}}
