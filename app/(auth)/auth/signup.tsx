@@ -1,7 +1,16 @@
 import { Link, Stack } from "expo-router";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../../context/AuthProvider";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Text, View, Spinner, Input, H1, H6, Button } from "tamagui";
+import {
+  Text,
+  View,
+  Spinner,
+  Input,
+  H1,
+  H6,
+  Button,
+  ScrollView,
+} from "tamagui";
 import { useState } from "react";
 
 export default function Login() {
@@ -22,22 +31,23 @@ export default function Login() {
   };
 
   return (
-    <View
+    <ScrollView
       style={{
         flex: 1,
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
         maxWidth: 500,
         margin: "auto",
         textAlign: "center",
       }}
+      contentContainerStyle={{
+        rowGap: 10,
+      }}
       padding="$5"
-      gap="$2"
     >
-      <H1>Welcome back!</H1>
+      <H1>Welcome to Dysperse.</H1>
       <Text marginBottom="$2">
-        We're so excited to see you again! Please sign in with your Dysperse ID.
+        It's time to set the new standard for productivity.
       </Text>
       <Input
         value={email}
@@ -59,6 +69,16 @@ export default function Login() {
         placeholder="Password"
       />
 
+      <Input
+        secureTextEntry
+        value={password}
+        onChangeText={(e) => setPassword(e)}
+        style={{ width: "100%" }}
+        disabled={isLoading}
+        size="$4"
+        borderWidth={2}
+        placeholder="Confirm your password"
+      />
       <Button
         onPress={login}
         disabled={disabled}
@@ -69,16 +89,16 @@ export default function Login() {
       >
         {isLoading ? <Spinner /> : "Continue"}
       </Button>
-      <Link asChild href="/signup">
+      <Link asChild href="/auth/login">
         <Button
           size="$2"
           style={{ textDecoration: "none" }}
           width="100%"
           opacity={0.7}
         >
-          Create an account
+          I already have an account
         </Button>
       </Link>
-    </View>
+    </ScrollView>
   );
 }

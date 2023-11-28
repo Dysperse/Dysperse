@@ -1,13 +1,21 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "../context/AuthProvider";
-import { TamaguiProvider } from "tamagui";
+import { TamaguiProvider, View } from "tamagui";
 import config from "../tamagui.config";
+import Navbar from "../ui/navbar";
 
 export default function RootLayout() {
   return (
     <TamaguiProvider config={config}>
       <AuthProvider>
-        <Stack>
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: "transparent",
+            },
+            header: (props) => <Navbar {...props} />,
+          }}
+        >
           <Stack.Screen
             name="(tabs)"
             options={{
@@ -15,9 +23,15 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="(auth)/login"
+            name="(auth)/auth/login"
             options={{
               headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(auth)/auth/signup"
+            options={{
+              headerTitle: "Signup",
             }}
           />
           {/* <Stack.Screen
