@@ -8,15 +8,26 @@ export default function Navbar(props: NativeStackHeaderProps) {
 
   return (
     <View
-      style={{ height: 64, alignItems: "center", flexDirection: "row" }}
+      style={{
+        height: 64,
+        alignItems: "center",
+        flexDirection: "row",
+        backgroundColor: "#fff",
+      }}
       paddingHorizontal="$2"
       borderBottomWidth={2}
       borderBottomColor="$borderColorHover"
     >
-      <Button onPress={handleBack} width="$4" padding={0} height="$4">
+      <Button
+        onPress={handleBack}
+        width="$4"
+        padding={0}
+        height="$4"
+        backgroundColor="transparent"
+      >
         &lt;
       </Button>
-      <Text>{props.options.headerTitle}</Text>
+      <Text style={{ fontWeight: "bold" }}>{props.options.headerTitle}</Text>
     </View>
   );
 }

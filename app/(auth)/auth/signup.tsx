@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from "tamagui";
 import { useState } from "react";
+import { KeyboardAvoidingView, SafeAreaView } from "react-native";
 
 export default function Login() {
   const { setUser } = useAuth();
@@ -31,77 +32,77 @@ export default function Login() {
   };
 
   return (
-    <ScrollView
-      // automaticallyAdjustKeyboardInsets={true}
-      automaticallyAdjustContentInsets
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        // alignItems: "center",
-        maxWidth: 500,
-        margin: "auto",
-        // textAlign: "center",
-      }}
-      contentContainerStyle={{
-        rowGap: 10,
-        flex: 1,
-      }}
-      padding="$5"
-    >
-      <H1>Welcome to Dysperse.</H1>
-      <Text marginBottom="$2">
-        It's time to set the new standard for productivity.
-      </Text>
-      <Input
-        value={email}
-        onChangeText={(e) => setEmail(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        size="$4"
-        borderWidth={2}
-        placeholder="Email or username"
-      />
-      <Input
-        secureTextEntry
-        value={password}
-        onChangeText={(e) => setPassword(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        size="$4"
-        borderWidth={2}
-        placeholder="Password"
-      />
-
-      <Input
-        secureTextEntry
-        value={password}
-        onChangeText={(e) => setPassword(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        size="$4"
-        borderWidth={2}
-        placeholder="Confirm your password"
-      />
-      <Button
-        onPress={login}
-        disabled={disabled}
-        theme="active"
-        width="100%"
-        size="$4"
-        opacity={disabled ? 0.6 : 1}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets
+        style={{
+          flexDirection: "column",
+          // alignItems: "center",
+          maxWidth: 500,
+          margin: "auto",
+          // textAlign: "center",
+        }}
+        contentContainerStyle={{
+          rowGap: 10,
+          flex: 1,
+        }}
+        padding="$5"
       >
-        {isLoading ? <Spinner /> : "Continue"}
-      </Button>
-      <Link asChild href="/auth/login">
+        <H1>Welcome to Dysperse.</H1>
+        <Text marginBottom="$2">
+          It's time to set the new standard for productivity.
+        </Text>
+        <Input
+          value={email}
+          onChangeText={(e) => setEmail(e)}
+          style={{ width: "100%" }}
+          disabled={isLoading}
+          size="$4"
+          borderWidth={2}
+          placeholder="Email or username"
+        />
+        <Input
+          secureTextEntry
+          value={password}
+          onChangeText={(e) => setPassword(e)}
+          style={{ width: "100%" }}
+          disabled={isLoading}
+          size="$4"
+          borderWidth={2}
+          placeholder="Password"
+        />
+
+        <Input
+          secureTextEntry
+          value={password}
+          onChangeText={(e) => setPassword(e)}
+          style={{ width: "100%" }}
+          disabled={isLoading}
+          size="$4"
+          borderWidth={2}
+          placeholder="Confirm your password"
+        />
         <Button
-          size="$2"
-          style={{ textDecoration: "none" }}
+          onPress={login}
+          disabled={disabled}
+          theme="active"
           width="100%"
-          opacity={0.7}
+          size="$4"
+          opacity={disabled ? 0.6 : 1}
         >
-          I already have an account
+          {isLoading ? <Spinner /> : "Continue"}
         </Button>
-      </Link>
-    </ScrollView>
+        <Link asChild href="/auth/login">
+          <Button
+            size="$2"
+            style={{ textDecoration: "none" }}
+            width="100%"
+            opacity={0.7}
+          >
+            I already have an account
+          </Button>
+        </Link>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
