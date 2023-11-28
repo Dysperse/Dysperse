@@ -32,16 +32,19 @@ export default function Login() {
 
   return (
     <ScrollView
+      // automaticallyAdjustKeyboardInsets={true}
+      automaticallyAdjustContentInsets
       style={{
         flex: 1,
         flexDirection: "column",
-        alignItems: "center",
+        // alignItems: "center",
         maxWidth: 500,
         margin: "auto",
-        textAlign: "center",
+        // textAlign: "center",
       }}
       contentContainerStyle={{
         rowGap: 10,
+        flex: 1,
       }}
       padding="$5"
     >
