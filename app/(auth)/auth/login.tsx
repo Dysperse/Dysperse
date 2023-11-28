@@ -3,6 +3,7 @@ import { useAuth } from "../../../context/AuthProvider";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text, View, Spinner, Input, H1, H6, Button } from "tamagui";
 import { useState } from "react";
+import { ScrollView } from "tamagui";
 
 export default function Login() {
   const { setUser } = useAuth();
@@ -22,21 +23,23 @@ export default function Login() {
   };
 
   return (
-    <View
+    <ScrollView
       style={{
         flex: 1,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
         maxWidth: 500,
         margin: "auto",
-        textAlign: "center",
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        gap: 10,
+        margin: "auto",
       }}
       padding="$5"
       gap="$2"
     >
-      <H1>Welcome back!</H1>
-      <Text marginBottom="$2">
+      <H1 textAlign="center">Welcome back!</H1>
+      <Text marginBottom="$2" textAlign="center">
         We're so excited to see you again! Please sign in with your Dysperse ID.
       </Text>
       <Input
@@ -58,7 +61,6 @@ export default function Login() {
         borderWidth={2}
         placeholder="Password"
       />
-
       <Button
         onPress={login}
         disabled={disabled}
@@ -69,16 +71,29 @@ export default function Login() {
       >
         {isLoading ? <Spinner /> : "Continue"}
       </Button>
-      <Link asChild href="/auth/signup">
-        <Button
-          size="$2"
-          style={{ textDecoration: "none" }}
-          width="100%"
-          opacity={0.7}
-        >
-          Create an account
-        </Button>
-      </Link>
-    </View>
+      <View flexDirection="row">
+        <Link asChild href="/auth/signup">
+          <Button
+            size="$2"
+            marginLeft="auto"
+            style={{ textDecoration: "none" }}
+            opacity={0.7}
+            chromeless
+          >
+            Forgot ID?
+          </Button>
+        </Link>
+        <Link asChild href="/auth/signup">
+          <Button
+            size="$2"
+            style={{ textDecoration: "none" }}
+            opacity={0.7}
+            chromeless
+          >
+            Create an account
+          </Button>
+        </Link>
+      </View>
+    </ScrollView>
   );
 }

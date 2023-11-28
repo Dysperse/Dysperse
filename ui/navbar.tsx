@@ -2,6 +2,7 @@ import React from "react";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { Button, View } from "tamagui";
 import { Text } from "tamagui";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function Navbar(props: NativeStackHeaderProps) {
   const handleBack = () => props.navigation.goBack();
@@ -24,10 +25,9 @@ export default function Navbar(props: NativeStackHeaderProps) {
         padding={0}
         height="$4"
         backgroundColor="transparent"
-      >
-        &lt;
-      </Button>
+      ></Button>
       <Text style={{ fontWeight: "bold" }}>{props.options.headerTitle}</Text>
+      <AntDesign name="stepforward" size={24} color="black" />
     </View>
   );
 }
