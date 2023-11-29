@@ -16,7 +16,9 @@ const Turnstile = ({ setToken }) => {
 
   // listen for messages from the iframe
   useEffect(() => {
-    window.addEventListener("message", handleMessage);
+    if (Platform.OS === "web") {
+      window.addEventListener("message", handleMessage);
+    }
   }, []);
 
   const htmlContent = `
