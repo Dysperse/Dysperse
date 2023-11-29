@@ -63,15 +63,6 @@ export default function RootLayout() {
                 headerTitle: "Signup",
               }}
             />
-            {/* <Stack.Screen
-          name="other"
-          options={{
-            title: "",
-            headerShown: true,
-            headerTransparent: Platform.OS === "ios",
-            headerBlurEffect: "regular",
-          }}
-        /> */}
           </Stack>
         </AuthProvider>
       </SafeAreaView>

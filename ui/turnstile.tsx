@@ -1,12 +1,23 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Platform } from "react-native";
 import { WebView } from "react-native-webview";
 
 const Turnstile = ({ setToken }) => {
   const handleMessage = (event) => {
-    const newToken = event.nativeEvent.data;
-    setToken(newToken);
+    console.log(event);
+
+    const newToken =
+      Platform.OS === "web" ? event?.data : event?.nativeEvent?.data;
+    if (newToken) {
+      console.log(newToken);
+      setToken(newToken);
+    }
   };
+
+  // listen for messages from the iframe
+  useEffect(() => {
+    window.addEventListener("message", handleMessage);
+  }, []);
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -22,7 +33,8 @@ const Turnstile = ({ setToken }) => {
             turnstile.render('#myWidget', {
               sitekey: '0x4AAAAAAABo1BKboDBdlv8r',
               callback: (token) => {
-                window.ReactNativeWebView.postMessage(token);
+                if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(token);
+                if(window.parent) window.parent.postMessage(token, '*');
               },
             });
           }
@@ -31,18 +43,31 @@ const Turnstile = ({ setToken }) => {
     </html>
   `;
 
-  return (
-    <View style={{ height: 65, width: "100%" }}>
-      <WebView
-        originWhitelist={["*"]}
-        onMessage={handleMessage}
-        source={{
-          baseUrl: "https://dysperse.com",
-          html: htmlContent,
-        }}
-      />
-    </View>
-  );
+  if (Platform.OS === "web") {
+    // For web, use an iframe
+    return (
+      <iframe
+        srcDoc={htmlContent}
+        style={{ height: 65, width: "100%", border: "none" }}
+        sandbox="allow-scripts allow-same-origin"
+      ></iframe>
+    );
+  } else {
+    // For mobile, use WebView
+    return (
+      <View style={{ height: 65, width: "100%" }}>
+        <WebView
+          originWhitelist={["*"]}
+          scrollEnabled={false}
+          onMessage={handleMessage}
+          source={{
+            baseUrl: "https://captcha.dysperse.com/",
+            html: htmlContent,
+          }}
+        />
+      </View>
+    );
+  }
 };
 
 export default Turnstile;

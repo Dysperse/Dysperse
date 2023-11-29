@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSegments, useRouter } from "expo-router";
+import { useRouter, useSegments } from "expo-router";
 import {
   createContext,
   useCallback,
@@ -7,9 +7,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import { Spinner, View } from "tamagui";
 import { sendApiRequest } from "../helpers/api";
-import { Spinner } from "tamagui";
-import { View } from "tamagui";
 
 type User = {
   name: string;
@@ -27,11 +26,7 @@ const AuthContext = createContext<AuthType>({
 
 export const useAuth = () => useContext(AuthContext);
 
-export function AuthProvider({
-  children,
-}: {
-  children: JSX.Element;
-}): JSX.Element {
+export function AuthProvider({ children }: any): JSX.Element {
   const segments = useSegments();
   const router = useRouter();
 
@@ -41,13 +36,11 @@ export function AuthProvider({
   const [user, setUser] = useState<User | null>(null);
 
   const fetchUserData = useCallback(async () => {
-    const session = await AsyncStorage.getItem("session");
-    if (!session) {
+    const token = await AsyncStorage.getItem("session");
+    if (!token) {
       return null;
     }
-    const userRequest = await sendApiRequest("POST", "session", {
-      token: session,
-    });
+    const userRequest = await sendApiRequest("POST", "session", { token });
     if (userRequest?.current) {
       return userRequest;
     }
@@ -57,10 +50,12 @@ export function AuthProvider({
   useEffect(() => {
     fetchUserData().then((sessionData) => {
       setUser(sessionData);
-      router.push(!sessionData && !inAuthGroup ? "/auth/login" : "/home");
+      setTimeout(() => {
+        if (!inAuthGroup && !sessionData) router.push("/auth/login");
+      });
       setLoading(false);
     });
-  }, [fetchUserData, inAuthGroup, router]);
+  }, []);
 
   const authContext: AuthType = {
     user,

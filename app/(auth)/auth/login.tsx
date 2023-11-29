@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Button, H1, Input, ScrollView, Spinner, Text, View } from "tamagui";
 import { useAuth } from "../../../context/AuthProvider";
@@ -25,33 +25,29 @@ export default function Login() {
       return;
     }
 
-    const sessionRequest = await sendApiRequest(
-      "POST",
-      "/auth/login",
-      {},
-      {
-        body: JSON.stringify({
-          email,
-          password,
-          token,
-        }),
-      }
-    );
+    const sessionRequest = await fetch("https://api.dysperse.com/auth/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password,
+        token,
+      }),
+    }).then((res) => res.json());
 
     if (!sessionRequest.key) {
-      alert("Invalid credentials");
+      console.log("incorrect login");
       setIsLoading(false);
       setStep(0);
+
       return;
     }
     await AsyncStorage.setItem("session", sessionRequest.key);
-
     const userRequest = await sendApiRequest("POST", "session", {
       token: sessionRequest.key,
     });
-
     setAlreadyLoggedIn(true);
     setUser(userRequest);
+    router.push("/");
   };
 
   useEffect(() => {
@@ -80,6 +76,7 @@ export default function Login() {
         textAlign="center"
         textTransform="uppercase"
         fontFamily={"heading" as any}
+        fontWeight={500 as any}
       >
         {step === 0 ? " Welcome back!" : "Verifying..."}
       </H1>

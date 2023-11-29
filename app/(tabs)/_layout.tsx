@@ -1,10 +1,9 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { BottomTabBar } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, View, Text } from "react-native";
-
+import { Platform, View } from "react-native";
 export default function TabsLayout() {
   return (
     <Tabs
@@ -13,7 +12,6 @@ export default function TabsLayout() {
         tabBarStyle: Platform.OS === "ios" && {
           backgroundColor: "transparent",
         },
-        headerShown: false,
       }}
       tabBar={(props) =>
         Platform.OS === "ios" ? (
@@ -29,20 +27,47 @@ export default function TabsLayout() {
       }
     >
       <Tabs.Screen
-        name="home"
+        name="tasks"
         options={{
-          href: "/home",
+          href: "/tasks",
           title: "",
+          header: () => null,
           tabBarIcon: ({ color }) => (
             <View
               style={{
                 flexDirection: "column",
                 alignItems: "center",
-                marginTop: 17,
                 backgroundColor: "transparent",
               }}
             >
-              <TabBarIcon name="home" color={color} size={24} />
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={30}
+                color={color}
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: "/",
+          title: "",
+          header: () => null,
+          tabBarIcon: ({ color }) => (
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                backgroundColor: "transparent",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="home-variant-outline"
+                size={30}
+                color={color}
+              />
             </View>
           ),
         }}
@@ -51,7 +76,7 @@ export default function TabsLayout() {
         name="account"
         options={{
           title: "",
-          headerShown: true,
+          headerShown: false,
           href: {
             pathname: "/account",
           },
@@ -60,29 +85,18 @@ export default function TabsLayout() {
               style={{
                 flexDirection: "column",
                 alignItems: "center",
-                marginTop: 17,
                 backgroundColor: "transparent",
               }}
             >
-              <TabBarIcon name="user" color={color} size={24} />
+              <MaterialCommunityIcons
+                name="package-variant-closed"
+                size={30}
+                color={color}
+              />
             </View>
           ),
         }}
       />
     </Tabs>
-  );
-}
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-  size?: number;
-}) {
-  return (
-    <FontAwesome
-      size={props.size || 26}
-      style={{ marginBottom: -3 }}
-      {...props}
-    />
   );
 }
