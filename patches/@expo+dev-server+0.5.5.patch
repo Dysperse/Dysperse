@@ -1,0 +1,24 @@
+diff --git a/node_modules/@expo/dev-server/build/middleware/remoteDevtoolsSecurityHeadersMiddleware.js b/node_modules/@expo/dev-server/build/middleware/remoteDevtoolsSecurityHeadersMiddleware.js
+index 7ac2cad..2f3e8ab 100644
+--- a/node_modules/@expo/dev-server/build/middleware/remoteDevtoolsSecurityHeadersMiddleware.js
++++ b/node_modules/@expo/dev-server/build/middleware/remoteDevtoolsSecurityHeadersMiddleware.js
+@@ -8,13 +8,13 @@ exports.remoteDevtoolsSecurityHeadersMiddleware = remoteDevtoolsSecurityHeadersM
+ // from https://chrome-devtools-frontend.appspot.com/
+ function remoteDevtoolsSecurityHeadersMiddleware(req, res, next) {
+   // Block any cross origin request.
+-  if (typeof req.headers.origin === 'string' && !req.headers.origin.match(/^https?:\/\/localhost:/) && !req.headers.origin.match(/^https:\/\/chrome-devtools-frontend\.appspot\.com/)) {
+-    next(new Error(`Unauthorized request from ${req.headers.origin}. ` + 'This may happen because of a conflicting browser extension to intercept HTTP requests. ' + 'Please try again without browser extensions or using incognito mode.'));
+-    return;
+-  }
++  // if (typeof req.headers.origin === 'string' && !req.headers.origin.match(/^https?:\/\/localhost:/) && !req.headers.origin.match(/^https:\/\/chrome-devtools-frontend\.appspot\.com/)) {
++  //   next(new Error(`Unauthorized request from ${req.headers.origin}. ` + 'This may happen because of a conflicting browser extension to intercept HTTP requests. ' + 'Please try again without browser extensions or using incognito mode.'));
++  //   return;
++  // }
+ 
+   // Block MIME-type sniffing.
+-  res.setHeader('X-Content-Type-Options', 'nosniff');
++  // res.setHeader('X-Content-Type-Options', 'nosniff');
+   next();
+ }
+ //# sourceMappingURL=remoteDevtoolsSecurityHeadersMiddleware.js.map
+\ No newline at end of file

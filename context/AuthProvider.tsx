@@ -1,5 +1,15 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSegments, useRouter } from "expo-router";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { sendApiRequest } from "../helpers/api";
+import { Spinner } from "tamagui";
+import { View } from "tamagui";
 
 type User = {
   name: string;
@@ -17,35 +27,40 @@ const AuthContext = createContext<AuthType>({
 
 export const useAuth = () => useContext(AuthContext);
 
-function useProtectedRoute(user: any) {
-  const segments = useSegments();
-  const router = useRouter();
-
-  useEffect(() => {
-    const inAuthGroup = segments[0] === "(auth)";
-
-    if (
-      // If the user is not signed in and the initial segment is not anything in the auth group.
-      !user &&
-      !inAuthGroup
-    ) {
-      // Redirect to the sign-in page.
-      router.replace("/auth/login");
-    } else if (user && inAuthGroup) {
-      // Redirect away from the sign-in page.
-      router.replace("/home");
-    }
-  }, [user, segments]);
-}
-
 export function AuthProvider({
   children,
 }: {
   children: JSX.Element;
 }): JSX.Element {
+  const segments = useSegments();
+  const router = useRouter();
+
+  const inAuthGroup = segments[0] === "(auth)";
+
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
-  useProtectedRoute(user);
+  const fetchUserData = useCallback(async () => {
+    const session = await AsyncStorage.getItem("session");
+    if (!session) {
+      return null;
+    }
+    const userRequest = await sendApiRequest("POST", "session", {
+      token: session,
+    });
+    if (userRequest?.current) {
+      return userRequest;
+    }
+    return null;
+  }, []);
+
+  useEffect(() => {
+    fetchUserData().then((sessionData) => {
+      setUser(sessionData);
+      router.push(!sessionData && !inAuthGroup ? "/auth/login" : "/home");
+      setLoading(false);
+    });
+  }, [fetchUserData, inAuthGroup, router]);
 
   const authContext: AuthType = {
     user,
@@ -53,6 +68,14 @@ export function AuthProvider({
   };
 
   return (
-    <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={authContext}>
+      {loading ? (
+        <View flex={1} jc="center" height="100%">
+          <Spinner size="large" color="$gray10" />
+        </View>
+      ) : (
+        children
+      )}
+    </AuthContext.Provider>
   );
 }

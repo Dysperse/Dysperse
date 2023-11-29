@@ -1,26 +1,64 @@
-import { Link, Stack } from "expo-router";
+import { Link } from "expo-router";
+import { useEffect, useState } from "react";
+import { Button, H1, Input, ScrollView, Spinner, Text, View } from "tamagui";
 import { useAuth } from "../../../context/AuthProvider";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Text, View, Spinner, Input, H1, H6, Button } from "tamagui";
-import { useState } from "react";
-import { ScrollView } from "tamagui";
+import Turnstile from "../../../ui/turnstile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { sendApiRequest } from "../../../helpers/api";
 
 export default function Login() {
   const { setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
+  const [step, setStep] = useState(0);
+  const [alreadyLoggedIn, setAlreadyLoggedIn] = useState(false);
 
   const disabled = isLoading || !email.trim() || !password.trim();
 
-  const login = () => {
+  const login = async () => {
     setIsLoading(true);
+    if (step === 0) {
+      setAlreadyLoggedIn(false);
+      setStep(1);
+      return;
+    }
 
-    // setUser({
-    //   name: "John Doe",
-    // });
-    setTimeout(() => setIsLoading(false), 1000);
+    const sessionRequest = await sendApiRequest(
+      "POST",
+      "/auth/login",
+      {},
+      {
+        body: JSON.stringify({
+          email,
+          password,
+          token,
+        }),
+      }
+    );
+
+    if (!sessionRequest.key) {
+      alert("Invalid credentials");
+      setIsLoading(false);
+      setStep(0);
+      return;
+    }
+    await AsyncStorage.setItem("session", sessionRequest.key);
+
+    const userRequest = await sendApiRequest("POST", "session", {
+      token: sessionRequest.key,
+    });
+
+    setAlreadyLoggedIn(true);
+    setUser(userRequest);
   };
+
+  useEffect(() => {
+    if (token && !alreadyLoggedIn) {
+      login();
+    }
+  }, [token, alreadyLoggedIn]);
 
   return (
     <ScrollView
@@ -38,29 +76,45 @@ export default function Login() {
       padding="$5"
       gap="$2"
     >
-      <H1 textAlign="center">Welcome back!</H1>
+      <H1
+        textAlign="center"
+        textTransform="uppercase"
+        fontFamily={"heading" as any}
+      >
+        {step === 0 ? " Welcome back!" : "Verifying..."}
+      </H1>
       <Text marginBottom="$2" textAlign="center">
-        We're so excited to see you again! Please sign in with your Dysperse ID.
+        {step === 0
+          ? "We're so excited to see you again! Please sign in with your Dysperse ID."
+          : "Hang tight while we verify that you're a human."}
       </Text>
-      <Input
-        value={email}
-        onChangeText={(e) => setEmail(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        size="$4"
-        borderWidth={2}
-        placeholder="Email or username"
-      />
-      <Input
-        secureTextEntry
-        value={password}
-        onChangeText={(e) => setPassword(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        size="$4"
-        borderWidth={2}
-        placeholder="Password"
-      />
+      {step === 0 ? (
+        <>
+          <Input
+            value={email}
+            onChangeText={(e) => setEmail(e)}
+            style={{ width: "100%" }}
+            disabled={isLoading}
+            size="$4"
+            borderWidth={2}
+            placeholder="Email or username"
+          />
+          <Input
+            secureTextEntry
+            value={password}
+            onChangeText={(e) => setPassword(e)}
+            style={{ width: "100%" }}
+            disabled={isLoading}
+            size="$4"
+            borderWidth={2}
+            placeholder="Password"
+          />
+        </>
+      ) : (
+        <>
+          <Turnstile setToken={setToken} />
+        </>
+      )}
       <Button
         onPress={login}
         disabled={disabled}
@@ -69,31 +123,33 @@ export default function Login() {
         size="$4"
         opacity={disabled ? 0.6 : 1}
       >
-        {isLoading ? <Spinner /> : "Continue"}
+        {isLoading || (step === 1 && !token) ? <Spinner /> : "Continue"}
       </Button>
-      <View flexDirection="row">
-        <Link asChild href="/auth/signup">
-          <Button
-            size="$2"
-            marginLeft="auto"
-            style={{ textDecoration: "none" }}
-            opacity={0.7}
-            chromeless
-          >
-            Forgot ID?
-          </Button>
-        </Link>
-        <Link asChild href="/auth/signup">
-          <Button
-            size="$2"
-            style={{ textDecoration: "none" }}
-            opacity={0.7}
-            chromeless
-          >
-            Create an account
-          </Button>
-        </Link>
-      </View>
+      {step === 0 && (
+        <View flexDirection="row">
+          <Link asChild href="/auth/signup">
+            <Button
+              size="$2"
+              marginLeft="auto"
+              style={{ textDecoration: "none" }}
+              opacity={0.7}
+              chromeless
+            >
+              Forgot ID?
+            </Button>
+          </Link>
+          <Link asChild href="/auth/signup">
+            <Button
+              size="$2"
+              style={{ textDecoration: "none" }}
+              opacity={0.7}
+              chromeless
+            >
+              Create an account
+            </Button>
+          </Link>
+        </View>
+      )}
     </ScrollView>
   );
 }

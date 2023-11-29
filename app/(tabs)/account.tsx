@@ -5,11 +5,11 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Accout() {
   const { setUser, user } = useAuth();
-  
+
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Account</Text>
-      <Text>{ user && user.name }</Text>
+      <Text>{JSON.stringify(user)}</Text>
       <TouchableOpacity onPress={() => setUser(null)}>
         <Text>Log out</Text>
       </TouchableOpacity>
