@@ -1,8 +1,7 @@
-import React from "react";
+import { Entypo } from "@expo/vector-icons";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { Button, View } from "tamagui";
-import { Text } from "tamagui";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import React from "react";
+import { Button, Text, View } from "tamagui";
 
 export default function Navbar(props: NativeStackHeaderProps) {
   const handleBack = () => props.navigation.goBack();
@@ -15,6 +14,7 @@ export default function Navbar(props: NativeStackHeaderProps) {
         flexDirection: "row",
         backgroundColor: "#fff",
       }}
+      gap="$2"
       paddingHorizontal="$2"
       borderBottomWidth={2}
       borderBottomColor="$borderColorHover"
@@ -24,9 +24,19 @@ export default function Navbar(props: NativeStackHeaderProps) {
         width="$4"
         padding={0}
         height="$4"
+        paddingLeft={8}
+        borderRadius={999}
         backgroundColor="transparent"
       >
-        <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+        <Entypo
+          name="chevron-thin-left"
+          size={24}
+          style={{
+            width: "100%",
+            textAlign: "center",
+          }}
+          color="black"
+        />{" "}
       </Button>
       <Text style={{ fontWeight: "bold" }}>{props.options.headerTitle}</Text>
     </View>

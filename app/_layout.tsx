@@ -9,6 +9,7 @@ import { StatusBar } from "expo-status-bar";
 export default function RootLayout() {
   return (
     <TamaguiProvider config={config}>
+      <StatusBar style="dark" />
       <SafeAreaView style={{ flex: 1 }}>
         <AuthProvider>
           <Stack
