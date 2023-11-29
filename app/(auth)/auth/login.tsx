@@ -35,16 +35,18 @@ export default function Login() {
     }).then((res) => res.json());
 
     if (!sessionRequest.key) {
-      console.log("incorrect login");
+      alert("Invalid credentials");
       setIsLoading(false);
-      setStep(0);
-
+      setToken("");
+      setAlreadyLoggedIn(false);
       return;
     }
     await AsyncStorage.setItem("session", sessionRequest.key);
+
     const userRequest = await sendApiRequest("POST", "session", {
       token: sessionRequest.key,
     });
+
     setAlreadyLoggedIn(true);
     setUser(userRequest);
     router.push("/");
