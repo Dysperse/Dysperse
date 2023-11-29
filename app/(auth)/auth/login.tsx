@@ -25,20 +25,23 @@ export default function Login() {
       return;
     }
 
-    const sessionRequest = await fetch("https://api.dysperse.com/auth/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-        token,
-      }),
-    }).then((res) => res.json());
+    const sessionRequest = await sendApiRequest(
+      "POST",
+      "auth/login",
+      {},
+      {
+        body: JSON.stringify({
+          email,
+          password,
+          token,
+        }),
+      }
+    );
 
     if (!sessionRequest.key) {
       alert("Invalid credentials");
       setIsLoading(false);
-      setToken("");
-      setAlreadyLoggedIn(false);
+      setStep(0);
       return;
     }
     await AsyncStorage.setItem("session", sessionRequest.key);
