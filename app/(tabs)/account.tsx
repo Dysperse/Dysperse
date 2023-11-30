@@ -1,4 +1,5 @@
-import { View, Text, Pressable } from "react-native";
+import { Text, Pressable } from "react-native";
+import { View } from "tamagui";
 import { useAuth } from "../../context/AuthProvider";
 import { Link, router } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";

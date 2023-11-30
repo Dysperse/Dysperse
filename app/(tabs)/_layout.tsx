@@ -3,7 +3,9 @@ import { BottomTabBar } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
+import { View } from "tamagui";
+
 export default function TabsLayout() {
   return (
     <Tabs
