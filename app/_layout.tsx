@@ -1,14 +1,15 @@
+import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useCallback } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import { TamaguiProvider } from "tamagui";
 import { AuthProvider } from "../context/AuthProvider";
-import { TamaguiProvider, View } from "tamagui";
 import config from "../tamagui.config";
 import Navbar from "../ui/navbar";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
-import { Text } from "react-native";
+import { toastConfig } from "../ui/toast.config";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -64,6 +65,7 @@ export default function RootLayout() {
               }}
             />
           </Stack>
+          <Toast topOffset={20} config={toastConfig} />
         </AuthProvider>
       </SafeAreaView>
     </TamaguiProvider>

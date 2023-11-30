@@ -5,6 +5,7 @@ import { useAuth } from "../../../context/AuthProvider";
 import Turnstile from "../../../ui/turnstile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { sendApiRequest } from "../../../helpers/api";
+import Toast from "react-native-toast-message";
 
 export default function Login() {
   const { setUser } = useAuth();
@@ -18,41 +19,52 @@ export default function Login() {
   const disabled = isLoading || !email.trim() || !password.trim();
 
   const login = async () => {
-    setIsLoading(true);
-    if (step === 0) {
-      setAlreadyLoggedIn(false);
-      setStep(1);
-      return;
-    }
-
-    const sessionRequest = await sendApiRequest(
-      "POST",
-      "auth/login",
-      {},
-      {
-        body: JSON.stringify({
-          email,
-          password,
-          token,
-        }),
+    try {
+      setIsLoading(true);
+      if (step === 0) {
+        setAlreadyLoggedIn(false);
+        setStep(1);
+        return;
       }
-    );
 
-    if (!sessionRequest.key) {
-      alert("Invalid credentials");
-      setIsLoading(false);
-      setStep(0);
-      return;
+      const sessionRequest = await sendApiRequest(
+        "POST",
+        "auth/login",
+        {},
+        {
+          body: JSON.stringify({
+            email,
+            password,
+            token,
+          }),
+        }
+      );
+
+      if (!sessionRequest.key) {
+        Toast.show({
+          type: "error",
+          text1: "Incorrect email or password",
+        });
+        setIsLoading(false);
+        setStep(0);
+        return;
+      }
+      await AsyncStorage.setItem("session", sessionRequest.key);
+
+      const userRequest = await sendApiRequest("POST", "session", {
+        token: sessionRequest.key,
+      });
+
+      setAlreadyLoggedIn(true);
+      setUser(userRequest);
+      router.push("/");
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+        text2: "Please try again later",
+      });
     }
-    await AsyncStorage.setItem("session", sessionRequest.key);
-
-    const userRequest = await sendApiRequest("POST", "session", {
-      token: sessionRequest.key,
-    });
-
-    setAlreadyLoggedIn(true);
-    setUser(userRequest);
-    router.push("/");
   };
 
   useEffect(() => {
@@ -77,6 +89,27 @@ export default function Login() {
       padding="$5"
       gap="$2"
     >
+      <Button
+        onPress={() => {
+          Toast.show({
+            type: "error",
+            text1: "Incorrect email or password",
+          });
+        }}
+      >
+        HI
+      </Button>
+      <Button
+        onPress={() => {
+          Toast.show({
+            type: "success",
+            text1: "toast 2",
+            text2: "toast 2 text",
+          });
+        }}
+      >
+        HI
+      </Button>
       <H1
         textAlign="center"
         textTransform="uppercase"

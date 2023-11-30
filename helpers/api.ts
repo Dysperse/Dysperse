@@ -5,6 +5,7 @@ export function sendApiRequest(method, path, params, options = {}) {
   console.log("query url", url);
 
   return fetch(url, {
+    ...options,
     method,
     headers: {
       "Content-Type": "application/json",
@@ -14,6 +15,5 @@ export function sendApiRequest(method, path, params, options = {}) {
     },
     mode: "cors",
     keepalive: true,
-    ...options,
   }).then((res) => res.json());
 }
