@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter, useSegments } from "expo-router";
+import { Redirect, useRouter, useSegments } from "expo-router";
 import {
   createContext,
   useCallback,
@@ -48,11 +48,7 @@ export function AuthProvider({ children }: any): JSX.Element {
   }, []);
 
   useEffect(() => {
-    fetchUserData().then((sessionData) => {
-      setUser(sessionData);
-      setTimeout(() => {
-        if (!inAuthGroup && !sessionData) router.push("/auth/login");
-      });
+    fetchUserData().then(() => {
       setLoading(false);
     });
   }, []);
@@ -64,12 +60,16 @@ export function AuthProvider({ children }: any): JSX.Element {
 
   return (
     <AuthContext.Provider value={authContext}>
-      {loading ? (
+      {inAuthGroup ? (
+        children
+      ) : loading ? (
         <View flex={1} jc="center" height="100%">
           <Spinner size="large" color="$gray10" />
         </View>
-      ) : (
+      ) : user ? (
         children
+      ) : (
+        !inAuthGroup && <Redirect href={"/auth/login"} />
       )}
     </AuthContext.Provider>
   );

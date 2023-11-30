@@ -57,6 +57,20 @@ export const toastConfig = {
       </BlurView>
     </View>
   ),
+
+  plain: (props) => (
+    <View style={toastContainerStyles}>
+      <BlurView intensity={40}>
+        <ErrorToast
+          {...props}
+          style={{ ...toastStyles, paddingLeft: 10 }}
+          text1NumberOfLines={null}
+          text1Style={{ fontSize: 17 }}
+          text2Style={{ fontSize: 15 }}
+        />
+      </BlurView>
+    </View>
+  ),
   /*
     Overwrite 'error' type,
     by modifying the existing `ErrorToast` component

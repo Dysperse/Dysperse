@@ -89,27 +89,6 @@ export default function Login() {
       padding="$5"
       gap="$2"
     >
-      <Button
-        onPress={() => {
-          Toast.show({
-            type: "error",
-            text1: "Incorrect email or password",
-          });
-        }}
-      >
-        HI
-      </Button>
-      <Button
-        onPress={() => {
-          Toast.show({
-            type: "success",
-            text1: "toast 2",
-            text2: "toast 2 text",
-          });
-        }}
-      >
-        HI
-      </Button>
       <H1
         textAlign="center"
         textTransform="uppercase"
