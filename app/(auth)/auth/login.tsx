@@ -1,11 +1,11 @@
 import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, H1, Input, ScrollView, Spinner, Text, View } from "tamagui";
 import { useAuth } from "../../../context/AuthProvider";
 import Turnstile from "../../../ui/turnstile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { sendApiRequest } from "../../../helpers/api";
 import Toast from "react-native-toast-message";
+import { Spinner } from "@gluestack-ui/themed";
 
 export default function Login() {
   const { setUser } = useAuth();

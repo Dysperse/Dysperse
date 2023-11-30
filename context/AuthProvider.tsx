@@ -7,20 +7,21 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Spinner, View } from "tamagui";
 import { sendApiRequest } from "../helpers/api";
+import { View } from "react-native";
+import { Spinner } from "@gluestack-ui/themed";
 
 type User = {
   name: string;
 };
 
 type AuthType = {
-  user: User | null;
+  session: any;
   setUser: (user: User | null) => void;
 };
 
 const AuthContext = createContext<AuthType>({
-  user: null,
+  session: null,
   setUser: () => {},
 });
 
@@ -48,13 +49,14 @@ export function AuthProvider({ children }: any): JSX.Element {
   }, []);
 
   useEffect(() => {
-    fetchUserData().then(() => {
+    fetchUserData().then((e) => {
+      if (e) setUser(e);
       setLoading(false);
     });
   }, []);
 
   const authContext: AuthType = {
-    user,
+    session: user,
     setUser,
   };
 
@@ -63,13 +65,13 @@ export function AuthProvider({ children }: any): JSX.Element {
       {inAuthGroup ? (
         children
       ) : loading ? (
-        <View flex={1} jc="center" height="100%">
+        <View style={{ flex: 1, justifyContent: "center", height: "100%" }}>
           <Spinner size="large" color="$gray10" />
         </View>
       ) : user ? (
         children
       ) : (
-        !inAuthGroup && <Redirect href={"/auth/login"} />
+        <Redirect href={"/auth/login"} />
       )}
     </AuthContext.Provider>
   );

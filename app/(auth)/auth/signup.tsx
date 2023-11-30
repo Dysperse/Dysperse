@@ -1,16 +1,6 @@
 import { Link, Stack } from "expo-router";
 import { useAuth } from "../../../context/AuthProvider";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import {
-  Text,
-  View,
-  Spinner,
-  Input,
-  H1,
-  H6,
-  Button,
-  ScrollView,
-} from "tamagui";
 import { useState } from "react";
 import { KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

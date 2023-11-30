@@ -5,11 +5,11 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { TamaguiProvider } from "tamagui";
+import { GluestackUIProvider, Text, Box } from "@gluestack-ui/themed";
 import { AuthProvider } from "../context/AuthProvider";
-import config from "../tamagui.config";
 import Navbar from "../ui/navbar";
 import { toastConfig } from "../ui/toast.config";
+import { config } from "@gluestack-ui/config"; // Optional if you want to use default theme
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,7 +31,7 @@ export default function RootLayout() {
   }
 
   return (
-    <TamaguiProvider config={config}>
+    <GluestackUIProvider config={config}>
       <StatusBar style="dark" />
       <SafeAreaView style={{ flex: 1 }} onLayout={onLayoutRootView}>
         <AuthProvider>
@@ -68,6 +68,6 @@ export default function RootLayout() {
           <Toast topOffset={20} config={toastConfig} />
         </AuthProvider>
       </SafeAreaView>
-    </TamaguiProvider>
+    </GluestackUIProvider>
   );
 }

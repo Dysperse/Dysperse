@@ -1,7 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { StyleProp, ViewStyle } from "react-native";
-import { View } from "tamagui";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { BaseToast, ErrorToast } from "react-native-toast-message";
 
 const toastStyles: StyleProp<ViewStyle> = {

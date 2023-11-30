@@ -3,14 +3,15 @@ import { BottomTabBar } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
-import { View } from "tamagui";
+import { Platform, View } from "react-native";
+import AccountNavbar from "../../ui/account-navbar";
 
 export default function TabsLayout() {
   return (
     <Tabs
       initialRouteName="home"
       screenOptions={{
+        header: (props) => <AccountNavbar {...props} />,
         tabBarStyle: Platform.OS === "ios" && {
           backgroundColor: "transparent",
         },
@@ -33,7 +34,6 @@ export default function TabsLayout() {
         options={{
           href: "/tasks",
           title: "",
-          header: () => null,
           tabBarIcon: ({ color }) => (
             <View
               style={{
@@ -56,7 +56,6 @@ export default function TabsLayout() {
         options={{
           href: "/",
           title: "",
-          header: () => null,
           tabBarIcon: ({ color }) => (
             <View
               style={{
@@ -78,7 +77,6 @@ export default function TabsLayout() {
         name="account"
         options={{
           title: "",
-          headerShown: false,
           href: {
             pathname: "/account",
           },
