@@ -71,7 +71,7 @@ export function AuthProvider({ children }: any): JSX.Element {
       ) : user ? (
         children
       ) : (
-        <Redirect href={"/auth/login"} />
+        <Redirect href="/auth/login" />
       )}
     </AuthContext.Provider>
   );

@@ -34,39 +34,37 @@ export default function RootLayout() {
     <GluestackUIProvider config={config}>
       <StatusBar style="dark" />
       <SafeAreaView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <AuthProvider>
-          <Stack
-            screenOptions={{
-              headerStyle: {
-                backgroundColor: "transparent",
-              },
-              contentStyle: {
-                backgroundColor: "#fff",
-              },
-              header: (props) => <Navbar {...props} />,
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: "transparent",
+            },
+            contentStyle: {
+              backgroundColor: "#fff",
+            },
+            header: (props) => <Navbar {...props} />,
+          }}
+        >
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
             }}
-          >
-            <Stack.Screen
-              name="(tabs)"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="(auth)/auth/login"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="(auth)/auth/signup"
-              options={{
-                headerTitle: "Signup",
-              }}
-            />
-          </Stack>
-          <Toast topOffset={20} config={toastConfig} />
-        </AuthProvider>
+          />
+          <Stack.Screen
+            name="(auth)/auth/login"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(auth)/auth/signup"
+            options={{
+              headerTitle: "Signup",
+            }}
+          />
+        </Stack>
+        <Toast topOffset={20} config={toastConfig} />
       </SafeAreaView>
     </GluestackUIProvider>
   );

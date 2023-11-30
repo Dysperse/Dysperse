@@ -1,104 +1,84 @@
-import { Link, Stack } from "expo-router";
+import { Link, router } from "expo-router";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthProvider";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useState } from "react";
-import { KeyboardAvoidingView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Turnstile from "../../../ui/turnstile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { sendApiRequest } from "../../../helpers/api";
+import Toast from "react-native-toast-message";
+import {
+  Box,
+  Button,
+  ButtonSpinner,
+  ButtonText,
+  Heading,
+  Input,
+  InputField,
+  Spinner,
+  Text,
+  View,
+} from "@gluestack-ui/themed";
+import { ScrollView } from "react-native";
 
 export default function Login() {
   const { setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const disabled = isLoading || !email.trim() || !password.trim();
-
-  const login = () => {
-    setIsLoading(true);
-
-    // setUser({
-    //   name: "John Doe",
-    // });
-    setTimeout(() => setIsLoading(false), 1000);
-  };
+  const [token, setToken] = useState("");
+  const [step, setStep] = useState(0);
+  const [alreadyLoggedIn, setAlreadyLoggedIn] = useState(false);
 
   return (
     <ScrollView
-      automaticallyAdjustKeyboardInsets
       style={{
-        flexDirection: "column",
+        flex: 1,
         maxWidth: 500,
         margin: "auto",
       }}
       contentContainerStyle={{
-        rowGap: 10,
-        flex: 1,
         flexGrow: 1,
+        justifyContent: "center",
+        gap: 10,
+        margin: "auto",
       }}
-      padding="$5"
     >
-      <H1 marginTop="auto" textAlign="center">
-        Welcome to Dysperse.
-      </H1>
-      <Text marginBottom="$2" textAlign="center">
-        It's time to set the new standard for productivity.
-      </Text>
-      <Input
-        value={email}
-        onChangeText={(e) => setEmail(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        size="$4"
-        flexShrink={0}
-        borderWidth={2}
-        placeholder="Email or username"
-      />
-      <Input
-        secureTextEntry
-        value={password}
-        onChangeText={(e) => setPassword(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        flexShrink={0}
-        size="$4"
-        borderWidth={2}
-        placeholder="Password"
-      />
-
-      <Input
-        secureTextEntry
-        value={password}
-        onChangeText={(e) => setPassword(e)}
-        style={{ width: "100%" }}
-        disabled={isLoading}
-        size="$4"
-        flexShrink={0}
-        borderWidth={2}
-        placeholder="Confirm your password"
-      />
-      <Button
-        onPress={login}
-        disabled={disabled}
-        theme="active"
-        width="100%"
-        flexShrink={0}
-        size="$4"
-        opacity={disabled ? 0.6 : 1}
+      <Heading
+        size="2xl"
+        textAlign="center"
+        textTransform="uppercase"
+        fontFamily={"heading" as any}
+        fontWeight={500 as any}
       >
-        {isLoading ? <Spinner /> : "Continue"}
+        Welcome to Dysperse
+      </Heading>
+      <Text marginBottom="$2" textAlign="center">
+        It's time to redefine the standard for productivity. Let's get started
+      </Text>
+      <Input variant="outline" size="md" isDisabled={isLoading}>
+        <InputField
+          placeholder="Email or username"
+          onChangeText={(e) => setEmail(e)}
+        />
+      </Input>
+      <Input variant="outline" size="md" isDisabled={isLoading}>
+        <InputField
+          secureTextEntry
+          placeholder="Password"
+          onChangeText={(e) => setPassword(e)}
+        />
+      </Input>
+      <Button>
+        <ButtonText>Continue</ButtonText>
       </Button>
-      <Link asChild href="/auth/login">
-        <Button
-          size="$2"
-          style={{ textDecoration: "none" }}
-          width="100%"
-          marginBottom="auto"
-          opacity={0.7}
-          chromeless
-        >
-          I already have an account
-        </Button>
-      </Link>
+      {step === 0 && (
+        <Box flexDirection="row" gap="$4">
+          <Link asChild href="/auth/login">
+            <Button size="sm" marginLeft="auto" variant="link">
+              I have an account
+            </Button>
+          </Link>
+        </Box>
+      )}
     </ScrollView>
   );
 }

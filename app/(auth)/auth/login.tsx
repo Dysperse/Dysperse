@@ -5,7 +5,19 @@ import Turnstile from "../../../ui/turnstile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { sendApiRequest } from "../../../helpers/api";
 import Toast from "react-native-toast-message";
-import { Spinner } from "@gluestack-ui/themed";
+import {
+  Box,
+  Button,
+  ButtonSpinner,
+  ButtonText,
+  Heading,
+  Input,
+  InputField,
+  Spinner,
+  Text,
+  View,
+} from "@gluestack-ui/themed";
+import { ScrollView } from "react-native";
 
 export default function Login() {
   const { setUser } = useAuth();
@@ -86,17 +98,16 @@ export default function Login() {
         gap: 10,
         margin: "auto",
       }}
-      padding="$5"
-      gap="$2"
     >
-      <H1
+      <Heading
+        size="2xl"
         textAlign="center"
         textTransform="uppercase"
         fontFamily={"heading" as any}
         fontWeight={500 as any}
       >
         {step === 0 ? " Welcome back!" : "Verifying..."}
-      </H1>
+      </Heading>
       <Text marginBottom="$2" textAlign="center">
         {step === 0
           ? "We're so excited to see you again! Please sign in with your Dysperse ID."
@@ -104,65 +115,49 @@ export default function Login() {
       </Text>
       {step === 0 ? (
         <>
-          <Input
-            value={email}
-            onChangeText={(e) => setEmail(e)}
-            style={{ width: "100%" }}
-            disabled={isLoading}
-            size="$4"
-            borderWidth={2}
-            placeholder="Email or username"
-          />
-          <Input
-            secureTextEntry
-            value={password}
-            onChangeText={(e) => setPassword(e)}
-            style={{ width: "100%" }}
-            disabled={isLoading}
-            size="$4"
-            borderWidth={2}
-            placeholder="Password"
-          />
+          <Input variant="outline" size="md" isDisabled={isLoading}>
+            <InputField
+              placeholder="Email or username"
+              value={email}
+              onChangeText={(e) => setEmail(e)}
+            />
+          </Input>
+          <Input variant="outline" size="md" isDisabled={isLoading}>
+            <InputField
+              secureTextEntry
+              placeholder="Password"
+              value={password}
+              onChangeText={(e) => setPassword(e)}
+            />
+          </Input>
         </>
       ) : (
         <>
           <Turnstile setToken={setToken} />
         </>
       )}
-      <Button
-        onPress={login}
-        disabled={disabled}
-        theme="active"
-        width="100%"
-        size="$4"
-        opacity={disabled ? 0.6 : 1}
-      >
-        {isLoading || (step === 1 && !token) ? <Spinner /> : "Continue"}
+      <Button onPress={login} isDisabled={disabled}>
+        {isLoading || (step === 1 && !token) ? (
+          <ButtonSpinner mr="$2" />
+        ) : (
+          <ButtonText fontWeight="$medium" fontSize="$sm">
+            Continue
+          </ButtonText>
+        )}
       </Button>
       {step === 0 && (
-        <View flexDirection="row">
+        <Box flexDirection="row" gap="$4">
           <Link asChild href="/auth/signup">
-            <Button
-              size="$2"
-              marginLeft="auto"
-              style={{ textDecoration: "none" }}
-              opacity={0.7}
-              chromeless
-            >
-              Forgot ID?
+            <Button size="sm" marginLeft="auto" variant="link">
+              <ButtonText>Forgot ID?</ButtonText>
             </Button>
           </Link>
           <Link asChild href="/auth/signup">
-            <Button
-              size="$2"
-              style={{ textDecoration: "none" }}
-              opacity={0.7}
-              chromeless
-            >
-              Create an account
+            <Button size="sm" variant="link">
+              <ButtonText>Create an account</ButtonText>
             </Button>
           </Link>
-        </View>
+        </Box>
       )}
     </ScrollView>
   );

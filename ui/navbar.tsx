@@ -18,10 +18,9 @@ export default function Navbar(props: NativeStackHeaderProps) {
       }}
     >
       <Button
+        variant="link"
         onPress={handleBack}
-        width="$4"
-        height="$4"
-        backgroundColor="transparent"
+        style={{ width: 40, height: 40, padding: 0 }}
       >
         <Entypo
           name="chevron-thin-left"
