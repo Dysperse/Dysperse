@@ -24,7 +24,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(null);
   const [step, setStep] = useState(0);
   const [alreadyLoggedIn, setAlreadyLoggedIn] = useState(false);
 
@@ -53,13 +53,7 @@ export default function Login() {
       );
 
       if (!sessionRequest.key) {
-        Toast.show({
-          type: "error",
-          text1: "Incorrect email or password",
-        });
-        setIsLoading(false);
-        setStep(0);
-        return;
+        throw new Error("Invalid email or password");
       }
       await AsyncStorage.setItem("session", sessionRequest.key);
 
@@ -71,19 +65,19 @@ export default function Login() {
       setUser(userRequest);
       router.push("/");
     } catch (e) {
+      setToken(null);
+      setIsLoading(false);
+      setStep(0);
       Toast.show({
         type: "error",
-        text1: "Something went wrong",
-        text2: "Please try again later",
+        text1: e.message,
       });
     }
   };
 
   useEffect(() => {
-    if (token && !alreadyLoggedIn) {
-      login();
-    }
-  }, [token, alreadyLoggedIn]);
+    if (typeof token === "string") login();
+  }, [token]);
 
   return (
     <ScrollView
@@ -101,6 +95,7 @@ export default function Login() {
       }}
     >
       <Heading
+        lineHeight={"1"}
         size="5xl"
         textAlign="center"
         textTransform="uppercase"

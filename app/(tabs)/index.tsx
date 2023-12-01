@@ -1,8 +1,9 @@
-import { Box, Heading } from "@gluestack-ui/themed";
-import { ScrollView } from "@gluestack-ui/themed";
+import { Box, Heading, ScrollView } from "@gluestack-ui/themed";
 import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Image } from "react-native";
+import { Image, ImageStyle, StyleProp } from "react-native";
+import * as themes from "../../themes";
+import { useAuth } from "../../context/AuthProvider";
 
 export function Emoji({
   style = {},
@@ -11,7 +12,7 @@ export function Emoji({
 }: {
   emoji: string;
   size: number;
-  style?: any;
+  style?: StyleProp<ImageStyle>;
 }) {
   return (
     <Image
@@ -19,9 +20,11 @@ export function Emoji({
       source={{
         uri: `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emoji.toLowerCase()}.png`,
       }}
-      width={size}
-      height={size}
-      style={style}
+      style={{
+        width: size,
+        height: size,
+        ...(style as any),
+      }}
     />
   );
 }
@@ -210,8 +213,8 @@ export function QuoteComponent() {
 
   return (
     <Box gap="$4" flexDirection="row" alignItems="center">
-      <Emoji emoji={greeting.emoji} size={30} />
-      <Heading>{greeting.text}</Heading>
+      <Emoji emoji={greeting.emoji} size={30} style={{ flexShrink: 0 }} />
+      <Heading backgroundColor="$primary9">{greeting.text}</Heading>
     </Box>
   );
 }
@@ -245,10 +248,20 @@ function GreetingComponent() {
 }
 
 export default function Home() {
+  const { session } = useAuth();
+
   return (
     <ScrollView style={{ flex: 1 }} padding="$5">
       <GreetingComponent />
       <QuoteComponent />
+      {/* {JSON.stringify(
+        Object.fromEntries(
+          Object.entries(themes[session.user.color]).map(([key, value]) => {
+            const match = key.match(/([a-zA-Z]+)(\d+)/);
+            return match ? [`primary${match[2]}`, value] : [key, value];
+          })
+        )
+      )} */}
     </ScrollView>
   );
 }

@@ -1,20 +1,21 @@
+import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useCallback } from "react";
+import { createContext, useCallback, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { GluestackUIProvider, Text, Box } from "@gluestack-ui/themed";
-import { AuthProvider } from "../context/AuthProvider";
+import { config } from "../config/gluestack-ui.config"; // Optional if you want to use default theme
 import Navbar from "../ui/navbar";
 import { toastConfig } from "../ui/toast.config";
-import { config } from "@gluestack-ui/config"; // Optional if you want to use default theme
-import { SWRConfig } from "swr";
+import { AuthProvider, useAuth } from "../context/AuthProvider";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { session } = useAuth();
+
   const [fontsLoaded] = useFonts({
     heading: require("../assets/fonts/league-gothic.otf"),
     Inter: require("../assets/fonts/inter/Inter-Regular.ttf"),
@@ -30,6 +31,7 @@ export default function RootLayout() {
   if (!fontsLoaded) {
     return null;
   }
+  console.log(session);
 
   return (
     <GluestackUIProvider config={config}>
@@ -55,7 +57,7 @@ export default function RootLayout() {
           <Stack.Screen
             name="(auth)/auth/login"
             options={{
-              headerShown: false,
+              headerTitle: "Sign in",
             }}
           />
           <Stack.Screen
