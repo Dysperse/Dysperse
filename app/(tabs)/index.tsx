@@ -251,17 +251,9 @@ export default function Home() {
   const { session } = useAuth();
 
   return (
-    <ScrollView style={{ flex: 1 }} padding="$5">
+    <ScrollView style={{ flex: 1 }} padding="$5" backgroundColor="$primary1">
       <GreetingComponent />
       <QuoteComponent />
-      {/* {JSON.stringify(
-        Object.fromEntries(
-          Object.entries(themes[session.user.color]).map(([key, value]) => {
-            const match = key.match(/([a-zA-Z]+)(\d+)/);
-            return match ? [`primary${match[2]}`, value] : [key, value];
-          })
-        )
-      )} */}
     </ScrollView>
   );
 }
