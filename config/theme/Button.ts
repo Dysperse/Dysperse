@@ -15,25 +15,14 @@ export const Button = createStyle({
   variants: {
     action: {
       primary: {
-        ":hover": { bg: "$primary3" },
-        ":active": { bg: "$primary4" },
+        borderColor: "$transparent",
+        borderWidth: "$2",
+        ":hover": { bg: "$primary3", borderColor: "$primary3" },
+        ":active": { bg: "$primary4", borderColor: "$primary4" },
       },
     },
 
     variant: {
-      link: {
-        px: "$0",
-        ":hover": {
-          _text: {
-            textDecorationLine: "underline",
-          },
-        },
-        ":active": {
-          _text: {
-            textDecorationLine: "underline",
-          },
-        },
-      },
       outlined: {
         bg: "transparent",
         borderColor: "$primary6",
