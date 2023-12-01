@@ -12,21 +12,27 @@ import {
   ScrollView,
   Spinner,
   View,
+  Text,
 } from "@gluestack-ui/themed";
 import { useState } from "react";
-import { Text } from "react-native";
 import useSWR from "swr";
 
 export default function Page() {
   const { data, error } = useSWR("https://api.dysperse.com/user/spaces");
   const [view, setView] = useState("all");
 
-  return (
-    <ScrollView contentContainerStyle={{ height: "100%" }}>
-      {data ? (
-        <Center>
-          <Box maxWidth={500} width={"100%"}>
-            <Heading size="5xl" fontFamily="heading" textTransform="uppercase">
+  return data ? (
+    <Box width={"100%"}>
+      <FlatList
+        padding="$5"
+        ListHeaderComponent={
+          <>
+            <Heading
+              size="5xl"
+              textTransform="uppercase"
+              fontFamily={"heading" as any}
+              fontWeight={500 as any}
+            >
               Spaces
             </Heading>
             <ButtonGroup isAttached>
@@ -48,32 +54,31 @@ export default function Page() {
                 <ButtonText>Invitations</ButtonText>
               </Button>
             </ButtonGroup>
-            <FlatList
-              data={data}
-              renderItem={({ item }) => (
-                <HStack
-                  space="md"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  marginTop="$2"
-                >
-                  <Avatar size="md">
-                    <AvatarFallbackText>Space</AvatarFallbackText>
-                  </Avatar>
-                  <VStack width="100%">
-                    <Text color="$coolGray800" fontWeight="$bold">
-                      {item.profile.name}
-                    </Text>
-                    <Text color="$coolGray600">{item.profile.type}</Text>
-                  </VStack>
-                </HStack>
-              )}
-            />
-          </Box>
-        </Center>
-      ) : (
-        <Spinner marginVertical="auto" />
-      )}
-    </ScrollView>
+          </>
+        }
+        data={data}
+        height="100%"
+        width="100%"
+        renderItem={({ item }: any) => (
+          <HStack
+            paddingTop="$4"
+            space="md"
+            justifyContent="space-between"
+            alignItems="center"
+            marginTop="$2"
+          >
+            <Avatar size="md">
+              <AvatarFallbackText>Space</AvatarFallbackText>
+            </Avatar>
+            <VStack width="100%">
+              <Text fontWeight="$900">{item.profile.name}</Text>
+              <Text color="$coolGray700">{item.profile.type}</Text>
+            </VStack>
+          </HStack>
+        )}
+      />
+    </Box>
+  ) : (
+    <Spinner marginVertical="auto" />
   );
 }
