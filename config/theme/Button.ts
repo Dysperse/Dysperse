@@ -27,13 +27,13 @@ export const Button = createStyle({
         bg: "transparent",
         borderColor: "$primary6",
         borderWidth: "$2",
-        ":hover": { bg: "$primary3" },
-        ":active": { bg: "$primary4" },
+        ":hover": { bg: "$primary3", borderColor: "$primary6" },
+        ":active": { bg: "$primary4", borderColor: "$primary6" },
       },
       filled: {
         bg: "$primary3",
-        ":hover": { bg: "$primary4" },
-        ":active": { bg: "$primary5" },
+        ":hover": { bg: "$primary4", borderColor: "$primary4" },
+        ":active": { bg: "$primary5", borderColor: "$primary5" },
       },
     },
 
