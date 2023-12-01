@@ -10,7 +10,7 @@ import { config } from "../config/gluestack-ui.config"; // Optional if you want 
 import Navbar from "../ui/navbar";
 import { toastConfig } from "../ui/toast.config";
 import { AuthProvider, useAuth } from "../context/AuthProvider";
-
+import * as themes from "../themes";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -34,7 +34,23 @@ export default function RootLayout() {
   console.log(session);
 
   return (
-    <GluestackUIProvider config={config}>
+    <GluestackUIProvider
+      config={{
+        ...config,
+        tokens: {
+          ...config.tokens,
+          colors: {
+            ...config.tokens.colors,
+            ...Object.fromEntries(
+              Object.entries(themes["mint"]).map(([key, value]) => {
+                const match = key.match(/([a-zA-Z]+)(\d+)/);
+                return match ? [`primary${match[2]}`, value] : [key, value];
+              })
+            ),
+          },
+        },
+      }}
+    >
       <StatusBar style="dark" />
       <SafeAreaView style={{ flex: 1 }} onLayout={onLayoutRootView}>
         <Stack

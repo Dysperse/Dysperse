@@ -1,8 +1,14 @@
-import { Box, Heading, ScrollView } from "@gluestack-ui/themed";
+import {
+  Box,
+  Button,
+  ButtonSpinner,
+  Heading,
+  ScrollView,
+  Spinner,
+} from "@gluestack-ui/themed";
 import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 import { Image, ImageStyle, StyleProp } from "react-native";
-import * as themes from "../../themes";
 import { useAuth } from "../../context/AuthProvider";
 
 export function Emoji({
@@ -214,7 +220,7 @@ export function QuoteComponent() {
   return (
     <Box gap="$4" flexDirection="row" alignItems="center">
       <Emoji emoji={greeting.emoji} size={30} style={{ flexShrink: 0 }} />
-      <Heading backgroundColor="$primary9">{greeting.text}</Heading>
+      <Heading>{greeting.text}</Heading>
     </Box>
   );
 }
@@ -254,6 +260,7 @@ export default function Home() {
     <ScrollView style={{ flex: 1 }} padding="$5" backgroundColor="$primary1">
       <GreetingComponent />
       <QuoteComponent />
+      <Spinner />
     </ScrollView>
   );
 }
