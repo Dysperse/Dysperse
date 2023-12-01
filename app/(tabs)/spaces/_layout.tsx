@@ -7,6 +7,9 @@ export default function Layout() {
     <Stack
       screenOptions={{
         header: (props) => <Navbar {...props} />,
+        contentStyle: {
+          backgroundColor: "#fff",
+        },
       }}
     >
       <Stack.Screen

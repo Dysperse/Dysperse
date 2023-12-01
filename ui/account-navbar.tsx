@@ -36,7 +36,7 @@ export default function AccountNavbar(props: any) {
 
   return (
     <Box
-      paddingHorizontal="$2"
+      paddingHorizontal="$4"
       borderBottomColor="$blueGray200"
       borderBottomWidth="$2"
       style={{

@@ -1,4 +1,4 @@
-import { Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, EvilIcons } from "@expo/vector-icons";
 import { Box, Button } from "@gluestack-ui/themed";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import React from "react";
@@ -9,7 +9,8 @@ export default function Navbar(props: NativeStackHeaderProps) {
 
   return (
     <Box
-      paddingHorizontal="$2"
+      paddingHorizontal="$4"
+      gap="$2"
       style={{
         height: 64,
         alignItems: "center",
@@ -20,10 +21,16 @@ export default function Navbar(props: NativeStackHeaderProps) {
       <Button
         variant="link"
         onPress={handleBack}
-        style={{ width: 40, height: 40, padding: 0 }}
+        sx={{
+          width: 40,
+          height: 40,
+          padding: 0,
+          ":hover": { backgroundColor: "$blueGray200" },
+          borderRadius: 999,
+        }}
       >
-        <Entypo
-          name="chevron-thin-left"
+        <AntDesign
+          name="close"
           size={24}
           style={{
             width: "100%",
