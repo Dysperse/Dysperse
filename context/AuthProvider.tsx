@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Redirect, useRouter, useSegments } from "expo-router";
+import { Link, Redirect, useRouter, useSegments } from "expo-router";
 import {
   createContext,
   useCallback,
@@ -8,8 +8,14 @@ import {
   useState,
 } from "react";
 import { sendApiRequest } from "../helpers/api";
-import { View } from "react-native";
-import { Spinner } from "@gluestack-ui/themed";
+import { Text, View } from "react-native";
+import {
+  Box,
+  Button,
+  ButtonText,
+  Heading,
+  Spinner,
+} from "@gluestack-ui/themed";
 
 type User = {
   name: string;
@@ -25,11 +31,32 @@ const AuthContext = createContext<AuthType>({
   setUser: () => {},
 });
 
+function IntroScreen() {
+  return (
+    <Box padding="$7" justifyContent="flex-end" height="100%">
+      <Heading
+        size="5xl"
+        lineHeight={70}
+        textTransform="uppercase"
+        fontFamily={"heading" as any}
+        fontWeight={500 as any}
+      >
+        Welcome to Dysperse.
+      </Heading>
+      <Heading>We're here to redefine the standard for productivity</Heading>
+      <Link href="/auth/login" asChild>
+        <Button marginTop="$3" borderRadius={99}>
+          <ButtonText>Get started</ButtonText>
+        </Button>
+      </Link>
+    </Box>
+  );
+}
+
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: any): JSX.Element {
   const segments = useSegments();
-  const router = useRouter();
 
   const inAuthGroup = segments[0] === "(auth)";
 
@@ -71,7 +98,7 @@ export function AuthProvider({ children }: any): JSX.Element {
       ) : user ? (
         children
       ) : (
-        <Redirect href="/auth/login" />
+        <IntroScreen />
       )}
     </AuthContext.Provider>
   );

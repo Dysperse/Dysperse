@@ -96,11 +96,12 @@ export default function Login() {
         flexGrow: 1,
         justifyContent: "center",
         gap: 10,
+        padding: 30,
         margin: "auto",
       }}
     >
       <Heading
-        size="2xl"
+        size="5xl"
         textAlign="center"
         textTransform="uppercase"
         fontFamily={"heading" as any}

@@ -48,7 +48,7 @@ export const toastConfig = {
           style={toastStyles}
           text1NumberOfLines={null}
           renderLeadingIcon={() => (
-            <AntDesign name="checkcircleo" size={24} color="inherit" />
+            <AntDesign name="checkcircleo" size={24} color="black" />
           )}
           text1Style={{ fontSize: 17 }}
           text2Style={{ fontSize: 15 }}
@@ -82,7 +82,7 @@ export const toastConfig = {
           style={toastStyles}
           text1NumberOfLines={null}
           renderLeadingIcon={() => (
-            <AntDesign name="closecircleo" size={24} color="inherit" />
+            <AntDesign name="closecircleo" size={24} color="black" />
           )}
           text1Style={{ fontSize: 17 }}
           text2Style={{ fontSize: 15 }}

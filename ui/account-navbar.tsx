@@ -1,18 +1,34 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React from "react";
-import { useAuth } from "../context/AuthProvider";
-import Logo from "./logo";
-import { View } from "react-native";
 import {
   Avatar,
   AvatarFallbackText,
   AvatarImage,
   Box,
   Button,
-  ButtonIcon,
-  EditIcon,
-  Text,
 } from "@gluestack-ui/themed";
+import { Link } from "expo-router";
+import React from "react";
+import { useAuth } from "../context/AuthProvider";
+import Logo from "./logo";
+
+function Spaces() {
+  return (
+    <Link asChild href="/spaces">
+      <Button
+        borderRadius="$full"
+        bg="$blueGray200"
+        size="xs"
+        sx={{
+          px: 0,
+          w: 40,
+          h: 40,
+        }}
+      >
+        <MaterialIcons name="workspaces-outline" size={22} color="black" />
+      </Button>
+    </Link>
+  );
+}
 
 export default function AccountNavbar(props: any) {
   const { session } = useAuth();
@@ -33,9 +49,7 @@ export default function AccountNavbar(props: any) {
     >
       <Logo size={40} />
       <Box flexGrow={1} />
-      <Button borderRadius="$full" width={40} height={40} bg="$blueGray200">
-        <MaterialIcons name="workspaces-outline" size={22} color="black" />
-      </Button>
+      <Spaces />
       <Avatar
         bgColor="$blueGray200"
         size="md"
@@ -49,13 +63,12 @@ export default function AccountNavbar(props: any) {
             source={{
               uri: session.user.Profile.picture,
             }}
+            alt="Profile Picture"
             width={40}
             height={40}
           />
         )}
       </Avatar>
-
-      {/* session.user.Profile.picture */}
     </Box>
   );
 }

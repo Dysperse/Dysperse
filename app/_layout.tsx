@@ -10,6 +10,7 @@ import { AuthProvider } from "../context/AuthProvider";
 import Navbar from "../ui/navbar";
 import { toastConfig } from "../ui/toast.config";
 import { config } from "@gluestack-ui/config"; // Optional if you want to use default theme
+import { SWRConfig } from "swr";
 
 SplashScreen.preventAutoHideAsync();
 
