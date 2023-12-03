@@ -3,6 +3,7 @@ import { createStyle } from "@gluestack-style/react";
 export const ModalContent = createStyle({
   bg: "$primary2",
   rounded: "$md",
+  p: 24,
   overflow: "hidden",
   ":initial": {
     opacity: 0,

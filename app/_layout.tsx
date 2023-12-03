@@ -18,8 +18,13 @@ export default function RootLayout() {
 
   const [fontsLoaded] = useFonts({
     heading: require("../assets/fonts/league-gothic.otf"),
-    Inter: require("../assets/fonts/inter/Inter-Regular.ttf"),
-    InterBold: require("../assets/fonts/inter/Inter-Bold.ttf"),
+    body_100: require("../assets/fonts/WorkSans/WorkSans-Thin.ttf"),
+    body_300: require("../assets/fonts/WorkSans/WorkSans-Light.ttf"),
+    body_400: require("../assets/fonts/WorkSans/WorkSans-Regular.ttf"),
+    body_500: require("../assets/fonts/WorkSans/WorkSans-Medium.ttf"),
+    body_600: require("../assets/fonts/WorkSans/WorkSans-SemiBold.ttf"),
+    body_700: require("../assets/fonts/WorkSans/WorkSans-Bold.ttf"),
+    body_800: require("../assets/fonts/WorkSans/WorkSans-Black.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {

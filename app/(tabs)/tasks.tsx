@@ -9,6 +9,7 @@ import { ModalContent } from "@gluestack-ui/themed";
 import { CloseIcon } from "@gluestack-ui/themed";
 import { ModalBody } from "@gluestack-ui/themed";
 import { ModalFooter } from "@gluestack-ui/themed";
+import { Divider } from "@gluestack-ui/themed";
 import { Icon } from "@gluestack-ui/themed";
 import { ModalHeader } from "@gluestack-ui/themed";
 import { Modal } from "@gluestack-ui/themed";
@@ -29,11 +30,16 @@ import React, { useState } from "react";
 
 function ModalTest() {
   const [showModal, setShowModal] = useState(false);
-  console.log(showModal);
   const ref = React.useRef(null);
+
   return (
-    <Center h={300}>
-      <Button onPress={() => setShowModal(true)} ref={ref}>
+    <Box>
+      <Button
+        onPress={() => setShowModal(true)}
+        ref={ref}
+        variant="tonal"
+        marginRight="auto"
+      >
         <ButtonText>Show Modal</ButtonText>
       </Button>
       <Modal
@@ -46,23 +52,13 @@ function ModalTest() {
         <ModalBackdrop />
         <ModalContent>
           <ModalHeader>
-            <Heading size="lg">Engage with Modals</Heading>
-            <ModalCloseButton>
-              <Icon as={CloseIcon} />
-            </ModalCloseButton>
+            <Heading>Delete task?</Heading>
           </ModalHeader>
           <ModalBody>
-            <Text>
-              Elevate user interactions with our versatile modals. Seamlessly
-              integrate notifications, forms, and media displays. Make an impact
-              effortlessly.
-            </Text>
+            <Text>You can't undo this action</Text>
           </ModalBody>
           <ModalFooter>
             <Button
-              variant="outlined"
-              size="sm"
-              mr="$3"
               onPress={() => {
                 setShowModal(false);
               }}
@@ -70,51 +66,66 @@ function ModalTest() {
               <ButtonText>Cancel</ButtonText>
             </Button>
             <Button
-              size="sm"
-              borderWidth="$0"
+              variant="outlined"
               onPress={() => {
                 setShowModal(false);
               }}
             >
-              <ButtonText>Explore</ButtonText>
+              <ButtonText>Continue</ButtonText>
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Center>
+    </Box>
   );
 }
 
 export default function Home() {
   return (
     <ScrollView>
-      <Box padding="$5">
-        <Heading title textShadowColor="black">
-          Title
-        </Heading>
-        <Heading size="xl">Heading xl</Heading>
-        <Heading size="lg">Heading lg</Heading>
-        <Heading size="md">Heading md</Heading>
-        <Heading size="sm">Heading sm</Heading>
+      <Box padding="$12">
         <Heading eyebrow>Eyebrow</Heading>
-        <Heading size="2xl">Text</Heading>
+        <Heading size="displayLarge">Display large</Heading>
+        <Heading size="displayMedium">Display medium</Heading>
+        <Heading size="displaySmall">Display small</Heading>
+        <Heading size="headlineLarge">Headline large</Heading>
+        <Heading size="headlineMedium">Headline medium</Heading>
+        <Heading size="headlineSmall">Headline small</Heading>
+        <Heading size="titleLarge">Title large</Heading>
+        <Heading size="titleMedium">Title medium</Heading>
+        <Heading size="titleSmall">Title small</Heading>
+        <Heading size="bodyLarge">Body large</Heading>
+        <Heading size="bodyMedium">Body medium</Heading>
+        <Heading size="bodySmall">Body small</Heading>
+        <Heading size="labelLarge">Label large</Heading>
+        <Heading size="labelMedium">Label medium</Heading>
+        <Heading size="labelSmall">Label small</Heading>
+        <Divider my="$4" />
         <HStack gap="$2">
-          <Button>
-            <ButtonText>Default button</ButtonText>
+          <Button variant="filled">
+            <ButtonText>Filled button</ButtonText>
+          </Button>
+          <Button variant="tonal">
+            <ButtonText>Tonal button</ButtonText>
           </Button>
           <Button variant="outlined">
             <ButtonText>Outlined button</ButtonText>
           </Button>
-          <Button variant="filled">
-            <ButtonText>Filled button</ButtonText>
+          <Button>
+            <ButtonText>Text button (default)</ButtonText>
           </Button>
         </HStack>
-        <Box>
+        <Divider my="$4" />
+        <HStack gap="$2">
+          <Badge size="md" variant="solid" action="success">
+            <BadgeText>Badge</BadgeText>
+          </Badge>
           <Badge size="md" variant="solid" action="success" marginRight="auto">
             <BadgeIcon as={GlobeIcon} ml="$2" />
-            <BadgeText>New feature</BadgeText>
+            <BadgeText>Badge with icon</BadgeText>
           </Badge>
-        </Box>
+        </HStack>
+        <Divider my="$4" />
         <ModalTest />
       </Box>
     </ScrollView>

@@ -1,6 +1,9 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
 export const ButtonText = createStyle({
-  color: '$textLight0',
-  userSelect: 'none',
+  fontSize: "$labelLarge",
+  fontFamily: "$body700",
+  letterSpacing: "$labelLarge",
+  lineHeight: "$labelLarge",
+  userSelect: "none",
 });

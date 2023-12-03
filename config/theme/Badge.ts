@@ -7,9 +7,10 @@ export const Badge = createStyle({
   display: "inline-flex",
   borderRadius: 999,
   width: "auto",
-  paddingHorizontal: "$2",
+  paddingHorizontal: 16,
   paddingVertical: "$1",
-  gap: "$3",
+  gap: 8,
+  height: 32,
   variants: {
     action: {
       error: {
@@ -136,13 +137,8 @@ export const Badge = createStyle({
         },
       },
       md: {
-        px: "$2",
+        px: 8,
         _icon: {
-          props: {
-            size: "xs",
-          },
-        },
-        _text: {
           props: {
             size: "xs",
           },

@@ -1,15 +1,14 @@
 import { createStyle } from "@gluestack-style/react";
 
 export const Button = createStyle({
-  borderRadius: "$md",
-  backgroundColor: "$primary3",
+  height: 40,
+  px: 24,
+  gap: "$md",
+  borderRadius: "$sm",
   flexDirection: "row",
   justifyContent: "center",
   alignItems: "center",
-
   background: "transparent",
-  _text: { color: "$primary11" },
-  _icon: { color: "$primary11" },
   _spinner: { props: { color: "$primary11" } },
 
   variants: {
@@ -23,17 +22,27 @@ export const Button = createStyle({
     },
 
     variant: {
-      outlined: {
-        bg: "transparent",
-        borderColor: "$primary6",
-        borderWidth: "$2",
-        ":hover": { bg: "$primary3", borderColor: "$primary6" },
-        ":active": { bg: "$primary4", borderColor: "$primary6" },
-      },
       filled: {
+        bg: "$primary11",
+        _text: { color: "$primary3" },
+        ":hover": { bg: "$primary12", borderColor: "$primary12" },
+        ":active": { bg: "$primary12", borderColor: "$primary12" },
+      },
+      tonal: {
         bg: "$primary3",
+        _text: { color: "$primary11" },
         ":hover": { bg: "$primary4", borderColor: "$primary4" },
         ":active": { bg: "$primary5", borderColor: "$primary5" },
+      },
+      outlined: {
+        borderWidth: "$2",
+        borderColor: "$primary6",
+        _text: { color: "$primary11" },
+        ":hover": { bg: "$primary3", borderColor: "$primary7" },
+        ":active": { bg: "$primary4", borderColor: "$primary8" },
+      },
+      text: {
+        _text: { color: "$primary11" },
       },
     },
 
@@ -99,5 +108,8 @@ export const Button = createStyle({
 
   ":disabled": {
     opacity: 0.4,
+  },
+  defaultProps: {
+    variant: "text",
   },
 });
