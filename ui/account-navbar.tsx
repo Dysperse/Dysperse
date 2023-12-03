@@ -10,6 +10,7 @@ import { Link } from "expo-router";
 import React from "react";
 import { useAuth } from "../context/AuthProvider";
 import Logo from "./logo";
+import { useToken } from "@gluestack-ui/themed";
 
 function Spaces() {
   return (
@@ -33,21 +34,20 @@ function Spaces() {
 export default function AccountNavbar(props: any) {
   const { session } = useAuth();
   const handleBack = () => props.navigation.goBack();
+  const logoColor = useToken("colors", "primary8");
 
   return (
     <Box
       paddingHorizontal="$4"
-      borderBottomColor="$primary6"
-      borderBottomWidth="$2"
       style={{
         height: 64,
         alignItems: "center",
         flexDirection: "row",
-        backgroundColor: "#fff",
       }}
+      backgroundColor="$primary1"
       gap="$2"
     >
-      <Logo size={40} />
+      <Logo size={40} color={logoColor} />
       <Box flexGrow={1} />
       <Spaces />
       <Avatar

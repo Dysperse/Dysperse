@@ -10,7 +10,7 @@ export const Button = createStyle({
   alignItems: "center",
   background: "transparent",
   _spinner: { props: { color: "$primary11" } },
-
+  _text: { fontFamily: "body_400" },
   variants: {
     action: {
       primary: {
