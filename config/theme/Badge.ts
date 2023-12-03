@@ -1,108 +1,114 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
 export const Badge = createStyle({
-  'flexDirection': 'row',
-  'alignItems': 'center',
-  'borderRadius': '$xs',
-  'variants': {
+  flexDirection: "row",
+  alignItems: "center",
+  background: "$primary3",
+  display: "inline-flex",
+  borderRadius: 999,
+  width: "auto",
+  paddingHorizontal: "$2",
+  paddingVertical: "$1",
+  gap: "$3",
+  variants: {
     action: {
       error: {
-        bg: '$backgroundLightError',
-        borderColor: '$error300',
+        bg: "$backgroundLightError",
+        borderColor: "$error300",
         _icon: {
-          color: '$error600',
+          color: "$error600",
         },
         _text: {
-          color: '$error600',
+          color: "$error600",
         },
         _dark: {
-          bg: '$backgroundDarkError',
-          borderColor: '$error700',
+          bg: "$backgroundDarkError",
+          borderColor: "$error700",
           _text: {
-            color: '$error400',
+            color: "$error400",
           },
           _icon: {
-            color: '$error400',
+            color: "$error400",
           },
         },
       },
       warning: {
-        bg: '$backgroundLightWarning',
-        borderColor: '$warning300',
+        bg: "$backgroundLightWarning",
+        borderColor: "$warning300",
         _icon: {
-          color: '$warning600',
+          color: "$warning600",
         },
         _text: {
-          color: '$warning600',
+          color: "$warning600",
         },
         _dark: {
-          bg: '$backgroundDarkWarning',
-          borderColor: '$warning700',
+          bg: "$backgroundDarkWarning",
+          borderColor: "$warning700",
           _text: {
-            color: '$warning400',
+            color: "$warning400",
           },
           _icon: {
-            color: '$warning400',
+            color: "$warning400",
           },
         },
       },
       success: {
-        bg: '$backgroundLightSuccess',
-        borderColor: '$success300',
+        bg: "$backgroundLightSuccess",
+        borderColor: "$success300",
         _icon: {
-          color: '$success600',
+          color: "$success600",
         },
         _text: {
-          color: '$success600',
+          color: "$success600",
         },
         _dark: {
-          bg: '$backgroundDarkSuccess',
-          borderColor: '$success700',
+          bg: "$backgroundDarkSuccess",
+          borderColor: "$success700",
           _text: {
-            color: '$success400',
+            color: "$success400",
           },
           _icon: {
-            color: '$success400',
+            color: "$success400",
           },
         },
       },
       info: {
-        bg: '$backgroundLightInfo',
-        borderColor: '$info300',
+        bg: "$backgroundLightInfo",
+        borderColor: "$info300",
         _icon: {
-          color: '$info600',
+          color: "$info600",
         },
         _text: {
-          color: '$info600',
+          color: "$info600",
         },
         _dark: {
-          bg: '$backgroundDarkInfo',
-          borderColor: '$info700',
+          bg: "$backgroundDarkInfo",
+          borderColor: "$info700",
           _text: {
-            color: '$info400',
+            color: "$info400",
           },
           _icon: {
-            color: '$info400',
+            color: "$info400",
           },
         },
       },
       muted: {
-        bg: '$backgroundLightMuted',
-        borderColor: '$secondary300',
+        bg: "$backgroundLightMuted",
+        borderColor: "$secondary300",
         _icon: {
-          color: '$secondary600',
+          color: "$secondary600",
         },
         _text: {
-          color: '$secondary600',
+          color: "$secondary600",
         },
         _dark: {
-          bg: '$backgroundDarkMuted',
-          borderColor: '$secondary700',
+          bg: "$backgroundDarkMuted",
+          borderColor: "$secondary700",
           _text: {
-            color: '$secondary400',
+            color: "$secondary400",
           },
           _icon: {
-            color: '$secondary400',
+            color: "$secondary400",
           },
         },
       },
@@ -111,55 +117,55 @@ export const Badge = createStyle({
     variant: {
       solid: {},
       outline: {
-        borderWidth: '$1',
+        borderWidth: "$1",
       },
     },
 
     size: {
       sm: {
-        px: '$2',
+        px: "$2",
         _icon: {
           props: {
-            size: '2xs',
+            size: "2xs",
           },
         },
         _text: {
           props: {
-            size: '2xs',
+            size: "2xs",
           },
         },
       },
       md: {
-        px: '$2',
+        px: "$2",
         _icon: {
           props: {
-            size: 'xs',
+            size: "xs",
           },
         },
         _text: {
           props: {
-            size: 'xs',
+            size: "xs",
           },
         },
       },
       lg: {
-        px: '$2',
+        px: "$2",
         _icon: {
-          props: { size: 'sm' },
+          props: { size: "sm" },
         },
         _text: {
-          props: { size: 'sm' },
+          props: { size: "sm" },
         },
       },
     },
   },
 
-  ':disabled': {
+  ":disabled": {
     opacity: 0.5,
   },
-  'defaultProps': {
-    action: 'info',
-    variant: 'solid',
-    size: 'md',
+  defaultProps: {
+    action: "info",
+    variant: "solid",
+    size: "md",
   },
 });

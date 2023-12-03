@@ -1,35 +1,35 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
 export const ModalContent = createStyle({
-  'bg': '$backgroundLight50',
-  'rounded': '$lg',
-  'overflow': 'hidden',
-  ':initial': {
+  bg: "$primary2",
+  rounded: "$md",
+  overflow: "hidden",
+  ":initial": {
     opacity: 0,
     scale: 0.9,
   },
-  ':animate': {
+  ":animate": {
     opacity: 1,
     scale: 1,
   },
-  ':exit': {
+  ":exit": {
     opacity: 0,
   },
-  ':transition': {
-    type: 'spring',
+  ":transition": {
+    type: "spring",
     damping: 18,
-    stiffness: 250,
+    stiffness: 200,
     opacity: {
-      type: 'timing',
-      duration: 250,
+      type: "timing",
+      duration: 100,
     },
   },
   // @ts-ignore
-  '_dark': {
-    bg: '$backgroundDark900',
+  _dark: {
+    bg: "$backgroundDark900",
   },
 
-  'defaultProps': {
-    softShadow: '3',
+  defaultProps: {
+    softShadow: "3",
   },
 });

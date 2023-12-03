@@ -1,5 +1,3 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
-export const BadgeText = createStyle({
-  textTransform: 'uppercase',
-});
+export const BadgeText = createStyle({});
