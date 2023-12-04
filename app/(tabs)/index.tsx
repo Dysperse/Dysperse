@@ -243,7 +243,7 @@ function GreetingComponent() {
 
   return (
     <Heading
-      size="5xl"
+      size="headlineLarge"
       textTransform="uppercase"
       fontFamily={"heading" as any}
       fontWeight={500 as any}

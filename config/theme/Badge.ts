@@ -56,12 +56,6 @@ export const Badge = createStyle({
       success: {
         bg: "$backgroundLightSuccess",
         borderColor: "$success300",
-        _icon: {
-          color: "$success600",
-        },
-        _text: {
-          color: "$success600",
-        },
         _dark: {
           bg: "$backgroundDarkSuccess",
           borderColor: "$success700",

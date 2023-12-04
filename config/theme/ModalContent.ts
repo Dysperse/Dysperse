@@ -4,6 +4,8 @@ export const ModalContent = createStyle({
   bg: "$primary2",
   rounded: "$md",
   p: 24,
+  borderWidth: 2,
+  borderColor: "$primary6",
   overflow: "hidden",
   ":initial": {
     opacity: 0,

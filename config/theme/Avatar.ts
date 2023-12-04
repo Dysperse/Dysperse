@@ -88,7 +88,7 @@ export const Avatar = createStyle({
         },
 
         _text: {
-          props: { size: "5xl" },
+          props: { size: "headlineLarge" },
         },
       },
     },

@@ -5,7 +5,7 @@ import { BlurView } from "expo-blur";
 import * as NavigationBar from "expo-navigation-bar";
 import { Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { SWRConfig } from "swr";
 import { config } from "../../config/gluestack-ui.config"; // Optional if you want to use default theme
 import { AuthProvider, useAuth } from "../../context/AuthProvider";
@@ -18,7 +18,7 @@ function Pill({ color, children }) {
   return (
     <Box
       backgroundColor={color}
-      width={64}
+      width={68}
       height={40}
       alignItems="center"
       justifyContent="center"
@@ -36,14 +36,13 @@ function RenderTabs() {
   const primary5 = useToken("colors", "primary5");
   const primary11 = useToken("colors", "primary11");
 
-  const [colorState, setColorState] = useState("gray");
-
   useEffect(() => {
-    setColorState(session?.user?.color);
-    NavigationBar.setBackgroundColorAsync(primary3);
-    NavigationBar.setBorderColorAsync(primary3);
-    NavigationBar.setButtonStyleAsync("dark");
-  }, [session?.user?.color, primary3]);
+    if (Platform.OS === "android") {
+      NavigationBar.setBackgroundColorAsync(primary3);
+      NavigationBar.setBorderColorAsync(primary3);
+      NavigationBar.setButtonStyleAsync("dark");
+    }
+  }, [session?.user?.color, primary3, Platform.OS]);
 
   return (
     <GluestackUIProvider
@@ -71,13 +70,22 @@ function RenderTabs() {
     >
       <SWRConfig
         value={{
-          fetcher: (resource, init) =>
-            fetch(resource, {
+          fetcher: ([
+            resource,
+            params,
+            host = "https://api.dysperse.com",
+            init = {},
+          ]) => {
+            const url = `${host}/${resource}?${new URLSearchParams(
+              params
+            ).toString()}`;
+            return fetch(url, {
               headers: {
                 Authorization: `Bearer ${session?.current?.token}`,
               },
               ...init,
-            }).then((res) => res.json()),
+            }).then((res) => res.json());
+          },
         }}
       >
         <Tabs
@@ -85,17 +93,21 @@ function RenderTabs() {
           screenOptions={{
             header: (props) => (session ? <AccountNavbar {...props} /> : null),
             tabBarStyle: {
-              backgroundColor: addHslAlpha(primary3, 0.8),
-              borderWidth: 0,
-              paddingTop: 8,
+              backgroundColor: addHslAlpha(
+                primary3,
+                Platform.OS === "android" ? 1 : 0.8
+              ),
+              borderTopWidth: 0,
+              borderColor: "transparent",
+              paddingTop: 20,
               height: 64,
-              paddingBottom: 12,
+              paddingBottom: 8,
             },
             tabBarActiveTintColor: primary5,
             tabBarInactiveTintColor: "transparent",
           }}
           sceneContainerStyle={{
-            backgroundColor: backgroundColor,
+            backgroundColor,
           }}
           tabBar={(props) => (
             <BlurView
@@ -186,6 +198,7 @@ function RenderTabs() {
             options={{
               href: null,
               header: () => null,
+              tabBarStyle: { display: "none" },
             }}
           />
         </Tabs>

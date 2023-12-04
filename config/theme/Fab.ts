@@ -28,34 +28,12 @@ export const Fab = createStyle({
   },
 
   _text: {
-    color: "$textLight50",
+    color: "$primary1",
     fontWeight: "$normal",
-    _dark: {
-      _text: {
-        color: "$textDark50",
-      },
-    },
   },
 
   _icon: {
-    color: "$textLight50",
-    ":hover": {
-      color: "$textLight0",
-    },
-    ":active": {
-      color: "$textLight0",
-    },
-    _dark: {
-      _icon: {
-        color: "$textDark0",
-        ":hover": {
-          color: "$textDark0",
-        },
-        ":active": {
-          color: "$textDark0",
-        },
-      },
-    },
+    color: "$primary12",
   },
 
   _dark: {
@@ -91,7 +69,7 @@ export const Fab = createStyle({
         px: "$2.5",
         py: "$2.5",
         _text: {
-          fontSize: "$sm",
+          fontSize: "$bodyMedium",
         },
         _icon: {
           props: {
@@ -103,7 +81,7 @@ export const Fab = createStyle({
         px: "$3",
         py: "$3",
         _text: {
-          fontSize: "$md",
+          fontSize: "$bodyMedium",
         },
         _icon: {
           props: {
@@ -115,7 +93,7 @@ export const Fab = createStyle({
         px: "$4",
         py: "$4",
         _text: {
-          fontSize: "$lg",
+          fontSize: "$bodyLarge",
         },
         _icon: {
           props: {

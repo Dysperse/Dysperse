@@ -1,42 +1,32 @@
 import {
+  Badge,
   BadgeIcon,
-  ModalBackdrop,
-  ModalCloseButton,
-  Text,
-} from "@gluestack-ui/themed";
-import { Center } from "@gluestack-ui/themed";
-import { ModalContent } from "@gluestack-ui/themed";
-import { CloseIcon } from "@gluestack-ui/themed";
-import { ModalBody } from "@gluestack-ui/themed";
-import { ModalFooter } from "@gluestack-ui/themed";
-import { Divider } from "@gluestack-ui/themed";
-import { Icon } from "@gluestack-ui/themed";
-import { ModalHeader } from "@gluestack-ui/themed";
-import { Modal } from "@gluestack-ui/themed";
-import { GlobeIcon } from "@gluestack-ui/themed";
-import {
+  BadgeText,
   Box,
   Button,
   ButtonText,
+  Divider,
+  GlobeIcon,
   HStack,
   Heading,
-  Badge,
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   ScrollView,
-  View,
-  BadgeText,
+  Text,
 } from "@gluestack-ui/themed";
-import { BlurView } from "expo-blur";
 import React, { useState } from "react";
 
 function ModalTest() {
   const [showModal, setShowModal] = useState(false);
-  const ref = React.useRef(null);
 
   return (
     <Box>
       <Button
         onPress={() => setShowModal(true)}
-        ref={ref}
         variant="tonal"
         marginRight="auto"
       >
@@ -47,7 +37,6 @@ function ModalTest() {
         onClose={() => {
           setShowModal(false);
         }}
-        finalFocusRef={ref}
       >
         <ModalBackdrop />
         <ModalContent>
@@ -65,12 +54,7 @@ function ModalTest() {
             >
               <ButtonText>Cancel</ButtonText>
             </Button>
-            <Button
-              variant="outlined"
-              onPress={() => {
-                setShowModal(false);
-              }}
-            >
+            <Button variant="outlined" onPress={() => setShowModal(false)}>
               <ButtonText>Continue</ButtonText>
             </Button>
           </ModalFooter>

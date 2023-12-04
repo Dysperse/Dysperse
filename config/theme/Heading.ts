@@ -2,9 +2,6 @@ import { createStyle } from "@gluestack-style/react";
 import { H1, H2, H3, H4, H5, H6, P } from "@expo/html-elements";
 
 export const Heading = createStyle({
-  color: "$textLight900",
-  letterSpacing: "$sm",
-  fontWeight: "$bold",
   fontFamily: "$body",
 
   // Overrides expo-html default styling
@@ -15,7 +12,7 @@ export const Heading = createStyle({
       true: {
         props: {
           textTransform: "uppercase",
-          fontSize: "$xs",
+          fontSize: "$bodySmall",
           opacity: 0.6,
           fontFamily: "$body700",
         },
@@ -30,11 +27,6 @@ export const Heading = createStyle({
         },
       },
     },
-    bold: {
-      true: {
-        fontWeight: "$bold",
-      },
-    },
     underline: {
       true: {
         textDecorationLine: "underline",
@@ -47,7 +39,7 @@ export const Heading = createStyle({
     },
     sub: {
       true: {
-        fontSize: "$xs",
+        fontSize: "$bodySmall",
         lineHeight: "1.3",
       },
     },
@@ -106,12 +98,12 @@ export const Heading = createStyle({
         letterSpacing: "$displaySmall",
         fontFamily: "$body400",
       },
-      titlelarge: {
+      titleLarge: {
         //@ts-ignore
         props: { as: H4 },
-        fontSize: "$titlelarge",
-        lineHeight: "$titlelarge",
-        letterSpacing: "$titlelarge",
+        fontSize: "$titleLarge",
+        lineHeight: "$titleLarge",
+        letterSpacing: "$titleLarge",
         fontFamily: "$body400",
       },
       titleMedium: {

@@ -5,7 +5,7 @@ export const ModalBackdrop = createStyle({
     opacity: 0,
   },
   ":animate": {
-    opacity: 0.5,
+    opacity: 0.7,
   },
   ":exit": {
     opacity: 0,
@@ -24,7 +24,7 @@ export const ModalBackdrop = createStyle({
   top: 0,
   right: 0,
   bottom: 0,
-  bg: "$primary12",
+  bg: "$primary5",
   _web: {
     cursor: "default",
   },

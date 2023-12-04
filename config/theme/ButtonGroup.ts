@@ -1,4 +1,4 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
 export const ButtonGroup = createStyle({
   variants: {
@@ -6,28 +6,28 @@ export const ButtonGroup = createStyle({
       xs: {
         _button: {
           props: {
-            size: 'xs',
+            size: "xs",
           },
         },
       },
       sm: {
         _button: {
           props: {
-            size: 'sm',
+            size: "sm",
           },
         },
       },
       md: {
         _button: {
           props: {
-            size: 'md',
+            size: "md",
           },
         },
       },
       lg: {
         _button: {
           props: {
-            size: 'lg',
+            size: "lg",
           },
         },
       },
@@ -35,36 +35,36 @@ export const ButtonGroup = createStyle({
         _button: {
           _button: {
             props: {
-              size: 'xl',
+              size: "xl",
             },
           },
         },
       },
     },
     space: {
-      'xs': {
-        gap: '$1',
+      xs: {
+        gap: "$1",
       },
-      'sm': {
-        gap: '$2',
+      sm: {
+        gap: "$2",
       },
-      'md': {
-        gap: '$3',
+      md: {
+        gap: "$3",
       },
-      'lg': {
-        gap: '$4',
+      lg: {
+        gap: "$4",
       },
-      'xl': {
-        gap: '$5',
+      xl: {
+        gap: "$5",
       },
-      '2xl': {
-        gap: '$6',
+      "2xl": {
+        gap: "$6",
       },
-      '3xl': {
-        gap: '$7',
+      "3xl": {
+        gap: "$7",
       },
-      '4xl': {
-        gap: '$8',
+      "4xl": {
+        gap: "$8",
       },
     },
     isAttached: {
@@ -74,7 +74,7 @@ export const ButtonGroup = createStyle({
     },
   },
   defaultProps: {
-    size: 'md',
-    space: 'sm',
+    size: "md",
+    space: "sm",
   },
 });

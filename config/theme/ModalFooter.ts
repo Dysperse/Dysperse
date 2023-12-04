@@ -5,4 +5,5 @@ export const ModalFooter = createStyle({
   justifyContent: "flex-end",
   alignItems: "center",
   flexWrap: "wrap",
+  gap: "$2",
 });

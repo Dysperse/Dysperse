@@ -1,11 +1,8 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
 export const FormControlHelperText = createStyle({
   props: {
-    size: 'xs',
+    size: "xs",
   },
-  color: '$textLight500',
-  _dark: {
-    color: '$textDark400',
-  },
+  color: "$primary1",
 });

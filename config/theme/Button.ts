@@ -3,7 +3,7 @@ import { createStyle } from "@gluestack-style/react";
 export const Button = createStyle({
   height: 40,
   px: 24,
-  gap: "$md",
+  gap: "$2",
   borderRadius: "$sm",
   flexDirection: "row",
   justifyContent: "center",

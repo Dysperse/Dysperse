@@ -43,7 +43,7 @@ export default function Login() {
       }}
     >
       <Heading
-        size="2xl"
+        size="headlineLarge"
         textAlign="center"
         textTransform="uppercase"
         fontFamily={"heading" as any}
@@ -73,7 +73,7 @@ export default function Login() {
       {step === 0 && (
         <Box flexDirection="row" gap="$4">
           <Link asChild href="/auth/login">
-            <Button size="sm" marginLeft="auto" variant="link">
+            <Button size="sm" marginLeft="auto">
               I have an account
             </Button>
           </Link>

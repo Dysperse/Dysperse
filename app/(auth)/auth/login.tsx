@@ -95,12 +95,11 @@ export default function Login() {
       }}
     >
       <Heading
-        lineHeight={"1"}
-        size="5xl"
-        textAlign="center"
+        size="headlineLarge"
         textTransform="uppercase"
         fontFamily={"heading" as any}
         fontWeight={500 as any}
+        textAlign="center"
       >
         {step === 0 ? " Welcome back!" : "Verifying..."}
       </Heading>
@@ -132,24 +131,22 @@ export default function Login() {
           <Turnstile setToken={setToken} />
         </>
       )}
-      <Button onPress={login} isDisabled={disabled}>
+      <Button onPress={login} isDisabled={disabled} variant="filled">
         {isLoading || (step === 1 && !token) ? (
           <ButtonSpinner mr="$2" />
         ) : (
-          <ButtonText fontWeight="$medium" fontSize="$sm">
-            Continue
-          </ButtonText>
+          <ButtonText>Continue</ButtonText>
         )}
       </Button>
       {step === 0 && (
         <Box flexDirection="row" gap="$4">
           <Link asChild href="/auth/signup">
-            <Button size="sm" marginLeft="auto" variant="link">
+            <Button size="sm" marginLeft="auto">
               <ButtonText>Forgot ID?</ButtonText>
             </Button>
           </Link>
           <Link asChild href="/auth/signup">
-            <Button size="sm" variant="link">
+            <Button size="sm">
               <ButtonText>Create an account</ButtonText>
             </Button>
           </Link>

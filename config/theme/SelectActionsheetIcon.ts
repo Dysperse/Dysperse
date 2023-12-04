@@ -1,15 +1,15 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
 export const SelectActionsheetIcon = createStyle({
-  w: '$4',
-  h: '$4',
-  mr: '$2',
-  color: '$backgroundLight500',
+  w: "$4",
+  h: "$4",
+  mr: "$2",
+  color: "$primary5",
   _dark: {
     //@ts-ignore
-    color: '$backgroundDark400',
+    color: "$backgroundDark400",
   },
   props: {
-    size: 'md',
+    size: "md",
   },
 });

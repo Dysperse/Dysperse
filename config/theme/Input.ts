@@ -32,25 +32,7 @@ export const Input = createStyle({
   },
 
   _icon: {
-    color: "$textLight400",
-  },
-
-  _dark: {
-    borderColor: "$borderDark700",
-    ":hover": {
-      borderColor: "$borderDark400",
-    },
-    ":focus": {
-      borderColor: "$primary4",
-      ":hover": {
-        borderColor: "$primary4",
-      },
-    },
-    ":disabled": {
-      ":hover": {
-        borderColor: "$borderDark700",
-      },
-    },
+    color: "$primary1",
   },
 
   variants: {

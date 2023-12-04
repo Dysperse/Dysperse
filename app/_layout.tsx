@@ -3,14 +3,14 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { createContext, useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { config } from "../config/gluestack-ui.config"; // Optional if you want to use default theme
+import { useAuth } from "../context/AuthProvider";
+import * as themes from "../themes";
 import Navbar from "../ui/navbar";
 import { toastConfig } from "../ui/toast.config";
-import { AuthProvider, useAuth } from "../context/AuthProvider";
-import * as themes from "../themes";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

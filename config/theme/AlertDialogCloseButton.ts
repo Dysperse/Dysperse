@@ -1,77 +1,77 @@
-import { createStyle } from '@gluestack-style/react';
+import { createStyle } from "@gluestack-style/react";
 
 export const AlertDialogCloseButton = createStyle({
-  'zIndex': 1,
-  'rounded': '$sm',
-  'p': '$2',
-  '_icon': {
-    color: '$backgroundLight400',
+  zIndex: 1,
+  rounded: "$sm",
+  p: "$2",
+  _icon: {
+    color: "$backgroundLight400",
   },
-  '_text': {
-    color: '$backgroundLight400',
+  _text: {
+    color: "$backgroundLight400",
   },
-  ':hover': {
+  ":hover": {
     _icon: {
-      color: '$backgroundLight700',
+      color: "$backgroundLight700",
     },
     _text: {
-      color: '$backgroundLight700',
+      color: "$backgroundLight700",
     },
   },
 
-  ':active': {
+  ":active": {
     _icon: {
-      color: '$backgroundLight900',
+      color: "$primary12",
     },
     _text: {
-      color: '$backgroundLight900',
+      color: "$primary12",
     },
   },
 
-  '_dark': {
-    '_icon': {
-      color: '$backgroundLight400',
+  _dark: {
+    _icon: {
+      color: "$backgroundLight400",
     },
-    '_text': {
-      color: '$backgroundLight400',
+    _text: {
+      color: "$backgroundLight400",
     },
-    ':hover': {
+    ":hover": {
       _icon: {
-        color: '$backgroundDark200',
+        color: "$backgroundDark200",
       },
       _text: {
-        color: '$backgroundLight200',
+        color: "$backgroundLight200",
       },
     },
 
-    ':active': {
+    ":active": {
       _icon: {
-        color: '$backgroundDark100',
+        color: "$backgroundDark100",
       },
     },
   },
 
-  ':focusVisible': {
-    bg: '$backgroundLight100',
+  ":focusVisible": {
+    bg: "$backgroundLight100",
     _icon: {
-      color: '$backgroundLight900',
+      color: "$primary12",
     },
     _text: {
-      color: '$backgroundLight900',
+      color: "$primary12",
     },
     _dark: {
-      bg: '$backgroundDark700',
+      bg: "$backgroundDark700",
       _icon: {
-        color: '$backgroundLight100',
+        color: "$backgroundLight100",
       },
       _text: {
-        color: '$backgroundLight100',
+        color: "$backgroundLight100",
       },
     },
   },
 
-  '_web': {
+  _web: {
     outlineWidth: 0,
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 });

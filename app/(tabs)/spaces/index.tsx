@@ -12,34 +12,38 @@ import {
   ScrollView,
   Spinner,
   View,
+  Pressable,
   Text,
 } from "@gluestack-ui/themed";
+import { router } from "expo-router";
 import { useState } from "react";
 import useSWR from "swr";
 
 export default function Page() {
-  const { data, error } = useSWR("https://api.dysperse.com/user/spaces");
+  const { data, error } = useSWR(["user/spaces", { test: "true" }]);
   const [view, setView] = useState("all");
 
   return data ? (
     <Box width={"100%"}>
       <FlatList
-        padding="$5"
+        py="$4"
         ListHeaderComponent={
-          <>
+          <Box px="$4">
             <Heading
-              size="5xl"
+              size="displayLarge"
               textTransform="uppercase"
               fontFamily={"heading" as any}
               fontWeight={500 as any}
+              mb={4}
             >
               Spaces
             </Heading>
-            <ButtonGroup isAttached>
+            <ButtonGroup isAttached mb={4}>
               <Button
                 width="50%"
                 borderWidth={2}
-                variant={view !== "all" ? "outline" : null}
+                borderRightWidth={0}
+                variant={view !== "all" ? "outlined" : "filled"}
                 onPress={() => setView("all")}
               >
                 <ButtonText>All</ButtonText>
@@ -48,33 +52,39 @@ export default function Page() {
                 width="50%"
                 borderWidth={2}
                 borderLeftWidth={0}
-                variant={view !== "invitations" ? "outline" : null}
+                variant={view !== "invitations" ? "outlined" : "filled"}
                 onPress={() => setView("invitations")}
               >
                 <ButtonText>Invitations</ButtonText>
               </Button>
             </ButtonGroup>
-          </>
+          </Box>
         }
         data={data}
         height="100%"
         width="100%"
         renderItem={({ item }: any) => (
-          <HStack
-            paddingTop="$4"
-            space="md"
-            justifyContent="space-between"
-            alignItems="center"
-            marginTop="$2"
+          <Pressable
+            onPress={() => router.push("/spaces/" + item.id)}
+            sx={{ ":active": { bg: "$primary4" } }}
+            borderRadius={5}
+            px="$5"
           >
-            <Avatar size="md">
-              <AvatarFallbackText>Space</AvatarFallbackText>
-            </Avatar>
-            <VStack width="100%">
-              <Text fontWeight="$900">{item.profile.name}</Text>
-              <Text color="$coolGray700">{item.profile.type}</Text>
-            </VStack>
-          </HStack>
+            <HStack
+              paddingVertical="$2"
+              space="md"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Avatar size="md">
+                <AvatarFallbackText>{item.profile.name[0]}</AvatarFallbackText>
+              </Avatar>
+              <VStack width="100%">
+                <Text fontFamily="body_600">{item.profile.name}</Text>
+                <Text>{item.profile.type}</Text>
+              </VStack>
+            </HStack>
+          </Pressable>
         )}
       />
     </Box>

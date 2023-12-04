@@ -58,17 +58,17 @@ export const Textarea = createStyle({
 
       lg: {
         _input: {
-          fontSize: "$lg",
+          // fontSize: "$lg",
         },
       },
       md: {
         _input: {
-          fontSize: "$md",
+          // fontSize: "$md",
         },
       },
       sm: {
         _input: {
-          fontSize: "$sm",
+          // fontSize: "$sm",
         },
       },
     },

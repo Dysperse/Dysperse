@@ -29,9 +29,9 @@ export const SelectTrigger = createStyle({
   },
 
   _icon: {
-    color: "$backgroundLight500",
+    color: "$primary5",
     _dark: {
-      color: "$backgroundLight500",
+      color: "$primary5",
     },
   },
 
@@ -55,7 +55,7 @@ export const SelectTrigger = createStyle({
       xl: {
         h: "$12",
         _input: {
-          fontSize: "$xl",
+          // fontSize: "$xl",
         },
         _icon: {
           h: "$6",
@@ -65,7 +65,7 @@ export const SelectTrigger = createStyle({
       lg: {
         h: "$11",
         _input: {
-          fontSize: "$lg",
+          // fontSize: "$lg",
         },
         _icon: {
           h: "$5",
@@ -75,7 +75,7 @@ export const SelectTrigger = createStyle({
       md: {
         h: "$10",
         _input: {
-          fontSize: "$md",
+          // fontSize: "$md",
         },
         _icon: {
           h: "$4",
@@ -85,7 +85,7 @@ export const SelectTrigger = createStyle({
       sm: {
         h: "$9",
         _input: {
-          fontSize: "$sm",
+          // fontSize: "$sm",
         },
         _icon: {
           h: "$3.5",

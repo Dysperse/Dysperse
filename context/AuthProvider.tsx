@@ -35,7 +35,7 @@ function IntroScreen() {
   return (
     <Box padding="$7" justifyContent="flex-end" height="100%">
       <Heading
-        size="5xl"
+        size="headlineLarge"
         lineHeight={70}
         textTransform="uppercase"
         fontFamily={"heading" as any}
@@ -45,7 +45,7 @@ function IntroScreen() {
       </Heading>
       <Heading>We're here to redefine the standard for productivity</Heading>
       <Link href="/auth/login" asChild>
-        <Button marginTop="$3" borderRadius={99}>
+        <Button marginTop="$3" variant="filled">
           <ButtonText>Get started</ButtonText>
         </Button>
       </Link>
