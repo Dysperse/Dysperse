@@ -1,13 +1,12 @@
-import { Stack } from "expo-router/stack";
-import AccountNavbar from "../../../ui/account-navbar";
-import Navbar from "../../../ui/navbar";
 import { TransitionPresets } from "@react-navigation/stack";
+import { Stack } from "expo-router/stack";
+import Navbar from "../../../ui/navbar";
 
 import { ParamListBase, StackNavigationState } from "@react-navigation/native";
 import {
-  createStackNavigator,
   StackNavigationEventMap,
   StackNavigationOptions,
+  createStackNavigator,
 } from "@react-navigation/stack";
 import { withLayoutContext } from "expo-router";
 import { Platform } from "react-native";
@@ -47,7 +46,7 @@ export default function Layout() {
         name="[space]"
         options={{
           presentation: "modal",
-          header: (props: any) => <Navbar {...props} icon="expand-more" />,
+          header: (props: any) => null,
         }}
       />
     </RenderStack>

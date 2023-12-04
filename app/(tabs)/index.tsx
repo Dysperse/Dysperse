@@ -1,13 +1,7 @@
-import {
-  Box,
-  Button,
-  ButtonSpinner,
-  Heading,
-  ScrollView,
-  Spinner,
-} from "@gluestack-ui/themed";
+import { Box, Heading, ScrollView, useToken } from "@gluestack-ui/themed";
 import dayjs from "dayjs";
-import React, { useEffect, useMemo, useState } from "react";
+import { StatusBar } from "expo-status-bar";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { Image, ImageStyle, StyleProp } from "react-native";
 import { useAuth } from "../../context/AuthProvider";
 
@@ -35,7 +29,7 @@ export function Emoji({
   );
 }
 
-export function QuoteComponent() {
+const QuoteComponent = memo(function QuoteComponent() {
   const sentences = useMemo(
     () => ({
       morning: [
@@ -218,12 +212,20 @@ export function QuoteComponent() {
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
 
   return (
-    <Box gap="$4" flexDirection="row" alignItems="center">
+    <Box flexDirection="row" alignItems="center" maxWidth="100%" gap="$4">
       <Emoji emoji={greeting.emoji} size={30} style={{ flexShrink: 0 }} />
-      <Heading>{greeting.text}</Heading>
+      <Heading
+        size="bodyLarge"
+        minWidth={0}
+        borderRadius={80}
+        flex={1}
+        flexWrap="wrap"
+      >
+        {greeting.text}
+      </Heading>
     </Box>
   );
-}
+});
 
 function GreetingComponent() {
   const [greeting, setGreeting] = useState("GOOD MORNING");
@@ -243,7 +245,7 @@ function GreetingComponent() {
 
   return (
     <Heading
-      size="headlineLarge"
+      size="displayLarge"
       textTransform="uppercase"
       fontFamily={"heading" as any}
       fontWeight={500 as any}
@@ -254,13 +256,13 @@ function GreetingComponent() {
 }
 
 export default function Home() {
-  const { session } = useAuth();
+  const primary1 = useToken("colors", "primary1");
 
   return (
-    <ScrollView style={{ flex: 1 }} padding="$5" backgroundColor="$primary1">
+    <ScrollView style={{ flex: 1 }} p="$7" py="$10" backgroundColor="$primary1">
+      <StatusBar style="dark" backgroundColor={primary1} />
       <GreetingComponent />
       <QuoteComponent />
-      <Spinner />
     </ScrollView>
   );
 }

@@ -62,6 +62,7 @@ export default function Login() {
       });
 
       setAlreadyLoggedIn(true);
+      console.log(userRequest);
       setUser(userRequest);
       router.push("/");
     } catch (e) {
@@ -110,14 +111,14 @@ export default function Login() {
       </Text>
       {step === 0 ? (
         <>
-          <Input variant="outline" size="md" isDisabled={isLoading}>
+          <Input variant="filled" size="md" isDisabled={isLoading}>
             <InputField
               placeholder="Email or username"
               value={email}
               onChangeText={(e) => setEmail(e)}
             />
           </Input>
-          <Input variant="outline" size="md" isDisabled={isLoading}>
+          <Input variant="filled" size="md" isDisabled={isLoading}>
             <InputField
               secureTextEntry
               placeholder="Password"
@@ -139,7 +140,7 @@ export default function Login() {
         )}
       </Button>
       {step === 0 && (
-        <Box flexDirection="row" gap="$4">
+        <Box flexDirection="row">
           <Link asChild href="/auth/signup">
             <Button size="sm" marginLeft="auto">
               <ButtonText>Forgot ID?</ButtonText>

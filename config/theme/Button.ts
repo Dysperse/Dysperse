@@ -12,6 +12,18 @@ export const Button = createStyle({
   _spinner: { props: { color: "$primary11" } },
   _text: { fontFamily: "body_400" },
   variants: {
+    // allow iconButton prop
+    iconButton: {
+      true: {
+        height: 40,
+        width: 40,
+        p: 0,
+        borderRadius: 999,
+        justifyContent: "center",
+        alignItems: "center",
+        _text: { display: "none" },
+      },
+    },
     action: {
       primary: {
         borderColor: "$transparent",
@@ -107,7 +119,11 @@ export const Button = createStyle({
   },
 
   ":disabled": {
-    opacity: 0.4,
+    bg: "#adadad",
+    color: "#fff",
+    _web: {
+      pointerEvents: "none",
+    },
   },
   defaultProps: {
     variant: "text",

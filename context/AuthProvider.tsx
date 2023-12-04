@@ -1,5 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Link, Redirect, useRouter, useSegments } from "expo-router";
+import {
+  Link,
+  Redirect,
+  useLocalSearchParams,
+  usePathname,
+  useRouter,
+  useSegments,
+} from "expo-router";
 import {
   createContext,
   useCallback,
@@ -8,14 +15,17 @@ import {
   useState,
 } from "react";
 import { sendApiRequest } from "../helpers/api";
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import {
   Box,
   Button,
   ButtonText,
   Heading,
   Spinner,
+  useToken,
 } from "@gluestack-ui/themed";
+import { StatusBar } from "expo-status-bar";
+import * as NavigationBar from "expo-navigation-bar";
 
 type User = {
   name: string;
@@ -31,12 +41,23 @@ const AuthContext = createContext<AuthType>({
   setUser: () => {},
 });
 
-function IntroScreen() {
+export function IntroScreen() {
+  const primary10 = useToken("colors", "primary10");
+  const slug = usePathname();
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      NavigationBar.setBackgroundColorAsync(primary10);
+      NavigationBar.setBorderColorAsync(primary10);
+      NavigationBar.setButtonStyleAsync("light");
+    }
+  }, [primary10, Platform.OS]);
+
   return (
-    <Box padding="$7" justifyContent="flex-end" height="100%">
+    <Box padding="$7" justifyContent="flex-end" height="100%" bg="$primary10">
+      {slug === "/" && <StatusBar style="dark" backgroundColor={primary10} />}
       <Heading
-        size="headlineLarge"
-        lineHeight={70}
+        size="displayLarge"
         textTransform="uppercase"
         fontFamily={"heading" as any}
         fontWeight={500 as any}

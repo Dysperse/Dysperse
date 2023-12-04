@@ -11,7 +11,26 @@ import { useAuth } from "../context/AuthProvider";
 import * as themes from "../themes";
 import Navbar from "../ui/navbar";
 import { toastConfig } from "../ui/toast.config";
+import { TransitionPresets } from "@react-navigation/stack";
+
+import { ParamListBase, StackNavigationState } from "@react-navigation/native";
+import {
+  StackNavigationEventMap,
+  StackNavigationOptions,
+  createStackNavigator,
+} from "@react-navigation/stack";
+import { withLayoutContext } from "expo-router";
+import { Platform } from "react-native";
+
 SplashScreen.preventAutoHideAsync();
+
+const { Navigator } = createStackNavigator();
+export const JsStack = withLayoutContext<
+  StackNavigationOptions,
+  typeof Navigator,
+  StackNavigationState<ParamListBase>,
+  StackNavigationEventMap
+>(Navigator);
 
 export default function RootLayout() {
   const { session } = useAuth();
@@ -56,38 +75,41 @@ export default function RootLayout() {
         },
       }}
     >
-      <StatusBar style="dark" />
+      <StatusBar style="light" backgroundColor="#000" />
       <SafeAreaView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <Stack
+        <JsStack
           screenOptions={{
+            ...TransitionPresets.ModalPresentationIOS,
+            gestureEnabled: true,
             headerStyle: {
               backgroundColor: "transparent",
             },
-            contentStyle: {
+            cardStyle: {
               backgroundColor: "#fff",
             },
-            header: (props) => <Navbar {...props} />,
+            header: (props: any) => <Navbar {...props} icon="expand-more" />,
           }}
         >
-          <Stack.Screen
+          <JsStack.Screen
             name="(tabs)"
             options={{
               headerShown: false,
             }}
           />
-          <Stack.Screen
+          <JsStack.Screen
             name="(auth)/auth/login"
             options={{
               headerTitle: "Sign in",
+              presentation: "modal",
             }}
           />
-          <Stack.Screen
+          <JsStack.Screen
             name="(auth)/auth/signup"
             options={{
               headerTitle: "Signup",
             }}
           />
-        </Stack>
+        </JsStack>
         <Toast topOffset={20} config={toastConfig} />
       </SafeAreaView>
     </GluestackUIProvider>

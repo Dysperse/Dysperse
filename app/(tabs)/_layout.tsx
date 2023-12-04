@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { SWRConfig } from "swr";
 import { config } from "../../config/gluestack-ui.config"; // Optional if you want to use default theme
-import { AuthProvider, useAuth } from "../../context/AuthProvider";
+import { AuthProvider, IntroScreen, useAuth } from "../../context/AuthProvider";
 import * as themes from "../../themes";
 import AccountNavbar from "../../ui/account-navbar";
 import { addHslAlpha } from "../../ui/color";
@@ -44,7 +44,7 @@ function RenderTabs() {
     }
   }, [session?.user?.color, primary3, Platform.OS]);
 
-  return (
+  return session ? (
     <GluestackUIProvider
       config={{
         ...config,
@@ -99,7 +99,7 @@ function RenderTabs() {
               ),
               borderTopWidth: 0,
               borderColor: "transparent",
-              paddingTop: 20,
+              paddingTop: Platform.OS === "web" ? 4 : 20,
               height: 64,
               paddingBottom: 8,
             },
@@ -204,6 +204,8 @@ function RenderTabs() {
         </Tabs>
       </SWRConfig>
     </GluestackUIProvider>
+  ) : (
+    <IntroScreen />
   );
 }
 

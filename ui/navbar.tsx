@@ -10,7 +10,7 @@ import React from "react";
 import { Text, View } from "react-native";
 
 interface NavbarProps extends NativeStackHeaderProps {
-  icon: "arrow-back-ios" | "close" | "expand-more";
+  icon?: "arrow-back-ios" | "close" | "expand-more";
 }
 
 export default function Navbar(props: NavbarProps) {
@@ -36,7 +36,7 @@ export default function Navbar(props: NavbarProps) {
         }}
       >
         <MaterialIcons
-          name={props.icon}
+          name={props.icon || "arrow-back"}
           size={24}
           style={{
             width: "100%",

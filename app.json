@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -20,12 +22,23 @@
       "splash": {
         "resizeMode": "cover",
         "image": "./assets/splash.png"
-      }
+      },
+      "package": "com.manucodes.Dysperse"
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c0997b30-888c-4328-83fb-f91557e70d3e"
+      }
+    }
   }
 }
