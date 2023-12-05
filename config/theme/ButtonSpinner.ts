@@ -1,7 +1,0 @@
-import { createStyle } from "@gluestack-style/react";
-
-export const ButtonSpinner = createStyle({
-  props: {
-    color: "#000",
-  },
-});

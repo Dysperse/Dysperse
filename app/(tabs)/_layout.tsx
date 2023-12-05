@@ -1,73 +1,29 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { GluestackUIProvider, useToken } from "@gluestack-ui/themed";
 import { BottomTabBar } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
-import * as NavigationBar from "expo-navigation-bar";
 import { Tabs } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Platform, View } from "react-native";
 import { SWRConfig } from "swr";
-import { config } from "../../config/gluestack-ui.config"; // Optional if you want to use default theme
 import { AuthProvider, IntroScreen, useAuth } from "../../context/AuthProvider";
-import * as themes from "../../themes";
 import AccountNavbar from "../../ui/account-navbar";
-import { addHslAlpha } from "../../ui/color";
-import { Box } from "@gluestack-ui/themed";
 
 function Pill({ color, children }) {
-  return (
-    <Box
-      backgroundColor={color}
-      width={68}
-      height={40}
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="$full"
-    >
-      {children}
-    </Box>
-  );
+  return <View>{children}</View>;
 }
 
 function RenderTabs() {
   const { session } = useAuth();
-  const backgroundColor = useToken("colors", "primary1");
-  const primary3 = useToken("colors", "primary3");
-  const primary5 = useToken("colors", "primary5");
-  const primary11 = useToken("colors", "primary11");
-
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      NavigationBar.setBackgroundColorAsync(primary3);
-      NavigationBar.setBorderColorAsync(primary3);
-      NavigationBar.setButtonStyleAsync("dark");
-    }
-  }, [session?.user?.color, primary3, Platform.OS]);
+  // useEffect(() => {
+  //   if (Platform.OS === "android") {
+  //     NavigationBar.setBackgroundColorAsync(primary3);
+  //     NavigationBar.setBorderColorAsync(primary3);
+  //     NavigationBar.setButtonStyleAsync("dark");
+  //   }
+  // }, [session?.user?.color, primary3, Platform.OS]);
 
   return session ? (
-    <GluestackUIProvider
-      config={{
-        ...config,
-        tokens: {
-          ...config.tokens,
-          colors: {
-            ...config.tokens.colors,
-            ...(session?.user?.color
-              ? Object.fromEntries(
-                  Object.entries(themes[session.user.color]).map(
-                    ([key, value]) => {
-                      const match = key.match(/([a-zA-Z]+)(\d+)/);
-                      return match
-                        ? [`primary${match[2]}`, value]
-                        : [key, value];
-                    }
-                  )
-                )
-              : {}),
-          },
-        },
-      }}
-    >
+    <>
       <SWRConfig
         value={{
           fetcher: ([
@@ -93,22 +49,24 @@ function RenderTabs() {
           screenOptions={{
             header: (props) => (session ? <AccountNavbar {...props} /> : null),
             tabBarStyle: {
-              backgroundColor: addHslAlpha(
-                primary3,
-                Platform.OS === "android" ? 1 : 0.8
-              ),
+              // backgroundColor: addHslAlpha(
+              //   primary3,
+              //   Platform.OS === "android" ? 1 : 0.8
+              // ),
               borderTopWidth: 0,
               borderColor: "transparent",
               paddingTop: Platform.OS === "web" ? 4 : 20,
               height: 64,
               paddingBottom: 8,
             },
-            tabBarActiveTintColor: primary5,
+            // tabBarActiveTintColor: primary5,
             tabBarInactiveTintColor: "transparent",
           }}
-          sceneContainerStyle={{
-            backgroundColor,
-          }}
+          sceneContainerStyle={
+            {
+              // backgroundColor,
+            }
+          }
           tabBar={(props) => (
             <BlurView
               style={{ position: "absolute", bottom: 0, left: 0, right: 0 }}
@@ -135,7 +93,7 @@ function RenderTabs() {
                     <MaterialCommunityIcons
                       name="check-circle-outline"
                       size={28}
-                      color={color == "transparent" && primary11}
+                      // color={color == "transparent" && primary11}
                     />
                   </Pill>
                 </View>
@@ -159,7 +117,7 @@ function RenderTabs() {
                     <MaterialCommunityIcons
                       name="home-variant-outline"
                       size={28}
-                      color={color == "transparent" && primary11}
+                      // color={color == "transparent" && primary11}
                     />
                   </Pill>
                 </View>
@@ -185,7 +143,7 @@ function RenderTabs() {
                     <MaterialCommunityIcons
                       name="package-variant-closed"
                       size={28}
-                      color={color == "transparent" && primary11}
+                      // color={color == "transparent" && primary11}
                     />
                   </Pill>
                 </View>
@@ -203,7 +161,7 @@ function RenderTabs() {
           />
         </Tabs>
       </SWRConfig>
-    </GluestackUIProvider>
+    </>
   ) : (
     <IntroScreen />
   );

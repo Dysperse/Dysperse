@@ -1,8 +1,14 @@
-import { Box, Heading, ScrollView, useToken } from "@gluestack-ui/themed";
 import dayjs from "dayjs";
 import { StatusBar } from "expo-status-bar";
 import React, { memo, useEffect, useMemo, useState } from "react";
-import { Image, ImageStyle, StyleProp } from "react-native";
+import {
+  Image,
+  ImageStyle,
+  ScrollView,
+  StyleProp,
+  Text,
+  View,
+} from "react-native";
 import { useAuth } from "../../context/AuthProvider";
 
 export function Emoji({
@@ -212,18 +218,10 @@ const QuoteComponent = memo(function QuoteComponent() {
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
 
   return (
-    <Box flexDirection="row" alignItems="center" maxWidth="100%" gap="$4">
+    <View>
       <Emoji emoji={greeting.emoji} size={30} style={{ flexShrink: 0 }} />
-      <Heading
-        size="bodyLarge"
-        minWidth={0}
-        borderRadius={80}
-        flex={1}
-        flexWrap="wrap"
-      >
-        {greeting.text}
-      </Heading>
-    </Box>
+      <Text>{greeting.text}</Text>
+    </View>
   );
 });
 
@@ -243,24 +241,13 @@ function GreetingComponent() {
     }
   }, []);
 
-  return (
-    <Heading
-      size="displayLarge"
-      textTransform="uppercase"
-      fontFamily={"heading" as any}
-      fontWeight={500 as any}
-    >
-      {greeting}
-    </Heading>
-  );
+  return <Text>{greeting}</Text>;
 }
 
 export default function Home() {
-  const primary1 = useToken("colors", "primary1");
-
   return (
-    <ScrollView style={{ flex: 1 }} p="$7" py="$10" backgroundColor="$primary1">
-      <StatusBar style="dark" backgroundColor={primary1} />
+    <ScrollView style={{ flex: 1 }}>
+      {/* <StatusBar style="dark" backgroundColor={primary1} /> */}
       <GreetingComponent />
       <QuoteComponent />
     </ScrollView>

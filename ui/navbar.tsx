@@ -1,13 +1,7 @@
-import {
-  AntDesign,
-  Entypo,
-  EvilIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
-import { Box, Button } from "@gluestack-ui/themed";
+import { MaterialIcons } from "@expo/vector-icons";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import React from "react";
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 
 interface NavbarProps extends NativeStackHeaderProps {
   icon?: "arrow-back-ios" | "close" | "expand-more";
@@ -17,37 +11,19 @@ export default function Navbar(props: NavbarProps) {
   const handleBack = () => props.navigation.goBack();
 
   return (
-    <Box
-      paddingHorizontal="$4"
-      gap="$2"
+    <View
       style={{
+        gap: 20,
         height: 64,
         alignItems: "center",
         flexDirection: "row",
-        backgroundColor: "#fff",
+        backgroundColor: "red",
       }}
     >
-      <Button
-        onPress={handleBack}
-        sx={{
-          height: 40,
-          width: 40,
-          px: 0,
-        }}
-      >
-        <MaterialIcons
-          name={props.icon || "arrow-back"}
-          size={24}
-          style={{
-            width: "100%",
-            textAlign: "center",
-          }}
-          color="black"
-        />
-      </Button>
+      <Button title="Back" />
       <Text style={{ fontWeight: "bold" }}>
         {props.options.headerTitle as string}
       </Text>
-    </Box>
+    </View>
   );
 }

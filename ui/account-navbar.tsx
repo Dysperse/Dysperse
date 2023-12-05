@@ -1,21 +1,14 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  Avatar,
-  AvatarFallbackText,
-  AvatarImage,
-  Box,
-  Button,
-} from "@gluestack-ui/themed";
 import { Link } from "expo-router";
 import React from "react";
 import { useAuth } from "../context/AuthProvider";
 import Logo from "./logo";
-import { useToken } from "@gluestack-ui/themed";
+import { View } from "react-native";
 
 function Spaces() {
   return (
     <Link asChild href="/spaces">
-      <Button
+      {/* <Button
         borderRadius="$full"
         bg="$blueGray200"
         size="xs"
@@ -26,7 +19,7 @@ function Spaces() {
         }}
       >
         <MaterialIcons name="workspaces-outline" size={22} color="black" />
-      </Button>
+      </Button> */}
     </Link>
   );
 }
@@ -34,23 +27,20 @@ function Spaces() {
 export default function AccountNavbar(props: any) {
   const { session } = useAuth();
   const handleBack = () => props.navigation.goBack();
-  const logoColor = useToken("colors", "primary8");
+  // const logoColor = useToken("colors", "primary8");
 
   return (
-    <Box
-      paddingHorizontal="$4"
+    <View
       style={{
         height: 64,
         alignItems: "center",
         flexDirection: "row",
       }}
-      backgroundColor="$primary1"
-      gap="$2"
     >
-      <Logo size={40} color={logoColor} />
-      <Box flexGrow={1} />
+      <Logo size={40} color={"red"} />
+      <View style={{ flexGrow: 1 }} />
       <Spaces />
-      <Avatar
+      {/* <Avatar
         bgColor="$blueGray200"
         size="md"
         borderRadius="$full"
@@ -68,7 +58,7 @@ export default function AccountNavbar(props: any) {
             height={40}
           />
         )}
-      </Avatar>
-    </Box>
+      </Avatar> */}
+    </View>
   );
 }

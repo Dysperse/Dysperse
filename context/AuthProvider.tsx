@@ -1,12 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  Link,
-  Redirect,
-  useLocalSearchParams,
-  usePathname,
-  useRouter,
-  useSegments,
-} from "expo-router";
+import { Link, usePathname, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import {
   createContext,
   useCallback,
@@ -14,18 +8,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { sendApiRequest } from "../helpers/api";
-import { Platform, Text, View } from "react-native";
 import {
-  Box,
+  ActivityIndicator,
   Button,
-  ButtonText,
-  Heading,
-  Spinner,
-  useToken,
-} from "@gluestack-ui/themed";
-import { StatusBar } from "expo-status-bar";
-import * as NavigationBar from "expo-navigation-bar";
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
+import { sendApiRequest } from "../helpers/api";
 
 type User = {
   name: string;
@@ -42,35 +32,27 @@ const AuthContext = createContext<AuthType>({
 });
 
 export function IntroScreen() {
-  const primary10 = useToken("colors", "primary10");
   const slug = usePathname();
 
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      NavigationBar.setBackgroundColorAsync(primary10);
-      NavigationBar.setBorderColorAsync(primary10);
-      NavigationBar.setButtonStyleAsync("light");
-    }
-  }, [primary10, Platform.OS]);
+  // useEffect(() => {
+  //   if (Platform.OS === "android") {
+  //     NavigationBar.setBackgroundColorAsync(primary10);
+  //     NavigationBar.setBorderColorAsync(primary10);
+  //     NavigationBar.setButtonStyleAsync("light");
+  //   }
+  // }, [primary10, Platform.OS]);
 
   return (
-    <Box padding="$7" justifyContent="flex-end" height="100%" bg="$primary10">
-      {slug === "/" && <StatusBar style="dark" backgroundColor={primary10} />}
-      <Heading
-        size="displayLarge"
-        textTransform="uppercase"
-        fontFamily={"heading" as any}
-        fontWeight={500 as any}
-      >
-        Welcome to Dysperse.
-      </Heading>
-      <Heading>We're here to redefine the standard for productivity</Heading>
+    <SafeAreaView>
+      {slug === "/" && (
+        <StatusBar style="dark" backgroundColor={"transparent"} />
+      )}
+      <Text>Welcome to Dysperse.</Text>
+      <Text>We're here to redefine the standard for productivity</Text>
       <Link href="/auth/login" asChild>
-        <Button marginTop="$3" variant="filled">
-          <ButtonText>Get started</ButtonText>
-        </Button>
+        <Button title="Get started" />
       </Link>
-    </Box>
+    </SafeAreaView>
   );
 }
 
@@ -114,7 +96,7 @@ export function AuthProvider({ children }: any): JSX.Element {
         children
       ) : loading ? (
         <View style={{ flex: 1, justifyContent: "center", height: "100%" }}>
-          <Spinner size="large" color="$gray10" />
+          <ActivityIndicator />
         </View>
       ) : user ? (
         children
