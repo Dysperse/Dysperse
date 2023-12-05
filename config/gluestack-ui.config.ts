@@ -40,9 +40,7 @@ export const gluestackUIConfig = createConfig({
     rounded: "borderRadius",
   } as const,
   tokens: {
-    colors: {
-      ...(flattenColors(colors) as ColorThemes),
-    },
+    colors: {},
     space: {
       px: "1px",
       "0": 0,

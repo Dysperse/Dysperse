@@ -15,9 +15,9 @@ export const Button = createStyle({
     // allow iconButton prop
     iconButton: {
       true: {
-        height: 40,
-        width: 40,
-        p: 0,
+        w: 40,
+        h: 40,
+        px: 0,
         borderRadius: 999,
         justifyContent: "center",
         alignItems: "center",

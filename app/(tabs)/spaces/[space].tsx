@@ -1,4 +1,4 @@
-import { Button, ButtonIcon, ScrollView } from "@gluestack-ui/themed";
+import { Button, ButtonIcon, ScrollView, View } from "@gluestack-ui/themed";
 import { Box, Heading, Spinner } from "@gluestack-ui/themed";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -21,7 +21,7 @@ export default function Page() {
 
   const palette = useColor("gray", false);
   const navigation = useNavigation();
-  
+
   return isLoading ? (
     <Spinner />
   ) : (
@@ -29,9 +29,11 @@ export default function Page() {
       <StatusBar backgroundColor="#000" style="light" />
       <ScrollView>
         <Box h={300} backgroundColor={palette[9]}>
-          <Button iconButton>
-            <MaterialIcons name="expand-more" size={24} color="black" />
-          </Button>
+          <View>
+            <Button iconButton onPress={() => router.back()}>
+              <MaterialIcons name="expand-more" size={22} color="black" />
+            </Button>
+          </View>
           <Heading size="displayLarge">Space</Heading>
         </Box>
         <Text>{JSON.stringify(data)}</Text>
