@@ -23,6 +23,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Platform } from "react-native";
 import { OpenTabsProvider } from "../../context/tabs";
+import { OpenTabsList } from "./OpenTabsList";
 
 const TestBottomSheet = ({ children }) => {
   // ref
@@ -88,18 +89,6 @@ const styles = StyleSheet.create({
   },
 });
 
-function OpenTabsList() {
-  const { session } = useSession();
-
-  useEffect(() => {});
-
-  return (
-    <>
-      <Text>Hi</Text>
-    </>
-  );
-}
-
 function BottomAppBar() {
   const pathname = usePathname();
   const shouldHide = ["/account", "/tabs"].includes(pathname);
@@ -128,9 +117,7 @@ function BottomAppBar() {
         </Pressable>
         <TestBottomSheet>
           <Pressable className="w-10 h-10 bg-gray-300 active:bg-gray-400 justify-center items-center rounded-full">
-            <Icon size={30} style={{ height: 24, lineHeight: 30 }}>
-              add
-            </Icon>
+            <Icon size={30}>add</Icon>
           </Pressable>
         </TestBottomSheet>
         <Pressable onPress={() => router.push("/tabs")}>

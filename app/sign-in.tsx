@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { useSession } from "../context/AuthProvider";
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   Text,
   View,
@@ -47,6 +47,7 @@ export default function SignIn() {
             body: JSON.stringify({ ...data, token }),
           }
         );
+        if (!sessionRequest.key) throw new Error(sessionRequest);
         signIn(sessionRequest.key);
       }
     } catch (e) {
@@ -71,7 +72,7 @@ export default function SignIn() {
 
   return step == 0 || step == 2 ? (
     <KeyboardAvoidingView
-      className="gap-3 flex-1 items-center justify-center p-10"
+      className="gap-3 flex-1 items-center justify-center p-10 max-w-lg mx-auto w-full"
       behavior="padding"
     >
       <Text style={{ fontFamily: "heading" }} className="uppercase text-4xl">

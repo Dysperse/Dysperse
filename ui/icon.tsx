@@ -5,12 +5,16 @@ export default function Icon({
   children,
   filled = false,
   style = {},
+  className = "",
 }) {
   return (
     <Text
+      className={className}
       style={{
         fontFamily: filled ? "symbols_filled" : "symbols_outlined",
         fontSize: size,
+        width: size,
+        height: size,
         ...(style && style),
       }}
     >

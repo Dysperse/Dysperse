@@ -10,5 +10,5 @@ export function useUser() {
     { method: "POST" },
   ]);
 
-  return { session:data, isLoading, error };
+  return { session: data, isLoading, error };
 }

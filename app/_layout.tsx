@@ -3,8 +3,14 @@ import { SessionProvider } from "../context/AuthProvider";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { useFonts } from "expo-font";
+import "./styles.css";
 
 SplashScreen.preventAutoHideAsync();
+import { NativeWindStyleSheet } from "nativewind";
+
+NativeWindStyleSheet.setOutput({
+  default: "native",
+});
 
 export default function Root() {
   // Set up the auth context and render our layout inside of it.

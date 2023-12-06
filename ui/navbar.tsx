@@ -28,7 +28,7 @@ export default function Navbar(props: NavbarProps) {
       >
         <Icon size={30}>{props.icon || "west"}</Icon>
       </Pressable>
-      <Text style={{ fontFamily: "body_700" }} className="ml-2">
+      <Text style={{ fontFamily: "body_700" }} className="pl-2">
         {props.options.headerTitle as string}
       </Text>
     </View>
