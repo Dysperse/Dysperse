@@ -11,6 +11,7 @@ export default function Icon({
       style={{
         fontFamily: filled ? "symbols_filled" : "symbols_outlined",
         fontSize: size,
+        ...(style && style),
       }}
     >
       {children}

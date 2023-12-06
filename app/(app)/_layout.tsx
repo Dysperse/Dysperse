@@ -113,13 +113,13 @@ function BottomAppBar() {
         </Pressable>
         <TestBottomSheet>
           <Pressable className="w-10 h-10 bg-gray-300 active:bg-gray-400 justify-center items-center rounded-full">
-            <Icon size={30}>add</Icon>
+            <Icon size={30} style={{ height: 24, lineHeight: 30 }}>
+              add
+            </Icon>
           </Pressable>
         </TestBottomSheet>
         <Pressable onPress={() => router.push("/tabs")}>
-          <Icon size={30} filled={pathname === "/tabs"}>
-            grid_view
-          </Icon>
+          <Icon size={30}>grid_view</Icon>
         </Pressable>
       </View>
     </View>
