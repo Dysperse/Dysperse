@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import React from "react";
+import { Platform, Pressable, Text, View } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
-import Icon from "../../ui/icon";
-import { useUser } from "../../context/useUser";
 import { window } from "../../constants";
-import { Platform } from "react-native";
-import { useSession } from "context/AuthProvider";
+import { useUser } from "../../context/useUser";
+import Icon from "../../ui/icon";
+import { styled } from "nativewind";
 
 const PAGE_WIDTH = window.width;
+const StyledPressable = styled(Pressable);
 
 function Tab({ tab }) {
   return (
@@ -19,8 +19,8 @@ function Tab({ tab }) {
         height: 64,
       }}
     >
-      <Pressable
-        className="bg-gray-200 flex-row items-center active:bg-gray-300"
+      <StyledPressable
+        className="flex-row items-center bg-gray-200 active:bg-gray-500"
         style={{
           flex: 1,
           gap: 20,
@@ -33,7 +33,7 @@ function Tab({ tab }) {
       >
         <Icon className="select-none">{tab.tabData.icon}</Icon>
         <Text className="select-none">{tab.tabData.label}</Text>
-      </Pressable>
+      </StyledPressable>
     </View>
   );
 }
