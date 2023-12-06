@@ -22,6 +22,7 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { Platform } from "react-native";
+import { OpenTabsProvider } from "../../context/tabs";
 
 const TestBottomSheet = ({ children }) => {
   // ref
@@ -87,6 +88,18 @@ const styles = StyleSheet.create({
   },
 });
 
+function OpenTabsList() {
+  const { session } = useSession();
+
+  useEffect(() => {});
+
+  return (
+    <>
+      <Text>Hi</Text>
+    </>
+  );
+}
+
 function BottomAppBar() {
   const pathname = usePathname();
   const shouldHide = ["/account", "/tabs"].includes(pathname);
@@ -101,7 +114,9 @@ function BottomAppBar() {
 
   return shouldHide ? null : (
     <View style={{ height: 128, backgroundColor: "#eee" }}>
-      <View style={{ height: 64 }}></View>
+      <View style={{ height: 64 }}>
+        <OpenTabsList />
+      </View>
       <View
         style={{ height: 64 }}
         className="px-5 flex-row items-center justify-between"
@@ -148,54 +163,56 @@ export default function AppLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <BottomSheetModalProvider>
-      <SWRConfig
-        value={{
-          fetcher: ([
-            resource,
-            params,
-            host = "https://api.dysperse.com",
-            init = {},
-          ]) => {
-            const url = `${host}/${resource}?${new URLSearchParams(
-              params
-            ).toString()}`;
-            return fetch(url, {
-              headers: {
-                Authorization: `Bearer ${session}`,
-              },
-              ...init,
-            }).then((res) => res.json());
-          },
-        }}
-      >
-        <Stack
-          screenOptions={{
-            header: (props) => <AccountNavbar {...props} />,
-            contentStyle: {
-              backgroundColor: "#fff",
+    <OpenTabsProvider>
+      <BottomSheetModalProvider>
+        <SWRConfig
+          value={{
+            fetcher: ([
+              resource,
+              params,
+              host = "https://api.dysperse.com",
+              init = {},
+            ]) => {
+              const url = `${host}/${resource}?${new URLSearchParams(
+                params
+              ).toString()}`;
+              return fetch(url, {
+                headers: {
+                  Authorization: `Bearer ${session}`,
+                },
+                ...init,
+              }).then((res) => res.json());
             },
           }}
         >
-          <Stack.Screen
-            name="account"
-            options={{
-              header: (props) => <Navbar {...props} />,
-              headerTitle: "Account",
-              animation: "slide_from_right",
+          <Stack
+            screenOptions={{
+              header: (props) => <AccountNavbar {...props} />,
+              contentStyle: {
+                backgroundColor: "#fff",
+              },
             }}
-          />
-          <Stack.Screen
-            name="tabs"
-            options={{
-              header: (props) => <Navbar {...props} />,
-              animation: "fade",
-              presentation: "modal",
-            }}
-          />
-        </Stack>
-        <BottomAppBar />
-      </SWRConfig>
-    </BottomSheetModalProvider>
+          >
+            <Stack.Screen
+              name="account"
+              options={{
+                header: (props) => <Navbar {...props} />,
+                headerTitle: "Account",
+                animation: "slide_from_right",
+              }}
+            />
+            <Stack.Screen
+              name="tabs"
+              options={{
+                header: (props) => <Navbar {...props} />,
+                animation: "fade",
+                presentation: "modal",
+              }}
+            />
+          </Stack>
+          <BottomAppBar />
+        </SWRConfig>
+      </BottomSheetModalProvider>
+    </OpenTabsProvider>
   );
 }

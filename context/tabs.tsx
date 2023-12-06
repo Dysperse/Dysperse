@@ -8,7 +8,7 @@ type Tab = {
 const TabContext = createContext([]);
 export const useOpenTabs = () => useContext(TabContext);
 
-const OpenTabsProvider = ({ children }) => {
+export const OpenTabsProvider = ({ children }) => {
   const [openTabs, setOpenTabs] = useState([]);
   const value = useMemo(() => [openTabs, setOpenTabs], [openTabs]);
   return <TabContext.Provider value={value}>{children}</TabContext.Provider>;
