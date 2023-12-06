@@ -1,64 +1,33 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { Link } from "expo-router";
 import React from "react";
-import { useAuth } from "../context/AuthProvider";
-import Logo from "./logo";
 import { View } from "react-native";
-
-function Spaces() {
-  return (
-    <Link asChild href="/spaces">
-      {/* <Button
-        borderRadius="$full"
-        bg="$blueGray200"
-        size="xs"
-        sx={{
-          px: 0,
-          w: 40,
-          h: 40,
-        }}
-      >
-        <MaterialIcons name="workspaces-outline" size={22} color="black" />
-      </Button> */}
-    </Link>
-  );
-}
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useUser } from "../context/useUser";
+import Logo from "./logo";
 
 export default function AccountNavbar(props: any) {
-  const { session } = useAuth();
-  const handleBack = () => props.navigation.goBack();
-  // const logoColor = useToken("colors", "primary8");
+  const insets = useSafeAreaInsets();
+  const { session } = useUser();
 
   return (
+    // <BlurView intensity={60}>
     <View
-      style={{
-        height: 64,
-        alignItems: "center",
-        flexDirection: "row",
-      }}
+      style={{ height: 64 + insets.top, paddingTop: insets.top }}
+      className="flex-row px-4 items-center bg-white"
     >
-      <Logo size={40} color={"red"} />
+      <Logo size={35} color={"black"} />
       <View style={{ flexGrow: 1 }} />
-      <Spaces />
-      {/* <Avatar
-        bgColor="$blueGray200"
-        size="md"
-        borderRadius="$full"
-        width={40}
-        height={40}
-      >
-        <AvatarFallbackText>{session.user.name}</AvatarFallbackText>
-        {session.user.Profile?.picture && (
-          <AvatarImage
-            source={{
-              uri: session.user.Profile.picture,
-            }}
-            alt="Profile Picture"
-            width={40}
-            height={40}
-          />
-        )}
-      </Avatar> */}
+      <Link href="/(app)/account">
+        <Image
+          source={{
+            uri: session?.user?.Profile?.picture,
+          }}
+          className="rounded-full"
+          style={{ width: 35, height: 35 }}
+        />
+      </Link>
     </View>
+    //  </BlurView>
   );
 }

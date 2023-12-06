@@ -1,27 +1,34 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { router } from "expo-router";
 import React from "react";
-import { Button, Text, View } from "react-native";
+import { Button, Pressable, Text, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Icon from "./icon";
 
 interface NavbarProps extends NativeStackHeaderProps {
-  icon?: "arrow-back-ios" | "close" | "expand-more";
+  icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
 }
 
 export default function Navbar(props: NavbarProps) {
+  const insets = useSafeAreaInsets();
   const handleBack = () => props.navigation.goBack();
 
   return (
     <View
       style={{
-        gap: 20,
-        height: 64,
-        alignItems: "center",
-        flexDirection: "row",
-        backgroundColor: "red",
+        height: 64 + insets.top,
+        paddingTop: insets.top,
       }}
+      className="flex-row px-4 items-center bg-white"
     >
-      <Button title="Back" />
-      <Text style={{ fontWeight: "bold" }}>
+      <Pressable
+        onPress={handleBack}
+        className="w-10 h-10 active:bg-gray-200 rounded-full flex items-center justify-center"
+      >
+        <Icon size={30}>{props.icon || "west"}</Icon>
+      </Pressable>
+      <Text style={{ fontFamily: "body_700" }} className="ml-2">
         {props.options.headerTitle as string}
       </Text>
     </View>

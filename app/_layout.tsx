@@ -1,34 +1,13 @@
-import { TransitionPresets } from "@react-navigation/stack";
-import { useFonts } from "expo-font";
+import { Slot } from "expo-router";
+import { SessionProvider } from "../context/AuthProvider";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
-import Toast from "react-native-toast-message";
-import { useAuth } from "../context/AuthProvider";
-import Navbar from "../ui/navbar";
-import { toastConfig } from "../ui/toast.config";
-
-import { ParamListBase, StackNavigationState } from "@react-navigation/native";
-import {
-  StackNavigationEventMap,
-  StackNavigationOptions,
-  createStackNavigator,
-} from "@react-navigation/stack";
-import { withLayoutContext } from "expo-router";
-import { View } from "react-native";
+import { useFonts } from "expo-font";
 
 SplashScreen.preventAutoHideAsync();
 
-const { Navigator } = createStackNavigator();
-export const JsStack = withLayoutContext<
-  StackNavigationOptions,
-  typeof Navigator,
-  StackNavigationState<ParamListBase>,
-  StackNavigationEventMap
->(Navigator);
-
-export default function RootLayout() {
-  const { session } = useAuth();
+export default function Root() {
+  // Set up the auth context and render our layout inside of it.
 
   const [fontsLoaded] = useFonts({
     heading: require("../assets/fonts/league-gothic.otf"),
@@ -39,6 +18,8 @@ export default function RootLayout() {
     body_600: require("../assets/fonts/WorkSans/WorkSans-SemiBold.ttf"),
     body_700: require("../assets/fonts/WorkSans/WorkSans-Bold.ttf"),
     body_800: require("../assets/fonts/WorkSans/WorkSans-Black.ttf"),
+    symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
+    symbols_filled: require("../assets/fonts/symbols/filled.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -50,46 +31,10 @@ export default function RootLayout() {
   if (!fontsLoaded) {
     return null;
   }
-  console.log(session);
 
   return (
-    <>
-      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <JsStack
-          screenOptions={{
-            ...TransitionPresets.ModalPresentationIOS,
-            gestureEnabled: true,
-            headerStyle: {
-              backgroundColor: "transparent",
-            },
-            cardStyle: {
-              backgroundColor: "#fff",
-            },
-            header: (props: any) => <Navbar {...props} icon="expand-more" />,
-          }}
-        >
-          <JsStack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <JsStack.Screen
-            name="(auth)/auth/login"
-            options={{
-              headerTitle: "Sign in",
-              presentation: "modal",
-            }}
-          />
-          <JsStack.Screen
-            name="(auth)/auth/signup"
-            options={{
-              headerTitle: "Signup",
-            }}
-          />
-        </JsStack>
-        <Toast topOffset={20} config={toastConfig} />
-      </View>
-    </>
+    <SessionProvider>
+      <Slot screenOptions={{ onLayoutRootView }} />
+    </SessionProvider>
   );
 }

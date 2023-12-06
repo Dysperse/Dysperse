@@ -1,108 +1,42 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Link, usePathname, useSegments } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import {
-  ActivityIndicator,
-  Button,
-  SafeAreaView,
-  Text,
-  View,
-} from "react-native";
-import { sendApiRequest } from "../helpers/api";
+import React from "react";
+import { useStorageState } from "./useStorageState";
 
-type User = {
-  name: string;
-};
+const AuthContext = React.createContext<{
+  signIn: (token) => void;
+  signOut: () => void;
+  session?: string | null;
+  isLoading: boolean;
+} | null>(null);
 
-type AuthType = {
-  session: any;
-  setUser: (user: User | null) => void;
-};
+// This hook can be used to access the user info.
+export function useSession() {
+  const value = React.useContext(AuthContext);
+  if (process.env.NODE_ENV !== "production") {
+    if (!value) {
+      throw new Error("useSession must be wrapped in a <SessionProvider />");
+    }
+  }
 
-const AuthContext = createContext<AuthType>({
-  session: null,
-  setUser: () => {},
-});
-
-export function IntroScreen() {
-  const slug = usePathname();
-
-  // useEffect(() => {
-  //   if (Platform.OS === "android") {
-  //     NavigationBar.setBackgroundColorAsync(primary10);
-  //     NavigationBar.setBorderColorAsync(primary10);
-  //     NavigationBar.setButtonStyleAsync("light");
-  //   }
-  // }, [primary10, Platform.OS]);
-
-  return (
-    <SafeAreaView>
-      {slug === "/" && (
-        <StatusBar style="dark" backgroundColor={"transparent"} />
-      )}
-      <Text>Welcome to Dysperse.</Text>
-      <Text>We're here to redefine the standard for productivity</Text>
-      <Link href="/auth/login" asChild>
-        <Button title="Get started" />
-      </Link>
-    </SafeAreaView>
-  );
+  return value;
 }
 
-export const useAuth = () => useContext(AuthContext);
-
-export function AuthProvider({ children }: any): JSX.Element {
-  const segments = useSegments();
-
-  const inAuthGroup = segments[0] === "(auth)";
-
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
-
-  const fetchUserData = useCallback(async () => {
-    const token = await AsyncStorage.getItem("session");
-    if (!token) {
-      return null;
-    }
-    const userRequest = await sendApiRequest("POST", "session", { token });
-    if (userRequest?.current) {
-      return userRequest;
-    }
-    return null;
-  }, []);
-
-  useEffect(() => {
-    fetchUserData().then((e) => {
-      if (e) setUser(e);
-      setLoading(false);
-    });
-  }, []);
-
-  const authContext: AuthType = {
-    session: user,
-    setUser,
-  };
+export function SessionProvider(props: React.PropsWithChildren) {
+  const [[isLoading, session], setSession] = useStorageState("session");
 
   return (
-    <AuthContext.Provider value={authContext}>
-      {inAuthGroup ? (
-        children
-      ) : loading ? (
-        <View style={{ flex: 1, justifyContent: "center", height: "100%" }}>
-          <ActivityIndicator />
-        </View>
-      ) : user ? (
-        children
-      ) : (
-        <IntroScreen />
-      )}
+    <AuthContext.Provider
+      value={{
+        signIn: async (token) => {
+          await setSession(token);
+        },
+        signOut: () => {
+          setSession(null);
+        },
+        session,
+        isLoading,
+      }}
+    >
+      {props.children}
     </AuthContext.Provider>
   );
 }

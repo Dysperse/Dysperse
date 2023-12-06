@@ -8,8 +8,11 @@ import { useColorScheme } from "react-native";
  * @param dark True if dark mode
  * @returns Color palette
  */
+
 export function useColor(base: keyof typeof colors, dark: boolean) {
-  const getColorPalette = (isDark: boolean): Record<string, string> => {
+  const getColorPalette = useMemo(() => {
+    const isDark = dark;
+    console.log("fetching...", base);
     const paletteKey = isDark ? `${base}Dark` : base;
     const colorPalette = colors[paletteKey];
     const _colorPalette: Record<string, string> = {};
@@ -22,9 +25,9 @@ export function useColor(base: keyof typeof colors, dark: boolean) {
     }
 
     return _colorPalette;
-  };
+  }, [base, dark]);
 
-  return getColorPalette(dark);
+  return getColorPalette;
 }
 
 /**
