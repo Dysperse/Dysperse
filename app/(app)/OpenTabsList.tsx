@@ -33,7 +33,7 @@ function Tab({ tab }) {
         padding: 6,
         paddingHorizontal: 3,
         flex: 1,
-        width: "80%",
+        width: "100%",
         marginHorizontal: "auto",
         ...(Platform.OS === "web" &&
           ({
