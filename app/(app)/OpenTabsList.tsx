@@ -79,10 +79,6 @@ function Tab({ tab }) {
 
 export function OpenTabsList() {
   const { session } = useUser();
-  const [data] = React.useState([...new Array(6).keys()]);
-  const [isFast, setIsFast] = React.useState(false);
-  const [isAutoPlay, setIsAutoPlay] = React.useState(false);
-  const [isPagingEnabled, setIsPagingEnabled] = React.useState(true);
   const ref = React.useRef<ICarouselInstance>(null);
 
   const baseOptions = {
@@ -111,10 +107,8 @@ export function OpenTabsList() {
             justifyContent: "center",
             height: 64,
           }}
-          autoPlay={isAutoPlay}
-          autoPlayInterval={isFast ? 100 : 2000}
           data={session.user.tabs}
-          pagingEnabled={isPagingEnabled}
+          pagingEnabled
           onSnapToItem={(index) => console.log("current index:", index)}
           renderItem={({ index }) => (
             <Tab
