@@ -11,6 +11,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Icon from "../../../ui/icon";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
+import Emoji from "../../../ui/emoji";
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -125,6 +126,17 @@ export default function Page() {
       }
       ListFooterComponent={<View className="mb-10" />}
       sections={filteredSections}
+      ListEmptyComponent={
+        <View className="items-center pt-10 h-full">
+          <Emoji emoji="1F62D" size={40} />
+          <Text
+            className="mt-3"
+            style={{ fontFamily: "body_600", fontSize: 17 }}
+          >
+            No results found
+          </Text>
+        </View>
+      }
       renderItem={({ item }) => (
         <Pressable
           className="active:bg-gray-200 flex-row items-center gap-x-3 py-2 px-6"
