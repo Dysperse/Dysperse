@@ -8,7 +8,7 @@ const Turnstile = ({ setToken }) => {
 
     const newToken =
       Platform.OS === "web" ? event?.data : event?.nativeEvent?.data;
-    if (newToken) {
+    if (newToken && newToken.length > 100) {
       console.log(newToken);
       setToken(newToken);
     }

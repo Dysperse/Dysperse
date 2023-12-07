@@ -2,6 +2,9 @@
   "compilerOptions": {
     "module": "esnext",
     "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "extends": "expo/tsconfig.base"
 }

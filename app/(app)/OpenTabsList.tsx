@@ -1,3 +1,5 @@
+import { LinearGradient } from "expo-linear-gradient";
+import { styled } from "nativewind";
 import React, { useMemo } from "react";
 import {
   ActivityIndicator,
@@ -8,13 +10,10 @@ import {
 } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
-import { window } from "../../constants";
-import { useUser } from "../../context/useUser";
-import Icon from "../../ui/icon";
-import { styled } from "nativewind";
-import { LinearGradient } from "expo-linear-gradient";
-import { redDark } from "../../themes";
-import { useColor } from "../../ui/color";
+import { window } from "@/constants";
+import { useUser } from "@/context/useUser";
+import { useColor } from "@/ui/color";
+import Icon from "@/ui/icon";
 
 const PAGE_WIDTH = window.width;
 const StyledPressable = styled(Pressable);
@@ -35,7 +34,8 @@ function Tab({ tab }) {
         padding: 6,
         paddingHorizontal: 3,
         flex: 1,
-        width: PAGE_WIDTH * 0.8,
+        width: "80%",
+        marginHorizontal: "auto",
       }}
     >
       <Pressable
@@ -89,7 +89,7 @@ export function OpenTabsList() {
 
   return session ? (
     Platform.OS === "web" ? (
-      <View>
+      <View style={{ height: 64 }}>
         {session.user.tabs.map((tab) => (
           <Tab tab={tab} key={tab.id} />
         ))}

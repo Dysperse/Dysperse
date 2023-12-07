@@ -38,7 +38,6 @@ export default function SignIn() {
         setStep(1);
       } else {
         setStep(2);
-
         const sessionRequest = await sendApiRequest(
           "POST",
           "auth/login",

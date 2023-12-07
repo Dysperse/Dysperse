@@ -1,9 +1,8 @@
-import { StatusBar, Text, View } from "react-native";
-import { useSession } from "../../context/AuthProvider";
-import useSWR from "swr";
-import { ScrollView } from "react-native-gesture-handler";
-import { useUser } from "../../context/useUser";
+import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import { useEffect, useState } from "react";
+import { StatusBar, Text } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 function Greeting() {
   const [greeting, setGreeting] = useState("");

@@ -1,3 +1,14 @@
+import { useSession } from "@/context/AuthProvider";
+import { OpenTabsProvider } from "@/context/tabs";
+import AccountNavbar from "@/ui/account-navbar";
+import Icon from "@/ui/icon";
+import Navbar from "@/ui/navbar";
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
 import * as NavigationBar from "expo-navigation-bar";
 import {
   Redirect,
@@ -6,32 +17,18 @@ import {
   useNavigation,
   usePathname,
 } from "expo-router";
+import React, { cloneElement, useCallback, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   BackHandler,
-  Button,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { SWRConfig } from "swr";
-import { useSession } from "../../context/AuthProvider";
-import AccountNavbar from "../../ui/account-navbar";
-import Icon from "../../ui/icon";
-import Navbar from "../../ui/navbar";
-
-import React, { cloneElement, useCallback, useEffect, useRef } from "react";
-
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import { Platform } from "react-native";
-import { OpenTabsProvider } from "../../context/tabs";
 import { OpenTabsList } from "./OpenTabsList";
-import { useBottomSheet } from "@gorhom/bottom-sheet";
 
 function BottomSheetBackHandler({ handleClose }) {
   const { animatedIndex } = useBottomSheet();
