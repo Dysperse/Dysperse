@@ -1,22 +1,21 @@
+import { window } from "@/constants";
+import { useUser } from "@/context/useUser";
+import { useColor } from "@/ui/color";
+import Icon from "@/ui/icon";
 import { LinearGradient } from "expo-linear-gradient";
-import { styled } from "nativewind";
 import React, { useMemo } from "react";
 import {
   ActivityIndicator,
   Platform,
   Pressable,
+  ScrollView,
   Text,
   View,
 } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
-import { window } from "@/constants";
-import { useUser } from "@/context/useUser";
-import { useColor } from "@/ui/color";
-import Icon from "@/ui/icon";
 
 const PAGE_WIDTH = window.width;
-const StyledPressable = styled(Pressable);
 
 function Tab({ tab }) {
   const isPerspective = useMemo(
@@ -36,6 +35,10 @@ function Tab({ tab }) {
         flex: 1,
         width: "80%",
         marginHorizontal: "auto",
+        ...(Platform.OS === "web" &&
+          ({
+            width: "200px",
+          } as Object)),
       }}
     >
       <Pressable
@@ -64,7 +67,7 @@ function Tab({ tab }) {
             justifyContent: "center",
           }}
         >
-          <Icon size={32} style={{ color: colors[11] }}>
+          <Icon size={30} style={{ color: colors[11] }}>
             {tab.tabData.icon}
           </Icon>
         </LinearGradient>
@@ -89,11 +92,14 @@ export function OpenTabsList() {
 
   return session ? (
     Platform.OS === "web" ? (
-      <View style={{ height: 64 }}>
+      <ScrollView
+        horizontal
+        style={{ height: 64, flexDirection: "row", paddingHorizontal: 20 }}
+      >
         {session.user.tabs.map((tab) => (
           <Tab tab={tab} key={tab.id} />
         ))}
-      </View>
+      </ScrollView>
     ) : (
       <View style={{ flex: 1 }}>
         <Carousel

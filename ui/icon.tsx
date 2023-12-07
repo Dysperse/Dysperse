@@ -15,6 +15,7 @@ export default function Icon({
         fontSize: size,
         width: size,
         height: size,
+        lineHeight: size,
         ...(style && { ...style }),
       }}
     >
