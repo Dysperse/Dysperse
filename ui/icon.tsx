@@ -15,7 +15,7 @@ export default function Icon({
         fontSize: size,
         width: size,
         height: size,
-        ...(style && style),
+        ...(style && { ...style }),
       }}
     >
       {children}

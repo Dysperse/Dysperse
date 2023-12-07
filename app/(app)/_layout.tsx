@@ -1,7 +1,14 @@
 import * as NavigationBar from "expo-navigation-bar";
-import { Redirect, Stack, router, usePathname } from "expo-router";
+import {
+  Redirect,
+  Stack,
+  router,
+  useNavigation,
+  usePathname,
+} from "expo-router";
 import {
   ActivityIndicator,
+  BackHandler,
   Button,
   Pressable,
   StyleSheet,
@@ -24,8 +31,26 @@ import {
 import { Platform } from "react-native";
 import { OpenTabsProvider } from "../../context/tabs";
 import { OpenTabsList } from "./OpenTabsList";
+import { useBottomSheet } from "@gorhom/bottom-sheet";
+
+function BottomSheetBackHandler({ handleClose }) {
+  const { animatedIndex } = useBottomSheet();
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", () => {
+      if (animatedIndex.value !== -1) {
+        handleClose();
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }, []);
+  return null;
+}
 
 const TestBottomSheet = ({ children }) => {
+  const navigation = useNavigation();
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -48,7 +73,7 @@ const TestBottomSheet = ({ children }) => {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={["38%"]}
+        snapPoints={[305]}
         backdropComponent={(props) => (
           <BottomSheetBackdrop
             {...props}
@@ -58,20 +83,32 @@ const TestBottomSheet = ({ children }) => {
           />
         )}
       >
+        <BottomSheetBackHandler handleClose={handleClose} />
         <View className="p-5">
           {[
-            { name: "Task", icon: "check_circle" },
-            { name: "Item", icon: "package_2" },
-            { name: "Note", icon: "sticky_note_2" },
-            { name: "Collection", icon: "draw_abstract" },
-            { name: "Tab", icon: "tab" },
+            { name: "Task", icon: "check_circle", callback: () => {} },
+            { name: "Item", icon: "package_2", callback: () => {} },
+            { name: "Note", icon: "sticky_note_2", callback: () => {} },
+            { name: "Collection", icon: "interests", callback: () => {} },
+            {
+              name: "Tab",
+              icon: "tab",
+              callback: () => router.push("/tabs/new"),
+            },
           ].map((button) => (
             <Pressable
-              className="flex-row items-center px-5 py-2.5 rounded-2xl gap-x-3 active:bg-gray-300"
+              className="flex-row items-center p-2.5 rounded-2xl gap-x-3 active:bg-gray-300"
               key={button.name}
-              onPress={handleClose}
+              onPress={() => {
+                button.callback();
+                handleClose();
+              }}
             >
-              <Icon size={30}>{button.icon}</Icon>
+              <View>
+                <Icon size={30} style={{ marginLeft: 0 }}>
+                  {button.icon}
+                </Icon>
+              </View>
               <Text>{button.name}</Text>
             </Pressable>
           ))}
@@ -91,15 +128,16 @@ const styles = StyleSheet.create({
 
 function BottomAppBar() {
   const pathname = usePathname();
-  const shouldHide = ["/account", "/tabs"].includes(pathname);
+  const shouldHide = ["/account", "/tabs", "/tabs/new"].includes(pathname);
 
   useEffect(() => {
     if (Platform.OS === "android") {
-      NavigationBar.setBackgroundColorAsync("#eee");
-      NavigationBar.setBorderColorAsync("#eee");
+      const color = shouldHide ? "#fff" : "#eee";
+      NavigationBar.setBackgroundColorAsync(color);
+      NavigationBar.setBorderColorAsync(color);
       NavigationBar.setButtonStyleAsync("dark");
     }
-  }, [Platform.OS]);
+  }, [Platform.OS, shouldHide]);
 
   return shouldHide ? null : (
     <View style={{ height: 128, backgroundColor: "#eee" }}>
@@ -189,7 +227,15 @@ export default function AppLayout() {
               }}
             />
             <Stack.Screen
-              name="tabs"
+              name="tabs/index"
+              options={{
+                header: (props) => <Navbar {...props} />,
+                animation: "fade",
+                presentation: "modal",
+              }}
+            />
+            <Stack.Screen
+              name="tabs/new"
               options={{
                 header: (props) => <Navbar {...props} />,
                 animation: "fade",
