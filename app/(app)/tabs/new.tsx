@@ -1,8 +1,10 @@
+import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useColor } from "@/ui/color";
 import Emoji from "@/ui/emoji";
 import Icon from "@/ui/icon";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -34,26 +36,33 @@ function Button({ section, item }) {
   const [loading, setLoading] = useState(false);
   const redPalette = useColor("red", false);
   const purplePalette = useColor("purple", false);
-
+  const { session } = useSession();
   const colors = { redPalette, purplePalette };
 
   const handlePress = async (item) => {
     try {
       setLoading(true);
-      const res = await sendApiRequest("POST", "user/tabs", {
-        ...(item.collection
-          ? {
-              boardId: item.collection.id,
-            }
-          : {
-              tabData: JSON.stringify({
-                href: item.href,
-                icon: item.icon,
-                label: item.label,
+      const res = await sendApiRequest(
+        session,
+        "POST",
+        "user/tabs",
+        {
+          ...(item.collection
+            ? {
+                boardId: item.collection.id,
+              }
+            : {
+                tabData: JSON.stringify({
+                  href: item.href,
+                  icon: item.icon,
+                  label: item.label,
+                }),
               }),
-            }),
-      });
+        },
+        null
+      );
       console.log(res);
+      router.push("/");
       setLoading(false);
     } catch (e) {
       setLoading(false);

@@ -1,5 +1,14 @@
-export function sendApiRequest(method, path, params, options = {}) {
-  const url = `https://api.dysperse.com/${path}${
+import { useSession } from "@/context/AuthProvider";
+
+export function sendApiRequest(
+  session,
+  method,
+  path,
+  params,
+  options = {},
+  etc = { host: "https://api.dysperse.com" }
+) {
+  const url = `${etc.host}/${path}${
     Object.keys(params).length > 0 ? "?" : ""
   }${new URLSearchParams(params)}`;
   console.log("query url", url);
@@ -8,10 +17,10 @@ export function sendApiRequest(method, path, params, options = {}) {
     ...options,
     method,
     headers: {
+      ...(session && { Authorization: `Bearer ${session}` }),
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
       Host: "api.dysperse.com",
-      "User-Agend": "HTTPie",
     },
     mode: "cors",
     keepalive: true,
