@@ -1,4 +1,5 @@
 import { Text } from "react-native";
+import { Platform } from "react-native";
 
 export default function Icon({
   size = 24,
@@ -16,6 +17,9 @@ export default function Icon({
         width: size,
         height: size,
         lineHeight: size,
+        ...(Platform.OS !== "web" && {
+          lineHeight: size + 5,
+        }),
         ...(style && { ...style }),
       }}
     >

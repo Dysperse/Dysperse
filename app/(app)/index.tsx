@@ -10,7 +10,6 @@ function Greeting() {
   useEffect(() => {
     const now = new Date();
     const hour = now.getHours();
-    // morning, afternoon, evening, night
     if (hour < 12) {
       setGreeting("Good morning");
     } else if (hour < 18) {

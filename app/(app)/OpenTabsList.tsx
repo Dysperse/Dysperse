@@ -56,7 +56,6 @@ function Tab({ tab }) {
       >
         <LinearGradient
           colors={[colors[5], colors[7]]}
-          // 45deg
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
