@@ -2,13 +2,13 @@ import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
 import Icon from "@/ui/icon";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-function WeatherModal({ weather, location, children }) {
+function WeatherModal({ weather, location, children, isNight }) {
   const ref = useRef<BottomSheetModal>(null);
 
   // callbacks
@@ -21,23 +21,34 @@ function WeatherModal({ weather, location, children }) {
       {trigger}
       <BottomSheetModal
         ref={ref}
-        snapPoints={["40%", "90%"]}
+        snapPoints={["60%", "90%"]}
         backdropComponent={BottomSheetBackdropComponent}
       >
         <BottomSheetBackHandler handleClose={handleClose} />
-        <View className="p-5 py-10">
-          <Text
-            className="text-5xl text-center"
-            style={{ fontFamily: "body_700" }}
-          >
-            {Math.round(weather.current_weather.temperature)}&deg;
-          </Text>
-          <Text className="text-center">
-            {location.address.city || location.address.county},{" "}
-            {location.address.state}
-          </Text>
-          <Text className="mt-3">{JSON.stringify(location, null, 2)}</Text>
-        </View>
+        <BottomSheetScrollView>
+          <View className="p-5 py-10">
+            <View className="flex items-center">
+              <Icon size={60}>
+                {
+                  weatherCodes[weather.current_weather.weathercode][
+                    isNight ? "night" : "day"
+                  ].icon
+                }
+              </Icon>
+            </View>
+            <Text
+              className="text-5xl text-center mt-4"
+              style={{ fontFamily: "body_700" }}
+            >
+              {Math.round(weather.current_weather.temperature)}&deg;
+            </Text>
+            <Text className="text-center">
+              {location.address.city || location.address.county},{" "}
+              {location.address.state}
+            </Text>
+            <Text className="mt-8">{JSON.stringify(weather, null, 2)}</Text>
+          </View>
+        </BottomSheetScrollView>
       </BottomSheetModal>
     </>
   );
@@ -115,7 +126,11 @@ export function WeatherWidget() {
       <ActivityIndicator />
     </Pressable>
   ) : weatherData && locationData ? (
-    <WeatherModal weather={weatherData} location={locationData}>
+    <WeatherModal
+      weather={weatherData}
+      location={locationData}
+      isNight={isNight()}
+    >
       <Pressable
         style={({ pressed }) => ({
           backgroundColor: pressed ? "lightgray" : "white",
