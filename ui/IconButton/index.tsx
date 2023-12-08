@@ -1,5 +1,4 @@
 import { Pressable, PressableProps } from "react-native";
-import Icon from "./icon";
 
 export default function IconButton(props: PressableProps) {
   return (

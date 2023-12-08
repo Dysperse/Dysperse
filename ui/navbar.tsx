@@ -1,10 +1,8 @@
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { router } from "expo-router";
 import React from "react";
-import { Button, Pressable, Text, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Icon from "./icon";
+import Icon from "./Icon";
 
 interface NavbarProps extends NativeStackHeaderProps {
   icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";

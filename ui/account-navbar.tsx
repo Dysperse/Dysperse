@@ -5,7 +5,7 @@ import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUser } from "../context/useUser";
 import Logo from "./logo";
-import Icon from "./icon";
+import Icon from "./Icon";
 
 export default function AccountNavbar() {
   const insets = useSafeAreaInsets();
