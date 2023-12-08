@@ -73,7 +73,7 @@ export default function SignIn() {
       className="gap-3 flex-1 items-center justify-center p-10 max-w-lg mx-auto w-full"
       behavior="padding"
     >
-      <Text style={{ fontFamily: "heading" }} className="uppercase text-4xl">
+      <Text style={{ fontFamily: "heading" }} className="uppercase text-5xl">
         Welcome to Dysperse.
       </Text>
       <Text>Please sign in with your Dysperse ID</Text>
@@ -137,7 +137,7 @@ export default function SignIn() {
         flex: 1,
       }}
     >
-      <Text style={{ fontFamily: "heading" }} className="uppercase text-4xl">
+      <Text style={{ fontFamily: "heading" }} className="uppercase text-5xl mb-2">
         Verifying...
       </Text>
       <Text className="mb-3">Checking if you're actually human 🤨</Text>
