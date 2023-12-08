@@ -1,19 +1,17 @@
 import { router } from "expo-router";
-import { useSession } from "../context/AuthProvider";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Text,
-  View,
-  TextInput,
-  Button,
-  Alert,
+  ActivityIndicator,
   KeyboardAvoidingView,
   Pressable,
-  ActivityIndicator,
+  Text,
+  TextInput,
+  View
 } from "react-native";
-import Turnstile from "../ui/turnstile";
+import { useSession } from "../context/AuthProvider";
 import { sendApiRequest } from "../helpers/api";
+import Turnstile from "../ui/turnstile";
 
 export default function SignIn() {
   const { signIn, session } = useSession();
