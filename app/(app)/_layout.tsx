@@ -1,28 +1,20 @@
 import { useSession } from "@/context/AuthProvider";
 import { OpenTabsProvider } from "@/context/tabs";
+import { useUser } from "@/context/useUser";
+import IconButton from "@/ui/IconButton";
 import AccountNavbar from "@/ui/account-navbar";
 import Icon from "@/ui/icon";
 import Navbar from "@/ui/navbar";
 import {
-  BottomSheetBackdrop,
   BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
-  useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import * as NavigationBar from "expo-navigation-bar";
-import {
-  Redirect,
-  Stack,
-  router,
-  useNavigation,
-  usePathname,
-} from "expo-router";
+import { Redirect, Stack, router, usePathname } from "expo-router";
 import React, { cloneElement, useCallback, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
-  BackHandler,
-  FlatList,
   Platform,
   Pressable,
   StyleSheet,
@@ -31,87 +23,13 @@ import {
 } from "react-native";
 import { SWRConfig } from "swr";
 import { OpenTabsList, Tab } from "./OpenTabsList";
-import { useUser } from "@/context/useUser";
-import IconButton from "@/ui/IconButton";
 
+import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
+import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { CreateDrawer } from "../../components/create-drawer";
 dayjs.extend(advancedFormat);
-
-function BottomSheetBackHandler({ handleClose }) {
-  const { animatedIndex } = useBottomSheet();
-
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      if (animatedIndex.value !== -1) {
-        handleClose();
-        return true;
-      } else {
-        return false;
-      }
-    });
-  }, []);
-  return null;
-}
-
-const CreateDrawer = ({ children }) => {
-  const ref = useRef<BottomSheetModal>(null);
-
-  // callbacks
-  const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
-  const trigger = cloneElement(children, { onPress: handleOpen });
-
-  return (
-    <View style={styles.container}>
-      {trigger}
-      <BottomSheetModal
-        ref={ref}
-        index={0}
-        snapPoints={[305]}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-            opacity={0.2}
-          />
-        )}
-      >
-        <BottomSheetBackHandler handleClose={handleClose} />
-        <View className="p-5">
-          {[
-            { name: "Task", icon: "check_circle", callback: () => {} },
-            { name: "Item", icon: "package_2", callback: () => {} },
-            { name: "Note", icon: "sticky_note_2", callback: () => {} },
-            { name: "Collection", icon: "interests", callback: () => {} },
-            {
-              name: "Tab",
-              icon: "tab",
-              callback: () => router.push("/tabs/new"),
-            },
-          ].map((button) => (
-            <Pressable
-              className="flex-row items-center p-2.5 rounded-2xl gap-x-3 active:bg-gray-300"
-              key={button.name}
-              onPress={() => {
-                button.callback();
-                handleClose();
-              }}
-            >
-              <View>
-                <Icon size={30} style={{ marginLeft: 0 }}>
-                  {button.icon}
-                </Icon>
-              </View>
-              <Text>{button.name}</Text>
-            </Pressable>
-          ))}
-        </View>
-      </BottomSheetModal>
-    </View>
-  );
-};
 
 const TabDrawer = ({ children }) => {
   const { session } = useUser();
@@ -123,20 +41,12 @@ const TabDrawer = ({ children }) => {
   const trigger = cloneElement(children, { onPress: handleOpen });
 
   return (
-    <View style={styles.container}>
+    <View>
       {trigger}
       <BottomSheetModal
         ref={ref}
-        index={0}
         snapPoints={["50%", "80%"]}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-            opacity={0.2}
-          />
-        )}
+        backdropComponent={BottomSheetBackdropComponent}
       >
         <BottomSheetBackHandler handleClose={handleClose} />
         <View className="flex-row items-center px-5 mb-2">
@@ -183,8 +93,7 @@ const TabDrawer = ({ children }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {},
+export const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: "center",
