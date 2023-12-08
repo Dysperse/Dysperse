@@ -18,7 +18,7 @@ export default function Icon({
         height: size,
         lineHeight: size,
         ...(Platform.OS !== "web" && {
-          lineHeight: size + 5,
+          lineHeight: size + 4,
         }),
         ...(style && { ...style }),
       }}

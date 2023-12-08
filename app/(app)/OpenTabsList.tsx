@@ -17,7 +17,7 @@ import Carousel from "react-native-reanimated-carousel";
 
 const PAGE_WIDTH = window.width;
 
-function Tab({ tab }) {
+export function Tab({ tab, isList = false }) {
   const isPerspective = useMemo(
     () => tab.tabData.href.includes("perspectives"),
     [tab.tabData]
@@ -30,10 +30,11 @@ function Tab({ tab }) {
   return (
     <View
       style={{
-        padding: 6,
-        paddingHorizontal: 3,
+        padding: isList ? 0 : 6,
+        paddingHorizontal: isList ? 0 : 3,
         flex: 1,
         width: "100%",
+        height: 64,
         marginHorizontal: "auto",
         ...(Platform.OS === "web" &&
           ({
@@ -45,12 +46,13 @@ function Tab({ tab }) {
         onPress={() => alert(JSON.stringify(tab))}
         style={{
           flex: 1,
-          paddingHorizontal: 15,
+          paddingHorizontal: isList ? 6 : 15,
           columnGap: 15,
           borderRadius: 20,
+          height: "100%",
           alignItems: "center",
           flexDirection: "row",
-          backgroundColor: "#ddd",
+          backgroundColor: isList ? "transparent" : "#ddd",
         }}
         className="active:opacity-60"
       >

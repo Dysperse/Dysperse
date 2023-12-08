@@ -5,6 +5,7 @@ import Icon from "@/ui/icon";
 import Navbar from "@/ui/navbar";
 import {
   BottomSheetBackdrop,
+  BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
   useBottomSheet,
@@ -21,6 +22,7 @@ import React, { cloneElement, useCallback, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   BackHandler,
+  FlatList,
   Platform,
   Pressable,
   StyleSheet,
@@ -28,7 +30,13 @@ import {
   View,
 } from "react-native";
 import { SWRConfig } from "swr";
-import { OpenTabsList } from "./OpenTabsList";
+import { OpenTabsList, Tab } from "./OpenTabsList";
+import { useUser } from "@/context/useUser";
+import IconButton from "@/ui/IconButton";
+
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+dayjs.extend(advancedFormat);
 
 function BottomSheetBackHandler({ handleClose }) {
   const { animatedIndex } = useBottomSheet();
@@ -46,29 +54,19 @@ function BottomSheetBackHandler({ handleClose }) {
   return null;
 }
 
-const TestBottomSheet = ({ children }) => {
-  const navigation = useNavigation();
-  // ref
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+const CreateDrawer = ({ children }) => {
+  const ref = useRef<BottomSheetModal>(null);
 
   // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleClose = useCallback(() => {
-    bottomSheetModalRef.current?.close();
-  }, []);
-
-  const trigger = cloneElement(children, {
-    onPress: handlePresentModalPress,
-  });
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+  const trigger = cloneElement(children, { onPress: handleOpen });
 
   return (
     <View style={styles.container}>
       {trigger}
       <BottomSheetModal
-        ref={bottomSheetModalRef}
+        ref={ref}
         index={0}
         snapPoints={[305]}
         backdropComponent={(props) => (
@@ -115,6 +113,76 @@ const TestBottomSheet = ({ children }) => {
   );
 };
 
+const TabDrawer = ({ children }) => {
+  const { session } = useUser();
+  const ref = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+  const trigger = cloneElement(children, { onPress: handleOpen });
+
+  return (
+    <View style={styles.container}>
+      {trigger}
+      <BottomSheetModal
+        ref={ref}
+        index={0}
+        snapPoints={["50%", "80%"]}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.2}
+          />
+        )}
+      >
+        <BottomSheetBackHandler handleClose={handleClose} />
+        <View className="flex-row items-center px-5 mb-2">
+          <IconButton className="bg-gray-100 mr-4" onPress={handleClose}>
+            <Icon>expand_more</Icon>
+          </IconButton>
+          <Text
+            className="py-3 text-2xl flex-1"
+            style={{ fontFamily: "body_700" }}
+          >
+            Tabs
+          </Text>
+          <IconButton
+            className="bg-gray-100"
+            onPress={() => router.push("/tabs/new")}
+          >
+            <Icon>add</Icon>
+          </IconButton>
+        </View>
+        {session ? (
+          <BottomSheetFlatList
+            ListFooterComponent={
+              <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
+                <Icon>info</Icon>
+                <Text className="ml-2">Tabs are synced between devices</Text>
+              </View>
+            }
+            data={session.user.tabs}
+            renderItem={({ item }) => (
+              <View className="pl-4 flex-row items-center">
+                <Tab tab={item} isList />
+                <IconButton className="mr-4" onPress={handleClose}>
+                  <Icon>remove_circle</Icon>
+                </IconButton>
+              </View>
+            )}
+            keyExtractor={(item: any) => item.id}
+          />
+        ) : (
+          <ActivityIndicator />
+        )}
+      </BottomSheetModal>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {},
   contentContainer: {
@@ -137,10 +205,14 @@ function BottomAppBar() {
   }, [Platform.OS, shouldHide]);
 
   return shouldHide ? null : (
-    <View style={{ height: 128, backgroundColor: "#eee" }}>
-      <View style={{ height: 64 }}>
-        <OpenTabsList />
-      </View>
+    <View
+      style={{ height: pathname === "/" ? 64 : 128, backgroundColor: "#eee" }}
+    >
+      {pathname !== "/" && (
+        <View style={{ height: 64 }}>
+          <OpenTabsList />
+        </View>
+      )}
       <View
         style={{ height: 64 }}
         className="px-5 flex-row items-center justify-between"
@@ -150,14 +222,16 @@ function BottomAppBar() {
             home
           </Icon>
         </Pressable>
-        <TestBottomSheet>
+        <CreateDrawer>
           <Pressable className="w-10 h-10 bg-gray-300 active:bg-gray-400 justify-center items-center rounded-full">
             <Icon size={30}>add</Icon>
           </Pressable>
-        </TestBottomSheet>
-        <Pressable onPress={() => router.push("/tabs")}>
-          <Icon size={30}>grid_view</Icon>
-        </Pressable>
+        </CreateDrawer>
+        <TabDrawer>
+          <Pressable className="active:opacity-50">
+            <Icon size={30}>grid_view</Icon>
+          </Pressable>
+        </TabDrawer>
       </View>
     </View>
   );
@@ -209,7 +283,7 @@ export default function AppLayout() {
         >
           <Stack
             screenOptions={{
-              header: (props) => <AccountNavbar {...props} />,
+              header: (props: any) => <AccountNavbar {...props} />,
               contentStyle: {
                 backgroundColor: "#fff",
               },
@@ -221,14 +295,6 @@ export default function AppLayout() {
                 header: (props) => <Navbar {...props} />,
                 headerTitle: "Account",
                 animation: "slide_from_right",
-              }}
-            />
-            <Stack.Screen
-              name="tabs/index"
-              options={{
-                header: (props) => <Navbar {...props} />,
-                animation: "fade",
-                presentation: "modal",
               }}
             />
             <Stack.Screen
