@@ -1,6 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
-import Icon from "@/ui/icon";
+import Icon from "@/ui/Icon";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { StatusBar, Text, View } from "react-native";

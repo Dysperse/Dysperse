@@ -1,6 +1,6 @@
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
-import Icon from "@/ui/icon";
+import Icon from "@/ui/Icon";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef } from "react";

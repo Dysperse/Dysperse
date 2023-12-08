@@ -2,7 +2,7 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useColor } from "@/ui/color";
 import Emoji from "@/ui/emoji";
-import Icon from "@/ui/icon";
+import Icon from "@/ui/Icon";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";

@@ -3,7 +3,7 @@ import { OpenTabsProvider } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
 import IconButton from "@/ui/IconButton";
 import AccountNavbar from "@/ui/account-navbar";
-import Icon from "@/ui/icon";
+import Icon from "@/ui/Icon";
 import Navbar from "@/ui/navbar";
 import {
   BottomSheetFlatList,

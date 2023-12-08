@@ -1,7 +1,7 @@
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
-import Icon from "@/ui/icon";
+import Icon from "@/ui/Icon";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import * as Location from "expo-location";

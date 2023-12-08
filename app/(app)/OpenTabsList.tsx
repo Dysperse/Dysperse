@@ -1,7 +1,7 @@
 import { window } from "@/constants";
 import { useUser } from "@/context/useUser";
 import { useColor } from "@/ui/color";
-import Icon from "@/ui/icon";
+import Icon from "@/ui/Icon";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import {
