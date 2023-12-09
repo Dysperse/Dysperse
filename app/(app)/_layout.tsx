@@ -59,7 +59,7 @@ function BottomAppBar() {
       >
         <Pressable
           onPress={() => router.push("/")}
-          className="p-2.5 pr-20 -ml-2.5"
+          className="p-2.5 pr-20 -ml-2.5 active:opacity-50"
         >
           <Icon size={30} filled={pathname === "/"}>
             home
