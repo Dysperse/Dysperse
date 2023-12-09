@@ -57,7 +57,7 @@ function BottomAppBar() {
         style={{ height: 64 }}
         className="px-5 flex-row items-center justify-between"
       >
-        <Pressable onPress={() => router.push("/")}>
+        <Pressable onPress={() => router.push("/")} className="p-2.5 -ml-2.5">
           <Icon size={30} filled={pathname === "/"}>
             home
           </Icon>
@@ -68,7 +68,7 @@ function BottomAppBar() {
           </Pressable>
         </CreateDrawer>
         <TabDrawer>
-          <Pressable className="active:opacity-50">
+          <Pressable className="active:opacity-50 p-2.5 -mr-2.5">
             <Icon size={30}>grid_view</Icon>
           </Pressable>
         </TabDrawer>
