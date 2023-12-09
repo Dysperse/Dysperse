@@ -1,6 +1,7 @@
+import Text from "@/ui/Text";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
 
@@ -26,7 +27,7 @@ export default function Navbar(props: NavbarProps) {
       >
         <Icon size={30}>{props.icon || "west"}</Icon>
       </Pressable>
-      <Text style={{ fontFamily: "body_700" }} className="pl-2">
+      <Text style={{ fontFamily: "body_700" }} textClassName="pl-2">
         {props.options.headerTitle as string}
       </Text>
     </View>

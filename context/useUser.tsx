@@ -3,12 +3,12 @@ import { useSession } from "./AuthProvider";
 
 export function useUser() {
   const { session } = useSession();
-  const { data, isLoading, error } = useSWR([
+  const { data, isLoading, error, mutate } = useSWR([
     "session",
     { token: session },
     undefined,
     { method: "POST" },
   ]);
 
-  return { session: data, isLoading, error };
+  return { sessionToken: session, session: data, isLoading, error, mutate };
 }

@@ -6,11 +6,11 @@ export default function Icon({
   children,
   filled = false,
   style = {},
-  className = "",
+  textClassName = "",
 }) {
   return (
     <Text
-      className={className}
+      className={textClassName}
       style={{
         fontFamily: filled ? "symbols_filled" : "symbols_outlined",
         fontSize: size,

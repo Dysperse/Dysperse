@@ -1,0 +1,56 @@
+[
+    {
+      "index": {
+        "min": 0,
+        "max": 50
+      },
+      "category": "Good",
+      "meaning": "Satisfactory enough to pose little or no risk",
+      "color": "Green"
+    },
+    {
+      "index": {
+        "min": 51,
+        "max": 100
+      },
+      "category": "Moderate",
+      "meaning": "Few people might be sensitive",
+      "color": "Yellow"
+    },
+    {
+      "index": {
+        "min": 101,
+        "max": 150
+      },
+      "category": "Unhealthy for Sensitive Groups",
+      "meaning": "Members of sensitive groups may experience health effects.",
+      "color": "Orange"
+    },
+    {
+      "index": {
+        "min": 151,
+        "max": 200
+      },
+      "category": "Unhealthy",
+      "meaning": "Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects",
+      "color": "Red"
+    },
+    {
+      "index": {
+        "min": 201,
+        "max": 300
+      },
+      "category": "Very Unhealthy",
+      "meaning": "Health alert: everyone may experience more serious health effects",
+      "color": "Purple"
+    },
+    {
+      "index": {
+        "min": 301,
+        "max": 500
+      },
+      "category": "Hazardous",
+      "meaning": "Health warnings of emergency conditions. The entire population is more likely to be affected",
+      "color": "Maroon"
+    }
+  ]

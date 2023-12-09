@@ -5,13 +5,13 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Pressable,
-  Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { useSession } from "../context/AuthProvider";
 import { sendApiRequest } from "../helpers/api";
 import Turnstile from "../ui/turnstile";
+import Text from "@/ui/Text";
 
 export default function SignIn() {
   const { signIn, session } = useSession();
@@ -70,10 +70,14 @@ export default function SignIn() {
 
   return step == 0 || step == 2 ? (
     <KeyboardAvoidingView
-      className="gap-3 flex-1 items-center justify-center p-10 max-w-lg mx-auto w-full"
-      behavior="padding"
+      className="flex-1 items-center justify-center p-10 max-w-lg mx-auto w-full"
+      behavior="height"
+      style={{ gap: 15 }}
     >
-      <Text style={{ fontFamily: "heading" }} className="uppercase text-5xl">
+      <Text
+        textStyle={{ fontFamily: "heading" }}
+        textClassName="uppercase text-center text-5xl"
+      >
         Welcome to Dysperse.
       </Text>
       <Text>Please sign in with your Dysperse ID</Text>
@@ -85,7 +89,7 @@ export default function SignIn() {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              className="border-2 px-5 mt-3 py-3 w-full rounded-2xl border-gray-300"
+              className="border-2 px-5 mt-2 py-3 w-full rounded-2xl border-gray-300"
               placeholder="Email"
               placeholderTextColor="black"
               onBlur={onBlur}
@@ -103,7 +107,7 @@ export default function SignIn() {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              className="border-2 px-5 mt-3 py-3 w-full rounded-2xl border-gray-300"
+              className="border-2 px-5 mt-4 py-3 w-full rounded-2xl border-gray-300"
               placeholder="Password"
               secureTextEntry
               placeholderTextColor="black"
@@ -116,7 +120,7 @@ export default function SignIn() {
         />
       </View>
       <Pressable
-        className={`bg-gray-700 w-full rounded-2xl justify-center items-center active:bg-gray-900 h-12 ${
+        className={`bg-gray-700 mt-1 w-full rounded-2xl justify-center items-center active:bg-gray-900 h-12 ${
           step === 2 ? "bg-gray-300" : ""
         }`}
         onPress={handleSubmit(onSubmit)}
@@ -125,7 +129,7 @@ export default function SignIn() {
         {step === 2 ? (
           <ActivityIndicator />
         ) : (
-          <Text className="text-gray-50">Continue</Text>
+          <Text textClassName="text-gray-50">Continue</Text>
         )}
       </Pressable>
     </KeyboardAvoidingView>
@@ -137,10 +141,13 @@ export default function SignIn() {
         flex: 1,
       }}
     >
-      <Text style={{ fontFamily: "heading" }} className="uppercase text-5xl mb-2">
+      <Text
+        style={{ fontFamily: "heading" }}
+        textClassName="uppercase text-5xl mb-2"
+      >
         Verifying...
       </Text>
-      <Text className="mb-3">Checking if you're actually human 🤨</Text>
+      <Text textClassName="mb-3">Checking if you're actually human 🤨</Text>
       <Turnstile setToken={setToken} />
     </View>
   );

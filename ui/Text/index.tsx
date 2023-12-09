@@ -1,12 +1,19 @@
-import { Text as CustomText, TextProps } from "react-native";
+import { Text as NText, StyleProp, TextProps, TextStyle } from "react-native";
 
-export default function Text(props: TextProps) {
+interface DTextProps extends TextProps {
+  textClassName?: string;
+  textStyle?: StyleProp<TextStyle>;
+}
+
+export default function Text(props: DTextProps) {
   return (
-    <CustomText
+    <NText
       {...props}
+      className={props.textClassName || undefined}
       style={{
         fontFamily: "body_300",
-        ...(props.style && (props.style as any)),
+        ...(props.style as any),
+        ...(props.textStyle as any),
       }}
     />
   );

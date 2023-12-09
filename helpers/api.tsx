@@ -2,7 +2,7 @@ import { useSession } from "@/context/AuthProvider";
 
 export function sendApiRequest(
   session,
-  method,
+  method: "GET" | "POST" | "PUT" | "DELETE",
   path,
   params,
   options = {},
@@ -11,7 +11,7 @@ export function sendApiRequest(
   const url = `${etc.host}/${path}${
     Object.keys(params).length > 0 ? "?" : ""
   }${new URLSearchParams(params)}`;
-  console.log("query url", url);
+  console.log(`[${method.toUpperCase()}] `, url);
 
   return fetch(url, {
     ...options,

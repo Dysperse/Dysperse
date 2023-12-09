@@ -1,8 +1,9 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import Emoji from "@/ui/emoji";
-import Icon from "@/ui/Icon";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -12,7 +13,6 @@ import {
   Pressable,
   SectionList,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -72,8 +72,9 @@ function Button({ section, item }) {
 
   return (
     <Pressable
-      className="active:bg-gray-200 flex-row items-center gap-x-3 py-2 px-6"
+      className="active:bg-gray-200 flex-row items-center py-2 px-6"
       onPress={() => handlePress(item)}
+      style={{ gap: 20 }}
     >
       <LinearGradient
         className="w-12 h-12 flex items-center rounded-2xl justify-center"
@@ -94,9 +95,7 @@ function Button({ section, item }) {
           <Icon size={30}>{item.icon}</Icon>
         )}
       </LinearGradient>
-      <Text style={{ flexGrow: 1 }}>
-        {item?.collection?.name || item.label}
-      </Text>
+      <Text textClassName="flex-1">{item?.collection?.name || item.label}</Text>
 
       {loading ? (
         <ActivityIndicator />
@@ -214,7 +213,7 @@ export default function Page() {
       ListHeaderComponent={
         <>
           <Text
-            className="mt-5"
+            textClassName="mt-5"
             style={{
               fontSize: 50,
               fontFamily: "heading",
@@ -241,7 +240,7 @@ export default function Page() {
         <View className="items-center pt-10 h-full">
           <Emoji emoji="1F62D" size={40} />
           <Text
-            className="mt-3"
+            textClassName="mt-3"
             style={{ fontFamily: "body_600", fontSize: 17 }}
           >
             No results found

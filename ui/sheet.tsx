@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo, useRef } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import Text from "@/ui/Text";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import React, { useCallback, useMemo, useRef } from "react";
+import { Button, StyleSheet, View } from "react-native";
 
 const App = () => {
   // ref

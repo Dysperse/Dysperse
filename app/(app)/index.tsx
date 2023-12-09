@@ -3,9 +3,10 @@ import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { StatusBar, Text, View } from "react-native";
+import { StatusBar, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { WeatherWidget } from "../../components/home/weather/widget";
+import Text from "@/ui/Text";
 
 function Greeting() {
   const [greeting, setGreeting] = useState("");
@@ -25,7 +26,10 @@ function Greeting() {
   }, []);
 
   return (
-    <Text style={{ fontFamily: "heading" }} className="uppercase text-5xl mt-5">
+    <Text
+      style={{ fontFamily: "heading" }}
+      textClassName="uppercase text-5xl mt-5"
+    >
       {greeting}
     </Text>
   );
@@ -37,7 +41,7 @@ function TodaysDate() {
       <Icon size={40} style={{ marginLeft: -5 }}>
         calendar_today
       </Icon>
-      <Text className="mt-1 text-xl" style={{ fontFamily: "body_700" }}>
+      <Text textClassName="mt-1 text-xl" style={{ fontFamily: "body_700" }}>
         {dayjs().format("MMM Do")}
       </Text>
       <Text>{dayjs().format("YYYY")}</Text>
@@ -88,7 +92,7 @@ export default function Index() {
       <Greeting />
 
       <Text
-        className="uppercase text-sm opacity-60 mt-2"
+        textClassName="uppercase text-sm opacity-60 mt-2"
         style={{ fontFamily: "body_700" }}
       >
         Today's rundown

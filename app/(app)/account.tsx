@@ -1,11 +1,11 @@
-import { Text, View } from "react-native";
 import { useSession } from "@/context/AuthProvider";
-import useSWR from "swr";
+import { useUser } from "@/context/useUser";
+import Text from "@/ui/Text";
+import { Image } from "expo-image";
 import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
-import { useUser } from "@/context/useUser";
 
 export default function Index() {
   const { signOut } = useSession();
@@ -22,6 +22,10 @@ export default function Index() {
         >
           Sign out
         </Text>
+        <Image
+          source={{ uri: session?.user?.Profile?.picture }}
+          className="rounded-full w-16 h-16"
+        />
         <Text>{JSON.stringify(session)}</Text>
         {error && <Text>Error</Text>}
       </ScrollView>

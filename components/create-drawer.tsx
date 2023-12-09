@@ -4,7 +4,8 @@ import Icon from "@/ui/Icon";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
+import Text from "@/ui/Text";
 
 export const CreateDrawer = ({ children }) => {
   const ref = useRef<BottomSheetModal>(null);
@@ -32,11 +33,12 @@ export const CreateDrawer = ({ children }) => {
             {
               name: "Tab",
               icon: "tab",
-              callback: () => router.push("/tabs/new"),
+              callback: () => router.push("/open"),
             },
           ].map((button) => (
             <Pressable
-              className="flex-row items-center p-2.5 rounded-2xl gap-x-3 active:bg-gray-300"
+              className="flex-row items-center p-2.5 rounded-2xl active:bg-gray-300"
+              style={{ gap: 20 }}
               key={button.name}
               onPress={() => {
                 button.callback();
@@ -44,7 +46,7 @@ export const CreateDrawer = ({ children }) => {
               }}
             >
               <View>
-                <Icon size={30} style={{ marginLeft: 0 }}>
+                <Icon size={30} style={{ marginLeft: 1 }}>
                   {button.icon}
                 </Icon>
               </View>

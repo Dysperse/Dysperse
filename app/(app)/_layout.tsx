@@ -1,97 +1,28 @@
 import { useSession } from "@/context/AuthProvider";
 import { OpenTabsProvider } from "@/context/tabs";
-import { useUser } from "@/context/useUser";
-import IconButton from "@/ui/IconButton";
 import AccountNavbar from "@/ui/account-navbar";
 import Icon from "@/ui/Icon";
 import Navbar from "@/ui/navbar";
-import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect, Stack, router, usePathname } from "expo-router";
-import React, { cloneElement, useCallback, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   Platform,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import { SWRConfig } from "swr";
-import { OpenTabsList, Tab } from "./OpenTabsList";
-
-import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
-import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import { OpenTabsList } from "../../components/tabs/carousel";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import utc from "dayjs/plugin/utc";
 import { CreateDrawer } from "../../components/create-drawer";
+import { TabDrawer } from "../../components/tabs/list";
 dayjs.extend(advancedFormat);
-
-const TabDrawer = ({ children }) => {
-  const { session } = useUser();
-  const ref = useRef<BottomSheetModal>(null);
-
-  // callbacks
-  const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
-  const trigger = cloneElement(children, { onPress: handleOpen });
-
-  return (
-    <View>
-      {trigger}
-      <BottomSheetModal
-        ref={ref}
-        snapPoints={["50%", "80%"]}
-        backdropComponent={BottomSheetBackdropComponent}
-      >
-        <BottomSheetBackHandler handleClose={handleClose} />
-        <View className="flex-row items-center px-5 mb-2">
-          <IconButton className="bg-gray-100 mr-4" onPress={handleClose}>
-            <Icon>expand_more</Icon>
-          </IconButton>
-          <Text
-            className="py-3 text-2xl flex-1"
-            style={{ fontFamily: "body_700" }}
-          >
-            Tabs
-          </Text>
-          <IconButton
-            className="bg-gray-100"
-            onPress={() => router.push("/tabs/new")}
-          >
-            <Icon>add</Icon>
-          </IconButton>
-        </View>
-        {session ? (
-          <BottomSheetFlatList
-            ListFooterComponent={
-              <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
-                <Icon>info</Icon>
-                <Text className="ml-2">Tabs are synced between devices</Text>
-              </View>
-            }
-            data={session.user.tabs}
-            renderItem={({ item }) => (
-              <View className="pl-4 flex-row items-center">
-                <Tab tab={item} isList />
-                <IconButton className="mr-4" onPress={handleClose}>
-                  <Icon>remove_circle</Icon>
-                </IconButton>
-              </View>
-            )}
-            keyExtractor={(item: any) => item.id}
-          />
-        ) : (
-          <ActivityIndicator />
-        )}
-      </BottomSheetModal>
-    </View>
-  );
-};
+dayjs.extend(utc);
 
 export const styles = StyleSheet.create({
   contentContainer: {
@@ -102,7 +33,7 @@ export const styles = StyleSheet.create({
 
 function BottomAppBar() {
   const pathname = usePathname();
-  const shouldHide = ["/account", "/tabs", "/tabs/new"].includes(pathname);
+  const shouldHide = ["/account", "/tabs", "/open"].includes(pathname);
 
   useEffect(() => {
     if (Platform.OS === "android") {
@@ -207,11 +138,23 @@ export default function AppLayout() {
               }}
             />
             <Stack.Screen
-              name="tabs/new"
+              name="open"
               options={{
                 header: (props) => <Navbar {...props} />,
                 animation: "fade",
                 presentation: "modal",
+              }}
+            />
+            <Stack.Screen
+              name="perspectives/agenda/[view]"
+              options={{
+                animation: "fade",
+              }}
+            />
+            <Stack.Screen
+              name="index"
+              options={{
+                animation: "fade",
               }}
             />
           </Stack>
