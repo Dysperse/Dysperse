@@ -123,15 +123,21 @@ export function WeatherModal({
               </Icon>
             </View>
             <Text
-              textClassName="text-5xl text-center mt-4"
+              textClassName="text-5xl mb-1 text-center mt-4"
               style={{ fontFamily: "body_700", color, marginRight: -13 }}
             >
               {Math.round(weather.current_weather.temperature)}&deg;
             </Text>
-            <Text textClassName="text-center" style={{ color, opacity: 0.7 }}>
+            <Text
+              textClassName="text-center text-lg mb-1"
+              style={{ color, opacity: 0.9 }}
+            >
               {weatherDescription.description}
             </Text>
-            <Text textClassName="text-center" style={{ color, opacity: 0.7 }}>
+            <Text
+              textClassName="text-center mb-1"
+              style={{ color, opacity: 0.7 }}
+            >
               {location.address.city || location.address.county},{" "}
               {location.address.state}
             </Text>
