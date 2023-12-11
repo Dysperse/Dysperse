@@ -7,6 +7,4 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
     "./ui/**/*.{js,ts,jsx,tsx}",
   ],
-  presets: [require("nativewind/preset")],
-  plugins: [],
 };

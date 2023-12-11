@@ -83,7 +83,7 @@ export const TabDrawer = ({ children }) => {
           </IconButton>
         </View>
         {session ? (
-          <BottomSheetFlatList
+          <FlatList
             ListFooterComponent={
               session.user.tabs.length !== 0 && (
                 <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">

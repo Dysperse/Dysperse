@@ -1,6 +1,5 @@
 const path = require("path");
 const { getDefaultConfig } = require("expo/metro-config");
-const { withNativeWind } = require("nativewind/metro");
 const tailwind = require("tailwindcss/lib/cli/build");
 
 module.exports = (async () => {
@@ -24,5 +23,5 @@ module.exports = (async () => {
     "--poll": true,
   });
 
-  return withNativeWind(config, { input: "./global.css" });
+  return config;
 })();
