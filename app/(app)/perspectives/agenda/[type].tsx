@@ -1,11 +1,29 @@
+import { useUser } from "@/context/useUser";
+import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
+import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
 import Text from "@/ui/Text";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  WINDOW_WIDTH,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
 import dayjs, { OpUnitType } from "dayjs";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
-import { createContext, useContext } from "react";
+import {
+  cloneElement,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Button,
   FlatList,
+  Platform,
   Pressable,
   StatusBar,
   View,
@@ -63,22 +81,70 @@ function Header({ start, end }) {
 
 function Task({ task }) {
   return (
-    <Pressable className="px-5 py-3 rounded-2xl active:bg-gray-200 hover:bg-gray-100 mb-0.5">
-      <Text>{task.name}</Text>
-    </Pressable>
+    <TaskDrawer id={task.id}>
+      <Pressable className="px-5 py-3 rounded-2xl active:bg-gray-200 hover:bg-gray-100 mb-0.5">
+        <Text>{task.name}</Text>
+      </Pressable>
+    </TaskDrawer>
+  );
+}
+
+function TaskDrawerContent({ data }) {
+  return (
+    <BottomSheetScrollView>
+      <Text>{JSON.stringify(data, null, 2)}</Text>
+    </BottomSheetScrollView>
+  );
+}
+
+function TaskDrawer({ children, id }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handleOpen = useCallback(() => {
+    ref.current?.present();
+    setOpen(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    ref.current?.close();
+  }, []);
+
+  const trigger = cloneElement(children, { onPress: handleOpen });
+
+  // Fetch data
+  const { data, error } = useSWR(["space/tasks/task", { id }]);
+
+  return (
+    <>
+      {trigger}
+      <BottomSheetModal
+        ref={ref}
+        snapPoints={["50%", "80%"]}
+        backdropComponent={BottomSheetBackdropComponent}
+      >
+        <BottomSheetBackHandler handleClose={handleClose} />
+        {data ? <TaskDrawerContent data={data} /> : <ActivityIndicator />}
+      </BottomSheetModal>
+    </>
   );
 }
 
 function Column({ column }) {
   return (
-    <View style={{ width: 300 }} className="border-r border-gray-200">
+    <View
+      style={{ width: Platform.OS === "web" ? 300 : WINDOW_WIDTH }}
+      className={Platform.OS == "web" ? "border-r border-gray-200" : undefined}
+    >
       <Header start={column.start} end={column.end} />
       <FlatList
         data={column.tasks}
         contentContainerStyle={{
           padding: 10,
         }}
-        renderItem={({ item }) => <Task task={item} key={item.id} />}
+        renderItem={({ item }) => <Task task={item} />}
       />
     </View>
   );
@@ -95,14 +161,74 @@ function Agenda() {
     },
   ]);
 
+  const [currentColumn, setCurrentColumn] = useState(null);
+
+  useEffect(() => {
+    if (data?.length > 1)
+      setCurrentColumn(
+        data.find((i) => dayjs().utc().isBetween(dayjs(i.start), dayjs(i.end)))
+      );
+  }, [data, setCurrentColumn]);
+
+  if (Platform.OS === "web") {
+    return (
+      <ScrollView horizontal contentContainerStyle={{ flexDirection: "row" }}>
+        {data ? (
+          data.map((col) => <Column key={col.start} column={col} />)
+        ) : (
+          <ActivityIndicator />
+        )}
+      </ScrollView>
+    );
+  }
+
   return (
-    <ScrollView horizontal contentContainerStyle={{ flexDirection: "row" }}>
+    <>
       {data ? (
-        data.map((col) => <Column key={col.start} column={col} />)
+        <View>
+          <FlatList
+            horizontal
+            data={data}
+            contentContainerStyle={{
+              gap: 15,
+              paddingBottom: 15,
+              paddingHorizontal: 15,
+            }}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <Pressable
+                className={`
+              h-16 w-16 flex items-center active:bg-gray-200 border-2 border-gray-100 active:border-gray-200 rounded-2xl items-center justify-center
+              ${
+                item?.start === currentColumn?.start
+                  ? "bg-gray-200 border-gray-200 active:bg-gray-300 active:border-gray-300"
+                  : ""
+              }
+              `}
+                onPress={() => setCurrentColumn(item)}
+              >
+                <Text
+                  textClassName="uppercase text-xs opacity-60"
+                  style={{ fontFamily: "body_400" }}
+                >
+                  {dayjs(item.start).format("ddd")}
+                </Text>
+                <Text
+                  textClassName="text-xl"
+                  style={{ fontFamily: "body_500" }}
+                >
+                  {dayjs(item.start).format("DD")}
+                </Text>
+              </Pressable>
+            )}
+            keyExtractor={(i) => i.start}
+          />
+          {currentColumn && <Column column={currentColumn} />}
+        </View>
       ) : (
         <ActivityIndicator />
       )}
-    </ScrollView>
+    </>
   );
 }
 

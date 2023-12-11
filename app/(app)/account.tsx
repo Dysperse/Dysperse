@@ -12,7 +12,7 @@ export default function Index() {
   const { session, error } = useUser();
 
   return (
-    <GestureHandlerRootView>
+    <>
       <ScrollView>
         <Text
           onPress={() => {
@@ -29,6 +29,6 @@ export default function Index() {
         <Text>{JSON.stringify(session)}</Text>
         {error && <Text>Error</Text>}
       </ScrollView>
-    </GestureHandlerRootView>
+    </>
   );
 }

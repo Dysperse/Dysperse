@@ -22,6 +22,7 @@ import utc from "dayjs/plugin/utc";
 import { CreateDrawer } from "../../components/create-drawer";
 import { TabDrawer } from "../../components/tabs/list";
 import isBetween from "dayjs/plugin/isBetween";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 dayjs.extend(isBetween);
 dayjs.extend(advancedFormat);
 dayjs.extend(utc);
@@ -104,68 +105,70 @@ export default function AppLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <OpenTabsProvider>
-      <BottomSheetModalProvider>
-        <SWRConfig
-          value={{
-            fetcher: ([
-              resource,
-              params,
-              host = "https://api.dysperse.com",
-              init = {},
-            ]) => {
-              const url = `${host}/${resource}?${new URLSearchParams(
-                params
-              ).toString()}`;
-              return fetch(url, {
-                headers: {
-                  Authorization: `Bearer ${session}`,
-                },
-                ...init,
-              }).then((res) => res.json());
-            },
-          }}
-        >
-          <Stack
-            screenOptions={{
-              header: (props: any) => <AccountNavbar {...props} />,
-              contentStyle: {
-                backgroundColor: "#fff",
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <OpenTabsProvider>
+        <BottomSheetModalProvider>
+          <SWRConfig
+            value={{
+              fetcher: ([
+                resource,
+                params,
+                host = "https://api.dysperse.com",
+                init = {},
+              ]) => {
+                const url = `${host}/${resource}?${new URLSearchParams(
+                  params
+                ).toString()}`;
+                return fetch(url, {
+                  headers: {
+                    Authorization: `Bearer ${session}`,
+                  },
+                  ...init,
+                }).then((res) => res.json());
               },
             }}
           >
-            <Stack.Screen
-              name="index"
-              options={{
-                animation: "fade",
+            <Stack
+              screenOptions={{
+                header: (props: any) => <AccountNavbar {...props} />,
+                contentStyle: {
+                  backgroundColor: "#fff",
+                },
               }}
-            />
-            <Stack.Screen
-              name="account"
-              options={{
-                header: (props) => <Navbar {...props} />,
-                headerTitle: "Account",
-                animation: "slide_from_right",
-              }}
-            />
-            <Stack.Screen
-              name="open"
-              options={{
-                header: (props) => <Navbar {...props} />,
-                animation: "fade",
-                presentation: "modal",
-              }}
-            />
-            <Stack.Screen
-              name="perspectives/agenda/[view]"
-              options={{
-                animation: "fade",
-              }}
-            />
-          </Stack>
-          <BottomAppBar />
-        </SWRConfig>
-      </BottomSheetModalProvider>
-    </OpenTabsProvider>
+            >
+              <Stack.Screen
+                name="index"
+                options={{
+                  animation: "fade",
+                }}
+              />
+              <Stack.Screen
+                name="account"
+                options={{
+                  header: (props) => <Navbar {...props} />,
+                  headerTitle: "Account",
+                  animation: "slide_from_right",
+                }}
+              />
+              <Stack.Screen
+                name="open"
+                options={{
+                  header: (props) => <Navbar {...props} />,
+                  animation: "fade",
+                  presentation: "modal",
+                }}
+              />
+              <Stack.Screen
+                name="perspectives/agenda/[type]"
+                options={{
+                  animation: "fade",
+                }}
+              />
+            </Stack>
+            <BottomAppBar />
+          </SWRConfig>
+        </BottomSheetModalProvider>
+      </OpenTabsProvider>
+    </GestureHandlerRootView>
   );
 }
