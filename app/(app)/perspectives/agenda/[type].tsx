@@ -79,10 +79,20 @@ function Header({ start, end }) {
   );
 }
 
+function TaskCheckbox({ completed }: { completed: boolean }) {
+  return (
+    <Pressable className="w-7 h-7 border-2 border-gray-400 active:bg-gray-100 rounded-full"></Pressable>
+  );
+}
+
 function Task({ task }) {
   return (
     <TaskDrawer id={task.id}>
-      <Pressable className="px-5 py-3 rounded-2xl active:bg-gray-200 hover:bg-gray-100 mb-0.5">
+      <Pressable
+        className="px-5 py-3 rounded-2xl active:bg-gray-200 hover:bg-gray-100 mb-0.5 flex-row items-center"
+        style={{ gap: 15 }}
+      >
+        <TaskCheckbox completed={task.completionInstances.length > 0} />
         <Text>{task.name}</Text>
       </Pressable>
     </TaskDrawer>
