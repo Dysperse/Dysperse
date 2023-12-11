@@ -29,6 +29,7 @@ export function OpenTabsList() {
   };
 
   useEffect(() => {
+    if (!session) return;
     if (Platform.OS === "web") {
       return;
     }
@@ -41,7 +42,7 @@ export function OpenTabsList() {
         ref.current.scrollTo({ index, animated: true });
       }
     }
-  }, [pathname, session.user.tabs]);
+  }, [pathname, session]);
 
   return session ? (
     Platform.OS === "web" ? (

@@ -10,6 +10,7 @@ import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler"
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
 import Text from "@/ui/Text";
 import { sendApiRequest } from "@/helpers/api";
+import { FlatList } from "react-native-gesture-handler";
 
 function TabListTab({ item, handleDelete, handleClose }) {
   const [loading, setLoading] = useState(false);
@@ -82,7 +83,7 @@ export const TabDrawer = ({ children }) => {
           </IconButton>
         </View>
         {session ? (
-          <BottomSheetFlatList
+          <FlatList
             ListFooterComponent={
               session.user.tabs.length !== 0 && (
                 <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">

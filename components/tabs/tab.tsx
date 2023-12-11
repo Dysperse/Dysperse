@@ -19,8 +19,8 @@ export function Tab({ tab, isList = false, handleClose = () => {} }) {
   return (
     <View
       style={{
-        padding: isList ? 0 : 6,
-        paddingHorizontal: isList ? 0 : 3,
+        padding: isList ? 0 : 8,
+        paddingHorizontal: isList ? 0 : 4,
         flex: 1,
         width: "100%",
         height: 64,

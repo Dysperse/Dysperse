@@ -121,17 +121,17 @@ const defaultSections = [
       {
         label: "Weeks",
         icon: "calendar_view_week",
-        href: "/perspectives/agenda/weeks",
+        href: "/perspectives/agenda/week",
       },
       {
         label: "Months",
         icon: "calendar_view_month",
-        href: "/perspectives/agenda/months",
+        href: "/perspectives/agenda/month",
       },
       {
         label: "Years",
         icon: "view_compact",
-        href: "/perspectives/agenda/years",
+        href: "/perspectives/agenda/year",
       },
       {
         label: "Upcoming",

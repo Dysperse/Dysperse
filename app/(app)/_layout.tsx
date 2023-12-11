@@ -21,6 +21,8 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import utc from "dayjs/plugin/utc";
 import { CreateDrawer } from "../../components/create-drawer";
 import { TabDrawer } from "../../components/tabs/list";
+import isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween);
 dayjs.extend(advancedFormat);
 dayjs.extend(utc);
 
@@ -133,6 +135,12 @@ export default function AppLayout() {
             }}
           >
             <Stack.Screen
+              name="index"
+              options={{
+                animation: "fade",
+              }}
+            />
+            <Stack.Screen
               name="account"
               options={{
                 header: (props) => <Navbar {...props} />,
@@ -150,12 +158,6 @@ export default function AppLayout() {
             />
             <Stack.Screen
               name="perspectives/agenda/[view]"
-              options={{
-                animation: "fade",
-              }}
-            />
-            <Stack.Screen
-              name="index"
               options={{
                 animation: "fade",
               }}
