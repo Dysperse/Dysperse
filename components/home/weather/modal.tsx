@@ -3,14 +3,17 @@ import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler"
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetFlatList,
+  BottomSheetModal,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import * as NavigationBar from "expo-navigation-bar";
 import { cloneElement, useCallback, useMemo, useRef } from "react";
-import { Pressable, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 import airQuality from "./airQuality.json";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
 
 const getAirQualityInfo = (index) => {
   const result = airQuality.find(
@@ -215,7 +218,7 @@ export function WeatherModal({
               Hourly
             </Text>
           </View>
-          <FlatList
+          <BottomSheetFlatList
             data={weather.hourly.temperature_2m.slice(0, 24)}
             horizontal
             contentContainerStyle={{

@@ -19,7 +19,7 @@ export default function AccountNavbar() {
     >
       <Logo size={35} color="black" />
       <View style={{ flexGrow: 1 }} />
-      <Pressable className="w-9 h-9 rounded-full items-center justify-center active:bg-gray-200 mr-2.5">
+      <Pressable className="w-9 h-9 rounded-full items-center justify-center hover:bg-gray-100 active:bg-gray-200 mr-2.5">
         <Icon>search</Icon>
       </Pressable>
       <Link href="/(app)/account">
@@ -28,7 +28,7 @@ export default function AccountNavbar() {
             uri: session?.user?.Profile?.picture,
           }}
           className="rounded-full"
-          style={{ width: 35, height: 35 }}
+          style={{ width: 35, height: 35, borderRadius: 99 }}
         />
       </Link>
     </View>

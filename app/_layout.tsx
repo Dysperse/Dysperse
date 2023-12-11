@@ -1,24 +1,15 @@
-// Ensure we import the CSS for Tailwind so it's included in hot module reloads.
-const ctx = (require as any).context(
-  // If this require.context is not inside the root directory (next to the package.json) then adjust this file path
-  // to resolve correctly.
-  "./node_modules/.cache/expo/tailwind"
-);
-if (ctx.keys().length) ctx(ctx.keys()[0]);
-
 import { Slot } from "expo-router";
 import { SessionProvider } from "../context/AuthProvider";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { useFonts } from "expo-font";
+import "@/global.css";
 
 SplashScreen.preventAutoHideAsync();
 
-import { NativeWindStyleSheet } from "nativewind";
-
-NativeWindStyleSheet.setOutput({
-  default: "native",
-});
+// NativeWindStyleSheet.setOutput({
+//   default: "native",
+// });
 
 export default function Root() {
   // Set up the auth context and render our layout inside of it.
