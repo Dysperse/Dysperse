@@ -9,6 +9,7 @@ import { Platform, Pressable, View } from "react-native";
 
 export function Tab({
   tab,
+  disabled = false,
   isList = false,
   handleClose = () => {},
   onLongPress = () => {},
@@ -39,6 +40,7 @@ export function Tab({
     >
       <Pressable
         onLongPress={onLongPress}
+        disabled={disabled}
         onPress={() => {
           setActiveTab(tab.id);
           router.replace(tab.tabData.href);

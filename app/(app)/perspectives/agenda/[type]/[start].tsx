@@ -522,6 +522,19 @@ function Agenda() {
     );
   }
 
+  const buttonTextFormats = {
+    small: {
+      week: "ddd",
+      month: "#W",
+      year: "-",
+    }[type],
+    big: {
+      week: "DD",
+      month: "DD",
+      year: "MMM",
+    }[type],
+  };
+
   return (
     <>
       <PerspectivesNavbar
@@ -556,17 +569,22 @@ function Agenda() {
               `}
                       onPress={() => setCurrentColumn(item)}
                     >
-                      <Text
-                        textClassName="uppercase text-xs opacity-60"
-                        style={{ fontFamily: "body_400" }}
-                      >
-                        {dayjs(item.start).format("ddd")}
-                      </Text>
+                      {buttonTextFormats.small !== "-" && (
+                        <Text
+                          textClassName="uppercase text-xs opacity-60"
+                          style={{ fontFamily: "body_400" }}
+                        >
+                          {dayjs(item.start).format(buttonTextFormats.small)}
+                          {type === "month" &&
+                            " - " +
+                              dayjs(item.end).format(buttonTextFormats.big)}
+                        </Text>
+                      )}
                       <Text
                         textClassName="text-xl"
                         style={{ fontFamily: "body_500" }}
                       >
-                        {dayjs(item.start).format("DD")}
+                        {dayjs(item.start).format(buttonTextFormats.big)}
                       </Text>
                     </Pressable>
                   )}

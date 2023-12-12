@@ -8,7 +8,7 @@ import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { ActivityIndicator, Pressable, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
@@ -21,6 +21,7 @@ function TabListTab({
   handleDelete,
   handleClose,
   isActive,
+  isEdit = false,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -33,17 +34,25 @@ function TabListTab({
         ...(isActive && { backgroundColor: "#eee", borderRadius: 20 }),
       }}
     >
-      <Tab tab={item} isList handleClose={handleClose} onLongPress={drag} />
-      <IconButton
-        className="mr-4"
-        onPress={async () => {
-          setLoading(true);
-          await handleDelete(item.id);
-          setLoading(false);
-        }}
-      >
-        {loading ? <ActivityIndicator /> : <Icon>remove_circle</Icon>}
-      </IconButton>
+      <Tab
+        tab={item}
+        disabled={isEdit}
+        isList
+        handleClose={handleClose}
+        onLongPress={drag}
+      />
+      {!isEdit && (
+        <IconButton
+          className="mr-4"
+          onPress={async () => {
+            setLoading(true);
+            await handleDelete(item.id);
+            setLoading(false);
+          }}
+        >
+          {loading ? <ActivityIndicator /> : <Icon>remove_circle</Icon>}
+        </IconButton>
+      )}
     </Pressable>
   );
 }
@@ -51,6 +60,7 @@ function TabListTab({
 export const TabDrawer = ({ children }) => {
   const { sessionToken, session, mutate } = useUser();
   const ref = useRef<BottomSheetModal>(null);
+  const [editMode, setEditMode] = useState(false);
 
   // callbacks
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -72,6 +82,8 @@ export const TabDrawer = ({ children }) => {
     [session]
   );
 
+  const FlatListComponent = editMode ? DraggableFlatList : FlatList;
+
   return (
     <View>
       {trigger}
@@ -92,14 +104,22 @@ export const TabDrawer = ({ children }) => {
             Tabs
           </Text>
           <IconButton
-            className="bg-gray-100"
-            onPress={() => router.push("/open")}
+            className={`mr-2 ${editMode ? "bg-gray-200" : ""}`}
+            onPress={() => setEditMode(!editMode)}
           >
-            <Icon>add</Icon>
+            <Icon>{editMode ? "check" : "edit"}</Icon>
           </IconButton>
+          {!editMode && (
+            <IconButton
+              className="bg-gray-100"
+              onPress={() => router.push("/open")}
+            >
+              <Icon>add</Icon>
+            </IconButton>
+          )}
         </View>
         {session ? (
-          <DraggableFlatList
+          <FlatListComponent
             onDragEnd={({ data }) => {
               const newData = data.map((item, index) => ({
                 id: item.id,
@@ -111,18 +131,33 @@ export const TabDrawer = ({ children }) => {
                 tabs: JSON.stringify(newData),
               }).then(() => mutate());
             }}
-            ListFooterComponent={() => (
-              <View>
-                {session.user.tabs.length !== 0 && (
-                  <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
-                    <Icon>info</Icon>
-                    <Text textClassName="ml-2">
-                      Tabs are synced between devices
-                    </Text>
+            ListFooterComponent={
+              editMode ? (
+                () => (
+                  <View>
+                    {session.user.tabs.length !== 0 && (
+                      <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
+                        <Icon>info</Icon>
+                        <Text textClassName="ml-2">
+                          Tabs are synced between devices
+                        </Text>
+                      </View>
+                    )}
                   </View>
-                )}
-              </View>
-            )}
+                )
+              ) : (
+                <View>
+                  {session.user.tabs.length !== 0 && (
+                    <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
+                      <Icon>info</Icon>
+                      <Text textClassName="ml-2">
+                        Tabs are synced between devices
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              )
+            }
             ListEmptyComponent={
               <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
                 <Icon>info</Icon>
@@ -132,18 +167,32 @@ export const TabDrawer = ({ children }) => {
               </View>
             }
             data={session.user.tabs}
-            renderItem={({ item, drag, isActive }) => (
-              <ScaleDecorator activeScale={0.95}>
-                <TabListTab
-                  item={item}
-                  disabled={false}
-                  drag={drag}
-                  handleDelete={handleDelete}
-                  handleClose={handleClose}
-                  isActive={isActive}
-                />
-              </ScaleDecorator>
-            )}
+            renderItem={
+              editMode
+                ? ({ item, drag, isActive }) => (
+                    <ScaleDecorator activeScale={0.95}>
+                      <TabListTab
+                        item={item}
+                        disabled={false}
+                        drag={drag}
+                        handleDelete={handleDelete}
+                        handleClose={handleClose}
+                        isActive={isActive}
+                        isEdit
+                      />
+                    </ScaleDecorator>
+                  )
+                : ({ item }) => (
+                    <TabListTab
+                      item={item}
+                      disabled={false}
+                      drag={() => {}}
+                      handleDelete={handleDelete}
+                      handleClose={handleClose}
+                      isActive={false}
+                    />
+                  )
+            }
             keyExtractor={(item: any) => item.id}
           />
         ) : (
