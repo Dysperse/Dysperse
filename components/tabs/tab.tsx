@@ -7,7 +7,12 @@ import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { Platform, Pressable, View } from "react-native";
 
-export function Tab({ tab, isList = false, handleClose = () => {} }) {
+export function Tab({
+  tab,
+  isList = false,
+  handleClose = () => {},
+  onLongPress = () => {},
+}) {
   const isPerspective = useMemo(
     () => tab.tabData.href.includes("perspectives"),
     [tab.tabData]
@@ -33,6 +38,7 @@ export function Tab({ tab, isList = false, handleClose = () => {} }) {
       }}
     >
       <Pressable
+        onLongPress={onLongPress}
         onPress={() => {
           setActiveTab(tab.id);
           router.replace(tab.tabData.href);

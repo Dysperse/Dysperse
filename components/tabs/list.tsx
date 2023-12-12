@@ -1,23 +1,29 @@
 import { useUser } from "@/context/useUser";
-import IconButton from "@/ui/IconButton";
-import Icon from "@/ui/Icon";
-import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
-import { router } from "expo-router";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
-import { Tab } from "./tab";
+import { sendApiRequest } from "@/helpers/api";
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import { sendApiRequest } from "@/helpers/api";
-import { FlatList } from "react-native-gesture-handler";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
+import React, { cloneElement, useCallback, useRef, useState } from "react";
+import { ActivityIndicator, Pressable, View } from "react-native";
+import DraggableFlatList, {
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
+import { Tab } from "./tab";
 
-function TabListTab({ item, handleDelete, handleClose }) {
+function TabListTab({ disabled, drag, item, handleDelete, handleClose }) {
   const [loading, setLoading] = useState(false);
 
   return (
-    <View className="pl-4 flex-row items-center">
-      <Tab tab={item} isList handleClose={handleClose} />
+    <Pressable
+      className="pl-4 flex-row items-center"
+      disabled={disabled}
+      onLongPress={drag}
+    >
+      <Tab tab={item} isList handleClose={handleClose} onLongPress={drag} />
       <IconButton
         className="mr-4"
         onPress={async () => {
@@ -28,7 +34,7 @@ function TabListTab({ item, handleDelete, handleClose }) {
       >
         {loading ? <ActivityIndicator /> : <Icon>remove_circle</Icon>}
       </IconButton>
-    </View>
+    </Pressable>
   );
 }
 
@@ -83,7 +89,18 @@ export const TabDrawer = ({ children }) => {
           </IconButton>
         </View>
         {session ? (
-          <FlatList
+          <DraggableFlatList
+            onDragEnd={({ data }) => {
+              const newData = data.map((item, index) => ({
+                id: item.id,
+                order: index,
+              }));
+              console.log(newData);
+
+              sendApiRequest(sessionToken, "PUT", "user/tabs/order", {
+                tabs: JSON.stringify(newData),
+              }).then(() => mutate());
+            }}
             ListFooterComponent={
               session.user.tabs.length !== 0 && (
                 <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
@@ -103,12 +120,18 @@ export const TabDrawer = ({ children }) => {
               </View>
             }
             data={session.user.tabs}
-            renderItem={({ item }) => (
-              <TabListTab
-                handleClose={handleClose}
-                item={item}
-                handleDelete={handleDelete}
-              />
+            renderItem={({ item, drag, isActive }) => (
+              <ScaleDecorator>
+                {/* <Pressable onLongPress={drag}> */}
+                <TabListTab
+                  item={item}
+                  disabled={false}
+                  drag={drag}
+                  handleDelete={handleDelete}
+                  handleClose={handleClose}
+                />
+                {/* </Pressable> */}
+              </ScaleDecorator>
             )}
             keyExtractor={(item: any) => item.id}
           />
