@@ -47,12 +47,14 @@ function TabHandler() {
 
   useEffect(() => {
     if (session) {
-      const tab = session.user.tabs.find((tab) => tab.href === pathname);
+      const tab = session.user.tabs.find(
+        (tab) => tab?.tabData?.href === pathname
+      );
       if (tab) {
         setActiveTab(tab.id);
       }
     }
-  }, [activeTab, pathname, session]);
+  }, [activeTab, pathname, setActiveTab, session]);
 
   return null;
 }
