@@ -158,7 +158,7 @@ function TaskDrawerContent({ data, handleClose }) {
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
         className="flex-row bg-white"
-        style={{ paddingHorizontal: 20, paddingVertical: 10 }}
+        style={{ paddingHorizontal: 20, height: 75, paddingVertical: 10 }}
       >
         <IconButton className="bg-gray-200" onPress={handleClose}>
           <Icon>close</Icon>
@@ -178,7 +178,7 @@ function TaskDrawerContent({ data, handleClose }) {
       <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
         <View
           className="flex-row"
-          style={{ gap: 10, marginVertical: 10, marginTop: 30 }}
+          style={{ gap: 10, marginVertical: 10, marginTop: 15 }}
         >
           <Chip icon={<Icon filled={data.pinned}>push_pin</Icon>} />
           <Chip icon={<Icon>label</Icon>} />
