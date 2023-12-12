@@ -1,3 +1,7 @@
+import { useSession } from "@/context/AuthProvider";
+import { useOpenTab } from "@/context/tabs";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
@@ -149,8 +153,6 @@ function AutoSizeTextArea(props: DTextAreaProps) {
 }
 
 function TaskDrawerContent({ data, handleClose }) {
-  const [size, setSize] = useState(50);
-
   return (
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
@@ -342,7 +344,7 @@ function Column({ column }) {
 }
 
 function PerspectivesNavbar({ handleToday, currentDateStart, currentDateEnd }) {
-  const { start, end, type } = useAgendaContext();
+  const { start, type } = useAgendaContext();
 
   const titleFormat = {
     week: "[W]W • MMMM",
@@ -357,21 +359,67 @@ function PerspectivesNavbar({ handleToday, currentDateStart, currentDateEnd }) {
     "[]"
   );
 
+  const { session: sessionToken } = useSession();
+  const { mutate, session } = useUser();
+  const { activeTab } = useOpenTab();
+
   const handlePrev = useCallback(() => {
-    router.push(
-      `/perspectives/agenda/${type}/${dayjs(start)
-        .subtract(1, type as ManipulateType)
-        .format("YYYY-MM-DD")}`
-    );
-  }, [router, type, start]);
+    const tab = session?.user?.tabs?.find((i) => i.id === activeTab);
+
+    const href = `/perspectives/agenda/${type}/${dayjs(start)
+      .subtract(1, type as ManipulateType)
+      .format("YYYY-MM-DD")}`;
+
+    if (tab) {
+      sendApiRequest(sessionToken, "PUT", "user/tabs", {
+        id: tab.id,
+        tabData: JSON.stringify({
+          ...tab.tabData,
+          href: href,
+        }),
+      }).then(() => mutate());
+    }
+    // Change the tab
+    router.push(href);
+  }, [
+    router,
+    type,
+    start,
+    sessionToken,
+    mutate,
+    activeTab,
+    session,
+    activeTab,
+  ]);
 
   const handleNext = useCallback(() => {
-    router.push(
-      `/perspectives/agenda/${type}/${dayjs(start)
-        .add(1, type as ManipulateType)
-        .format("YYYY-MM-DD")}`
-    );
-  }, [router, type, start]);
+    const tab = session?.user?.tabs?.find((i) => i.id === activeTab);
+
+    const href = `/perspectives/agenda/${type}/${dayjs(start)
+      .add(1, type as ManipulateType)
+      .format("YYYY-MM-DD")}`;
+
+    if (tab) {
+      sendApiRequest(sessionToken, "PUT", "user/tabs", {
+        id: tab.id,
+        tabData: JSON.stringify({
+          ...tab.tabData,
+          href: href,
+        }),
+      }).then(() => mutate());
+    }
+
+    router.push(href);
+  }, [
+    router,
+    type,
+    start,
+    sessionToken,
+    mutate,
+    activeTab,
+    session,
+    activeTab,
+  ]);
 
   return (
     <View className="p-4 pb-0">

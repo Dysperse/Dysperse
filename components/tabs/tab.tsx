@@ -1,3 +1,4 @@
+import { useOpenTab } from "@/context/tabs";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -12,8 +13,8 @@ export function Tab({ tab, isList = false, handleClose = () => {} }) {
     [tab.tabData]
   );
 
+  const { activeTab, setActiveTab } = useOpenTab();
   const redPalette = useColor("red", false);
-
   const colors = isPerspective ? redPalette : redPalette;
 
   return (
@@ -33,6 +34,7 @@ export function Tab({ tab, isList = false, handleClose = () => {} }) {
     >
       <Pressable
         onPress={() => {
+          setActiveTab(tab.id);
           router.replace(tab.tabData.href);
           handleClose();
         }}

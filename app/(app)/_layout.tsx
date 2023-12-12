@@ -1,7 +1,7 @@
 import { useSession } from "@/context/AuthProvider";
-import { OpenTabsProvider } from "@/context/tabs";
+import { OpenTabsProvider, useOpenTab } from "@/context/tabs";
+import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
 import AccountNavbar from "@/ui/account-navbar";
 import Navbar from "@/ui/navbar";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -39,6 +39,23 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+function TabHandler() {
+  const { session } = useUser();
+  const { activeTab, setActiveTab } = useOpenTab();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (session) {
+      const tab = session.user.tabs.find((tab) => tab.href === pathname);
+      if (tab) {
+        setActiveTab(tab.id);
+      }
+    }
+  }, [activeTab, pathname, session]);
+
+  return null;
+}
 
 function BottomAppBar() {
   const pathname = usePathname();
@@ -113,6 +130,7 @@ export default function AppLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <OpenTabsProvider>
+        <TabHandler />
         <BottomSheetModalProvider>
           <SWRConfig
             value={{
