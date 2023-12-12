@@ -9,8 +9,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as NavigationBar from "expo-navigation-bar";
 import { cloneElement, useCallback, useMemo, useRef } from "react";
 import { Pressable, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import airQuality from "./airQuality.json";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
 
 const getAirQualityInfo = (index) => {
   const result = airQuality.find(
@@ -70,13 +70,19 @@ export function WeatherModal({
     return ({ icon, heading, subheading, onPress = () => {} }) => (
       <Pressable
         onPress={onPress}
-        className="flex-row px-5 flex-1 py-3 rounded-2xl items-center"
+        className="flex-row px-5 flex-1 py-3 rounded-2xl items-center overflow-hidden "
         style={{ backgroundColor: base }}
       >
         <Icon style={{ color }}>{icon}</Icon>
-        <View className="pl-4 pr-3" style={{ minWidth: 0 }}>
+        <View className="pl-4 pr-3" style={{ minWidth: 0, maxWidth: "100%" }}>
           <Text
-            style={{ fontFamily: "body_500", opacity: 0.7, color }}
+            style={{
+              fontFamily: "body_500",
+              opacity: 0.7,
+              color,
+              maxWidth: "100%",
+              minWidth: 0,
+            }}
             numberOfLines={1}
           >
             {heading}

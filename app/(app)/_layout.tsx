@@ -1,9 +1,16 @@
 import { useSession } from "@/context/AuthProvider";
 import { OpenTabsProvider } from "@/context/tabs";
-import AccountNavbar from "@/ui/account-navbar";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
+import AccountNavbar from "@/ui/account-navbar";
 import Navbar from "@/ui/navbar";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import isBetween from "dayjs/plugin/isBetween";
+import isoWeek from "dayjs/plugin/isoWeek";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect, Stack, router, usePathname } from "expo-router";
 import React, { useEffect } from "react";
@@ -14,17 +21,16 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { SWRConfig } from "swr";
-import { OpenTabsList } from "../../components/tabs/carousel";
-import dayjs from "dayjs";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-import utc from "dayjs/plugin/utc";
-import { CreateDrawer } from "../../components/create-drawer";
-import { TabDrawer } from "../../components/tabs/list";
-import isBetween from "dayjs/plugin/isBetween";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SWRConfig } from "swr";
+import { CreateDrawer } from "../../components/create-drawer";
+import { OpenTabsList } from "../../components/tabs/carousel";
+import { TabDrawer } from "../../components/tabs/list";
+
 dayjs.extend(isBetween);
+dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
+dayjs.extend(isoWeek);
 dayjs.extend(utc);
 
 export const styles = StyleSheet.create({
@@ -159,9 +165,10 @@ export default function AppLayout() {
                 }}
               />
               <Stack.Screen
-                name="perspectives/agenda/[type]"
+                name="perspectives/agenda/[type]/[start]"
                 options={{
                   animation: "fade",
+                  header: () => null,
                 }}
               />
             </Stack>

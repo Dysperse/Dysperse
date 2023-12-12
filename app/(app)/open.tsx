@@ -4,6 +4,7 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import Emoji from "@/ui/emoji";
+import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -62,7 +63,7 @@ function Button({ section, item }) {
         null
       );
       console.log(res);
-      router.push("/");
+      router.push(item.href);
       setLoading(false);
     } catch (e) {
       setLoading(false);
@@ -121,17 +122,17 @@ const defaultSections = [
       {
         label: "Weeks",
         icon: "calendar_view_week",
-        href: "/perspectives/agenda/week",
+        href: "/perspectives/agenda/week/" + dayjs().format("YYYY-MM-DD"),
       },
       {
         label: "Months",
         icon: "calendar_view_month",
-        href: "/perspectives/agenda/month",
+        href: "/perspectives/agenda/month/" + dayjs().format("YYYY-MM-DD"),
       },
       {
         label: "Years",
         icon: "view_compact",
-        href: "/perspectives/agenda/year",
+        href: "/perspectives/agenda/year/" + dayjs().format("YYYY-MM-DD"),
       },
       {
         label: "Upcoming",

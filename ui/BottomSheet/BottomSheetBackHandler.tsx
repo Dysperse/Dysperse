@@ -1,6 +1,6 @@
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import { useEffect } from "react";
-import { BackHandler } from "react-native";
+import { BackHandler, Platform } from "react-native";
 
 export function BottomSheetBackHandler({ handleClose }) {
   const { animatedIndex } = useBottomSheet();
@@ -14,6 +14,19 @@ export function BottomSheetBackHandler({ handleClose }) {
         return false;
       }
     });
+
+    if (Platform.OS === "web") {
+      const close = (e) => {
+        if (e.key === "Escape") handleClose();
+      };
+      // Add event listener for the "Esc" key press
+      window.addEventListener("keydown", close);
+
+      // Remove event listener on component unmount
+      return () => {
+        window.removeEventListener("keydown", close);
+      };
+    }
   }, []);
   return null;
 }
