@@ -168,7 +168,7 @@ export const TabDrawer = ({ children }) => {
             }
             data={session.user.tabs}
             renderItem={
-              editMode
+              (editMode
                 ? ({ item, drag, isActive }) => (
                     <ScaleDecorator activeScale={0.95}>
                       <TabListTab
@@ -191,7 +191,7 @@ export const TabDrawer = ({ children }) => {
                       handleClose={handleClose}
                       isActive={false}
                     />
-                  )
+                  )) as any
             }
             keyExtractor={(item: any) => item.id}
           />
