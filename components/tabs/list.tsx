@@ -14,7 +14,14 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { Tab } from "./tab";
 
-function TabListTab({ disabled, drag, item, handleDelete, handleClose }) {
+function TabListTab({
+  disabled,
+  drag,
+  item,
+  handleDelete,
+  handleClose,
+  isActive,
+}) {
   const [loading, setLoading] = useState(false);
 
   return (
@@ -22,6 +29,9 @@ function TabListTab({ disabled, drag, item, handleDelete, handleClose }) {
       className="pl-4 flex-row items-center"
       disabled={disabled}
       onLongPress={drag}
+      style={{
+        ...(isActive && { backgroundColor: "#eee", borderRadius: 20 }),
+      }}
     >
       <Tab tab={item} isList handleClose={handleClose} onLongPress={drag} />
       <IconButton
@@ -101,16 +111,18 @@ export const TabDrawer = ({ children }) => {
                 tabs: JSON.stringify(newData),
               }).then(() => mutate());
             }}
-            ListFooterComponent={
-              session.user.tabs.length !== 0 && (
-                <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
-                  <Icon>info</Icon>
-                  <Text textClassName="ml-2">
-                    Tabs are synced between devices
-                  </Text>
-                </View>
-              )
-            }
+            ListFooterComponent={() => (
+              <View>
+                {session.user.tabs.length !== 0 && (
+                  <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
+                    <Icon>info</Icon>
+                    <Text textClassName="ml-2">
+                      Tabs are synced between devices
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
             ListEmptyComponent={
               <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
                 <Icon>info</Icon>
@@ -121,16 +133,15 @@ export const TabDrawer = ({ children }) => {
             }
             data={session.user.tabs}
             renderItem={({ item, drag, isActive }) => (
-              <ScaleDecorator>
-                {/* <Pressable onLongPress={drag}> */}
+              <ScaleDecorator activeScale={0.95}>
                 <TabListTab
                   item={item}
                   disabled={false}
                   drag={drag}
                   handleDelete={handleDelete}
                   handleClose={handleClose}
+                  isActive={isActive}
                 />
-                {/* </Pressable> */}
               </ScaleDecorator>
             )}
             keyExtractor={(item: any) => item.id}

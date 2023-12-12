@@ -35,6 +35,7 @@ import {
   View,
 } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
 const AgendaContext = createContext({
@@ -324,7 +325,7 @@ function TaskDrawer({ children, id }) {
   );
 }
 
-function Column({ column }) {
+function Column({ header, column }) {
   return (
     <View
       style={{ width: WINDOW_WIDTH > 600 ? 300 : WINDOW_WIDTH }}
@@ -332,12 +333,14 @@ function Column({ column }) {
     >
       {WINDOW_WIDTH > 600 && <Header start={column.start} end={column.end} />}
       <FlatList
+        ListHeaderComponent={header}
         data={column.tasks}
         contentContainerStyle={{
           padding: WINDOW_WIDTH > 600 ? 10 : 0,
           paddingTop: WINDOW_WIDTH > 600 ? 10 : 0,
         }}
         renderItem={({ item }) => <Task task={item} />}
+        keyExtractor={(i) => `${i.id}-${Math.random()}`}
       />
     </View>
   );
@@ -420,10 +423,14 @@ function PerspectivesNavbar({ handleToday, currentDateStart, currentDateEnd }) {
     session,
     activeTab,
   ]);
+  const insets = useSafeAreaInsets();
 
   return (
-    <View className="p-4 pb-0">
-      <View className="flex-row items-center bg-gray-100 p-2 py-3 rounded-full">
+    <View className="p-4 pb-0" style={{ marginTop: insets.top, height: 80 }}>
+      <View
+        className="flex-row items-center bg-gray-100 p-2 py-3 rounded-full"
+        style={{ height: "100%" }}
+      >
         <Text textClassName="ml-2 mr-auto" numberOfLines={1}>
           {dayjs(start).format(titleFormat)}
         </Text>
@@ -491,7 +498,9 @@ function Agenda() {
     return (
       <ScrollView horizontal contentContainerStyle={{ flexDirection: "row" }}>
         {data ? (
-          data.map((col) => <Column key={col.start} column={col} />)
+          data.map((col) => (
+            <Column header={() => {}} key={col.start} column={col} />
+          ))
         ) : (
           <ActivityIndicator />
         )}
@@ -507,19 +516,23 @@ function Agenda() {
         currentDateEnd={currentColumn?.end}
       />
       {data ? (
-        <ScrollView contentContainerStyle={{ paddingTop: 20 }}>
-          <FlatList
-            horizontal
-            data={data}
-            contentContainerStyle={{
-              gap: 15,
-              paddingBottom: 15,
-              paddingHorizontal: 15,
-            }}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <Pressable
-                className={`
+        <View>
+          {currentColumn && (
+            <Column
+              column={currentColumn}
+              header={
+                <FlatList
+                  horizontal
+                  data={data}
+                  contentContainerStyle={{
+                    gap: 15,
+                    paddingVertical: 20,
+                    paddingHorizontal: 20,
+                  }}
+                  showsHorizontalScrollIndicator={false}
+                  renderItem={({ item }) => (
+                    <Pressable
+                      className={`
               h-16 w-16 flex active:bg-gray-200 border-2 border-gray-100 active:border-gray-200 rounded-2xl items-center justify-center
               ${
                 item?.start === currentColumn?.start
@@ -527,26 +540,28 @@ function Agenda() {
                   : ""
               }
               `}
-                onPress={() => setCurrentColumn(item)}
-              >
-                <Text
-                  textClassName="uppercase text-xs opacity-60"
-                  style={{ fontFamily: "body_400" }}
-                >
-                  {dayjs(item.start).format("ddd")}
-                </Text>
-                <Text
-                  textClassName="text-xl"
-                  style={{ fontFamily: "body_500" }}
-                >
-                  {dayjs(item.start).format("DD")}
-                </Text>
-              </Pressable>
-            )}
-            keyExtractor={(i) => i.start}
-          />
-          {currentColumn && <Column column={currentColumn} />}
-        </ScrollView>
+                      onPress={() => setCurrentColumn(item)}
+                    >
+                      <Text
+                        textClassName="uppercase text-xs opacity-60"
+                        style={{ fontFamily: "body_400" }}
+                      >
+                        {dayjs(item.start).format("ddd")}
+                      </Text>
+                      <Text
+                        textClassName="text-xl"
+                        style={{ fontFamily: "body_500" }}
+                      >
+                        {dayjs(item.start).format("DD")}
+                      </Text>
+                    </Pressable>
+                  )}
+                  keyExtractor={(i) => `${i.start}-${i.end}`}
+                />
+              }
+            />
+          )}
+        </View>
       ) : (
         <ActivityIndicator />
       )}
