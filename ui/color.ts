@@ -12,7 +12,6 @@ import { useColorScheme } from "react-native";
 export function useColor(base: keyof typeof colors, dark: boolean) {
   const getColorPalette = useMemo(() => {
     const isDark = dark;
-    console.log("fetching...", base);
     const paletteKey = isDark ? `${base}Dark` : base;
     const colorPalette = colors[paletteKey];
     const _colorPalette: Record<string, string> = {};

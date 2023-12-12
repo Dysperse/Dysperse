@@ -157,8 +157,8 @@ function TaskDrawerContent({ data, handleClose }) {
   return (
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
-        className="flex-row bg-white"
-        style={{ paddingHorizontal: 20, height: 75, paddingVertical: 10 }}
+        className="flex-row bg-white items-center"
+        style={{ paddingHorizontal: 20, height: 60 }}
       >
         <IconButton className="bg-gray-200" onPress={handleClose}>
           <Icon>close</Icon>
@@ -176,10 +176,7 @@ function TaskDrawerContent({ data, handleClose }) {
         </IconButton>
       </View>
       <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
-        <View
-          className="flex-row"
-          style={{ gap: 10, marginVertical: 10, marginTop: 15 }}
-        >
+        <View className="flex-row" style={{ gap: 10, marginVertical: 20 }}>
           <Chip icon={<Icon filled={data.pinned}>push_pin</Icon>} />
           <Chip icon={<Icon>label</Icon>} />
           <Chip label={dayjs(data.due).format("DD/MM/YYYY")} />
@@ -206,31 +203,48 @@ function TaskDrawerContent({ data, handleClose }) {
         />
 
         <Text
-          textClassName="uppercase text-sm text-gray-700 mt-3 mb-1 opacity-60"
+          textClassName="uppercase text-sm text-gray-700 mt-3 mb-2 opacity-60"
           weight={700}
         >
           Attachments
         </Text>
-        <View className="bg-gray-100 rounded-2xl">
+        <View className="bg-gray-100 rounded-2xl overflow-hidden">
           {data.where && (
             <ListItemButton
               className="flex-row"
               style={{ gap: 10, paddingRight: 0, paddingVertical: 0 }}
             >
-              <Avatar size={30}>
-                <Icon>link</Icon>
+              <Avatar size={30} viewClassName="bg-gray-200">
+                <Icon size={20}>link</Icon>
               </Avatar>
               <TextInput
                 value={data.where}
                 style={{
                   fontFamily: "body_600",
-                  width: "100%",
-                  paddingVertical: 10,
+                  flex: 1,
+                  paddingVertical: 5,
                 }}
               />
             </ListItemButton>
           )}
-          <ListItemButton buttonClassName="justify-center py-3 bg-gray-200 active:bg-gray-300">
+          {data.where && <View className="border-t border-gray-200" />}
+          <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 border-t border-gray-200 rounded-t-none active:bg-gray-300">
+            <Icon>add</Icon>
+            <ListItemText>Add</ListItemText>
+          </ListItemButton>
+        </View>
+
+        <Text
+          textClassName="uppercase text-sm text-gray-700 mt-3 mb-2 opacity-60"
+          weight={700}
+        >
+          Subtasks
+        </Text>
+        <View className="bg-gray-100 rounded-2xl overflow-hidden">
+          {data.subTasks.length > 0 && (
+            <View className="border-t border-gray-200" />
+          )}
+          <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 rounded-t-none active:bg-gray-300">
             <Icon>add</Icon>
             <ListItemText>New</ListItemText>
           </ListItemButton>
@@ -246,7 +260,7 @@ function TaskDrawerContent({ data, handleClose }) {
         )}
 
         <Text
-          textClassName="uppercase text-sm text-gray-700 mt-3 mb-1 opacity-60"
+          textClassName="uppercase text-sm text-gray-700 mt-3 mb-2 opacity-60"
           weight={700}
         >
           About
