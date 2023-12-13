@@ -1,8 +1,13 @@
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { BottomSheetModal, BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetTextInput,
+} from "@gorhom/bottom-sheet";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View, TextInput, Pressable, Platform } from "react-native";
@@ -35,9 +40,7 @@ export default function CreateTask({ children, defaultValues = {} }) {
       {trigger}
       <BottomSheetModal
         ref={ref}
-        snapPoints={[135]}
-        enablePanDownToClose
-        keyboardBlurBehavior="restore"
+        snapPoints={["50%"]}
         backdropComponent={BottomSheetBackdropComponent}
         containerStyle={{
           maxWidth: 500,
@@ -45,25 +48,31 @@ export default function CreateTask({ children, defaultValues = {} }) {
         }}
       >
         <BottomSheetBackHandler handleClose={handleClose} />
-        <View className="px-5 py-4">
+        <View className="px-6 py-5 h-full">
+          <View className="flex-row" style={{ gap: 10 }}>
+            <Chip icon={<Icon>priority_high</Icon>} />
+            <Chip icon={<Icon>label</Icon>} />
+          </View>
           <Controller
             control={control}
             rules={{
               required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <BottomSheetTextInput
+              <TextInput
+                autoFocus
                 ref={nameRef as any}
                 placeholder="Task name"
                 onBlur={onBlur}
-                autoFocus
-                onChangeText={onChange}
+                onChangeText={(e) => onChange(e.replaceAll("\n", ""))}
                 value={value}
                 className="outline-none"
                 placeholderTextColor="#aaa"
+                multiline
                 style={{
                   fontFamily: "body_400",
-                  fontSize: 20,
+                  minHeight: 80,
+                  fontSize: 40,
                   ...(Platform.OS === "web" &&
                     ({ outlineStyle: "none" } as any)),
                 }}
@@ -71,7 +80,7 @@ export default function CreateTask({ children, defaultValues = {} }) {
             )}
             name="firstName"
           />
-          <View className="flex-row -ml-2 mt-2 items-center">
+          <View className="flex-row -ml-2 items-center mt-auto border-t pt-3 border-gray-200">
             <IconButton>
               <Icon>location_on</Icon>
             </IconButton>
