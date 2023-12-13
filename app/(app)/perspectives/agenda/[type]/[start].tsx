@@ -157,8 +157,8 @@ function TaskDrawerContent({ data, handleClose }) {
   return (
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
-        className="flex-row bg-white items-center"
-        style={{ paddingHorizontal: 20, height: 60 }}
+        className="flex-row bg-white items-start"
+        style={{ paddingHorizontal: 20, paddingTop: 10, height: 70 }}
       >
         <IconButton className="bg-gray-200" onPress={handleClose}>
           <Icon>close</Icon>
@@ -228,7 +228,7 @@ function TaskDrawerContent({ data, handleClose }) {
             </ListItemButton>
           )}
           {data.where && <View className="border-t border-gray-200" />}
-          <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 border-t border-gray-200 rounded-t-none active:bg-gray-300">
+          <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 rounded-t-none active:bg-gray-300">
             <Icon>add</Icon>
             <ListItemText>Add</ListItemText>
           </ListItemButton>
@@ -266,14 +266,16 @@ function TaskDrawerContent({ data, handleClose }) {
           About
         </Text>
         <View className="bg-gray-100 rounded-2xl">
-          <ListItemButton>
-            <ProfilePicture
-              size={30}
-              name={data.createdBy.name}
-              image={data.createdBy.Profile.picture}
-            />
-            <ListItemText>Created by {data.createdBy.name}</ListItemText>
-          </ListItemButton>
+          {data.createdBy && (
+            <ListItemButton>
+              <ProfilePicture
+                size={30}
+                name={data.createdBy.name}
+                image={data.createdBy.Profile.picture}
+              />
+              <ListItemText>Created by {data.createdBy.name}</ListItemText>
+            </ListItemButton>
+          )}
           <ListItemButton>
             <Avatar size={30}>
               <Icon>workspaces</Icon>
@@ -510,15 +512,27 @@ function Agenda() {
 
   if (WINDOW_WIDTH > 600) {
     return (
-      <ScrollView horizontal contentContainerStyle={{ flexDirection: "row" }}>
-        {data ? (
-          data.map((col) => (
-            <Column header={() => {}} key={col.start} column={col} />
-          ))
-        ) : (
-          <ActivityIndicator />
-        )}
-      </ScrollView>
+      <>
+        <PerspectivesNavbar
+          handleToday={handleToday}
+          currentDateStart={currentColumn?.start}
+          currentDateEnd={currentColumn?.end}
+        />
+        <ScrollView
+          horizontal
+          contentContainerStyle={{ flexDirection: "row", width: "100%" }}
+        >
+          {data ? (
+            data.map((col) => (
+              <Column header={() => {}} key={col.start} column={col} />
+            ))
+          ) : (
+            <View className="items-center justify-center w-full">
+              <ActivityIndicator />
+            </View>
+          )}
+        </ScrollView>
+      </>
     );
   }
 

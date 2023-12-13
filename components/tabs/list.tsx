@@ -29,11 +29,15 @@ function TabListTab({
     <Pressable
       className="pl-4 flex-row items-center"
       disabled={disabled}
-      onLongPress={drag}
       style={{
         ...(isActive && { backgroundColor: "#eee", borderRadius: 20 }),
       }}
     >
+      {isEdit && (
+        <IconButton onLongPress={drag}>
+          <Icon>drag_handle</Icon>
+        </IconButton>
+      )}
       <Tab
         tab={item}
         disabled={isEdit}
