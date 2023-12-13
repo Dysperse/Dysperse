@@ -26,6 +26,7 @@ import { SWRConfig } from "swr";
 import { CreateDrawer } from "../../components/create-drawer";
 import { OpenTabsList } from "../../components/tabs/carousel";
 import { TabDrawer } from "../../components/tabs/list";
+// import { KeysProvider } from "react-native-hotkeys";
 
 dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
@@ -74,7 +75,11 @@ function BottomAppBar() {
 
   return shouldHide ? null : (
     <View
-      style={{ height: pathname === "/" ? 64 : 128, backgroundColor: "#eee" }}
+      style={{
+        height: pathname === "/" ? 64 : 128,
+        backgroundColor: "#eee",
+        ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+      }}
     >
       {pathname !== "/" && (
         <View style={{ height: 64 }}>
@@ -131,6 +136,7 @@ export default function AppLayout() {
   // This layout can be deferred because it's not the root layout.
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* <KeysProvider> */}
       <OpenTabsProvider>
         <TabHandler />
         <BottomSheetModalProvider>
@@ -196,6 +202,7 @@ export default function AppLayout() {
           </SWRConfig>
         </BottomSheetModalProvider>
       </OpenTabsProvider>
+      {/* </KeysProvider> */}
     </GestureHandlerRootView>
   );
 }

@@ -20,6 +20,7 @@ export default function Icon({
         ...(Platform.OS !== "web" && {
           lineHeight: size + 4,
         }),
+        ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
         ...(style && { ...style }),
       }}
     >

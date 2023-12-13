@@ -59,9 +59,7 @@ function Agenda() {
   }, [data, setCurrentColumn, router, type]);
 
   if (WINDOW_WIDTH > 600) {
-    return true ? (
-      <ErrorAlert />
-    ) : (
+    return (
       <>
         <PerspectivesNavbar
           handleToday={handleToday}

@@ -74,7 +74,13 @@ export function Tab({
             {tab.tabData.icon}
           </Icon>
         </LinearGradient>
-        <Text>{tab.tabData.label}</Text>
+        <Text
+          style={{
+            ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+          }}
+        >
+          {tab.tabData.label}
+        </Text>
       </Pressable>
     </View>
   );
