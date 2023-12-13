@@ -349,7 +349,22 @@ function Column({ header, column }) {
     >
       {WINDOW_WIDTH > 600 && <Header start={column.start} end={column.end} />}
       <FlatList
-        ListHeaderComponent={header}
+        ListHeaderComponent={
+          <>
+            {header()}
+            <Pressable
+              className={`px-5 py-3 ${
+                WINDOW_WIDTH > 600 ? "rounded-2xl" : ""
+              } hover:bg-gray-100 active:bg-gray-200 mb-0.5 flex-row items-center`}
+              style={{ gap: 15 }}
+            >
+              <Pressable className="w-7 h-7 border-2 border-gray-400 active:bg-gray-100 rounded-full">
+                <Icon textClassName="text-gray-400">add</Icon>
+              </Pressable>
+              <Text>Create task</Text>
+            </Pressable>
+          </>
+        }
         data={column.tasks}
         contentContainerStyle={{
           padding: WINDOW_WIDTH > 600 ? 10 : 0,
