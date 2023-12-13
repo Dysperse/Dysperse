@@ -52,6 +52,7 @@ export default function CreateTask({ children, defaultValues = {} }) {
           <View className="flex-row" style={{ gap: 10 }}>
             <Chip icon={<Icon>priority_high</Icon>} />
             <Chip icon={<Icon>label</Icon>} />
+            <Chip icon={<Icon>calendar_today</Icon>} label="Date" />
           </View>
           <Controller
             control={control}
