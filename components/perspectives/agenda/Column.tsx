@@ -6,6 +6,7 @@ import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import React from "react";
 import { FlatList, Pressable, View } from "react-native";
 import CreateTask from "./CreateTask";
+import dayjs from "dayjs";
 
 export function Column({ header, column }) {
   return (
@@ -20,7 +21,7 @@ export function Column({ header, column }) {
             {header()}
             <CreateTask
               defaultValues={{
-                date: column.start,
+                date: dayjs(column.start),
               }}
             >
               <Pressable
@@ -45,7 +46,7 @@ export function Column({ header, column }) {
         data={column.tasks}
         contentContainerStyle={{
           padding: WINDOW_WIDTH > 600 ? 10 : 0,
-          paddingTop: WINDOW_WIDTH > 600 ? 10 : 0,
+          paddingTop: WINDOW_WIDTH > 600 ? 10 : 70,
         }}
         renderItem={({ item }) => <Task task={item} />}
         keyExtractor={(i) => `${i.id}-${Math.random()}`}

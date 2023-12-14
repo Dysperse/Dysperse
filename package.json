@@ -47,6 +47,7 @@
     "react-hook-form": "^7.48.2",
     "react-material-symbols": "^4.3.1",
     "react-native": "0.72.6",
+    "react-native-autogrow-textinput": "^5.4.0",
     "react-native-draggable-flatlist": "^4.0.1",
     "react-native-gesture-handler": "~2.12.0",
     "react-native-hotkeys": "^0.5.6",

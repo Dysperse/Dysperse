@@ -95,7 +95,10 @@ export function PerspectivesNavbar({
   const insets = useSafeAreaInsets();
 
   return (
-    <View className="p-4 pb-0" style={{ marginTop: insets.top, height: 80 }}>
+    <View
+      className="rounded-full p-4 pb-0 z-10"
+      style={{ marginTop: insets.top, marginBottom: -70, height: 70 }}
+    >
       <View
         className="flex-row items-center bg-gray-100 p-2 py-3 rounded-full"
         style={{ height: "100%" }}

@@ -63,7 +63,7 @@ export function OpenTabsList() {
           style={{
             width: "100%",
             justifyContent: "center",
-            height: 64,
+            height: 50,
           }}
           data={session.user.tabs}
           pagingEnabled

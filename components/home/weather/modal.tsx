@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import * as NavigationBar from "expo-navigation-bar";
 import { cloneElement, useCallback, useMemo, useRef } from "react";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import airQuality from "./airQuality.json";
 
@@ -48,16 +48,20 @@ export function WeatherModal({
   // callbacks
   const handleOpen = useCallback(() => {
     ref.current?.present();
-    NavigationBar.setButtonStyleAsync("light");
-    NavigationBar.setBackgroundColorAsync(gradient[1]);
-    NavigationBar.setBorderColorAsync(gradient[1]);
+    if (Platform.OS === "android") {
+      NavigationBar.setButtonStyleAsync("light");
+      NavigationBar.setBackgroundColorAsync(gradient[1]);
+      NavigationBar.setBorderColorAsync(gradient[1]);
+    }
   }, []);
 
   const handleClose = useCallback(() => {
     ref.current?.close();
-    NavigationBar.setButtonStyleAsync("dark");
-    NavigationBar.setBackgroundColorAsync("#eee");
-    NavigationBar.setBorderColorAsync("#eee");
+    if (Platform.OS === "android") {
+      NavigationBar.setButtonStyleAsync("dark");
+      NavigationBar.setBackgroundColorAsync("#eee");
+      NavigationBar.setBorderColorAsync("#eee");
+    }
   }, []);
 
   const trigger = cloneElement(children, { onPress: handleOpen });

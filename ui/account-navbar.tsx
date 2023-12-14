@@ -7,6 +7,7 @@ import { useUser } from "../context/useUser";
 import Logo from "./logo";
 import Icon from "./Icon";
 import Text from "./Text";
+import { BlurView } from "expo-blur";
 
 export default function AccountNavbar(props) {
   const insets = useSafeAreaInsets();
@@ -26,10 +27,13 @@ export default function AccountNavbar(props) {
   );
 
   return (
-    // <BlurView intensity={60}>
-    <View
-      style={{ height: 64 + insets.top, paddingTop: insets.top }}
-      className="flex-row px-4 items-center bg-white"
+    <BlurView
+      intensity={50}
+      style={{
+        height: 64 + insets.top,
+        paddingTop: insets.top,
+      }}
+      className="flex-row px-4 items-center"
     >
       {props.options.headerTitle ? (
         <Text>{props.options.headerTitle}</Text>
@@ -48,7 +52,6 @@ export default function AccountNavbar(props) {
           style={{ width: 35, height: 35 }}
         />
       </Link>
-    </View>
-    //  </BlurView>
+    </BlurView>
   );
 }

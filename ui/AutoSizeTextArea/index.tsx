@@ -11,6 +11,11 @@ interface DTextAreaProps extends TextInputProps {
 
 export default function AutoSizeTextArea(props: DTextAreaProps) {
   const [size, setSize] = useState(props.fontSize || 15);
+
+  const handleChange = (e) => {
+    setSize(e.nativeEvent.contentSize.height);
+  };
+
   return (
     <TextInput
       {...props}
@@ -19,11 +24,12 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
       className={`border border-transparent ${props.inputClassName}`}
       style={{
         ...props.inputStyle,
-        height: size,
+        height: Math.max(props.fontSize || 15, size),
         overflow: "hidden",
         fontSize: props.fontSize || 15,
       }}
-      onContentSizeChange={(e) => setSize(e.nativeEvent.contentSize.height)}
+      onContentSizeChange={handleChange}
+      onKeyPress={() => setSize(props.fontSize || 15)}
     />
   );
 }

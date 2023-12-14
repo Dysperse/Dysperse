@@ -7,6 +7,7 @@ import { StatusBar, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { WeatherWidget } from "../../components/home/weather/widget";
 import Text from "@/ui/Text";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function Greeting() {
   const [greeting, setGreeting] = useState("");
@@ -83,11 +84,10 @@ function RecentActivity() {
 }
 
 export default function Index() {
-  const { signOut } = useSession();
-  const { session, error } = useUser();
+  const insets = useSafeAreaInsets();
 
   return (
-    <ScrollView className="p-5">
+    <ScrollView className="p-5" style={{ paddingTop: insets.top + 64 }}>
       <StatusBar barStyle="dark-content" />
       <Greeting />
 

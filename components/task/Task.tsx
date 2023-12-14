@@ -20,28 +20,35 @@ import { TextInput } from "react-native-gesture-handler";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { ActivityIndicator } from "react-native";
+import { BlurView } from "expo-blur";
 
 function TaskDrawerContent({ data, handleClose }) {
   return (
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
-        className="flex-row bg-white items-start"
-        style={{ paddingHorizontal: 20, paddingTop: 10, height: 70 }}
+        className="flex-row items-start bg-white"
+        style={{
+          paddingHorizontal: 20,
+          height: 60,
+          left: 0,
+        }}
       >
-        <IconButton className="bg-gray-200" onPress={handleClose}>
-          <Icon>close</Icon>
-        </IconButton>
-        <View className="flex-1" />
-        <IconButton>
-          <Icon>dark_mode</Icon>
-        </IconButton>
-        <IconButton
-          className="bg-gray-200 flex-row px-3 ml-1.5"
-          style={{ width: "auto", gap: 5 }}
-        >
-          <Icon>check</Icon>
-          <Text>Complete</Text>
-        </IconButton>
+        <View className="flex-row" style={{ paddingTop: 10 }}>
+          <IconButton className="bg-gray-200" onPress={handleClose}>
+            <Icon>close</Icon>
+          </IconButton>
+          <View className="flex-1" />
+          <IconButton>
+            <Icon>dark_mode</Icon>
+          </IconButton>
+          <IconButton
+            className="bg-gray-200 flex-row px-3 ml-1.5"
+            style={{ width: "auto", gap: 5 }}
+          >
+            <Icon>check</Icon>
+            <Text>Complete</Text>
+          </IconButton>
+        </View>
       </View>
       <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
         <View className="flex-row" style={{ gap: 10, marginVertical: 20 }}>

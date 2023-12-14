@@ -27,10 +27,11 @@ export function Tab({
     <View
       style={{
         padding: isList ? 0 : 8,
+        paddingBottom: 0,
         paddingHorizontal: isList ? 0 : 4,
         flex: 1,
         width: "100%",
-        height: 64,
+        height: 50,
         marginHorizontal: "auto",
         ...(Platform.OS === "web" &&
           ({
@@ -59,18 +60,18 @@ export function Tab({
         className="active:opacity-60"
       >
         <LinearGradient
-          colors={[colors[5], colors[7]]}
+          colors={[colors[6], colors[7]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
-            borderRadius: 14,
-            width: 35,
-            height: 35,
+            borderRadius: 10,
+            width: 30,
+            height: 30,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Icon size={30} style={{ color: colors[11] }}>
+          <Icon size={24} style={{ color: colors[12] }}>
             {tab.tabData.icon}
           </Icon>
         </LinearGradient>

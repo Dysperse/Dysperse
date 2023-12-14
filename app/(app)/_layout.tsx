@@ -26,6 +26,7 @@ import { SWRConfig } from "swr";
 import { CreateDrawer } from "../../components/create-drawer";
 import { OpenTabsList } from "../../components/tabs/carousel";
 import { TabDrawer } from "../../components/tabs/list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 // import { KeysProvider } from "react-native-hotkeys";
 
 dayjs.extend(isBetween);
@@ -76,18 +77,14 @@ function BottomAppBar() {
   return shouldHide ? null : (
     <View
       style={{
-        height: pathname === "/" ? 64 : 128,
+        height: pathname === "/" ? 50 : 53 + 50,
         backgroundColor: "#eee",
         ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
       }}
     >
-      {pathname !== "/" && (
-        <View style={{ height: 64 }}>
-          <OpenTabsList />
-        </View>
-      )}
+      {pathname !== "/" && <OpenTabsList />}
       <View
-        style={{ height: 64 }}
+        style={{ height: 53 }}
         className="px-5 flex-row items-center justify-between"
       >
         <Pressable
@@ -115,6 +112,7 @@ function BottomAppBar() {
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
+  const insets = useSafeAreaInsets();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -163,6 +161,15 @@ export default function AppLayout() {
             <Stack
               screenOptions={{
                 header: (props: any) => <AccountNavbar {...props} />,
+                headerTransparent: true,
+                headerBackground: () => (
+                  <View
+                    style={{
+                      marginBottom: 100,
+                      height: 100,
+                    }}
+                  />
+                ),
                 contentStyle: {
                   backgroundColor: "#fff",
                 },
