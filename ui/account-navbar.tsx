@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import React, { useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUser } from "../context/useUser";
 import Logo from "./logo";
@@ -28,8 +28,9 @@ export default function AccountNavbar(props) {
 
   return (
     <BlurView
-      intensity={50}
+      intensity={Platform.OS === "android" ? 0 : 50}
       style={{
+        backgroundColor: Platform.OS === "android" ? "#fff" : "transparent",
         height: 64 + insets.top,
         paddingTop: insets.top,
       }}
@@ -43,7 +44,7 @@ export default function AccountNavbar(props) {
       <View style={{ flexGrow: 1 }} />
       {props.options.headerRight && props.options.headerRight()}
       {search}
-      <Link href="/(app)/account">
+      <Link href="/(app)/account" style={{ marginBottom: -10 }}>
         <Image
           source={{
             uri: session?.user?.Profile?.picture,

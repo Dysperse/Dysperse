@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -178,6 +179,7 @@ const views = [{ name: "Weeks", icon: "", href: "" }];
 export default function Page() {
   const { data: collections } = useSWR(["space/tasks/boards"]);
   const [query, setQuery] = useState("");
+  const { top } = useSafeAreaInsets();
   const sections = collections
     ? [
         ...defaultSections.filter((e) => e.title !== "Collections"),
@@ -217,6 +219,7 @@ export default function Page() {
             textClassName="mt-5"
             style={{
               fontSize: 50,
+              marginTop: top + 64 + 20,
               fontFamily: "heading",
               paddingLeft: 25,
               textTransform: "uppercase",

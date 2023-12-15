@@ -1,21 +1,57 @@
-import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
+import { orange } from "@/themes";
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import {
-  BottomSheetModal,
-  BottomSheetScrollView,
-  BottomSheetTextInput,
-} from "@gorhom/bottom-sheet";
-import dayjs from "dayjs";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import dayjs, { Dayjs } from "dayjs";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, Pressable, View } from "react-native";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
-import { AutoGrowingTextInput } from "react-native-autogrow-textinput";
+import { Platform, Pressable, TextInput, View } from "react-native";
+
+function ColorPicker({ children, color, setColor }) {
+  const ref = useRef<BottomSheetModal>(null);
+  // callbacks
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+  const trigger = cloneElement(children, { onPress: handleOpen });
+
+  return (
+    <>
+      {trigger}
+      <BottomSheetModal
+        ref={ref}
+        snapPoints={["80%"]}
+        enablePanDownToClose
+        backdropComponent={BottomSheetBackdropComponent}
+        containerStyle={{
+          maxWidth: 500,
+          margin: "auto",
+        }}
+        footerComponent={() => (
+          <View className="flex-row justify-end p-4 pt-0">
+            <Button variant="filled">
+              <Text>Done</Text>
+            </Button>
+          </View>
+        )}
+      >
+        <BottomSheetBackHandler handleClose={handleClose} />
+        <View className="p-4">
+          <TextInput
+            autoFocus
+            className="p-2 px-4 bg-gray-200 rounded-2xl"
+            placeholder="Search..."
+          />
+        </View>
+      </BottomSheetModal>
+    </>
+  );
+}
 
 export default function CreateTask({
   showClose = false,
@@ -26,7 +62,9 @@ export default function CreateTask({
 }) {
   const ref = useRef<BottomSheetModal>(null);
 
-  const [date, setDate] = useState(defaultValues.date);
+  const [date, setDate] = useState<Dayjs>(defaultValues.date);
+  const [pinned, setPinned] = useState<boolean>(false);
+  const [color, setColor] = useState("gray");
 
   const {
     control,
@@ -45,6 +83,10 @@ export default function CreateTask({
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
 
+  const handlePriorityChange = useCallback(() => {
+    setPinned((p) => !p);
+  }, []);
+
   return (
     <>
       {trigger}
@@ -56,6 +98,35 @@ export default function CreateTask({
           maxWidth: 500,
           margin: "auto",
         }}
+        footerComponent={() => (
+          <View
+            className="px-5"
+            style={{
+              height: 60,
+              shadowColor: "#eee",
+              shadowRadius: 20,
+              shadowOpacity: 1,
+            }}
+          >
+            <View className="flex-row items-center mt-auto border-t py-2 border-gray-200 bg-white h-full">
+              <IconButton style={{ marginLeft: -5 }}>
+                <Icon>location_on</Icon>
+              </IconButton>
+              <IconButton>
+                <Icon>sticky_note_2</Icon>
+              </IconButton>
+              <IconButton>
+                <Icon>attach_file</Icon>
+              </IconButton>
+              <Pressable
+                onPress={onSubmit}
+                className="bg-gray-300 rounded-full ml-auto w-14 items-center justify-center h-9 active:opacity-60"
+              >
+                <Icon style={{ marginTop: -4 }}>add</Icon>
+              </Pressable>
+            </View>
+          </View>
+        )}
       >
         <BottomSheetBackHandler handleClose={handleClose} />
         <View className="pt-2 flex-1">
@@ -66,8 +137,20 @@ export default function CreateTask({
                 onPress={handleClose}
               />
             )}
-            <Chip outlined={showClose} icon={<Icon>priority_high</Icon>} />
-            <Chip outlined={showClose} icon={<Icon>label</Icon>} />
+            <Chip
+              outlined={showClose}
+              onPress={handlePriorityChange}
+              icon={<Icon>priority_high</Icon>}
+              style={{
+                ...(pinned && {
+                  backgroundColor: orange["orange4"],
+                  borderColor: orange["orange4"],
+                }),
+              }}
+            />
+            <ColorPicker color={color} setColor={setColor}>
+              <Chip outlined={showClose} icon={<Icon>label</Icon>} />
+            </ColorPicker>
             <Chip
               outlined={showClose}
               icon={<Icon>calendar_today</Icon>}
@@ -81,7 +164,7 @@ export default function CreateTask({
                 required: true,
               }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <BottomSheetTextInput
+                <TextInput
                   autoFocus={Platform.OS !== "web"}
                   placeholder="Task name"
                   onBlur={onBlur}
@@ -98,10 +181,11 @@ export default function CreateTask({
                   style={{
                     fontFamily: "body_400",
                     fontSize: 35,
-                    minHeight: "100%",
-                    flex: 1,
                     paddingHorizontal: 20,
-                    paddingBottom: 80,
+                    paddingBottom: 55,
+                    flex: 1,
+                    minHeight: "100%",
+                    textAlignVertical: "top",
                     ...(Platform.OS === "web" &&
                       ({ outlineStyle: "none" } as any)),
                   }}
@@ -109,32 +193,6 @@ export default function CreateTask({
               )}
               name="firstName"
             />
-          </View>
-        </View>
-        <View
-          className="px-5"
-          style={{
-            shadowColor: "#eee",
-            shadowRadius: 20,
-            shadowOpacity: 1,
-          }}
-        >
-          <View className="flex-row items-center mt-auto border-t py-2 border-gray-200 bg-white">
-            <IconButton style={{ marginLeft: -5 }}>
-              <Icon>location_on</Icon>
-            </IconButton>
-            <IconButton>
-              <Icon>sticky_note_2</Icon>
-            </IconButton>
-            <IconButton>
-              <Icon>attach_file</Icon>
-            </IconButton>
-            <Pressable
-              onPress={onSubmit}
-              className="bg-gray-300 rounded-full ml-auto w-14 items-center justify-center h-9 active:opacity-60"
-            >
-              <Icon style={{ marginTop: -4 }}>add</Icon>
-            </Pressable>
           </View>
         </View>
       </BottomSheetModal>

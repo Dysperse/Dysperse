@@ -87,7 +87,11 @@ export default function Index() {
   const insets = useSafeAreaInsets();
 
   return (
-    <ScrollView className="p-5" style={{ paddingTop: insets.top + 64 }}>
+    <ScrollView
+      overScrollMode="never"
+      className="p-5"
+      contentContainerStyle={{ paddingTop: insets.top + 64 }}
+    >
       <StatusBar barStyle="dark-content" />
       <Greeting />
 

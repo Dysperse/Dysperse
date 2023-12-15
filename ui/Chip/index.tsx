@@ -1,4 +1,4 @@
-import { Platform, Pressable } from "react-native";
+import { Platform, Pressable, StyleProp } from "react-native";
 import Text from "../Text";
 
 interface ChipProps {
@@ -6,6 +6,7 @@ interface ChipProps {
   label?: String | React.ReactNode;
   onPress?: () => void;
   outlined?: boolean;
+  style?: StyleProp<any>;
 }
 
 export default function Chip({
@@ -13,6 +14,7 @@ export default function Chip({
   label,
   onPress,
   outlined = false,
+  style = {},
 }: ChipProps) {
   return (
     <Pressable
@@ -23,7 +25,7 @@ export default function Chip({
           ? "border-gray-200 active:bg-gray-100"
           : "bg-gray-200 active:bg-gray-300"
       }`}
-      style={{ gap: 10 }}
+      style={{ gap: 10, ...style }}
       {...(onPress && { onPress })}
     >
       {icon}

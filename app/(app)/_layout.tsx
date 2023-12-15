@@ -162,14 +162,7 @@ export default function AppLayout() {
               screenOptions={{
                 header: (props: any) => <AccountNavbar {...props} />,
                 headerTransparent: true,
-                headerBackground: () => (
-                  <View
-                    style={{
-                      marginBottom: 100,
-                      height: 100,
-                    }}
-                  />
-                ),
+                fullScreenGestureEnabled: true,
                 contentStyle: {
                   backgroundColor: "#fff",
                 },
@@ -187,6 +180,7 @@ export default function AppLayout() {
                   header: (props) => <Navbar {...props} />,
                   headerTitle: "Account",
                   animation: "slide_from_right",
+                  // gestureResponseDistance: 900,
                 }}
               />
               <Stack.Screen

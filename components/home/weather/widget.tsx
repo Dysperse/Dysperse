@@ -69,7 +69,7 @@ export function WeatherWidget() {
   };
 
   useEffect(() => {
-    if (location && !locationData && !weatherData && !error) {
+    if (location && !weatherData) {
       getWeather();
     }
   }, [location, locationData, error]);
