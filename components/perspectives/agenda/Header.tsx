@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import React from "react";
 import { View } from "react-native";
 import { useAgendaContext } from "@/app/(app)/perspectives/agenda/context";
+import { useColorTheme } from "@/ui/color/theme-provider";
 
 export function Header({ start, end }) {
   const { type } = useAgendaContext();
@@ -20,11 +21,16 @@ export function Header({ start, end }) {
       year: "-",
     }[type],
   };
+  const theme = useColorTheme();
 
   return (
     <View
-      className="flex-row items-center justify-center border-b border-gray-200 p-5"
-      style={{ gap: 20 }}
+      className="flex-row items-center justify-center p-5"
+      style={{
+        gap: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: theme[5],
+      }}
     >
       <View
         className={`min-w-9 px-3 h-9 ${

@@ -17,8 +17,13 @@ export function Column({ header, column }) {
 
   return (
     <View
-      style={{ width: WINDOW_WIDTH > 600 ? 300 : WINDOW_WIDTH }}
-      className={WINDOW_WIDTH > 600 ? "border-r border-gray-200" : undefined}
+      style={{
+        ...(WINDOW_WIDTH > 600 && {
+          borderRightWidth: 1,
+          borderRightColor: theme[5],
+        }),
+        width: WINDOW_WIDTH > 600 ? 300 : WINDOW_WIDTH,
+      }}
     >
       {WINDOW_WIDTH > 600 && <Header start={column.start} end={column.end} />}
       <FlatList
