@@ -79,12 +79,12 @@ function BottomAppBar() {
   return shouldHide ? null : (
     <View
       style={{
-        height: pathname === "/" ? 55 : 55 + 50,
+        height: pathname === "/" ? 57 : 57 + 50,
         backgroundColor: theme[1],
         ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
       }}
     >
-      <View style={{ borderTopWidth: 2, borderTopColor: theme[4] }} />
+      <View style={{ height: 2, backgroundColor: theme[3] }} />
       {pathname !== "/" && <OpenTabsList />}
       <View
         style={{ height: 55, paddingTop: 4 }}
