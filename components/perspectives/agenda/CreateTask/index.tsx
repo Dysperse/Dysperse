@@ -6,6 +6,7 @@ import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
@@ -19,6 +20,7 @@ function ColorPicker({ children, color, setColor }) {
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
+  const theme = useColorTheme();
 
   return (
     <>
@@ -43,8 +45,12 @@ function ColorPicker({ children, color, setColor }) {
         <BottomSheetBackHandler handleClose={handleClose} />
         <View className="p-4">
           <TextInput
-            autoFocus
+            placeholderTextColor="#aaa"
+            autoFocus={Platform.OS !== "web"}
             className="p-2 px-4 bg-gray-200 rounded-2xl"
+            style={{
+              backgroundColor: theme[4],
+            }}
             placeholder="Search..."
           />
         </View>

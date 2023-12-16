@@ -1,5 +1,6 @@
 import { Pressable } from "react-native";
 import { PressableProps } from "react-native";
+import { useColorTheme } from "../color/theme-provider";
 
 interface DButtonProps extends PressableProps {
   buttonClassName?: string;
@@ -7,14 +8,41 @@ interface DButtonProps extends PressableProps {
 }
 export function Button(props: DButtonProps) {
   const variant = props.variant || "text";
+  const theme = useColorTheme();
+
   return (
     <Pressable
       {...props}
-      className={`px-4 h-10 rounded-full flex-row items-center justify-center 
-        ${props.buttonClassName} 
-        ${variant === "filled" && "bg-gray-200 active:bg-gray-300"}
-        `}
-      style={{ gap: 10 }}
+      style={({ hovered, pressed }: any) => ({
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 2,
+        borderRadius: 999,
+        paddingHorizontal: 10,
+        height: 35,
+        ...(variant === "outlined"
+          ? {
+              backgroundColor: pressed
+                ? theme[5]
+                : hovered
+                ? theme[4]
+                : undefined,
+              borderColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            }
+          : variant === "filled"
+          ? {
+              borderColor: "transparent",
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            }
+          : {
+              backgroundColor: pressed
+                ? theme[4]
+                : hovered
+                ? theme[3]
+                : undefined,
+            }),
+        gap: 10,
+      })}
     />
   );
 }

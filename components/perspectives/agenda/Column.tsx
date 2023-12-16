@@ -2,15 +2,19 @@ import { Header } from "@/components/perspectives/agenda/Header";
 import { Task } from "@/components/task/Task";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/emoji";
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import React from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList, View } from "react-native";
 import CreateTask from "./CreateTask";
 
 export function Column({ header, column }) {
+  const theme = useColorTheme();
+
   return (
     <View
       style={{ width: WINDOW_WIDTH > 600 ? 300 : WINDOW_WIDTH }}
@@ -20,11 +24,25 @@ export function Column({ header, column }) {
       <FlatList
         ListEmptyComponent={
           <View className="p-4">
-            <View className="bg-gray-100 border-2 border-gray-200 rounded-3xl items-center py-10">
-              <View className="w-16 border border-gray-300 h-16 bg-gray-200 items-center rounded-full justify-center">
+            <View
+              style={{
+                borderRadius: 28,
+                backgroundColor: theme[2],
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 20,
+                borderWidth: 2,
+                borderColor: theme[5],
+                gap: 10,
+              }}
+            >
+              <View
+                className="w-16 border-2 h-16 bg-gray-200 items-center rounded-full justify-center"
+                style={{ backgroundColor: theme[4], borderColor: theme[6] }}
+              >
                 <Emoji emoji="1f389" size={30} />
               </View>
-              <Text textClassName="mt-2 text-xl" weight={400}>
+              <Text textClassName="text-xl" weight={400}>
                 No tasks!
               </Text>
               <Button variant="filled" buttonClassName="mt-2">
@@ -42,22 +60,31 @@ export function Column({ header, column }) {
                 date: dayjs(column.start),
               }}
             >
-              <Pressable
-                className={`px-5 py-3 ${
-                  WINDOW_WIDTH > 600 ? "rounded-2xl" : ""
-                } hover:bg-gray-100 active:bg-gray-200 mb-0.5 flex-row items-center`}
-                style={{ gap: 15 }}
+              <ListItemButton
+                wrapperStyle={{ borderRadius: 0, paddingVertical: 10 }}
               >
-                <Pressable className="w-7 h-7 border-2 border-gray-400 active:bg-gray-100 rounded-full items-center justify-center">
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 99,
+                    borderWidth: 2,
+                    borderColor: theme[11],
+                  }}
+                >
                   <Icon
-                    style={{ lineHeight: 26.5 }}
-                    textClassName="text-gray-400"
+                    style={{
+                      lineHeight: 26.5,
+                      color: theme[11],
+                    }}
                   >
                     add
                   </Icon>
-                </Pressable>
-                <Text>Create task</Text>
-              </Pressable>
+                </View>
+                <Text weight={400}>Create task</Text>
+              </ListItemButton>
             </CreateTask>
           </>
         }

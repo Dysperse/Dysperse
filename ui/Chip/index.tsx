@@ -1,5 +1,6 @@
 import { Platform, Pressable, StyleProp } from "react-native";
 import Text from "../Text";
+import { useColorTheme } from "../color/theme-provider";
 
 interface ChipProps {
   icon?: React.ReactNode;
@@ -16,16 +17,33 @@ export default function Chip({
   outlined = false,
   style = {},
 }: ChipProps) {
+  const theme = useColorTheme();
+
   return (
     <Pressable
-      className={`flex-row items-center border border-transparent py-1 px-3 rounded-full ${
-        Platform.OS === "web" ? "" : "pb-2"
-      } ${
-        outlined
-          ? "border-gray-200 active:bg-gray-100"
-          : "bg-gray-200 active:bg-gray-300"
-      }`}
-      style={{ gap: 10, ...style }}
+      style={({ hovered, pressed }: any) => ({
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 2,
+        borderRadius: 999,
+        paddingHorizontal: 10,
+        height: 35,
+        ...(outlined
+          ? {
+              backgroundColor: pressed
+                ? theme[5]
+                : hovered
+                ? theme[4]
+                : undefined,
+              borderColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            }
+          : {
+              borderColor: "transparent",
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            }),
+        gap: 10,
+        ...style,
+      })}
       {...(onPress && { onPress })}
     >
       {icon}

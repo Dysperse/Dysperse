@@ -10,6 +10,7 @@ import React, { useCallback } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAgendaContext } from "@/app/(app)/perspectives/agenda/context";
+import { useColorTheme } from "@/ui/color/theme-provider";
 
 export function PerspectivesNavbar({
   handleToday,
@@ -93,6 +94,7 @@ export function PerspectivesNavbar({
     activeTab,
   ]);
   const insets = useSafeAreaInsets();
+  const theme = useColorTheme();
 
   return (
     <View
@@ -100,8 +102,8 @@ export function PerspectivesNavbar({
       style={{ marginTop: insets.top, marginBottom: -70, height: 70 }}
     >
       <View
-        className="flex-row items-center bg-gray-100 p-2 py-3 rounded-full"
-        style={{ height: "100%" }}
+        className="flex-row items-center p-2 py-3 rounded-full"
+        style={{ height: "100%", backgroundColor: theme[3] }}
       >
         <Text textClassName="ml-2 mr-auto" numberOfLines={1}>
           {dayjs(start).format(titleFormat)}

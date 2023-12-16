@@ -4,6 +4,7 @@ import React from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
+import { useColorTheme } from "./color/theme-provider";
 
 interface NavbarProps extends NativeStackHeaderProps {
   icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
@@ -11,6 +12,7 @@ interface NavbarProps extends NativeStackHeaderProps {
 
 export default function Navbar(props: NavbarProps) {
   const insets = useSafeAreaInsets();
+  const theme = useColorTheme();
   const handleBack = () => props.navigation.goBack();
 
   return (
@@ -18,8 +20,9 @@ export default function Navbar(props: NavbarProps) {
       style={{
         height: 64 + insets.top,
         paddingTop: insets.top,
+        backgroundColor: theme[1],
       }}
-      className="flex-row px-4 items-center bg-white"
+      className="flex-row px-4 items-center"
     >
       <Pressable
         onPress={handleBack}

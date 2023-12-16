@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import * as colors from "../themes";
+import * as colors from "../../themes";
 import { useColorScheme } from "react-native";
 
 /**

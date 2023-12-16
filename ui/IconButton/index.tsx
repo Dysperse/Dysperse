@@ -1,10 +1,33 @@
-import { Pressable, PressableProps } from "react-native";
+import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
+import { useColorTheme } from "../color/theme-provider";
 
-export default function IconButton(props: PressableProps) {
+interface DIconButtonProps extends PressableProps {
+  variant?: "filled" | "text";
+  buttonStyle?: StyleProp<ViewStyle>;
+}
+
+export default function IconButton(props: DIconButtonProps) {
+  const theme = useColorTheme();
+
   return (
     <Pressable
       {...props}
-      className={`w-10 h-10 active:bg-gray-200 items-center justify-center rounded-full ${props.className}`}
+      style={({ pressed, hovered }: any) => ({
+        width: 35,
+        height: 35,
+        backgroundColor: pressed
+          ? theme[5]
+          : hovered
+          ? theme[4]
+          : props.variant === "filled"
+          ? theme[3]
+          : undefined,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 999,
+        ...((props.buttonStyle || {}) as any),
+      })}
+      // className={`${props.className}`}
     />
   );
 }

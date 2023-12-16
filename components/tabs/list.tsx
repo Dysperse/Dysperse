@@ -47,7 +47,7 @@ function TabListTab({
       />
       {!isEdit && (
         <IconButton
-          className="mr-4"
+          buttonStyle={{ marginRight: 10 }}
           onPress={async () => {
             setLoading(true);
             await handleDelete(item.id);
@@ -97,8 +97,8 @@ export const TabDrawer = ({ children }) => {
         backdropComponent={BottomSheetBackdropComponent}
       >
         <BottomSheetBackHandler handleClose={handleClose} />
-        <View className="flex-row items-center px-5 mb-2">
-          <IconButton className="bg-gray-100 mr-4" onPress={handleClose}>
+        <View className="flex-row items-center px-5 mb-2" style={{ gap: 10 }}>
+          <IconButton onPress={handleClose} variant="filled">
             <Icon>expand_more</Icon>
           </IconButton>
           <Text
@@ -107,17 +107,11 @@ export const TabDrawer = ({ children }) => {
           >
             Tabs
           </Text>
-          <IconButton
-            className={`mr-2 ${editMode ? "bg-gray-200" : ""}`}
-            onPress={() => setEditMode(!editMode)}
-          >
+          <IconButton onPress={() => setEditMode(!editMode)}>
             <Icon>{editMode ? "check" : "edit"}</Icon>
           </IconButton>
           {!editMode && (
-            <IconButton
-              className="bg-gray-100"
-              onPress={() => router.push("/open")}
-            >
+            <IconButton variant="filled" onPress={() => router.push("/open")}>
               <Icon>add</Icon>
             </IconButton>
           )}

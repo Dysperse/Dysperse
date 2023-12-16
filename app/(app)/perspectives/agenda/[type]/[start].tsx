@@ -22,8 +22,10 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
+import { useColorTheme } from "@/ui/color/theme-provider";
 
 function Agenda() {
+  const theme = useColorTheme();
   const { type, start, end } = useAgendaContext();
   const { data, error } = useSWR([
     "space/tasks/perspectives",
@@ -123,14 +125,20 @@ function Agenda() {
                   showsHorizontalScrollIndicator={false}
                   renderItem={({ item }) => (
                     <Pressable
-                      className={`
-              h-16 w-16 flex active:bg-gray-200 border-2 border-gray-100 active:border-gray-200 rounded-2xl items-center justify-center
-              ${
-                item?.start === currentColumn?.start
-                  ? "bg-gray-200 border-gray-200 active:bg-gray-300 active:border-gray-300"
-                  : ""
-              }
-              `}
+                      style={({ pressed, hovered }: any) => ({
+                        height: 65,
+                        width: 65,
+                        borderWidth: 2,
+                        borderRadius: 25,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                        backgroundColor: theme[pressed ? 3 : 1],
+                        ...(item?.start === currentColumn?.start && {
+                          backgroundColor: theme[pressed ? 10 : 9],
+                          borderColor: theme[pressed ? 10 : 9],
+                        }),
+                      })}
                       onPress={() => setCurrentColumn(item)}
                     >
                       {buttonTextFormats.small !== "-" && (

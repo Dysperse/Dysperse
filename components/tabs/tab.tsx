@@ -2,6 +2,7 @@ import { useOpenTab } from "@/context/tabs";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
@@ -20,6 +21,7 @@ export function Tab({
   );
 
   const { activeTab, setActiveTab } = useOpenTab();
+  const theme = useColorTheme();
   const redPalette = useColor("red", false);
   const colors = isPerspective ? redPalette : redPalette;
 
@@ -47,7 +49,7 @@ export function Tab({
           router.replace(tab.tabData.href);
           handleClose();
         }}
-        style={{
+        style={({ pressed, hovered }: any) => ({
           flex: 1,
           paddingHorizontal: isList ? 6 : 15,
           columnGap: 15,
@@ -55,9 +57,10 @@ export function Tab({
           height: "100%",
           alignItems: "center",
           flexDirection: "row",
-          backgroundColor: isList ? "transparent" : "#ddd",
-        }}
-        className="active:opacity-60"
+          backgroundColor: isList
+            ? "transparent"
+            : theme[pressed ? 5 : hovered ? 4 : 3],
+        })}
       >
         <LinearGradient
           colors={[colors[6], colors[7]]}

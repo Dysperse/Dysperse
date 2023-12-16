@@ -1,26 +1,20 @@
-import Text from "@/ui/Text";
-import {
-  BottomSheetModal,
-  BottomSheetScrollView,
-  WINDOW_WIDTH,
-} from "@gorhom/bottom-sheet";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { Pressable, View } from "react-native";
-import { TaskCheckbox } from "./Checkbox";
-import useSWR from "swr";
-import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
-import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
-import IconButton from "@/ui/IconButton";
-import Icon from "@/ui/Icon";
-import dayjs from "dayjs";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
-import Chip from "@/ui/Chip";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
-import { TextInput } from "react-native-gesture-handler";
+import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
+import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import Chip from "@/ui/Chip";
+import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { ActivityIndicator } from "react-native";
-import { BlurView } from "expo-blur";
+import Text from "@/ui/Text";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import dayjs from "dayjs";
+import React, { cloneElement, useCallback, useRef, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import useSWR from "swr";
+import { TaskCheckbox } from "./Checkbox";
 
 function TaskDrawerContent({ data, handleClose }) {
   return (
@@ -219,15 +213,10 @@ export function TaskDrawer({ children, id }) {
 export function Task({ task }) {
   return (
     <TaskDrawer id={task.id}>
-      <Pressable
-        className={`px-5 py-3 ${
-          WINDOW_WIDTH > 600 ? "rounded-2xl" : ""
-        } hover:bg-gray-100 active:bg-gray-200 mb-0.5 flex-row items-center`}
-        style={{ gap: 15 }}
-      >
+      <ListItemButton wrapperStyle={{ borderRadius: 0, paddingVertical: 10 }}>
         <TaskCheckbox completed={task.completionInstances.length > 0} />
-        <Text>{task.name}</Text>
-      </Pressable>
+        <Text weight={400}>{task.name}</Text>
+      </ListItemButton>
     </TaskDrawer>
   );
 }

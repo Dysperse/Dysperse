@@ -1,15 +1,25 @@
-import { useSession } from "@/context/AuthProvider";
-import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { StatusBar, View } from "react-native";
+import { Pressable, StatusBar, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { WeatherWidget } from "../../components/home/weather/widget";
-import Text from "@/ui/Text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { WeatherWidget } from "../../components/home/weather/widget";
+import { useColorTheme } from "@/ui/color/theme-provider";
+
+export const styles = StyleSheet.create({
+  card: {
+    borderRadius: 28,
+    flex: 1,
+    justifyContent: "flex-end",
+    padding: 20,
+    height: 144,
+  },
+});
 
 function Greeting() {
+  const theme = useColorTheme();
   const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
@@ -28,7 +38,13 @@ function Greeting() {
 
   return (
     <Text
-      style={{ fontFamily: "heading" }}
+      style={{
+        fontFamily: "heading",
+        color: theme[12],
+        textShadowColor: theme[7],
+        textShadowRadius: 30,
+        textShadowOffset: { height: 5, width: 5 },
+      }}
       textClassName="uppercase text-5xl mt-5"
     >
       {greeting}
@@ -37,8 +53,17 @@ function Greeting() {
 }
 
 function TodaysDate() {
+  const theme = useColorTheme();
+
   return (
-    <View className="h-36 rounded-3xl bg-gray-200 flex-1 justify-end p-5">
+    <Pressable
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        },
+      ]}
+    >
       <Icon size={40} style={{ marginLeft: -5 }}>
         calendar_today
       </Icon>
@@ -46,44 +71,63 @@ function TodaysDate() {
         {dayjs().format("MMM Do")}
       </Text>
       <Text>{dayjs().format("YYYY")}</Text>
-    </View>
+    </Pressable>
   );
 }
 
 function PlanDayPrompt() {
+  const theme = useColorTheme();
+
   return (
-    <View
-      className="h-24 rounded-3xl bg-gray-200 flex-1 p-5"
-      style={{ marginBottom: 15 }}
+    <Pressable
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+          marginBottom: 15,
+        },
+      ]}
     >
       <Text>Plan your day</Text>
-    </View>
+    </Pressable>
   );
 }
 
 function TodaysTasks() {
+  const theme = useColorTheme();
   return (
-    <View
-      className="h-24 rounded-3xl bg-gray-200 flex-1 p-5"
-      style={{ marginBottom: 15 }}
+    <Pressable
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+          marginBottom: 15,
+        },
+      ]}
     >
       <Text>Today's tasks!</Text>
-    </View>
+    </Pressable>
   );
 }
 
 function RecentActivity() {
+  const theme = useColorTheme();
   return (
-    <View
-      className="h-96 rounded-3xl bg-gray-200 flex-1 p-5"
-      style={{ marginBottom: 60 }}
+    <Pressable
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        },
+      ]}
     >
       <Text>Recent activity</Text>
-    </View>
+    </Pressable>
   );
 }
 
 export default function Index() {
+  const theme = useColorTheme();
   const insets = useSafeAreaInsets();
 
   return (
@@ -96,8 +140,8 @@ export default function Index() {
       <Greeting />
 
       <Text
-        textClassName="uppercase text-sm opacity-60 mt-2"
-        style={{ fontFamily: "body_700" }}
+        textClassName="uppercase text-sm mt-2 opacity-80"
+        style={{ fontFamily: "body_700", color: theme[11] }}
       >
         Today's rundown
       </Text>

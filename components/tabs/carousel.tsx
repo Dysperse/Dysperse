@@ -48,6 +48,7 @@ export function OpenTabsList() {
     Platform.OS === "web" ? (
       <ScrollView
         horizontal
+        showsHorizontalScrollIndicator={false}
         style={{ height: 64, flexDirection: "row", paddingHorizontal: 20 }}
       >
         {session.user.tabs.map((tab) => (

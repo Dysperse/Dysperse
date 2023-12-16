@@ -1,11 +1,13 @@
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable } from "react-native";
-import Text from "@/ui/Text";
 import { WeatherModal } from "./modal";
+import { styles } from "@/app/(app)";
 
 export function WeatherWidget() {
   const [location, setLocation] = useState(null);
@@ -38,7 +40,7 @@ export function WeatherWidget() {
     checkLocationPermission();
   }, []);
 
-  const getWeather = async () => {
+  const getWeather = async (location) => {
     let lat = location.coords.latitude;
     let long = location.coords.longitude;
     fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${long}`)
@@ -53,26 +55,28 @@ export function WeatherWidget() {
     const getUrl = (days) =>
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=relative_humidity_2m&hourly=visibility,temperature_2m,wind_speed_10m,apparent_temperature,precipitation_probability,weathercode&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=${days}&daily=sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min`;
     const url = getUrl(1);
+
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
+        if (res.error) setError(true);
         setWeatherData(res);
         const url = getUrl(10);
         fetch(url)
           .then((res) => res.json())
           .then((res) => setWeatherData(res))
-          .catch((res) => setError(true));
+          .catch(() => setError(true));
       })
-      .catch((res) => setError(true));
+      .catch(() => setError(true));
 
     setLoading(false);
   };
 
   useEffect(() => {
-    if (location && !weatherData) {
-      getWeather();
+    if (location) {
+      getWeather(location);
     }
-  }, [location, locationData, error]);
+  }, [location]);
 
   const isNight = () => {
     const currentHour = new Date().getHours();
@@ -87,15 +91,35 @@ export function WeatherWidget() {
     }
   };
 
+  const theme = useColorTheme();
   return loading || (location && !locationData) ? (
     <Pressable
-      style={({ pressed }) => ({
-        backgroundColor: pressed ? "lightgray" : "white",
-      })}
-      onPress={onPressHandler}
-      className="h-36 rounded-3xl bg-gray-200 flex-1 justify-center p-5 active:bg-gray-300"
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        },
+      ]}
     >
       <ActivityIndicator />
+    </Pressable>
+  ) : error ? (
+    <Pressable
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        },
+      ]}
+      onPress={onPressHandler}
+    >
+      <Icon size={40} style={{ marginLeft: -5 }}>
+        error
+      </Icon>
+      <Text textClassName="text-xl mt-1" textStyle={{ fontFamily: "body_700" }}>
+        Yikes!
+      </Text>
+      <Text>Couldn't get weather</Text>
     </Pressable>
   ) : weatherData && locationData && airQualityData ? (
     <WeatherModal
@@ -105,10 +129,12 @@ export function WeatherWidget() {
       isNight={isNight()}
     >
       <Pressable
-        style={({ pressed }) => ({
-          backgroundColor: pressed ? "lightgray" : "white",
-        })}
-        className="h-36 rounded-3xl bg-gray-200 flex-1 justify-end p-5 active:bg-gray-300"
+        style={({ pressed, hovered }: any) => [
+          styles.card,
+          {
+            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+          },
+        ]}
       >
         <Icon size={40} style={{ marginLeft: -5 }}>
           {
@@ -117,7 +143,10 @@ export function WeatherWidget() {
             ].icon
           }
         </Icon>
-        <Text textClassName="text-xl mt-1" style={{ fontFamily: "body_700" }}>
+        <Text
+          textClassName="text-xl mt-1"
+          textStyle={{ fontFamily: "body_700" }}
+        >
           {Math.round(weatherData.hourly.apparent_temperature[dayjs().hour()])}
           &deg;
         </Text>
@@ -132,12 +161,20 @@ export function WeatherWidget() {
     </WeatherModal>
   ) : (
     <Pressable
-      style={({ pressed }) => ({
-        backgroundColor: pressed ? "lightgray" : "white",
-      })}
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        },
+      ]}
       onPress={onPressHandler}
-      className="h-36 rounded-3xl bg-gray-200 flex-1 justify-end p-5 active:bg-gray-300"
     >
+      <Icon size={40} style={{ marginLeft: -5 }}>
+        near_me
+      </Icon>
+      <Text textClassName="text-xl mt-1" textStyle={{ fontFamily: "body_700" }}>
+        Weather
+      </Text>
       <Text>Tap to enable location</Text>
     </Pressable>
   );

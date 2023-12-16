@@ -8,20 +8,19 @@ import Logo from "./logo";
 import Icon from "./Icon";
 import Text from "./Text";
 import { BlurView } from "expo-blur";
+import { useColorTheme } from "./color/theme-provider";
+import IconButton from "./IconButton";
 
 export default function AccountNavbar(props) {
   const insets = useSafeAreaInsets();
+  const theme = useColorTheme();
   const { session } = useUser();
 
   const search = useMemo(
     () => (
-      <Pressable
-        className={`w-9 h-9 rounded-full items-center justify-center active:bg-gray-200 mr-2.5 ${
-          props.options.headerRight ? "bg-gray-100 -mr-1 ml-1" : ""
-        }`}
-      >
-        <Icon>search</Icon>
-      </Pressable>
+      <IconButton>
+        <Icon size={30}>bolt</Icon>
+      </IconButton>
     ),
     []
   );
@@ -33,18 +32,22 @@ export default function AccountNavbar(props) {
         backgroundColor: Platform.OS === "android" ? "#fff" : "transparent",
         height: 64 + insets.top,
         paddingTop: insets.top,
+        gap: 10,
       }}
       className="flex-row px-4 items-center"
     >
       {props.options.headerTitle ? (
         <Text>{props.options.headerTitle}</Text>
       ) : (
-        <Logo size={35} color="black" />
+        <Logo size={35} color={theme[8]} />
       )}
       <View style={{ flexGrow: 1 }} />
       {props.options.headerRight && props.options.headerRight()}
       {search}
-      <Link href="/(app)/account" style={{ marginBottom: -10 }}>
+      <Link
+        href="/(app)/account"
+        style={{ marginBottom: Platform.OS === "android" ? -10 : 0 }}
+      >
         <Image
           source={{
             uri: session?.user?.Profile?.picture,

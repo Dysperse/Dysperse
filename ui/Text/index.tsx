@@ -1,4 +1,5 @@
 import { Text as NText, StyleProp, TextProps, TextStyle } from "react-native";
+import { useColorTheme } from "../color/theme-provider";
 
 export interface DTextProps extends TextProps {
   textClassName?: string;
@@ -7,11 +8,14 @@ export interface DTextProps extends TextProps {
 }
 
 export default function Text(props: DTextProps) {
+  const theme = useColorTheme();
+
   return (
     <NText
       {...props}
       className={props.textClassName || undefined}
       style={{
+        color: theme[12],
         fontFamily: `body_${props.weight || 300}`,
         ...(props.style as any),
         ...(props.textStyle as any),
