@@ -1,5 +1,6 @@
 import { Text } from "react-native";
 import { Platform } from "react-native";
+import { useColorTheme } from "../color/theme-provider";
 
 export default function Icon({
   size = 24,
@@ -8,10 +9,12 @@ export default function Icon({
   style = {},
   textClassName = "",
 }) {
+  const theme = useColorTheme();
   return (
     <Text
       className={textClassName}
       style={{
+        color: theme[11],
         fontFamily: filled ? "symbols_filled" : "symbols_outlined",
         fontSize: size,
         width: size,
