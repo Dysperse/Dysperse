@@ -5,14 +5,20 @@ import { ActivityIndicator, Platform, ScrollView, View } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import { Tab } from "./tab";
-import { router, usePathname } from "expo-router";
+import { Link, router, usePathname } from "expo-router";
+import IconButton from "@/ui/IconButton";
+import Icon from "@/ui/Icon";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { useOpenTab } from "@/context/tabs";
+import { addHslAlpha } from "@/ui/color";
 
 const PAGE_WIDTH = window.width;
 
 export function OpenTabsList() {
+  const theme = useColorTheme();
   const { session } = useUser();
   const ref = React.useRef<ICarouselInstance>(null);
-
+  const { setActiveTab } = useOpenTab();
   const pathname = usePathname();
 
   const baseOptions = {
@@ -49,8 +55,32 @@ export function OpenTabsList() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={{ height: 64, flexDirection: "row", paddingHorizontal: 20 }}
+        style={{
+          height: 64,
+          flexDirection: "row",
+        }}
       >
+        <View style={{ paddingTop: 8, paddingRight: 3 }}>
+          <IconButton
+            buttonStyle={({ pressed, hovered }) => ({
+              backgroundColor:
+                pathname === "/"
+                  ? theme[pressed ? 4 : 3]
+                  : hovered
+                  ? theme[3]
+                  : addHslAlpha(theme[3], 0.7),
+              width: 46,
+              height: 46,
+              borderRadius: 20,
+            })}
+            onPress={() => {
+              router.replace("/");
+              setActiveTab("");
+            }}
+          >
+            <Icon filled={pathname === "/"}>home</Icon>
+          </IconButton>
+        </View>
         {session.user.tabs.map((tab) => (
           <Tab tab={tab} key={tab.id} />
         ))}

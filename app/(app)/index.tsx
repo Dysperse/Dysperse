@@ -2,11 +2,18 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Pressable, StatusBar, StyleSheet, View } from "react-native";
+import {
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WeatherWidget } from "../../components/home/weather/widget";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { useOpenTab } from "@/context/tabs";
 
 export const styles = StyleSheet.create({
   card: {
@@ -134,7 +141,11 @@ export default function Index() {
     <ScrollView
       overScrollMode="never"
       className="p-5"
-      contentContainerStyle={{ paddingTop: insets.top + 64 }}
+      style={{
+        marginTop: insets.top + 64,
+        backgroundColor: theme[1],
+        borderTopLeftRadius: 20,
+      }}
     >
       <StatusBar barStyle="dark-content" />
       <Greeting />

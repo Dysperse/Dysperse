@@ -8,19 +8,33 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
-import {
-  BottomSheetModal,
-  BottomSheetScrollView,
-  WINDOW_WIDTH,
-} from "@gorhom/bottom-sheet";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { TaskCheckbox } from "./Checkbox";
 
+const styles = StyleSheet.create({
+  section: {
+    borderRadius: 25,
+    overflow: "hidden",
+  },
+  divider: {
+    height: 2,
+  },
+});
+
 function TaskDrawerContent({ data, handleClose }) {
+  const theme = useColorTheme();
+
   return (
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
@@ -31,17 +45,29 @@ function TaskDrawerContent({ data, handleClose }) {
           left: 0,
         }}
       >
-        <View className="flex-row" style={{ paddingTop: 10 }}>
-          <IconButton className="bg-gray-200" onPress={handleClose}>
+        <View
+          className="flex-row"
+          style={{ paddingTop: 10, gap: 10, width: "100%" }}
+        >
+          <IconButton
+            onPress={handleClose}
+            buttonStyle={{ backgroundColor: theme[3] }}
+          >
             <Icon>close</Icon>
           </IconButton>
           <View className="flex-1" />
-          <IconButton>
+          <IconButton buttonStyle={{ backgroundColor: theme[3] }}>
             <Icon>dark_mode</Icon>
           </IconButton>
           <IconButton
             className="bg-gray-200 flex-row px-3 ml-1.5"
-            style={{ width: "auto", gap: 5 }}
+            buttonStyle={{
+              backgroundColor: theme[3],
+              width: "auto",
+              flexDirection: "row",
+              gap: 10,
+              paddingHorizontal: 10,
+            }}
           >
             <Icon>check</Icon>
             <Text>Complete</Text>
@@ -76,18 +102,18 @@ function TaskDrawerContent({ data, handleClose }) {
         />
 
         <Text
-          textClassName="uppercase text-sm text-gray-700 mt-3 mb-2 opacity-60"
+          textClassName="uppercase text-sm text-gray-700 mt-5 mb-2 opacity-60"
           weight={700}
         >
           Attachments
         </Text>
-        <View className="bg-gray-100 rounded-2xl overflow-hidden">
+        <View style={[styles.section, { backgroundColor: theme[3] }]}>
           {data.where && (
             <ListItemButton
               className="flex-row"
               style={{ gap: 10, paddingRight: 0, paddingVertical: 0 }}
             >
-              <Avatar size={30} viewClassName="bg-gray-200">
+              <Avatar size={30} style={{ backgroundColor: theme[5] }}>
                 <Icon size={20}>link</Icon>
               </Avatar>
               <TextInput
@@ -100,7 +126,9 @@ function TaskDrawerContent({ data, handleClose }) {
               />
             </ListItemButton>
           )}
-          {data.where && <View className="border-t border-gray-200" />}
+          {data.where && (
+            <View style={[styles.divider, { backgroundColor: theme[5] }]} />
+          )}
           <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 rounded-t-none active:bg-gray-300">
             <Icon>add</Icon>
             <ListItemText>Add</ListItemText>
@@ -108,12 +136,12 @@ function TaskDrawerContent({ data, handleClose }) {
         </View>
 
         <Text
-          textClassName="uppercase text-sm text-gray-700 mt-3 mb-2 opacity-60"
+          textClassName="uppercase text-sm text-gray-700 mt-5 mb-2 opacity-60"
           weight={700}
         >
           Subtasks
         </Text>
-        <View className="bg-gray-100 rounded-2xl overflow-hidden">
+        <View style={[styles.section, { backgroundColor: theme[3] }]}>
           {data.subTasks.length > 0 && (
             <View className="border-t border-gray-200" />
           )}
@@ -133,12 +161,12 @@ function TaskDrawerContent({ data, handleClose }) {
         )}
 
         <Text
-          textClassName="uppercase text-sm text-gray-700 mt-3 mb-2 opacity-60"
+          textClassName="uppercase text-sm text-gray-700 mt-5 mb-2 opacity-60"
           weight={700}
         >
           About
         </Text>
-        <View className="bg-gray-100 rounded-2xl">
+        <View style={[styles.section, { backgroundColor: theme[3] }]}>
           {data.createdBy && (
             <ListItemButton>
               <ProfilePicture
@@ -165,7 +193,9 @@ function TaskDrawerContent({ data, handleClose }) {
           </ListItemButton>
         </View>
 
-        <View className="bg-gray-100 rounded-2xl mt-5">
+        <View
+          style={[styles.section, { backgroundColor: theme[3], marginTop: 20 }]}
+        >
           <ListItemButton buttonClassName="justify-center py-4">
             <ListItemText>Delete task</ListItemText>
           </ListItemButton>
@@ -215,11 +245,13 @@ export function TaskDrawer({ children, id }) {
 }
 
 export function Task({ task }) {
+  const { width } = useWindowDimensions();
+
   return (
     <TaskDrawer id={task.id}>
       <ListItemButton
         wrapperStyle={{
-          borderRadius: WINDOW_WIDTH > 600 ? 20 : 0,
+          borderRadius: width > 600 ? 20 : 0,
           paddingVertical: 10,
         }}
       >

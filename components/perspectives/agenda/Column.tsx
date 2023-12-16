@@ -6,27 +6,32 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/emoji";
-import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
+import { usePathname } from "expo-router";
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, View, useWindowDimensions } from "react-native";
 import CreateTask from "./CreateTask";
+import { getBottomNavigationHeight } from "@/app/(app)/_layout";
 
 export function Column({ header, column }) {
   const theme = useColorTheme();
+  const { width, height } = useWindowDimensions();
+  const pathname = usePathname();
 
   return (
     <View
       style={{
-        ...(WINDOW_WIDTH > 600 && {
+        ...(width > 600 && {
           borderRightWidth: 1,
           borderRightColor: theme[5],
         }),
-        width: WINDOW_WIDTH > 600 ? 300 : WINDOW_WIDTH,
+        width: width > 600 ? 300 : width,
+        maxHeight: height - 1,
       }}
     >
-      {WINDOW_WIDTH > 600 && <Header start={column.start} end={column.end} />}
+      {width > 600 && <Header start={column.start} end={column.end} />}
       <FlatList
+        style={{ flex: 1, maxHeight: "100%" }}
         ListEmptyComponent={
           <View className="p-4">
             <View
@@ -67,7 +72,7 @@ export function Column({ header, column }) {
             >
               <ListItemButton
                 wrapperStyle={{
-                  borderRadius: WINDOW_WIDTH > 600 ? 20 : 0,
+                  borderRadius: width > 600 ? 20 : 0,
                   paddingVertical: 10,
                 }}
               >
@@ -98,8 +103,9 @@ export function Column({ header, column }) {
         }
         data={column.tasks}
         contentContainerStyle={{
-          padding: WINDOW_WIDTH > 600 ? 10 : 0,
-          paddingTop: WINDOW_WIDTH > 600 ? 10 : 70,
+          padding: width > 600 ? 10 : 0,
+          paddingTop: width > 600 ? 10 : 70,
+          paddingBottom: getBottomNavigationHeight(pathname) + 20,
         }}
         renderItem={({ item }) => <Task task={item} />}
         keyExtractor={(i) => `${i.id}-${Math.random()}`}

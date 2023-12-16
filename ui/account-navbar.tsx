@@ -11,6 +11,24 @@ import { BlurView } from "expo-blur";
 import { useColorTheme } from "./color/theme-provider";
 import IconButton from "./IconButton";
 
+export function NavbarProfilePicture() {
+  const { session } = useUser();
+  return (
+    <Link
+      href="/(app)/account"
+      style={{ marginBottom: Platform.OS === "android" ? -10 : 0 }}
+    >
+      <Image
+        source={{
+          uri: session?.user?.Profile?.picture,
+        }}
+        className="rounded-full"
+        style={{ width: 35, height: 35 }}
+      />
+    </Link>
+  );
+}
+
 export default function AccountNavbar(props) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
@@ -44,18 +62,7 @@ export default function AccountNavbar(props) {
       <View style={{ flexGrow: 1 }} />
       {props.options.headerRight && props.options.headerRight()}
       {search}
-      <Link
-        href="/(app)/account"
-        style={{ marginBottom: Platform.OS === "android" ? -10 : 0 }}
-      >
-        <Image
-          source={{
-            uri: session?.user?.Profile?.picture,
-          }}
-          className="rounded-full"
-          style={{ width: 35, height: 35 }}
-        />
-      </Link>
+      <NavbarProfilePicture />
     </BlurView>
   );
 }

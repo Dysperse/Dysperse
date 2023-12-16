@@ -1,7 +1,7 @@
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import { useEffect } from "react";
 import { BackHandler } from "react-native";
-// import { ReactNativeKeysKeyCode, useHotkey } from "react-native-hotkeys";
+import { ReactNativeKeysKeyCode, useHotkey } from "react-native-hotkeys";
 
 export function BottomSheetBackHandler({ handleClose }) {
   const { animatedIndex } = useBottomSheet();
@@ -18,7 +18,7 @@ export function BottomSheetBackHandler({ handleClose }) {
       });
   }, [animatedIndex]);
 
-  // useHotkey(ReactNativeKeysKeyCode.Escape, handleClose);
+  useHotkey(ReactNativeKeysKeyCode.Escape, handleClose);
 
   return null;
 }

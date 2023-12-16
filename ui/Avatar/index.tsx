@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { PressableProps, View } from "react-native";
+import { PressableProps, StyleProp, View, ViewStyle } from "react-native";
 import { Pressable } from "react-native";
 import Text from "../Text";
 
@@ -7,6 +7,7 @@ interface DAvatarProps extends PressableProps {
   image?: string;
   size?: number;
   viewClassName?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function Avatar(props: DAvatarProps) {
@@ -17,6 +18,7 @@ export function Avatar(props: DAvatarProps) {
       style={{
         width: props.size,
         height: props.size,
+        ...(props.style as {}),
       }}
     >
       <View className="absolute w-full h-full rounded-full items-center justify-center">

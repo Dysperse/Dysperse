@@ -7,10 +7,20 @@ import Text from "@/ui/Text";
 import dayjs, { ManipulateType } from "dayjs";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAgendaContext } from "@/app/(app)/perspectives/agenda/context";
 import { useColorTheme } from "@/ui/color/theme-provider";
+
+const styles = StyleSheet.create({
+  navigationButton: {
+    borderRadius: 99,
+    height: 40,
+    width: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export function PerspectivesNavbar({
   handleToday,
@@ -98,7 +108,7 @@ export function PerspectivesNavbar({
 
   return (
     <View
-      className="rounded-full p-4 pb-0 z-10"
+      className="rounded-full p-3 pb-0 z-10"
       style={{ marginTop: insets.top, marginBottom: -70, height: 70 }}
     >
       <View
@@ -110,7 +120,12 @@ export function PerspectivesNavbar({
         </Text>
         {!isCurrent && (
           <Pressable
-            className="flex h-full justify-center active:bg-gray-200 px-2 rounded-2xl"
+            style={({ pressed, hovered }: any) => [
+              styles.navigationButton,
+              {
+                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              },
+            ]}
             onPress={handleToday}
           >
             <Icon textClassName="font-gray-600">calendar_today</Icon>
@@ -118,13 +133,23 @@ export function PerspectivesNavbar({
         )}
         <Pressable
           onPress={handlePrev}
-          className="flex h-full justify-center active:bg-gray-200 px-2 rounded-2xl"
+          style={({ pressed, hovered }: any) => [
+            styles.navigationButton,
+            {
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            },
+          ]}
         >
           <Icon textClassName="font-gray-600">arrow_back_ios_new</Icon>
         </Pressable>
         <Pressable
           onPress={handleNext}
-          className="flex h-full justify-center active:bg-gray-200 px-2 rounded-2xl"
+          style={({ pressed, hovered }: any) => [
+            styles.navigationButton,
+            {
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            },
+          ]}
         >
           <Icon textClassName="font-gray-600">arrow_forward_ios</Icon>
         </Pressable>

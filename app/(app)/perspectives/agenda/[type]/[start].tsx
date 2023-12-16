@@ -3,7 +3,6 @@ import { PerspectivesNavbar } from "@/components/perspectives/agenda/Navbar";
 import ErrorAlert from "@/ui/Error";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -13,8 +12,10 @@ import {
   Pressable,
   StatusBar,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
 
@@ -54,9 +55,19 @@ function Agenda() {
     }
   }, [data, setCurrentColumn, router, type]);
 
-  if (WINDOW_WIDTH > 600) {
+  const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
+  if (width > 600) {
     return (
-      <>
+      <View
+        style={{
+          marginTop: insets.top + 64,
+          backgroundColor: theme[1],
+          borderTopLeftRadius: 20,
+          flex: 1,
+        }}
+      >
         <PerspectivesNavbar
           handleToday={handleToday}
           currentDateStart={currentColumn?.start}
@@ -82,19 +93,19 @@ function Agenda() {
             </View>
           )}
         </ScrollView>
-      </>
+      </View>
     );
   }
 
   const buttonTextFormats = {
     small: {
       week: "ddd",
-      month: "#W",
+      month: "Do",
       year: "-",
     }[type],
     big: {
       week: "DD",
-      month: "DD",
+      month: "[W]W",
       year: "MMM",
     }[type],
   };
@@ -107,7 +118,7 @@ function Agenda() {
         currentDateEnd={currentColumn?.end}
       />
       {data ? (
-        <View>
+        <View style={{ overflow: "hidden" }}>
           {currentColumn && (
             <Column
               column={currentColumn}
@@ -142,12 +153,15 @@ function Agenda() {
                       {buttonTextFormats.small !== "-" && (
                         <Text
                           textClassName="uppercase text-xs opacity-60"
-                          style={{ fontFamily: "body_400" }}
+                          style={{
+                            fontFamily: "body_400",
+                            textAlign: "center",
+                          }}
                         >
                           {dayjs(item.start).format(buttonTextFormats.small)}
                           {type === "month" &&
                             " - " +
-                              dayjs(item.end).format(buttonTextFormats.big)}
+                              dayjs(item.end).format(buttonTextFormats.small)}
                         </Text>
                       )}
                       <Text

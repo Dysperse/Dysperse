@@ -1,12 +1,12 @@
 import { useOpenTab } from "@/context/tabs";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 
 export function Tab({
   tab,
@@ -22,22 +22,25 @@ export function Tab({
 
   const { activeTab, setActiveTab } = useOpenTab();
   const theme = useColorTheme();
-  const redPalette = useColor("red", false);
+  const redPalette = useColor("red", true);
   const colors = isPerspective ? redPalette : redPalette;
+  const { width } = useWindowDimensions();
 
   return (
     <View
       style={{
         padding: isList ? 0 : 8,
         paddingBottom: 0,
-        paddingHorizontal: isList ? 0 : 4,
+        paddingHorizontal: isList ? 0 : 3,
         flex: 1,
         width: "100%",
-        height: 50,
+        height: width > 600 ? 53.5 : 50,
         marginHorizontal: "auto",
         ...(Platform.OS === "web" &&
           ({
             width: "200px",
+            flexDirection: "row",
+            alignItems: "center",
           } as Object)),
       }}
     >
@@ -57,9 +60,22 @@ export function Tab({
           height: "100%",
           alignItems: "center",
           flexDirection: "row",
-          backgroundColor: isList
-            ? "transparent"
-            : theme[pressed ? 5 : hovered ? 4 : 3],
+          ...(width > 600
+            ? {
+                backgroundColor:
+                  activeTab === tab.id
+                    ? theme[pressed ? 6 : hovered ? 5 : 4]
+                    : pressed
+                    ? theme[5]
+                    : hovered
+                    ? theme[4]
+                    : addHslAlpha(theme[3], 0.7),
+              }
+            : {
+                backgroundColor: isList
+                  ? "transparent"
+                  : theme[pressed ? 5 : hovered ? 4 : 3],
+              }),
         })}
       >
         <LinearGradient
