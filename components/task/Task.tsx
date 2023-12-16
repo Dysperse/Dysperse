@@ -8,7 +8,11 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  WINDOW_WIDTH,
+} from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -213,7 +217,12 @@ export function TaskDrawer({ children, id }) {
 export function Task({ task }) {
   return (
     <TaskDrawer id={task.id}>
-      <ListItemButton wrapperStyle={{ borderRadius: 0, paddingVertical: 10 }}>
+      <ListItemButton
+        wrapperStyle={{
+          borderRadius: WINDOW_WIDTH > 600 ? 20 : 0,
+          paddingVertical: 10,
+        }}
+      >
         <TaskCheckbox completed={task.completionInstances.length > 0} />
         <Text weight={400}>{task.name}</Text>
       </ListItemButton>

@@ -66,7 +66,10 @@ export function Column({ header, column }) {
               }}
             >
               <ListItemButton
-                wrapperStyle={{ borderRadius: 0, paddingVertical: 10 }}
+                wrapperStyle={{
+                  borderRadius: WINDOW_WIDTH > 600 ? 20 : 0,
+                  paddingVertical: 10,
+                }}
               >
                 <View
                   style={{
