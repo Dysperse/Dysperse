@@ -136,7 +136,7 @@ export default function AppLayout() {
   const { session: sessionData, isLoading: isUserLoading } = useUser();
 
   const theme = useColor(
-    sessionData?.user?.color || "gray",
+    sessionData?.user?.color || "violet",
     // CHANGE THIS LATER!!!
     false
     // sessionData?.user?.darkMode === "dark"

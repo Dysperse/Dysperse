@@ -15,12 +15,17 @@ import { useFonts } from "expo-font";
 SplashScreen.preventAutoHideAsync();
 
 import { NativeWindStyleSheet } from "nativewind";
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider } from "@/ui/color/theme-provider";
 
 NativeWindStyleSheet.setOutput({
   default: "native",
 });
 
 export default function Root() {
+  // CHANGE THIS LATER!!!
+  const theme = useColor("violet", false);
+
   // Set up the auth context and render our layout inside of it.
 
   const [fontsLoaded] = useFonts({
@@ -47,8 +52,10 @@ export default function Root() {
   }
 
   return (
-    <SessionProvider>
-      <Slot screenOptions={{ onLayoutRootView }} />
-    </SessionProvider>
+    <ColorThemeProvider theme={theme}>
+      <SessionProvider>
+        <Slot screenOptions={{ onLayoutRootView }} />
+      </SessionProvider>
+    </ColorThemeProvider>
   );
 }

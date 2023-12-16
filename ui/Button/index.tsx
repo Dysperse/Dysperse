@@ -1,10 +1,11 @@
-import { Pressable } from "react-native";
+import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { PressableProps } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
 interface DButtonProps extends PressableProps {
   buttonClassName?: string;
   variant?: "filled" | "outlined" | "text";
+  buttonStyle?: StyleProp<ViewStyle>;
 }
 export function Button(props: DButtonProps) {
   const variant = props.variant || "text";
@@ -42,6 +43,7 @@ export function Button(props: DButtonProps) {
                 : undefined,
             }),
         gap: 10,
+        ...(props.buttonStyle || ({} as any)),
       })}
     />
   );

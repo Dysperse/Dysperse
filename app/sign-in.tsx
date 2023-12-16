@@ -12,8 +12,11 @@ import { useSession } from "../context/AuthProvider";
 import { sendApiRequest } from "../helpers/api";
 import Turnstile from "../ui/turnstile";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { Button } from "@/ui/Button";
 
 export default function SignIn() {
+  const theme = useColorTheme();
   const { signIn, session } = useSession();
   const [step, setStep] = useState(0);
 
@@ -91,38 +94,46 @@ export default function SignIn() {
             <TextInput
               className="border-2 px-5 mt-2 py-3 w-full rounded-2xl border-gray-300"
               placeholder="Email"
-              placeholderTextColor="black"
+              placeholderTextColor="#aaa"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              style={{
+                ...(errors.email && { borderColor: "red" }),
+              }}
             />
           )}
           name="email"
         />
-        {errors.email && <Text>This is required.</Text>}
         <Controller
           control={control}
           rules={{
             maxLength: 100,
+            required: true,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               className="border-2 px-5 mt-4 py-3 w-full rounded-2xl border-gray-300"
               placeholder="Password"
               secureTextEntry
-              placeholderTextColor="black"
+              placeholderTextColor="#aaa"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              style={{
+                ...(errors.password && { borderColor: "red" }),
+              }}
             />
           )}
           name="password"
         />
       </View>
-      <Pressable
-        className={`bg-gray-700 mt-1 w-full rounded-2xl justify-center items-center active:bg-gray-900 h-12 ${
-          step === 2 ? "bg-gray-300" : ""
-        }`}
+      <Button
+        variant="filled"
+        buttonStyle={{
+          width: "100%",
+          justifyContent: "center",
+        }}
         onPress={handleSubmit(onSubmit)}
         disabled={step === 2} // loading
       >
@@ -131,7 +142,7 @@ export default function SignIn() {
         ) : (
           <Text textClassName="text-gray-50">Continue</Text>
         )}
-      </Pressable>
+      </Button>
     </KeyboardAvoidingView>
   ) : (
     <View
