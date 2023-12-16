@@ -2,16 +2,11 @@ import { Column } from "@/components/perspectives/agenda/Column";
 import { PerspectivesNavbar } from "@/components/perspectives/agenda/Navbar";
 import ErrorAlert from "@/ui/Error";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -22,7 +17,6 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
-import { useColorTheme } from "@/ui/color/theme-provider";
 
 function Agenda() {
   const theme = useColorTheme();
@@ -70,7 +64,11 @@ function Agenda() {
         />
         <ScrollView
           horizontal
-          contentContainerStyle={{ flexDirection: "row", width: "100%" }}
+          contentContainerStyle={{
+            flexDirection: "row",
+            width: "100%",
+            paddingTop: 70,
+          }}
         >
           {data ? (
             data.map((col) => (
