@@ -33,13 +33,14 @@ export function Header({ start, end }) {
       }}
     >
       <View
-        className={`min-w-9 px-3 h-9 ${
-          isToday ? "bg-gray-700" : "bg-gray-200"
-        } rounded-lg items-center justify-center`}
+        className={`min-w-9 px-2 h-8 rounded-xl items-center justify-center`}
+        style={{
+          backgroundColor: theme[isToday ? 11 : 3],
+        }}
       >
         <Text
-          textClassName={`text-xl ${isToday ? "text-white" : "text-black"}`}
-          textStyle={{ fontFamily: "body_700" }}
+          textClassName={`text-xl`}
+          textStyle={{ fontFamily: "body_700", color: theme[isToday ? 2 : 11] }}
         >
           {dayjs(start).format(formats.heading)}
         </Text>
