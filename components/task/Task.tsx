@@ -240,9 +240,7 @@ export function TaskDrawer({ children, id }) {
           margin: "auto",
         }}
       >
-        {true ? (
-          <ErrorAlert />
-        ) : data ? (
+        {data ? (
           <TaskDrawerContent data={data} handleClose={handleClose} />
         ) : error ? (
           <ErrorAlert />

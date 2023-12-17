@@ -1,7 +1,6 @@
 import { View, useColorScheme } from "react-native";
-import Text from "../Text";
 import Icon from "../Icon";
-import { red } from "@/themes";
+import Text from "../Text";
 import { useColor } from "../color";
 
 export default function ErrorAlert({
