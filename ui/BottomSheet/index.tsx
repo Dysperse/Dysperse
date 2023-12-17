@@ -15,7 +15,6 @@ export default function BottomSheet(props: DBottomSheetProps) {
   return (
     <BottomSheetModal
       ref={props.sheetRef}
-      //   snapPoints={session?.user?.tabs?.length === 0 ? ["20"] : ["50%", "80%"]}
       backdropComponent={BottomSheetBackdropComponent}
       backgroundStyle={{
         backgroundColor: theme[1],

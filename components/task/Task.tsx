@@ -20,6 +20,7 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { TaskCheckbox } from "./Checkbox";
+import ErrorAlert from "@/ui/Error";
 
 const styles = StyleSheet.create({
   section: {
@@ -239,8 +240,12 @@ export function TaskDrawer({ children, id }) {
           margin: "auto",
         }}
       >
-        {data ? (
+        {true ? (
+          <ErrorAlert />
+        ) : data ? (
           <TaskDrawerContent data={data} handleClose={handleClose} />
+        ) : error ? (
+          <ErrorAlert />
         ) : (
           <ActivityIndicator />
         )}
