@@ -1,6 +1,5 @@
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
-import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
-import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
@@ -100,14 +99,10 @@ export function WeatherModal({
   return (
     <>
       {trigger}
-      <BottomSheetModal
-        ref={ref}
+      <BottomSheet
+        onClose={handleClose}
+        sheetRef={ref}
         snapPoints={["60%", "90%"]}
-        backdropComponent={BottomSheetBackdropComponent}
-        onDismiss={handleClose}
-        handleIndicatorStyle={{
-          backgroundColor: color,
-        }}
         backgroundComponent={(props) => (
           <LinearGradient
             colors={[gradient[1], gradient[1], ...gradient]}
@@ -120,7 +115,6 @@ export function WeatherModal({
           />
         )}
       >
-        <BottomSheetBackHandler handleClose={handleClose} />
         <BottomSheetScrollView>
           <View className="p-5 py-10">
             <View className="flex items-center">
@@ -272,7 +266,7 @@ export function WeatherModal({
             )}
           />
         </BottomSheetScrollView>
-      </BottomSheetModal>
+      </BottomSheet>
     </>
   );
 }

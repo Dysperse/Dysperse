@@ -1,29 +1,13 @@
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import {
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WeatherWidget } from "../../components/home/weather/widget";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { useOpenTab } from "@/context/tabs";
-
-export const styles = StyleSheet.create({
-  card: {
-    borderRadius: 28,
-    flex: 1,
-    justifyContent: "flex-end",
-    padding: 20,
-    height: 144,
-  },
-});
+import { styles } from "@/components/home/styles";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -147,7 +131,6 @@ export default function Index() {
         borderTopLeftRadius: 20,
       }}
     >
-      <StatusBar barStyle="dark-content" />
       <Greeting />
 
       <Text

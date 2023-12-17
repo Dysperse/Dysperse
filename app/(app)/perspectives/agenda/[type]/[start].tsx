@@ -118,7 +118,7 @@ function Agenda() {
         currentDateEnd={currentColumn?.end}
       />
       {data ? (
-        <View style={{ overflow: "hidden" }}>
+        <View style={{ overflow: "hidden", flex: 1 }}>
           {currentColumn && (
             <Column
               column={currentColumn}
@@ -156,6 +156,10 @@ function Agenda() {
                           style={{
                             fontFamily: "body_400",
                             textAlign: "center",
+                            color:
+                              theme[
+                                item?.start === currentColumn?.start ? 1 : 12
+                              ],
                           }}
                         >
                           {dayjs(item.start).format(buttonTextFormats.small)}
@@ -166,7 +170,13 @@ function Agenda() {
                       )}
                       <Text
                         textClassName="text-xl"
-                        style={{ fontFamily: "body_500" }}
+                        style={{
+                          fontFamily: "body_500",
+                          color:
+                            theme[
+                              item?.start === currentColumn?.start ? 1 : 12
+                            ],
+                        }}
                       >
                         {dayjs(item.start).format(buttonTextFormats.big)}
                       </Text>
@@ -200,7 +210,6 @@ export default function Page() {
           .add(1, type as ManipulateType),
       }}
     >
-      <StatusBar barStyle="dark-content" />
       <Agenda />
     </AgendaContext.Provider>
   );

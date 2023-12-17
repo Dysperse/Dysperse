@@ -8,6 +8,7 @@ export default function Icon({
   filled = false,
   style = {},
   textClassName = "",
+  bold = false,
 }) {
   const theme = useColorTheme();
   return (
@@ -15,7 +16,11 @@ export default function Icon({
       className={textClassName}
       style={{
         color: theme[11],
-        fontFamily: filled ? "symbols_filled" : "symbols_outlined",
+        fontFamily: bold
+          ? "symbols_bold_outlined"
+          : filled
+          ? "symbols_filled"
+          : "symbols_outlined",
         fontSize: size,
         width: size,
         height: size,

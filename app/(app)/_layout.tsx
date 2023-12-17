@@ -18,8 +18,10 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
+  StatusBar,
   StyleSheet,
   View,
+  useColorScheme,
   useWindowDimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -110,7 +112,7 @@ function BottomAppBar() {
 
   useEffect(() => {
     if (Platform.OS === "android") {
-      const color = shouldHide ? "#fff" : "#eee";
+      const color = shouldHide ? "#fff" : theme[1];
       NavigationBar.setBackgroundColorAsync(color);
       NavigationBar.setBorderColorAsync(color);
       NavigationBar.setButtonStyleAsync("dark");
@@ -189,13 +191,14 @@ export default function AppLayout() {
   const { session, isLoading } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
   const { width } = useWindowDimensions();
+  const isDark = useColorScheme() === "dark";
+
   const theme = useColor(
     sessionData?.user?.color || "violet",
     // CHANGE THIS LATER!!!
-    true
+    isDark
     // sessionData?.user?.darkMode === "dark"
   );
-
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading || isUserLoading) {
     return (
@@ -215,92 +218,91 @@ export default function AppLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <KeysProvider>
-      <ColorThemeProvider theme={theme}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          {/* <KeysProvider> */}
-          <OpenTabsProvider>
-            <TabHandler />
-            <BottomSheetModalProvider>
-              <SWRConfig
-                value={{
-                  fetcher: async ([
-                    resource,
-                    params,
-                    host = "https://api.dysperse.com",
-                    init = {},
-                  ]) => {
-                    const url = `${host}/${resource}?${new URLSearchParams(
-                      params
-                    ).toString()}`;
-                    const res = await fetch(url, {
-                      headers: {
-                        Authorization: `Bearer ${session}`,
-                      },
-                      ...init,
-                    });
-                    return await res.json();
-                  },
+    <ColorThemeProvider theme={theme}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <OpenTabsProvider>
+          <TabHandler />
+          <BottomSheetModalProvider>
+            <SWRConfig
+              value={{
+                fetcher: async ([
+                  resource,
+                  params,
+                  host = "https://api.dysperse.com",
+                  init = {},
+                ]) => {
+                  const url = `${host}/${resource}?${new URLSearchParams(
+                    params
+                  ).toString()}`;
+                  const res = await fetch(url, {
+                    headers: {
+                      Authorization: `Bearer ${session}`,
+                    },
+                    ...init,
+                  });
+                  return await res.json();
+                },
+              }}
+            >
+              <StatusBar
+                barStyle={!isDark ? "dark-content" : "light-content"}
+              />
+              <View
+                style={{
+                  flexDirection: width > 600 ? "row" : "column",
+                  height: "100%",
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: width > 600 ? "row" : "column",
-                    height: "100%",
+                {width > 600 && <Sidebar />}
+                <Stack
+                  screenOptions={{
+                    header:
+                      width > 600
+                        ? DesktopHeader
+                        : (props: any) => <AccountNavbar {...props} />,
+                    headerTransparent: true,
+                    fullScreenGestureEnabled: true,
+                    contentStyle: {
+                      backgroundColor: theme[width > 600 ? 2 : 1],
+                    },
                   }}
                 >
-                  {width > 600 && <Sidebar />}
-                  <Stack
-                    screenOptions={{
-                      header:
-                        width > 600
-                          ? DesktopHeader
-                          : (props: any) => <AccountNavbar {...props} />,
-                      headerTransparent: true,
-                      fullScreenGestureEnabled: true,
-                      contentStyle: {
-                        backgroundColor: theme[width > 600 ? 2 : 1],
-                      },
+                  <Stack.Screen
+                    name="index"
+                    options={{
+                      animation: "fade",
                     }}
-                  >
-                    <Stack.Screen
-                      name="index"
-                      options={{
-                        animation: "fade",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="account"
-                      options={{
-                        header: (props) => <Navbar {...props} />,
-                        headerTitle: "Account",
-                        animation: "slide_from_right",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="open"
-                      options={{
-                        header: (props) => <Navbar {...props} />,
-                        animation: "fade",
-                        presentation: "modal",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="perspectives/agenda/[type]/[start]"
-                      options={{
-                        animation: "fade",
-                        header: width > 600 ? DesktopHeader : () => null,
-                      }}
-                    />
-                  </Stack>
-                  {width < 600 && <BottomAppBar />}
-                </View>
-              </SWRConfig>
-            </BottomSheetModalProvider>
-          </OpenTabsProvider>
-          {/* </KeysProvider> */}
-        </GestureHandlerRootView>
-      </ColorThemeProvider>
-    </KeysProvider>
+                  />
+                  <Stack.Screen
+                    name="account"
+                    options={{
+                      header: (props) => <Navbar {...props} />,
+                      headerTitle: "Account",
+                      animation: "slide_from_right",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="open"
+                    options={{
+                      header: (props) => <Navbar {...props} />,
+                      animation: "fade",
+                      presentation: "modal",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="perspectives/agenda/[type]/[start]"
+                    options={{
+                      animation: "fade",
+                      header: width > 600 ? DesktopHeader : () => null,
+                    }}
+                  />
+                </Stack>
+                {width < 600 && <BottomAppBar />}
+              </View>
+            </SWRConfig>
+          </BottomSheetModalProvider>
+        </OpenTabsProvider>
+      </GestureHandlerRootView>
+    </ColorThemeProvider>
   );
 }

@@ -1,7 +1,6 @@
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
-import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
-import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -38,8 +37,9 @@ function TaskDrawerContent({ data, handleClose }) {
   return (
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
-        className="flex-row items-start bg-white"
+        className="flex-row items-start"
         style={{
+          backgroundColor: theme[1],
           paddingHorizontal: 20,
           height: 60,
           left: 0,
@@ -85,6 +85,7 @@ function TaskDrawerContent({ data, handleClose }) {
           inputClassName="text-5xl uppercase"
           inputStyle={{
             fontFamily: "heading",
+            color: theme[12],
           }}
           fontSize={50}
         />
@@ -96,9 +97,9 @@ function TaskDrawerContent({ data, handleClose }) {
         </Text>
         <TextInput
           placeholder="Coming soon..."
-          value=""
+          value="Coming soon!"
           className="opacity-60"
-          style={{ fontFamily: "body_300" }}
+          style={{ fontFamily: "body_300", color: theme[12] }}
         />
 
         <Text
@@ -122,6 +123,7 @@ function TaskDrawerContent({ data, handleClose }) {
                   fontFamily: "body_600",
                   flex: 1,
                   paddingVertical: 5,
+                  color: theme[12],
                 }}
               />
             </ListItemButton>
@@ -228,18 +230,21 @@ export function TaskDrawer({ children, id }) {
   return (
     <>
       {trigger}
-      <BottomSheetModal
-        ref={ref}
+      <BottomSheet
+        sheetRef={ref}
         snapPoints={["50%", "80%"]}
-        backdropComponent={BottomSheetBackdropComponent}
+        onClose={handleClose}
+        style={{
+          maxWidth: 700,
+          margin: "auto",
+        }}
       >
-        <BottomSheetBackHandler handleClose={handleClose} />
         {data ? (
           <TaskDrawerContent data={data} handleClose={handleClose} />
         ) : (
           <ActivityIndicator />
         )}
-      </BottomSheetModal>
+      </BottomSheet>
     </>
   );
 }
@@ -252,11 +257,14 @@ export function Task({ task }) {
       <ListItemButton
         wrapperStyle={{
           borderRadius: width > 600 ? 20 : 0,
-          paddingVertical: 10,
+          paddingVertical: 15 - (width > 600 ? 5 : 0),
+          paddingHorizontal: 20 - (width > 600 ? 5 : 0),
         }}
       >
         <TaskCheckbox completed={task.completionInstances.length > 0} />
-        <Text weight={400}>{task.name}</Text>
+        <Text numberOfLines={1} weight={400}>
+          {task.name}
+        </Text>
       </ListItemButton>
     </TaskDrawer>
   );

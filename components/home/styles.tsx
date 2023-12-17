@@ -1,0 +1,11 @@
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  card: {
+    borderRadius: 28,
+    flex: 1,
+    justifyContent: "flex-end",
+    padding: 20,
+    height: 144,
+  },
+});

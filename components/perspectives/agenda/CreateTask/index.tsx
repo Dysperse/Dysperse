@@ -1,4 +1,5 @@
 import { orange } from "@/themes";
+import BottomSheet from "@/ui/BottomSheet";
 import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
 import { Button } from "@/ui/Button";
@@ -25,11 +26,10 @@ function ColorPicker({ children, color, setColor }) {
   return (
     <>
       {trigger}
-      <BottomSheetModal
-        ref={ref}
+      <BottomSheet
+        sheetRef={ref}
+        onClose={handleClose}
         snapPoints={["80%"]}
-        enablePanDownToClose
-        backdropComponent={BottomSheetBackdropComponent}
         containerStyle={{
           maxWidth: 500,
           margin: "auto",
@@ -42,7 +42,6 @@ function ColorPicker({ children, color, setColor }) {
           </View>
         )}
       >
-        <BottomSheetBackHandler handleClose={handleClose} />
         <View className="p-4">
           <TextInput
             placeholderTextColor="#aaa"
@@ -54,7 +53,7 @@ function ColorPicker({ children, color, setColor }) {
             placeholder="Search..."
           />
         </View>
-      </BottomSheetModal>
+      </BottomSheet>
     </>
   );
 }
@@ -66,6 +65,7 @@ export default function CreateTask({
     date: dayjs().utc(),
   },
 }) {
+  const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
 
   const [date, setDate] = useState<Dayjs>(defaultValues.date);
@@ -96,10 +96,10 @@ export default function CreateTask({
   return (
     <>
       {trigger}
-      <BottomSheetModal
-        ref={ref}
+      <BottomSheet
+        onClose={handleClose}
+        sheetRef={ref}
         snapPoints={["50%"]}
-        backdropComponent={BottomSheetBackdropComponent}
         containerStyle={{
           maxWidth: 500,
           margin: "auto",
@@ -114,7 +114,10 @@ export default function CreateTask({
               shadowOpacity: 1,
             }}
           >
-            <View className="flex-row items-center mt-auto border-t py-2 border-gray-200 bg-white h-full">
+            <View
+              className="flex-row items-center mt-auto border-t py-2 h-full"
+              style={{ backgroundColor: theme[1], borderColor: theme[5] }}
+            >
               <IconButton style={{ marginLeft: -5 }}>
                 <Icon>location_on</Icon>
               </IconButton>
@@ -126,7 +129,8 @@ export default function CreateTask({
               </IconButton>
               <Pressable
                 onPress={onSubmit}
-                className="bg-gray-300 rounded-full ml-auto w-14 items-center justify-center h-9 active:opacity-60"
+                className="rounded-full ml-auto w-14 items-center justify-center h-9 active:opacity-60"
+                style={{ backgroundColor: theme[3] }}
               >
                 <Icon style={{ marginTop: -4 }}>add</Icon>
               </Pressable>
@@ -134,7 +138,6 @@ export default function CreateTask({
           </View>
         )}
       >
-        <BottomSheetBackHandler handleClose={handleClose} />
         <View className="pt-2 flex-1">
           <View className="flex-row mb-4 px-5" style={{ gap: 10 }}>
             {showClose && (
@@ -201,7 +204,7 @@ export default function CreateTask({
             />
           </View>
         </View>
-      </BottomSheetModal>
+      </BottomSheet>
     </>
   );
 }

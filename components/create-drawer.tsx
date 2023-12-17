@@ -1,16 +1,10 @@
-import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
-import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef } from "react";
-import {
-  Pressable,
-  PressableProps,
-  PressableStateCallbackType,
-  View,
-} from "react-native";
-import Text from "@/ui/Text";
+import { Pressable, View } from "react-native";
 import CreateTask from "./perspectives/agenda/CreateTask";
 
 export const CreateDrawer = ({ children }) => {
@@ -24,12 +18,7 @@ export const CreateDrawer = ({ children }) => {
   return (
     <View>
       {trigger}
-      <BottomSheetModal
-        ref={ref}
-        snapPoints={[305]}
-        backdropComponent={BottomSheetBackdropComponent}
-      >
-        <BottomSheetBackHandler handleClose={handleClose} />
+      <BottomSheet sheetRef={ref} snapPoints={[305]} onClose={handleClose}>
         <View className="p-5">
           {[
             {
@@ -73,7 +62,7 @@ export const CreateDrawer = ({ children }) => {
             )
           )}
         </View>
-      </BottomSheetModal>
+      </BottomSheet>
     </View>
   );
 };

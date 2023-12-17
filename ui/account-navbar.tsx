@@ -1,15 +1,15 @@
+import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import React, { useMemo } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUser } from "../context/useUser";
-import Logo from "./logo";
 import Icon from "./Icon";
-import Text from "./Text";
-import { BlurView } from "expo-blur";
-import { useColorTheme } from "./color/theme-provider";
 import IconButton from "./IconButton";
+import Text from "./Text";
+import { useColorTheme } from "./color/theme-provider";
+import Logo from "./logo";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
@@ -47,7 +47,7 @@ export default function AccountNavbar(props) {
     <BlurView
       intensity={Platform.OS === "android" ? 0 : 50}
       style={{
-        backgroundColor: Platform.OS === "android" ? "#fff" : "transparent",
+        backgroundColor: Platform.OS === "android" ? theme[1] : "transparent",
         height: 64 + insets.top,
         paddingTop: insets.top,
         gap: 10,

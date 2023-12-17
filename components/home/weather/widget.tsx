@@ -7,7 +7,7 @@ import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable } from "react-native";
 import { WeatherModal } from "./modal";
-import { styles } from "@/app/(app)";
+import { styles } from "../styles";
 
 export function WeatherWidget() {
   const [location, setLocation] = useState(null);

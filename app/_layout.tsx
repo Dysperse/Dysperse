@@ -39,6 +39,7 @@ export default function Root() {
     body_800: require("../assets/fonts/WorkSans/WorkSans-Black.ttf"),
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
     symbols_filled: require("../assets/fonts/symbols/filled.ttf"),
+    symbols_bold_outlined: require("../assets/fonts/symbols/bold.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {

@@ -13,6 +13,8 @@ import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { Tab } from "./tab";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import BottomSheet from "@/ui/BottomSheet";
 
 function TabListTab({
   disabled,
@@ -63,6 +65,7 @@ function TabListTab({
 
 export const TabDrawer = ({ children }) => {
   const { sessionToken, session, mutate } = useUser();
+  const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
   const [editMode, setEditMode] = useState(false);
 
@@ -91,12 +94,11 @@ export const TabDrawer = ({ children }) => {
   return (
     <View>
       {trigger}
-      <BottomSheetModal
-        ref={ref}
+      <BottomSheet
+        sheetRef={ref}
+        onClose={handleClose}
         snapPoints={session?.user?.tabs?.length === 0 ? ["20"] : ["50%", "80%"]}
-        backdropComponent={BottomSheetBackdropComponent}
       >
-        <BottomSheetBackHandler handleClose={handleClose} />
         <View className="flex-row items-center px-5 mb-2" style={{ gap: 10 }}>
           <IconButton onPress={handleClose} variant="filled">
             <Icon>expand_more</Icon>
@@ -196,7 +198,7 @@ export const TabDrawer = ({ children }) => {
         ) : (
           <ActivityIndicator />
         )}
-      </BottomSheetModal>
+      </BottomSheet>
     </View>
   );
 };

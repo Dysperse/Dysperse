@@ -9,9 +9,19 @@ import Emoji from "@/ui/emoji";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
 import React from "react";
-import { FlatList, View, useWindowDimensions } from "react-native";
+import { FlatList, StyleSheet, View, useWindowDimensions } from "react-native";
 import CreateTask from "./CreateTask";
 import { getBottomNavigationHeight } from "@/app/(app)/_layout";
+
+const styles = StyleSheet.create({
+  columnCard: {
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 20,
+    borderWidth: 2,
+  },
+});
 
 export function Column({ header, column }) {
   const theme = useColorTheme();
@@ -27,6 +37,7 @@ export function Column({ header, column }) {
         }),
         width: width > 600 ? 300 : width,
         maxHeight: height - 1,
+        height: height,
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
@@ -35,16 +46,13 @@ export function Column({ header, column }) {
         ListEmptyComponent={
           <View className="p-4">
             <View
-              style={{
-                borderRadius: 28,
-                backgroundColor: theme[2],
-                alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 20,
-                borderWidth: 2,
-                borderColor: theme[5],
-                gap: 10,
-              }}
+              style={[
+                styles.columnCard,
+                {
+                  borderColor: theme[5],
+                  backgroundColor: theme[2],
+                },
+              ]}
             >
               <View
                 className="w-16 border-2 h-16 bg-gray-200 items-center rounded-full justify-center"
@@ -73,24 +81,26 @@ export function Column({ header, column }) {
               <ListItemButton
                 wrapperStyle={{
                   borderRadius: width > 600 ? 20 : 0,
-                  paddingVertical: 10,
+                  paddingVertical: 15 - (width > 600 ? 5 : 0),
+                  paddingHorizontal: 20 - (width > 600 ? 5 : 0),
                 }}
               >
                 <View
                   style={{
-                    width: 30,
-                    height: 30,
+                    width: 25,
+                    height: 25,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 99,
                     borderWidth: 2,
-                    borderColor: theme[11],
+                    borderColor: theme[7],
                   }}
                 >
                   <Icon
+                    size={23}
                     style={{
-                      lineHeight: 26.5,
-                      color: theme[11],
+                      lineHeight: 24.5,
+                      color: theme[8],
                     }}
                   >
                     add
