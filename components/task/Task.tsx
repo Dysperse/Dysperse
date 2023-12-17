@@ -224,6 +224,7 @@ export function TaskDrawer({ children, id }) {
   }, []);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
+  const { width } = useWindowDimensions();
 
   // Fetch data
   const { data, error } = useSWR(["space/tasks/task", { id }]);
@@ -233,10 +234,10 @@ export function TaskDrawer({ children, id }) {
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        snapPoints={["50%", "80%"]}
+        snapPoints={width > 600 ? ["90%"] : ["50%", "80%"]}
         onClose={handleClose}
         style={{
-          maxWidth: 700,
+          maxWidth: 550,
           margin: "auto",
         }}
       >
