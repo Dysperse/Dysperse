@@ -2,7 +2,9 @@ import { useSession } from "@/context/AuthProvider";
 import { OpenTabsProvider, useOpenTab } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
-import AccountNavbar, { NavbarProfilePicture } from "@/ui/account-navbar";
+import AccountNavbar, {
+  NavbarProfilePicture,
+} from "@/components/layout/account-navbar";
 import Navbar from "@/ui/navbar";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
@@ -11,13 +13,10 @@ import isBetween from "dayjs/plugin/isBetween";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
-import * as NavigationBar from "expo-navigation-bar";
-import { Redirect, Stack, router, usePathname } from "expo-router";
+import { Redirect, Stack, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
-  Platform,
-  Pressable,
   StatusBar,
   StyleSheet,
   View,
@@ -26,15 +25,17 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SWRConfig } from "swr";
-import { CreateDrawer } from "../../components/create-drawer";
-import { OpenTabsList } from "../../components/tabs/carousel";
-import { TabDrawer } from "../../components/tabs/list";
+import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
+import { TabDrawer } from "../../components/layout/bottom-navigation/tabs/list";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import { KeysProvider } from "react-native-hotkeys";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "@/ui/toast.config";
+import { BottomAppBar } from "../../components/layout/bottom-navigation";
 
 dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
@@ -100,78 +101,6 @@ function TabHandler() {
   }, [activeTab, pathname, setActiveTab, session]);
 
   return null;
-}
-
-export const getBottomNavigationHeight = (pathname) =>
-  pathname === "/" ? 57 : 57 + 50;
-
-function BottomAppBar() {
-  const pathname = usePathname();
-  const shouldHide = ["/account", "/tabs", "/open"].includes(pathname);
-  const theme = useColorTheme();
-
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      const color = shouldHide ? "#fff" : theme[1];
-      NavigationBar.setBackgroundColorAsync(color);
-      NavigationBar.setBorderColorAsync(color);
-      NavigationBar.setButtonStyleAsync("dark");
-    }
-  }, [Platform.OS, shouldHide]);
-
-  return shouldHide ? null : (
-    <View
-      style={{
-        height: getBottomNavigationHeight(pathname),
-        backgroundColor: theme[1],
-        ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-      }}
-    >
-      <View style={{ height: 2, backgroundColor: theme[3] }} />
-      {pathname !== "/" && <OpenTabsList />}
-      <View
-        style={{ height: 55, paddingTop: 4 }}
-        className="px-5 flex-row items-center justify-between"
-      >
-        <Pressable
-          onPress={() => router.push("/")}
-          className="p-2.5 pr-20 -ml-2.5 active:opacity-50"
-        >
-          <Icon
-            size={30}
-            filled={pathname === "/"}
-            style={{ color: theme[11] }}
-          >
-            home
-          </Icon>
-        </Pressable>
-        <CreateDrawer>
-          <Pressable
-            // className="w-10 h-10 justify-center items-center rounded-full"
-            style={({ pressed, hovered }: any) => ({
-              width: 40,
-              height: 40,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 99,
-              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-            })}
-          >
-            <Icon style={{ color: theme[11] }} size={30}>
-              add
-            </Icon>
-          </Pressable>
-        </CreateDrawer>
-        <TabDrawer>
-          <Pressable className="active:opacity-50 p-2.5 pl-20 -mr-2.5">
-            <Icon size={30} style={{ color: theme[11] }}>
-              grid_view
-            </Icon>
-          </Pressable>
-        </TabDrawer>
-      </View>
-    </View>
-  );
 }
 
 function DesktopHeader() {
@@ -299,6 +228,7 @@ export default function AppLayout() {
                 </Stack>
                 {width < 600 && <BottomAppBar />}
               </View>
+              <Toast config={toastConfig(theme)} />
             </SWRConfig>
           </BottomSheetModalProvider>
         </OpenTabsProvider>

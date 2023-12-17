@@ -29,7 +29,7 @@ export function Tab({
   return (
     <View
       style={{
-        padding: isList ? 0 : 8,
+        padding: isList ? 0 : 5,
         paddingBottom: 0,
         paddingHorizontal: isList ? 0 : 3,
         flex: 1,

@@ -6,17 +6,17 @@ const ctx = (require as any).context(
 );
 if (ctx.keys().length) ctx(ctx.keys()[0]);
 
+import { useFonts } from "expo-font";
 import { Slot } from "expo-router";
-import { SessionProvider } from "../context/AuthProvider";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
-import { useFonts } from "expo-font";
+import { SessionProvider } from "../context/AuthProvider";
 
 SplashScreen.preventAutoHideAsync();
 
-import { NativeWindStyleSheet } from "nativewind";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import { NativeWindStyleSheet } from "nativewind";
 
 NativeWindStyleSheet.setOutput({
   default: "native",

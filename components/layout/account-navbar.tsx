@@ -4,20 +4,17 @@ import { Link } from "expo-router";
 import React, { useMemo } from "react";
 import { Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useUser } from "../context/useUser";
-import Icon from "./Icon";
-import IconButton from "./IconButton";
-import Text from "./Text";
-import { useColorTheme } from "./color/theme-provider";
-import Logo from "./logo";
+import { useUser } from "../../context/useUser";
+import Icon from "../../ui/Icon";
+import IconButton from "../../ui/IconButton";
+import Text from "../../ui/Text";
+import { useColorTheme } from "../../ui/color/theme-provider";
+import Logo from "../../ui/logo";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
   return (
-    <Link
-      href="/(app)/account"
-      style={{ marginBottom: Platform.OS === "android" ? -10 : 0 }}
-    >
+    <Link href="/(app)/account">
       <Image
         source={{
           uri: session?.user?.Profile?.picture,
@@ -36,8 +33,8 @@ export default function AccountNavbar(props) {
 
   const search = useMemo(
     () => (
-      <IconButton>
-        <Icon size={30}>bolt</Icon>
+      <IconButton buttonStyle={{ marginRight: 10 }}>
+        <Icon size={30}>smart_button</Icon>
       </IconButton>
     ),
     []

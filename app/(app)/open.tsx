@@ -3,7 +3,7 @@ import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
-import Emoji from "@/ui/emoji";
+import Emoji from "@/ui/Emoji";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";

@@ -8,6 +8,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WeatherWidget } from "../../components/home/weather/widget";
 import { styles } from "@/components/home/styles";
+import { Button } from "@/ui/Button";
+import Toast from "react-native-toast-message";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -35,6 +37,8 @@ function Greeting() {
         textShadowColor: theme[7],
         textShadowRadius: 30,
         textShadowOffset: { height: 5, width: 5 },
+        height: 100,
+        paddingTop: 20,
       }}
       textClassName="uppercase text-5xl mt-5"
     >
@@ -135,7 +139,11 @@ export default function Index() {
 
       <Text
         textClassName="uppercase text-sm mt-2 opacity-80"
-        style={{ fontFamily: "body_700", color: theme[11] }}
+        style={{
+          fontFamily: "body_700",
+          color: theme[11],
+          marginTop: -25,
+        }}
       >
         Today's rundown
       </Text>

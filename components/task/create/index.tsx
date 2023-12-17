@@ -14,6 +14,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, Pressable, TextInput, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 function ColorPicker({ children, color, setColor }) {
   const ref = useRef<BottomSheetModal>(null);
@@ -82,7 +83,14 @@ export default function CreateTask({
       lastName: "",
     },
   });
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    console.log(data);
+    Toast.show({
+      type: "success",
+      text1: "Hello",
+      text2: JSON.stringify(data),
+    });
+  };
 
   // callbacks
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -128,7 +136,7 @@ export default function CreateTask({
                 <Icon>attach_file</Icon>
               </IconButton>
               <Pressable
-                onPress={onSubmit}
+                onPress={handleSubmit(onSubmit)}
                 className="rounded-full ml-auto w-14 items-center justify-center h-9 active:opacity-60"
                 style={{ backgroundColor: theme[3] }}
               >
@@ -185,9 +193,12 @@ export default function CreateTask({
                     }
                   }}
                   value={value}
-                  placeholderTextColor="#aaa"
+                  placeholderTextColor={theme[5]}
+                  cursorColor={theme[7]}
+                  selectionColor={theme[4]}
                   multiline
                   style={{
+                    color: theme[11],
                     fontFamily: "body_400",
                     fontSize: 35,
                     paddingHorizontal: 20,

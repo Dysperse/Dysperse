@@ -1,11 +1,12 @@
 import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef } from "react";
-import { Pressable, View } from "react-native";
-import CreateTask from "./perspectives/agenda/CreateTask";
+import { View } from "react-native";
+import CreateTask from "../../task/create";
 
 export const CreateDrawer = ({ children }) => {
   const ref = useRef<BottomSheetModal>(null);
@@ -43,9 +44,7 @@ export const CreateDrawer = ({ children }) => {
               name,
             }) => (
               <Wrapper key={name}>
-                <Pressable
-                  className="flex-row items-center p-2.5 rounded-2xl active:bg-gray-300"
-                  style={{ gap: 20 }}
+                <ListItemButton
                   onPress={() => {
                     callback();
                     handleClose();
@@ -56,8 +55,8 @@ export const CreateDrawer = ({ children }) => {
                       {icon}
                     </Icon>
                   </View>
-                  <Text>{name}</Text>
-                </Pressable>
+                  <ListItemText>{name}</ListItemText>
+                </ListItemButton>
               </Wrapper>
             )
           )}

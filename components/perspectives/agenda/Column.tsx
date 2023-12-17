@@ -1,17 +1,17 @@
+import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
-import { Task } from "@/components/task/Task";
+import { Task } from "@/components/task";
 import { Button } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Emoji from "@/ui/emoji";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
 import React from "react";
 import { FlatList, StyleSheet, View, useWindowDimensions } from "react-native";
-import CreateTask from "./CreateTask";
-import { getBottomNavigationHeight } from "@/app/(app)/_layout";
+import CreateTask from "../../task/create";
 
 const styles = StyleSheet.create({
   columnCard: {
@@ -97,7 +97,7 @@ export function Column({ header, column }) {
                   }}
                 >
                   <Icon
-                    size={23}
+                    size={20}
                     style={{
                       lineHeight: 24.5,
                       color: theme[8],
