@@ -62,7 +62,7 @@ export function OpenTabsList() {
       >
         <View style={{ paddingTop: 8, paddingRight: 3 }}>
           <IconButton
-            buttonStyle={({ pressed, hovered }) => ({
+            style={({ pressed, hovered }) => ({
               backgroundColor:
                 pathname === "/"
                   ? theme[pressed ? 4 : 3]
@@ -94,7 +94,7 @@ export function OpenTabsList() {
           style={{
             width: "100%",
             justifyContent: "center",
-            height: 50,
+            height: 53,
           }}
           data={session.user.tabs}
           pagingEnabled

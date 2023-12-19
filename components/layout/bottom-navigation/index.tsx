@@ -10,7 +10,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { addHslAlpha } from "@/ui/color";
 
 export const getBottomNavigationHeight = (pathname) =>
-  pathname === "/" ? 57 : 57 + 50;
+  pathname === "/" ? 58 : 58 + 50;
 
 export function BottomAppBar() {
   const pathname = usePathname();
@@ -43,8 +43,8 @@ export function BottomAppBar() {
       />
       {pathname !== "/" && <OpenTabsList />}
       <View
-        style={{ height: 55, paddingTop: 2 }}
-        className="px-5 flex-row items-center justify-between"
+        style={{ height: 58, paddingTop: 1 }}
+        className="px-6 flex-row items-center justify-between"
       >
         <Pressable
           onPress={() => router.push("/")}

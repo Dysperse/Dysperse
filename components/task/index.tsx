@@ -52,17 +52,17 @@ function TaskDrawerContent({ data, handleClose }) {
         >
           <IconButton
             onPress={handleClose}
-            buttonStyle={{ backgroundColor: theme[3] }}
+            style={{ backgroundColor: theme[3] }}
           >
             <Icon>close</Icon>
           </IconButton>
           <View className="flex-1" />
-          <IconButton buttonStyle={{ backgroundColor: theme[3] }}>
+          <IconButton style={{ backgroundColor: theme[3] }}>
             <Icon>dark_mode</Icon>
           </IconButton>
           <IconButton
             className="bg-gray-200 flex-row px-3 ml-1.5"
-            buttonStyle={{
+            style={{
               backgroundColor: theme[3],
               width: "auto",
               flexDirection: "row",

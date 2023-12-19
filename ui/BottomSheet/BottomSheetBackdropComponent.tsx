@@ -6,6 +6,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { useColorTheme } from "../color/theme-provider";
+import { BlurView } from "expo-blur";
 
 export const BottomSheetBackdropComponent = ({
   animatedIndex,
@@ -17,7 +18,7 @@ export const BottomSheetBackdropComponent = ({
     opacity: interpolate(
       animatedIndex.value,
       [-1, 0],
-      [0, 0.5],
+      [0, 0.35],
       Extrapolate.CLAMP
     ),
   }));
@@ -27,12 +28,23 @@ export const BottomSheetBackdropComponent = ({
     () => [
       style,
       {
-        backgroundColor: theme[7],
+        backgroundColor: "#000",
       },
       containerAnimatedStyle,
     ],
     [style, containerAnimatedStyle]
   );
 
-  return <Animated.View style={containerStyle} />;
+  return (
+    // <BlurView
+    //   intensity={5}
+    //   style={{
+    //     height: "100%",
+    //     width: "100%",
+    //     position: "absolute",
+    //   }}
+    // >
+    <Animated.View style={containerStyle} />
+    // </BlurView>
+  );
 };

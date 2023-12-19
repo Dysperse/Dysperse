@@ -29,7 +29,7 @@ export function Tab({
   return (
     <View
       style={{
-        padding: isList ? 0 : 5,
+        padding: isList ? 0 : 6,
         paddingBottom: 0,
         paddingHorizontal: isList ? 0 : 3,
         flex: 1,
@@ -74,7 +74,9 @@ export function Tab({
             : {
                 backgroundColor: isList
                   ? "transparent"
-                  : theme[pressed ? 5 : hovered ? 4 : 3],
+                  : theme[
+                      activeTab === tab.id ? 5 : pressed ? 4 : hovered ? 3 : 3
+                    ],
               }),
         })}
       >

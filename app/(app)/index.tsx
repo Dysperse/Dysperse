@@ -1,3 +1,4 @@
+import { styles } from "@/components/home/styles";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -7,9 +8,6 @@ import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WeatherWidget } from "../../components/home/weather/widget";
-import { styles } from "@/components/home/styles";
-import { Button } from "@/ui/Button";
-import Toast from "react-native-toast-message";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -30,20 +28,30 @@ function Greeting() {
   }, []);
 
   return (
-    <Text
+    <View
       style={{
-        fontFamily: "heading",
-        color: theme[12],
-        textShadowColor: theme[7],
-        textShadowRadius: 30,
-        textShadowOffset: { height: 5, width: 5 },
-        height: 100,
-        paddingTop: 20,
+        height: 200,
+        alignItems: "center",
+        justifyContent: "center",
       }}
-      textClassName="uppercase text-5xl mt-5"
     >
-      {greeting}
-    </Text>
+      <Text
+        style={{
+          fontFamily: "heading",
+          textAlign: "center",
+          color: theme[12],
+          textShadowColor: theme[7],
+          textShadowRadius: 30,
+          height: 120,
+          paddingTop: 20,
+          width: "100%",
+          textShadowOffset: { height: 5, width: 5 },
+        }}
+        textClassName="uppercase text-5xl mt-5"
+      >
+        {greeting}
+      </Text>
+    </View>
   );
 }
 
@@ -142,7 +150,6 @@ export default function Index() {
         style={{
           fontFamily: "body_700",
           color: theme[11],
-          marginTop: -25,
         }}
       >
         Today's rundown

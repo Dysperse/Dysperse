@@ -1,12 +1,18 @@
+import AccountNavbar, {
+  NavbarProfilePicture,
+} from "@/components/layout/account-navbar";
 import { useSession } from "@/context/AuthProvider";
 import { OpenTabsProvider, useOpenTab } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
-import AccountNavbar, {
-  NavbarProfilePicture,
-} from "@/components/layout/account-navbar";
+import IconButton from "@/ui/IconButton";
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import Logo from "@/ui/logo";
 import Navbar from "@/ui/navbar";
+import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { PortalProvider } from "@gorhom/portal";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import isBetween from "dayjs/plugin/isBetween";
@@ -24,18 +30,11 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import { SWRConfig } from "swr";
+import { BottomAppBar } from "../../components/layout/bottom-navigation";
 import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
 import { TabDrawer } from "../../components/layout/bottom-navigation/tabs/list";
-import { addHslAlpha, useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import Text from "@/ui/Text";
-import { KeysProvider } from "react-native-hotkeys";
-import IconButton from "@/ui/IconButton";
-import Logo from "@/ui/logo";
-import Toast from "react-native-toast-message";
-import { toastConfig } from "@/ui/toast.config";
-import { BottomAppBar } from "../../components/layout/bottom-navigation";
 
 dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
@@ -69,7 +68,7 @@ function Sidebar() {
 
       <TabDrawer>
         <IconButton
-          buttonStyle={{
+          style={{
             width: 50,
             height: 50,
           }}
@@ -147,92 +146,94 @@ export default function AppLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <ColorThemeProvider theme={theme}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <OpenTabsProvider>
-          <TabHandler />
-          <BottomSheetModalProvider>
-            <SWRConfig
-              value={{
-                fetcher: async ([
-                  resource,
-                  params,
-                  host = "https://api.dysperse.com",
-                  init = {},
-                ]) => {
-                  const url = `${host}/${resource}?${new URLSearchParams(
-                    params
-                  ).toString()}`;
-                  const res = await fetch(url, {
-                    headers: {
-                      Authorization: `Bearer ${session}`,
-                    },
-                    ...init,
-                  });
-                  return await res.json();
-                },
-              }}
-            >
-              <StatusBar
-                barStyle={!isDark ? "dark-content" : "light-content"}
-              />
-              <View
-                style={{
-                  flexDirection: width > 600 ? "row" : "column",
-                  height: "100%",
+    <PortalProvider>
+      <ColorThemeProvider theme={theme}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <OpenTabsProvider>
+            <TabHandler />
+            <BottomSheetModalProvider>
+              <SWRConfig
+                value={{
+                  fetcher: async ([
+                    resource,
+                    params,
+                    host = "https://api.dysperse.com",
+                    init = {},
+                  ]) => {
+                    const url = `${host}/${resource}?${new URLSearchParams(
+                      params
+                    ).toString()}`;
+                    const res = await fetch(url, {
+                      headers: {
+                        Authorization: `Bearer ${session}`,
+                      },
+                      ...init,
+                    });
+                    return await res.json();
+                  },
                 }}
               >
-                {width > 600 && <Sidebar />}
-                <Stack
-                  screenOptions={{
-                    header:
-                      width > 600
-                        ? DesktopHeader
-                        : (props: any) => <AccountNavbar {...props} />,
-                    headerTransparent: true,
-                    fullScreenGestureEnabled: true,
-                    contentStyle: {
-                      backgroundColor: theme[width > 600 ? 2 : 1],
-                    },
+                <StatusBar
+                  barStyle={!isDark ? "dark-content" : "light-content"}
+                />
+                <View
+                  style={{
+                    flexDirection: width > 600 ? "row" : "column",
+                    height: "100%",
                   }}
                 >
-                  <Stack.Screen
-                    name="index"
-                    options={{
-                      animation: "fade",
+                  {width > 600 && <Sidebar />}
+                  <Stack
+                    screenOptions={{
+                      header:
+                        width > 600
+                          ? DesktopHeader
+                          : (props: any) => <AccountNavbar {...props} />,
+                      headerTransparent: true,
+                      fullScreenGestureEnabled: true,
+                      contentStyle: {
+                        backgroundColor: theme[width > 600 ? 2 : 1],
+                      },
                     }}
-                  />
-                  <Stack.Screen
-                    name="account"
-                    options={{
-                      header: (props) => <Navbar {...props} />,
-                      headerTitle: "Account",
-                      animation: "slide_from_right",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="open"
-                    options={{
-                      header: (props) => <Navbar {...props} />,
-                      animation: "fade",
-                      presentation: "modal",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="perspectives/agenda/[type]/[start]"
-                    options={{
-                      animation: "fade",
-                      header: width > 600 ? DesktopHeader : () => null,
-                    }}
-                  />
-                </Stack>
-                {width < 600 && <BottomAppBar />}
-              </View>
-              <Toast config={toastConfig(theme)} />
-            </SWRConfig>
-          </BottomSheetModalProvider>
-        </OpenTabsProvider>
-      </GestureHandlerRootView>
-    </ColorThemeProvider>
+                  >
+                    <Stack.Screen
+                      name="index"
+                      options={{
+                        animation: "fade",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="account"
+                      options={{
+                        header: (props) => <Navbar {...props} />,
+                        headerTitle: "Account",
+                        animation: "slide_from_right",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="open"
+                      options={{
+                        header: (props) => <Navbar {...props} />,
+                        animation: "fade",
+                        presentation: "modal",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="perspectives/agenda/[type]/[start]"
+                      options={{
+                        animation: "fade",
+                        header: width > 600 ? DesktopHeader : () => null,
+                      }}
+                    />
+                  </Stack>
+                  {width < 600 && <BottomAppBar />}
+                </View>
+                <Toast config={toastConfig(theme)} />
+              </SWRConfig>
+            </BottomSheetModalProvider>
+          </OpenTabsProvider>
+        </GestureHandlerRootView>
+      </ColorThemeProvider>
+    </PortalProvider>
   );
 }

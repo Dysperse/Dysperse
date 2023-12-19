@@ -1,20 +1,91 @@
-import { orange } from "@/themes";
 import BottomSheet from "@/ui/BottomSheet";
-import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
-import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, Pressable, TextInput, View } from "react-native";
+import {
+  Modal,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+  useColorScheme,
+} from "react-native";
 import Toast from "react-native-toast-message";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuContainer: {
+    position: "absolute",
+    backgroundColor: "white",
+    borderRadius: 8,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    zIndex: 100000000, // Ensure the menu is above other components
+  },
+});
+
+function Menu({ children }) {
+  const [isMenuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
+  const showMenu = (event) => {
+    setMenuPosition({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
+    setMenuVisible(true);
+  };
+
+  const hideMenu = () => {
+    setMenuVisible(false);
+  };
+
+  const trigger = cloneElement(children, {
+    onPress: showMenu,
+  });
+
+  return (
+    <>
+      {trigger}
+      <Text>{isMenuVisible ? 1 : 0}</Text>
+
+      {isMenuVisible && (
+        <View
+          style={[
+            // styles.menuContainer,
+            {
+              transform: [
+                { translateX: menuPosition.x },
+                { translateY: menuPosition.y },
+              ],
+              height: 100,
+              width: 100,
+            },
+          ]}
+        >
+          <TouchableOpacity onPress={hideMenu}>
+            <Text>Option 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={hideMenu}>
+            <Text>Option 2</Text>
+          </TouchableOpacity>
+          {/* Add more menu options as needed */}
+        </View>
+      )}
+    </>
+  );
+}
 
 function ColorPicker({ children, color, setColor }) {
   const ref = useRef<BottomSheetModal>(null);
@@ -66,6 +137,7 @@ export default function CreateTask({
     date: dayjs().utc(),
   },
 }) {
+  const orange = useColor("orange", useColorScheme() === "dark");
   const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
 
@@ -123,25 +195,20 @@ export default function CreateTask({
             }}
           >
             <View
-              className="flex-row items-center mt-auto border-t py-2 h-full"
+              className="flex-row items-center mt-auto pb-2 h-full"
               style={{ backgroundColor: theme[1], borderColor: theme[5] }}
             >
-              <IconButton style={{ marginLeft: -5 }}>
-                <Icon>location_on</Icon>
-              </IconButton>
-              <IconButton>
-                <Icon>sticky_note_2</Icon>
-              </IconButton>
-              <IconButton>
-                <Icon>attach_file</Icon>
-              </IconButton>
-              <Pressable
-                onPress={handleSubmit(onSubmit)}
-                className="rounded-full ml-auto w-14 items-center justify-center h-9 active:opacity-60"
-                style={{ backgroundColor: theme[3] }}
-              >
-                <Icon style={{ marginTop: -4 }}>add</Icon>
-              </Pressable>
+              <Menu>
+                <IconButton
+                  variant="filled"
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                >
+                  <Icon size={30}>add</Icon>
+                </IconButton>
+              </Menu>
             </View>
           </View>
         )}
@@ -157,11 +224,19 @@ export default function CreateTask({
             <Chip
               outlined={showClose}
               onPress={handlePriorityChange}
-              icon={<Icon>priority_high</Icon>}
+              icon={
+                <Icon
+                  style={{
+                    ...(pinned && { color: orange[11] }),
+                  }}
+                >
+                  priority_high
+                </Icon>
+              }
               style={{
                 ...(pinned && {
-                  backgroundColor: orange["orange4"],
-                  borderColor: orange["orange4"],
+                  backgroundColor: orange[4],
+                  borderColor: orange[4],
                 }),
               }}
             />
@@ -173,6 +248,7 @@ export default function CreateTask({
               icon={<Icon>calendar_today</Icon>}
               label={date.format("MMM Do")}
             />
+            <Chip icon={<Icon>north</Icon>} style={{ marginLeft: "auto" }} />
           </View>
           <View className="flex-1">
             <Controller

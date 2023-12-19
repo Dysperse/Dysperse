@@ -49,7 +49,7 @@ function TabListTab({
       />
       {!isEdit && (
         <IconButton
-          buttonStyle={{ marginRight: 20 }}
+          style={{ marginRight: 20 }}
           onPress={async () => {
             setLoading(true);
             await handleDelete(item.id);
