@@ -1,11 +1,14 @@
 import { useOpenTab } from "@/context/tabs";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 
 export function Tab({
@@ -25,6 +28,22 @@ export function Tab({
   const redPalette = useColor("red", true);
   const colors = isPerspective ? redPalette : redPalette;
   const { width } = useWindowDimensions();
+  const { sessionToken, session, mutate } = useUser();
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      try {
+        await sendApiRequest(sessionToken, "DELETE", "user/tabs", {
+          id,
+        });
+        await mutate();
+      } catch (err) {
+        alert("Something went wrong. Please try again later.");
+        console.log(err);
+      }
+    },
+    [session]
+  );
 
   return (
     <View
@@ -103,6 +122,19 @@ export function Tab({
         >
           {tab.tabData.label}
         </Text>
+        <IconButton
+          style={{
+            marginLeft: "auto",
+            display: activeTab === tab.id ? "flex" : "none",
+          }}
+          onPress={async () => {
+            await handleDelete(tab.id);
+          }}
+        >
+          <Icon size={23} style={{ color: theme[11], opacity: 0.6 }}>
+            close
+          </Icon>
+        </IconButton>
       </Pressable>
     </View>
   );

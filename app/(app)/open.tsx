@@ -1,13 +1,13 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
-import Emoji from "@/ui/Emoji";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -19,7 +19,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import useSWR from "swr";
 
 const styles = StyleSheet.create({
   sectionHeader: {
@@ -116,91 +115,90 @@ function Button({ section, item }) {
   );
 }
 
-const defaultSections = [
-  {
-    title: "Perspectives",
-    data: [
-      {
-        label: "Weeks",
-        icon: "calendar_view_week",
-        href: "/perspectives/agenda/week/" + dayjs().format("YYYY-MM-DD"),
-      },
-      {
-        label: "Months",
-        icon: "calendar_view_month",
-        href: "/perspectives/agenda/month/" + dayjs().format("YYYY-MM-DD"),
-      },
-      {
-        label: "Years",
-        icon: "view_compact",
-        href: "/perspectives/agenda/year/" + dayjs().format("YYYY-MM-DD"),
-      },
-      {
-        label: "Upcoming",
-        icon: "calendar_clock",
-        href: "/perspectives/backlog",
-      },
-      {
-        label: "Backlog",
-        icon: "event_upcoming",
-        href: "/perspectives/upcoming",
-      },
-      {
-        label: "Unscheduled",
-        icon: "history_toggle_off",
-        href: "/perspectives/unscheduled",
-      },
-      {
-        label: "Completed",
-        icon: "check_circle",
-        href: "/perspectives/completed",
-      },
-      {
-        label: "Difficulty",
-        icon: "priority_high",
-        href: "/perspectives/difficulty",
-      },
-    ],
-  },
-  {
-    title: "Collections",
-    data: [
-      {
-        label: "Create",
-        icon: "add",
-        href: "/collections/create",
-      },
-    ],
-  },
-];
+export const getSidebarItems = async (session) => {
+  const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
 
-const views = [{ name: "Weeks", icon: "", href: "" }];
-
-export default function Page() {
-  const { data: collections } = useSWR(["space/tasks/boards"]);
-  const [query, setQuery] = useState("");
-  const { top } = useSafeAreaInsets();
-  const sections = collections
-    ? [
-        ...defaultSections.filter((e) => e.title !== "Collections"),
+  return [
+    {
+      title: "Perspectives",
+      data: [
         {
-          title: "Collections",
-          data: [
-            ...collections.map((collection) => ({
+          label: "Weeks",
+          icon: "calendar_view_week",
+          href: "/perspectives/agenda/week/" + dayjs().format("YYYY-MM-DD"),
+        },
+        {
+          label: "Months",
+          icon: "calendar_view_month",
+          href: "/perspectives/agenda/month/" + dayjs().format("YYYY-MM-DD"),
+        },
+        {
+          label: "Years",
+          icon: "view_compact",
+          href: "/perspectives/agenda/year/" + dayjs().format("YYYY-MM-DD"),
+        },
+        {
+          label: "Upcoming",
+          icon: "calendar_clock",
+          href: "/perspectives/backlog",
+        },
+        {
+          label: "Backlog",
+          icon: "event_upcoming",
+          href: "/perspectives/upcoming",
+        },
+        {
+          label: "Unscheduled",
+          icon: "history_toggle_off",
+          href: "/perspectives/unscheduled",
+        },
+        {
+          label: "Completed",
+          icon: "check_circle",
+          href: "/perspectives/completed",
+        },
+        {
+          label: "Difficulty",
+          icon: "priority_high",
+          href: "/perspectives/difficulty",
+        },
+      ],
+    },
+    {
+      title: "Collections",
+      data: [
+        {
+          label: "Create",
+          icon: "add",
+          href: "/collections/create",
+        },
+        ...(req && Array.isArray(req)
+          ? req.map((collection) => ({
               collection,
               href: `/collections/${collection.id}`,
-            })),
-            {
-              label: "Create",
-              icon: "add",
-              href: "/collections/create",
-            },
-          ],
-        },
-      ]
-    : defaultSections;
+            }))
+          : [{}]),
+      ],
+    },
+  ];
+};
 
-  const filteredSections = sections
+export default function Page() {
+  const [query, setQuery] = useState("");
+  const { top } = useSafeAreaInsets();
+  const { session } = useSession();
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    getSidebarItems(session).then((sections) => {
+      setData(sections);
+      setIsLoading(false);
+    });
+  }, []);
+
+  const filteredSections = data
     .map((section) => ({
       ...section,
       data: section.data.filter(
@@ -211,7 +209,9 @@ export default function Page() {
     }))
     .filter((section) => section.data.length > 0);
 
-  return (
+  return isLoading ? (
+    <ActivityIndicator />
+  ) : (
     <SectionList
       ListHeaderComponent={
         <>

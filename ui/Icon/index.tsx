@@ -1,6 +1,7 @@
-import { Text } from "react-native";
+import { StyleProp, Text, TextStyle } from "react-native";
 import { Platform } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
+import React from "react";
 
 export default function Icon({
   size = 24,
@@ -9,6 +10,13 @@ export default function Icon({
   style = {},
   textClassName = "",
   bold = false,
+}: {
+  size?: number;
+  children?: React.ReactNode;
+  filled?: boolean;
+  style?: StyleProp<TextStyle>;
+  textClassName?: string;
+  bold?: boolean;
 }) {
   const theme = useColorTheme();
   return (
@@ -29,7 +37,7 @@ export default function Icon({
           lineHeight: size + 4,
         }),
         ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-        ...(style && { ...style }),
+        ...(style && { ...(style as any) }),
       }}
     >
       {children}

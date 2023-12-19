@@ -11,6 +11,7 @@ import Icon from "@/ui/Icon";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useOpenTab } from "@/context/tabs";
 import { addHslAlpha } from "@/ui/color";
+import { LinearGradient } from "expo-linear-gradient";
 
 const PAGE_WIDTH = window.width;
 
@@ -52,15 +53,19 @@ export function OpenTabsList() {
 
   return session ? (
     Platform.OS === "web" ? (
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
+      <View
         style={{
           height: 64,
           flexDirection: "row",
         }}
       >
-        <View style={{ paddingTop: 8, paddingRight: 3 }}>
+        <View
+          style={{
+            paddingTop: 8,
+            paddingRight: 3,
+            shadowColor: "red",
+          }}
+        >
           <IconButton
             style={({ pressed, hovered }) => ({
               backgroundColor:
@@ -81,10 +86,35 @@ export function OpenTabsList() {
             <Icon filled={pathname === "/"}>home</Icon>
           </IconButton>
         </View>
-        {session.user.tabs.map((tab) => (
-          <Tab tab={tab} key={tab.id} />
-        ))}
-      </ScrollView>
+        <LinearGradient
+          colors={[theme[2], "transparent"]}
+          style={{ width: 17, marginRight: -17, marginLeft: -3, zIndex: 99 }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+        />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{
+            height: 64,
+            flexDirection: "row",
+            paddingRight: 20,
+            paddingLeft: 10,
+            paddingTop: 1.5,
+          }}
+          contentContainerStyle={{ paddingRight: 3 }}
+        >
+          {session.user.tabs.map((tab) => (
+            <Tab tab={tab} key={tab.id} />
+          ))}
+        </ScrollView>
+        <LinearGradient
+          colors={["transparent", theme[2]]}
+          style={{ width: 30, marginLeft: -30, zIndex: 99 }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+        />
+      </View>
     ) : (
       <View style={{ flex: 1 }}>
         <Carousel

@@ -1,3 +1,4 @@
+import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
@@ -7,13 +8,19 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
-import { cloneElement, useCallback, useRef, useState } from "react";
+import React, {
+  ReactElement,
+  cloneElement,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Modal,
   Platform,
+  Pressable,
   StyleSheet,
   TextInput,
   View,
@@ -36,53 +43,58 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     zIndex: 100000000, // Ensure the menu is above other components
   },
+  attachmentCard: {
+    borderRadius: 25,
+    padding: 20,
+    flexDirection: "column",
+    flex: 1,
+  },
+  attachmentCardText: {
+    fontSize: 20,
+    marginTop: 5,
+    paddingLeft: 5,
+    fontFamily: "body_700",
+  },
 });
 
-function Menu({ children }) {
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
-  const showMenu = (event) => {
-    setMenuPosition({ x: event.nativeEvent.pageX, y: event.nativeEvent.pageY });
-    setMenuVisible(true);
-  };
-
-  const hideMenu = () => {
-    setMenuVisible(false);
-  };
-
-  const trigger = cloneElement(children, {
-    onPress: showMenu,
-  });
+function Menu({
+  trigger,
+  children,
+  height = ["30%"],
+  footer = () => null,
+}: {
+  trigger: ReactElement;
+  children: React.ReactNode;
+  height: (string | number)[];
+  footer?: () => React.ReactNode;
+}) {
+  const theme = useColorTheme();
+  const ref = useRef<BottomSheetModal>(null);
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+  const _trigger = cloneElement(trigger, { onPress: handleOpen });
 
   return (
     <>
-      {trigger}
-      <Text>{isMenuVisible ? 1 : 0}</Text>
-
-      {isMenuVisible && (
-        <View
-          style={[
-            // styles.menuContainer,
-            {
-              transform: [
-                { translateX: menuPosition.x },
-                { translateY: menuPosition.y },
-              ],
-              height: 100,
-              width: 100,
-            },
-          ]}
-        >
-          <TouchableOpacity onPress={hideMenu}>
-            <Text>Option 1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={hideMenu}>
-            <Text>Option 2</Text>
-          </TouchableOpacity>
-          {/* Add more menu options as needed */}
-        </View>
-      )}
+      {_trigger}
+      <BottomSheet
+        sheetRef={ref}
+        onClose={handleClose}
+        snapPoints={height}
+        containerStyle={{
+          maxWidth: 400,
+          margin: "auto",
+        }}
+        backgroundStyle={{
+          borderRadius: 40,
+          backgroundColor: theme[1],
+        }}
+        detached
+        footerComponent={footer}
+        bottomInset={20}
+      >
+        {children}
+      </BottomSheet>
     </>
   );
 }
@@ -156,7 +168,6 @@ export default function CreateTask({
     },
   });
   const onSubmit = (data) => {
-    console.log(data);
     Toast.show({
       type: "success",
       text1: "Hello",
@@ -189,25 +200,63 @@ export default function CreateTask({
             className="px-5"
             style={{
               height: 60,
-              shadowColor: "#eee",
-              shadowRadius: 20,
-              shadowOpacity: 1,
+              shadowColor: theme[3],
+              shadowOffset: { width: 0, height: -40 },
+              shadowRadius: 40,
+              shadowOpacity: 0.3,
             }}
           >
             <View
-              className="flex-row items-center mt-auto pb-2 h-full"
+              className="flex-row items-center mt-auto py-2 h-full"
               style={{ backgroundColor: theme[1], borderColor: theme[5] }}
             >
-              <Menu>
-                <IconButton
-                  variant="filled"
+              <Menu
+                height={[200]}
+                trigger={
+                  <IconButton
+                    variant="filled"
+                    style={{
+                      width: 40,
+                      height: 40,
+                    }}
+                  >
+                    <Icon size={30}>add</Icon>
+                  </IconButton>
+                }
+              >
+                <View
                   style={{
-                    width: 40,
-                    height: 40,
+                    flexDirection: "row",
+                    gap: 20,
+                    marginTop: 20,
+                    paddingHorizontal: 20,
                   }}
                 >
-                  <Icon size={30}>add</Icon>
-                </IconButton>
+                  <Pressable
+                    style={({ pressed, hovered }: any) => [
+                      styles.attachmentCard,
+                      { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+                    ]}
+                  >
+                    <Avatar size={45}>
+                      <Icon style={{ transform: [{ rotate: "-45deg" }] }}>
+                        attachment
+                      </Icon>
+                    </Avatar>
+                    <Text style={styles.attachmentCardText}>Location</Text>
+                  </Pressable>
+                  <Pressable
+                    style={({ pressed, hovered }: any) => [
+                      styles.attachmentCard,
+                      { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+                    ]}
+                  >
+                    <Avatar size={45}>
+                      <Icon>cloud</Icon>
+                    </Avatar>
+                    <Text style={styles.attachmentCardText}>Image</Text>
+                  </Pressable>
+                </View>
               </Menu>
             </View>
           </View>
@@ -248,7 +297,19 @@ export default function CreateTask({
               icon={<Icon>calendar_today</Icon>}
               label={date.format("MMM Do")}
             />
-            <Chip icon={<Icon>north</Icon>} style={{ marginLeft: "auto" }} />
+            <Chip
+              icon={<Icon>north</Icon>}
+              style={{ marginLeft: "auto" }}
+              onPress={() => {
+                handleSubmit(onSubmit)();
+                if (errors) {
+                  Toast.show({
+                    type: "error",
+                    text1: "Type in a task name",
+                  });
+                }
+              }}
+            />
           </View>
           <View className="flex-1">
             <Controller

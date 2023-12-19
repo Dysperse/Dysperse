@@ -5,6 +5,7 @@ export interface DTextProps extends TextProps {
   textClassName?: string;
   textStyle?: StyleProp<TextStyle>;
   weight?: 100 | 300 | 400 | 500 | 600 | 700 | 800;
+  variant?: "default" | "eyebrow";
 }
 
 export default function Text(props: DTextProps) {
@@ -19,6 +20,13 @@ export default function Text(props: DTextProps) {
         fontFamily: `body_${props.weight || 300}`,
         ...(props.style as any),
         ...(props.textStyle as any),
+
+        ...(props.variant === "eyebrow" && {
+          textTransform: "uppercase",
+          fontFamily: `body_${props.weight || 700}`,
+          opacity: 0.6,
+          color: theme[11],
+        }),
       }}
     />
   );

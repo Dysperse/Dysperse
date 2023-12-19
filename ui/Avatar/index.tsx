@@ -2,15 +2,17 @@ import { Image } from "expo-image";
 import { PressableProps, StyleProp, View, ViewStyle } from "react-native";
 import { Pressable } from "react-native";
 import Text from "../Text";
+import { useColorTheme } from "../color/theme-provider";
 
 interface DAvatarProps extends PressableProps {
   image?: string;
-  size?: number;
+  size: number;
   viewClassName?: string;
   style?: StyleProp<ViewStyle>;
 }
 
 export function Avatar(props: DAvatarProps) {
+  const theme = useColorTheme();
   return (
     <Pressable
       {...props}
@@ -18,6 +20,7 @@ export function Avatar(props: DAvatarProps) {
       style={{
         width: props.size,
         height: props.size,
+        backgroundColor: theme[5],
         ...(props.style as {}),
       }}
     >

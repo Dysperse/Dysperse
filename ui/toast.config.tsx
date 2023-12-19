@@ -1,11 +1,5 @@
-import { AntDesign } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { StyleProp, View, ViewStyle } from "react-native";
-import {
-  BaseToast,
-  ErrorToast,
-  SuccessToast,
-} from "react-native-toast-message";
+import { BaseToast, ErrorToast } from "react-native-toast-message";
 import Icon from "./Icon";
 
 const toastStyles = (theme): StyleProp<ViewStyle> => ({
@@ -72,14 +66,20 @@ export const toastConfig = (theme) => ({
   */
   error: (props) => (
     <View style={toastContainerStyles}>
-      <ErrorToast
+      <BaseToast
         {...props}
         style={toastStyles(theme)}
         text1NumberOfLines={null}
+        text1Props={text1Props(theme)}
         renderLeadingIcon={() => (
-          <AntDesign name="closecircleo" size={24} color="black" />
+          <Icon
+            style={{ color: theme[8], marginLeft: 10, marginRight: -10 }}
+            filled
+            size={30}
+          >
+            error
+          </Icon>
         )}
-        text1Style={{ fontSize: 17 }}
         text2Style={{ fontSize: 15 }}
       />
     </View>

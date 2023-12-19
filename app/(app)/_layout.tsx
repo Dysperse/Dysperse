@@ -1,11 +1,13 @@
-import AccountNavbar, {
-  NavbarProfilePicture,
-} from "@/components/layout/account-navbar";
+import AccountNavbar from "@/components/layout/account-navbar";
+import { CreateDrawer } from "@/components/layout/bottom-navigation/create-drawer";
 import { useSession } from "@/context/AuthProvider";
 import { OpenTabsProvider, useOpenTab } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
@@ -19,10 +21,14 @@ import isBetween from "dayjs/plugin/isBetween";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
-import { Redirect, Stack, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { Redirect, Stack, router, usePathname } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Platform,
+  Pressable,
+  SectionList,
   StatusBar,
   StyleSheet,
   View,
@@ -34,7 +40,7 @@ import Toast from "react-native-toast-message";
 import { SWRConfig } from "swr";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
-import { TabDrawer } from "../../components/layout/bottom-navigation/tabs/list";
+import { getSidebarItems } from "./open";
 
 dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
@@ -49,36 +55,182 @@ export const styles = StyleSheet.create({
   },
 });
 
+function Button({ section, item }) {
+  const [loading, setLoading] = useState(false);
+  const redPalette = useColor("red", useColorScheme() === "dark");
+  const purplePalette = useColor("purple", useColorScheme() === "dark");
+  const { session } = useSession();
+  const colors = { redPalette, purplePalette }[
+    section.title === "Collections" ? "purplePalette" : "redPalette"
+  ];
+
+  const handlePress = async (item) => {
+    try {
+      setLoading(true);
+      const res = await sendApiRequest(
+        session,
+        "POST",
+        "user/tabs",
+        {
+          ...(item.collection
+            ? {
+                boardId: item.collection.id,
+              }
+            : {
+                tabData: JSON.stringify({
+                  href: item.href,
+                  icon: item.icon,
+                  label: item.label,
+                }),
+              }),
+        },
+        null
+      );
+      console.log(res);
+      router.push(item.href);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      alert("Something went wrong. Please try again later");
+    }
+  };
+  const theme = useColorTheme();
+
+  return (
+    <Pressable
+      style={({ pressed }) => ({
+        backgroundColor: theme[pressed ? 3 : 2],
+        paddingHorizontal: 20,
+        paddingVertical: 7,
+        flexDirection: "row",
+        gap: 15,
+        alignItems: "center",
+      })}
+      onPress={() => handlePress(item)}
+    >
+      <LinearGradient
+        colors={[colors[5], colors[3]]}
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: 10,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        {item.collection ? (
+          <Emoji size={21} emoji={item.collection.emoji || "1f4e6"} />
+        ) : (
+          <Icon size={21} style={{ color: colors[12] }}>
+            {item.icon}
+          </Icon>
+        )}
+      </LinearGradient>
+      <Text textClassName="flex-1">{item?.collection?.name || item.label}</Text>
+
+      {loading && <ActivityIndicator />}
+    </Pressable>
+  );
+}
 function Sidebar() {
   const theme = useColorTheme();
+  const { session } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    getSidebarItems(session).then((sections) => {
+      setData(sections);
+      setIsLoading(false);
+    });
+  }, []);
+
+  const { height } = useWindowDimensions();
 
   return (
     <View
       style={{
         height: "100%",
         backgroundColor: theme[2],
-        width: 75,
+        width: 240,
         flexDirection: "column",
-        alignItems: "center",
-        padding: 15,
+        maxHeight: height,
       }}
     >
-      <Logo color={theme[8]} size={40} />
-      <View style={{ flex: 1 }} />
-
-      <TabDrawer>
-        <IconButton
-          style={{
-            width: 50,
-            height: 50,
-          }}
-        >
-          <Icon size={30} style={{ color: theme[11] }}>
-            grid_view
-          </Icon>
+      <View
+        style={{
+          height: 70,
+          paddingHorizontal: 20,
+          alignItems: "center",
+          flexDirection: "row",
+        }}
+      >
+        <Logo color={theme[6]} size={35} />
+        <IconButton style={{ marginLeft: "auto" }}>
+          <Icon style={{ color: theme[8] }}>workspaces</Icon>
         </IconButton>
-      </TabDrawer>
-      <NavbarProfilePicture />
+      </View>
+      <View style={{ paddingHorizontal: 20 }}>
+        <CreateDrawer>
+          <Pressable
+            style={({ pressed, hovered }: any) => ({
+              flexDirection: "row",
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              shadowColor: theme[4],
+              borderWidth: 2,
+              borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+              shadowRadius: 10,
+              marginBottom: 15,
+              shadowOffset: { height: 5, width: 0 },
+              borderRadius: 8,
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              alignItems: "center",
+              gap: 15,
+              ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+            })}
+          >
+            <Icon bold style={{ opacity: 0.8 }}>
+              add
+            </Icon>
+            <Text style={{ color: theme[11] }} weight={700}>
+              Create
+            </Text>
+          </Pressable>
+        </CreateDrawer>
+      </View>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <SectionList
+          sections={data}
+          ListEmptyComponent={
+            <View className="items-center h-full">
+              <Emoji emoji="1F62D" size={40} />
+              <Text
+                textClassName="mt-3"
+                style={{ fontFamily: "body_600", fontSize: 17 }}
+              >
+                No results found
+              </Text>
+            </View>
+          }
+          renderItem={({ item, section }) => (
+            <Button item={item} section={section} />
+          )}
+          renderSectionHeader={({ section }) => (
+            <Text
+              variant="eyebrow"
+              style={{ paddingHorizontal: 20, marginBottom: 10, marginTop: 20 }}
+            >
+              {section.title}
+            </Text>
+          )}
+          keyExtractor={(item) => `basicListEntry-${item.href}`}
+        />
+      )}
     </View>
   );
 }
@@ -228,9 +380,9 @@ export default function AppLayout() {
                   </Stack>
                   {width < 600 && <BottomAppBar />}
                 </View>
-                <Toast config={toastConfig(theme)} />
               </SWRConfig>
             </BottomSheetModalProvider>
+            <Toast config={toastConfig(theme)} />
           </OpenTabsProvider>
         </GestureHandlerRootView>
       </ColorThemeProvider>
