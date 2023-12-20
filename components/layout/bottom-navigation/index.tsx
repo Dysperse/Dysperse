@@ -1,5 +1,4 @@
 import Icon from "@/ui/Icon";
-import * as NavigationBar from "expo-navigation-bar";
 import { router, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import { Platform, Pressable, View } from "react-native";
@@ -8,6 +7,7 @@ import { OpenTabsList } from "./tabs/carousel";
 import { TabDrawer } from "./tabs/list";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { addHslAlpha } from "@/ui/color";
+import NavigationBar from "@/ui/NavigationBar";
 
 export const getBottomNavigationHeight = (pathname) =>
   pathname === "/" ? 58 : 58 + 50;
@@ -17,15 +17,6 @@ export function BottomAppBar() {
   const shouldHide = ["/account", "/tabs", "/open"].includes(pathname);
   const theme = useColorTheme();
 
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      const color = shouldHide ? "#fff" : theme[1];
-      NavigationBar.setBackgroundColorAsync(color);
-      NavigationBar.setBorderColorAsync(color);
-      NavigationBar.setButtonStyleAsync("dark");
-    }
-  }, [Platform.OS, shouldHide]);
-
   return shouldHide ? null : (
     <View
       style={{
@@ -34,6 +25,7 @@ export function BottomAppBar() {
         ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
       }}
     >
+      <NavigationBar color={theme[1]} />
       <View
         style={{
           height: 1.5,

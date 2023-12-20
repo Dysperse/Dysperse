@@ -3,9 +3,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 // Create a context for managing active tabs
 const TabContext = createContext({
   activeTab: null,
-  setActiveTab: (i) => {
-    alert(1);
-  },
+  setActiveTab: (e) => {},
 });
 
 // Custom hook for accessing the active tab context

@@ -6,7 +6,7 @@ import { useColorTheme } from "../color/theme-provider";
 
 interface DAvatarProps extends PressableProps {
   image?: string;
-  size: number;
+  size?: number;
   viewClassName?: string;
   style?: StyleProp<ViewStyle>;
 }
@@ -18,8 +18,8 @@ export function Avatar(props: DAvatarProps) {
       {...props}
       className={`rounded-full relative items-center justify-center ${props.viewClassName}`}
       style={{
-        width: props.size,
-        height: props.size,
+        width: props.size || 30,
+        height: props.size || 30,
         backgroundColor: theme[5],
         ...(props.style as {}),
       }}

@@ -1,11 +1,13 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { BottomSheetBackHandler } from "@/ui/BottomSheet/BottomSheetBackHandler";
-import { BottomSheetBackdropComponent } from "@/ui/BottomSheet/BottomSheetBackdropComponent";
+import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  useGestureEventsHandlersDefault,
+} from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
@@ -13,20 +15,16 @@ import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { Tab } from "./tab";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import BottomSheet from "@/ui/BottomSheet";
+import { Button } from "@/ui/Button";
 
 function TabListTab({
   disabled,
   drag,
   item,
-  handleDelete,
   handleClose,
   isActive,
   isEdit = false,
 }) {
-  const [loading, setLoading] = useState(false);
-
   return (
     <Pressable
       className="pl-4 flex-row items-center"
@@ -47,25 +45,12 @@ function TabListTab({
         handleClose={handleClose}
         onLongPress={drag}
       />
-      {!isEdit && (
-        <IconButton
-          style={{ marginRight: 20 }}
-          onPress={async () => {
-            setLoading(true);
-            await handleDelete(item.id);
-            setLoading(false);
-          }}
-        >
-          {loading ? <ActivityIndicator /> : <Icon>remove_circle</Icon>}
-        </IconButton>
-      )}
     </Pressable>
   );
 }
 
 export const TabDrawer = ({ children }) => {
   const { sessionToken, session, mutate } = useUser();
-  const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
   const [editMode, setEditMode] = useState(false);
 
@@ -73,21 +58,6 @@ export const TabDrawer = ({ children }) => {
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
-
-  const handleDelete = useCallback(
-    async (id: string) => {
-      try {
-        await sendApiRequest(sessionToken, "DELETE", "user/tabs", {
-          id,
-        });
-        await mutate();
-      } catch (err) {
-        alert("Something went wrong. Please try again later.");
-        console.log(err);
-      }
-    },
-    [session]
-  );
 
   const FlatListComponent = editMode ? DraggableFlatList : FlatList;
 
@@ -125,8 +95,6 @@ export const TabDrawer = ({ children }) => {
                 id: item.id,
                 order: index,
               }));
-              console.log(newData);
-
               sendApiRequest(sessionToken, "PUT", "user/tabs/order", {
                 tabs: JSON.stringify(newData),
               }).then(() => mutate());
@@ -175,7 +143,6 @@ export const TabDrawer = ({ children }) => {
                         item={item}
                         disabled={false}
                         drag={drag}
-                        handleDelete={handleDelete}
                         handleClose={handleClose}
                         isActive={isActive}
                         isEdit
@@ -187,7 +154,6 @@ export const TabDrawer = ({ children }) => {
                       item={item}
                       disabled={false}
                       drag={() => {}}
-                      handleDelete={handleDelete}
                       handleClose={handleClose}
                       isActive={false}
                     />

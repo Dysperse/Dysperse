@@ -1,9 +1,10 @@
 import Text from "@/ui/Text";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import React from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
+import IconButton from "./IconButton";
 import { useColorTheme } from "./color/theme-provider";
 
 interface NavbarProps extends NativeStackHeaderProps {
@@ -24,12 +25,9 @@ export default function Navbar(props: NavbarProps) {
       }}
       className="flex-row px-4 items-center"
     >
-      <Pressable
-        onPress={handleBack}
-        className="w-10 h-10 active:bg-gray-200 rounded-full flex items-center justify-center"
-      >
+      <IconButton onPress={handleBack} style={{ width: 45, height: 45 }}>
         <Icon size={30}>{props.icon || "west"}</Icon>
-      </Pressable>
+      </IconButton>
       <Text style={{ fontFamily: "body_700" }} textClassName="pl-2">
         {props.options.headerTitle as string}
       </Text>

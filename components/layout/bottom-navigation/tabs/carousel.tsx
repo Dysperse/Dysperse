@@ -1,17 +1,23 @@
 import { window } from "@/constants";
+import { useOpenTab } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
+import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { LinearGradient } from "expo-linear-gradient";
+import { router, usePathname } from "expo-router";
 import React, { useEffect } from "react";
-import { ActivityIndicator, Platform, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  ScrollView,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import { Tab } from "./tab";
-import { Link, router, usePathname } from "expo-router";
-import IconButton from "@/ui/IconButton";
-import Icon from "@/ui/Icon";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { useOpenTab } from "@/context/tabs";
-import { addHslAlpha } from "@/ui/color";
-import { LinearGradient } from "expo-linear-gradient";
 
 const PAGE_WIDTH = window.width;
 
@@ -19,7 +25,7 @@ export function OpenTabsList() {
   const theme = useColorTheme();
   const { session } = useUser();
   const ref = React.useRef<ICarouselInstance>(null);
-  const { setActiveTab } = useOpenTab();
+  const { activeTab, setActiveTab } = useOpenTab();
   const pathname = usePathname();
 
   const baseOptions = {
@@ -40,8 +46,7 @@ export function OpenTabsList() {
     if (Platform.OS === "web") {
       return;
     }
-    if (pathname === "/") {
-    } else {
+    if (pathname !== "/") {
       const index = session.user.tabs.findIndex(
         (tab) => tab.tabData.href === pathname
       );
@@ -50,6 +55,24 @@ export function OpenTabsList() {
       }
     }
   }, [pathname, session]);
+
+  useEffect(() => {
+    const id = session?.user?.tabs?.findIndex((i) => i.id === activeTab);
+    if (session && ref?.current && id) {
+      ref.current.scrollTo(id);
+    }
+  }, [session, activeTab]);
+
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    if (width < 600) {
+      const tab = session.user.tabs.find((i) => i.tabData.href === pathname);
+      if (tab) {
+        setActiveTab(tab);
+      }
+    }
+  }, [session, pathname, width, setActiveTab]);
 
   return session ? (
     Platform.OS === "web" ? (

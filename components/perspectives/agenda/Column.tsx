@@ -99,7 +99,6 @@ export function Column({ header, column }) {
                   <Icon
                     size={20}
                     style={{
-                      lineHeight: 24.5,
                       color: theme[8],
                     }}
                   >

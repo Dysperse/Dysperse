@@ -12,6 +12,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import React, {
   ReactElement,
+  Ref,
   cloneElement,
   useCallback,
   useRef,
@@ -62,14 +63,17 @@ function Menu({
   children,
   height = ["30%"],
   footer = () => null,
+  menuRef = null,
 }: {
   trigger: ReactElement;
   children: React.ReactNode;
   height: (string | number)[];
   footer?: () => React.ReactNode;
+  menuRef?: Ref<BottomSheetModal>;
 }) {
   const theme = useColorTheme();
-  const ref = useRef<BottomSheetModal>(null);
+  const _ref = useRef<BottomSheetModal>(null);
+  const ref: any = menuRef || _ref;
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const _trigger = cloneElement(trigger, { onPress: handleOpen });
@@ -149,6 +153,7 @@ export default function CreateTask({
     date: dayjs().utc(),
   },
 }) {
+  const menuRef = useRef<BottomSheetModal>(null);
   const orange = useColor("orange", useColorScheme() === "dark");
   const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
@@ -211,6 +216,7 @@ export default function CreateTask({
               style={{ backgroundColor: theme[1], borderColor: theme[5] }}
             >
               <Menu
+                menuRef={menuRef}
                 height={[200]}
                 trigger={
                   <IconButton
@@ -322,6 +328,12 @@ export default function CreateTask({
                   autoFocus={Platform.OS !== "web"}
                   placeholder="Task name"
                   onBlur={onBlur}
+                  onKeyPress={(e: any) => {
+                    if (e.key === "/") {
+                      // alert(1);
+                      menuRef.current.present();
+                    }
+                  }}
                   onChangeText={(e) => {
                     if (e.length === 1) {
                       onChange(capitalizeFirstLetter(e.replaceAll("\n", "")));

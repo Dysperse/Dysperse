@@ -26,14 +26,14 @@ export function NavbarProfilePicture() {
   );
 }
 
-export default function AccountNavbar(props) {
+export default function AccountNavbar(props: any) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const { session } = useUser();
 
   const search = useMemo(
     () => (
-      <IconButton buttonStyle={{ marginRight: 10 }}>
+      <IconButton style={{ marginRight: 10 }}>
         <Icon size={30}>smart_button</Icon>
       </IconButton>
     ),

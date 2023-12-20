@@ -1,19 +1,19 @@
+import { BottomSheetBackdropProps, useBottomSheet } from "@gorhom/bottom-sheet";
 import React, { useMemo } from "react";
-import { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { useColorTheme } from "../color/theme-provider";
-import { BlurView } from "expo-blur";
+import { Keyboard, Platform } from "react-native";
 
 export const BottomSheetBackdropComponent = ({
   animatedIndex,
   style,
 }: BottomSheetBackdropProps) => {
-  const theme = useColorTheme();
   // animated variables
+  const { forceClose } = useBottomSheet();
   const containerAnimatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       animatedIndex.value,
@@ -36,15 +36,18 @@ export const BottomSheetBackdropComponent = ({
   );
 
   return (
-    // <BlurView
-    //   intensity={5}
-    //   style={{
-    //     height: "100%",
-    //     width: "100%",
-    //     position: "absolute",
-    //   }}
-    // >
-    <Animated.View style={containerStyle} />
-    // </BlurView>
+    <Animated.View
+      style={containerStyle}
+      onTouchEnd={() => {
+        if (Platform.OS !== "web") {
+          Keyboard.dismiss();
+        }
+        if (Platform.OS !== "web" && Keyboard.isVisible()) {
+          setTimeout(forceClose, 200);
+        } else {
+          forceClose();
+        }
+      }}
+    />
   );
 };

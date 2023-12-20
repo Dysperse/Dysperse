@@ -1,3 +1,4 @@
+import React from "react";
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
@@ -25,7 +26,7 @@ export function WeatherModal({
   airQuality,
   children,
   isNight,
-}) {
+}: any) {
   const ref = useRef<BottomSheetModal>(null);
 
   const weatherDescription =
@@ -52,7 +53,7 @@ export function WeatherModal({
       NavigationBar.setBackgroundColorAsync(gradient[1]);
       NavigationBar.setBorderColorAsync(gradient[1]);
     }
-  }, []);
+  }, [gradient]);
 
   const handleClose = useCallback(() => {
     ref.current?.close();
@@ -70,7 +71,7 @@ export function WeatherModal({
       : "rgba(0, 0, 0, 0.1)";
 
   const WeatherCard = useMemo(() => {
-    return ({ icon, heading, subheading, onPress = () => {} }) => (
+    return ({ icon, heading, subheading, onPress = () => {} }: any) => (
       <Pressable
         onPress={onPress}
         className="flex-row px-5 flex-1 py-3 rounded-2xl items-center overflow-hidden "
@@ -94,7 +95,7 @@ export function WeatherModal({
         </View>
       </Pressable>
     );
-  }, []); // Note: The second argument to useMemo is the dependency array. Since there are no dependencies, it's an empty array.
+  }, [base, color]); // Note: The second argument to useMemo is the dependency array. Since there are no dependencies, it's an empty array.
 
   return (
     <>
@@ -102,6 +103,7 @@ export function WeatherModal({
       <BottomSheet
         onClose={handleClose}
         sheetRef={ref}
+        style={{ maxWidth: 500, marginHorizontal: "auto" }}
         snapPoints={["60%", "90%"]}
         backgroundComponent={(props) => (
           <LinearGradient

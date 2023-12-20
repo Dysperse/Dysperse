@@ -15,8 +15,7 @@ export function BottomSheetBackHandler({ handleClose }) {
           return false;
         }
       });
-  }, [animatedIndex]);
-
+  }, [animatedIndex, handleClose]);
 
   return null;
 }

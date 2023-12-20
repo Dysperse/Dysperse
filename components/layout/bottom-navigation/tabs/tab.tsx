@@ -10,6 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import Toast from "react-native-toast-message";
 
 export function Tab({
   tab,
@@ -17,12 +18,17 @@ export function Tab({
   isList = false,
   handleClose = () => {},
   onLongPress = () => {},
+}: {
+  tab: any;
+  disabled?: boolean;
+  isList?: boolean;
+  handleClose?: () => void;
+  onLongPress?: () => void;
 }) {
   const isPerspective = useMemo(
     () => tab.tabData.href.includes("perspectives"),
     [tab.tabData]
   );
-
   const { activeTab, setActiveTab } = useOpenTab();
   const theme = useColorTheme();
   const redPalette = useColor("red", true);
@@ -33,16 +39,25 @@ export function Tab({
   const handleDelete = useCallback(
     async (id: string) => {
       try {
-        await sendApiRequest(sessionToken, "DELETE", "user/tabs", {
+        // await mutate({
+        //   ...session,
+        //   user: {
+        //     ...session.user,
+        //     tabs: session.user.tabs.filter((e) => e.id !== id),
+        //   },
+        // });
+        sendApiRequest(sessionToken, "DELETE", "user/tabs", {
           id,
-        });
-        await mutate();
+        }).then(() => mutate());
       } catch (err) {
-        alert("Something went wrong. Please try again later.");
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong. Please try again later.",
+        });
         console.log(err);
       }
     },
-    [session]
+    [mutate, sessionToken, session]
   );
 
   return (
@@ -60,7 +75,7 @@ export function Tab({
             width: "200px",
             flexDirection: "row",
             alignItems: "center",
-          } as Object)),
+          } as object)),
       }}
     >
       <Pressable
@@ -125,14 +140,21 @@ export function Tab({
         <IconButton
           style={{
             marginLeft: "auto",
-            display: activeTab === tab.id ? "flex" : "none",
+            display:
+              width < 600
+                ? isList
+                  ? "flex"
+                  : "none"
+                : activeTab === tab.id
+                ? "flex"
+                : "none",
           }}
           onPress={async () => {
             await handleDelete(tab.id);
           }}
         >
           <Icon size={23} style={{ color: theme[11], opacity: 0.6 }}>
-            close
+            {width > 600 ? "close" : "remove_circle"}
           </Icon>
         </IconButton>
       </Pressable>

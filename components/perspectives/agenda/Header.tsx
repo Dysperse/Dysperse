@@ -2,7 +2,7 @@ import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import React from "react";
 import { View } from "react-native";
-import { useAgendaContext } from "@/app/(app)/perspectives/agenda/context";
+import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
 import { useColorTheme } from "@/ui/color/theme-provider";
 
 export function Header({ start, end }) {

@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAgendaContext } from "@/app/(app)/perspectives/agenda/context";
+import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
 import { useColorTheme } from "@/ui/color/theme-provider";
 
 const styles = StyleSheet.create({
