@@ -17,6 +17,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
+import { ContentWrapper } from "@/components/layout/content";
 
 function Agenda() {
   const theme = useColorTheme();
@@ -55,18 +56,10 @@ function Agenda() {
   }, [data, setCurrentColumn, type]);
 
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
 
   if (width > 600) {
     return (
-      <View
-        style={{
-          marginTop: insets.top + 64,
-          backgroundColor: theme[1],
-          borderTopLeftRadius: 20,
-          flex: 1,
-        }}
-      >
+      <ContentWrapper>
         <PerspectivesNavbar
           handleToday={handleToday}
           currentDateStart={currentColumn?.start}
@@ -100,7 +93,7 @@ function Agenda() {
             </View>
           )}
         </ScrollView>
-      </View>
+      </ContentWrapper>
     );
   }
 

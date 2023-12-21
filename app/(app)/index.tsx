@@ -8,6 +8,7 @@ import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WeatherWidget } from "../../components/home/weather/widget";
+import { ContentWrapper } from "@/components/layout/content";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -131,38 +132,31 @@ function RecentActivity() {
 
 export default function Index() {
   const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
 
   return (
-    <ScrollView
-      overScrollMode="never"
-      className="p-5"
-      style={{
-        marginTop: insets.top + 64,
-        backgroundColor: theme[1],
-        borderTopLeftRadius: 20,
-      }}
-    >
-      <Greeting />
-      <Text
-        textClassName="uppercase text-sm mt-2 opacity-80"
-        style={{
-          fontFamily: "body_700",
-          color: theme[11],
-        }}
-      >
-        Today's rundown
-      </Text>
-      <View
-        className="flex-row mt-1.5"
-        style={{ columnGap: 15, marginBottom: 15 }}
-      >
-        <WeatherWidget />
-        <TodaysDate />
-      </View>
-      <PlanDayPrompt />
-      <TodaysTasks />
-      <RecentActivity />
-    </ScrollView>
+    <ContentWrapper>
+      <ScrollView overScrollMode="never">
+        <Greeting />
+        <Text
+          textClassName="uppercase text-sm mt-2 opacity-80"
+          style={{
+            fontFamily: "body_700",
+            color: theme[11],
+          }}
+        >
+          Today's rundown
+        </Text>
+        <View
+          className="flex-row mt-1.5"
+          style={{ columnGap: 15, marginBottom: 15 }}
+        >
+          <WeatherWidget />
+          <TodaysDate />
+        </View>
+        <PlanDayPrompt />
+        <TodaysTasks />
+        <RecentActivity />
+      </ScrollView>
+    </ContentWrapper>
   );
 }
