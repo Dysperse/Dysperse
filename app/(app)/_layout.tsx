@@ -1,7 +1,6 @@
 import AccountNavbar from "@/components/layout/account-navbar";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
-import { OpenTabsProvider, useOpenTab } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
@@ -15,8 +14,8 @@ import isBetween from "dayjs/plugin/isBetween";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
-import { Redirect, Stack, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import { Redirect, Stack } from "expo-router";
+import React from "react";
 import {
   ActivityIndicator,
   AppState,
@@ -27,7 +26,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import useSWR, { SWRConfig } from "swr";
+import { SWRConfig } from "swr";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
 
@@ -36,32 +35,6 @@ dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
-
-function TabHandler() {
-  const { session } = useUser();
-  const { activeTab, setActiveTab } = useOpenTab();
-  const pathname = usePathname();
-
-  const { data, error } = useSWR(["tabs"]);
-
-  useEffect(() => {
-    if (session && activeTab === null && Array.isArray(data)) {
-      const tab = data.find((tab) => tab?.tabData?.href === pathname);
-      if (tab) {
-        setActiveTab(tab.id);
-      }
-    }
-    if (error) {
-      Toast.show({
-        type: "error",
-        text1: "Couldn't load tabs",
-        text2: "Please try again later.",
-      });
-    }
-  }, [activeTab, pathname, setActiveTab, data, session]);
-
-  return null;
-}
 
 function DesktopHeader() {
   return (
@@ -110,116 +83,113 @@ export default function AppLayout() {
     <PortalProvider>
       <ColorThemeProvider theme={theme}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <OpenTabsProvider>
-            <TabHandler />
-            <BottomSheetModalProvider>
-              <SWRConfig
-                value={{
-                  fetcher: async ([
-                    resource,
-                    params,
-                    host = "https://api.dysperse.com",
-                    init = {},
-                  ]) => {
-                    const url = `${host}/${resource}?${new URLSearchParams(
-                      params
-                    ).toString()}`;
-                    const res = await fetch(url, {
-                      headers: {
-                        Authorization: `Bearer ${session}`,
-                      },
-                      ...init,
-                    });
-                    return await res.json();
-                  },
+          <BottomSheetModalProvider>
+            <SWRConfig
+              value={{
+                fetcher: async ([
+                  resource,
+                  params,
+                  host = "https://api.dysperse.com",
+                  init = {},
+                ]) => {
+                  const url = `${host}/${resource}?${new URLSearchParams(
+                    params
+                  ).toString()}`;
+                  const res = await fetch(url, {
+                    headers: {
+                      Authorization: `Bearer ${session}`,
+                    },
+                    ...init,
+                  });
+                  return await res.json();
+                },
 
-                  // provider: () => new Map(),
-                  isVisible: () => true,
-                  initFocus(callback) {
-                    let appState = AppState.currentState;
+                // provider: () => new Map(),
+                isVisible: () => true,
+                initFocus(callback) {
+                  let appState = AppState.currentState;
 
-                    const onAppStateChange = (nextAppState) => {
-                      /* If it's resuming from background or inactive mode to active one */
-                      if (
-                        appState.match(/inactive|background/) &&
-                        nextAppState === "active"
-                      ) {
-                        callback();
-                      }
-                      appState = nextAppState;
-                    };
+                  const onAppStateChange = (nextAppState) => {
+                    /* If it's resuming from background or inactive mode to active one */
+                    if (
+                      appState.match(/inactive|background/) &&
+                      nextAppState === "active"
+                    ) {
+                      callback();
+                    }
+                    appState = nextAppState;
+                  };
 
-                    // Subscribe to the app state change events
-                    const subscription = AppState.addEventListener(
-                      "change",
-                      onAppStateChange
-                    );
+                  // Subscribe to the app state change events
+                  const subscription = AppState.addEventListener(
+                    "change",
+                    onAppStateChange
+                  );
 
-                    return () => {
-                      subscription.remove();
-                    };
-                  },
+                  return () => {
+                    subscription.remove();
+                  };
+                },
+              }}
+            >
+              <StatusBar
+                barStyle={!isDark ? "dark-content" : "light-content"}
+              />
+              <View
+                style={{
+                  flexDirection: width > 600 ? "row" : "column",
+                  height: "100%",
                 }}
               >
-                <StatusBar
-                  barStyle={!isDark ? "dark-content" : "light-content"}
-                />
-                <View
-                  style={{
-                    flexDirection: width > 600 ? "row" : "column",
-                    height: "100%",
+                {width > 600 && <Sidebar />}
+                <Stack
+                  screenOptions={{
+                    header:
+                      width > 600
+                        ? DesktopHeader
+                        : (props: any) => <AccountNavbar {...props} />,
+                    headerTransparent: true,
+                    fullScreenGestureEnabled: true,
+                    contentStyle: {
+                      backgroundColor: theme[width > 600 ? 2 : 1],
+                    },
                   }}
                 >
-                  {width > 600 && <Sidebar />}
-                  <Stack
-                    screenOptions={{
-                      header:
-                        width > 600
-                          ? DesktopHeader
-                          : (props: any) => <AccountNavbar {...props} />,
-                      headerTransparent: true,
-                      fullScreenGestureEnabled: true,
-                      contentStyle: {
-                        backgroundColor: theme[width > 600 ? 2 : 1],
-                      },
+                  <Stack.Screen
+                    name="index"
+                    options={{
+                      animation: "fade",
                     }}
-                  >
-                    <Stack.Screen
-                      name="index"
-                      options={{
-                        animation: "fade",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="account"
-                      options={{
-                        header: (props) => <Navbar {...props} />,
-                        headerTitle: "Account",
-                        animation: "slide_from_right",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="open"
-                      options={{
-                        header: (props) => <Navbar {...props} />,
-                        animation: "fade",
-                        presentation: "modal",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="[tab]/perspectives/agenda/[type]/[start]"
-                      options={{
-                        animation: "fade",
-                        header: width > 600 ? DesktopHeader : () => null,
-                      }}
-                    />
-                  </Stack>
-                  {width < 600 && <BottomAppBar />}
-                </View>
-              </SWRConfig>
-            </BottomSheetModalProvider>
-            <Toast config={toastConfig(theme)} />
-          </OpenTabsProvider>
+                  />
+                  <Stack.Screen
+                    name="account"
+                    options={{
+                      header: (props) => <Navbar {...props} />,
+                      headerTitle: "Account",
+                      animation: "slide_from_right",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="open"
+                    options={{
+                      header: (props) => <Navbar {...props} />,
+                      animation: "fade",
+                      presentation: "modal",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="[tab]/perspectives/agenda/[type]/[start]"
+                    options={{
+                      animation: "fade",
+                      header: width > 600 ? DesktopHeader : () => null,
+                    }}
+                  />
+                </Stack>
+                {width < 600 && <BottomAppBar />}
+              </View>
+            </SWRConfig>
+          </BottomSheetModalProvider>
+          <Toast config={toastConfig(theme)} />
         </GestureHandlerRootView>
       </ColorThemeProvider>
     </PortalProvider>

@@ -1,14 +1,14 @@
 import Icon from "@/ui/Icon";
+import NavigationBar from "@/ui/NavigationBar";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { BlurView } from "expo-blur";
 import { router, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import React from "react";
 import { Platform, Pressable, View } from "react-native";
 import { CreateDrawer } from "./create-drawer";
 import { OpenTabsList } from "./tabs/carousel";
 import { TabDrawer } from "./tabs/list";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { addHslAlpha } from "@/ui/color";
-import NavigationBar from "@/ui/NavigationBar";
-import { BlurView } from "expo-blur";
 
 export const getBottomNavigationHeight = (pathname) =>
   pathname === "/" ? 58 : 58 + 50;

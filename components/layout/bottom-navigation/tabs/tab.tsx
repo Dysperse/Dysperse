@@ -1,4 +1,3 @@
-import { useOpenTab } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
@@ -7,7 +6,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
@@ -26,15 +25,15 @@ export function Tab({
   onLongPress?: () => void;
 }) {
   const isPerspective = useMemo(
-    () => tab.tabData.href.includes("perspectives"),
-    [tab.tabData]
+    () => tab.slug.includes("perspectives"),
+    [tab.slug]
   );
-  const { activeTab, setActiveTab } = useOpenTab();
+  const params = useLocalSearchParams();
   const theme = useColorTheme();
   const redPalette = useColor("red", true);
   const colors = isPerspective ? redPalette : redPalette;
   const { width } = useWindowDimensions();
-  const { sessionToken, session, mutate } = useUser();
+  const { sessionToken, mutate } = useUser();
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -82,10 +81,9 @@ export function Tab({
         onLongPress={onLongPress}
         disabled={disabled}
         onPress={() => {
-          setActiveTab(tab.id);
-          router.replace(tab.tabData.href);
+          router.replace(tab.slug);
           router.replace({
-            pathname: `/[tab]/${tab.tabData.href}`,
+            pathname: tab.slug,
             params: {
               ...tab.params,
               tab: tab.id,
@@ -96,7 +94,7 @@ export function Tab({
         style={({ pressed, hovered }: any) => ({
           flex: 1,
           paddingHorizontal: isList ? 6 : 15,
-          columnGap: 15,
+          columnGap: 5,
           borderRadius: 20,
           height: "100%",
           alignItems: "center",
@@ -104,7 +102,7 @@ export function Tab({
           ...(width > 600
             ? {
                 backgroundColor:
-                  activeTab === tab.id
+                  params.tab === tab.id
                     ? theme[pressed ? 6 : hovered ? 5 : 4]
                     : pressed
                     ? theme[5]
@@ -116,7 +114,7 @@ export function Tab({
                 backgroundColor: isList
                   ? "transparent"
                   : theme[
-                      activeTab === tab.id ? 5 : pressed ? 4 : hovered ? 3 : 3
+                      params.tab === tab.id ? 5 : pressed ? 4 : hovered ? 3 : 3
                     ],
               }),
         })}
@@ -130,29 +128,34 @@ export function Tab({
             width: 30,
             height: 30,
             alignItems: "center",
+            marginRight: 5,
             justifyContent: "center",
           }}
         >
           <Icon size={24} style={{ color: colors[12] }}>
-            {tab.tabData.icon}
+            pageview
           </Icon>
         </LinearGradient>
         <Text
           style={{
             ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
           }}
+          numberOfLines={1}
         >
-          {tab.tabData.label}
+          {/* {tab.tabData.label} */}
+          {tab.slug}
         </Text>
         <IconButton
           style={{
             marginLeft: "auto",
+            width: 20,
+            height: 20,
             display:
               width < 600
                 ? isList
                   ? "flex"
                   : "none"
-                : activeTab === tab.id
+                : params.tab === tab.id
                 ? "flex"
                 : "none",
           }}

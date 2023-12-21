@@ -1,13 +1,10 @@
-import { window } from "@/constants";
-import { useOpenTab } from "@/context/tabs";
-import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -17,25 +14,31 @@ import {
 } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
+import Toast from "react-native-toast-message";
+import useSWR from "swr";
 import { Tab } from "./tab";
 
-const PAGE_WIDTH = window.width;
-
 export function OpenTabsList() {
+  const { width } = useWindowDimensions();
   const theme = useColorTheme();
-  const { session } = useUser();
   const ref = React.useRef<ICarouselInstance>(null);
-  const { activeTab, setActiveTab } = useOpenTab();
   const pathname = usePathname();
 
   const baseOptions = {
     vertical: false,
-    width: PAGE_WIDTH * 0.8,
+    width: width * 0.8,
   } as const;
 
+  const { data, error } = useSWR(["user/tabs"]);
+
   const handleSnapToIndex = (index: number) => {
-    const tabs = session.user.tabs;
-    const tab = tabs[index];
+    if (error)
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+    if (!data) return;
+    const tab = data[index];
     if (tab) {
       router.replace({
         pathname: tab.slug,
@@ -44,40 +47,7 @@ export function OpenTabsList() {
     }
   };
 
-  useEffect(() => {
-    if (!session) return;
-    if (Platform.OS === "web") {
-      return;
-    }
-    if (pathname !== "/") {
-      const index = session.user.tabs.findIndex(
-        (tab) => tab.tabData.href === pathname
-      );
-      if (index !== -1) {
-        ref.current.scrollTo({ index, animated: true });
-      }
-    }
-  }, [pathname, session]);
-
-  useEffect(() => {
-    const id = session?.user?.tabs?.findIndex((i) => i.id === activeTab);
-    if (session && ref?.current && id) {
-      ref.current.scrollTo(id);
-    }
-  }, [session, activeTab]);
-
-  const { width } = useWindowDimensions();
-
-  useEffect(() => {
-    if (width < 600) {
-      const tab = session.user.tabs.find((i) => i.tabData.href === pathname);
-      if (tab) {
-        setActiveTab(tab);
-      }
-    }
-  }, [session, pathname, width, setActiveTab]);
-
-  return session ? (
+  return data ? (
     Platform.OS === "web" ? (
       <View
         style={{
@@ -106,14 +76,13 @@ export function OpenTabsList() {
             })}
             onPress={() => {
               router.replace("/");
-              setActiveTab("");
             }}
           >
             <Icon filled={pathname === "/"}>home</Icon>
           </IconButton>
         </View>
         <LinearGradient
-          colors={[theme[2], "transparent"]}
+          colors={[theme[width < 600 ? 1 : 2], "transparent"]}
           style={{ width: 17, marginRight: -17, marginLeft: -3, zIndex: 99 }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -130,12 +99,12 @@ export function OpenTabsList() {
           }}
           contentContainerStyle={{ paddingRight: 3 }}
         >
-          {session.user.tabs.map((tab) => (
+          {data?.map((tab) => (
             <Tab tab={tab} key={tab.id} />
           ))}
         </ScrollView>
         <LinearGradient
-          colors={["transparent", theme[2]]}
+          colors={["transparent", theme[width < 600 ? 1 : 2]]}
           style={{ width: 30, marginLeft: -30, zIndex: 99 }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -152,14 +121,11 @@ export function OpenTabsList() {
             justifyContent: "center",
             height: 53,
           }}
-          data={session.user.tabs}
+          data={data}
           pagingEnabled
           onSnapToItem={handleSnapToIndex}
           renderItem={({ index }) => (
-            <Tab
-              tab={session.user.tabs[index]}
-              key={session.user.tabs[index].id}
-            />
+            <Tab tab={data[index]} key={data[index].id} />
           )}
         />
       </View>

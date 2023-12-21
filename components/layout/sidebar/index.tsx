@@ -25,7 +25,7 @@ import {
 } from "react-native";
 
 export const getSidebarItems = async (session) => {
-  const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
+  // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
 
   return [
     {
@@ -34,45 +34,54 @@ export const getSidebarItems = async (session) => {
         {
           label: "Weeks",
           icon: "calendar_view_week",
-          href: "/perspectives/agenda/week/" + dayjs().format("YYYY-MM-DD"),
-          query: "/perspectives/agenda/week/",
+          slug: "/[tab]/perspectives/agenda/[type]/[start]",
+          params: {
+            start: dayjs().format("YYYY-MM-DD"),
+            type: "week",
+          },
         },
         {
           label: "Months",
           icon: "calendar_view_month",
-          href: "/perspectives/agenda/month/" + dayjs().format("YYYY-MM-DD"),
-          query: "/perspectives/agenda/month/",
+          slug: "/[tab]/perspectives/agenda/[type]/[start]",
+          params: {
+            start: dayjs().format("YYYY-MM-DD"),
+            type: "month",
+          },
         },
         {
           label: "Years",
           icon: "view_compact",
-          href: "/perspectives/agenda/year/" + dayjs().format("YYYY-MM-DD"),
-          query: "/perspectives/agenda/year/",
+          slug: "/[tab]/perspectives/agenda/[type]/[start]",
+          params: {
+            start: dayjs().format("YYYY-MM-DD"),
+            type: "year",
+          },
         },
         {
           label: "Upcoming",
           icon: "calendar_clock",
-          href: "/perspectives/upcoming",
+          slug: "/[tab]/perspectives/upcoming",
         },
         {
           label: "Backlog",
           icon: "event_upcoming",
-          href: "/perspectives/backlog",
+          slug: "/[tab]/perspectives/backlog",
         },
         {
           label: "Unscheduled",
           icon: "history_toggle_off",
-          href: "/perspectives/unscheduled",
+          slug: "/[tab]/perspectives/unscheduled",
         },
         {
           label: "Completed",
           icon: "check_circle",
-          href: "/perspectives/completed",
+          slug: "/[tab]/perspectives/completed",
         },
         {
           label: "Difficulty",
           icon: "priority_high",
-          href: "/perspectives/difficulty",
+          slug: "/[tab]/perspectives/difficulty",
         },
       ],
     },
@@ -82,14 +91,14 @@ export const getSidebarItems = async (session) => {
         {
           label: "Create",
           icon: "add",
-          href: "/collections/create",
+          slug: "/[tab]/collections/create",
         },
-        ...(req && Array.isArray(req)
-          ? req.map((collection) => ({
-              collection,
-              href: `/collections/${collection.id}`,
-            }))
-          : [{}]),
+        // ...(req && Array.isArray(req)
+        //   ? req.map((collection) => ({
+        //       collection,
+        //       slug: `/collections/${collection.id}`,
+        //     }))
+        //   : [{}]),
       ],
     },
     {
@@ -98,17 +107,17 @@ export const getSidebarItems = async (session) => {
         {
           label: "Tasks",
           icon: "check_circle",
-          href: "/all/tasks",
+          slug: "/[tab]/all/tasks",
         },
         {
           label: "Items",
           icon: "package_2",
-          href: "/all/items",
+          slug: "/[tab]/all/items",
         },
         {
           label: "Notes",
           icon: "sticky_note_2",
-          href: "/all/notes",
+          slug: "/[tab]/all/notes",
         },
       ],
     },
@@ -133,7 +142,8 @@ export function Button({ section, item }: any) {
 
   const pathname = usePathname();
   const isActive = Boolean(
-    item?.href === pathname || pathname?.includes(item.query)
+    // item?.href === pathname || pathname?.includes(item.query)
+    false
   );
 
   const handlePress = async (tab) => {
@@ -143,24 +153,22 @@ export function Button({ section, item }: any) {
         sessionToken,
         "POST",
         "user/tabs",
+        {},
         {
-          ...(tab.collection
-            ? {
-                boardId: tab.collection.id,
-              }
-            : {
-                params: JSON.stringify({
-                  href: tab.href,
-                  icon: tab.icon,
-                  label: tab.label,
-                  query: tab.query,
-                }),
-              }),
-        },
-        null
+          body: JSON.stringify({
+            slug: tab.slug,
+            params: JSON.stringify(tab.params),
+          }),
+        }
       );
       console.log(res);
-      router.push(item.href);
+      router.push({
+        pathname: tab.slug,
+        params: {
+          tab: res.id,
+          ...tab.params,
+        },
+      });
       setLoading(false);
     } catch (e) {
       setLoading(false);
@@ -326,7 +334,7 @@ export function Sidebar() {
               {section.title}
             </Text>
           )}
-          keyExtractor={(item) => `basicListEntry-${item.href}`}
+          keyExtractor={(item) => item.slug + JSON.stringify(item.params)}
         />
       )}
     </View>

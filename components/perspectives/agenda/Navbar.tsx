@@ -1,16 +1,15 @@
+import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
 import { useSession } from "@/context/AuthProvider";
-import { useOpenTab } from "@/context/tabs";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
-import { useColorTheme } from "@/ui/color/theme-provider";
 
 const styles = StyleSheet.create({
   navigationButton: {
@@ -26,7 +25,7 @@ export function PerspectivesNavbar({
   handleToday,
   currentDateStart,
   currentDateEnd,
-}) {
+}: any) {
   const { start, type } = useAgendaContext();
 
   const titleFormat = {
@@ -44,10 +43,10 @@ export function PerspectivesNavbar({
 
   const { session: sessionToken } = useSession();
   const { mutate, session } = useUser();
-  const { activeTab } = useOpenTab();
+  const params = useLocalSearchParams();
 
   const handlePrev = useCallback(() => {
-    const tab = session?.user?.tabs?.find((i) => i.id === activeTab);
+    const tab = session?.user?.tabs?.find((i) => i.id === params.tab);
 
     const href = `/perspectives/agenda/${type}/${dayjs(start)
       .subtract(1, type as ManipulateType)
@@ -64,19 +63,10 @@ export function PerspectivesNavbar({
     }
     // Change the tab
     router.push(href);
-  }, [
-    router,
-    type,
-    start,
-    sessionToken,
-    mutate,
-    activeTab,
-    session,
-    activeTab,
-  ]);
+  }, [type, start, sessionToken, mutate, params.tab, session]);
 
   const handleNext = useCallback(() => {
-    const tab = session?.user?.tabs?.find((i) => i.id === activeTab);
+    const tab = session?.user?.tabs?.find((i) => i.id === params.tab);
 
     const href = `/perspectives/agenda/${type}/${dayjs(start)
       .add(1, type as ManipulateType)
@@ -93,16 +83,8 @@ export function PerspectivesNavbar({
     }
 
     router.push(href);
-  }, [
-    router,
-    type,
-    start,
-    sessionToken,
-    mutate,
-    activeTab,
-    session,
-    activeTab,
-  ]);
+  }, [type, start, sessionToken, mutate, params.tab, session]);
+
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
 

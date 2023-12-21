@@ -88,7 +88,6 @@ export const TabDrawer = ({ children }) => {
             </IconButton>
           )}
         </View>
-        <Text>{JSON.stringify(data)}</Text>
         {data ? (
           <FlatListComponent
             onDragEnd={({ data }) => {
