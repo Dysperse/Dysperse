@@ -8,6 +8,7 @@ import { TabDrawer } from "./tabs/list";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { addHslAlpha } from "@/ui/color";
 import NavigationBar from "@/ui/NavigationBar";
+import { BlurView } from "expo-blur";
 
 export const getBottomNavigationHeight = (pathname) =>
   pathname === "/" ? 58 : 58 + 50;
@@ -26,7 +27,8 @@ export function BottomAppBar() {
       }}
     >
       <NavigationBar color={theme[1]} />
-      <View
+      <BlurView
+        tint="dark"
         style={{
           height: 1.5,
           backgroundColor: addHslAlpha(theme[6], 0.5),
