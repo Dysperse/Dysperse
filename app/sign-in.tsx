@@ -1,19 +1,18 @@
+import { Button } from "@/ui/Button";
+import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
-  Pressable,
   TextInput,
   View,
 } from "react-native";
 import { useSession } from "../context/AuthProvider";
 import { sendApiRequest } from "../helpers/api";
 import Turnstile from "../ui/turnstile";
-import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { Button } from "@/ui/Button";
 
 export default function SignIn() {
   const theme = useColorTheme();
@@ -33,37 +32,44 @@ export default function SignIn() {
     },
   });
 
-  const onSubmit = async (data) => {
-    try {
-      if (step === 0) {
-        setStep(1);
-      } else {
-        setStep(2);
-        const sessionRequest = await sendApiRequest(
-          false,
-          "POST",
-          "auth/login",
-          {},
-          {
-            body: JSON.stringify({ ...data, token }),
-          }
-        );
-        if (!sessionRequest.key) throw new Error(sessionRequest);
-        signIn(sessionRequest.key);
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        if (step === 0) {
+          setStep(1);
+        } else {
+          setStep(2);
+          console.log(data);
+          const sessionRequest = await sendApiRequest(
+            false,
+            "POST",
+            "auth/login",
+            {},
+            {
+              body: JSON.stringify({ ...data, token }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!sessionRequest.session) throw new Error(sessionRequest);
+          signIn(sessionRequest.session);
+        }
+      } catch (e) {
+        alert("Something went wrong. Please try again later.");
+        setToken("");
+        setStep(0);
       }
-    } catch (e) {
-      alert("Something went wrong. Please try again later");
-      setToken("");
-      setStep(0);
-    }
-  };
+    },
+    [signIn, step, token]
+  );
 
   useEffect(() => {
     if (step == 1 && token) {
       setStep(0);
       handleSubmit(onSubmit)();
     }
-  }, [step, token, handleSubmit]);
+  }, [step, token, onSubmit, handleSubmit]);
 
   useEffect(() => {
     if (session) {

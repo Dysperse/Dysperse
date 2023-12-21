@@ -149,7 +149,7 @@ export function Button({ section, item }: any) {
                 boardId: tab.collection.id,
               }
             : {
-                tabData: JSON.stringify({
+                params: JSON.stringify({
                   href: tab.href,
                   icon: tab.icon,
                   label: tab.label,

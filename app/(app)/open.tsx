@@ -1,6 +1,5 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import NavigationBar from "@/ui/NavigationBar";
-import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 
 export default function Page() {

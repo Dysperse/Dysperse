@@ -57,7 +57,7 @@ export function Tab({
         console.log(err);
       }
     },
-    [mutate, sessionToken, session]
+    [mutate, sessionToken]
   );
 
   return (
@@ -84,6 +84,13 @@ export function Tab({
         onPress={() => {
           setActiveTab(tab.id);
           router.replace(tab.tabData.href);
+          router.replace({
+            pathname: `/[tab]/${tab.tabData.href}`,
+            params: {
+              ...tab.params,
+              tab: tab.id,
+            },
+          });
           handleClose();
         }}
         style={({ pressed, hovered }: any) => ({

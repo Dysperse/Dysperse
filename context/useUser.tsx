@@ -7,7 +7,6 @@ export function useUser() {
     "session",
     { token: session },
     undefined,
-    { method: "POST" },
   ]);
 
   return { sessionToken: session, session: data, isLoading, error, mutate };

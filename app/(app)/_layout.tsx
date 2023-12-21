@@ -27,7 +27,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import { SWRConfig } from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
 
@@ -42,16 +42,23 @@ function TabHandler() {
   const { activeTab, setActiveTab } = useOpenTab();
   const pathname = usePathname();
 
+  const { data, error } = useSWR(["tabs"]);
+
   useEffect(() => {
-    if (session && activeTab === null) {
-      const tab = session.user.tabs.find(
-        (tab) => tab?.tabData?.href === pathname
-      );
+    if (session && activeTab === null && Array.isArray(data)) {
+      const tab = data.find((tab) => tab?.tabData?.href === pathname);
       if (tab) {
         setActiveTab(tab.id);
       }
     }
-  }, [activeTab, pathname, setActiveTab, session]);
+    if (error) {
+      Toast.show({
+        type: "error",
+        text1: "Couldn't load tabs",
+        text2: "Please try again later.",
+      });
+    }
+  }, [activeTab, pathname, setActiveTab, data, session]);
 
   return null;
 }
@@ -200,7 +207,7 @@ export default function AppLayout() {
                       }}
                     />
                     <Stack.Screen
-                      name="perspectives/agenda/[type]/[start]"
+                      name="[tab]/perspectives/agenda/[type]/[start]"
                       options={{
                         animation: "fade",
                         header: width > 600 ? DesktopHeader : () => null,

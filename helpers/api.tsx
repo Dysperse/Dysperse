@@ -1,5 +1,3 @@
-import { useSession } from "@/context/AuthProvider";
-
 export function sendApiRequest(
   session,
   method: "GET" | "POST" | "PUT" | "DELETE",

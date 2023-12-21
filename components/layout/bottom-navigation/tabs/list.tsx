@@ -4,10 +4,7 @@ import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import {
-  BottomSheetModal,
-  useGestureEventsHandlersDefault,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
@@ -15,7 +12,7 @@ import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { Tab } from "./tab";
-import { Button } from "@/ui/Button";
+import useSWR from "swr";
 
 function TabListTab({
   disabled,
@@ -51,6 +48,9 @@ function TabListTab({
 
 export const TabDrawer = ({ children }) => {
   const { sessionToken, session, mutate } = useUser();
+
+  const { data, error } = useSWR(["user/tabs"]);
+
   const ref = useRef<BottomSheetModal>(null);
   const [editMode, setEditMode] = useState(false);
 
@@ -88,7 +88,8 @@ export const TabDrawer = ({ children }) => {
             </IconButton>
           )}
         </View>
-        {session ? (
+        <Text>{JSON.stringify(data)}</Text>
+        {data ? (
           <FlatListComponent
             onDragEnd={({ data }) => {
               const newData = data.map((item, index) => ({
@@ -103,7 +104,7 @@ export const TabDrawer = ({ children }) => {
               editMode ? (
                 () => (
                   <View>
-                    {session.user.tabs.length !== 0 && (
+                    {data.length !== 0 && (
                       <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
                         <Icon>info</Icon>
                         <Text textClassName="ml-2">
@@ -115,7 +116,7 @@ export const TabDrawer = ({ children }) => {
                 )
               ) : (
                 <View>
-                  {session.user.tabs.length !== 0 && (
+                  {data.length !== 0 && (
                     <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
                       <Icon>info</Icon>
                       <Text textClassName="ml-2">
@@ -134,7 +135,7 @@ export const TabDrawer = ({ children }) => {
                 </Text>
               </View>
             }
-            data={session.user.tabs}
+            data={data}
             renderItem={
               (editMode
                 ? ({ item, drag, isActive }) => (
