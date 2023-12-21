@@ -8,6 +8,7 @@ import Navbar from "@/ui/navbar";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import isBetween from "dayjs/plugin/isBetween";
@@ -138,53 +139,64 @@ export default function AppLayout() {
               <View
                 style={{
                   flexDirection: width > 600 ? "row" : "column",
-                  height: "100%",
+                  flex: 1,
+                  backgroundColor: theme[1],
                 }}
               >
                 {width > 600 && <Sidebar />}
-                <Stack
-                  screenOptions={{
-                    header:
-                      width > 600
-                        ? DesktopHeader
-                        : (props: any) => <AccountNavbar {...props} />,
-                    headerTransparent: true,
-                    fullScreenGestureEnabled: true,
-                    contentStyle: {
-                      backgroundColor: theme[width > 600 ? 2 : 1],
+                <ThemeProvider
+                  value={{
+                    ...DefaultTheme,
+                    colors: {
+                      ...DefaultTheme.colors,
+                      background: theme[1],
                     },
                   }}
                 >
-                  <Stack.Screen
-                    name="index"
-                    options={{
-                      animation: "fade",
+                  <Stack
+                    screenOptions={{
+                      header:
+                        width > 600
+                          ? DesktopHeader
+                          : (props: any) => <AccountNavbar {...props} />,
+                      headerTransparent: true,
+                      fullScreenGestureEnabled: true,
+                      contentStyle: {
+                        backgroundColor: theme[width > 600 ? 2 : 1],
+                      },
                     }}
-                  />
-                  <Stack.Screen
-                    name="account"
-                    options={{
-                      header: (props) => <Navbar {...props} />,
-                      headerTitle: "Account",
-                      animation: "slide_from_right",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="open"
-                    options={{
-                      header: (props) => <Navbar {...props} />,
-                      animation: "fade",
-                      presentation: "modal",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="[tab]/perspectives/agenda/[type]/[start]"
-                    options={{
-                      animation: "fade",
-                      header: width > 600 ? DesktopHeader : () => null,
-                    }}
-                  />
-                </Stack>
+                  >
+                    <Stack.Screen
+                      name="index"
+                      options={{
+                        animation: "fade",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="account"
+                      options={{
+                        header: (props) => <Navbar {...props} />,
+                        headerTitle: "Account",
+                        animation: "slide_from_right",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="open"
+                      options={{
+                        header: (props) => <Navbar {...props} />,
+                        animation: "fade",
+                        presentation: "modal",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="[tab]/perspectives/agenda/[type]/[start]"
+                      options={{
+                        animation: "fade",
+                        header: width > 600 ? DesktopHeader : () => null,
+                      }}
+                    />
+                  </Stack>
+                </ThemeProvider>
                 {width < 600 && <BottomAppBar />}
               </View>
             </SWRConfig>

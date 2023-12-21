@@ -10,6 +10,7 @@ import { useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
+  KeyboardAvoidingView,
   TextInput,
   View,
   useWindowDimensions,
@@ -23,78 +24,80 @@ export default function Page() {
 
   return (
     <ContentWrapper>
-      {data ? (
-        <FlatList
-          contentContainerStyle={{
-            paddingBottom: 10,
-          }}
-          ListHeaderComponent={
-            <>
-              <Text
-                heading
-                style={{
-                  fontSize: 45,
-                  padding: 20,
-                  paddingBottom: 0,
-                  paddingTop: 40,
-                }}
-              >
-                Tasks
-              </Text>
-              <View style={{ paddingHorizontal: 20 }}>
-                <TextField
-                  placeholder="Find"
+      <KeyboardAvoidingView>
+        {data ? (
+          <FlatList
+            contentContainerStyle={{
+              paddingBottom: 10,
+            }}
+            ListHeaderComponent={
+              <>
+                <Text
+                  heading
                   style={{
-                    paddingHorizontal: 15,
-                    paddingVertical: 7,
-                    borderRadius: 15,
-                    backgroundColor: theme[3],
-                    marginBottom: 10,
-                    marginTop: 5,
-                  }}
-                />
-              </View>
-              <CreateTask>
-                <ListItemButton
-                  wrapperStyle={{
-                    borderRadius: width > 600 ? 20 : 0,
-                    paddingVertical: 15 - (width > 600 ? 5 : 0),
-                    paddingHorizontal: 20 - (width > 600 ? 5 : 0),
+                    fontSize: 45,
+                    padding: 20,
+                    paddingBottom: 0,
+                    paddingTop: 40,
                   }}
                 >
-                  <View
+                  Tasks
+                </Text>
+                <View style={{ paddingHorizontal: 20 }}>
+                  <TextField
+                    placeholder="Find"
                     style={{
-                      width: 25,
-                      height: 25,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 99,
-                      borderWidth: 2,
-                      borderColor: theme[7],
+                      paddingHorizontal: 15,
+                      paddingVertical: 7,
+                      borderRadius: 15,
+                      backgroundColor: theme[3],
+                      marginBottom: 10,
+                      marginTop: 5,
+                    }}
+                  />
+                </View>
+                <CreateTask>
+                  <ListItemButton
+                    wrapperStyle={{
+                      borderRadius: width > 600 ? 20 : 0,
+                      paddingVertical: 15 - (width > 600 ? 5 : 0),
+                      paddingHorizontal: 20 - (width > 600 ? 5 : 0),
                     }}
                   >
-                    <Icon
-                      size={20}
+                    <View
                       style={{
-                        color: theme[8],
-                        lineHeight: 22,
+                        width: 25,
+                        height: 25,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 99,
+                        borderWidth: 2,
+                        borderColor: theme[7],
                       }}
                     >
-                      add
-                    </Icon>
-                  </View>
-                  <Text weight={400}>Create task</Text>
-                </ListItemButton>
-              </CreateTask>
-            </>
-          }
-          keyExtractor={(i) => i.id}
-          data={data}
-          renderItem={({ item }) => <Task task={item} />}
-        />
-      ) : (
-        <ActivityIndicator />
-      )}
+                      <Icon
+                        size={20}
+                        style={{
+                          color: theme[8],
+                          lineHeight: 22,
+                        }}
+                      >
+                        add
+                      </Icon>
+                    </View>
+                    <Text weight={400}>Create task</Text>
+                  </ListItemButton>
+                </CreateTask>
+              </>
+            }
+            keyExtractor={(i) => i.id}
+            data={data}
+            renderItem={({ item }) => <Task task={item} />}
+          />
+        ) : (
+          <ActivityIndicator />
+        )}
+      </KeyboardAvoidingView>
     </ContentWrapper>
   );
 }

@@ -4,8 +4,8 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BlurView } from "expo-blur";
 import { router, usePathname } from "expo-router";
-import React from "react";
-import { Platform, Pressable, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Keyboard, Platform, Pressable, View } from "react-native";
 import { CreateDrawer } from "./create-drawer";
 import { OpenTabsList } from "./tabs/carousel";
 import { TabDrawer } from "./tabs/list";
@@ -13,9 +13,38 @@ import { TabDrawer } from "./tabs/list";
 export const getBottomNavigationHeight = (pathname) =>
   pathname === "/" ? 58 : 58 + 50;
 
+const useKeyboardVisibility = () => {
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+  return isKeyboardVisible;
+};
+
 export function BottomAppBar() {
   const pathname = usePathname();
-  const shouldHide = ["/account", "/tabs", "/open"].includes(pathname);
+  const isKeyboardVisible = useKeyboardVisibility();
+  const shouldHide =
+    ["/account", "/tabs", "/open"].includes(pathname) || isKeyboardVisible;
   const theme = useColorTheme();
 
   return shouldHide ? null : (

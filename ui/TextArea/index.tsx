@@ -1,19 +1,23 @@
-import { TextInput } from "react-native";
+import { StyleProp, TextInput, TextStyle } from "react-native";
 import { TextInputProps } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
-export default function TextField(props: TextInputProps) {
+interface DTextInputProps extends TextInputProps {
+  style?: StyleProp<TextStyle>;
+}
+
+export default function TextField(props: DTextInputProps) {
   const theme = useColorTheme();
   return (
     <TextInput
-      placeholderTextColor={theme[7]}
+      placeholderTextColor={theme[8]}
       cursorColor={theme[8]}
-      selectionColor={theme[4]}
+      selectionColor={theme[5]}
       {...props}
       style={{
-        color: theme[11],
-        fontFamily: `body_300`,
         ...(props.style as any),
+        color: theme[11],
+        fontFamily: `body_400`,
       }}
     />
   );

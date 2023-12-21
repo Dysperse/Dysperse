@@ -27,6 +27,7 @@
         "resizeMode": "cover",
         "image": "./assets/splash.png"
       },
+      "softwareKeyboardLayoutMode": "pan",
       "package": "com.manucodes.Dysperse"
     },
     "web": {

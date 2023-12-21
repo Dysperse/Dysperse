@@ -3,8 +3,13 @@ import IconButton from "@/ui/IconButton";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, usePathname } from "expo-router";
-import React from "react";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -45,11 +50,22 @@ export function OpenTabsList() {
         pathname: tab.slug,
         params: {
           tab: tab.id,
-          ...typeof tab.params === 'object' && tab.params
-        }
+          ...(typeof tab.params === "object" && tab.params),
+        },
       });
     }
   };
+
+  const { tab } = useGlobalSearchParams();
+
+  useEffect(() => {
+    if (data && ref.current) {
+      const t = data.findIndex((i) => i.id === tab);
+      setTimeout(() => {
+        ref.current.scrollTo(t);
+      }, 300);
+    }
+  }, [data, tab]);
 
   return data ? (
     Platform.OS === "web" ? (
