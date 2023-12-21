@@ -5,13 +5,14 @@ import { sendApiRequest } from "@/helpers/api";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, usePathname } from "expo-router";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -131,6 +132,23 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+function SpacesTrigger() {
+  const theme = useColorTheme();
+
+  return (
+    <Menu
+      height={["50%", "80%"]}
+      trigger={
+        <IconButton style={{ marginLeft: "auto" }}>
+          <Icon style={{ color: theme[8] }}>workspaces</Icon>
+        </IconButton>
+      }
+    >
+      <Text>Hi</Text>
+    </Menu>
+  );
+}
 
 export function Button({ section, item }: any) {
   const [loading, setLoading] = useState(false);
@@ -255,9 +273,7 @@ export function Sidebar() {
           }}
         >
           <Logo color={theme[6]} size={35} />
-          <IconButton style={{ marginLeft: "auto" }}>
-            <Icon style={{ color: theme[8] }}>workspaces</Icon>
-          </IconButton>
+          <SpacesTrigger />
         </View>
       )}
       {width > 600 && (

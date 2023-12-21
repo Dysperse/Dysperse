@@ -1,12 +1,11 @@
 import { BottomSheetBackdropProps, useBottomSheet } from "@gorhom/bottom-sheet";
 import React, { useMemo } from "react";
+import { Keyboard, Platform } from "react-native";
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { useColorTheme } from "../color/theme-provider";
-import { Keyboard, Platform } from "react-native";
 
 export const BottomSheetBackdropComponent = ({
   animatedIndex,
@@ -35,19 +34,22 @@ export const BottomSheetBackdropComponent = ({
     [style, containerAnimatedStyle]
   );
 
+  const handleClose = () => {
+    if (Platform.OS !== "web") {
+      Keyboard.dismiss();
+    }
+    if (Platform.OS !== "web" && Keyboard.isVisible()) {
+      setTimeout(forceClose, 200);
+    } else {
+      forceClose();
+    }
+  };
+
   return (
     <Animated.View
       style={containerStyle}
-      onTouchEnd={() => {
-        if (Platform.OS !== "web") {
-          Keyboard.dismiss();
-        }
-        if (Platform.OS !== "web" && Keyboard.isVisible()) {
-          setTimeout(forceClose, 200);
-        } else {
-          forceClose();
-        }
-      }}
+      onPointerUp={handleClose}
+      onTouchEnd={handleClose}
     />
   );
 };

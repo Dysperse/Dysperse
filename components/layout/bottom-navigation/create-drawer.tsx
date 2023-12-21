@@ -19,7 +19,12 @@ export const CreateDrawer = ({ children }) => {
   return (
     <View>
       {trigger}
-      <BottomSheet sheetRef={ref} snapPoints={[305]} onClose={handleClose}>
+      <BottomSheet
+        sheetRef={ref}
+        snapPoints={[305]}
+        style={{ maxWidth: 350, marginHorizontal: "auto" }}
+        onClose={handleClose}
+      >
         <View className="p-5">
           {[
             {

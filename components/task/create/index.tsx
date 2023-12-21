@@ -4,20 +4,14 @@ import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
-import React, {
-  ReactElement,
-  Ref,
-  cloneElement,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Platform,
@@ -57,51 +51,6 @@ const styles = StyleSheet.create({
     fontFamily: "body_700",
   },
 });
-
-function Menu({
-  trigger,
-  children,
-  height = ["30%"],
-  footer = () => null,
-  menuRef = null,
-}: {
-  trigger: ReactElement;
-  children: React.ReactNode;
-  height: (string | number)[];
-  footer?: () => React.ReactNode;
-  menuRef?: Ref<BottomSheetModal>;
-}) {
-  const theme = useColorTheme();
-  const _ref = useRef<BottomSheetModal>(null);
-  const ref: any = menuRef || _ref;
-  const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
-  const _trigger = cloneElement(trigger, { onPress: handleOpen });
-
-  return (
-    <>
-      {_trigger}
-      <BottomSheet
-        sheetRef={ref}
-        onClose={handleClose}
-        snapPoints={height}
-        containerStyle={{
-          maxWidth: 400,
-          margin: "auto",
-        }}
-        backgroundStyle={{
-          borderRadius: 40,
-          backgroundColor: theme[1],
-        }}
-        detached
-        footerComponent={footer}
-        bottomInset={20}
-      >
-        {children}
-      </BottomSheet>
-    </>
-  );
-}
 
 function ColorPicker({ children, color, setColor }) {
   const ref = useRef<BottomSheetModal>(null);

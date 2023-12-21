@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   FlatList,
   Pressable,
-  StatusBar,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -53,7 +52,7 @@ function Agenda() {
           `/perspectives/agenda/${type}/${dayjs().format("YYYY-MM-DD")}`
         );
     }
-  }, [data, setCurrentColumn, router, type]);
+  }, [data, setCurrentColumn, type]);
 
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -86,7 +85,15 @@ function Agenda() {
               <Column header={() => <></>} key={col.start} column={col} />
             ))
           ) : error ? (
-            <ErrorAlert />
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ErrorAlert />
+            </View>
           ) : (
             <View className="items-center justify-center w-full">
               <ActivityIndicator />
