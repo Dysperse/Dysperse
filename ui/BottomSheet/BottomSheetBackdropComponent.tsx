@@ -41,7 +41,7 @@ export const BottomSheetBackdropComponent = ({
     if (Platform.OS !== "web" && Keyboard.isVisible()) {
       setTimeout(forceClose, 200);
     } else {
-      forceClose();
+      setImmediate(() => forceClose());
     }
   };
 

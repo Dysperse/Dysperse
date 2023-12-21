@@ -134,7 +134,7 @@ function TaskDrawerContent({ data, handleClose }) {
           )}
           <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 rounded-t-none active:bg-gray-300">
             <Icon>add</Icon>
-            <ListItemText>Add</ListItemText>
+            <ListItemText primary="Add" />
           </ListItemButton>
         </View>
 
@@ -150,7 +150,7 @@ function TaskDrawerContent({ data, handleClose }) {
           )}
           <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 rounded-t-none active:bg-gray-300">
             <Icon>add</Icon>
-            <ListItemText>New</ListItemText>
+            <ListItemText primary="New" />
           </ListItemButton>
         </View>
 
@@ -175,24 +175,26 @@ function TaskDrawerContent({ data, handleClose }) {
               <ProfilePicture
                 size={30}
                 name={data.createdBy.name}
-                image={data.createdBy.Profile.picture}
+                image={data.createdBy.profile.picture}
               />
-              <ListItemText>Created by {data.createdBy.name}</ListItemText>
+              <ListItemText
+                primary={`Created by @${data.createdBy.username}`}
+              />
             </ListItemButton>
           )}
           <ListItemButton>
             <Avatar size={30}>
               <Icon>workspaces</Icon>
             </Avatar>
-            <ListItemText>Found in "{data.property.name}"</ListItemText>
+            <ListItemText primary={`Found in #${data.property.username}`} />
           </ListItemButton>
           <ListItemButton>
             <Avatar size={30}>
               <Icon>access_time</Icon>
             </Avatar>
-            <ListItemText>
-              Edited {dayjs(data.lastUpdated).fromNow()}
-            </ListItemText>
+            <ListItemText
+              primary={`Edited ${dayjs(data.lastUpdated).fromNow()}`}
+            />
           </ListItemButton>
         </View>
 
@@ -200,7 +202,7 @@ function TaskDrawerContent({ data, handleClose }) {
           style={[styles.section, { backgroundColor: theme[3], marginTop: 20 }]}
         >
           <ListItemButton buttonClassName="justify-center py-4">
-            <ListItemText>Delete task</ListItemText>
+            <ListItemText primary="Delete task" />
           </ListItemButton>
         </View>
       </View>

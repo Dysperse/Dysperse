@@ -275,6 +275,13 @@ export default function CreateTask({
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   autoFocus={Platform.OS !== "web"}
+                  ref={(e) => {
+                    if (Platform.OS === "web" && e?.focus) {
+                      setTimeout(() => {
+                        e.focus();
+                      }, 100);
+                    }
+                  }}
                   placeholder="Task name"
                   onBlur={onBlur}
                   onKeyPress={(e: any) => {

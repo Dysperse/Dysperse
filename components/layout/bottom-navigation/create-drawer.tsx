@@ -60,7 +60,7 @@ export const CreateDrawer = ({ children }) => {
                       {icon}
                     </Icon>
                   </View>
-                  <ListItemText>{name}</ListItemText>
+                  <ListItemText primary={name} />
                 </ListItemButton>
               </Wrapper>
             )

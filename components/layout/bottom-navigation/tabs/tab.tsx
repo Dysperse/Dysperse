@@ -8,7 +8,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo } from "react";
-import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import {
+  Platform,
+  Pressable,
+  View,
+  useColorScheme,
+  useWindowDimensions,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -25,14 +31,19 @@ export function Tab({
   handleClose?: () => void;
   onLongPress?: () => void;
 }) {
-  const isPerspective = useMemo(
-    () => tab.slug.includes("perspectives"),
-    [tab.slug]
-  );
   const params = useLocalSearchParams();
   const theme = useColorTheme();
-  const redPalette = useColor("red", true);
-  const colors = isPerspective ? redPalette : redPalette;
+  const redPalette = useColor("red", useColorScheme() === "dark");
+  const purplePalette = useColor("purple", useColorScheme() === "dark");
+  const greenPalette = useColor("green", useColorScheme() === "dark");
+  const colors = { redPalette, purplePalette, greenPalette }[
+    tab.slug.includes("collections")
+      ? "purplePalette"
+      : tab.slug.includes("all")
+      ? "greenPalette"
+      : "redPalette"
+  ];
+
   const { width } = useWindowDimensions();
   const { sessionToken } = useUser();
   const { data, mutate } = useSWR(["user/tabs"]);
@@ -40,6 +51,7 @@ export function Tab({
   const handleDelete = useCallback(
     async (id: string) => {
       try {
+        setIsClosedAnimation(true);
         // get last tab
         const tab = data.findIndex((tab: any) => tab.id === id);
         const lastTab = data[tab - 1] || data[tab + 1];
@@ -56,6 +68,7 @@ export function Tab({
           id,
         }).then(() => mutate());
       } catch (err) {
+        setIsClosedAnimation(false);
         Toast.show({
           type: "error",
           text1: "Something went wrong. Please try again later.",
@@ -63,8 +76,10 @@ export function Tab({
         console.log(err);
       }
     },
-    [mutate, sessionToken]
+    [mutate, sessionToken, data]
   );
+
+  const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
 
   return (
     <View
@@ -74,6 +89,7 @@ export function Tab({
         paddingHorizontal: isList ? 0 : 3,
         flex: 1,
         width: "100%",
+        opacity: isClosedAnimation ? 0.5 : 1,
         height: width > 600 ? 53.5 : 50,
         marginHorizontal: "auto",
         ...(Platform.OS === "web" &&

@@ -2,9 +2,13 @@ import { CreateDrawer } from "@/components/layout/bottom-navigation/create-drawe
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { ButtonGroup } from "@/ui/ButtonGroup";
 import Emoji from "@/ui/Emoji";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -24,6 +28,7 @@ import {
   useColorScheme,
   useWindowDimensions,
 } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 
 export const getSidebarItems = async (session) => {
@@ -104,7 +109,7 @@ export const getSidebarItems = async (session) => {
       ],
     },
     {
-      title: "Other",
+      title: "ALL",
       data: [
         {
           label: "Tasks",
@@ -133,30 +138,94 @@ export const styles = StyleSheet.create({
   },
 });
 
+function SpaceButton({ item }: any) {
+  const theme = useColor(item.space.color, useColorScheme() === "dark");
+
+  return (
+    <ListItemButton
+      style={({ pressed, hovered }: any) => ({
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+      })}
+    >
+      <View
+        style={{
+          width: 15,
+          height: 15,
+          borderRadius: 99,
+          backgroundColor: theme[9],
+        }}
+      />
+      <ListItemText
+        primary={item.space.name}
+        secondary={`${item.space?._count?.members} member${
+          item.space?._count?.members !== 1 ? "s" : ""
+        }`}
+      />
+    </ListItemButton>
+  );
+}
+
 function SpacesTrigger() {
   const theme = useColorTheme();
+  const [view, setView] = useState("all");
+  const { data, error } = useSWR(["user/spaces"]);
 
   return (
     <Menu
-      height={["50%", "80%"]}
+      height={["70%"]}
       trigger={
         <IconButton style={{ marginLeft: "auto" }}>
           <Icon style={{ color: theme[8] }}>workspaces</Icon>
         </IconButton>
       }
     >
-      <Text>Hi</Text>
+      {data ? (
+        <FlatList
+          data={data}
+          ListHeaderComponent={
+            <View style={{ paddingHorizontal: 12 }}>
+              <Text heading style={{ fontSize: 40, paddingTop: 20 }}>
+                Spaces
+              </Text>
+              <ButtonGroup
+                containerStyle={{ marginVertical: 5 }}
+                options={[
+                  { label: "All", value: "all" },
+                  { label: "Invitations", value: "invitations" },
+                ]}
+                state={[view, setView]}
+              />
+            </View>
+          }
+          contentContainerStyle={{ padding: 10 }}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }: any) => <SpaceButton item={item} />}
+        />
+      ) : error ? (
+        <ErrorAlert />
+      ) : (
+        <ActivityIndicator />
+      )}
     </Menu>
   );
 }
 
 export function Button({ section, item }: any) {
   const [loading, setLoading] = useState(false);
+  const { sessionToken } = useUser();
+  
   const redPalette = useColor("red", useColorScheme() === "dark");
   const purplePalette = useColor("purple", useColorScheme() === "dark");
-  const { sessionToken } = useUser();
-  const colors = { redPalette, purplePalette }[
-    section.title === "Collections" ? "purplePalette" : "redPalette"
+  const greenPalette = useColor("green", useColorScheme() === "dark");
+  const colors = { redPalette, purplePalette, greenPalette }[
+    section.title === "Collections"
+      ? "purplePalette"
+      : section.title === "ALL"
+      ? "greenPalette"
+      : "redPalette"
   ];
 
   const isActive = Boolean(
@@ -177,7 +246,7 @@ export function Button({ section, item }: any) {
         {
           body: JSON.stringify({
             slug: tab.slug,
-            params: tab.params,
+            params: tab.params || {},
           }),
         }
       );
@@ -344,14 +413,37 @@ export function Sidebar() {
           renderItem={({ item, section }) => (
             <Button item={item} section={section} />
           )}
-          renderSectionHeader={({ section }) => (
-            <Text
-              variant="eyebrow"
-              style={{ paddingHorizontal: 20, marginBottom: 10, marginTop: 20 }}
-            >
-              {section.title}
-            </Text>
-          )}
+          renderSectionHeader={({ section }) =>
+            section.title === "ALL" ? (
+              <View style={{ paddingHorizontal: 20 }}>
+                <View
+                  style={{
+                    height: 2,
+                    backgroundColor: theme[4],
+                    borderRadius: 9,
+                    marginVertical: 10,
+                  }}
+                />
+                <Text
+                  variant="eyebrow"
+                  style={{ marginBottom: 10, marginTop: 6 }}
+                >
+                  {section.title}
+                </Text>
+              </View>
+            ) : (
+              <Text
+                variant="eyebrow"
+                style={{
+                  paddingHorizontal: 20,
+                  marginBottom: 10,
+                  marginTop: 20,
+                }}
+              >
+                {section.title}
+              </Text>
+            )
+          }
           keyExtractor={(item) => item.slug + JSON.stringify(item.params)}
         />
       )}
