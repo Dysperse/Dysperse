@@ -43,7 +43,10 @@ export function OpenTabsList() {
     if (tab) {
       router.replace({
         pathname: tab.slug,
-        ...(tab.params && { params: tab.params }),
+        params: {
+          tab: tab.id,
+          ...typeof tab.params === 'object' && tab.params
+        }
       });
     }
   };

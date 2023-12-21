@@ -1,4 +1,5 @@
 import { styles } from "@/components/home/styles";
+import { ContentWrapper } from "@/components/layout/content";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -6,9 +7,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WeatherWidget } from "../../components/home/weather/widget";
-import { ContentWrapper } from "@/components/layout/content";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -31,7 +30,7 @@ function Greeting() {
   return (
     <View
       style={{
-        height: 200,
+        height: 220,
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -43,8 +42,8 @@ function Greeting() {
           color: theme[12],
           textShadowColor: theme[7],
           textShadowRadius: 30,
-          height: 120,
-          paddingTop: 20,
+          height: '100%',
+          paddingTop: 90,
           width: "100%",
           textShadowOffset: { height: 5, width: 5 },
         }}
@@ -135,10 +134,15 @@ export default function Index() {
 
   return (
     <ContentWrapper>
-      <ScrollView overScrollMode="never">
+      <ScrollView
+        overScrollMode="never"
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+        }}
+      >
         <Greeting />
         <Text
-          textClassName="uppercase text-sm mt-2 opacity-80"
+          textClassName="uppercase text-sm opacity-80"
           style={{
             fontFamily: "body_700",
             color: theme[11],

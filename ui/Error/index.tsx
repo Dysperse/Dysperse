@@ -10,11 +10,19 @@ export default function ErrorAlert({
   const red = useColor("red", useColorScheme() === "dark");
   return (
     <View
-      className="border-2 flex-row items-center rounded-2xl px-5 py-4"
-      style={{ gap: 15, backgroundColor: red[3], borderColor: red[5] }}
+      style={{
+        gap: 15,
+        backgroundColor: red[3],
+        borderColor: red[5],
+        flexDirection: "row",
+        borderRadius: 20,
+        borderWidth: 2,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+      }}
     >
-      <Icon style={{ color: red[11] }}>{icon}</Icon>
-      <Text style={{ color: red[11] }}>{message}</Text>
+      <Icon style={{ color: red[11], marginTop: 5 }}>{icon}</Icon>
+      <Text style={{ color: red[11], lineHeight: 23, flex: 1 }}>{message}</Text>
     </View>
   );
 }

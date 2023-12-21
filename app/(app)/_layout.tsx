@@ -104,7 +104,7 @@ export default function AppLayout() {
                   return await res.json();
                 },
 
-                // provider: () => new Map(),
+                provider: () => new Map(),
                 isVisible: () => true,
                 initFocus(callback) {
                   let appState = AppState.currentState;

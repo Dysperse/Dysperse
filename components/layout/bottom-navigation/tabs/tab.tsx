@@ -6,8 +6,8 @@ import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo } from "react";
+import { router, useGlobalSearchParams, useLocalSearchParams } from "expo-router";
+import React, { useCallback } from "react";
 import {
   Platform,
   Pressable,
@@ -31,7 +31,7 @@ export function Tab({
   handleClose?: () => void;
   onLongPress?: () => void;
 }) {
-  const params = useLocalSearchParams();
+  const params = useGlobalSearchParams();
   const theme = useColorTheme();
   const redPalette = useColor("red", useColorScheme() === "dark");
   const purplePalette = useColor("purple", useColorScheme() === "dark");
@@ -165,7 +165,6 @@ export function Tab({
           }}
           numberOfLines={1}
         >
-          {/* {tab.tabData.label} */}
           {tab.slug}
         </Text>
         <IconButton

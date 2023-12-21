@@ -236,7 +236,7 @@ export function TaskDrawer({ children, id }) {
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        snapPoints={width > 600 ? ["90%"] : ["50%", "80%"]}
+        snapPoints={error ? ["50%"] : width > 600 ? ["90%"] : ["50%", "80%"]}
         onClose={handleClose}
         style={{
           maxWidth: 550,
@@ -246,7 +246,9 @@ export function TaskDrawer({ children, id }) {
         {data ? (
           <TaskDrawerContent data={data} handleClose={handleClose} />
         ) : error ? (
-          <ErrorAlert />
+          <View style={{ padding: 20 }}>
+            <ErrorAlert />
+          </View>
         ) : (
           <ActivityIndicator />
         )}
@@ -267,7 +269,7 @@ export function Task({ task }) {
           paddingHorizontal: 20 - (width > 600 ? 5 : 0),
         }}
       >
-        <TaskCheckbox completed={task.completionInstances.length > 0} />
+        <TaskCheckbox completed={task?.completionInstances?.length > 0} />
         <Text numberOfLines={1} weight={400}>
           {task.name}
         </Text>
