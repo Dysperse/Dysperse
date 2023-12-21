@@ -23,6 +23,7 @@ import {
   useColorScheme,
   useWindowDimensions,
 } from "react-native";
+import useSWR from "swr";
 
 export const getSidebarItems = async (session) => {
   // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
@@ -140,11 +141,12 @@ export function Button({ section, item }: any) {
     section.title === "Collections" ? "purplePalette" : "redPalette"
   ];
 
-  const pathname = usePathname();
   const isActive = Boolean(
     // item?.href === pathname || pathname?.includes(item.query)
     false
   );
+
+  const { mutate } = useSWR(["user/tabs"]);
 
   const handlePress = async (tab) => {
     try {
@@ -157,18 +159,18 @@ export function Button({ section, item }: any) {
         {
           body: JSON.stringify({
             slug: tab.slug,
-            params: JSON.stringify(tab.params),
+            params: tab.params,
           }),
         }
       );
-      console.log(res);
-      router.push({
+      router.replace({
         pathname: tab.slug,
         params: {
           tab: res.id,
           ...tab.params,
         },
       });
+      await mutate();
       setLoading(false);
     } catch (e) {
       setLoading(false);

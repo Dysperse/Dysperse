@@ -17,6 +17,7 @@ import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
+import { NavbarProfilePicture } from "../../account-navbar";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
@@ -109,6 +110,15 @@ export function OpenTabsList() {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         />
+        <View
+          style={{
+            justifyContent: "center",
+            marginRight: 15,
+            paddingLeft: 10,
+          }}
+        >
+          <NavbarProfilePicture />
+        </View>
       </View>
     ) : (
       <View style={{ flex: 1 }}>

@@ -8,6 +8,8 @@ import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WeatherWidget } from "../../components/home/weather/widget";
+import { Button } from "@/ui/Button";
+import { router } from "expo-router";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -144,7 +146,6 @@ export default function Index() {
       }}
     >
       <Greeting />
-
       <Text
         textClassName="uppercase text-sm mt-2 opacity-80"
         style={{

@@ -10,6 +10,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import useSWR from "swr";
 
 export function Tab({
   tab,
@@ -33,18 +34,24 @@ export function Tab({
   const redPalette = useColor("red", true);
   const colors = isPerspective ? redPalette : redPalette;
   const { width } = useWindowDimensions();
-  const { sessionToken, mutate } = useUser();
+  const { sessionToken } = useUser();
+  const { data, mutate } = useSWR(["user/tabs"]);
 
   const handleDelete = useCallback(
     async (id: string) => {
       try {
-        // await mutate({
-        //   ...session,
-        //   user: {
-        //     ...session.user,
-        //     tabs: session.user.tabs.filter((e) => e.id !== id),
-        //   },
-        // });
+        // get last tab
+        const tab = data.findIndex((tab: any) => tab.id === id);
+        const lastTab = data[tab - 1] || data[tab + 1];
+        if (lastTab) {
+          router.replace({
+            params: {
+              tab: lastTab.id,
+              ...lastTab.params,
+            },
+            pathname: lastTab.slug,
+          });
+        }
         sendApiRequest(sessionToken, "DELETE", "user/tabs", {
           id,
         }).then(() => mutate());
