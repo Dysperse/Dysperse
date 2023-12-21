@@ -1,3 +1,5 @@
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
@@ -102,6 +104,7 @@ export default function CreateTask({
     date: dayjs().utc(),
   },
 }) {
+  const { sessionToken } = useUser();
   const menuRef = useRef<BottomSheetModal>(null);
   const orange = useColor("orange", useColorScheme() === "dark");
   const theme = useColorTheme();
@@ -117,16 +120,38 @@ export default function CreateTask({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      firstName: "",
+      name: "",
       lastName: "",
     },
   });
-  const onSubmit = (data) => {
-    Toast.show({
-      type: "success",
-      text1: "Hello",
-      text2: JSON.stringify(data),
-    });
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await sendApiRequest(
+        sessionToken,
+        "POST",
+        "space/entity",
+        {},
+        {
+          body: JSON.stringify({
+            ...data,
+            type: "TASK",
+          }),
+        }
+      );
+      console.log(res);
+      // clear form
+      handleClose();
+      Toast.show({
+        type: "success",
+        text1: "Created!",
+      });
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+    }
   };
 
   // callbacks
@@ -256,13 +281,13 @@ export default function CreateTask({
               icon={<Icon>north</Icon>}
               style={{ marginLeft: "auto" }}
               onPress={() => {
-                handleSubmit(onSubmit)();
-                if (errors) {
+                if (Object.keys(errors).length > 0) {
                   Toast.show({
                     type: "error",
                     text1: "Type in a task name",
                   });
                 }
+                handleSubmit(onSubmit)();
               }}
             />
           </View>
@@ -316,7 +341,7 @@ export default function CreateTask({
                   }}
                 />
               )}
-              name="firstName"
+              name="name"
             />
           </View>
         </View>

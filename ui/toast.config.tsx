@@ -18,7 +18,7 @@ const toastContainerStyles: StyleProp<ViewStyle> = {
 
 const text1Props = (theme) => ({
   style: {
-    color: theme[9],
+    color: theme[11],
     fontFamily: "body_400",
     fontSize: 15,
   },
@@ -45,7 +45,7 @@ export const toastConfig = (theme) => ({
             check_circle
           </Icon>
         )}
-        text2Style={{ fontSize: 15 }}
+        text2Style={{ fontSize: 15, color: theme[11], opacity: 0.6 }}
       />
     </View>
   ),
