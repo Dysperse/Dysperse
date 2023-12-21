@@ -37,7 +37,10 @@ export function OpenTabsList() {
     const tabs = session.user.tabs;
     const tab = tabs[index];
     if (tab) {
-      router.replace(tab.tabData.href);
+      router.replace({
+        pathname: tab.slug,
+        ...(tab.params && { params: tab.params }),
+      });
     }
   };
 

@@ -1,6 +1,5 @@
 import { Button } from "@/ui/Button";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -15,7 +14,6 @@ import { sendApiRequest } from "../helpers/api";
 import Turnstile from "../ui/turnstile";
 
 export default function SignIn() {
-  const theme = useColorTheme();
   const { signIn, session } = useSession();
   const [step, setStep] = useState(0);
 

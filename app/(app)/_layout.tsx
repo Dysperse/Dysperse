@@ -83,7 +83,7 @@ export default function AppLayout() {
   const isDark = useColorScheme() === "dark";
 
   const theme = useColor(
-    sessionData?.user?.color || "violet",
+    sessionData?.user?.theme || "violet",
     // CHANGE THIS LATER!!!
     isDark
     // sessionData?.user?.darkMode === "dark"
