@@ -1,13 +1,13 @@
-import { Platform, Pressable, StyleProp } from "react-native";
+import { Pressable, StyleProp, ViewStyle } from "react-native";
 import Text from "../Text";
 import { useColorTheme } from "../color/theme-provider";
 
 interface ChipProps {
   icon?: React.ReactNode;
-  label?: String | React.ReactNode;
+  label?: React.ReactNode;
   onPress?: () => void;
   outlined?: boolean;
-  style?: StyleProp<any>;
+  style?: StyleProp<ViewStyle>;
 }
 
 export default function Chip({
@@ -42,7 +42,7 @@ export default function Chip({
               backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
             }),
         gap: 10,
-        ...style,
+        ...(style as any),
       })}
       {...(onPress && { onPress })}
     >

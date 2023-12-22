@@ -59,11 +59,9 @@ export function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
 
   useEffect(() => {
-    if (data && ref.current) {
-      const t = data.findIndex((i) => i.id === tab);
-      setTimeout(() => {
-        ref.current.scrollTo(t);
-      }, 300);
+    if (data && Platform.OS !== "web") {
+      const index = data.findIndex((i) => i.id === tab);
+      ref.current.scrollTo({ index, animated: true });
     }
   }, [data, tab]);
 

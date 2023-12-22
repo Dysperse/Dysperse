@@ -213,10 +213,40 @@ function SpacesTrigger() {
   );
 }
 
+export const createTab = async (
+  sessionToken: string,
+  tab: {
+    label?: string;
+    icon?: string;
+    slug: string;
+    params?: Record<string, string>;
+  }
+) => {
+  const res = await sendApiRequest(
+    sessionToken,
+    "POST",
+    "user/tabs",
+    {},
+    {
+      body: JSON.stringify({
+        slug: tab.slug,
+        params: tab.params || {},
+      }),
+    }
+  );
+  router.replace({
+    pathname: tab.slug,
+    params: {
+      tab: res.id,
+      ...tab.params,
+    },
+  });
+};
+
 export function Button({ section, item }: any) {
   const [loading, setLoading] = useState(false);
   const { sessionToken } = useUser();
-  
+
   const redPalette = useColor("red", useColorScheme() === "dark");
   const purplePalette = useColor("purple", useColorScheme() === "dark");
   const greenPalette = useColor("green", useColorScheme() === "dark");
@@ -238,25 +268,7 @@ export function Button({ section, item }: any) {
   const handlePress = async (tab) => {
     try {
       setLoading(true);
-      const res = await sendApiRequest(
-        sessionToken,
-        "POST",
-        "user/tabs",
-        {},
-        {
-          body: JSON.stringify({
-            slug: tab.slug,
-            params: tab.params || {},
-          }),
-        }
-      );
-      router.replace({
-        pathname: tab.slug,
-        params: {
-          tab: res.id,
-          ...tab.params,
-        },
-      });
+      await createTab(sessionToken, tab);
       await mutate();
       setLoading(false);
     } catch (e) {

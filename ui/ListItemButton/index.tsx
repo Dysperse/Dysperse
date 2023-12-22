@@ -6,6 +6,7 @@ import { useColorTheme } from "../color/theme-provider";
 export interface DListitemButtonProps extends PressableProps {
   wrapperStyle?: StyleProp<any>;
   buttonClassName?: string;
+  variant?: "default" | "filled";
 }
 
 export function ListItemButton(props: DListitemButtonProps) {
@@ -23,6 +24,8 @@ export function ListItemButton(props: DListitemButtonProps) {
           ? theme[5]
           : hovered
           ? theme[4]
+          : props.variant === "filled"
+          ? theme[3]
           : "transparent",
         paddingHorizontal: 15,
         paddingVertical: 10,

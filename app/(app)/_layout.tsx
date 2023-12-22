@@ -189,6 +189,13 @@ export default function AppLayout() {
                       }}
                     />
                     <Stack.Screen
+                      name="[tab]/spaces/[id]"
+                      options={{
+                        ...(width < 600 && { header: () => null }),
+                        animation: "fade",
+                      }}
+                    />
+                    <Stack.Screen
                       name="[tab]/perspectives/agenda/[type]/[start]"
                       options={{
                         animation: "fade",

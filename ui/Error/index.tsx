@@ -16,12 +16,13 @@ export default function ErrorAlert({
         borderColor: red[5],
         flexDirection: "row",
         borderRadius: 20,
+        alignItems: "center",
         borderWidth: 2,
         paddingHorizontal: 20,
         paddingVertical: 15,
       }}
     >
-      <Icon style={{ color: red[11], marginTop: 5 }}>{icon}</Icon>
+      <Icon style={{ color: red[11] }}>{icon}</Icon>
       <Text style={{ color: red[11], lineHeight: 23, flex: 1 }}>{message}</Text>
     </View>
   );
