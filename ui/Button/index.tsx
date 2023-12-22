@@ -1,12 +1,27 @@
-import { Pressable, StyleProp, ViewStyle } from "react-native";
+import { Pressable, StyleProp, TextProps, ViewStyle } from "react-native";
 import { PressableProps } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
+import Text, { DTextProps } from "../Text";
 
 interface DButtonProps extends PressableProps {
   buttonClassName?: string;
   variant?: "filled" | "outlined" | "text";
   buttonStyle?: StyleProp<ViewStyle>;
 }
+
+export function ButtonText(props: DTextProps) {
+  const theme = useColorTheme();
+  return (
+    <Text
+      weight={500}
+      {...props}
+      style={{
+        color: theme[11],
+      }}
+    />
+  );
+}
+
 export function Button(props: DButtonProps) {
   const variant = props.variant || "text";
   const theme = useColorTheme();
@@ -20,7 +35,9 @@ export function Button(props: DButtonProps) {
         borderWidth: 2,
         borderRadius: 999,
         paddingHorizontal: 10,
-        height: 35,
+        height: 45,
+        minWidth: 70,
+        justifyContent: "center",
         ...(variant === "outlined"
           ? {
               backgroundColor: pressed
@@ -41,9 +58,10 @@ export function Button(props: DButtonProps) {
                 : hovered
                 ? theme[3]
                 : undefined,
+              borderColor: "transparent",
             }),
         gap: 10,
-        ...(props.buttonStyle || ({} as any)),
+        ...(props.style || ({} as any)),
       })}
     />
   );

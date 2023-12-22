@@ -13,6 +13,7 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { Tab } from "./tab";
 import useSWR from "swr";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 function TabListTab({
   disabled,
@@ -150,13 +151,15 @@ export const TabDrawer = ({ children }) => {
                     </ScaleDecorator>
                   )
                 : ({ item }) => (
-                    <TabListTab
-                      item={item}
-                      disabled={false}
-                      drag={() => {}}
-                      handleClose={handleClose}
-                      isActive={false}
-                    />
+                    <TouchableOpacity>
+                      <TabListTab
+                        item={item}
+                        disabled={false}
+                        drag={() => {}}
+                        handleClose={handleClose}
+                        isActive={false}
+                      />
+                    </TouchableOpacity>
                   )) as any
             }
             keyExtractor={(item: any) => item.id}

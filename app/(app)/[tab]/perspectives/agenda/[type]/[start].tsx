@@ -1,3 +1,4 @@
+import { ContentWrapper } from "@/components/layout/content";
 import { Column } from "@/components/perspectives/agenda/Column";
 import { PerspectivesNavbar } from "@/components/perspectives/agenda/Navbar";
 import ErrorAlert from "@/ui/Error";
@@ -14,16 +15,14 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
-import { ContentWrapper } from "@/components/layout/content";
 
 function Agenda() {
   const theme = useColorTheme();
   const { type, start, end } = useAgendaContext();
   const { data, error } = useSWR([
-    "space/tasks/perspectives",
+    "space/perspectives/agenda",
     {
       start: start.toISOString(),
       end: end.toISOString(),
@@ -57,6 +56,20 @@ function Agenda() {
 
   const { width } = useWindowDimensions();
 
+  const agendaFallback = (
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+      }}
+    >
+      {error ? <ErrorAlert /> : <ActivityIndicator />}
+    </View>
+  );
+
   if (width > 600) {
     return (
       <ContentWrapper>
@@ -73,25 +86,11 @@ function Agenda() {
             paddingTop: 70,
           }}
         >
-          {data ? (
-            data.map((col) => (
-              <Column header={() => <></>} key={col.start} column={col} />
-            ))
-          ) : error ? (
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <ErrorAlert />
-            </View>
-          ) : (
-            <View className="items-center justify-center w-full">
-              <ActivityIndicator />
-            </View>
-          )}
+          {data
+            ? data.map((col) => (
+                <Column header={() => <></>} key={col.start} column={col} />
+              ))
+            : agendaFallback}
         </ScrollView>
       </ContentWrapper>
     );
@@ -189,9 +188,7 @@ function Agenda() {
           )}
         </View>
       ) : (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator />
-        </View>
+        agendaFallback
       )}
     </>
   );

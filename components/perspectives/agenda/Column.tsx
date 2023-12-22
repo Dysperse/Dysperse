@@ -1,7 +1,7 @@
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import { Task } from "@/components/task";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -12,6 +12,7 @@ import { usePathname } from "expo-router";
 import React from "react";
 import { FlatList, StyleSheet, View, useWindowDimensions } from "react-native";
 import CreateTask from "../../task/create";
+import { Avatar } from "@/ui/Avatar";
 
 const styles = StyleSheet.create({
   columnCard: {
@@ -44,70 +45,49 @@ export function Column({ header, column }) {
       <FlatList
         style={{ flex: 1, maxHeight: "100%" }}
         ListEmptyComponent={
-          <View className="p-4">
-            <View
-              style={[
-                styles.columnCard,
-                {
-                  borderColor: theme[5],
-                  backgroundColor: theme[2],
-                },
-              ]}
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
+            }}
+          >
+            <Avatar
+              size={60}
+              style={{
+                borderWidth:2,
+                borderColor: theme[5],
+                backgroundColor: theme[3]
+              }}
             >
-              <View
-                className="w-16 border-2 h-16 bg-gray-200 items-center rounded-full justify-center"
-                style={{ backgroundColor: theme[4], borderColor: theme[6] }}
-              >
-                <Emoji emoji="1f389" size={30} />
-              </View>
-              <Text textClassName="text-xl" weight={400}>
-                No tasks!
-              </Text>
-              <Button variant="filled" buttonClassName="mt-2">
-                <Icon size={24}>add_circle</Icon>
-                <Text textStyle={{ fontSize: 13 }}>Create</Text>
-              </Button>
-            </View>
+              <Emoji emoji="1f389" size={30} />
+            </Avatar>
+            <Text textClassName="text-xl" weight={400}>
+              Nothing here!
+            </Text>
           </View>
         }
         ListHeaderComponent={
           <>
             {header()}
-            <CreateTask
-              defaultValues={{
-                date: dayjs(column.start),
-              }}
+            <View
+              style={{ flexDirection: "row", gap: 10, paddingHorizontal: 20 }}
             >
-              <ListItemButton
-                wrapperStyle={{
-                  borderRadius: width > 600 ? 20 : 0,
-                  paddingVertical: 15 - (width > 600 ? 5 : 0),
-                  paddingHorizontal: 20 - (width > 600 ? 5 : 0),
+              <CreateTask
+                defaultValues={{
+                  date: dayjs(column.start),
                 }}
               >
-                <View
-                  style={{
-                    width: 25,
-                    height: 25,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 99,
-                    borderWidth: 2,
-                    borderColor: theme[7],
-                  }}
-                >
-                  <Icon
-                    size={20}
-                    style={{
-                      color: theme[8],
-                    }}
-                  >
-                    add
-                  </Icon>
-                </View>
-                <Text weight={400}>Create task</Text>
-              </ListItemButton>
-            </CreateTask>
+                <Button variant="filled" style={{ flex: 1 }}>
+                  <Icon>add</Icon>
+                  <ButtonText>Create</ButtonText>
+                </Button>
+              </CreateTask>
+              <Button variant="outlined">
+                <Icon>more_horiz</Icon>
+              </Button>
+            </View>
           </>
         }
         data={column.tasks}
@@ -115,6 +95,7 @@ export function Column({ header, column }) {
           padding: width > 600 ? 10 : 0,
           paddingTop: width > 600 ? 10 : 70,
           paddingBottom: getBottomNavigationHeight(pathname) + 20,
+          flex: 1,
         }}
         renderItem={({ item }) => <Task task={item} />}
         keyExtractor={(i) => `${i.id}-${Math.random()}`}

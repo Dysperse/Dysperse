@@ -237,8 +237,8 @@ export function Tab({
         </View>
         <IconButton
           style={{
-            width: width < 600 ? 20 : 40,
-            height: width < 600 ? 20 : 40,
+            width: width > 600 ? 20 : 40,
+            height: width > 600 ? 20 : 40,
             marginHorizontal: 5,
             display:
               width < 600

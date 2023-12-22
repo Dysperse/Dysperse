@@ -61,7 +61,8 @@ export function OpenTabsList() {
   useEffect(() => {
     if (data && Platform.OS !== "web") {
       const index = data.findIndex((i) => i.id === tab);
-      ref.current.scrollTo({ index, animated: true });
+      if (ref.current.getCurrentIndex() !== index)
+        ref.current.scrollTo({ index, animated: true });
     }
   }, [data, tab]);
 
