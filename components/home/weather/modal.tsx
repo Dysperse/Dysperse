@@ -102,6 +102,9 @@ export function WeatherModal({
       {trigger}
       <BottomSheet
         onClose={handleClose}
+        handleIndicatorStyle={{
+          backgroundColor: base.replace("0.1", "0.3"),
+        }}
         sheetRef={ref}
         style={{ maxWidth: 500, marginHorizontal: "auto" }}
         snapPoints={["60%", "90%"]}

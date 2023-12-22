@@ -6,12 +6,10 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
-  TextInput,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -95,7 +93,16 @@ export default function Page() {
             renderItem={({ item }) => <Task task={item} />}
           />
         ) : (
-          <ActivityIndicator />
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ActivityIndicator />
+          </View>
         )}
       </KeyboardAvoidingView>
     </ContentWrapper>

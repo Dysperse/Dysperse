@@ -18,18 +18,18 @@ export function WeatherWidget() {
   const [loading, setLoading] = useState(true);
 
   const checkLocationPermission = async () => {
-    let { status } = await Location.getForegroundPermissionsAsync();
+    const { status } = await Location.getForegroundPermissionsAsync();
     if (status === "granted") {
-      let location = await Location.getCurrentPositionAsync({});
+      const location = await Location.getCurrentPositionAsync({});
       setLocation(location);
     }
   };
 
   const requestLocationPermission = async () => {
     setLoading(false);
-    let { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await Location.requestForegroundPermissionsAsync();
     if (status === "granted") {
-      let location = await Location.getCurrentPositionAsync({});
+      const location = await Location.getCurrentPositionAsync({});
       setLocation(location);
     } else {
       setError(true);
@@ -41,8 +41,8 @@ export function WeatherWidget() {
   }, []);
 
   const getWeather = async (location) => {
-    let lat = location.coords.latitude;
-    let long = location.coords.longitude;
+    const lat = location.coords.latitude;
+    const long = location.coords.longitude;
     fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${long}`)
       .then((res) => res.json())
       .then((res) => setLocationData(res));
@@ -100,6 +100,7 @@ export function WeatherWidget() {
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         },
       ]}
+      onPress={onPressHandler}
     >
       <ActivityIndicator />
     </Pressable>
