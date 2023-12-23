@@ -172,9 +172,7 @@ export default function CreateTask({
         onClose={handleClose}
         sheetRef={ref}
         snapPoints={["50%"]}
-        containerStyle={{
-          maxWidth: 500,
-        }}
+        maxWidth={500}
         footerComponent={() => (
           <View
             style={{

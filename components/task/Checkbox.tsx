@@ -8,12 +8,12 @@ export function TaskCheckbox({ completed }: { completed: boolean }) {
   return (
     <Pressable
       style={({ pressed }) => ({
-        borderColor: theme[completed ? 8 : pressed ? 12 : 7],
+        borderColor: theme[completed ? 8 : pressed ? 8 : 6],
         width: 25,
         height: 25,
         borderRadius: 99,
         borderWidth: 2,
-        backgroundColor: completed ? theme[8] : theme[1],
+        backgroundColor: completed ? theme[8] : undefined,
         alignItems: "center",
       })}
     >
