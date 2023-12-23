@@ -16,8 +16,9 @@ export function Avatar(props: DAvatarProps) {
   return (
     <Pressable
       {...props}
-      className={`rounded-full relative items-center justify-center ${props.viewClassName}`}
+      className={`relative items-center justify-center ${props.viewClassName}`}
       style={{
+        borderRadius: 99,
         width: props.size || 30,
         height: props.size || 30,
         backgroundColor: theme[5],
@@ -43,9 +44,19 @@ export function Avatar(props: DAvatarProps) {
   );
 }
 
-export function ProfilePicture({ name, image, size }) {
+export function ProfilePicture({
+  name,
+  image,
+  size,
+  style,
+}: {
+  name: string;
+  image?: string;
+  size: number;
+  style?: StyleProp<ViewStyle>;
+}) {
   return (
-    <Avatar image={image ? image : undefined} size={size}>
+    <Avatar image={image ? image : undefined} size={size} style={style}>
       <Text>
         {name[0].toUpperCase()}
         {name[1].toUpperCase()}

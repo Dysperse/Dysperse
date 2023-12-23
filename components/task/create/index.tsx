@@ -2,10 +2,9 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -52,6 +51,12 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     fontFamily: "body_700",
   },
+  gridRow: {
+    flexDirection: "row",
+    gap: 15,
+    marginTop: 15,
+    paddingHorizontal: 15,
+  },
 });
 
 function ColorPicker({ children, color, setColor }) {
@@ -69,10 +74,6 @@ function ColorPicker({ children, color, setColor }) {
         sheetRef={ref}
         onClose={handleClose}
         snapPoints={["80%"]}
-        containerStyle={{
-          maxWidth: 500,
-          margin: "auto",
-        }}
         footerComponent={() => (
           <View className="flex-row justify-end p-4 pt-0">
             <Button variant="filled">
@@ -103,14 +104,16 @@ export default function CreateTask({
   defaultValues = {
     date: dayjs().utc(),
   },
-}) {
+}: any) {
   const { sessionToken } = useUser();
   const menuRef = useRef<BottomSheetModal>(null);
   const orange = useColor("orange", useColorScheme() === "dark");
   const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
 
-  const [date, setDate] = useState<Dayjs>(defaultValues.date);
+  const [date, setDate] = useState<Dayjs | null>(
+    defaultValues.date || undefined
+  );
   const [pinned, setPinned] = useState<boolean>(false);
   const [color, setColor] = useState("gray");
 
@@ -158,7 +161,6 @@ export default function CreateTask({
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
-
   const handlePriorityChange = useCallback(() => {
     setPinned((p) => !p);
   }, []);
@@ -172,12 +174,14 @@ export default function CreateTask({
         snapPoints={["50%"]}
         containerStyle={{
           maxWidth: 500,
-          margin: "auto",
         }}
         footerComponent={() => (
           <View
-            className="px-5"
             style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              paddingHorizontal: 20,
               height: 60,
               shadowColor: theme[3],
               shadowOffset: { width: 0, height: -40 },
@@ -191,27 +195,16 @@ export default function CreateTask({
             >
               <Menu
                 menuRef={menuRef}
-                height={[200]}
-                trigger={
-                  <IconButton
-                    variant="filled"
-                    style={{
-                      width: 40,
-                      height: 40,
-                    }}
-                  >
-                    <Icon size={30}>add</Icon>
-                  </IconButton>
-                }
+                height={[350]}
+                trigger={<Chip icon={<Icon>add</Icon>} />}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 20,
-                    marginTop: 20,
-                    paddingHorizontal: 20,
-                  }}
-                >
+                <View style={{ flexDirection: "row" }}>
+                  <Button>
+                    <Icon>arrow_back_ios_new</Icon>
+                    <ButtonText>Back</ButtonText>
+                  </Button>
+                </View>
+                <View style={styles.gridRow}>
                   <Pressable
                     style={({ pressed, hovered }: any) => [
                       styles.attachmentCard,
@@ -232,6 +225,30 @@ export default function CreateTask({
                     ]}
                   >
                     <Avatar size={45}>
+                      <Icon>link</Icon>
+                    </Avatar>
+                    <Text style={styles.attachmentCardText}>Link</Text>
+                  </Pressable>
+                </View>
+                <View style={styles.gridRow}>
+                  <Pressable
+                    style={({ pressed, hovered }: any) => [
+                      styles.attachmentCard,
+                      { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+                    ]}
+                  >
+                    <Avatar size={45}>
+                      <Icon>sticky_note_2</Icon>
+                    </Avatar>
+                    <Text style={styles.attachmentCardText}>Note</Text>
+                  </Pressable>
+                  <Pressable
+                    style={({ pressed, hovered }: any) => [
+                      styles.attachmentCard,
+                      { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+                    ]}
+                  >
+                    <Avatar size={45}>
                       <Icon>cloud</Icon>
                     </Avatar>
                     <Text style={styles.attachmentCardText}>Image</Text>
@@ -239,19 +256,12 @@ export default function CreateTask({
                 </View>
               </Menu>
             </View>
-          </View>
-        )}
-      >
-        <View className="pt-2 flex-1">
-          <View className="flex-row mb-4 px-5" style={{ gap: 10 }}>
-            {showClose && (
-              <Chip
-                icon={<Icon>arrow_back_ios_new</Icon>}
-                onPress={handleClose}
-              />
-            )}
             <Chip
-              outlined={showClose}
+              style={{ marginLeft: "auto" }}
+              icon={<Icon>calendar_today</Icon>}
+              label={date ? date.format("MMM Do") : undefined}
+            />
+            <Chip
               onPress={handlePriorityChange}
               icon={
                 <Icon
@@ -270,16 +280,28 @@ export default function CreateTask({
               }}
             />
             <ColorPicker color={color} setColor={setColor}>
-              <Chip outlined={showClose} icon={<Icon>label</Icon>} />
+              <Chip icon={<Icon>label</Icon>} />
             </ColorPicker>
+          </View>
+        )}
+      >
+        <View className="pt-2 flex-1">
+          <View
+            style={{
+              gap: 10,
+              flexDirection: "row",
+              paddingHorizontal: 20,
+            }}
+          >
+            {showClose && (
+              <Chip
+                icon={<Icon>arrow_back_ios_new</Icon>}
+                onPress={handleClose}
+              />
+            )}
             <Chip
-              outlined={showClose}
-              icon={<Icon>calendar_today</Icon>}
-              label={date.format("MMM Do")}
-            />
-            <Chip
-              icon={<Icon>north</Icon>}
               style={{ marginLeft: "auto" }}
+              icon={<Icon>north</Icon>}
               onPress={() => {
                 if (Object.keys(errors).length > 0) {
                   Toast.show({

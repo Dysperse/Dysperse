@@ -4,6 +4,7 @@ import React from "react";
 import { View } from "react-native";
 import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { LinearGradient } from "expo-linear-gradient";
 
 export function Header({ start, end }) {
   const { type } = useAgendaContext();
@@ -24,12 +25,14 @@ export function Header({ start, end }) {
   const theme = useColorTheme();
 
   return (
-    <View
-      className="flex-row items-center justify-center p-5"
+    <LinearGradient
+      colors={[theme[3], theme[2]]}
       style={{
         gap: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: theme[5],
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
       }}
     >
       <View
@@ -49,6 +52,6 @@ export function Header({ start, end }) {
         {dayjs(start).format(formats.subheading)}
         {type === "month" && <> - {dayjs(end).format(formats.subheading)}</>}
       </Text>
-    </View>
+    </LinearGradient>
   );
 }

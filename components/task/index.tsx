@@ -258,15 +258,18 @@ export function TaskDrawer({ children, id }) {
 }
 
 export function Task({ task }) {
+  const theme = useColorTheme();
   const { width } = useWindowDimensions();
 
   return (
     <TaskDrawer id={task.id}>
       <ListItemButton
-        wrapperStyle={{
+        style={{
           borderRadius: width > 600 ? 20 : 0,
           paddingVertical: 15 - (width > 600 ? 5 : 0),
           paddingHorizontal: 20 - (width > 600 ? 5 : 0),
+          borderWidth: 2,
+          borderColor: theme[4],
         }}
       >
         <TaskCheckbox completed={task?.completionInstances?.length > 0} />

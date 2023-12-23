@@ -14,16 +14,6 @@ import { FlatList, StyleSheet, View, useWindowDimensions } from "react-native";
 import CreateTask from "../../task/create";
 import { Avatar } from "@/ui/Avatar";
 
-const styles = StyleSheet.create({
-  columnCard: {
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 20,
-    borderWidth: 2,
-  },
-});
-
 export function Column({ header, column }) {
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
@@ -33,12 +23,12 @@ export function Column({ header, column }) {
     <View
       style={{
         ...(width > 600 && {
-          borderRightWidth: 1,
-          borderRightColor: theme[5],
+          backgroundColor: theme[2],
+          borderRadius: 20,
         }),
         width: width > 600 ? 300 : width,
-        maxHeight: height - 1,
-        height: height,
+        flex: 1,
+        overflow: "hidden",
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
@@ -54,14 +44,13 @@ export function Column({ header, column }) {
             }}
           >
             <Avatar
-              size={60}
+              size={90}
               style={{
-                borderWidth:2,
-                borderColor: theme[5],
-                backgroundColor: theme[3]
+                backgroundColor: theme[3],
+                borderRadius: 40,
               }}
             >
-              <Emoji emoji="1f389" size={30} />
+              <Emoji emoji="1f389" size={40} />
             </Avatar>
             <Text textClassName="text-xl" weight={400}>
               Nothing here!
@@ -72,7 +61,11 @@ export function Column({ header, column }) {
           <>
             {header()}
             <View
-              style={{ flexDirection: "row", gap: 10, paddingHorizontal: 20 }}
+              style={{
+                flexDirection: "row",
+                gap: 15,
+                paddingBottom: 15,
+              }}
             >
               <CreateTask
                 defaultValues={{
@@ -92,12 +85,19 @@ export function Column({ header, column }) {
         }
         data={column.tasks}
         contentContainerStyle={{
-          padding: width > 600 ? 10 : 0,
-          paddingTop: width > 600 ? 10 : 70,
+          padding: width > 600 ? 15 : 0,
+          paddingTop: width > 600 ? 15 : 70,
           paddingBottom: getBottomNavigationHeight(pathname) + 20,
           flex: 1,
         }}
-        renderItem={({ item }) => <Task task={item} />}
+        renderItem={({ item }) => {
+          switch (item.type) {
+            case "TASK":
+              return <Task task={item} />;
+            default:
+              return <Text>Invalid entity type</Text>;
+          }
+        }}
         keyExtractor={(i) => `${i.id}-${Math.random()}`}
       />
     </View>

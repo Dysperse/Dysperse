@@ -99,9 +99,9 @@ export default function Page() {
             <View style={profileStyles.cardContent}>
               <Text variant="eyebrow">Local Time</Text>
               <Text style={profileStyles.statHeading}>
-                {dayjs(data.profile.lastActive)
-                  .tz(data.timeZone)
-                  .format("h:mm A")}
+                {dayjs(new Date().toISOString(), data.timeZone).format(
+                  "h:mm A"
+                )}
               </Text>
             </View>
             <Avatar size={40}>
@@ -119,6 +119,40 @@ export default function Page() {
               <Icon>emoji_objects</Icon>
             </Avatar>
           </Pressable>
+          <Pressable style={() => [profileStyles.card, themedCardValues]}>
+            <View style={profileStyles.cardContent}>
+              <Text variant="eyebrow">Birthday</Text>
+              <Text style={profileStyles.statHeading}>
+                {dayjs(data.profile.birthday).format("MMM Do")}
+              </Text>
+              <Text>
+                In{" "}
+                {
+                  -dayjs().diff(
+                    dayjs(data.profile.birthday).set(
+                      "year",
+                      new Date().getFullYear() + 1
+                    ),
+                    "days"
+                  )
+                }{" "}
+                days
+              </Text>
+            </View>
+            <Avatar size={40}>
+              <Icon>cake</Icon>
+            </Avatar>
+          </Pressable>
+          {data.profile.bio && (
+            <Pressable style={() => [profileStyles.card, themedCardValues]}>
+              <View style={profileStyles.cardContent}>
+                <Text variant="eyebrow">About</Text>
+                <Text style={profileStyles.statHeading}>
+                  {data.profile.bio}
+                </Text>
+              </View>
+            </Pressable>
+          )}
           <Text>{JSON.stringify(data, null, 2)}</Text>
         </ScrollView>
       ) : error ? (

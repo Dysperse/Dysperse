@@ -56,7 +56,7 @@ export default function Page() {
                 </View>
                 <CreateTask>
                   <ListItemButton
-                    wrapperStyle={{
+                    style={{
                       borderRadius: width > 600 ? 20 : 0,
                       paddingVertical: 15 - (width > 600 ? 5 : 0),
                       paddingHorizontal: 20 - (width > 600 ? 5 : 0),

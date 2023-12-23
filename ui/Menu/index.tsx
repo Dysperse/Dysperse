@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
+import { useWindowDimensions } from "react-native";
 
 export function Menu({
   trigger,
@@ -23,6 +24,7 @@ export function Menu({
   menuRef?: Ref<BottomSheetModal>;
 }) {
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
   const _ref = useRef<BottomSheetModal>(null);
   const ref: any = menuRef || _ref;
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -37,16 +39,15 @@ export function Menu({
         onClose={handleClose}
         snapPoints={height}
         containerStyle={{
-          maxWidth: 400,
-          margin: "auto",
+          marginHorizontal: 20,
         }}
         backgroundStyle={{
-          borderRadius: 40,
+          borderRadius: 20,
           backgroundColor: theme[1],
         }}
         detached
         footerComponent={footer}
-        bottomInset={20}
+        bottomInset={23.5}
       >
         {children}
       </BottomSheet>

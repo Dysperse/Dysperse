@@ -215,7 +215,7 @@ export function Tab({
             style={{
               ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
             }}
-            weight={500}
+            weight={600}
             numberOfLines={1}
           >
             {capitalizeFirstLetter(tabData.name(tab.params, tab.slug)[0] || "")}

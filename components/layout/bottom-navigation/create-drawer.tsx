@@ -5,11 +5,12 @@ import ListItemText from "@/ui/ListItemText";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef } from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import CreateTask from "../../task/create";
 
 export const CreateDrawer = ({ children }) => {
   const ref = useRef<BottomSheetModal>(null);
+  const { width } = useWindowDimensions();
 
   // callbacks
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -22,7 +23,10 @@ export const CreateDrawer = ({ children }) => {
       <BottomSheet
         sheetRef={ref}
         snapPoints={[305]}
-        style={{ maxWidth: 350, marginHorizontal: "auto" }}
+        style={{
+          maxWidth: width > 600 ? 350 : "auto",
+          marginHorizontal: "auto",
+        }}
         onClose={handleClose}
       >
         <View className="p-5">

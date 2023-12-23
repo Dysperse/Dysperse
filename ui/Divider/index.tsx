@@ -1,7 +1,7 @@
-import { View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
-export default function Divider() {
+export default function Divider({ style }: { style?: StyleProp<ViewStyle> }) {
   const theme = useColorTheme();
   return (
     <View
@@ -9,6 +9,7 @@ export default function Divider() {
         height: 2,
         backgroundColor: theme[5],
         borderRadius: 99,
+        ...(style as {}),
       }}
     />
   );

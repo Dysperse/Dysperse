@@ -8,6 +8,7 @@ interface ChipProps {
   onPress?: () => void;
   outlined?: boolean;
   style?: StyleProp<ViewStyle>;
+  iconPosition?: "before" | "after";
 }
 
 export default function Chip({
@@ -16,6 +17,7 @@ export default function Chip({
   onPress,
   outlined = false,
   style = {},
+  iconPosition = "before",
 }: ChipProps) {
   const theme = useColorTheme();
 
@@ -46,8 +48,15 @@ export default function Chip({
       })}
       {...(onPress && { onPress })}
     >
-      {icon}
-      {typeof label === "string" ? <Text>{label}</Text> : label}
+      {iconPosition === "before" && icon}
+      {typeof label === "string" ? (
+        <Text style={{ color: theme[11] }} weight={400}>
+          {label}
+        </Text>
+      ) : (
+        label
+      )}
+      {iconPosition === "after" && icon}
     </Pressable>
   );
 }

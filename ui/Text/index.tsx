@@ -18,7 +18,7 @@ export default function Text(props: DTextProps) {
       className={props.textClassName || undefined}
       style={{
         color: theme[12],
-        fontFamily: props.heading ? "heading" : `body_${props.weight || 300}`,
+        fontFamily: props.heading ? "heading" : `body_${props.weight || 400}`,
         ...(props.style as any),
         ...(props.textStyle as any),
 

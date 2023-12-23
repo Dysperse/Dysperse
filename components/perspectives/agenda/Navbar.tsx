@@ -6,9 +6,16 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
@@ -47,8 +54,7 @@ export function PerspectivesNavbar({
 
   const handlePrev = useCallback(() => {
     const tab = session?.user?.tabs?.find((i) => i.id === params.tab);
-
-    const href = `/perspectives/agenda/${type}/${dayjs(start)
+    const href = `/[tab]/perspectives/agenda/${type}/${dayjs(start)
       .subtract(1, type as ManipulateType)
       .format("YYYY-MM-DD")}`;
 
@@ -68,7 +74,7 @@ export function PerspectivesNavbar({
   const handleNext = useCallback(() => {
     const tab = session?.user?.tabs?.find((i) => i.id === params.tab);
 
-    const href = `/perspectives/agenda/${type}/${dayjs(start)
+    const href = `/[tab]/perspectives/agenda/${type}/${dayjs(start)
       .add(1, type as ManipulateType)
       .format("YYYY-MM-DD")}`;
 
@@ -87,55 +93,43 @@ export function PerspectivesNavbar({
 
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
 
   return (
-    <View
-      className="rounded-full p-3 pb-0 z-10"
-      style={{ marginTop: insets.top, marginBottom: -70, height: 70 }}
+    <LinearGradient
+      colors={[theme[width > 600 ? 3 : 2], theme[width > 600 ? 4 : 3]]}
+      style={{
+        paddingHorizontal: 20,
+        borderBottomRightRadius: width > 600 ? 0 : 30,
+        borderBottomLeftRadius: width > 600 ? 0 : 30,
+        paddingTop: insets.top,
+        marginBottom: -70,
+        flexDirection: "row",
+        height: 70 + insets.top,
+        alignItems: "center",
+        zIndex: 9999,
+        backgroundColor: theme[3],
+      }}
     >
-      <View
-        className="flex-row items-center p-2 py-3 rounded-full"
-        style={{ height: "100%", backgroundColor: theme[3] }}
-      >
-        <Text textClassName="ml-2 mr-auto" numberOfLines={1}>
-          {dayjs(start).format(titleFormat)}
+      <View style={{ flex: 1 }}>
+        <Text numberOfLines={1} weight={600}>
+          {dayjs(start).format(titleFormat).split("•")?.[0]}
         </Text>
-        {!isCurrent && (
-          <Pressable
-            style={({ pressed, hovered }: any) => [
-              styles.navigationButton,
-              {
-                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-              },
-            ]}
-            onPress={handleToday}
-          >
-            <Icon textClassName="font-gray-600">calendar_today</Icon>
-          </Pressable>
-        )}
-        <Pressable
-          onPress={handlePrev}
-          style={({ pressed, hovered }: any) => [
-            styles.navigationButton,
-            {
-              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-            },
-          ]}
-        >
-          <Icon textClassName="font-gray-600">arrow_back_ios_new</Icon>
-        </Pressable>
-        <Pressable
-          onPress={handleNext}
-          style={({ pressed, hovered }: any) => [
-            styles.navigationButton,
-            {
-              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-            },
-          ]}
-        >
-          <Icon textClassName="font-gray-600">arrow_forward_ios</Icon>
-        </Pressable>
+        <Text numberOfLines={1} style={{ opacity: 0.6 }}>
+          {dayjs(start).format(titleFormat).split("• ")?.[1]}
+        </Text>
       </View>
-    </View>
+      {!isCurrent && (
+        <TouchableOpacity style={styles.navigationButton} onPress={handleToday}>
+          <Icon textClassName="font-gray-600">calendar_today</Icon>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity onPress={handlePrev} style={styles.navigationButton}>
+        <Icon textClassName="font-gray-600">arrow_back_ios_new</Icon>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleNext} style={styles.navigationButton}>
+        <Icon textClassName="font-gray-600">arrow_forward_ios</Icon>
+      </TouchableOpacity>
+    </LinearGradient>
   );
 }

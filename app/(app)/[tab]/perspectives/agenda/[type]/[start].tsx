@@ -49,7 +49,7 @@ function Agenda() {
       if (c) setCurrentColumn(c);
       else
         router.push(
-          `/perspectives/agenda/${type}/${dayjs().format("YYYY-MM-DD")}`
+          `/[type]/perspectives/agenda/${type}/${dayjs().format("YYYY-MM-DD")}`
         );
     }
   }, [data, setCurrentColumn, type]);
@@ -82,8 +82,9 @@ function Agenda() {
           horizontal
           contentContainerStyle={{
             flexDirection: "row",
-            width: "100%",
-            paddingTop: 70,
+            padding: 15,
+            paddingTop: 70 + 15,
+            gap: 15,
           }}
         >
           {data

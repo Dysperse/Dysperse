@@ -1,10 +1,11 @@
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import Text from "@/ui/Text";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
+  ImageBackground,
   KeyboardAvoidingView,
   TextInput,
   View,
@@ -12,6 +13,11 @@ import {
 import { useSession } from "../context/AuthProvider";
 import { sendApiRequest } from "../helpers/api";
 import Turnstile from "../ui/turnstile";
+import TextField from "@/ui/TextArea";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { Platform } from "react-native";
+import { BlurView } from "expo-blur";
+import { addHslAlpha } from "@/ui/color";
 
 export default function SignIn() {
   const { signIn, session } = useSession();
@@ -75,95 +81,148 @@ export default function SignIn() {
     }
   }, [session]);
 
-  return step == 0 || step == 2 ? (
-    <KeyboardAvoidingView
-      className="flex-1 items-center justify-center p-10 max-w-lg mx-auto w-full"
-      behavior="height"
-      style={{ gap: 15 }}
-    >
-      <Text
-        textStyle={{ fontFamily: "heading" }}
-        textClassName="uppercase text-center text-5xl"
-      >
-        Welcome to Dysperse.
-      </Text>
-      <Text>Please sign in with your Dysperse ID</Text>
-      <View className="w-full">
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              className="border-2 px-5 mt-2 py-3 w-full rounded-2xl border-gray-300"
-              placeholder="Email"
-              placeholderTextColor="#aaa"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              style={{
-                ...(errors.email && { borderColor: "red" }),
-              }}
-            />
-          )}
-          name="email"
-        />
-        <Controller
-          control={control}
-          rules={{
-            maxLength: 100,
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              className="border-2 px-5 mt-4 py-3 w-full rounded-2xl border-gray-300"
-              placeholder="Password"
-              secureTextEntry
-              placeholderTextColor="#aaa"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              style={{
-                ...(errors.password && { borderColor: "red" }),
-              }}
-            />
-          )}
-          name="password"
-        />
-      </View>
-      <Button
-        variant="filled"
-        buttonStyle={{
-          width: "100%",
-          justifyContent: "center",
-        }}
-        onPress={handleSubmit(onSubmit)}
-        disabled={step === 2} // loading
-      >
-        {step === 2 ? (
-          <ActivityIndicator />
-        ) : (
-          <Text textClassName="text-gray-50">Continue</Text>
-        )}
-      </Button>
-    </KeyboardAvoidingView>
-  ) : (
-    <View
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        flex: 1,
+  const theme = useColorTheme();
+
+  return (
+    <ImageBackground
+      source={{
+        uri: "https://my.dysperse.com/auth/background-light.png?purge=dev",
       }}
+      style={{ height: "100%" }}
+      resizeMode="cover"
     >
-      <Text
-        style={{ fontFamily: "heading" }}
-        textClassName="uppercase text-5xl mb-2"
-      >
-        Verifying...
-      </Text>
-      <Text textClassName="mb-3">Checking if you're actually human 🤨</Text>
-      <Turnstile setToken={setToken} />
-    </View>
+      {step == 0 || step == 2 ? (
+        <KeyboardAvoidingView
+          behavior="height"
+          style={{
+            gap: 15,
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+          }}
+        >
+          <BlurView
+            intensity={20}
+            style={{
+              borderWidth: 2,
+              borderColor: theme[7],
+              padding: 30,
+              borderRadius: 28,
+              overflow: "hidden",
+            }}
+          >
+            <Text
+              textStyle={{ fontFamily: "heading" }}
+              textClassName="uppercase text-center text-5xl"
+            >
+              Welcome to Dysperse.
+            </Text>
+            <Text style={{ paddingTop: 10, paddingBottom: 20, opacity: 0.6 }}>
+              Please sign in with your Dysperse ID
+            </Text>
+            <View style={{ gap: 10 }}>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    style={{
+                      borderWidth: 2,
+                      paddingHorizontal: 20,
+                      paddingVertical: 15,
+                      borderRadius: 15,
+                      backgroundColor: addHslAlpha(theme[5], 0.5),
+                      borderColor: errors.email
+                        ? "red"
+                        : addHslAlpha(theme[9], 0.5),
+                      ...(Platform.OS === "web" && { outline: "none" }),
+                    }}
+                    placeholder="Email or username"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="email"
+              />
+              <Controller
+                control={control}
+                rules={{
+                  maxLength: 100,
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    style={{
+                      borderWidth: 2,
+                      paddingHorizontal: 20,
+                      paddingVertical: 15,
+                      borderRadius: 15,
+                      backgroundColor: addHslAlpha(theme[5], 0.5),
+                      borderColor: errors.password
+                        ? "red"
+                        : addHslAlpha(theme[9], 0.5),
+                      ...(Platform.OS === "web" && { outline: "none" }),
+                    }}
+                    placeholder="Password"
+                    secureTextEntry
+                    placeholderTextColor="#aaa"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="password"
+              />
+              <View
+                style={{ flexDirection: "row", justifyContent: "flex-end" }}
+              >
+                <Button style={{ height: 20 }}>
+                  <ButtonText>Need help signing in?</ButtonText>
+                </Button>
+              </View>
+              <Button
+                variant="filled"
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  backgroundColor: theme[7],
+                }}
+                onPress={handleSubmit(onSubmit)}
+                disabled={step === 2} // loading
+              >
+                {step === 2 ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text textClassName="text-gray-50">Continue</Text>
+                )}
+              </Button>
+              <Button style={{ height: 20 }}>
+                <ButtonText>Create an account</ButtonText>
+              </Button>
+            </View>
+          </BlurView>
+        </KeyboardAvoidingView>
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1,
+          }}
+        >
+          <Text
+            style={{ fontFamily: "heading" }}
+            textClassName="uppercase text-5xl mb-2"
+          >
+            Verifying...
+          </Text>
+          <Text textClassName="mb-3">Checking if you're actually human 🤨</Text>
+          <Turnstile setToken={setToken} />
+        </View>
+      )}
+    </ImageBackground>
   );
 }

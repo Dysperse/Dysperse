@@ -7,6 +7,7 @@ import { Ref } from "react";
 interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: Ref<BottomSheetModal>;
   onClose: () => void;
+  maxWidth?: number;
 }
 
 export default function BottomSheet(props: DBottomSheetProps) {
@@ -22,6 +23,10 @@ export default function BottomSheet(props: DBottomSheetProps) {
         borderTopRightRadius: 25,
       }}
       handleIndicatorStyle={{ backgroundColor: theme[5] }}
+      containerStyle={{
+        maxWidth: props.maxWidth || 600,
+        marginHorizontal: "auto",
+      }}
       {...props}
     >
       <BottomSheetBackHandler handleClose={props.onClose} />

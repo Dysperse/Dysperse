@@ -15,7 +15,7 @@ import isBetween from "dayjs/plugin/isBetween";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
-import tz from "dayjs/plugin/timezone";
+import timezone from "dayjs/plugin/timezone";
 import { Redirect, Stack } from "expo-router";
 import React from "react";
 import {
@@ -32,13 +32,12 @@ import { SWRConfig } from "swr";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
-dayjs.extend(utc);
-dayjs.extend(tz);
-
 function DesktopHeader() {
   return (
     <View
