@@ -85,55 +85,55 @@ export default function AppLayout() {
     <PortalProvider>
       <ColorThemeProvider theme={theme}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <BottomSheetModalProvider>
-            <SWRConfig
-              value={{
-                fetcher: async ([
-                  resource,
-                  params,
-                  host = "https://api.dysperse.com",
-                  init = {},
-                ]) => {
-                  const url = `${host}/${resource}?${new URLSearchParams(
-                    params
-                  ).toString()}`;
-                  const res = await fetch(url, {
-                    headers: {
-                      Authorization: `Bearer ${session}`,
-                    },
-                    ...init,
-                  });
-                  return await res.json();
-                },
+          <SWRConfig
+            value={{
+              fetcher: async ([
+                resource,
+                params,
+                host = "https://api.dysperse.com",
+                init = {},
+              ]) => {
+                const url = `${host}/${resource}?${new URLSearchParams(
+                  params
+                ).toString()}`;
+                const res = await fetch(url, {
+                  headers: {
+                    Authorization: `Bearer ${session}`,
+                  },
+                  ...init,
+                });
+                return await res.json();
+              },
 
-                provider: () => new Map(),
-                isVisible: () => true,
-                initFocus(callback) {
-                  let appState = AppState.currentState;
+              provider: () => new Map(),
+              isVisible: () => true,
+              initFocus(callback) {
+                let appState = AppState.currentState;
 
-                  const onAppStateChange = (nextAppState) => {
-                    /* If it's resuming from background or inactive mode to active one */
-                    if (
-                      appState.match(/inactive|background/) &&
-                      nextAppState === "active"
-                    ) {
-                      callback();
-                    }
-                    appState = nextAppState;
-                  };
+                const onAppStateChange = (nextAppState) => {
+                  /* If it's resuming from background or inactive mode to active one */
+                  if (
+                    appState.match(/inactive|background/) &&
+                    nextAppState === "active"
+                  ) {
+                    callback();
+                  }
+                  appState = nextAppState;
+                };
 
-                  // Subscribe to the app state change events
-                  const subscription = AppState.addEventListener(
-                    "change",
-                    onAppStateChange
-                  );
+                // Subscribe to the app state change events
+                const subscription = AppState.addEventListener(
+                  "change",
+                  onAppStateChange
+                );
 
-                  return () => {
-                    subscription.remove();
-                  };
-                },
-              }}
-            >
+                return () => {
+                  subscription.remove();
+                };
+              },
+            }}
+          >
+            <BottomSheetModalProvider>
               <StatusBar
                 barStyle={!isDark ? "dark-content" : "light-content"}
               />
@@ -207,8 +207,8 @@ export default function AppLayout() {
                 </ThemeProvider>
                 {width < 600 && <BottomAppBar />}
               </View>
-            </SWRConfig>
-          </BottomSheetModalProvider>
+            </BottomSheetModalProvider>
+          </SWRConfig>
           <Toast config={toastConfig(theme)} />
         </GestureHandlerRootView>
       </ColorThemeProvider>

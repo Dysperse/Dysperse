@@ -10,7 +10,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -30,6 +30,7 @@ import Toast from "react-native-toast-message";
 import TextField from "@/ui/TextArea";
 import useSWR from "swr";
 import ErrorAlert from "@/ui/Error";
+import Emoji from "@/ui/Emoji";
 
 const styles = StyleSheet.create({
   container: {
@@ -123,7 +124,65 @@ function LabelPicker({ children, color, setColor }) {
               justifyContent: "center",
             }}
           >
-            {data ? <></> : error ? <ErrorAlert /> : <ActivityIndicator />}
+            {data ? (
+              <BottomSheetFlatList
+                data={data}
+                contentContainerStyle={{ flex: 1 }}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      height: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingBottom: 70,
+                      paddingHorizontal: 20,
+                      gap: 10,
+                    }}
+                  >
+                    <Emoji emoji="1f62d" size={50} />
+                    <Text heading style={{ fontSize: 35 }}>
+                      No labels
+                    </Text>
+                    <Text style={{ opacity: 0.6, textAlign: "center" }}>
+                      Labels are a great way to group things together
+                    </Text>
+                  </View>
+                }
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setColor(item.color);
+                      handleClose();
+                    }}
+                    style={({ pressed, hovered }: any) => [
+                      {
+                        flexDirection: "row",
+                        alignItems: "center",
+                        padding: 15,
+                        borderRadius: 999,
+                        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+                        marginBottom: 15,
+                      },
+                    ]}
+                  >
+                    <View
+                      style={{
+                        width: 25,
+                        height: 25,
+                        borderRadius: 999,
+                        backgroundColor: item.color,
+                        marginRight: 15,
+                      }}
+                    />
+                    <Text weight={700}>{item.name}</Text>
+                  </Pressable>
+                )}
+              />
+            ) : error ? (
+              <ErrorAlert />
+            ) : (
+              <ActivityIndicator />
+            )}
           </View>
         </View>
       </BottomSheet>
