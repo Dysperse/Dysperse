@@ -148,7 +148,7 @@ function LabelPicker({ children, color, setColor }) {
                     </Text>
                   </View>
                 }
-                renderItem={({ item }) => (
+                renderItem={({ item }: any) => (
                   <Pressable
                     onPress={() => {
                       setColor(item.color);
