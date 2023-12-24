@@ -23,6 +23,8 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
 import { NavbarProfilePicture } from "../../account-navbar";
+import Text from "@/ui/Text";
+import { Button } from "@/ui/Button";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
@@ -66,7 +68,7 @@ export function OpenTabsList() {
     }
   }, [data, tab]);
 
-  return data ? (
+  return data && Array.isArray(data) ? (
     Platform.OS === "web" ? (
       <View
         style={{
@@ -118,7 +120,7 @@ export function OpenTabsList() {
           }}
           contentContainerStyle={{ paddingRight: 3 }}
         >
-          {data?.map((tab) => (
+          {data.map((tab) => (
             <Tab tab={tab} key={tab.id} />
           ))}
         </ScrollView>

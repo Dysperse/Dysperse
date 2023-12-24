@@ -15,12 +15,14 @@ import {
   ActivityIndicator,
   StyleSheet,
   View,
+  useColorScheme,
   useWindowDimensions,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { TaskCheckbox } from "./Checkbox";
 import ErrorAlert from "@/ui/Error";
+import { useColor } from "@/ui/color";
 
 const styles = StyleSheet.create({
   section: {
@@ -260,22 +262,49 @@ export function TaskDrawer({ children, id }) {
 export function Task({ task }) {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
+  const orange = useColor("orange", useColorScheme() === "dark");
 
   return (
     <TaskDrawer id={task.id}>
       <ListItemButton
-        style={{
-          borderRadius: width > 600 ? 20 : 0,
-          paddingVertical: 15 - (width > 600 ? 5 : 0),
-          paddingHorizontal: 20 - (width > 600 ? 5 : 0),
-          borderWidth: 2,
-          borderColor: theme[4],
+        onLongPress={() => {
+          console.log("long press");
         }}
+        style={({ pressed, hovered }) => ({
+          paddingHorizontal: 15,
+          paddingVertical: 15,
+          borderRadius: 20,
+          borderWidth: 2,
+          borderColor: theme[pressed ? 5 : 4],
+          alignItems: "flex-start",
+        })}
       >
         <TaskCheckbox completed={task?.completionInstances?.length > 0} />
-        <Text numberOfLines={1} weight={400}>
-          {task.name}
-        </Text>
+        <View style={{ gap: 5, paddingTop: 1 }}>
+          <Text numberOfLines={1}>{task.name}</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+            {task.pinned && (
+              <Chip
+                dense
+                label="Pinned"
+                icon={
+                  <Icon size={22} style={{ color: orange[11] }}>
+                    favorite
+                  </Icon>
+                }
+                style={{ backgroundColor: orange[3] }}
+                color={orange[11]}
+              />
+            )}
+            {!task.dateOnly && (
+              <Chip
+                dense
+                label={dayjs(task.due).format("h:mm A")}
+                icon={<Icon size={22}>calendar_today</Icon>}
+              />
+            )}
+          </View>
+        </View>
       </ListItemButton>
     </TaskDrawer>
   );

@@ -8,6 +8,7 @@ interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: Ref<BottomSheetModal>;
   onClose: () => void;
   maxWidth?: number;
+  stackBehavior?: "replace" | "push";
 }
 
 export default function BottomSheet(props: DBottomSheetProps) {

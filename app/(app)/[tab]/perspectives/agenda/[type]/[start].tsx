@@ -128,24 +128,26 @@ function Agenda() {
                   data={data}
                   contentContainerStyle={{
                     gap: 15,
-                    paddingVertical: 20,
+                    paddingBottom: 20,
+                    paddingTop: 5,
                     paddingHorizontal: 20,
+                  }}
+                  style={{
+                    backgroundColor: theme[3],
+                    marginBottom: 20,
                   }}
                   showsHorizontalScrollIndicator={false}
                   renderItem={({ item }) => (
                     <Pressable
                       style={({ pressed, hovered }: any) => ({
                         height: 65,
-                        width: 65,
-                        borderWidth: 2,
+                        width: 55,
                         borderRadius: 25,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-                        backgroundColor: theme[pressed ? 3 : 1],
+                        backgroundColor: theme[pressed ? 5 : 4],
                         ...(item?.start === currentColumn?.start && {
-                          backgroundColor: theme[pressed ? 10 : 9],
-                          borderColor: theme[pressed ? 10 : 9],
+                          backgroundColor: theme[pressed ? 11 : 10],
                         }),
                       })}
                       onPress={() => setCurrentColumn(item)}

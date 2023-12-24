@@ -36,7 +36,7 @@ export function PerspectivesNavbar({
   const { start, type } = useAgendaContext();
 
   const titleFormat = {
-    week: "[W]W • MMMM",
+    week: "[Week #]W • MMM YYYY",
     month: "YYYY",
     year: "YYYY",
   }[type];
@@ -97,14 +97,14 @@ export function PerspectivesNavbar({
 
   return (
     <LinearGradient
-      colors={[theme[width > 600 ? 3 : 2], theme[width > 600 ? 4 : 3]]}
+      colors={[theme[width > 600 ? 3 : 2], theme[width > 600 ? 2 : 3]]}
       style={{
         paddingHorizontal: 20,
-        borderBottomRightRadius: width > 600 ? 0 : 30,
-        borderBottomLeftRadius: width > 600 ? 0 : 30,
         paddingTop: insets.top,
         marginBottom: -70,
         flexDirection: "row",
+        // borderBottomRightRadius: width > 600 ? 0 : 15,
+        // borderBottomLeftRadius: width > 600 ? 0 : 15,
         height: 70 + insets.top,
         alignItems: "center",
         zIndex: 9999,

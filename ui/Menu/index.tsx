@@ -8,7 +8,6 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import { useWindowDimensions } from "react-native";
 
 export function Menu({
   trigger,
@@ -16,18 +15,22 @@ export function Menu({
   height = ["30%"],
   footer = () => null,
   menuRef = null,
+  onOpen = () => null,
 }: {
   trigger: ReactElement;
   children: React.ReactNode;
   height: (string | number)[];
   footer?: () => React.ReactNode;
   menuRef?: Ref<BottomSheetModal>;
+  onOpen?: () => void;
 }) {
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
   const _ref = useRef<BottomSheetModal>(null);
   const ref: any = menuRef || _ref;
-  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleOpen = useCallback(() => {
+    ref.current?.present();
+    onOpen();
+  }, [ref, onOpen]);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const _trigger = cloneElement(trigger, { onPress: handleOpen });
 
@@ -38,6 +41,7 @@ export function Menu({
         sheetRef={ref}
         onClose={handleClose}
         snapPoints={height}
+        stackBehavior="push"
         containerStyle={{
           marginHorizontal: 20,
         }}

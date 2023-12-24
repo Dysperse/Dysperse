@@ -14,7 +14,11 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import DateTimePicker from "react-native-ui-datepicker";
+
+import IconButton from "@/ui/IconButton";
 import {
+  ActivityIndicator,
   Platform,
   Pressable,
   StyleSheet,
@@ -23,6 +27,9 @@ import {
   useColorScheme,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import TextField from "@/ui/TextArea";
+import useSWR from "swr";
+import ErrorAlert from "@/ui/Error";
 
 const styles = StyleSheet.create({
   container: {
@@ -59,7 +66,14 @@ const styles = StyleSheet.create({
   },
 });
 
-function ColorPicker({ children, color, setColor }) {
+const labelPickerStyles = StyleSheet.create({
+  searchBox: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});
+
+function LabelPicker({ children, color, setColor }) {
   const ref = useRef<BottomSheetModal>(null);
   // callbacks
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -67,31 +81,50 @@ function ColorPicker({ children, color, setColor }) {
   const trigger = cloneElement(children, { onPress: handleOpen });
   const theme = useColorTheme();
 
+  const { data, error } = useSWR(["space/labels"]);
+
   return (
     <>
       {trigger}
       <BottomSheet
         sheetRef={ref}
+        stackBehavior="push"
         onClose={handleClose}
         snapPoints={["80%"]}
-        footerComponent={() => (
-          <View className="flex-row justify-end p-4 pt-0">
-            <Button variant="filled">
-              <Text>Done</Text>
-            </Button>
-          </View>
-        )}
       >
-        <View className="p-4">
-          <TextInput
-            placeholderTextColor="#aaa"
-            autoFocus={Platform.OS !== "web"}
-            className="p-2 px-4 bg-gray-200 rounded-2xl"
+        <View style={{ padding: 15 }}>
+          <View
+            style={[
+              labelPickerStyles.searchBox,
+              {
+                backgroundColor: theme[3],
+                borderRadius: 999,
+              },
+            ]}
+          >
+            <IconButton onPress={handleClose}>
+              <Icon>arrow_back_ios_new</Icon>
+            </IconButton>
+            <TextField
+              autoFocus={Platform.OS !== "web"}
+              style={{
+                backgroundColor: theme[3],
+                paddingHorizontal: 15,
+                paddingVertical: 7,
+                borderRadius: 99,
+                flex: 1,
+              }}
+              placeholder="Search..."
+            />
+          </View>
+          <View
             style={{
-              backgroundColor: theme[4],
+              height: "100%",
+              justifyContent: "center",
             }}
-            placeholder="Search..."
-          />
+          >
+            {data ? <></> : error ? <ErrorAlert /> : <ActivityIndicator />}
+          </View>
         </View>
       </BottomSheet>
     </>
@@ -107,6 +140,7 @@ export default function CreateTask({
 }: any) {
   const { sessionToken } = useUser();
   const menuRef = useRef<BottomSheetModal>(null);
+  const dateMenuRef = useRef<BottomSheetModal>(null);
   const orange = useColor("orange", useColorScheme() === "dark");
   const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
@@ -164,6 +198,7 @@ export default function CreateTask({
   const handlePriorityChange = useCallback(() => {
     setPinned((p) => !p);
   }, []);
+  const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
 
   return (
     <>
@@ -193,14 +228,26 @@ export default function CreateTask({
             >
               <Menu
                 menuRef={menuRef}
-                height={[350]}
+                height={[365]}
                 trigger={<Chip icon={<Icon>add</Icon>} />}
               >
-                <View style={{ flexDirection: "row" }}>
-                  <Button>
-                    <Icon>arrow_back_ios_new</Icon>
-                    <ButtonText>Back</ButtonText>
-                  </Button>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 20,
+                    gap: 20,
+                  }}
+                >
+                  <IconButton
+                    onPress={() => menuRef.current.close()}
+                    variant="filled"
+                  >
+                    <Icon>close</Icon>
+                  </IconButton>
+                  <Text weight={700} style={{ fontSize: 23 }}>
+                    Add
+                  </Text>
                 </View>
                 <View style={styles.gridRow}>
                   <Pressable
@@ -254,11 +301,56 @@ export default function CreateTask({
                 </View>
               </Menu>
             </View>
-            <Chip
-              style={{ marginLeft: "auto" }}
-              icon={<Icon>calendar_today</Icon>}
-              label={date ? date.format("MMM Do") : undefined}
-            />
+            <Menu
+              menuRef={dateMenuRef}
+              height={[440]}
+              trigger={
+                <Chip
+                  style={{ marginLeft: "auto" }}
+                  icon={<Icon>calendar_today</Icon>}
+                  label={date ? date.format("MMM Do") : undefined}
+                />
+              }
+            >
+              <DateTimePicker
+                value={date}
+                selectedItemColor={theme[9]}
+                todayContainerStyle={{ borderColor: theme[4] }}
+                calendarTextStyle={calendarTextStyles}
+                headerTextStyle={calendarTextStyles}
+                todayTextStyle={calendarTextStyles}
+                selectedTextStyle={calendarTextStyles}
+                weekDaysTextStyle={calendarTextStyles}
+                timePickerTextStyle={calendarTextStyles}
+                buttonNextIcon={<Icon>arrow_forward_ios</Icon>}
+                buttonPrevIcon={<Icon>arrow_back_ios_new</Icon>}
+                weekDaysContainerStyle={{ borderColor: theme[4] }}
+                onValueChange={(date) => setDate(dayjs(date))}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  padding: 10,
+                  marginTop: 10,
+                  paddingVertical: 5,
+                  borderTopWidth: 2,
+                  borderTopColor: theme[4],
+                }}
+              >
+                <Button onPress={() => dateMenuRef.current?.forceClose()}>
+                  <Icon>close</Icon>
+                  <ButtonText>Cancel</ButtonText>
+                </Button>
+                <Button
+                  onPress={() => dateMenuRef.current?.forceClose()}
+                  variant="filled"
+                >
+                  <ButtonText>Done</ButtonText>
+                  <Icon>check</Icon>
+                </Button>
+              </View>
+            </Menu>
             <Chip
               onPress={handlePriorityChange}
               icon={
@@ -277,9 +369,9 @@ export default function CreateTask({
                 }),
               }}
             />
-            <ColorPicker color={color} setColor={setColor}>
+            <LabelPicker color={color} setColor={setColor}>
               <Chip icon={<Icon>label</Icon>} />
-            </ColorPicker>
+            </LabelPicker>
           </View>
         )}
       >

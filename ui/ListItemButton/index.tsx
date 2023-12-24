@@ -1,16 +1,17 @@
-import { Pressable, ViewStyle } from "react-native";
+import { Pressable, ViewStyle, useWindowDimensions } from "react-native";
 import { PressableProps } from "react-native";
 import { StyleProp } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
 export interface DListitemButtonProps extends PressableProps {
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle> | ((props: any) => StyleProp<ViewStyle>);
   buttonClassName?: string;
   variant?: "default" | "filled";
 }
 
 export function ListItemButton(props: DListitemButtonProps) {
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
 
   return (
     <Pressable
@@ -22,7 +23,7 @@ export function ListItemButton(props: DListitemButtonProps) {
           alignItems: "center",
           borderRadius: 20,
           backgroundColor: pressed
-            ? theme[5]
+            ? theme[width > 600 ? 5 : 3]
             : hovered
             ? theme[4]
             : props.variant === "filled"
@@ -31,7 +32,9 @@ export function ListItemButton(props: DListitemButtonProps) {
           paddingHorizontal: 15,
           paddingVertical: 10,
         },
-        props.style,
+        typeof props.style === "function"
+          ? props.style({ pressed, hovered })
+          : props.style,
       ]}
     />
   );

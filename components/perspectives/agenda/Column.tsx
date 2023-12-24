@@ -1,18 +1,17 @@
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import { Task } from "@/components/task";
+import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
-import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
 import React from "react";
-import { FlatList, StyleSheet, View, useWindowDimensions } from "react-native";
+import { FlatList, View, useWindowDimensions } from "react-native";
 import CreateTask from "../../task/create";
-import { Avatar } from "@/ui/Avatar";
 
 export function Column({ header, column }) {
   const theme = useColorTheme();
@@ -65,6 +64,7 @@ export function Column({ header, column }) {
                 flexDirection: "row",
                 gap: 15,
                 paddingBottom: 15,
+                paddingHorizontal: width > 600 ? 0 : 15,
               }}
             >
               <CreateTask
@@ -91,11 +91,28 @@ export function Column({ header, column }) {
           flex: 1,
         }}
         renderItem={({ item }) => {
+          const Container = ({ children }) => (
+            <View
+              style={{
+                paddingHorizontal: width > 600 ? 0 : 15,
+              }}
+            >
+              {children}
+            </View>
+          );
           switch (item.type) {
             case "TASK":
-              return <Task task={item} />;
+              return (
+                <Container>
+                  <Task task={item} />
+                </Container>
+              );
             default:
-              return <Text>Invalid entity type</Text>;
+              return (
+                <Container>
+                  <Text>Invalid entity type</Text>
+                </Container>
+              );
           }
         }}
         keyExtractor={(i) => `${i.id}-${Math.random()}`}
