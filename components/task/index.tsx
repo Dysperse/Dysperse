@@ -2,11 +2,13 @@ import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
@@ -21,8 +23,6 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { TaskCheckbox } from "./Checkbox";
-import ErrorAlert from "@/ui/Error";
-import { useColor } from "@/ui/color";
 
 const styles = StyleSheet.create({
   section: {
@@ -286,10 +286,10 @@ export function Task({ task }) {
             {task.pinned && (
               <Chip
                 dense
-                label="Pinned"
+                label="Important"
                 icon={
                   <Icon size={22} style={{ color: orange[11] }}>
-                    favorite
+                    priority_high
                   </Icon>
                 }
                 style={{ backgroundColor: orange[3] }}

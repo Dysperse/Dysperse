@@ -12,11 +12,21 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import DateTimePicker from "react-native-ui-datepicker";
 
+import Emoji from "@/ui/Emoji";
+import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
+import TextField from "@/ui/TextArea";
 import {
   ActivityIndicator,
   Platform,
@@ -26,11 +36,10 @@ import {
   View,
   useColorScheme,
 } from "react-native";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import TextField from "@/ui/TextArea";
 import useSWR from "swr";
-import ErrorAlert from "@/ui/Error";
-import Emoji from "@/ui/Emoji";
+import { EmojiPicker } from "@/ui/EmojiPicker";
 
 const styles = StyleSheet.create({
   container: {
@@ -71,18 +80,251 @@ const labelPickerStyles = StyleSheet.create({
   searchBox: {
     flexDirection: "row",
     alignItems: "center",
+    borderRadius: 999,
+    marginBottom: 10,
+  },
+  labelOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 25,
+  },
+  labelDot: {
+    width: 25,
+    height: 25,
+    borderRadius: 999,
+    marginRight: 15,
+  },
+  labelSubHeading: {
+    opacity: 0.6,
   },
 });
 
-function LabelPicker({ children, color, setColor }) {
+const useLabelColors = () => {
+  const red = useColor("red", useColorScheme() === "dark");
+  const orange = useColor("orange", useColorScheme() === "dark");
+  const yellow = useColor("yellow", useColorScheme() === "dark");
+  const green = useColor("green", useColorScheme() === "dark");
+  const blue = useColor("blue", useColorScheme() === "dark");
+  const purple = useColor("purple", useColorScheme() === "dark");
+  const pink = useColor("pink", useColorScheme() === "dark");
+  const brown = useColor("brown", useColorScheme() === "dark");
+  const gray = useColor("gray", useColorScheme() === "dark");
+
+  const colors = {
+    red,
+    orange,
+    yellow,
+    green,
+    blue,
+    purple,
+    pink,
+    brown,
+    gray,
+  };
+
+  return colors;
+};
+
+function CreateLabelModal({ children, mutate }) {
+  const theme = useColorTheme();
+  const ref = useRef<BottomSheetModal>(null);
+  const { sessionToken } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+  const trigger = cloneElement(children, { onPress: handleOpen });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      color: "red",
+      emoji: "1f600",
+    },
+  });
+
+  const colors = useLabelColors();
+
+  const onSubmit = async (e) => {
+    try {
+      setIsLoading(true);
+      await sendApiRequest(
+        sessionToken,
+        "POST",
+        "space/labels",
+        {},
+        {
+          body: JSON.stringify(e),
+        }
+      );
+      Toast.show({
+        type: "success",
+        text1: "Created label!",
+      });
+      await mutate();
+      handleClose();
+      setIsLoading(false);
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {trigger}
+      <BottomSheet
+        sheetRef={ref}
+        snapPoints={["50%"]}
+        onClose={handleClose}
+        stackBehavior="push"
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingTop: 10,
+            gap: 20,
+          }}
+        >
+          <IconButton onPress={() => ref.current.close()}>
+            <Icon>close</Icon>
+          </IconButton>
+          <Text weight={700} style={{ fontSize: 23, flex: 1 }}>
+            Create label
+          </Text>
+          <IconButton
+            onPress={() => {
+              if (Object.keys(errors).length > 0) {
+                return Toast.show({
+                  type: "error",
+                  text1: "Type in a label name",
+                });
+              }
+              handleSubmit(onSubmit)();
+            }}
+            variant="filled"
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" />
+            ) : (
+              <Icon>check</Icon>
+            )}
+          </IconButton>
+        </View>
+        <ScrollView>
+          <View style={{ padding: 20, gap: 20 }}>
+            <View style={{ alignItems: "center", paddingVertical: 20 }}>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <EmojiPicker emoji={value} setEmoji={onChange}>
+                    <IconButton
+                      style={{
+                        borderStyle: "dashed",
+                        borderWidth: 2,
+                        width: 100,
+                        height: 100,
+                        borderColor: theme[7],
+                      }}
+                    >
+                      <Emoji emoji={value} size={50} />
+                    </IconButton>
+                  </EmojiPicker>
+                )}
+                name="emoji"
+              />
+            </View>
+            <View>
+              <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+                Name
+              </Text>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    placeholder="Task name"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    variant="filled"
+                  />
+                )}
+                name="name"
+              />
+            </View>
+            <View>
+              <Text variant="eyebrow">Color</Text>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      marginTop: 10,
+                      gap: 10,
+                    }}
+                  >
+                    {Object.keys(colors).map((color) => (
+                      <Pressable
+                        key={color}
+                        onPress={() => onChange(color)}
+                        style={() => ({
+                          width: 30,
+                          height: 30,
+                          borderRadius: 999,
+                          backgroundColor: colors[color][9],
+                          borderWidth: 3,
+                          borderColor: colors[color][color === value ? 12 : 9],
+                          shadowColor: colors[color][9],
+                          shadowOffset: { width: 0, height: 0 },
+                          shadowRadius: 10,
+                        })}
+                      />
+                    ))}
+                  </View>
+                )}
+                name="color"
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </BottomSheet>
+    </>
+  );
+}
+
+function LabelPicker({ children, label, setLabel }) {
   const ref = useRef<BottomSheetModal>(null);
   // callbacks
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
-  const theme = useColorTheme();
 
-  const { data, error } = useSWR(["space/labels"]);
+  const theme = useColorTheme();
+  const colors = useLabelColors();
+
+  const { data, mutate, error } = useSWR(["space/labels"]);
 
   return (
     <>
@@ -91,7 +333,7 @@ function LabelPicker({ children, color, setColor }) {
         sheetRef={ref}
         stackBehavior="push"
         onClose={handleClose}
-        snapPoints={["80%"]}
+        snapPoints={["65%"]}
       >
         <View style={{ padding: 15 }}>
           <View
@@ -99,7 +341,6 @@ function LabelPicker({ children, color, setColor }) {
               labelPickerStyles.searchBox,
               {
                 backgroundColor: theme[3],
-                borderRadius: 999,
               },
             ]}
           >
@@ -107,7 +348,6 @@ function LabelPicker({ children, color, setColor }) {
               <Icon>arrow_back_ios_new</Icon>
             </IconButton>
             <TextField
-              autoFocus={Platform.OS !== "web"}
               style={{
                 backgroundColor: theme[3],
                 paddingHorizontal: 15,
@@ -116,7 +356,13 @@ function LabelPicker({ children, color, setColor }) {
                 flex: 1,
               }}
               placeholder="Search..."
+              autoFocus={Platform.OS !== "web"}
             />
+            <CreateLabelModal mutate={mutate}>
+              <IconButton style={{ marginRight: 10 }}>
+                <Icon>add</Icon>
+              </IconButton>
+            </CreateLabelModal>
           </View>
           <View
             style={{
@@ -136,45 +382,52 @@ function LabelPicker({ children, color, setColor }) {
                       alignItems: "center",
                       paddingBottom: 70,
                       paddingHorizontal: 20,
-                      gap: 10,
+                      gap: 5,
                     }}
                   >
                     <Emoji emoji="1f62d" size={50} />
-                    <Text heading style={{ fontSize: 35 }}>
+                    <Text heading style={{ fontSize: 35, marginTop: 10 }}>
                       No labels
                     </Text>
                     <Text style={{ opacity: 0.6, textAlign: "center" }}>
-                      Labels are a great way to group things together
+                      Labels are a great way to{"\n"} group things together
                     </Text>
+                    <CreateLabelModal mutate={mutate}>
+                      <Button>
+                        <Icon>add</Icon>
+                        <ButtonText>Create one</ButtonText>
+                      </Button>
+                    </CreateLabelModal>
                   </View>
                 }
                 renderItem={({ item }: any) => (
                   <Pressable
                     onPress={() => {
-                      setColor(item.color);
+                      setLabel(item);
                       handleClose();
                     }}
                     style={({ pressed, hovered }: any) => [
+                      labelPickerStyles.labelOption,
                       {
-                        flexDirection: "row",
-                        alignItems: "center",
-                        padding: 15,
-                        borderRadius: 999,
-                        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                        marginBottom: 15,
+                        backgroundColor: theme[pressed ? 4 : hovered ? 3 : 1],
                       },
                     ]}
                   >
                     <View
-                      style={{
-                        width: 25,
-                        height: 25,
-                        borderRadius: 999,
-                        backgroundColor: item.color,
-                        marginRight: 15,
-                      }}
+                      style={[
+                        labelPickerStyles.labelDot,
+                        {
+                          backgroundColor: colors[item.color][9],
+                        },
+                      ]}
                     />
-                    <Text weight={700}>{item.name}</Text>
+                    <View>
+                      <Text weight={700}>{item.name}</Text>
+                      <Text style={labelPickerStyles.labelSubHeading}>
+                        {item._count.entities} item
+                        {item._count.entities !== 1 && "s"}
+                      </Text>
+                    </View>
                   </Pressable>
                 )}
               />
@@ -187,6 +440,38 @@ function LabelPicker({ children, color, setColor }) {
         </View>
       </BottomSheet>
     </>
+  );
+}
+
+function CreateTaskLabelInput({ control }) {
+  const colors = useLabelColors();
+
+  return (
+    <Controller
+      control={control}
+      name="label"
+      defaultValue={false}
+      render={({ field: { onChange, value } }) => (
+        <LabelPicker label={value} setLabel={onChange}>
+          <Chip
+            icon={
+              value ? (
+                <Emoji emoji={value?.emoji} />
+              ) : (
+                <Icon filled={value}>label</Icon>
+              )
+            }
+            {...(value && {
+              // label: JSON.stringify(value?.name),
+              style: {
+                backgroundColor: colors[value?.color]?.[3],
+              },
+            })}
+            color={value ? colors[value?.color]?.[3] : undefined}
+          />
+        </LabelPicker>
+      )}
+    />
   );
 }
 
@@ -207,8 +492,6 @@ export default function CreateTask({
   const [date, setDate] = useState<Dayjs | null>(
     defaultValues.date || undefined
   );
-  const [pinned, setPinned] = useState<boolean>(false);
-  const [color, setColor] = useState("gray");
 
   const {
     control,
@@ -217,13 +500,14 @@ export default function CreateTask({
   } = useForm({
     defaultValues: {
       name: "",
-      lastName: "",
+      pinned: false,
+      label: null,
     },
   });
 
   const onSubmit = async (data) => {
     try {
-      const res = await sendApiRequest(
+      sendApiRequest(
         sessionToken,
         "POST",
         "space/entity",
@@ -231,16 +515,17 @@ export default function CreateTask({
         {
           body: JSON.stringify({
             ...data,
+            pinned: String(data.pinned),
+            labelId: data.label?.id,
+            due: date?.toISOString(),
             type: "TASK",
           }),
         }
-      );
-      console.log(res);
-      // clear form
+      ).then((e) => console.log(e));
       handleClose();
       Toast.show({
         type: "success",
-        text1: "Created!",
+        text1: "Created task!",
       });
     } catch (e) {
       Toast.show({
@@ -254,9 +539,6 @@ export default function CreateTask({
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
-  const handlePriorityChange = useCallback(() => {
-    setPinned((p) => !p);
-  }, []);
   const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
 
   return (
@@ -410,27 +692,36 @@ export default function CreateTask({
                 </Button>
               </View>
             </Menu>
-            <Chip
-              onPress={handlePriorityChange}
-              icon={
-                <Icon
+            <Controller
+              control={control}
+              name="pinned"
+              defaultValue={false}
+              render={({ field: { onChange, value } }) => (
+                <Chip
+                  onPress={() => onChange(!value)}
+                  icon={
+                    <Icon
+                      style={{
+                        ...(value && {
+                          color: orange[11],
+                          transform: [{ rotate: "-45deg" }],
+                        }),
+                      }}
+                      filled={value}
+                    >
+                      push_pin
+                    </Icon>
+                  }
                   style={{
-                    ...(pinned && { color: orange[11] }),
+                    ...(value && {
+                      backgroundColor: orange[4],
+                      borderColor: orange[4],
+                    }),
                   }}
-                >
-                  priority_high
-                </Icon>
-              }
-              style={{
-                ...(pinned && {
-                  backgroundColor: orange[4],
-                  borderColor: orange[4],
-                }),
-              }}
+                />
+              )}
             />
-            <LabelPicker color={color} setColor={setColor}>
-              <Chip icon={<Icon>label</Icon>} />
-            </LabelPicker>
+            <CreateTaskLabelInput control={control} />
           </View>
         )}
       >

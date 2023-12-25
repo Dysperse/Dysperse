@@ -62,8 +62,8 @@ export function Column({ header, column }) {
             <View
               style={{
                 flexDirection: "row",
+                paddingBottom: 5,
                 gap: 15,
-                paddingBottom: 15,
                 paddingHorizontal: width > 600 ? 0 : 15,
               }}
             >
@@ -85,6 +85,7 @@ export function Column({ header, column }) {
         }
         data={column.tasks}
         contentContainerStyle={{
+          gap: 15,
           padding: width > 600 ? 15 : 0,
           paddingTop: width > 600 ? 15 : 70,
           paddingBottom: getBottomNavigationHeight(pathname) + 20,

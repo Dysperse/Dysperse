@@ -52,14 +52,16 @@ export const toastConfig = (theme) => ({
 
   plain: (props) => (
     <View style={toastContainerStyles}>
-      <ErrorToast
+      <BaseToast
         {...props}
         style={toastStyles(theme)}
         text1NumberOfLines={null}
         text1Props={text1Props(theme)}
+        text2Style={{ fontSize: 15, color: theme[11], opacity: 0.6 }}
       />
     </View>
   ),
+
   /*
     Overwrite 'error' type,
     by modifying the existing `ErrorToast` component

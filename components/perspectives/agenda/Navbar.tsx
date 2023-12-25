@@ -111,14 +111,14 @@ export function PerspectivesNavbar({
         backgroundColor: theme[3],
       }}
     >
-      <View style={{ flex: 1 }}>
+      <TouchableOpacity style={{ flex: 1 }}>
         <Text numberOfLines={1} weight={600}>
           {dayjs(start).format(titleFormat).split("•")?.[0]}
         </Text>
         <Text numberOfLines={1} style={{ opacity: 0.6 }}>
           {dayjs(start).format(titleFormat).split("• ")?.[1]}
         </Text>
-      </View>
+      </TouchableOpacity>
       {!isCurrent && (
         <TouchableOpacity style={styles.navigationButton} onPress={handleToday}>
           <Icon textClassName="font-gray-600">calendar_today</Icon>
