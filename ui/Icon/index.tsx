@@ -8,20 +8,19 @@ export default function Icon({
   children,
   filled = false,
   style = {},
-  textClassName = "",
   bold = false,
 }: {
   size?: number;
   children?: React.ReactNode;
   filled?: boolean;
   style?: StyleProp<TextStyle>;
-  textClassName?: string;
   bold?: boolean;
 }) {
   const theme = useColorTheme();
   return (
     <Text
-      className={textClassName}
+      allowFontScaling={false}
+      maxFontSizeMultiplier={1}
       style={{
         color: theme[11],
         fontFamily: bold
@@ -30,12 +29,11 @@ export default function Icon({
           ? "symbols_filled"
           : "symbols_outlined",
         fontSize: size,
-        width: size,
+        width: size - 1,
         height: size,
-        lineHeight: size,
-        ...(Platform.OS !== "web" && {
-          lineHeight: size + 4,
-        }),
+        // textAlign: "center",
+        lineHeight: size + 3,
+        // backgroundColor: "red",
         ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
         ...(style && { ...(style as any) }),
       }}

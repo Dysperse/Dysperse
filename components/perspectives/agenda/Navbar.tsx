@@ -68,7 +68,7 @@ export function PerspectivesNavbar({
       }).then(() => mutate());
     }
     // Change the tab
-    router.push(href);
+    router.replace(href);
   }, [type, start, sessionToken, mutate, params.tab, session]);
 
   const handleNext = useCallback(() => {
@@ -88,7 +88,7 @@ export function PerspectivesNavbar({
       }).then(() => mutate());
     }
 
-    router.push(href);
+    router.replace(href);
   }, [type, start, sessionToken, mutate, params.tab, session]);
 
   const insets = useSafeAreaInsets();
@@ -100,11 +100,9 @@ export function PerspectivesNavbar({
       colors={[theme[width > 600 ? 3 : 2], theme[width > 600 ? 2 : 3]]}
       style={{
         paddingHorizontal: 20,
+        paddingRight: 10,
         paddingTop: insets.top,
-        marginBottom: -70,
         flexDirection: "row",
-        // borderBottomRightRadius: width > 600 ? 0 : 15,
-        // borderBottomLeftRadius: width > 600 ? 0 : 15,
         height: 70 + insets.top,
         alignItems: "center",
         zIndex: 9999,
@@ -121,14 +119,14 @@ export function PerspectivesNavbar({
       </TouchableOpacity>
       {!isCurrent && (
         <TouchableOpacity style={styles.navigationButton} onPress={handleToday}>
-          <Icon textClassName="font-gray-600">calendar_today</Icon>
+          <Icon>calendar_today</Icon>
         </TouchableOpacity>
       )}
       <TouchableOpacity onPress={handlePrev} style={styles.navigationButton}>
-        <Icon textClassName="font-gray-600">arrow_back_ios_new</Icon>
+        <Icon>arrow_back_ios_new</Icon>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleNext} style={styles.navigationButton}>
-        <Icon textClassName="font-gray-600">arrow_forward_ios</Icon>
+        <Icon>arrow_forward_ios</Icon>
       </TouchableOpacity>
     </LinearGradient>
   );

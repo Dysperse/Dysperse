@@ -21,7 +21,7 @@ import { AgendaContext, useAgendaContext } from "../context";
 function Agenda() {
   const theme = useColorTheme();
   const { type, start, end } = useAgendaContext();
-  const { data, error } = useSWR([
+  const { data, mutate, error } = useSWR([
     "space/perspectives/agenda",
     {
       start: start.toISOString(),
@@ -48,7 +48,7 @@ function Agenda() {
       );
       if (c) setCurrentColumn(c);
       else
-        router.push(
+        router.replace(
           `/[type]/perspectives/agenda/${type}/${dayjs().format("YYYY-MM-DD")}`
         );
     }
@@ -89,7 +89,7 @@ function Agenda() {
         >
           {data
             ? data.map((col) => (
-                <Column header={() => <></>} key={col.start} column={col} />
+                <Column mutate={mutate} key={col.start} column={col} />
               ))
             : agendaFallback}
         </ScrollView>
@@ -111,89 +111,77 @@ function Agenda() {
   };
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <PerspectivesNavbar
         handleToday={handleToday}
         currentDateStart={currentColumn?.start}
         currentDateEnd={currentColumn?.end}
       />
       {data ? (
-        <View style={{ overflow: "hidden", flex: 1 }}>
-          {currentColumn && (
-            <Column
-              column={currentColumn}
-              header={() => (
-                <FlatList
-                  horizontal
-                  data={data}
-                  contentContainerStyle={{
-                    gap: 15,
-                    paddingBottom: 20,
-                    paddingTop: 5,
-                    paddingHorizontal: 20,
-                  }}
+        <>
+          <FlatList
+            horizontal
+            data={data}
+            contentContainerStyle={{
+              gap: 15,
+              paddingBottom: 10,
+              paddingHorizontal: 20,
+            }}
+            style={{
+              backgroundColor: theme[3],
+              flexGrow: 0,
+              flexShrink: 0,
+            }}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <Pressable
+                style={({ pressed, hovered }: any) => ({
+                  height: 65,
+                  width: 55,
+                  borderRadius: 25,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: theme[pressed ? 5 : 4],
+                  ...(item?.start === currentColumn?.start && {
+                    backgroundColor: theme[pressed ? 11 : 10],
+                  }),
+                })}
+                onPress={() => setCurrentColumn(item)}
+              >
+                {buttonTextFormats.small !== "-" && (
+                  <Text
+                    textClassName="uppercase text-xs opacity-60"
+                    style={{
+                      fontFamily: "body_400",
+                      textAlign: "center",
+                      color:
+                        theme[item?.start === currentColumn?.start ? 1 : 12],
+                    }}
+                  >
+                    {dayjs(item.start).format(buttonTextFormats.small)}
+                    {type === "month" &&
+                      " - " + dayjs(item.end).format(buttonTextFormats.small)}
+                  </Text>
+                )}
+                <Text
+                  textClassName="text-xl"
                   style={{
-                    backgroundColor: theme[3],
-                    marginBottom: 20,
+                    fontFamily: "body_500",
+                    color: theme[item?.start === currentColumn?.start ? 1 : 12],
                   }}
-                  showsHorizontalScrollIndicator={false}
-                  renderItem={({ item }) => (
-                    <Pressable
-                      style={({ pressed, hovered }: any) => ({
-                        height: 65,
-                        width: 55,
-                        borderRadius: 25,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: theme[pressed ? 5 : 4],
-                        ...(item?.start === currentColumn?.start && {
-                          backgroundColor: theme[pressed ? 11 : 10],
-                        }),
-                      })}
-                      onPress={() => setCurrentColumn(item)}
-                    >
-                      {buttonTextFormats.small !== "-" && (
-                        <Text
-                          textClassName="uppercase text-xs opacity-60"
-                          style={{
-                            fontFamily: "body_400",
-                            textAlign: "center",
-                            color:
-                              theme[
-                                item?.start === currentColumn?.start ? 1 : 12
-                              ],
-                          }}
-                        >
-                          {dayjs(item.start).format(buttonTextFormats.small)}
-                          {type === "month" &&
-                            " - " +
-                              dayjs(item.end).format(buttonTextFormats.small)}
-                        </Text>
-                      )}
-                      <Text
-                        textClassName="text-xl"
-                        style={{
-                          fontFamily: "body_500",
-                          color:
-                            theme[
-                              item?.start === currentColumn?.start ? 1 : 12
-                            ],
-                        }}
-                      >
-                        {dayjs(item.start).format(buttonTextFormats.big)}
-                      </Text>
-                    </Pressable>
-                  )}
-                  keyExtractor={(i) => `${i.start}-${i.end}`}
-                />
-              )}
-            />
-          )}
-        </View>
+                >
+                  {dayjs(item.start).format(buttonTextFormats.big)}
+                </Text>
+              </Pressable>
+            )}
+            keyExtractor={(i) => `${i.start}-${i.end}`}
+          />
+          {currentColumn && <Column mutate={mutate} column={currentColumn} />}
+        </>
       ) : (
         agendaFallback
       )}
-    </>
+    </View>
   );
 }
 

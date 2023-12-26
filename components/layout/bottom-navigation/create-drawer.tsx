@@ -22,7 +22,7 @@ export const CreateDrawer = ({ children }) => {
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        snapPoints={[305]}
+        snapPoints={[275]}
         style={{
           maxWidth: width > 600 ? 350 : "auto",
           marginHorizontal: "auto",
@@ -35,7 +35,11 @@ export const CreateDrawer = ({ children }) => {
               name: "Task",
               icon: "check_circle",
               callback: () => {},
-              Wrapper: (p) => <CreateTask showClose>{p.children}</CreateTask>,
+              Wrapper: (p) => (
+                <CreateTask mutate={() => {}} showClose>
+                  {p.children}
+                </CreateTask>
+              ),
             },
             { name: "Item", icon: "package_2", callback: () => {} },
             { name: "Note", icon: "sticky_note_2", callback: () => {} },
@@ -60,9 +64,7 @@ export const CreateDrawer = ({ children }) => {
                   }}
                 >
                   <View>
-                    <Icon size={30} style={{ marginLeft: 1 }}>
-                      {icon}
-                    </Icon>
+                    <Icon style={{ marginLeft: 1 }}>{icon}</Icon>
                   </View>
                   <ListItemText primary={name} />
                 </ListItemButton>

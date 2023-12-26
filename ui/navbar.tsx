@@ -1,36 +1,51 @@
 import Text from "@/ui/Text";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
+import { StackHeaderProps, StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
 import IconButton from "./IconButton";
 import { useColorTheme } from "./color/theme-provider";
+import { addHslAlpha } from "./color";
 
-interface NavbarProps extends NativeStackHeaderProps {
+interface NavbarProps extends StackHeaderProps {
   icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
 }
 
-export default function Navbar(props: NavbarProps) {
+export default function Navbar(props: any) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
-  const handleBack = () => props.navigation.goBack();
+  const handleBack = () => {
+    (props as any).navigation.goBack();
+  };
 
   return (
-    <View
-      style={{
-        height: 64 + insets.top,
-        paddingTop: insets.top,
-        backgroundColor: theme[1],
-      }}
-      className="flex-row px-4 items-center"
-    >
-      <IconButton onPress={handleBack} style={{ width: 45, height: 45 }}>
-        <Icon size={30}>{props.icon || "west"}</Icon>
-      </IconButton>
-      <Text style={{ fontFamily: "body_700" }} textClassName="pl-2">
-        {props.options.headerTitle as string}
-      </Text>
-    </View>
+    <>
+      <View
+        style={{
+          height: 64 + insets.top,
+          paddingTop: insets.top,
+          backgroundColor: theme[1],
+          flexDirection:"row",
+          paddingHorizontal:10,
+          alignItems:"center"
+        }}
+      >
+        <IconButton onPress={handleBack} style={{ width: 45, height: 45 }}>
+          <Icon>{props.icon || "west"}</Icon>
+        </IconButton>
+        <Text style={{ fontFamily: "body_700",paddingLeft:5 }}>
+          {props.options.headerTitle as string}
+        </Text>
+      </View>
+      <View
+        style={{
+          height: 1.5,
+          opacity: props.options.headerTitle ? 1 : 0,
+          backgroundColor: addHslAlpha(theme[4], 0.9),
+        }}
+      />
+    </>
   );
 }

@@ -15,7 +15,7 @@ export function ContentWrapper(props) {
         backgroundColor: theme[1],
         borderTopLeftRadius: 20,
         flex: 1,
-        overflow: "hidden",
+        overflow: "scroll",
       }}
       {...props}
     >

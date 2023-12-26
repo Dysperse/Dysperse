@@ -18,7 +18,7 @@ import useSWR from "swr";
 export default function Page() {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
-  const { data } = useSWR(["space/all", { type: "TASK" }]);
+  const { data, mutate } = useSWR(["space/all", { type: "TASK" }]);
 
   return (
     <ContentWrapper>
@@ -54,7 +54,7 @@ export default function Page() {
                     }}
                   />
                 </View>
-                <CreateTask>
+                <CreateTask mutate={mutate}>
                   <ListItemButton
                     style={{
                       borderRadius: width > 600 ? 20 : 0,

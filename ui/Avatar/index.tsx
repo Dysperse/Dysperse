@@ -16,18 +16,17 @@ export function Avatar(props: DAvatarProps) {
   return (
     <Pressable
       {...props}
-      className={`relative items-center justify-center ${props.viewClassName}`}
-      style={{
-        borderRadius: 99,
-        width: props.size || 30,
-        height: props.size || 30,
-        backgroundColor: theme[5],
-        ...(props.style as {}),
-      }}
+      style={[
+        {
+          borderRadius: 99,
+          width: props.size || 30,
+          height: props.size || 30,
+          backgroundColor: theme[5],
+        },
+        props.style,
+      ]}
     >
-      <View className="absolute w-full h-full rounded-full items-center justify-center">
-        {props.children as any}
-      </View>
+      <View>{props.children as any}</View>
       {props.image && (
         <Image
           source={props.image}

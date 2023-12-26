@@ -29,7 +29,6 @@ export default function Index() {
   return session ? (
     <>
       <ScrollView
-        style={{ flex: 1 }}
         contentContainerStyle={{
           gap: 15,
           padding: 15,

@@ -63,7 +63,7 @@ export const TabDrawer = ({ children }) => {
   const FlatListComponent = editMode ? DraggableFlatList : FlatList;
 
   return (
-    <View>
+    <>
       {trigger}
       <BottomSheet
         sheetRef={ref}
@@ -168,6 +168,6 @@ export const TabDrawer = ({ children }) => {
           <ActivityIndicator />
         )}
       </BottomSheet>
-    </View>
+    </>
   );
 };

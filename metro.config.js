@@ -1,6 +1,5 @@
-const path = require("path");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { getDefaultConfig } = require("expo/metro-config");
-const tailwind = require("tailwindcss/lib/cli/build");
 
 module.exports = (async () => {
   /** @type {import('expo/metro-config').MetroConfig} */
@@ -11,17 +10,6 @@ module.exports = (async () => {
 
   config.transformer.minifierConfig.compress.drop_console = true;
   config.resolver.sourceExts = [...config.resolver.sourceExts, "mjs", "cjs"];
-
-  // Run Tailwind CLI to generate CSS files.
-  await tailwind.build({
-    "--input": path.relative(__dirname, "./global.css"),
-    "--output": path.resolve(
-      __dirname,
-      "node_modules/.cache/expo/tailwind/eval.css"
-    ),
-    "--watch": process.env.NODE_ENV === "development" ? "always" : false,
-    "--poll": true,
-  });
 
   return config;
 })();

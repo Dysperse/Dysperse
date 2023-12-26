@@ -111,10 +111,7 @@ export default function SignIn() {
               overflow: "hidden",
             }}
           >
-            <Text
-              textStyle={{ fontFamily: "heading" }}
-              textClassName="uppercase text-center text-5xl"
-            >
+            <Text heading style={{ fontSize: 30, textAlign: "center" }}>
               Welcome to Dysperse.
             </Text>
             <Text style={{ paddingTop: 10, paddingBottom: 20, opacity: 0.6 }}>

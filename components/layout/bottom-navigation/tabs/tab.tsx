@@ -33,7 +33,15 @@ const useTabColorTheme = (slug: string) => {
     "/[tab]/perspectives/": {
       theme: red,
       icon: "asterisk",
-      name: (params) => [params.type, dayjs(params.start).format("MMM Do")],
+      name: (params) => [
+        params.type,
+        `${dayjs(params.start).startOf(params.type).format("MMM Do")} - ${dayjs(
+          params.start
+        )
+          .startOf(params.type)
+          .add(1, params.type)
+          .format("Do")}`,
+      ],
     },
     "/[tab]/collections/": {
       theme: purple,

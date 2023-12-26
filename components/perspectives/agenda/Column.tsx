@@ -13,9 +13,9 @@ import React from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import CreateTask from "../../task/create";
 
-export function Column({ header, column }) {
+export function Column({ mutate, column }) {
   const theme = useColorTheme();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const pathname = usePathname();
 
   return (
@@ -26,13 +26,10 @@ export function Column({ header, column }) {
           borderRadius: 20,
         }),
         width: width > 600 ? 300 : width,
-        flex: 1,
-        overflow: "hidden",
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
       <FlatList
-        style={{ flex: 1, maxHeight: "100%" }}
         ListEmptyComponent={
           <View
             style={{
@@ -58,7 +55,6 @@ export function Column({ header, column }) {
         }
         ListHeaderComponent={
           <>
-            {header()}
             <View
               style={{
                 flexDirection: "row",
@@ -71,6 +67,7 @@ export function Column({ header, column }) {
                 defaultValues={{
                   date: dayjs(column.start),
                 }}
+                mutate={() => mutate()}
               >
                 <Button variant="filled" style={{ flex: 1 }}>
                   <Icon>add</Icon>
@@ -87,9 +84,8 @@ export function Column({ header, column }) {
         contentContainerStyle={{
           gap: 15,
           padding: width > 600 ? 15 : 0,
-          paddingTop: width > 600 ? 15 : 70,
-          paddingBottom: getBottomNavigationHeight(pathname) + 20,
-          flex: 1,
+          paddingTop: 15,
+          paddingBottom: getBottomNavigationHeight(pathname) + 100,
         }}
         renderItem={({ item }) => {
           const Container = ({ children }) => (

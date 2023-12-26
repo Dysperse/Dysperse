@@ -1,11 +1,4 @@
-// Ensure we import the CSS for Tailwind so it's included in hot module reloads.
-const ctx = (require as any).context(
-  // If this require.context is not inside the root directory (next to the package.json) then adjust this file path
-  // to resolve correctly.
-  "./node_modules/.cache/expo/tailwind"
-);
-if (ctx.keys().length) ctx(ctx.keys()[0]);
-
+import "react-native-gesture-handler";
 import { useFonts } from "expo-font";
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -16,11 +9,6 @@ SplashScreen.preventAutoHideAsync();
 
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
-import { NativeWindStyleSheet } from "nativewind";
-
-NativeWindStyleSheet.setOutput({
-  default: "native",
-});
 
 export default function Root() {
   // CHANGE THIS LATER!!!

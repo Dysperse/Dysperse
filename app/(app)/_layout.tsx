@@ -1,3 +1,4 @@
+import { JsStack } from "@/components/layout/_stack";
 import AccountNavbar from "@/components/layout/account-navbar";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
@@ -9,17 +10,23 @@ import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import {
+  StackCardInterpolatedStyle,
+  StackCardInterpolationProps,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import isBetween from "dayjs/plugin/isBetween";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
-import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { Redirect, Stack } from "expo-router";
+import utc from "dayjs/plugin/utc";
+import { Redirect } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
+  Animated,
   AppState,
   StatusBar,
   View,
@@ -38,6 +45,61 @@ dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
+
+const { multiply } = Animated;
+
+function forHorizontalIOS({
+  current,
+  next,
+  inverted,
+  layouts: { screen },
+}: StackCardInterpolationProps): StackCardInterpolatedStyle {
+  const translateFocused = multiply(
+    current.progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [screen.width, 0],
+      extrapolate: "clamp",
+    }),
+    inverted
+  );
+
+  const translateUnfocused = next
+    ? multiply(
+        next.progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, screen.width * -0.3],
+          extrapolate: "clamp",
+        }),
+        inverted
+      )
+    : 0;
+
+  const overlayOpacity = current.progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.5],
+    extrapolate: "clamp",
+  });
+
+  const shadowOpacity = current.progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.3],
+    extrapolate: "clamp",
+  });
+
+  return {
+    cardStyle: {
+      transform: [
+        // Translation for the animation of the current card
+        { translateX: translateFocused },
+        // Translation for the animation of the card on top of this
+        { translateX: translateUnfocused },
+      ],
+    },
+    overlayStyle: { opacity: overlayOpacity },
+    shadowStyle: { shadowOpacity },
+  };
+}
+
 function DesktopHeader() {
   return (
     <View
@@ -54,7 +116,7 @@ function DesktopHeader() {
 export default function AppLayout() {
   const { session, isLoading } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const isDark = useColorScheme() === "dark";
 
   const theme = useColor(
@@ -84,7 +146,9 @@ export default function AppLayout() {
   return (
     <PortalProvider>
       <ColorThemeProvider theme={theme}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView
+          style={{ flex: 1, overflow: "hidden", width, height }}
+        >
           <SWRConfig
             value={{
               fetcher: async ([
@@ -154,56 +218,57 @@ export default function AppLayout() {
                     },
                   }}
                 >
-                  <Stack
+                  <JsStack
                     screenOptions={{
                       header:
                         width > 600
                           ? DesktopHeader
                           : (props: any) => <AccountNavbar {...props} />,
                       headerTransparent: true,
-                      fullScreenGestureEnabled: true,
-                      contentStyle: {
+                      gestureResponseDistance: width,
+                      cardShadowEnabled: false,
+                      gestureEnabled: true,
+                      cardStyle: {
                         backgroundColor: theme[width > 600 ? 2 : 1],
                       },
+                      // change opacity of the previous screen when swipe
+                      cardOverlayEnabled: true,
+                      animationEnabled: false,
+                      gestureVelocityImpact: 0.7,
                     }}
                   >
-                    <Stack.Screen
-                      name="index"
-                      options={{
-                        animation: "fade",
-                      }}
-                    />
-                    <Stack.Screen
+                    <JsStack.Screen name="index" options={{}} />
+                    <JsStack.Screen
                       name="account"
                       options={{
-                        header: (props) => <Navbar {...props} />,
-                        headerTitle: "Account",
-                        animation: "slide_from_right",
+                        header: (props) => (
+                          <Navbar icon="arrow_back_ios_new" {...props} />
+                        ),
+                        animationEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
                       }}
                     />
-                    <Stack.Screen
+                    <JsStack.Screen
                       name="open"
                       options={{
                         header: (props) => <Navbar {...props} />,
-                        animation: "fade",
                         presentation: "modal",
                       }}
                     />
-                    <Stack.Screen
+                    <JsStack.Screen
                       name="[tab]/spaces/[id]"
                       options={{
                         ...(width < 600 && { header: () => null }),
-                        animation: "fade",
                       }}
                     />
-                    <Stack.Screen
+                    <JsStack.Screen
                       name="[tab]/perspectives/agenda/[type]/[start]"
                       options={{
-                        animation: "fade",
                         header: width > 600 ? DesktopHeader : () => null,
                       }}
                     />
-                  </Stack>
+                  </JsStack>
                 </ThemeProvider>
                 {width < 600 && <BottomAppBar />}
               </View>

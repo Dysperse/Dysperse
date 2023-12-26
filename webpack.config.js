@@ -1,21 +1,13 @@
-const path = require("path");
-const createExpoWebpackConfigAsync = require("@expo/webpack-config");
+import createExpoWebpackConfigAsync from "@expo/webpack-config";
 
-module.exports = async function (env, argv) {
+export default async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(
     {
       ...env,
-      babel: {
-        dangerouslyAddModulePathsToTranspile: ["nativewind", "@gorhom"],
-      },
+      babel: { dangerouslyAddModulePathsToTranspile: ["@gorhom"] },
     },
     argv
   );
 
-  config.module.rules.push({
-    test: /\.css$/i,
-    use: ["postcss-loader"],
-  });
-
   return config;
-};
+}

@@ -371,7 +371,7 @@ function LabelPicker({ children, label, setLabel }) {
             }}
           >
             {data ? (
-              <BottomSheetFlatList
+              <FlatList
                 data={data}
                 contentContainerStyle={{ flex: 1 }}
                 ListEmptyComponent={
@@ -464,7 +464,7 @@ function CreateTaskLabelInput({ control }) {
             {...(value && {
               // label: JSON.stringify(value?.name),
               style: {
-                backgroundColor: colors[value?.color]?.[3],
+                backgroundColor: colors[value?.color]?.[4],
               },
             })}
             color={value ? colors[value?.color]?.[3] : undefined}
@@ -481,7 +481,15 @@ export default function CreateTask({
   defaultValues = {
     date: dayjs().utc(),
   },
-}: any) {
+  mutate,
+}: {
+  showClose?: boolean;
+  children: any;
+  defaultValues?: {
+    date?: Dayjs;
+  };
+  mutate: () => void;
+}) {
   const { sessionToken } = useUser();
   const menuRef = useRef<BottomSheetModal>(null);
   const dateMenuRef = useRef<BottomSheetModal>(null);
@@ -537,7 +545,10 @@ export default function CreateTask({
 
   // callbacks
   const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
+  const handleClose = useCallback(() => {
+    ref.current?.close();
+    mutate();
+  }, []);
   const trigger = cloneElement(children, { onPress: handleOpen });
   const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
 
@@ -547,7 +558,7 @@ export default function CreateTask({
       <BottomSheet
         onClose={handleClose}
         sheetRef={ref}
-        snapPoints={["50%"]}
+        snapPoints={["60%"]}
         maxWidth={500}
         footerComponent={() => (
           <View
@@ -792,7 +803,7 @@ export default function CreateTask({
                   style={{
                     color: theme[11],
                     fontFamily: "body_400",
-                    fontSize: 35,
+                    fontSize: 25,
                     paddingHorizontal: 20,
                     paddingBottom: 55,
                     flex: 1,

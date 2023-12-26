@@ -43,9 +43,9 @@ export function WeatherWidget() {
   const getWeather = async (location) => {
     const lat = location.coords.latitude;
     const long = location.coords.longitude;
-    fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${long}`)
-      .then((res) => res.json())
-      .then((res) => setLocationData(res));
+    // fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${long}`)
+    //   .then((res) => res.json())
+    //   .then((res) => setLocationData(res));
     fetch(
       `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${long}&current=pm2_5`
     )

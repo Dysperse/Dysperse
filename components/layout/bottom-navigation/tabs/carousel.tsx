@@ -149,7 +149,7 @@ export function OpenTabsList() {
           style={{
             width: "100%",
             justifyContent: "center",
-            height: 53,
+            height: 55,
           }}
           data={data}
           pagingEnabled

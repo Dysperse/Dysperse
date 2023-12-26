@@ -15,6 +15,7 @@ export default function Text(props: DTextProps) {
   return (
     <NText
       {...props}
+      maxFontSizeMultiplier={1.1}
       className={props.textClassName || undefined}
       style={{
         color: theme[12],

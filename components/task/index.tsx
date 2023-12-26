@@ -271,6 +271,7 @@ export function Task({ task }) {
           console.log("long press");
         }}
         style={({ pressed, hovered }) => ({
+          flexShrink: 0,
           paddingHorizontal: 15,
           paddingVertical: 15,
           borderRadius: 20,
