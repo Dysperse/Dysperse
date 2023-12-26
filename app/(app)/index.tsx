@@ -140,10 +140,17 @@ function RecentActivity() {
   );
 }
 function SpaceInfo() {
-  const theme = useColorTheme();
   const { session } = useUser();
+  const { width } = useWindowDimensions();
+
   return (
-    <View style={{ flexDirection: "row", gap: 15, justifyContent: "flex-end" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        gap: 15,
+        justifyContent: width > 600 ? "flex-end" : "center",
+      }}
+    >
       <Button variant="outlined">
         <Icon>tag</Icon>
         <ButtonText>{session?.space?.space?.name}</ButtonText>
@@ -192,7 +199,14 @@ export default function Index() {
           <PlanDayPrompt />
           <TodaysTasks />
         </View>
-        <View style={{ flex: 1, gap: 15 }}>
+        <View
+          style={{
+            flex: width > 600 ? 1 : undefined,
+            gap: 15,
+            paddingBottom: width > 600 ? 0 : 20,
+            flexDirection: width > 600 ? "column" : "column-reverse",
+          }}
+        >
           <SpaceInfo />
           <RecentActivity />
         </View>

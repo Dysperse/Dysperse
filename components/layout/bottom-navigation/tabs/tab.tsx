@@ -231,7 +231,8 @@ export function Tab({
           {tabData.name(tab.params, tab.slug)[1] && (
             <Text
               style={{
-                fontSize: 13,
+                marginTop: 3,
+                fontSize: 12,
                 opacity: 0.6,
                 ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
               }}

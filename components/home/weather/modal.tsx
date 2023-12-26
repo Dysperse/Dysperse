@@ -108,7 +108,7 @@ export function WeatherModal({
         <Icon style={{ color }} size={30}>
           {icon}
         </Icon>
-        <View style={{ minWidth: 0, maxWidth: "100%" }}>
+        <View style={{ minWidth: 0, flex: 1 }}>
           <Text
             variant="eyebrow"
             numberOfLines={1}

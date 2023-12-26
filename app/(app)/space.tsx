@@ -114,7 +114,7 @@ function SpacePage({ space }: any) {
   );
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ height }}>
       {Platform.OS === "ios" && (
         <View
           style={{
@@ -161,28 +161,30 @@ function SpacePage({ space }: any) {
           />
         </View>
       </LinearGradient>
-      <MembersTrigger space={space} />
-      {divider}
-      <StorageTrigger>
+      <View style={{ backgroundColor: theme[1], flex: 1 }}>
+        <MembersTrigger space={space} />
+        {divider}
+        <StorageTrigger>
+          <TouchableOpacity style={spaceStyles.button}>
+            <View style={spaceStyles.buttonContent}>
+              <Text variant="eyebrow" style={{ marginBottom: 10 }}>
+                Storage
+              </Text>
+              <ProgressBar progress={0.4} height={10} />
+              <Text style={{ opacity: 0.6, marginTop: 4 }}>40% used</Text>
+            </View>
+            <Icon>arrow_forward_ios</Icon>
+          </TouchableOpacity>
+        </StorageTrigger>
+        {divider}
         <TouchableOpacity style={spaceStyles.button}>
           <View style={spaceStyles.buttonContent}>
-            <Text variant="eyebrow" style={{ marginBottom: 10 }}>
-              Storage
-            </Text>
-            <ProgressBar progress={0.4} height={10} />
-            <Text style={{ opacity: 0.6, marginTop: 4 }}>40% used</Text>
+            <Text variant="eyebrow">Integrations</Text>
+            <Text style={{ opacity: 0.6 }}>Coming soon!</Text>
           </View>
           <Icon>arrow_forward_ios</Icon>
         </TouchableOpacity>
-      </StorageTrigger>
-      {divider}
-      <TouchableOpacity style={spaceStyles.button}>
-        <View style={spaceStyles.buttonContent}>
-          <Text variant="eyebrow">Integrations</Text>
-          <Text style={{ opacity: 0.6 }}>Coming soon!</Text>
-        </View>
-        <Icon>arrow_forward_ios</Icon>
-      </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
