@@ -147,6 +147,7 @@ function SpaceInfo() {
     <View
       style={{
         flexDirection: "row",
+        flexWrap: "wrap",
         gap: 15,
         justifyContent: width > 600 ? "flex-end" : "center",
       }}

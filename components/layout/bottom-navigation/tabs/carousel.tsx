@@ -3,12 +3,7 @@ import IconButton from "@/ui/IconButton";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  usePathname,
-} from "expo-router";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -22,10 +17,6 @@ import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
-import { NavbarProfilePicture } from "../../account-navbar";
-import Text from "@/ui/Text";
-import { Button } from "@/ui/Button";
-import { SpacesTrigger } from "../../sidebar";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
@@ -70,7 +61,7 @@ export function OpenTabsList() {
   }, [data, tab]);
 
   return data && Array.isArray(data) ? (
-    Platform.OS === "web" ? (
+    width > 600 ? (
       <View
         style={{
           height: 64,
@@ -145,7 +136,7 @@ export function OpenTabsList() {
       <View style={{ flex: 1 }}>
         <Carousel
           {...baseOptions}
-          loop={false}
+          enabled={Platform.OS !== "web"}
           ref={ref}
           style={{
             width: "100%",

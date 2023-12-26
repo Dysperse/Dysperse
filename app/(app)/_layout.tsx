@@ -8,7 +8,6 @@ import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import Navbar from "@/ui/navbar";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { PortalProvider } from "@gorhom/portal";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import {
   StackCardInterpolatedStyle,
@@ -144,148 +143,144 @@ export default function AppLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <PortalProvider>
-      <ColorThemeProvider theme={theme}>
-        <GestureHandlerRootView
-          style={{ flex: 1, overflow: "hidden", width, height }}
+    <ColorThemeProvider theme={theme}>
+      <GestureHandlerRootView
+        style={{ flex: 1, overflow: "hidden", width, height }}
+      >
+        <SWRConfig
+          value={{
+            fetcher: async ([
+              resource,
+              params,
+              host = "https://api.dysperse.com",
+              init = {},
+            ]) => {
+              const url = `${host}/${resource}?${new URLSearchParams(
+                params
+              ).toString()}`;
+              const res = await fetch(url, {
+                headers: {
+                  Authorization: `Bearer ${session}`,
+                },
+                ...init,
+              });
+              return await res.json();
+            },
+
+            provider: () => new Map(),
+            isVisible: () => true,
+            initFocus(callback) {
+              let appState = AppState.currentState;
+
+              const onAppStateChange = (nextAppState) => {
+                /* If it's resuming from background or inactive mode to active one */
+                if (
+                  appState.match(/inactive|background/) &&
+                  nextAppState === "active"
+                ) {
+                  callback();
+                }
+                appState = nextAppState;
+              };
+
+              // Subscribe to the app state change events
+              const subscription = AppState.addEventListener(
+                "change",
+                onAppStateChange
+              );
+
+              return () => {
+                subscription.remove();
+              };
+            },
+          }}
         >
-          <SWRConfig
-            value={{
-              fetcher: async ([
-                resource,
-                params,
-                host = "https://api.dysperse.com",
-                init = {},
-              ]) => {
-                const url = `${host}/${resource}?${new URLSearchParams(
-                  params
-                ).toString()}`;
-                const res = await fetch(url, {
-                  headers: {
-                    Authorization: `Bearer ${session}`,
+          <BottomSheetModalProvider>
+            <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
+            <View
+              style={{
+                flexDirection: width > 600 ? "row" : "column",
+                flex: 1,
+                backgroundColor: theme[1],
+              }}
+            >
+              {width > 600 && <Sidebar />}
+              <ThemeProvider
+                value={{
+                  ...DefaultTheme,
+                  colors: {
+                    ...DefaultTheme.colors,
+                    background: theme[1],
                   },
-                  ...init,
-                });
-                return await res.json();
-              },
-
-              provider: () => new Map(),
-              isVisible: () => true,
-              initFocus(callback) {
-                let appState = AppState.currentState;
-
-                const onAppStateChange = (nextAppState) => {
-                  /* If it's resuming from background or inactive mode to active one */
-                  if (
-                    appState.match(/inactive|background/) &&
-                    nextAppState === "active"
-                  ) {
-                    callback();
-                  }
-                  appState = nextAppState;
-                };
-
-                // Subscribe to the app state change events
-                const subscription = AppState.addEventListener(
-                  "change",
-                  onAppStateChange
-                );
-
-                return () => {
-                  subscription.remove();
-                };
-              },
-            }}
-          >
-            <BottomSheetModalProvider>
-              <StatusBar
-                barStyle={!isDark ? "dark-content" : "light-content"}
-              />
-              <View
-                style={{
-                  flexDirection: width > 600 ? "row" : "column",
-                  flex: 1,
-                  backgroundColor: theme[1],
                 }}
               >
-                {width > 600 && <Sidebar />}
-                <ThemeProvider
-                  value={{
-                    ...DefaultTheme,
-                    colors: {
-                      ...DefaultTheme.colors,
-                      background: theme[1],
+                <JsStack
+                  screenOptions={{
+                    header:
+                      width > 600
+                        ? DesktopHeader
+                        : (props: any) => <AccountNavbar {...props} />,
+                    headerTransparent: true,
+                    gestureResponseDistance: width,
+                    cardShadowEnabled: false,
+                    gestureEnabled: true,
+                    cardStyle: {
+                      backgroundColor: theme[width > 600 ? 2 : 1],
                     },
+                    // change opacity of the previous screen when swipe
+                    cardOverlayEnabled: true,
+                    animationEnabled: false,
+                    gestureVelocityImpact: 0.7,
                   }}
                 >
-                  <JsStack
-                    screenOptions={{
-                      header:
-                        width > 600
-                          ? DesktopHeader
-                          : (props: any) => <AccountNavbar {...props} />,
-                      headerTransparent: true,
-                      gestureResponseDistance: width,
-                      cardShadowEnabled: false,
-                      gestureEnabled: true,
-                      cardStyle: {
-                        backgroundColor: theme[width > 600 ? 2 : 1],
-                      },
-                      // change opacity of the previous screen when swipe
-                      cardOverlayEnabled: true,
-                      animationEnabled: false,
-                      gestureVelocityImpact: 0.7,
+                  <JsStack.Screen name="index" options={{}} />
+                  <JsStack.Screen
+                    name="account"
+                    options={{
+                      header: (props) => (
+                        <Navbar icon="arrow_back_ios_new" {...props} />
+                      ),
+                      animationEnabled: true,
+                      ...TransitionPresets.SlideFromRightIOS,
+                      cardStyleInterpolator: forHorizontalIOS,
                     }}
-                  >
-                    <JsStack.Screen name="index" options={{}} />
-                    <JsStack.Screen
-                      name="account"
-                      options={{
-                        header: (props) => (
-                          <Navbar icon="arrow_back_ios_new" {...props} />
-                        ),
-                        animationEnabled: true,
-                        ...TransitionPresets.SlideFromRightIOS,
-                        cardStyleInterpolator: forHorizontalIOS,
-                      }}
-                    />
-                    <JsStack.Screen
-                      name="space"
-                      options={{
-                        header: () => null,
-                        animationEnabled: true,
-                        ...TransitionPresets.SlideFromRightIOS,
-                        cardStyleInterpolator: forHorizontalIOS,
-                      }}
-                    />
-                    <JsStack.Screen
-                      name="open"
-                      options={{
-                        header: (props) => <Navbar {...props} />,
-                        presentation: "modal",
-                      }}
-                    />
-                    <JsStack.Screen
-                      name="[tab]/spaces/[id]"
-                      options={{
-                        ...(width < 600 && { header: () => null }),
-                      }}
-                    />
-                    <JsStack.Screen
-                      name="[tab]/perspectives/agenda/[type]/[start]"
-                      options={{
-                        header: width > 600 ? DesktopHeader : () => null,
-                      }}
-                    />
-                  </JsStack>
-                </ThemeProvider>
-                {width < 600 && <BottomAppBar />}
-              </View>
-            </BottomSheetModalProvider>
-          </SWRConfig>
-          <Toast config={toastConfig(theme)} />
-        </GestureHandlerRootView>
-      </ColorThemeProvider>
-    </PortalProvider>
+                  />
+                  <JsStack.Screen
+                    name="space"
+                    options={{
+                      header: () => null,
+                      animationEnabled: true,
+                      ...TransitionPresets.SlideFromRightIOS,
+                      cardStyleInterpolator: forHorizontalIOS,
+                    }}
+                  />
+                  <JsStack.Screen
+                    name="open"
+                    options={{
+                      header: (props) => <Navbar {...props} />,
+                      presentation: "modal",
+                    }}
+                  />
+                  <JsStack.Screen
+                    name="[tab]/spaces/[id]"
+                    options={{
+                      ...(width < 600 && { header: () => null }),
+                    }}
+                  />
+                  <JsStack.Screen
+                    name="[tab]/perspectives/agenda/[type]/[start]"
+                    options={{
+                      header: width > 600 ? DesktopHeader : () => null,
+                    }}
+                  />
+                </JsStack>
+              </ThemeProvider>
+              {width < 600 && <BottomAppBar />}
+            </View>
+          </BottomSheetModalProvider>
+        </SWRConfig>
+        <Toast config={toastConfig(theme)} />
+      </GestureHandlerRootView>
+    </ColorThemeProvider>
   );
 }

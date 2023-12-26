@@ -146,7 +146,7 @@ export function WeatherModal({
         )}
       >
         <BottomSheetScrollView>
-          <View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
+          <View style={{ paddingHorizontal: 15, paddingVertical: 20 }}>
             <View style={{ alignItems: "center" }}>
               <Icon size={60} style={{ color }}>
                 {
