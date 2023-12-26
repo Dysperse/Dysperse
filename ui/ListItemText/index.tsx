@@ -10,7 +10,7 @@ interface DListItemTextProps extends DTextProps {
 
 export default function ListItemText(props: DListItemTextProps) {
   return (
-    <View style={{ gap: 3 }}>
+    <View style={[{ gap: 3 }, props.style]}>
       <Text weight={600} {...props.primaryProps}>
         {props.primary}
       </Text>

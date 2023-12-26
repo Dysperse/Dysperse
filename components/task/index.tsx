@@ -25,6 +25,8 @@ import useSWR from "swr";
 import { TaskCheckbox } from "./Checkbox";
 import Emoji from "@/ui/Emoji";
 import { useLabelColors } from "../labels/useLabelColors";
+import ListItemText from "@/ui/ListItemText";
+import Divider from "@/ui/Divider";
 
 const styles = StyleSheet.create({
   section: {
@@ -57,7 +59,40 @@ const timelineStyles = StyleSheet.create({
 function TaskDetails({ data }) {
   return (
     <>
-      <Text>{JSON.stringify(data)}</Text>
+      <ListItemButton>
+        <Icon>calendar_today</Icon>
+        <ListItemText primary={dayjs(data.due).format("MMM Do, YYYY")} />
+        <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+      </ListItemButton>
+      {!data.dateOnly && (
+        <ListItemButton>
+          <Icon>access_time</Icon>
+          <ListItemText primary={dayjs(data.due).format("h:mm A")} />
+          <Icon style={{ marginLeft: "auto" }}>edit</Icon>
+        </ListItemButton>
+      )}
+      {data.due && (
+        <ListItemButton>
+          <Icon>notifications</Icon>
+          <ListItemText
+            primary={`${data.notifications.length} notification${
+              data.notifications.length == 1 ? "" : "s"
+            }`}
+          />
+          <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+        </ListItemButton>
+      )}
+      <View style={{ padding: 15, paddingVertical: 10 }}>
+        <Divider />
+      </View>
+      <ListItemButton>
+        <Icon>sticky_note_2</Icon>
+        <ListItemText primary="Add note" />
+      </ListItemButton>
+      <ListItemButton>
+        <Icon>add_circle</Icon>
+        <ListItemText primary="New attachment" />
+      </ListItemButton>
     </>
   );
 }
@@ -197,7 +232,6 @@ function TaskDrawerContent({ data, handleClose }) {
               },
             })}
           />
-          <Chip label={dayjs(data.due).format("MMM Do, YYYY")} />
         </View>
         <AutoSizeTextArea
           inputDefaultValue={data.name}
@@ -220,7 +254,7 @@ function TaskDrawerContent({ data, handleClose }) {
             backgroundColor: "transparent",
             borderBottomWidth: 2,
             borderColor: theme[5],
-            flex: null,
+            // flex: null,
             paddingVertical: 7,
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10,
