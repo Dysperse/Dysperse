@@ -57,6 +57,7 @@ const timelineStyles = StyleSheet.create({
 });
 
 function TaskDetails({ data }) {
+  const theme = useColorTheme();
   return (
     <>
       <ListItemButton>
@@ -97,73 +98,129 @@ function TaskDetails({ data }) {
   );
 }
 
-function TaskStream({ data }) {
+function TaskStream({ children, data }) {
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
+  const ref = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+  const trigger = cloneElement(children, { onPress: handleOpen });
+
   return (
-    <View style={{ paddingLeft: 20, paddingTop: 15 }}>
-      <View
-        style={[
-          timelineStyles.container,
-          {
-            borderLeftColor: theme[5],
-          },
-        ]}
+    <>
+      {trigger}
+      <BottomSheet
+        sheetRef={ref}
+        snapPoints={width > 600 ? ["90%"] : ["50%", "80%"]}
+        onClose={handleClose}
+        style={{
+          maxWidth: 550,
+          margin: "auto",
+        }}
+        stackBehavior="push"
       >
-        {data.history.map((audit) => (
-          <View key={audit.id} style={timelineStyles.itemContainer}>
+        <BottomSheetScrollView contentContainerStyle={{ padding: 20 }}>
+          <View
+            style={{
+              paddingTop: 10,
+              flexDirection: "row",
+              gap: 10,
+              width: "100%",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <IconButton
+              onPress={handleClose}
+              style={{ backgroundColor: theme[3] }}
+            >
+              <Icon>arrow_back_ios_new</Icon>
+            </IconButton>
+            <Text style={{ fontSize: 20 }} weight={700}>
+              Audit log
+            </Text>
+          </View>
+          <View
+            style={{
+              paddingLeft: 20,
+              paddingTop: 15,
+            }}
+          >
             <View
               style={[
-                timelineStyles.dot,
+                timelineStyles.container,
                 {
-                  borderColor: theme[1],
-                  width: 30,
-                  height: 30,
-                  position: "relative",
+                  borderLeftColor: theme[5],
                 },
               ]}
             >
-              <ProfilePicture
-                size={30}
-                name={audit.who.profile.name}
-                image={audit.who.profile.picture}
-                style={{
-                  borderWidth: 2,
-                  borderColor: theme[1],
-                }}
-              />
-              <Avatar
-                size={23}
-                style={{
-                  position: "absolute",
-                  top: 10,
-                  left: 10,
-                  borderWidth: 2,
-                  borderColor: theme[1],
-                }}
-              >
-                <Icon style={{ marginTop: -6, marginLeft: -3 }} size={24}>
-                  {audit.type === "CREATE"
-                    ? "add"
-                    : audit.type == "POSTPONE"
-                    ? "east"
-                    : "edit"}
-                </Icon>
-              </Avatar>
-            </View>
-            <View style={{ flex: 1, paddingTop: 5, paddingBottom: 10 }}>
-              <Text variant="eyebrow">{audit.who.profile.name}</Text>
-              <Text style={{ fontSize: 25 }} weight={700}>
-                {audit.data.replace(" a ", " this ")}
-              </Text>
-              <Text style={{ opacity: 0.6 }}>
-                {dayjs(audit.timestamp).format("MMM Do h:mm A")} &bull;{" "}
-                {dayjs(audit.timestamp).fromNow()}
-              </Text>
+              {data ? (
+                data.history.map((audit) => (
+                  <View key={audit.id} style={timelineStyles.itemContainer}>
+                    <View
+                      style={[
+                        timelineStyles.dot,
+                        {
+                          borderColor: theme[1],
+                          width: 30,
+                          height: 30,
+                          position: "relative",
+                        },
+                      ]}
+                    >
+                      <ProfilePicture
+                        size={30}
+                        name={audit.who.profile.name}
+                        image={audit.who.profile.picture}
+                        style={{
+                          borderWidth: 2,
+                          borderColor: theme[1],
+                        }}
+                      />
+                      <Avatar
+                        size={23}
+                        style={{
+                          position: "absolute",
+                          top: 10,
+                          left: 10,
+                          borderWidth: 2,
+                          borderColor: theme[1],
+                        }}
+                      >
+                        <Icon
+                          style={{ marginTop: -6, marginLeft: -3 }}
+                          size={24}
+                        >
+                          {audit.type === "CREATE"
+                            ? "add"
+                            : audit.type == "POSTPONE"
+                            ? "east"
+                            : "edit"}
+                        </Icon>
+                      </Avatar>
+                    </View>
+                    <View style={{ flex: 1, paddingTop: 5, paddingBottom: 10 }}>
+                      <Text variant="eyebrow">{audit.who.profile.name}</Text>
+                      <Text style={{ fontSize: 25 }} weight={700}>
+                        {audit.data.replace(" a ", " this ")}
+                      </Text>
+                      <Text style={{ opacity: 0.6 }}>
+                        {dayjs(audit.timestamp).format("MMM Do h:mm A")} &bull;{" "}
+                        {dayjs(audit.timestamp).fromNow()}
+                      </Text>
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <ActivityIndicator />
+              )}
             </View>
           </View>
-        ))}
-      </View>
-    </View>
+        </BottomSheetScrollView>
+      </BottomSheet>
+    </>
   );
 }
 
@@ -216,7 +273,14 @@ function TaskDrawerContent({ data, handleClose }) {
         </View>
       </View>
       <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
-        <View style={{ gap: 10, marginVertical: 20, flexDirection: "row" }}>
+        <View
+          style={{
+            paddingHorizontal: 10,
+            gap: 10,
+            marginVertical: 20,
+            flexDirection: "row",
+          }}
+        >
           <Chip icon={<Icon filled={data.pinned}>push_pin</Icon>} />
           <Chip
             icon={<Icon>label</Icon>}
@@ -238,53 +302,21 @@ function TaskDrawerContent({ data, handleClose }) {
           inputStyle={{
             fontFamily: "heading",
             color: theme[12],
+            paddingHorizontal: 15,
           }}
           fontSize={50}
         />
-        <ButtonGroup
-          containerStyle={{
-            marginVertical: 10,
-            padding: 0,
-            borderRadius: 0,
-            gap: 0,
-            backgroundColor: "transparent",
-          }}
-          buttonStyle={{
-            borderRadius: 0,
-            backgroundColor: "transparent",
-            borderBottomWidth: 2,
-            borderColor: theme[5],
-            // flex: null,
-            paddingVertical: 7,
-            borderTopRightRadius: 10,
-            borderTopLeftRadius: 10,
-          }}
-          selectedButtonStyle={{
-            borderBottomColor: theme[9],
-            backgroundColor: theme[3],
-          }}
-          buttonTextStyle={{
-            fontSize: 15,
-            color: theme[12],
-          }}
-          selectedButtonTextStyle={{
-            color: theme[11],
-          }}
-          options={[
-            { label: "Details", value: "details" },
-            { label: "Subtasks", value: "subtasks" },
-            { label: "Stream", value: "stream" },
-          ]}
-          state={[view, setView]}
-        />
-
-        {view === "details" && <TaskDetails data={data} />}
-        {view === "stream" && <TaskStream data={data} />}
-
-        <View
-          style={[styles.section, { backgroundColor: theme[3], marginTop: 20 }]}
-        >
-          <Button>
+        <TaskDetails data={data} />
+        <View style={{ padding: 15, paddingVertical: 10 }}>
+          <Divider />
+        </View>
+        <View style={[styles.section, { flexDirection: "row" }]}>
+          <TaskStream data={data}>
+            <Button onPress={() => setView("stream")} style={{ flex: 1 }}>
+              <ButtonText>History</ButtonText>
+            </Button>
+          </TaskStream>
+          <Button style={{ flex: 1 }}>
             <ButtonText>Move to trash</ButtonText>
           </Button>
         </View>
@@ -319,10 +351,10 @@ export function TaskDrawer({ children, id }) {
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        snapPoints={error ? ["50%"] : width > 600 ? ["90%"] : ["50%", "80%"]}
+        snapPoints={error ? ["50%"] : width > 600 ? [500] : ["50%", "80%"]}
         onClose={handleClose}
         style={{
-          maxWidth: 550,
+          maxWidth: 500,
           margin: "auto",
         }}
       >
@@ -361,7 +393,7 @@ export function Task({ task }) {
         })}
       >
         <TaskCheckbox completed={task?.completionInstances?.length > 0} />
-        <View style={{ gap: 5, paddingTop: 1 }}>
+        <View style={{ gap: 5, paddingTop: 1, flex: 1 }}>
           <Text numberOfLines={1}>{task.name}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
             {task.pinned && (
