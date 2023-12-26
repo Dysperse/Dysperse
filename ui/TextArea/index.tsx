@@ -2,19 +2,23 @@ import { StyleProp, TextStyle } from "react-native";
 import { TextInputProps } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { TextInput } from "react-native-gesture-handler";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 interface DTextInputProps extends TextInputProps {
   style?: StyleProp<TextStyle>;
   variant?: "default" | "filled";
+  bottomSheet?: boolean;
 }
 
 export default function TextField(props: DTextInputProps) {
   const theme = useColorTheme();
+  const Component = props.bottomSheet ? BottomSheetTextInput : TextInput;
+
   return (
-    <TextInput
+    <Component
       placeholderTextColor={theme[8]}
       cursorColor={theme[8]}
-      selectionColor={theme[5]}
+      selectionColor={theme[8]}
       {...props}
       style={{
         ...(props.style as any),

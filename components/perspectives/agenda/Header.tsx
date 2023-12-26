@@ -28,7 +28,7 @@ export function Header({ start, end }) {
     <LinearGradient
       colors={[theme[3], theme[2]]}
       style={{
-        gap: 20,
+        gap: 15,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
@@ -36,19 +36,27 @@ export function Header({ start, end }) {
       }}
     >
       <View
-        className={`min-w-9 px-2 h-8 rounded-xl items-center justify-center`}
         style={{
-          backgroundColor: theme[isToday ? 11 : 3],
+          borderRadius: 15,
+          minWidth: 45,
+          height: 40,
+          alignItems: "center",
+          justifyContent: "center",
+          paddingHorizontal: 8,
+          backgroundColor: theme[isToday ? 11 : 4],
         }}
       >
         <Text
-          textClassName={`text-xl`}
-          textStyle={{ fontFamily: "body_700", color: theme[isToday ? 2 : 11] }}
+          textStyle={{
+            fontFamily: "body_700",
+            color: theme[isToday ? 2 : 11],
+            fontSize: 20,
+          }}
         >
           {dayjs(start).format(formats.heading)}
         </Text>
       </View>
-      <Text textClassName="text-xl" textStyle={{ fontFamily: "body_600" }}>
+      <Text textStyle={{ fontFamily: "body_600", fontSize: 20 }}>
         {dayjs(start).format(formats.subheading)}
         {type === "month" && <> - {dayjs(end).format(formats.subheading)}</>}
       </Text>

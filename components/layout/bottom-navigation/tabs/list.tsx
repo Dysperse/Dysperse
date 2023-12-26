@@ -7,7 +7,13 @@ import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
@@ -15,6 +21,16 @@ import { Tab } from "./tab";
 import useSWR from "swr";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+const styles = StyleSheet.create({
+  helperText: {
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 15,
+    alignItems: "center",
+    paddingHorizontal: 30,
+    paddingTop: 15,
+  },
+});
 function TabListTab({
   disabled,
   drag,
@@ -25,9 +41,10 @@ function TabListTab({
 }) {
   return (
     <Pressable
-      className="pl-4 flex-row items-center"
       disabled={disabled}
       style={{
+        flexDirection: "row",
+        paddingLeft: 15,
         ...(isActive && { backgroundColor: "#eee", borderRadius: 20 }),
       }}
     >
@@ -68,16 +85,20 @@ export const TabDrawer = ({ children }) => {
       <BottomSheet
         sheetRef={ref}
         onClose={handleClose}
-        snapPoints={session?.user?.tabs?.length === 0 ? ["20"] : ["50%", "80%"]}
+        snapPoints={session?.user?.tabs?.length === 0 ? ["20"] : ["60%"]}
       >
-        <View className="flex-row items-center px-5 mb-2" style={{ gap: 10 }}>
+        <View
+          style={{
+            gap: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+          }}
+        >
           <IconButton onPress={handleClose} variant="filled">
             <Icon>expand_more</Icon>
           </IconButton>
-          <Text
-            textClassName="py-3 text-2xl flex-1"
-            style={{ fontFamily: "body_700" }}
-          >
+          <Text style={{ fontSize: 20, flex: 1 }} weight={700}>
             Tabs
           </Text>
           <IconButton onPress={() => setEditMode(!editMode)}>
@@ -91,6 +112,7 @@ export const TabDrawer = ({ children }) => {
         </View>
         {data ? (
           <FlatListComponent
+            style={{ marginTop: 15 }}
             onDragEnd={({ data }) => {
               const newData = data.map((item, index) => ({
                 id: item.id,
@@ -105,9 +127,9 @@ export const TabDrawer = ({ children }) => {
                 () => (
                   <View>
                     {data.length !== 0 && (
-                      <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
+                      <View style={styles.helperText}>
                         <Icon>info</Icon>
-                        <Text textClassName="ml-2">
+                        <Text style={{ opacity: 0.6 }}>
                           Tabs are synced between devices
                         </Text>
                       </View>
@@ -117,9 +139,9 @@ export const TabDrawer = ({ children }) => {
               ) : (
                 <View>
                   {data.length !== 0 && (
-                    <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
+                    <View style={styles.helperText}>
                       <Icon>info</Icon>
-                      <Text textClassName="ml-2">
+                      <Text style={{ opacity: 0.6 }}>
                         Tabs are synced between devices
                       </Text>
                     </View>
@@ -128,9 +150,17 @@ export const TabDrawer = ({ children }) => {
               )
             }
             ListEmptyComponent={
-              <View className="flex-row items-center p-4 opacity-50 justify-center pb-8">
+              <View
+                style={{
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  gap: 15,
+                  alignItems: "center",
+                  paddingHorizontal: 30,
+                }}
+              >
                 <Icon>info</Icon>
-                <Text textClassName="ml-2">
+                <Text style={{ opacity: 0.6 }}>
                   You don't have any tabs. Tap "+" to create one.
                 </Text>
               </View>
@@ -151,15 +181,13 @@ export const TabDrawer = ({ children }) => {
                     </ScaleDecorator>
                   )
                 : ({ item }) => (
-                    <TouchableOpacity>
-                      <TabListTab
-                        item={item}
-                        disabled={false}
-                        drag={() => {}}
-                        handleClose={handleClose}
-                        isActive={false}
-                      />
-                    </TouchableOpacity>
+                    <TabListTab
+                      item={item}
+                      disabled={false}
+                      drag={() => {}}
+                      handleClose={handleClose}
+                      isActive={false}
+                    />
                   )) as any
             }
             keyExtractor={(item: any) => item.id}

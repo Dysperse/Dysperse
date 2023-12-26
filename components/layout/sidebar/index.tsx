@@ -14,10 +14,11 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -168,13 +169,18 @@ function SpaceButton({ item }: any) {
   );
 }
 
-function SpacesTrigger() {
+export function SpacesTrigger() {
+  const ref = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
   const [view, setView] = useState("all");
   const { data, error } = useSWR(["user/spaces"]);
 
+  const handleClose = useCallback(() => ref.current.close(), []);
+
   return (
     <Menu
+      menuRef={ref}
+      width={400}
       height={["70%"]}
       trigger={
         <IconButton style={{ marginLeft: "auto" }}>
@@ -184,14 +190,30 @@ function SpacesTrigger() {
     >
       {data ? (
         <FlatList
+          style={{ padding: 10 }}
           data={data}
           ListHeaderComponent={
-            <View style={{ paddingHorizontal: 12 }}>
-              <Text heading style={{ fontSize: 40, paddingTop: 20 }}>
-                Spaces
-              </Text>
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text heading style={{ fontSize: 40 }}>
+                  Spaces
+                </Text>
+                <IconButton
+                  variant="filled"
+                  style={{ marginTop: -7 }}
+                  onPress={handleClose}
+                >
+                  <Icon>close</Icon>
+                </IconButton>
+              </View>
               <ButtonGroup
-                containerStyle={{ marginVertical: 5 }}
+                containerStyle={{ marginVertical: 10 }}
                 options={[
                   { label: "All", value: "all" },
                   { label: "Invitations", value: "invitations" },
@@ -200,7 +222,7 @@ function SpacesTrigger() {
               />
             </View>
           }
-          contentContainerStyle={{ padding: 10 }}
+          contentContainerStyle={{ padding: 20 }}
           keyExtractor={(item) => item.id}
           renderItem={({ item }: any) => <SpaceButton item={item} />}
         />
@@ -409,7 +431,7 @@ export function Sidebar() {
             )
           }
           ListEmptyComponent={
-            <View className="items-center h-full">
+            <View>
               <Emoji emoji="1F62D" size={40} />
               <Text
                 textClassName="mt-3"

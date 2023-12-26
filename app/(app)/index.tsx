@@ -42,12 +42,12 @@ function Greeting() {
           color: theme[12],
           textShadowColor: theme[7],
           textShadowRadius: 30,
-          height: '100%',
+          height: "100%",
           paddingTop: 90,
+          fontSize: 55,
           width: "100%",
           textShadowOffset: { height: 5, width: 5 },
         }}
-        textClassName="uppercase text-5xl mt-5"
       >
         {greeting}
       </Text>
@@ -130,8 +130,6 @@ function RecentActivity() {
 }
 
 export default function Index() {
-  const theme = useColorTheme();
-
   return (
     <ContentWrapper>
       <ScrollView
@@ -141,18 +139,9 @@ export default function Index() {
         }}
       >
         <Greeting />
-        <Text
-          textClassName="uppercase text-sm opacity-80"
-          style={{
-            fontFamily: "body_700",
-            color: theme[11],
-          }}
-        >
-          Today's rundown
-        </Text>
+        <Text variant="eyebrow">Today's rundown</Text>
         <View
-          className="flex-row mt-1.5"
-          style={{ columnGap: 15, marginBottom: 15 }}
+          style={{ columnGap: 15, marginBottom: 15, flexGrow: 1, marginTop: 5 }}
         >
           <WeatherWidget />
           <TodaysDate />

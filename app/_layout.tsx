@@ -17,7 +17,7 @@ export default function Root() {
   // Set up the auth context and render our layout inside of it.
 
   const [fontsLoaded] = useFonts({
-    heading: require("../assets/fonts/league-gothic.otf"),
+    heading: require("../assets/fonts/heading.ttf"),
     body_100: require("../assets/fonts/WorkSans/WorkSans-Thin.ttf"),
     body_300: require("../assets/fonts/WorkSans/WorkSans-Light.ttf"),
     body_400: require("../assets/fonts/WorkSans/WorkSans-Regular.ttf"),

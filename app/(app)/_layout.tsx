@@ -250,6 +250,15 @@ export default function AppLayout() {
                       }}
                     />
                     <JsStack.Screen
+                      name="space"
+                      options={{
+                        header: () => null,
+                        animationEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
+                      }}
+                    />
+                    <JsStack.Screen
                       name="open"
                       options={{
                         header: (props) => <Navbar {...props} />,

@@ -1,21 +1,30 @@
 import { ContentWrapper } from "@/components/layout/content";
+import { useUser } from "@/context/useUser";
+import Text from "@/ui/Text";
+import useSWR from "swr";
 import { ProfilePicture } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
 import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams } from "expo-router";
 import { cloneElement } from "react";
-import { ScrollView, StyleSheet } from "react-native";
-import { ActivityIndicator, View, useColorScheme } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+  useColorScheme,
+  useWindowDimensions,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import useSWR from "swr";
+import { router } from "expo-router";
+import { BlurView } from "expo-blur";
 
 const spaceStyles = StyleSheet.create({
   button: {
@@ -95,6 +104,9 @@ function StorageTrigger({ children }) {
 function SpacePage({ space }: any) {
   const theme = useColor(space.color, useColorScheme() === "dark");
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
+  const { top } = useSafeAreaInsets();
+
   const divider = (
     <View style={{ paddingHorizontal: 20 }}>
       <Divider />
@@ -102,74 +114,86 @@ function SpacePage({ space }: any) {
   );
 
   return (
-    <ContentWrapper>
-      <ScrollView>
-        <LinearGradient
-          colors={[theme[5], theme[4], theme[6]]}
+    <ScrollView>
+      {Platform.OS === "ios" && (
+        <View
           style={{
-            borderBottomLeftRadius: 25,
-            borderBottomRightRadius: 25,
-            padding: 25,
-            paddingTop: 25 + insets.top,
+            backgroundColor: theme[5],
+            height,
+            position: "absolute",
+            top: -height,
+            left: 0,
+            right: 0,
           }}
-        >
-          <View style={{ flexDirection: "row", gap: 3 }}>
-            <IconButton style={{ marginLeft: "auto" }}>
-              <Icon size={26}>edit</Icon>
-            </IconButton>
-            <IconButton>
-              <Icon size={26}>schedule</Icon>
-            </IconButton>
-            <IconButton>
-              <Icon size={26}>pending</Icon>
-            </IconButton>
-          </View>
-          <Text heading style={{ fontSize: 45, marginTop: 30 }}>
-            {space.name}
-          </Text>
-          <View style={{ flexDirection: "row" }}>
-            <Chip
-              icon={<Icon>visibility</Icon>}
-              label="View only"
-              style={{ backgroundColor: theme[7], marginTop: 5 }}
-            />
-          </View>
-        </LinearGradient>
-        <MembersTrigger space={space} />
-        {divider}
-        <StorageTrigger>
-          <TouchableOpacity style={spaceStyles.button}>
-            <View style={spaceStyles.buttonContent}>
-              <Text variant="eyebrow" style={{ marginBottom: 10 }}>
-                Storage
-              </Text>
-              <ProgressBar progress={0.4} height={10} />
-              <Text style={{ opacity: 0.6, marginTop: 4 }}>40% used</Text>
-            </View>
-            <Icon>arrow_forward_ios</Icon>
-          </TouchableOpacity>
-        </StorageTrigger>
-        {divider}
+        />
+      )}
+      <LinearGradient
+        colors={[theme[5], theme[4], theme[6]]}
+        style={{
+          borderBottomLeftRadius: 25,
+          borderBottomRightRadius: 25,
+          padding: 25,
+          paddingTop: 25 + insets.top,
+        }}
+      >
+        <View style={{ flexDirection: "row", gap: 3 }}>
+          <IconButton onPress={() => router.back()} style={{ marginLeft: -8 }}>
+            <Icon size={26}>arrow_back_ios_new</Icon>
+          </IconButton>
+          <IconButton style={{ marginLeft: "auto" }}>
+            <Icon size={26}>edit</Icon>
+          </IconButton>
+          <IconButton>
+            <Icon size={26}>schedule</Icon>
+          </IconButton>
+          <IconButton>
+            <Icon size={26}>pending</Icon>
+          </IconButton>
+        </View>
+        <Text heading style={{ fontSize: 45, marginTop: 30 }}>
+          {space.name}
+        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <Chip
+            icon={<Icon>visibility</Icon>}
+            label="View only"
+            style={{ backgroundColor: theme[7], marginTop: 5 }}
+          />
+        </View>
+      </LinearGradient>
+      <MembersTrigger space={space} />
+      {divider}
+      <StorageTrigger>
         <TouchableOpacity style={spaceStyles.button}>
           <View style={spaceStyles.buttonContent}>
-            <Text variant="eyebrow">Integrations</Text>
-            <Text style={{ opacity: 0.6 }}>Coming soon!</Text>
+            <Text variant="eyebrow" style={{ marginBottom: 10 }}>
+              Storage
+            </Text>
+            <ProgressBar progress={0.4} height={10} />
+            <Text style={{ opacity: 0.6, marginTop: 4 }}>40% used</Text>
           </View>
           <Icon>arrow_forward_ios</Icon>
         </TouchableOpacity>
-      </ScrollView>
-    </ContentWrapper>
+      </StorageTrigger>
+      {divider}
+      <TouchableOpacity style={spaceStyles.button}>
+        <View style={spaceStyles.buttonContent}>
+          <Text variant="eyebrow">Integrations</Text>
+          <Text style={{ opacity: 0.6 }}>Coming soon!</Text>
+        </View>
+        <Icon>arrow_forward_ios</Icon>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 export default function Page() {
-  const params = useLocalSearchParams();
+  const { session } = useUser();
   const { data, error } = useSWR(
-    params.id ? ["space", { spaceId: params.id }] : null
+    session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
-
   return (
-    <>
+    <View>
       {data ? (
         <SpacePage space={data} />
       ) : error ? (
@@ -177,6 +201,6 @@ export default function Page() {
       ) : (
         <ActivityIndicator />
       )}
-    </>
+    </View>
   );
 }

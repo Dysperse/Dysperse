@@ -1,3 +1,4 @@
+import { ContentWrapper } from "@/components/layout/content";
 import { createTab } from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
@@ -11,6 +12,7 @@ import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { ActivityIndicator, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,12 +29,12 @@ export default function Index() {
   );
 
   return session ? (
-    <>
+    <ContentWrapper>
       <ScrollView
         contentContainerStyle={{
           gap: 15,
           padding: 15,
-          paddingTop: insets.top + 110,
+          paddingTop: insets.top,
           paddingBottom: 30,
         }}
       >
@@ -61,22 +63,19 @@ export default function Index() {
         >
           <Image
             source={{
-              uri: session.user.profile?.picture,
+              uri: session?.user?.profile?.picture,
             }}
             style={{ width: 40, height: 40, borderRadius: 99 }}
           />
           <ListItemText
             primary="Profile"
-            secondary={session.user.profile.name}
+            secondary={session?.user?.profile?.name}
           />
         </ListItemButton>
         <ListItemButton
           variant="filled"
           onPress={() => {
-            createTab(sessionToken, {
-              slug: "/[tab]/spaces/[id]",
-              params: { id: session.space.space.id },
-            });
+            router.push("/space");
           }}
         >
           <Avatar
@@ -89,7 +88,10 @@ export default function Index() {
               workspaces
             </Icon>
           </Avatar>
-          <ListItemText primary="Space" secondary={session.space.space.name} />
+          <ListItemText
+            primary="Space"
+            secondary={session?.space?.space?.name}
+          />
         </ListItemButton>
         {[
           [
@@ -127,7 +129,7 @@ export default function Index() {
           </View>
         ))}
       </ScrollView>
-    </>
+    </ContentWrapper>
   ) : error ? (
     <View>
       <ErrorAlert />

@@ -26,7 +26,16 @@ export function Avatar(props: DAvatarProps) {
         props.style,
       ]}
     >
-      <View>{props.children as any}</View>
+      <View
+        style={{
+          width: props.size || 30,
+          height: props.size || 30,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {props.children as any}
+      </View>
       {props.image && (
         <Image
           source={props.image}
@@ -48,15 +57,22 @@ export function ProfilePicture({
   image,
   size,
   style,
+  onPress = () => {},
 }: {
   name: string;
   image?: string;
   size: number;
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }) {
   return (
-    <Avatar image={image ? image : undefined} size={size} style={style}>
-      <Text>
+    <Avatar
+      image={image ? image : undefined}
+      size={size}
+      style={style}
+      onPress={onPress}
+    >
+      <Text style={{ fontSize: 17 }} weight={600}>
         {name[0].toUpperCase()}
         {name[1].toUpperCase()}
       </Text>

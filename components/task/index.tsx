@@ -40,8 +40,8 @@ function TaskDrawerContent({ data, handleClose }) {
   return (
     <BottomSheetScrollView stickyHeaderIndices={[0]}>
       <View
-        className="flex-row items-start"
         style={{
+          flexDirection: "row",
           backgroundColor: theme[1],
           paddingHorizontal: 20,
           height: 60,
@@ -49,8 +49,12 @@ function TaskDrawerContent({ data, handleClose }) {
         }}
       >
         <View
-          className="flex-row"
-          style={{ paddingTop: 10, gap: 10, width: "100%" }}
+          style={{
+            paddingTop: 10,
+            flexDirection: "row",
+            gap: 10,
+            width: "100%",
+          }}
         >
           <IconButton
             onPress={handleClose}
@@ -58,12 +62,11 @@ function TaskDrawerContent({ data, handleClose }) {
           >
             <Icon>close</Icon>
           </IconButton>
-          <View className="flex-1" />
+          <View style={{ flex: 1 }} />
           <IconButton style={{ backgroundColor: theme[3] }}>
             <Icon>dark_mode</Icon>
           </IconButton>
           <IconButton
-            className="bg-gray-200 flex-row px-3 ml-1.5"
             style={{
               backgroundColor: theme[3],
               width: "auto",
@@ -78,44 +81,40 @@ function TaskDrawerContent({ data, handleClose }) {
         </View>
       </View>
       <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
-        <View className="flex-row" style={{ gap: 10, marginVertical: 20 }}>
+        <View style={{ gap: 10, marginVertical: 20, flexDirection: "row" }}>
           <Chip icon={<Icon filled={data.pinned}>push_pin</Icon>} />
           <Chip icon={<Icon>label</Icon>} />
-          <Chip label={dayjs(data.due).format("DD/MM/YYYY")} />
+          <Chip label={dayjs(data.due).format("MMM Do, YYYY")} />
         </View>
         <AutoSizeTextArea
           inputDefaultValue={data.name}
-          inputClassName="text-5xl uppercase"
           inputStyle={{
             fontFamily: "heading",
             color: theme[12],
           }}
           fontSize={50}
         />
-        <Text
-          textClassName="uppercase text-sm text-gray-700 mt-3 mb-1 opacity-60"
-          weight={700}
-        >
+        <Text variant="eyebrow" style={{ marginVertical: 10 }}>
           Note
         </Text>
         <TextInput
           placeholder="Coming soon..."
           value="Coming soon!"
-          className="opacity-60"
           style={{ fontFamily: "body_300", color: theme[12] }}
         />
 
-        <Text
-          textClassName="uppercase text-sm text-gray-700 mt-5 mb-2 opacity-60"
-          weight={700}
-        >
+        <Text variant="eyebrow" style={{ marginVertical: 10 }}>
           Attachments
         </Text>
         <View style={[styles.section, { backgroundColor: theme[3] }]}>
           {data.where && (
             <ListItemButton
-              className="flex-row"
-              style={{ gap: 10, paddingRight: 0, paddingVertical: 0 }}
+              style={{
+                gap: 10,
+                paddingRight: 0,
+                paddingVertical: 0,
+                flexDirection: "row",
+              }}
             >
               <Avatar size={30} style={{ backgroundColor: theme[5] }}>
                 <Icon size={20}>link</Icon>
@@ -134,13 +133,13 @@ function TaskDrawerContent({ data, handleClose }) {
           {data.where && (
             <View style={[styles.divider, { backgroundColor: theme[5] }]} />
           )}
-          <ListItemButton buttonClassName="justify-center py-2 bg-gray-100 rounded-t-none active:bg-gray-300">
+          <ListItemButton style={{ justifyContent: "center" }}>
             <Icon>add</Icon>
             <ListItemText primary="Add" />
           </ListItemButton>
         </View>
 
-        <Text
+        {/* <Text
           textClassName="uppercase text-sm text-gray-700 mt-5 mb-2 opacity-60"
           weight={700}
         >
@@ -154,10 +153,10 @@ function TaskDrawerContent({ data, handleClose }) {
             <Icon>add</Icon>
             <ListItemText primary="New" />
           </ListItemButton>
-        </View>
+        </View> */}
 
         {data.image && (
-          <View className="flex-row">
+          <View style={{ flexDirection: "row" }}>
             <Avatar>
               <Icon>image</Icon>
             </Avatar>
@@ -165,10 +164,7 @@ function TaskDrawerContent({ data, handleClose }) {
           </View>
         )}
 
-        <Text
-          textClassName="uppercase text-sm text-gray-700 mt-5 mb-2 opacity-60"
-          weight={700}
-        >
+        <Text variant="eyebrow" style={{ marginVertical: 10 }}>
           About
         </Text>
         <View style={[styles.section, { backgroundColor: theme[3] }]}>
@@ -176,7 +172,7 @@ function TaskDrawerContent({ data, handleClose }) {
             <ListItemButton>
               <ProfilePicture
                 size={30}
-                name={data.createdBy.name}
+                name={data.createdBy.profile.name}
                 image={data.createdBy.profile.picture}
               />
               <ListItemText
@@ -188,14 +184,14 @@ function TaskDrawerContent({ data, handleClose }) {
             <Avatar size={30}>
               <Icon>workspaces</Icon>
             </Avatar>
-            <ListItemText primary={`Found in #${data.property.username}`} />
+            <ListItemText primary={`Found in ${data.space.name}`} />
           </ListItemButton>
           <ListItemButton>
             <Avatar size={30}>
               <Icon>access_time</Icon>
             </Avatar>
             <ListItemText
-              primary={`Edited ${dayjs(data.lastUpdated).fromNow()}`}
+              primary={`Edited ${dayjs(data.lastModified).fromNow()}`}
             />
           </ListItemButton>
         </View>
@@ -203,7 +199,7 @@ function TaskDrawerContent({ data, handleClose }) {
         <View
           style={[styles.section, { backgroundColor: theme[3], marginTop: 20 }]}
         >
-          <ListItemButton buttonClassName="justify-center py-4">
+          <ListItemButton style={{ justifyContent: "center" }}>
             <ListItemText primary="Delete task" />
           </ListItemButton>
         </View>
@@ -231,7 +227,7 @@ export function TaskDrawer({ children, id }) {
   const { width } = useWindowDimensions();
 
   // Fetch data
-  const { data, error } = useSWR(["space/tasks/task", { id }]);
+  const { data, error } = useSWR(["space/entity", { id }]);
 
   return (
     <>
@@ -261,7 +257,6 @@ export function TaskDrawer({ children, id }) {
 
 export function Task({ task }) {
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
   const orange = useColor("orange", useColorScheme() === "dark");
 
   return (
@@ -270,7 +265,7 @@ export function Task({ task }) {
         onLongPress={() => {
           console.log("long press");
         }}
-        style={({ pressed, hovered }) => ({
+        style={({ pressed }) => ({
           flexShrink: 0,
           paddingHorizontal: 15,
           paddingVertical: 15,

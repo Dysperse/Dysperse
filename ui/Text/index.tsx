@@ -16,7 +16,6 @@ export default function Text(props: DTextProps) {
     <NText
       {...props}
       maxFontSizeMultiplier={1.1}
-      className={props.textClassName || undefined}
       style={{
         color: theme[12],
         fontFamily: props.heading ? "heading" : `body_${props.weight || 400}`,

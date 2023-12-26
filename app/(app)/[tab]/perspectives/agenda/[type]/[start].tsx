@@ -83,7 +83,6 @@ function Agenda() {
           contentContainerStyle={{
             flexDirection: "row",
             padding: 15,
-            paddingTop: 70 + 15,
             gap: 15,
           }}
         >
@@ -150,9 +149,10 @@ function Agenda() {
               >
                 {buttonTextFormats.small !== "-" && (
                   <Text
-                    textClassName="uppercase text-xs opacity-60"
+                    weight={400}
                     style={{
-                      fontFamily: "body_400",
+                      fontSize: 13,
+                      opacity: 0.6,
                       textAlign: "center",
                       color:
                         theme[item?.start === currentColumn?.start ? 1 : 12],
@@ -164,9 +164,9 @@ function Agenda() {
                   </Text>
                 )}
                 <Text
-                  textClassName="text-xl"
+                  weight={500}
                   style={{
-                    fontFamily: "body_500",
+                    fontSize: 20,
                     color: theme[item?.start === currentColumn?.start ? 1 : 12],
                   }}
                 >

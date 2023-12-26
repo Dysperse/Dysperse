@@ -13,7 +13,7 @@ import React from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import CreateTask from "../../task/create";
 
-export function Column({ mutate, column }) {
+export function Column({ mutate, column }: any) {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const pathname = usePathname();
@@ -26,6 +26,7 @@ export function Column({ mutate, column }) {
           borderRadius: 20,
         }),
         width: width > 600 ? 300 : width,
+        overflow: "hidden",
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
@@ -88,7 +89,7 @@ export function Column({ mutate, column }) {
           paddingBottom: getBottomNavigationHeight(pathname) + 100,
         }}
         renderItem={({ item }) => {
-          const Container = ({ children }) => (
+          const Container = ({ children }: { children: React.ReactNode }) => (
             <View
               style={{
                 paddingHorizontal: width > 600 ? 0 : 15,

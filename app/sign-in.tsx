@@ -190,11 +190,7 @@ export default function SignIn() {
                 onPress={handleSubmit(onSubmit)}
                 disabled={step === 2} // loading
               >
-                {step === 2 ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text textClassName="text-gray-50">Continue</Text>
-                )}
+                {step === 2 ? <ActivityIndicator /> : <Text>Continue</Text>}
               </Button>
               <Button style={{ height: 20 }}>
                 <ButtonText>Create an account</ButtonText>
@@ -210,10 +206,7 @@ export default function SignIn() {
             flex: 1,
           }}
         >
-          <Text
-            style={{ fontFamily: "heading" }}
-            textClassName="uppercase text-5xl mb-2"
-          >
+          <Text style={{ fontFamily: "heading" }} textClassName="text-5xl mb-2">
             Verifying...
           </Text>
           <Text textClassName="mb-3">Checking if you're actually human 🤨</Text>

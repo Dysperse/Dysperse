@@ -51,7 +51,8 @@ export function BottomAppBar() {
   const pathname = usePathname();
   const isKeyboardVisible = useKeyboardVisibility();
   const shouldHide =
-    ["/account", "/tabs", "/open"].includes(pathname) || isKeyboardVisible;
+    ["/account", "/tabs", "/open", "/space"].includes(pathname) ||
+    isKeyboardVisible;
   const theme = useColorTheme();
 
   return shouldHide ? null : (
@@ -63,12 +64,12 @@ export function BottomAppBar() {
       }}
     >
       <NavigationBar color={theme[2]} />
-   
+
       {pathname !== "/" && <OpenTabsList />}
       <View
         style={{
           height: 58,
-          paddingTop: 10,
+          paddingTop: Platform.OS === "android" ? 10 : 0,
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 25,

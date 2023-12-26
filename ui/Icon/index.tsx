@@ -21,22 +21,24 @@ export default function Icon({
     <Text
       allowFontScaling={false}
       maxFontSizeMultiplier={1}
-      style={{
-        color: theme[11],
-        fontFamily: bold
-          ? "symbols_bold_outlined"
-          : filled
-          ? "symbols_filled"
-          : "symbols_outlined",
-        fontSize: size,
-        width: size,
-        height: size,
-        // textAlign: "center",
-        lineHeight: size + 3,
-        // backgroundColor: "red",
-        ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-        ...(style && { ...(style as any) }),
-      }}
+      style={[
+        {
+          color: theme[11],
+          fontFamily: bold
+            ? "symbols_bold_outlined"
+            : filled
+            ? "symbols_filled"
+            : "symbols_outlined",
+          fontSize: size,
+          width: size,
+          height: size,
+          // textAlign: "center",
+          lineHeight: size + 3,
+          // backgroundColor: "red",
+          ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+        },
+        style,
+      ]}
     >
       {children}
     </Text>

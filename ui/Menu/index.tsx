@@ -16,6 +16,7 @@ export function Menu({
   footer = () => null,
   menuRef = null,
   onOpen = () => null,
+  width = 500,
 }: {
   trigger: ReactElement;
   children: React.ReactNode;
@@ -23,6 +24,7 @@ export function Menu({
   footer?: () => React.ReactNode;
   menuRef?: Ref<BottomSheetModal>;
   onOpen?: () => void;
+  width?: number;
 }) {
   const theme = useColorTheme();
   const _ref = useRef<BottomSheetModal>(null);
@@ -43,7 +45,8 @@ export function Menu({
         snapPoints={height}
         stackBehavior="push"
         containerStyle={{
-          marginHorizontal: 20,
+          marginHorizontal: "auto",
+          maxWidth: width,
         }}
         backgroundStyle={{
           borderRadius: 20,
