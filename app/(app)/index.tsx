@@ -76,7 +76,7 @@ function TodaysDate() {
         },
       ]}
     >
-      <Icon size={30} style={{ marginLeft: -4 }}>
+      <Icon size={40} style={{ marginLeft: -4 }}>
         calendar_today
       </Icon>
       <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>

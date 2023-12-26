@@ -14,9 +14,12 @@ export function ButtonText(props: DTextProps) {
     <Text
       weight={500}
       {...props}
-      style={{
-        color: theme[11],
-      }}
+      style={[
+        {
+          color: theme[11],
+        },
+        Array.isArray(props.style) ? [...props.style] : props.style,
+      ]}
     />
   );
 }

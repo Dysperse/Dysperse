@@ -116,7 +116,7 @@ export function WeatherWidget() {
       ]}
       onPress={onPressHandler}
     >
-      <Icon size={30} style={{ marginLeft: -2 }}>
+      <Icon size={40} style={{ marginLeft: -2 }}>
         error
       </Icon>
       <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
@@ -139,7 +139,7 @@ export function WeatherWidget() {
           },
         ]}
       >
-        <Icon size={30} style={{ marginLeft: -2 }}>
+        <Icon size={40} style={{ marginLeft: -2 }}>
           {
             weatherCodes[weatherData.current_weather.weathercode][
               isNight() ? "night" : "day"
@@ -169,7 +169,7 @@ export function WeatherWidget() {
       ]}
       onPress={onPressHandler}
     >
-      <Icon size={30} style={{ marginLeft: -2 }}>
+      <Icon size={40} style={{ marginLeft: -2 }}>
         near_me
       </Icon>
       <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
