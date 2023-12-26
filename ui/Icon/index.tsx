@@ -29,7 +29,7 @@ export default function Icon({
           ? "symbols_filled"
           : "symbols_outlined",
         fontSize: size,
-        width: size - 1,
+        width: size,
         height: size,
         // textAlign: "center",
         lineHeight: size + 3,
