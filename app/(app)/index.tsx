@@ -76,10 +76,10 @@ function TodaysDate() {
         },
       ]}
     >
-      <Icon size={40} style={{ marginLeft: -5 }}>
+      <Icon size={30} style={{ marginLeft: -4 }}>
         calendar_today
       </Icon>
-      <Text textClassName="mt-1 text-xl" style={{ fontFamily: "body_700" }}>
+      <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
         {dayjs().format("MMM Do")}
       </Text>
       <Text>{dayjs().format("YYYY")}</Text>
@@ -146,7 +146,7 @@ function SpaceInfo() {
     <View style={{ flexDirection: "row", gap: 15, justifyContent: "flex-end" }}>
       <Button variant="outlined">
         <Icon>tag</Icon>
-        <ButtonText>{session.space.space.name}</ButtonText>
+        <ButtonText>{session?.space?.space?.name}</ButtonText>
       </Button>
       <Button variant="outlined">
         <Icon>palette</Icon>

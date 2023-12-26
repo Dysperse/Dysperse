@@ -8,7 +8,13 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import * as NavigationBar from "expo-navigation-bar";
 import { cloneElement, useCallback, useMemo, useRef } from "react";
-import { Platform, Pressable, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import airQuality from "./airQuality.json";
 
@@ -20,13 +26,36 @@ const getAirQualityInfo = (index) => {
   return result || null; // Return null if no matching category is found
 };
 
+const weatherStyles = StyleSheet.create({
+  cardRow: { marginTop: 15, gap: 15, flexDirection: "row" },
+  description: { opacity: 0.9, fontSize: 20, textAlign: "center" },
+  temperature: {
+    marginRight: -13,
+    fontSize: 30,
+    textAlign: "center",
+    marginTop: 10,
+    marginBottom: 5,
+    marginLeft: -10,
+  },
+  weatherCard: {
+    flex: 1,
+    gap: 15,
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    alignItems: "center",
+    borderRadius: 20,
+  },
+});
+
 export function WeatherModal({
   weather,
-  location,
+  // location,
   airQuality,
   children,
   isNight,
 }: any) {
+  const { width } = useWindowDimensions();
   const ref = useRef<BottomSheetModal>(null);
 
   const weatherDescription =
@@ -74,20 +103,16 @@ export function WeatherModal({
     return ({ icon, heading, subheading, onPress = () => {} }: any) => (
       <Pressable
         onPress={onPress}
-        className="flex-row px-5 flex-1 py-3 rounded-2xl items-center overflow-hidden "
-        style={{ backgroundColor: base }}
+        style={[weatherStyles.weatherCard, { backgroundColor: base }]}
       >
-        <Icon style={{ color }}>{icon}</Icon>
-        <View className="pl-4 pr-3" style={{ minWidth: 0, maxWidth: "100%" }}>
+        <Icon style={{ color }} size={30}>
+          {icon}
+        </Icon>
+        <View style={{ minWidth: 0, maxWidth: "100%" }}>
           <Text
-            style={{
-              fontFamily: "body_500",
-              opacity: 0.7,
-              color,
-              maxWidth: "100%",
-              minWidth: 0,
-            }}
+            variant="eyebrow"
             numberOfLines={1}
+            style={{ color, marginBottom: 3 }}
           >
             {heading}
           </Text>
@@ -107,7 +132,7 @@ export function WeatherModal({
         }}
         sheetRef={ref}
         style={{ maxWidth: 500, marginHorizontal: "auto" }}
-        snapPoints={["60%", "90%"]}
+        snapPoints={width > 600 ? ["90"] : ["60%", "90%"]}
         backgroundComponent={(props) => (
           <LinearGradient
             colors={[gradient[1], gradient[1], ...gradient]}
@@ -121,8 +146,8 @@ export function WeatherModal({
         )}
       >
         <BottomSheetScrollView>
-          <View className="p-5 py-10">
-            <View className="flex items-center">
+          <View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
+            <View style={{ alignItems: "center" }}>
               <Icon size={60} style={{ color }}>
                 {
                   weatherCodes[weather.current_weather.weathercode][
@@ -131,27 +156,21 @@ export function WeatherModal({
                 }
               </Icon>
             </View>
-            <Text
-              textClassName="text-5xl mb-1 text-center mt-4"
-              style={{ fontFamily: "body_700", color, marginRight: -13 }}
-            >
+            <Text weight={700} style={[weatherStyles.temperature, { color }]}>
               {Math.round(weather.current_weather.temperature)}&deg;
             </Text>
-            <Text
-              textClassName="text-center text-lg mb-1"
-              style={{ color, opacity: 0.9 }}
-            >
+            <Text style={[weatherStyles.description, { color }]}>
               {weatherDescription.description}
             </Text>
-            <Text
+            {/* <Text
               textClassName="text-center mb-1"
               style={{ color, opacity: 0.7 }}
             >
               {location.address.city || location.address.county},{" "}
               {location.address.state}
-            </Text>
+            </Text> */}
             {/* hi daddy noah */}
-            <View className="flex-row" style={{ marginTop: 15, gap: 15 }}>
+            <View style={weatherStyles.cardRow}>
               <WeatherCard
                 icon="waving_hand"
                 heading="Feels like"
@@ -165,7 +184,7 @@ export function WeatherModal({
                 )}%`}
               />
             </View>
-            <View className="flex-row" style={{ marginTop: 15, gap: 15 }}>
+            <View style={{ marginTop: 15, gap: 15, flexDirection: "row" }}>
               <WeatherCard
                 icon="airwave"
                 heading="Wind"
@@ -177,7 +196,7 @@ export function WeatherModal({
                 subheading={`${~~(weather.hourly.visibility[hour] / 1609)} mi`}
               />
             </View>
-            <View className="flex-row" style={{ marginTop: 15, gap: 15 }}>
+            <View style={weatherStyles.cardRow}>
               <WeatherCard
                 icon="north"
                 heading="High"
@@ -189,7 +208,7 @@ export function WeatherModal({
                 subheading={`${-~weather.daily.temperature_2m_min[0]}°`}
               />
             </View>
-            <View className="flex-row" style={{ marginVertical: 15, gap: 15 }}>
+            <View style={weatherStyles.cardRow}>
               <WeatherCard
                 icon="wb_sunny"
                 heading="Sunset"
@@ -201,6 +220,7 @@ export function WeatherModal({
                 subheading={dayjs(weather.daily.sunset[0]).format("h:mm A")}
               />
             </View>
+            <View style={{ marginTop: 10 }} />
             <WeatherCard
               icon="eco"
               heading="Air Quality"
@@ -216,11 +236,8 @@ export function WeatherModal({
               }`}
             />
           </View>
-          <View className="px-5 -mt-2">
-            <Text
-              textClassName="uppercase opacity-60"
-              style={{ color, fontFamily: "body_600" }}
-            >
+          <View style={{ paddingHorizontal: 20 }}>
+            <Text style={{ color }} variant="eyebrow">
               Hourly
             </Text>
           </View>
@@ -241,7 +258,7 @@ export function WeatherModal({
                 style={{
                   backgroundColor: base,
                   paddingHorizontal: 25,
-                  paddingVertical: 10,
+                  paddingVertical: 15,
                   flexShrink: 0,
                   borderRadius: 20,
                   display: "flex",
@@ -250,14 +267,16 @@ export function WeatherModal({
                   justifyContent: "center",
                 }}
               >
-                <Icon style={{ color, marginBottom: 7 }}>
+                <Icon style={{ color, marginBottom: 7 }} size={30}>
                   {
                     weatherCodes[weather.hourly.weathercode[index]][
                       isNight ? "night" : "day"
                     ].icon
                   }
                 </Icon>
-                <Text style={{ color, marginRight: -3 }}>{-~item}&deg;</Text>
+                <Text style={{ color, marginRight: -3 }} weight={600}>
+                  {-~item}&deg;
+                </Text>
                 <Text
                   style={{
                     color,

@@ -43,6 +43,7 @@ export function WeatherWidget() {
   const getWeather = async (location) => {
     const lat = location.coords.latitude;
     const long = location.coords.longitude;
+
     // fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${long}`)
     //   .then((res) => res.json())
     //   .then((res) => setLocationData(res));
@@ -52,6 +53,7 @@ export function WeatherWidget() {
       .then((r) => r.json())
       .then((r) => setAirQualityData(r))
       .catch((res) => setError(true));
+
     const getUrl = (days) =>
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=relative_humidity_2m&hourly=visibility,temperature_2m,wind_speed_10m,apparent_temperature,precipitation_probability,weathercode&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=${days}&daily=sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min`;
     const url = getUrl(1);
@@ -92,7 +94,7 @@ export function WeatherWidget() {
   };
 
   const theme = useColorTheme();
-  return loading || (location && !locationData) ? (
+  return loading || (location && !weatherData) ? (
     <Pressable
       style={({ pressed, hovered }: any) => [
         styles.card,
@@ -102,7 +104,7 @@ export function WeatherWidget() {
       ]}
       onPress={onPressHandler}
     >
-      <ActivityIndicator />
+      <ActivityIndicator style={{ marginVertical: "auto" }} />
     </Pressable>
   ) : error ? (
     <Pressable
@@ -114,18 +116,18 @@ export function WeatherWidget() {
       ]}
       onPress={onPressHandler}
     >
-      <Icon size={40} style={{ marginLeft: -5 }}>
+      <Icon size={30} style={{ marginLeft: -2 }}>
         error
       </Icon>
-      <Text textClassName="text-xl mt-1" textStyle={{ fontFamily: "body_700" }}>
+      <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
         Yikes!
       </Text>
       <Text>Couldn't get weather</Text>
     </Pressable>
-  ) : weatherData && locationData && airQualityData ? (
+  ) : weatherData && airQualityData ? (
     <WeatherModal
       weather={weatherData}
-      location={locationData}
+      location={null}
       airQuality={airQualityData}
       isNight={isNight()}
     >
@@ -137,17 +139,14 @@ export function WeatherWidget() {
           },
         ]}
       >
-        <Icon size={40} style={{ marginLeft: -5 }}>
+        <Icon size={30} style={{ marginLeft: -2 }}>
           {
             weatherCodes[weatherData.current_weather.weathercode][
               isNight() ? "night" : "day"
             ].icon
           }
         </Icon>
-        <Text
-          textClassName="text-xl mt-1"
-          textStyle={{ fontFamily: "body_700" }}
-        >
+        <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
           {Math.round(weatherData.hourly.apparent_temperature[dayjs().hour()])}
           &deg;
         </Text>
@@ -170,10 +169,10 @@ export function WeatherWidget() {
       ]}
       onPress={onPressHandler}
     >
-      <Icon size={40} style={{ marginLeft: -5 }}>
+      <Icon size={30} style={{ marginLeft: -2 }}>
         near_me
       </Icon>
-      <Text textClassName="text-xl mt-1" textStyle={{ fontFamily: "body_700" }}>
+      <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
         Weather
       </Text>
       <Text>Tap to enable location</Text>

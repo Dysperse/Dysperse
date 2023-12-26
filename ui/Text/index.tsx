@@ -16,22 +16,24 @@ export default function Text(props: DTextProps) {
     <NText
       {...props}
       maxFontSizeMultiplier={1.1}
-      style={{
-        color: theme[12],
-        fontFamily: props.heading ? "heading" : `body_${props.weight || 400}`,
-        ...(props.style as any),
-        ...(props.textStyle as any),
+      style={[
+        {
+          color: theme[12],
+          fontFamily: props.heading ? "heading" : `body_${props.weight || 400}`,
+          ...(props.textStyle as any),
 
-        ...(props.variant === "eyebrow" && {
-          textTransform: "uppercase",
-          fontFamily: `body_${props.weight || 700}`,
-          opacity: 0.6,
-          color: theme[11],
-        }),
-        ...(props.heading && {
-          textTransform: "uppercase",
-        }),
-      }}
+          ...(props.variant === "eyebrow" && {
+            textTransform: "uppercase",
+            fontFamily: `body_${props.weight || 700}`,
+            opacity: 0.6,
+            color: theme[11],
+          }),
+          ...(props.heading && {
+            textTransform: "uppercase",
+          }),
+        },
+        Array.isArray(props.style) ? [...props.style] : props.style,
+      ]}
     />
   );
 }
