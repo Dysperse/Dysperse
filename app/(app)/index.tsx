@@ -5,9 +5,12 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { WeatherWidget } from "../../components/home/weather/widget";
+import { Avatar } from "@/ui/Avatar";
+import { useUser } from "@/context/useUser";
+import { Button, ButtonText } from "@/ui/Button";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -27,23 +30,29 @@ function Greeting() {
     }
   }, []);
 
+  const { width } = useWindowDimensions();
+
   return (
     <View
-      style={{
-        height: 220,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      style={
+        width > 600
+          ? undefined
+          : {
+              height: 220,
+              alignItems: "center",
+              justifyContent: "center",
+            }
+      }
     >
       <Text
         style={{
           fontFamily: "heading",
-          textAlign: "center",
+          textAlign: width > 600 ? "left" : "center",
           color: theme[12],
           textShadowColor: theme[7],
           textShadowRadius: 30,
           height: "100%",
-          paddingTop: 90,
+          paddingTop: width > 600 ? 0 : 90,
           fontSize: 55,
           width: "100%",
           textShadowOffset: { height: 5, width: 5 },
@@ -115,12 +124,14 @@ function TodaysTasks() {
 
 function RecentActivity() {
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
   return (
     <Pressable
       style={({ pressed, hovered }: any) => [
         styles.card,
         {
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+          minHeight: width > 600 ? 315 : "auto",
         },
       ]}
     >
@@ -128,27 +139,63 @@ function RecentActivity() {
     </Pressable>
   );
 }
+function SpaceInfo() {
+  const theme = useColorTheme();
+  const { session } = useUser();
+  return (
+    <View style={{ flexDirection: "row", gap: 15, justifyContent: "flex-end" }}>
+      <Button variant="outlined">
+        <Icon>tag</Icon>
+        <ButtonText>{session.space.space.name}</ButtonText>
+      </Button>
+      <Button variant="outlined">
+        <Icon>palette</Icon>
+        <ButtonText>Customize</ButtonText>
+      </Button>
+    </View>
+  );
+}
 
 export default function Index() {
+  const { width } = useWindowDimensions();
   return (
     <ContentWrapper>
       <ScrollView
+        scrollEnabled={width < 600}
         overScrollMode="never"
         contentContainerStyle={{
           paddingHorizontal: 20,
+          ...(width > 600 && {
+            flexDirection: "row",
+            height: "100%",
+            alignItems: "center",
+            gap: 20,
+            paddingHorizontal: 50,
+          }),
         }}
       >
-        <Greeting />
-        <Text variant="eyebrow">Today's rundown</Text>
-        <View
-          style={{ columnGap: 15, marginBottom: 15, flexGrow: 1, marginTop: 5 }}
-        >
-          <WeatherWidget />
-          <TodaysDate />
+        <View style={{ flex: 1 }}>
+          <Greeting />
+          <Text variant="eyebrow">Today's rundown</Text>
+          <View
+            style={{
+              columnGap: 15,
+              marginBottom: 15,
+              flexGrow: 1,
+              marginTop: 15,
+              flexDirection: "row",
+            }}
+          >
+            <WeatherWidget />
+            <TodaysDate />
+          </View>
+          <PlanDayPrompt />
+          <TodaysTasks />
         </View>
-        <PlanDayPrompt />
-        <TodaysTasks />
-        <RecentActivity />
+        <View style={{ flex: 1, gap: 15 }}>
+          <SpaceInfo />
+          <RecentActivity />
+        </View>
       </ScrollView>
     </ContentWrapper>
   );

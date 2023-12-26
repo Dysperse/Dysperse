@@ -31,6 +31,7 @@ import {
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
+import { NavbarProfilePicture } from "../account-navbar";
 
 export const getSidebarItems = async (session) => {
   // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
@@ -184,7 +185,7 @@ export function SpacesTrigger() {
       height={["70%"]}
       trigger={
         <IconButton style={{ marginLeft: "auto" }}>
-          <Icon style={{ color: theme[8] }}>workspaces</Icon>
+          <Icon style={{ color: theme[8] }}>tag</Icon>
         </IconButton>
       }
     >
@@ -373,10 +374,11 @@ export function Sidebar() {
             paddingHorizontal: 20,
             alignItems: "center",
             flexDirection: "row",
+            justifyContent: "space-between",
           }}
         >
           <Logo color={theme[6]} size={35} />
-          <SpacesTrigger />
+          <NavbarProfilePicture />
         </View>
       )}
       {width > 600 && (

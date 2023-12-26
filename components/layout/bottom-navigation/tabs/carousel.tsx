@@ -25,6 +25,7 @@ import { Tab } from "./tab";
 import { NavbarProfilePicture } from "../../account-navbar";
 import Text from "@/ui/Text";
 import { Button } from "@/ui/Button";
+import { SpacesTrigger } from "../../sidebar";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
@@ -137,7 +138,7 @@ export function OpenTabsList() {
             paddingLeft: 10,
           }}
         >
-          <NavbarProfilePicture />
+          {/* <SpacesTrigger /> */}
         </View>
       </View>
     ) : (

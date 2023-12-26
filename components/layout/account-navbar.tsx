@@ -2,7 +2,12 @@ import { ProfilePicture } from "@/ui/Avatar";
 import { addHslAlpha } from "@/ui/color";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUser } from "../../context/useUser";
 import Icon from "../../ui/Icon";
@@ -10,9 +15,11 @@ import IconButton from "../../ui/IconButton";
 import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
+import { SpacesTrigger } from "./sidebar";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
+  const { width } = useWindowDimensions();
 
   return (
     <TouchableOpacity
@@ -29,7 +36,7 @@ export function NavbarProfilePicture() {
         <ProfilePicture
           name={session.user.profile.name}
           image={session.user.profile.picture}
-          size={40}
+          size={width > 600 ? 30 : 40}
           style={{
             pointerEvents: "none",
           }}
