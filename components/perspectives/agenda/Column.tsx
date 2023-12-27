@@ -53,29 +53,6 @@ export function Column({ mutate, column }: any) {
             tintColor={theme[11]}
           />
         }
-        ListEmptyComponent={
-          <View
-            style={{
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
-            }}
-          >
-            <Avatar
-              size={90}
-              style={{
-                backgroundColor: theme[3],
-                borderRadius: 40,
-              }}
-            >
-              <Emoji emoji="1f389" size={40} />
-            </Avatar>
-            <Text textClassName="text-xl" weight={400}>
-              Nothing here!
-            </Text>
-          </View>
-        }
         ListHeaderComponent={
           <>
             <View
@@ -110,6 +87,29 @@ export function Column({ mutate, column }: any) {
           paddingTop: 15,
           paddingBottom: getBottomNavigationHeight(pathname) + 100,
         }}
+        ListEmptyComponent={
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              gap: 20,
+            }}
+          >
+            <Avatar
+              size={90}
+              style={{
+                backgroundColor: theme[3],
+                borderRadius: 40,
+              }}
+            >
+              <Emoji emoji="1f389" size={40} />
+            </Avatar>
+            <Text weight={400} style={{ fontSize: 20 }}>
+              Nothing here!
+            </Text>
+          </View>
+        }
         renderItem={({ item }) => {
           const Container = ({ children }: { children: React.ReactNode }) => (
             <View
