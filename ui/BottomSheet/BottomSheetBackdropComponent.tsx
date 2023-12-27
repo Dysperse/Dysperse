@@ -17,7 +17,7 @@ export const BottomSheetBackdropComponent = ({
     opacity: interpolate(
       animatedIndex.value,
       [-1, 0],
-      [0, 0.35],
+      [0, 0.5],
       Extrapolate.CLAMP
     ),
   }));

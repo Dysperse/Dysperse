@@ -234,7 +234,7 @@ function TaskDrawerContent({ data, handleClose }) {
       <View
         style={{
           flexDirection: "row",
-          backgroundColor: theme[1],
+          backgroundColor: theme[2],
           paddingHorizontal: 20,
           height: 60,
           left: 0,
@@ -272,7 +272,7 @@ function TaskDrawerContent({ data, handleClose }) {
           </IconButton>
         </View>
       </View>
-      <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
+      <View style={{ paddingBottom: 20, paddingHorizontal: 15 }}>
         <View
           style={{
             paddingHorizontal: 10,
@@ -344,7 +344,7 @@ export function TaskDrawer({ children, id }) {
   const { width } = useWindowDimensions();
 
   // Fetch data
-  const { data, error } = useSWR(["space/entity", { id }]);
+  const { data, error } = useSWR(open ? ["space/entity", { id }] : null);
 
   return (
     <>

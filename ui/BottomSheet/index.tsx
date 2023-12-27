@@ -21,7 +21,7 @@ export default function BottomSheet(props: DBottomSheetProps) {
       ref={props.sheetRef}
       backdropComponent={BottomSheetBackdropComponent}
       backgroundStyle={{
-        backgroundColor: theme[1],
+        backgroundColor: theme[2],
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
       }}

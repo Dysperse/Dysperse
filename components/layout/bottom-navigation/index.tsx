@@ -74,10 +74,12 @@ export function BottomAppBar() {
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 25,
-            paddingBottom:
+            paddingBottom: Math.max(
               Dimensions.get("screen").height -
-              Dimensions.get("window").height -
-              StatusBar.currentHeight,
+                Dimensions.get("window").height -
+                StatusBar.currentHeight,
+              0
+            ),
           }}
         >
           <TouchableOpacity
