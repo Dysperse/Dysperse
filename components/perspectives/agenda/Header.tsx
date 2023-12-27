@@ -39,7 +39,7 @@ export function Header({ start, end }) {
         style={{
           borderRadius: 15,
           minWidth: 45,
-          height: 40,
+          height: 35,
           alignItems: "center",
           justifyContent: "center",
           paddingHorizontal: 8,

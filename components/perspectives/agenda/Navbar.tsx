@@ -10,10 +10,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
 import {
-  Pressable,
   StyleSheet,
   TouchableOpacity,
-  View,
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -49,47 +47,25 @@ export function PerspectivesNavbar({
   );
 
   const { session: sessionToken } = useSession();
-  const { mutate, session } = useUser();
+  const { mutate } = useUser();
   const params = useLocalSearchParams();
 
   const handlePrev = useCallback(() => {
-    const tab = session?.user?.tabs?.find((i) => i.id === params.tab);
-    const href = `/[tab]/perspectives/agenda/${type}/${dayjs(start)
-      .subtract(1, type as ManipulateType)
-      .format("YYYY-MM-DD")}`;
-
-    if (tab) {
-      sendApiRequest(sessionToken, "PUT", "user/tabs", {
-        id: tab.id,
-        tabData: JSON.stringify({
-          ...tab.tabData,
-          href: href,
-        }),
-      }).then(() => mutate());
-    }
-    // Change the tab
-    router.replace(href);
-  }, [type, start, sessionToken, mutate, params.tab, session]);
+    router.setParams({
+      start: dayjs(start)
+        .subtract(1, type as ManipulateType)
+        .format("YYYY-MM-DD"),
+    });
+  }, [type, start]);
 
   const handleNext = useCallback(() => {
-    const tab = session?.user?.tabs?.find((i) => i.id === params.tab);
-
-    const href = `/[tab]/perspectives/agenda/${type}/${dayjs(start)
-      .add(1, type as ManipulateType)
-      .format("YYYY-MM-DD")}`;
-
-    if (tab) {
-      sendApiRequest(sessionToken, "PUT", "user/tabs", {
-        id: tab.id,
-        tabData: JSON.stringify({
-          ...tab.tabData,
-          href: href,
-        }),
-      }).then(() => mutate());
-    }
-
-    router.replace(href);
-  }, [type, start, sessionToken, mutate, params.tab, session]);
+    router.setParams({
+      start: dayjs(start)
+        .startOf(type as ManipulateType)
+        .add(1, type as ManipulateType)
+        .format("YYYY-MM-DD"),
+    });
+  }, [type, start]);
 
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();

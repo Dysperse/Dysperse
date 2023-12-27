@@ -8,6 +8,7 @@ import Icon from "./Icon";
 import IconButton from "./IconButton";
 import { useColorTheme } from "./color/theme-provider";
 import { addHslAlpha } from "./color";
+import { router } from "expo-router";
 
 interface NavbarProps extends StackHeaderProps {
   icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
@@ -18,7 +19,12 @@ export default function Navbar(props: any) {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const handleBack = () => {
-    (props as any).navigation.goBack();
+    try {
+      if (!router.canGoBack()) throw new Error("Can't go back");
+      router.back();
+    } catch {
+      router.replace("/");
+    }
   };
 
   return (

@@ -44,13 +44,13 @@ export function Column({ mutate, column }: any) {
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
       <FlatList
-        refreshing
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
             progressBackgroundColor={theme[5]}
             colors={[theme[11]]}
+            tintColor={theme[11]}
           />
         }
         ListEmptyComponent={
