@@ -250,8 +250,10 @@ export default function AppLayout() {
                     options={{
                       header: () => null,
                       animationEnabled: true,
-                      ...TransitionPresets.SlideFromRightIOS,
-                      cardStyleInterpolator: forHorizontalIOS,
+                      presentation: "modal",
+                      ...TransitionPresets.ModalPresentationIOS,
+                      // cardStyleInterpolator: forHorizontalIOS,
+                      gestureResponseDistance: height,
                     }}
                   />
                   <JsStack.Screen
@@ -259,12 +261,6 @@ export default function AppLayout() {
                     options={{
                       header: (props) => <Navbar {...props} />,
                       presentation: "modal",
-                    }}
-                  />
-                  <JsStack.Screen
-                    name="[tab]/spaces/[id]"
-                    options={{
-                      ...(width < 600 && { header: () => null }),
                     }}
                   />
                   <JsStack.Screen

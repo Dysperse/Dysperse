@@ -13,7 +13,12 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { ActivityIndicator, View, useColorScheme } from "react-native";
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -72,27 +77,24 @@ export default function Index() {
             secondary={session?.user?.profile?.name}
           />
         </ListItemButton>
-        <ListItemButton
-          variant="filled"
-          onPress={() => {
-            router.push("/space");
-          }}
-        >
-          <Avatar
-            size={40}
-            style={{
-              backgroundColor: spaceTheme[9],
-            }}
-          >
-            <Icon style={{ color: spaceTheme[12], lineHeight: 27 }} size={25}>
-              workspaces
-            </Icon>
-          </Avatar>
-          <ListItemText
-            primary="Space"
-            secondary={session?.space?.space?.name}
-          />
-        </ListItemButton>
+        <TouchableOpacity onPress={() => router.push("/space")}>
+          <ListItemButton variant="filled" disabled>
+            <Avatar
+              size={40}
+              style={{
+                backgroundColor: spaceTheme[9],
+              }}
+            >
+              <Icon style={{ color: spaceTheme[12], lineHeight: 27 }} size={25}>
+                workspaces
+              </Icon>
+            </Avatar>
+            <ListItemText
+              primary="Space"
+              secondary={session?.space?.space?.name}
+            />
+          </ListItemButton>
+        </TouchableOpacity>
         {[
           [
             { name: "Appearance", icon: "palette" },

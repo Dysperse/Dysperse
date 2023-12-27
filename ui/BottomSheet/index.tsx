@@ -3,6 +3,8 @@ import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
 import { useColorTheme } from "../color/theme-provider";
 import { Ref } from "react";
+import { BottomSheetEscapeHandler } from "./BottomSheetEscapeHandler";
+import { Platform } from "react-native";
 
 interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: Ref<BottomSheetModal>;
@@ -31,6 +33,9 @@ export default function BottomSheet(props: DBottomSheetProps) {
       {...props}
     >
       <BottomSheetBackHandler handleClose={props.onClose} />
+      {Platform.OS === "web" && (
+        <BottomSheetEscapeHandler handleClose={props.onClose} />
+      )}
       {props.children}
     </BottomSheetModal>
   );

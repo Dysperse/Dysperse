@@ -128,6 +128,7 @@ export default function CreateTask({
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -155,6 +156,7 @@ export default function CreateTask({
         }
       ).then((e) => console.log(e));
       handleClose();
+      reset();
       Toast.show({
         type: "success",
         text1: "Created task!",
@@ -168,11 +170,28 @@ export default function CreateTask({
   };
 
   // callbacks
-  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleOpen = useCallback(() => {
+    ref.current?.present();
+    if (Platform.OS === "web") {
+      setTimeout(() => {
+        nameRef.current.focus();
+      }, 200);
+    }
+  }, []);
   const handleClose = useCallback(() => {
     ref.current?.close();
     mutate();
   }, [mutate]);
+  const handleSubmitButtonClick = () => {
+    if (Object.keys(errors).length > 0) {
+      Toast.show({
+        type: "error",
+        text1: "Type in a task name",
+      });
+    }
+    handleSubmit(onSubmit)();
+  };
+
   const nameRef = useRef(null);
   const trigger = cloneElement(children, { onPress: handleOpen });
   const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
@@ -194,7 +213,7 @@ export default function CreateTask({
               gap: 5,
               paddingHorizontal: 15,
               height: 60,
-              shadowColor: theme[5],
+              shadowColor: theme[3],
               shadowOffset: { width: 0, height: -40 },
               shadowRadius: 40,
               shadowOpacity: 0.5,
@@ -202,7 +221,7 @@ export default function CreateTask({
           >
             <View
               style={{
-                backgroundColor: theme[2],
+                backgroundColor: theme[1],
                 borderColor: theme[5],
                 ...(Platform.OS === "ios" && { width: "100%" }),
                 height: "100%",
@@ -391,15 +410,7 @@ export default function CreateTask({
             <Chip
               style={{ marginLeft: "auto" }}
               icon={<Icon>north</Icon>}
-              onPress={() => {
-                if (Object.keys(errors).length > 0) {
-                  Toast.show({
-                    type: "error",
-                    text1: "Type in a task name",
-                  });
-                }
-                handleSubmit(onSubmit)();
-              }}
+              onPress={handleSubmitButtonClick}
             />
           </View>
           <View style={{ flex: 1 }}>
@@ -420,6 +431,9 @@ export default function CreateTask({
                     if (e.key === "/") {
                       // alert(1);
                       menuRef.current.present();
+                    }
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      handleSubmitButtonClick();
                     }
                   }}
                   onChangeText={(e) => {

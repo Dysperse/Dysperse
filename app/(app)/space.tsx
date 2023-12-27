@@ -25,6 +25,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { BlurView } from "expo-blur";
+import { useSession } from "@/context/AuthProvider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 
 const spaceStyles = StyleSheet.create({
   button: {
@@ -104,6 +106,7 @@ function StorageTrigger({ children }) {
 function SpacePage({ space }: any) {
   const theme = useColor(space.color, useColorScheme() === "dark");
   const insets = useSafeAreaInsets();
+  const { session } = useUser();
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
 
@@ -130,10 +133,9 @@ function SpacePage({ space }: any) {
       <LinearGradient
         colors={[theme[5], theme[4], theme[6]]}
         style={{
-          borderBottomLeftRadius: 25,
-          borderBottomRightRadius: 25,
+          borderRadius: 10,
           padding: 25,
-          paddingTop: 25 + insets.top,
+          paddingTop: 25,
         }}
       >
         <View style={{ flexDirection: "row", gap: 3 }}>
@@ -156,7 +158,9 @@ function SpacePage({ space }: any) {
         <View style={{ flexDirection: "row" }}>
           <Chip
             icon={<Icon>visibility</Icon>}
-            label="View only"
+            label={capitalizeFirstLetter(
+              session?.space?.access.toLowerCase() || ""
+            )}
             style={{ backgroundColor: theme[7], marginTop: 5 }}
           />
         </View>
