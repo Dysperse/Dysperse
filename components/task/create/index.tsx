@@ -202,9 +202,10 @@ export default function CreateTask({
       <BottomSheet
         onClose={handleClose}
         sheetRef={ref}
-        snapPoints={Platform.OS === "android" ? ["60%"] : ["40%"]}
+        snapPoints={Platform.OS === "android" ? ["50%"] : ["40%"]}
         maxWidth={500}
         keyboardBehavior="interactive"
+        android_keyboardInputMode="adjustResize"
         footerComponent={() => (
           <View
             style={{
@@ -221,7 +222,7 @@ export default function CreateTask({
           >
             <View
               style={{
-                backgroundColor: theme[1],
+                backgroundColor: theme[2],
                 borderColor: theme[5],
                 ...(Platform.OS === "ios" && { width: "100%" }),
                 height: "100%",

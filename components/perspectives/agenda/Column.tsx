@@ -10,13 +10,26 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
 import React from "react";
-import { FlatList, View, useWindowDimensions } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import CreateTask from "../../task/create";
 
 export function Column({ mutate, column }: any) {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const pathname = usePathname();
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await mutate();
+    setRefreshing(false);
+  }, [mutate]);
 
   return (
     <View
@@ -31,6 +44,15 @@ export function Column({ mutate, column }: any) {
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
       <FlatList
+        refreshing
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            progressBackgroundColor={theme[5]}
+            colors={[theme[11]]}
+          />
+        }
         ListEmptyComponent={
           <View
             style={{

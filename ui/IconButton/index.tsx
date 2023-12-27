@@ -3,6 +3,7 @@ import { useColorTheme } from "../color/theme-provider";
 
 interface DIconButtonProps extends PressableProps {
   variant?: "filled" | "text";
+  size?: number;
   style?:
     | StyleProp<ViewStyle>
     | (({ pressed, hovered }) => StyleProp<ViewStyle>);
@@ -16,8 +17,8 @@ export default function IconButton(props: DIconButtonProps) {
       {...props}
       style={({ pressed, hovered }: any) => [
         {
-          width: 35,
-          height: 35,
+          width: props.size ?? 35,
+          height: props.size ?? 35,
           backgroundColor: pressed
             ? theme[5]
             : hovered

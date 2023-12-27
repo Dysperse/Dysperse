@@ -62,6 +62,7 @@ export function BottomAppBar() {
         style={{
           height: getBottomNavigationHeight(pathname),
           backgroundColor: theme[2],
+          justifyContent: "center",
           ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
         }}
       >
@@ -69,7 +70,8 @@ export function BottomAppBar() {
         {pathname !== "/" && <OpenTabsList />}
         <View
           style={{
-            height: 58,
+            height: "100%",
+            maxHeight: 45,
             paddingTop: Platform.OS === "android" ? 10 : 0,
             flexDirection: "row",
             alignItems: "center",

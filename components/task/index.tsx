@@ -251,14 +251,15 @@ function TaskDrawerContent({ data, handleClose }) {
           <IconButton
             onPress={handleClose}
             style={{ backgroundColor: theme[3] }}
+            size={40}
           >
             <Icon>close</Icon>
           </IconButton>
           <View style={{ flex: 1 }} />
-          <IconButton style={{ backgroundColor: theme[3] }}>
+          <IconButton size={40} style={{ backgroundColor: theme[3] }}>
             <Icon>dark_mode</Icon>
           </IconButton>
-          <IconButton
+          <Button
             style={{
               backgroundColor: theme[3],
               width: "auto",
@@ -268,16 +269,17 @@ function TaskDrawerContent({ data, handleClose }) {
             }}
           >
             <Icon>check</Icon>
-            <Text>Complete</Text>
-          </IconButton>
+            <ButtonText>Complete</ButtonText>
+          </Button>
         </View>
       </View>
-      <View style={{ paddingBottom: 20, paddingHorizontal: 15 }}>
+      <View style={{ paddingBottom: 20, paddingHorizontal: 12 }}>
         <View
           style={{
             paddingHorizontal: 10,
             gap: 10,
             marginVertical: 20,
+            marginBottom: 10,
             flexDirection: "row",
           }}
         >
@@ -303,6 +305,7 @@ function TaskDrawerContent({ data, handleClose }) {
             fontFamily: "heading",
             color: theme[12],
             paddingHorizontal: 15,
+            marginBottom: 5,
           }}
           fontSize={50}
         />
