@@ -15,7 +15,7 @@ export function ContentWrapper(props) {
         marginTop: insets.top + 64,
         backgroundColor: theme[1],
         flex: 1,
-        overflow: "scroll",
+        overflow: "hidden",
         borderRadius: 15,
         borderWidth: width > 600 ? 1 : 0,
         borderColor: theme[6],

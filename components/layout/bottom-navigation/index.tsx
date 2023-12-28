@@ -17,6 +17,7 @@ import {
   Platform,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useAnimatedReaction } from "react-native-reanimated";
@@ -217,6 +218,7 @@ function BottomNavigation() {
 
 export function BottomAppBar() {
   const pathname = usePathname();
+  const { width } = useWindowDimensions();
   const isKeyboardVisible = useKeyboardVisibility();
   const shouldHide =
     ["/account", "/tabs", "/open", "/space"].includes(pathname) ||
@@ -231,23 +233,25 @@ export function BottomAppBar() {
     handleOpen();
   }, [handleOpen, shouldHide]);
 
-  return shouldHide ? null : (
-    <BottomSheet
-      snapPoints={[pathname === "/" ? 55 : 55 * 2, "70%"]}
-      sheetRef={ref}
-      appearsOnIndex={1}
-      dismissible={false}
-      enablePanDownToClose={false}
-      onClose={() => null}
-      handleComponent={() => null}
-      stackBehavior="push"
-      backgroundStyle={{
-        borderRadius: 0,
-        backgroundColor: theme[1],
-      }}
-      backdropComponent={(d) => <BottomSheetBackdrop {...d} />}
-    >
-      <BottomNavigation />
-    </BottomSheet>
-  );
+  return width < 600 ? (
+    shouldHide ? null : (
+      <BottomSheet
+        snapPoints={[pathname === "/" ? 55 : 55 * 2, "70%"]}
+        sheetRef={ref}
+        appearsOnIndex={1}
+        dismissible={false}
+        enablePanDownToClose={false}
+        onClose={() => null}
+        handleComponent={() => null}
+        stackBehavior="push"
+        backgroundStyle={{
+          borderRadius: 0,
+          backgroundColor: theme[1],
+        }}
+        backdropComponent={(d) => <BottomSheetBackdrop {...d} />}
+      >
+        <BottomNavigation />
+      </BottomSheet>
+    )
+  ) : null;
 }
