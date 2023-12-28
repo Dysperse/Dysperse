@@ -305,9 +305,7 @@ export function Button({ section, item }: any) {
   return (
     <Pressable
       style={({ pressed }) => ({
-        backgroundColor: isActive
-          ? theme[3]
-          : theme[pressed ? 3 : width > 600 ? 2 : 1],
+        backgroundColor: isActive ? theme[3] : pressed ? theme[3] : undefined,
         paddingHorizontal: 20,
         paddingVertical: 7,
         flexDirection: "row",
@@ -361,7 +359,9 @@ export function Sidebar() {
     <View
       style={{
         height: "100%",
-        backgroundColor: theme[width > 600 ? 2 : 1],
+        // borderRightWidth: 1,
+        backgroundColor: theme[2],
+        // borderRightColor: theme[5],
         width: width > 600 ? 240 : "100%",
         flexDirection: "column",
         maxHeight: width > 600 ? height : undefined,

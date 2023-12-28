@@ -1,4 +1,8 @@
-import { BottomSheetModal, BottomSheetProps } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetProps,
+  useBottomSheetSpringConfigs,
+} from "@gorhom/bottom-sheet";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
 import { useColorTheme } from "../color/theme-provider";
@@ -11,15 +15,28 @@ interface DBottomSheetProps extends BottomSheetProps {
   onClose: () => void;
   maxWidth?: number;
   stackBehavior?: "replace" | "push";
+  appearsOnIndex?: number;
+  dismissible?: boolean;
 }
 
 export default function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
+  const animationConfigs = useBottomSheetSpringConfigs({
+    damping: 30,
+    overshootClamping: false,
+    restDisplacementThreshold: 0.1,
+    restSpeedThreshold: 0.1,
+    stiffness: 400,
+  });
 
   return (
     <BottomSheetModal
+      animationConfigs={animationConfigs}
+      stackBehavior="push"
       ref={props.sheetRef}
-      backdropComponent={BottomSheetBackdropComponent}
+      backdropComponent={(d) => (
+        <BottomSheetBackdropComponent {...d} dismissible={props.dismissible} />
+      )}
       backgroundStyle={{
         backgroundColor: theme[2],
         borderTopLeftRadius: 25,

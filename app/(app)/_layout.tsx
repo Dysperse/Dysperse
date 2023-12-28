@@ -225,7 +225,9 @@ export default function AppLayout() {
                     cardShadowEnabled: false,
                     gestureEnabled: true,
                     cardStyle: {
-                      backgroundColor: theme[width > 600 ? 2 : 1],
+                      backgroundColor: theme[1],
+                      padding: width > 600 ? 10 : 0,
+                      paddingTop: 0,
                     },
                     // change opacity of the previous screen when swipe
                     cardOverlayEnabled: true,

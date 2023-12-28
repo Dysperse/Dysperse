@@ -4,7 +4,7 @@ import { BackHandler } from "react-native";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 
 export function BottomSheetEscapeHandler({ handleClose }) {
-  const { animatedIndex, } = useBottomSheet();
+  const { animatedIndex } = useBottomSheet();
 
   useKeyboardShortcut(["Shift", "H"], () => alert(animatedPosition.value), {
     overrideSystem: false,

@@ -3,35 +3,19 @@ import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
-import {
-  Platform,
-  Pressable,
-  View,
-  useColorScheme,
-  useWindowDimensions,
-} from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const useTabColorTheme = (slug: string) => {
-  const isDark = useColorScheme() === "dark";
-  const gray = useColor("gray", isDark);
-  const red = useColor("red", isDark);
-  const purple = useColor("purple", isDark);
-  const green = useColor("green", isDark);
-  const orange = useColor("orange", isDark);
-  const yellow = useColor("yellow", isDark);
-
   const startWithMatchers = {
     "/[tab]/perspectives/": {
-      theme: red,
       icon: "asterisk",
       name: (params) => [
         params.type,
@@ -44,22 +28,18 @@ const useTabColorTheme = (slug: string) => {
       ],
     },
     "/[tab]/collections/": {
-      theme: purple,
       icon: "draw_abstract",
       name: () => [],
     },
     "/[tab]/all/": {
-      theme: green,
       icon: "airwave",
       name: (params, slug) => [slug.split("/all/")[1]],
     },
     "/[tab]/spaces/": {
-      theme: yellow,
       icon: "tag",
       name: (params) => ["Space"],
     },
     "/[tab]/users/": {
-      theme: orange,
       icon: "alternate_email",
       name: (params, slug) => [params.id],
     },
@@ -68,7 +48,7 @@ const useTabColorTheme = (slug: string) => {
   const match = Object.keys(startWithMatchers).find((key) =>
     slug.startsWith(key)
   );
-  if (!startWithMatchers[match]) return { theme: gray, icon: "square" };
+  if (!startWithMatchers[match]) return { icon: "square" };
   return startWithMatchers[match];
 };
 
@@ -169,59 +149,40 @@ export function Tab({
           flex: 1,
           paddingHorizontal: isList ? 6 : 10,
           columnGap: 5,
-          borderRadius: 20,
+          borderRadius: 999,
           height: "100%",
           alignItems: "center",
           flexDirection: "row",
-          ...(width > 600
-            ? {
-                backgroundColor:
-                  params.tab === tab.id
-                    ? theme[pressed ? 6 : hovered ? 5 : 4]
-                    : pressed
-                    ? theme[5]
-                    : hovered
-                    ? theme[4]
-                    : addHslAlpha(theme[3], 0.7),
-              }
-            : {
-                backgroundColor: isList
-                  ? "transparent"
-                  : theme[
-                      params.tab === tab.id ? 5 : pressed ? 4 : hovered ? 3 : 3
-                    ],
-              }),
+          backgroundColor:
+            params.tab === tab.id
+              ? theme[11]
+              : pressed
+              ? theme[5]
+              : hovered
+              ? theme[4]
+              : addHslAlpha(theme[3], 0.7),
         })}
       >
-        <LinearGradient
-          colors={[tabData.theme[6], tabData.theme[7]]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+        <Icon
+          size={tabData.icon === "alternate_email" ? 24 : 30}
           style={{
-            borderRadius: 15,
-            width: isList ? 40 : 35,
-            height: isList ? 40 : 35,
-            alignItems: "center",
-            marginRight: 5,
-            justifyContent: "center",
+            ...(tabData.icon === "alternate_email" && {
+              lineHeight: 27,
+            }),
+            ...(params.tab === tab.id && {
+              color: theme[3],
+            }),
           }}
         >
-          <Icon
-            size={tabData.icon === "alternate_email" ? 24 : 30}
-            style={{
-              color: tabData.theme[12],
-              ...(tabData.icon === "alternate_email" && {
-                lineHeight: 27,
-              }),
-            }}
-          >
-            {tabData.icon}
-          </Icon>
-        </LinearGradient>
+          {tabData.icon}
+        </Icon>
         <View style={{ flex: 1 }}>
           <Text
             style={{
               ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+              ...(params.tab === tab.id && {
+                color: theme[3],
+              }),
             }}
             weight={600}
             numberOfLines={1}
@@ -234,6 +195,9 @@ export function Tab({
                 fontSize: 12,
                 opacity: 0.6,
                 ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+                ...(params.tab === tab.id && {
+                  color: theme[3],
+                }),
               }}
               numberOfLines={1}
             >
@@ -248,6 +212,7 @@ export function Tab({
             width: width > 600 ? 20 : 40,
             height: width > 600 ? 20 : 40,
             marginHorizontal: 5,
+            backgroundColor: "transparent",
             display:
               width < 600
                 ? isList
@@ -264,7 +229,7 @@ export function Tab({
           <Icon
             size={23}
             style={{
-              color: theme[11],
+              color: theme[3],
               opacity: 0.6,
             }}
           >

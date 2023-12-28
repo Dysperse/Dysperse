@@ -8,11 +8,18 @@ import Animated, {
 } from "react-native-reanimated";
 
 export const BottomSheetBackdropComponent = ({
-  animatedIndex,
+  // animatedIndex,
   style,
-}: BottomSheetBackdropProps) => {
+  dismissible,
+}: BottomSheetBackdropProps & {
+  dismissible: boolean;
+}) => {
   // animated variables
-  const { forceClose } = useBottomSheet();
+  const { forceClose, collapse, animatedIndex } = useBottomSheet();
+  const handlePushDown = () => {
+    collapse();
+  };
+
   const containerAnimatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       animatedIndex.value,
@@ -48,8 +55,8 @@ export const BottomSheetBackdropComponent = ({
   return (
     <Animated.View
       style={containerStyle}
-      onPointerUp={handleClose}
-      onTouchEnd={handleClose}
+      onPointerUp={dismissible === false ? handlePushDown : handleClose}
+      onTouchEnd={dismissible === false ? handlePushDown : handleClose}
     />
   );
 };

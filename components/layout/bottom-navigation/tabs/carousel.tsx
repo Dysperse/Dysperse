@@ -70,33 +70,37 @@ export function OpenTabsList() {
       >
         <View
           style={{
-            paddingTop: 8,
+            justifyContent: "center",
             paddingRight: 3,
-            shadowColor: "red",
           }}
         >
           <IconButton
             style={({ pressed, hovered }) => ({
               backgroundColor:
                 pathname === "/"
-                  ? theme[pressed ? 4 : 3]
+                  ? theme[pressed ? 12 : 11]
                   : hovered
                   ? theme[3]
                   : addHslAlpha(theme[3], 0.7),
               width: 46,
               height: 46,
-              borderRadius: 20,
+              borderRadius: 999,
             })}
             onPress={() => {
               router.replace("/");
             }}
           >
-            <Icon filled={pathname === "/"}>home</Icon>
+            <Icon
+              style={{ color: theme[pathname === "/" ? 3 : 11] }}
+              filled={pathname === "/"}
+            >
+              home
+            </Icon>
           </IconButton>
         </View>
         <LinearGradient
-          colors={[theme[width < 600 ? 1 : 2], "transparent"]}
-          style={{ width: 17, marginRight: -17, marginLeft: -3, zIndex: 99 }}
+          colors={[theme[1], "transparent"]}
+          style={{ width: 17, marginRight: -17, zIndex: 99 }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         />
@@ -107,7 +111,7 @@ export function OpenTabsList() {
             height: 64,
             flexDirection: "row",
             paddingRight: 20,
-            paddingLeft: 10,
+            paddingLeft: 5,
             paddingTop: 1.5,
           }}
           contentContainerStyle={{ paddingRight: 3 }}
@@ -117,7 +121,7 @@ export function OpenTabsList() {
           ))}
         </ScrollView>
         <LinearGradient
-          colors={["transparent", theme[width < 600 ? 1 : 2]]}
+          colors={["transparent", theme[1]]}
           style={{ width: 30, marginLeft: -30, zIndex: 99 }}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -133,24 +137,22 @@ export function OpenTabsList() {
         </View>
       </View>
     ) : (
-      <View style={{ flex: 1 }}>
-        <Carousel
-          {...baseOptions}
-          enabled={Platform.OS !== "web"}
-          ref={ref}
-          style={{
-            width: "100%",
-            justifyContent: "center",
-            height: 60,
-          }}
-          data={data}
-          pagingEnabled
-          onSnapToItem={handleSnapToIndex}
-          renderItem={({ index }) => (
-            <Tab tab={data[index]} key={data[index].id} />
-          )}
-        />
-      </View>
+      <Carousel
+        {...baseOptions}
+        enabled={Platform.OS !== "web"}
+        ref={ref}
+        style={{
+          width: "100%",
+          justifyContent: "center",
+          height: 55,
+        }}
+        data={data}
+        pagingEnabled
+        onSnapToItem={handleSnapToIndex}
+        renderItem={({ index }) => (
+          <Tab tab={data[index]} key={data[index].id} />
+        )}
+      />
     )
   ) : (
     <View>

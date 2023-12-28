@@ -14,9 +14,11 @@ export function ContentWrapper(props) {
       style={{
         marginTop: insets.top + 64,
         backgroundColor: theme[1],
-        borderTopLeftRadius: width > 600 ? 20 : 0,
         flex: 1,
         overflow: "scroll",
+        borderRadius: 15,
+        borderWidth: width > 600 ? 1 : 0,
+        borderColor: theme[6],
       }}
       {...props}
     >
