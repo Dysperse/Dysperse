@@ -11,7 +11,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1.00001, viewport-fit=cover"
     />
-    <link rel="manifest" href="/assets/manifest.json"></link>
+    <link rel="manifest" href="/assets/manifest.json" />
     <title>%WEB_TITLE%</title>
     <style>
       /**
@@ -61,6 +61,29 @@
           background-color: black;
         }
       }*/
+      ::-webkit-scrollbar {
+        width: 15px;
+      }
+
+      ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 10px 10px rgba(0, 0, 0, 0);
+        border: solid 5px transparent;
+        border-radius: 999px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 10px 10px var(--theme-4);
+        border: solid 5px transparent;
+        border-radius: 999px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        box-shadow: inset 0 0 10px 10px var(--theme-5);
+      }
+
+      ::-webkit-scrollbar-thumb:active {
+        box-shadow: inset 0 0 10px 10px var(--theme-6);
+      }
     </style>
   </head>
 
@@ -92,7 +115,7 @@
           "
         >
           <p>Oh no! It looks like JavaScript is not enabled in your browser.</p>
-          <p style="margin: 20px 0;">
+          <p style="margin: 20px 0">
             <button
               type="submit"
               style="
