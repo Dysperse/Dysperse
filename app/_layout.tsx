@@ -10,6 +10,9 @@ SplashScreen.preventAutoHideAsync();
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 
+import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
+import { Platform } from "react-native";
+
 export default function Root() {
   // CHANGE THIS LATER!!!
   const theme = useColor("violet", false);
@@ -47,4 +50,8 @@ export default function Root() {
       </SessionProvider>
     </ColorThemeProvider>
   );
+}
+
+if (Platform.OS === "web") {
+  serviceWorkerRegistration.register();
 }

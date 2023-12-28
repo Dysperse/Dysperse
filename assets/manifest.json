@@ -1,0 +1,18 @@
+{
+  "background_color": "#ffffff",
+  "description": "The new standard for productivity",
+  "display": "standalone",
+  "lang": "en",
+  "name": "Dysperse",
+  "short_name": "Dysperse",
+  "start_url": "/?utm_source=web_app_manifest",
+  "orientation": "portrait",
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "http://play.google.com/store/apps/details?id=com.manucodes.Dysperse",
+      "id": "com.manucodes.Dysperse"
+    }
+  ],
+  "prefer_related_applications": true
+}

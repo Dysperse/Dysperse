@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Dysperse",
+    "description": "The new standard for productivity",
     "slug": "Dysperse",
     "scheme": "dysperse",
     "version": "1.0.0",
@@ -31,8 +32,11 @@
       "package": "com.manucodes.Dysperse"
     },
     "web": {
+      "name": "Dysperse",
       "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "bundler": "metro",
+      "backgroundColor": "#ffffff",
+      "display": "standalone"
     },
     "plugins": [
       "expo-router",
