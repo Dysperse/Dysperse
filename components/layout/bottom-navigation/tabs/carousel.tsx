@@ -137,7 +137,9 @@ export function OpenTabsList() {
         </View>
       </View>
     ) : (
+      //   <NativeViewGestureHandler disallowInterruption={true}>
       <Carousel
+        loop={false}
         {...baseOptions}
         enabled={Platform.OS !== "web"}
         ref={ref}
@@ -153,6 +155,7 @@ export function OpenTabsList() {
           <Tab tab={data[index]} key={data[index].id} />
         )}
       />
+      //</NativeViewGestureHandler>
     )
   ) : (
     <View>

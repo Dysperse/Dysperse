@@ -10,7 +10,13 @@ import {
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Keyboard,
@@ -20,7 +26,14 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { useAnimatedReaction } from "react-native-reanimated";
+import Animated, {
+  Extrapolate,
+  interpolate,
+  interpolateColor,
+  runOnJS,
+  useAnimatedReaction,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import useSWR from "swr";
 import { CreateDrawer } from "./create-drawer";
 import { OpenTabsList } from "./tabs/carousel";
@@ -73,146 +86,203 @@ function BottomNavigation() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useAnimatedReaction(
-    () => animatedIndex.value,
-    (value) => {
-      if (value === 1) setCurrentIndex(1);
-      else if (value === 0) setCurrentIndex(0);
-    }
+  const tabListAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      animatedIndex.value,
+      [0, 1],
+      [0, 1],
+      Extrapolate.CLAMP
+    ),
+    transform: [
+      {
+        translateY: interpolate(
+          animatedIndex.value,
+          [0, 1],
+          [0, pathname === "/" ? -50 : -100],
+          Extrapolate.CLAMP
+        ),
+      },
+    ],
+  }));
+
+  const tabStripAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      animatedIndex.value,
+      [0, 1],
+      [1, 0],
+      Extrapolate.CLAMP
+    ),
+    transform: [
+      {
+        translateY: interpolate(
+          animatedIndex.value,
+          [0, 1],
+          [0, pathname === "/" ? -50 : -100],
+          Extrapolate.CLAMP
+        ),
+      },
+    ],
+  }));
+
+  const containerAnimatedStyle = useAnimatedStyle(() => ({
+    borderRadius: interpolate(
+      animatedIndex.value,
+      [0, 1],
+      [0, 20],
+      Extrapolate.CLAMP
+    ),
+    borderTopColor: interpolateColor(
+      animatedIndex.value,
+      [0, 1],
+      [theme[5], "transparent"]
+    ),
+  }));
+
+  const tabListStyle = useMemo(
+    () => [tabListAnimatedStyle],
+    [tabListAnimatedStyle]
+  );
+
+  const tabStripStyle = useMemo(
+    () => [tabStripAnimatedStyle],
+    [tabStripAnimatedStyle]
+  );
+
+  const containerStyle = useMemo(
+    () => [
+      containerAnimatedStyle,
+      {
+        height: "100%",
+        borderTopWidth: 2,
+        backgroundColor: theme[1],
+      },
+    ],
+    [containerAnimatedStyle, theme]
   );
 
   const { data, error } = useSWR(["user/tabs"]);
 
   return (
-    <View
-      style={{
-        borderTopWidth: 1,
-        borderTopColor: theme[5],
-        height: 500,
-      }}
-    >
-      {currentIndex === 1 ? (
-        <View>
-          <View
-            style={{
-              gap: 10,
-              paddingTop: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              paddingHorizontal: 20,
+    <Animated.View style={containerStyle}>
+      <Animated.View style={tabStripStyle}>
+        {pathname !== "/" && <OpenTabsList />}
+        <View
+          style={{
+            height: 60,
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 15,
+            flexDirection: "row",
+          }}
+        >
+          <IconButton
+            onPress={() => {
+              router.push("/");
             }}
           >
-            <IconButton onPress={() => snapToIndex(0)} variant="filled">
-              <Icon>expand_more</Icon>
+            <Icon size={28} filled={pathname == "/"}>
+              home
+            </Icon>
+          </IconButton>
+          <CreateDrawer>
+            <IconButton variant="filled">
+              <Icon size={30}>add</Icon>
             </IconButton>
-            <Text style={{ fontSize: 20, flex: 1 }} weight={700}>
-              Tabs
-            </Text>
-            <IconButton variant="filled" onPress={() => router.push("/open")}>
-              <Icon>add</Icon>
-            </IconButton>
-          </View>
-          {data ? (
-            <FlatList
-              style={{ marginTop: 15 }}
-              //  onDragEnd={({ data }) => {
-              //    const newData = data.map((item, index) => ({
-              //      id: item.id,
-              //      order: index,
-              //    }));
-              //    sendApiRequest(sessionToken, "PUT", "user/tabs/order", {
-              //      tabs: JSON.stringify(newData),
-              //    }).then(() => mutate());
-              //  }}
-              ListFooterComponent={
-                <View>
-                  {data.length !== 0 && (
-                    <View style={styles.helperText}>
-                      <Icon>info</Icon>
-                      <Text style={{ opacity: 0.6 }}>
-                        Tabs are synced between devices
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              }
-              ListEmptyComponent={
+          </CreateDrawer>
+          <IconButton onPress={() => snapToIndex(1)}>
+            <Icon size={26}>stack</Icon>
+          </IconButton>
+        </View>
+      </Animated.View>
+      <Animated.View style={tabListStyle}>
+        <View
+          style={{
+            gap: 10,
+            paddingTop: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+          }}
+        >
+          <IconButton onPress={() => snapToIndex(0)} variant="filled">
+            <Icon>expand_more</Icon>
+          </IconButton>
+          <Text style={{ fontSize: 20, flex: 1 }} weight={700}>
+            Tabs
+          </Text>
+          <IconButton variant="filled" onPress={() => router.push("/open")}>
+            <Icon>add</Icon>
+          </IconButton>
+        </View>
+        {data ? (
+          <FlatList
+            style={{ marginTop: 15 }}
+            //  onDragEnd={({ data }) => {
+            //    const newData = data.map((item, index) => ({
+            //      id: item.id,
+            //      order: index,
+            //    }));
+            //    sendApiRequest(sessionToken, "PUT", "user/tabs/order", {
+            //      tabs: JSON.stringify(newData),
+            //    }).then(() => mutate());
+            //  }}
+            ListFooterComponent={
+              <View>
+                {data.length !== 0 && (
+                  <View style={styles.helperText}>
+                    <Icon>info</Icon>
+                    <Text style={{ opacity: 0.6 }}>
+                      Tabs are synced between devices
+                    </Text>
+                  </View>
+                )}
+              </View>
+            }
+            ListEmptyComponent={
+              <View
+                style={{
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  gap: 15,
+                  alignItems: "center",
+                  paddingHorizontal: 30,
+                }}
+              >
+                <Icon>info</Icon>
+                <Text style={{ opacity: 0.6 }}>
+                  You don't have any tabs. Tap "+" to create one.
+                </Text>
+              </View>
+            }
+            data={data}
+            contentContainerStyle={{ gap: 10 }}
+            renderItem={
+              (({ item }) => (
                 <View
                   style={{
-                    justifyContent: "center",
+                    width: "100%",
                     flexDirection: "row",
-                    gap: 15,
-                    alignItems: "center",
-                    paddingHorizontal: 30,
+                    paddingHorizontal: 20,
                   }}
                 >
-                  <Icon>info</Icon>
-                  <Text style={{ opacity: 0.6 }}>
-                    You don't have any tabs. Tap "+" to create one.
-                  </Text>
+                  <Tab
+                    tab={item}
+                    isList
+                    handleClose={() => snapToIndex(0)}
+                    // onLongPress={drag}
+                  />
                 </View>
-              }
-              data={data}
-              contentContainerStyle={{ gap: 10 }}
-              renderItem={
-                (({ item }) => (
-                  <View
-                    style={{
-                      width: "100%",
-                      flexDirection: "row",
-                      paddingHorizontal: 20,
-                    }}
-                  >
-                    <Tab
-                      tab={item}
-                      isList
-                      handleClose={() => snapToIndex(0)}
-                      // onLongPress={drag}
-                    />
-                  </View>
-                )) as any
-              }
-              keyExtractor={(item: any) => item.id}
-            />
-          ) : error ? (
-            <ErrorAlert />
-          ) : (
-            <ActivityIndicator />
-          )}
-        </View>
-      ) : (
-        <View>
-          {pathname !== "/" && <OpenTabsList />}
-          <View
-            style={{
-              height: 55,
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              flexDirection: "row",
-            }}
-          >
-            <IconButton
-              onPress={() => {
-                router.push("/");
-              }}
-            >
-              <Icon size={28} filled={pathname == "/"}>
-                home
-              </Icon>
-            </IconButton>
-            <CreateDrawer>
-              <IconButton variant="filled">
-                <Icon size={30}>add</Icon>
-              </IconButton>
-            </CreateDrawer>
-            <IconButton onPress={() => snapToIndex(1)}>
-              <Icon size={26}>stack</Icon>
-            </IconButton>
-          </View>
-        </View>
-      )}
-    </View>
+              )) as any
+            }
+            keyExtractor={(item: any) => item.id}
+          />
+        ) : error ? (
+          <ErrorAlert />
+        ) : (
+          <ActivityIndicator />
+        )}
+      </Animated.View>
+    </Animated.View>
   );
 }
 
@@ -223,35 +293,38 @@ export function BottomAppBar() {
   const shouldHide =
     ["/account", "/tabs", "/open", "/space"].includes(pathname) ||
     isKeyboardVisible;
+
   const theme = useColorTheme();
 
   const ref = useRef<BottomSheetModal>(null);
 
-  const handleOpen = useCallback(() => ref.current?.present(), []);
-
   useEffect(() => {
-    handleOpen();
-  }, [handleOpen, shouldHide]);
+    if (shouldHide) {
+      ref.current.close();
+    } else {
+      ref.current?.present();
+    }
+  }, [shouldHide]);
 
   return width < 600 ? (
-    shouldHide ? null : (
-      <BottomSheet
-        snapPoints={[pathname === "/" ? 55 : 55 * 2, "70%"]}
-        sheetRef={ref}
-        appearsOnIndex={1}
-        dismissible={false}
-        enablePanDownToClose={false}
-        onClose={() => null}
-        handleComponent={() => null}
-        stackBehavior="push"
-        backgroundStyle={{
-          borderRadius: 0,
-          backgroundColor: theme[1],
-        }}
-        backdropComponent={(d) => <BottomSheetBackdrop {...d} />}
-      >
-        <BottomNavigation />
-      </BottomSheet>
-    )
+    <BottomSheet
+      snapPoints={[shouldHide ? 0.001 : pathname === "/" ? 60 : 60 * 2, "70%"]}
+      sheetRef={ref}
+      appearsOnIndex={1}
+      dismissible={false}
+      enablePanDownToClose={false}
+      onClose={() => null}
+      handleComponent={() => null}
+      stackBehavior="push"
+      backgroundStyle={{
+        borderRadius: 25,
+        backgroundColor: theme[1],
+      }}
+      backdropComponent={(d) => (
+        <BottomSheetBackdrop pressBehavior="collapse" {...d} />
+      )}
+    >
+      <BottomNavigation />
+    </BottomSheet>
   ) : null;
 }

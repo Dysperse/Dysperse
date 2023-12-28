@@ -44,11 +44,13 @@ export default function Root() {
   }
 
   return (
-    <ColorThemeProvider theme={theme}>
-      <SessionProvider>
-        <Slot screenOptions={{ onLayoutRootView }} />
-      </SessionProvider>
-    </ColorThemeProvider>
+    <>
+      <ColorThemeProvider theme={theme}>
+        <SessionProvider>
+          <Slot screenOptions={{ onLayoutRootView }} />
+        </SessionProvider>
+      </ColorThemeProvider>
+    </>
   );
 }
 

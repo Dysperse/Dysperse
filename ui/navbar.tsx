@@ -50,7 +50,7 @@ export default function Navbar(props: any) {
         style={{
           height: 1.5,
           opacity: props.options.headerTitle ? 1 : 0,
-          backgroundColor: addHslAlpha(theme[4], 0.9),
+          backgroundColor: theme[5],
         }}
       />
     </>

@@ -407,6 +407,10 @@ export default function CreateTask({
               <Chip
                 icon={<Icon>arrow_back_ios_new</Icon>}
                 onPress={handleClose}
+                style={{
+                  backgroundColor: "transparent",
+                  marginLeft: -15,
+                }}
               />
             )}
             <Chip

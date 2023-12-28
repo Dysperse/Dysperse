@@ -85,7 +85,7 @@ export default function AccountNavbar(props: any) {
       <View
         style={{
           height: 2,
-          backgroundColor: addHslAlpha(theme[4], 0.9),
+          backgroundColor: theme[5],
           marginBottom: -1.5,
         }}
       />

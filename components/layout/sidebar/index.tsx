@@ -39,6 +39,7 @@ export const getSidebarItems = async (session) => {
   return [
     {
       title: "Perspectives",
+      icon: "asterisk",
       data: [
         {
           label: "Weeks",
@@ -96,6 +97,7 @@ export const getSidebarItems = async (session) => {
     },
     {
       title: "Collections",
+      icon: "draw_abstract",
       data: [
         {
           label: "Create",
@@ -112,6 +114,7 @@ export const getSidebarItems = async (session) => {
     },
     {
       title: "ALL",
+      icon: "airwave",
       data: [
         {
           label: "Tasks",
@@ -270,17 +273,6 @@ export function Button({ section, item }: any) {
   const [loading, setLoading] = useState(false);
   const { sessionToken } = useUser();
 
-  const redPalette = useColor("red", useColorScheme() === "dark");
-  const purplePalette = useColor("purple", useColorScheme() === "dark");
-  const greenPalette = useColor("green", useColorScheme() === "dark");
-  const colors = { redPalette, purplePalette, greenPalette }[
-    section.title === "Collections"
-      ? "purplePalette"
-      : section.title === "ALL"
-      ? "greenPalette"
-      : "redPalette"
-  ];
-
   const isActive = Boolean(
     // item?.href === pathname || pathname?.includes(item.query)
     false
@@ -304,8 +296,14 @@ export function Button({ section, item }: any) {
 
   return (
     <Pressable
-      style={({ pressed }) => ({
-        backgroundColor: isActive ? theme[3] : pressed ? theme[3] : undefined,
+      style={({ pressed, hovered }) => ({
+        backgroundColor: isActive
+          ? theme[3]
+          : pressed
+          ? theme[3]
+          : hovered
+          ? theme[4]
+          : undefined,
         paddingHorizontal: 20,
         paddingVertical: 7,
         flexDirection: "row",
@@ -314,27 +312,12 @@ export function Button({ section, item }: any) {
       })}
       onPress={() => handlePress(item)}
     >
-      <LinearGradient
-        colors={[colors[5], colors[3]]}
-        style={{
-          width: 30,
-          height: 30,
-          borderRadius: 10,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        {item.collection ? (
-          <Emoji size={21} emoji={item.collection.emoji || "1f4e6"} />
-        ) : (
-          <Icon size={21} style={{ color: colors[12] }}>
-            {item.icon}
-          </Icon>
-        )}
-      </LinearGradient>
-      <Text textClassName="flex-1">{item?.collection?.name || item.label}</Text>
+      {item.collection ? (
+        <Emoji size={23} emoji={item.collection.emoji || "1f4e6"} />
+      ) : (
+        <Icon size={23}>{item.icon}</Icon>
+      )}
+      <Text style={{ flex: 1 }}>{item?.collection?.name || item.label}</Text>
       {loading && <ActivityIndicator />}
     </Pressable>
   );

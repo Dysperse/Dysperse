@@ -11,6 +11,7 @@ import { WeatherWidget } from "../../components/home/weather/widget";
 import { Avatar } from "@/ui/Avatar";
 import { useUser } from "@/context/useUser";
 import { Button, ButtonText } from "@/ui/Button";
+import NavigationBar from "@/ui/NavigationBar";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -166,8 +167,11 @@ function SpaceInfo() {
 
 export default function Index() {
   const { width } = useWindowDimensions();
+  const theme = useColorTheme();
+
   return (
     <ContentWrapper>
+      <NavigationBar color={theme[1]} />
       <ScrollView
         scrollEnabled={width < 600}
         overScrollMode="never"
