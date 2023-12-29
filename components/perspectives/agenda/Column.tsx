@@ -10,7 +10,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
 import React, { memo, useState } from "react";
-import { FlashList } from "@shopify/flash-list";
 import {
   FlatList,
   RefreshControl,
@@ -106,7 +105,8 @@ export function Column({
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
-      <FlashList
+      <FlatList
+        initialNumToRender={10}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
