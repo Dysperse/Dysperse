@@ -118,7 +118,7 @@ export function Column({ mutate, column }: any) {
             <Text weight={300} style={{ fontSize: 30 }}>
               Shhh!
             </Text>
-            <Text style={{ opacity: 0.6 }}>It's quiet here!</Text>
+            <Text style={{ opacity: 0.6 }}>It's quiet here...</Text>
           </View>
         }
         renderItem={({ item }) => {
