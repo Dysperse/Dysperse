@@ -35,15 +35,6 @@ function Agenda() {
 
   const [currentColumn, setCurrentColumn] = useState(null);
 
-  useEffect(() => {
-    if (data?.length > 1)
-      setCurrentColumn(
-        data.find((i) =>
-          dayjs().utc().isBetween(dayjs(i.start), dayjs(i.end))
-        ) || data[0]
-      );
-  }, [data, setCurrentColumn]);
-
   const handleToday = useCallback(() => {
     if (data?.length > 1) {
       const c = data.find((i) =>
@@ -60,17 +51,34 @@ function Agenda() {
   const { width } = useWindowDimensions();
 
   const flatListRef = useRef(null);
-  // scroll to active item in the flat list
+
+  const [alreadyScrolled, setAlreadyScrolled] = useState(false);
   useEffect(() => {
-    if (currentColumn && Platform.OS !== "web" && data) {
+    if (
+      !alreadyScrolled &&
+      flatListRef?.current &&
+      currentColumn &&
+      Platform.OS !== "web" &&
+      Array.isArray(data)
+    ) {
+      setAlreadyScrolled(true);
       const index = data.findIndex((i) => i.start === currentColumn.start);
       if (index !== -1) {
         setTimeout(() => {
           flatListRef.current.scrollToIndex({ index, viewPosition: 0.5 });
-        }, 100);
+        }, 200);
       }
     }
-  }, [currentColumn, data]);
+  }, [currentColumn, data, alreadyScrolled]);
+
+  useEffect(() => {
+    if (data?.length > 1 && !alreadyScrolled)
+      setCurrentColumn(
+        data.find((i) =>
+          dayjs().utc().isBetween(dayjs(i.start), dayjs(i.end))
+        ) || data[0]
+      );
+  }, [data, setCurrentColumn, alreadyScrolled]);
 
   const agendaFallback = (
     <View

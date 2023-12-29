@@ -20,18 +20,22 @@ export default function TextField(props: DTextInputProps) {
       cursorColor={theme[8]}
       selectionColor={theme[8]}
       {...props}
-      style={{
-        ...(props.style as any),
-        color: theme[11],
-        fontFamily: `body_400`,
+      style={[
+        {
+          color: theme[11],
+          fontFamily: `body_400`,
 
-        ...(props.variant === "filled" && {
-          backgroundColor: theme[3],
-          borderRadius: 15,
-          paddingHorizontal: 15,
-          paddingVertical: 7,
-        }),
-      }}
+          ...(props.variant === "filled" && {
+            backgroundColor: theme[3],
+            borderRadius: 15,
+            paddingHorizontal: 15,
+            paddingVertical: 7,
+          }),
+        },
+        Array.isArray(props.style)
+          ? Object.assign({}, ...props.style)
+          : props.style,
+      ]}
     />
   );
 }

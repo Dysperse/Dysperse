@@ -135,7 +135,7 @@ export function Column({ mutate, column }: any) {
             case "TASK":
               return (
                 <Container>
-                  <Task task={item} />
+                  <Task mutate={onRefresh} task={item} />
                 </Container>
               );
             default:

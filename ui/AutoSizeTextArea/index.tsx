@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { StyleProp, TextInputProps } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import TextField from "../TextArea";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -17,17 +18,18 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
   };
 
   return (
-    <TextInput
+    <TextField
       {...props}
       defaultValue={props.inputDefaultValue}
       multiline
-      className={`border border-transparent ${props.inputClassName}`}
-      style={{
-        ...props.inputStyle,
-        height: Math.max(props.fontSize || 15, size),
-        overflow: "hidden",
-        fontSize: props.fontSize || 15,
-      }}
+      style={[
+        {
+          height: Math.max(props.fontSize || 15, size),
+          overflow: "hidden",
+          fontSize: props.fontSize || 15,
+        },
+        props.style,
+      ]}
       onContentSizeChange={handleChange}
       onKeyPress={() => setSize(props.fontSize || 15)}
     />
