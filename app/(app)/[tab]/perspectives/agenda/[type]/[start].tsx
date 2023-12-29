@@ -99,7 +99,7 @@ function Agenda() {
 
   const buttonTextFormats = {
     small: {
-      week: "ddd",
+      week: "dd",
       month: "Do",
       year: "-",
     }[type],

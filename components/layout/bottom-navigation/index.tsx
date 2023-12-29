@@ -10,13 +10,7 @@ import {
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Keyboard,
@@ -30,8 +24,6 @@ import Animated, {
   Extrapolate,
   interpolate,
   interpolateColor,
-  runOnJS,
-  useAnimatedReaction,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import useSWR from "swr";
@@ -163,7 +155,7 @@ function BottomNavigation() {
   const { data, error } = useSWR(["user/tabs"]);
 
   return (
-    <Animated.View style={containerStyle}>
+    <Animated.View style={containerStyle as any}>
       <Animated.View style={tabStripStyle}>
         {pathname !== "/" && <OpenTabsList />}
         <View

@@ -343,7 +343,7 @@ export function Sidebar() {
       style={{
         height: "100%",
         // borderRightWidth: 1,
-        backgroundColor: theme[2],
+        backgroundColor: theme[width > 600 ? 2 : 1],
         // borderRightColor: theme[5],
         width: width > 600 ? 240 : "100%",
         flexDirection: "column",

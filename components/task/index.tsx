@@ -27,6 +27,7 @@ import Emoji from "@/ui/Emoji";
 import { useLabelColors } from "../labels/useLabelColors";
 import ListItemText from "@/ui/ListItemText";
 import Divider from "@/ui/Divider";
+import { LinearGradient } from "expo-linear-gradient";
 
 const styles = StyleSheet.create({
   section: {
@@ -58,43 +59,44 @@ const timelineStyles = StyleSheet.create({
 
 function TaskDetails({ data }) {
   const theme = useColorTheme();
+
   return (
-    <>
-      <ListItemButton>
+    <View style={{ gap: 10 }}>
+      <ListItemButton style={{ backgroundColor: theme[3] }}>
         <Icon>calendar_today</Icon>
-        <ListItemText primary={dayjs(data.due).format("MMM Do, YYYY")} />
-        <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+        <ListItemText
+          primary={dayjs(data.due).format("MMM Do, YYYY")}
+          secondary="Does not repeat"
+        />
       </ListItemButton>
       {!data.dateOnly && (
-        <ListItemButton>
+        <ListItemButton style={{ backgroundColor: theme[3] }}>
           <Icon>access_time</Icon>
           <ListItemText primary={dayjs(data.due).format("h:mm A")} />
-          <Icon style={{ marginLeft: "auto" }}>edit</Icon>
         </ListItemButton>
       )}
       {data.due && (
-        <ListItemButton>
+        <ListItemButton style={{ backgroundColor: theme[3] }}>
           <Icon>notifications</Icon>
           <ListItemText
             primary={`${data.notifications.length} notification${
               data.notifications.length == 1 ? "" : "s"
             }`}
           />
-          <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
         </ListItemButton>
       )}
-      <View style={{ padding: 15, paddingVertical: 10 }}>
-        <Divider />
-      </View>
-      <ListItemButton>
-        <Icon>sticky_note_2</Icon>
-        <ListItemText primary="Add note" />
-      </ListItemButton>
-      <ListItemButton>
-        <Icon>add_circle</Icon>
-        <ListItemText primary="New attachment" />
-      </ListItemButton>
-    </>
+      <TaskStream data={data}>
+        <ListItemButton style={{ backgroundColor: theme[3] }}>
+          <Icon>change_history</Icon>
+          <ListItemText
+            primary="History"
+            secondary={`Last edit ${dayjs(
+              data.history[0]?.timestamp
+            ).fromNow()}`}
+          />
+        </ListItemButton>
+      </TaskStream>
+    </View>
   );
 }
 
@@ -250,27 +252,30 @@ function TaskDrawerContent({ data, handleClose }) {
         >
           <IconButton
             onPress={handleClose}
-            style={{ backgroundColor: theme[3] }}
-            size={40}
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={55}
           >
-            <Icon>close</Icon>
+            <Icon size={28}>close</Icon>
           </IconButton>
           <View style={{ flex: 1 }} />
-          <IconButton size={40} style={{ backgroundColor: theme[3] }}>
-            <Icon>dark_mode</Icon>
-          </IconButton>
-          <Button
-            style={{
-              backgroundColor: theme[3],
-              width: "auto",
-              flexDirection: "row",
-              gap: 10,
-              paddingHorizontal: 10,
-            }}
+          <IconButton
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={55}
           >
-            <Icon>check</Icon>
-            <ButtonText>Complete</ButtonText>
-          </Button>
+            <Icon size={27}>done_outline</Icon>
+          </IconButton>
+          <IconButton
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={55}
+          >
+            <Icon size={27}>delete</Icon>
+          </IconButton>
+          <IconButton
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={55}
+          >
+            <Icon size={27}>edit</Icon>
+          </IconButton>
         </View>
       </View>
       <View style={{ paddingBottom: 20, paddingHorizontal: 12 }}>
@@ -278,14 +283,27 @@ function TaskDrawerContent({ data, handleClose }) {
           style={{
             paddingHorizontal: 10,
             gap: 10,
-            marginVertical: 20,
-            marginBottom: 10,
+            marginTop: 50,
             flexDirection: "row",
+            justifyContent: "center",
           }}
         >
-          <Chip icon={<Icon filled={data.pinned}>push_pin</Icon>} />
           <Chip
-            icon={<Icon>label</Icon>}
+            icon={<Icon>push_pin</Icon>}
+            style={{
+              backgroundColor: "transparent",
+              borderWidth: 1,
+              borderColor: theme[6],
+            }}
+          />
+          <Chip
+            icon={<Icon>new_label</Icon>}
+            label="Add label"
+            style={{
+              backgroundColor: "transparent",
+              borderWidth: 1,
+              borderColor: theme[6],
+            }}
             {...(data.label && {
               icon: <Emoji emoji={data.label.emoji} />,
               label: (
@@ -305,24 +323,12 @@ function TaskDrawerContent({ data, handleClose }) {
             fontFamily: "heading",
             color: theme[12],
             paddingHorizontal: 15,
-            marginBottom: 5,
+            marginVertical: 10,
+            textAlign: "center",
           }}
           fontSize={50}
         />
         <TaskDetails data={data} />
-        <View style={{ padding: 15, paddingVertical: 10 }}>
-          <Divider />
-        </View>
-        <View style={[styles.section, { flexDirection: "row" }]}>
-          <TaskStream data={data}>
-            <Button onPress={() => setView("stream")} style={{ flex: 1 }}>
-              <ButtonText>History</ButtonText>
-            </Button>
-          </TaskStream>
-          <Button style={{ flex: 1 }}>
-            <ButtonText>Move to trash</ButtonText>
-          </Button>
-        </View>
       </View>
     </BottomSheetScrollView>
   );
@@ -339,12 +345,12 @@ export function TaskDrawer({ children, id }) {
   }, []);
 
   const handleClose = useCallback(() => {
-    setOpen(false);
     ref.current?.close();
   }, []);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
   const { width } = useWindowDimensions();
+  const theme = useColorTheme();
 
   // Fetch data
   const { data, error } = useSWR(open ? ["space/entity", { id }] : null);
@@ -354,7 +360,7 @@ export function TaskDrawer({ children, id }) {
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        snapPoints={error ? ["50%"] : width > 600 ? [500] : ["50%", "80%"]}
+        snapPoints={error ? ["50%"] : width > 600 ? [500] : ["65%", "80%"]}
         onClose={handleClose}
         style={{
           maxWidth: 500,

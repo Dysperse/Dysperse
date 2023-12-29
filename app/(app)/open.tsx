@@ -7,7 +7,7 @@ export default function Page() {
 
   return (
     <>
-      <NavigationBar color={theme[2]} />
+      <NavigationBar color={theme[1]} />
       <Sidebar />
     </>
   );

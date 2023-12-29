@@ -59,8 +59,8 @@ export const CreateDrawer = ({ children }) => {
               <Wrapper key={name}>
                 <ListItemButton
                   onPress={() => {
-                    callback();
                     handleClose();
+                    setImmediate(callback);
                   }}
                 >
                   <View>

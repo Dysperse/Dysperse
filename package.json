@@ -12,6 +12,9 @@
     "build": "eas build --profile development --platform android"
   },
   "dependencies": {
+    "@expo-google-fonts/jost": "^0.2.3",
+    "@expo-google-fonts/libre-franklin": "^0.2.3",
+    "@expo-google-fonts/manrope": "^0.2.3",
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^19.0.0",
     "@gorhom/bottom-sheet": "^5.0.0-alpha.4",

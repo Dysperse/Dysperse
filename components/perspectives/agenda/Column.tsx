@@ -85,29 +85,40 @@ export function Column({ mutate, column }: any) {
           gap: 15,
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
+          height: "100%",
           paddingBottom: getBottomNavigationHeight(pathname) + 100,
+        }}
+        style={{
+          height: "100%",
         }}
         ListEmptyComponent={
           <View
             style={{
               alignItems: "center",
               justifyContent: "center",
-              height: "100%",
-              gap: 20,
+              marginTop: -100,
+              flex: 1,
             }}
           >
             <Avatar
               size={90}
               style={{
                 backgroundColor: theme[3],
-                borderRadius: 40,
+                borderRadius: 30,
+                marginBottom: 20,
+                transform: [{ rotate: "45deg" }],
               }}
             >
-              <Emoji emoji="1f389" size={40} />
+              <Emoji
+                emoji="1f92b"
+                size={40}
+                style={{ transform: [{ rotate: "-45deg" }] }}
+              />
             </Avatar>
-            <Text weight={400} style={{ fontSize: 20 }}>
-              Nothing here!
+            <Text weight={300} style={{ fontSize: 30 }}>
+              Shhh!
             </Text>
+            <Text style={{ opacity: 0.6 }}>It's quiet here!</Text>
           </View>
         }
         renderItem={({ item }) => {

@@ -4,6 +4,17 @@ import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { SessionProvider } from "../context/AuthProvider";
+import {
+  Jost_100Thin,
+  Jost_200ExtraLight,
+  Jost_300Light,
+  Jost_400Regular,
+  Jost_500Medium,
+  Jost_600SemiBold,
+  Jost_700Bold,
+  Jost_800ExtraBold,
+  Jost_900Black,
+} from "@expo-google-fonts/jost";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,13 +32,15 @@ export default function Root() {
 
   const [fontsLoaded] = useFonts({
     heading: require("../assets/fonts/heading.ttf"),
-    body_100: require("../assets/fonts/WorkSans/WorkSans-Thin.ttf"),
-    body_300: require("../assets/fonts/WorkSans/WorkSans-Light.ttf"),
-    body_400: require("../assets/fonts/WorkSans/WorkSans-Regular.ttf"),
-    body_500: require("../assets/fonts/WorkSans/WorkSans-Medium.ttf"),
-    body_600: require("../assets/fonts/WorkSans/WorkSans-SemiBold.ttf"),
-    body_700: require("../assets/fonts/WorkSans/WorkSans-Bold.ttf"),
-    body_800: require("../assets/fonts/WorkSans/WorkSans-Black.ttf"),
+    body_100: Jost_100Thin,
+    body_200: Jost_200ExtraLight,
+    body_300: Jost_300Light,
+    body_400: Jost_400Regular,
+    body_500: Jost_500Medium,
+    body_600: Jost_600SemiBold,
+    body_700: Jost_700Bold,
+    body_800: Jost_800ExtraBold,
+    body_900: Jost_900Black,
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
     symbols_filled: require("../assets/fonts/symbols/filled.ttf"),
     symbols_bold_outlined: require("../assets/fonts/symbols/bold.ttf"),
