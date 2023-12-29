@@ -1,33 +1,31 @@
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
+import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import * as NavigationBar from "expo-navigation-bar";
 import dayjs from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   View,
   useColorScheme,
   useWindowDimensions,
 } from "react-native";
 import useSWR from "swr";
-import { TaskCheckbox } from "./Checkbox";
-import Emoji from "@/ui/Emoji";
 import { useLabelColors } from "../labels/useLabelColors";
-import ListItemText from "@/ui/ListItemText";
-import Divider from "@/ui/Divider";
-import { LinearGradient } from "expo-linear-gradient";
+import { TaskCheckbox } from "./Checkbox";
 
 const styles = StyleSheet.create({
   section: {
@@ -337,20 +335,28 @@ function TaskDrawerContent({ data, handleClose }) {
 export function TaskDrawer({ children, id }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
+  const theme = useColorTheme();
 
   // callbacks
   const handleOpen = useCallback(() => {
     ref.current?.present();
     setOpen(true);
-  }, []);
+    if (Platform.OS === "android") {
+      NavigationBar.setBackgroundColorAsync(theme[2]);
+      NavigationBar.setBorderColorAsync(theme[2]);
+    }
+  }, [theme]);
 
   const handleClose = useCallback(() => {
     ref.current?.close();
-  }, []);
+    if (Platform.OS === "android") {
+      NavigationBar.setBackgroundColorAsync(theme[2]);
+      NavigationBar.setBorderColorAsync(theme[2]);
+    }
+  }, [theme]);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
   const { width } = useWindowDimensions();
-  const theme = useColorTheme();
 
   // Fetch data
   const { data, error } = useSWR(open ? ["space/entity", { id }] : null);

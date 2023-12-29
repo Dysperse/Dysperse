@@ -16,7 +16,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -292,11 +291,10 @@ export function Button({ section, item }: any) {
     }
   };
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
 
   return (
     <Pressable
-      style={({ pressed, hovered }) => ({
+      style={({ pressed, hovered }: any) => ({
         backgroundColor: isActive
           ? theme[3]
           : pressed

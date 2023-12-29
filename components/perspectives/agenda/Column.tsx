@@ -85,11 +85,12 @@ export function Column({ mutate, column }: any) {
           gap: 15,
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
-          height: "100%",
-          paddingBottom: getBottomNavigationHeight(pathname) + 100,
+          height: column.tasks.length == 0 ? "100%" : undefined,
+          paddingBottom:
+            getBottomNavigationHeight(pathname) + (width > 600 ? -20 : 250),
         }}
         style={{
-          height: "100%",
+          height: column.tasks.length == 0 ? "100%" : undefined,
         }}
         ListEmptyComponent={
           <View
