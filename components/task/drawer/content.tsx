@@ -18,6 +18,7 @@ import {
 } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import { LabelPicker } from "@/components/labels/picker";
+import Toast from "react-native-toast-message";
 
 export function TaskDrawerContent({ handleClose }) {
   const theme = useColorTheme();
@@ -37,6 +38,15 @@ export function TaskDrawerContent({ handleClose }) {
     });
     updateTask("pinned", !task.pinned);
   }, [task.pinned, updateTask, rotate]);
+
+  const handleDelete = useCallback(async () => {
+    Toast.show({
+      type: "success",
+      text1: "Task deleted!",
+    });
+    await updateTask("deleted", true);
+    setImmediate(handleClose);
+  }, [handleClose, updateTask]);
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {
@@ -85,6 +95,7 @@ export function TaskDrawerContent({ handleClose }) {
           <IconButton
             style={{ borderWidth: 1, borderColor: theme[6] }}
             size={55}
+            onPress={handleDelete}
           >
             <Icon size={27}>delete</Icon>
           </IconButton>

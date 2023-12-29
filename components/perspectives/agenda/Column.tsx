@@ -150,11 +150,15 @@ export function Column({
                             oldColumn.start === column.start
                               ? {
                                   ...oldColumn,
-                                  tasks: oldColumn.tasks.map((oldTask) =>
-                                    oldTask.id === newTask.id
-                                      ? newTask
-                                      : oldTask
-                                  ),
+                                  tasks: oldColumn.tasks
+                                    .map((oldTask) =>
+                                      oldTask.id === newTask.id
+                                        ? newTask.deleted === true
+                                          ? undefined
+                                          : newTask
+                                        : oldTask
+                                    )
+                                    .filter((e) => e),
                                 }
                               : oldColumn
                           ),
