@@ -1,5 +1,4 @@
 import { ProfilePicture } from "@/ui/Avatar";
-import { addHslAlpha } from "@/ui/color";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
 import {
@@ -15,7 +14,7 @@ import IconButton from "../../ui/IconButton";
 import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
-import { SpacesTrigger } from "./sidebar";
+import Skeleton from "@/ui/Skeleton";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
@@ -32,16 +31,22 @@ export function NavbarProfilePicture() {
         borderRadius: 999,
       }}
     >
-      {session?.user && (
-        <ProfilePicture
-          name={session.user.profile.name}
-          image={session.user.profile.picture}
-          size={width > 600 ? 30 : 40}
-          style={{
-            pointerEvents: "none",
-          }}
-        />
-      )}
+      <Skeleton
+        rounded
+        size={width > 600 ? 30 : 40}
+        isLoading={Boolean(!session?.user)}
+      >
+        {session?.user && (
+          <ProfilePicture
+            name={session.user.profile.name}
+            image={session.user.profile.picture}
+            size={width > 600 ? 30 : 40}
+            style={{
+              pointerEvents: "none",
+            }}
+          />
+        )}
+      </Skeleton>
     </TouchableOpacity>
   );
 }

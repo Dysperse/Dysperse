@@ -97,7 +97,6 @@ export function Column({ mutate, column }: any) {
             style={{
               alignItems: "center",
               justifyContent: "center",
-              marginTop: -100,
               flex: 1,
             }}
           >
