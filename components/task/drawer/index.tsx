@@ -23,6 +23,11 @@ export function TaskDrawer({ mutateList, children, id }) {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
 
+  // Fetch data
+  const { data, mutate, error } = useSWR(
+    open ? ["space/entity", { id }] : null
+  );
+
   // callbacks
   const handleOpen = useCallback(() => {
     ref.current?.present();
@@ -35,20 +40,15 @@ export function TaskDrawer({ mutateList, children, id }) {
 
   const handleClose = useCallback(() => {
     ref.current?.close();
-    mutateList();
+    mutateList(data);
     if (Platform.OS === "android") {
       NavigationBar.setBackgroundColorAsync(theme[2]);
       NavigationBar.setBorderColorAsync(theme[2]);
     }
-  }, [theme, mutateList]);
+  }, [theme, mutateList, data]);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
   const { width } = useWindowDimensions();
-
-  // Fetch data
-  const { data, mutate, error } = useSWR(
-    open ? ["space/entity", { id }] : null
-  );
 
   const updateTask = useCallback(
     async (key, value) => {

@@ -10,12 +10,18 @@ import { View, useColorScheme } from "react-native";
 import { TaskCheckbox } from "./Checkbox";
 import { TaskDrawer } from "./drawer";
 
-export function Task({ task, mutate }) {
+export function Task({
+  task,
+  onTaskUpdate,
+}: {
+  task: any;
+  onTaskUpdate: (newData) => void;
+}) {
   const theme = useColorTheme();
   const orange = useColor("orange", useColorScheme() === "dark");
 
   return (
-    <TaskDrawer id={task.id} mutateList={mutate}>
+    <TaskDrawer id={task.id} mutateList={onTaskUpdate}>
       <ListItemButton
         onLongPress={() => {
           console.log("long press");

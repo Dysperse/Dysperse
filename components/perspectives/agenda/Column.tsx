@@ -9,7 +9,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   RefreshControl,
@@ -17,8 +17,15 @@ import {
   useWindowDimensions,
 } from "react-native";
 import CreateTask from "../../task/create";
+import { KeyedMutator } from "swr";
 
-export function Column({ mutate, column }: any) {
+export function Column({
+  mutate,
+  column,
+}: {
+  mutate: KeyedMutator<any>;
+  column: any;
+}) {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const pathname = usePathname();
@@ -43,6 +50,7 @@ export function Column({ mutate, column }: any) {
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
+      <Text>{JSON.stringify(column)}</Text>
       <FlatList
         refreshControl={
           <RefreshControl
@@ -135,7 +143,15 @@ export function Column({ mutate, column }: any) {
             case "TASK":
               return (
                 <Container>
-                  <Task mutate={onRefresh} task={item} />
+                  <Task
+                    onTaskUpdate={(newData) => {
+                      mutate([], {
+                        revalidate: false,
+                      });
+                      console.log(JSON.stringify(newData));
+                    }}
+                    task={item}
+                  />
                 </Container>
               );
             default:
@@ -146,7 +162,7 @@ export function Column({ mutate, column }: any) {
               );
           }
         }}
-        keyExtractor={(i) => `${i.id}-${Math.random()}`}
+        keyExtractor={(i) => i.id}
       />
     </View>
   );

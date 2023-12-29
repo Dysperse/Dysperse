@@ -1,13 +1,10 @@
 import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
-import { useSession } from "@/context/AuthProvider";
-import { useUser } from "@/context/useUser";
-import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import React, { useCallback } from "react";
 import {
   StyleSheet,
@@ -45,10 +42,6 @@ export function PerspectivesNavbar({
     "day",
     "[]"
   );
-
-  const { session: sessionToken } = useSession();
-  const { mutate } = useUser();
-  const params = useLocalSearchParams();
 
   const handlePrev = useCallback(() => {
     router.setParams({

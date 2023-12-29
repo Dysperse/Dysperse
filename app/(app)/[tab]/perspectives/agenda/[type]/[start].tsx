@@ -2,16 +2,15 @@ import { ContentWrapper } from "@/components/layout/content";
 import { Column } from "@/components/perspectives/agenda/Column";
 import { PerspectivesNavbar } from "@/components/perspectives/agenda/Navbar";
 import ErrorAlert from "@/ui/Error";
+import Skeleton from "@/ui/Skeleton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   Platform,
-  Pressable,
   TouchableOpacity,
   View,
   useWindowDimensions,
@@ -19,7 +18,6 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
-import Skeleton from "@/ui/Skeleton";
 
 function Agenda() {
   const theme = useColorTheme();
@@ -33,11 +31,11 @@ function Agenda() {
     },
   ]);
 
-  const [currentColumn, setCurrentColumn] = useState(null);
+  const [currentColumn, setCurrentColumn] = useState(0);
 
   const handleToday = useCallback(() => {
     if (data?.length > 1) {
-      const c = data.find((i) =>
+      const c = data.findIndex((i) =>
         dayjs().utc().isBetween(dayjs(i.start), dayjs(i.end))
       );
       if (c) setCurrentColumn(c);
@@ -54,31 +52,33 @@ function Agenda() {
 
   const [alreadyScrolled, setAlreadyScrolled] = useState(false);
   useEffect(() => {
-    if (
-      !alreadyScrolled &&
-      flatListRef?.current &&
-      currentColumn &&
-      Platform.OS !== "web" &&
-      Array.isArray(data)
-    ) {
-      setAlreadyScrolled(true);
-      const index = data.findIndex((i) => i.start === currentColumn.start);
-      if (index !== -1) {
-        setTimeout(() => {
-          flatListRef.current.scrollToIndex({ index, viewPosition: 0.5 });
-        }, 200);
+    setImmediate(() => {
+      if (
+        !alreadyScrolled &&
+        flatListRef?.current &&
+        currentColumn &&
+        Platform.OS !== "web" &&
+        Array.isArray(data)
+      ) {
+        setAlreadyScrolled(true);
+        const index = data.findIndex((i) => i.start === currentColumn.start);
+        if (index !== -1) {
+          setTimeout(() => {
+            flatListRef.current.scrollToIndex({ index, viewPosition: 0.5 });
+          }, 200);
+        }
       }
-    }
+    });
   }, [currentColumn, data, alreadyScrolled]);
 
   useEffect(() => {
     if (data?.length > 1 && !alreadyScrolled)
       setCurrentColumn(
-        data.find((i) =>
+        data.findIndex((i) =>
           dayjs().utc().isBetween(dayjs(i.start), dayjs(i.end))
         ) || data[0]
       );
-  }, [data, setCurrentColumn, alreadyScrolled]);
+  }, []);
 
   const agendaFallback = (
     <View
@@ -136,8 +136,8 @@ function Agenda() {
       <ContentWrapper>
         <PerspectivesNavbar
           handleToday={handleToday}
-          currentDateStart={currentColumn?.start}
-          currentDateEnd={currentColumn?.end}
+          currentDateStart={data?.[currentColumn]?.start}
+          currentDateEnd={data?.[currentColumn]?.end}
         />
         <ScrollView
           horizontal
@@ -195,7 +195,7 @@ function Agenda() {
               flexShrink: 0,
             }}
             showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={{
                   height: 65,
@@ -205,7 +205,10 @@ function Agenda() {
                   justifyContent: "center",
                   gap: 3,
                 }}
-                onPress={() => setCurrentColumn(item)}
+                onPress={() => {
+                  setAlreadyScrolled(false);
+                  setCurrentColumn(index);
+                }}
               >
                 {buttonTextFormats.small !== "-" && (
                   <Text

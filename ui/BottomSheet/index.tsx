@@ -21,6 +21,7 @@ interface DBottomSheetProps extends BottomSheetProps {
 
 export default function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
+
   const animationConfigs = useBottomSheetSpringConfigs({
     damping: 30,
     overshootClamping: false,
@@ -37,6 +38,9 @@ export default function BottomSheet(props: DBottomSheetProps) {
       backdropComponent={(d) => (
         <BottomSheetBackdropComponent {...d} dismissible={props.dismissible} />
       )}
+      onChange={(e) => {
+        if (e === -1) props.onClose();
+      }}
       backgroundStyle={{
         backgroundColor: theme[2],
         borderTopLeftRadius: 25,
@@ -49,7 +53,7 @@ export default function BottomSheet(props: DBottomSheetProps) {
       }}
       {...props}
     >
-      <BottomSheetBackHandler handleClose={props.onClose} />
+      <BottomSheetBackHandler />
       {Platform.OS === "web" && (
         <BottomSheetEscapeHandler handleClose={props.onClose} />
       )}
