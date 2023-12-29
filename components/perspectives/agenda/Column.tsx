@@ -9,7 +9,8 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
+import { FlashList } from "@shopify/flash-list";
 import {
   FlatList,
   RefreshControl,
@@ -18,6 +19,58 @@ import {
 } from "react-native";
 import CreateTask from "../../task/create";
 import { KeyedMutator } from "swr";
+
+const renderColumnItem = ({ item, width, mutate, column }: any) => {
+  const Container = ({ children }: { children: React.ReactNode }) => (
+    <View
+      style={{
+        paddingHorizontal: width > 600 ? 0 : 15,
+      }}
+    >
+      {children}
+    </View>
+  );
+  switch (item.type) {
+    case "TASK":
+      return (
+        <Container>
+          <Task
+            onTaskUpdate={(newTask) => {
+              mutate(
+                (oldData) =>
+                  oldData.map((oldColumn) =>
+                    oldColumn.start === column.start
+                      ? {
+                          ...oldColumn,
+                          tasks: oldColumn.tasks
+                            .map((oldTask) =>
+                              oldTask.id === newTask.id
+                                ? newTask.deleted === true
+                                  ? undefined
+                                  : newTask
+                                : oldTask
+                            )
+                            .filter((e) => e),
+                        }
+                      : oldColumn
+                  ),
+                {
+                  revalidate: false,
+                }
+              );
+            }}
+            task={item}
+          />
+        </Container>
+      );
+    default:
+      return (
+        <Container>
+          <Text>Invalid entity type</Text>
+        </Container>
+      );
+  }
+};
 
 export function Column({
   mutate,
@@ -38,6 +91,9 @@ export function Column({
     setRefreshing(false);
   }, [mutate]);
 
+  const renderColumnItemWrapper = (props) =>
+    renderColumnItem({ ...props, width, mutate, column });
+
   return (
     <View
       style={{
@@ -50,7 +106,7 @@ export function Column({
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
-      <FlatList
+      <FlashList
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -128,57 +184,7 @@ export function Column({
             <Text style={{ opacity: 0.6 }}>It's quiet here...</Text>
           </View>
         }
-        renderItem={({ item }) => {
-          const Container = ({ children }: { children: React.ReactNode }) => (
-            <View
-              style={{
-                paddingHorizontal: width > 600 ? 0 : 15,
-              }}
-            >
-              {children}
-            </View>
-          );
-          switch (item.type) {
-            case "TASK":
-              return (
-                <Container>
-                  <Task
-                    onTaskUpdate={(newTask) => {
-                      mutate(
-                        (oldData) =>
-                          oldData.map((oldColumn) =>
-                            oldColumn.start === column.start
-                              ? {
-                                  ...oldColumn,
-                                  tasks: oldColumn.tasks
-                                    .map((oldTask) =>
-                                      oldTask.id === newTask.id
-                                        ? newTask.deleted === true
-                                          ? undefined
-                                          : newTask
-                                        : oldTask
-                                    )
-                                    .filter((e) => e),
-                                }
-                              : oldColumn
-                          ),
-                        {
-                          revalidate: false,
-                        }
-                      );
-                    }}
-                    task={item}
-                  />
-                </Container>
-              );
-            default:
-              return (
-                <Container>
-                  <Text>Invalid entity type</Text>
-                </Container>
-              );
-          }
-        }}
+        renderItem={renderColumnItemWrapper}
         keyExtractor={(i) => i.id}
       />
     </View>

@@ -77,8 +77,6 @@ function BottomNavigation() {
   const pathname = usePathname();
   const { animatedIndex, snapToIndex } = useBottomSheet();
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
   const tabListAnimatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       animatedIndex.value,
@@ -308,8 +306,9 @@ export function BottomAppBar() {
 
   return width < 600 ? (
     <BottomSheet
-      snapPoints={[shouldHide ? 0.001 : pathname === "/" ? 60 : 60 * 2, "70%"]}
+      snapPoints={[shouldHide ? 5 : pathname === "/" ? 60 : 60 * 2, "70%"]}
       sheetRef={ref}
+      animateOnMount={false}
       appearsOnIndex={1}
       dismissible={false}
       enablePanDownToClose={false}
@@ -319,6 +318,9 @@ export function BottomAppBar() {
       backgroundStyle={{
         borderRadius: 25,
         backgroundColor: theme[1],
+      }}
+      containerStyle={{
+        opacity: isKeyboardVisible ? 0 : 1,
       }}
       backdropComponent={(d) => (
         <BottomSheetBackdrop pressBehavior="collapse" {...d} />

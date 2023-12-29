@@ -45,7 +45,7 @@ export function TaskDrawerContent({ handleClose }) {
       text1: "Task deleted!",
     });
     await updateTask("deleted", true);
-    setImmediate(handleClose);
+    handleClose();
   }, [handleClose, updateTask]);
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated

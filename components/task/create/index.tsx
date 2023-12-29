@@ -156,7 +156,7 @@ export default function CreateTask({
           }),
         }
       ).then((e) => console.log(e));
-      handleClose();
+      // handleClose();
       reset();
       Toast.show({
         type: "success",
@@ -201,6 +201,7 @@ export default function CreateTask({
     <>
       {trigger}
       <BottomSheet
+        stackBehavior="replace"
         onClose={handleClose}
         sheetRef={ref}
         snapPoints={Platform.OS === "android" ? ["50%"] : ["40%"]}
