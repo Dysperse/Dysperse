@@ -21,6 +21,9 @@ import { AgendaContext, useAgendaContext } from "../context";
 
 function Agenda() {
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
+  const flatListRef = useRef(null);
+
   const { type, start, end } = useAgendaContext();
   const { data, mutate, error } = useSWR([
     "space/perspectives/agenda",
@@ -31,7 +34,8 @@ function Agenda() {
     },
   ]);
 
-  const [currentColumn, setCurrentColumn] = useState(0);
+  const [currentColumn, setCurrentColumn] = useState<number>(0);
+  const column = data?.[currentColumn];
 
   const handleToday = useCallback(() => {
     if (data?.length > 1) {
@@ -46,11 +50,8 @@ function Agenda() {
     }
   }, [data, setCurrentColumn]);
 
-  const { width } = useWindowDimensions();
-
-  const flatListRef = useRef(null);
-
   const [alreadyScrolled, setAlreadyScrolled] = useState(false);
+
   useEffect(() => {
     setImmediate(() => {
       if (
@@ -61,7 +62,7 @@ function Agenda() {
         Array.isArray(data)
       ) {
         setAlreadyScrolled(true);
-        const index = data.findIndex((i) => i.start === currentColumn.start);
+        const index = data.findIndex((i) => i.start === column?.start);
         if (index !== -1) {
           setTimeout(() => {
             flatListRef.current.scrollToIndex({ index, viewPosition: 0.5 });
@@ -69,7 +70,7 @@ function Agenda() {
         }
       }
     });
-  }, [currentColumn, data, alreadyScrolled]);
+  }, [currentColumn, data, alreadyScrolled, column]);
 
   useEffect(() => {
     if (data?.length > 1 && !alreadyScrolled)
@@ -175,8 +176,8 @@ function Agenda() {
     <View style={{ flex: 1 }}>
       <PerspectivesNavbar
         handleToday={handleToday}
-        currentDateStart={currentColumn?.start}
-        currentDateEnd={currentColumn?.end}
+        currentDateStart={column?.start}
+        currentDateEnd={column?.end}
       />
       {data ? (
         <>
@@ -236,7 +237,7 @@ function Agenda() {
                     borderRadius: 99,
                     borderWidth: 1,
                     borderColor: theme[6],
-                    ...(item?.start === currentColumn?.start && {
+                    ...(item?.start === column?.start && {
                       backgroundColor: theme[10],
                       borderColor: theme[10],
                     }),
@@ -246,8 +247,7 @@ function Agenda() {
                     weight={500}
                     style={{
                       fontSize: 18,
-                      color:
-                        theme[item?.start === currentColumn?.start ? 1 : 12],
+                      color: theme[item?.start === column?.start ? 1 : 12],
                     }}
                   >
                     {dayjs(item.start).format(buttonTextFormats.big)}
@@ -257,7 +257,7 @@ function Agenda() {
             )}
             keyExtractor={(i) => `${i.start}-${i.end}`}
           />
-          {currentColumn && <Column mutate={mutate} column={currentColumn} />}
+          {column && <Column mutate={mutate} column={column} />}
         </>
       ) : (
         agendaFallback

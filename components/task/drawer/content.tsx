@@ -150,7 +150,7 @@ export function TaskDrawerContent({ handleClose }) {
                   </Text>
                 ),
                 style: {
-                  backgroundColor: labelColors[task.label.color][4],
+                  backgroundColor: labelColors[task.label.color][3],
                 },
               })}
             />

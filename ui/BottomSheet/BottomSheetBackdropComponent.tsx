@@ -5,6 +5,7 @@ import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
+  useDerivedValue,
 } from "react-native-reanimated";
 
 export const BottomSheetBackdropComponent = ({
@@ -16,9 +17,7 @@ export const BottomSheetBackdropComponent = ({
 }) => {
   // animated variables
   const { forceClose, collapse, animatedIndex } = useBottomSheet();
-  const handlePushDown = () => {
-    collapse();
-  };
+  const handlePushDown = () => collapse();
 
   const containerAnimatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
@@ -29,16 +28,21 @@ export const BottomSheetBackdropComponent = ({
     ),
   }));
 
+  const pointerEvents = useDerivedValue(() => {
+    return animatedIndex.value == -1 ? "none" : "auto";
+  });
+
   // styles
   const containerStyle = useMemo(
     () => [
       style,
       {
         backgroundColor: "#000",
+        pointerEvents,
       },
       containerAnimatedStyle,
     ],
-    [style, containerAnimatedStyle]
+    [style, containerAnimatedStyle, pointerEvents]
   );
 
   const handleClose = () => {
@@ -54,7 +58,7 @@ export const BottomSheetBackdropComponent = ({
 
   return (
     <Animated.View
-      style={containerStyle}
+      style={containerStyle as any}
       onPointerUp={dismissible === false ? handlePushDown : handleClose}
       onTouchEnd={dismissible === false ? handlePushDown : handleClose}
     />

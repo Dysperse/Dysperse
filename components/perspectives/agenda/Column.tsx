@@ -50,7 +50,6 @@ export function Column({
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
-      <Text>{JSON.stringify(column)}</Text>
       <FlatList
         refreshControl={
           <RefreshControl
@@ -144,11 +143,25 @@ export function Column({
               return (
                 <Container>
                   <Task
-                    onTaskUpdate={(newData) => {
-                      mutate([], {
-                        revalidate: false,
-                      });
-                      console.log(JSON.stringify(newData));
+                    onTaskUpdate={(newTask) => {
+                      mutate(
+                        (oldData) =>
+                          oldData.map((oldColumn) =>
+                            oldColumn.start === column.start
+                              ? {
+                                  ...oldColumn,
+                                  tasks: oldColumn.tasks.map((oldTask) =>
+                                    oldTask.id === newTask.id
+                                      ? newTask
+                                      : oldTask
+                                  ),
+                                }
+                              : oldColumn
+                          ),
+                        {
+                          revalidate: false,
+                        }
+                      );
                     }}
                     task={item}
                   />
