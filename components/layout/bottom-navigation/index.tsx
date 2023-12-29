@@ -7,6 +7,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
+  TouchableOpacity,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
@@ -167,23 +168,30 @@ function BottomNavigation() {
             flexDirection: "row",
           }}
         >
-          <IconButton
+          <TouchableOpacity
             onPress={() => {
               router.push("/");
             }}
+            style={{ padding: 30, marginLeft: -30 }}
           >
             <Icon size={28} filled={pathname == "/"}>
               home
             </Icon>
-          </IconButton>
+          </TouchableOpacity>
           <CreateDrawer>
             <IconButton variant="filled">
               <Icon size={30}>add</Icon>
             </IconButton>
           </CreateDrawer>
-          <IconButton onPress={() => snapToIndex(1)}>
+          <TouchableOpacity
+            onPress={() => snapToIndex(1)}
+            style={{
+              padding: 30,
+              marginRight: -30,
+            }}
+          >
             <Icon size={26}>stack</Icon>
-          </IconButton>
+          </TouchableOpacity>
         </View>
       </Animated.View>
       <Animated.View style={tabListStyle}>
