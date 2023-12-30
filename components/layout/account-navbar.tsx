@@ -15,6 +15,7 @@ import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
 import Skeleton from "@/ui/Skeleton";
+import { useCommandPalette } from "./command-palette";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
@@ -25,7 +26,7 @@ export function NavbarProfilePicture() {
       onPress={() => router.push("/account")}
       style={{
         zIndex: 999,
-        borderWidth: 10,
+        borderWidth: width > 600 ? 0 : 10,
         borderColor: "transparent",
         marginHorizontal: -10,
         borderRadius: 999,
@@ -33,14 +34,14 @@ export function NavbarProfilePicture() {
     >
       <Skeleton
         rounded
-        size={width > 600 ? 30 : 40}
+        size={width > 600 ? 35 : 40}
         isLoading={Boolean(!session?.user)}
       >
         {session?.user && (
           <ProfilePicture
             name={session.user.profile.name}
             image={session.user.profile.picture}
-            size={width > 600 ? 30 : 40}
+            size={width > 600 ? 35 : 40}
             style={{
               pointerEvents: "none",
             }}
@@ -54,10 +55,10 @@ export function NavbarProfilePicture() {
 export default function AccountNavbar(props: any) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
-
+  const { openPalette } = useCommandPalette();
   const search = useMemo(
     () => (
-      <IconButton style={{ marginRight: 5 }}>
+      <IconButton style={{ marginRight: 5 }} onPress={openPalette}>
         <Icon size={30}>electric_bolt</Icon>
       </IconButton>
     ),

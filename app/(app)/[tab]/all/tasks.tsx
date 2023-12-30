@@ -3,6 +3,7 @@ import { Task } from "@/components/task";
 import CreateTask from "@/components/task/create";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -101,7 +102,7 @@ export default function Page() {
               justifyContent: "center",
             }}
           >
-            <ActivityIndicator />
+            <Spinner />
           </View>
         )}
       </KeyboardAvoidingView>

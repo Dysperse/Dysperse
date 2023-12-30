@@ -1,14 +1,12 @@
 import Text from "@/ui/Text";
-import { NativeStackHeaderProps } from "@react-navigation/native-stack/lib/typescript/src/types";
-import { StackHeaderProps, StackNavigationProp } from "@react-navigation/stack";
+import { StackHeaderProps } from "@react-navigation/stack";
+import { router } from "expo-router";
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
 import IconButton from "./IconButton";
 import { useColorTheme } from "./color/theme-provider";
-import { addHslAlpha } from "./color";
-import { router } from "expo-router";
 
 interface NavbarProps extends StackHeaderProps {
   icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
@@ -33,13 +31,17 @@ export default function Navbar(props: any) {
         style={{
           height: 64 + insets.top,
           paddingTop: insets.top,
-          backgroundColor: theme[width > 600 ? 2 : 1],
+          backgroundColor: theme[1],
           flexDirection: "row",
           paddingHorizontal: 10,
           alignItems: "center",
         }}
       >
-        <IconButton onPress={handleBack} style={{ width: 45, height: 45 }}>
+        <IconButton
+          onPress={handleBack}
+          size={width > 600 ? 40 : 45}
+          variant={width > 600 ? "filled" : "text"}
+        >
           <Icon>{props.icon || "west"}</Icon>
         </IconButton>
         <Text style={{ fontFamily: "body_700", paddingLeft: 5 }}>

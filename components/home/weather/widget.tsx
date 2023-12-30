@@ -8,14 +8,13 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable } from "react-native";
 import { WeatherModal } from "./modal";
 import { styles } from "../styles";
+import Spinner from "@/ui/Spinner";
 
 export function WeatherWidget() {
   const [location, setLocation] = useState(null);
-  const [locationData, setLocationData] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const [airQualityData, setAirQualityData] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const checkLocationPermission = async () => {
     const { status } = await Location.getForegroundPermissionsAsync();
@@ -26,7 +25,6 @@ export function WeatherWidget() {
   };
 
   const requestLocationPermission = async () => {
-    setLoading(false);
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status === "granted") {
       const location = await Location.getCurrentPositionAsync({});
@@ -70,8 +68,6 @@ export function WeatherWidget() {
           .catch(() => setError(true));
       })
       .catch(() => setError(true));
-
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -88,13 +84,13 @@ export function WeatherWidget() {
   const onPressHandler = async () => {
     if (!location) {
       await requestLocationPermission();
-    } else if (locationData && weatherData) {
+    } else if (weatherData) {
       alert(JSON.stringify(weatherData, null, 2));
     }
   };
 
   const theme = useColorTheme();
-  return loading || (location && !weatherData) ? (
+  return location && !weatherData ? (
     <Pressable
       style={({ pressed, hovered }: any) => [
         styles.card,
@@ -104,7 +100,7 @@ export function WeatherWidget() {
       ]}
       onPress={onPressHandler}
     >
-      <ActivityIndicator style={{ marginVertical: "auto" }} />
+      <Spinner />
     </Pressable>
   ) : error ? (
     <Pressable

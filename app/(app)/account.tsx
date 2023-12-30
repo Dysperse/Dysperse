@@ -7,6 +7,7 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
@@ -137,6 +138,6 @@ export default function Index() {
       <ErrorAlert />
     </View>
   ) : (
-    <ActivityIndicator />
+    <Spinner />
   );
 }

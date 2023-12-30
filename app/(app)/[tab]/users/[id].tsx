@@ -3,6 +3,7 @@ import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import dayjs from "dayjs";
@@ -166,7 +167,7 @@ export default function Page() {
             justifyContent: "center",
           }}
         >
-          <ActivityIndicator />
+          <Spinner />
         </View>
       )}
     </ContentWrapper>

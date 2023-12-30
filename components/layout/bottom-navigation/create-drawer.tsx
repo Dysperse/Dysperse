@@ -3,7 +3,6 @@ import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { router } from "expo-router";
 import React, { cloneElement, useCallback, useRef } from "react";
 import { View, useWindowDimensions } from "react-native";
 import CreateTask from "../../task/create";
@@ -29,7 +28,7 @@ export const CreateDrawer = ({ children }) => {
         }}
         onClose={handleClose}
       >
-        <View className="p-5">
+        <View>
           {[
             {
               name: "Task",
@@ -44,11 +43,6 @@ export const CreateDrawer = ({ children }) => {
             { name: "Item", icon: "package_2", callback: () => {} },
             { name: "Note", icon: "sticky_note_2", callback: () => {} },
             { name: "Collection", icon: "interests", callback: () => {} },
-            {
-              name: "Tab",
-              icon: "tab",
-              callback: () => router.push("/open"),
-            },
           ].map(
             ({
               Wrapper = (p) => <React.Fragment {...p} />,

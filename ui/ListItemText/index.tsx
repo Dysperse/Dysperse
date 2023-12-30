@@ -10,12 +10,12 @@ interface DListItemTextProps extends DTextProps {
 
 export default function ListItemText(props: DListItemTextProps) {
   return (
-    <View style={[{ gap: 3 }, props.style]}>
+    <View style={[{ gap: 3, flex: 1 }, props.style]}>
       <Text weight={600} {...props.primaryProps}>
         {props.primary}
       </Text>
       {props.secondary && (
-        <Text style={{ opacity: 0.6, fontSize: 13 }} {...props.secondaryProps}>
+        <Text style={{ opacity: 0.6, fontSize: 14 }} {...props.secondaryProps}>
           {props.secondary}
         </Text>
       )}

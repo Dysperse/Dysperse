@@ -63,12 +63,14 @@ export function Menu({
         <View
           style={{
             paddingHorizontal: 23.5,
+            height: "100%",
           }}
         >
           <View
             style={{
               borderRadius: 20,
               paddingVertical: 20,
+              height: "100%",
               backgroundColor: theme[1],
             }}
           >

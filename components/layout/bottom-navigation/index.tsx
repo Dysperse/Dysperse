@@ -32,6 +32,7 @@ import useSWR from "swr";
 import { CreateDrawer } from "./create-drawer";
 import { OpenTabsList } from "./tabs/carousel";
 import { Tab } from "./tabs/tab";
+import Spinner from "@/ui/Spinner";
 
 export const getBottomNavigationHeight = (pathname) =>
   pathname === "/" ? 58 : 58 + 50;
@@ -278,7 +279,7 @@ function BottomNavigation() {
         ) : error ? (
           <ErrorAlert />
         ) : (
-          <ActivityIndicator />
+          <Spinner />
         )}
       </Animated.View>
     </Animated.View>
@@ -290,7 +291,7 @@ export const BottomAppBar = memo(function BottomAppBar() {
   const { width } = useWindowDimensions();
   const isKeyboardVisible = useKeyboardVisibility();
   const shouldHide =
-    ["/account", "/tabs", "/open", "/space"].includes(pathname) ||
+    ["/account", "/tabs", "/open", "/space", "/friends"].includes(pathname) ||
     isKeyboardVisible;
 
   const theme = useColorTheme();

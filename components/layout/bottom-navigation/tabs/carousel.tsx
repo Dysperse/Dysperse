@@ -22,6 +22,7 @@ import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
+import Spinner from "@/ui/Spinner";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
@@ -164,8 +165,8 @@ export function OpenTabsList() {
       //</NativeViewGestureHandler>
     )
   ) : (
-    <View>
-      <ActivityIndicator />
+    <View style={{ alignItems: "center" }}>
+      <Spinner />
     </View>
   );
 }

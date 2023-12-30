@@ -43,7 +43,7 @@ export function ButtonGroup({
             {
               backgroundColor:
                 state[0] === option.value
-                  ? theme[pressed ? 10 : 9]
+                  ? theme[pressed ? 10 : 11]
                   : theme[pressed ? 5 : hovered ? 4 : 3],
               borderRadius: 15,
               paddingHorizontal: 10,
@@ -58,6 +58,7 @@ export function ButtonGroup({
             numberOfLines={1}
             style={[
               {
+                color: theme[state[0] === option.value ? 3 : 11],
                 paddingHorizontal: 10,
                 paddingVertical: 5,
                 fontFamily: "body_600",

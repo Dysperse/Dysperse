@@ -37,6 +37,7 @@ import Toast from "react-native-toast-message";
 import { SWRConfig } from "swr";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
+import { CommandPaletteProvider } from "@/components/layout/command-palette";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -196,86 +197,101 @@ export default function AppLayout() {
           }}
         >
           <BottomSheetModalProvider>
-            <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
-            <View
-              style={{
-                flexDirection: width > 600 ? "row" : "column",
-                flex: 1,
-                backgroundColor: theme[1],
-              }}
-            >
-              {width > 600 && <Sidebar />}
-              <ThemeProvider
-                value={{
-                  ...DefaultTheme,
-                  colors: {
-                    ...DefaultTheme.colors,
-                    background: theme[1],
-                  },
+            <CommandPaletteProvider>
+              <StatusBar
+                barStyle={!isDark ? "dark-content" : "light-content"}
+              />
+              <View
+                style={{
+                  flexDirection: width > 600 ? "row" : "column",
+                  flex: 1,
+                  backgroundColor: theme[1],
                 }}
               >
-                <JsStack
-                  screenOptions={{
-                    header:
-                      width > 600
-                        ? DesktopHeader
-                        : (props: any) => <AccountNavbar {...props} />,
-                    headerTransparent: true,
-                    gestureResponseDistance: width,
-                    cardShadowEnabled: false,
-                    gestureEnabled: true,
-                    cardStyle: {
-                      backgroundColor: theme[1],
-                      padding: width > 600 ? 10 : 0,
-                      paddingTop: 0,
+                {width > 600 && <Sidebar />}
+                <ThemeProvider
+                  value={{
+                    ...DefaultTheme,
+                    colors: {
+                      ...DefaultTheme.colors,
+                      background: theme[1],
                     },
-                    // change opacity of the previous screen when swipe
-                    cardOverlayEnabled: true,
-                    animationEnabled: false,
-                    gestureVelocityImpact: 0.7,
                   }}
                 >
-                  <JsStack.Screen name="index" options={{}} />
-                  <JsStack.Screen
-                    name="account"
-                    options={{
-                      header: (props) => (
-                        <Navbar icon="arrow_back_ios_new" {...props} />
-                      ),
-                      animationEnabled: true,
-                      ...TransitionPresets.SlideFromRightIOS,
-                      cardStyleInterpolator: forHorizontalIOS,
+                  <JsStack
+                    screenOptions={{
+                      header:
+                        width > 600
+                          ? DesktopHeader
+                          : (props: any) => <AccountNavbar {...props} />,
+                      headerTransparent: true,
+                      gestureResponseDistance: width,
+                      cardShadowEnabled: false,
+                      gestureEnabled: true,
+                      cardStyle: {
+                        backgroundColor: theme[1],
+                        padding: width > 600 ? 10 : 0,
+                        paddingTop: 0,
+                      },
+                      // change opacity of the previous screen when swipe
+                      cardOverlayEnabled: true,
+                      animationEnabled: false,
+                      gestureVelocityImpact: 0.7,
                     }}
-                  />
-                  <JsStack.Screen
-                    name="open"
-                    options={{
-                      header: (props) => <Navbar {...props} />,
-                      animationEnabled: true,
-                      ...TransitionPresets.SlideFromRightIOS,
-                      cardStyleInterpolator: forHorizontalIOS,
-                    }}
-                  />
-                  <JsStack.Screen
-                    name="space"
-                    options={{
-                      header: () => null,
-                      animationEnabled: true,
-                      presentation: "modal",
-                      ...TransitionPresets.ModalPresentationIOS,
-                      gestureResponseDistance: height,
-                    }}
-                  />
-                  <JsStack.Screen
-                    name="[tab]/perspectives/agenda/[type]/[start]"
-                    options={{
-                      header: width > 600 ? DesktopHeader : () => null,
-                    }}
-                  />
-                </JsStack>
-              </ThemeProvider>
-              {width < 600 && <BottomAppBar />}
-            </View>
+                  >
+                    <JsStack.Screen name="index" options={{}} />
+                    <JsStack.Screen
+                      name="account"
+                      options={{
+                        header: (props) => (
+                          <Navbar icon="arrow_back_ios_new" {...props} />
+                        ),
+                        animationEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="friends"
+                      options={{
+                        header: (props) => (
+                          <Navbar icon="arrow_back_ios_new" {...props} />
+                        ),
+                        animationEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="open"
+                      options={{
+                        header: (props) => <Navbar {...props} />,
+                        animationEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="space"
+                      options={{
+                        header: () => null,
+                        animationEnabled: true,
+                        presentation: "modal",
+                        ...TransitionPresets.ModalPresentationIOS,
+                        gestureResponseDistance: height,
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="[tab]/perspectives/agenda/[type]/[start]"
+                      options={{
+                        header: width > 600 ? DesktopHeader : () => null,
+                      }}
+                    />
+                  </JsStack>
+                </ThemeProvider>
+                {width < 600 && <BottomAppBar />}
+              </View>
+            </CommandPaletteProvider>
           </BottomSheetModalProvider>
         </SWRConfig>
         <Toast config={toastConfig(theme)} />

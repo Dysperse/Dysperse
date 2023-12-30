@@ -1,4 +1,4 @@
-import { Pressable, StyleProp, ViewStyle } from "react-native";
+import { Pressable, StyleProp, TextStyle, ViewStyle } from "react-native";
 import Text from "../Text";
 import { useColorTheme } from "../color/theme-provider";
 
@@ -11,6 +11,7 @@ interface ChipProps {
   iconPosition?: "before" | "after";
   dense?: boolean;
   color?: string;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 export default function Chip({
@@ -22,6 +23,7 @@ export default function Chip({
   iconPosition = "before",
   dense = false,
   color,
+  textStyle = {},
 }: ChipProps) {
   const theme = useColorTheme();
 
@@ -60,7 +62,10 @@ export default function Chip({
       {iconPosition === "before" && icon}
       {typeof label === "string" ? (
         <Text
-          style={{ color: color || theme[11], ...(dense && { fontSize: 13 }) }}
+          style={[
+            { color: color || theme[11], ...(dense && { fontSize: 13 }) },
+            textStyle,
+          ]}
           weight={400}
         >
           {label}

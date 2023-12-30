@@ -34,7 +34,7 @@ export function Button(props: DButtonProps) {
       style={({ hovered, pressed }: any) => ({
         flexDirection: "row",
         alignItems: "center",
-        borderWidth: 2,
+        borderWidth: 1,
         borderRadius: 999,
         paddingHorizontal: 10,
         height: 40,
@@ -42,6 +42,7 @@ export function Button(props: DButtonProps) {
         justifyContent: "center",
         ...(variant === "outlined"
           ? {
+              paddingHorizontal: 20,
               backgroundColor: pressed
                 ? theme[5]
                 : hovered

@@ -1,9 +1,6 @@
 import { CreateDrawer } from "@/components/layout/bottom-navigation/create-drawer";
-import { useSession } from "@/context/AuthProvider";
-import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { ButtonGroup } from "@/ui/ButtonGroup";
-import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -17,12 +14,12 @@ import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Linking,
   Platform,
   Pressable,
-  SectionList,
   StyleSheet,
   View,
   useColorScheme,
@@ -31,6 +28,8 @@ import {
 import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { NavbarProfilePicture } from "../account-navbar";
+import { useCommandPalette } from "../command-palette";
+import Spinner from "@/ui/Spinner";
 
 export const getSidebarItems = async (session) => {
   // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
@@ -142,11 +141,23 @@ export const styles = StyleSheet.create({
   },
 });
 
-function SpaceButton({ item }: any) {
+function SpaceButton({ handleClose, item }: any) {
   const theme = useColor(item.space.color, useColorScheme() === "dark");
+
+  const handleSpacePress = useCallback(() => {
+    handleClose();
+    setTimeout(
+      () =>
+        router.push({
+          pathname: "/space",
+        }),
+      1000
+    );
+  }, [handleClose]);
 
   return (
     <ListItemButton
+      onPress={handleSpacePress}
       style={({ pressed, hovered }: any) => ({
         flexDirection: "row",
         alignItems: "center",
@@ -172,7 +183,7 @@ function SpaceButton({ item }: any) {
   );
 }
 
-export function SpacesTrigger() {
+export function SpacesTrigger({ children }) {
   const ref = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
   const [view, setView] = useState("all");
@@ -181,16 +192,7 @@ export function SpacesTrigger() {
   const handleClose = useCallback(() => ref.current.close(), []);
 
   return (
-    <Menu
-      menuRef={ref}
-      width={400}
-      height={["70%"]}
-      trigger={
-        <IconButton style={{ marginLeft: "auto" }}>
-          <Icon style={{ color: theme[8] }}>tag</Icon>
-        </IconButton>
-      }
-    >
+    <Menu menuRef={ref} width={400} height={["70%"]} trigger={children}>
       {data ? (
         <FlatList
           style={{ padding: 10 }}
@@ -227,12 +229,14 @@ export function SpacesTrigger() {
           }
           contentContainerStyle={{ padding: 20 }}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }: any) => <SpaceButton item={item} />}
+          renderItem={({ item }: any) => (
+            <SpaceButton handleClose={handleClose} item={item} />
+          )}
         />
       ) : error ? (
         <ErrorAlert />
       ) : (
-        <ActivityIndicator />
+        <Spinner />
       )}
     </Menu>
   );
@@ -268,84 +272,24 @@ export const createTab = async (
   });
 };
 
-export function Button({ section, item }: any) {
-  const [loading, setLoading] = useState(false);
-  const { sessionToken } = useUser();
-
-  const isActive = Boolean(
-    // item?.href === pathname || pathname?.includes(item.query)
-    false
-  );
-
-  const { mutate } = useSWR(["user/tabs"]);
-
-  const handlePress = async (tab) => {
-    try {
-      setLoading(true);
-      await createTab(sessionToken, tab);
-      await mutate();
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      alert("Something went wrong. Please try again later");
-    }
-  };
-  const theme = useColorTheme();
-
-  return (
-    <Pressable
-      style={({ pressed, hovered }: any) => ({
-        backgroundColor: isActive
-          ? theme[3]
-          : pressed
-          ? theme[3]
-          : hovered
-          ? theme[4]
-          : undefined,
-        paddingHorizontal: 20,
-        paddingVertical: 7,
-        flexDirection: "row",
-        gap: 15,
-        alignItems: "center",
-      })}
-      onPress={() => handlePress(item)}
-    >
-      {item.collection ? (
-        <Emoji size={23} emoji={item.collection.emoji || "1f4e6"} />
-      ) : (
-        <Icon size={23}>{item.icon}</Icon>
-      )}
-      <Text style={{ flex: 1 }}>{item?.collection?.name || item.label}</Text>
-      {loading && <ActivityIndicator />}
-    </Pressable>
-  );
-}
-
 export function Sidebar() {
   const theme = useColorTheme();
-  const { session } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any[]>([]);
-
-  useEffect(() => {
-    getSidebarItems(session).then((sections) => {
-      setData(sections);
-      setIsLoading(false);
-    });
-  }, [session]);
-
+  const { openPalette } = useCommandPalette();
   const { width, height } = useWindowDimensions();
+
+  const openSupport = useCallback(() => {
+    Linking.openURL("https://blog.dysperse.com");
+  }, []);
 
   return (
     <View
       style={{
         height: "100%",
-        // borderRightWidth: 1,
-        backgroundColor: theme[width > 600 ? 2 : 1],
-        // borderRightColor: theme[5],
-        width: width > 600 ? 240 : "100%",
+        backgroundColor: width > 600 ? theme[2] : undefined,
+        width: width > 600 ? 80 : "100%",
         flexDirection: "column",
         maxHeight: width > 600 ? height : undefined,
+        alignItems: "center",
       }}
     >
       {width > 600 && (
@@ -358,8 +302,7 @@ export function Sidebar() {
             justifyContent: "space-between",
           }}
         >
-          <Logo color={theme[6]} size={35} />
-          <NavbarProfilePicture />
+          <Logo color={theme[7]} size={40} />
         </View>
       )}
       {width > 600 && (
@@ -376,9 +319,10 @@ export function Sidebar() {
                 marginBottom: 15,
                 shadowOffset: { height: 5, width: 0 },
                 borderRadius: 8,
-                paddingHorizontal: 15,
-                paddingVertical: 5,
+                height: 50,
+                width: 50,
                 alignItems: "center",
+                justifyContent: "center",
                 gap: 15,
                 ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
               })}
@@ -386,84 +330,31 @@ export function Sidebar() {
               <Icon bold style={{ opacity: 0.8 }}>
                 add
               </Icon>
-              <Text style={{ color: theme[11] }} weight={700}>
-                Create
-              </Text>
             </Pressable>
           </CreateDrawer>
         </View>
       )}
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <SectionList
-          sections={data}
-          ListHeaderComponent={
-            width < 600 && (
-              <Text
-                style={{
-                  marginTop: 150,
-                  fontFamily: "heading",
-                  textTransform: "uppercase",
-                  fontSize: 50,
-                  paddingHorizontal: 20,
-                }}
-              >
-                Open
-              </Text>
-            )
-          }
-          ListEmptyComponent={
-            <View>
-              <Emoji emoji="1F62D" size={40} />
-              <Text
-                textClassName="mt-3"
-                style={{ fontFamily: "body_600", fontSize: 17 }}
-              >
-                No results found
-              </Text>
-            </View>
-          }
-          contentContainerStyle={{
-            paddingBottom: 30,
-          }}
-          renderItem={({ item, section }) => (
-            <Button item={item} section={section} />
-          )}
-          renderSectionHeader={({ section }) =>
-            section.title === "ALL" ? (
-              <View style={{ paddingHorizontal: 20 }}>
-                <View
-                  style={{
-                    height: 2,
-                    backgroundColor: theme[4],
-                    borderRadius: 9,
-                    marginVertical: 10,
-                  }}
-                />
-                <Text
-                  variant="eyebrow"
-                  style={{ marginBottom: 10, marginTop: 6 }}
-                >
-                  {section.title}
-                </Text>
-              </View>
-            ) : (
-              <Text
-                variant="eyebrow"
-                style={{
-                  paddingHorizontal: 20,
-                  marginBottom: 10,
-                  marginTop: 20,
-                }}
-              >
-                {section.title}
-              </Text>
-            )
-          }
-          keyExtractor={(item) => item.slug + JSON.stringify(item.params)}
-        />
-      )}
+      <IconButton onPress={openPalette} size={40}>
+        <Icon style={{ transform: [{ rotate: "-11deg" }] }}>electric_bolt</Icon>
+      </IconButton>
+      <View
+        style={{
+          marginTop: "auto",
+          marginBottom: 10,
+          gap: 10,
+          alignItems: "center",
+        }}
+      >
+        <IconButton variant="filled" onPress={openSupport}>
+          <Icon>question_mark</Icon>
+        </IconButton>
+        <SpacesTrigger>
+          <IconButton variant="filled">
+            <Icon>workspaces</Icon>
+          </IconButton>
+        </SpacesTrigger>
+        <NavbarProfilePicture />
+      </View>
     </View>
   );
 }
