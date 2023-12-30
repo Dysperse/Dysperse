@@ -310,6 +310,7 @@ function SpaceInfo() {
     >
       <Button variant="outlined">
         <Icon>palette</Icon>
+        <ButtonText>Edit</ButtonText>
       </Button>
     </View>
   );
