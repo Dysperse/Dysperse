@@ -6,6 +6,7 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import useKeyboardShortcut from "use-keyboard-shortcut";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   createContext,
@@ -193,6 +194,12 @@ export function CommandPaletteProvider({ children }) {
 
   const [query, setQuery] = useState("");
 
+  useKeyboardShortcut(["Control", "K"], () => handleOpen(), {
+    overrideSystem: true,
+    ignoreInputFields: true,
+    repeatOnHold: false,
+  });
+
   return (
     <CommandPaletteContext.Provider value={{ openPalette: handleOpen }}>
       {children}
@@ -252,6 +259,7 @@ export function CommandPaletteProvider({ children }) {
                 </TouchableOpacity>
               </View>
               <TextField
+                onKeyPress={(e) => e.key === "Escape" && handleClose()}
                 bottomSheet
                 placeholder="Search labels, tasks, notes, & more..."
                 placeholderTextColor={theme[6]}

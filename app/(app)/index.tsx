@@ -200,7 +200,7 @@ function FriendActivity() {
         borderWidth: 1,
         borderColor: theme[5],
         borderRadius: 20,
-        height: 150 * 2 + 2,
+        height: 180 * 2 + 2,
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -220,14 +220,14 @@ function FriendActivity() {
                 key={"all"}
                 onPress={handleFriendsPress}
                 style={{
-                  height: 150,
+                  height: 180,
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
                   flex: 0.5,
                 }}
               >
-                <Avatar size={70} disabled>
+                <Avatar size={90} disabled>
                   <Icon size={30}>groups_2</Icon>
                 </Avatar>
                 <Text style={{ opacity: 0.6 }}>All Friends</Text>
@@ -236,7 +236,7 @@ function FriendActivity() {
               <TouchableOpacity
                 key={friend.user.email}
                 style={{
-                  height: 150,
+                  height: 180,
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
@@ -245,8 +245,8 @@ function FriendActivity() {
               >
                 <View
                   style={{
-                    width: 70,
-                    height: 70,
+                    width: 90,
+                    height: 90,
                     borderRadius: 999,
                     position: "relative",
                   }}
@@ -255,7 +255,7 @@ function FriendActivity() {
                     style={{ pointerEvents: "none" }}
                     name={friend.user.profile?.name || "--"}
                     image={friend.user.profile?.picture}
-                    size={70}
+                    size={90}
                   />
                   <Chip
                     // dense
@@ -364,10 +364,6 @@ export default function Index() {
           <SpaceInfo />
           <Text variant="eyebrow">Friends</Text>
           <FriendActivity />
-          <Text variant="eyebrow" style={{ marginTop: 20 }}>
-            Recent activity
-          </Text>
-          <RecentActivity />
         </View>
       </ScrollView>
     </ContentWrapper>
