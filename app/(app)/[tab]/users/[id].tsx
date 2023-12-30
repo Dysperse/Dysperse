@@ -57,105 +57,125 @@ export default function Page() {
   return (
     <ContentWrapper>
       {data ? (
-        <ScrollView contentContainerStyle={{ padding: 20, gap: 20 }}>
-          <Pressable
-            style={() => [
-              profileStyles.card,
-              themedCardValues,
-              {
-                alignItems: "center",
-                paddingVertical: 40,
-                flexDirection: "column",
-              },
-            ]}
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: width > 600 ? "row" : "column",
+              maxHeight: width > 600 ? "100%" : undefined,
+            }}
           >
-            <Image
-              source={{
-                uri: data.profile?.picture,
-              }}
+            <View
               style={{
-                width: 140,
-                height: 140,
-                borderRadius: 99,
-                marginBottom: 20,
+                padding: 20,
+                width: width > 600 ? 300 : undefined,
+                paddingRight: 10,
               }}
-            />
-            <Text heading style={{ fontSize: 40 }} numberOfLines={1}>
-              {data.profile.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                opacity: 0.6,
-                textAlign: "center",
-              }}
-              numberOfLines={1}
-              weight={600}
             >
-              {data.username && "@"}
-              {data.username || data.email}
-            </Text>
-          </Pressable>
-          <Pressable style={() => [profileStyles.card, themedCardValues]}>
-            <View style={profileStyles.cardContent}>
-              <Text variant="eyebrow">Local Time</Text>
-              <Text style={profileStyles.statHeading}>
-                {dayjs(new Date().toISOString(), data.timeZone).format(
-                  "h:mm A"
-                )}
-              </Text>
-            </View>
-            <Avatar size={40}>
-              <Icon>access_time</Icon>
-            </Avatar>
-          </Pressable>
-          <Pressable style={() => [profileStyles.card, themedCardValues]}>
-            <View style={profileStyles.cardContent}>
-              <Text variant="eyebrow">Last active</Text>
-              <Text style={profileStyles.statHeading}>
-                {dayjs(data.profile.lastActive).fromNow()}
-              </Text>
-            </View>
-            <Avatar size={40}>
-              <Icon>emoji_objects</Icon>
-            </Avatar>
-          </Pressable>
-          <Pressable style={() => [profileStyles.card, themedCardValues]}>
-            <View style={profileStyles.cardContent}>
-              <Text variant="eyebrow">Birthday</Text>
-              <Text style={profileStyles.statHeading}>
-                {dayjs(data.profile.birthday).format("MMM Do")}
-              </Text>
-              <Text>
-                In{" "}
-                {
-                  -dayjs().diff(
-                    dayjs(data.profile.birthday).set(
-                      "year",
-                      new Date().getFullYear() + 1
-                    ),
-                    "days"
-                  )
-                }{" "}
-                days
-              </Text>
-            </View>
-            <Avatar size={40}>
-              <Icon>cake</Icon>
-            </Avatar>
-          </Pressable>
-          {data.profile.bio && (
-            <Pressable style={() => [profileStyles.card, themedCardValues]}>
-              <View style={profileStyles.cardContent}>
-                <Text variant="eyebrow">About</Text>
-                <Text style={profileStyles.statHeading}>
-                  {data.profile.bio}
+              <Pressable
+                style={() => [
+                  profileStyles.card,
+                  themedCardValues,
+                  {
+                    alignItems: "center",
+                    paddingVertical: 40,
+                    flexDirection: "column",
+                  },
+                ]}
+              >
+                <Image
+                  source={{
+                    uri: data.profile?.picture,
+                  }}
+                  style={{
+                    width: 140,
+                    height: 140,
+                    borderRadius: 99,
+                    marginBottom: 20,
+                  }}
+                />
+                <Text heading style={{ fontSize: 40 }} numberOfLines={1}>
+                  {data.profile.name}
                 </Text>
-              </View>
-            </Pressable>
-          )}
-          <Text>{JSON.stringify(data, null, 2)}</Text>
-        </ScrollView>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    opacity: 0.6,
+                    textAlign: "center",
+                  }}
+                  numberOfLines={1}
+                  weight={600}
+                >
+                  {data.username && "@"}
+                  {data.username || data.email}
+                </Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              style={{ flex: 1, height: "100%" }}
+              contentContainerStyle={{ padding: 20, paddingLeft: 10, gap: 20 }}
+            >
+              <Pressable style={() => [profileStyles.card, themedCardValues]}>
+                <View style={profileStyles.cardContent}>
+                  <Text variant="eyebrow">Local Time</Text>
+                  <Text style={profileStyles.statHeading}>
+                    {dayjs(new Date().toISOString(), data.timeZone).format(
+                      "h:mm A"
+                    )}
+                  </Text>
+                </View>
+                <Avatar size={40}>
+                  <Icon>access_time</Icon>
+                </Avatar>
+              </Pressable>
+              <Pressable style={() => [profileStyles.card, themedCardValues]}>
+                <View style={profileStyles.cardContent}>
+                  <Text variant="eyebrow">Last active</Text>
+                  <Text style={profileStyles.statHeading}>
+                    {dayjs(data.profile.lastActive).fromNow()}
+                  </Text>
+                </View>
+                <Avatar size={40}>
+                  <Icon>emoji_objects</Icon>
+                </Avatar>
+              </Pressable>
+              <Pressable style={() => [profileStyles.card, themedCardValues]}>
+                <View style={profileStyles.cardContent}>
+                  <Text variant="eyebrow">Birthday</Text>
+                  <Text style={profileStyles.statHeading}>
+                    {dayjs(data.profile.birthday).format("MMM Do")}
+                  </Text>
+                  <Text>
+                    In{" "}
+                    {
+                      -dayjs().diff(
+                        dayjs(data.profile.birthday).set(
+                          "year",
+                          new Date().getFullYear() + 1
+                        ),
+                        "days"
+                      )
+                    }{" "}
+                    days
+                  </Text>
+                </View>
+                <Avatar size={40}>
+                  <Icon>cake</Icon>
+                </Avatar>
+              </Pressable>
+              {data.profile.bio && (
+                <Pressable style={() => [profileStyles.card, themedCardValues]}>
+                  <View style={profileStyles.cardContent}>
+                    <Text variant="eyebrow">About</Text>
+                    <Text style={profileStyles.statHeading}>
+                      {data.profile.bio}
+                    </Text>
+                  </View>
+                </Pressable>
+              )}
+              {/* <Text>{JSON.stringify(data, null, 2)}</Text> */}
+            </ScrollView>
+          </View>
+        </View>
       ) : error ? (
         <ErrorAlert />
       ) : (
