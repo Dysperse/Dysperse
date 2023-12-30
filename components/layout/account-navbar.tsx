@@ -72,7 +72,7 @@ export default function AccountNavbar(props: any) {
           paddingTop: insets.top,
           gap: 10,
           flexDirection: "row",
-          paddingHorizontal: 20,
+          paddingHorizontal: 25,
           alignItems: "center",
           backgroundColor: Platform.OS === "ios" ? "transparent" : theme[1],
         }}
@@ -87,13 +87,6 @@ export default function AccountNavbar(props: any) {
         {search}
         <NavbarProfilePicture />
       </View>
-      <View
-        style={{
-          height: 2,
-          backgroundColor: theme[5],
-          marginBottom: -1.5,
-        }}
-      />
     </View>
   );
 }

@@ -17,6 +17,8 @@ interface DBottomSheetProps extends BottomSheetProps {
   stackBehavior?: "replace" | "push";
   appearsOnIndex?: number;
   dismissible?: boolean;
+  disableBackHandler?: boolean;
+  disableEscapeHandler?: boolean;
 }
 
 export default function BottomSheet(props: DBottomSheetProps) {
@@ -32,6 +34,7 @@ export default function BottomSheet(props: DBottomSheetProps) {
 
   return (
     <BottomSheetModal
+      keyboardBlurBehavior="restore"
       animationConfigs={animationConfigs}
       stackBehavior="push"
       ref={props.sheetRef}
@@ -39,6 +42,7 @@ export default function BottomSheet(props: DBottomSheetProps) {
         <BottomSheetBackdropComponent {...d} dismissible={props.dismissible} />
       )}
       onChange={(e) => {
+        console.log(e);
         if (e === -1) props.onClose();
       }}
       backgroundStyle={{
@@ -53,8 +57,8 @@ export default function BottomSheet(props: DBottomSheetProps) {
       }}
       {...props}
     >
-      <BottomSheetBackHandler />
-      {Platform.OS === "web" && (
+      {props.disableBackHandler !== true && <BottomSheetBackHandler />}
+      {Platform.OS === "web" && props.disableEscapeHandler !== true && (
         <BottomSheetEscapeHandler handleClose={props.onClose} />
       )}
       {props.children}

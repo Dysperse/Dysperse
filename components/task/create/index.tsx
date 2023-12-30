@@ -19,13 +19,18 @@ import dayjs, { Dayjs } from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Dimensions,
+  Keyboard,
   Platform,
   Pressable,
   StyleSheet,
   View,
   useColorScheme,
 } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 
@@ -197,17 +202,26 @@ export default function CreateTask({
   const trigger = cloneElement(children, { onPress: handleOpen });
   const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
 
+  const rotate = useSharedValue(0);
+  const rotateStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotate: `${rotate.value}deg`,
+        },
+      ],
+    };
+  });
+
   return (
     <>
       {trigger}
       <BottomSheet
-        stackBehavior="replace"
         onClose={handleClose}
         sheetRef={ref}
-        snapPoints={Platform.OS === "android" ? ["50%"] : ["40%"]}
+        snapPoints={["40%"]}
         maxWidth={500}
         keyboardBehavior="interactive"
-        android_keyboardInputMode="adjustResize"
         footerComponent={() => (
           <View
             style={{
@@ -237,6 +251,10 @@ export default function CreateTask({
                 menuRef={menuRef}
                 height={[365]}
                 trigger={<Chip icon={<Icon>add</Icon>} />}
+                onOpen={() => {
+                  Keyboard.dismiss();
+                }}
+                onClose={() => nameRef.current?.focus()}
               >
                 <View
                   style={{
@@ -310,7 +328,7 @@ export default function CreateTask({
             </View>
             <Menu
               menuRef={dateMenuRef}
-              height={[440]}
+              height={[440 + 23.5]}
               trigger={
                 <Chip
                   style={{ marginLeft: "auto" }}
@@ -364,19 +382,30 @@ export default function CreateTask({
               defaultValue={false}
               render={({ field: { onChange, value } }) => (
                 <Chip
-                  onPress={() => onChange(!value)}
+                  onPress={() => {
+                    onChange(!value);
+                    rotate.value = withSpring(!value ? -35 : 0, {
+                      mass: 1,
+                      damping: 10,
+                      stiffness: 200,
+                      overshootClamping: false,
+                      restDisplacementThreshold: 0.01,
+                      restSpeedThreshold: 2,
+                    });
+                  }}
                   icon={
-                    <Icon
-                      style={{
-                        ...(value && {
-                          color: orange[11],
-                          transform: [{ rotate: "-45deg" }],
-                        }),
-                      }}
-                      filled={value}
-                    >
-                      push_pin
-                    </Icon>
+                    <Animated.View style={rotateStyle}>
+                      <Icon
+                        style={{
+                          ...(value && {
+                            color: orange[11],
+                          }),
+                        }}
+                        filled={value}
+                      >
+                        push_pin
+                      </Icon>
+                    </Animated.View>
                   }
                   style={{
                     ...(value && {
@@ -436,7 +465,6 @@ export default function CreateTask({
                   onBlur={onBlur}
                   onKeyPress={(e: any) => {
                     if (e.key === "/") {
-                      // alert(1);
                       menuRef.current.present();
                     }
                     if (e.key === "Enter" && !e.shiftKey) {

@@ -13,10 +13,12 @@ import {
   Pressable,
   StyleSheet,
   View,
+  useColorScheme,
   useWindowDimensions,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import airQuality from "./airQuality.json";
+import { useColorTheme } from "@/ui/color/theme-provider";
 
 const getAirQualityInfo = (index) => {
   const result = airQuality.find(
@@ -73,6 +75,8 @@ export function WeatherModal({
   );
 
   const hour = useMemo(() => dayjs().hour(), []);
+  const theme = useColorTheme();
+  const scheme = useColorScheme();
 
   // callbacks
   const handleOpen = useCallback(() => {
@@ -87,9 +91,9 @@ export function WeatherModal({
   const handleClose = useCallback(() => {
     ref.current?.close();
     if (Platform.OS === "android") {
-      NavigationBar.setButtonStyleAsync("dark");
-      NavigationBar.setBackgroundColorAsync("#eee");
-      NavigationBar.setBorderColorAsync("#eee");
+      NavigationBar.setButtonStyleAsync(scheme == "dark" ? "light" : "dark");
+      NavigationBar.setBackgroundColorAsync(theme[1]);
+      NavigationBar.setBorderColorAsync(theme[1]);
     }
   }, []);
 

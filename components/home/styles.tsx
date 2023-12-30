@@ -8,4 +8,10 @@ export const styles = StyleSheet.create({
     padding: 20,
     height: 144,
   },
+  cardOutline: {
+    borderWidth: 1,
+    borderColor: "#000000",
+    padding: 20,
+    borderRadius: 20,
+  },
 });

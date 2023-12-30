@@ -45,7 +45,8 @@ export function LabelPicker({
         sheetRef={ref}
         stackBehavior="push"
         onClose={handleClose}
-        snapPoints={["65%"]}
+        snapPoints={["80%"]}
+        keyboardBehavior="extend"
       >
         <View style={{ padding: 15 }}>
           <View
@@ -60,6 +61,7 @@ export function LabelPicker({
               <Icon>arrow_back_ios_new</Icon>
             </IconButton>
             <TextField
+              enterKeyHint="search"
               bottomSheet
               style={{
                 backgroundColor: theme[3],
@@ -117,12 +119,12 @@ export function LabelPicker({
                   <Pressable
                     onPress={() => {
                       setLabel(item);
-                      handleClose();
+                      setTimeout(handleClose, 200);
                     }}
                     style={({ pressed, hovered }: any) => [
                       labelPickerStyles.labelOption,
                       {
-                        backgroundColor: theme[pressed ? 4 : hovered ? 3 : 1],
+                        backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
                       },
                     ]}
                   >

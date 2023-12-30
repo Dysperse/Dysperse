@@ -1,4 +1,8 @@
-import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetFlatList,
+  BottomSheetModal,
+  TouchableOpacity,
+} from "@gorhom/bottom-sheet";
 import { useColorTheme } from "../color/theme-provider";
 import {
   cloneElement,
@@ -16,12 +20,19 @@ import Emoji from "../Emoji";
 import Text from "../Text";
 import ErrorAlert from "../Error";
 import useSWR from "swr";
+import Icon from "../Icon";
 
 const emojiPickerStyles = StyleSheet.create({
   container: {
     padding: 15,
     paddingTop: 10,
     flex: 1,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 15,
+    gap: 15,
   },
   emptyContainer: {
     flex: 1,
@@ -82,7 +93,7 @@ export function EmojiPicker({ children, emoji, setEmoji }: any) {
       style={({ pressed, hovered }: any) => [
         emojiPickerStyles.button,
         {
-          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 1],
+          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
         },
       ]}
     >
@@ -103,11 +114,18 @@ export function EmojiPicker({ children, emoji, setEmoji }: any) {
       >
         {data ? (
           <View style={emojiPickerStyles.container}>
-            <TextField
-              variant="filled"
-              placeholder="Find an emoji..."
-              onChangeText={(e) => setQuery(e.toLowerCase())}
-            />
+            <View style={emojiPickerStyles.searchContainer}>
+              <TouchableOpacity onPress={handleClose}>
+                <Icon>close</Icon>
+              </TouchableOpacity>
+              <TextField
+                style={{ flex: 1 }}
+                bottomSheet
+                variant="filled"
+                placeholder="Find an emoji..."
+                onChangeText={(e) => setQuery(e.toLowerCase())}
+              />
+            </View>
             <BottomSheetFlatList
               data={filteredData}
               style={{ flex: 1 }}

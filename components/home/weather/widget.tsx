@@ -75,10 +75,10 @@ export function WeatherWidget() {
   };
 
   useEffect(() => {
-    if (location) {
+    if (location && !weatherData) {
       getWeather(location);
     }
-  }, [location]);
+  }, [location, weatherData]);
 
   const isNight = () => {
     const currentHour = new Date().getHours();
@@ -146,7 +146,7 @@ export function WeatherWidget() {
             ].icon
           }
         </Icon>
-        <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
+        <Text style={{ fontSize: 20, marginTop: 5 }} weight={700}>
           {Math.round(weatherData.hourly.apparent_temperature[dayjs().hour()])}
           &deg;
         </Text>

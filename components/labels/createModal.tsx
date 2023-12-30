@@ -11,7 +11,7 @@ import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import IconButton from "@/ui/IconButton";
 import TextField from "@/ui/TextArea";
-import { ActivityIndicator, Pressable, View } from "react-native";
+import { ActivityIndicator, Keyboard, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { useLabelColors } from "./useLabelColors";
@@ -22,7 +22,10 @@ export function CreateLabelModal({ children, mutate }) {
   const { sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleOpen = useCallback(() => {
+    ref.current?.present();
+    Keyboard.dismiss();
+  }, []);
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
 
@@ -76,6 +79,7 @@ export function CreateLabelModal({ children, mutate }) {
         snapPoints={["60%"]}
         onClose={handleClose}
         stackBehavior="push"
+        keyboardBlurBehavior="none"
       >
         <View
           style={{
@@ -148,7 +152,8 @@ export function CreateLabelModal({ children, mutate }) {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
-                    placeholder="Task name"
+                    bottomSheet
+                    placeholder="Label name"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}

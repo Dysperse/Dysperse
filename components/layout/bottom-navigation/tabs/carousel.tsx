@@ -3,7 +3,12 @@ import IconButton from "@/ui/IconButton";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useGlobalSearchParams, usePathname } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -30,6 +35,7 @@ export function OpenTabsList() {
   } as const;
 
   const { data, error } = useSWR(["user/tabs"]);
+  const params = useLocalSearchParams();
 
   const handleSnapToIndex = (index: number) => {
     if (error)
@@ -39,7 +45,7 @@ export function OpenTabsList() {
       });
     if (!data) return;
     const tab = data[index];
-    if (tab) {
+    if (tab && tab.slug !== pathname && tab.params !== params) {
       router.replace({
         pathname: tab.slug,
         params: {

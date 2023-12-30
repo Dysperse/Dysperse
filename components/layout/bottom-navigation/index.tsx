@@ -7,11 +7,12 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
+  BottomSheetModalProvider,
   TouchableOpacity,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Keyboard,
@@ -159,10 +160,10 @@ function BottomNavigation() {
         {pathname !== "/" && <OpenTabsList />}
         <View
           style={{
-            height: 60,
+            height: 65,
             justifyContent: "space-between",
             alignItems: "center",
-            paddingHorizontal: 15,
+            paddingHorizontal: 25,
             flexDirection: "row",
           }}
         >
@@ -172,13 +173,13 @@ function BottomNavigation() {
             }}
             style={{ padding: 30, marginLeft: -30 }}
           >
-            <Icon size={28} filled={pathname == "/"}>
+            <Icon size={30} filled={pathname == "/"}>
               home
             </Icon>
           </TouchableOpacity>
           <CreateDrawer>
-            <IconButton variant="filled">
-              <Icon size={30}>add</Icon>
+            <IconButton variant="filled" size={45}>
+              <Icon size={34}>add</Icon>
             </IconButton>
           </CreateDrawer>
           <TouchableOpacity
@@ -188,7 +189,7 @@ function BottomNavigation() {
               marginRight: -30,
             }}
           >
-            <Icon size={26}>stack</Icon>
+            <Icon size={28}>stack</Icon>
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -284,7 +285,7 @@ function BottomNavigation() {
   );
 }
 
-export function BottomAppBar() {
+export const BottomAppBar = memo(function BottomAppBar() {
   const pathname = usePathname();
   const { width } = useWindowDimensions();
   const isKeyboardVisible = useKeyboardVisibility();
@@ -305,28 +306,34 @@ export function BottomAppBar() {
   }, [shouldHide]);
 
   return width < 600 ? (
-    <BottomSheet
-      snapPoints={[shouldHide ? 5 : pathname === "/" ? 60 : 60 * 2, "70%"]}
-      sheetRef={ref}
-      animateOnMount={false}
-      appearsOnIndex={1}
-      dismissible={false}
-      enablePanDownToClose={false}
-      onClose={() => null}
-      handleComponent={() => null}
-      stackBehavior="push"
-      backgroundStyle={{
-        borderRadius: 25,
-        backgroundColor: theme[1],
-      }}
-      containerStyle={{
-        opacity: isKeyboardVisible ? 0 : 1,
-      }}
-      backdropComponent={(d) => (
-        <BottomSheetBackdrop pressBehavior="collapse" {...d} />
-      )}
-    >
-      <BottomNavigation />
-    </BottomSheet>
+    <BottomSheetModalProvider>
+      <BottomSheet
+        snapPoints={[pathname === "/" ? 65 : 65 * 2, "70%"]}
+        sheetRef={ref}
+        animateOnMount={false}
+        appearsOnIndex={1}
+        dismissible={false}
+        enablePanDownToClose={false}
+        onClose={() => null}
+        handleComponent={() => null}
+        stackBehavior="push"
+        keyboardBlurBehavior="none"
+        disableBackHandler
+        disableEscapeHandler
+        backgroundStyle={{
+          borderRadius: 25,
+          backgroundColor: theme[1],
+        }}
+        containerStyle={{
+          opacity: shouldHide ? 0 : 1,
+          pointerEvents: shouldHide ? "none" : undefined,
+        }}
+        backdropComponent={(d) => (
+          <BottomSheetBackdrop pressBehavior="collapse" {...d} />
+        )}
+      >
+        <BottomNavigation />
+      </BottomSheet>
+    </BottomSheetModalProvider>
   ) : null;
-}
+});

@@ -32,7 +32,7 @@ const useTabColorTheme = (slug: string) => {
       name: () => [],
     },
     "/[tab]/all/": {
-      icon: "airwave",
+      icon: "nest_true_radiant",
       name: (params, slug) => [slug.split("/all/")[1]],
     },
     "/[tab]/spaces/": {

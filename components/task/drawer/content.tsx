@@ -6,7 +6,7 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import { useLabelColors } from "../../labels/useLabelColors";
 import { TaskDetails } from "./details";
@@ -19,6 +19,30 @@ import {
 import Animated from "react-native-reanimated";
 import { LabelPicker } from "@/components/labels/picker";
 import Toast from "react-native-toast-message";
+
+function TaskNameInput() {
+  const { task, updateTask } = useTaskDrawerContext();
+  const theme = useColorTheme();
+  const [name, setName] = useState(task.name);
+
+  return (
+    <AutoSizeTextArea
+      onBlur={(e) => {
+        updateTask("name", name);
+      }}
+      onChangeText={(text) => setName(text.trim())}
+      value={name}
+      style={{
+        fontFamily: "heading",
+        color: theme[12],
+        paddingHorizontal: 20,
+        marginVertical: 20,
+        textAlign: "center",
+      }}
+      fontSize={50}
+    />
+  );
+}
 
 export function TaskDrawerContent({ handleClose }) {
   const theme = useColorTheme();
@@ -167,18 +191,7 @@ export function TaskDrawerContent({ handleClose }) {
             />
           </LabelPicker>
         </View>
-        <AutoSizeTextArea
-          inputDefaultValue={task.name.trim()}
-          style={{
-            fontFamily: "heading",
-            color: theme[12],
-            paddingHorizontal: 20,
-            marginVertical: 20,
-            textAlign: "center",
-            lineHeight: 53,
-          }}
-          fontSize={50}
-        />
+        <TaskNameInput />
         <TaskDetails />
       </View>
     </BottomSheetScrollView>

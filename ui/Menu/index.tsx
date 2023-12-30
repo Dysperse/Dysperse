@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
+import { View } from "react-native";
 
 export function Menu({
   trigger,
@@ -16,6 +17,7 @@ export function Menu({
   footer = () => null,
   menuRef = null,
   onOpen = () => null,
+  onClose = () => null,
   width = 500,
 }: {
   trigger: ReactElement;
@@ -24,6 +26,7 @@ export function Menu({
   footer?: () => React.ReactNode;
   menuRef?: Ref<BottomSheetModal>;
   onOpen?: () => void;
+  onClose?: () => void;
   width?: number;
 }) {
   const theme = useColorTheme();
@@ -33,7 +36,12 @@ export function Menu({
     ref.current?.present();
     onOpen();
   }, [ref, onOpen]);
-  const handleClose = useCallback(() => ref.current?.close(), []);
+
+  const handleClose = useCallback(() => {
+    ref.current?.close();
+    onClose();
+  }, [ref, onClose]);
+
   const _trigger = cloneElement(trigger, { onPress: handleOpen });
 
   return (
@@ -44,19 +52,29 @@ export function Menu({
         onClose={handleClose}
         snapPoints={height}
         stackBehavior="push"
-        containerStyle={{
-          marginHorizontal: "auto",
-          maxWidth: width,
-        }}
+        keyboardBlurBehavior="none"
         backgroundStyle={{
-          borderRadius: 20,
-          backgroundColor: theme[1],
+          backgroundColor: "transparent",
         }}
         detached
         footerComponent={footer}
         bottomInset={23.5}
       >
-        {children}
+        <View
+          style={{
+            paddingHorizontal: 23.5,
+          }}
+        >
+          <View
+            style={{
+              borderRadius: 20,
+              paddingVertical: 20,
+              backgroundColor: theme[1],
+            }}
+          >
+            {children}
+          </View>
+        </View>
       </BottomSheet>
     </>
   );

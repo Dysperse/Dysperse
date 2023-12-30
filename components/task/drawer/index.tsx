@@ -1,21 +1,15 @@
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import * as NavigationBar from "expo-navigation-bar";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Platform,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { ActivityIndicator, View, useWindowDimensions } from "react-native";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
-import { sendApiRequest } from "@/helpers/api";
-import { useUser } from "@/context/useUser";
-import Toast from "react-native-toast-message";
 
 export function TaskDrawer({ mutateList, children, id }) {
   const [open, setOpen] = useState(false);
@@ -32,20 +26,12 @@ export function TaskDrawer({ mutateList, children, id }) {
   const handleOpen = useCallback(() => {
     ref.current?.present();
     setOpen(true);
-    if (Platform.OS === "android") {
-      NavigationBar.setBackgroundColorAsync(theme[2]);
-      NavigationBar.setBorderColorAsync(theme[2]);
-    }
-  }, [theme]);
+  }, []);
 
   const handleClose = useCallback(() => {
     ref.current?.close();
     mutateList(data);
-    if (Platform.OS === "android") {
-      NavigationBar.setBackgroundColorAsync(theme[2]);
-      NavigationBar.setBorderColorAsync(theme[2]);
-    }
-  }, [theme, mutateList, data]);
+  }, [mutateList, data]);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
   const { width } = useWindowDimensions();

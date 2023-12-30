@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { StyleProp, TextInputProps } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Keyboard, StyleProp, TextInputProps } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import TextField from "../TextArea";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -11,14 +12,22 @@ interface DTextAreaProps extends TextInputProps {
 }
 
 export default function AutoSizeTextArea(props: DTextAreaProps) {
+  const ref: any = useRef();
   const [size, setSize] = useState(props.fontSize || 15);
 
   const handleChange = (e) => {
     setSize(e.nativeEvent.contentSize.height);
   };
 
+  useEffect(() => {
+    Keyboard.addListener("keyboardDidHide", () => {
+      ref?.current?.blur();
+    });
+  }, [ref]);
+
   return (
-    <TextField
+    <BottomSheetTextInput
+      ref={ref}
       {...props}
       defaultValue={props.inputDefaultValue}
       multiline

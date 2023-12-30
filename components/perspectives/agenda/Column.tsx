@@ -7,23 +7,21 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
-import React, { memo, useState } from "react";
-import {
-  FlatList,
-  RefreshControl,
-  View,
-  useWindowDimensions,
-} from "react-native";
-import CreateTask from "../../task/create";
+import React from "react";
+import { RefreshControl, View, useWindowDimensions } from "react-native";
 import { KeyedMutator } from "swr";
+import CreateTask from "../../task/create";
+import { WINDOW_HEIGHT } from "@gorhom/bottom-sheet";
 
 const renderColumnItem = ({ item, width, mutate, column }: any) => {
   const Container = ({ children }: { children: React.ReactNode }) => (
     <View
       style={{
         paddingHorizontal: width > 600 ? 0 : 15,
+        paddingVertical: 5,
       }}
     >
       {children}
@@ -102,11 +100,11 @@ export function Column({
         }),
         width: width > 600 ? 300 : width,
         overflow: "hidden",
+        height: "100%",
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
-      <FlatList
-        initialNumToRender={10}
+      <FlashList
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -144,23 +142,21 @@ export function Column({
           </>
         }
         data={column.tasks}
+        estimatedItemSize={200}
         contentContainerStyle={{
-          gap: 15,
+          // gap: 15,
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
-          height: column.tasks.length == 0 ? "100%" : undefined,
+          // height: column.tasks.length == 0 ? "100%" : undefined,
           paddingBottom:
             getBottomNavigationHeight(pathname) + (width > 600 ? -20 : 250),
-        }}
-        style={{
-          height: column.tasks.length == 0 ? "100%" : undefined,
         }}
         ListEmptyComponent={
           <View
             style={{
               alignItems: "center",
               justifyContent: "center",
-              flex: 1,
+              height: "100%",
             }}
           >
             <Avatar

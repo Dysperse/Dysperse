@@ -24,7 +24,6 @@ export default function TextField(props: DTextInputProps) {
         {
           color: theme[11],
           fontFamily: `body_400`,
-
           ...(props.variant === "filled" && {
             backgroundColor: theme[3],
             borderRadius: 15,
