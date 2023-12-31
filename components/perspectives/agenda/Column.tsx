@@ -165,11 +165,9 @@ export function Column({
                 transform: [{ rotate: "45deg" }],
               }}
             >
-              <Emoji
-                emoji="1f92b"
-                size={40}
-                style={{ transform: [{ rotate: "-45deg" }] }}
-              />
+              <View style={{ transform: [{ rotate: "-45deg" }] }}>
+                <Emoji emoji="1f92b" size={40} />
+              </View>
             </Avatar>
             <Text weight={300} style={{ fontSize: 30 }}>
               Shhh!
