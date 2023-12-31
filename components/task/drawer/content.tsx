@@ -23,6 +23,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { useUser } from "@/context/useUser";
 import { useColor } from "@/ui/color";
 import Spinner from "@/ui/Spinner";
+import { useSession } from "@/context/AuthProvider";
 
 function TaskCompleteButton() {
   const theme = useColorTheme();
@@ -129,12 +130,19 @@ export function TaskDrawerContent({ handleClose }) {
   }, [task.pinned, updateTask, rotate]);
 
   const handleDelete = useCallback(async () => {
-    Toast.show({
-      type: "success",
-      text1: "Task deleted!",
-    });
-    await updateTask("deleted", true);
-    handleClose();
+    try {
+      await updateTask("trash", true);
+      handleClose();
+      Toast.show({
+        type: "success",
+        text1: "Task deleted!",
+      });
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later",
+      });
+    }
   }, [handleClose, updateTask]);
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated

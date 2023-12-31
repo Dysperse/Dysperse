@@ -41,7 +41,7 @@ const renderColumnItem = ({ item, width, mutate, column }: any) => {
                           tasks: oldColumn.tasks
                             .map((oldTask) =>
                               oldTask.id === newTask.id
-                                ? newTask.deleted === true
+                                ? newTask.trash === true
                                   ? undefined
                                   : newTask
                                 : oldTask
