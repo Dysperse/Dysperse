@@ -3,7 +3,6 @@ import {
   BottomSheetModal,
   TouchableOpacity,
 } from "@gorhom/bottom-sheet";
-import { useColorTheme } from "../color/theme-provider";
 import {
   cloneElement,
   memo,
@@ -12,15 +11,15 @@ import {
   useRef,
   useState,
 } from "react";
-import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
-import BottomSheet from "../BottomSheet";
-import { View } from "react-native";
-import TextField from "../TextArea";
-import Emoji from "../Emoji";
-import Text from "../Text";
-import ErrorAlert from "../Error";
+import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import useSWR from "swr";
+import BottomSheet from "../BottomSheet";
+import Emoji from "../Emoji";
+import ErrorAlert from "../Error";
 import Icon from "../Icon";
+import Text from "../Text";
+import TextField from "../TextArea";
+import { useColorTheme } from "../color/theme-provider";
 
 const emojiPickerStyles = StyleSheet.create({
   container: {
@@ -43,7 +42,9 @@ const emojiPickerStyles = StyleSheet.create({
   emptyHeading: { fontSize: 35, marginTop: 10 },
   emptySubHeading: { opacity: 0.6, textAlign: "center", maxWidth: 200 },
   button: {
-    padding: 10,
+    height: 70,
+    alignItems: "center",
+    justifyContent: "center",
     flex: 1,
     borderRadius: 999,
   },
@@ -90,14 +91,12 @@ export function EmojiPicker({ children, emoji, setEmoji }: any) {
   const EmojiItem = memo(({ item }: any) => (
     <Pressable
       onPress={() => handleEmojiChange(item)}
-      style={({ pressed, hovered }: any) => [
+      style={({ pressed }) => [
         emojiPickerStyles.button,
-        {
-          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-        },
+        { opacity: pressed ? 0.5 : 1 },
       ]}
     >
-      <Text style={{ fontSize: 30, textAlign: "center" }}>
+      <Text style={{ fontSize: 30, textAlign: "center", width: 40 }}>
         {data?.emojis?.[item]?.skins?.[0]?.native}
       </Text>
     </Pressable>
@@ -127,7 +126,14 @@ export function EmojiPicker({ children, emoji, setEmoji }: any) {
               />
             </View>
             <BottomSheetFlatList
+              keyboardShouldPersistTaps="handled"
               data={filteredData}
+              getItemLayout={(data, index) => ({
+                length: 50,
+                offset: 50 * index,
+                index,
+              })}
+              initialNumToRender={30}
               style={{ flex: 1 }}
               contentContainerStyle={{ flexGrow: 1 }}
               ListEmptyComponent={

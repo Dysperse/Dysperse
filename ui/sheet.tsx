@@ -17,9 +17,6 @@ const App = () => {
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
 
   // renders
   return (
@@ -34,7 +31,6 @@ const App = () => {
           ref={bottomSheetModalRef}
           index={1}
           snapPoints={snapPoints}
-          onChange={handleSheetChanges}
         >
           <View style={styles.contentContainer}>
             <Text>Awesome 🎉</Text>

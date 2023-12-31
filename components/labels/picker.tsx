@@ -6,13 +6,13 @@ import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useRef } from "react";
-import { ActivityIndicator, Platform, Pressable, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { ActivityIndicator, Keyboard, Pressable, View } from "react-native";
 import useSWR from "swr";
 import { labelPickerStyles } from "./labelPickerStyles";
 
@@ -25,7 +25,10 @@ export function LabelPicker({
 }) {
   const ref = useRef<BottomSheetModal>(null);
   // callbacks
-  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const searchRef = useRef(null);
+  const handleOpen = useCallback(() => {
+    ref.current?.present();
+  }, []);
   const handleClose = useCallback(() => {
     ref.current?.close();
     onClose();
@@ -41,13 +44,7 @@ export function LabelPicker({
   return (
     <>
       {trigger}
-      <BottomSheet
-        sheetRef={ref}
-        stackBehavior="push"
-        onClose={handleClose}
-        snapPoints={["80%"]}
-        keyboardBehavior="extend"
-      >
+      <BottomSheet sheetRef={ref} onClose={handleClose} snapPoints={["60%"]}>
         <View style={{ padding: 15 }}>
           <View
             style={[
@@ -70,12 +67,16 @@ export function LabelPicker({
                 borderRadius: 99,
                 flex: 1,
               }}
+              inputRef={searchRef}
+              autoFocus={autoFocus}
               placeholder="Search..."
-              autoFocus={Platform.OS !== "web" && autoFocus}
             />
-            <CreateLabelModal mutate={mutate}>
+            <CreateLabelModal
+              mutate={mutate}
+              onClose={() => searchRef.current.focus()}
+            >
               <IconButton style={{ marginRight: 10 }}>
-                <Icon>add</Icon>
+                <Icon>add_circle</Icon>
               </IconButton>
             </CreateLabelModal>
           </View>
@@ -86,9 +87,10 @@ export function LabelPicker({
             }}
           >
             {data ? (
-              <FlatList
+              <BottomSheetFlatList
                 data={data}
-                contentContainerStyle={{ flex: 1 }}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={{ paddingBottom: 100 }}
                 ListEmptyComponent={
                   <View
                     style={{
@@ -124,7 +126,11 @@ export function LabelPicker({
                     style={({ pressed, hovered }: any) => [
                       labelPickerStyles.labelOption,
                       {
-                        backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+                        backgroundColor:
+                          theme[
+                            (pressed ? 4 : hovered ? 3 : 2) +
+                              (label == item.id ? 1 : 0)
+                          ],
                       },
                     ]}
                   >
@@ -132,17 +138,19 @@ export function LabelPicker({
                       style={[
                         labelPickerStyles.labelDot,
                         {
-                          backgroundColor: colors[item.color][9],
+                          backgroundColor: colors[item.color][4],
                         },
                       ]}
-                    />
-                    <View>
-                      <Text weight={700}>{item.name}</Text>
-                      <Text style={labelPickerStyles.labelSubHeading}>
-                        {item._count.entities} item
-                        {item._count.entities !== 1 && "s"}
-                      </Text>
+                    >
+                      <Emoji emoji={item.emoji} size={20} />
                     </View>
+                    <ListItemText
+                      primary={item.name}
+                      secondary={`${item._count.entities} item${
+                        item._count.entities !== 1 ? "s" : ""
+                      }`}
+                    />
+                    {label == item.id && <Icon>check</Icon>}
                   </Pressable>
                 )}
               />

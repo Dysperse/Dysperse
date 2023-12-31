@@ -1,4 +1,5 @@
 import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -6,8 +7,7 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import useKeyboardShortcut from "use-keyboard-shortcut";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetSectionList } from "@gorhom/bottom-sheet";
 import {
   createContext,
   useCallback,
@@ -25,9 +25,10 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { createTab, getSidebarItems } from "../sidebar";
-import { useUser } from "@/context/useUser";
 import useSWR from "swr";
+import { createTab } from "../openTab";
+import { getSidebarItems } from "./list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface CommandPaletteContextValue {
   openPalette: () => void;
@@ -75,6 +76,11 @@ function Button({ item }: any) {
   const handlePress = async (tab) => {
     try {
       setLoading(true);
+      if (tab.onPress) {
+        await tab.onPress();
+        setLoading(false);
+        return;
+      }
       await createTab(sessionToken, tab);
       await mutate();
       setLoading(false);
@@ -106,11 +112,12 @@ function Button({ item }: any) {
   );
 }
 
-function PaletteList({ query }: { query: string }) {
+function PaletteList({ handleClose }) {
   const theme = useColorTheme();
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<any[]>([]);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     getSidebarItems(session).then((sections) => {
@@ -133,52 +140,79 @@ function PaletteList({ query }: { query: string }) {
       ),
     }));
 
-  return isLoading ? (
-    <ActivityIndicator />
-  ) : (
-    <SectionList
-      sections={filteredSections}
-      ListEmptyComponent={
-        <View style={commandPaletteStyles.emptyContainer}>
-          <Emoji emoji="1F62D" size={40} />
-          <Text style={{ fontSize: 20 }} weight={200}>
-            No results found
-          </Text>
-        </View>
-      }
-      contentContainerStyle={{ paddingBottom: 30 }}
-      style={{ height: 250 }}
-      renderItem={({ item }) => <Button item={item} />}
-      renderSectionHeader={({ section }) =>
-        section.title === "ALL" ? (
-          <View style={{ paddingHorizontal: 20 }}>
-            <View
-              style={{
-                height: 2,
-                backgroundColor: theme[4],
-                borderRadius: 9,
-                marginVertical: 10,
-              }}
-            />
-            <Text variant="eyebrow" style={{ marginBottom: 10, marginTop: 6 }}>
-              {section.title}
-            </Text>
-          </View>
-        ) : (
-          <Text
-            variant="eyebrow"
-            style={{
-              paddingHorizontal: 20,
-              marginBottom: 10,
-              marginTop: 20,
-            }}
-          >
-            {section.title}
-          </Text>
-        )
-      }
-      keyExtractor={(item: any) => item.slug + JSON.stringify(item.params)}
-    />
+  const SectionListComponent =
+    Platform.OS === "web" ? SectionList : BottomSheetSectionList;
+
+  return (
+    <>
+      <TextField
+        onKeyPress={(e: any) => e.key === "Escape" && handleClose()}
+        bottomSheet
+        placeholder="Search labels, tasks, notes, & more..."
+        placeholderTextColor={theme[6]}
+        style={[
+          commandPaletteStyles.input,
+          {
+            ...(Platform.OS === "web" && ({ outline: "none" } as any)),
+          },
+        ]}
+        value={query}
+        onChangeText={setQuery}
+        autoFocus
+      />
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <SectionListComponent
+          sections={filteredSections}
+          ListEmptyComponent={
+            <View style={commandPaletteStyles.emptyContainer}>
+              <Emoji emoji="1F62D" size={40} />
+              <Text style={{ fontSize: 20 }} weight={200}>
+                No results found
+              </Text>
+            </View>
+          }
+          contentContainerStyle={{ paddingBottom: 30 }}
+          style={{ flex: 1 }}
+          renderItem={({ item }) => <Button item={item} />}
+          renderSectionHeader={({ section }) =>
+            section.title === "ALL" ? (
+              <View style={{ paddingHorizontal: 20 }}>
+                <View
+                  style={{
+                    height: 2,
+                    backgroundColor: theme[4],
+                    borderRadius: 9,
+                    marginVertical: 10,
+                  }}
+                />
+                <Text
+                  variant="eyebrow"
+                  style={{ marginBottom: 10, marginTop: 6 }}
+                >
+                  {section.title}
+                </Text>
+              </View>
+            ) : (
+              <Text
+                variant="eyebrow"
+                style={{
+                  paddingHorizontal: 20,
+                  marginBottom: 10,
+                  marginTop: 20,
+                }}
+              >
+                {section.title}
+              </Text>
+            )
+          }
+          keyExtractor={(item: any) =>
+            item.slug + JSON.stringify(item.params) || item.label
+          }
+        />
+      )}
+    </>
   );
 }
 
@@ -193,13 +227,13 @@ export function CommandPaletteProvider({ children }) {
   const handleClose = useCallback(() => ref.current?.close(), []);
 
   const [query, setQuery] = useState("");
+  const insets = useSafeAreaInsets();
 
-  useKeyboardShortcut(["Control", "K"], () => handleOpen(), {
-    overrideSystem: true,
-    ignoreInputFields: true,
-    repeatOnHold: false,
-  });
-
+  // useKeyboardShortcut(["Control", "K"], () => handleOpen(), {
+  //   overrideSystem: true,
+  //   ignoreInputFields: true,
+  //   repeatOnHold: false,
+  // });
   return (
     <CommandPaletteContext.Provider value={{ openPalette: handleOpen }}>
       {children}
@@ -213,6 +247,8 @@ export function CommandPaletteProvider({ children }) {
           backgroundColor: "transparent",
           borderRadius: 0,
         }}
+        keyboardBehavior="fillParent"
+        android_keyboardInputMode="adjustResize"
         // backdropComponent={() => null}
         onClose={handleClose}
       >
@@ -227,7 +263,8 @@ export function CommandPaletteProvider({ children }) {
           <View
             style={{
               padding: 20,
-              paddingTop: 100,
+              paddingVertical: 50,
+              paddingTop: insets.top + 50,
               width: "100%",
               alignItems: "center",
             }}
@@ -244,6 +281,7 @@ export function CommandPaletteProvider({ children }) {
                 borderWidth: 1,
                 shadowOpacity: 1,
                 elevation: 50,
+                height: "100%",
               }}
             >
               <View style={commandPaletteStyles.headerContainer}>
@@ -258,22 +296,7 @@ export function CommandPaletteProvider({ children }) {
                   <Icon style={{ color: theme[8] }}>expand_more</Icon>
                 </TouchableOpacity>
               </View>
-              <TextField
-                onKeyPress={(e) => e.key === "Escape" && handleClose()}
-                bottomSheet
-                placeholder="Search labels, tasks, notes, & more..."
-                placeholderTextColor={theme[6]}
-                style={[
-                  commandPaletteStyles.input,
-                  {
-                    ...(Platform.OS === "web" && ({ outline: "none" } as any)),
-                  },
-                ]}
-                value={query}
-                onChangeText={setQuery}
-                autoFocus
-              />
-              <PaletteList query={query} />
+              <PaletteList handleClose={handleClose} />
             </View>
           </View>
         </View>

@@ -43,6 +43,7 @@ export function Task({
             {task.pinned && (
               <Chip
                 dense
+                disabled
                 label="Important"
                 icon={
                   <Icon size={22} style={{ color: orange[11] }}>

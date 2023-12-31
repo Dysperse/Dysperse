@@ -38,6 +38,8 @@ import { SWRConfig } from "swr";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
 import { CommandPaletteProvider } from "@/components/layout/command-palette";
+import Spinner from "@/ui/Spinner";
+import Logo from "@/ui/logo";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -47,6 +49,27 @@ dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
 
 const { multiply } = Animated;
+
+function SessionLoadingScreen() {
+  const theme = useColorScheme();
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme === "dark" ? "#000" : "#fff",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 20,
+      }}
+    >
+      <View style={{ opacity: 0.6 }}>
+        <Logo size={90} color={theme === "dark" ? "#ffffff" : "#000000"} />
+      </View>
+      <Spinner color={theme === "dark" ? "#ffffff" : "#000000"} />
+    </View>
+  );
+}
 
 function forHorizontalIOS({
   current,
@@ -127,11 +150,7 @@ export default function AppLayout() {
   );
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading || isUserLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator />
-      </View>
-    );
+    return <SessionLoadingScreen />;
   }
 
   // Only require authentication within the (app) group's layout as users

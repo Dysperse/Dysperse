@@ -10,6 +10,7 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
+import Spinner from "@/ui/Spinner";
 
 export function TaskDrawer({ mutateList, children, id }) {
   const [open, setOpen] = useState(false);
@@ -37,7 +38,7 @@ export function TaskDrawer({ mutateList, children, id }) {
   const { width } = useWindowDimensions();
 
   const updateTask = useCallback(
-    async (key, value) => {
+    async (key, value, sendRequest = true) => {
       const oldData = data;
       const newData = {
         ...data,
@@ -47,6 +48,7 @@ export function TaskDrawer({ mutateList, children, id }) {
         revalidate: false,
         populateCache: newData,
       });
+      if (!sendRequest) return;
       await sendApiRequest(sessionToken, "PUT", "space/entity", {
         id,
         [key]: value,
@@ -94,7 +96,7 @@ export function TaskDrawer({ mutateList, children, id }) {
               justifyContent: "center",
             }}
           >
-            <ActivityIndicator />
+            <Spinner />
           </View>
         )}
       </BottomSheet>

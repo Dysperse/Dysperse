@@ -8,7 +8,8 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import { View } from "react-native";
+import { Keyboard, View } from "react-native";
+import BottomSheetKeyboardHandler from "../BottomSheet/BottomSheetKeyboardHandler";
 
 export function Menu({
   trigger,
@@ -32,8 +33,10 @@ export function Menu({
   const theme = useColorTheme();
   const _ref = useRef<BottomSheetModal>(null);
   const ref: any = menuRef || _ref;
+
   const handleOpen = useCallback(() => {
     ref.current?.present();
+    Keyboard.dismiss();
     onOpen();
   }, [ref, onOpen]);
 
@@ -51,8 +54,6 @@ export function Menu({
         sheetRef={ref}
         onClose={handleClose}
         snapPoints={height}
-        stackBehavior="push"
-        keyboardBlurBehavior="none"
         backgroundStyle={{
           backgroundColor: "transparent",
         }}
@@ -62,7 +63,8 @@ export function Menu({
       >
         <View
           style={{
-            paddingHorizontal: 23.5,
+            padding: 23.5,
+            paddingTop: 0,
             height: "100%",
           }}
         >

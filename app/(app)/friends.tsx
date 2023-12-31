@@ -1,8 +1,7 @@
-import { createTab } from "@/components/layout/sidebar";
+import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -15,7 +14,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 
 type FriendsPageView = "all" | "requests" | "pending" | "blocked";
@@ -23,6 +23,7 @@ type FriendsPageView = "all" | "requests" | "pending" | "blocked";
 export default function Page() {
   const { sessionToken, session } = useUser();
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
   const [view, setView] = useState<FriendsPageView>("all");
 
   const { data, isLoading, error } = useSWR(["user/friends"]);
@@ -34,7 +35,7 @@ export default function Page() {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          marginTop: 30,
+          marginTop: 40,
           marginBottom: 10,
         }}
       >
@@ -43,10 +44,18 @@ export default function Page() {
         </Text>
         <Button variant="outlined">
           <Icon>person_add</Icon>
-          <ButtonText>Add friend</ButtonText>
+          <ButtonText>Add</ButtonText>
         </Button>
       </View>
-      <View style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          flexDirection: "row",
+          gap: 10,
+          marginBottom: 10,
+        }}
+      >
         {[
           { label: "All", value: "all" },
           { label: "Requests", value: "requests" },
@@ -63,17 +72,15 @@ export default function Page() {
             }
             onPress={() => setView(i.value)}
             key={i.value}
-            style={{ padding: 20, paddingHorizontal: 20 }}
           />
         ))}
-      </View>
+      </ScrollView>
     </>
   );
 
   return (
     <View
       style={{
-        paddingTop: 64,
         flex: 1,
         maxWidth: 500,
         marginHorizontal: "auto",
@@ -82,14 +89,9 @@ export default function Page() {
     >
       <FlashList
         ListHeaderComponent={Header}
-        style={{
-          width: "100%",
-          flex: 1,
-          paddingHorizontal: 20,
-          marginHorizontal: "auto",
-        }}
         contentContainerStyle={{
-          paddingHorizontal: 20,
+          paddingHorizontal: 25,
+          paddingTop: width > 600 ? 64 : 80,
         }}
         data={
           data
@@ -114,7 +116,7 @@ export default function Page() {
             style={{
               alignItems: "center",
               justifyContent: "center",
-              height: "100%",
+              minHeight: 200,
             }}
           >
             {isLoading ? (
@@ -135,7 +137,10 @@ export default function Page() {
                   }
                   size={50}
                 />
-                <Text style={{ fontSize: 20 }} weight={700}>
+                <Text
+                  style={{ fontSize: 20, textAlign: "center" }}
+                  weight={700}
+                >
                   {view === "blocked"
                     ? "You haven't blocked anybody"
                     : view === "requests"

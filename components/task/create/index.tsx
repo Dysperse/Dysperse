@@ -14,7 +14,11 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal, BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetTextInput,
+  TouchableOpacity,
+} from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -249,10 +253,10 @@ export default function CreateTask({
             >
               <Menu
                 menuRef={menuRef}
-                height={[365]}
+                height={[400]}
                 trigger={<Chip icon={<Icon>add</Icon>} />}
                 onOpen={() => {
-                  Keyboard.dismiss();
+                  // Keyboard.dismiss();
                 }}
                 onClose={() => nameRef.current?.focus()}
               >
@@ -431,18 +435,13 @@ export default function CreateTask({
               gap: 10,
               flexDirection: "row",
               paddingHorizontal: 20,
+              alignItems: "center",
+              marginBottom: 10,
             }}
           >
-            {showClose && (
-              <Chip
-                icon={<Icon>arrow_back_ios_new</Icon>}
-                onPress={handleClose}
-                style={{
-                  backgroundColor: "transparent",
-                  marginLeft: -15,
-                }}
-              />
-            )}
+            <TouchableOpacity onPress={handleClose}>
+              <ButtonText style={{ color: theme[10] }}>Cancel</ButtonText>
+            </TouchableOpacity>
             <Chip
               style={{ marginLeft: "auto" }}
               icon={<Icon>north</Icon>}
@@ -457,6 +456,7 @@ export default function CreateTask({
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <BottomSheetTextInput
+                  enterKeyHint="done"
                   selectionColor={theme[8]}
                   cursorColor={theme[9]}
                   autoFocus={Platform.OS !== "web"}
@@ -467,7 +467,7 @@ export default function CreateTask({
                     if (e.key === "/") {
                       menuRef.current.present();
                     }
-                    if (e.key === "Enter" && !e.shiftKey) {
+                    if (e.key === "Enter") {
                       handleSubmitButtonClick();
                     }
                   }}

@@ -7,16 +7,15 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import dayjs from "dayjs";
 import { router } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Linking,
   Platform,
   Pressable,
@@ -29,110 +28,6 @@ import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { NavbarProfilePicture } from "../account-navbar";
 import { useCommandPalette } from "../command-palette";
-import Spinner from "@/ui/Spinner";
-
-export const getSidebarItems = async (session) => {
-  // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
-
-  return [
-    {
-      title: "Perspectives",
-      icon: "asterisk",
-      data: [
-        {
-          label: "Weeks",
-          icon: "calendar_view_week",
-          slug: "/[tab]/perspectives/agenda/[type]/[start]",
-          params: {
-            start: dayjs().format("YYYY-MM-DD"),
-            type: "week",
-          },
-        },
-        {
-          label: "Months",
-          icon: "calendar_view_month",
-          slug: "/[tab]/perspectives/agenda/[type]/[start]",
-          params: {
-            start: dayjs().format("YYYY-MM-DD"),
-            type: "month",
-          },
-        },
-        {
-          label: "Years",
-          icon: "view_compact",
-          slug: "/[tab]/perspectives/agenda/[type]/[start]",
-          params: {
-            start: dayjs().format("YYYY-MM-DD"),
-            type: "year",
-          },
-        },
-        {
-          label: "Upcoming",
-          icon: "calendar_clock",
-          slug: "/[tab]/perspectives/upcoming",
-        },
-        {
-          label: "Backlog",
-          icon: "event_upcoming",
-          slug: "/[tab]/perspectives/backlog",
-        },
-        {
-          label: "Unscheduled",
-          icon: "history_toggle_off",
-          slug: "/[tab]/perspectives/unscheduled",
-        },
-        {
-          label: "Completed",
-          icon: "check_circle",
-          slug: "/[tab]/perspectives/completed",
-        },
-        {
-          label: "Difficulty",
-          icon: "priority_high",
-          slug: "/[tab]/perspectives/difficulty",
-        },
-      ],
-    },
-    {
-      title: "Collections",
-      icon: "draw_abstract",
-      data: [
-        {
-          label: "Create",
-          icon: "add",
-          slug: "/[tab]/collections/create",
-        },
-        // ...(req && Array.isArray(req)
-        //   ? req.map((collection) => ({
-        //       collection,
-        //       slug: `/collections/${collection.id}`,
-        //     }))
-        //   : [{}]),
-      ],
-    },
-    {
-      title: "ALL",
-      icon: "airwave",
-      data: [
-        {
-          label: "Tasks",
-          icon: "check_circle",
-          slug: "/[tab]/all/tasks",
-        },
-        {
-          label: "Items",
-          icon: "package_2",
-          slug: "/[tab]/all/items",
-        },
-        {
-          label: "Notes",
-          icon: "sticky_note_2",
-          slug: "/[tab]/all/notes",
-        },
-      ],
-    },
-  ];
-};
 
 export const styles = StyleSheet.create({
   contentContainer: {
@@ -185,7 +80,6 @@ function SpaceButton({ handleClose, item }: any) {
 
 export function SpacesTrigger({ children }) {
   const ref = useRef<BottomSheetModal>(null);
-  const theme = useColorTheme();
   const [view, setView] = useState("all");
   const { data, error } = useSWR(["user/spaces"]);
 
@@ -241,36 +135,6 @@ export function SpacesTrigger({ children }) {
     </Menu>
   );
 }
-
-export const createTab = async (
-  sessionToken: string,
-  tab: {
-    label?: string;
-    icon?: string;
-    slug: string;
-    params?: Record<string, string>;
-  }
-) => {
-  const res = await sendApiRequest(
-    sessionToken,
-    "POST",
-    "user/tabs",
-    {},
-    {
-      body: JSON.stringify({
-        slug: tab.slug,
-        params: tab.params || {},
-      }),
-    }
-  );
-  router.replace({
-    pathname: tab.slug,
-    params: {
-      tab: res.id,
-      ...tab.params,
-    },
-  });
-};
 
 export function Sidebar() {
   const theme = useColorTheme();

@@ -10,6 +10,7 @@ interface ChipProps {
   style?: StyleProp<ViewStyle> | ((props: any) => StyleProp<ViewStyle>);
   iconPosition?: "before" | "after";
   dense?: boolean;
+  disabled?: boolean;
   color?: string;
   textStyle?: StyleProp<TextStyle>;
 }
@@ -24,11 +25,13 @@ export default function Chip({
   dense = false,
   color,
   textStyle = {},
+  disabled = false,
 }: ChipProps) {
   const theme = useColorTheme();
 
   return (
     <Pressable
+      disabled={disabled}
       style={({ hovered, pressed }: any) => [
         {
           flexDirection: "row",
@@ -63,7 +66,10 @@ export default function Chip({
       {typeof label === "string" ? (
         <Text
           style={[
-            { color: color || theme[11], ...(dense && { fontSize: 13 }) },
+            {
+              color: color || theme[11],
+              ...(dense && { fontSize: 13 }),
+            },
             textStyle,
           ]}
           weight={400}

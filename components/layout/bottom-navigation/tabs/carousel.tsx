@@ -1,28 +1,18 @@
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  usePathname,
-} from "expo-router";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { useEffect } from "react";
-import {
-  ActivityIndicator,
-  Platform,
-  ScrollView,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
-import Spinner from "@/ui/Spinner";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
@@ -36,7 +26,6 @@ export function OpenTabsList() {
   } as const;
 
   const { data, error } = useSWR(["user/tabs"]);
-  const params = useLocalSearchParams();
 
   const handleSnapToIndex = (index: number) => {
     if (error)
@@ -46,7 +35,7 @@ export function OpenTabsList() {
       });
     if (!data) return;
     const tab = data[index];
-    if (tab && tab.slug !== pathname && tab.params !== params) {
+    if (tab && tab.slug !== pathname) {
       router.replace({
         pathname: tab.slug,
         params: {
@@ -139,12 +128,9 @@ export function OpenTabsList() {
             marginRight: 15,
             paddingLeft: 10,
           }}
-        >
-          {/* <SpacesTrigger /> */}
-        </View>
+        ></View>
       </View>
     ) : (
-      //   <NativeViewGestureHandler disallowInterruption={true}>
       <Carousel
         loop={false}
         {...baseOptions}
@@ -153,7 +139,7 @@ export function OpenTabsList() {
         style={{
           width: "100%",
           justifyContent: "center",
-          height: 55,
+          height: 65,
         }}
         data={data}
         pagingEnabled
@@ -162,11 +148,10 @@ export function OpenTabsList() {
           <Tab tab={data[index]} key={data[index].id} />
         )}
       />
-      //</NativeViewGestureHandler>
     )
   ) : (
     <View style={{ alignItems: "center" }}>
-      <Spinner />
+      {error ? <ErrorAlert /> : <Spinner />}
     </View>
   );
 }

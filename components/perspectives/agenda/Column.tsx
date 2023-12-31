@@ -1,4 +1,3 @@
-import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import { Task } from "@/components/task";
 import { Avatar } from "@/ui/Avatar";
@@ -14,7 +13,7 @@ import React from "react";
 import { RefreshControl, View, useWindowDimensions } from "react-native";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
-import { WINDOW_HEIGHT } from "@gorhom/bottom-sheet";
+import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 
 const renderColumnItem = ({ item, width, mutate, column }: any) => {
   const Container = ({ children }: { children: React.ReactNode }) => (
@@ -144,19 +143,17 @@ export function Column({
         data={column.tasks}
         estimatedItemSize={200}
         contentContainerStyle={{
-          // gap: 15,
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
-          // height: column.tasks.length == 0 ? "100%" : undefined,
-          paddingBottom:
-            getBottomNavigationHeight(pathname) + (width > 600 ? -20 : 250),
+          paddingBottom: getBottomNavigationHeight(pathname),
         }}
         ListEmptyComponent={
           <View
             style={{
               alignItems: "center",
               justifyContent: "center",
-              height: "100%",
+              flex: 1,
+              minHeight: 300,
             }}
           >
             <Avatar
@@ -181,7 +178,7 @@ export function Column({
           </View>
         }
         renderItem={renderColumnItemWrapper}
-        keyExtractor={(i) => i.id}
+        keyExtractor={(i: any) => i.id}
       />
     </View>
   );

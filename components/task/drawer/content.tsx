@@ -7,7 +7,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import React, { useCallback, useState } from "react";
-import { View } from "react-native";
+import { View, useColorScheme } from "react-native";
 import { useLabelColors } from "../../labels/useLabelColors";
 import { TaskDetails } from "./details";
 import { useTaskDrawerContext } from "./context";
@@ -19,7 +19,68 @@ import {
 import Animated from "react-native-reanimated";
 import { LabelPicker } from "@/components/labels/picker";
 import Toast from "react-native-toast-message";
+import { sendApiRequest } from "@/helpers/api";
+import { useUser } from "@/context/useUser";
+import { useColor } from "@/ui/color";
+import Spinner from "@/ui/Spinner";
 
+function TaskCompleteButton() {
+  const theme = useColorTheme();
+  const { sessionToken } = useUser();
+  const { task, updateTask } = useTaskDrawerContext();
+  const green = useColor("green", useColorScheme() == "dark");
+  const isCompleted = task.completionInstances.length > 0;
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePress = async () => {
+    setIsLoading(true);
+    const res = await sendApiRequest(
+      sessionToken,
+      isCompleted ? "DELETE" : "POST",
+      "space/entity/complete-task",
+      {},
+      {
+        body: JSON.stringify({
+          id: task.id,
+          recurring: false,
+        }),
+      }
+    );
+    updateTask(
+      "completionInstances",
+      isCompleted ? [] : [...task.completionInstances, res],
+      false
+    );
+    setIsLoading(false);
+  };
+
+  return (
+    <>
+      <IconButton
+        style={{
+          borderWidth: 1,
+          borderColor: isCompleted ? green[6] : theme[6],
+          backgroundColor: isCompleted ? green[4] : theme[2],
+        }}
+        size={55}
+        onPress={handlePress}
+      >
+        {isLoading ? (
+          <Spinner color={isCompleted ? green[11] : theme[11]} />
+        ) : (
+          <Icon
+            size={27}
+            style={{
+              color: isCompleted ? green[11] : theme[11],
+            }}
+          >
+            done_outline
+          </Icon>
+        )}
+      </IconButton>
+    </>
+  );
+}
 function TaskNameInput() {
   const { task, updateTask } = useTaskDrawerContext();
   const theme = useColorTheme();
@@ -110,12 +171,7 @@ export function TaskDrawerContent({ handleClose }) {
             <Icon size={28}>close</Icon>
           </IconButton>
           <View style={{ flex: 1 }} />
-          <IconButton
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-            size={55}
-          >
-            <Icon size={27}>done_outline</Icon>
-          </IconButton>
+          <TaskCompleteButton />
           <IconButton
             style={{ borderWidth: 1, borderColor: theme[6] }}
             size={55}
@@ -164,8 +220,11 @@ export function TaskDrawerContent({ handleClose }) {
             }}
           />
           <LabelPicker
-            label=""
-            setLabel={() => {}}
+            label={task.labelId}
+            setLabel={(e) => {
+              updateTask("labelId", e.id);
+              updateTask("label", e, false);
+            }}
             onClose={() => {}}
             autoFocus={false}
           >

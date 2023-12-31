@@ -56,14 +56,6 @@ export default function AccountNavbar(props: any) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const { openPalette } = useCommandPalette();
-  const search = useMemo(
-    () => (
-      <IconButton style={{ marginRight: 5 }} onPress={openPalette}>
-        <Icon size={30}>electric_bolt</Icon>
-      </IconButton>
-    ),
-    []
-  );
 
   return (
     <View>
@@ -85,7 +77,6 @@ export default function AccountNavbar(props: any) {
         )}
         <View style={{ flexGrow: 1 }} />
         {props.options.headerRight && props.options.headerRight()}
-        {search}
         <NavbarProfilePicture />
       </View>
     </View>

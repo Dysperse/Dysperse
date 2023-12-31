@@ -12,12 +12,14 @@ export const labelPickerStyles = StyleSheet.create({
     alignItems: "center",
     padding: 15,
     borderRadius: 25,
+    gap: 15,
   },
   labelDot: {
-    width: 25,
-    height: 25,
+    width: 40,
+    height: 40,
     borderRadius: 999,
-    marginRight: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   labelSubHeading: {
     opacity: 0.6,

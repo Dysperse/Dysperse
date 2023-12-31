@@ -16,17 +16,28 @@ import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { useLabelColors } from "./useLabelColors";
 
-export function CreateLabelModal({ children, mutate }) {
+export function CreateLabelModal({
+  children,
+  mutate,
+  onClose = () => null,
+}: {
+  children: React.ReactNode;
+  mutate: any;
+  onClose?: () => void;
+}) {
   const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
   const { sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleOpen = useCallback(() => {
-    ref.current?.present();
     Keyboard.dismiss();
+    setImmediate(() => ref.current?.present());
   }, []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
+  const handleClose = useCallback(() => {
+    ref.current?.close();
+    onClose();
+  }, [onClose]);
   const trigger = cloneElement(children, { onPress: handleOpen });
 
   const {
@@ -60,8 +71,10 @@ export function CreateLabelModal({ children, mutate }) {
         text1: "Created label!",
       });
       await mutate();
-      handleClose();
       setIsLoading(false);
+      setTimeout(() => {
+        handleClose();
+      }, 500);
     } catch (e) {
       Toast.show({
         type: "error",
@@ -74,13 +87,7 @@ export function CreateLabelModal({ children, mutate }) {
   return (
     <>
       {trigger}
-      <BottomSheet
-        sheetRef={ref}
-        snapPoints={["60%"]}
-        onClose={handleClose}
-        stackBehavior="push"
-        keyboardBlurBehavior="none"
-      >
+      <BottomSheet sheetRef={ref} snapPoints={["60%"]} onClose={handleClose}>
         <View
           style={{
             flexDirection: "row",

@@ -6,13 +6,22 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
   BottomSheetBackdrop,
+  BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
   TouchableOpacity,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
-import React, { memo, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Keyboard,
@@ -33,9 +42,7 @@ import { CreateDrawer } from "./create-drawer";
 import { OpenTabsList } from "./tabs/carousel";
 import { Tab } from "./tabs/tab";
 import Spinner from "@/ui/Spinner";
-
-export const getBottomNavigationHeight = (pathname) =>
-  pathname === "/" ? 58 : 58 + 50;
+import { useCommandPalette } from "../command-palette";
 
 const styles = StyleSheet.create({
   helperText: {
@@ -47,154 +54,22 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
 });
-const useKeyboardVisibility = () => {
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  useEffect(() => {
-    if (Platform.OS === "web") return;
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true); // or some other action
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false); // or some other action
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-
-  return isKeyboardVisible;
-};
-
-function BottomNavigation() {
-  const theme = useColorTheme();
-  const pathname = usePathname();
-  const { animatedIndex, snapToIndex } = useBottomSheet();
-
-  const tabListAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      animatedIndex.value,
-      [0, 1],
-      [0, 1],
-      Extrapolate.CLAMP
-    ),
-    transform: [
-      {
-        translateY: interpolate(
-          animatedIndex.value,
-          [0, 1],
-          [0, pathname === "/" ? -50 : -100],
-          Extrapolate.CLAMP
-        ),
-      },
-    ],
-  }));
-
-  const tabStripAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      animatedIndex.value,
-      [0, 1],
-      [1, 0],
-      Extrapolate.CLAMP
-    ),
-    transform: [
-      {
-        translateY: interpolate(
-          animatedIndex.value,
-          [0, 1],
-          [0, pathname === "/" ? -50 : -100],
-          Extrapolate.CLAMP
-        ),
-      },
-    ],
-  }));
-
-  const containerAnimatedStyle = useAnimatedStyle(() => ({
-    borderRadius: interpolate(
-      animatedIndex.value,
-      [0, 1],
-      [0, 20],
-      Extrapolate.CLAMP
-    ),
-    borderTopColor: interpolateColor(
-      animatedIndex.value,
-      [0, 1],
-      [theme[5], "transparent"]
-    ),
-  }));
-
-  const tabListStyle = useMemo(
-    () => [tabListAnimatedStyle],
-    [tabListAnimatedStyle]
-  );
-
-  const tabStripStyle = useMemo(
-    () => [tabStripAnimatedStyle],
-    [tabStripAnimatedStyle]
-  );
-
-  const containerStyle = useMemo(
-    () => [
-      containerAnimatedStyle,
-      {
-        height: "100%",
-        borderTopWidth: 2,
-        backgroundColor: theme[1],
-      },
-    ],
-    [containerAnimatedStyle, theme]
-  );
-
+const TabDrawer = memo(function TabDrawer({ children }: any) {
+  const ref = useRef<BottomSheetModal>(null);
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+  const trigger = cloneElement(children, { onPress: handleOpen });
   const { data, error } = useSWR(["user/tabs"]);
 
   return (
-    <Animated.View style={containerStyle as any}>
-      <Animated.View style={tabStripStyle}>
-        {pathname !== "/" && <OpenTabsList />}
-        <View
-          style={{
-            height: 65,
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 25,
-            flexDirection: "row",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              router.push("/");
-            }}
-            style={{ padding: 30, marginLeft: -30 }}
-          >
-            <Icon size={30} filled={pathname == "/"}>
-              home
-            </Icon>
-          </TouchableOpacity>
-          <CreateDrawer>
-            <IconButton variant="filled" size={45}>
-              <Icon size={34}>add</Icon>
-            </IconButton>
-          </CreateDrawer>
-          <TouchableOpacity
-            onPress={() => snapToIndex(1)}
-            style={{
-              padding: 30,
-              marginRight: -30,
-            }}
-          >
-            <Icon size={28}>stack</Icon>
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
-      <Animated.View style={tabListStyle}>
+    <>
+      {trigger}
+      <BottomSheet
+        sheetRef={ref}
+        onClose={handleClose}
+        snapPoints={["50%", "90%"]}
+      >
         <View
           style={{
             gap: 10,
@@ -204,7 +79,7 @@ function BottomNavigation() {
             paddingHorizontal: 20,
           }}
         >
-          <IconButton onPress={() => snapToIndex(0)} variant="filled">
+          <IconButton onPress={handleClose} variant="filled">
             <Icon>expand_more</Icon>
           </IconButton>
           <Text style={{ fontSize: 20, flex: 1 }} weight={700}>
@@ -215,17 +90,8 @@ function BottomNavigation() {
           </IconButton>
         </View>
         {data ? (
-          <FlatList
+          <BottomSheetFlatList
             style={{ marginTop: 15 }}
-            //  onDragEnd={({ data }) => {
-            //    const newData = data.map((item, index) => ({
-            //      id: item.id,
-            //      order: index,
-            //    }));
-            //    sendApiRequest(sessionToken, "PUT", "user/tabs/order", {
-            //      tabs: JSON.stringify(newData),
-            //    }).then(() => mutate());
-            //  }}
             ListFooterComponent={
               <View>
                 {data.length !== 0 && (
@@ -265,12 +131,7 @@ function BottomNavigation() {
                     paddingHorizontal: 20,
                   }}
                 >
-                  <Tab
-                    tab={item}
-                    isList
-                    handleClose={() => snapToIndex(0)}
-                    // onLongPress={drag}
-                  />
+                  <Tab tab={item} isList handleClose={handleClose} />
                 </View>
               )) as any
             }
@@ -281,60 +142,82 @@ function BottomNavigation() {
         ) : (
           <Spinner />
         )}
-      </Animated.View>
-    </Animated.View>
+      </BottomSheet>
+    </>
+  );
+});
+
+function BottomNavigation() {
+  const pathname = usePathname();
+  const height = getBottomNavigationHeight(pathname);
+  const theme = useColorTheme();
+  const { openPalette } = useCommandPalette();
+
+  return (
+    <View
+      style={{
+        height,
+        borderTopColor: theme[5],
+        borderTopWidth: 1,
+        marginBottom: -1,
+      }}
+    >
+      <View>
+        {pathname !== "/" && <OpenTabsList />}
+        <View
+          style={{
+            height: 65,
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 25,
+            flexDirection: "row",
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              router.push("/");
+            }}
+            style={{ padding: 30, marginLeft: -30 }}
+          >
+            <Icon size={30} filled={pathname == "/"}>
+              home
+            </Icon>
+          </TouchableOpacity>
+          <IconButton variant="filled" size={45} onPress={openPalette}>
+            <Icon style={{ transform: [{ rotate: "-11deg" }] }} size={28}>
+              electric_bolt
+            </Icon>
+          </IconButton>
+          <TabDrawer>
+            <TouchableOpacity
+              style={{
+                padding: 30,
+                marginRight: -30,
+              }}
+            >
+              <Icon size={28}>stack</Icon>
+            </TouchableOpacity>
+          </TabDrawer>
+        </View>
+      </View>
+    </View>
   );
 }
 
+export const getBottomNavigationHeight = (pathname) => {
+  const hidden = ["/account", "/tabs", "/open", "/space", "/friends"].includes(
+    pathname
+  );
+  return hidden
+    ? 0
+    : pathname === "/"
+    ? // Default
+      65
+    : // Carousel
+      65 * 2;
+};
+
 export const BottomAppBar = memo(function BottomAppBar() {
-  const pathname = usePathname();
   const { width } = useWindowDimensions();
-  const isKeyboardVisible = useKeyboardVisibility();
-  const shouldHide =
-    ["/account", "/tabs", "/open", "/space", "/friends"].includes(pathname) ||
-    isKeyboardVisible;
-
-  const theme = useColorTheme();
-
-  const ref = useRef<BottomSheetModal>(null);
-
-  useEffect(() => {
-    if (shouldHide) {
-      ref.current.close();
-    } else {
-      ref.current?.present();
-    }
-  }, [shouldHide]);
-
-  return width < 600 ? (
-    <BottomSheetModalProvider>
-      <BottomSheet
-        snapPoints={[pathname === "/" ? 65 : 65 * 2, "70%"]}
-        sheetRef={ref}
-        animateOnMount={false}
-        appearsOnIndex={1}
-        dismissible={false}
-        enablePanDownToClose={false}
-        onClose={() => null}
-        handleComponent={() => null}
-        stackBehavior="push"
-        keyboardBlurBehavior="none"
-        disableBackHandler
-        disableEscapeHandler
-        backgroundStyle={{
-          borderRadius: 25,
-          backgroundColor: theme[1],
-        }}
-        containerStyle={{
-          opacity: shouldHide ? 0 : 1,
-          pointerEvents: shouldHide ? "none" : undefined,
-        }}
-        backdropComponent={(d) => (
-          <BottomSheetBackdrop pressBehavior="collapse" {...d} />
-        )}
-      >
-        <BottomNavigation />
-      </BottomSheet>
-    </BottomSheetModalProvider>
-  ) : null;
+  return width < 600 ? <BottomNavigation /> : null;
 });

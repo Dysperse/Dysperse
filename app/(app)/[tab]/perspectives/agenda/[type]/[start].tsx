@@ -180,7 +180,7 @@ function Agenda() {
         currentDateEnd={column?.end}
       />
       {data ? (
-        <>
+        <View style={{ flex: 1 }}>
           <FlatList
             ref={flatListRef}
             horizontal
@@ -258,7 +258,7 @@ function Agenda() {
             keyExtractor={(i) => `${i.start}-${i.end}`}
           />
           {column && <Column mutate={mutate} column={column} />}
-        </>
+        </View>
       ) : (
         agendaFallback
       )}

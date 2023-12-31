@@ -1,8 +1,10 @@
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
+import { usePathname } from "expo-router";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { getBottomNavigationHeight } from "./bottom-navigation";
 
 export function ContentWrapper(props) {
   const theme = useColorTheme();

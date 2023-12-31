@@ -200,9 +200,10 @@ function FriendActivity() {
         borderWidth: 1,
         borderColor: theme[5],
         borderRadius: 20,
-        height: 180 * 2 + 2,
+        height: data?.length <= 1 ? 180 : 180 * 2 + 2,
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "row",
       }}
     >
       {isLoading ? (
@@ -210,86 +211,81 @@ function FriendActivity() {
       ) : error ? (
         <ErrorAlert />
       ) : (
-        <FlatList
-          data={[...data, "ALL_FRIENDS"]}
-          style={{ width: "100%" }}
-          numColumns={2}
-          renderItem={({ item: friend }) =>
-            friend === "ALL_FRIENDS" ? (
-              <TouchableOpacity
-                key={"all"}
-                onPress={handleFriendsPress}
+        [...data, "ALL_FRIENDS"].map((friend) =>
+          friend === "ALL_FRIENDS" ? (
+            <TouchableOpacity
+              key={"all"}
+              onPress={handleFriendsPress}
+              style={{
+                height: 180,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+                flex: 0.5,
+              }}
+            >
+              <Avatar size={90} disabled>
+                <Icon size={30}>groups_2</Icon>
+              </Avatar>
+              <Text style={{ opacity: 0.6 }}>All Friends</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              key={friend.user.email}
+              style={{
+                height: 180,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+                flex: 0.5,
+              }}
+            >
+              <View
                 style={{
-                  height: 180,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  flex: 0.5,
+                  width: 90,
+                  height: 90,
+                  borderRadius: 999,
+                  position: "relative",
                 }}
               >
-                <Avatar size={90} disabled>
-                  <Icon size={30}>groups_2</Icon>
-                </Avatar>
-                <Text style={{ opacity: 0.6 }}>All Friends</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                key={friend.user.email}
-                style={{
-                  height: 180,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  flex: 0.5,
-                }}
-              >
-                <View
+                <ProfilePicture
+                  style={{ pointerEvents: "none" }}
+                  name={friend.user.profile?.name || "--"}
+                  image={friend.user.profile?.picture}
+                  size={90}
+                />
+                <Chip
+                  // dense
                   style={{
-                    width: 90,
-                    height: 90,
-                    borderRadius: 999,
-                    position: "relative",
+                    position: "absolute",
+                    bottom: -3,
+                    right: -3,
+                    height: 30,
+                    borderWidth: 5,
+                    borderColor: theme[1],
                   }}
-                >
-                  <ProfilePicture
-                    style={{ pointerEvents: "none" }}
-                    name={friend.user.profile?.name || "--"}
-                    image={friend.user.profile?.picture}
-                    size={90}
-                  />
-                  <Chip
-                    // dense
-                    style={{
-                      position: "absolute",
-                      bottom: -3,
-                      right: -3,
-                      height: 30,
-                      borderWidth: 5,
-                      borderColor: theme[1],
-                    }}
-                    textStyle={{ fontSize: 13 }}
-                    label={dayjs(friend.user.profile?.lastActive)
+                  textStyle={{ fontSize: 13 }}
+                  label={
+                    dayjs(friend.user.profile?.lastActive)
                       .fromNow(true)
-                      .replace("inute", "")
-                      .replace("our", "")
-                      .replace("ay", "")
-                      .replace("ay", "")
-                      .replace("onth", "")
-                      .replace("s", "")
-                      .replace("ear", "")
-                      .replace("an", "1")
-                      .replace("a ", "1")
-                      .replaceAll(" ", "")
-                      .toUpperCase()}
-                  />
-                </View>
-                <Text style={{ opacity: 0.6 }}>
-                  {friend.user.profile?.name.split(" ")?.[0]}
-                </Text>
-              </TouchableOpacity>
-            )
-          }
-        />
+                      .includes("few")
+                      ? "NOW"
+                      : dayjs(friend.user.profile?.lastActive)
+                          .fromNow(true)
+                          .split(" ")[0] +
+                        dayjs(friend.user.profile?.lastActive)
+                          .fromNow(true)
+                          .split(" ")?.[1]?.[0]
+                          .toUpperCase()
+                  }
+                />
+              </View>
+              <Text style={{ opacity: 0.6 }}>
+                {friend.user.profile?.name.split(" ")?.[0]}
+              </Text>
+            </TouchableOpacity>
+          )
+        )
       )}
     </View>
   );
