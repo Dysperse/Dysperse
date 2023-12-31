@@ -80,6 +80,7 @@ export function TaskDrawer({ mutateList, children, id }) {
             value={{
               task: data,
               updateTask,
+              mutateList,
             }}
           >
             <TaskDrawerContent handleClose={handleClose} />

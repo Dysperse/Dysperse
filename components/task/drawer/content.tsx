@@ -5,7 +5,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import React, { useCallback, useState } from "react";
 import { View, useColorScheme } from "react-native";
 import { useLabelColors } from "../../labels/useLabelColors";
@@ -27,14 +27,17 @@ import Spinner from "@/ui/Spinner";
 function TaskCompleteButton() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task, updateTask, mutateList } = useTaskDrawerContext();
   const green = useColor("green", useColorScheme() == "dark");
   const isCompleted = task.completionInstances.length > 0;
   const [isLoading, setIsLoading] = useState(false);
+  const { animatedIndex } = useBottomSheet();
 
   const handlePress = async () => {
     setIsLoading(true);
-    const res = await sendApiRequest(
+    const newArr = isCompleted ? [] : [...task.completionInstances, true];
+    updateTask("completionInstances", newArr, false);
+    await sendApiRequest(
       sessionToken,
       isCompleted ? "DELETE" : "POST",
       "space/entity/complete-task",
@@ -46,11 +49,12 @@ function TaskCompleteButton() {
         }),
       }
     );
-    updateTask(
-      "completionInstances",
-      isCompleted ? [] : [...task.completionInstances, res],
-      false
-    );
+    if (animatedIndex.value === -1) {
+      mutateList({
+        ...task,
+        completionInstances: newArr,
+      });
+    }
     setIsLoading(false);
   };
 
