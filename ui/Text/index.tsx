@@ -1,4 +1,10 @@
-import { Text as NText, StyleProp, TextProps, TextStyle } from "react-native";
+import {
+  Text as NText,
+  Platform,
+  StyleProp,
+  TextProps,
+  TextStyle,
+} from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
 export interface DTextProps extends TextProps {
@@ -18,7 +24,7 @@ export default function Text(props: DTextProps) {
       maxFontSizeMultiplier={1.1}
       style={[
         {
-          fontSize: 16,
+          fontSize: Platform.OS === "web" ? 15 : 16,
           color: theme[12],
           fontFamily: props.heading ? "heading" : `body_${props.weight || 400}`,
           ...(props.textStyle as any),

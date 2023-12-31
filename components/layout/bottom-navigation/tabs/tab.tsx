@@ -1,5 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
@@ -111,24 +112,13 @@ export function Tab({
   );
 
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
       style={{
-        padding: isList ? 0 : 6,
-        paddingBottom: 0,
-        paddingHorizontal: isList ? 0 : 3,
-        flex: 1,
-        width: "100%",
         opacity: isClosedAnimation ? 0.5 : 1,
-        height: width > 600 ? 53.5 : isList ? 55 : 50,
-        marginHorizontal: "auto",
-        ...(Platform.OS === "web" &&
-          ({
-            width: "200px",
-            flexDirection: "row",
-            alignItems: "center",
-          } as object)),
+        ...(breakpoints.lg && { width: "100%" }),
       }}
     >
       <Pressable
@@ -146,21 +136,27 @@ export function Tab({
           handleClose();
         }}
         style={({ pressed, hovered }: any) => ({
-          flex: 1,
-          paddingHorizontal: isList ? 6 : 10,
+          paddingHorizontal: isList ? 6 : breakpoints.lg ? 6 : 10,
           columnGap: 5,
-          borderRadius: 999,
-          height: "100%",
+          borderRadius: breakpoints.lg ? 15 : 99,
+          height: breakpoints.lg ? 40 : 60,
           alignItems: "center",
           flexDirection: "row",
+          borderWidth: 1,
           backgroundColor:
-            params.tab === tab.id
-              ? theme[11]
-              : pressed
-              ? theme[5]
-              : hovered
-              ? theme[4]
-              : addHslAlpha(theme[3], 0.7),
+            theme[
+              params.tab === tab.id
+                ? 11
+                : pressed
+                ? 5
+                : hovered
+                ? 4
+                : breakpoints.lg
+                ? 2
+                : 3
+            ],
+          borderColor:
+            theme[params.tab === tab.id ? 11 : breakpoints.lg ? 2 : 5],
         })}
       >
         <Icon
@@ -179,12 +175,10 @@ export function Tab({
         <View style={{ flex: 1 }}>
           <Text
             style={{
+              color: theme[params.tab === tab.id ? 3 : 11],
               ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-              ...(params.tab === tab.id && {
-                color: theme[3],
-              }),
             }}
-            weight={600}
+            weight={500}
             numberOfLines={1}
           >
             {capitalizeFirstLetter(tabData.name(tab.params, tab.slug)[0] || "")}
@@ -192,12 +186,11 @@ export function Tab({
           {tabData.name(tab.params, tab.slug)[1] && (
             <Text
               style={{
+                marginTop: -3,
                 fontSize: 12,
                 opacity: 0.6,
+                color: theme[params.tab === tab.id ? 3 : 11],
                 ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-                ...(params.tab === tab.id && {
-                  color: theme[3],
-                }),
               }}
               numberOfLines={1}
             >
@@ -211,7 +204,7 @@ export function Tab({
           style={{
             width: width > 600 ? 20 : 40,
             height: width > 600 ? 20 : 40,
-            marginHorizontal: 5,
+            marginRight: 5,
             backgroundColor: "transparent",
             display:
               width < 600

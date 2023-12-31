@@ -1,6 +1,6 @@
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
-import { Task } from "@/components/task";
+import Task from "@/components/task";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -14,6 +14,7 @@ import React from "react";
 import { RefreshControl, View, useWindowDimensions } from "react-native";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 const renderColumnItem = ({ item, width, mutate, column }: any) => {
   const Container = ({ children }: { children: React.ReactNode }) => (
@@ -40,7 +41,7 @@ const renderColumnItem = ({ item, width, mutate, column }: any) => {
                           ...oldColumn,
                           tasks: oldColumn.tasks
                             .map((oldTask) =>
-                              oldTask.id === newTask.id
+                              oldTask?.id === newTask?.id
                                 ? newTask.trash === true
                                   ? undefined
                                   : newTask
@@ -89,15 +90,16 @@ export function Column({
 
   const renderColumnItemWrapper = (props) =>
     renderColumnItem({ ...props, width, mutate, column });
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
       style={{
-        ...(width > 600 && {
+        ...(breakpoints.lg && {
           backgroundColor: theme[2],
           borderRadius: 20,
         }),
-        width: width > 600 ? 300 : width,
+        width: breakpoints.lg ? 300 : width,
         overflow: "hidden",
         height: "100%",
       }}

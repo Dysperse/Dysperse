@@ -1,5 +1,3 @@
-import { CreateDrawer } from "@/components/layout/bottom-navigation/create-drawer";
-import { sendApiRequest } from "@/helpers/api";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -11,7 +9,6 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
@@ -28,6 +25,7 @@ import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { NavbarProfilePicture } from "../account-navbar";
 import { useCommandPalette } from "../command-palette";
+import { OpenTabsList } from "../bottom-navigation/tabs/carousel";
 
 export const styles = StyleSheet.create({
   contentContainer: {
@@ -149,75 +147,71 @@ export function Sidebar() {
     <View
       style={{
         height: "100%",
-        backgroundColor: width > 600 ? theme[2] : undefined,
-        width: width > 600 ? 80 : "100%",
+        width: width > 600 ? 220 : "100%",
         flexDirection: "column",
         maxHeight: width > 600 ? height : undefined,
-        alignItems: "center",
+        backgroundColor: theme[2],
       }}
     >
-      {width > 600 && (
-        <View
-          style={{
-            height: 70,
-            paddingHorizontal: 20,
+      <View
+        style={{
+          padding: 15,
+          paddingBottom: 0,
+        }}
+      >
+        <Pressable
+          onPress={openPalette}
+          style={({ pressed }) => ({
+            borderWidth: 1,
+            opacity: pressed ? 0.5 : 1,
+            borderColor: theme[5],
+            backgroundColor: theme[1],
             alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 10,
+            gap: 10,
             flexDirection: "row",
-            justifyContent: "space-between",
-          }}
+            width: "100%",
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+          })}
         >
-          <Logo color={theme[7]} size={40} />
-        </View>
-      )}
-      {width > 600 && (
-        <View style={{ paddingHorizontal: 20 }}>
-          <CreateDrawer>
-            <Pressable
-              style={({ pressed, hovered }: any) => ({
-                flexDirection: "row",
-                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                shadowColor: theme[4],
-                borderWidth: 2,
-                borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-                shadowRadius: 10,
-                marginBottom: 15,
-                shadowOffset: { height: 5, width: 0 },
-                borderRadius: 8,
-                height: 50,
-                width: 50,
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 15,
-                ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-              })}
-            >
-              <Icon bold style={{ opacity: 0.8 }}>
-                add
-              </Icon>
-            </Pressable>
-          </CreateDrawer>
-        </View>
-      )}
-      <IconButton onPress={openPalette} size={40}>
-        <Icon style={{ transform: [{ rotate: "-11deg" }] }}>electric_bolt</Icon>
-      </IconButton>
+          <Icon>bolt</Icon>
+          <Text style={{ color: theme[11] }}>Jump to</Text>
+        </Pressable>
+      </View>
+      <OpenTabsList />
       <View
         style={{
           marginTop: "auto",
-          marginBottom: 10,
-          gap: 10,
-          alignItems: "center",
+          padding: 15,
+          paddingTop: 0,
         }}
       >
-        <IconButton variant="filled" onPress={openSupport}>
-          <Icon>question_mark</Icon>
-        </IconButton>
-        <SpacesTrigger>
-          <IconButton variant="filled">
-            <Icon>workspaces</Icon>
+        <View
+          style={{
+            gap: 10,
+            paddingTop: 15,
+            alignItems: "center",
+            flexDirection: "row",
+            borderTopWidth: 1,
+            borderTopColor: theme[6],
+          }}
+        >
+          <IconButton
+            variant="filled"
+            style={{ marginRight: "auto" }}
+            onPress={openSupport}
+          >
+            <Icon>question_mark</Icon>
           </IconButton>
-        </SpacesTrigger>
-        <NavbarProfilePicture />
+          <SpacesTrigger>
+            <IconButton variant="filled">
+              <Icon>workspaces</Icon>
+            </IconButton>
+          </SpacesTrigger>
+          <NavbarProfilePicture />
+        </View>
       </View>
     </View>
   );

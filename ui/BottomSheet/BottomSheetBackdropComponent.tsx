@@ -28,21 +28,16 @@ export const BottomSheetBackdropComponent = ({
     ),
   }));
 
-  const pointerEvents = useDerivedValue(() => {
-    return animatedIndex.value == -1 ? "none" : "auto";
-  });
-
   // styles
   const containerStyle = useMemo(
     () => [
       style,
       {
         backgroundColor: "#000",
-        pointerEvents,
       },
       containerAnimatedStyle,
     ],
-    [style, containerAnimatedStyle, pointerEvents]
+    [style, containerAnimatedStyle]
   );
 
   const handleClose = () => {

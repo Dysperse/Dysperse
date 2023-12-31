@@ -25,6 +25,7 @@ function Agenda() {
   const { width } = useWindowDimensions();
   const flatListRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
+  const params = useLocalSearchParams();
 
   const { type, start, end } = useAgendaContext();
   const { data, mutate, error } = useSWR([
@@ -36,52 +37,9 @@ function Agenda() {
     },
   ]);
 
-  const [currentColumn, setCurrentColumn] = useState<number>(0);
-  const column = data?.[currentColumn];
-
-  const handleToday = useCallback(() => {
-    if (data?.length > 1) {
-      const c = data.findIndex((i) =>
-        dayjs().utc().isBetween(dayjs(i.start), dayjs(i.end))
-      );
-      if (c) setCurrentColumn(c);
-      else
-        router.setParams({
-          start: dayjs().format("YYYY-MM-DD"),
-        });
-    }
-  }, [data, setCurrentColumn]);
-
-  const [alreadyScrolled, setAlreadyScrolled] = useState(false);
-
-  useEffect(() => {
-    setImmediate(() => {
-      if (
-        !alreadyScrolled &&
-        flatListRef?.current &&
-        currentColumn &&
-        Platform.OS !== "web" &&
-        Array.isArray(data)
-      ) {
-        setAlreadyScrolled(true);
-        const index = data.findIndex((i) => i.start === column?.start);
-        if (index !== -1) {
-          setTimeout(() => {
-            flatListRef.current.scrollToIndex({ index, viewPosition: 0.5 });
-          }, 200);
-        }
-      }
-    });
-  }, [currentColumn, data, alreadyScrolled, column]);
-
-  useEffect(() => {
-    if (data?.length > 1 && !alreadyScrolled)
-      setCurrentColumn(
-        data.findIndex((i) =>
-          dayjs().utc().isBetween(dayjs(i.start), dayjs(i.end))
-        ) || data[0]
-      );
-  }, []);
+  const column = data?.find((col) =>
+    dayjs(params.start as any).isBetween(col.start, col.end, null, "[]")
+  );
 
   const agendaFallback = (
     <View
@@ -139,9 +97,8 @@ function Agenda() {
       <ContentWrapper>
         <PerspectivesNavbar
           error={Boolean(error)}
-          handleToday={handleToday}
-          currentDateStart={data?.[currentColumn]?.start}
-          currentDateEnd={data?.[currentColumn]?.end}
+          currentDateStart={column?.start}
+          currentDateEnd={column?.end}
         />
         <ScrollView
           horizontal
@@ -179,10 +136,10 @@ function Agenda() {
     <View style={{ flex: 1 }}>
       <PerspectivesNavbar
         error={Boolean(error)}
-        handleToday={handleToday}
         currentDateStart={column?.start}
         currentDateEnd={column?.end}
       />
+
       {data ? (
         <View style={{ flex: 1 }}>
           <FlatList
@@ -211,8 +168,9 @@ function Agenda() {
                   gap: 3,
                 }}
                 onPress={() => {
-                  setAlreadyScrolled(false);
-                  setCurrentColumn(index);
+                  router.setParams({
+                    start: dayjs(item.start).format("YYYY-MM-DD"),
+                  });
                 }}
               >
                 {buttonTextFormats.small !== "-" && (
@@ -261,7 +219,7 @@ function Agenda() {
             )}
             keyExtractor={(i) => `${i.start}-${i.end}`}
           />
-          {column && <Column mutate={mutate} column={column} />}
+          <Column mutate={mutate} column={column} />
         </View>
       ) : (
         agendaFallback

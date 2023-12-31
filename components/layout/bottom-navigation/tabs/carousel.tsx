@@ -1,10 +1,9 @@
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { LinearGradient } from "expo-linear-gradient";
+import Logo from "@/ui/logo";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
@@ -13,6 +12,7 @@ import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
+import Text from "@/ui/Text";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
@@ -60,75 +60,45 @@ export function OpenTabsList() {
     width > 600 ? (
       <View
         style={{
-          height: 64,
-          flexDirection: "row",
+          flex: 1,
+          padding: 15,
+          width: "100%",
         }}
       >
-        <View
-          style={{
-            justifyContent: "center",
-            paddingRight: 3,
+        <IconButton
+          style={({ pressed, hovered }) => ({
+            borderWidth: 1,
+            borderColor: theme[5],
+            backgroundColor:
+              pathname === "/"
+                ? theme[pressed ? 12 : 11]
+                : hovered
+                ? theme[3]
+                : addHslAlpha(theme[3], 0.7),
+            borderRadius: 999,
+          })}
+          size={47}
+          onPress={() => {
+            router.replace("/");
           }}
         >
-          <IconButton
-            style={({ pressed, hovered }) => ({
-              backgroundColor:
-                pathname === "/"
-                  ? theme[pressed ? 12 : 11]
-                  : hovered
-                  ? theme[3]
-                  : addHslAlpha(theme[3], 0.7),
-              width: 46,
-              height: 46,
-              borderRadius: 999,
-            })}
-            onPress={() => {
-              router.replace("/");
-            }}
-          >
-            <Icon
-              style={{ color: theme[pathname === "/" ? 3 : 11] }}
-              filled={pathname === "/"}
-            >
-              home
-            </Icon>
-          </IconButton>
-        </View>
-        <LinearGradient
-          colors={[theme[1], "transparent"]}
-          style={{ width: 17, marginRight: -17, zIndex: 99 }}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-        />
+          <Logo color={theme[pathname === "/" ? 3 : 11]} size={26} />
+        </IconButton>
+        <Text
+          variant="eyebrow"
+          style={{ marginVertical: 10, marginLeft: 5, marginTop: 20 }}
+        >
+          Tabs
+        </Text>
         <ScrollView
-          horizontal
           showsHorizontalScrollIndicator={false}
-          style={{
-            height: 64,
-            flexDirection: "row",
-            paddingRight: 20,
-            paddingLeft: 5,
-            paddingTop: 1.5,
-          }}
-          contentContainerStyle={{ paddingRight: 3 }}
+          style={{ flex: 1, width: "100%" }}
+          contentContainerStyle={{ gap: 5 }}
         >
           {data.map((tab) => (
             <Tab tab={tab} key={tab.id} />
           ))}
         </ScrollView>
-        <LinearGradient
-          colors={["transparent", theme[1]]}
-          style={{ width: 30, marginLeft: -30, zIndex: 99 }}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-        />
-        <View
-          style={{
-            justifyContent: "center",
-            marginRight: 15,
-            paddingLeft: 10,
-          }}
-        ></View>
       </View>
     ) : (
       <Carousel

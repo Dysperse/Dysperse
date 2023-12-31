@@ -16,19 +16,21 @@ import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
 import Skeleton from "@/ui/Skeleton";
 import { useCommandPalette } from "./command-palette";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
   const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <TouchableOpacity
       onPress={() => router.push("/account")}
       style={{
         zIndex: 999,
-        borderWidth: width > 600 ? 0 : 10,
+        borderWidth: breakpoints.lg ? 0 : 10,
         borderColor: "transparent",
-        marginHorizontal: -10,
+        marginHorizontal: breakpoints.lg ? 0 : -10,
         borderRadius: 999,
       }}
     >

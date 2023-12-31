@@ -1,29 +1,27 @@
+import { LabelPicker } from "@/components/labels/picker";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import React, { useCallback, useState } from "react";
 import { View, useColorScheme } from "react-native";
-import { useLabelColors } from "../../labels/useLabelColors";
-import { TaskDetails } from "./details";
-import { useTaskDrawerContext } from "./context";
-import {
+import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import Animated from "react-native-reanimated";
-import { LabelPicker } from "@/components/labels/picker";
 import Toast from "react-native-toast-message";
-import { sendApiRequest } from "@/helpers/api";
-import { useUser } from "@/context/useUser";
-import { useColor } from "@/ui/color";
-import Spinner from "@/ui/Spinner";
-import { useSession } from "@/context/AuthProvider";
+import { useLabelColors } from "../../labels/useLabelColors";
+import { useTaskDrawerContext } from "./context";
+import { TaskDetails } from "./details";
 
 function TaskCompleteButton() {
   const theme = useColorTheme();
@@ -35,7 +33,7 @@ function TaskCompleteButton() {
   const { animatedIndex } = useBottomSheet();
 
   const handlePress = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const newArr = isCompleted ? [] : [...task.completionInstances, true];
     updateTask("completionInstances", newArr, false);
     await sendApiRequest(
@@ -56,7 +54,7 @@ function TaskCompleteButton() {
         completionInstances: newArr,
       });
     }
-    setIsLoading(false);
+    // setIsLoading(false);
   };
 
   return (

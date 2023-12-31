@@ -3,13 +3,12 @@ import {
   BottomSheetProps,
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
+import { Ref, memo } from "react";
+import { Platform } from "react-native";
+import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
-import { useColorTheme } from "../color/theme-provider";
-import { Ref } from "react";
 import { BottomSheetEscapeHandler } from "./BottomSheetEscapeHandler";
-import { Platform } from "react-native";
-import BottomSheetKeyboardHandler from "./BottomSheetKeyboardHandler";
 
 interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: Ref<BottomSheetModal>;
@@ -22,7 +21,7 @@ interface DBottomSheetProps extends BottomSheetProps {
   disableEscapeHandler?: boolean;
 }
 
-export default function BottomSheet(props: DBottomSheetProps) {
+const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
 
   const animationConfigs = useBottomSheetSpringConfigs({
@@ -65,4 +64,6 @@ export default function BottomSheet(props: DBottomSheetProps) {
       {props.children}
     </BottomSheetModal>
   );
-}
+});
+
+export default BottomSheet;

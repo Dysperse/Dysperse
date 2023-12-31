@@ -14,7 +14,7 @@ export function ContentWrapper(props) {
   return (
     <View
       style={{
-        marginTop: insets.top + 64,
+        marginTop: insets.top + 15,
         backgroundColor: theme[1],
         flex: 1,
         overflow: "hidden",

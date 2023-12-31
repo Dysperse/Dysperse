@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
 });
 
 export function PerspectivesNavbar({
-  handleToday,
   currentDateStart,
   currentDateEnd,
   error,
@@ -59,19 +58,25 @@ export function PerspectivesNavbar({
     });
   }, [type, start]);
 
+  const handleToday = useCallback(() => {
+    router.setParams({
+      start: dayjs().format("YYYY-MM-DD"),
+    });
+  }, []);
+
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
     <LinearGradient
-      colors={[theme[breakpoints.lg ? 1 : 2], theme[breakpoints.lg ? 1 : 3]]}
+      colors={[theme[breakpoints.lg ? 1 : 2], theme[breakpoints.lg ? 3 : 3]]}
       style={{
         paddingHorizontal: 20,
         paddingRight: 10,
         paddingTop: insets.top,
         flexDirection: "row",
-        height: breakpoints["lg"] ? 60 : 70 + insets.top,
+        height: 70 + insets.top,
         alignItems: "center",
         zIndex: 9999,
         backgroundColor: theme[3],

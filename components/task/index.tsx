@@ -5,12 +5,12 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import React from "react";
+import React, { memo } from "react";
 import { View, useColorScheme } from "react-native";
-import { TaskCheckbox } from "./Checkbox";
+import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
 
-export function Task({
+const Task = memo(function Task({
   task,
   onTaskUpdate,
 }: {
@@ -66,4 +66,6 @@ export function Task({
       </ListItemButton>
     </TaskDrawer>
   );
-}
+});
+
+export default Task;
