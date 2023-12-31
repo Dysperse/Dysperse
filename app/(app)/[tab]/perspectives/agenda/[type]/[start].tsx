@@ -175,6 +175,7 @@ function Agenda() {
   return (
     <View style={{ flex: 1 }}>
       <PerspectivesNavbar
+        error={Boolean(error)}
         handleToday={handleToday}
         currentDateStart={column?.start}
         currentDateEnd={column?.end}

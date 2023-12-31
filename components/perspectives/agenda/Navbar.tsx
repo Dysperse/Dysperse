@@ -1,4 +1,5 @@
 import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
+import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -9,6 +10,7 @@ import React, { useCallback } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
+  View,
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,6 +29,7 @@ export function PerspectivesNavbar({
   handleToday,
   currentDateStart,
   currentDateEnd,
+  error,
 }: any) {
   const { start, type } = useAgendaContext();
 
@@ -66,7 +69,7 @@ export function PerspectivesNavbar({
 
   return (
     <LinearGradient
-      colors={[theme[width > 600 ? 3 : 2], theme[width > 600 ? 2 : 3]]}
+      colors={[theme[width > 600 ? 2 : 2], theme[width > 600 ? 2 : 3]]}
       style={{
         paddingHorizontal: 20,
         paddingRight: 10,
@@ -78,14 +81,23 @@ export function PerspectivesNavbar({
         backgroundColor: theme[3],
       }}
     >
-      <TouchableOpacity style={{ flex: 1 }}>
-        <Text numberOfLines={1} weight={600}>
-          {dayjs(start).format(titleFormat).split("•")?.[0]}
-        </Text>
-        <Text numberOfLines={1} style={{ opacity: 0.6 }}>
-          {dayjs(start).format(titleFormat).split("• ")?.[1]}
-        </Text>
-      </TouchableOpacity>
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+        <TouchableOpacity>
+          <Text numberOfLines={1} weight={600}>
+            {dayjs(start).format(titleFormat).split("•")?.[0]}
+          </Text>
+          <Text numberOfLines={1} style={{ opacity: 0.6 }}>
+            {dayjs(start).format(titleFormat).split("• ")?.[1]}
+          </Text>
+        </TouchableOpacity>
+        {error && (
+          <Chip
+            icon={<Icon>cloud_off</Icon>}
+            style={{ marginHorizontal: "auto" }}
+            label="Offline"
+          />
+        )}
+      </View>
       {!isCurrent && (
         <TouchableOpacity style={styles.navigationButton} onPress={handleToday}>
           <Icon>calendar_today</Icon>
