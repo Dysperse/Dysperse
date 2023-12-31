@@ -95,7 +95,7 @@ function TaskNameInput() {
       onBlur={(e) => {
         updateTask("name", name);
       }}
-      onChangeText={(text) => setName(text.trim())}
+      onChangeText={(text) => setName(text.replaceAll("\n", ""))}
       value={name}
       style={{
         fontFamily: "heading",
