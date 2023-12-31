@@ -141,7 +141,7 @@ export function Column({
           </>
         }
         data={column.tasks}
-        estimatedItemSize={200}
+        estimatedItemSize={103}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
