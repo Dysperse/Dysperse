@@ -43,7 +43,6 @@ export default function BottomSheet(props: DBottomSheetProps) {
         <BottomSheetBackdropComponent {...d} dismissible={props.dismissible} />
       )}
       onChange={(e) => {
-        console.log(e);
         if (e === -1) props.onClose();
       }}
       backgroundStyle={{

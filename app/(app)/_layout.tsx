@@ -40,6 +40,7 @@ import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/car
 import { CommandPaletteProvider } from "@/components/layout/command-palette";
 import Spinner from "@/ui/Spinner";
 import Logo from "@/ui/logo";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -141,6 +142,7 @@ export default function AppLayout() {
   const { session: sessionData, isLoading: isUserLoading } = useUser();
   const { width, height } = useWindowDimensions();
   const isDark = useColorScheme() === "dark";
+  const breakpoints = useResponsiveBreakpoints();
 
   const theme = useColor(
     sessionData?.user?.theme || "violet",
@@ -222,12 +224,12 @@ export default function AppLayout() {
               />
               <View
                 style={{
-                  flexDirection: width > 600 ? "row" : "column",
+                  flexDirection: breakpoints.lg ? "row" : "column",
                   flex: 1,
                   backgroundColor: theme[1],
                 }}
               >
-                {width > 600 && <Sidebar />}
+                {breakpoints.lg && <Sidebar />}
                 <ThemeProvider
                   value={{
                     ...DefaultTheme,
@@ -239,17 +241,16 @@ export default function AppLayout() {
                 >
                   <JsStack
                     screenOptions={{
-                      header:
-                        width > 600
-                          ? DesktopHeader
-                          : (props: any) => <AccountNavbar {...props} />,
+                      header: breakpoints.lg
+                        ? DesktopHeader
+                        : (props: any) => <AccountNavbar {...props} />,
                       headerTransparent: true,
                       gestureResponseDistance: width,
                       cardShadowEnabled: false,
                       gestureEnabled: true,
                       cardStyle: {
                         backgroundColor: theme[1],
-                        padding: width > 600 ? 10 : 0,
+                        padding: breakpoints.lg ? 10 : 0,
                         paddingTop: 0,
                       },
                       // change opacity of the previous screen when swipe
@@ -303,12 +304,12 @@ export default function AppLayout() {
                     <JsStack.Screen
                       name="[tab]/perspectives/agenda/[type]/[start]"
                       options={{
-                        header: width > 600 ? DesktopHeader : () => null,
+                        header: breakpoints.lg ? DesktopHeader : () => null,
                       }}
                     />
                   </JsStack>
                 </ThemeProvider>
-                {width < 600 && <BottomAppBar />}
+                {!breakpoints.md && <BottomAppBar />}
               </View>
             </CommandPaletteProvider>
           </BottomSheetModalProvider>

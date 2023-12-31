@@ -18,11 +18,13 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 function Agenda() {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const flatListRef = useRef(null);
+  const breakpoints = useResponsiveBreakpoints();
 
   const { type, start, end } = useAgendaContext();
   const { data, mutate, error } = useSWR([
@@ -132,7 +134,7 @@ function Agenda() {
     </View>
   );
 
-  if (width > 600) {
+  if (breakpoints["lg"]) {
     return (
       <ContentWrapper>
         <PerspectivesNavbar
@@ -145,9 +147,9 @@ function Agenda() {
           horizontal
           contentContainerStyle={{
             flexDirection: "row",
-            padding: 15,
             gap: 15,
-            flex: 1,
+            padding: 15,
+            height: "100%",
           }}
         >
           {Array.isArray(data)

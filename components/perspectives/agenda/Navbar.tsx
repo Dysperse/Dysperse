@@ -1,4 +1,5 @@
 import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -7,12 +8,7 @@ import dayjs, { ManipulateType } from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
@@ -65,23 +61,23 @@ export function PerspectivesNavbar({
 
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <LinearGradient
-      colors={[theme[width > 600 ? 2 : 2], theme[width > 600 ? 2 : 3]]}
+      colors={[theme[breakpoints.lg ? 1 : 2], theme[breakpoints.lg ? 1 : 3]]}
       style={{
         paddingHorizontal: 20,
         paddingRight: 10,
         paddingTop: insets.top,
         flexDirection: "row",
-        height: 70 + insets.top,
+        height: breakpoints["lg"] ? 60 : 70 + insets.top,
         alignItems: "center",
         zIndex: 9999,
         backgroundColor: theme[3],
       }}
     >
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexGrow: 1, flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity>
           <Text numberOfLines={1} weight={600}>
             {dayjs(start).format(titleFormat).split("•")?.[0]}
