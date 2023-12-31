@@ -149,7 +149,7 @@ function Agenda() {
             flex: 1,
           }}
         >
-          {data
+          {Array.isArray(data)
             ? data.map((col) => (
                 <Column mutate={mutate} key={col.start} column={col} />
               ))
