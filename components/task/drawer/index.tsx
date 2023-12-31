@@ -75,7 +75,7 @@ export function TaskDrawer({ mutateList, children, id }) {
           margin: "auto",
         }}
       >
-        {data ? (
+        {data?.id ? (
           <TaskDrawerContext.Provider
             value={{
               task: data,
