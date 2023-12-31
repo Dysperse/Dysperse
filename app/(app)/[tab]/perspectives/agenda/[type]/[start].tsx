@@ -136,7 +136,7 @@ function Agenda() {
     return (
       <ContentWrapper>
         <PerspectivesNavbar
-          error={Boolean(error) || !Array.isArray(data)}
+          error={Boolean(error)}
           handleToday={handleToday}
           currentDateStart={data?.[currentColumn]?.start}
           currentDateEnd={data?.[currentColumn]?.end}
@@ -176,7 +176,7 @@ function Agenda() {
   return (
     <View style={{ flex: 1 }}>
       <PerspectivesNavbar
-        error={Boolean(error) || !Array.isArray(data)}
+        error={Boolean(error)}
         handleToday={handleToday}
         currentDateStart={column?.start}
         currentDateEnd={column?.end}
