@@ -1,3 +1,4 @@
+import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import { Task } from "@/components/task";
 import { Avatar } from "@/ui/Avatar";
@@ -13,7 +14,6 @@ import React from "react";
 import { RefreshControl, View, useWindowDimensions } from "react-native";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
-import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 
 const renderColumnItem = ({ item, width, mutate, column }: any) => {
   const Container = ({ children }: { children: React.ReactNode }) => (

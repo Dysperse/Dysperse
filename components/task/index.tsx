@@ -36,7 +36,7 @@ export function Task({
           alignItems: "flex-start",
         })}
       >
-        <TaskCheckbox completed={task?.completionInstances?.length > 0} />
+        <TaskCheckbox task={task} mutateList={onTaskUpdate} />
         <View style={{ gap: 5, paddingTop: 1, flex: 1 }}>
           <Text numberOfLines={1}>{task.name}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>

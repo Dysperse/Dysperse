@@ -272,7 +272,8 @@ function FriendActivity() {
                       ? "NOW"
                       : dayjs(friend.user.profile?.lastActive)
                           .fromNow(true)
-                          .split(" ")[0] +
+                          .split(" ")[0]
+                          .replace("a", "1") +
                         dayjs(friend.user.profile?.lastActive)
                           .fromNow(true)
                           .split(" ")?.[1]?.[0]

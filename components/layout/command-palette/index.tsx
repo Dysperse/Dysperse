@@ -174,7 +174,14 @@ function PaletteList({ handleClose }) {
             </View>
           }
           contentContainerStyle={{ paddingBottom: 30 }}
-          style={{ flex: 1 }}
+          style={{
+            flex: 1,
+            ...(Platform.OS == "web" && {
+              height: 300,
+              maxHeight: 300,
+              minHeight: 300,
+            }),
+          }}
           renderItem={({ item }) => <Button item={item} />}
           renderSectionHeader={({ section }) =>
             section.title === "ALL" ? (
@@ -249,7 +256,6 @@ export function CommandPaletteProvider({ children }) {
         }}
         keyboardBehavior="fillParent"
         android_keyboardInputMode="adjustResize"
-        // backdropComponent={() => null}
         onClose={handleClose}
       >
         <View
