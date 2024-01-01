@@ -151,21 +151,29 @@ function TaskLocationPicker({ children }) {
   const session = useSession();
   const onSubmit = useCallback(
     async (values) => {
-      // alert(JSON.stringify(values));
-      setIsLoading(true);
-      await sendApiRequest(
-        session,
-        "POST",
-        "space/entity/attachments",
-        {},
-        {
-          body: JSON.stringify({
-            id: task.id,
-            type: "LOCATION",
-            data: values.location,
-          }),
-        }
-      );
+      try {
+        setIsLoading(true);
+        await sendApiRequest(
+          session,
+          "POST",
+          "space/entity/attachments",
+          {},
+          {
+            body: JSON.stringify({
+              id: task.id,
+              type: "LOCATION",
+              data: values.location,
+            }),
+          }
+        );
+        setIsLoading(false);
+      } catch {
+        setIsLoading(false);
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong. Please try again later",
+        });
+      }
     },
     [session, task.id]
   );
