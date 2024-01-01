@@ -1,11 +1,13 @@
 import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
 import Text, { DTextProps } from "../Text";
 import { useColorTheme } from "../color/theme-provider";
+import Spinner from "../Spinner";
 
 interface DButtonProps extends PressableProps {
   buttonClassName?: string;
   variant?: "filled" | "outlined" | "text";
   buttonStyle?: StyleProp<ViewStyle>;
+  isLoading?: boolean;
 }
 
 export function ButtonText(props: DTextProps) {
@@ -40,6 +42,7 @@ export function Button(props: DButtonProps) {
           paddingHorizontal: 10,
           height: 40,
           minWidth: 70,
+          ...(props.isLoading && { opacity: 0.5, pointerEvents: "none" }),
           justifyContent: "center",
           ...(variant === "outlined"
             ? {
@@ -67,9 +70,11 @@ export function Button(props: DButtonProps) {
           gap: 10,
         },
         typeof props.style === "function"
-          ? props.style({ pressed, hovered })
+          ? props["style" as any]({ pressed, hovered })
           : props.style,
       ]}
-    />
+    >
+      {props.isLoading ? <Spinner /> : props.children}
+    </Pressable>
   );
 }

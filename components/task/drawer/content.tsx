@@ -2,12 +2,16 @@ import { LabelPicker } from "@/components/labels/picker";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
+import { Avatar } from "@/ui/Avatar";
+import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
@@ -15,7 +19,13 @@ import {
   BottomSheetScrollView,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Pressable, View, useColorScheme } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -24,14 +34,11 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useLabelColors } from "../../labels/useLabelColors";
+import { styles } from "../create/styles";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
-import { Menu } from "@/ui/Menu";
-import { styles } from "../create/styles";
-import { Avatar } from "@/ui/Avatar";
-import BottomSheet from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet";
-import TextField from "@/ui/TextArea";
-import { Button, ButtonText } from "@/ui/Button";
+import { Controller, useForm } from "react-hook-form";
+import { useSession } from "@/context/AuthProvider";
 
 function TaskCompleteButton() {
   const theme = useColorTheme();
@@ -128,6 +135,49 @@ function TaskLocationPicker({ children }) {
   const trigger = cloneElement(children);
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
+  const [isLoading, setIsLoading] = useState(false);
+  const { task } = useTaskDrawerContext();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      location: "",
+    },
+  });
+
+  const session = useSession();
+  const onSubmit = useCallback(
+    async (values) => {
+      // alert(JSON.stringify(values));
+      setIsLoading(true);
+      await sendApiRequest(
+        session,
+        "POST",
+        "space/entity/attachments",
+        {},
+        {
+          body: JSON.stringify({
+            id: task.id,
+            type: "LOCATION",
+            data: values.location,
+          }),
+        }
+      );
+    },
+    [session, task.id]
+  );
+
+  useEffect(() => {
+    if (errors.location) {
+      Toast.show({
+        type: "error",
+        text1: "Please enter a location",
+      });
+    }
+  }, [errors.location]);
 
   return (
     <Menu
@@ -152,13 +202,29 @@ function TaskLocationPicker({ children }) {
         </Text>
       </View>
       <View style={{ padding: 20, gap: 10 }}>
-        <TextField
-          placeholder="Enter a location"
-          variant="filled"
-          style={{ paddingHorizontal: 25, paddingVertical: 15, fontSize: 20 }}
-          autoFocus
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              placeholder="Enter a location"
+              variant="filled"
+              style={{
+                paddingHorizontal: 25,
+                paddingVertical: 15,
+                fontSize: 20,
+              }}
+              autoFocus
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+            />
+          )}
+          name="location"
         />
         <Button
+          onPress={handleSubmit(onSubmit)}
+          isLoading={isLoading}
           style={({ pressed, hovered }: any) => ({
             borderRadius: 25,
             padding: 10,
