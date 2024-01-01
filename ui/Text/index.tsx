@@ -27,8 +27,6 @@ export default function Text(props: DTextProps) {
           fontSize: Platform.OS === "web" ? 15 : 16,
           color: theme[12],
           fontFamily: props.heading ? "heading" : `body_${props.weight || 400}`,
-          ...(props.textStyle as any),
-
           ...(props.variant === "eyebrow" && {
             textTransform: "uppercase",
             fontFamily: `body_${props.weight || 800}`,
@@ -39,6 +37,7 @@ export default function Text(props: DTextProps) {
             textTransform: "uppercase",
           }),
         },
+        props.textStyle,
         Array.isArray(props.style) ? [...props.style] : props.style,
       ]}
     />

@@ -47,8 +47,8 @@ export function Header({ start, end }) {
         }}
       >
         <Text
-          textStyle={{
-            fontFamily: "body_700",
+          weight={700}
+          style={{
             color: theme[isToday ? 2 : 11],
             fontSize: 20,
           }}
@@ -56,7 +56,7 @@ export function Header({ start, end }) {
           {dayjs(start).format(formats.heading)}
         </Text>
       </View>
-      <Text textStyle={{ fontFamily: "body_600", fontSize: 20 }}>
+      <Text style={{ fontSize: 20 }} weight={600}>
         {dayjs(start).format(formats.subheading)}
         {type === "month" && <> - {dayjs(end).format(formats.subheading)}</>}
       </Text>

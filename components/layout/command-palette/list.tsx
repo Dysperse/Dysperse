@@ -22,6 +22,16 @@ export const getSidebarItems = async (session) => {
           icon: "package_2",
           onPress: () => console.log("Pressed"),
         },
+        {
+          label: "Label",
+          icon: "label",
+          onPress: () => console.log("Pressed"),
+        },
+        {
+          label: "Collection",
+          icon: "draw_abstract",
+          onPress: () => console.log("Pressed"),
+        },
       ],
     },
     {
@@ -117,6 +127,11 @@ export const getSidebarItems = async (session) => {
           label: "Notes",
           icon: "sticky_note_2",
           slug: "/[tab]/all/notes",
+        },
+        {
+          label: "Trash",
+          icon: "sticky_note_2",
+          slug: "/[tab]/trash",
         },
       ],
     },

@@ -14,12 +14,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import {
-  ActivityIndicator,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
+import { TouchableOpacity, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -40,11 +35,11 @@ export default function Index() {
         contentContainerStyle={{
           gap: 15,
           padding: 15,
-          paddingTop: insets.top,
+          marginTop: insets.top,
           paddingBottom: 30,
         }}
       >
-        <Text heading style={{ fontSize: 45 }}>
+        <Text heading style={{ fontSize: 50, marginTop: 30 }}>
           Settings
         </Text>
         <TextField

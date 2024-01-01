@@ -42,6 +42,7 @@ import { CommandPaletteProvider } from "@/components/layout/command-palette";
 import Spinner from "@/ui/Spinner";
 import Logo from "@/ui/logo";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import NavigationBar from "@/ui/NavigationBar";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -65,6 +66,7 @@ export function SessionLoadingScreen() {
         gap: 20,
       }}
     >
+      <NavigationBar color={theme === "dark" ? "#000" : "#fff"} />
       <View style={{ opacity: 0.6 }}>
         <Logo size={90} color={theme === "dark" ? "#ffffff" : "#000000"} />
       </View>
