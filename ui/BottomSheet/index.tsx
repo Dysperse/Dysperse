@@ -56,7 +56,9 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       }}
       {...props}
     >
-      {props.disableBackHandler !== true && <BottomSheetBackHandler />}
+      {props.disableBackHandler !== true && Platform.OS !== "web" && (
+        <BottomSheetBackHandler />
+      )}
       {Platform.OS === "web" && props.disableEscapeHandler !== true && (
         <BottomSheetEscapeHandler handleClose={props.onClose} />
       )}

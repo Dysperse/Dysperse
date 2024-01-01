@@ -12,7 +12,6 @@ const TaskCheckox = memo(function TaskCheckbox({
   task: any;
   mutateList: any;
 }) {
-  console.log(task.id);
   const theme = useColorTheme();
   const { session } = useSession();
 

@@ -111,7 +111,7 @@ function TaskNameInput() {
 export function TaskDrawerContent({ handleClose }) {
   const theme = useColorTheme();
   const labelColors = useLabelColors();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task, updateTask, mutateList } = useTaskDrawerContext();
 
   const rotate = useSharedValue(task.pinned ? -35 : 0);
 
@@ -129,11 +129,14 @@ export function TaskDrawerContent({ handleClose }) {
 
   const handleDelete = useCallback(async () => {
     try {
-      await updateTask("trash", true);
+      updateTask("trash", true);
       handleClose();
-      Toast.show({
-        type: "success",
-        text1: "Task deleted!",
+      setImmediate(async () => {
+        mutateList({ ...task, trash: true });
+        Toast.show({
+          type: "success",
+          text1: "Task deleted!",
+        });
       });
     } catch (e) {
       Toast.show({
@@ -141,7 +144,7 @@ export function TaskDrawerContent({ handleClose }) {
         text1: "Something went wrong. Please try again later",
       });
     }
-  }, [handleClose, updateTask]);
+  }, [handleClose, updateTask, mutateList, task]);
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {
@@ -155,14 +158,14 @@ export function TaskDrawerContent({ handleClose }) {
   });
 
   return (
-    <BottomSheetScrollView stickyHeaderIndices={[0]}>
+    <>
       <View
         style={{
           flexDirection: "row",
           backgroundColor: theme[2],
           paddingHorizontal: 20,
-          height: 60,
           left: 0,
+          paddingBottom: 10,
         }}
       >
         <View
@@ -197,72 +200,74 @@ export function TaskDrawerContent({ handleClose }) {
           </IconButton>
         </View>
       </View>
-      <View style={{ paddingBottom: 20, paddingHorizontal: 12 }}>
-        <View
-          style={{
-            paddingHorizontal: 10,
-            gap: 10,
-            marginTop: 50,
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-        >
-          <Chip
-            onPress={handlePriorityChange}
-            icon={
-              <Animated.View style={rotateStyle}>
-                <Icon
-                  filled={task.pinned}
-                  style={{
-                    ...(task.pinned ? { color: labelColors.orange[3] } : {}),
-                  }}
-                >
-                  push_pin
-                </Icon>
-              </Animated.View>
-            }
+      <BottomSheetScrollView>
+        <View style={{ paddingBottom: 20, paddingHorizontal: 12 }}>
+          <View
             style={{
-              backgroundColor: task.pinned
-                ? labelColors.orange[11]
-                : "transparent",
-              borderWidth: 1,
-              borderColor: task.pinned ? labelColors.orange[3] : theme[6],
+              paddingHorizontal: 10,
+              gap: 10,
+              marginTop: 30,
+              flexDirection: "row",
+              justifyContent: "center",
             }}
-          />
-          <LabelPicker
-            label={task.labelId}
-            setLabel={(e) => {
-              updateTask("labelId", e.id);
-              updateTask("label", e, false);
-            }}
-            onClose={() => {}}
-            autoFocus={false}
           >
             <Chip
-              icon={<Icon>new_label</Icon>}
-              label="Add label"
-              style={({ pressed }) => ({
-                backgroundColor: theme[pressed ? 4 : 2],
+              onPress={handlePriorityChange}
+              icon={
+                <Animated.View style={rotateStyle}>
+                  <Icon
+                    filled={task.pinned}
+                    style={{
+                      ...(task.pinned ? { color: labelColors.orange[3] } : {}),
+                    }}
+                  >
+                    push_pin
+                  </Icon>
+                </Animated.View>
+              }
+              style={{
+                backgroundColor: task.pinned
+                  ? labelColors.orange[11]
+                  : "transparent",
                 borderWidth: 1,
-                borderColor: theme[6],
-              })}
-              {...(task.label && {
-                icon: <Emoji emoji={task.label.emoji} />,
-                label: (
-                  <Text style={{ color: labelColors[task.label.color][11] }}>
-                    {task.label.name}
-                  </Text>
-                ),
-                style: {
-                  backgroundColor: labelColors[task.label.color][3],
-                },
-              })}
+                borderColor: task.pinned ? labelColors.orange[3] : theme[6],
+              }}
             />
-          </LabelPicker>
+            <LabelPicker
+              label={task.labelId}
+              setLabel={(e) => {
+                updateTask("labelId", e.id);
+                updateTask("label", e, false);
+              }}
+              onClose={() => {}}
+              autoFocus={false}
+            >
+              <Chip
+                icon={<Icon>new_label</Icon>}
+                label="Add label"
+                style={({ pressed }) => ({
+                  backgroundColor: theme[pressed ? 4 : 2],
+                  borderWidth: 1,
+                  borderColor: theme[6],
+                })}
+                {...(task.label && {
+                  icon: <Emoji emoji={task.label.emoji} />,
+                  label: (
+                    <Text style={{ color: labelColors[task.label.color][11] }}>
+                      {task.label.name}
+                    </Text>
+                  ),
+                  style: {
+                    backgroundColor: labelColors[task.label.color][3],
+                  },
+                })}
+              />
+            </LabelPicker>
+          </View>
+          <TaskNameInput />
+          <TaskDetails />
         </View>
-        <TaskNameInput />
-        <TaskDetails />
-      </View>
-    </BottomSheetScrollView>
+      </BottomSheetScrollView>
+    </>
   );
 }

@@ -1,20 +1,19 @@
+import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import { Menu } from "@/ui/Menu";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
+import Collapsible from "react-native-collapsible";
+import DateTimePicker from "react-native-ui-datepicker";
 import { TaskStream } from "./audit-log";
 import { useTaskDrawerContext } from "./context";
-import DateTimePicker from "react-native-ui-datepicker";
-import { Menu } from "@/ui/Menu";
-import { Button, ButtonText } from "@/ui/Button";
-import IconButton from "@/ui/IconButton";
-import { Portal } from "@gorhom/portal";
-import Collapsible from "react-native-collapsible";
-import Text from "@/ui/Text";
-import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import Toast from "react-native-toast-message";
 
 function DatePickerModal({ date, onDateSelect, children, menuRef }) {
   const theme = useColorTheme();
@@ -87,23 +86,33 @@ function TaskDateCard() {
             paddingVertical: 10,
           }}
         >
-          <Pressable style={{ gap: 5, flex: 1, alignItems: "center" }}>
-            <DatePickerModal
-              date={task.due}
-              onDateSelect={(e) => console.log(e)}
-              menuRef={dateMenuRef}
-            >
+          <DatePickerModal
+            date={task.due}
+            onDateSelect={(e) => console.log(e)}
+            menuRef={dateMenuRef}
+          >
+            <Pressable style={{ gap: 5, flex: 1, alignItems: "center" }}>
               <IconButton
+                disabled
                 style={{ borderWidth: 1, borderColor: theme[6] }}
                 size={50}
               >
                 <Icon>edit</Icon>
               </IconButton>
-            </DatePickerModal>
-            <Text>Edit</Text>
-          </Pressable>
-          <Pressable style={{ gap: 5, flex: 1, alignItems: "center" }}>
+              <Text>Edit</Text>
+            </Pressable>
+          </DatePickerModal>
+          <Pressable
+            style={{ gap: 5, flex: 1, alignItems: "center" }}
+            onPress={() =>
+              Toast.show({
+                type: "success",
+                text1: "Coming soon!",
+              })
+            }
+          >
             <IconButton
+              disabled
               style={{ borderWidth: 1, borderColor: theme[6] }}
               size={50}
             >
