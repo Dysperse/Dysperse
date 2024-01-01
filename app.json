@@ -10,8 +10,8 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
     },
     "experiments": {
       "tsconfigPaths": true
@@ -26,7 +26,8 @@
     "android": {
       "splash": {
         "resizeMode": "cover",
-        "image": "./assets/splash.png"
+        "image": "./assets/splash.png",
+        "backgroundColor":"#000000"
       },
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.manucodes.Dysperse"

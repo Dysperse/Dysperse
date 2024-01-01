@@ -52,7 +52,7 @@ dayjs.extend(isoWeek);
 
 const { multiply } = Animated;
 
-function SessionLoadingScreen() {
+export function SessionLoadingScreen() {
   const theme = useColorScheme();
 
   return (
@@ -240,7 +240,6 @@ export default function AppLayout() {
                         cardStyle: {
                           backgroundColor: theme[breakpoints.sm ? 2 : 1],
                           padding: breakpoints.lg ? 10 : 0,
-                          paddingTop: 0,
                         },
                         // change opacity of the previous screen when swipe
                         cardOverlayEnabled: true,

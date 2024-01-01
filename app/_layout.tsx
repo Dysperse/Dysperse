@@ -23,6 +23,7 @@ import { ColorThemeProvider } from "@/ui/color/theme-provider";
 
 import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
 import { Platform } from "react-native";
+import { SessionLoadingScreen } from "./(app)/_layout";
 
 export default function Root() {
   // CHANGE THIS LATER!!!
@@ -53,7 +54,7 @@ export default function Root() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return null;
+    return <SessionLoadingScreen />;
   }
 
   return (
