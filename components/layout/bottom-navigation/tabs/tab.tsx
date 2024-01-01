@@ -133,7 +133,7 @@ export function Tab({
               tab: tab.id,
             },
           });
-          handleClose();
+          setImmediate(handleClose);
         }}
         style={({ pressed, hovered }: any) => ({
           paddingHorizontal: isList ? 6 : breakpoints.lg ? 6 : 10,
