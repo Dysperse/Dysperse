@@ -10,9 +10,13 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
-import React, { useCallback, useState } from "react";
-import { View, useColorScheme } from "react-native";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
+import React, { cloneElement, useCallback, useRef, useState } from "react";
+import { Pressable, View, useColorScheme } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -22,6 +26,12 @@ import Toast from "react-native-toast-message";
 import { useLabelColors } from "../../labels/useLabelColors";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
+import { Menu } from "@/ui/Menu";
+import { styles } from "../create/styles";
+import { Avatar } from "@/ui/Avatar";
+import BottomSheet from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet";
+import TextField from "@/ui/TextArea";
+import { Button, ButtonText } from "@/ui/Button";
 
 function TaskCompleteButton() {
   const theme = useColorTheme();
@@ -60,11 +70,15 @@ function TaskCompleteButton() {
   return (
     <>
       <IconButton
-        style={{
+        style={({ pressed, hovered }) => ({
           borderWidth: 1,
-          borderColor: isCompleted ? green[6] : theme[6],
-          backgroundColor: isCompleted ? green[4] : theme[2],
-        }}
+          borderColor: isCompleted
+            ? green[pressed ? 8 : hovered ? 7 : 6]
+            : theme[pressed ? 8 : hovered ? 7 : 6],
+          backgroundColor: isCompleted
+            ? green[pressed ? 6 : hovered ? 5 : 4]
+            : theme[pressed ? 4 : hovered ? 3 : 2],
+        })}
         size={55}
         onPress={handlePress}
       >
@@ -84,6 +98,7 @@ function TaskCompleteButton() {
     </>
   );
 }
+
 function TaskNameInput() {
   const { task, updateTask } = useTaskDrawerContext();
   const theme = useColorTheme();
@@ -92,6 +107,7 @@ function TaskNameInput() {
   return (
     <AutoSizeTextArea
       onBlur={(e) => {
+        if (name === task.name) return;
         updateTask("name", name);
       }}
       onChangeText={(text) => setName(text.replaceAll("\n", ""))}
@@ -105,6 +121,128 @@ function TaskNameInput() {
       }}
       fontSize={50}
     />
+  );
+}
+
+function TaskLocationPicker({ children }) {
+  const trigger = cloneElement(children);
+  const menuRef = useRef<BottomSheetModal>(null);
+  const theme = useColorTheme();
+
+  return (
+    <Menu
+      height={[250]}
+      trigger={trigger}
+      stackBehavior="replace"
+      menuRef={menuRef}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          gap: 20,
+        }}
+      >
+        <IconButton onPress={() => menuRef.current.close()}>
+          <Icon>arrow_back_ios_new</Icon>
+        </IconButton>
+        <Text weight={700} style={{ fontSize: 23 }}>
+          Location
+        </Text>
+      </View>
+      <View style={{ padding: 20, gap: 10 }}>
+        <TextField
+          placeholder="Enter a location"
+          variant="filled"
+          style={{ paddingHorizontal: 25, paddingVertical: 15, fontSize: 20 }}
+          autoFocus
+        />
+        <Button
+          style={({ pressed, hovered }: any) => ({
+            borderRadius: 25,
+            padding: 10,
+            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            width: "100%",
+          })}
+        >
+          <ButtonText>Done</ButtonText>
+        </Button>
+      </View>
+    </Menu>
+  );
+}
+
+function TaskAttachmentButton() {
+  const menuRef = useRef<BottomSheetModal>(null);
+  const theme = useColorTheme();
+
+  const handleClose = useCallback(() => menuRef.current?.close(), [menuRef]);
+
+  const taskMenuCardStyle = ({ pressed, hovered }: any) => [
+    styles.attachmentCard,
+    { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+  ];
+
+  return (
+    <Menu
+      menuRef={menuRef}
+      height={[400]}
+      width={400}
+      trigger={
+        <IconButton style={{ borderWidth: 1, borderColor: theme[6] }} size={55}>
+          <Icon size={27}>edit</Icon>
+        </IconButton>
+      }
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          gap: 20,
+        }}
+      >
+        <IconButton onPress={() => menuRef.current.close()} variant="filled">
+          <Icon>close</Icon>
+        </IconButton>
+        <Text weight={700} style={{ fontSize: 23 }}>
+          Add
+        </Text>
+      </View>
+      <View style={styles.gridRow}>
+        <TaskLocationPicker>
+          <Pressable onPress={handleClose} style={taskMenuCardStyle}>
+            <Avatar size={45}>
+              <Icon style={{ transform: [{ rotate: "-45deg" }] }}>
+                attachment
+              </Icon>
+            </Avatar>
+            <Text style={styles.attachmentCardText}>Location</Text>
+          </Pressable>
+        </TaskLocationPicker>
+        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
+          <Avatar size={45}>
+            <Icon>link</Icon>
+          </Avatar>
+          <Text style={styles.attachmentCardText}>Link</Text>
+        </Pressable>
+      </View>
+      <View style={styles.gridRow}>
+        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
+          <Avatar size={45}>
+            <Icon>sticky_note_2</Icon>
+          </Avatar>
+          <Text style={styles.attachmentCardText}>Note</Text>
+        </Pressable>
+        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
+          <Avatar size={45}>
+            <Icon>cloud</Icon>
+          </Avatar>
+          <Text style={styles.attachmentCardText}>Image</Text>
+        </Pressable>
+      </View>
+    </Menu>
   );
 }
 
@@ -192,12 +330,7 @@ export function TaskDrawerContent({ handleClose }) {
           >
             <Icon size={27}>delete</Icon>
           </IconButton>
-          <IconButton
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-            size={55}
-          >
-            <Icon size={27}>edit</Icon>
-          </IconButton>
+          <TaskAttachmentButton />
         </View>
       </View>
       <BottomSheetScrollView>
@@ -258,7 +391,7 @@ export function TaskDrawerContent({ handleClose }) {
                     </Text>
                   ),
                   style: {
-                    backgroundColor: labelColors[task.label.color][3],
+                    backgroundColor: labelColors[task.label.color][5],
                   },
                 })}
               />

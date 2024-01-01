@@ -31,41 +31,45 @@ export function Button(props: DButtonProps) {
   return (
     <Pressable
       {...props}
-      style={({ hovered, pressed }: any) => ({
-        flexDirection: "row",
-        alignItems: "center",
-        borderWidth: 1,
-        borderRadius: 999,
-        paddingHorizontal: 10,
-        height: 40,
-        minWidth: 70,
-        justifyContent: "center",
-        ...(variant === "outlined"
-          ? {
-              paddingHorizontal: 20,
-              backgroundColor: pressed
-                ? theme[5]
-                : hovered
-                ? theme[4]
-                : undefined,
-              borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            }
-          : variant === "filled"
-          ? {
-              borderColor: "transparent",
-              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-            }
-          : {
-              backgroundColor: pressed
-                ? theme[4]
-                : hovered
-                ? theme[3]
-                : undefined,
-              borderColor: "transparent",
-            }),
-        gap: 10,
-        ...(props.style || ({} as any)),
-      })}
+      style={({ hovered, pressed }: any) => [
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          borderWidth: 1,
+          borderRadius: 999,
+          paddingHorizontal: 10,
+          height: 40,
+          minWidth: 70,
+          justifyContent: "center",
+          ...(variant === "outlined"
+            ? {
+                paddingHorizontal: 20,
+                backgroundColor: pressed
+                  ? theme[5]
+                  : hovered
+                  ? theme[4]
+                  : undefined,
+                borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+              }
+            : variant === "filled"
+            ? {
+                borderColor: "transparent",
+                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              }
+            : {
+                backgroundColor: pressed
+                  ? theme[4]
+                  : hovered
+                  ? theme[3]
+                  : undefined,
+                borderColor: "transparent",
+              }),
+          gap: 10,
+        },
+        typeof props.style === "function"
+          ? props.style({ pressed, hovered })
+          : props.style,
+      ]}
     />
   );
 }

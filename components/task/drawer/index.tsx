@@ -30,7 +30,7 @@ export function TaskDrawer({ mutateList, children, id }) {
   }, []);
 
   const handleClose = useCallback(() => {
-    ref.current?.close();
+    ref.current?.forceClose();
     mutateList(data);
   }, [mutateList, data]);
 

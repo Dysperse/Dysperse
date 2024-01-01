@@ -20,6 +20,7 @@ export function Menu({
   onOpen = () => null,
   onClose = () => null,
   width = 500,
+  stackBehavior = "push",
 }: {
   trigger: ReactElement;
   children: React.ReactNode;
@@ -29,6 +30,7 @@ export function Menu({
   onOpen?: () => void;
   onClose?: () => void;
   width?: number;
+  stackBehavior?: "push" | "replace";
 }) {
   const theme = useColorTheme();
   const _ref = useRef<BottomSheetModal>(null);
@@ -53,6 +55,7 @@ export function Menu({
       <BottomSheet
         sheetRef={ref}
         onClose={handleClose}
+        maxWidth={width}
         snapPoints={height}
         backgroundStyle={{
           backgroundColor: "transparent",
@@ -60,6 +63,7 @@ export function Menu({
         detached
         footerComponent={footer}
         bottomInset={23.5}
+        stackBehavior={stackBehavior}
       >
         <View
           style={{
