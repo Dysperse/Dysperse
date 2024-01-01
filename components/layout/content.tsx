@@ -18,7 +18,7 @@ export function ContentWrapper(props) {
         backgroundColor: theme[1],
         flex: 1,
         overflow: "hidden",
-        borderRadius: 15,
+        borderRadius: 20,
         borderWidth: width > 600 ? 1 : 0,
         borderColor: theme[6],
       }}

@@ -117,8 +117,8 @@ export function Tab({
   return (
     <View
       style={{
+        width: "100%",
         opacity: isClosedAnimation ? 0.5 : 1,
-        ...(breakpoints.lg && { width: "100%" }),
       }}
     >
       <Pressable
@@ -137,11 +137,11 @@ export function Tab({
         }}
         style={({ pressed, hovered }: any) => ({
           paddingHorizontal: isList ? 6 : breakpoints.lg ? 6 : 10,
-          columnGap: 5,
           borderRadius: breakpoints.lg ? 15 : 99,
           height: breakpoints.lg ? 40 : 60,
           alignItems: "center",
           flexDirection: "row",
+          columnGap: 5,
           borderWidth: 1,
           backgroundColor:
             theme[
@@ -160,11 +160,8 @@ export function Tab({
         })}
       >
         <Icon
-          size={tabData.icon === "alternate_email" ? 24 : 30}
+          size={tabData.icon === "alternate_email" ? 26 : 30}
           style={{
-            ...(tabData.icon === "alternate_email" && {
-              lineHeight: 27,
-            }),
             ...(params.tab === tab.id && {
               color: theme[3],
             }),

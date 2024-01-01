@@ -238,7 +238,7 @@ export default function AppLayout() {
                         cardShadowEnabled: false,
                         gestureEnabled: true,
                         cardStyle: {
-                          backgroundColor: theme[2],
+                          backgroundColor: theme[breakpoints.sm ? 2 : 1],
                           padding: breakpoints.lg ? 10 : 0,
                           paddingTop: 0,
                         },

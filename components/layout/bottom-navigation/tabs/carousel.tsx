@@ -62,31 +62,13 @@ export function OpenTabsList() {
         style={{
           flex: 1,
           padding: 15,
+          paddingTop: 0,
           width: "100%",
         }}
       >
-        <IconButton
-          style={({ pressed, hovered }) => ({
-            borderWidth: 1,
-            borderColor: theme[5],
-            backgroundColor:
-              pathname === "/"
-                ? theme[pressed ? 12 : 11]
-                : hovered
-                ? theme[3]
-                : addHslAlpha(theme[3], 0.7),
-            borderRadius: 999,
-          })}
-          size={47}
-          onPress={() => {
-            router.replace("/");
-          }}
-        >
-          <Logo color={theme[pathname === "/" ? 3 : 11]} size={26} />
-        </IconButton>
         <Text
           variant="eyebrow"
-          style={{ marginVertical: 10, marginLeft: 5, marginTop: 20 }}
+          style={{ marginVertical: 10, marginLeft: 5, marginTop: 15 }}
         >
           Tabs
         </Text>
@@ -115,7 +97,9 @@ export function OpenTabsList() {
         pagingEnabled
         onSnapToItem={handleSnapToIndex}
         renderItem={({ index }) => (
-          <Tab tab={data[index]} key={data[index].id} />
+          <View key={data[index].id} style={{ padding: 5 }}>
+            <Tab tab={data[index]} />
+          </View>
         )}
       />
     )

@@ -10,7 +10,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import {
   Linking,
@@ -26,11 +26,22 @@ import useSWR from "swr";
 import { NavbarProfilePicture } from "../account-navbar";
 import { useCommandPalette } from "../command-palette";
 import { OpenTabsList } from "../bottom-navigation/tabs/carousel";
+import Logo from "@/ui/logo";
 
 export const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: "center",
+  },
+  button: {
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    gap: 5,
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
 });
 
@@ -138,10 +149,13 @@ export function Sidebar() {
   const theme = useColorTheme();
   const { openPalette } = useCommandPalette();
   const { width, height } = useWindowDimensions();
+  const pathname = usePathname();
 
   const openSupport = useCallback(() => {
     Linking.openURL("https://blog.dysperse.com");
   }, []);
+
+  const handleHome = () => router.push("/");
 
   return (
     <View
@@ -157,28 +171,40 @@ export function Sidebar() {
         style={{
           padding: 15,
           paddingBottom: 0,
+          paddingTop: 20,
         }}
       >
-        <Pressable
-          onPress={openPalette}
-          style={({ pressed }) => ({
-            borderWidth: 1,
-            opacity: pressed ? 0.5 : 1,
-            borderColor: theme[5],
-            backgroundColor: theme[1],
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 10,
-            gap: 10,
-            flexDirection: "row",
-            width: "100%",
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-          })}
-        >
-          <Icon>bolt</Icon>
-          <Text style={{ color: theme[11] }}>Jump to</Text>
-        </Pressable>
+        <Logo size={35} color={theme[6]} />
+        <View style={{ flexDirection: "row", gap: 10, marginTop: 20 }}>
+          <Pressable
+            onPress={handleHome}
+            style={({ pressed }) => [
+              styles.button,
+              {
+                borderColor: theme[5],
+                backgroundColor: theme[1],
+                opacity: pressed ? 0.5 : 1,
+              },
+            ]}
+          >
+            <Icon filled={pathname === "/"}>home</Icon>
+          </Pressable>
+          <Pressable
+            onPress={openPalette}
+            style={({ pressed }) => [
+              styles.button,
+              {
+                flex: 1,
+                borderColor: theme[5],
+                backgroundColor: theme[1],
+                opacity: pressed ? 0.5 : 1,
+              },
+            ]}
+          >
+            <Icon>electric_bolt</Icon>
+            <Text style={{ color: theme[11] }}>Jump to</Text>
+          </Pressable>
+        </View>
       </View>
       <OpenTabsList />
       <View
