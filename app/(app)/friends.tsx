@@ -85,6 +85,8 @@ export default function Page() {
         maxWidth: 500,
         marginHorizontal: "auto",
         width: "100%",
+        minWidth: 5,
+        minHeight: 5,
       }}
     >
       <FlashList

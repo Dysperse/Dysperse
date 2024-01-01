@@ -1,9 +1,13 @@
 import { styles } from "@/components/home/styles";
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
+import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import Chip from "@/ui/Chip";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import NavigationBar from "@/ui/NavigationBar";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -11,7 +15,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
-  FlatList,
   Platform,
   Pressable,
   TouchableOpacity,
@@ -19,14 +22,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { WeatherWidget } from "../../components/home/weather/widget";
-import Spinner from "@/ui/Spinner";
 import useSWR from "swr";
-import ErrorAlert from "@/ui/Error";
-import { Avatar, ProfilePicture } from "@/ui/Avatar";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
-import Chip from "@/ui/Chip";
+import { WeatherWidget } from "../../components/home/weather/widget";
 
 function Greeting() {
   const theme = useColorTheme();

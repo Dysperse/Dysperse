@@ -102,6 +102,8 @@ export function Column({
         width: breakpoints.lg ? 300 : width,
         overflow: "hidden",
         height: "100%",
+        minWidth: 5,
+        minHeight: 5,
       }}
     >
       {width > 600 && <Header start={column.start} end={column.end} />}
