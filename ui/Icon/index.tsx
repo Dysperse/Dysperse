@@ -21,6 +21,7 @@ export default function Icon({
     <Text
       allowFontScaling={false}
       maxFontSizeMultiplier={1}
+      numberOfLines={1}
       style={[
         {
           color: theme[11],
