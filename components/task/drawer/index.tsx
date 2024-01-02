@@ -10,6 +10,8 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useColorTheme } from "@/ui/color/theme-provider";
 
 export function TaskDrawer({ mutateList, children, id }) {
   const [open, setOpen] = useState(false);
@@ -33,7 +35,8 @@ export function TaskDrawer({ mutateList, children, id }) {
   }, [mutateList, data]);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
-  const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
 
   const updateTask = useCallback(
     async (key, value, sendRequest = true) => {
@@ -66,12 +69,22 @@ export function TaskDrawer({ mutateList, children, id }) {
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        snapPoints={error ? ["50%"] : width > 600 ? [500] : ["65%", "90%"]}
+        snapPoints={
+          error ? ["50%"] : breakpoints.lg ? ["100%"] : ["65%", "90%"]
+        }
         onClose={handleClose}
         style={{
           maxWidth: 500,
           margin: "auto",
         }}
+        backgroundStyle={{
+          backgroundColor: theme[2],
+          borderTopLeftRadius: breakpoints.lg ? 0 : 25,
+          borderTopRightRadius: breakpoints.lg ? 0 : 25,
+        }}
+        {...(breakpoints.lg && {
+          handleComponent: () => <View style={{ paddingTop: 10 }} />,
+        })}
       >
         {data?.id ? (
           <TaskDrawerContext.Provider

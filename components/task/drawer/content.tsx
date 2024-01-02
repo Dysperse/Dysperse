@@ -26,7 +26,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Pressable, View, useColorScheme } from "react-native";
+import { Keyboard, Pressable, View, useColorScheme } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -131,7 +131,7 @@ function TaskNameInput() {
   );
 }
 
-function TaskLocationPicker({ task, children }) {
+function TaskLocationPicker({ updateTask, task, children }) {
   const trigger = cloneElement(children);
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
@@ -147,12 +147,14 @@ function TaskLocationPicker({ task, children }) {
     },
   });
 
-  const session = useSession();
+  const { session } = useSession();
+
   const onSubmit = useCallback(
     async (values) => {
       try {
+        Keyboard.dismiss();
         setIsLoading(true);
-        await sendApiRequest(
+        const d = await sendApiRequest(
           session,
           "POST",
           "space/entity/attachments",
@@ -165,6 +167,7 @@ function TaskLocationPicker({ task, children }) {
             }),
           }
         );
+        updateTask("attachments", [...task.attachments, d], false);
         setIsLoading(false);
       } catch {
         setIsLoading(false);
@@ -174,7 +177,7 @@ function TaskLocationPicker({ task, children }) {
         });
       }
     },
-    [session, task]
+    [session, task, updateTask]
   );
 
   useEffect(() => {
@@ -214,6 +217,7 @@ function TaskLocationPicker({ task, children }) {
           rules={{ required: true }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextField
+              bottomSheet
               placeholder="Enter a location"
               variant="filled"
               style={{
@@ -221,8 +225,8 @@ function TaskLocationPicker({ task, children }) {
                 paddingVertical: 15,
                 fontSize: 20,
               }}
-              // autoFocus
-              onChange={onChange}
+              autoFocus
+              onChangeText={onChange}
               onBlur={onBlur}
               value={value}
             />
@@ -249,7 +253,7 @@ function TaskLocationPicker({ task, children }) {
 function TaskAttachmentButton() {
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
-  const { task } = useTaskDrawerContext();
+  const { task, updateTask } = useTaskDrawerContext();
 
   const handleClose = useCallback(() => menuRef.current?.close(), [menuRef]);
 
@@ -285,7 +289,7 @@ function TaskAttachmentButton() {
         </Text>
       </View>
       <View style={styles.gridRow}>
-        <TaskLocationPicker task={task}>
+        <TaskLocationPicker task={task} updateTask={updateTask}>
           <Pressable onPress={handleClose} style={taskMenuCardStyle}>
             <Avatar size={45}>
               <Icon style={{ transform: [{ rotate: "-45deg" }] }}>

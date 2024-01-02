@@ -8,6 +8,7 @@ interface DButtonProps extends PressableProps {
   variant?: "filled" | "outlined" | "text";
   buttonStyle?: StyleProp<ViewStyle>;
   isLoading?: boolean;
+  dense?: boolean;
 }
 
 export function ButtonText(props: DTextProps) {
@@ -40,8 +41,8 @@ export function Button(props: DButtonProps) {
           borderWidth: 1,
           borderRadius: 999,
           paddingHorizontal: 10,
-          height: 40,
-          minWidth: 70,
+          height: props.dense ? 30 : 40,
+          minWidth: props.dense ? 50 : 70,
           ...(props.isLoading && { opacity: 0.5, pointerEvents: "none" }),
           justifyContent: "center",
           ...(variant === "outlined"
@@ -67,7 +68,7 @@ export function Button(props: DButtonProps) {
                   : undefined,
                 borderColor: "transparent",
               }),
-          gap: 10,
+          gap: props.dense ? 3 : 10,
         },
         typeof props.style === "function"
           ? props["style" as any]({ pressed, hovered })

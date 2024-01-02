@@ -8,12 +8,18 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { useRef, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import DateTimePicker from "react-native-ui-datepicker";
 import { TaskStream } from "./audit-log";
 import { useTaskDrawerContext } from "./context";
 import Toast from "react-native-toast-message";
+import TextField from "@/ui/TextArea";
+import { TextInput } from "react-native-gesture-handler";
+
+const drawerStyles = StyleSheet.create({
+  collapsibleMenuItem: { gap: 5, flex: 1, alignItems: "center" },
+});
 
 function DatePickerModal({ date, onDateSelect, children, menuRef }) {
   const theme = useColorTheme();
@@ -60,6 +66,99 @@ function DatePickerModal({ date, onDateSelect, children, menuRef }) {
   );
 }
 
+function TaskAttachmentCategory({ category, attachments }) {
+  const theme = useColorTheme();
+  const { task } = useTaskDrawerContext();
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const icon = category === "LOCATION" ? "location_on" : "image";
+
+  return (
+    <View style={{ backgroundColor: theme[open ? 4 : 3], borderRadius: 20 }}>
+      <ListItemButton
+        style={{
+          backgroundColor: "transparent",
+          alignItems: attachments.length == 1 ? "center" : "flex-start",
+        }}
+      >
+        <Icon>{icon}</Icon>
+        <ListItemText
+          primary={
+            attachments.length == 1
+              ? undefined
+              : attachments.length + " " + category.toLowerCase() + "s"
+          }
+          secondaryProps={{
+            style: {},
+          }}
+          secondary={
+            <View
+              style={{
+                width: "100%",
+                marginBottom: -10,
+                ...(attachments.length == 1 && { marginTop: -10 }),
+              }}
+            >
+              {attachments.map((attachment, index) => (
+                <View
+                  key={attachment.id}
+                  style={{
+                    paddingVertical: 5,
+                    gap: 10,
+                    borderBottomWidth:
+                      attachments.length == 1 ||
+                      index === attachments.length - 1
+                        ? 0
+                        : 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    borderBottomColor: theme[7],
+                  }}
+                >
+                  <TextField
+                    bottomSheet
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      flex: 1,
+                      borderColor: theme[open ? 7 : 3],
+                      paddingVertical: 7,
+                      color: theme[12],
+                      paddingHorizontal: open ? 10 : 0,
+                      fontFamily: `body_600`,
+                    }}
+                    editable={open}
+                    onFocus={handleOpen}
+                    onBlur={handleClose}
+                    value={attachment.data}
+                    onChangeText={(text) => {
+                      // updateTask("name", text);
+                      // setTask((t) => ({ ...t, name: text }));
+                    }}
+                  />
+                  {open ? (
+                    <Button dense style={{ marginLeft: -5 }}>
+                      <Icon>remove_circle</Icon>
+                    </Button>
+                  ) : (
+                    <Button style={{ backgroundColor: theme[6] }} dense>
+                      <ButtonText>Maps</ButtonText>
+                      <Icon>north_east</Icon>
+                    </Button>
+                  )}
+                </View>
+              ))}
+            </View>
+          }
+        />
+      </ListItemButton>
+    </View>
+  );
+}
+
 function TaskDateCard() {
   const { task } = useTaskDrawerContext();
   const theme = useColorTheme();
@@ -68,10 +167,17 @@ function TaskDateCard() {
   const [open, setOpen] = useState(false);
 
   return (
-    <View style={{ backgroundColor: theme[open ? 4 : 3], borderRadius: 20 }}>
+    <Pressable
+      style={{ backgroundColor: theme[open ? 4 : 3], borderRadius: 20 }}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+      // allow focusing
+      accessible
+      onPress={(e: any) => e.currentTarget.focus()}
+    >
       <ListItemButton
         style={{ backgroundColor: "transparent", zIndex: 999 }}
-        onPress={() => setOpen((s) => !s)}
+        disabled
       >
         <Icon>calendar_today</Icon>
         <ListItemText
@@ -91,7 +197,7 @@ function TaskDateCard() {
             onDateSelect={(e) => console.log(e)}
             menuRef={dateMenuRef}
           >
-            <Pressable style={{ gap: 5, flex: 1, alignItems: "center" }}>
+            <Pressable style={drawerStyles.collapsibleMenuItem}>
               <IconButton
                 disabled
                 style={{ borderWidth: 1, borderColor: theme[6] }}
@@ -103,7 +209,7 @@ function TaskDateCard() {
             </Pressable>
           </DatePickerModal>
           <Pressable
-            style={{ gap: 5, flex: 1, alignItems: "center" }}
+            style={drawerStyles.collapsibleMenuItem}
             onPress={() =>
               Toast.show({
                 type: "success",
@@ -120,7 +226,7 @@ function TaskDateCard() {
             </IconButton>
             <Text>Repeat</Text>
           </Pressable>
-          <Pressable style={{ gap: 5, flex: 1, alignItems: "center" }}>
+          <Pressable style={drawerStyles.collapsibleMenuItem}>
             <IconButton
               style={{ borderWidth: 1, borderColor: theme[6] }}
               size={50}
@@ -131,13 +237,19 @@ function TaskDateCard() {
           </Pressable>
         </View>
       </Collapsible>
-    </View>
+    </Pressable>
   );
 }
 
 export function TaskDetails() {
   const theme = useColorTheme();
   const { task } = useTaskDrawerContext();
+
+  const attachmentCategories = task.attachments.reduce((acc, attachment) => {
+    if (!acc[attachment.type]) acc[attachment.type] = [];
+    acc[attachment.type].push(attachment);
+    return acc;
+  }, {});
 
   return (
     <View style={{ gap: 10 }}>
@@ -158,6 +270,14 @@ export function TaskDetails() {
           />
         </ListItemButton>
       )}
+      {Object.keys(attachmentCategories).length > 0 &&
+        Object.keys(attachmentCategories).map((category) => (
+          <TaskAttachmentCategory
+            attachments={attachmentCategories[category]}
+            category={category}
+            key={category}
+          />
+        ))}
       <TaskStream>
         <ListItemButton style={{ backgroundColor: theme[3] }}>
           <Icon>timeline</Icon>
