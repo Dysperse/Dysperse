@@ -36,7 +36,6 @@
       "name": "Dysperse",
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
-      "output": "static",
       "backgroundColor": "#ffffff",
       "display": "standalone"
     },
