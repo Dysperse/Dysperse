@@ -145,6 +145,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (Platform.OS === "web") {
+      // @ts-expect-error this is a valid DOM
       document
         .querySelector(`meta[name="theme-color"]`)
         .setAttribute("content", theme[1]);
