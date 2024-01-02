@@ -24,6 +24,7 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { WeatherWidget } from "../../components/home/weather/widget";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -44,36 +45,29 @@ function Greeting() {
   }, []);
 
   const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <View
-      style={
-        width > 600
-          ? undefined
-          : {
-              height: 220,
-              alignItems: "center",
-              justifyContent: "center",
-            }
-      }
+    <Text
+      numberOfLines={1}
+      style={{
+        fontFamily: "heading",
+        textAlign: width > 600 ? "left" : "center",
+        color: theme[12],
+        textShadowColor: theme[7],
+        textShadowRadius: 30,
+        height: "100%",
+        padding: 15,
+        margin: breakpoints.lg ? -15 : 0,
+        fontSize: 55,
+        width: "100%",
+        marginVertical: breakpoints.lg ? 0 : 20,
+        marginTop: breakpoints.lg ? 0 : 50,
+        textShadowOffset: { height: 5, width: 5 },
+      }}
     >
-      <Text
-        style={{
-          fontFamily: "heading",
-          textAlign: width > 600 ? "left" : "center",
-          color: theme[12],
-          textShadowColor: theme[7],
-          textShadowRadius: 30,
-          height: "100%",
-          paddingTop: width > 600 ? 0 : 90,
-          fontSize: 55,
-          width: "100%",
-          textShadowOffset: { height: 5, width: 5 },
-        }}
-      >
-        {greeting}
-      </Text>
-    </View>
+      {greeting}
+    </Text>
   );
 }
 
@@ -99,7 +93,7 @@ function TodaysDate() {
       >
         {dayjs().format("MMM Do")}
       </Text>
-      <Text>{dayjs().format("YYYY")}</Text>
+      <Text numberOfLines={1}>{dayjs().format("YYYY")}</Text>
     </Pressable>
   );
 }
@@ -166,11 +160,14 @@ function TodaysTasks() {
       >
         <Icon size={30}>transition_push</Icon>
 
-        <View>
-          <Text weight={700} style={{ fontSize: 20 }}>
+        <View style={{ flex: 1 }}>
+          <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
             Upcoming
           </Text>
-          <Text style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}>
+          <Text
+            style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}
+            numberOfLines={1}
+          >
             5 tasks, 7 notes
           </Text>
         </View>
@@ -320,6 +317,7 @@ function SpaceInfo() {
 export default function Index() {
   const { width } = useWindowDimensions();
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <ContentWrapper>
@@ -338,7 +336,7 @@ export default function Index() {
           }),
         }}
       >
-        <View style={{ flex: 1.3 }}>
+        <View style={{ flex: 1.3, paddingTop: breakpoints.lg ? 0 : 50 }}>
           <Greeting />
           <Text variant="eyebrow">Today's rundown</Text>
           <View
