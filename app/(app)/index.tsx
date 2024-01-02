@@ -92,7 +92,11 @@ function TodaysDate() {
       <Icon size={40} style={{ marginLeft: -4 }}>
         calendar_today
       </Icon>
-      <Text style={{ fontSize: 20, marginTop: 5 }} weight={700}>
+      <Text
+        style={{ fontSize: 20, marginTop: 5 }}
+        weight={700}
+        numberOfLines={1}
+      >
         {dayjs().format("MMM Do")}
       </Text>
       <Text>{dayjs().format("YYYY")}</Text>
@@ -124,11 +128,14 @@ function PlanDayPrompt() {
         ]}
       >
         <Icon size={30}>gesture</Icon>
-        <View>
-          <Text weight={700} style={{ fontSize: 20 }}>
+        <View style={{ flex: 1 }}>
+          <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
             Plan your day
           </Text>
-          <Text style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}>
+          <Text
+            style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}
+            numberOfLines={1}
+          >
             Let's optimize today's schedule
           </Text>
         </View>

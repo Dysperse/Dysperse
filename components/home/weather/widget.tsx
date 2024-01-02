@@ -110,10 +110,7 @@ export function WeatherWidget() {
   );
 
   return error ? (
-    <Pressable
-      style={weatherCardStyles}
-      onPress={() => alert(JSON.stringify(data))}
-    >
+    <Pressable style={weatherCardStyles}>
       <Icon size={40} style={{ marginLeft: -2 }}>
         error
       </Icon>
@@ -152,7 +149,7 @@ export function WeatherWidget() {
           {Math.round(data.hourly.apparent_temperature[dayjs().hour()])}
           &deg;
         </Text>
-        <Text>
+        <Text numberOfLines={1}>
           {isNight()
             ? weatherCodes[data.current_weather.weathercode].night.description
             : weatherCodes[data.current_weather.weathercode].day.description}
