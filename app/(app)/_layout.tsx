@@ -148,7 +148,7 @@ export default function AppLayout() {
       // @ts-expect-error this is a valid DOM
       document
         .querySelector(`meta[name="theme-color"]`)
-        .setAttribute("content", theme[1]);
+        .setAttribute("content", theme[2]);
     }
   }, [theme]);
 
