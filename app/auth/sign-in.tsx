@@ -1,27 +1,31 @@
 import { Button, ButtonText } from "@/ui/Button";
+import NavigationBar from "@/ui/NavigationBar";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  ActivityIndicator,
-  ImageBackground,
-  KeyboardAvoidingView,
-  TextInput,
-  View,
-} from "react-native";
-import { useSession } from "../context/AuthProvider";
-import { sendApiRequest } from "../helpers/api";
-import Turnstile from "../ui/turnstile";
-import TextField from "@/ui/TextArea";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { Platform } from "react-native";
-import { BlurView } from "expo-blur";
-import { addHslAlpha } from "@/ui/color";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { useSession } from "../../context/AuthProvider";
+import { sendApiRequest } from "../../helpers/api";
+import Turnstile from "../../ui/turnstile";
+import { authStyles } from "./authStyles";
+import Icon from "@/ui/Icon";
+import Chip from "@/ui/Chip";
+import IconButton from "@/ui/IconButton";
+import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const styles = StyleSheet.create({
+  title: { fontSize: 55, width: "100%", lineHeight: 55 },
+});
 
 export default function SignIn() {
   const { signIn, session } = useSession();
   const [step, setStep] = useState(0);
+  const insets = useSafeAreaInsets();
 
   const [token, setToken] = useState("");
 
@@ -81,41 +85,34 @@ export default function SignIn() {
     }
   }, [session]);
 
+  const handleBack = useCallback(() => router.back(), []);
   const theme = useColorTheme();
 
   return (
-    <ImageBackground
-      source={{
-        uri: "https://my.dysperse.com/auth/background-light.png?purge=dev",
-      }}
-      style={{ height: "100%" }}
-      resizeMode="cover"
-    >
+    <View style={{ backgroundColor: theme[1], flex: 1 }}>
+      <NavigationBar color={theme[1]} />
+      <IconButton variant="filled" onPress={handleBack} style={{ margin: 20 }}>
+        <Icon>close</Icon>
+      </IconButton>
       {step == 0 || step == 2 ? (
-        <KeyboardAvoidingView
-          behavior="height"
-          style={{
-            gap: 15,
-            alignItems: "center",
-            justifyContent: "center",
-            flex: 1,
-          }}
-        >
-          <BlurView
-            intensity={20}
-            style={{
-              borderWidth: 2,
-              borderColor: theme[7],
-              padding: 30,
-              borderRadius: 28,
-              overflow: "hidden",
-            }}
+        <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
+          <ScrollView
+            style={{ maxHeight: "100%" }}
+            contentContainerStyle={[
+              authStyles.container,
+              {
+                justifyContent: "flex-start",
+                flex: undefined,
+                paddingBottom: insets.top + 40,
+                paddingTop: 40,
+              },
+            ]}
           >
-            <Text heading style={{ fontSize: 30, textAlign: "center" }}>
-              Welcome to Dysperse.
+            <Text heading style={[styles.title, { color: theme[11] }]}>
+              Sign in
             </Text>
-            <Text style={{ paddingTop: 10, paddingBottom: 20, opacity: 0.6 }}>
-              Please sign in with your Dysperse ID
+            <Text style={authStyles.subtitleContainer}>
+              Use your Dysperse ID to continue
             </Text>
             <View style={{ gap: 10 }}>
               <Controller
@@ -126,14 +123,13 @@ export default function SignIn() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
                     style={{
-                      borderWidth: 2,
-                      paddingHorizontal: 20,
-                      paddingVertical: 15,
+                      borderWidth: 1,
+                      paddingHorizontal: 30,
+                      paddingVertical: 20,
                       borderRadius: 15,
-                      backgroundColor: addHslAlpha(theme[5], 0.5),
-                      borderColor: errors.email
-                        ? "red"
-                        : addHslAlpha(theme[9], 0.5),
+                      fontSize: 20,
+                      backgroundColor: theme[3],
+                      borderColor: errors.email ? "red" : theme[6],
                       ...(Platform.OS === "web" && { outline: "none" }),
                     }}
                     placeholder="Email or username"
@@ -151,21 +147,19 @@ export default function SignIn() {
                   required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
+                  <TextField
                     style={{
-                      borderWidth: 2,
-                      paddingHorizontal: 20,
-                      paddingVertical: 15,
+                      borderWidth: 1,
+                      paddingHorizontal: 30,
+                      paddingVertical: 20,
                       borderRadius: 15,
-                      backgroundColor: addHslAlpha(theme[5], 0.5),
-                      borderColor: errors.password
-                        ? "red"
-                        : addHslAlpha(theme[9], 0.5),
+                      fontSize: 20,
+                      backgroundColor: theme[3],
+                      borderColor: errors.email ? "red" : theme[6],
                       ...(Platform.OS === "web" && { outline: "none" }),
                     }}
                     placeholder="Password"
                     secureTextEntry
-                    placeholderTextColor="#aaa"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
@@ -173,46 +167,31 @@ export default function SignIn() {
                 )}
                 name="password"
               />
-              <View
-                style={{ flexDirection: "row", justifyContent: "flex-end" }}
-              >
-                <Button style={{ height: 20 }}>
-                  <ButtonText>Need help signing in?</ButtonText>
-                </Button>
-              </View>
               <Button
                 variant="filled"
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  backgroundColor: theme[7],
-                }}
+                style={[authStyles.button, { marginTop: 20 }]}
                 onPress={handleSubmit(onSubmit)}
-                disabled={step === 2} // loading
+                isLoading={step === 2}
               >
-                {step === 2 ? <ActivityIndicator /> : <Text>Continue</Text>}
+                <ButtonText style={authStyles.buttonText}>Continue</ButtonText>
               </Button>
-              <Button style={{ height: 20 }}>
-                <ButtonText>Create an account</ButtonText>
+              <Button dense variant="outlined" style={[authStyles.button]}>
+                <ButtonText
+                  style={[authStyles.buttonText, { fontFamily: "body_200" }]}
+                >
+                  Need help?
+                </ButtonText>
               </Button>
             </View>
-          </BlurView>
+          </ScrollView>
         </KeyboardAvoidingView>
       ) : (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            flex: 1,
-          }}
-        >
-          <Text style={{ fontFamily: "heading" }} textClassName="text-5xl mb-2">
-            Verifying...
-          </Text>
-          <Text textClassName="mb-3">Checking if you're actually human 🤨</Text>
+        <View style={authStyles.container}>
+          <Text style={authStyles.title}>Verifying...</Text>
+          <Text>Checking if you're actually human 🤨</Text>
           <Turnstile setToken={setToken} />
         </View>
       )}
-    </ImageBackground>
+    </View>
   );
 }

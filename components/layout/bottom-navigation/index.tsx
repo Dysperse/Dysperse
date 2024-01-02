@@ -2,47 +2,22 @@ import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
-  BottomSheetBackdrop,
   BottomSheetFlatList,
   BottomSheetModal,
-  BottomSheetModalProvider,
   TouchableOpacity,
-  useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
-import React, {
-  cloneElement,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  ActivityIndicator,
-  Keyboard,
-  Platform,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import Animated, {
-  Extrapolate,
-  interpolate,
-  interpolateColor,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import React, { cloneElement, memo, useCallback, useRef } from "react";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import useSWR from "swr";
-import { CreateDrawer } from "./create-drawer";
+import { useCommandPalette } from "../command-palette";
 import { OpenTabsList } from "./tabs/carousel";
 import { Tab } from "./tabs/tab";
-import Spinner from "@/ui/Spinner";
-import { useCommandPalette } from "../command-palette";
+import { FlatList } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   helperText: {
@@ -90,7 +65,7 @@ const TabDrawer = memo(function TabDrawer({ children }: any) {
           </IconButton>
         </View>
         {data ? (
-          <BottomSheetFlatList
+          <FlatList
             style={{ marginTop: 15 }}
             ListFooterComponent={
               <View>

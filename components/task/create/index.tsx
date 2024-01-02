@@ -188,7 +188,7 @@ export default function CreateTask({
       <BottomSheet
         onClose={handleClose}
         sheetRef={ref}
-        snapPoints={["40%"]}
+        snapPoints={[300]}
         maxWidth={500}
         keyboardBehavior="interactive"
         footerComponent={() => (

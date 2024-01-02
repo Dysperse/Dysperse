@@ -56,7 +56,6 @@ function Greeting() {
         color: theme[12],
         textShadowColor: theme[7],
         textShadowRadius: 30,
-        height: "100%",
         padding: 15,
         margin: breakpoints.lg ? -15 : 0,
         fontSize: 55,

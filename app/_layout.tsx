@@ -27,7 +27,7 @@ import { SessionLoadingScreen } from "./(app)/_layout";
 
 export default function Root() {
   // CHANGE THIS LATER!!!
-  const theme = useColor("violet", false);
+  const theme = useColor("violet", true);
 
   // Set up the auth context and render our layout inside of it.
 

@@ -14,9 +14,12 @@ import { WeatherModal } from "./modal";
 
 export function WeatherWidget() {
   const [location, setLocation] = useState(null);
+  const [permissionStatus, setPermissionStatus] =
+    useState<Location.PermissionStatus>(null);
 
   const checkLocationPermission = useCallback(async () => {
     const { status } = await Location.getForegroundPermissionsAsync();
+    setPermissionStatus(status);
     if (status === "granted") {
       const location = await Location.getCurrentPositionAsync({});
       setLocation(location);
@@ -109,17 +112,17 @@ export function WeatherWidget() {
     [theme]
   );
 
-  return error ? (
-    <Pressable style={weatherCardStyles}>
+  return error || permissionStatus === "denied" ? (
+    <Pressable style={weatherCardStyles} onPress={onPressHandler}>
       <Icon size={40} style={{ marginLeft: -2 }}>
         error
       </Icon>
       <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
-        Yikes!
+        Error
       </Text>
-      <Text>Couldn't get weather</Text>
+      <Text>Tap to retry</Text>
     </Pressable>
-  ) : !location || isLoading ? (
+  ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
     <Pressable style={weatherCardStyles} onPress={onPressHandler}>
       <Spinner />
     </Pressable>
