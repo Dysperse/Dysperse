@@ -23,11 +23,12 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { Redirect } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   Animated,
   AppState,
+  Platform,
   StatusBar,
   View,
   useColorScheme,
@@ -43,6 +44,7 @@ import Spinner from "@/ui/Spinner";
 import Logo from "@/ui/logo";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import NavigationBar from "@/ui/NavigationBar";
+import { isDocumentDefined } from "swr/_internal";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -140,6 +142,15 @@ export default function AppLayout() {
     isDark
     // sessionData?.user?.darkMode === "dark"
   );
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      document
+        .querySelector(`meta[name="theme-color"]`)
+        .setAttribute("content", theme[1]);
+    }
+  }, [theme]);
+
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading || isUserLoading) {
     return <SessionLoadingScreen />;

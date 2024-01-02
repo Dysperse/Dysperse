@@ -170,7 +170,9 @@ function TaskDateCard() {
     <Pressable
       style={{ backgroundColor: theme[open ? 4 : 3], borderRadius: 20 }}
       onFocus={() => setOpen(true)}
-      onBlur={() => setOpen(false)}
+      onBlur={(e: any) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
+      }}
       // allow focusing
       accessible
       onPress={(e: any) => e.currentTarget.focus()}
