@@ -2,20 +2,18 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
-import { useColorTheme } from "@/ui/color/theme-provider";
+import Spinner from "@/ui/Spinner";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { ActivityIndicator, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
-import Spinner from "@/ui/Spinner";
 
 export function TaskDrawer({ mutateList, children, id }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
-  const theme = useColorTheme();
   const { sessionToken } = useUser();
 
   // Fetch data

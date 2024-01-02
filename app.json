@@ -27,7 +27,7 @@
       "splash": {
         "resizeMode": "cover",
         "image": "./assets/splash.png",
-        "backgroundColor":"#000000"
+        "backgroundColor": "#000000"
       },
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.manucodes.Dysperse"

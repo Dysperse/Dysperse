@@ -1,16 +1,16 @@
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Pressable } from "react-native";
-import { WeatherModal } from "./modal";
-import { styles } from "../styles";
-import Spinner from "@/ui/Spinner";
-import useSWR from "swr";
+import { Pressable } from "react-native";
 import Toast from "react-native-toast-message";
+import useSWR from "swr";
+import { styles } from "../styles";
+import { WeatherModal } from "./modal";
 
 export function WeatherWidget() {
   const [location, setLocation] = useState(null);

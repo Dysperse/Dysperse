@@ -38,7 +38,6 @@ export function Menu({
 
   const handleOpen = useCallback(() => {
     ref.current?.present();
-    Keyboard.dismiss();
     onOpen();
   }, [ref, onOpen]);
 

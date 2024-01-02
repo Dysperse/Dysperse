@@ -4,11 +4,12 @@ import {
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
 import { Ref, memo } from "react";
-import { Platform } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
 import { BottomSheetEscapeHandler } from "./BottomSheetEscapeHandler";
+import BottomSheetKeyboardHandler from "./BottomSheetKeyboardHandler";
 
 interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: Ref<BottomSheetModal>;

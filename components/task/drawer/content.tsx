@@ -131,12 +131,11 @@ function TaskNameInput() {
   );
 }
 
-function TaskLocationPicker({ children }) {
+function TaskLocationPicker({ task, children }) {
   const trigger = cloneElement(children);
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
   const [isLoading, setIsLoading] = useState(false);
-  const { task } = useTaskDrawerContext();
 
   const {
     control,
@@ -175,7 +174,7 @@ function TaskLocationPicker({ children }) {
         });
       }
     },
-    [session, task.id]
+    [session, task]
   );
 
   useEffect(() => {
@@ -222,7 +221,7 @@ function TaskLocationPicker({ children }) {
                 paddingVertical: 15,
                 fontSize: 20,
               }}
-              autoFocus
+              // autoFocus
               onChange={onChange}
               onBlur={onBlur}
               value={value}
@@ -250,6 +249,7 @@ function TaskLocationPicker({ children }) {
 function TaskAttachmentButton() {
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
+  const { task } = useTaskDrawerContext();
 
   const handleClose = useCallback(() => menuRef.current?.close(), [menuRef]);
 
@@ -285,7 +285,7 @@ function TaskAttachmentButton() {
         </Text>
       </View>
       <View style={styles.gridRow}>
-        <TaskLocationPicker>
+        <TaskLocationPicker task={task}>
           <Pressable onPress={handleClose} style={taskMenuCardStyle}>
             <Avatar size={45}>
               <Icon style={{ transform: [{ rotate: "-45deg" }] }}>

@@ -220,9 +220,6 @@ export default function CreateTask({
                 menuRef={menuRef}
                 height={[400]}
                 trigger={<Chip icon={<Icon>add</Icon>} />}
-                onOpen={() => {
-                  // Keyboard.dismiss();
-                }}
                 onClose={() => nameRef.current?.focus()}
               >
                 <View

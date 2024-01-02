@@ -1,6 +1,8 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
+import Skeleton from "@/ui/Skeleton";
 import { router } from "expo-router";
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Platform,
   TouchableOpacity,
@@ -9,14 +11,9 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUser } from "../../context/useUser";
-import Icon from "../../ui/Icon";
-import IconButton from "../../ui/IconButton";
 import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
-import Skeleton from "@/ui/Skeleton";
-import { useCommandPalette } from "./command-palette";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
@@ -57,7 +54,6 @@ export function NavbarProfilePicture() {
 export default function AccountNavbar(props: any) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
-  const { openPalette } = useCommandPalette();
 
   return (
     <View>
@@ -67,7 +63,7 @@ export default function AccountNavbar(props: any) {
           paddingTop: insets.top,
           gap: 10,
           flexDirection: "row",
-          paddingHorizontal: 25,
+          paddingHorizontal: 20,
           alignItems: "center",
           backgroundColor: Platform.OS === "ios" ? "transparent" : theme[1],
         }}
