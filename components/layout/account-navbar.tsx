@@ -31,16 +31,12 @@ export function NavbarProfilePicture() {
         borderRadius: 999,
       }}
     >
-      <Skeleton
-        rounded
-        size={width > 600 ? 35 : 40}
-        isLoading={Boolean(!session?.user)}
-      >
+      <Skeleton rounded size={35} isLoading={Boolean(!session?.user)}>
         {session?.user && (
           <ProfilePicture
             name={session.user.profile.name}
             image={session.user.profile.picture}
-            size={width > 600 ? 35 : 40}
+            size={35}
             style={{
               pointerEvents: "none",
             }}
@@ -71,7 +67,7 @@ export default function AccountNavbar(props: any) {
         {props.options.headerTitle ? (
           <Text>{props.options.headerTitle}</Text>
         ) : (
-          <Logo size={35} color={theme[8]} />
+          <Logo size={35} color={theme[7]} />
         )}
         <View style={{ flexGrow: 1 }} />
         {props.options.headerRight && props.options.headerRight()}

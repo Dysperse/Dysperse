@@ -2,6 +2,7 @@ import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -16,6 +17,7 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
 type FriendsPageView = "all" | "requests" | "pending" | "blocked";
@@ -27,6 +29,7 @@ export default function Page() {
   const [view, setView] = useState<FriendsPageView>("all");
 
   const { data, isLoading, error } = useSWR(["user/friends"]);
+  const insets = useSafeAreaInsets();
 
   const Header = () => (
     <>
@@ -35,46 +38,42 @@ export default function Page() {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          marginTop: 40,
+          marginTop: 20 + insets.top,
           marginBottom: 10,
         }}
       >
         <Text heading style={{ fontSize: 50 }}>
           Friends
         </Text>
-        <Button variant="outlined">
+        <Button variant="filled" style={{ paddingHorizontal: 25 }}>
           <Icon>person_add</Icon>
           <ButtonText>Add</ButtonText>
         </Button>
       </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          flexDirection: "row",
-          gap: 10,
-          marginBottom: 10,
+      <ButtonGroup
+        containerStyle={{ backgroundColor: "transparent", borderRadius: 0 }}
+        scrollContainerStyle={{ gap: 0 }}
+        buttonStyle={{
+          flexShrink: 0,
+          borderRadius: 0,
+          backgroundColor: "transparent",
+          borderBottomWidth: 2,
+          borderBottomColor: theme[3],
         }}
-      >
-        {[
+        buttonTextStyle={{
+          color: theme[11],
+        }}
+        selectedButtonStyle={{
+          borderBottomColor: theme[11],
+        }}
+        options={[
           { label: "All", value: "all" },
           { label: "Requests", value: "requests" },
           { label: "Pending", value: "pending" },
           { label: "Blocked", value: "blocked" },
-        ].map((i: any) => (
-          <Chip
-            outlined={view !== i.value}
-            label={i.label}
-            icon={
-              view === i.value ? (
-                <Icon style={{ marginLeft: -10 }}>check</Icon>
-              ) : undefined
-            }
-            onPress={() => setView(i.value)}
-            key={i.value}
-          />
-        ))}
-      </ScrollView>
+        ]}
+        state={[view, setView]}
+      />
     </>
   );
 

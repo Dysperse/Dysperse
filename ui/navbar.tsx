@@ -33,14 +33,15 @@ export default function Navbar(props: any) {
           paddingTop: insets.top,
           backgroundColor: theme[1],
           flexDirection: "row",
-          paddingHorizontal: 10,
+          paddingHorizontal: 15,
           alignItems: "center",
         }}
       >
         <IconButton
+          size={55}
           onPress={handleBack}
-          size={width > 600 ? 40 : 45}
           variant={width > 600 ? "filled" : "text"}
+          style={{ borderWidth: 1, borderColor: theme[5] }}
         >
           <Icon>{props.icon || "west"}</Icon>
         </IconButton>

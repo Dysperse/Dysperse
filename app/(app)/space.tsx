@@ -27,6 +27,7 @@ import { router } from "expo-router";
 import { BlurView } from "expo-blur";
 import { useSession } from "@/context/AuthProvider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import Spinner from "@/ui/Spinner";
 
 const spaceStyles = StyleSheet.create({
   button: {
@@ -131,39 +132,53 @@ function SpacePage({ space }: any) {
         />
       )}
       <LinearGradient
-        colors={[theme[5], theme[4], theme[6]]}
+        colors={[theme[4], theme[2], theme[3]]}
+        start={[0, 0]}
+        end={[1, 1]}
         style={{
           borderRadius: 10,
-          padding: 25,
-          paddingTop: 25,
+          padding: 20,
         }}
       >
-        <View style={{ flexDirection: "row", gap: 3 }}>
-          <IconButton onPress={() => router.back()} style={{ marginLeft: -8 }}>
-            <Icon size={26}>arrow_back_ios_new</Icon>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <IconButton
+            onPress={() => router.back()}
+            size={55}
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+          >
+            <Icon size={26}>close</Icon>
           </IconButton>
-          <IconButton style={{ marginLeft: "auto" }}>
+          <View style={{ flexGrow: 1 }} />
+          <IconButton
+            size={55}
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+          >
             <Icon size={26}>edit</Icon>
           </IconButton>
-          <IconButton>
-            <Icon size={26}>schedule</Icon>
+          <IconButton
+            size={55}
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+          >
+            <Icon size={26}>history</Icon>
           </IconButton>
-          <IconButton>
-            <Icon size={26}>pending</Icon>
+          <IconButton
+            size={55}
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+          >
+            <Icon size={26}>more_horiz</Icon>
           </IconButton>
         </View>
-        <Text heading style={{ fontSize: 45, marginTop: 30 }}>
+        <Text
+          heading
+          style={{
+            fontSize: 50,
+            marginVertical: 50,
+            marginTop: 60,
+            textAlign: "center",
+          }}
+        >
           {space.name}
         </Text>
-        <View style={{ flexDirection: "row" }}>
-          <Chip
-            icon={<Icon>visibility</Icon>}
-            label={capitalizeFirstLetter(
-              session?.space?.access.toLowerCase() || ""
-            )}
-            style={{ backgroundColor: theme[7], marginTop: 5 }}
-          />
-        </View>
       </LinearGradient>
       <View style={{ backgroundColor: theme[1], flex: 1 }}>
         <MembersTrigger space={space} />
@@ -205,7 +220,15 @@ export default function Page() {
       ) : error ? (
         <ErrorAlert />
       ) : (
-        <ActivityIndicator />
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <Spinner />
+        </View>
       )}
     </View>
   );

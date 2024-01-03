@@ -23,11 +23,11 @@ export function ListItemButton(props: DListitemButtonProps) {
           alignItems: "center",
           borderRadius: 20,
           backgroundColor: pressed
-            ? theme[width > 600 ? 5 : 3]
+            ? theme[5]
             : hovered
             ? theme[4]
             : props.variant === "filled"
-            ? theme[3]
+            ? theme[pressed ? 5 : hovered ? 4 : 3]
             : "transparent",
           paddingHorizontal: 15,
           paddingVertical: 10,

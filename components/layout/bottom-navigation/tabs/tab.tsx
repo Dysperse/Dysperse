@@ -136,7 +136,13 @@ export function Tab({
           setImmediate(handleClose);
         }}
         style={({ pressed, hovered }: any) => ({
-          paddingHorizontal: isList ? 6 : breakpoints.lg ? 6 : 10,
+          paddingHorizontal: isList
+            ? breakpoints.lg
+              ? 6
+              : 13
+            : breakpoints.lg
+            ? 6
+            : 10,
           borderRadius: breakpoints.lg ? 15 : 99,
           height: breakpoints.lg ? 40 : 60,
           alignItems: "center",

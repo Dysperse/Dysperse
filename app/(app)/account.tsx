@@ -53,30 +53,37 @@ export default function Index() {
           }}
           placeholder="Search..."
         />
-        <ListItemButton
-          variant="filled"
-          onPress={() => {
-            createTab(sessionToken, {
-              slug: "/[tab]/users/[id]",
-              params: { id: session.user.email },
-            });
-          }}
-        >
-          <Image
-            source={{
-              uri: session?.user?.profile?.picture,
+        <View style={{ flexDirection: "row", gap: 15 }}>
+          <ListItemButton
+            style={{ flexGrow: 1, flexBasis: 0 }}
+            variant="filled"
+            onPress={() => {
+              createTab(sessionToken, {
+                slug: "/[tab]/users/[id]",
+                params: { id: session.user.email },
+              });
             }}
-            style={{ width: 40, height: 40, borderRadius: 99 }}
-          />
-          <ListItemText
-            primary="Profile"
-            secondary={session?.user?.profile?.name}
-          />
-        </ListItemButton>
-        <TouchableOpacity onPress={() => router.push("/space")}>
-          <ListItemButton variant="filled" disabled>
+          >
+            <Image
+              source={{
+                uri: session?.user?.profile?.picture,
+              }}
+              style={{ width: 40, height: 40, borderRadius: 99 }}
+            />
+            <ListItemText
+              truncate
+              primary="Profile"
+              secondary={session?.user?.profile?.name}
+            />
+          </ListItemButton>
+          <ListItemButton
+            variant="filled"
+            onPress={() => router.push("/space")}
+            style={{ flexGrow: 1, flexBasis: 0 }}
+          >
             <Avatar
               size={40}
+              disabled
               style={{
                 backgroundColor: spaceTheme[9],
               }}
@@ -86,11 +93,12 @@ export default function Index() {
               </Icon>
             </Avatar>
             <ListItemText
+              truncate
               primary="Space"
               secondary={session?.space?.space?.name}
             />
           </ListItemButton>
-        </TouchableOpacity>
+        </View>
         {[
           [
             { name: "Appearance", icon: "palette" },

@@ -158,7 +158,12 @@ function BottomNavigation() {
               home
             </Icon>
           </TouchableOpacity>
-          <IconButton variant="filled" size={45} onPress={openPalette}>
+          <IconButton
+            variant="filled"
+            style={{ width: 80 }}
+            size={45}
+            onPress={openPalette}
+          >
             <Icon style={{ transform: [{ rotate: "-11deg" }] }} size={28}>
               electric_bolt
             </Icon>
