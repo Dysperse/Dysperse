@@ -1,3 +1,4 @@
+import { ContentWrapper } from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { ProfilePicture } from "@/ui/Avatar";
@@ -68,109 +69,111 @@ export default function Page() {
   );
 
   return (
-    <View
-      style={{
-        flex: 1,
-        maxWidth: 500,
-        marginHorizontal: "auto",
-        width: "100%",
-        minWidth: 5,
-        minHeight: 5,
-      }}
-    >
-      <FlashList
-        ListHeaderComponent={Header}
-        contentContainerStyle={{
-          paddingHorizontal: 25,
-          paddingTop: width > 600 ? 64 : 80,
+    <ContentWrapper>
+      <View
+        style={{
+          flex: 1,
+          maxWidth: 500,
+          marginHorizontal: "auto",
+          width: "100%",
+          minWidth: 5,
+          minHeight: 5,
         }}
-        data={
-          data
-            ? data.filter((user) => {
-                if (view === "all") return user.accepted === true;
-                if (view === "requests")
-                  return (
-                    user.accepted === false &&
-                    user.followingId === session.user.id
-                  );
-                if (view === "pending")
-                  return (
-                    user.accepted === false &&
-                    user.followerId === session.user.id
-                  );
-                if (view === "blocked") return user.blocked;
-              })
-            : []
-        }
-        ListEmptyComponent={
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: 200,
-            }}
-          >
-            {isLoading ? (
-              <Spinner />
-            ) : error ? (
-              <ErrorAlert />
-            ) : (
-              <View style={{ gap: 10, alignItems: "center" }}>
-                <Emoji
-                  emoji={
-                    view === "all"
-                      ? "1f97a"
-                      : view === "blocked"
-                      ? "1f910"
-                      : view == "requests"
-                      ? "1fae3"
-                      : "1f614"
-                  }
-                  size={50}
-                />
-                <Text
-                  style={{ fontSize: 20, textAlign: "center" }}
-                  weight={700}
-                >
-                  {view === "blocked"
-                    ? "You haven't blocked anybody"
-                    : view === "requests"
-                    ? "You haven't sent any friend requests"
-                    : view === "pending"
-                    ? "You don't have any pending requests"
-                    : "You don't have any friends"}
-                </Text>
-              </View>
-            )}
-          </View>
-        }
-        renderItem={({ item }: any) => (
-          <ListItemButton
-            style={{ backgroundColor: theme[3], marginTop: 10 }}
-            onPress={() =>
-              createTab(sessionToken, {
-                slug: "/[tab]/users/[id]",
-                params: { id: item.user.email },
-              })
-            }
-          >
-            <ProfilePicture
-              style={{ pointerEvents: "none" }}
-              name={item.user.profile?.name || "--"}
-              image={item.user.profile?.picture}
-              size={40}
-            />
-            <ListItemText
-              primary={item.user.profile?.name}
-              secondary={`Active ${dayjs(
-                item.user.profile?.lastActive
-              ).fromNow()}`}
-            />
-            <Icon>arrow_forward_ios</Icon>
-          </ListItemButton>
-        )}
-        estimatedItemSize={100}
-      />
-    </View>
+      >
+        <FlashList
+          ListHeaderComponent={Header}
+          contentContainerStyle={{
+            paddingHorizontal: 25,
+            paddingTop: width > 600 ? 64 : 80,
+          }}
+          data={
+            data
+              ? data.filter((user) => {
+                  if (view === "all") return user.accepted === true;
+                  if (view === "requests")
+                    return (
+                      user.accepted === false &&
+                      user.followingId === session.user.id
+                    );
+                  if (view === "pending")
+                    return (
+                      user.accepted === false &&
+                      user.followerId === session.user.id
+                    );
+                  if (view === "blocked") return user.blocked;
+                })
+              : []
+          }
+          ListEmptyComponent={
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 200,
+              }}
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : error ? (
+                <ErrorAlert />
+              ) : (
+                <View style={{ gap: 10, alignItems: "center" }}>
+                  <Emoji
+                    emoji={
+                      view === "all"
+                        ? "1f97a"
+                        : view === "blocked"
+                        ? "1f910"
+                        : view == "requests"
+                        ? "1fae3"
+                        : "1f614"
+                    }
+                    size={50}
+                  />
+                  <Text
+                    style={{ fontSize: 20, textAlign: "center" }}
+                    weight={700}
+                  >
+                    {view === "blocked"
+                      ? "You haven't blocked anybody"
+                      : view === "requests"
+                      ? "You haven't sent any friend requests"
+                      : view === "pending"
+                      ? "You don't have any pending requests"
+                      : "You don't have any friends"}
+                  </Text>
+                </View>
+              )}
+            </View>
+          }
+          renderItem={({ item }: any) => (
+            <ListItemButton
+              style={{ backgroundColor: theme[3], marginTop: 10 }}
+              onPress={() =>
+                createTab(sessionToken, {
+                  slug: "/[tab]/users/[id]",
+                  params: { id: item.user.email },
+                })
+              }
+            >
+              <ProfilePicture
+                style={{ pointerEvents: "none" }}
+                name={item.user.profile?.name || "--"}
+                image={item.user.profile?.picture}
+                size={40}
+              />
+              <ListItemText
+                primary={item.user.profile?.name}
+                secondary={`Active ${dayjs(
+                  item.user.profile?.lastActive
+                ).fromNow()}`}
+              />
+              <Icon>arrow_forward_ios</Icon>
+            </ListItemButton>
+          )}
+          estimatedItemSize={100}
+        />
+      </View>
+    </ContentWrapper>
   );
 }

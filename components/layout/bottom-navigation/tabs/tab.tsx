@@ -4,54 +4,14 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import dayjs from "dayjs";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-
-const useTabColorTheme = (slug: string) => {
-  const startWithMatchers = {
-    "/[tab]/perspectives/": {
-      icon: "asterisk",
-      name: (params) => [
-        params.type,
-        `${dayjs(params.start).startOf(params.type).format("MMM Do")} - ${dayjs(
-          params.start
-        )
-          .startOf(params.type)
-          .add(1, params.type)
-          .format("Do")}`,
-      ],
-    },
-    "/[tab]/collections/": {
-      icon: "draw_abstract",
-      name: () => [],
-    },
-    "/[tab]/all/": {
-      icon: "nest_true_radiant",
-      name: (params, slug) => [slug.split("/all/")[1]],
-    },
-    "/[tab]/spaces/": {
-      icon: "tag",
-      name: (params) => ["Space"],
-    },
-    "/[tab]/users/": {
-      icon: "alternate_email",
-      name: (params, slug) => [params.id],
-    },
-  };
-
-  const match = Object.keys(startWithMatchers).find((key) =>
-    slug.startsWith(key)
-  );
-  if (!startWithMatchers[match]) return { icon: "square" };
-  return startWithMatchers[match];
-};
+import { useTabMetadata } from "./useTabMetadata";
 
 export function Tab({
   tab,
@@ -68,7 +28,7 @@ export function Tab({
 }) {
   const params = useGlobalSearchParams();
   const theme = useColorTheme();
-  const tabData = useTabColorTheme(tab.slug);
+  const tabData = useTabMetadata(tab.slug);
 
   const { width } = useWindowDimensions();
   const { sessionToken } = useUser();

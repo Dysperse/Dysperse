@@ -4,7 +4,12 @@ import Spinner from "@/ui/Spinner";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
-import { router, useGlobalSearchParams, usePathname } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import React, { useEffect } from "react";
 import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -13,12 +18,14 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
 import Text from "@/ui/Text";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();
   const theme = useColorTheme();
   const ref = React.useRef<ICarouselInstance>(null);
   const pathname = usePathname();
+  const { tab } = useGlobalSearchParams();
 
   const baseOptions = {
     vertical: false,
@@ -46,8 +53,6 @@ export function OpenTabsList() {
     }
   };
 
-  const { tab } = useGlobalSearchParams();
-
   useEffect(() => {
     if (data && Platform.OS !== "web") {
       const index = data.findIndex((i) => i.id === tab);
@@ -55,6 +60,16 @@ export function OpenTabsList() {
         ref.current.scrollTo({ index, animated: true });
     }
   }, [data, tab]);
+
+  useEffect(() => {
+    if (tab) {
+      const index = data?.findIndex((i) => i.id === tab);
+      if (index !== -1) {
+        const recentlyAccessed = JSON.stringify(data[index]);
+        AsyncStorage.setItem("recentlyAccessed", recentlyAccessed);
+      }
+    }
+  }, [pathname, tab, data]);
 
   return data && Array.isArray(data) ? (
     width > 600 ? (

@@ -11,6 +11,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -25,6 +26,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { WeatherWidget } from "../../components/home/weather/widget";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Skeleton from "@/ui/Skeleton";
+import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import ListItemText from "@/ui/ListItemText";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -312,10 +317,76 @@ function SpaceInfo() {
 }
 
 function JumpBackIn() {
+  const theme = useColorTheme();
+  const [data, setData] = useState<Record<
+    string,
+    string | Record<string, string>
+  > | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    AsyncStorage.getItem("recentlyAccessed").then((data) => {
+      setData(JSON.parse(data));
+      setLoading(false);
+    });
+  }, []);
+
+  const handlePress = useCallback(() => {
+    if (!data) return;
+    router.push({
+      pathname: data.slug as string,
+      params: data.params as Record<string, string>,
+    });
+  }, [data]);
+
+  const tabMetadata = useTabMetadata(data?.slug as string);
+
   return (
-    <View style={[styles.card, { marginBottom: 15, height: 80 }]}>
-      <Text>Hi</Text>
-    </View>
+    data !== null && (
+      <>
+        <Text variant="eyebrow" style={{ marginLeft: 5 }}>
+          Jump back in
+        </Text>
+        <Skeleton
+          isLoading={loading}
+          height={60}
+          style={{
+            marginTop: 10,
+            marginBottom: 20,
+          }}
+        >
+          <Pressable
+            onPress={handlePress}
+            style={({ pressed, hovered }: any) => [
+              styles.card,
+              {
+                alignItems: "center",
+                justifyContent: "flex-start",
+                gap: 10,
+                paddingHorizontal: 15,
+                height: 60,
+                borderRadius: 20,
+                flexDirection: "row",
+                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              },
+            ]}
+          >
+            <Avatar size={40}>
+              <Icon size={30}>{tabMetadata.icon}</Icon>
+            </Avatar>
+            <ListItemText
+              truncate
+              primary={capitalizeFirstLetter(tabMetadata.name(data.params)[0])}
+              secondaryProps={{
+                style: { marginTop: -4, fontSize: 13, opacity: 0.6 },
+              }}
+              secondary={tabMetadata.name(data.params)[1]}
+            />
+            <Icon>arrow_forward_ios</Icon>
+          </Pressable>
+        </Skeleton>
+      </>
+    )
   );
 }
 
@@ -343,7 +414,6 @@ export default function Index() {
       >
         <View style={{ flex: 1.3, paddingTop: breakpoints.lg ? 0 : 50 }}>
           <Greeting />
-          <Text variant="eyebrow">Jump back in</Text>
           <JumpBackIn />
           <Text variant="eyebrow">Today's rundown</Text>
           <View

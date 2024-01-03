@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
 import IconButton from "./IconButton";
 import { useColorTheme } from "./color/theme-provider";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 interface NavbarProps extends StackHeaderProps {
   icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
@@ -16,6 +17,8 @@ export default function Navbar(props: any) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
+
   const handleBack = () => {
     try {
       if (!router.canGoBack()) throw new Error("Can't go back");
@@ -32,6 +35,11 @@ export default function Navbar(props: any) {
           height: 64 + insets.top,
           paddingTop: insets.top,
           backgroundColor: theme[1],
+          ...(breakpoints.lg && {
+            borderRadius: 20,
+            margin: 1,
+            height: 80,
+          }),
           flexDirection: "row",
           paddingHorizontal: 15,
           alignItems: "center",
