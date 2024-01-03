@@ -26,6 +26,7 @@
     "@shopify/flash-list": "1.4.3",
     "@svgr/webpack": "^8.1.0",
     "@types/react": "~18.2.14",
+    "@vercel/speed-insights": "^1.0.2",
     "dayjs": "^1.11.10",
     "eas": "^0.1.0",
     "esbuild": "^0.12.29",
