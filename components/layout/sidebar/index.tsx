@@ -17,6 +17,7 @@ import {
   Platform,
   Pressable,
   StyleSheet,
+  TouchableOpacity,
   View,
   useColorScheme,
   useWindowDimensions,
@@ -179,7 +180,19 @@ export function Sidebar() {
           paddingTop: 20,
         }}
       >
-        <Logo size={35} color={theme[6]} />
+        <SpacesTrigger>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+              paddingLeft: 3,
+            }}
+          >
+            <Logo size={35} color={theme[6]} />
+            <Icon style={{ color: theme[6] }}>expand_more</Icon>
+          </TouchableOpacity>
+        </SpacesTrigger>
         <View style={{ flexDirection: "row", gap: 10, marginTop: 20 }}>
           <Pressable
             onPress={handleHome}
@@ -236,11 +249,6 @@ export function Sidebar() {
           >
             <Icon>question_mark</Icon>
           </IconButton>
-          <SpacesTrigger>
-            <IconButton variant="filled">
-              <Icon>workspaces</Icon>
-            </IconButton>
-          </SpacesTrigger>
           <NavbarProfilePicture />
         </View>
       </View>
