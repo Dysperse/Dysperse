@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "baseUrl": ".",
-    "lib": ["ES2023"],
+    "lib": ["dom", "ES2023"],
     "paths": {
       "@/*": ["./*"]
     }

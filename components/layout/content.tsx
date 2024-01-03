@@ -1,15 +1,18 @@
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { Platform, View, ViewProps, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export function ContentWrapper(props) {
+interface ContentWrapperProps extends ViewProps {
+  enabled?: boolean;
+}
+export function ContentWrapper(props: ContentWrapperProps) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
-  return (
+  return props.enabled !== false ? (
     <View
       style={{
         marginTop: insets.top,
@@ -30,5 +33,7 @@ export function ContentWrapper(props) {
       )}
       {props.children}
     </View>
+  ) : (
+    props.children
   );
 }

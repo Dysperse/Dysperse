@@ -27,6 +27,7 @@ import { NavbarProfilePicture } from "../account-navbar";
 import { useCommandPalette } from "../command-palette";
 import { OpenTabsList } from "../bottom-navigation/tabs/carousel";
 import Logo from "@/ui/logo";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 export const styles = StyleSheet.create({
   contentContainer: {
@@ -93,12 +94,17 @@ export function SpacesTrigger({ children }) {
   const { data, error } = useSWR(["user/spaces"]);
 
   const handleClose = useCallback(() => ref.current.close(), []);
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <Menu menuRef={ref} width={400} height={["70%"]} trigger={children}>
+    <Menu
+      menuRef={ref}
+      width={breakpoints.lg ? 400 : undefined}
+      height={["55%"]}
+      trigger={children}
+    >
       {data ? (
         <FlatList
-          style={{ padding: 10 }}
           data={data}
           ListHeaderComponent={
             <View>
@@ -106,21 +112,20 @@ export function SpacesTrigger({ children }) {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  gap: 20,
+                  marginTop: -15,
                 }}
               >
+                <IconButton size={55} variant="outlined" onPress={handleClose}>
+                  <Icon>close</Icon>
+                </IconButton>
                 <Text heading style={{ fontSize: 40 }}>
                   Spaces
                 </Text>
-                <IconButton
-                  variant="filled"
-                  style={{ marginTop: -7 }}
-                  onPress={handleClose}
-                >
-                  <Icon>close</Icon>
-                </IconButton>
               </View>
               <ButtonGroup
+                scrollContainerStyle={{ width: "100%" }}
+                buttonStyle={{ flexGrow: 1, flexBasis: 0 }}
                 containerStyle={{ marginVertical: 10 }}
                 options={[
                   { label: "All", value: "all" },

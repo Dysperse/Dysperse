@@ -83,13 +83,18 @@ export function PerspectivesNavbar({
       }}
     >
       <View style={{ flexGrow: 1, flexDirection: "row", alignItems: "center" }}>
-        <TouchableOpacity>
-          <Text numberOfLines={1} weight={600}>
-            {dayjs(start).format(titleFormat).split("•")?.[0]}
-          </Text>
-          <Text numberOfLines={1} style={{ opacity: 0.6 }}>
-            {dayjs(start).format(titleFormat).split("• ")?.[1]}
-          </Text>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+        >
+          <View>
+            <Text numberOfLines={1} weight={600}>
+              {dayjs(start).format(titleFormat).split("•")?.[0]}
+            </Text>
+            <Text numberOfLines={1} style={{ opacity: 0.6 }}>
+              {dayjs(start).format(titleFormat).split("• ")?.[1]}
+            </Text>
+          </View>
+          <Icon style={{ color: theme[12] }}>expand_more</Icon>
         </TouchableOpacity>
         {error && (
           <Chip

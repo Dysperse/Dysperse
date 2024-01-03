@@ -14,6 +14,8 @@ import { useUser } from "../../context/useUser";
 import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
+import { SpacesTrigger } from "./sidebar";
+import Icon from "@/ui/Icon";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
@@ -67,7 +69,14 @@ export default function AccountNavbar(props: any) {
         {props.options.headerTitle ? (
           <Text>{props.options.headerTitle}</Text>
         ) : (
-          <Logo size={35} color={theme[7]} />
+          <SpacesTrigger>
+            <TouchableOpacity
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <Logo size={35} color={theme[7]} />
+              <Icon style={{ color: theme[7] }}>expand_more</Icon>
+            </TouchableOpacity>
+          </SpacesTrigger>
         )}
         <View style={{ flexGrow: 1 }} />
         {props.options.headerRight && props.options.headerRight()}

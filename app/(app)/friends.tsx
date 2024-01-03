@@ -52,20 +52,10 @@ export default function Page() {
       </View>
       <ButtonGroup
         containerStyle={{ backgroundColor: "transparent", borderRadius: 0 }}
-        scrollContainerStyle={{ gap: 0 }}
-        buttonStyle={{
-          flexShrink: 0,
-          borderRadius: 0,
-          backgroundColor: "transparent",
-          borderBottomWidth: 2,
-          borderBottomColor: theme[3],
-        }}
         buttonTextStyle={{
           color: theme[11],
         }}
-        selectedButtonStyle={{
-          borderBottomColor: theme[11],
-        }}
+        selectedButtonStyle={{}}
         options={[
           { label: "All", value: "all" },
           { label: "Requests", value: "requests" },

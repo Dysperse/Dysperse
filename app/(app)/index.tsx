@@ -44,7 +44,6 @@ function Greeting() {
     }
   }, []);
 
-  const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -52,16 +51,15 @@ function Greeting() {
       numberOfLines={1}
       style={{
         fontFamily: "heading",
-        textAlign: width > 600 ? "left" : "center",
         color: theme[12],
         textShadowColor: theme[7],
         textShadowRadius: 30,
-        padding: 15,
-        margin: breakpoints.lg ? -15 : 0,
         fontSize: 55,
+        height: 200,
         width: "100%",
         marginVertical: breakpoints.lg ? 0 : 20,
-        marginTop: breakpoints.lg ? 0 : 50,
+        marginBottom: breakpoints.lg ? -130 : -60,
+        paddingTop: breakpoints.lg ? 0 : 70,
         textShadowOffset: { height: 5, width: 5 },
       }}
     >
@@ -313,6 +311,14 @@ function SpaceInfo() {
   );
 }
 
+function JumpBackIn() {
+  return (
+    <View style={[styles.card, { marginBottom: 15, height: 80 }]}>
+      <Text>Hi</Text>
+    </View>
+  );
+}
+
 export default function Index() {
   const { width } = useWindowDimensions();
   const theme = useColorTheme();
@@ -337,6 +343,8 @@ export default function Index() {
       >
         <View style={{ flex: 1.3, paddingTop: breakpoints.lg ? 0 : 50 }}>
           <Greeting />
+          <Text variant="eyebrow">Jump back in</Text>
+          <JumpBackIn />
           <Text variant="eyebrow">Today's rundown</Text>
           <View
             style={{

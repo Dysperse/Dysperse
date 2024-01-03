@@ -2,7 +2,7 @@ import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
 interface DIconButtonProps extends PressableProps {
-  variant?: "filled" | "text";
+  variant?: "filled" | "outlined" | "text";
   size?: number;
   style?:
     | StyleProp<ViewStyle>
@@ -17,6 +17,8 @@ export default function IconButton(props: DIconButtonProps) {
       {...props}
       style={({ pressed, hovered }: any) => [
         {
+          borderWidth: 1,
+          borderColor: props.variant === "outlined" ? theme[5] : "transparent",
           width: props.size ?? 35,
           height: props.size ?? 35,
           backgroundColor: pressed

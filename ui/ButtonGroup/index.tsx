@@ -26,33 +26,12 @@ export function ButtonGroup({
 }) {
   const theme = useColorTheme();
   return (
-    <View
-      style={[
-        {
-          borderRadius: 15,
-          width: "100%",
-          overflow: "hidden",
-          backgroundColor: theme[3],
-        },
-        containerStyle,
-      ]}
-    >
+    <View style={[{ width: "100%" }, containerStyle]}>
       <ScrollView
         showsHorizontalScrollIndicator={false}
         horizontal
-        style={[
-          {
-            borderRadius: 15,
-            width: "100%",
-          },
-        ]}
-        contentContainerStyle={[
-          {
-            gap: 2,
-            flexDirection: "row",
-          },
-          scrollContainerStyle,
-        ]}
+        style={[{ width: "100%" }]}
+        contentContainerStyle={[{ flexDirection: "row" }, scrollContainerStyle]}
       >
         {options.map((option) => (
           <Pressable
@@ -60,11 +39,11 @@ export function ButtonGroup({
             onPress={() => state[1](option.value)}
             style={({ pressed, hovered }: any) => [
               {
-                backgroundColor:
-                  state[0] === option.value
-                    ? theme[pressed ? 10 : 11]
-                    : theme[pressed ? 5 : hovered ? 4 : 3],
-                borderRadius: 15,
+                flexShrink: 0,
+                borderRadius: 0,
+                backgroundColor: "transparent",
+                borderBottomWidth: 2,
+                borderBottomColor: theme[state[0] === option.value ? 11 : 3],
                 paddingHorizontal: 10,
                 paddingVertical: 4.5,
                 flex: 1,
@@ -77,7 +56,7 @@ export function ButtonGroup({
               numberOfLines={1}
               style={[
                 {
-                  color: theme[state[0] === option.value ? 3 : 11],
+                  color: theme[11],
                   paddingHorizontal: 10,
                   paddingVertical: 5,
                   fontFamily: "body_600",

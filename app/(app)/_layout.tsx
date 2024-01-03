@@ -129,6 +129,20 @@ function forHorizontalIOS({
   };
 }
 
+function localStorageProvider() {
+  // When initializing, we restore the data from `localStorage` into a map.
+  const map = new Map(JSON.parse(localStorage.getItem("app-cache") || "[]"));
+
+  // Before unloading the app, we write back all the data into `localStorage`.
+  window.addEventListener("beforeunload", () => {
+    const appCache = JSON.stringify(Array.from(map.entries()));
+    localStorage.setItem("app-cache", appCache);
+  });
+
+  // We still use the map for write & read for performance.
+  return map;
+}
+
 export default function AppLayout() {
   const { session, isLoading } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
@@ -145,7 +159,6 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (Platform.OS === "web") {
-      // @ts-expect-error this is a valid DOM
       document
         .querySelector(`meta[name="theme-color"]`)
         .setAttribute("content", theme[2]);
@@ -191,7 +204,8 @@ export default function AppLayout() {
               return await res.json();
             },
 
-            provider: () => new Map(),
+            provider:
+              Platform.OS === "web" ? localStorageProvider : () => new Map(),
             isVisible: () => true,
             initFocus(callback) {
               let appState = AppState.currentState;

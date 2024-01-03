@@ -1,6 +1,7 @@
 import BottomSheet from "@/ui/BottomSheet";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BlurView } from "expo-blur";
 import React, {
   ReactElement,
   Ref,
@@ -8,8 +9,8 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import { Keyboard, View } from "react-native";
-import BottomSheetKeyboardHandler from "../BottomSheet/BottomSheetKeyboardHandler";
+import { View } from "react-native";
+import { addHslAlpha } from "../color";
 
 export function Menu({
   trigger,
@@ -56,13 +57,11 @@ export function Menu({
         onClose={handleClose}
         maxWidth={width}
         snapPoints={height}
-        backgroundStyle={{
-          backgroundColor: "transparent",
-        }}
+        backgroundStyle={{ backgroundColor: "transparent" }}
         detached
         footerComponent={footer}
-        bottomInset={23.5}
         stackBehavior={stackBehavior}
+        handleComponent={() => null}
       >
         <View
           style={{
@@ -73,10 +72,13 @@ export function Menu({
         >
           <View
             style={{
+              backgroundColor: theme[2],
+              borderWidth: 1,
+              borderColor: theme[4],
+              overflow: "hidden",
               borderRadius: 20,
               paddingVertical: 20,
               height: "100%",
-              backgroundColor: theme[1],
             }}
           >
             {children}
