@@ -10,7 +10,9 @@ module.exports = (async () => {
 
   config.transformer.minifierPath = require.resolve("metro-minify-esbuild");
   config.transformer.minifierConfig = {
-    drop: ["console"],
+    compress: {
+      drop_console: true,
+    },
   };
   // config.transformer.minifierConfig.compress.drop_console = true;
   config.resolver.sourceExts = [...config.resolver.sourceExts, "mjs", "cjs"];
