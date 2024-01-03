@@ -15,7 +15,6 @@ import {
   Jost_800ExtraBold,
   Jost_900Black,
 } from "@expo-google-fonts/jost";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -65,7 +64,6 @@ export default function Root() {
           <Slot screenOptions={{ onLayoutRootView }} />
         </SessionProvider>
       </ColorThemeProvider>
-      {Platform.OS === "web" && <SpeedInsights />}
     </>
   );
 }
