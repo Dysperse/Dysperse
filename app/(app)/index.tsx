@@ -335,7 +335,10 @@ function JumpBackIn() {
     if (!data) return;
     router.push({
       pathname: data.slug as string,
-      params: data.params as Record<string, string>,
+      params: {
+        tab: data.id,
+        ...(data.params as Record<string, string>),
+      },
     });
   }, [data]);
 
