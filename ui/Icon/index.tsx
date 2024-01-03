@@ -21,9 +21,10 @@ export default function Icon({
     <Text
       allowFontScaling={false}
       maxFontSizeMultiplier={1}
-      numberOfLines={1}
       style={[
         {
+          overflow: "visible",
+          maxWidth: size + 3,
           color: theme[11],
           fontFamily: bold
             ? "symbols_bold_outlined"
