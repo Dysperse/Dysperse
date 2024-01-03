@@ -42,6 +42,7 @@
     "expo-router": "^2.0.0",
     "expo-secure-store": "~12.3.1",
     "expo-status-bar": "~1.6.0",
+    "fiction-expo-restart": "^2.0.0",
     "npx": "^10.2.2",
     "patch-package": "^8.0.0",
     "react": "18.2.0",

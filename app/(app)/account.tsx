@@ -13,9 +13,10 @@ import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
+import { Restart } from "fiction-expo-restart";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View, useColorScheme } from "react-native";
+import { Platform, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -140,6 +141,18 @@ export default function Index() {
             { name: "Terms of Service", icon: "info" },
             { name: "Privacy Policy", icon: "info" },
             { name: "Open Source", icon: "open_in_new" },
+          ],
+          [
+            {
+              name: "Clear app cache & reload",
+              icon: "logout",
+              callback: () => {
+                if (Platform.OS === "web") {
+                  localStorage.removeItem("app-cache");
+                }
+                Restart();
+              },
+            },
           ],
         ].map((section, index) => (
           <View
