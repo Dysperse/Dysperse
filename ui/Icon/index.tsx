@@ -37,7 +37,7 @@ export default function Icon({
           // textAlign: "center",
           lineHeight: size + 3,
           // backgroundColor: "red",
-          ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+          ...(Platform.OS === "web" && ({ userSelect: "none", whiteSpace: "nowrap" } as any)),
         },
         style,
       ]}
