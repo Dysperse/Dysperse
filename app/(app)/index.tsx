@@ -414,7 +414,7 @@ export default function Index() {
       >
         <View style={{ flex: 1.3, paddingTop: breakpoints.lg ? 0 : 50 }}>
           <Greeting />
-          <JumpBackIn />
+          {!breakpoints.lg && <JumpBackIn />}
           <Text variant="eyebrow">Today's rundown</Text>
           <View
             style={{
@@ -439,6 +439,7 @@ export default function Index() {
           }}
         >
           <SpaceInfo />
+          {breakpoints.lg && <JumpBackIn />}
           <Text variant="eyebrow">Friends</Text>
           <FriendActivity />
         </View>
