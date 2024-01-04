@@ -5,19 +5,14 @@ import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  TouchableOpacity,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
 import React, { cloneElement, memo, useCallback, useRef } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
-import { useCommandPalette } from "../command-palette";
 import { OpenTabsList } from "./tabs/carousel";
 import { Tab } from "./tabs/tab";
-import { FlatList } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   helperText: {
@@ -126,7 +121,6 @@ function BottomNavigation() {
   const pathname = usePathname();
   const height = getBottomNavigationHeight(pathname);
   const theme = useColorTheme();
-  const { openPalette } = useCommandPalette();
 
   return (
     <View
@@ -162,7 +156,7 @@ function BottomNavigation() {
             variant="filled"
             style={{ width: 80 }}
             size={45}
-            onPress={openPalette}
+            onPress={() => router.push("/open")}
           >
             <Icon style={{ transform: [{ rotate: "-11deg" }] }} size={28}>
               electric_bolt

@@ -2,6 +2,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
 import React, { useCallback } from "react";
 import {
@@ -13,9 +14,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { NavbarProfilePicture } from "../account-navbar";
-import { useCommandPalette } from "../command-palette";
 import { OpenTabsList } from "../bottom-navigation/tabs/carousel";
-import Logo from "@/ui/logo";
+import { useCommandPalette } from "../command-palette";
 import { SpacesTrigger } from "./SpacesTrigger";
 
 export const styles = StyleSheet.create({
@@ -92,7 +92,7 @@ export function Sidebar() {
             <Icon filled={pathname === "/"}>home</Icon>
           </Pressable>
           <Pressable
-            onPress={openPalette}
+            onPress={() => router.push("/open")}
             style={({ pressed }) => [
               styles.button,
               {

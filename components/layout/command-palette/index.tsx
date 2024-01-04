@@ -1,10 +1,7 @@
 import { useSession } from "@/context/AuthProvider";
-import { useUser } from "@/context/useUser";
 import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetSectionList } from "@gorhom/bottom-sheet";
@@ -25,10 +22,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import useSWR from "swr";
-import { createTab } from "../openTab";
-import { getSidebarItems } from "./list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { getSidebarItems } from "./list";
 
 interface CommandPaletteContextValue {
   openPalette: () => void;
@@ -67,50 +62,6 @@ const commandPaletteStyles = StyleSheet.create({
   },
 });
 
-function Button({ item }: any) {
-  const [loading, setLoading] = useState(false);
-  const { sessionToken } = useUser();
-
-  const { mutate } = useSWR(["user/tabs"]);
-
-  const handlePress = async (tab) => {
-    try {
-      setLoading(true);
-      if (tab.onPress) {
-        await tab.onPress();
-        setLoading(false);
-        return;
-      }
-      await createTab(sessionToken, tab);
-      await mutate();
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      alert("Something went wrong. Please try again later");
-    }
-  };
-
-  return (
-    <TouchableOpacity
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 7,
-        flexDirection: "row",
-        gap: 15,
-        alignItems: "center",
-      }}
-      onPress={() => handlePress(item)}
-    >
-      {item.collection ? (
-        <Emoji size={23} emoji={item.collection.emoji || "1f4e6"} />
-      ) : (
-        <Icon size={23}>{item.icon}</Icon>
-      )}
-      <Text style={{ flex: 1 }}>{item?.collection?.name || item.label}</Text>
-      {loading && <ActivityIndicator />}
-    </TouchableOpacity>
-  );
-}
 
 function PaletteList({ handleClose }) {
   const theme = useColorTheme();
@@ -125,20 +76,6 @@ function PaletteList({ handleClose }) {
       setIsLoading(false);
     });
   }, [session]);
-
-  const filteredSections = data
-    .filter((section) => {
-      if (query === "") return true;
-      return section.data.some((item) =>
-        item.label.toLowerCase().includes(query.toLowerCase())
-      );
-    })
-    .map((section) => ({
-      ...section,
-      data: section.data.filter((item) =>
-        item.label.toLowerCase().includes(query.toLowerCase())
-      ),
-    }));
 
   const SectionListComponent =
     Platform.OS === "web" ? SectionList : BottomSheetSectionList;
@@ -164,60 +101,7 @@ function PaletteList({ handleClose }) {
         <ActivityIndicator />
       ) : (
         <SectionListComponent
-          sections={filteredSections}
-          ListEmptyComponent={
-            <View style={commandPaletteStyles.emptyContainer}>
-              <Emoji emoji="1F62D" size={40} />
-              <Text style={{ fontSize: 20 }} weight={200}>
-                No results found
-              </Text>
-            </View>
-          }
-          contentContainerStyle={{ paddingBottom: 30 }}
-          style={{
-            flex: 1,
-            ...(Platform.OS == "web" && {
-              height: 300,
-              maxHeight: 300,
-              minHeight: 300,
-            }),
-          }}
-          renderItem={({ item }) => <Button item={item} />}
-          renderSectionHeader={({ section }) =>
-            section.title === "ALL" ? (
-              <View style={{ paddingHorizontal: 20 }}>
-                <View
-                  style={{
-                    height: 2,
-                    backgroundColor: theme[4],
-                    borderRadius: 9,
-                    marginVertical: 10,
-                  }}
-                />
-                <Text
-                  variant="eyebrow"
-                  style={{ marginBottom: 10, marginTop: 6 }}
-                >
-                  {section.title}
-                </Text>
-              </View>
-            ) : (
-              <Text
-                variant="eyebrow"
-                style={{
-                  paddingHorizontal: 20,
-                  marginBottom: 10,
-                  marginTop: 20,
-                }}
-              >
-                {section.title}
-              </Text>
-            )
-          }
-          keyExtractor={(item: any) =>
-            item.slug + JSON.stringify(item.params) || item.label
-          }
-        />
+        
       )}
     </>
   );

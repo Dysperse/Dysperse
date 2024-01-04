@@ -298,10 +298,11 @@ export default function AppLayout() {
                       <JsStack.Screen
                         name="open"
                         options={{
-                          header: (props) => <Navbar {...props} />,
+                          header: () => null,
                           animationEnabled: true,
-                          ...TransitionPresets.SlideFromRightIOS,
-                          cardStyleInterpolator: forHorizontalIOS,
+                          presentation: "modal",
+                          ...TransitionPresets.ModalPresentationIOS,
+                          gestureResponseDistance: 250,
                         }}
                       />
                       <JsStack.Screen

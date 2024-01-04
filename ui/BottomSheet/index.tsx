@@ -4,12 +4,10 @@ import {
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
 import { Ref, memo } from "react";
-import { Keyboard, Platform } from "react-native";
+import { Platform } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
-import { BottomSheetEscapeHandler } from "./BottomSheetEscapeHandler";
-import BottomSheetKeyboardHandler from "./BottomSheetKeyboardHandler";
 
 interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: Ref<BottomSheetModal>;
@@ -60,9 +58,9 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       {props.disableBackHandler !== true && Platform.OS !== "web" && (
         <BottomSheetBackHandler />
       )}
-      {Platform.OS === "web" && props.disableEscapeHandler !== true && (
+      {/* {Platform.OS === "web" && props.disableEscapeHandler !== true && (
         <BottomSheetEscapeHandler handleClose={props.onClose} />
-      )}
+      )} */}
       {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
       {props.children}
     </BottomSheetModal>

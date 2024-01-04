@@ -326,8 +326,8 @@ function JumpBackIn() {
 
   useEffect(() => {
     AsyncStorage.getItem("recentlyAccessed").then((data) => {
-      setData(JSON.parse(data));
       setLoading(false);
+      setData(JSON.parse(data));
     });
   }, []);
 

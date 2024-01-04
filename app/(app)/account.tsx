@@ -13,8 +13,8 @@ import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
-import { Restart } from "fiction-expo-restart";
 import { router } from "expo-router";
+import * as Updates from "expo-updates";
 import { useState } from "react";
 import { Platform, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -150,7 +150,11 @@ export default function Index() {
                 if (Platform.OS === "web") {
                   localStorage.removeItem("app-cache");
                 }
-                Restart();
+                if (Platform.OS == "web") {
+                  window.location.reload();
+                } else {
+                  Updates.reloadAsync();
+                }
               },
             },
           ],
