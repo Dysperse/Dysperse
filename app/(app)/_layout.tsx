@@ -296,11 +296,11 @@ export default function AppLayout() {
                     <JsStack.Screen
                       name="open"
                       options={{
-                        header: () => null,
-                        animationEnabled: true,
-                        presentation: "modal",
-                        ...TransitionPresets.ModalPresentationIOS,
-                        gestureResponseDistance: 250,
+          header: () => null,
+          animationEnabled: true,
+          presentation: "modal",
+          ...TransitionPresets.ModalPresentationIOS,
+          gestureResponseDistance: height
                       }}
                     />
                     <JsStack.Screen
