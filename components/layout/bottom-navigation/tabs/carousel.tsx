@@ -1,15 +1,9 @@
 import ErrorAlert from "@/ui/Error";
-import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
-import { addHslAlpha } from "@/ui/color";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Logo from "@/ui/logo";
-import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  usePathname,
-} from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -17,8 +11,6 @@ import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Tab } from "./tab";
-import Text from "@/ui/Text";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function OpenTabsList() {
   const { width } = useWindowDimensions();

@@ -1,10 +1,15 @@
 import { JsStack } from "@/components/layout/_stack";
 import AccountNavbar from "@/components/layout/account-navbar";
+import { CommandPaletteProvider } from "@/components/layout/command-palette";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import NavigationBar from "@/ui/NavigationBar";
+import Spinner from "@/ui/Spinner";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import Logo from "@/ui/logo";
 import Navbar from "@/ui/navbar";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -25,7 +30,6 @@ import utc from "dayjs/plugin/utc";
 import { Redirect } from "expo-router";
 import React, { useEffect } from "react";
 import {
-  ActivityIndicator,
   Animated,
   AppState,
   Platform,
@@ -38,13 +42,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { SWRConfig } from "swr";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
-import { OpenTabsList } from "../../components/layout/bottom-navigation/tabs/carousel";
-import { CommandPaletteProvider } from "@/components/layout/command-palette";
-import Spinner from "@/ui/Spinner";
-import Logo from "@/ui/logo";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import NavigationBar from "@/ui/NavigationBar";
-import { isDocumentDefined } from "swr/_internal";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

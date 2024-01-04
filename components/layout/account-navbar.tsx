@@ -14,7 +14,7 @@ import { useUser } from "../../context/useUser";
 import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
-import { SpacesTrigger } from "./sidebar";
+import { SpacesTrigger } from "./sidebar/SpacesTrigger";
 import Icon from "@/ui/Icon";
 
 export function NavbarProfilePicture() {

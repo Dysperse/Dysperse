@@ -1,17 +1,22 @@
 import { styles } from "@/components/home/styles";
+import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import ListItemText from "@/ui/ListItemText";
 import NavigationBar from "@/ui/NavigationBar";
+import Skeleton from "@/ui/Skeleton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import dayjs from "dayjs";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -25,11 +30,6 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { WeatherWidget } from "../../components/home/weather/widget";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Skeleton from "@/ui/Skeleton";
-import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import ListItemText from "@/ui/ListItemText";
 
 function Greeting() {
   const theme = useColorTheme();

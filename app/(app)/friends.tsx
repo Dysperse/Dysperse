@@ -4,7 +4,6 @@ import { useUser } from "@/context/useUser";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
-import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -17,7 +16,6 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { View, useWindowDimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
