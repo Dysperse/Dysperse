@@ -1,6 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
 import AccountNavbar from "@/components/layout/account-navbar";
-import { CommandPaletteProvider } from "@/components/layout/command-palette";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
@@ -231,102 +230,100 @@ export default function AppLayout() {
           }}
         >
           <BottomSheetModalProvider>
-            <CommandPaletteProvider>
-              <PortalProvider>
-                <StatusBar
-                  barStyle={!isDark ? "dark-content" : "light-content"}
-                />
-                <View
-                  style={{
-                    flexDirection: breakpoints.lg ? "row" : "column",
-                    flex: 1,
-                    backgroundColor: theme[1],
+            <PortalProvider>
+              <StatusBar
+                barStyle={!isDark ? "dark-content" : "light-content"}
+              />
+              <View
+                style={{
+                  flexDirection: breakpoints.lg ? "row" : "column",
+                  flex: 1,
+                  backgroundColor: theme[1],
+                }}
+              >
+                {breakpoints.lg && <Sidebar />}
+                <ThemeProvider
+                  value={{
+                    ...DefaultTheme,
+                    colors: {
+                      ...DefaultTheme.colors,
+                      background: theme[1],
+                    },
                   }}
                 >
-                  {breakpoints.lg && <Sidebar />}
-                  <ThemeProvider
-                    value={{
-                      ...DefaultTheme,
-                      colors: {
-                        ...DefaultTheme.colors,
-                        background: theme[1],
+                  <JsStack
+                    screenOptions={{
+                      header: breakpoints.lg
+                        ? () => null
+                        : (props: any) => <AccountNavbar {...props} />,
+                      headerTransparent: true,
+                      gestureResponseDistance: width,
+                      cardShadowEnabled: false,
+                      gestureEnabled: true,
+                      cardStyle: {
+                        backgroundColor: theme[breakpoints.sm ? 2 : 1],
+                        padding: breakpoints.lg ? 10 : 0,
                       },
+                      // change opacity of the previous screen when swipe
+                      cardOverlayEnabled: true,
+                      animationEnabled: false,
+                      gestureVelocityImpact: 0.7,
                     }}
                   >
-                    <JsStack
-                      screenOptions={{
-                        header: breakpoints.lg
-                          ? () => null
-                          : (props: any) => <AccountNavbar {...props} />,
-                        headerTransparent: true,
-                        gestureResponseDistance: width,
-                        cardShadowEnabled: false,
-                        gestureEnabled: true,
-                        cardStyle: {
-                          backgroundColor: theme[breakpoints.sm ? 2 : 1],
-                          padding: breakpoints.lg ? 10 : 0,
-                        },
-                        // change opacity of the previous screen when swipe
-                        cardOverlayEnabled: true,
-                        animationEnabled: false,
-                        gestureVelocityImpact: 0.7,
+                    <JsStack.Screen name="index" options={{}} />
+                    <JsStack.Screen
+                      name="account"
+                      options={{
+                        header: (props) => (
+                          <Navbar icon="arrow_back_ios_new" {...props} />
+                        ),
+                        animationEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
                       }}
-                    >
-                      <JsStack.Screen name="index" options={{}} />
-                      <JsStack.Screen
-                        name="account"
-                        options={{
-                          header: (props) => (
-                            <Navbar icon="arrow_back_ios_new" {...props} />
-                          ),
-                          animationEnabled: true,
-                          ...TransitionPresets.SlideFromRightIOS,
-                          cardStyleInterpolator: forHorizontalIOS,
-                        }}
-                      />
-                      <JsStack.Screen
-                        name="friends"
-                        options={{
-                          header: (props) => (
-                            <Navbar icon="arrow_back_ios_new" {...props} />
-                          ),
-                          animationEnabled: true,
-                          ...TransitionPresets.SlideFromRightIOS,
-                          cardStyleInterpolator: forHorizontalIOS,
-                        }}
-                      />
-                      <JsStack.Screen
-                        name="open"
-                        options={{
-                          header: () => null,
-                          animationEnabled: true,
-                          presentation: "modal",
-                          ...TransitionPresets.ModalPresentationIOS,
-                          gestureResponseDistance: 250,
-                        }}
-                      />
-                      <JsStack.Screen
-                        name="space"
-                        options={{
-                          header: () => null,
-                          animationEnabled: true,
-                          presentation: "modal",
-                          ...TransitionPresets.ModalPresentationIOS,
-                          gestureResponseDistance: height,
-                        }}
-                      />
-                      <JsStack.Screen
-                        name="[tab]/perspectives/agenda/[type]/[start]"
-                        options={{
-                          header: () => null,
-                        }}
-                      />
-                    </JsStack>
-                  </ThemeProvider>
-                  {!breakpoints.md && <BottomAppBar />}
-                </View>
-              </PortalProvider>
-            </CommandPaletteProvider>
+                    />
+                    <JsStack.Screen
+                      name="friends"
+                      options={{
+                        header: (props) => (
+                          <Navbar icon="arrow_back_ios_new" {...props} />
+                        ),
+                        animationEnabled: true,
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="open"
+                      options={{
+                        header: () => null,
+                        animationEnabled: true,
+                        presentation: "modal",
+                        ...TransitionPresets.ModalPresentationIOS,
+                        gestureResponseDistance: 250,
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="space"
+                      options={{
+                        header: () => null,
+                        animationEnabled: true,
+                        presentation: "modal",
+                        ...TransitionPresets.ModalPresentationIOS,
+                        gestureResponseDistance: height,
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="[tab]/perspectives/agenda/[type]/[start]"
+                      options={{
+                        header: () => null,
+                      }}
+                    />
+                  </JsStack>
+                </ThemeProvider>
+                {!breakpoints.md && <BottomAppBar />}
+              </View>
+            </PortalProvider>
           </BottomSheetModalProvider>
         </SWRConfig>
         <Toast config={toastConfig(theme)} />
