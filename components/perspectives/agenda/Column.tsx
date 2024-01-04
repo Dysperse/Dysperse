@@ -1,6 +1,7 @@
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -14,7 +15,6 @@ import React from "react";
 import { RefreshControl, View, useWindowDimensions } from "react-native";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 const renderColumnItem = ({ item, width, mutate, column }: any) => {
   const Container = ({ children }: { children: React.ReactNode }) => (
@@ -27,37 +27,45 @@ const renderColumnItem = ({ item, width, mutate, column }: any) => {
       {children}
     </View>
   );
+
+  const onTaskUpdate = (newTask) => {
+    mutate(
+      (oldData) => {
+        if (
+          oldData
+            .find((oldColumn) => oldColumn.start === column.start)
+            ?.tasks.find((oldTask) => oldTask === newTask)
+        ) {
+          return oldData;
+        }
+        return oldData.map((oldColumn) =>
+          oldColumn.start === column.start
+            ? {
+                ...oldColumn,
+                tasks: oldColumn.tasks
+                  .map((oldTask) =>
+                    oldTask?.id === newTask?.id
+                      ? newTask.trash === true
+                        ? undefined
+                        : newTask
+                      : oldTask
+                  )
+                  .filter((e) => e),
+              }
+            : oldColumn
+        );
+      },
+      {
+        revalidate: false,
+      }
+    );
+  };
+
   switch (item.type) {
     case "TASK":
       return (
         <Container>
-          <Task
-            onTaskUpdate={(newTask) => {
-              mutate(
-                (oldData) =>
-                  oldData.map((oldColumn) =>
-                    oldColumn.start === column.start
-                      ? {
-                          ...oldColumn,
-                          tasks: oldColumn.tasks
-                            .map((oldTask) =>
-                              oldTask?.id === newTask?.id
-                                ? newTask.trash === true
-                                  ? undefined
-                                  : newTask
-                                : oldTask
-                            )
-                            .filter((e) => e),
-                        }
-                      : oldColumn
-                  ),
-                {
-                  revalidate: false,
-                }
-              );
-            }}
-            task={item}
-          />
+          <Task onTaskUpdate={onTaskUpdate} task={item} />
         </Container>
       );
     default:

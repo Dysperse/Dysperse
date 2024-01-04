@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Text, { DTextProps } from "../Text";
 
 interface DListItemTextProps extends DTextProps {
@@ -9,9 +9,14 @@ interface DListItemTextProps extends DTextProps {
   truncate?: boolean;
 }
 
+const styles = StyleSheet.create({
+  base: { gap: 3, flex: 1 },
+  secondary: { opacity: 0.6, fontSize: 14 },
+});
+
 export default function ListItemText(props: DListItemTextProps) {
   return (
-    <View style={[{ gap: 3, flex: 1 }, props.style]}>
+    <View style={[styles.base, props.style]}>
       <Text
         weight={600}
         {...props.primaryProps}
@@ -21,7 +26,7 @@ export default function ListItemText(props: DListItemTextProps) {
       </Text>
       {props.secondary && (
         <Text
-          style={{ opacity: 0.6, fontSize: 14 }}
+          style={styles.secondary}
           {...props.secondaryProps}
           numberOfLines={props.truncate ? 1 : undefined}
         >

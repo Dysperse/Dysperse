@@ -1,8 +1,8 @@
 import { JsStack } from "@/components/layout/_stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { View, useWindowDimensions } from "react-native";
 import { TransitionPresets } from "@react-navigation/stack";
+import { View, useWindowDimensions } from "react-native";
 
 export default function Layout() {
   const theme = useColorTheme();
@@ -15,7 +15,6 @@ export default function Layout() {
         header: () => <View />,
         headerTransparent: true,
         gestureResponseDistance: width,
-        cardShadowEnabled: false,
         gestureEnabled: true,
         cardStyle: {
           backgroundColor: theme[breakpoints.sm ? 2 : 1],

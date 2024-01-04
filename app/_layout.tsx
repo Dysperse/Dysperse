@@ -1,9 +1,3 @@
-import "react-native-gesture-handler";
-import { useFonts } from "expo-font";
-import { Slot } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
-import { SessionProvider } from "../context/AuthProvider";
 import {
   Jost_100Thin,
   Jost_200ExtraLight,
@@ -15,14 +9,20 @@ import {
   Jost_800ExtraBold,
   Jost_900Black,
 } from "@expo-google-fonts/jost";
+import { useFonts } from "expo-font";
+import { Slot } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useCallback } from "react";
+import "react-native-gesture-handler";
+import { SessionProvider } from "../context/AuthProvider";
 
 SplashScreen.preventAutoHideAsync();
 
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 
-import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
 import { Platform } from "react-native";
+import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
 import { SessionLoadingScreen } from "./(app)/_layout";
 
 export default function Root() {

@@ -16,16 +16,39 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import * as Updates from "expo-updates";
 import { useState } from "react";
-import { Platform, View, useColorScheme } from "react-native";
+import { Platform, StyleSheet, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    gap: 15,
+    padding: 15,
+    paddingBottom: 130,
+  },
+  search: {
+    paddingHorizontal: 15,
+    paddingVertical: 7,
+    borderRadius: 15,
+    marginTop: -5,
+    marginBottom: 10,
+  },
+  headerButton: { flexGrow: 1, flexBasis: 0 },
+  title: { fontSize: 50, marginTop: 30 },
+  sectionContainer: {
+    borderWidth: 1,
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  sectionItem: { borderRadius: 0 },
+});
 
 function ProfileButton() {
   const { session, sessionToken } = useUser();
   const [loading, setLoading] = useState(false);
   return (
     <ListItemButton
-      style={{ flexGrow: 1, flexBasis: 0 }}
+      style={styles.headerButton}
       variant="filled"
       onPress={() => {
         if (loading) return;
@@ -68,7 +91,7 @@ function ProfileButton() {
 
 export default function Index() {
   const { signOut } = useSession();
-  const { session, sessionToken, error } = useUser();
+  const { session, error } = useUser();
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
 
@@ -80,25 +103,23 @@ export default function Index() {
   return session ? (
     <ContentWrapper>
       <ScrollView
-        contentContainerStyle={{
-          gap: 15,
-          padding: 15,
-          marginTop: insets.top + 50,
-          paddingBottom: 30,
-        }}
+        contentContainerStyle={[
+          styles.contentContainer,
+          {
+            marginTop: insets.top + 30,
+          },
+        ]}
       >
-        <Text heading style={{ fontSize: 50, marginTop: 30 }}>
+        <Text heading style={styles.title}>
           Settings
         </Text>
         <TextField
-          style={{
-            backgroundColor: theme[3],
-            paddingHorizontal: 15,
-            paddingVertical: 7,
-            borderRadius: 15,
-            marginTop: -5,
-            marginBottom: 10,
-          }}
+          style={[
+            styles.search,
+            {
+              backgroundColor: theme[3],
+            },
+          ]}
           placeholder="Search..."
         />
         <View style={{ flexDirection: "row", gap: 15 }}>
@@ -106,7 +127,7 @@ export default function Index() {
           <ListItemButton
             variant="filled"
             onPress={() => router.push("/space")}
-            style={{ flexGrow: 1, flexBasis: 0 }}
+            style={styles.headerButton}
           >
             <Avatar
               size={40}
@@ -161,16 +182,16 @@ export default function Index() {
         ].map((section, index) => (
           <View
             key={index}
-            style={{
-              borderWidth: 1,
-              borderColor: theme[3],
-              borderRadius: 20,
-              overflow: "hidden",
-            }}
+            style={[
+              styles.sectionContainer,
+              {
+                borderColor: theme[3],
+              },
+            ]}
           >
             {section.map((button) => (
               <ListItemButton
-                style={{ borderRadius: 0 }}
+                style={styles.sectionItem}
                 key={button.name}
                 {...(button.callback && { onPress: button.callback })}
               >

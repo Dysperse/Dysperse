@@ -1,5 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
+import Icon from "@/ui/Icon";
 import Skeleton from "@/ui/Skeleton";
 import { router } from "expo-router";
 import React from "react";
@@ -15,7 +16,6 @@ import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
 import Logo from "../../ui/logo";
 import { SpacesTrigger } from "./sidebar/SpacesTrigger";
-import Icon from "@/ui/Icon";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
@@ -23,29 +23,19 @@ export function NavbarProfilePicture() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <TouchableOpacity
-      onPress={() => router.push("/account")}
-      style={{
-        zIndex: 999,
-        borderWidth: breakpoints.lg ? 0 : 10,
-        borderColor: "transparent",
-        marginHorizontal: breakpoints.lg ? 0 : -10,
-        borderRadius: 999,
-      }}
-    >
-      <Skeleton rounded size={35} isLoading={Boolean(!session?.user)}>
-        {session?.user && (
-          <ProfilePicture
-            name={session.user.profile.name}
-            image={session.user.profile.picture}
-            size={35}
-            style={{
-              pointerEvents: "none",
-            }}
-          />
-        )}
-      </Skeleton>
-    </TouchableOpacity>
+    <Skeleton rounded size={35} isLoading={Boolean(!session?.user)}>
+      {session?.user && (
+        <ProfilePicture
+          onPress={() => router.push("/account")}
+          name={session.user.profile.name}
+          image={session.user.profile.picture}
+          size={35}
+          style={({ pressed }) => ({
+            transform: [{ scale: pressed ? 0.9 : 1 }],
+          })}
+        />
+      )}
+    </Skeleton>
   );
 }
 

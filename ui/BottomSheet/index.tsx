@@ -4,7 +4,7 @@ import {
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
 import { Ref, memo } from "react";
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
@@ -19,6 +19,16 @@ interface DBottomSheetProps extends BottomSheetProps {
   disableBackHandler?: boolean;
   disableEscapeHandler?: boolean;
 }
+
+const styles = StyleSheet.create({
+  background: {
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  container: {
+    marginHorizontal: "auto",
+  },
+});
 
 const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
@@ -43,16 +53,9 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       onChange={(e) => {
         if (e === -1) props.onClose();
       }}
-      backgroundStyle={{
-        backgroundColor: theme[2],
-        borderTopLeftRadius: 25,
-        borderTopRightRadius: 25,
-      }}
+      containerStyle={[styles.container, { maxWidth: props.maxWidth || 600 }]}
+      backgroundStyle={[styles.background, { backgroundColor: theme[2] }]}
       handleIndicatorStyle={{ backgroundColor: theme[5] }}
-      containerStyle={{
-        maxWidth: props.maxWidth || 600,
-        marginHorizontal: "auto",
-      }}
       {...props}
     >
       {props.disableBackHandler !== true && Platform.OS !== "web" && (

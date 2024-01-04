@@ -1,4 +1,10 @@
-import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
+import {
+  Pressable,
+  PressableProps,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
 interface DIconButtonProps extends PressableProps {
@@ -9,6 +15,14 @@ interface DIconButtonProps extends PressableProps {
     | (({ pressed, hovered }) => StyleProp<ViewStyle>);
 }
 
+const styles = StyleSheet.create({
+  base: {
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 999,
+  },
+});
 export default function IconButton(props: DIconButtonProps) {
   const theme = useColorTheme();
 
@@ -16,8 +30,8 @@ export default function IconButton(props: DIconButtonProps) {
     <Pressable
       {...props}
       style={({ pressed, hovered }: any) => [
+        styles.base,
         {
-          borderWidth: 1,
           borderColor: props.variant === "outlined" ? theme[5] : "transparent",
           width: props.size ?? 35,
           height: props.size ?? 35,
@@ -28,9 +42,6 @@ export default function IconButton(props: DIconButtonProps) {
             : props.variant === "filled"
             ? theme[3]
             : undefined,
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 999,
         },
         typeof props.style === "function"
           ? props.style({ pressed, hovered })

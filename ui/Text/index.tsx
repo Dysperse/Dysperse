@@ -1,7 +1,9 @@
+import { memo } from "react";
 import {
   Text as NText,
   Platform,
   StyleProp,
+  StyleSheet,
   TextProps,
   TextStyle,
 } from "react-native";
@@ -15,7 +17,20 @@ export interface DTextProps extends TextProps {
   heading?: boolean;
 }
 
-export default function Text(props: DTextProps) {
+const textStyles = StyleSheet.create({
+  default: {
+    fontSize: 16,
+  },
+  eyebrow: {
+    opacity: 0.6,
+    textTransform: "uppercase",
+  },
+  heading: {
+    textTransform: "uppercase",
+  },
+});
+
+function Text(props: DTextProps) {
   const theme = useColorTheme();
 
   return (
@@ -30,16 +45,16 @@ export default function Text(props: DTextProps) {
           ...(props.variant === "eyebrow" && {
             textTransform: "uppercase",
             fontFamily: `body_${props.weight || 800}`,
-            opacity: 0.6,
             color: theme[11],
           }),
-          ...(props.heading && {
-            textTransform: "uppercase",
-          }),
         },
+        props.variant === "eyebrow" && textStyles.eyebrow,
+        props.heading && textStyles.heading,
         props.textStyle,
         Array.isArray(props.style) ? [...props.style] : props.style,
       ]}
     />
   );
 }
+
+export default memo(Text);

@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
+import { memo } from "react";
 
-export default function Emoji({ size = 24, emoji, style = {} }) {
+function Emoji({ size = 24, emoji, style = {} }) {
   return (
     <Image
       style={[
@@ -14,3 +15,4 @@ export default function Emoji({ size = 24, emoji, style = {} }) {
     />
   );
 }
+export default memo(Emoji);

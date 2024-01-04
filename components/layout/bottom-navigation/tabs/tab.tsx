@@ -8,10 +8,31 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { useCallback } from "react";
-import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useTabMetadata } from "./useTabMetadata";
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    flexDirection: "row",
+    columnGap: 5,
+    borderWidth: 1,
+  },
+  text: { marginTop: -3, fontSize: 12, opacity: 0.6 },
+  closeButton: {
+    marginRight: 5,
+    backgroundColor: "transparent",
+  },
+  closeIcon: { opacity: 0.6 },
+});
 
 export function Tab({
   tab,
@@ -95,35 +116,34 @@ export function Tab({
           });
           setImmediate(handleClose);
         }}
-        style={({ pressed, hovered }: any) => ({
-          paddingHorizontal: isList
-            ? breakpoints.lg
+        style={({ pressed, hovered }: any) => [
+          styles.button,
+          {
+            paddingHorizontal: isList
+              ? breakpoints.lg
+                ? 6
+                : 13
+              : breakpoints.lg
               ? 6
-              : 13
-            : breakpoints.lg
-            ? 6
-            : 10,
-          borderRadius: breakpoints.lg ? 15 : 99,
-          height: breakpoints.lg ? 40 : 60,
-          alignItems: "center",
-          flexDirection: "row",
-          columnGap: 5,
-          borderWidth: 1,
-          backgroundColor:
-            theme[
-              params.tab === tab.id
-                ? 11
-                : pressed
-                ? 5
-                : hovered
-                ? 4
-                : breakpoints.lg
-                ? 2
-                : 3
-            ],
-          borderColor:
-            theme[params.tab === tab.id ? 11 : breakpoints.lg ? 2 : 5],
-        })}
+              : 10,
+            borderRadius: breakpoints.lg ? 15 : 99,
+            height: breakpoints.lg ? 40 : 60,
+            backgroundColor:
+              theme[
+                params.tab === tab.id
+                  ? 11
+                  : pressed
+                  ? 5
+                  : hovered
+                  ? 4
+                  : breakpoints.lg
+                  ? 2
+                  : 3
+              ],
+            borderColor:
+              theme[params.tab === tab.id ? 11 : breakpoints.lg ? 2 : 5],
+          },
+        ]}
       >
         <Icon
           size={tabData.icon === "alternate_email" ? 26 : 30}
@@ -148,13 +168,13 @@ export function Tab({
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (
             <Text
-              style={{
-                marginTop: -3,
-                fontSize: 12,
-                opacity: 0.6,
-                color: theme[params.tab === tab.id ? 3 : 11],
-                ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-              }}
+              style={[
+                styles.text,
+                {
+                  color: theme[params.tab === tab.id ? 3 : 11],
+                  ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
+                },
+              ]}
               numberOfLines={1}
             >
               {capitalizeFirstLetter(
@@ -164,31 +184,24 @@ export function Tab({
           )}
         </View>
         <IconButton
-          style={{
-            width: width > 600 ? 20 : 40,
-            height: width > 600 ? 20 : 40,
-            marginRight: 5,
-            backgroundColor: "transparent",
-            display:
-              width < 600
-                ? isList
+          style={[
+            styles.closeButton,
+            {
+              width: width > 600 ? 20 : 40,
+              height: width > 600 ? 20 : 40,
+              display:
+                width < 600
+                  ? isList
+                    ? "flex"
+                    : "none"
+                  : params.tab === tab.id
                   ? "flex"
-                  : "none"
-                : params.tab === tab.id
-                ? "flex"
-                : "none",
-          }}
-          onPress={async () => {
-            await handleDelete(tab.id);
-          }}
+                  : "none",
+            },
+          ]}
+          onPress={async () => await handleDelete(tab.id)}
         >
-          <Icon
-            size={23}
-            style={{
-              color: theme[3],
-              opacity: 0.6,
-            }}
-          >
+          <Icon size={23} style={[styles.closeIcon, { color: theme[3] }]}>
             close
           </Icon>
         </IconButton>

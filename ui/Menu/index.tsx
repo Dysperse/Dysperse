@@ -1,7 +1,6 @@
 import BottomSheet from "@/ui/BottomSheet";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { BlurView } from "expo-blur";
 import React, {
   ReactElement,
   Ref,
@@ -10,7 +9,6 @@ import React, {
   useRef,
 } from "react";
 import { View } from "react-native";
-import { addHslAlpha } from "../color";
 
 export function Menu({
   trigger,

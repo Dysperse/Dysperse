@@ -4,39 +4,9 @@ export const getSidebarItems = async (session) => {
   // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
   return [
     {
-      title: "Quick Create",
-      icon: "asterisk",
-      data: [
-        {
-          label: "Task",
-          icon: "check_circle",
-          onPress: () => console.log("Pressed"),
-        },
-        {
-          label: "Note",
-          icon: "sticky_note_2",
-          onPress: () => console.log("Pressed"),
-        },
-        {
-          label: "Item",
-          icon: "package_2",
-          onPress: () => console.log("Pressed"),
-        },
-        {
-          label: "Label",
-          icon: "label",
-          onPress: () => console.log("Pressed"),
-        },
-        {
-          label: "Collection",
-          icon: "draw_abstract",
-          onPress: () => console.log("Pressed"),
-        },
-      ],
-    },
-    {
       title: "Perspectives",
       icon: "asterisk",
+      theme: "orange",
       data: [
         {
           label: "Weeks",
@@ -94,7 +64,8 @@ export const getSidebarItems = async (session) => {
     },
     {
       title: "Collections",
-      icon: "draw_abstract",
+      icon: "layers",
+      theme: "blue",
       data: [
         {
           label: "Create",
@@ -112,6 +83,7 @@ export const getSidebarItems = async (session) => {
     {
       title: "ALL",
       icon: "airwave",
+      theme: "green",
       data: [
         {
           label: "Tasks",

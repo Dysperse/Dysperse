@@ -1,58 +1,85 @@
+import { useUser } from "@/context/useUser";
 import { Image } from "expo-image";
-import { PressableProps, StyleProp, View, ViewStyle } from "react-native";
-import { Pressable } from "react-native";
+import {
+  Pressable,
+  PressableProps,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+  useColorScheme,
+} from "react-native";
+import Icon from "../Icon";
 import Text from "../Text";
-import { useColorTheme } from "../color/theme-provider";
+import { useColor } from "../color";
 
 interface DAvatarProps extends PressableProps {
   image?: string;
   size?: number;
   viewClassName?: string;
-  style?: StyleProp<ViewStyle>;
+  style?:
+    | StyleProp<ViewStyle>
+    | (({ pressed, hovered }) => StyleProp<ViewStyle>);
+  theme?: string;
+  icon?: string;
 }
+const styles = StyleSheet.create({
+  container: {
+    borderRadius: 99,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 999,
+    position: "absolute",
+    zIndex: 2,
+  },
+  view: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export function Avatar(props: DAvatarProps) {
-  const theme = useColorTheme();
+  const { session } = useUser();
+  const theme = useColor(
+    props.theme || session?.user?.profile?.theme || "violet",
+    useColorScheme() === "dark"
+  );
+
   return (
     <Pressable
       {...props}
-      style={[
+      style={({ pressed, hovered }: any) => [
+        styles.container,
         {
-          borderRadius: 99,
           width: props.size || 30,
           height: props.size || 30,
           backgroundColor: theme[5],
         },
-        props.style,
+        typeof props.style === "function"
+          ? props.style({ pressed, hovered })
+          : props.style,
       ]}
     >
       <View
-        style={{
-          width: props.size || 30,
-          height: props.size || 30,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        style={[
+          styles.view,
+          {
+            width: props.size || 30,
+            height: props.size || 30,
+          },
+        ]}
       >
-        {props.children as any}
+        {props.children ||
+          ((<Icon style={{ color: theme[11] }}>{props.icon}</Icon>) as any)}
       </View>
-      {props.image && (
-        <Image
-          source={props.image}
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: 999,
-            position: "absolute",
-            zIndex: 2,
-          }}
-        />
-      )}
+      {props.image && <Image source={props.image} style={styles.image} />}
     </Pressable>
   );
 }
 
-export function ProfilePicture({
+export const ProfilePicture = function ProfilePicture({
   name,
   image,
   size,
@@ -62,7 +89,9 @@ export function ProfilePicture({
   name: string;
   image?: string;
   size: number;
-  style?: StyleProp<ViewStyle>;
+  style?:
+    | StyleProp<ViewStyle>
+    | (({ pressed, hovered }) => StyleProp<ViewStyle>);
   onPress?: () => void;
 }) {
   return (
@@ -78,4 +107,4 @@ export function ProfilePicture({
       </Text>
     </Avatar>
   );
-}
+};

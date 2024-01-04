@@ -258,7 +258,6 @@ export default function AppLayout() {
                         : (props: any) => <AccountNavbar {...props} />,
                       headerTransparent: true,
                       gestureResponseDistance: width,
-                      cardShadowEnabled: false,
                       gestureEnabled: true,
                       cardStyle: {
                         backgroundColor: theme[breakpoints.sm ? 2 : 1],
@@ -296,11 +295,11 @@ export default function AppLayout() {
                     <JsStack.Screen
                       name="open"
                       options={{
-          header: () => null,
-          animationEnabled: true,
-          presentation: "modal",
-          ...TransitionPresets.ModalPresentationIOS,
-          gestureResponseDistance: height
+                        header: () => null,
+                        animationEnabled: true,
+                        presentation: "modal",
+                        ...TransitionPresets.ModalPresentationIOS,
+                        gestureResponseDistance: 100,
                       }}
                     />
                     <JsStack.Screen

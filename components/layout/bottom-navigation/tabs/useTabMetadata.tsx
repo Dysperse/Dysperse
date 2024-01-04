@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 export const useTabMetadata = (slug: string) => {
   if (!slug) return { icon: "square" };
-  
+
   const startWithMatchers = {
     "/[tab]/perspectives/": {
       icon: "asterisk",
@@ -17,7 +17,7 @@ export const useTabMetadata = (slug: string) => {
       ],
     },
     "/[tab]/collections/": {
-      icon: "draw_abstract",
+      icon: "layers",
       name: () => [],
     },
     "/[tab]/all/": {

@@ -1,17 +1,17 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { useColorTheme } from "@/ui/color/theme-provider";
 
 export function TaskDrawer({ mutateList, children, id }) {
   const [open, setOpen] = useState(false);

@@ -1,7 +1,13 @@
-import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
+import {
+  Pressable,
+  PressableProps,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
+import Spinner from "../Spinner";
 import Text, { DTextProps } from "../Text";
 import { useColorTheme } from "../color/theme-provider";
-import Spinner from "../Spinner";
 
 interface DButtonProps extends PressableProps {
   buttonClassName?: string;
@@ -27,6 +33,21 @@ export function ButtonText(props: DTextProps) {
   );
 }
 
+const styles = StyleSheet.create({
+  base: {
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+  },
+  outlined: {
+    paddingHorizontal: 20,
+  },
+  loading: { opacity: 0.5, pointerEvents: "none" },
+});
+
 export function Button(props: DButtonProps) {
   const variant = props.variant || "text";
   const theme = useColorTheme();
@@ -35,19 +56,14 @@ export function Button(props: DButtonProps) {
     <Pressable
       {...props}
       style={({ hovered, pressed }: any) => [
+        styles.base,
+        props.isLoading && styles.loading,
+        props.variant === "outlined" && styles.outlined,
         {
-          flexDirection: "row",
-          alignItems: "center",
-          borderWidth: 1,
-          borderRadius: 999,
-          paddingHorizontal: 10,
           height: props.dense ? 30 : 40,
           minWidth: props.dense ? 50 : 70,
-          ...(props.isLoading && { opacity: 0.5, pointerEvents: "none" }),
-          justifyContent: "center",
           ...(variant === "outlined"
             ? {
-                paddingHorizontal: 20,
                 backgroundColor: pressed
                   ? theme[5]
                   : hovered
