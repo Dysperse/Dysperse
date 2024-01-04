@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { NavbarProfilePicture } from "../account-navbar";
 import { OpenTabsList } from "../bottom-navigation/tabs/carousel";
-import { useCommandPalette } from "../command-palette";
 import { SpacesTrigger } from "./SpacesTrigger";
 
 export const styles = StyleSheet.create({
@@ -37,7 +36,6 @@ export const styles = StyleSheet.create({
 
 export function Sidebar() {
   const theme = useColorTheme();
-  const { openPalette } = useCommandPalette();
   const { width, height } = useWindowDimensions();
   const pathname = usePathname();
 
