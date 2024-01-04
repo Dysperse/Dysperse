@@ -135,6 +135,12 @@ function localStorageProvider() {
     localStorage.setItem("app-cache", appCache);
   });
 
+  // On window change focus, we write back all the data into `localStorage`.
+  window.addEventListener("blur", () => {
+    const appCache = JSON.stringify(Array.from(map.entries()));
+    localStorage.setItem("app-cache", appCache);
+  });
+
   // We still use the map for write & read for performance.
   return map;
 }

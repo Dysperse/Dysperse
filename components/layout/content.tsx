@@ -1,6 +1,7 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { usePathname } from "expo-router";
-import { StyleSheet, View, ViewProps, useWindowDimensions } from "react-native";
+import { StyleSheet, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getBottomNavigationHeight } from "./bottom-navigation";
 
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
 export function ContentWrapper(props: ContentWrapperProps) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
 
   return props.enabled !== false ? (
@@ -27,8 +28,10 @@ export function ContentWrapper(props: ContentWrapperProps) {
         {
           marginTop: insets.top,
           backgroundColor: theme[1],
-          borderWidth: width > 600 ? 1 : 0,
-          paddingBottom: getBottomNavigationHeight(pathname),
+          borderWidth: breakpoints.lg ? 1 : 0,
+          paddingBottom: breakpoints.lg
+            ? 0
+            : getBottomNavigationHeight(pathname),
           borderColor: theme[6],
         },
       ]}
