@@ -29,7 +29,7 @@ function Agenda() {
   const params = useLocalSearchParams();
 
   const { type, start, end } = useAgendaContext();
-  const { data, mutate, error, isValidating } = useSWR([
+  const { data, mutate, error, isLoading, isValidating } = useSWR([
     "space/perspectives/agenda",
     {
       start: start.toISOString(),
@@ -38,9 +38,12 @@ function Agenda() {
     },
   ]);
 
-  const column = data?.find((col) =>
-    dayjs(params.start as any).isBetween(col.start, col.end, null, "[]")
-  );
+  const column =
+    data && !error && !isLoading
+      ? data.find((col) =>
+          dayjs(params.start as any).isBetween(col.start, col.end, null, "[]")
+        )
+      : null;
 
   const agendaFallback = (
     <View
