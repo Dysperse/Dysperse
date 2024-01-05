@@ -11,9 +11,14 @@ import { OpenTabsList } from "./tabs/carousel";
 import { TabDrawer } from "./tabs/drawer";
 
 export const getBottomNavigationHeight = (pathname) => {
-  const hidden = ["/settings", "/tabs", "/open", "/space", "/friends"].find(
-    (i) => pathname.includes(i)
-  );
+  const hidden = [
+    "/settings",
+    "/clock",
+    "/tabs",
+    "/open",
+    "/space",
+    "/friends",
+  ].find((i) => pathname.includes(i));
 
   return hidden
     ? 0

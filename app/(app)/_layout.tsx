@@ -180,6 +180,15 @@ export default function AppLayout() {
                     }}
                   />
                   <JsStack.Screen
+                    name="clock"
+                    options={{
+                      ...TransitionPresets.SlideFromRightIOS,
+                      gestureResponseDistance: width,
+                      cardStyleInterpolator: forHorizontalIOS,
+                      cardStyle: { marginBottom: 0 },
+                    }}
+                  />
+                  <JsStack.Screen
                     name="open"
                     options={{
                       presentation: "modal",

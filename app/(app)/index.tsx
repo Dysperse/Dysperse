@@ -74,9 +74,11 @@ function Greeting() {
 
 function TodaysDate() {
   const theme = useColorTheme();
+  const handlePress = () => router.push("/clock");
 
   return (
     <Pressable
+      onPress={handlePress}
       style={({ pressed, hovered }: any) => [
         styles.card,
         {
@@ -394,7 +396,6 @@ function JumpBackIn() {
 
 export default function Index() {
   const { width } = useWindowDimensions();
-  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
