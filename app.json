@@ -55,6 +55,7 @@
       "display": "standalone"
     },
     "plugins": [
+      "sentry-expo",
       "expo-router",
       [
         "expo-location",
