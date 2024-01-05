@@ -13,13 +13,28 @@
       "resizeMode": "cover",
       "backgroundColor": "#000000"
     },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "dysperse",
+            "project": "new-dashboard"
+          }
+        }
+      ]
+    },
     "experiments": {
       "tsconfigPaths": true
     },
     "packagerOpts": {
-      "sourceExts": ["cjs"]
+      "sourceExts": [
+        "cjs"
+      ]
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -46,7 +61,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
-      ]
+      ],
+      "sentry-expo"
     ],
     "extra": {
       "router": {

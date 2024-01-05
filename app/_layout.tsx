@@ -15,6 +15,7 @@ import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import "react-native-gesture-handler";
+import * as Sentry from "sentry-expo";
 import { SessionProvider, useSession } from "../context/AuthProvider";
 
 if (Platform.OS === "android") {
@@ -23,6 +24,12 @@ if (Platform.OS === "android") {
   NavigationBar.setBackgroundColorAsync("transparent");
   NavigationBar.setBorderColorAsync("transparent");
 }
+
+Sentry.init({
+  dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
+  enableInExpoDevelopment: true,
+  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 SplashScreen.preventAutoHideAsync();
 
