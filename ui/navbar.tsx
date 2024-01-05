@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Text from "@/ui/Text";
 import { StackHeaderProps } from "@react-navigation/stack";
 import { router } from "expo-router";
@@ -7,7 +8,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
 import IconButton from "./IconButton";
 import { useColorTheme } from "./color/theme-provider";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 interface NavbarProps extends StackHeaderProps {
   icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
@@ -53,17 +53,17 @@ export default function Navbar(props: any) {
         >
           <Icon>{props.icon || "west"}</Icon>
         </IconButton>
-        <Text style={{ fontFamily: "body_700", paddingLeft: 5 }}>
+        <Text
+          weight={300}
+          style={{
+            textAlign: "center",
+            flex: 1,
+            paddingRight: 55,
+          }}
+        >
           {props.options.headerTitle as string}
         </Text>
       </View>
-      <View
-        style={{
-          height: 1.5,
-          opacity: props.options.headerTitle ? 1 : 0,
-          backgroundColor: theme[5],
-        }}
-      />
     </>
   );
 }

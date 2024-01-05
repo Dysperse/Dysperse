@@ -1,12 +1,8 @@
-import { StyleProp, TextStyle } from "react-native";
-import { TextInputProps } from "react-native";
-import { useColorTheme } from "../color/theme-provider";
-import { TextInput } from "react-native-gesture-handler";
-import {
-  BottomSheetTextInput,
-  useBottomSheetInternal,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Ref } from "react";
+import { StyleProp, TextInputProps, TextStyle } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import { useColorTheme } from "../color/theme-provider";
 
 interface DTextInputProps extends TextInputProps {
   style?: StyleProp<TextStyle>;
@@ -20,6 +16,21 @@ export default function TextField(props: DTextInputProps) {
   const Component = props.bottomSheet ? BottomSheetTextInput : TextInput;
 
   return (
+    // <View style={{ position: "relative" }}>
+    // {props.placeholder && (
+    //   <Text
+    //     style={{
+    //       position: "absolute",
+    //       zIndex: 1,
+    //       top: -10,
+    //       left: 15,
+    //       color: theme[8],
+    //     }}
+    //     weight={700}
+    //   >
+    //     {props.placeholder}
+    //   </Text>
+    // )}
     <Component
       placeholderTextColor={theme[8]}
       cursorColor={theme[8]}
@@ -43,5 +54,6 @@ export default function TextField(props: DTextInputProps) {
           : props.style,
       ]}
     />
+    // </View>
   );
 }

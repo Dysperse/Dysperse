@@ -93,13 +93,13 @@ export function SpaceButton({ handleClose, item }: any) {
 
   return (
     <ListItemButton
+      variant="filled"
       onPress={handleSpacePress}
-      style={({ pressed, hovered }: any) => ({
+      style={{
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-      })}
+      }}
     >
       <View
         style={{

@@ -1,7 +1,6 @@
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
-import NavigationBar from "@/ui/NavigationBar";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,7 +19,6 @@ export default function Page() {
         colors={[theme[2], theme[1]]}
         style={[StyleSheet.absoluteFill]}
       />
-      <NavigationBar color={theme[1]} />
       <Text heading style={authStyles.title}>
         We're here to{" "}
         <Text heading style={[authStyles.title, { color: theme[11] }]}>

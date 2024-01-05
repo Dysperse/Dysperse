@@ -1,34 +1,35 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { Column } from "@/components/perspectives/agenda/Column";
 import { PerspectivesNavbar } from "@/components/perspectives/agenda/Navbar";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Skeleton from "@/ui/Skeleton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   FlatList,
-  Platform,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 
 function Agenda() {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
+  const { bottom } = useSafeAreaInsets();
   const flatListRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
   const params = useLocalSearchParams();
 
   const { type, start, end } = useAgendaContext();
-  const { data, mutate, error } = useSWR([
+  const { data, mutate, error, isValidating } = useSWR([
     "space/perspectives/agenda",
     {
       start: start.toISOString(),
@@ -96,6 +97,7 @@ function Agenda() {
     return (
       <ContentWrapper>
         <PerspectivesNavbar
+          isLoading={isValidating}
           error={Boolean(error)}
           currentDateStart={column?.start}
           currentDateEnd={column?.end}
@@ -135,6 +137,7 @@ function Agenda() {
   return (
     <View style={{ flex: 1 }}>
       <PerspectivesNavbar
+        isLoading={isValidating}
         error={Boolean(error)}
         currentDateStart={column?.start}
         currentDateEnd={column?.end}

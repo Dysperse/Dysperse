@@ -5,7 +5,6 @@ import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
-import { router } from "expo-router";
 import React, { cloneElement, memo, useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -23,7 +22,7 @@ const styles = StyleSheet.create({
   },
   list: { marginTop: 15 },
   header: {
-    gap: 10,
+    gap: 20,
     paddingTop: 10,
     flexDirection: "row",
     alignItems: "center",
@@ -57,15 +56,12 @@ export const TabDrawer = memo(function TabDrawer({ children }: any) {
         snapPoints={["50%", "90%"]}
       >
         <View style={styles.header}>
-          <IconButton onPress={handleClose} variant="filled">
-            <Icon>expand_more</Icon>
+          <IconButton onPress={handleClose} variant="outlined" size={55}>
+            <Icon>close</Icon>
           </IconButton>
           <Text style={styles.headerText} weight={700}>
             Tabs
           </Text>
-          <IconButton variant="filled" onPress={() => router.push("/open")}>
-            <Icon>add</Icon>
-          </IconButton>
         </View>
         {data ? (
           <FlatListComponent

@@ -9,7 +9,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-screen.png",
       "resizeMode": "cover",
       "backgroundColor": "#000000"
     },
@@ -26,7 +26,7 @@
     "android": {
       "splash": {
         "resizeMode": "cover",
-        "image": "./assets/splash.png",
+        "image": "./assets/splash-screen.png",
         "backgroundColor": "#000000"
       },
       "softwareKeyboardLayoutMode": "pan",

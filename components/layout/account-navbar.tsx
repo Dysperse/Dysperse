@@ -26,7 +26,7 @@ export function NavbarProfilePicture() {
     <Skeleton rounded size={35} isLoading={Boolean(!session?.user)}>
       {session?.user && (
         <ProfilePicture
-          onPress={() => router.push("/account")}
+          onPress={() => router.push("/settings")}
           name={session.user.profile.name}
           image={session.user.profile.picture}
           size={35}

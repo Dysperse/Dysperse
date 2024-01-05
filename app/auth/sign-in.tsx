@@ -1,22 +1,19 @@
 import { Button, ButtonText } from "@/ui/Button";
-import NavigationBar from "@/ui/NavigationBar";
+import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
 import Turnstile from "../../ui/turnstile";
 import { authStyles } from "./authStyles";
-import Icon from "@/ui/Icon";
-import Chip from "@/ui/Chip";
-import IconButton from "@/ui/IconButton";
-import { ScrollView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
   title: { fontSize: 55, width: "100%", lineHeight: 55 },
@@ -90,7 +87,6 @@ export default function SignIn() {
 
   return (
     <View style={{ backgroundColor: theme[1], flex: 1 }}>
-      <NavigationBar color={theme[1]} />
       <IconButton variant="filled" onPress={handleBack} style={{ margin: 20 }}>
         <Icon>close</Icon>
       </IconButton>

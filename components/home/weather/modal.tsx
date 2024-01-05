@@ -1,4 +1,3 @@
-import React from "react";
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
@@ -6,19 +5,10 @@ import Text from "@/ui/Text";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import * as NavigationBar from "expo-navigation-bar";
-import { cloneElement, useCallback, useMemo, useRef } from "react";
-import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-  useColorScheme,
-  useWindowDimensions,
-} from "react-native";
+import React, { cloneElement, useCallback, useMemo, useRef } from "react";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import airQuality from "./airQuality.json";
-import { useColorTheme } from "@/ui/color/theme-provider";
 
 const getAirQualityInfo = (index) => {
   const result = airQuality.find(
@@ -75,26 +65,12 @@ export function WeatherModal({
   );
 
   const hour = useMemo(() => dayjs().hour(), []);
-  const theme = useColorTheme();
-  const scheme = useColorScheme();
 
   // callbacks
-  const handleOpen = useCallback(() => {
-    ref.current?.present();
-    if (Platform.OS === "android") {
-      NavigationBar.setButtonStyleAsync("light");
-      NavigationBar.setBackgroundColorAsync(gradient[1]);
-      NavigationBar.setBorderColorAsync(gradient[1]);
-    }
-  }, [gradient]);
+  const handleOpen = useCallback(() => ref.current?.present(), []);
 
   const handleClose = useCallback(() => {
     ref.current?.close();
-    if (Platform.OS === "android") {
-      NavigationBar.setButtonStyleAsync(scheme == "dark" ? "light" : "dark");
-      NavigationBar.setBackgroundColorAsync(theme[1]);
-      NavigationBar.setBorderColorAsync(theme[1]);
-    }
   }, []);
 
   const trigger = cloneElement(children, { onPress: handleOpen });

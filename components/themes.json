@@ -1,0 +1,157 @@
+{
+  "tomato": {
+    "key": 0,
+    "name": "Flaming Ruby",
+    "description": "A sizzling shade reminiscent of a blazing gem."
+  },
+  "red": {
+    "key": 1,
+    "name": "Ember Glow",
+    "description": "Radiating warmth and intensity like a burning fire."
+  },
+  "crimson": {
+    "key": 2,
+    "name": "Scarlet Tempest",
+    "description": "A stormy hue that embodies passionate fervor."
+  },
+  "ruby": {
+    "key": 3,
+    "name": "Crimson Glow",
+    "description": "Captures the fiery intensity of a ruby gemstone, radiating passion and allure."
+  },
+  "jade": {
+    "key": 4,
+    "name": "Iris Dreamscapes",
+    "description": "Embodies the ethereal beauty of iris flowers, offering a medley of purples and blues that evoke a sense of mystery and wonder."
+  },
+  "iris": {
+    "key": 5,
+    "name": "Tranquil Jade Oasis",
+    "description": "Soothing blend of cool greens and blues, reminiscent of precious jade."
+  },
+  "pink": {
+    "key": 6,
+    "name": "Enchanting Blush",
+    "description": "A captivating color that evokes tender feelings."
+  },
+  "plum": {
+    "key": 7,
+    "name": "Velvet Twilight",
+    "description": "Smooth and luxurious, like the dusk sky."
+  },
+  "purple": {
+    "key": 8,
+    "name": "Regal Majesty",
+    "description": "An imperial shade, exuding power and grandeur."
+  },
+  "violet": {
+    "key": 9,
+    "name": "Mystic Orchid",
+    "description": "A magical tone, invoking the allure of rare flowers."
+  },
+  "indigo": {
+    "key": 10,
+    "name": "Nightfall Serenade",
+    "description": "Deep and mysterious, echoing the melody of the darkening sky."
+  },
+  "blue": {
+    "key": 11,
+    "name": "Sapphire Cascade",
+    "description": "Flowing like a cascade of precious blue gemstones."
+  },
+  "cyan": {
+    "key": 12,
+    "name": "Aqua Whisper",
+    "description": "Whispering tranquility, as gentle as a serene watercolor."
+  },
+  "teal": {
+    "key": 13,
+    "name": "Turquoise Oasis",
+    "description": "A refreshing oasis of greenish-blue, calming like pristine waters."
+  },
+  "green": {
+    "key": 14,
+    "name": "Emerald Eden",
+    "description": "A lush, vivid hue resembling the beauty of a mythical paradise."
+  },
+  "grass": {
+    "key": 15,
+    "name": "Verdant Embrace",
+    "description": "An embrace of vibrant green, reminiscent of lush, sun-kissed meadows."
+  },
+  "orange": {
+    "key": 16,
+    "name": "Radiant Ember",
+    "description": "Fiery and full of life, like the glow of a burning sun."
+  },
+  "brown": {
+    "key": 17,
+    "name": "Cocoa Essence",
+    "description": "Rich and comforting, akin to the aroma of cocoa."
+  },
+  "sky": {
+    "key": 18,
+    "name": "Celestial Canopy",
+    "description": "The vast expanse above, painted in hues of boundless wonder."
+  },
+  "mint": {
+    "key": 19,
+    "name": "Frosted Jade",
+    "description": "A cool and refreshing tone, akin to frosted precious jade."
+  },
+  "lime": {
+    "key": 20,
+    "name": "Sour Citron",
+    "description": "Citrusy and vibrant, like the zest of a ripe lime."
+  },
+  "yellow": {
+    "key": 21,
+    "name": "Golden Glimmer",
+    "description": "Glimmering with the brilliance of precious gold."
+  },
+  "amber": {
+    "key": 22,
+    "name": "Honeyed Ember",
+    "description": "Warm and amber-like, reminiscent of sweet golden honey."
+  },
+  "gray": {
+    "key": 23,
+    "name": "Misty Moonstone",
+    "description": "Ethereal and mysterious, like a moonstone veiled in mist."
+  },
+  "mauve": {
+    "key": 24,
+    "name": "Velvet Haze",
+    "description": "A soft and luxurious hue, enveloping like a velvety mist."
+  },
+  "slate": {
+    "key": 25,
+    "name": "Stormy Dusk",
+    "description": "A dusk-inspired shade, echoing the drama of dark stormy skies."
+  },
+  "sage": {
+    "key": 26,
+    "name": "Tranquil Verdigris",
+    "description": "Calming and serene, like the patina of aged copper."
+  },
+  "olive": {
+    "key": 27,
+    "name": "Ancient Olive",
+    "description": "A color with an age-old charm, reminiscent of ancient treasures."
+  },
+  "sand": {
+    "key": 28,
+    "name": "Golden Sahara",
+    "description": "The golden desert sands, shimmering in the light of the setting sun."
+  },
+  "bronze": {
+    "key": 29,
+    "name": "Burnished Bronze",
+    "description": "A warm and polished hue, reminiscent of ancient bronze artifacts."
+  },
+  "gold": {
+    "key": 30,
+    "name": "Gilded Euphoria",
+    "description": "Exuding pure euphoria, akin to the brilliance of gilded gold."
+  }
+}

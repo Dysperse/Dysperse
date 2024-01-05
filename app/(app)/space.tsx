@@ -1,19 +1,17 @@
-import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
-import Text from "@/ui/Text";
-import useSWR from "swr";
 import { ProfilePicture } from "@/ui/Avatar";
-import Chip from "@/ui/Chip";
 import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { cloneElement } from "react";
 import {
-  ActivityIndicator,
   Platform,
   ScrollView,
   StyleSheet,
@@ -22,12 +20,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { BlurView } from "expo-blur";
-import { useSession } from "@/context/AuthProvider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import Spinner from "@/ui/Spinner";
+import useSWR from "swr";
 
 const spaceStyles = StyleSheet.create({
   button: {
@@ -106,10 +99,7 @@ function StorageTrigger({ children }) {
 
 function SpacePage({ space }: any) {
   const theme = useColor(space.color, useColorScheme() === "dark");
-  const insets = useSafeAreaInsets();
-  const { session } = useUser();
   const { height } = useWindowDimensions();
-  const { top } = useSafeAreaInsets();
 
   const divider = (
     <View style={{ paddingHorizontal: 20 }}>
@@ -118,93 +108,95 @@ function SpacePage({ space }: any) {
   );
 
   return (
-    <ScrollView contentContainerStyle={{ height }}>
-      {Platform.OS === "ios" && (
-        <View
+    <ColorThemeProvider theme={theme}>
+      <ScrollView contentContainerStyle={{ height }}>
+        {Platform.OS === "ios" && (
+          <View
+            style={{
+              backgroundColor: theme[5],
+              height,
+              position: "absolute",
+              top: -height,
+              left: 0,
+              right: 0,
+            }}
+          />
+        )}
+        <LinearGradient
+          colors={[theme[4], theme[2], theme[3]]}
+          start={[0, 0]}
+          end={[1, 1]}
           style={{
-            backgroundColor: theme[5],
-            height,
-            position: "absolute",
-            top: -height,
-            left: 0,
-            right: 0,
-          }}
-        />
-      )}
-      <LinearGradient
-        colors={[theme[4], theme[2], theme[3]]}
-        start={[0, 0]}
-        end={[1, 1]}
-        style={{
-          borderRadius: 10,
-          padding: 20,
-        }}
-      >
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <IconButton
-            onPress={() => router.back()}
-            size={55}
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-          >
-            <Icon size={26}>close</Icon>
-          </IconButton>
-          <View style={{ flexGrow: 1 }} />
-          <IconButton
-            size={55}
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-          >
-            <Icon size={26}>edit</Icon>
-          </IconButton>
-          <IconButton
-            size={55}
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-          >
-            <Icon size={26}>history</Icon>
-          </IconButton>
-          <IconButton
-            size={55}
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-          >
-            <Icon size={26}>more_horiz</Icon>
-          </IconButton>
-        </View>
-        <Text
-          heading
-          style={{
-            fontSize: 50,
-            marginVertical: 50,
-            marginTop: 60,
-            textAlign: "center",
+            borderRadius: 10,
+            padding: 20,
           }}
         >
-          {space.name}
-        </Text>
-      </LinearGradient>
-      <View style={{ backgroundColor: theme[1], flex: 1 }}>
-        <MembersTrigger space={space} />
-        {divider}
-        <StorageTrigger>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <IconButton
+              onPress={() => router.back()}
+              size={55}
+              style={{ borderWidth: 1, borderColor: theme[6] }}
+            >
+              <Icon size={26}>close</Icon>
+            </IconButton>
+            <View style={{ flexGrow: 1 }} />
+            <IconButton
+              size={55}
+              style={{ borderWidth: 1, borderColor: theme[6] }}
+            >
+              <Icon size={26}>edit</Icon>
+            </IconButton>
+            <IconButton
+              size={55}
+              style={{ borderWidth: 1, borderColor: theme[6] }}
+            >
+              <Icon size={26}>history</Icon>
+            </IconButton>
+            <IconButton
+              size={55}
+              style={{ borderWidth: 1, borderColor: theme[6] }}
+            >
+              <Icon size={26}>more_horiz</Icon>
+            </IconButton>
+          </View>
+          <Text
+            heading
+            style={{
+              fontSize: 50,
+              marginVertical: 50,
+              marginTop: 60,
+              textAlign: "center",
+            }}
+          >
+            {space.name}
+          </Text>
+        </LinearGradient>
+        <View style={{ backgroundColor: theme[1], flex: 1 }}>
+          <MembersTrigger space={space} />
+          {divider}
+          <StorageTrigger>
+            <TouchableOpacity style={spaceStyles.button}>
+              <View style={spaceStyles.buttonContent}>
+                <Text variant="eyebrow" style={{ marginBottom: 10 }}>
+                  Storage
+                </Text>
+                <ProgressBar progress={0.4} height={10} />
+                <Text style={{ opacity: 0.6, marginTop: 4 }}>40% used</Text>
+              </View>
+              <Icon>arrow_forward_ios</Icon>
+            </TouchableOpacity>
+          </StorageTrigger>
+          {divider}
           <TouchableOpacity style={spaceStyles.button}>
             <View style={spaceStyles.buttonContent}>
-              <Text variant="eyebrow" style={{ marginBottom: 10 }}>
-                Storage
-              </Text>
-              <ProgressBar progress={0.4} height={10} />
-              <Text style={{ opacity: 0.6, marginTop: 4 }}>40% used</Text>
+              <Text variant="eyebrow">Integrations</Text>
+              <Text style={{ opacity: 0.6 }}>Coming soon!</Text>
             </View>
             <Icon>arrow_forward_ios</Icon>
           </TouchableOpacity>
-        </StorageTrigger>
-        {divider}
-        <TouchableOpacity style={spaceStyles.button}>
-          <View style={spaceStyles.buttonContent}>
-            <Text variant="eyebrow">Integrations</Text>
-            <Text style={{ opacity: 0.6 }}>Coming soon!</Text>
-          </View>
-          <Icon>arrow_forward_ios</Icon>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </ColorThemeProvider>
   );
 }
 

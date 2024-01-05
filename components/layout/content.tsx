@@ -26,7 +26,7 @@ export function ContentWrapper(props: ContentWrapperProps) {
       style={[
         styles.container,
         {
-          marginTop: insets.top,
+          marginTop: breakpoints.lg ? insets.top : insets.top + 64,
           backgroundColor: theme[1],
           borderWidth: breakpoints.lg ? 1 : 0,
           paddingBottom: breakpoints.lg

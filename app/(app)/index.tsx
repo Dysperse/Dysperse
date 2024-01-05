@@ -9,7 +9,6 @@ import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import ListItemText from "@/ui/ListItemText";
-import NavigationBar from "@/ui/NavigationBar";
 import Skeleton from "@/ui/Skeleton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -400,7 +399,6 @@ export default function Index() {
 
   return (
     <ContentWrapper>
-      <NavigationBar color={theme[1]} />
       <ScrollView
         scrollEnabled={width < 600}
         style={Platform.OS === "web" ? { height: 0 } : undefined}
@@ -415,7 +413,7 @@ export default function Index() {
           }),
         }}
       >
-        <View style={{ flex: 1.3, paddingTop: breakpoints.lg ? 0 : 50 }}>
+        <View style={{ flex: 1.3 }}>
           <Greeting />
           {!breakpoints.lg && <JumpBackIn />}
           <Text variant="eyebrow">Today's rundown</Text>

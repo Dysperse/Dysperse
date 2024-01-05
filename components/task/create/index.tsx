@@ -22,13 +22,7 @@ import {
 import dayjs, { Dayjs } from "dayjs";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Keyboard,
-  Platform,
-  Pressable,
-  View,
-  useColorScheme,
-} from "react-native";
+import { Platform, Pressable, View, useColorScheme } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -405,8 +399,12 @@ export default function CreateTask({
               <ButtonText style={{ color: theme[10] }}>Cancel</ButtonText>
             </TouchableOpacity>
             <Chip
-              style={{ marginLeft: "auto" }}
-              icon={<Icon>north</Icon>}
+              style={{ marginLeft: "auto", backgroundColor: theme[5] }}
+              icon={
+                <Icon bold style={{ color: theme[11] }}>
+                  north
+                </Icon>
+              }
               onPress={handleSubmitButtonClick}
             />
           </View>

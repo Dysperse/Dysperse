@@ -6,12 +6,13 @@ import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
 import React, { memo } from "react";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OpenTabsList } from "./tabs/carousel";
 import { TabDrawer } from "./tabs/drawer";
 
 export const getBottomNavigationHeight = (pathname) => {
-  const hidden = ["/account", "/tabs", "/open", "/space", "/friends"].includes(
-    pathname
+  const hidden = ["/settings", "/tabs", "/open", "/space", "/friends"].find(
+    (i) => pathname.includes(i)
   );
 
   return hidden
@@ -27,6 +28,7 @@ function BottomNavigation() {
   const pathname = usePathname();
   const height = getBottomNavigationHeight(pathname);
   const theme = useColorTheme();
+  const { bottom } = useSafeAreaInsets();
 
   return (
     <View
@@ -39,7 +41,8 @@ function BottomNavigation() {
         borderTopWidth: 1,
         marginBottom: -1,
         position: "absolute",
-        bottom: 0,
+        bottom,
+        opacity: height === 0 ? 0 : 1,
       }}
     >
       <View>
@@ -55,7 +58,7 @@ function BottomNavigation() {
         >
           <TouchableOpacity
             onPress={() => {
-              router.push("/");
+              router.replace("/");
             }}
             style={{ padding: 30, marginLeft: -30 }}
           >

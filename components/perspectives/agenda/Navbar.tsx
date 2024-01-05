@@ -2,6 +2,7 @@ import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context"
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
@@ -25,6 +26,7 @@ export function PerspectivesNavbar({
   currentDateStart,
   currentDateEnd,
   error,
+  isLoading,
 }: any) {
   const { start, type } = useAgendaContext();
 
@@ -94,7 +96,13 @@ export function PerspectivesNavbar({
               {dayjs(start).format(titleFormat).split("• ")?.[1]}
             </Text>
           </View>
-          <Icon style={{ color: theme[12] }}>expand_more</Icon>
+          {isLoading ? (
+            <View style={{ opacity: 0.5 }}>
+              <Spinner color={theme[12]} size={20} />
+            </View>
+          ) : (
+            <Icon style={{ color: theme[12] }}>expand_more</Icon>
+          )}
         </TouchableOpacity>
         {error && (
           <Chip
