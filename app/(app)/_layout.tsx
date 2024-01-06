@@ -122,7 +122,7 @@ export default function AppLayout() {
                   ...DefaultTheme,
                   colors: {
                     ...DefaultTheme.colors,
-                    background: theme[1],
+                    background: theme[breakpoints.sm ? 2 : 1],
                   },
                 }}
               >
