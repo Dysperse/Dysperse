@@ -6,7 +6,7 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { router, useGlobalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import React, { useCallback } from "react";
 import {
   Platform,
@@ -34,23 +34,23 @@ const styles = StyleSheet.create({
   closeIcon: { opacity: 0.6 },
 });
 
-export function Tab({
+function Tab({
   tab,
   disabled = false,
   isList = false,
+  selected = false,
   handleClose = () => {},
   onLongPress = () => {},
 }: {
   tab: any;
   disabled?: boolean;
   isList?: boolean;
+  selected?: boolean;
   handleClose?: () => void;
   onLongPress?: () => void;
 }) {
-  const params = useGlobalSearchParams();
   const theme = useColorTheme();
   const tabData = useTabMetadata(tab.slug);
-
   const { width } = useWindowDimensions();
   const { sessionToken } = useUser();
   const { data, error, mutate } = useSWR(["user/tabs"]);
@@ -130,7 +130,7 @@ export function Tab({
             height: breakpoints.lg ? 40 : 60,
             backgroundColor:
               theme[
-                params.tab === tab.id
+                selected
                   ? 11
                   : pressed
                   ? 5
@@ -140,15 +140,14 @@ export function Tab({
                   ? 2
                   : 3
               ],
-            borderColor:
-              theme[params.tab === tab.id ? 11 : breakpoints.lg ? 2 : 5],
+            borderColor: theme[selected ? 11 : breakpoints.lg ? 2 : 5],
           },
         ]}
       >
         <Icon
           size={tabData.icon === "alternate_email" ? 26 : 30}
           style={{
-            ...(params.tab === tab.id && {
+            ...(selected && {
               color: theme[3],
             }),
           }}
@@ -158,7 +157,7 @@ export function Tab({
         <View style={{ flex: 1 }}>
           <Text
             style={{
-              color: theme[params.tab === tab.id ? 3 : 11],
+              color: theme[selected ? 3 : 11],
               ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
             }}
             weight={500}
@@ -171,7 +170,7 @@ export function Tab({
               style={[
                 styles.text,
                 {
-                  color: theme[params.tab === tab.id ? 3 : 11],
+                  color: theme[selected ? 3 : 11],
                   ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
                 },
               ]}
@@ -194,7 +193,7 @@ export function Tab({
                   ? isList
                     ? "flex"
                     : "none"
-                  : params.tab === tab.id
+                  : selected
                   ? "flex"
                   : "none",
             },
@@ -209,3 +208,5 @@ export function Tab({
     </View>
   );
 }
+
+export default React.memo(Tab);

@@ -12,9 +12,34 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
 import React from "react";
-import { RefreshControl, View, useWindowDimensions } from "react-native";
+import {
+  RefreshControl,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    paddingBottom: 5,
+    gap: 15,
+  },
+  empty: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    minHeight: 300,
+  },
+  emptyIcon: { transform: [{ rotate: "-45deg" }] },
+  emptyIconContainer: {
+    borderRadius: 30,
+    marginBottom: 20,
+    transform: [{ rotate: "45deg" }],
+  },
+});
 
 const renderColumnItem = ({ item, width, mutate, column }: any) => {
   const Container = ({ children }: { children: React.ReactNode }) => (
@@ -114,7 +139,7 @@ export function Column({
         minHeight: 5,
       }}
     >
-      {width > 600 && <Header start={column.start} end={column.end} />}
+      {breakpoints.lg && <Header start={column.start} end={column.end} />}
       <FlashList
         refreshControl={
           <RefreshControl
@@ -128,17 +153,13 @@ export function Column({
         ListHeaderComponent={
           <>
             <View
-              style={{
-                flexDirection: "row",
-                paddingBottom: 5,
-                gap: 15,
-                paddingHorizontal: width > 600 ? 0 : 15,
-              }}
+              style={[
+                styles.header,
+                { paddingHorizontal: breakpoints.lg ? 0 : 15 },
+              ]}
             >
               <CreateTask
-                defaultValues={{
-                  date: dayjs(column.start),
-                }}
+                defaultValues={{ date: dayjs(column.start) }}
                 mutate={() => mutate()}
               >
                 <Button variant="filled" style={{ flex: 1 }}>
@@ -160,24 +181,12 @@ export function Column({
           paddingBottom: getBottomNavigationHeight(pathname),
         }}
         ListEmptyComponent={
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              flex: 1,
-              minHeight: 300,
-            }}
-          >
+          <View style={styles.empty}>
             <Avatar
               size={90}
-              style={{
-                backgroundColor: theme[3],
-                borderRadius: 30,
-                marginBottom: 20,
-                transform: [{ rotate: "45deg" }],
-              }}
+              style={[styles.emptyIconContainer, { backgroundColor: theme[3] }]}
             >
-              <View style={{ transform: [{ rotate: "-45deg" }] }}>
+              <View style={styles.emptyIcon}>
                 <Emoji emoji="1f92b" size={40} />
               </View>
             </Avatar>

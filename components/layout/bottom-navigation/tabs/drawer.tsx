@@ -9,7 +9,7 @@ import React, { cloneElement, memo, useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
-import { Tab } from "./tab";
+import Tab from "./tab";
 
 const styles = StyleSheet.create({
   helperText: {

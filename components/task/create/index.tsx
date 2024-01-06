@@ -20,7 +20,13 @@ import {
   TouchableOpacity,
 } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, Pressable, View, useColorScheme } from "react-native";
 import Animated, {
@@ -69,14 +75,12 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
 }
 
 export default function CreateTask({
-  showClose = false,
   children,
   defaultValues = {
     date: dayjs().utc(),
   },
   mutate,
 }: {
-  showClose?: boolean;
   children: any;
   defaultValues?: {
     date?: Dayjs;
@@ -162,7 +166,10 @@ export default function CreateTask({
   };
 
   const nameRef = useRef(null);
-  const trigger = cloneElement(children, { onPress: handleOpen });
+  const trigger = useMemo(
+    () => cloneElement(children, { onPress: handleOpen }),
+    [handleOpen]
+  );
   const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
 
   const rotate = useSharedValue(0);

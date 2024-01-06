@@ -1,22 +1,30 @@
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useGlobalSearchParams, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import { router, useGlobalSearchParams } from "expo-router";
+import React, { memo, useEffect } from "react";
 import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { Tab } from "./tab";
+import Tab from "./tab";
 
-export function OpenTabsList() {
+const Header = memo(function Header() {
+  return (
+    <Text
+      variant="eyebrow"
+      style={{ marginVertical: 10, marginLeft: 5, marginTop: 15 }}
+    >
+      Tabs
+    </Text>
+  );
+});
+
+const OpenTabsList = memo(function OpenTabsList() {
   const { width } = useWindowDimensions();
-  const theme = useColorTheme();
   const ref = React.useRef<ICarouselInstance>(null);
-  const pathname = usePathname();
   const { tab } = useGlobalSearchParams();
 
   const baseOptions = {
@@ -34,15 +42,13 @@ export function OpenTabsList() {
       });
     if (!data) return;
     const tab = data[index];
-    if (tab && tab.slug !== pathname) {
-      router.replace({
-        pathname: tab.slug,
-        params: {
-          tab: tab.id,
-          ...(typeof tab.params === "object" && tab.params),
-        },
-      });
-    }
+    router.replace({
+      pathname: tab.slug,
+      params: {
+        tab: tab.id,
+        ...(typeof tab.params === "object" && tab.params),
+      },
+    });
   };
 
   useEffect(() => {
@@ -61,7 +67,7 @@ export function OpenTabsList() {
         AsyncStorage.setItem("recentlyAccessed", recentlyAccessed);
       }
     }
-  }, [pathname, tab, data]);
+  }, [tab, data]);
 
   return data && Array.isArray(data) ? (
     width > 600 ? (
@@ -73,19 +79,14 @@ export function OpenTabsList() {
           width: "100%",
         }}
       >
-        <Text
-          variant="eyebrow"
-          style={{ marginVertical: 10, marginLeft: 5, marginTop: 15 }}
-        >
-          Tabs
-        </Text>
+        <Header />
         <ScrollView
           showsHorizontalScrollIndicator={false}
           style={{ flex: 1, width: "100%" }}
           contentContainerStyle={{ gap: 5 }}
         >
-          {data.map((tab) => (
-            <Tab tab={tab} key={tab.id} />
+          {data.map((t) => (
+            <Tab tab={t} key={t.id} selected={tab === t.id} />
           ))}
         </ScrollView>
       </View>
@@ -99,14 +100,13 @@ export function OpenTabsList() {
           width: "100%",
           justifyContent: "center",
           height: 65,
+          padding: 5,
         }}
         data={data}
         pagingEnabled
         onSnapToItem={handleSnapToIndex}
-        renderItem={({ index }) => (
-          <View key={data[index].id} style={{ padding: 5 }}>
-            <Tab tab={data[index]} />
-          </View>
+        renderItem={({ item }) => (
+          <Tab key={item.id} tab={item} selected={tab === item.id} />
         )}
       />
     )
@@ -115,4 +115,6 @@ export function OpenTabsList() {
       {error ? <ErrorAlert /> : <Spinner />}
     </View>
   );
-}
+});
+
+export default OpenTabsList;

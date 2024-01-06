@@ -4,7 +4,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
-import React, { useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import {
   Linking,
   Pressable,
@@ -14,10 +14,15 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { NavbarProfilePicture } from "../account-navbar";
-import { OpenTabsList } from "../bottom-navigation/tabs/carousel";
+import OpenTabsList from "../bottom-navigation/tabs/carousel";
 import { SpacesTrigger } from "./SpacesTrigger";
 
 export const styles = StyleSheet.create({
+  header: {
+    padding: 15,
+    paddingBottom: 0,
+    paddingTop: 20,
+  },
   contentContainer: {
     flex: 1,
     alignItems: "center",
@@ -32,18 +37,126 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
+  footerContainer: {
+    marginTop: "auto",
+    padding: 15,
+    paddingTop: 0,
+  },
+  footer: {
+    gap: 10,
+    paddingTop: 15,
+    alignItems: "center",
+    flexDirection: "row",
+    borderTopWidth: 1,
+  },
+});
+
+const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
+  const handleHome = () => router.push("/");
+  const theme = useColorTheme();
+
+  return (
+    <Pressable
+      onPress={handleHome}
+      style={({ pressed }) => [
+        styles.button,
+        {
+          borderColor: theme[5],
+          backgroundColor: theme[1],
+          opacity: pressed ? 0.5 : 1,
+        },
+      ]}
+    >
+      <Icon filled={isHome}>home</Icon>
+    </Pressable>
+  );
+});
+
+const JumpToButton = memo(function JumpToButton() {
+  const theme = useColorTheme();
+
+  return (
+    <Pressable
+      onPress={() => router.push("/open")}
+      style={({ pressed }) => [
+        styles.button,
+        {
+          flex: 1,
+          borderColor: theme[5],
+          backgroundColor: theme[1],
+          opacity: pressed ? 0.5 : 1,
+        },
+      ]}
+    >
+      <Icon>electric_bolt</Icon>
+      <Text style={{ color: theme[11] }}>Jump to</Text>
+    </Pressable>
+  );
+});
+
+const Footer = memo(function Footer() {
+  const theme = useColorTheme();
+  const openSupport = useCallback(() => {
+    Linking.openURL("https://blog.dysperse.com");
+  }, []);
+
+  return (
+    <View style={styles.footerContainer}>
+      <View
+        style={[
+          styles.footer,
+          {
+            borderTopColor: theme[6],
+          },
+        ]}
+      >
+        <IconButton
+          variant="filled"
+          style={{ marginRight: "auto" }}
+          onPress={openSupport}
+        >
+          <Icon>question_mark</Icon>
+        </IconButton>
+        <NavbarProfilePicture />
+      </View>
+    </View>
+  );
+});
+
+const LogoButton = memo(function LogoButton() {
+  const theme = useColorTheme();
+
+  return (
+    <SpacesTrigger>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 5,
+          paddingLeft: 3,
+        }}
+      >
+        <Logo size={35} color={theme[6]} />
+        <Icon style={{ color: theme[6] }}>expand_more</Icon>
+      </TouchableOpacity>
+    </SpacesTrigger>
+  );
+});
+
+const Header = memo(function Header() {
+  const isHome = usePathname() === "/";
+
+  return (
+    <View style={{ flexDirection: "row", gap: 10, marginTop: 20 }}>
+      <HomeButton isHome={isHome} />
+      <JumpToButton />
+    </View>
+  );
 });
 
 export function Sidebar() {
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
-  const pathname = usePathname();
-
-  const openSupport = useCallback(() => {
-    Linking.openURL("https://blog.dysperse.com");
-  }, []);
-
-  const handleHome = () => router.push("/");
 
   return (
     <View
@@ -55,85 +168,12 @@ export function Sidebar() {
         backgroundColor: theme[2],
       }}
     >
-      <View
-        style={{
-          padding: 15,
-          paddingBottom: 0,
-          paddingTop: 20,
-        }}
-      >
-        <SpacesTrigger>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              paddingLeft: 3,
-            }}
-          >
-            <Logo size={35} color={theme[6]} />
-            <Icon style={{ color: theme[6] }}>expand_more</Icon>
-          </TouchableOpacity>
-        </SpacesTrigger>
-        <View style={{ flexDirection: "row", gap: 10, marginTop: 20 }}>
-          <Pressable
-            onPress={handleHome}
-            style={({ pressed }) => [
-              styles.button,
-              {
-                borderColor: theme[5],
-                backgroundColor: theme[1],
-                opacity: pressed ? 0.5 : 1,
-              },
-            ]}
-          >
-            <Icon filled={pathname === "/"}>home</Icon>
-          </Pressable>
-          <Pressable
-            onPress={() => router.push("/open")}
-            style={({ pressed }) => [
-              styles.button,
-              {
-                flex: 1,
-                borderColor: theme[5],
-                backgroundColor: theme[1],
-                opacity: pressed ? 0.5 : 1,
-              },
-            ]}
-          >
-            <Icon>electric_bolt</Icon>
-            <Text style={{ color: theme[11] }}>Jump to</Text>
-          </Pressable>
-        </View>
+      <View style={styles.header}>
+        <LogoButton />
+        <Header />
       </View>
       <OpenTabsList />
-      <View
-        style={{
-          marginTop: "auto",
-          padding: 15,
-          paddingTop: 0,
-        }}
-      >
-        <View
-          style={{
-            gap: 10,
-            paddingTop: 15,
-            alignItems: "center",
-            flexDirection: "row",
-            borderTopWidth: 1,
-            borderTopColor: theme[6],
-          }}
-        >
-          <IconButton
-            variant="filled"
-            style={{ marginRight: "auto" }}
-            onPress={openSupport}
-          >
-            <Icon>question_mark</Icon>
-          </IconButton>
-          <NavbarProfilePicture />
-        </View>
-      </View>
+      <Footer />
     </View>
   );
 }

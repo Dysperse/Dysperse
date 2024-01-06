@@ -7,7 +7,7 @@ import { router, usePathname } from "expo-router";
 import React, { memo } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { OpenTabsList } from "./tabs/carousel";
+import OpenTabsList from "./tabs/carousel";
 import { TabDrawer } from "./tabs/drawer";
 
 export const getBottomNavigationHeight = (pathname) => {
@@ -28,6 +28,51 @@ export const getBottomNavigationHeight = (pathname) => {
     : // Carousel
       65 * 2;
 };
+
+const HomeButton = memo(function HomeButton({ filled }: { filled: boolean }) {
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        router.replace("/");
+      }}
+      style={{ padding: 30, marginLeft: -30 }}
+    >
+      <Icon size={30} filled={filled}>
+        home
+      </Icon>
+    </TouchableOpacity>
+  );
+});
+
+const PaletteButton = memo(function PaletteButton() {
+  return (
+    <IconButton
+      variant="filled"
+      style={{ width: 80 }}
+      size={45}
+      onPress={() => router.push("/open")}
+    >
+      <Icon style={{ transform: [{ rotate: "-11deg" }] }} size={28}>
+        electric_bolt
+      </Icon>
+    </IconButton>
+  );
+});
+
+const TabDrawerButton = memo(function TabDrawerButton() {
+  return (
+    <TabDrawer>
+      <TouchableOpacity
+        style={{
+          padding: 30,
+          marginRight: -30,
+        }}
+      >
+        <Icon size={28}>stack</Icon>
+      </TouchableOpacity>
+    </TabDrawer>
+  );
+});
 
 function BottomNavigation() {
   const pathname = usePathname();
@@ -61,36 +106,9 @@ function BottomNavigation() {
             flexDirection: "row",
           }}
         >
-          <TouchableOpacity
-            onPress={() => {
-              router.replace("/");
-            }}
-            style={{ padding: 30, marginLeft: -30 }}
-          >
-            <Icon size={30} filled={pathname == "/"}>
-              home
-            </Icon>
-          </TouchableOpacity>
-          <IconButton
-            variant="filled"
-            style={{ width: 80 }}
-            size={45}
-            onPress={() => router.push("/open")}
-          >
-            <Icon style={{ transform: [{ rotate: "-11deg" }] }} size={28}>
-              electric_bolt
-            </Icon>
-          </IconButton>
-          <TabDrawer>
-            <TouchableOpacity
-              style={{
-                padding: 30,
-                marginRight: -30,
-              }}
-            >
-              <Icon size={28}>stack</Icon>
-            </TouchableOpacity>
-          </TabDrawer>
+          <HomeButton filled={pathname === "/"} />
+          <PaletteButton />
+          <TabDrawerButton />
         </View>
       </View>
     </View>

@@ -1,35 +1,26 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { Column } from "@/components/perspectives/agenda/Column";
-import { PerspectivesNavbar } from "@/components/perspectives/agenda/Navbar";
+import PerspectivesNavbar from "@/components/perspectives/agenda/Navbar";
+import { AgendaSelector } from "@/components/perspectives/agenda/Selector";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Skeleton from "@/ui/Skeleton";
-import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useRef } from "react";
-import {
-  FlatList,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import React, { useMemo } from "react";
+import { View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
 
 function Agenda() {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
-  const { bottom } = useSafeAreaInsets();
-  const flatListRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
   const params = useLocalSearchParams();
-
   const { type, start, end } = useAgendaContext();
-  const { data, mutate, error, isValidating } = useSWR([
+  const { data, mutate, error } = useSWR([
     "space/perspectives/agenda",
     {
       start: start.toISOString(),
@@ -95,12 +86,10 @@ function Agenda() {
       )}
     </View>
   );
-
   if (breakpoints["lg"]) {
     return (
       <ContentWrapper>
         <PerspectivesNavbar
-          isLoading={isValidating}
           error={Boolean(error)}
           currentDateStart={column?.start}
           currentDateEnd={column?.end}
@@ -123,24 +112,9 @@ function Agenda() {
       </ContentWrapper>
     );
   }
-
-  const buttonTextFormats = {
-    small: {
-      week: "dd",
-      month: "Do",
-      year: "-",
-    }[type],
-    big: {
-      week: "DD",
-      month: "[W]W",
-      year: "MMM",
-    }[type],
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <PerspectivesNavbar
-        isLoading={isValidating}
         error={Boolean(error)}
         currentDateStart={column?.start}
         currentDateEnd={column?.end}
@@ -148,83 +122,7 @@ function Agenda() {
 
       {data ? (
         <View style={{ flex: 1 }}>
-          <FlatList
-            ref={flatListRef}
-            horizontal
-            data={data}
-            contentContainerStyle={{
-              gap: 15,
-              paddingBottom: 10,
-              paddingHorizontal: 20,
-            }}
-            style={{
-              backgroundColor: theme[3],
-              flexGrow: 0,
-              flexShrink: 0,
-            }}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                style={{
-                  height: 65,
-                  width: 55,
-                  borderRadius: 25,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 3,
-                }}
-                onPress={() => {
-                  router.setParams({
-                    start: dayjs(item.start).format("YYYY-MM-DD"),
-                  });
-                }}
-              >
-                {buttonTextFormats.small !== "-" && (
-                  <Text
-                    weight={400}
-                    style={{
-                      fontSize: 13,
-                      opacity: 0.6,
-                      textAlign: "center",
-                      color: theme[12],
-                    }}
-                  >
-                    {dayjs(item.start)
-                      .format(buttonTextFormats.small)
-                      .substring(0, type === "week" ? 1 : 999)}
-                    {type === "month" &&
-                      " - " + dayjs(item.end).format(buttonTextFormats.small)}
-                  </Text>
-                )}
-                <View
-                  style={{
-                    width: 50,
-                    height: 50,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 99,
-                    borderWidth: 1,
-                    borderColor: theme[6],
-                    ...(item?.start === column?.start && {
-                      backgroundColor: theme[10],
-                      borderColor: theme[10],
-                    }),
-                  }}
-                >
-                  <Text
-                    weight={500}
-                    style={{
-                      fontSize: 18,
-                      color: theme[item?.start === column?.start ? 1 : 12],
-                    }}
-                  >
-                    {dayjs(item.start).format(buttonTextFormats.big)}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(i) => `${i.start}-${i.end}`}
-          />
+          <AgendaSelector type={type} data={data} start={column?.start} />
           <Column mutate={mutate} column={column} />
         </View>
       ) : (
@@ -237,16 +135,18 @@ function Agenda() {
 export default function Page() {
   const { type, start } = useLocalSearchParams();
 
+  const agendaContextValue = useMemo(() => {
+    return {
+      type: type as string,
+      start: dayjs(start as string).startOf(type as OpUnitType),
+      end: dayjs(start as string)
+        .startOf(type as OpUnitType)
+        .add(1, type as ManipulateType),
+    };
+  }, [type, start]);
+
   return (
-    <AgendaContext.Provider
-      value={{
-        type: type as string,
-        start: dayjs(start as string).startOf(type as OpUnitType),
-        end: dayjs(start as string)
-          .startOf(type as OpUnitType)
-          .add(1, type as ManipulateType),
-      }}
-    >
+    <AgendaContext.Provider value={agendaContextValue}>
       <Agenda />
     </AgendaContext.Provider>
   );

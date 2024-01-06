@@ -2,13 +2,12 @@ import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context"
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -22,12 +21,38 @@ const styles = StyleSheet.create({
   },
 });
 
-export function PerspectivesNavbar({
-  currentDateStart,
-  currentDateEnd,
-  error,
-  isLoading,
-}: any) {
+const NavbarButtons = memo(function PrevButton({
+  isCurrent,
+  handlePrev,
+  handleNext,
+  handleToday,
+}: {
+  isCurrent: boolean;
+  handlePrev: () => void;
+  handleNext: () => void;
+  handleToday: () => void;
+}) {
+  return (
+    <>
+      {!isCurrent && (
+        <TouchableOpacity style={styles.navigationButton} onPress={handleToday}>
+          <Icon>calendar_today</Icon>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity onPress={handlePrev} style={styles.navigationButton}>
+        <Icon>arrow_back_ios_new</Icon>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleNext} style={styles.navigationButton}>
+        <Icon>arrow_forward_ios</Icon>
+      </TouchableOpacity>
+    </>
+  );
+});
+
+function PerspectivesNavbar({ currentDateStart, currentDateEnd, error }: any) {
+  const insets = useSafeAreaInsets();
+  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { start, type } = useAgendaContext();
 
   const titleFormat = {
@@ -66,10 +91,6 @@ export function PerspectivesNavbar({
     });
   }, []);
 
-  const insets = useSafeAreaInsets();
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-
   return (
     <LinearGradient
       colors={[theme[breakpoints.lg ? 1 : 2], theme[breakpoints.lg ? 3 : 3]]}
@@ -96,13 +117,7 @@ export function PerspectivesNavbar({
               {dayjs(start).format(titleFormat).split("• ")?.[1]}
             </Text>
           </View>
-          {isLoading ? (
-            <View style={{ opacity: 0.5 }}>
-              <Spinner color={theme[12]} size={20} />
-            </View>
-          ) : (
-            <Icon style={{ color: theme[12] }}>expand_more</Icon>
-          )}
+          <Icon style={{ color: theme[12] }}>expand_more</Icon>
         </TouchableOpacity>
         {error && (
           <Chip
@@ -112,17 +127,14 @@ export function PerspectivesNavbar({
           />
         )}
       </View>
-      {!isCurrent && (
-        <TouchableOpacity style={styles.navigationButton} onPress={handleToday}>
-          <Icon>calendar_today</Icon>
-        </TouchableOpacity>
-      )}
-      <TouchableOpacity onPress={handlePrev} style={styles.navigationButton}>
-        <Icon>arrow_back_ios_new</Icon>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleNext} style={styles.navigationButton}>
-        <Icon>arrow_forward_ios</Icon>
-      </TouchableOpacity>
+      <NavbarButtons
+        isCurrent={isCurrent}
+        handleToday={handleToday}
+        handlePrev={handlePrev}
+        handleNext={handleNext}
+      />
     </LinearGradient>
   );
 }
+
+export default memo(PerspectivesNavbar);

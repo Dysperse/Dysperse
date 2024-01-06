@@ -1,3 +1,5 @@
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import {
   Jost_100Thin,
   Jost_200ExtraLight,
@@ -14,9 +16,13 @@ import * as NavigationBar from "expo-navigation-bar";
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
+import { AppState, Platform } from "react-native";
 import "react-native-gesture-handler";
 import * as Sentry from "sentry-expo";
+import { SWRConfig } from "swr";
+import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
 import { SessionProvider, useSession } from "../context/AuthProvider";
+import { SessionLoadingScreen } from "./(app)/_layout";
 
 if (Platform.OS === "android") {
   NavigationBar.setPositionAsync("absolute");
@@ -27,20 +33,12 @@ if (Platform.OS === "android") {
 
 Sentry.init({
   dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
-  enableInExpoDevelopment: true,
+  enableInExpoDevelopment: false,
   enableAutoSessionTracking: true,
   debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
 });
 
 SplashScreen.preventAutoHideAsync();
-
-import { useColor } from "@/ui/color";
-import { ColorThemeProvider } from "@/ui/color/theme-provider";
-
-import { AppState, Platform } from "react-native";
-import { SWRConfig } from "swr";
-import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
-import { SessionLoadingScreen } from "./(app)/_layout";
 
 function localStorageProvider() {
   // When initializing, we restore the data from `localStorage` into a map.
