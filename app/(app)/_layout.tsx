@@ -136,6 +136,10 @@ export default function AppLayout() {
                       backgroundColor: theme[breakpoints.sm ? 2 : 1],
                       padding: breakpoints.lg ? 10 : 0,
                       marginBottom: bottom,
+                      ...(Platform.OS === "web" &&
+                        ({
+                          marginTop: "env(titlebar-area-height,0)",
+                        } as any)),
                     },
                     // change opacity of the previous screen when swipe
                     cardOverlayEnabled: true,

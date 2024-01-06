@@ -1,6 +1,9 @@
+import { useUser } from "@/context/useUser";
+import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
@@ -11,6 +14,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  useColorScheme,
   useWindowDimensions,
 } from "react-native";
 import { NavbarProfilePicture } from "../account-navbar";
@@ -125,21 +129,38 @@ const Footer = memo(function Footer() {
 
 const LogoButton = memo(function LogoButton() {
   const theme = useColorTheme();
-
+  const { error } = useUser();
+  const red = useColor("red", useColorScheme() === "dark");
   return (
-    <SpacesTrigger>
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 5,
-          paddingLeft: 3,
-        }}
-      >
-        <Logo size={35} color={theme[6]} />
-        <Icon style={{ color: theme[6] }}>expand_more</Icon>
-      </TouchableOpacity>
-    </SpacesTrigger>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <SpacesTrigger>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
+            paddingLeft: 3,
+          }}
+        >
+          <Logo size={35} color={theme[6]} />
+          <Icon style={{ color: theme[6] }}>expand_more</Icon>
+        </TouchableOpacity>
+      </SpacesTrigger>
+      {error && (
+        <Chip
+          style={{ backgroundColor: red[5] }}
+          color={red[11]}
+          icon={<Icon style={{ color: red[11] }}>cloud_off</Icon>}
+          label="Offline"
+        />
+      )}
+    </View>
   );
 });
 

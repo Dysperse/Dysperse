@@ -5,17 +5,16 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Collapsible from "react-native-collapsible";
+import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 import { TaskStream } from "./audit-log";
 import { useTaskDrawerContext } from "./context";
-import Toast from "react-native-toast-message";
-import TextField from "@/ui/TextArea";
-import { TextInput } from "react-native-gesture-handler";
 
 const drawerStyles = StyleSheet.create({
   collapsibleMenuItem: { gap: 5, flex: 1, alignItems: "center" },
@@ -160,11 +159,14 @@ function TaskAttachmentCategory({ category, attachments }) {
 }
 
 function TaskDateCard() {
-  const { task } = useTaskDrawerContext();
+  const { task, updateTask } = useTaskDrawerContext();
   const theme = useColorTheme();
   const dateMenuRef = useRef();
 
   const [open, setOpen] = useState(false);
+  const handleEditDate = (date) => {
+    updateTask("due", date.toISOString());
+  };
 
   return (
     <Pressable
@@ -196,7 +198,7 @@ function TaskDateCard() {
         >
           <DatePickerModal
             date={task.due}
-            onDateSelect={(e) => console.log(e)}
+            onDateSelect={handleEditDate}
             menuRef={dateMenuRef}
           >
             <Pressable style={drawerStyles.collapsibleMenuItem}>
