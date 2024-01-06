@@ -194,7 +194,6 @@ function RecentActivity() {
 
 function FriendActivity() {
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
   const { data, isLoading, error } = useSWR(["user/friends"]);
   const handleFriendsPress = useCallback(() => router.push("/friends"), []);
 
@@ -437,7 +436,7 @@ export default function Index() {
           style={{
             flex: width > 600 ? 1 : undefined,
             gap: 10,
-            paddingBottom: width > 600 ? 0 : 20,
+            paddingBottom: width > 600 ? 0 : 70,
           }}
         >
           <SpaceInfo />

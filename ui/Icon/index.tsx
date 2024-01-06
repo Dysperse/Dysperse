@@ -2,19 +2,21 @@ import React, { memo } from "react";
 import { Platform, StyleProp, Text, TextStyle } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
+export interface DIconProps {
+  size?: number;
+  children?: React.ReactNode;
+  filled?: boolean;
+  style?: StyleProp<TextStyle>;
+  bold?: boolean;
+}
+
 function Icon({
   size = 24,
   children,
   filled = false,
   style = {},
   bold = false,
-}: {
-  size?: number;
-  children?: React.ReactNode;
-  filled?: boolean;
-  style?: StyleProp<TextStyle>;
-  bold?: boolean;
-}) {
+}: DIconProps) {
   const theme = useColorTheme();
   return (
     <Text

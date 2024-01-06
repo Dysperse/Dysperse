@@ -107,7 +107,7 @@ function PerspectivesNavbar({ currentDateStart, currentDateEnd, error }: any) {
     >
       <View style={{ flexGrow: 1, flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+          style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
         >
           <View>
             <Text numberOfLines={1} weight={600}>

@@ -7,8 +7,9 @@ import React, {
   cloneElement,
   useCallback,
   useRef,
+  useState,
 } from "react";
-import { View } from "react-native";
+import { Keyboard, View } from "react-native";
 
 export function Menu({
   trigger,
@@ -31,16 +32,20 @@ export function Menu({
   width?: number;
   stackBehavior?: "push" | "replace";
 }) {
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
   const theme = useColorTheme();
   const _ref = useRef<BottomSheetModal>(null);
   const ref: any = menuRef || _ref;
 
   const handleOpen = useCallback(() => {
+    setIsKeyboardVisible(Keyboard.isVisible());
     ref.current?.present();
     onOpen();
   }, [ref, onOpen]);
 
   const handleClose = useCallback(() => {
+    setIsKeyboardVisible(Keyboard.isVisible());
     ref.current?.close();
     onClose();
   }, [ref, onClose]);
@@ -60,6 +65,7 @@ export function Menu({
         footerComponent={footer}
         stackBehavior={stackBehavior}
         handleComponent={() => null}
+        bottomInset={isKeyboardVisible ? Keyboard.metrics().height : 0}
       >
         <View
           style={{

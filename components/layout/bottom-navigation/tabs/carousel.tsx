@@ -23,9 +23,9 @@ const Header = memo(function Header() {
 });
 
 const OpenTabsList = memo(function OpenTabsList() {
+  const { tab } = useGlobalSearchParams();
   const { width } = useWindowDimensions();
   const ref = React.useRef<ICarouselInstance>(null);
-  const { tab } = useGlobalSearchParams();
 
   const baseOptions = {
     vertical: false,
@@ -41,12 +41,13 @@ const OpenTabsList = memo(function OpenTabsList() {
         text1: "Something went wrong. Please try again later.",
       });
     if (!data) return;
-    const tab = data[index];
+    const _tab = data[index];
+    if (tab === _tab.id) return;
     router.replace({
-      pathname: tab.slug,
+      pathname: _tab.slug,
       params: {
-        tab: tab.id,
-        ...(typeof tab.params === "object" && tab.params),
+        tab: _tab.id,
+        ...(typeof _tab.params === "object" && _tab.params),
       },
     });
   };
@@ -106,7 +107,9 @@ const OpenTabsList = memo(function OpenTabsList() {
         pagingEnabled
         onSnapToItem={handleSnapToIndex}
         renderItem={({ item }) => (
-          <Tab key={item.id} tab={item} selected={tab === item.id} />
+          <View key={item.id} style={{ padding: 5, paddingHorizontal: 2.5 }}>
+            <Tab key={item.id} tab={item} selected={tab === item.id} />
+          </View>
         )}
       />
     )

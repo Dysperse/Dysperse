@@ -7,6 +7,7 @@ import { getBottomNavigationHeight } from "./bottom-navigation";
 
 interface ContentWrapperProps extends ViewProps {
   enabled?: boolean;
+  noPaddingTop?: boolean;
 }
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +27,11 @@ export function ContentWrapper(props: ContentWrapperProps) {
       style={[
         styles.container,
         {
-          marginTop: breakpoints.lg ? insets.top : insets.top + 64,
+          marginTop: props.noPaddingTop
+            ? 0
+            : breakpoints.lg
+            ? insets.top
+            : insets.top + 64,
           backgroundColor: theme[1],
           borderWidth: breakpoints.lg ? 1 : 0,
           paddingBottom: breakpoints.lg

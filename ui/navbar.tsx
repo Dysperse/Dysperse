@@ -1,6 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Text from "@/ui/Text";
-import { StackHeaderProps } from "@react-navigation/stack";
 import { router } from "expo-router";
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
@@ -8,10 +7,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "./Icon";
 import IconButton from "./IconButton";
 import { useColorTheme } from "./color/theme-provider";
-
-interface NavbarProps extends StackHeaderProps {
-  icon?: "arrow_back_ios_new" | "close" | "expand_more" | "west";
-}
 
 export default function Navbar(props: any) {
   const insets = useSafeAreaInsets();
@@ -32,8 +27,9 @@ export default function Navbar(props: any) {
     <>
       <View
         style={{
-          height: 64 + insets.top,
+          height: 75 + insets.top,
           paddingTop: insets.top,
+          paddingHorizontal: 10,
           backgroundColor: theme[1],
           ...(breakpoints.lg && {
             borderRadius: 20,
@@ -41,7 +37,6 @@ export default function Navbar(props: any) {
             height: 80,
           }),
           flexDirection: "row",
-          paddingHorizontal: 15,
           alignItems: "center",
         }}
       >

@@ -34,6 +34,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 import { styles } from "./styles";
@@ -93,6 +94,7 @@ export default function CreateTask({
   const orange = useColor("orange", useColorScheme() === "dark");
   const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
+  const insets = useSafeAreaInsets();
 
   const [date, setDate] = useState<Dayjs | null>(
     defaultValues.date || undefined
@@ -199,7 +201,8 @@ export default function CreateTask({
               alignItems: "center",
               gap: 5,
               paddingHorizontal: 15,
-              height: 60,
+              height: 60 + insets.bottom,
+              paddingBottom: insets.bottom,
               shadowColor: theme[3],
               shadowOffset: { width: 0, height: -40 },
               shadowRadius: 40,
@@ -219,7 +222,7 @@ export default function CreateTask({
             >
               <Menu
                 menuRef={menuRef}
-                height={[400]}
+                height={[350]}
                 trigger={<Chip icon={<Icon>add</Icon>} />}
                 onClose={() => nameRef.current?.focus()}
               >
@@ -233,7 +236,8 @@ export default function CreateTask({
                 >
                   <IconButton
                     onPress={() => menuRef.current.close()}
-                    variant="filled"
+                    variant="outlined"
+                    size={55}
                   >
                     <Icon>close</Icon>
                   </IconButton>

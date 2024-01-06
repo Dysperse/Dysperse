@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Spinner from "@/ui/Spinner";
+import ErrorAlert from "@/ui/Error";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
@@ -32,7 +32,6 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 
@@ -56,21 +55,17 @@ export function SessionLoadingScreen() {
         gap: 20,
       }}
     >
-      <View style={{ opacity: 0.6 }}>
-        <Logo size={90} color={theme === "dark" ? "#ffffff" : "#000000"} />
-      </View>
-      <Spinner color={theme === "dark" ? "#ffffff" : "#000000"} />
+      <Logo size={130} color={theme === "dark" ? "#ffffff" : "#000000"} />
     </View>
   );
 }
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
-  const { session: sessionData, isLoading: isUserLoading } = useUser();
+  const { session: sessionData, isLoading: isUserLoading, error } = useUser();
   const { width, height } = useWindowDimensions();
   const isDark = useColorScheme() === "dark";
   const breakpoints = useResponsiveBreakpoints();
-  const { bottom } = useSafeAreaInsets();
 
   const theme = useColor(
     sessionData?.user?.profile?.theme || "violet",
@@ -88,6 +83,9 @@ export default function AppLayout() {
   }, [theme]);
 
   // You can keep the splash screen open, or render a loading screen like we do here.
+  if (error) {
+    return <ErrorAlert />;
+  }
   if (isLoading || isUserLoading) {
     return <SessionLoadingScreen />;
   }
@@ -135,7 +133,6 @@ export default function AppLayout() {
                     cardStyle: {
                       backgroundColor: theme[breakpoints.sm ? 2 : 1],
                       padding: breakpoints.lg ? 10 : 0,
-                      marginBottom: bottom,
                       ...(Platform.OS === "web" &&
                         ({
                           marginTop: "env(titlebar-area-height,0)",

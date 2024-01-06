@@ -9,7 +9,7 @@ import {
   ViewStyle,
   useColorScheme,
 } from "react-native";
-import Icon from "../Icon";
+import Icon, { DIconProps } from "../Icon";
 import Text from "../Text";
 import { useColor } from "../color";
 
@@ -22,6 +22,7 @@ interface DAvatarProps extends PressableProps {
     | (({ pressed, hovered }) => StyleProp<ViewStyle>);
   theme?: string;
   icon?: string;
+  iconProps?: DIconProps;
 }
 const styles = StyleSheet.create({
   container: {
@@ -72,7 +73,11 @@ export function Avatar(props: DAvatarProps) {
         ]}
       >
         {props.children ||
-          ((<Icon style={{ color: theme[11] }}>{props.icon}</Icon>) as any)}
+          ((
+            <Icon style={{ color: theme[11] }} {...props.iconProps}>
+              {props.icon}
+            </Icon>
+          ) as any)}
       </View>
       {props.image && <Image source={props.image} style={styles.image} />}
     </Pressable>

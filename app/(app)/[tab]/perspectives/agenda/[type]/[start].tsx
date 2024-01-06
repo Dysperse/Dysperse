@@ -113,13 +113,12 @@ function Agenda() {
     );
   }
   return (
-    <View style={{ flex: 1 }}>
+    <ContentWrapper noPaddingTop>
       <PerspectivesNavbar
         error={Boolean(error)}
         currentDateStart={column?.start}
         currentDateEnd={column?.end}
       />
-
       {data ? (
         <View style={{ flex: 1 }}>
           <AgendaSelector type={type} data={data} start={column?.start} />
@@ -128,7 +127,7 @@ function Agenda() {
       ) : (
         agendaFallback
       )}
-    </View>
+    </ContentWrapper>
   );
 }
 

@@ -27,6 +27,7 @@ export function LabelPicker({
   // callbacks
   const searchRef = useRef(null);
   const handleOpen = useCallback(() => {
+    Keyboard.dismiss();
     ref.current?.present();
   }, []);
   const handleClose = useCallback(() => {

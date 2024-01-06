@@ -4,8 +4,9 @@ import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { View } from "react-native";
+import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import OpenTabsList from "./tabs/carousel";
 import { TabDrawer } from "./tabs/drawer";
@@ -80,10 +81,23 @@ function BottomNavigation() {
   const theme = useColorTheme();
   const { bottom } = useSafeAreaInsets();
 
+  const animatedHeight = useSharedValue(height);
+  const animatedOpacity = useSharedValue(1);
+
+  useEffect(() => {
+    animatedHeight.value = withSpring(height, {
+      mass: 1,
+      damping: 20,
+      stiffness: 200,
+    });
+    animatedOpacity.value = withSpring(height === 0 ? 0 : 1);
+  }, [height, animatedHeight, animatedOpacity]);
+
   return (
-    <View
+    <Animated.View
       style={{
-        height,
+        height: animatedHeight,
+        opacity: animatedOpacity,
         width: "100%",
         zIndex: 1,
         backgroundColor: theme[1],
@@ -92,11 +106,10 @@ function BottomNavigation() {
         marginBottom: -1,
         position: "absolute",
         bottom,
-        opacity: height === 0 ? 0 : 1,
       }}
     >
       <View>
-        {pathname !== "/" && <OpenTabsList />}
+        {pathname !== "/" && height !== 0 && <OpenTabsList />}
         <View
           style={{
             height: 65,
@@ -111,7 +124,7 @@ function BottomNavigation() {
           <TabDrawerButton />
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 

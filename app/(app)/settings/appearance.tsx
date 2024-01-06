@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: { height: 80 },
-  themeCardIcon: { textAlign: "center" },
+  themeCardIcon: { textAlign: "center", marginBottom: 10 },
   cardTitle: { fontSize: 25 },
   cardDescription: { textAlign: "center", opacity: 0.7, maxWidth: 200 },
 });
@@ -80,7 +80,6 @@ const HexagonButton = memo(function HexagonButton({
 });
 
 function ThemePicker({ children }) {
-  const userTheme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
   const [selectedTheme, setSelectedTheme] = useState("violet");
   const colors = useColor(selectedTheme as any, useColorScheme() === "dark");
@@ -256,7 +255,7 @@ export default function Page() {
                 style={styles.button}
                 key={button}
               >
-                <ButtonText style={{ fontSize: 20 }}>
+                <ButtonText style={{ fontSize: 20 }} weight={900}>
                   {capitalizeFirstLetter(button)}
                 </ButtonText>
               </Button>
