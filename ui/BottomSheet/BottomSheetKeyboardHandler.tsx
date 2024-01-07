@@ -1,6 +1,6 @@
 import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
 import { forwardRef, memo, useEffect } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, Platform } from "react-native";
 
 const BottomSheetTextInputComponent = forwardRef(() => {
   //#region hooks
@@ -18,7 +18,7 @@ const BottomSheetTextInputComponent = forwardRef(() => {
       animatedKeyboardState.value = 0;
     };
     const handleKeyboardShow = () => {
-      if (Keyboard.isVisible()) {
+      if (Platform.OS !== "web" && Keyboard.isVisible()) {
         animatedKeyboardHeight.value = Keyboard.metrics().height;
         shouldHandleKeyboardEvents.value = true;
         animatedKeyboardState.value = 1;

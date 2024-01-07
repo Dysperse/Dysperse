@@ -1,18 +1,21 @@
 import { ContentWrapper } from "@/components/layout/content";
 import Task from "@/components/task";
+import CreateTask from "@/components/task/create";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { MasonryFlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 
 const StreamContext = createContext(null);
@@ -23,6 +26,7 @@ const styles = StyleSheet.create({
     paddingVertical: 100,
     alignItems: "center",
     gap: 10,
+    marginBottom: -50,
   },
   headerText: {
     fontSize: 50,
@@ -33,11 +37,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  selectButton: {
+    height: 60,
+  },
+  selectButtonText: {
+    fontSize: 20,
+  },
 });
 
-function StreamList() {
+function StreamList({ query, setQuery }) {
   const theme = useColorTheme();
   const { data, mutate } = useStreamContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const onTaskUpdate = (newTask) => {
     mutate(
@@ -62,23 +73,35 @@ function StreamList() {
   };
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <MasonryFlashList
         data={data}
-        numColumns={2}
-        renderItem={({ item }) => (
-          <View style={{ backgroundColor: "red" }}>
+        ListHeaderComponent={<Header query={query} setQuery={setQuery} />}
+        numColumns={breakpoints.lg ? 3 : 1}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        renderItem={({ item, columnIndex }) => (
+          <View
+            style={{
+              padding: 10,
+              ...(columnIndex === 0 && breakpoints.lg && { paddingLeft: 100 }),
+              ...(columnIndex === 2 && breakpoints.lg && { paddingRight: 100 }),
+            }}
+          >
             <Task onTaskUpdate={onTaskUpdate} task={item} />
           </View>
         )}
         estimatedItemSize={200}
       />
-    </>
+    </View>
   );
 }
 
-function Header() {
+function Header({ query, setQuery }) {
   const theme = useColorTheme();
+  const menuRef = useRef(null);
+  const { mutate } = useStreamContext();
+  const handleClose = () => menuRef.current?.close();
+
   return (
     <LinearGradient
       style={styles.headerContainer}
@@ -98,7 +121,9 @@ function Header() {
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 20,
-          gap: 20,
+          gap: 10,
+          width: "100%",
+          maxWidth: 500,
         }}
       >
         <TextField
@@ -111,11 +136,49 @@ function Header() {
             borderRadius: 99,
           }}
           placeholder="Search..."
+          onChangeText={setQuery}
         />
-        <Button variant="outlined" style={{ height: 60 }}>
-          <Icon>filter_list</Icon>
-          <ButtonText>Filter</ButtonText>
-        </Button>
+        <Menu
+          menuRef={menuRef}
+          height={[550]}
+          trigger={
+            <Button variant="outlined" style={{ height: 60 }}>
+              <Icon>filter_list</Icon>
+              <ButtonText>Filter</ButtonText>
+            </Button>
+          }
+        >
+          <View style={{ paddingHorizontal: 20, gap: 10 }}>
+            <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
+              <IconButton variant="outlined" size={55} onPress={handleClose}>
+                <Icon>close</Icon>
+              </IconButton>
+            </View>
+            {[
+              { name: "Completed?" },
+              { name: "Pinned?" },
+              { name: "Has due date?" },
+              { name: "Past due date?" },
+              { name: "Has label?" },
+              { name: "Has notifications?" },
+            ].map((button) => (
+              <Button
+                key={button.name}
+                style={styles.selectButton}
+                variant="outlined"
+              >
+                <ButtonText weight={900} style={styles.selectButtonText}>
+                  {button.name}
+                </ButtonText>
+              </Button>
+            ))}
+          </View>
+        </Menu>
+        <CreateTask mutate={() => mutate()}>
+          <IconButton variant="outlined" size={60}>
+            <Icon>add</Icon>
+          </IconButton>
+        </CreateTask>
       </View>
     </LinearGradient>
   );
@@ -126,6 +189,8 @@ export default function Page() {
     "space/all",
     { type: "TASK" },
   ]);
+
+  const [query, setQuery] = useState("");
 
   return (
     <ContentWrapper noPaddingTop>
@@ -138,12 +203,16 @@ export default function Page() {
           <ErrorAlert />
         </View>
       ) : (
-        <ScrollView>
-          <Header />
-          <StreamContext.Provider value={{ data, mutate }}>
-            <StreamList />
-          </StreamContext.Provider>
-        </ScrollView>
+        <StreamContext.Provider
+          value={{
+            data: data?.filter((entity) =>
+              entity?.name?.toLowerCase()?.includes(query.toLowerCase())
+            ),
+            mutate,
+          }}
+        >
+          <StreamList query={query} setQuery={setQuery} />
+        </StreamContext.Provider>
       )}
     </ContentWrapper>
   );

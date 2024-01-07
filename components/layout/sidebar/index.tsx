@@ -180,6 +180,7 @@ const Header = memo(function Header() {
 });
 
 export function Sidebar() {
+  const pathname = usePathname();
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
 
@@ -191,6 +192,9 @@ export function Sidebar() {
         flexDirection: "column",
         maxHeight: width > 600 ? height : undefined,
         backgroundColor: theme[2],
+        ...(pathname == "/collections/create" && {
+          filter: "brightness(70%)",
+        }),
       }}
     >
       <View style={styles.header}>

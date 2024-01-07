@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { router } from "expo-router";
 
 export const getSidebarItems = async (session) => {
   // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
@@ -36,26 +37,6 @@ export const getSidebarItems = async (session) => {
           },
         },
         {
-          label: "Upcoming",
-          icon: "calendar_clock",
-          slug: "/[tab]/perspectives/upcoming",
-        },
-        {
-          label: "Backlog",
-          icon: "event_upcoming",
-          slug: "/[tab]/perspectives/backlog",
-        },
-        {
-          label: "Unscheduled",
-          icon: "history_toggle_off",
-          slug: "/[tab]/perspectives/unscheduled",
-        },
-        {
-          label: "Completed",
-          icon: "check_circle",
-          slug: "/[tab]/perspectives/completed",
-        },
-        {
           label: "Difficulty",
           icon: "priority_high",
           slug: "/[tab]/perspectives/difficulty",
@@ -70,7 +51,10 @@ export const getSidebarItems = async (session) => {
         {
           label: "Create",
           icon: "add",
-          slug: "/[tab]/collections/create",
+          slug: "",
+          onPress: () => {
+            router.push("/collections/create");
+          },
         },
         // ...(req && Array.isArray(req)
         //   ? req.map((collection) => ({

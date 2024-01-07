@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Keyboard, View } from "react-native";
+import { Keyboard, Platform, View } from "react-native";
 
 export function Menu({
   trigger,
@@ -39,13 +39,13 @@ export function Menu({
   const ref: any = menuRef || _ref;
 
   const handleOpen = useCallback(() => {
-    setIsKeyboardVisible(Keyboard.isVisible());
+    setIsKeyboardVisible(Platform.OS !== "web" && Keyboard.isVisible());
     ref.current?.present();
     onOpen();
   }, [ref, onOpen]);
 
   const handleClose = useCallback(() => {
-    setIsKeyboardVisible(Keyboard.isVisible());
+    setIsKeyboardVisible(Platform.OS !== "web" && Keyboard.isVisible());
     ref.current?.close();
     onClose();
   }, [ref, onClose]);

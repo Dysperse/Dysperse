@@ -201,15 +201,28 @@ export default function AppLayout() {
                       cardStyle: { marginBottom: 0 },
                     }}
                   />
-                  <JsStack.Screen
-                    name="space"
-                    options={{
-                      presentation: "modal",
-                      ...TransitionPresets.ModalPresentationIOS,
-                      gestureResponseDistance: height,
-                      cardStyle: { marginBottom: 0 },
-                    }}
-                  />
+                  {["space", "collections/create"].map((d) => (
+                    <JsStack.Screen
+                      name={d}
+                      key={d}
+                      options={{
+                        presentation: "modal",
+                        ...TransitionPresets.ModalPresentationIOS,
+                        gestureResponseDistance: height,
+                        cardStyle: {
+                          marginBottom: 0,
+                          ...(breakpoints.lg && {
+                            padding: 15,
+                            maxWidth: 800,
+                            width: 800,
+                            paddingVertical: 60,
+                            marginHorizontal: "auto",
+                            backgroundColor: "transparent",
+                          }),
+                        },
+                      }}
+                    />
+                  ))}
                   <JsStack.Screen name="[tab]/perspectives/agenda/[type]/[start]" />
                 </JsStack>
               </ThemeProvider>

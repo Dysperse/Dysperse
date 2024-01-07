@@ -123,7 +123,7 @@ export default function CreateTask({
         {
           body: JSON.stringify({
             ...data,
-            pinned: String(data.pinned),
+            pinned: data.pinned,
             labelId: data.label?.id,
             due: date?.toISOString(),
             type: "TASK",

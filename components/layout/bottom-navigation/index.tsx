@@ -19,6 +19,7 @@ export const getBottomNavigationHeight = (pathname) => {
     "/open",
     "/space",
     "/friends",
+    "collections/create",
   ].find((i) => pathname.includes(i));
 
   return hidden

@@ -6,7 +6,7 @@ import { useColorTheme } from "../color/theme-provider";
 
 interface DTextInputProps extends TextInputProps {
   style?: StyleProp<TextStyle>;
-  variant?: "default" | "filled";
+  variant?: "default" | "filled" | "filled+outlined";
   bottomSheet?: boolean;
   inputRef?: Ref<TextInput>;
 }
@@ -42,11 +42,15 @@ export default function TextField(props: DTextInputProps) {
           color: theme[11],
           fontFamily: `body_400`,
           fontSize: 16,
-          ...(props.variant === "filled" && {
+          ...(props.variant?.includes("filled") && {
             backgroundColor: theme[3],
             borderRadius: 15,
             paddingHorizontal: 15,
             paddingVertical: 7,
+          }),
+          ...(props.variant?.includes("outlined") && {
+            borderWidth: 1,
+            borderColor: theme[5],
           }),
         },
         Array.isArray(props.style)
