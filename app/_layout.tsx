@@ -1,5 +1,8 @@
+import ErrorBoundary from "@/components/ErrorBoundary";
+import Emoji from "@/ui/Emoji";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
-import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import {
   Jost_100Thin,
   Jost_200ExtraLight,
@@ -15,8 +18,8 @@ import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
-import { AppState, Platform } from "react-native";
+import React, { useCallback } from "react";
+import { AppState, Platform, View } from "react-native";
 import "react-native-gesture-handler";
 import * as Sentry from "sentry-expo";
 import { SWRConfig } from "swr";
@@ -40,18 +43,50 @@ Sentry.init({
 
 SplashScreen.preventAutoHideAsync();
 
+function ErrorBoundaryComponent() {
+  const theme = useColorTheme();
+  return (
+    <View
+      style={{
+        backgroundColor: theme[1],
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+      }}
+    >
+      <View
+        style={{
+          maxWidth: 350,
+          justifyContent: "center",
+          alignItems: "center",
+          borderWidth: 1,
+          borderColor: theme[6],
+          padding: 30,
+          borderRadius: 20,
+        }}
+      >
+        <Emoji size={50} emoji="1F62C" />
+        <Text
+          heading
+          style={{ fontSize: 40, marginTop: 10, textAlign: "center" }}
+        >
+          Well, that's embarrassing...
+        </Text>
+        <Text style={{ textAlign: "center", opacity: 0.6 }}>
+          Dysperse unexpectedly crashed, and our team has been notified. Try
+          reopening the app to see if that fixes the issue.
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 function localStorageProvider() {
   // When initializing, we restore the data from `localStorage` into a map.
   const map = new Map(JSON.parse(localStorage.getItem("app-cache") || "[]"));
 
   // Before unloading the app, we write back all the data into `localStorage`.
   window.addEventListener("beforeunload", () => {
-    const appCache = JSON.stringify(Array.from(map.entries()));
-    localStorage.setItem("app-cache", appCache);
-  });
-
-  // On window change focus, we write back all the data into `localStorage`.
-  window.addEventListener("blur", () => {
     const appCache = JSON.stringify(Array.from(map.entries()));
     localStorage.setItem("app-cache", appCache);
   });
@@ -151,11 +186,13 @@ export default function Root() {
 
   return (
     <ColorThemeProvider theme={theme}>
-      <SessionProvider>
-        <SWRWrapper>
-          <Slot screenOptions={{ onLayoutRootView }} />
-        </SWRWrapper>
-      </SessionProvider>
+      <ErrorBoundary fallback={<ErrorBoundaryComponent />}>
+        <SessionProvider>
+          <SWRWrapper>
+            <Slot screenOptions={{ onLayoutRootView }} />
+          </SWRWrapper>
+        </SessionProvider>
+      </ErrorBoundary>
     </ColorThemeProvider>
   );
 }

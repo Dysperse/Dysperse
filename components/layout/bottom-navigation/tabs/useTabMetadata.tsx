@@ -20,9 +20,9 @@ export const useTabMetadata = (slug: string) => {
       icon: "layers",
       name: () => [],
     },
-    "/[tab]/all/": {
-      icon: "nest_true_radiant",
-      name: (params, slug) => [slug.split("/all/")[1]],
+    "/[tab]/all/[type]": {
+      icon: (params) => (params.type === "tasks" ? "task_alt" : "layers"),
+      name: (params) => [params.type, "All"],
     },
     "/[tab]/spaces/": {
       icon: "tag",

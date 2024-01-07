@@ -115,13 +115,16 @@ const Footer = memo(function Footer() {
         ]}
       >
         <IconButton
-          variant="filled"
+          variant="outlined"
+          size={45}
           style={{ marginRight: "auto" }}
           onPress={openSupport}
         >
           <Icon>question_mark</Icon>
         </IconButton>
-        <NavbarProfilePicture />
+        <IconButton variant="outlined" size={45}>
+          <Icon>keyboard_double_arrow_left</Icon>
+        </IconButton>
       </View>
     </View>
   );
@@ -152,6 +155,7 @@ const LogoButton = memo(function LogoButton() {
           <Icon style={{ color: theme[6] }}>expand_more</Icon>
         </TouchableOpacity>
       </SpacesTrigger>
+      <NavbarProfilePicture />
       {error && (
         <Chip
           style={{ backgroundColor: red[5] }}

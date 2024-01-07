@@ -375,7 +375,11 @@ function JumpBackIn() {
             ]}
           >
             <Avatar size={40}>
-              <Icon size={30}>{tabMetadata.icon}</Icon>
+              <Icon size={30}>
+                {typeof tabMetadata.icon === "function"
+                  ? tabMetadata.icon(data.params)
+                  : tabMetadata.icon}
+              </Icon>
             </Avatar>
             <ListItemText
               truncate

@@ -84,7 +84,6 @@ const OpenTabsList = memo(function OpenTabsList() {
         <ScrollView
           showsHorizontalScrollIndicator={false}
           style={{ flex: 1, width: "100%" }}
-          contentContainerStyle={{ gap: 5 }}
         >
           {data.map((t) => (
             <Tab tab={t} key={t.id} selected={tab === t.id} />

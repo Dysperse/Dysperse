@@ -4,12 +4,7 @@ import Icon from "@/ui/Icon";
 import Skeleton from "@/ui/Skeleton";
 import { router } from "expo-router";
 import React from "react";
-import {
-  Platform,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUser } from "../../context/useUser";
 import Text from "../../ui/Text";
@@ -19,7 +14,6 @@ import { SpacesTrigger } from "./sidebar/SpacesTrigger";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
-  const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
 
   return (

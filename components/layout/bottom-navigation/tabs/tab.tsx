@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     flexDirection: "row",
-    columnGap: 5,
+    columnGap: 10,
     borderWidth: 1,
   },
   text: { marginTop: -3, fontSize: 12, opacity: 0.6 },
@@ -119,15 +119,9 @@ function Tab({
         style={({ pressed, hovered }: any) => [
           styles.button,
           {
-            paddingHorizontal: isList
-              ? breakpoints.lg
-                ? 6
-                : 13
-              : breakpoints.lg
-              ? 6
-              : 10,
-            borderRadius: breakpoints.lg ? 15 : 99,
-            height: breakpoints.lg ? 40 : 60,
+            paddingHorizontal: isList ? 13 : breakpoints.lg ? 10 : 10,
+            borderRadius: breakpoints.lg ? 99 : 99,
+            height: breakpoints.lg ? 50 : 60,
             backgroundColor:
               theme[
                 selected
@@ -152,7 +146,9 @@ function Tab({
             }),
           }}
         >
-          {tabData.icon}
+          {typeof tabData.icon === "function"
+            ? tabData.icon(tab.params)
+            : tabData.icon}
         </Icon>
         <View style={{ flex: 1 }}>
           <Text

@@ -55,7 +55,10 @@ export function SessionLoadingScreen() {
         gap: 20,
       }}
     >
-      <Logo size={130} color={theme === "dark" ? "#ffffff" : "#000000"} />
+      <Logo
+        size={Platform.OS === "web" ? 45 : 130}
+        color={theme === "dark" ? "#ffffff" : "#000000"}
+      />
     </View>
   );
 }
