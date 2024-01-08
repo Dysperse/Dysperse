@@ -114,7 +114,7 @@ function TaskNameInput() {
       onChangeText={(text) => setName(text.replaceAll("\n", ""))}
       value={name}
       style={{
-        fontFamily: "heading",
+        fontFamily: "body_200",
         color: theme[12],
         paddingHorizontal: 20,
         marginVertical: 20,
@@ -464,7 +464,7 @@ export function TaskDrawerContent({ handleClose }) {
           <TaskAttachmentButton />
         </View>
       </View>
-      <BottomSheetScrollView keyboardShouldPersistTaps>
+      <BottomSheetScrollView>
         <View style={{ paddingBottom: 20, paddingHorizontal: 12 }}>
           <View
             style={{

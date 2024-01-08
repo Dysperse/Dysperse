@@ -7,6 +7,7 @@ import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -23,24 +24,19 @@ import dayjs from "dayjs";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 type FriendsPageView = "all" | "requests" | "pending" | "blocked";
 
-function AddFriend({ mutate }) {
+function AddFriend({ friends, mutate }) {
   const theme = useColorTheme();
   const [loading, setLoading] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
     },
@@ -51,6 +47,8 @@ function AddFriend({ mutate }) {
   const onSubmit = async (values) => {
     try {
       Keyboard.dismiss();
+      if (friends.find((friend) => friend.user.username === values.email))
+        throw new Error("Friend exists");
       setLoading(true);
       await sendApiRequest(
         session,
@@ -65,12 +63,13 @@ function AddFriend({ mutate }) {
         text1: "Sent friend request!",
       });
       setLoading(false);
-    } catch {
-      setLoading(false);
+    } catch (e: any) {
       Toast.show({
         type: "error",
-        text1: "Something went wrong",
+        text1: e.message,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -142,13 +141,13 @@ function AddFriend({ mutate }) {
   );
 }
 
-function DeleteRequestButton({ mutate, id }) {
+function DeleteRequestButton({ reject = false, mutate, id }) {
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
   const handleDelete = async () => {
     try {
       setLoading(true);
-      const data = await sendApiRequest(
+      await sendApiRequest(
         session,
         "DELETE",
         "user/friends",
@@ -158,7 +157,7 @@ function DeleteRequestButton({ mutate, id }) {
       await mutate();
       Toast.show({
         type: "success",
-        text1: "Deleted request!",
+        text1: reject ? "Deleted friend request" : "Canceled friend request",
       });
       setLoading(false);
     } catch {
@@ -177,14 +176,109 @@ function DeleteRequestButton({ mutate, id }) {
   );
 }
 
+function AcceptRequestButton({ mutate, id }) {
+  const [loading, setLoading] = useState(false);
+  const { session, sessionToken } = useUser();
+  const handleAccept = async () => {
+    try {
+      setLoading(true);
+      const data = await sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/friends",
+        {},
+        {
+          body: JSON.stringify({
+            accepted: true,
+            followerId: id,
+            followingId: session.user.id,
+          }),
+        }
+      );
+      console.log(data);
+      await mutate();
+      Toast.show({
+        type: "success",
+        text1: "Accepted friend request!",
+      });
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    }
+  };
+
+  return (
+    <IconButton
+      variant="outlined"
+      onPress={handleAccept}
+      size={40}
+      style={{ marginLeft: -10 }}
+    >
+      {loading ? <Spinner /> : <Icon>check</Icon>}
+    </IconButton>
+  );
+}
+
+function BlockRequestButton({ mutate, id }) {
+  return (
+    <ConfirmationModal
+      height={410}
+      title="Block user?"
+      secondary="You can unblock this user any time. We won't let this person know you've blocked them."
+      onSuccess={async () => {
+        await new Promise((r) => setTimeout(() => r("hi"), 100));
+      }}
+    >
+      <IconButton variant="outlined" size={40} style={{ marginRight: -10 }}>
+        <Icon>person_off</Icon>
+      </IconButton>
+    </ConfirmationModal>
+  );
+}
+
+function ViewFriendButton({ email }: { email: string }) {
+  const { session } = useSession();
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <IconButton
+      onPress={async () => {
+        try {
+          await createTab(session, {
+            slug: "/[tab]/users/[id]",
+            params: { id: email },
+          });
+        } catch (e) {
+          Toast.show({
+            type: "error",
+            text1: "Something went wrong. Please try again later",
+          });
+        } finally {
+          setLoading(false);
+        }
+      }}
+      variant="outlined"
+      size={40}
+    >
+      {loading ? <Spinner /> : <Icon>arrow_forward_ios</Icon>}
+    </IconButton>
+  );
+}
+
 export default function Page() {
   const { sessionToken, session } = useUser();
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const [view, setView] = useState<FriendsPageView>("all");
 
-  const { data, isLoading, mutate, error } = useSWR(["user/friends"]);
-  const insets = useSafeAreaInsets();
+  const { data, isLoading, mutate, error } = useSWR([
+    "user/friends",
+    { requests: "true" },
+  ]);
 
   const Header = () => (
     <>
@@ -199,7 +293,7 @@ export default function Page() {
         <Text heading style={{ fontSize: 50 }}>
           Friends
         </Text>
-        <AddFriend mutate={mutate} />
+        <AddFriend friends={data} mutate={mutate} />
       </View>
       <ButtonGroup
         containerStyle={{ backgroundColor: "transparent", borderRadius: 0 }}
@@ -275,8 +369,8 @@ export default function Page() {
                         : view === "blocked"
                         ? "1f910"
                         : view == "requests"
-                        ? "1fae3"
-                        : "1f614"
+                        ? "1f614"
+                        : "1fae3"
                     }
                     size={50}
                   />
@@ -286,10 +380,10 @@ export default function Page() {
                   >
                     {view === "blocked"
                       ? "You haven't blocked anybody"
-                      : view === "requests"
-                      ? "You haven't sent any friend requests"
                       : view === "pending"
-                      ? "You don't have any pending requests"
+                      ? "You haven't sent any friend requests"
+                      : view === "requests"
+                      ? "You don't have any requests"
                       : "You don't have any friends"}
                   </Text>
                 </View>
@@ -298,13 +392,9 @@ export default function Page() {
           }
           renderItem={({ item }: any) => (
             <ListItemButton
-              style={{ backgroundColor: theme[3], marginTop: 10 }}
-              onPress={() =>
-                createTab(sessionToken, {
-                  slug: "/[tab]/users/[id]",
-                  params: { id: item.user.email },
-                })
-              }
+              variant="outlined"
+              style={{ marginTop: 10 }}
+              disabled
             >
               <ProfilePicture
                 style={{ pointerEvents: "none" }}
@@ -313,6 +403,7 @@ export default function Page() {
                 size={40}
               />
               <ListItemText
+                truncate
                 primary={item.user.profile?.name}
                 secondary={`Active ${dayjs(
                   item.user.profile?.lastActive
@@ -320,8 +411,20 @@ export default function Page() {
               />
               {view === "pending" ? (
                 <DeleteRequestButton mutate={mutate} id={item.user.id} />
+              ) : view === "requests" ? (
+                <>
+                  <BlockRequestButton mutate={mutate} id={item.user.id} />
+                  <DeleteRequestButton
+                    reject
+                    mutate={mutate}
+                    id={item.user.id}
+                  />
+                  <AcceptRequestButton mutate={mutate} id={item.user.id} />
+                </>
               ) : (
-                <Icon>arrow_forward_ios</Icon>
+                <>
+                  <ViewFriendButton email={item.user.email} />
+                </>
               )}
             </ListItemButton>
           )}

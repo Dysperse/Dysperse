@@ -1,8 +1,6 @@
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, StyleProp, TextInputProps } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import TextField from "../TextArea";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -36,6 +34,7 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
           height: Math.max(props.fontSize || 15, size),
           overflow: "hidden",
           fontSize: props.fontSize || 15,
+          lineHeight: props.fontSize,
         },
         props.style,
       ]}
