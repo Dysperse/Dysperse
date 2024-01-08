@@ -86,6 +86,7 @@ function Footer({ nameRef, menuRef, control }) {
           value={{ task: {}, mutateList: () => null, updateTask: () => null }}
         >
           <TaskAttachmentButton
+            onAttachmentCreate={(e) => console.log(e)}
             onClose={() => nameRef.current.focus()}
             onOpen={() => nameRef.current.focus()}
           >

@@ -31,7 +31,7 @@ const Task = memo(function Task({
           paddingHorizontal: 15,
           paddingVertical: 15,
           borderRadius: 20,
-          borderWidth: 2,
+          borderWidth: 1,
           borderColor: theme[pressed ? 5 : 4],
           alignItems: "flex-start",
         })}

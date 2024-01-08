@@ -55,7 +55,7 @@ const TaskCheckox = memo(function TaskCheckbox({
             width: 25,
             height: 25,
             borderRadius: 99,
-            borderWidth: 2,
+            borderWidth: 1,
             backgroundColor: isCompleted ? theme[8] : undefined,
             alignItems: "center",
           }}

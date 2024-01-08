@@ -29,8 +29,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   label: {
-    fontSize: 13,
+    fontSize: 11,
     opacity: 0.6,
+    maxHeight: 13,
     textAlign: "center",
   },
   item: {

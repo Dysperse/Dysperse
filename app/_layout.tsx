@@ -1,4 +1,5 @@
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -18,6 +19,7 @@ import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as Updates from "expo-updates";
 import React, { useCallback } from "react";
 import { AppState, Platform, View } from "react-native";
 import "react-native-gesture-handler";
@@ -75,6 +77,10 @@ function ErrorBoundaryComponent() {
           Dysperse unexpectedly crashed, and our team has been notified. Try
           reopening the app to see if that fixes the issue.
         </Text>
+
+        <Button onPress={() => Updates.reloadAsync()}>
+          <Button>Reload</Button>
+        </Button>
       </View>
     </View>
   );

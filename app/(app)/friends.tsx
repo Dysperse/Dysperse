@@ -1,6 +1,8 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
+import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -19,17 +21,58 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { useCallback, useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { Keyboard, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 type FriendsPageView = "all" | "requests" | "pending" | "blocked";
 
-function AddFriend() {
+function AddFriend({ mutate }) {
   const theme = useColorTheme();
+  const [loading, setLoading] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const { session } = useSession();
+
+  const onSubmit = async (values) => {
+    try {
+      Keyboard.dismiss();
+      setLoading(true);
+      await sendApiRequest(
+        session,
+        "POST",
+        "user/friends",
+        {},
+        { body: JSON.stringify({ email: values.email }) }
+      );
+      await mutate();
+      Toast.show({
+        type: "success",
+        text1: "Sent friend request!",
+      });
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    }
+  };
 
   return (
     <>
@@ -62,16 +105,32 @@ function AddFriend() {
             }}
           >
             <Icon>alternate_email</Icon>
-            <TextField
-              bottomSheet
-              autoFocus
-              placeholder="Email or username"
-              style={{
-                padding: 20,
-              }}
+            <Controller
+              control={control}
+              name="email"
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
+                  bottomSheet
+                  autoFocus
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  placeholder="Email or username"
+                  style={{
+                    padding: 20,
+                    fontSize: 20,
+                  }}
+                />
+              )}
             />
           </View>
-          <Button style={{ height: 70 }} variant="filled">
+          <Button
+            isLoading={loading}
+            style={{ height: 70 }}
+            variant="filled"
+            onPress={handleSubmit(onSubmit)}
+          >
             <ButtonText weight={900} style={{ fontSize: 20 }}>
               Send request
             </ButtonText>
@@ -83,13 +142,48 @@ function AddFriend() {
   );
 }
 
+function DeleteRequestButton({ mutate, id }) {
+  const { session } = useSession();
+  const [loading, setLoading] = useState(false);
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      const data = await sendApiRequest(
+        session,
+        "DELETE",
+        "user/friends",
+        {},
+        { body: JSON.stringify({ userId: id }) }
+      );
+      await mutate();
+      Toast.show({
+        type: "success",
+        text1: "Deleted request!",
+      });
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong",
+      });
+    }
+  };
+
+  return (
+    <IconButton variant="outlined" onPress={handleDelete} size={40}>
+      {loading ? <Spinner /> : <Icon>close</Icon>}
+    </IconButton>
+  );
+}
+
 export default function Page() {
   const { sessionToken, session } = useUser();
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const [view, setView] = useState<FriendsPageView>("all");
 
-  const { data, isLoading, error } = useSWR(["user/friends"]);
+  const { data, isLoading, mutate, error } = useSWR(["user/friends"]);
   const insets = useSafeAreaInsets();
 
   const Header = () => (
@@ -105,7 +199,7 @@ export default function Page() {
         <Text heading style={{ fontSize: 50 }}>
           Friends
         </Text>
-        <AddFriend />
+        <AddFriend mutate={mutate} />
       </View>
       <ButtonGroup
         containerStyle={{ backgroundColor: "transparent", borderRadius: 0 }}
@@ -224,7 +318,11 @@ export default function Page() {
                   item.user.profile?.lastActive
                 ).fromNow()}`}
               />
-              <Icon>arrow_forward_ios</Icon>
+              {view === "pending" ? (
+                <DeleteRequestButton mutate={mutate} id={item.user.id} />
+              ) : (
+                <Icon>arrow_forward_ios</Icon>
+              )}
             </ListItemButton>
           )}
           estimatedItemSize={100}

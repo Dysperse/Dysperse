@@ -56,7 +56,7 @@ const OpenTabsList = memo(function OpenTabsList() {
     if (data && Platform.OS !== "web") {
       const index = data.findIndex((i) => i.id === tab);
       if (ref.current.getCurrentIndex() !== index)
-        ref.current.scrollTo({ index, animated: true });
+        ref.current.scrollTo({ index });
     }
   }, [data, tab]);
 

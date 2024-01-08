@@ -23,10 +23,10 @@ const useStreamContext = () => useContext(StreamContext);
 
 const styles = StyleSheet.create({
   headerContainer: {
-    paddingVertical: 100,
+    paddingTop: 100,
+    paddingBottom: 20,
     alignItems: "center",
     gap: 10,
-    marginBottom: -50,
   },
   headerText: {
     fontSize: 50,
@@ -85,6 +85,7 @@ function StreamList({ query, setQuery }) {
               padding: 10,
               ...(columnIndex === 0 && breakpoints.lg && { paddingLeft: 100 }),
               ...(columnIndex === 2 && breakpoints.lg && { paddingRight: 100 }),
+              ...(!breakpoints.lg && { paddingHorizontal: 20 }),
             }}
           >
             <Task onTaskUpdate={onTaskUpdate} task={item} />

@@ -20,13 +20,7 @@ import {
   BottomSheetScrollView,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
-import React, {
-  cloneElement,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Pressable, View, useColorScheme } from "react-native";
 import Animated, {
@@ -131,15 +125,20 @@ function TaskNameInput() {
   );
 }
 
-function TaskLocationPicker({ updateTask, task, children, onClose }) {
-  const trigger = cloneElement(children);
-  const menuRef = useRef<BottomSheetModal>(null);
+function TaskLocationPicker({
+  updateTask,
+  onAttachmentCreate,
+  task,
+  onClose,
+  handleParentClose,
+}) {
   const theme = useColorTheme();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -152,6 +151,11 @@ function TaskLocationPicker({ updateTask, task, children, onClose }) {
   const onSubmit = useCallback(
     async (values) => {
       try {
+        if (typeof onAttachmentCreate === "function") {
+          handleParentClose();
+          onAttachmentCreate(values.location);
+          return;
+        }
         Keyboard.dismiss();
         setIsLoading(true);
         const d = await sendApiRequest(
@@ -177,7 +181,7 @@ function TaskLocationPicker({ updateTask, task, children, onClose }) {
         });
       }
     },
-    [session, task, updateTask]
+    [session, task, updateTask, onAttachmentCreate]
   );
 
   useEffect(() => {
@@ -190,89 +194,54 @@ function TaskLocationPicker({ updateTask, task, children, onClose }) {
   }, [errors.location]);
 
   return (
-    <Menu
-      height={[270]}
-      trigger={trigger}
-      stackBehavior="replace"
-      menuRef={menuRef}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          gap: 20,
-        }}
+    <View style={{ padding: 20, gap: 20, flex: 1 }}>
+      <Controller
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            bottomSheet
+            placeholder="Enter a location"
+            variant="filled+outlined"
+            style={{
+              paddingHorizontal: 25,
+              paddingVertical: 15,
+              fontSize: 20,
+              borderRadius: 999,
+            }}
+            autoFocus
+            onChangeText={onChange}
+            onBlur={onBlur}
+            value={value}
+          />
+        )}
+        name="location"
+      />
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        isLoading={isLoading}
+        style={({ pressed, hovered }: any) => ({
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+          width: "100%",
+          height: 60,
+        })}
       >
-        <IconButton
-          onPress={() => {
-            menuRef.current.close();
-            if (typeof onClose === "function") onClose();
-          }}
-          variant="outlined"
-          size={55}
-        >
-          <Icon>arrow_back_ios_new</Icon>
-        </IconButton>
-        <Text weight={700} style={{ fontSize: 23 }}>
-          Location
-        </Text>
-      </View>
-      <View style={{ padding: 20, gap: 10 }}>
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextField
-              bottomSheet
-              placeholder="Enter a location"
-              variant="filled+outlined"
-              style={{
-                paddingHorizontal: 25,
-                paddingVertical: 15,
-                fontSize: 20,
-                borderRadius: 999,
-              }}
-              autoFocus
-              onChangeText={onChange}
-              onBlur={onBlur}
-              value={value}
-            />
-          )}
-          name="location"
-        />
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          isLoading={isLoading}
-          style={({ pressed, hovered }: any) => ({
-            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-            width: "100%",
-            height: 60,
-          })}
-        >
-          <ButtonText style={{ fontSize: 20 }}>Done</ButtonText>
-        </Button>
-      </View>
-    </Menu>
+        <ButtonText style={{ fontSize: 20 }}>Done</ButtonText>
+        <Icon>check</Icon>
+      </Button>
+    </View>
   );
 }
 
-export function TaskAttachmentButton({
-  children,
-  onClose,
-  onOpen,
-  createTask = false,
+function AttachmentGrid({
+  task,
+  updateTask,
+  setView,
   onAttachmentCreate,
-}: {
-  children?: JSX.Element;
-  onClose?: () => void;
-  onOpen?: () => void;
-  createTask?: boolean;
-  onAttachmentCreate?: (data: string) => void;
+  onClose,
+  menuRef,
 }) {
-  const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
-  const { task, updateTask } = useTaskDrawerContext();
 
   const handleClose = useCallback(() => menuRef.current?.close(), [menuRef]);
 
@@ -282,9 +251,70 @@ export function TaskAttachmentButton({
   ];
 
   return (
+    <>
+      <View style={styles.gridRow}>
+        <Pressable
+          onPress={() => setView("Location")}
+          style={taskMenuCardStyle}
+        >
+          <Avatar size={45}>
+            <Icon style={{ transform: [{ rotate: "-45deg" }] }}>
+              attachment
+            </Icon>
+          </Avatar>
+          <Text style={styles.attachmentCardText}>Location</Text>
+        </Pressable>
+        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
+          <Avatar size={45}>
+            <Icon>link</Icon>
+          </Avatar>
+          <Text style={styles.attachmentCardText}>Link</Text>
+        </Pressable>
+      </View>
+      <View style={styles.gridRow}>
+        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
+          <Avatar size={45}>
+            <Icon>sticky_note_2</Icon>
+          </Avatar>
+          <Text style={styles.attachmentCardText}>Note</Text>
+        </Pressable>
+        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
+          <Avatar size={45}>
+            <Icon>cloud</Icon>
+          </Avatar>
+          <Text style={styles.attachmentCardText}>Image</Text>
+        </Pressable>
+      </View>
+    </>
+  );
+}
+
+export function TaskAttachmentButton({
+  children,
+  onClose,
+  onOpen,
+  onAttachmentCreate,
+}: {
+  children?: JSX.Element;
+  onClose?: () => void;
+  onOpen?: () => void;
+  onAttachmentCreate?: (data: string) => void;
+}) {
+  const { task, updateTask } = useTaskDrawerContext();
+
+  const menuRef = useRef<BottomSheetModal>(null);
+  const theme = useColorTheme();
+
+  const [view, setView] = useState<"Add" | "Location">("Add");
+
+  return (
     <Menu
       menuRef={menuRef}
       height={[390]}
+      onClose={() => {
+        onClose?.();
+        setView("Add");
+      }}
       width={400}
       onOpen={onOpen}
       trigger={
@@ -307,52 +337,42 @@ export function TaskAttachmentButton({
         }}
       >
         <IconButton
-          onPress={() => menuRef.current.close()}
+          onPress={() => {
+            if (view === "Add") {
+              menuRef.current.close();
+            } else {
+              onClose();
+              setView("Add");
+            }
+          }}
           variant="outlined"
           size={55}
         >
-          <Icon>close</Icon>
+          <Icon>{view !== "Add" ? "arrow_back_ios_new" : "close"}</Icon>
         </IconButton>
         <Text weight={700} style={{ fontSize: 23 }}>
-          Add
+          {view}
         </Text>
       </View>
-      <View style={styles.gridRow}>
+      {view === "Add" && (
+        <AttachmentGrid
+          task={task}
+          updateTask={updateTask}
+          menuRef={menuRef}
+          onClose={onClose}
+          onAttachmentCreate={onAttachmentCreate}
+          setView={setView}
+        />
+      )}
+      {view === "Location" && (
         <TaskLocationPicker
+          handleParentClose={() => menuRef.current?.close()}
+          onAttachmentCreate={onAttachmentCreate}
           task={task}
           updateTask={updateTask}
           onClose={onClose}
-        >
-          <Pressable onPress={handleClose} style={taskMenuCardStyle}>
-            <Avatar size={45}>
-              <Icon style={{ transform: [{ rotate: "-45deg" }] }}>
-                attachment
-              </Icon>
-            </Avatar>
-            <Text style={styles.attachmentCardText}>Location</Text>
-          </Pressable>
-        </TaskLocationPicker>
-        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
-          <Avatar size={45}>
-            <Icon>link</Icon>
-          </Avatar>
-          <Text style={styles.attachmentCardText}>Link</Text>
-        </Pressable>
-      </View>
-      <View style={styles.gridRow}>
-        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
-          <Avatar size={45}>
-            <Icon>sticky_note_2</Icon>
-          </Avatar>
-          <Text style={styles.attachmentCardText}>Note</Text>
-        </Pressable>
-        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
-          <Avatar size={45}>
-            <Icon>cloud</Icon>
-          </Avatar>
-          <Text style={styles.attachmentCardText}>Image</Text>
-        </Pressable>
-      </View>
+        />
+      )}
     </Menu>
   );
 }
