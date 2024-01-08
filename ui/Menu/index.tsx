@@ -65,7 +65,7 @@ export function Menu({
         footerComponent={footer}
         stackBehavior={stackBehavior}
         handleComponent={() => null}
-        bottomInset={isKeyboardVisible ? Keyboard.metrics().height : 0}
+        bottomInset={isKeyboardVisible ? Keyboard.metrics()?.height ?? 0 : 0}
       >
         <View
           style={{

@@ -128,6 +128,7 @@ function Header({ query, setQuery }) {
       >
         <TextField
           style={{
+            fontFamily: "body_300",
             flex: 1,
             height: 60,
             borderWidth: 1,
@@ -149,7 +150,17 @@ function Header({ query, setQuery }) {
           }
         >
           <View style={{ paddingHorizontal: 20, gap: 10 }}>
-            <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ fontSize: 20 }} weight={800}>
+                Filter...
+              </Text>
               <IconButton variant="outlined" size={55} onPress={handleClose}>
                 <Icon>close</Icon>
               </IconButton>
@@ -167,7 +178,7 @@ function Header({ query, setQuery }) {
                 style={styles.selectButton}
                 variant="outlined"
               >
-                <ButtonText weight={900} style={styles.selectButtonText}>
+                <ButtonText weight={700} style={styles.selectButtonText}>
                   {button.name}
                 </ButtonText>
               </Button>

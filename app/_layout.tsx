@@ -29,8 +29,7 @@ import { SessionLoadingScreen } from "./(app)/_layout";
 
 if (Platform.OS === "android") {
   NavigationBar.setPositionAsync("absolute");
-  NavigationBar.setBackgroundColorAsync("transparent");
-  NavigationBar.setBackgroundColorAsync("transparent");
+  NavigationBar.setBackgroundColorAsync("rgba(255,255,255,0.005)");
   NavigationBar.setBorderColorAsync("transparent");
 }
 

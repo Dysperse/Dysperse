@@ -6,7 +6,7 @@ import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import Navbar from "@/ui/navbar";
@@ -22,6 +22,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
 import React, { useEffect } from "react";
 import {
@@ -76,6 +77,10 @@ export default function AppLayout() {
     isDark
     // sessionData?.user?.darkMode === "dark"
   );
+
+  if (Platform.OS === "android") {
+    NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
+  }
 
   useEffect(() => {
     if (Platform.OS === "web") {

@@ -333,7 +333,7 @@ function JumpBackIn() {
 
   const handlePress = useCallback(() => {
     if (!data) return;
-    router.push({
+    router.replace({
       pathname: data.slug as string,
       params: {
         tab: data.id,

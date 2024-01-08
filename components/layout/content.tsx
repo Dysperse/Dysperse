@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     overflow: "hidden",
-    borderRadius: 20,
+    //  borderRadius: 20,
   },
 });
 export function ContentWrapper(props: ContentWrapperProps) {
@@ -27,6 +27,7 @@ export function ContentWrapper(props: ContentWrapperProps) {
       style={[
         styles.container,
         {
+          borderRadius: breakpoints.lg ? 20 : 0,
           marginTop: props.noPaddingTop
             ? 0
             : breakpoints.lg

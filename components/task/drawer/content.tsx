@@ -1,4 +1,5 @@
 import { LabelPicker } from "@/components/labels/picker";
+import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
@@ -26,6 +27,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Pressable, View, useColorScheme } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -37,8 +39,6 @@ import { useLabelColors } from "../../labels/useLabelColors";
 import { styles } from "../create/styles";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
-import { Controller, useForm } from "react-hook-form";
-import { useSession } from "@/context/AuthProvider";
 
 function TaskCompleteButton() {
   const theme = useColorTheme();
@@ -131,7 +131,7 @@ function TaskNameInput() {
   );
 }
 
-function TaskLocationPicker({ updateTask, task, children }) {
+function TaskLocationPicker({ updateTask, task, children, onClose }) {
   const trigger = cloneElement(children);
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
@@ -191,7 +191,7 @@ function TaskLocationPicker({ updateTask, task, children }) {
 
   return (
     <Menu
-      height={[250]}
+      height={[270]}
       trigger={trigger}
       stackBehavior="replace"
       menuRef={menuRef}
@@ -204,7 +204,14 @@ function TaskLocationPicker({ updateTask, task, children }) {
           gap: 20,
         }}
       >
-        <IconButton onPress={() => menuRef.current.close()}>
+        <IconButton
+          onPress={() => {
+            menuRef.current.close();
+            if (typeof onClose === "function") onClose();
+          }}
+          variant="outlined"
+          size={55}
+        >
           <Icon>arrow_back_ios_new</Icon>
         </IconButton>
         <Text weight={700} style={{ fontSize: 23 }}>
@@ -219,11 +226,12 @@ function TaskLocationPicker({ updateTask, task, children }) {
             <TextField
               bottomSheet
               placeholder="Enter a location"
-              variant="filled"
+              variant="filled+outlined"
               style={{
                 paddingHorizontal: 25,
                 paddingVertical: 15,
                 fontSize: 20,
+                borderRadius: 999,
               }}
               autoFocus
               onChangeText={onChange}
@@ -237,20 +245,31 @@ function TaskLocationPicker({ updateTask, task, children }) {
           onPress={handleSubmit(onSubmit)}
           isLoading={isLoading}
           style={({ pressed, hovered }: any) => ({
-            borderRadius: 25,
-            padding: 10,
             backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
             width: "100%",
+            height: 60,
           })}
         >
-          <ButtonText>Done</ButtonText>
+          <ButtonText style={{ fontSize: 20 }}>Done</ButtonText>
         </Button>
       </View>
     </Menu>
   );
 }
 
-function TaskAttachmentButton() {
+export function TaskAttachmentButton({
+  children,
+  onClose,
+  onOpen,
+  createTask = false,
+  onAttachmentCreate,
+}: {
+  children?: JSX.Element;
+  onClose?: () => void;
+  onOpen?: () => void;
+  createTask?: boolean;
+  onAttachmentCreate?: (data: string) => void;
+}) {
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
   const { task, updateTask } = useTaskDrawerContext();
@@ -265,12 +284,18 @@ function TaskAttachmentButton() {
   return (
     <Menu
       menuRef={menuRef}
-      height={[400]}
+      height={[390]}
       width={400}
+      onOpen={onOpen}
       trigger={
-        <IconButton style={{ borderWidth: 1, borderColor: theme[6] }} size={55}>
-          <Icon size={27}>edit</Icon>
-        </IconButton>
+        children || (
+          <IconButton
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={55}
+          >
+            <Icon size={27}>edit</Icon>
+          </IconButton>
+        )
       }
     >
       <View
@@ -281,7 +306,11 @@ function TaskAttachmentButton() {
           gap: 20,
         }}
       >
-        <IconButton onPress={() => menuRef.current.close()} variant="filled">
+        <IconButton
+          onPress={() => menuRef.current.close()}
+          variant="outlined"
+          size={55}
+        >
           <Icon>close</Icon>
         </IconButton>
         <Text weight={700} style={{ fontSize: 23 }}>
@@ -289,7 +318,11 @@ function TaskAttachmentButton() {
         </Text>
       </View>
       <View style={styles.gridRow}>
-        <TaskLocationPicker task={task} updateTask={updateTask}>
+        <TaskLocationPicker
+          task={task}
+          updateTask={updateTask}
+          onClose={onClose}
+        >
           <Pressable onPress={handleClose} style={taskMenuCardStyle}>
             <Avatar size={45}>
               <Icon style={{ transform: [{ rotate: "-45deg" }] }}>
@@ -411,7 +444,7 @@ export function TaskDrawerContent({ handleClose }) {
           <TaskAttachmentButton />
         </View>
       </View>
-      <BottomSheetScrollView>
+      <BottomSheetScrollView keyboardShouldPersistTaps>
         <View style={{ paddingBottom: 20, paddingHorizontal: 12 }}>
           <View
             style={{
