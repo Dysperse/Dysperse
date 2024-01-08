@@ -10,7 +10,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import Collapsible from "react-native-collapsible";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 import { TaskStream } from "./audit-log";
@@ -169,79 +168,69 @@ function TaskDateCard() {
   };
 
   return (
-    <Pressable
-      style={{ backgroundColor: theme[open ? 4 : 3], borderRadius: 20 }}
-      onFocus={() => setOpen(true)}
-      onBlur={(e: any) => {
-        if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
-      }}
-      // allow focusing
-      accessible
-      onPress={(e: any) => e.currentTarget.focus()}
+    <Menu
+      trigger={
+        <ListItemButton variant="filled">
+          <Icon>calendar_today</Icon>
+          <ListItemText
+            primary={dayjs(task.due).format("MMM Do, YYYY")}
+            secondary="Does not repeat"
+          />
+        </ListItemButton>
+      }
+      height={[155]}
     >
-      <ListItemButton
-        style={{ backgroundColor: "transparent", zIndex: 999 }}
-        disabled
+      <View
+        style={{
+          flexDirection: "row",
+          paddingVertical: 10,
+        }}
       >
-        <Icon>calendar_today</Icon>
-        <ListItemText
-          primary={dayjs(task.due).format("MMM Do, YYYY")}
-          secondary="Does not repeat"
-        />
-      </ListItemButton>
-      <Collapsible collapsed={!open}>
-        <View
-          style={{
-            flexDirection: "row",
-            paddingVertical: 10,
-          }}
+        <DatePickerModal
+          date={task.due}
+          onDateSelect={handleEditDate}
+          menuRef={dateMenuRef}
         >
-          <DatePickerModal
-            date={task.due}
-            onDateSelect={handleEditDate}
-            menuRef={dateMenuRef}
-          >
-            <Pressable style={drawerStyles.collapsibleMenuItem}>
-              <IconButton
-                disabled
-                style={{ borderWidth: 1, borderColor: theme[6] }}
-                size={50}
-              >
-                <Icon>edit</Icon>
-              </IconButton>
-              <Text>Edit</Text>
-            </Pressable>
-          </DatePickerModal>
-          <Pressable
-            style={drawerStyles.collapsibleMenuItem}
-            onPress={() =>
-              Toast.show({
-                type: "success",
-                text1: "Coming soon!",
-              })
-            }
-          >
+          <Pressable style={drawerStyles.collapsibleMenuItem}>
             <IconButton
               disabled
               style={{ borderWidth: 1, borderColor: theme[6] }}
               size={50}
             >
-              <Icon>autorenew</Icon>
+              <Icon>edit</Icon>
             </IconButton>
-            <Text>Repeat</Text>
+            <Text>Edit</Text>
           </Pressable>
-          <Pressable style={drawerStyles.collapsibleMenuItem}>
-            <IconButton
-              style={{ borderWidth: 1, borderColor: theme[6] }}
-              size={50}
-            >
-              <Icon>close</Icon>
-            </IconButton>
-            <Text>Remove</Text>
-          </Pressable>
-        </View>
-      </Collapsible>
-    </Pressable>
+        </DatePickerModal>
+        <Pressable
+          style={drawerStyles.collapsibleMenuItem}
+          onPress={() =>
+            Toast.show({
+              type: "success",
+              text1: "Coming soon!",
+            })
+          }
+        >
+          <IconButton
+            disabled
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={50}
+          >
+            <Icon>autorenew</Icon>
+          </IconButton>
+          <Text>Repeat</Text>
+        </Pressable>
+        <Pressable style={drawerStyles.collapsibleMenuItem}>
+          <IconButton
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={50}
+          >
+            <Icon>close</Icon>
+          </IconButton>
+          <Text>Remove</Text>
+        </Pressable>
+      </View>
+    </Menu>
   );
 }
 
@@ -283,7 +272,7 @@ export function TaskDetails() {
           />
         ))}
       <TaskStream>
-        <ListItemButton style={{ backgroundColor: theme[3] }}>
+        <ListItemButton variant="filled">
           <Icon>timeline</Icon>
           <ListItemText
             primary="History"

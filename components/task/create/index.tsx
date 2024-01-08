@@ -224,7 +224,6 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
               )
             }
             {...(value && {
-              // label: JSON.stringify(value?.name),
               style: {
                 backgroundColor: colors[value?.color]?.[4],
               },
@@ -304,7 +303,7 @@ function BottomSheetContent({ nameRef, handleClose, defaultValues }) {
   } = useForm({
     defaultValues: {
       name: "",
-      date: defaultValues.date,
+      date: dayjs(defaultValues.date),
       pinned: false,
       label: null,
     },
@@ -320,6 +319,7 @@ function BottomSheetContent({ nameRef, handleClose, defaultValues }) {
         {
           body: JSON.stringify({
             ...data,
+            due: data?.date?.toISOString(),
             pinned: data.pinned,
             labelId: data.label?.id,
             type: "TASK",

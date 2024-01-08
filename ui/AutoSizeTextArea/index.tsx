@@ -34,7 +34,7 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
           height: Math.max(props.fontSize || 15, size),
           overflow: "hidden",
           fontSize: props.fontSize || 15,
-          lineHeight: props.fontSize,
+          lineHeight: props.fontSize + 10,
         },
         props.style,
       ]}
