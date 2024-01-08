@@ -14,6 +14,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import { Menu } from "@/ui/Menu";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -240,6 +241,37 @@ function BlockRequestButton({ mutate, id }) {
   );
 }
 
+function FriendOptionsButton() {
+  return (
+    <Menu
+      height={[315]}
+      trigger={
+        <IconButton variant="outlined" size={40} style={{ marginRight: -10 }}>
+          <Icon>more_vert</Icon>
+        </IconButton>
+      }
+    >
+      <View style={{ paddingHorizontal: 20, gap: 20 }}>
+        <Button style={{ height: 70 }} variant="outlined">
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Remove friend
+          </ButtonText>
+        </Button>
+        <Button style={{ height: 70 }} variant="outlined">
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Block
+          </ButtonText>
+        </Button>
+        <Button style={{ height: 70 }} variant="outlined">
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Cancel
+          </ButtonText>
+        </Button>
+      </View>
+    </Menu>
+  );
+}
+
 function ViewFriendButton({ email }: { email: string }) {
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
@@ -423,6 +455,7 @@ export default function Page() {
                 </>
               ) : (
                 <>
+                  <FriendOptionsButton />
                   <ViewFriendButton email={item.user.email} />
                 </>
               )}
