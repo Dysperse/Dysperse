@@ -2,16 +2,16 @@ import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation
 import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import * as shapes from "@/ui/shapes";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
-import React from "react";
+import React, { memo } from "react";
 import {
   RefreshControl,
   StyleSheet,
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
-    minHeight: 300,
+    minHeight: 250,
   },
   emptyIcon: { transform: [{ rotate: "-45deg" }] },
   emptyIconContainer: {
@@ -39,6 +39,50 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     transform: [{ rotate: "45deg" }],
   },
+});
+
+const PerspectivesEmptyComponent = memo(function PerspectivesEmptyComponent() {
+  const theme = useColorTheme();
+
+  const shapesLength = Array.from({ length: 7 }, (_, i) => `shape${i + 1}`);
+  const Shape =
+    shapes[shapesLength[Math.floor(Math.random() * shapesLength.length)]];
+
+  const messages = [
+    ["1f92b", "Shhh!", "It's quiet here!"],
+    ["1f60a", "Enjoy the calm!", "Take a breather"],
+    ["1f92b", "Silence is golden!", "Embrace the quiet"],
+    ["1f60c", "Pause and relax!", "No plans, no worries"],
+    ["1fab4", "Nothing!?", "Idea: Free time?"],
+    ["1fae0", "Peaceful moment!", "Savor the tranquility"],
+  ];
+
+  const message = messages[Math.floor(Math.random() * messages.length)];
+
+  return (
+    <View style={styles.empty}>
+      <View style={{ position: "relative", marginBottom: 20 }}>
+        <Shape color={theme[5]} size={100} />
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Emoji emoji={message[0]} size={50} />
+        </View>
+      </View>
+      <Text weight={300} style={{ fontSize: 30 }}>
+        {message[1]}
+      </Text>
+      <Text style={{ opacity: 0.6 }}>{message[2]}</Text>
+    </View>
+  );
 });
 
 const renderColumnItem = ({ item, width, mutate, column }: any) => {
@@ -185,22 +229,7 @@ export function Column({
           paddingTop: 15,
           paddingBottom: getBottomNavigationHeight(pathname),
         }}
-        ListEmptyComponent={
-          <View style={styles.empty}>
-            <Avatar
-              size={90}
-              style={[styles.emptyIconContainer, { backgroundColor: theme[3] }]}
-            >
-              <View style={styles.emptyIcon}>
-                <Emoji emoji="1f92b" size={40} />
-              </View>
-            </Avatar>
-            <Text weight={300} style={{ fontSize: 30 }}>
-              Shhh!
-            </Text>
-            <Text style={{ opacity: 0.6 }}>It's quiet here...</Text>
-          </View>
-        }
+        ListEmptyComponent={PerspectivesEmptyComponent}
         renderItem={renderColumnItemWrapper}
         keyExtractor={(i: any) => i.id}
       />
