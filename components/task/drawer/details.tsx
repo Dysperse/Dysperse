@@ -13,6 +13,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 import { TaskStream } from "./audit-log";
+import { TaskAttachmentButton } from "./content";
 import { useTaskDrawerContext } from "./context";
 
 const drawerStyles = StyleSheet.create({
@@ -132,10 +133,6 @@ function TaskAttachmentCategory({ category, attachments }) {
                     onFocus={handleOpen}
                     onBlur={handleClose}
                     value={attachment.data}
-                    onChangeText={(text) => {
-                      // updateTask("name", text);
-                      // setTask((t) => ({ ...t, name: text }));
-                    }}
                   />
                   {open ? (
                     <Button dense style={{ marginLeft: -5 }}>
@@ -162,7 +159,6 @@ function TaskDateCard() {
   const theme = useColorTheme();
   const dateMenuRef = useRef();
 
-  const [open, setOpen] = useState(false);
   const handleEditDate = (date) => {
     updateTask("due", date.toISOString());
   };
@@ -246,6 +242,22 @@ export function TaskDetails() {
 
   return (
     <View style={{ gap: 10 }}>
+      {task.note && (
+        <TaskAttachmentButton defaultView="Note" lockView>
+          <ListItemButton variant="filled">
+            <Icon>sticky_note_2</Icon>
+            <ListItemText primary={task.note} />
+          </ListItemButton>
+        </TaskAttachmentButton>
+      )}
+      {Object.keys(attachmentCategories).length > 0 &&
+        Object.keys(attachmentCategories).map((category) => (
+          <TaskAttachmentCategory
+            attachments={attachmentCategories[category]}
+            category={category}
+            key={category}
+          />
+        ))}
       <TaskDateCard />
       {!task.dateOnly && (
         <ListItemButton style={{ backgroundColor: theme[3] }}>
@@ -263,14 +275,6 @@ export function TaskDetails() {
           />
         </ListItemButton>
       )}
-      {Object.keys(attachmentCategories).length > 0 &&
-        Object.keys(attachmentCategories).map((category) => (
-          <TaskAttachmentCategory
-            attachments={attachmentCategories[category]}
-            category={category}
-            key={category}
-          />
-        ))}
       <TaskStream>
         <ListItemButton variant="filled">
           <Icon>timeline</Icon>

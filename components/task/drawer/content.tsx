@@ -44,28 +44,33 @@ function TaskCompleteButton() {
   const { animatedIndex } = useBottomSheet();
 
   const handlePress = async () => {
-    // setIsLoading(true);
-    const newArr = isCompleted ? [] : [...task.completionInstances, true];
-    updateTask("completionInstances", newArr, false);
-    await sendApiRequest(
-      sessionToken,
-      isCompleted ? "DELETE" : "POST",
-      "space/entity/complete-task",
-      {},
-      {
-        body: JSON.stringify({
-          id: task.id,
-          recurring: false,
-        }),
+    try {
+      const newArr = isCompleted ? [] : [...task.completionInstances, true];
+      updateTask("completionInstances", newArr, false);
+      await sendApiRequest(
+        sessionToken,
+        isCompleted ? "DELETE" : "POST",
+        "space/entity/complete-task",
+        {},
+        {
+          body: JSON.stringify({
+            id: task.id,
+            recurring: false,
+          }),
+        }
+      );
+      if (animatedIndex.value === -1) {
+        mutateList({
+          ...task,
+          completionInstances: newArr,
+        });
       }
-    );
-    if (animatedIndex.value === -1) {
-      mutateList({
-        ...task,
-        completionInstances: newArr,
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
       });
     }
-    // setIsLoading(false);
   };
 
   return (
@@ -125,12 +130,24 @@ function TaskNameInput() {
   );
 }
 
-function TaskLocationPicker({
+function TaskAttachmentPicker({
+  placeholder,
   updateTask,
   onAttachmentCreate,
   task,
-  onClose,
   handleParentClose,
+  footer = null,
+  multiline,
+  type,
+}: {
+  placeholder: string;
+  updateTask?: any;
+  onAttachmentCreate: (newData) => void;
+  task: any;
+  handleParentClose: any;
+  footer?: JSX.Element;
+  multiline?: boolean;
+  type: string;
 }) {
   const theme = useColorTheme();
   const [isLoading, setIsLoading] = useState(false);
@@ -138,11 +155,10 @@ function TaskLocationPicker({
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      location: "",
+      data: type == "NOTE" ? task.note ?? "" : "",
     },
   });
 
@@ -151,8 +167,12 @@ function TaskLocationPicker({
   const onSubmit = useCallback(
     async (values) => {
       try {
+        if (type === "NOTE") {
+          await updateTask("note", values.data);
+          setIsLoading(false);
+          return;
+        }
         if (typeof onAttachmentCreate === "function") {
-          handleParentClose();
           onAttachmentCreate(values.location);
           return;
         }
@@ -166,32 +186,33 @@ function TaskLocationPicker({
           {
             body: JSON.stringify({
               id: task.id,
-              type: "LOCATION",
+              type,
               data: values.location,
             }),
           }
         );
         updateTask("attachments", [...task.attachments, d], false);
-        setIsLoading(false);
       } catch {
-        setIsLoading(false);
         Toast.show({
           type: "error",
           text1: "Something went wrong. Please try again later",
         });
+      } finally {
+        handleParentClose();
+        setIsLoading(false);
       }
     },
-    [session, task, updateTask, onAttachmentCreate]
+    [session, task, updateTask, onAttachmentCreate, handleParentClose, type]
   );
 
   useEffect(() => {
-    if (errors.location) {
+    if (errors.data) {
       Toast.show({
         type: "error",
-        text1: "Please enter a location",
+        text1: "Please enter a " + type.toLowerCase(),
       });
     }
-  }, [errors.location]);
+  }, [errors.data, type]);
 
   return (
     <View style={{ padding: 20, gap: 20, flex: 1 }}>
@@ -201,22 +222,27 @@ function TaskLocationPicker({
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             bottomSheet
-            placeholder="Enter a location"
+            placeholder={placeholder}
             variant="filled+outlined"
             style={{
               paddingHorizontal: 25,
               paddingVertical: 15,
               fontSize: 20,
-              borderRadius: 999,
+              borderRadius: 30,
+              ...(multiline && {
+                flex: 1,
+              }),
             }}
+            multiline={multiline}
             autoFocus
             onChangeText={onChange}
             onBlur={onBlur}
             value={value}
           />
         )}
-        name="location"
+        name="data"
       />
+      {footer}
       <Button
         onPress={handleSubmit(onSubmit)}
         isLoading={isLoading}
@@ -224,6 +250,7 @@ function TaskLocationPicker({
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
           width: "100%",
           height: 60,
+          marginBottom: -20,
         })}
       >
         <ButtonText style={{ fontSize: 20 }}>Done</ButtonText>
@@ -243,69 +270,62 @@ function AttachmentGrid({
 }) {
   const theme = useColorTheme();
 
-  const handleClose = useCallback(() => menuRef.current?.close(), [menuRef]);
-
   const taskMenuCardStyle = ({ pressed, hovered }: any) => [
     styles.attachmentCard,
     { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
   ];
 
-  return (
-    <>
-      <View style={styles.gridRow}>
+  const menuRows = [
+    [
+      { icon: "location_on", text: "Location" },
+      { icon: "link", text: "Link" },
+    ],
+    [
+      { icon: "sticky_note_2", text: "Note" },
+      { icon: "cloud", text: "Image" },
+    ],
+  ];
+
+  return menuRows.map((row, rowIndex) => (
+    <View key={rowIndex} style={styles.gridRow}>
+      {row.map((item, itemIndex) => (
         <Pressable
-          onPress={() => setView("Location")}
+          key={itemIndex}
+          onPress={() => setView(item.text)}
           style={taskMenuCardStyle}
         >
-          <Avatar size={45}>
-            <Icon style={{ transform: [{ rotate: "-45deg" }] }}>
-              attachment
-            </Icon>
+          <Avatar size={45} disabled>
+            <Icon>{item.icon}</Icon>
           </Avatar>
-          <Text style={styles.attachmentCardText}>Location</Text>
+          <Text style={styles.attachmentCardText}>{item.text}</Text>
         </Pressable>
-        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
-          <Avatar size={45}>
-            <Icon>link</Icon>
-          </Avatar>
-          <Text style={styles.attachmentCardText}>Link</Text>
-        </Pressable>
-      </View>
-      <View style={styles.gridRow}>
-        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
-          <Avatar size={45}>
-            <Icon>sticky_note_2</Icon>
-          </Avatar>
-          <Text style={styles.attachmentCardText}>Note</Text>
-        </Pressable>
-        <Pressable onPress={handleClose} style={taskMenuCardStyle}>
-          <Avatar size={45}>
-            <Icon>cloud</Icon>
-          </Avatar>
-          <Text style={styles.attachmentCardText}>Image</Text>
-        </Pressable>
-      </View>
-    </>
-  );
+      ))}
+    </View>
+  ));
 }
 
+type TaskAttachmentType = "Add" | "Location" | "Link" | "Note" | "Image";
 export function TaskAttachmentButton({
   children,
   onClose,
   onOpen,
   onAttachmentCreate,
+  defaultView = "Add",
+  lockView = false,
 }: {
   children?: JSX.Element;
   onClose?: () => void;
   onOpen?: () => void;
   onAttachmentCreate?: (data: string) => void;
+  defaultView?: TaskAttachmentType;
+  lockView?: boolean;
 }) {
   const { task, updateTask } = useTaskDrawerContext();
 
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
 
-  const [view, setView] = useState<"Add" | "Location">("Add");
+  const [view, setView] = useState<TaskAttachmentType>(defaultView);
 
   return (
     <Menu
@@ -313,6 +333,7 @@ export function TaskAttachmentButton({
       height={[390]}
       onClose={() => {
         onClose?.();
+        if (lockView) return;
         setView("Add");
       }}
       width={400}
@@ -338,7 +359,7 @@ export function TaskAttachmentButton({
       >
         <IconButton
           onPress={() => {
-            if (view === "Add") {
+            if (view === "Add" || lockView) {
               menuRef.current.close();
             } else {
               onClose?.();
@@ -348,7 +369,9 @@ export function TaskAttachmentButton({
           variant="outlined"
           size={55}
         >
-          <Icon>{view !== "Add" ? "arrow_back_ios_new" : "close"}</Icon>
+          <Icon>
+            {view === "Add" || lockView ? "close" : "arrow_back_ios_new"}
+          </Icon>
         </IconButton>
         <Text weight={700} style={{ fontSize: 23 }}>
           {view}
@@ -365,12 +388,47 @@ export function TaskAttachmentButton({
         />
       )}
       {view === "Location" && (
-        <TaskLocationPicker
+        <TaskAttachmentPicker
+          type="LOCATION"
+          placeholder="Enter a location"
           handleParentClose={() => menuRef.current?.close()}
           onAttachmentCreate={onAttachmentCreate}
           task={task}
           updateTask={updateTask}
-          onClose={onClose}
+        />
+      )}
+      {view === "Link" && (
+        <TaskAttachmentPicker
+          type="LINK"
+          placeholder="Enter a link"
+          handleParentClose={() => menuRef.current?.close()}
+          onAttachmentCreate={onAttachmentCreate}
+          task={task}
+          updateTask={updateTask}
+          footer={
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                paddingHorizontal: 10,
+              }}
+            >
+              <Icon>lightbulb</Icon>
+              <Text>Supports YouTube, Canvas, Zoom, and more.</Text>
+            </View>
+          }
+        />
+      )}
+      {view === "Note" && (
+        <TaskAttachmentPicker
+          type="NOTE"
+          multiline
+          placeholder="Type in a note..."
+          handleParentClose={() => menuRef.current?.close()}
+          onAttachmentCreate={onAttachmentCreate}
+          task={task}
+          updateTask={updateTask}
         />
       )}
     </Menu>

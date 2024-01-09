@@ -65,7 +65,8 @@
     "sentry-expo": "~7.1.0",
     "expo-application": "~5.3.0",
     "expo-device": "~5.4.0",
-    "@sentry/react-native": "5.10.0"
+    "@sentry/react-native": "5.10.0",
+    "expo-image-picker": "~14.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",
