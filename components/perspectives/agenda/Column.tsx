@@ -53,8 +53,13 @@ const PerspectivesEmptyComponent = memo(function PerspectivesEmptyComponent() {
     ["1f60a", "Enjoy the calm!", "Take a breather"],
     ["1f92b", "Silence is golden!", "Embrace the quiet"],
     ["1f60c", "Pause and relax!", "No plans, no worries"],
-    ["1fab4", "Nothing!?", "Idea: Free time?"],
+    ["1fab4", "Positive vibes", "Idea: Free time?"],
+    ["1f4ab", "Energize yourself", "Maybe get some sleep?"],
     ["1fae0", "Peaceful moment!", "Savor the tranquility"],
+    ["26c5", "Own your day!", "Effort = Results"],
+    ["1f44a", "You're unstoppable!", "Quick stretch or snack"],
+    ["1f5ff", "Crushing it!", "No task is too big"],
+    ["1f64c", "Nothing to see here", "That's a win"],
   ];
 
   const message = messages[Math.floor(Math.random() * messages.length)];
