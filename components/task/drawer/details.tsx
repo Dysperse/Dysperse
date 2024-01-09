@@ -9,7 +9,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 import { TaskStream } from "./audit-log";
@@ -73,7 +73,10 @@ function TaskAttachmentCategory({ category, attachments }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const icon = category === "LOCATION" ? "location_on" : "image";
+  const icon = {
+    LINK: "link",
+    LOCATION: "location_on",
+  }[category];
 
   return (
     <View style={{ backgroundColor: theme[open ? 4 : 3], borderRadius: 20 }}>
@@ -139,8 +142,28 @@ function TaskAttachmentCategory({ category, attachments }) {
                       <Icon>remove_circle</Icon>
                     </Button>
                   ) : (
-                    <Button style={{ backgroundColor: theme[6] }} dense>
-                      <ButtonText>Maps</ButtonText>
+                    <Button
+                      style={{ backgroundColor: theme[6] }}
+                      dense
+                      onPress={() => {
+                        if (attachment.type === "LOCATION") {
+                          Linking.openURL(
+                            `https://www.google.com/maps/dir//${encodeURIComponent(
+                              attachment.data
+                            )}`
+                          );
+                        } else {
+                          try {
+                            Linking.openURL(attachment.data);
+                          } catch (e) {
+                            Toast.show({ type: "error" });
+                          }
+                        }
+                      }}
+                    >
+                      <ButtonText>
+                        {attachment.type === "LINK" ? "Open" : "Maps"}
+                      </ButtonText>
                       <Icon>north_east</Icon>
                     </Button>
                   )}

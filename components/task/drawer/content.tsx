@@ -187,7 +187,7 @@ function TaskAttachmentPicker({
             body: JSON.stringify({
               id: task.id,
               type,
-              data: values.location,
+              data: values.data,
             }),
           }
         );

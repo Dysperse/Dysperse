@@ -1,5 +1,5 @@
 import { StyleProp, View, ViewStyle } from "react-native";
-import { BaseToast, ErrorToast } from "react-native-toast-message";
+import { BaseToast } from "react-native-toast-message";
 import Icon from "./Icon";
 
 const toastStyles = (theme): StyleProp<ViewStyle> => ({
@@ -71,6 +71,7 @@ export const toastConfig = (theme) => ({
       <BaseToast
         {...props}
         style={toastStyles(theme)}
+        text1={props.text1 || "Something went wrong. Please try again later"}
         text1NumberOfLines={null}
         text1Props={text1Props(theme)}
         renderLeadingIcon={() => (
