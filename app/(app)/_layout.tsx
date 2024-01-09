@@ -154,7 +154,7 @@ export default function AppLayout() {
                       padding: breakpoints.lg ? 10 : 0,
                       ...(Platform.OS === "web" &&
                         ({
-                          paddingTop: "calc(env(titlebar-area-height,0) + 10)",
+                          marginTop: "env(titlebar-area-height,0)",
                         } as any)),
                     },
                     // change opacity of the previous screen when swipe
