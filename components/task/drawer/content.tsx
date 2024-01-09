@@ -341,7 +341,7 @@ export function TaskAttachmentButton({
             if (view === "Add") {
               menuRef.current.close();
             } else {
-              onClose();
+              onClose?.();
               setView("Add");
             }
           }}

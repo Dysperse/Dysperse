@@ -75,7 +75,13 @@ const renderColumnItem = ({ item, width, mutate, column }: any) => {
                         : newTask
                       : oldTask
                   )
-                  .filter((e) => e),
+                  .filter((e) => e)
+                  .sort((a, b) => (a.pinned ? 0 : 1) - (b.pinned ? 0 : 1))
+                  .sort(
+                    (a, b) =>
+                      (a.completionInstances.length !== 0 ? 1 : 0) -
+                      (b.completionInstances.length !== 0 ? 1 : 0)
+                  ),
               }
             : oldColumn
         );

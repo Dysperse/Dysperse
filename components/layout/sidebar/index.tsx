@@ -10,6 +10,7 @@ import { router, usePathname } from "expo-router";
 import React, { memo, useCallback } from "react";
 import {
   Linking,
+  Platform,
   Pressable,
   StyleSheet,
   TouchableOpacity,
@@ -195,6 +196,10 @@ export function Sidebar() {
         ...(pathname == "/collections/create" && {
           filter: "brightness(70%)",
         }),
+        ...(Platform.OS === "web" &&
+          ({
+            paddingTop: "env(titlebar-area-height,0)",
+          } as any)),
       }}
     >
       <View style={styles.header}>

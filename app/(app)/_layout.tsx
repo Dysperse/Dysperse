@@ -77,7 +77,6 @@ export default function AppLayout() {
     isDark
     // sessionData?.user?.darkMode === "dark"
   );
-
   if (Platform.OS === "android") {
     NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
   }
@@ -155,7 +154,7 @@ export default function AppLayout() {
                       padding: breakpoints.lg ? 10 : 0,
                       ...(Platform.OS === "web" &&
                         ({
-                          marginTop: "env(titlebar-area-height,0)",
+                          paddingTop: "calc(env(titlebar-area-height,0) + 10)",
                         } as any)),
                     },
                     // change opacity of the previous screen when swipe

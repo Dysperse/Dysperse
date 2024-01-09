@@ -1,5 +1,4 @@
-import ErrorBoundary from "@/components/ErrorBoundary";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -15,6 +14,7 @@ import {
   Jost_800ExtraBold,
   Jost_900Black,
 } from "@expo-google-fonts/jost";
+import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import { Slot } from "expo-router";
@@ -78,8 +78,12 @@ function ErrorBoundaryComponent() {
           reopening the app to see if that fixes the issue.
         </Text>
 
-        <Button onPress={() => Updates.reloadAsync()}>
-          <Button>Reload</Button>
+        <Button
+          onPress={() => Updates.reloadAsync()}
+          variant="outlined"
+          style={{ marginTop: 10 }}
+        >
+          <ButtonText>Reload</ButtonText>
         </Button>
       </View>
     </View>
@@ -191,7 +195,7 @@ export default function Root() {
 
   return (
     <ColorThemeProvider theme={theme}>
-      <ErrorBoundary fallback={<ErrorBoundaryComponent />}>
+      <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
         <SessionProvider>
           <SWRWrapper>
             <Slot screenOptions={{ onLayoutRootView }} />
