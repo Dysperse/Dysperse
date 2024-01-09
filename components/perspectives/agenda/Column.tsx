@@ -59,7 +59,7 @@ const PerspectivesEmptyComponent = memo(function PerspectivesEmptyComponent() {
     ["26c5", "Own your day!", "Effort = Results"],
     ["1f44a", "You're unstoppable!", "Quick stretch or snack"],
     ["1f5ff", "Crushing it!", "No task is too big"],
-    ["1f985", "Look at yourself", "Aren't you amazing!?"],
+    ["1f985", "Look at yourself", "You're beautiful."],
   ];
 
   const message = messages[Math.floor(Math.random() * messages.length)];
