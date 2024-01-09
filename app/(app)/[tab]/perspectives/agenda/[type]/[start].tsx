@@ -9,7 +9,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { AgendaContext, useAgendaContext } from "../context";
