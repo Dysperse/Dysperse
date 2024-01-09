@@ -139,8 +139,7 @@ export function Column({
           borderRadius: 20,
         }),
         width: breakpoints.lg ? 300 : width,
-        overflow: "hidden",
-        height: "100%",
+        flex: 1,
         minWidth: 5,
         minHeight: 5,
       }}

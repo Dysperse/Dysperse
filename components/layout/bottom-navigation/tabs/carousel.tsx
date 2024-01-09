@@ -94,7 +94,6 @@ const OpenTabsList = memo(function OpenTabsList() {
       <Carousel
         loop={false}
         {...baseOptions}
-        enabled={Platform.OS !== "web"}
         ref={ref}
         style={{
           width: "100%",

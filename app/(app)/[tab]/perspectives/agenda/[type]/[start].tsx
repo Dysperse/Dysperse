@@ -120,7 +120,13 @@ function Agenda() {
         currentDateEnd={column?.end}
       />
       {data ? (
-        <View style={{ flex: 1 }}>
+        <View
+          style={{
+            flex: 1,
+            ...(Platform.OS === "web" &&
+              ({ maxHeight: "calc(100dvh - 120px)" } as any)),
+          }}
+        >
           <AgendaSelector type={type} data={data} start={column?.start} />
           <Column mutate={mutate} column={column} />
         </View>
