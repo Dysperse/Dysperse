@@ -291,7 +291,12 @@ function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
   );
 }
 
-function BottomSheetContent({ nameRef, handleClose, defaultValues }) {
+function BottomSheetContent({
+  nameRef,
+  handleClose,
+  defaultValues,
+  mutateList,
+}) {
   const { sessionToken } = useUser();
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
@@ -325,7 +330,9 @@ function BottomSheetContent({ nameRef, handleClose, defaultValues }) {
             type: "TASK",
           }),
         }
-      ).then((e) => console.log(e));
+      )
+        .then((e) => mutateList(e))
+        .then((e) => console.log(e));
       reset();
       Toast.show({
         type: "success",
@@ -398,7 +405,7 @@ export default function CreateTask({
   defaultValues?: {
     date?: Dayjs;
   };
-  mutate: () => void;
+  mutate: (newTask) => void;
 }) {
   const ref = useRef<BottomSheetModal>(null);
 
@@ -416,7 +423,7 @@ export default function CreateTask({
 
   const handleClose = useCallback(() => {
     ref.current?.close();
-    mutate();
+    mutate(null);
   }, [mutate]);
 
   const trigger = useMemo(
@@ -438,6 +445,7 @@ export default function CreateTask({
           handleClose={handleClose}
           defaultValues={defaultValues}
           nameRef={nameRef}
+          mutateList={mutate}
         />
       </BottomSheet>
     </>

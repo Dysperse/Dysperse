@@ -22,6 +22,23 @@ const Header = memo(function Header() {
   );
 });
 
+const useKeyboardShortcut = (keys, callback) => {
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      // Bind the keyboard shortcut using Mousetrap
+      window.Mousetrap.bind(keys, (e, combo) => {
+        e.preventDefault();
+        callback(combo);
+      });
+
+      // Cleanup: Unbind the keyboard shortcut when the component is unmounted
+      return () => {
+        window.Mousetrap.unbind(keys);
+      };
+    }
+  }, [keys, callback]);
+};
+
 const OpenTabsList = memo(function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
   const { width } = useWindowDimensions();
@@ -69,6 +86,31 @@ const OpenTabsList = memo(function OpenTabsList() {
       }
     }
   }, [tab, data]);
+
+  useKeyboardShortcut(["ctrl+tab"], () => {
+    const i = data.findIndex((i) => i.id === tab);
+    let d = i + 1;
+    if (d >= data.length || i === -1) d = 0;
+    handleSnapToIndex(d);
+  });
+
+  useKeyboardShortcut(["ctrl+shift+tab"], () => {
+    const i = data.findIndex((i) => i.id === tab);
+    let d = i - 1;
+    if (i === 0) d = data.length - 1;
+    handleSnapToIndex(d);
+  });
+
+  useKeyboardShortcut(
+    Array(9)
+      .fill(0)
+      .map((_, index) => "ctrl+" + (index + 1)),
+    (combo) => {
+      const i = parseInt(combo.split("+")[1]) - 1;
+      if (i === 8) return handleSnapToIndex(data.length - 1);
+      if (data[i]) handleSnapToIndex(i);
+    }
+  );
 
   return data && Array.isArray(data) ? (
     width > 600 ? (

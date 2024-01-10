@@ -214,7 +214,38 @@ export function Column({
             >
               <CreateTask
                 defaultValues={{ date: dayjs(column.start) }}
-                mutate={() => mutate()}
+                mutate={(newTask) => {
+                  console.log(newTask);
+                  if (!newTask) return;
+                  if (
+                    !dayjs(newTask.due)
+                      .utc()
+                      .isBetween(
+                        dayjs(column.start),
+                        dayjs(column.end),
+                        null,
+                        "[]"
+                      ) ||
+                    !newTask.due
+                  )
+                    return;
+
+                  console.log("hiiii");
+
+                  mutate(
+                    (oldData) => {
+                      oldData.map((oldColumn) =>
+                        oldColumn.start === column.start &&
+                        oldColumn.end === column.end
+                          ? {}
+                          : oldColumn
+                      );
+                    },
+                    {
+                      revalidate: false,
+                    }
+                  );
+                }}
               >
                 <Button variant="filled" style={{ flex: 1 }}>
                   <Icon>add</Icon>

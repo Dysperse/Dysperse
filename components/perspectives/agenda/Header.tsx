@@ -1,10 +1,10 @@
+import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View } from "react-native";
-import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { LinearGradient } from "expo-linear-gradient";
 
 export function Header({ start, end }) {
   const { type } = useAgendaContext();
@@ -33,6 +33,8 @@ export function Header({ start, end }) {
         alignItems: "center",
         justifyContent: "center",
         padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
       }}
     >
       <View

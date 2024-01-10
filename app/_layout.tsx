@@ -35,6 +35,12 @@ if (Platform.OS === "android") {
   NavigationBar.setBorderColorAsync("transparent");
 }
 
+declare global {
+  interface Window {
+    Mousetrap?: any;
+  }
+}
+
 Sentry.init({
   dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
   enableInExpoDevelopment: false,
@@ -94,11 +100,14 @@ function localStorageProvider() {
   // When initializing, we restore the data from `localStorage` into a map.
   const map = new Map(JSON.parse(localStorage.getItem("app-cache") || "[]"));
 
-  // Before unloading the app, we write back all the data into `localStorage`.
-  window.addEventListener("beforeunload", () => {
+  const save = () => {
     const appCache = JSON.stringify(Array.from(map.entries()));
     localStorage.setItem("app-cache", appCache);
-  });
+  };
+
+  // Before unloading the app, we write back all the data into `localStorage`.
+  window.addEventListener("beforeunload", save);
+  window.addEventListener("visibilitychange", save);
 
   // We still use the map for write & read for performance.
   return map;
