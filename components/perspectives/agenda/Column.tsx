@@ -188,7 +188,7 @@ function ReorderModal({ column, children }) {
           data={column.tasks}
           onOrderChange={() => {}}
           contentContainerStyle={{ paddingBottom: 100 }}
-          renderItem={({ item }) => (
+          renderItem={({ item }: any) => (
             <View
               style={{
                 height: 100,
@@ -206,7 +206,12 @@ function ReorderModal({ column, children }) {
               </Avatar>
               <ListItemText
                 primary={item.name}
-                secondary={item.note || dayjs(item.due).format("MMM D, YYYY")}
+                secondary={
+                  item.note ||
+                  dayjs(item.due).format(
+                    item.dateOnly ? "MMM Do, YYYY" : "MMM Do @ hh:mm A"
+                  )
+                }
               />
               <Icon>drag_indicator</Icon>
             </View>
@@ -426,7 +431,7 @@ export function Column({
         data={column.tasks.sort((a, b) =>
           a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
         )}
-        estimatedItemSize={103}
+        estimatedItemSize={200}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
