@@ -24,6 +24,7 @@ import {
 } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import SortableList from "react-native-ui-lib/sortableList";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
 
@@ -151,7 +152,16 @@ function ReorderModal({ column, children }) {
     <>
       {trigger}
       <BottomSheet sheetRef={ref} onClose={handleClose} snapPoints={["90%"]}>
-        <Text>{JSON.stringify(column, null, 2)}</Text>
+        <SortableList
+          data={column.tasks}
+          onOrderChange={() => {}}
+          renderItem={({ item }) => (
+            <View style={{ height: 100 }}>
+              <Text>{JSON.stringify(item)}</Text>
+            </View>
+          )}
+          keyExtractor={(i) => i.id}
+        />
       </BottomSheet>
     </>
   );
