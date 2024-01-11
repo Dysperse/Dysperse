@@ -1,4 +1,5 @@
 import { useUser } from "@/context/useUser";
+import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -79,6 +80,8 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
+
+  useKeyboardShortcut(["ctrl+k", "ctrl+/"], () => router.push("/open"));
 
   return (
     <Pressable
