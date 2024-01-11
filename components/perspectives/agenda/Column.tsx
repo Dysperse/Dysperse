@@ -411,7 +411,15 @@ export function Column({
               ]}
             >
               <CreateTask
-                defaultValues={{ date: dayjs(column.start) }}
+                defaultValues={{
+                  date: dayjs(column.start),
+                  agendaOrder: LexoRank.parse(
+                    column.tasks[column.tasks.length - 1]?.agendaOrder ||
+                      LexoRank.max().toString()
+                  )
+                    .genNext()
+                    .toString(),
+                }}
                 mutate={(newTask) => {
                   console.log(newTask);
                   if (!newTask) return;

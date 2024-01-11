@@ -1,6 +1,8 @@
+import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import {
   BottomSheetModal,
   BottomSheetProps,
+  useBottomSheet,
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
 import { Ref, memo } from "react";
@@ -29,6 +31,12 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
   },
 });
+
+function BottomSheetEscapeHandler() {
+  const { forceClose } = useBottomSheet();
+  useKeyboardShortcut(["esc"], () => forceClose());
+  return null;
+}
 
 const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
@@ -61,9 +69,9 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       {props.disableBackHandler !== true && Platform.OS !== "web" && (
         <BottomSheetBackHandler />
       )}
-      {/* {Platform.OS === "web" && props.disableEscapeHandler !== true && (
+      {Platform.OS === "web" && props.disableEscapeHandler !== true && (
         <BottomSheetEscapeHandler handleClose={props.onClose} />
-      )} */}
+      )}
       {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
       {props.children}
     </BottomSheetModal>

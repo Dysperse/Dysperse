@@ -61,6 +61,8 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const handleHome = () => router.push("/");
   const theme = useColorTheme();
 
+  useKeyboardShortcut(["ctrl+0"], () => router.push("/"));
+
   return (
     <Pressable
       onPress={handleHome}
@@ -81,7 +83,9 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
-  useKeyboardShortcut(["ctrl+k", "ctrl+/"], () => router.push("/open"));
+  useKeyboardShortcut(["ctrl+k", "ctrl+/", "ctrl+o"], () =>
+    router.push("/open")
+  );
 
   return (
     <Pressable

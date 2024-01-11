@@ -325,6 +325,7 @@ function BottomSheetContent({
           body: JSON.stringify({
             ...data,
             due: data?.date?.toISOString(),
+            agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,
             labelId: data.label?.id,
             type: "TASK",
@@ -398,12 +399,14 @@ export default function CreateTask({
   children,
   defaultValues = {
     date: dayjs().utc(),
+    agendaOrder: null,
   },
   mutate,
 }: {
   children: any;
   defaultValues?: {
     date?: Dayjs;
+    agendaOrder?: string;
   };
   mutate: (newTask) => void;
 }) {
@@ -417,7 +420,7 @@ export default function CreateTask({
     if (Platform.OS === "web") {
       setTimeout(() => {
         nameRef.current.focus();
-      }, 200);
+      }, 500);
     }
   }, []);
 
