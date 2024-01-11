@@ -1,6 +1,8 @@
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -8,16 +10,21 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
-import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
-import React, { memo } from "react";
+import { LexoRank } from "lexorank";
+import React, { cloneElement, memo } from "react";
 import {
   RefreshControl,
   StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
+import DraggableFlatList, {
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
 
@@ -90,17 +97,70 @@ const PerspectivesEmptyComponent = memo(function PerspectivesEmptyComponent() {
   );
 });
 
-const renderColumnItem = ({ item, width, mutate, column }: any) => {
-  const Container = ({ children }: { children: React.ReactNode }) => (
-    <View
-      style={{
-        paddingHorizontal: width > 600 ? 0 : 15,
-        paddingVertical: 5,
-      }}
-    >
-      {children}
-    </View>
-  );
+const renderColumnItem = ({
+  onTaskUpdate,
+  item,
+  width,
+  drag,
+  isActive,
+}: RenderItemParams<any> & {
+  width: any;
+  onTaskUpdate: any;
+}) => {
+  const Container = ({ children }: { children: JSX.Element }) => {
+    const trigger = cloneElement(children, { drag, isActive });
+    return (
+      // <ScaleDecorator activeScale={1.05}>
+      <View
+        style={{
+          paddingHorizontal: width > 600 ? 0 : 15,
+          paddingVertical: 5,
+        }}
+      >
+        {trigger}
+      </View>
+      //</ScaleDecorator>
+    );
+  };
+
+  switch (item.type) {
+    case "TASK":
+      return (
+        <Container>
+          <Task onTaskUpdate={onTaskUpdate} task={item} />
+        </Container>
+      );
+    default:
+      return (
+        <Container>
+          <TouchableOpacity onLongPress={drag} disabled={isActive}>
+            <Text>{item.name}</Text>
+            <Text>{item.agendaOrder?.toString()}</Text>
+          </TouchableOpacity>
+        </Container>
+      );
+  }
+};
+
+export function Column({
+  mutate,
+  column,
+}: {
+  mutate: KeyedMutator<any>;
+  column: any;
+}) {
+  const theme = useColorTheme();
+  const { width, height } = useWindowDimensions();
+  const { session } = useSession();
+  const pathname = usePathname();
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await mutate();
+    setRefreshing(false);
+  }, [mutate]);
 
   const onTaskUpdate = (newTask) => {
     mutate(
@@ -124,13 +184,14 @@ const renderColumnItem = ({ item, width, mutate, column }: any) => {
                         : newTask
                       : oldTask
                   )
-                  .filter((e) => e)
-                  .sort((a, b) => (a.pinned ? 0 : 1) - (b.pinned ? 0 : 1))
-                  .sort(
-                    (a, b) =>
-                      (a.completionInstances.length !== 0 ? 1 : 0) -
-                      (b.completionInstances.length !== 0 ? 1 : 0)
-                  ),
+                  .filter((e) => e),
+
+                // .sort((a, b) => (a.pinned ? 0 : 1) - (b.pinned ? 0 : 1))
+                // .sort(
+                //   (a, b) =>
+                //     (a.completionInstances.length !== 0 ? 1 : 0) -
+                //     (b.completionInstances.length !== 0 ? 1 : 0)
+                // ),
               }
             : oldColumn
         );
@@ -141,43 +202,9 @@ const renderColumnItem = ({ item, width, mutate, column }: any) => {
     );
   };
 
-  switch (item.type) {
-    case "TASK":
-      return (
-        <Container>
-          <Task onTaskUpdate={onTaskUpdate} task={item} />
-        </Container>
-      );
-    default:
-      return (
-        <Container>
-          <Text>Invalid entity type</Text>
-        </Container>
-      );
-  }
-};
-
-export function Column({
-  mutate,
-  column,
-}: {
-  mutate: KeyedMutator<any>;
-  column: any;
-}) {
-  const theme = useColorTheme();
-  const { width } = useWindowDimensions();
-  const pathname = usePathname();
-
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true);
-    await mutate();
-    setRefreshing(false);
-  }, [mutate]);
-
   const renderColumnItemWrapper = (props) =>
-    renderColumnItem({ ...props, width, mutate, column });
+    renderColumnItem({ ...props, width, onTaskUpdate });
+
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -194,7 +221,37 @@ export function Column({
       }}
     >
       {breakpoints.lg && <Header start={column.start} end={column.end} />}
-      <FlashList
+      <DraggableFlatList
+        onDragEnd={async (params) => {
+          const previousItem = LexoRank.parse(
+            params.data[params.to - 1]?.agendaOrder ?? LexoRank.min().toString()
+          );
+          const nextItem = LexoRank.parse(
+            params.data[params.to + 1]?.agendaOrder ?? LexoRank.max().toString()
+          );
+          const newId = previousItem.between(nextItem).toString();
+          const task = column.tasks[params.from];
+          onTaskUpdate({
+            ...task,
+            agendaOrder: newId,
+          });
+
+          sendApiRequest(session, "PUT", "space/entity", {
+            id: task.id,
+            agendaOrder: newId,
+          }).catch((e) => {
+            onTaskUpdate(task);
+            Toast.show({
+              type: "error",
+              text1: "Something went wrong. Please try again later.",
+            });
+          });
+        }}
+        // containerStyle={{ flex: 1 }}
+        style={{ height: height - 30 - 120 - 70 }}
+        // renderPlaceholder={() => (
+        //   <View style={{ height: 10, backgroundColor: "red", width: "100%" }} />
+        // )}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -230,17 +287,17 @@ export function Column({
                   )
                     return;
 
-                  console.log("hiiii");
-
                   mutate(
-                    (oldData) => {
+                    (oldData) =>
                       oldData.map((oldColumn) =>
                         oldColumn.start === column.start &&
                         oldColumn.end === column.end
-                          ? {}
+                          ? {
+                              ...oldColumn,
+                              tasks: [...oldColumn.tasks, newTask],
+                            }
                           : oldColumn
-                      );
-                    },
+                      ),
                     {
                       revalidate: false,
                     }
@@ -258,8 +315,9 @@ export function Column({
             </View>
           </>
         }
-        data={column.tasks}
-        estimatedItemSize={103}
+        data={column.tasks.sort((a, b) =>
+          a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
+        )}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,

@@ -35,7 +35,6 @@ function Agenda() {
           dayjs(params.start as any).isBetween(col.start, col.end, null, "[]")
         )
       : null;
-
   const agendaFallback = (
     <View
       style={{

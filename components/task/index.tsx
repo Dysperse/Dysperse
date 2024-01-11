@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -13,19 +14,23 @@ import { TaskDrawer } from "./drawer";
 const Task = memo(function Task({
   task,
   onTaskUpdate,
+  drag,
+  isActive,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
+  drag?: any;
+  isActive?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange", useColorScheme() === "dark");
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <TaskDrawer id={task.id} mutateList={onTaskUpdate}>
       <ListItemButton
-        onLongPress={() => {
-          console.log("long press");
-        }}
+        onLongPress={drag}
+        disabled={isActive}
         style={({ pressed }) => ({
           flexShrink: 0,
           paddingHorizontal: 15,
@@ -33,6 +38,7 @@ const Task = memo(function Task({
           borderRadius: 20,
           borderWidth: 1,
           borderColor: theme[pressed ? 5 : 4],
+          backgroundColor: theme[breakpoints.lg ? 2 : 1],
           alignItems: "flex-start",
         })}
       >

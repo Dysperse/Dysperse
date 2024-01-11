@@ -24,7 +24,7 @@ export function TaskDrawer({ mutateList, children, id }) {
   );
 
   // callbacks
-  const handleOpen = useCallback(() => {
+  const handleOpen = useCallback((e) => {
     ref.current?.present();
     setOpen(true);
   }, []);

@@ -1,3 +1,4 @@
+import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -21,23 +22,6 @@ const Header = memo(function Header() {
     </Text>
   );
 });
-
-const useKeyboardShortcut = (keys, callback) => {
-  useEffect(() => {
-    if (Platform.OS === "web") {
-      // Bind the keyboard shortcut using Mousetrap
-      window.Mousetrap.bind(keys, (e, combo) => {
-        e.preventDefault();
-        callback(combo);
-      });
-
-      // Cleanup: Unbind the keyboard shortcut when the component is unmounted
-      return () => {
-        window.Mousetrap.unbind(keys);
-      };
-    }
-  }, [keys, callback]);
-};
 
 const OpenTabsList = memo(function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
