@@ -33,7 +33,11 @@ export function SpacesTrigger({ children }) {
     >
       {data ? (
         <FlatList
-          data={data}
+          data={data.filter((e) => {
+            if (e.accepted && view === "all") return true;
+            if (!e.accepted && view === "invitations") return true;
+            return false;
+          })}
           ListHeaderComponent={
             <View>
               <View

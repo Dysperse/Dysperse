@@ -1,26 +1,26 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
-import { ProfilePicture } from "@/ui/Avatar";
-import Divider from "@/ui/Divider";
+import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { cloneElement } from "react";
 import {
   Platform,
-  ScrollView,
   StyleSheet,
   View,
   useColorScheme,
   useWindowDimensions,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import useSWR from "swr";
 
 const spaceStyles = StyleSheet.create({
@@ -67,51 +67,79 @@ function MembersTrigger({ space }: any) {
   const theme = useColor(space.color, useColorScheme() === "dark");
 
   return (
-    <TouchableOpacity>
-      <View style={spaceStyles.button}>
-        <View style={spaceStyles.buttonContent}>
-          <Text variant="eyebrow">Members</Text>
-          <View style={{ flexDirection: "row", marginLeft: 10 }}>
-            {[...new Array(4)].map((_, i) => (
-              <ProfilePicture
-                name="Manu"
-                image=""
-                size={45}
-                key={i}
-                style={{
-                  marginLeft: -10,
-                  borderWidth: 3,
-                  borderColor: theme[1],
-                }}
-              />
-            ))}
-          </View>
-        </View>
-        <Icon>arrow_forward_ios</Icon>
-      </View>
-    </TouchableOpacity>
+    <View style={{ padding: 20 }}>
+      <Text variant="eyebrow" style={{ paddingLeft: 8 }}>
+        Members
+      </Text>
+      {space.members.map((member) => (
+        <ListItemButton key={member.id} disabled>
+          <ProfilePicture
+            size={35}
+            name={member.user.profile.name}
+            image={member.user.profile.picture}
+          />
+          <ListItemText
+            primary={member.user.profile.name}
+            secondary={capitalizeFirstLetter(member.access.toLowerCase())}
+          />
+          <IconButton icon="more_horiz" variant="outlined" />
+        </ListItemButton>
+      ))}
+    </View>
   );
 }
 
-function StorageTrigger({ children }) {
-  const trigger = cloneElement(children, {});
-  return <>{trigger}</>;
+function StorageTrigger({ space }) {
+  const theme = useColorTheme();
+  const cardStyles: any = {
+    borderWidth: 2,
+    borderColor: theme[6],
+    height: 130,
+    flex: 1,
+    justifyContent: "flex-end",
+    borderRadius: 20,
+    padding: 20,
+  };
+  const rowStyles: any = { flexDirection: "row", gap: 20, marginBottom: 20 };
+  return (
+    <View style={{ padding: 20, paddingLeft: 28 }}>
+      <Text variant="eyebrow">Storage</Text>
+      <View style={rowStyles}>
+        <View style={cardStyles}>
+          <Avatar icon="check" theme={space.color} />
+          <Text>{space._count.entities} </Text>
+          <Text>Tasks</Text>
+        </View>
+        <View style={cardStyles}>
+          <Avatar icon="package_2" theme={space.color} />
+          <Text>{space._count.entities} </Text>
+          <Text>Items</Text>
+        </View>
+      </View>
+      <View style={rowStyles}>
+        <View style={cardStyles}>
+          <Avatar icon="sticky_note_2" theme={space.color} />
+          <Text>{space._count.entities} </Text>
+          <Text>Notes</Text>
+        </View>
+        <View style={cardStyles}>
+          <Avatar icon="label" theme={space.color} />
+          <Text>{space._count.labels} </Text>
+          <Text>Labels</Text>
+        </View>
+      </View>
+    </View>
+  );
 }
 
 function SpacePage({ space }: any) {
   const theme = useColor(space.color, useColorScheme() === "dark");
   const { height } = useWindowDimensions();
 
-  const divider = (
-    <View style={{ paddingHorizontal: 20 }}>
-      <Divider />
-    </View>
-  );
-
   return (
     <ColorThemeProvider theme={theme}>
       <ContentWrapper noPaddingTop>
-        <ScrollView contentContainerStyle={{ height }}>
+        <ScrollView>
           {Platform.OS === "ios" && (
             <View
               style={{
@@ -175,20 +203,6 @@ function SpacePage({ space }: any) {
           </LinearGradient>
           <View style={{ backgroundColor: theme[1], flex: 1 }}>
             <MembersTrigger space={space} />
-            {divider}
-            <StorageTrigger>
-              <TouchableOpacity style={spaceStyles.button}>
-                <View style={spaceStyles.buttonContent}>
-                  <Text variant="eyebrow" style={{ marginBottom: 10 }}>
-                    Storage
-                  </Text>
-                  <ProgressBar progress={0.4} height={10} />
-                  <Text style={{ opacity: 0.6, marginTop: 4 }}>40% used</Text>
-                </View>
-                <Icon>arrow_forward_ios</Icon>
-              </TouchableOpacity>
-            </StorageTrigger>
-            {divider}
             <TouchableOpacity style={spaceStyles.button}>
               <View style={spaceStyles.buttonContent}>
                 <Text variant="eyebrow">Integrations</Text>
@@ -196,6 +210,7 @@ function SpacePage({ space }: any) {
               </View>
               <Icon>arrow_forward_ios</Icon>
             </TouchableOpacity>
+            <StorageTrigger space={space} />
           </View>
         </ScrollView>
       </ContentWrapper>

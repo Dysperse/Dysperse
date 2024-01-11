@@ -210,7 +210,7 @@ function ReorderModal({ onTaskUpdate, column, children }) {
         </View>
         <SortableList
           data={column.tasks}
-          onOrderChange={(newData) => {
+          onOrderChange={(newData: any) => {
             const { fromIndex, toIndex } = findChangedItem(
               column.tasks,
               newData
