@@ -2,6 +2,7 @@ import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation
 import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";
 import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
@@ -15,9 +16,9 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { usePathname } from "expo-router";
+import { LexoRank } from "lexorank";
 import React, { cloneElement, memo, useCallback, useRef } from "react";
 import {
   RefreshControl,
@@ -26,7 +27,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { RenderItemParams } from "react-native-draggable-flatlist";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import SortableList from "react-native-ui-lib/sortableList";
 import { KeyedMutator } from "swr";
 import CreateTask from "../../task/create";
@@ -51,6 +53,27 @@ const styles = StyleSheet.create({
   },
 });
 
+function findChangedItem(oldArray, newArray) {
+  if (oldArray.length !== newArray.length) {
+    return null;
+  }
+
+  for (let i = 0; i < oldArray.length; i++) {
+    if (!isEqual(oldArray[i], newArray[i])) {
+      return {
+        fromIndex: i,
+        toIndex: newArray.indexOf(oldArray[i]),
+        item: newArray[i],
+      };
+    }
+  }
+
+  return null;
+}
+
+function isEqual(obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
 const PerspectivesEmptyComponent = memo(function PerspectivesEmptyComponent() {
   const theme = useColorTheme();
 
@@ -145,12 +168,13 @@ const renderColumnItem = ({
   }
 };
 
-function ReorderModal({ column, children }) {
+function ReorderModal({ onTaskUpdate, column, children }) {
   const ref = useRef<BottomSheetModal>(null);
   const handleOpen = useCallback(() => ref.current.present(), []);
   const handleClose = useCallback(() => ref.current.close(), []);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
+  const { session } = useSession();
 
   const theme = useColorTheme();
   return (
@@ -186,7 +210,36 @@ function ReorderModal({ column, children }) {
         </View>
         <SortableList
           data={column.tasks}
-          onOrderChange={() => {}}
+          onOrderChange={(newData) => {
+            const { fromIndex, toIndex } = findChangedItem(
+              column.tasks,
+              newData
+            );
+
+            const previousItem = LexoRank.parse(
+              newData[toIndex - 1]?.agendaOrder ?? LexoRank.min().toString()
+            );
+            const nextItem = LexoRank.parse(
+              newData[toIndex + 1]?.agendaOrder ?? LexoRank.max().toString()
+            );
+            const newId = previousItem.between(nextItem).toString();
+            const task = column.tasks[fromIndex];
+            onTaskUpdate({
+              ...task,
+              agendaOrder: newId,
+            });
+
+            sendApiRequest(session, "PUT", "space/entity", {
+              id: task.id,
+              agendaOrder: newId,
+            }).catch((e) => {
+              onTaskUpdate(task);
+              Toast.show({
+                type: "error",
+                text1: "Something went wrong. Please try again later.",
+              });
+            });
+          }}
           contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }: any) => (
             <View
@@ -216,14 +269,14 @@ function ReorderModal({ column, children }) {
               <Icon>drag_indicator</Icon>
             </View>
           )}
-          keyExtractor={(i) => i.id}
+          keyExtractor={(i, d) => `${i.id}-${d}`}
         />
       </BottomSheet>
     </>
   );
 }
 
-function ColumnMenu({ column, children }) {
+function ColumnMenu({ column, children, onTaskUpdate }) {
   const ref = useRef<BottomSheetModal>(null);
 
   return (
@@ -235,7 +288,7 @@ function ColumnMenu({ column, children }) {
             Select
           </ButtonText>
         </Button>
-        <ReorderModal column={column}>
+        <ReorderModal column={column} onTaskUpdate={onTaskUpdate}>
           <Button style={{ height: 90 }} variant="filled">
             <Icon size={30}>low_priority</Icon>
             <ButtonText style={{ fontSize: 20 }} weight={800}>
@@ -333,31 +386,8 @@ export function Column({
       }}
     >
       {breakpoints.lg && <Header start={column.start} end={column.end} />}
-      <FlashList
+      <FlatList
         // onDragEnd={async (params) => {
-        //   const previousItem = LexoRank.parse(
-        //     params.data[params.to - 1]?.agendaOrder ?? LexoRank.min().toString()
-        //   );
-        //   const nextItem = LexoRank.parse(
-        //     params.data[params.to + 1]?.agendaOrder ?? LexoRank.max().toString()
-        //   );
-        //   const newId = previousItem.between(nextItem).toString();
-        //   const task = column.tasks[params.from];
-        //   onTaskUpdate({
-        //     ...task,
-        //     agendaOrder: newId,
-        //   });
-
-        //   sendApiRequest(session, "PUT", "space/entity", {
-        //     id: task.id,
-        //     agendaOrder: newId,
-        //   }).catch((e) => {
-        //     onTaskUpdate(task);
-        //     Toast.show({
-        //       type: "error",
-        //       text1: "Something went wrong. Please try again later.",
-        //     });
-        //   });
         // }}
         // containerStyle={{ flex: 1 }}
         // renderPlaceholder={() => (
@@ -420,7 +450,7 @@ export function Column({
                   <ButtonText>Create</ButtonText>
                 </Button>
               </CreateTask>
-              <ColumnMenu column={column}>
+              <ColumnMenu column={column} onTaskUpdate={onTaskUpdate}>
                 <Button variant="outlined">
                   <Icon>more_horiz</Icon>
                 </Button>
@@ -431,7 +461,8 @@ export function Column({
         data={column.tasks.sort((a, b) =>
           a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
         )}
-        estimatedItemSize={200}
+        // estimatedItemSize={200}
+        initialNumToRender={10}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
