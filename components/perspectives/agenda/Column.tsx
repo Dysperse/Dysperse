@@ -3,10 +3,13 @@ import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";
 import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -148,16 +151,64 @@ function ReorderModal({ column, children }) {
   const handleClose = useCallback(() => ref.current.close(), []);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
+
+  const theme = useColorTheme();
   return (
     <>
       {trigger}
-      <BottomSheet sheetRef={ref} onClose={handleClose} snapPoints={["90%"]}>
+      <BottomSheet
+        sheetRef={ref}
+        onClose={handleClose}
+        snapPoints={["90%"]}
+        enableContentPanningGesture={false}
+      >
+        <View
+          style={{
+            paddingHorizontal: 20,
+            paddingBottom: 10,
+            paddingLeft: 25,
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: "row",
+            borderBottomWidth: 1,
+            borderBottomColor: theme[4],
+          }}
+        >
+          <Text weight={900} style={{ fontSize: 20 }}>
+            Reorder
+          </Text>
+          <IconButton
+            size={55}
+            variant="outlined"
+            icon="check"
+            onPress={handleClose}
+          />
+        </View>
         <SortableList
           data={column.tasks}
           onOrderChange={() => {}}
+          contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }) => (
-            <View style={{ height: 100 }}>
-              <Text>{JSON.stringify(item)}</Text>
+            <View
+              style={{
+                height: 100,
+                backgroundColor: theme[2],
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 20,
+                paddingHorizontal: 20,
+              }}
+            >
+              <Avatar size={50} style={{ borderRadius: 20 }}>
+                <Icon size={30}>
+                  {item.type === "TASK" ? "task_alt" : "view_in_ar"}
+                </Icon>
+              </Avatar>
+              <ListItemText
+                primary={item.name}
+                secondary={item.note || dayjs(item.due).format("MMM D, YYYY")}
+              />
+              <Icon>drag_indicator</Icon>
             </View>
           )}
           keyExtractor={(i) => i.id}
@@ -383,7 +434,7 @@ export function Column({
         }}
         ListEmptyComponent={PerspectivesEmptyComponent}
         renderItem={renderColumnItemWrapper}
-        keyExtractor={(i: any) => i.id}
+        keyExtractor={(i: any, d) => `${i.id}-${d}`}
       />
     </View>
   );

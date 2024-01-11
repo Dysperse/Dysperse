@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
+import Icon from "../Icon";
 import { useColorTheme } from "../color/theme-provider";
 
 interface DIconButtonProps extends PressableProps {
@@ -13,6 +14,7 @@ interface DIconButtonProps extends PressableProps {
   style?:
     | StyleProp<ViewStyle>
     | (({ pressed, hovered }) => StyleProp<ViewStyle>);
+  icon?: string;
 }
 
 const styles = StyleSheet.create({
@@ -48,6 +50,8 @@ export default function IconButton(props: DIconButtonProps) {
           : props.style,
       ]}
       // className={`${props.className}`}
-    />
+    >
+      {props.children || <Icon>{props.icon}</Icon>}
+    </Pressable>
   );
 }
