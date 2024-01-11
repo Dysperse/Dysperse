@@ -141,7 +141,7 @@ const renderColumnItem = ({
   }
 };
 
-function ReorderModal({ children }) {
+function ReorderModal({ column, children }) {
   const ref = useRef<BottomSheetModal>(null);
   const handleOpen = useCallback(() => ref.current.present(), []);
   const handleClose = useCallback(() => ref.current.close(), []);
@@ -151,13 +151,13 @@ function ReorderModal({ children }) {
     <>
       {trigger}
       <BottomSheet sheetRef={ref} onClose={handleClose} snapPoints={["90%"]}>
-        <Text>Reorder</Text>
+        <Text>{JSON.stringify(column, null, 2)}</Text>
       </BottomSheet>
     </>
   );
 }
 
-function ColumnMenu({ children }) {
+function ColumnMenu({ column, children }) {
   const ref = useRef<BottomSheetModal>(null);
 
   return (
@@ -169,7 +169,7 @@ function ColumnMenu({ children }) {
             Select
           </ButtonText>
         </Button>
-        <ReorderModal>
+        <ReorderModal column={column}>
           <Button style={{ height: 90 }} variant="filled">
             <Icon size={30}>low_priority</Icon>
             <ButtonText style={{ fontSize: 20 }} weight={800}>
@@ -354,7 +354,7 @@ export function Column({
                   <ButtonText>Create</ButtonText>
                 </Button>
               </CreateTask>
-              <ColumnMenu>
+              <ColumnMenu column={column}>
                 <Button variant="outlined">
                   <Icon>more_horiz</Icon>
                 </Button>
