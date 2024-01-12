@@ -163,15 +163,14 @@ const LogoButton = memo(function LogoButton() {
           <Icon style={{ color: theme[6] }}>expand_more</Icon>
         </TouchableOpacity>
       </SpacesTrigger>
-      <NavbarProfilePicture />
       {error && (
         <Chip
-          style={{ backgroundColor: red[5] }}
+          style={{ backgroundColor: red[5], marginRight: -10 }}
           color={red[11]}
           icon={<Icon style={{ color: red[11] }}>cloud_off</Icon>}
-          label="Offline"
         />
       )}
+      <NavbarProfilePicture />
     </View>
   );
 });

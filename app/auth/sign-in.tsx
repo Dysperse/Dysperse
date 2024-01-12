@@ -1,5 +1,4 @@
 import { Button, ButtonText } from "@/ui/Button";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -87,9 +86,13 @@ export default function SignIn() {
 
   return (
     <View style={{ backgroundColor: theme[1], flex: 1 }}>
-      <IconButton variant="filled" onPress={handleBack} style={{ margin: 20 }}>
-        <Icon>close</Icon>
-      </IconButton>
+      <IconButton
+        variant="outlined"
+        size={55}
+        icon="close"
+        onPress={handleBack}
+        style={{ margin: 20 }}
+      />
       {step == 0 || step == 2 ? (
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
           <ScrollView
@@ -118,13 +121,11 @@ export default function SignIn() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
+                    variant="filled+outlined"
                     style={{
-                      borderWidth: 1,
                       paddingHorizontal: 30,
                       paddingVertical: 20,
-                      borderRadius: 15,
                       fontSize: 20,
-                      backgroundColor: theme[3],
                       borderColor: errors.email ? "red" : theme[6],
                       ...(Platform.OS === "web" && { outline: "none" }),
                     }}
@@ -144,14 +145,12 @@ export default function SignIn() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
+                    variant="filled+outlined"
                     style={{
-                      borderWidth: 1,
                       paddingHorizontal: 30,
                       paddingVertical: 20,
-                      borderRadius: 15,
                       fontSize: 20,
-                      backgroundColor: theme[3],
-                      borderColor: errors.email ? "red" : theme[6],
+                      borderColor: errors.password ? "red" : theme[6],
                       ...(Platform.OS === "web" && { outline: "none" }),
                     }}
                     placeholder="Password"

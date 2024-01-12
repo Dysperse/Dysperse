@@ -106,9 +106,7 @@ function PerspectivesNavbar({ currentDateStart, currentDateEnd, error }: any) {
       }}
     >
       <View style={{ flexGrow: 1, flexDirection: "row", alignItems: "center" }}>
-        <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
-        >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
           <View>
             <Text numberOfLines={1} weight={600}>
               {dayjs(start).format(titleFormat).split("•")?.[0]}
@@ -117,8 +115,7 @@ function PerspectivesNavbar({ currentDateStart, currentDateEnd, error }: any) {
               {dayjs(start).format(titleFormat).split("• ")?.[1]}
             </Text>
           </View>
-          <Icon style={{ color: theme[12] }}>expand_more</Icon>
-        </TouchableOpacity>
+        </View>
         {error && (
           <Chip
             icon={<Icon>cloud_off</Icon>}

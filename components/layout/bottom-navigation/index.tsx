@@ -54,9 +54,7 @@ const PaletteButton = memo(function PaletteButton() {
       size={45}
       onPress={() => router.push("/open")}
     >
-      <Icon style={{ transform: [{ rotate: "-11deg" }] }} size={28}>
-        electric_bolt
-      </Icon>
+      <Icon size={30}>bolt</Icon>
     </IconButton>
   );
 });

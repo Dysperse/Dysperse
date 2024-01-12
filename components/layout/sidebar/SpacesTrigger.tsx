@@ -31,7 +31,7 @@ export function SpacesTrigger({ children }) {
       height={["55%"]}
       trigger={children}
     >
-      {data ? (
+      {Array.isArray(data) ? (
         <FlatList
           data={data.filter((e) => {
             if (e.accepted && view === "all") return true;

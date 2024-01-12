@@ -70,7 +70,13 @@ export function TaskDrawer({ mutateList, children, id }) {
       <BottomSheet
         sheetRef={ref}
         snapPoints={
-          error ? ["50%"] : breakpoints.lg ? ["100%"] : ["65%", "90%"]
+          error
+            ? ["50%"]
+            : breakpoints.lg
+            ? ["100%"]
+            : data
+            ? ["65%", "90%"]
+            : ["65%"]
         }
         onClose={handleClose}
         style={{

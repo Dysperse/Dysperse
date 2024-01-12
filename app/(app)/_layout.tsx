@@ -5,7 +5,6 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import ErrorAlert from "@/ui/Error";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
@@ -33,7 +32,9 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
+import "react-native-url-polyfill/auto";
 import { BottomAppBar } from "../../components/layout/bottom-navigation";
 
 dayjs.extend(utc);
@@ -90,21 +91,21 @@ export default function AppLayout() {
   }, [theme]);
 
   // You can keep the splash screen open, or render a loading screen like we do here.
-  if (error) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: theme[1],
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 20,
-        }}
-      >
-        <ErrorAlert message="Couldn't load your account. Check your internet connection and try again. " />
-      </View>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         backgroundColor: theme[1],
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         padding: 20,
+  //       }}
+  //     >
+  //       <ErrorAlert message="Couldn't load your account. Check your internet connection and try again. " />
+  //     </View>
+  //   );
+  // }
   if (isLoading || isUserLoading) {
     return <SessionLoadingScreen />;
   }
@@ -124,63 +125,85 @@ export default function AppLayout() {
         style={{ flex: 1, overflow: "hidden", width, height }}
       >
         <BottomSheetModalProvider>
-          <PortalProvider>
-            <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
-            <View
-              style={{
-                flexDirection: breakpoints.lg ? "row" : "column",
+          <MenuProvider
+            customStyles={{
+              backdrop: {
+                backgroundColor: "rgba(0,0,0,0.1)",
                 flex: 1,
-                backgroundColor: theme[1],
-              }}
-            >
-              {breakpoints.lg && <Sidebar />}
-              <ThemeProvider
-                value={{
-                  ...DefaultTheme,
-                  colors: {
-                    ...DefaultTheme.colors,
-                    background: theme[breakpoints.sm ? 2 : 1],
-                  },
+                opacity: 1,
+              },
+            }}
+          >
+            <PortalProvider>
+              <StatusBar
+                barStyle={!isDark ? "dark-content" : "light-content"}
+              />
+              <View
+                style={{
+                  flexDirection: breakpoints.lg ? "row" : "column",
+                  flex: 1,
+                  backgroundColor: theme[1],
                 }}
               >
-                <JsStack
-                  screenOptions={{
-                    header: () => null,
-                    headerTransparent: true,
-                    gestureResponseDistance: width,
-                    gestureEnabled: true,
-                    cardStyle: {
-                      backgroundColor: theme[breakpoints.sm ? 2 : 1],
-                      padding: breakpoints.lg ? 10 : 0,
-                      ...(Platform.OS === "web" &&
-                        ({
-                          marginTop: "env(titlebar-area-height,0)",
-                        } as any)),
+                {breakpoints.lg && <Sidebar />}
+                <ThemeProvider
+                  value={{
+                    ...DefaultTheme,
+                    colors: {
+                      ...DefaultTheme.colors,
+                      background: theme[breakpoints.sm ? 2 : 1],
                     },
-                    // change opacity of the previous screen when swipe
-                    cardOverlayEnabled: true,
-                    animationEnabled: true,
-                    gestureVelocityImpact: 0.7,
                   }}
                 >
-                  <JsStack.Screen
-                    name="index"
-                    options={{
-                      header: breakpoints.lg
-                        ? () => null
-                        : (props: any) => <AccountNavbar {...props} />,
+                  <JsStack
+                    screenOptions={{
+                      header: () => null,
+                      headerTransparent: true,
+                      gestureResponseDistance: width,
+                      gestureEnabled: true,
+                      cardStyle: {
+                        backgroundColor: theme[breakpoints.sm ? 2 : 1],
+                        padding: breakpoints.lg ? 10 : 0,
+                        ...(Platform.OS === "web" &&
+                          ({
+                            marginTop: "env(titlebar-area-height,0)",
+                          } as any)),
+                      },
+                      // change opacity of the previous screen when swipe
+                      cardOverlayEnabled: true,
+                      animationEnabled: true,
+                      gestureVelocityImpact: 0.7,
                     }}
-                  />
-                  {[
-                    "settings/index",
-                    "settings/appearance",
-                    "settings/personal-information",
-                  ].map((d) => (
+                  >
                     <JsStack.Screen
-                      name={d}
-                      key={d}
+                      name="index"
                       options={{
-                        headerTitle: d !== "settings/index" && "Settings",
+                        header: breakpoints.lg
+                          ? () => null
+                          : (props: any) => <AccountNavbar {...props} />,
+                      }}
+                    />
+                    {[
+                      "settings/index",
+                      "settings/appearance",
+                      "settings/personal-information",
+                    ].map((d) => (
+                      <JsStack.Screen
+                        name={d}
+                        key={d}
+                        options={{
+                          headerTitle: d !== "settings/index" && "Settings",
+                          header: (props) => (
+                            <Navbar icon="arrow_back_ios_new" {...props} />
+                          ),
+                          ...TransitionPresets.SlideFromRightIOS,
+                          cardStyleInterpolator: forHorizontalIOS,
+                        }}
+                      />
+                    ))}
+                    <JsStack.Screen
+                      name="friends"
+                      options={{
                         header: (props) => (
                           <Navbar icon="arrow_back_ios_new" {...props} />
                         ),
@@ -188,63 +211,53 @@ export default function AppLayout() {
                         cardStyleInterpolator: forHorizontalIOS,
                       }}
                     />
-                  ))}
-                  <JsStack.Screen
-                    name="friends"
-                    options={{
-                      header: (props) => (
-                        <Navbar icon="arrow_back_ios_new" {...props} />
-                      ),
-                      ...TransitionPresets.SlideFromRightIOS,
-                      cardStyleInterpolator: forHorizontalIOS,
-                    }}
-                  />
-                  <JsStack.Screen
-                    name="clock"
-                    options={{
-                      ...TransitionPresets.SlideFromRightIOS,
-                      gestureResponseDistance: width,
-                      cardStyleInterpolator: forHorizontalIOS,
-                      cardStyle: { marginBottom: 0 },
-                    }}
-                  />
-                  <JsStack.Screen
-                    name="open"
-                    options={{
-                      presentation: "modal",
-                      ...TransitionPresets.ModalPresentationIOS,
-                      gestureResponseDistance: 100,
-                      cardStyle: { marginBottom: 0 },
-                    }}
-                  />
-                  {["space", "collections/create"].map((d) => (
                     <JsStack.Screen
-                      name={d}
-                      key={d}
+                      name="clock"
+                      options={{
+                        ...TransitionPresets.SlideFromRightIOS,
+                        gestureResponseDistance: width,
+                        cardStyleInterpolator: forHorizontalIOS,
+                        cardStyle: { marginBottom: 0 },
+                      }}
+                    />
+                    <JsStack.Screen
+                      name="open"
                       options={{
                         presentation: "modal",
                         ...TransitionPresets.ModalPresentationIOS,
-                        gestureResponseDistance: height,
-                        cardStyle: {
-                          marginBottom: 0,
-                          ...(breakpoints.lg && {
-                            padding: 15,
-                            maxWidth: 800,
-                            width: 800,
-                            paddingVertical: 60,
-                            marginHorizontal: "auto",
-                            backgroundColor: "transparent",
-                          }),
-                        },
+                        gestureResponseDistance: 100,
+                        cardStyle: { marginBottom: 0 },
                       }}
                     />
-                  ))}
-                  <JsStack.Screen name="[tab]/perspectives/agenda/[type]/[start]" />
-                </JsStack>
-              </ThemeProvider>
-              {!breakpoints.md && <BottomAppBar />}
-            </View>
-          </PortalProvider>
+                    {["space", "collections/create"].map((d) => (
+                      <JsStack.Screen
+                        name={d}
+                        key={d}
+                        options={{
+                          presentation: "modal",
+                          ...TransitionPresets.ModalPresentationIOS,
+                          gestureResponseDistance: height,
+                          cardStyle: {
+                            marginBottom: 0,
+                            ...(breakpoints.lg && {
+                              padding: 15,
+                              maxWidth: 800,
+                              width: 800,
+                              paddingVertical: 60,
+                              marginHorizontal: "auto",
+                              backgroundColor: "transparent",
+                            }),
+                          },
+                        }}
+                      />
+                    ))}
+                    <JsStack.Screen name="[tab]/perspectives/agenda/[type]/[start]" />
+                  </JsStack>
+                </ThemeProvider>
+                {!breakpoints.md && <BottomAppBar />}
+              </View>
+            </PortalProvider>
+          </MenuProvider>
         </BottomSheetModalProvider>
         <Toast config={toastConfig(theme)} />
       </GestureHandlerRootView>

@@ -66,16 +66,6 @@ export const TabDrawer = memo(function TabDrawer({ children }: any) {
         {data ? (
           <FlatListComponent
             style={styles.list}
-            ListFooterComponent={
-              <View>
-                {data.length !== 0 && (
-                  <View style={styles.helperText}>
-                    <Icon>info</Icon>
-                    <Text>Tabs are synced between devices</Text>
-                  </View>
-                )}
-              </View>
-            }
             ListEmptyComponent={
               <View style={styles.helperText}>
                 <Icon>info</Icon>

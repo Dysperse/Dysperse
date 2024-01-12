@@ -107,7 +107,7 @@ function PlanDayPrompt() {
   return (
     <TouchableOpacity>
       <LinearGradient
-        colors={[theme[3], theme[7], theme[6], theme[5]]}
+        colors={[theme[3], theme[3]]}
         start={[0, 0]}
         end={[1, 1]}
         style={[
@@ -133,7 +133,7 @@ function PlanDayPrompt() {
             style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}
             numberOfLines={1}
           >
-            Let's optimize today's schedule
+            Tap to begin
           </Text>
         </View>
         <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
@@ -348,50 +348,53 @@ function JumpBackIn() {
     data !== null && (
       <>
         <Text variant="eyebrow" style={{ marginLeft: 5 }}>
-          Jump back in
+          Recent
         </Text>
-        <Skeleton
-          isLoading={loading}
-          height={60}
-          style={{
-            marginTop: 10,
-            marginBottom: 20,
-          }}
-        >
-          <Pressable
-            onPress={handlePress}
-            style={({ pressed, hovered }: any) => [
-              styles.card,
-              {
-                alignItems: "center",
-                justifyContent: "flex-start",
-                gap: 10,
-                paddingHorizontal: 15,
-                height: 60,
-                borderRadius: 20,
-                flexDirection: "row",
-                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-              },
-            ]}
+        <TouchableOpacity onPress={handlePress}>
+          <Skeleton
+            isLoading={loading}
+            height={60}
+            style={{
+              marginTop: 10,
+              marginBottom: 20,
+            }}
           >
-            <Avatar size={40}>
-              <Icon size={30}>
-                {typeof tabMetadata.icon === "function"
-                  ? tabMetadata.icon(data.params)
-                  : tabMetadata.icon}
-              </Icon>
-            </Avatar>
-            <ListItemText
-              truncate
-              primary={capitalizeFirstLetter(tabMetadata.name(data.params)[0])}
-              secondaryProps={{
-                style: { marginTop: -4, fontSize: 13, opacity: 0.6 },
-              }}
-              secondary={tabMetadata.name(data.params)[1]}
-            />
-            <Icon>arrow_forward_ios</Icon>
-          </Pressable>
-        </Skeleton>
+            <View
+              style={[
+                styles.card,
+                {
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  gap: 10,
+                  paddingHorizontal: 15,
+                  height: 60,
+                  borderRadius: 20,
+                  flexDirection: "row",
+                  backgroundColor: theme[3],
+                },
+              ]}
+            >
+              <Avatar size={40}>
+                <Icon size={30}>
+                  {typeof tabMetadata.icon === "function"
+                    ? tabMetadata.icon(data.params)
+                    : tabMetadata.icon}
+                </Icon>
+              </Avatar>
+              <ListItemText
+                truncate
+                primary={capitalizeFirstLetter(
+                  tabMetadata.name(data.params)[0]
+                )}
+                secondaryProps={{
+                  style: { marginTop: -4, fontSize: 13, opacity: 0.6 },
+                }}
+                secondary={tabMetadata.name(data.params)[1]}
+              />
+              <Icon>arrow_forward_ios</Icon>
+            </View>
+          </Skeleton>
+        </TouchableOpacity>
       </>
     )
   );

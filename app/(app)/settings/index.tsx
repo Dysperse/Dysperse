@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
   },
-  sectionItem: { borderRadius: 0 },
+  sectionItem: { borderRadius: 0, height: 60 },
 });
 
 function ProfileButton() {
@@ -195,8 +195,13 @@ export default function Index() {
                 }
                 {...(button.callback && { onPress: button.callback })}
               >
-                <Icon>{button.icon}</Icon>
-                <ListItemText primary={button.name} />
+                <Icon style={{ color: theme[11] }} size={30}>
+                  {button.icon}
+                </Icon>
+                <ListItemText
+                  primary={button.name}
+                  primaryProps={{ style: { fontSize: 18,color:theme[11] } }}
+                />
               </ListItemButton>
             ))}
           </View>

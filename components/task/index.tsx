@@ -6,7 +6,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import React, { memo } from "react";
+import React, { memo, useRef } from "react";
 import { View, useColorScheme } from "react-native";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
@@ -14,23 +14,24 @@ import { TaskDrawer } from "./drawer";
 const Task = memo(function Task({
   task,
   onTaskUpdate,
-  drag,
-  isActive,
+  openColumnMenu,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
-  drag?: any;
-  isActive?: boolean;
+  openColumnMenu: () => void;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange", useColorScheme() === "dark");
   const breakpoints = useResponsiveBreakpoints();
 
+  const noChips = !task.pinned && task.dateOnly;
+  const isCompleted = task.completionInstances.length > 0;
+  const ref = useRef();
+
   return (
     <TaskDrawer id={task.id} mutateList={onTaskUpdate}>
       <ListItemButton
-        onLongPress={drag}
-        disabled={isActive}
+        onLongPress={openColumnMenu}
         style={({ pressed }) => ({
           flexShrink: 0,
           paddingHorizontal: 15,
@@ -38,19 +39,30 @@ const Task = memo(function Task({
           borderRadius: 20,
           borderWidth: 1,
           borderColor: theme[pressed ? 5 : 4],
-          backgroundColor: theme[breakpoints.lg ? 2 : 1],
           alignItems: "flex-start",
         })}
       >
         <TaskCheckbox task={task} mutateList={onTaskUpdate} />
-        <View style={{ gap: 5, paddingTop: 1, flex: 1 }}>
-          <Text numberOfLines={1}>{task.name}</Text>
+        <View style={{ gap: 5, flex: 1 }}>
+          <Text
+            weight={300}
+            numberOfLines={noChips ? undefined : 1}
+            style={{
+              fontSize: 17,
+              ...(isCompleted && {
+                opacity: 0.6,
+                textDecorationLine: "line-through",
+              }),
+            }}
+          >
+            {task.name}
+          </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
             {task.pinned && (
               <Chip
                 dense
                 disabled
-                label="Important"
+                label="Urgent"
                 icon={
                   <Icon size={22} style={{ color: orange[11] }}>
                     priority_high

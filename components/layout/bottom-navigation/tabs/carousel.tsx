@@ -62,7 +62,7 @@ const OpenTabsList = memo(function OpenTabsList() {
   }, [data, tab]);
 
   useEffect(() => {
-    if (tab) {
+    if (tab && Array.isArray(data)) {
       const index = data?.findIndex((i) => i.id === tab);
       if (index !== -1) {
         const recentlyAccessed = JSON.stringify(data[index]);

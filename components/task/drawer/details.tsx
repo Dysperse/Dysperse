@@ -5,11 +5,12 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
-import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { useRef, useState } from "react";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import Accordion from "react-native-collapsible/Accordion";
+import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 import { TaskStream } from "./audit-log";
@@ -86,92 +87,30 @@ function TaskAttachmentCategory({ category, attachments }) {
           alignItems: attachments.length == 1 ? "center" : "flex-start",
         }}
       >
-        <Icon>{icon}</Icon>
-        <ListItemText
-          primary={
-            attachments.length == 1
-              ? undefined
-              : attachments.length + " " + category.toLowerCase() + "s"
-          }
-          secondaryProps={{
-            style: {},
-          }}
-          secondary={
-            <View
+        <Icon style={{ marginTop: 10 }}>{icon}</Icon>
+        <View style={{ flex: 1 }}>
+          {attachments.map((attachment) => (
+            <Pressable
               style={{
-                width: "100%",
-                marginBottom: -10,
-                ...(attachments.length == 1 && { marginTop: -10 }),
+                paddingVertical: 10,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
               }}
+              key={attachment.id}
             >
-              {attachments.map((attachment, index) => (
-                <View
-                  key={attachment.id}
-                  style={{
-                    paddingVertical: 5,
-                    gap: 10,
-                    borderBottomWidth:
-                      attachments.length == 1 ||
-                      index === attachments.length - 1
-                        ? 0
-                        : 1,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderBottomColor: theme[7],
-                  }}
-                >
-                  <TextField
-                    bottomSheet
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 5,
-                      flex: 1,
-                      borderColor: theme[open ? 7 : 3],
-                      paddingVertical: 7,
-                      color: theme[12],
-                      paddingHorizontal: open ? 10 : 0,
-                      fontFamily: `body_600`,
-                    }}
-                    editable={open}
-                    onFocus={handleOpen}
-                    onBlur={handleClose}
-                    value={attachment.data}
-                  />
-                  {open ? (
-                    <Button dense style={{ marginLeft: -5 }}>
-                      <Icon>remove_circle</Icon>
-                    </Button>
-                  ) : (
-                    <Button
-                      style={{ backgroundColor: theme[6] }}
-                      dense
-                      onPress={() => {
-                        if (attachment.type === "LOCATION") {
-                          Linking.openURL(
-                            `https://www.google.com/maps/dir//${encodeURIComponent(
-                              attachment.data
-                            )}`
-                          );
-                        } else {
-                          try {
-                            Linking.openURL(attachment.data);
-                          } catch (e) {
-                            Toast.show({ type: "error" });
-                          }
-                        }
-                      }}
-                    >
-                      <ButtonText>
-                        {attachment.type === "LINK" ? "Open" : "Maps"}
-                      </ButtonText>
-                      <Icon>north_east</Icon>
-                    </Button>
-                  )}
-                </View>
-              ))}
-            </View>
-          }
-        />
+              <ListItemText primary={attachment.data} truncate />
+              <Button
+                variant="filled"
+                dense
+                style={{ backgroundColor: theme[4] }}
+              >
+                <ButtonText>Open</ButtonText>
+                <Icon>north_east</Icon>
+              </Button>
+            </Pressable>
+          ))}
+        </View>
       </ListItemButton>
     </View>
   );
@@ -253,62 +192,202 @@ function TaskDateCard() {
   );
 }
 
+function isValidHttpUrl(string) {
+  let url;
+
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
+}
+
+function TaskAttachmentCard({ item }) {
+  const theme = useColorTheme();
+
+  let icon = "";
+  let name = item.data;
+  switch (item.type) {
+    case "LINK":
+      icon = "link";
+      if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
+      break;
+    case "LOCATION":
+      icon = "map";
+      if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
+      break;
+  }
+  return (
+    <Menu
+      trigger={
+        <Pressable
+          style={({ pressed }) => ({
+            width: 190,
+            backgroundColor: theme[pressed ? 4 : 3],
+            padding: 20,
+            borderRadius: 20,
+            height: 100,
+            justifyContent: "flex-end",
+            position: "relative",
+          })}
+        >
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              margin: 20,
+              marginTop: 15,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <Icon size={30}>{icon}</Icon>
+          </View>
+          <Text numberOfLines={1} style={{ fontSize: 17 }}>
+            {name}
+          </Text>
+        </Pressable>
+      }
+      height={[250]}
+    >
+      <View style={{ paddingHorizontal: 20, gap: 20 }}>
+        <Button variant="filled" style={{ height: 90, paddingHorizontal: 30 }}>
+          <View>
+            <ButtonText weight={900}>
+              Open {isValidHttpUrl(item.data) ? "link" : "in Maps"}
+            </ButtonText>
+            <ButtonText
+              style={{ opacity: 0.5, paddingRight: 25 }}
+              numberOfLines={1}
+            >
+              {!isValidHttpUrl(item.data) ? `"${name}"` : name}
+            </ButtonText>
+          </View>
+          <Icon style={{ marginLeft: "auto" }}>north_east</Icon>
+        </Button>
+        <View style={{ flexDirection: "row", gap: 20 }}>
+          <Button variant="outlined" style={{ height: 70, flex: 1 }}>
+            <Icon>remove_circle</Icon>
+            <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
+          </Button>
+          <Button variant="outlined" style={{ height: 70, flex: 1 }}>
+            <Icon>edit_square</Icon>
+            <ButtonText style={{ fontSize: 17 }}>Edit</ButtonText>
+          </Button>
+        </View>
+      </View>
+    </Menu>
+  );
+}
+
 export function TaskDetails() {
   const theme = useColorTheme();
   const { task } = useTaskDrawerContext();
 
-  const attachmentCategories = task.attachments.reduce((acc, attachment) => {
-    if (!acc[attachment.type]) acc[attachment.type] = [];
-    acc[attachment.type].push(attachment);
-    return acc;
-  }, {});
+  const [activeSections, setActiveSections] = useState([]);
 
   return (
-    <View style={{ gap: 10 }}>
-      {task.note && (
-        <TaskAttachmentButton defaultView="Note" lockView>
+    <>
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        data={task.attachments}
+        horizontal
+        keyExtractor={(i) => i.id}
+        contentContainerStyle={{ gap: 20, paddingHorizontal: 10 }}
+        style={{ marginBottom: 20, marginHorizontal: -10 }}
+        renderItem={(i) => <TaskAttachmentCard {...i} />}
+      />
+      <Accordion
+        activeSections={activeSections}
+        underlayColor="transparent"
+        sections={[
+          task.note && {
+            trigger: (isActive) => (
+              <TaskAttachmentButton defaultView="Note" lockView>
+                <ListItemButton variant="filled" disabled>
+                  <Icon>sticky_note_2</Icon>
+                  <ListItemText primary={task.note} />
+                </ListItemButton>
+              </TaskAttachmentButton>
+            ),
+            content: <Text>HI</Text>,
+          },
+          {
+            trigger: (isActive) => (
+              <ListItemButton
+                variant="filled"
+                disabled
+                style={{
+                  ...(isActive && {
+                    borderBottomLeftRadius: 0,
+                    borderBottomRightRadius: 0,
+                  }),
+                }}
+              >
+                <Icon>calendar_today</Icon>
+                <ListItemText
+                  primary={dayjs(task.due).format("MMM Do, YYYY")}
+                  secondary="Does not repeat"
+                />
+              </ListItemButton>
+            ),
+            content: (
+              <View
+                style={{
+                  backgroundColor: theme[3],
+                  padding: 10,
+                  borderBottomLeftRadius: 20,
+                  borderBottomRightRadius: 20,
+                }}
+              >
+                <Text>bru</Text>
+              </View>
+            ),
+          },
+          !task.dateOnly && {
+            trigger: (isActive) => (
+              <ListItemButton style={{ backgroundColor: theme[3] }}>
+                <Icon>access_time</Icon>
+                <ListItemText primary={dayjs(task.due).format("h:mm A")} />
+              </ListItemButton>
+            ),
+            content: <Text>bruh</Text>,
+          },
+          task.due && {
+            trigger: (isActive) => (
+              <ListItemButton style={{ backgroundColor: theme[3] }}>
+                <Icon>notifications</Icon>
+                <ListItemText
+                  primary={`${task.notifications.length} notification${
+                    task.notifications.length == 1 ? "" : "s"
+                  }`}
+                />
+              </ListItemButton>
+            ),
+            content: <Text></Text>,
+          },
+        ].filter((e) => e)}
+        renderHeader={(section, _, isActive) => section.trigger(isActive)}
+        renderContent={(section) => section.content}
+        onChange={setActiveSections}
+      />
+      <View style={{ gap: 10 }}>
+        <TaskStream>
           <ListItemButton variant="filled">
-            <Icon>sticky_note_2</Icon>
-            <ListItemText primary={task.note} />
+            <Icon>timeline</Icon>
+            <ListItemText
+              primary="History"
+              secondary={`Last edit ${dayjs(
+                task.history[0]?.timestamp
+              ).fromNow()}`}
+            />
           </ListItemButton>
-        </TaskAttachmentButton>
-      )}
-      {Object.keys(attachmentCategories).length > 0 &&
-        Object.keys(attachmentCategories).map((category) => (
-          <TaskAttachmentCategory
-            attachments={attachmentCategories[category]}
-            category={category}
-            key={category}
-          />
-        ))}
-      <TaskDateCard />
-      {!task.dateOnly && (
-        <ListItemButton style={{ backgroundColor: theme[3] }}>
-          <Icon>access_time</Icon>
-          <ListItemText primary={dayjs(task.due).format("h:mm A")} />
-        </ListItemButton>
-      )}
-      {task.due && (
-        <ListItemButton style={{ backgroundColor: theme[3] }}>
-          <Icon>notifications</Icon>
-          <ListItemText
-            primary={`${task.notifications.length} notification${
-              task.notifications.length == 1 ? "" : "s"
-            }`}
-          />
-        </ListItemButton>
-      )}
-      <TaskStream>
-        <ListItemButton variant="filled">
-          <Icon>timeline</Icon>
-          <ListItemText
-            primary="History"
-            secondary={`Last edit ${dayjs(
-              task.history[0]?.timestamp
-            ).fromNow()}`}
-          />
-        </ListItemButton>
-      </TaskStream>
-    </View>
+        </TaskStream>
+      </View>
+    </>
   );
 }

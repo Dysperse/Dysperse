@@ -36,7 +36,8 @@ import CreateTask from "../../task/create";
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    paddingBottom: 5,
+    paddingBottom: 10,
+    paddingTop: 5,
     gap: 15,
   },
   empty: {
@@ -129,9 +130,11 @@ const renderColumnItem = ({
   width,
   drag,
   isActive,
+  openColumnMenu,
 }: RenderItemParams<any> & {
   width: any;
   onTaskUpdate: any;
+  openColumnMenu: any;
 }) => {
   const Container = ({ children }: { children: JSX.Element }) => {
     const trigger = cloneElement(children, { drag, isActive });
@@ -153,7 +156,11 @@ const renderColumnItem = ({
     case "TASK":
       return (
         <Container>
-          <Task onTaskUpdate={onTaskUpdate} task={item} />
+          <Task
+            onTaskUpdate={onTaskUpdate}
+            task={item}
+            openColumnMenu={openColumnMenu}
+          />
         </Container>
       );
     default:
@@ -258,7 +265,8 @@ function ReorderModal({ onTaskUpdate, column, children }) {
                 </Icon>
               </Avatar>
               <ListItemText
-                primary={item.name}
+                // primary={item.name}
+                primary={item.agendaOrder + item.name}
                 secondary={
                   item.note ||
                   dayjs(item.due).format(
@@ -276,11 +284,9 @@ function ReorderModal({ onTaskUpdate, column, children }) {
   );
 }
 
-function ColumnMenu({ column, children, onTaskUpdate }) {
-  const ref = useRef<BottomSheetModal>(null);
-
+function ColumnMenu({ column, children, onTaskUpdate, columnMenuRef }) {
   return (
-    <Menu menuRef={ref} trigger={children} height={[365]}>
+    <Menu menuRef={columnMenuRef} trigger={children} height={[365]}>
       <View style={{ paddingHorizontal: 15, gap: 15 }}>
         <Button style={{ height: 90 }} variant="filled">
           <Icon size={30}>select</Icon>
@@ -367,8 +373,11 @@ export function Column({
     );
   };
 
+  const columnMenuRef = useRef(null);
+  const openColumnMenu = useCallback(() => columnMenuRef.current.present(), []);
+
   const renderColumnItemWrapper = (props) =>
-    renderColumnItem({ ...props, width, onTaskUpdate });
+    renderColumnItem({ ...props, width, onTaskUpdate, openColumnMenu });
 
   const breakpoints = useResponsiveBreakpoints();
 
@@ -387,12 +396,6 @@ export function Column({
     >
       {breakpoints.lg && <Header start={column.start} end={column.end} />}
       <FlatList
-        // onDragEnd={async (params) => {
-        // }}
-        // containerStyle={{ flex: 1 }}
-        // renderPlaceholder={() => (
-        //   <View style={{ height: 10, backgroundColor: "red", width: "100%" }} />
-        // )}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -453,27 +456,41 @@ export function Column({
                   );
                 }}
               >
-                <Button variant="filled" style={{ flex: 1 }}>
+                <Button variant="filled" style={{ flex: 1, height: 50 }}>
                   <Icon>add</Icon>
                   <ButtonText>Create</ButtonText>
                 </Button>
               </CreateTask>
-              <ColumnMenu column={column} onTaskUpdate={onTaskUpdate}>
-                <Button variant="outlined">
+              <ColumnMenu
+                column={column}
+                onTaskUpdate={onTaskUpdate}
+                columnMenuRef={columnMenuRef}
+              >
+                <Button variant="outlined" style={{ height: 50 }}>
                   <Icon>more_horiz</Icon>
                 </Button>
               </ColumnMenu>
             </View>
           </>
         }
-        data={column.tasks.sort((a, b) =>
-          a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
-        )}
+        data={column.tasks
+          .sort((a, b) =>
+            a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
+          )
+          .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
+          .sort((x, y) =>
+            x.completionInstances.length === y.completionInstances.length
+              ? 0
+              : x.completionInstances.length === 0
+              ? -1
+              : 0
+          )}
         // estimatedItemSize={200}
         initialNumToRender={10}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
+          gap: 5,
           paddingBottom: getBottomNavigationHeight(pathname),
         }}
         ListEmptyComponent={PerspectivesEmptyComponent}

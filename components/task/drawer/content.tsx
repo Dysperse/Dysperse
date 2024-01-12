@@ -33,7 +33,11 @@ import { useLabelColors } from "../../labels/useLabelColors";
 import { styles } from "../create/styles";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
+import * as MediaLibrary from "expo-media-library";
 
+function TaskImagePicker() {
+  return <></>;
+}
 function TaskCompleteButton() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
@@ -282,7 +286,7 @@ function AttachmentGrid({
     ],
     [
       { icon: "sticky_note_2", text: "Note" },
-      { icon: "cloud", text: "Image" },
+      { icon: "camera_alt", text: "Image" },
     ],
   ];
 
@@ -420,6 +424,7 @@ export function TaskAttachmentButton({
           }
         />
       )}
+      {view === "Image" && <TaskImagePicker />}
       {view === "Note" && (
         <TaskAttachmentPicker
           type="NOTE"

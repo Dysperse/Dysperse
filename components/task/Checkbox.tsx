@@ -45,6 +45,7 @@ const TaskCheckox = memo(function TaskCheckbox({
         style={({ pressed, hovered }: any) => ({
           padding: 10,
           margin: -10,
+          marginTop: -7,
           opacity: pressed ? 0.5 : hovered ? 0.6 : 1,
         })}
         onPress={handlePress}

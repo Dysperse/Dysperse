@@ -65,6 +65,21 @@ export const getSidebarItems = async (session) => {
       ],
     },
     {
+      title: "Labels",
+      icon: "label",
+      theme: "purple",
+      data: [
+        {
+          label: "Create",
+          icon: "add",
+          slug: "l",
+          onPress: () => {
+            router.push("/collections/create");
+          },
+        },
+      ],
+    },
+    {
       title: "ALL",
       icon: "airwave",
       theme: "green",
@@ -89,7 +104,7 @@ export const getSidebarItems = async (session) => {
         },
         {
           label: "Trash",
-          icon: "sticky_note_2",
+          icon: "delete",
           slug: "/[tab]/all/[type]",
           params: { type: "trash" },
         },
