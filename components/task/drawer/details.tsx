@@ -116,82 +116,6 @@ function TaskAttachmentCategory({ category, attachments }) {
   );
 }
 
-function TaskDateCard() {
-  const { task, updateTask } = useTaskDrawerContext();
-  const theme = useColorTheme();
-  const dateMenuRef = useRef();
-
-  const handleEditDate = (date) => {
-    updateTask("due", date.toISOString());
-  };
-
-  return (
-    <Menu
-      trigger={
-        <ListItemButton variant="filled">
-          <Icon>calendar_today</Icon>
-          <ListItemText
-            primary={dayjs(task.due).format("MMM Do, YYYY")}
-            secondary="Does not repeat"
-          />
-        </ListItemButton>
-      }
-      height={[155]}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          paddingVertical: 10,
-        }}
-      >
-        <DatePickerModal
-          date={task.due}
-          onDateSelect={handleEditDate}
-          menuRef={dateMenuRef}
-        >
-          <Pressable style={drawerStyles.collapsibleMenuItem}>
-            <IconButton
-              disabled
-              style={{ borderWidth: 1, borderColor: theme[6] }}
-              size={50}
-            >
-              <Icon>edit</Icon>
-            </IconButton>
-            <Text>Edit</Text>
-          </Pressable>
-        </DatePickerModal>
-        <Pressable
-          style={drawerStyles.collapsibleMenuItem}
-          onPress={() =>
-            Toast.show({
-              type: "success",
-              text1: "Coming soon!",
-            })
-          }
-        >
-          <IconButton
-            disabled
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-            size={50}
-          >
-            <Icon>autorenew</Icon>
-          </IconButton>
-          <Text>Repeat</Text>
-        </Pressable>
-        <Pressable style={drawerStyles.collapsibleMenuItem}>
-          <IconButton
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-            size={50}
-          >
-            <Icon>close</Icon>
-          </IconButton>
-          <Text>Remove</Text>
-        </Pressable>
-      </View>
-    </Menu>
-  );
-}
-
 function isValidHttpUrl(string) {
   let url;
 
@@ -286,9 +210,15 @@ function TaskAttachmentCard({ item }) {
 
 export function TaskDetails() {
   const theme = useColorTheme();
-  const { task } = useTaskDrawerContext();
+  const { task, updateTask } = useTaskDrawerContext();
 
   const [activeSections, setActiveSections] = useState([]);
+
+  const dateMenuRef = useRef();
+
+  const handleEditDate = (date) => {
+    updateTask("due", date.toISOString());
+  };
 
   return (
     <>
@@ -303,6 +233,12 @@ export function TaskDetails() {
       />
       <Accordion
         activeSections={activeSections}
+        sectionContainerStyle={{
+          backgroundColor: theme[3],
+          borderRadius: 20,
+          overflow: "hidden",
+          marginBottom: 15,
+        }}
         underlayColor="transparent"
         sections={[
           task.note && {
@@ -318,16 +254,7 @@ export function TaskDetails() {
           },
           {
             trigger: (isActive) => (
-              <ListItemButton
-                variant="filled"
-                disabled
-                style={{
-                  ...(isActive && {
-                    borderBottomLeftRadius: 0,
-                    borderBottomRightRadius: 0,
-                  }),
-                }}
-              >
+              <ListItemButton variant="filled" disabled>
                 <Icon>calendar_today</Icon>
                 <ListItemText
                   primary={dayjs(task.due).format("MMM Do, YYYY")}
@@ -340,11 +267,53 @@ export function TaskDetails() {
                 style={{
                   backgroundColor: theme[3],
                   padding: 10,
-                  borderBottomLeftRadius: 20,
-                  borderBottomRightRadius: 20,
+                  flexDirection: "row",
+                  paddingVertical: 10,
                 }}
               >
-                <Text>bru</Text>
+                <DatePickerModal
+                  date={task.due}
+                  onDateSelect={handleEditDate}
+                  menuRef={dateMenuRef}
+                >
+                  <Pressable style={drawerStyles.collapsibleMenuItem}>
+                    <IconButton
+                      disabled
+                      style={{ borderWidth: 1, borderColor: theme[6] }}
+                      size={50}
+                    >
+                      <Icon>edit</Icon>
+                    </IconButton>
+                    <Text>Edit</Text>
+                  </Pressable>
+                </DatePickerModal>
+                <Pressable
+                  style={drawerStyles.collapsibleMenuItem}
+                  onPress={() =>
+                    Toast.show({
+                      type: "success",
+                      text1: "Coming soon!",
+                    })
+                  }
+                >
+                  <IconButton
+                    disabled
+                    style={{ borderWidth: 1, borderColor: theme[6] }}
+                    size={50}
+                  >
+                    <Icon>autorenew</Icon>
+                  </IconButton>
+                  <Text>Repeat</Text>
+                </Pressable>
+                <Pressable style={drawerStyles.collapsibleMenuItem}>
+                  <IconButton
+                    style={{ borderWidth: 1, borderColor: theme[6] }}
+                    size={50}
+                  >
+                    <Icon>close</Icon>
+                  </IconButton>
+                  <Text>Remove</Text>
+                </Pressable>
               </View>
             ),
           },

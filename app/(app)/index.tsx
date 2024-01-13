@@ -28,6 +28,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
+import { ProfileModal } from "../../components/ProfileModal";
 import { WeatherWidget } from "../../components/home/weather/widget";
 
 function Greeting() {
@@ -233,61 +234,63 @@ function FriendActivity() {
               <Text style={{ opacity: 0.6 }}>All Friends</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
-              key={friend.user.email}
-              style={{
-                height: 180,
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-                flex: 0.5,
-              }}
-            >
-              <View
+            <ProfileModal email={friend.user.email} key={friend.user.email}>
+              <TouchableOpacity
                 style={{
-                  width: 90,
-                  height: 90,
-                  borderRadius: 999,
-                  position: "relative",
+                  height: 180,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  flex: 0.5,
                 }}
               >
-                <ProfilePicture
-                  style={{ pointerEvents: "none" }}
-                  name={friend.user.profile?.name || "--"}
-                  image={friend.user.profile?.picture}
-                  size={90}
-                />
-                <Chip
-                  // dense
+                <View
                   style={{
-                    position: "absolute",
-                    bottom: -3,
-                    right: -3,
-                    height: 30,
-                    borderWidth: 5,
-                    borderColor: theme[1],
+                    width: 90,
+                    height: 90,
+                    borderRadius: 999,
+                    position: "relative",
                   }}
-                  textStyle={{ fontSize: 13 }}
-                  label={
-                    dayjs(friend.user.profile?.lastActive)
-                      .fromNow(true)
-                      .includes("few")
-                      ? "NOW"
-                      : dayjs(friend.user.profile?.lastActive)
-                          .fromNow(true)
-                          .split(" ")[0]
-                          .replace("a", "1") +
-                        dayjs(friend.user.profile?.lastActive)
-                          .fromNow(true)
-                          .split(" ")?.[1]?.[0]
-                          .toUpperCase()
-                  }
-                />
-              </View>
-              <Text style={{ opacity: 0.6 }}>
-                {friend.user.profile?.name.split(" ")?.[0]}
-              </Text>
-            </TouchableOpacity>
+                >
+                  <ProfilePicture
+                    style={{ pointerEvents: "none" }}
+                    name={friend.user.profile?.name || "--"}
+                    image={friend.user.profile?.picture}
+                    size={90}
+                  />
+                  <Chip
+                    // dense
+                    disabled
+                    style={{
+                      position: "absolute",
+                      bottom: -3,
+                      right: -3,
+                      height: 30,
+                      borderWidth: 5,
+                      borderColor: theme[1],
+                    }}
+                    textStyle={{ fontSize: 13 }}
+                    label={
+                      dayjs(friend.user.profile?.lastActive)
+                        .fromNow(true)
+                        .includes("few")
+                        ? "NOW"
+                        : dayjs(friend.user.profile?.lastActive)
+                            .fromNow(true)
+                            .split(" ")[0]
+                            .replace("a", "1") +
+                          dayjs(friend.user.profile?.lastActive)
+                            .fromNow(true)
+                            .split(" ")?.[1]?.[0]
+                            .toUpperCase()
+                    }
+                  />
+                </View>
+                <Text style={{ opacity: 0.6 }}>
+                  {friend.user.profile?.name.split(" ")?.[0]}
+                </Text>
+              </TouchableOpacity>
+            </ProfileModal>
           )
         )
       )}

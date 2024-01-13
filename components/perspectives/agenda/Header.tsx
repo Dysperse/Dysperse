@@ -33,6 +33,7 @@ export function Header({ start, end }) {
         alignItems: "center",
         justifyContent: "center",
         padding: 20,
+        height: 90,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
       }}
@@ -58,10 +59,12 @@ export function Header({ start, end }) {
           {dayjs(start).format(formats.heading)}
         </Text>
       </View>
-      <Text style={{ fontSize: 20 }} weight={600}>
-        {dayjs(start).format(formats.subheading)}
-        {type === "month" && <> - {dayjs(end).format(formats.subheading)}</>}
-      </Text>
+      {formats.subheading !== "-" && (
+        <Text style={{ fontSize: 20 }} weight={600}>
+          {dayjs(start).format(formats.subheading)}
+          {type === "month" && <> - {dayjs(end).format(formats.subheading)}</>}
+        </Text>
+      )}
     </LinearGradient>
   );
 }

@@ -13,7 +13,7 @@ import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
 
-export function TaskDrawer({ mutateList, children, id }) {
+export function TaskDrawer({ mutateList, children, id }: any) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
   const { sessionToken } = useUser();

@@ -26,7 +26,6 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { RenderItemParams } from "react-native-draggable-flatlist";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import SortableList from "react-native-ui-lib/sortableList";
@@ -37,8 +36,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     paddingBottom: 10,
-    paddingTop: 5,
     gap: 15,
+    marginTop: -15,
   },
   empty: {
     alignItems: "center",
@@ -131,7 +130,7 @@ const renderColumnItem = ({
   drag,
   isActive,
   openColumnMenu,
-}: RenderItemParams<any> & {
+}: any & {
   width: any;
   onTaskUpdate: any;
   openColumnMenu: any;
@@ -457,8 +456,8 @@ export function Column({
                 }}
               >
                 <Button variant="filled" style={{ flex: 1, height: 50 }}>
-                  <Icon>add</Icon>
                   <ButtonText>Create</ButtonText>
+                  <Icon>add</Icon>
                 </Button>
               </CreateTask>
               <ColumnMenu

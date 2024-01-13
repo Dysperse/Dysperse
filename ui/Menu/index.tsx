@@ -19,7 +19,7 @@ export function Menu({
   menuRef = null,
   onOpen = () => null,
   onClose = () => null,
-  width = 500,
+  width = 400,
   stackBehavior = "push",
 }: {
   trigger: ReactElement;
