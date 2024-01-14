@@ -1,3 +1,4 @@
+import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";
@@ -284,8 +285,30 @@ function ReorderModal({ onTaskUpdate, column, children }) {
 }
 
 function ColumnMenu({ column, children, onTaskUpdate, columnMenuRef }) {
+  const { type } = useAgendaContext();
+
+  const formats = {
+    heading: {
+      week: "DD",
+      month: "[#]W",
+      year: "MMMM",
+    }[type],
+    subheading: {
+      week: "dddd",
+      month: "Do",
+      year: "-",
+    }[type],
+  };
   return (
-    <Menu menuRef={columnMenuRef} trigger={children} height={[365]}>
+    <Menu menuRef={columnMenuRef} trigger={children} height={[400]}>
+      <View style={{ paddingHorizontal: 15, gap: 15 }}>
+        <Text
+          style={{ textAlign: "center", fontSize: 20, marginBottom: 10 }}
+          weight={900}
+        >
+          {dayjs(column.start).format(formats.heading)}
+        </Text>
+      </View>
       <View style={{ paddingHorizontal: 15, gap: 15 }}>
         <Button style={{ height: 90 }} variant="filled">
           <Icon size={30}>select</Icon>

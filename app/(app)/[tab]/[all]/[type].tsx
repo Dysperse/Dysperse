@@ -136,6 +136,7 @@ function Header({ query, setQuery }) {
             borderColor: theme[5],
             paddingHorizontal: 25,
             borderRadius: 99,
+            fontSize: 20,
           }}
           placeholder="Search..."
           onChangeText={setQuery}
@@ -146,7 +147,7 @@ function Header({ query, setQuery }) {
           trigger={
             <Button variant="outlined" style={{ height: 60 }}>
               <Icon>filter_list</Icon>
-              <ButtonText>Filter</ButtonText>
+              <ButtonText style={{ fontSize: 20 }}>Filter</ButtonText>
             </Button>
           }
         >
