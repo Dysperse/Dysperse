@@ -1,5 +1,6 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
+import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -223,6 +224,8 @@ export default function Page() {
   const { data, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
+  useKeyboardShortcut(["esc"], () => router.back());
+
   return (
     <>
       {data ? (

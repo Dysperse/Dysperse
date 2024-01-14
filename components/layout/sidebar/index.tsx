@@ -117,12 +117,12 @@ const Footer = memo(function Footer() {
         style={[
           styles.footer,
           {
-            borderTopColor: theme[6],
+            borderTopColor: theme[5],
           },
         ]}
       >
         <IconButton
-          variant="outlined"
+          variant="filled"
           size={45}
           style={{ marginRight: "auto" }}
           onPress={openSupport}
@@ -199,7 +199,9 @@ export function Sidebar() {
         flexDirection: "column",
         maxHeight: "100%",
         backgroundColor: theme[2],
-        ...((pathname === "/open" || pathname === "/collections/create") && {
+        ...((pathname === "/open" ||
+          pathname === "/collections/create" ||
+          pathname.includes("space")) && {
           filter: "brightness(70%)",
           transition: "all .3s",
           transitionDelay: ".1s",

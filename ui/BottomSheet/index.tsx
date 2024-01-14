@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 function BottomSheetEscapeHandler() {
   const { forceClose } = useBottomSheet();
   useKeyboardShortcut(["esc"], () =>
-    forceClose({ overshootClamping: true, damping: 5 })
+    forceClose({ overshootClamping: true, damping: 1 })
   );
   return null;
 }

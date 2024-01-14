@@ -5,10 +5,12 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import React, { useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -128,8 +130,68 @@ function isValidHttpUrl(string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
+function EditAttachment({ item, handleCancel }) {
+  const { control, handleSubmit } = useForm({
+    defaultValues: { attachment: item.data },
+  });
+  const onSubmit = (data) => console.log(data);
+
+  return (
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 20,
+          paddingHorizontal: 20,
+          alignItems: "center",
+        }}
+      >
+        <IconButton
+          onPress={handleCancel}
+          icon="close"
+          variant="outlined"
+          size={55}
+        />
+        <Text style={{ marginHorizontal: "auto", fontSize: 20 }}>Edit</Text>
+        <IconButton
+          onPress={handleSubmit(onSubmit)}
+          icon="check"
+          variant="outlined"
+          size={55}
+        />
+      </View>
+      <View style={{ paddingHorizontal: 20, flex: 1, paddingTop: 20 }}>
+        <Controller
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              multiline
+              bottomSheet
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              variant="filled+outlined"
+              placeholder="Edit attachment..."
+              style={{
+                flex: 1,
+                fontSize: 20,
+                paddingHorizontal: 20,
+                paddingVertical: 20,
+              }}
+            />
+          )}
+          name="attachment"
+          control={control}
+          defaultValue={item.data}
+        />
+      </View>
+    </>
+  );
+}
+
 function TaskAttachmentCard({ item }) {
   const theme = useColorTheme();
+  const [isEditing, setIsEditing] = useState(false);
 
   let icon = "";
   let name = item.data;
@@ -139,10 +201,22 @@ function TaskAttachmentCard({ item }) {
       if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
       break;
     case "LOCATION":
-      icon = "map";
+      icon = isValidHttpUrl(item.data) ? "link" : "map";
       if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
       break;
   }
+
+  const handleOpenPress = useCallback(() => {
+    if (isValidHttpUrl(item.data)) {
+      Linking.openURL(item.data);
+    } else {
+      Linking.openURL(`https://maps.google.com/?q=${item.data}`);
+    }
+  }, [item.data]);
+
+  const handleEditPress = useCallback(() => setIsEditing(true), []);
+  const handleCancelEditing = useCallback(() => setIsEditing(false), []);
+
   return (
     <Menu
       trigger={
@@ -176,34 +250,46 @@ function TaskAttachmentCard({ item }) {
           </Text>
         </Pressable>
       }
-      height={[250]}
+      height={[isEditing ? 350 : 250]}
     >
-      <View style={{ paddingHorizontal: 20, gap: 20 }}>
-        <Button variant="filled" style={{ height: 90, paddingHorizontal: 30 }}>
-          <View>
-            <ButtonText weight={900}>
-              Open {isValidHttpUrl(item.data) ? "link" : "in Maps"}
-            </ButtonText>
-            <ButtonText
-              style={{ opacity: 0.5, paddingRight: 25 }}
-              numberOfLines={1}
+      {isEditing ? (
+        <EditAttachment handleCancel={handleCancelEditing} item={item} />
+      ) : (
+        <View style={{ paddingHorizontal: 20, gap: 20 }}>
+          <Button
+            variant="filled"
+            style={{ height: 90, paddingHorizontal: 30 }}
+            onPress={handleOpenPress}
+          >
+            <View>
+              <ButtonText weight={900}>
+                Open {isValidHttpUrl(item.data) ? "link" : "in Maps"}
+              </ButtonText>
+              <ButtonText
+                style={{ opacity: 0.5, paddingRight: 25 }}
+                numberOfLines={1}
+              >
+                {!isValidHttpUrl(item.data) ? `"${name}"` : name}
+              </ButtonText>
+            </View>
+            <Icon style={{ marginLeft: "auto" }}>north_east</Icon>
+          </Button>
+          <View style={{ flexDirection: "row", gap: 20 }}>
+            <Button variant="outlined" style={{ height: 70, flex: 1 }}>
+              <Icon>remove_circle</Icon>
+              <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
+            </Button>
+            <Button
+              variant="outlined"
+              style={{ height: 70, flex: 1 }}
+              onPress={handleEditPress}
             >
-              {!isValidHttpUrl(item.data) ? `"${name}"` : name}
-            </ButtonText>
+              <Icon>edit_square</Icon>
+              <ButtonText style={{ fontSize: 17 }}>Edit</ButtonText>
+            </Button>
           </View>
-          <Icon style={{ marginLeft: "auto" }}>north_east</Icon>
-        </Button>
-        <View style={{ flexDirection: "row", gap: 20 }}>
-          <Button variant="outlined" style={{ height: 70, flex: 1 }}>
-            <Icon>remove_circle</Icon>
-            <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
-          </Button>
-          <Button variant="outlined" style={{ height: 70, flex: 1 }}>
-            <Icon>edit_square</Icon>
-            <ButtonText style={{ fontSize: 17 }}>Edit</ButtonText>
-          </Button>
         </View>
-      </View>
+      )}
     </Menu>
   );
 }

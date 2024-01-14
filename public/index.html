@@ -33,12 +33,12 @@
       }
 
       * {
-        outline: none
+        outline: none;
       }
       input:focus {
         box-shadow: 0 0 0 2px var(--theme-7);
       }
-      
+
       html {
         scroll-behavior: smooth;
         -webkit-text-size-adjust: 100%;
@@ -57,6 +57,11 @@
       ::-webkit-scrollbar {
         width: 15px;
         min-height: 15px;
+      }
+
+      [aria-label="Bottom Sheet"]::-webkit-scrollbar {
+        width: 0px;
+        min-height: 0px;
       }
 
       ::-webkit-scrollbar-track {
