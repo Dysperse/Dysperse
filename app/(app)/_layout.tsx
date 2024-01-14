@@ -152,7 +152,7 @@ export default function AppLayout() {
                 style={{
                   flexDirection: breakpoints.lg ? "row" : "column",
                   flex: 1,
-                  backgroundColor: theme[1],
+                  backgroundColor: theme[breakpoints.lg ? 2 : 1],
                 }}
               >
                 {breakpoints.lg && <Sidebar />}

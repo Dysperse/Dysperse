@@ -15,7 +15,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { MasonryFlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { createContext, useContext, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import useSWR from "swr";
 
 const StreamContext = createContext(null);
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
 
 function StreamList({ query, setQuery }) {
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
   const { data, mutate } = useStreamContext();
   const breakpoints = useResponsiveBreakpoints();
 
@@ -73,7 +74,14 @@ function StreamList({ query, setQuery }) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        maxWidth: width - 220,
+        marginHorizontal: "auto",
+        width: "100%",
+      }}
+    >
       <MasonryFlashList
         data={data}
         ListHeaderComponent={<Header query={query} setQuery={setQuery} />}

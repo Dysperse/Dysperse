@@ -8,7 +8,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import {
   Linking,
   Platform,
@@ -18,6 +18,11 @@ import {
   View,
   useColorScheme,
 } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { NavbarProfilePicture } from "../account-navbar";
 import OpenTabsList from "../bottom-navigation/tabs/carousel";
 import { SpacesTrigger } from "./SpacesTrigger";
@@ -105,7 +110,7 @@ const JumpToButton = memo(function JumpToButton() {
   );
 });
 
-const Footer = memo(function Footer() {
+const Footer = memo(function Footer({ toggleHidden }) {
   const theme = useColorTheme();
   const openSupport = useCallback(() => {
     Linking.openURL("https://blog.dysperse.com");
@@ -129,7 +134,7 @@ const Footer = memo(function Footer() {
         >
           <Icon>question_mark</Icon>
         </IconButton>
-        <IconButton variant="outlined" size={45}>
+        <IconButton variant="outlined" size={45} onPress={toggleHidden}>
           <Icon>keyboard_double_arrow_left</Icon>
         </IconButton>
       </View>
@@ -189,36 +194,81 @@ export function Sidebar() {
   const pathname = usePathname();
   const theme = useColorTheme();
 
+  const [isHidden, setIsHidden] = useState(false);
+  const toggleHidden = useCallback(() => setIsHidden((prev) => !prev), []);
+
   useKeyboardShortcut(["ctrl+,"], () => router.push("/settings"));
+  useKeyboardShortcut(["\\"], toggleHidden);
+
+  const marginLeft = useSharedValue(0);
+  const translateX = useSharedValue(0);
+
+  useEffect(() => {
+    if (isHidden) {
+      marginLeft.value = withSpring(-170, { damping: 30, stiffness: 400 });
+      translateX.value = withSpring(-40, { damping: 30, stiffness: 400 });
+    } else {
+      marginLeft.value = withSpring(0, { damping: 30, stiffness: 400 });
+      translateX.value = withSpring(0, { damping: 30, stiffness: 400 });
+    }
+  }, [isHidden, marginLeft]);
+
+  const marginLeftStyle = useAnimatedStyle(() => ({
+    marginLeft: marginLeft.value,
+    transform: [{ translateX: translateX.value }],
+    pointerEvents: isHidden ? "none" : "auto",
+  }));
+
+  const hiddenSidebarStyles = useAnimatedStyle(() => ({
+    opacity: withSpring(isHidden ? 1 : 0),
+    position: "absolute",
+    top: 20,
+    left: 12,
+    zIndex: 1,
+  }));
 
   return (
-    <View
-      style={{
-        height: "100%",
-        width: 220,
-        flexDirection: "column",
-        maxHeight: "100%",
-        backgroundColor: theme[2],
-        ...((pathname === "/open" ||
-          pathname === "/collections/create" ||
-          pathname.includes("space")) && {
-          filter: "brightness(70%)",
-          transition: "all .3s",
-          transitionDelay: ".1s",
-          pointerEvents: "none",
-        }),
-        ...(Platform.OS === "web" &&
-          ({
-            paddingTop: "env(titlebar-area-height,0)",
-          } as any)),
-      }}
-    >
-      <View style={styles.header}>
-        <LogoButton />
-        <Header />
-      </View>
-      <OpenTabsList />
-      <Footer />
-    </View>
+    <>
+      <Animated.View
+        style={[
+          marginLeftStyle,
+          {
+            height: "100%",
+            width: 220,
+            flexDirection: "column",
+            maxHeight: "100%",
+            backgroundColor: theme[2],
+            ...((pathname === "/open" ||
+              pathname === "/collections/create" ||
+              pathname.includes("space")) && {
+              filter: "brightness(70%)",
+              transition: "all .3s",
+              transitionDelay: ".1s",
+              pointerEvents: "none",
+            }),
+            ...(Platform.OS === "web" &&
+              ({
+                paddingTop: "env(titlebar-area-height,0)",
+              } as any)),
+          },
+        ]}
+      >
+        <View style={styles.header}>
+          <LogoButton />
+          <Header />
+        </View>
+        <OpenTabsList />
+        <Footer toggleHidden={toggleHidden} />
+      </Animated.View>
+      {isHidden && (
+        <Animated.View style={hiddenSidebarStyles}>
+          <IconButton
+            style={{ opacity: 0.4 }}
+            onPress={toggleHidden}
+            icon="dock_to_right"
+          />
+        </Animated.View>
+      )}
+    </>
   );
 }
