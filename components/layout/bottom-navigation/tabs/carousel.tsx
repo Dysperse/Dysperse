@@ -2,6 +2,7 @@ import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { memo, useEffect } from "react";
@@ -9,6 +10,7 @@ import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
+import { SortableList } from "react-native-ui-lib";
 import useSWR from "swr";
 import Tab from "./tab";
 
@@ -96,6 +98,7 @@ const OpenTabsList = memo(function OpenTabsList() {
     }
   );
 
+  const theme = useColorTheme();
   return data && Array.isArray(data) ? (
     width > 600 ? (
       <View
@@ -107,13 +110,32 @@ const OpenTabsList = memo(function OpenTabsList() {
         }}
       >
         <Header />
+        <SortableList
+          aria-label="Sidebar"
+          data={data}
+          onOrderChange={() => {}}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                backgroundColor: theme[2],
+                padding: 1,
+                margin: -1,
+              }}
+            >
+              <Tab tab={item} selected={tab === item.id} />
+            </View>
+          )}
+          style={{ backgroundColor: theme[2] }}
+          contentContainerStyle={{ backgroundColor: theme[2] }}
+          keyExtractor={(item) => item.id}
+        />
         <ScrollView
           showsHorizontalScrollIndicator={false}
           style={{ flex: 1, width: "100%" }}
         >
-          {data.map((t) => (
+          {/* {data.map((t) => (
             <Tab tab={t} key={t.id} selected={tab === t.id} />
-          ))}
+          ))} */}
         </ScrollView>
       </View>
     ) : (
