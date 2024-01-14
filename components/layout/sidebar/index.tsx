@@ -194,7 +194,11 @@ export function Sidebar() {
   const pathname = usePathname();
   const theme = useColorTheme();
 
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = useState(
+    Platform.OS === "web"
+      ? localStorage.getItem("sidebarHidden") === "true"
+      : false
+  );
   const toggleHidden = useCallback(() => setIsHidden((prev) => !prev), []);
 
   useKeyboardShortcut(["ctrl+,"], () => router.push("/settings"));
@@ -207,11 +211,13 @@ export function Sidebar() {
     if (isHidden) {
       marginLeft.value = withSpring(-170, { damping: 30, stiffness: 400 });
       translateX.value = withSpring(-40, { damping: 30, stiffness: 400 });
+      if (Platform.OS === "web") localStorage.setItem("sidebarHidden", "true");
     } else {
       marginLeft.value = withSpring(0, { damping: 30, stiffness: 400 });
       translateX.value = withSpring(0, { damping: 30, stiffness: 400 });
+      if (Platform.OS === "web") localStorage.setItem("sidebarHidden", "false");
     }
-  }, [isHidden, marginLeft]);
+  }, [isHidden, marginLeft, translateX]);
 
   const marginLeftStyle = useAnimatedStyle(() => ({
     marginLeft: marginLeft.value,
