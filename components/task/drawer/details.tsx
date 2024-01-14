@@ -306,6 +306,13 @@ export function TaskDetails() {
     updateTask("due", date.toISOString());
   };
 
+  const collapsibleMenuStyles = {
+    backgroundColor: theme[3],
+    padding: 10,
+    flexDirection: "row",
+    paddingVertical: 10,
+  };
+
   return (
     <>
       <FlatList
@@ -336,7 +343,31 @@ export function TaskDetails() {
                 </ListItemButton>
               </TaskAttachmentButton>
             ),
-            content: <Text>HI</Text>,
+            content: (
+              <View style={collapsibleMenuStyles as any}>
+                <TaskAttachmentButton defaultView="Note" lockView>
+                  <Pressable style={drawerStyles.collapsibleMenuItem}>
+                    <IconButton
+                      disabled
+                      style={{ borderWidth: 1, borderColor: theme[6] }}
+                      size={50}
+                    >
+                      <Icon>edit</Icon>
+                    </IconButton>
+                    <Text>Edit</Text>
+                  </Pressable>
+                </TaskAttachmentButton>
+                <Pressable style={drawerStyles.collapsibleMenuItem}>
+                  <IconButton
+                    style={{ borderWidth: 1, borderColor: theme[6] }}
+                    size={50}
+                  >
+                    <Icon>close</Icon>
+                  </IconButton>
+                  <Text>Remove</Text>
+                </Pressable>
+              </View>
+            ),
           },
           {
             trigger: (isActive) => (
@@ -349,14 +380,7 @@ export function TaskDetails() {
               </ListItemButton>
             ),
             content: (
-              <View
-                style={{
-                  backgroundColor: theme[3],
-                  padding: 10,
-                  flexDirection: "row",
-                  paddingVertical: 10,
-                }}
-              >
+              <View style={collapsibleMenuStyles as any}>
                 <DatePickerModal
                   date={task.due}
                   onDateSelect={handleEditDate}

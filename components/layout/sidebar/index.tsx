@@ -263,7 +263,11 @@ export function Sidebar() {
       {isHidden && (
         <Animated.View style={hiddenSidebarStyles}>
           <IconButton
-            style={{ opacity: 0.4 }}
+            style={{
+              opacity: 0.4,
+              ...(Platform.OS === "web" &&
+                ({ marginTop: "env(titlebar-area-height,0)" } as any)),
+            }}
             onPress={toggleHidden}
             icon="dock_to_right"
           />
