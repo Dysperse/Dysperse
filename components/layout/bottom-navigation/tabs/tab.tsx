@@ -100,7 +100,8 @@ function Tab({
   useEffect(() => {
     if (
       selected &&
-      JSON.stringify(tab.params) !== JSON.stringify(omit("tab", params))
+      JSON.stringify(tab.params) !==
+        JSON.stringify(omit("screen", omit("tab", params)))
     ) {
       console.log("Tab change", params.tab);
       sendApiRequest(
@@ -109,7 +110,10 @@ function Tab({
         "user/tabs",
         {},
         {
-          body: JSON.stringify({ params: omit("tab", params), id: params.tab }),
+          body: JSON.stringify({
+            params: omit("screen", omit("tab", params)),
+            id: params.tab,
+          }),
         }
       ).then(() => mutate());
     }
