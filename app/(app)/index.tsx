@@ -420,7 +420,10 @@ export default function Index() {
             height: "100%",
             alignItems: "center",
             gap: 50,
-            paddingHorizontal: 150,
+            paddingHorizontal: 20,
+            maxWidth: 900,
+            width: "100%",
+            marginHorizontal: "auto",
           }),
         }}
       >
