@@ -17,7 +17,6 @@ import {
   TouchableOpacity,
   View,
   useColorScheme,
-  useWindowDimensions,
 } from "react-native";
 import { NavbarProfilePicture } from "../account-navbar";
 import OpenTabsList from "../bottom-navigation/tabs/carousel";
@@ -189,18 +188,20 @@ const Header = memo(function Header() {
 export function Sidebar() {
   const pathname = usePathname();
   const theme = useColorTheme();
-  const { width, height } = useWindowDimensions();
 
   return (
     <View
       style={{
         height: "100%",
-        width: width > 600 ? 220 : "100%",
+        width: 220,
         flexDirection: "column",
-        maxHeight: width > 600 ? height : undefined,
+        maxHeight: "100%",
         backgroundColor: theme[2],
-        ...(pathname == "/collections/create" && {
+        ...((pathname === "/open" || pathname === "/collections/create") && {
           filter: "brightness(70%)",
+          transition: "all .3s",
+          transitionDelay: ".1s",
+          pointerEvents: "none",
         }),
         ...(Platform.OS === "web" &&
           ({

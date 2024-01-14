@@ -1,13 +1,16 @@
 import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Chip from "@/ui/Chip";
+import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType } from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -20,6 +23,61 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+function SortMenu({ children }: { children: JSX.Element }) {
+  const theme = useColorTheme();
+  const menuRef = useRef<BottomSheetModal>(null);
+
+  const handleClose = useCallback(() => menuRef.current?.close(), []);
+
+  return (
+    <Menu trigger={children} height={[500]} menuRef={menuRef}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingBottom: 20,
+          paddingHorizontal: 20,
+          marginBottom: 20,
+          borderBottomWidth: 1,
+          borderBottomColor: theme[6],
+        }}
+      >
+        <Text weight={300} style={{ fontSize: 30, color: theme[11] }}>
+          Sort by
+        </Text>
+        <IconButton
+          icon="close"
+          variant="outlined"
+          size={55}
+          onPress={handleClose}
+        />
+      </View>
+      <View style={{ paddingHorizontal: 20, gap: 20 }}>
+        {[
+          { key: "Auto", icon: "magic_button" },
+          { key: "Title", icon: "sort_by_alpha" },
+          { key: "Recently modified", icon: "schedule" },
+          { key: "Custom order", icon: "hand_gesture" },
+        ].map(({ key, icon }) => (
+          <Button
+            key={key}
+            variant={key === "Auto" ? "filled" : "outlined"}
+            style={{ height: 70 }}
+          >
+            <ButtonText style={{ fontSize: 20 }} weight={600}>
+              {key}
+            </ButtonText>
+            <Icon size={30} style={{ marginLeft: "auto" }}>
+              {icon}
+            </Icon>
+          </Button>
+        ))}
+      </View>
+    </Menu>
+  );
+}
 
 const NavbarButtons = memo(function PrevButton({
   isCurrent,
@@ -116,13 +174,15 @@ function PerspectivesNavbar({ currentDateStart, currentDateEnd, error }: any) {
             </Text>
           </View>
         </View>
-        {error && (
-          <Chip
-            icon={<Icon>cloud_off</Icon>}
-            style={{ marginHorizontal: "auto" }}
-            label="Offline"
-          />
-        )}
+        <SortMenu>
+          <Button
+            variant="outlined"
+            style={{ marginHorizontal: "auto", borderColor: theme[6] }}
+          >
+            <ButtonText>Sort</ButtonText>
+            <Icon>filter_list</Icon>
+          </Button>
+        </SortMenu>
       </View>
       <NavbarButtons
         isCurrent={isCurrent}

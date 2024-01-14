@@ -349,7 +349,13 @@ export function Column({
                 tasks: oldColumn.tasks
                   .map((oldTask) =>
                     oldTask?.id === newTask?.id
-                      ? newTask.trash === true
+                      ? newTask.trash === true ||
+                        !dayjs(newTask.due).isBetween(
+                          column.start,
+                          column.end,
+                          null,
+                          "[]"
+                        )
                         ? undefined
                         : newTask
                       : oldTask

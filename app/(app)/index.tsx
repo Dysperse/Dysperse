@@ -215,6 +215,7 @@ function FriendActivity() {
       ) : error ? (
         <ErrorAlert />
       ) : (
+        Array.isArray(data) &&
         [...data, "ALL_FRIENDS"].map((friend) =>
           friend === "ALL_FRIENDS" ? (
             <TouchableOpacity

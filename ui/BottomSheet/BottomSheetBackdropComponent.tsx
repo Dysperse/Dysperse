@@ -5,7 +5,6 @@ import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
-  useDerivedValue,
 } from "react-native-reanimated";
 
 export const BottomSheetBackdropComponent = ({
@@ -47,7 +46,7 @@ export const BottomSheetBackdropComponent = ({
     if (Platform.OS !== "web" && Keyboard.isVisible()) {
       setTimeout(forceClose, 200);
     } else {
-      setImmediate(() => forceClose());
+      setImmediate(() => forceClose({ overshootClamping: true, damping: 5 }));
     }
   };
 

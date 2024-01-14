@@ -2,6 +2,7 @@ import { getSidebarItems } from "@/components/layout/command-palette/list";
 import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Avatar } from "@/ui/Avatar";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -139,16 +140,16 @@ export default function Page() {
   const theme = useColorTheme();
   const handleBack = useCallback(() => router.back(), []);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<any[]>([]);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
     getSidebarItems(session).then((sections) => {
       setData(sections);
-      setIsLoading(false);
     });
   }, [session]);
+
+  useKeyboardShortcut(["esc"], () => router.back());
 
   const filteredSections = data
     .filter((section) => {
@@ -166,7 +167,16 @@ export default function Page() {
   const handleClear = () => setQuery("");
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{
+        flex: 1,
+        backgroundColor: theme[2],
+        borderWidth: 1,
+        borderColor: theme[7],
+        borderRadius: 20,
+      }}
+    >
       <Header handleBack={handleBack} />
       <View style={paletteStyles.container}>
         <View style={paletteStyles.inputContainer}>

@@ -119,6 +119,16 @@ export default function AppLayout() {
   }
 
   // This layout can be deferred because it's not the root layout.
+
+  const desktopPresentationModal = {
+    padding: 15,
+    maxWidth: 1000,
+    width: 1000,
+    paddingRight: 220,
+    paddingVertical: 60,
+    marginHorizontal: "auto",
+    backgroundColor: "transparent",
+  };
   return (
     <ColorThemeProvider theme={theme}>
       <GestureHandlerRootView
@@ -226,7 +236,11 @@ export default function AppLayout() {
                         presentation: "modal",
                         ...TransitionPresets.ModalPresentationIOS,
                         gestureResponseDistance: 100,
-                        cardStyle: { marginBottom: 0 },
+                        cardStyle: {
+                          marginBottom: 0,
+                          ...(breakpoints.lg &&
+                            (desktopPresentationModal as any)),
+                        },
                       }}
                     />
                     {["space", "collections/create"].map((d) => (
@@ -239,14 +253,7 @@ export default function AppLayout() {
                           gestureResponseDistance: height,
                           cardStyle: {
                             marginBottom: 0,
-                            ...(breakpoints.lg && {
-                              padding: 15,
-                              maxWidth: 800,
-                              width: 800,
-                              paddingVertical: 60,
-                              marginHorizontal: "auto",
-                              backgroundColor: "transparent",
-                            }),
+                            ...(breakpoints.lg && desktopPresentationModal),
                           },
                         }}
                       />

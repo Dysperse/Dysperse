@@ -5,14 +5,14 @@ import {
   useBottomSheet,
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
-import { Ref, memo } from "react";
+import { RefObject, memo } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
 
 interface DBottomSheetProps extends BottomSheetProps {
-  sheetRef: Ref<BottomSheetModal>;
+  sheetRef: RefObject<BottomSheetModal>;
   onClose: () => void;
   maxWidth?: number;
   stackBehavior?: "replace" | "push";
@@ -34,7 +34,9 @@ const styles = StyleSheet.create({
 
 function BottomSheetEscapeHandler() {
   const { forceClose } = useBottomSheet();
-  useKeyboardShortcut(["esc"], () => forceClose());
+  useKeyboardShortcut(["esc"], () =>
+    forceClose({ overshootClamping: true, damping: 5 })
+  );
   return null;
 }
 
