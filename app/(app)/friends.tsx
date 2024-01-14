@@ -3,6 +3,7 @@ import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -22,6 +23,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, View, useWindowDimensions } from "react-native";
@@ -302,7 +304,7 @@ function ViewFriendButton({ email }: { email: string }) {
 }
 
 export default function Page() {
-  const { sessionToken, session } = useUser();
+  const { session } = useUser();
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const [view, setView] = useState<FriendsPageView>("all");
@@ -311,6 +313,7 @@ export default function Page() {
     "user/friends",
     { requests: "true" },
   ]);
+  useKeyboardShortcut(["esc"], () => router.back());
 
   const Header = () => (
     <>

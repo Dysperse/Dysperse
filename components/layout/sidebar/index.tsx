@@ -189,6 +189,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const theme = useColorTheme();
 
+  useKeyboardShortcut(["ctrl+,"], () => router.push("/settings"));
+
   return (
     <View
       style={{

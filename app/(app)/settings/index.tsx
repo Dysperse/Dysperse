@@ -2,6 +2,7 @@ import { ContentWrapper } from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Avatar } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -98,6 +99,8 @@ export default function Index() {
     session?.space?.space?.color,
     useColorScheme() === "dark"
   );
+
+  useKeyboardShortcut(["esc"], () => router.back());
 
   return session ? (
     <ContentWrapper>
@@ -200,7 +203,7 @@ export default function Index() {
                 </Icon>
                 <ListItemText
                   primary={button.name}
-                  primaryProps={{ style: { fontSize: 18,color:theme[11] } }}
+                  primaryProps={{ style: { fontSize: 18, color: theme[11] } }}
                 />
               </ListItemButton>
             ))}
