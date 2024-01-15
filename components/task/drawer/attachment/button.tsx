@@ -1,0 +1,144 @@
+import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
+import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import React, { useRef, useState } from "react";
+import { View } from "react-native";
+import { useTaskDrawerContext } from "../context";
+import { TaskImagePicker } from "./TaskImagePicker";
+import { AttachmentGrid } from "./grid";
+import { TaskAttachmentPicker } from "./picker";
+import { TaskAttachmentType } from "./type";
+
+export function TaskAttachmentButton({
+  children,
+  onClose,
+  onOpen,
+  onAttachmentCreate,
+  defaultView = "Add",
+  lockView = false,
+}: {
+  children?: JSX.Element;
+  onClose?: () => void;
+  onOpen?: () => void;
+  onAttachmentCreate?: (data: string) => void;
+  defaultView?: TaskAttachmentType;
+  lockView?: boolean;
+}) {
+  const { task, updateTask } = useTaskDrawerContext();
+
+  const menuRef = useRef<BottomSheetModal>(null);
+  const theme = useColorTheme();
+
+  const [view, setView] = useState<TaskAttachmentType>(defaultView);
+
+  return (
+    <Menu
+      menuRef={menuRef}
+      height={[view === "Image" ? "60%" : 390]}
+      onClose={() => {
+        onClose?.();
+        if (lockView) return;
+        setView("Add");
+      }}
+      width={400}
+      onOpen={onOpen}
+      trigger={
+        children || (
+          <IconButton
+            style={{ borderWidth: 1, borderColor: theme[6] }}
+            size={55}
+          >
+            <Icon size={27}>edit</Icon>
+          </IconButton>
+        )
+      }
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          gap: 20,
+        }}
+      >
+        <IconButton
+          onPress={() => {
+            if (view === "Add" || lockView) {
+              menuRef.current.close();
+            } else {
+              onClose?.();
+              setView("Add");
+            }
+          }}
+          variant="outlined"
+          size={55}
+        >
+          <Icon>
+            {view === "Add" || lockView ? "close" : "arrow_back_ios_new"}
+          </Icon>
+        </IconButton>
+        <Text weight={700} style={{ fontSize: 23 }}>
+          {view}
+        </Text>
+      </View>
+      {view === "Add" && (
+        <AttachmentGrid
+          task={task}
+          updateTask={updateTask}
+          menuRef={menuRef}
+          onClose={onClose}
+          onAttachmentCreate={onAttachmentCreate}
+          setView={setView}
+        />
+      )}
+      {view === "Location" && (
+        <TaskAttachmentPicker
+          type="LOCATION"
+          placeholder="Enter a location"
+          handleParentClose={() => menuRef.current?.close()}
+          onAttachmentCreate={onAttachmentCreate}
+          task={task}
+          updateTask={updateTask}
+        />
+      )}
+      {view === "Link" && (
+        <TaskAttachmentPicker
+          type="LINK"
+          placeholder="Enter a link"
+          handleParentClose={() => menuRef.current?.close()}
+          onAttachmentCreate={onAttachmentCreate}
+          task={task}
+          updateTask={updateTask}
+          footer={
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                paddingHorizontal: 10,
+              }}
+            >
+              <Icon>lightbulb</Icon>
+              <Text>Supports YouTube, Canvas, Zoom, and more.</Text>
+            </View>
+          }
+        />
+      )}
+      {view === "Image" && <TaskImagePicker task={task} />}
+      {view === "Note" && (
+        <TaskAttachmentPicker
+          type="NOTE"
+          multiline
+          placeholder="Type in a note..."
+          handleParentClose={() => menuRef.current?.close()}
+          onAttachmentCreate={onAttachmentCreate}
+          task={task}
+          updateTask={updateTask}
+        />
+      )}
+    </Menu>
+  );
+}

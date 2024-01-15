@@ -33,7 +33,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
-import { TaskAttachmentButton } from "../drawer/content";
+import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { TaskDrawerContext } from "../drawer/context";
 
 function Footer({ nameRef, menuRef, control }) {

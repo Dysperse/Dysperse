@@ -22,8 +22,8 @@ import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
+import { TaskAttachmentButton } from "./attachment/button";
 import { TaskStream } from "./audit-log";
-import { TaskAttachmentButton } from "./content";
 import { useTaskDrawerContext } from "./context";
 
 const drawerStyles = StyleSheet.create({
