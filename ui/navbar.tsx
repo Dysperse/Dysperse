@@ -31,7 +31,7 @@ export default function Navbar(props: any) {
           paddingTop: insets.top,
           paddingHorizontal: 10,
           backgroundColor: theme[1],
-          ...(breakpoints.lg && {
+          ...(breakpoints.md && {
             borderRadius: 20,
             margin: 1,
             height: 80,

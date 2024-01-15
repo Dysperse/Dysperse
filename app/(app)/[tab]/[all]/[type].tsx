@@ -85,18 +85,22 @@ function StreamList({ query, setQuery }) {
       <MasonryFlashList
         data={data}
         ListHeaderComponent={<Header query={query} setQuery={setQuery} />}
-        numColumns={breakpoints.lg ? 3 : 1}
+        numColumns={breakpoints.md ? 3 : 1}
         contentContainerStyle={{ paddingBottom: 100 }}
         renderItem={({ item, columnIndex }) => (
           <View
             style={{
               padding: 10,
-              ...(columnIndex === 0 && breakpoints.lg && { paddingLeft: 100 }),
-              ...(columnIndex === 2 && breakpoints.lg && { paddingRight: 100 }),
-              ...(!breakpoints.lg && { paddingHorizontal: 20 }),
+              ...(columnIndex === 0 && breakpoints.md && { paddingLeft: 100 }),
+              ...(columnIndex === 2 && breakpoints.md && { paddingRight: 100 }),
+              ...(!breakpoints.md && { paddingHorizontal: 20 }),
             }}
           >
-            <Task onTaskUpdate={onTaskUpdate} task={item} />
+            <Task
+              openColumnMenu={() => {}}
+              onTaskUpdate={onTaskUpdate}
+              task={item}
+            />
           </View>
         )}
         estimatedItemSize={200}

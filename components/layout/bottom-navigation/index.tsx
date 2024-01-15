@@ -129,5 +129,5 @@ function BottomNavigation() {
 
 export const BottomAppBar = memo(function BottomAppBar() {
   const breakpoints = useResponsiveBreakpoints();
-  return breakpoints.lg ? null : <BottomNavigation />;
+  return breakpoints.md ? null : <BottomNavigation />;
 });

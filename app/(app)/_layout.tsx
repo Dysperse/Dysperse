@@ -86,9 +86,9 @@ export default function AppLayout() {
     if (Platform.OS === "web") {
       document
         .querySelector(`meta[name="theme-color"]`)
-        .setAttribute("content", theme[breakpoints.lg ? 2 : 1]);
+        .setAttribute("content", theme[breakpoints.md ? 2 : 1]);
     }
-  }, [theme, breakpoints.lg]);
+  }, [theme, breakpoints.md]);
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   // if (error) {
@@ -150,12 +150,12 @@ export default function AppLayout() {
               />
               <View
                 style={{
-                  flexDirection: breakpoints.lg ? "row" : "column",
+                  flexDirection: breakpoints.md ? "row" : "column",
                   flex: 1,
-                  backgroundColor: theme[breakpoints.lg ? 2 : 1],
+                  backgroundColor: theme[breakpoints.md ? 2 : 1],
                 }}
               >
-                {breakpoints.lg && <Sidebar />}
+                {breakpoints.md && <Sidebar />}
                 <ThemeProvider
                   value={{
                     ...DefaultTheme,
@@ -173,7 +173,7 @@ export default function AppLayout() {
                       gestureEnabled: true,
                       cardStyle: {
                         backgroundColor: theme[breakpoints.sm ? 2 : 1],
-                        padding: breakpoints.lg ? 10 : 0,
+                        padding: breakpoints.md ? 10 : 0,
                         ...(Platform.OS === "web" &&
                           ({
                             marginTop: "env(titlebar-area-height,0)",
@@ -188,7 +188,7 @@ export default function AppLayout() {
                     <JsStack.Screen
                       name="index"
                       options={{
-                        header: breakpoints.lg
+                        header: breakpoints.md
                           ? () => null
                           : (props: any) => <AccountNavbar {...props} />,
                       }}
@@ -238,7 +238,7 @@ export default function AppLayout() {
                         gestureResponseDistance: 100,
                         cardStyle: {
                           marginBottom: 0,
-                          ...(breakpoints.lg &&
+                          ...(breakpoints.md &&
                             (desktopPresentationModal as any)),
                         },
                       }}
@@ -253,7 +253,7 @@ export default function AppLayout() {
                           gestureResponseDistance: height,
                           cardStyle: {
                             marginBottom: 0,
-                            ...(breakpoints.lg && desktopPresentationModal),
+                            ...(breakpoints.md && desktopPresentationModal),
                           },
                         }}
                       />

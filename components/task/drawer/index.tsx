@@ -72,7 +72,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
         snapPoints={
           error
             ? ["50%"]
-            : breakpoints.lg
+            : breakpoints.md
             ? ["100%"]
             : data
             ? ["65%", "90%"]
@@ -85,10 +85,10 @@ export function TaskDrawer({ mutateList, children, id }: any) {
         }}
         backgroundStyle={{
           backgroundColor: theme[2],
-          borderTopLeftRadius: breakpoints.lg ? 0 : 25,
-          borderTopRightRadius: breakpoints.lg ? 0 : 25,
+          borderTopLeftRadius: breakpoints.md ? 0 : 25,
+          borderTopRightRadius: breakpoints.md ? 0 : 25,
         }}
-        {...(breakpoints.lg && {
+        {...(breakpoints.md && {
           handleComponent: () => <View style={{ paddingTop: 10 }} />,
         })}
       >

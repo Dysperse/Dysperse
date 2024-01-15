@@ -143,9 +143,9 @@ function Tab({
         style={({ pressed, hovered }: any) => [
           styles.button,
           {
-            paddingHorizontal: isList ? 13 : breakpoints.lg ? 10 : 10,
-            borderRadius: breakpoints.lg ? 99 : 99,
-            height: breakpoints.lg ? 50 : 60,
+            paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
+            borderRadius: breakpoints.md ? 99 : 99,
+            height: breakpoints.md ? 50 : 60,
             backgroundColor:
               theme[
                 selected
@@ -154,11 +154,11 @@ function Tab({
                   ? 5
                   : hovered
                   ? 4
-                  : breakpoints.lg
+                  : breakpoints.md
                   ? 2
                   : 3
               ],
-            borderColor: theme[selected ? 11 : breakpoints.lg ? 2 : 5],
+            borderColor: theme[selected ? 11 : breakpoints.md ? 2 : 5],
           },
         ]}
       >

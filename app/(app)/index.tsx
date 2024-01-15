@@ -1,7 +1,6 @@
 import { styles } from "@/components/home/styles";
 import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
 import { ContentWrapper } from "@/components/layout/content";
-import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -62,9 +61,9 @@ function Greeting() {
         fontSize: 55,
         height: 200,
         width: "100%",
-        marginVertical: breakpoints.lg ? 0 : 20,
-        marginBottom: breakpoints.lg ? -130 : -60,
-        paddingTop: breakpoints.lg ? 0 : 70,
+        marginVertical: breakpoints.md ? 0 : 20,
+        marginBottom: breakpoints.md ? -130 : -60,
+        paddingTop: breakpoints.md ? 0 : 70,
         textShadowOffset: { height: 5, width: 5 },
       }}
     >
@@ -300,7 +299,6 @@ function FriendActivity() {
 }
 
 function SpaceInfo() {
-  const { session } = useUser();
   const { width } = useWindowDimensions();
 
   return (
@@ -429,7 +427,7 @@ export default function Index() {
       >
         <View style={{ flex: 1.3 }}>
           <Greeting />
-          {!breakpoints.lg && <JumpBackIn />}
+          {!breakpoints.md && <JumpBackIn />}
           <Text variant="eyebrow">Today's rundown</Text>
           <View
             style={{
@@ -454,7 +452,7 @@ export default function Index() {
           }}
         >
           <SpaceInfo />
-          {breakpoints.lg && <JumpBackIn />}
+          {breakpoints.md && <JumpBackIn />}
           <Text variant="eyebrow">Friends</Text>
           <FriendActivity />
         </View>

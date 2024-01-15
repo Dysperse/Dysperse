@@ -27,15 +27,15 @@ export function ContentWrapper(props: ContentWrapperProps) {
       style={[
         styles.container,
         {
-          borderRadius: breakpoints.lg ? 20 : 0,
+          borderRadius: breakpoints.md ? 20 : 0,
           marginTop: props.noPaddingTop
             ? 0
-            : breakpoints.lg
+            : breakpoints.md
             ? insets.top
             : insets.top + 64,
           backgroundColor: theme[1],
-          borderWidth: breakpoints.lg ? 1 : 0,
-          paddingBottom: breakpoints.lg
+          borderWidth: breakpoints.md ? 1 : 0,
+          paddingBottom: breakpoints.md
             ? 0
             : getBottomNavigationHeight(pathname),
           borderColor: theme[6],

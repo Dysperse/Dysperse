@@ -412,17 +412,17 @@ export function Column({
   return (
     <View
       style={{
-        ...(breakpoints.lg && {
+        ...(breakpoints.md && {
           backgroundColor: theme[2],
           borderRadius: 20,
         }),
-        width: breakpoints.lg ? 300 : width,
+        width: breakpoints.md ? 300 : width,
         flex: 1,
         minWidth: 5,
         minHeight: 5,
       }}
     >
-      {breakpoints.lg && <Header start={column.start} end={column.end} />}
+      {breakpoints.md && <Header start={column.start} end={column.end} />}
       <FlatList
         refreshControl={
           <RefreshControl
@@ -439,8 +439,8 @@ export function Column({
               style={[
                 styles.header,
                 {
-                  paddingHorizontal: breakpoints.lg ? 0 : 15,
-                  paddingTop: breakpoints.lg ? 0 : 20,
+                  paddingHorizontal: breakpoints.md ? 0 : 15,
+                  paddingTop: breakpoints.md ? 0 : 20,
                 },
               ]}
             >

@@ -27,7 +27,7 @@ export function SpacesTrigger({ children }) {
   return (
     <Menu
       menuRef={ref}
-      width={breakpoints.lg ? 400 : undefined}
+      width={breakpoints.md ? 400 : undefined}
       height={["55%"]}
       trigger={children}
     >

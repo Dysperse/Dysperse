@@ -5,6 +5,7 @@ import { AgendaSelector } from "@/components/perspectives/agenda/Selector";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Skeleton from "@/ui/Skeleton";
+import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
@@ -85,7 +86,7 @@ function Agenda() {
       )}
     </View>
   );
-  if (breakpoints["lg"]) {
+  if (breakpoints.md) {
     return (
       <ContentWrapper>
         <PerspectivesNavbar
@@ -100,13 +101,25 @@ function Agenda() {
             gap: 15,
             padding: 15,
             height: "100%",
+            width: Array.isArray(data) ? undefined : "100%",
           }}
         >
-          {Array.isArray(data)
-            ? data.map((col) => (
-                <Column mutate={mutate} key={col.start} column={col} />
-              ))
-            : agendaFallback}
+          {Array.isArray(data) ? (
+            data.map((col) => (
+              <Column mutate={mutate} key={col.start} column={col} />
+            ))
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
         </ScrollView>
       </ContentWrapper>
     );

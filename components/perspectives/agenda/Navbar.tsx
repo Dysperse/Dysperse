@@ -151,7 +151,7 @@ function PerspectivesNavbar({ currentDateStart, currentDateEnd, error }: any) {
 
   return (
     <LinearGradient
-      colors={[theme[breakpoints.lg ? 1 : 2], theme[breakpoints.lg ? 3 : 3]]}
+      colors={[theme[breakpoints.md ? 1 : 2], theme[breakpoints.md ? 3 : 3]]}
       style={{
         paddingHorizontal: 20,
         paddingRight: 10,
