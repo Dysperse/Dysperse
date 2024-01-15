@@ -104,7 +104,10 @@ export default function Index() {
 
   return session ? (
     <ContentWrapper>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        style={{ height: "100%" }}
+      >
         <Text heading style={styles.title}>
           Settings
         </Text>
