@@ -7,10 +7,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { memo, useEffect } from "react";
 import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
-import { SortableList } from "react-native-ui-lib";
 import useSWR from "swr";
 import Tab from "./tab";
 
@@ -110,10 +110,9 @@ const OpenTabsList = memo(function OpenTabsList() {
         }}
       >
         <Header />
-        <SortableList
+        <FlatList
           aria-label="Sidebar"
           data={data}
-          onOrderChange={() => {}}
           renderItem={({ item }) => (
             <View
               style={{

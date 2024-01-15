@@ -1,6 +1,5 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -8,7 +7,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   Platform,
   Pressable,
@@ -97,27 +96,26 @@ function Tab({
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
   const breakpoints = useResponsiveBreakpoints();
 
-  useEffect(() => {
-    if (
-      selected &&
-      JSON.stringify(tab.params) !==
-        JSON.stringify(omit("screen", omit("tab", params)))
-    ) {
-      console.log("Tab change", params.tab);
-      sendApiRequest(
-        sessionToken,
-        "PUT",
-        "user/tabs",
-        {},
-        {
-          body: JSON.stringify({
-            params: omit("screen", omit("tab", params)),
-            id: params.tab,
-          }),
-        }
-      ).then(() => mutate());
-    }
-  }, [selected, tab.params, params, mutate, sessionToken]);
+  // useEffect(() => {
+  //   if (
+  //     selected &&
+  //     JSON.stringify(tab.params) !==
+  //       JSON.stringify(omit(["params", "screen", "tab"], params))
+  //   ) {
+  //     sendApiRequest(
+  //       sessionToken,
+  //       "PUT",
+  //       "user/tabs",
+  //       {},
+  //       {
+  //         body: JSON.stringify({
+  //           params: omit(["params", "screen", "tab"], params),
+  //           id: params.tab,
+  //         }),
+  //       }
+  //     ).then(() => mutate());
+  //   }
+  // }, [selected, tab.params, params, mutate, sessionToken]);
 
   return (
     <View

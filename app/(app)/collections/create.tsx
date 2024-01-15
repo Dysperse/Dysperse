@@ -1,3 +1,4 @@
+import { LabelPicker } from "@/components/labels/picker";
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
 import { Button, ButtonText } from "@/ui/Button";
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   containerContent: {
     width: "100%",
-    maxWidth: 400,
+    maxWidth: 500,
     gap: 20,
     padding: 20,
   },
@@ -57,9 +58,16 @@ export default function Page() {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      name: "",
+      about: "",
+      labels: [],
       emoji: "1f600",
     },
   });
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   const theme = useColorTheme();
 
@@ -75,55 +83,105 @@ export default function Page() {
             Collections provide a seamless and structured way to view items by
             selected labels.
           </Text>
-          <Text variant="eyebrow">Icon</Text>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, value } }) => (
-              <EmojiPicker emoji={value} setEmoji={onChange}>
-                <IconButton
-                  style={{
-                    borderStyle: "dashed",
-                    borderWidth: 2,
-                    width: 100,
-                    height: 100,
-                    borderColor: theme[7],
-                  }}
-                >
-                  <Emoji emoji={value} size={50} />
-                </IconButton>
-              </EmojiPicker>
-            )}
-            name="emoji"
-          />
-          <View style={styles.section}>
+          <View style={{ flexDirection: "row", gap: 20 }}>
+            <View style={styles.section}>
+              <Text variant="eyebrow">Icon</Text>
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <EmojiPicker emoji={value} setEmoji={onChange}>
+                    <IconButton
+                      style={{
+                        borderStyle: "dashed",
+                        borderWidth: 2,
+                        width: 80,
+                        height: 80,
+                        borderColor: theme[7],
+                      }}
+                    >
+                      <Emoji emoji={value} size={50} />
+                    </IconButton>
+                  </EmojiPicker>
+                )}
+                name="emoji"
+              />
+            </View>
+            <View style={[styles.section, { flex: 1 }]}>
+              <Text variant="eyebrow">Labels</Text>
+              <Controller
+                control={control}
+                name="labels"
+                render={({ field: { onChange, value } }) => (
+                  <LabelPicker
+                    multiple
+                    hideBack
+                    autoFocus={false}
+                    label={value}
+                    setLabel={onChange}
+                    onClose={() => {}}
+                  >
+                    <Button
+                      style={{
+                        height: 80,
+                        borderWidth: 2,
+                        borderColor: theme[7],
+                        borderStyle: "dashed",
+                      }}
+                      variant="outlined"
+                    >
+                      <ButtonText weight={900} style={{ fontSize: 20 }}>
+                        {value.length === 0
+                          ? "Tap to select"
+                          : value.length + " selected"}
+                      </ButtonText>
+                    </Button>
+                  </LabelPicker>
+                )}
+              />
+            </View>
+          </View>
+          <View style={[styles.section]}>
             <Text variant="eyebrow">Name</Text>
-            <TextField
-              variant="filled+outlined"
-              style={{
-                fontSize: 20,
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-              }}
-              placeholder={`${session?.user?.profile?.name}'s collection`}
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { onChange, value } }) => (
+                <TextField
+                  variant="filled+outlined"
+                  placeholder={`${session?.user?.profile?.name}'s collection`}
+                  value={value}
+                  onChangeText={onChange}
+                  style={{
+                    ...(errors.name && { borderColor: "red" }),
+                  }}
+                />
+              )}
+              name="name"
             />
           </View>
           <View style={styles.section}>
-            <Text variant="eyebrow">Labels</Text>
-            <TextField
-              variant="filled+outlined"
-              style={{
-                fontSize: 20,
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-              }}
-              placeholder="Add labels"
-              editable={false}
+            <Text variant="eyebrow">Description</Text>
+            <Controller
+              control={control}
+              rules={{ required: false }}
+              render={({ field: { onChange, value } }) => (
+                <TextField
+                  variant="filled+outlined"
+                  multiline
+                  placeholder="What's this collection about? (Optional)"
+                  value={value}
+                  onChangeText={onChange}
+                />
+              )}
+              name="about"
             />
           </View>
-          <Button style={{ height: 80 }} variant="filled">
+          <Button
+            style={{ height: 80 }}
+            variant="filled"
+            onPress={handleSubmit(onSubmit)}
+          >
             <ButtonText weight={900} style={{ fontSize: 20 }}>
               Done
             </ButtonText>

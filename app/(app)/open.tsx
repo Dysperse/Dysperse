@@ -3,6 +3,7 @@ import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -166,16 +167,21 @@ export default function Page() {
     }));
   const handleClear = () => setQuery("");
 
+  const breakpoints = useResponsiveBreakpoints();
   return (
     <KeyboardAvoidingView
       behavior="padding"
-      style={{
-        flex: 1,
-        backgroundColor: theme[2],
-        borderWidth: 1,
-        borderColor: theme[7],
-        borderRadius: 20,
-      }}
+      style={
+        breakpoints.md
+          ? {
+              flex: 1,
+              backgroundColor: theme[2],
+              borderWidth: 1,
+              borderColor: theme[7],
+              borderRadius: 20,
+            }
+          : undefined
+      }
     >
       <Header handleBack={handleBack} />
       <View style={paletteStyles.container}>
@@ -185,7 +191,6 @@ export default function Page() {
             value={query}
             onChangeText={setQuery}
             placeholder="Jump to..."
-            // autoFocus
             style={[
               paletteStyles.input,
               { borderColor: theme[5], backgroundColor: theme[3] },

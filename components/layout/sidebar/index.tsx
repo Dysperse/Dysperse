@@ -244,9 +244,7 @@ export function Sidebar() {
             flexDirection: "column",
             maxHeight: "100%",
             backgroundColor: theme[2],
-            ...((pathname === "/open" ||
-              pathname === "/collections/create" ||
-              pathname.includes("space")) && {
+            ...((pathname === "/open" || pathname.includes("space")) && {
               filter: "brightness(70%)",
               transition: "all .3s",
               transitionDelay: ".1s",

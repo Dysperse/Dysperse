@@ -221,15 +221,19 @@ export default function AppLayout() {
                         cardStyleInterpolator: forHorizontalIOS,
                       }}
                     />
-                    <JsStack.Screen
-                      name="clock"
-                      options={{
-                        ...TransitionPresets.SlideFromRightIOS,
-                        gestureResponseDistance: width,
-                        cardStyleInterpolator: forHorizontalIOS,
-                        cardStyle: { marginBottom: 0 },
-                      }}
-                    />
+                    {["clock", "collections/create"].map((d) => (
+                      <JsStack.Screen
+                        name={d}
+                        key={d}
+                        options={{
+                          ...TransitionPresets.SlideFromRightIOS,
+                          gestureResponseDistance: width,
+                          cardStyleInterpolator: forHorizontalIOS,
+                          // cardStyle: { marginBottom: 0 },
+                        }}
+                      />
+                    ))}
+
                     <JsStack.Screen
                       name="open"
                       options={{
@@ -243,7 +247,7 @@ export default function AppLayout() {
                         },
                       }}
                     />
-                    {["space", "collections/create"].map((d) => (
+                    {["space"].map((d) => (
                       <JsStack.Screen
                         name={d}
                         key={d}

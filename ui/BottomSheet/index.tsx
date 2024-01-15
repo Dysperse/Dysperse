@@ -63,7 +63,7 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       onChange={(e) => {
         if (e === -1) props.onClose();
       }}
-      containerStyle={[styles.container, { maxWidth: props.maxWidth || 600 }]}
+      containerStyle={[styles.container, { maxWidth: props.maxWidth || 500 }]}
       backgroundStyle={[styles.background, { backgroundColor: theme[2] }]}
       handleIndicatorStyle={{ backgroundColor: theme[5] }}
       {...props}

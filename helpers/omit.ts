@@ -1,4 +1,5 @@
-export function omit(key, obj) {
-  const { [key]: _, ...rest } = obj;
-  return rest;
+export function omit(keys, obj) {
+  const filteredObj = { ...obj };
+  keys.forEach((key) => delete filteredObj[key]);
+  return filteredObj;
 }
