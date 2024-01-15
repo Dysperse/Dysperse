@@ -17,7 +17,13 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import * as Updates from "expo-updates";
 import { useState } from "react";
-import { Platform, StyleSheet, View, useColorScheme } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  View,
+  useColorScheme,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
@@ -100,13 +106,14 @@ export default function Index() {
     useColorScheme() === "dark"
   );
 
+  const { height } = useWindowDimensions();
   useKeyboardShortcut(["esc"], () => router.back());
 
   return session ? (
     <ContentWrapper>
       <ScrollView
         contentContainerStyle={styles.contentContainer}
-        style={{ height: "100%" }}
+        style={{ maxHeight: height }}
       >
         <Text heading style={styles.title}>
           Settings
