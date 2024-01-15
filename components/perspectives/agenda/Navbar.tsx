@@ -64,7 +64,7 @@ function SortMenu({ children }: { children: JSX.Element }) {
           <Button
             key={key}
             variant={key === "Auto" ? "filled" : "outlined"}
-            style={{ height: 70 }}
+            style={{ height: 70, paddingHorizontal: 20 }}
           >
             <ButtonText style={{ fontSize: 20 }} weight={600}>
               {key}
@@ -174,16 +174,12 @@ function PerspectivesNavbar({ currentDateStart, currentDateEnd, error }: any) {
             </Text>
           </View>
         </View>
-        <SortMenu>
-          <Button
-            variant="outlined"
-            style={{ marginHorizontal: "auto", borderColor: theme[6] }}
-          >
-            <ButtonText>Sort</ButtonText>
-            <Icon>filter_list</Icon>
-          </Button>
-        </SortMenu>
       </View>
+      <SortMenu>
+        <TouchableOpacity style={styles.navigationButton}>
+          <Icon>filter_list</Icon>
+        </TouchableOpacity>
+      </SortMenu>
       <NavbarButtons
         isCurrent={isCurrent}
         handleToday={handleToday}

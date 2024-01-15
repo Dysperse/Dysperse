@@ -86,9 +86,9 @@ export default function AppLayout() {
     if (Platform.OS === "web") {
       document
         .querySelector(`meta[name="theme-color"]`)
-        .setAttribute("content", theme[2]);
+        .setAttribute("content", theme[breakpoints.lg ? 2 : 1]);
     }
-  }, [theme]);
+  }, [theme, breakpoints.lg]);
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   // if (error) {

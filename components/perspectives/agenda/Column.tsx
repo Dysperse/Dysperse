@@ -438,7 +438,10 @@ export function Column({
             <View
               style={[
                 styles.header,
-                { paddingHorizontal: breakpoints.lg ? 0 : 15 },
+                {
+                  paddingHorizontal: breakpoints.lg ? 0 : 15,
+                  paddingTop: breakpoints.lg ? 0 : 20,
+                },
               ]}
             >
               <CreateTask

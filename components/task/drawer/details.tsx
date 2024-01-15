@@ -8,9 +8,16 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import { Image } from "expo-image";
 import React, { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import {
+  Linking,
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -192,6 +199,7 @@ function EditAttachment({ item, handleCancel }) {
 function TaskAttachmentCard({ item }) {
   const theme = useColorTheme();
   const [isEditing, setIsEditing] = useState(false);
+  const { height } = useWindowDimensions();
 
   let icon = "";
   let name = item.data;
@@ -203,6 +211,9 @@ function TaskAttachmentCard({ item }) {
     case "LOCATION":
       icon = isValidHttpUrl(item.data) ? "link" : "map";
       if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
+      break;
+    case "IMAGE":
+      icon = "image";
       break;
   }
 
@@ -240,18 +251,50 @@ function TaskAttachmentCard({ item }) {
               marginTop: 15,
               flexDirection: "row",
               alignItems: "center",
+              zIndex: 999,
               gap: 5,
+              backgroundColor: "rgba(0,0,0,0.9)",
+              borderRadius: 5,
             }}
           >
             <Icon size={30}>{icon}</Icon>
           </View>
-          <Text numberOfLines={1} style={{ fontSize: 17 }}>
-            {name}
-          </Text>
+          {item.type !== "IMAGE" && (
+            <Text numberOfLines={1} style={{ fontSize: 17 }}>
+              {name}
+            </Text>
+          )}
+          {item.type === "IMAGE" && (
+            <Image
+              source={{ uri: item.data }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                borderRadius: 20,
+              }}
+              transition={100}
+            />
+          )}
         </Pressable>
       }
-      height={[isEditing ? 350 : 250]}
+      height={[item.type === "IMAGE" ? height - 50 : isEditing ? 350 : 250]}
     >
+      {item.type === "IMAGE" && (
+        <View style={{ flex: 1, padding: 25 }}>
+          <Image
+            source={{ uri: item.data }}
+            style={{
+              flex: 1,
+              borderRadius: 20,
+              marginTop: -20,
+            }}
+            transition={100}
+          />
+        </View>
+      )}
       {isEditing ? (
         <EditAttachment handleCancel={handleCancelEditing} item={item} />
       ) : (
@@ -263,7 +306,12 @@ function TaskAttachmentCard({ item }) {
           >
             <View>
               <ButtonText weight={900}>
-                Open {isValidHttpUrl(item.data) ? "link" : "in Maps"}
+                Open{" "}
+                {item.type === "IMAGE"
+                  ? "image"
+                  : isValidHttpUrl(item.data)
+                  ? "link"
+                  : "in Maps"}
               </ButtonText>
               <ButtonText
                 style={{ opacity: 0.5, paddingRight: 25 }}
@@ -279,14 +327,16 @@ function TaskAttachmentCard({ item }) {
               <Icon>remove_circle</Icon>
               <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
             </Button>
-            <Button
-              variant="outlined"
-              style={{ height: 70, flex: 1 }}
-              onPress={handleEditPress}
-            >
-              <Icon>edit_square</Icon>
-              <ButtonText style={{ fontSize: 17 }}>Edit</ButtonText>
-            </Button>
+            {item.type !== "IMAGE" && (
+              <Button
+                variant="outlined"
+                style={{ height: 70, flex: 1 }}
+                onPress={handleEditPress}
+              >
+                <Icon>edit_square</Icon>
+                <ButtonText style={{ fontSize: 17 }}>Edit</ButtonText>
+              </Button>
+            )}
           </View>
         </View>
       )}
@@ -320,8 +370,8 @@ export function TaskDetails() {
         data={task.attachments}
         horizontal
         keyExtractor={(i) => i.id}
-        contentContainerStyle={{ gap: 20, paddingHorizontal: 10 }}
-        style={{ marginBottom: 20, marginHorizontal: -10 }}
+        contentContainerStyle={{ gap: 20, paddingHorizontal: 20 }}
+        style={{ marginBottom: 20, marginHorizontal: -20 }}
         renderItem={(i) => <TaskAttachmentCard {...i} />}
       />
       <Accordion

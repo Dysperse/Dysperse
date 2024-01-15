@@ -9,6 +9,8 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -16,13 +18,25 @@ import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
+  BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetScrollView,
+  TouchableOpacity,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
+import { Image } from "expo-image";
+import * as MediaLibrary from "expo-media-library";
+import mime from "mime-types";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Pressable, View, useColorScheme } from "react-native";
+import {
+  Keyboard,
+  Platform,
+  Pressable,
+  View,
+  useColorScheme,
+} from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -33,11 +47,203 @@ import { useLabelColors } from "../../labels/useLabelColors";
 import { styles } from "../create/styles";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
-import * as MediaLibrary from "expo-media-library";
 
-function TaskImagePicker() {
-  return <></>;
+function ImagePickerItem({ task, item }: { task; item: MediaLibrary.Asset }) {
+  const [loading, setLoading] = useState(false);
+  const { session } = useSession();
+  const handlePress = useCallback(async () => {
+    try {
+      setLoading(true);
+      const form: any = new FormData();
+      form.append("image", {
+        uri: item.uri,
+        name: item.filename,
+        type: mime.lookup(item.filename),
+      });
+
+      const res = await fetch(
+        "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
+        {
+          method: "POST",
+          body: form,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      ).then((res) => res.json());
+      const d = await sendApiRequest(
+        session,
+        "POST",
+        "space/entity/attachments",
+        {},
+        {
+          body: JSON.stringify({
+            id: task.id,
+            type: "IMAGE",
+            data: res.data.display_url,
+          }),
+        }
+      );
+      console.log(d, res);
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [item]);
+
+  return (
+    <View
+      style={{
+        width: "33.3333%",
+        padding: 10,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <TouchableOpacity onPress={handlePress}>
+        <Image
+          transition={100}
+          source={{
+            uri: item.uri,
+            height: 200,
+            width: 200,
+          }}
+          style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }}
+        />
+        {loading && (
+          <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0,0,0,0.9)",
+              zIndex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 10,
+            }}
+          >
+            <Spinner />
+          </View>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
 }
+
+function TaskImagePicker({ task }) {
+  const [albums, setAlbums] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [assets, setAssets] = useState([]);
+  const [selectAlbums, setSelectAlbums] = useState(false);
+
+  const getAlbumsAsync = async () => {
+    const perm = await MediaLibrary.requestPermissionsAsync();
+    if (!perm.granted) {
+      Toast.show({
+        type: "error",
+        text1: "Please enable media library permissions in your settings.",
+      });
+    }
+
+    const albums = await MediaLibrary.getAlbumsAsync();
+    setAlbums(albums);
+
+    // find album with highest number of assets
+    setSelectedAlbum(
+      albums.reduce((a, b) => (a.assetCount > b.assetCount ? a : b), albums[0])
+    );
+  };
+
+  useEffect(() => {
+    getAlbumsAsync();
+  }, []);
+
+  useEffect(() => {
+    if (selectedAlbum) {
+      MediaLibrary.getAssetsAsync({
+        first: 50,
+        mediaType: "photo",
+        sortBy: "modificationTime",
+        album: selectedAlbum.id,
+      }).then((e) => setAssets(e.assets));
+    }
+  }, [selectedAlbum]);
+
+  const loadMoreAlbums = () => {
+    if (!selectedAlbum || assets.length === 0) {
+      return;
+    }
+    MediaLibrary.getAssetsAsync({
+      first: 50,
+      mediaType: "photo",
+      sortBy: "modificationTime",
+      album: selectedAlbum.id,
+      after:
+        Platform.OS === "android"
+          ? (assets.length + 1).toString()
+          : assets[assets.length - 1].id,
+    })
+      .then((e) => setAssets([...assets, ...e.assets]))
+      .catch((e) => alert("Error"));
+  };
+
+  return selectAlbums ? (
+    <FlatList
+      data={albums}
+      renderItem={({ item }) => (
+        <ListItemButton
+          onPress={() => {
+            setSelectedAlbum(item);
+            setSelectAlbums(false);
+          }}
+        >
+          <ListItemText
+            primary={item.title}
+            secondary={item.assetCount + " photos"}
+          />
+          {selectedAlbum?.id === item.id && <Icon>check</Icon>}
+        </ListItemButton>
+      )}
+      keyExtractor={(item) => item.id}
+    />
+  ) : (
+    <>
+      <BottomSheetFlatList
+        data={assets}
+        key={selectedAlbum?.id}
+        numColumns={3}
+        style={{ flex: 1 }}
+        keyExtractor={(item) => item.uri}
+        onEndReached={loadMoreAlbums}
+        onEndReachedThreshold={0.5}
+        onMomentumScrollBegin={() => {
+          this.onEndReachedCalledDuringMomentum = false;
+        }}
+        ListHeaderComponent={
+          <View style={{ padding: 5 }}>
+            <Button
+              variant="filled"
+              style={{ marginTop: 10 }}
+              onPress={() => setSelectAlbums(true)}
+            >
+              <ButtonText>{selectedAlbum?.title}</ButtonText>
+              <Icon>expand_more</Icon>
+            </Button>
+          </View>
+        }
+        contentContainerStyle={{ paddingHorizontal: 20 }}
+        renderItem={({ item }) => <ImagePickerItem task={task} item={item} />}
+      />
+    </>
+  );
+}
+
 function TaskCompleteButton() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
@@ -334,7 +540,7 @@ export function TaskAttachmentButton({
   return (
     <Menu
       menuRef={menuRef}
-      height={[390]}
+      height={[view === "Image" ? "60%" : 390]}
       onClose={() => {
         onClose?.();
         if (lockView) return;
@@ -424,7 +630,7 @@ export function TaskAttachmentButton({
           }
         />
       )}
-      {view === "Image" && <TaskImagePicker />}
+      {view === "Image" && <TaskImagePicker task={task} />}
       {view === "Note" && (
         <TaskAttachmentPicker
           type="NOTE"
@@ -528,7 +734,7 @@ export function TaskDrawerContent({ handleClose }) {
         </View>
       </View>
       <BottomSheetScrollView>
-        <View style={{ paddingBottom: 20, paddingHorizontal: 12 }}>
+        <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
           <View
             style={{
               paddingHorizontal: 10,
