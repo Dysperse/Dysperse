@@ -5,13 +5,11 @@ export const updateTabParams = async ({
   tabId,
   params,
   mutateTabList,
-  slug,
 }: {
   sessionToken: string;
   tabId: string;
   params: Record<string, string>;
   mutateTabList: () => Promise<unknown>;
-  slug: string;
 }) => {
   const res = await sendApiRequest(
     sessionToken,
@@ -21,7 +19,6 @@ export const updateTabParams = async ({
     {
       body: JSON.stringify({
         params,
-        slug: slug.replace("(app)", ""),
         id: tabId,
       }),
     }

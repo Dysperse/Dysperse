@@ -1,5 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import Emoji from "@/ui/Emoji";
@@ -8,8 +9,9 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { useTabParams } from "@/utils/useTabParams";
 import { router } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -93,6 +95,29 @@ function Tab({
 
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
   const breakpoints = useResponsiveBreakpoints();
+
+  const tabParams = useTabParams();
+
+  useEffect(() => {
+    if (selected) {
+      if (
+        JSON.stringify(omit(["tab"], tabParams)) !== JSON.stringify(tab.params)
+      ) {
+        sendApiRequest(
+          sessionToken,
+          "PUT",
+          "user/tabs",
+          {},
+          {
+            body: JSON.stringify({
+              params: tabParams,
+              id: tab.id,
+            }),
+          }
+        ).then(() => mutate());
+      }
+    }
+  }, [tabParams, selected, tab, sessionToken, mutate]);
 
   return (
     <View

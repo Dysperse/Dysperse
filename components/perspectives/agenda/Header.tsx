@@ -1,3 +1,4 @@
+import { columnStyles } from "@/components/collections/columnStyles";
 import { useAgendaContext } from "@/components/collections/views/agenda-context";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -25,19 +26,7 @@ export function Header({ start, end }) {
   const theme = useColorTheme();
 
   return (
-    <LinearGradient
-      colors={[theme[3], theme[2]]}
-      style={{
-        gap: 15,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-        height: 90,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-      }}
-    >
+    <LinearGradient colors={[theme[3], theme[2]]} style={columnStyles.header}>
       <View
         style={{
           borderRadius: 15,

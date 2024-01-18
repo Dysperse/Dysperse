@@ -14,8 +14,8 @@ export const getSidebarItems = async (session) => {
           ? req.map((collection) => ({
               label: collection.name,
               icon: "grid_view",
-              slug: `/[tab]/collections/[id]`,
-              params: { id: collection.id },
+              slug: `/[tab]/collections/[id]/[type]`,
+              params: { id: collection.id, type: "agenda" },
             }))
           : [{}]),
         {

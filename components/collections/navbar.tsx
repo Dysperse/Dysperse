@@ -1,4 +1,3 @@
-import { useUser } from "@/context/useUser";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -6,14 +5,8 @@ import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { updateTabParams } from "@/utils/updateTabParams";
 import dayjs, { ManipulateType } from "dayjs";
-import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-  useSegments,
-} from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useCallback } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useCollectionContext } from "./context";
@@ -35,9 +28,6 @@ function AgendaNavbarButtons() {
   // eslint-disable-next-line prefer-const
   let { agendaView, start }: any = useGlobalSearchParams();
   if (!agendaView) agendaView = "week";
-  const { sessionToken } = useUser();
-  const params = useLocalSearchParams();
-  const slug = useSegments().join("/");
 
   const handlePrev = useCallback(async () => {
     const newParams = {
@@ -46,46 +36,22 @@ function AgendaNavbarButtons() {
         .format("YYYY-MM-DD"),
     };
     router.setParams(newParams);
-    updateTabParams({
-      sessionToken,
-      mutateTabList: () => null,
-      params: { ...params, ...newParams },
-      tabId: params.tab,
-      slug,
-    });
-  }, [agendaView, start, sessionToken, params, slug]);
+  }, [agendaView, start]);
 
   const handleNext = useCallback(() => {
-    const newParams = {
+    router.setParams({
       start: dayjs(start)
         .startOf(agendaView as ManipulateType)
         .add(1, agendaView as ManipulateType)
         .format("YYYY-MM-DD"),
-    };
-    router.setParams(newParams);
-    updateTabParams({
-      sessionToken,
-      mutateTabList: () => null,
-      params: { ...params, ...newParams },
-      tabId: params.tab,
-      slug,
     });
-  }, [agendaView, start, slug, params, sessionToken]);
+  }, [agendaView, start]);
 
   const handleToday = useCallback(() => {
-    const newParams = {
+    router.setParams({
       start: dayjs().format("YYYY-MM-DD"),
-    };
-    router.setParams(newParams);
-
-    updateTabParams({
-      sessionToken,
-      mutateTabList: () => null,
-      params: { ...params, ...newParams },
-      tabId: params.tab,
-      slug,
     });
-  }, [params, sessionToken, slug]);
+  }, []);
 
   const isTodaysView = dayjs().isBetween(
     dayjs(start).startOf(agendaView as ManipulateType),
