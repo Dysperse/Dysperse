@@ -58,7 +58,7 @@ export default function Page() {
   return (
     <ColorThemeProvider theme={theme}>
       <ContentWrapper>
-        {data ? (
+        {data?.profile ? (
           <View style={{ flex: 1 }}>
             <View
               style={{
@@ -140,9 +140,7 @@ export default function Page() {
                       {dayjs(data.profile.lastActive).fromNow()}
                     </Text>
                   </View>
-                  <Avatar size={40}>
-                    <Icon>emoji_objects</Icon>
-                  </Avatar>
+                  <Avatar size={40} icon="emoji_objects" />
                 </Pressable>
                 <Pressable style={() => [profileStyles.card, themedCardValues]}>
                   <View style={profileStyles.cardContent}>
@@ -164,9 +162,7 @@ export default function Page() {
                       days
                     </Text>
                   </View>
-                  <Avatar size={40}>
-                    <Icon>cake</Icon>
-                  </Avatar>
+                  <Avatar size={40} icon="cake" />
                 </Pressable>
                 {data.profile.bio && (
                   <Pressable
@@ -180,7 +176,6 @@ export default function Page() {
                     </View>
                   </Pressable>
                 )}
-                {/* <Text>{JSON.stringify(data, null, 2)}</Text> */}
               </ScrollView>
             </View>
           </View>

@@ -100,6 +100,7 @@ function Tab({
 
   useEffect(() => {
     if (selected) {
+      console.log(tabParams);
       if (
         JSON.stringify(omit(["tab"], tabParams)) !== JSON.stringify(tab.params)
       ) {
@@ -119,12 +120,11 @@ function Tab({
     }
   }, [tabParams, selected, tab, sessionToken, mutate]);
 
-  return (
+  return isClosedAnimation ? null : (
     <View
       style={{
         width: "100%",
         height: 52,
-        opacity: isClosedAnimation ? 0.5 : 1,
       }}
     >
       <Pressable
@@ -174,6 +174,7 @@ function Tab({
       >
         {tab.collection && (
           <Avatar
+            disabled
             style={{
               backgroundColor: theme[selected ? 7 : 4],
               marginTop: tab.collection ? -10 : 0,
@@ -186,9 +187,12 @@ function Tab({
           </Avatar>
         )}
         <Avatar
+          disabled
           size={tab.collection ? 23 : undefined}
           style={{
-            backgroundColor: theme[selected ? 7 : 5],
+            backgroundColor: tab.collection
+              ? theme[selected ? 7 : 5]
+              : "transparent",
             marginLeft: tab.collection ? -23 : 0,
             marginBottom: tab.collection ? -10 : 0,
           }}

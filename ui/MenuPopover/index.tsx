@@ -20,7 +20,7 @@ type MenuOption = MenuOptionProps & {
   callback;
   selected?: boolean;
 };
-interface MenuProps {
+export interface MenuProps {
   trigger: ReactElement;
   options: MenuOption[];
   menuProps?: MenuPropsType;

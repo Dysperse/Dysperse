@@ -4,8 +4,30 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import { MasonryFlashList } from "@shopify/flash-list";
+import { ReactElement } from "react";
 import { View } from "react-native";
+import { MenuProps } from "react-native-popup-menu";
 import { Entity } from "../entity";
+
+export const CreateEntityTrigger = ({
+  children,
+  menuProps,
+}: {
+  children: ReactElement;
+  menuProps?: MenuProps;
+}) => {
+  return (
+    <MenuPopover
+      menuProps={menuProps}
+      trigger={children}
+      options={[
+        { icon: "task_alt", text: "Task", callback: () => {} },
+        { icon: "sticky_note_2", text: "Note", callback: () => {} },
+        { icon: "package_2", text: "Item", callback: () => {} },
+      ]}
+    />
+  );
+};
 
 export function Masonry() {
   const { data } = useCollectionContext();
@@ -39,23 +61,16 @@ export function Masonry() {
               justifyContent: "center",
             }}
           >
-            <MenuPopover
-              trigger={
-                <Button
-                  disabled
-                  variant="filled"
-                  style={{ height: 70, paddingHorizontal: 40 }}
-                >
-                  <Icon size={35}>add</Icon>
-                  <ButtonText style={{ fontSize: 20 }}>New</ButtonText>
-                </Button>
-              }
-              options={[
-                { icon: "task_alt", text: "Task", callback: () => {} },
-                { icon: "sticky_note_2", text: "Note", callback: () => {} },
-                { icon: "package_2", text: "Item", callback: () => {} },
-              ]}
-            ></MenuPopover>
+            <CreateEntityTrigger>
+              <Button
+                disabled
+                variant="filled"
+                style={{ height: 70, paddingHorizontal: 40 }}
+              >
+                <Icon size={35}>add</Icon>
+                <ButtonText style={{ fontSize: 20 }}>New</ButtonText>
+              </Button>
+            </CreateEntityTrigger>
           </View>
         }
         renderItem={({ item }) => (
