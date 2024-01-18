@@ -17,6 +17,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import React, {
+  RefObject,
   cloneElement,
   useCallback,
   useEffect,
@@ -24,7 +25,13 @@ import React, {
   useRef,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Platform, View, useColorScheme } from "react-native";
+import {
+  Keyboard,
+  Platform,
+  Pressable,
+  View,
+  useColorScheme,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -314,6 +321,12 @@ function BottomSheetContent({
     },
   });
 
+  useEffect(() => {
+    setTimeout(() => {
+      nameRef.current.focus();
+    }, 500);
+  }, [nameRef]);
+
   const onSubmit = async (data) => {
     try {
       sendApiRequest(
@@ -397,13 +410,15 @@ function BottomSheetContent({
 
 export default function CreateTask({
   children,
+  sheetRef,
   defaultValues = {
     date: dayjs().utc(),
     agendaOrder: null,
   },
   mutate,
 }: {
-  children: any;
+  children?: any;
+  sheetRef?: RefObject<BottomSheetModal>;
   defaultValues?: {
     date?: Dayjs;
     agendaOrder?: string;
@@ -411,17 +426,11 @@ export default function CreateTask({
   mutate: (newTask) => void;
 }) {
   const ref = useRef<BottomSheetModal>(null);
-
   const nameRef = useRef(null);
 
   // callbacks
   const handleOpen = useCallback(() => {
     ref.current?.present();
-    if (Platform.OS === "web") {
-      setTimeout(() => {
-        nameRef.current.focus();
-      }, 500);
-    }
   }, []);
 
   const handleClose = useCallback(() => {
@@ -430,7 +439,7 @@ export default function CreateTask({
   }, [mutate]);
 
   const trigger = useMemo(
-    () => cloneElement(children, { onPress: handleOpen }),
+    () => cloneElement(children || <Pressable />, { onPress: handleOpen }),
     [handleOpen, children]
   );
 
@@ -439,7 +448,7 @@ export default function CreateTask({
       {trigger}
       <BottomSheet
         onClose={handleClose}
-        sheetRef={ref}
+        sheetRef={sheetRef || ref}
         snapPoints={[300]}
         maxWidth={500}
         keyboardBehavior="interactive"
