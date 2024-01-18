@@ -1,20 +1,16 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Avatar } from "@/ui/Avatar";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { router, useGlobalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import React, { useCallback } from "react";
-import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useTabMetadata } from "./useTabMetadata";
@@ -50,10 +46,8 @@ function Tab({
   handleClose?: () => void;
   onLongPress?: () => void;
 }) {
-  const params = useGlobalSearchParams();
   const theme = useColorTheme();
-  const tabData = useTabMetadata(tab.slug);
-  const { width } = useWindowDimensions();
+  const tabData = useTabMetadata(tab.slug, tab);
   const { sessionToken } = useUser();
   const { data, error, mutate } = useSWR(["user/tabs"]);
 
@@ -74,7 +68,10 @@ function Tab({
           router.replace({
             params: {
               tab: lastTab.id,
-              ...lastTab.params,
+              params: {
+                tab: lastTab.id,
+                ...(typeof lastTab.params === "object" && lastTab.params),
+              },
             },
             pathname: lastTab.slug,
           });
@@ -97,27 +94,6 @@ function Tab({
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
   const breakpoints = useResponsiveBreakpoints();
 
-  // useEffect(() => {
-  //   if (
-  //     selected &&
-  //     JSON.stringify(tab.params) !==
-  //       JSON.stringify(omit(["params", "screen", "tab"], params))
-  //   ) {
-  //     sendApiRequest(
-  //       sessionToken,
-  //       "PUT",
-  //       "user/tabs",
-  //       {},
-  //       {
-  //         body: JSON.stringify({
-  //           params: omit(["params", "screen", "tab"], params),
-  //           id: params.tab,
-  //         }),
-  //       }
-  //     ).then(() => mutate());
-  //   }
-  // }, [selected, tab.params, params, mutate, sessionToken]);
-
   return (
     <View
       style={{
@@ -130,7 +106,6 @@ function Tab({
         onLongPress={onLongPress}
         disabled={disabled}
         onPress={() => {
-          router.replace(tab.slug);
           router.replace({
             pathname: tab.slug,
             params: {
@@ -172,11 +147,33 @@ function Tab({
           },
         ]}
       >
-        <Icon size={tabData.icon === "alternate_email" ? 26 : 30}>
-          {typeof tabData.icon === "function"
-            ? tabData.icon(tab.params)
-            : tabData.icon}
-        </Icon>
+        {tab.collection && (
+          <Avatar
+            style={{
+              backgroundColor: theme[selected ? 7 : 4],
+              marginTop: tab.collection ? -10 : 0,
+            }}
+            size={23}
+          >
+            {tab.collection && (
+              <Emoji size={23} emoji={tab.collection?.emoji} />
+            )}
+          </Avatar>
+        )}
+        <Avatar
+          size={tab.collection ? 23 : undefined}
+          style={{
+            backgroundColor: theme[selected ? 7 : 5],
+            marginLeft: tab.collection ? -23 : 0,
+            marginBottom: tab.collection ? -10 : 0,
+          }}
+          iconProps={{ size: tab.collection ? 20 : 24 }}
+          icon={
+            typeof tabData.icon === "function"
+              ? tabData.icon(tab.params)
+              : tabData.icon
+          }
+        />
         <View style={{ flex: 1 }}>
           <Text weight={500} numberOfLines={1}>
             {capitalizeFirstLetter(tabData.name(tab.params, tab.slug)[0] || "")}

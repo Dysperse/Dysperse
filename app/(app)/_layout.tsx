@@ -138,7 +138,6 @@ export default function AppLayout() {
           <MenuProvider
             customStyles={{
               backdrop: {
-                // backgroundColor: "rgba(0,0,0,0.1)",
                 flex: 1,
                 opacity: 1,
               },
@@ -262,7 +261,6 @@ export default function AppLayout() {
                         }}
                       />
                     ))}
-                    <JsStack.Screen name="[tab]/perspectives/agenda/[type]/[start]" />
                   </JsStack>
                 </ThemeProvider>
                 {!breakpoints.md && <BottomAppBar />}

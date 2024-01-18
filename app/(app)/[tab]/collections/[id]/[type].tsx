@@ -1,5 +1,5 @@
-import Perspectives from "@/app/(app)/[tab]/perspectives/agenda/[type]/[start]";
 import { useCollectionContext } from "@/components/collections/context";
+import Perspectives from "@/components/collections/views/agenda";
 import { Masonry } from "@/components/collections/views/masonry";
 import Text from "@/ui/Text";
 import { useLocalSearchParams } from "expo-router";
@@ -31,6 +31,6 @@ export default function Page() {
     case "difficulty":
       return <Text>Difficulty</Text>;
     default:
-      return <Text>404</Text>;
+      return <Text>404: {type}</Text>;
   }
 }

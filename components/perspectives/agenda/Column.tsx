@@ -1,4 +1,4 @@
-import { useAgendaContext } from "@/app/(app)/[tab]/perspectives/agenda/context";
+import { useAgendaContext } from "@/components/collections/views/agenda-context";
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";

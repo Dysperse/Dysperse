@@ -1,50 +1,10 @@
 import { sendApiRequest } from "@/helpers/api";
-import dayjs from "dayjs";
 import { router } from "expo-router";
 
 export const getSidebarItems = async (session) => {
   const req = await sendApiRequest(session, "GET", "space/collections", {});
 
   return [
-    {
-      title: "Perspectives",
-      icon: "asterisk",
-      theme: "orange",
-      data: [
-        {
-          label: "Weeks",
-          icon: "calendar_view_week",
-          slug: "/[tab]/perspectives/agenda/[type]/[start]",
-          params: {
-            start: dayjs().format("YYYY-MM-DD"),
-            type: "week",
-          },
-        },
-        {
-          label: "Months",
-          icon: "calendar_view_month",
-          slug: "/[tab]/perspectives/agenda/[type]/[start]",
-          params: {
-            start: dayjs().format("YYYY-MM-DD"),
-            type: "month",
-          },
-        },
-        {
-          label: "Years",
-          icon: "view_compact",
-          slug: "/[tab]/perspectives/agenda/[type]/[start]",
-          params: {
-            start: dayjs().format("YYYY-MM-DD"),
-            type: "year",
-          },
-        },
-        {
-          label: "Difficulty",
-          icon: "priority_high",
-          slug: "/[tab]/perspectives/difficulty",
-        },
-      ],
-    },
     {
       title: "Collections",
       icon: "layers",

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-export const useTabMetadata = (slug: string) => {
+export const useTabMetadata = (slug: string, tab: any) => {
   if (!slug) return { icon: "square" };
 
   const startWithMatchers = {
@@ -17,8 +17,16 @@ export const useTabMetadata = (slug: string) => {
       ],
     },
     "/[tab]/collections/": {
-      icon: "layers",
-      name: () => [],
+      icon: (params) =>
+        ({
+          agenda: "calendar_today",
+          kanban: "view_kanban",
+          stream: "view_agenda",
+          masonry: "dashboard",
+          grid: "view_cozy",
+          difficulty: "exercise",
+        }[params.type]),
+      name: (params) => [tab?.collection?.name, params.type],
     },
     "/[tab]/all/[type]": {
       icon: (params) => (params.type === "tasks" ? "task_alt" : "layers"),
@@ -37,6 +45,7 @@ export const useTabMetadata = (slug: string) => {
   const match = Object.keys(startWithMatchers).find((key) =>
     slug.startsWith(key)
   );
-  if (!startWithMatchers[match]) return { icon: "square" };
+  if (!startWithMatchers[match])
+    return { icon: "square", name: (params, slug) => [match] };
   return startWithMatchers[match];
 };

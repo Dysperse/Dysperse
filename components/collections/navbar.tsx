@@ -1,3 +1,4 @@
+import { useUser } from "@/context/useUser";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -5,8 +6,14 @@ import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { updateTabParams } from "@/utils/updateTabParams";
 import dayjs, { ManipulateType } from "dayjs";
-import { router, useGlobalSearchParams } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  useSegments,
+} from "expo-router";
 import { memo, useCallback } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useCollectionContext } from "./context";
@@ -25,30 +32,60 @@ const styles = StyleSheet.create({
 
 function AgendaNavbarButtons() {
   const theme = useColorTheme();
-  const { agendaView, start }: any = useGlobalSearchParams();
+  // eslint-disable-next-line prefer-const
+  let { agendaView, start }: any = useGlobalSearchParams();
+  if (!agendaView) agendaView = "week";
+  const { sessionToken } = useUser();
+  const params = useLocalSearchParams();
+  const slug = useSegments().join("/");
 
-  const handlePrev = useCallback(() => {
-    router.setParams({
+  const handlePrev = useCallback(async () => {
+    const newParams = {
       start: dayjs(start)
         .subtract(1, agendaView as ManipulateType)
         .format("YYYY-MM-DD"),
+    };
+    router.setParams(newParams);
+    updateTabParams({
+      sessionToken,
+      mutateTabList: () => null,
+      params: { ...params, ...newParams },
+      tabId: params.tab,
+      slug,
     });
-  }, [agendaView, start]);
+  }, [agendaView, start, sessionToken, params, slug]);
 
   const handleNext = useCallback(() => {
-    router.setParams({
+    const newParams = {
       start: dayjs(start)
         .startOf(agendaView as ManipulateType)
         .add(1, agendaView as ManipulateType)
         .format("YYYY-MM-DD"),
+    };
+    router.setParams(newParams);
+    updateTabParams({
+      sessionToken,
+      mutateTabList: () => null,
+      params: { ...params, ...newParams },
+      tabId: params.tab,
+      slug,
     });
-  }, [agendaView, start]);
+  }, [agendaView, start, slug, params, sessionToken]);
 
   const handleToday = useCallback(() => {
-    router.setParams({
+    const newParams = {
       start: dayjs().format("YYYY-MM-DD"),
+    };
+    router.setParams(newParams);
+
+    updateTabParams({
+      sessionToken,
+      mutateTabList: () => null,
+      params: { ...params, ...newParams },
+      tabId: params.tab,
+      slug,
     });
-  }, []);
+  }, [params, sessionToken, slug]);
 
   const isTodaysView = dayjs().isBetween(
     dayjs(start).startOf(agendaView as ManipulateType),
@@ -60,7 +97,7 @@ function AgendaNavbarButtons() {
     week: "[Week #]W • MMM YYYY",
     month: "YYYY",
     year: "YYYY",
-  }[agendaView];
+  }[agendaView || "week"];
 
   return (
     <>

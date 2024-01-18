@@ -1,6 +1,5 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { Column } from "@/components/perspectives/agenda/Column";
-import PerspectivesNavbar from "@/components/perspectives/agenda/Navbar";
 import { AgendaSelector } from "@/components/perspectives/agenda/Selector";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
@@ -8,12 +7,12 @@ import Skeleton from "@/ui/Skeleton";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo } from "react";
+import { useLocalSearchParams } from "expo-router";
+import React, { useMemo } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
-import { AgendaContext, useAgendaContext } from "../context";
+import { AgendaContext, useAgendaContext } from "./agenda-context";
 
 function Agenda() {
   const theme = useColorTheme();
@@ -121,11 +120,6 @@ function Agenda() {
   }
   return (
     <ContentWrapper noPaddingTop>
-      <PerspectivesNavbar
-        error={Boolean(error)}
-        currentDateStart={column?.start}
-        currentDateEnd={column?.end}
-      />
       {data ? (
         <View
           style={{
@@ -145,12 +139,9 @@ function Agenda() {
 }
 
 export default function Page() {
-  const { agendaView, start } = useLocalSearchParams();
-
-  useEffect(() => {
-    if (!start) router.setParams({ start: dayjs().format("YYYY-MM-DD") });
-    if (!agendaView) router.setParams({ agendaView: "week" });
-  }, [agendaView, start]);
+  let { agendaView, start } = useLocalSearchParams();
+  if (!agendaView) agendaView = "week";
+  if (!start) start = dayjs().format("YYYY-MM-DD");
 
   const agendaContextValue = useMemo(() => {
     return {

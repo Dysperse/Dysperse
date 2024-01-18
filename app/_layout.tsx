@@ -19,6 +19,7 @@ import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
 import React, { useCallback } from "react";
 import { AppState, Platform, View } from "react-native";
@@ -29,6 +30,7 @@ import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration"
 import { SessionProvider, useSession } from "../context/AuthProvider";
 import { SessionLoadingScreen } from "./(app)/_layout";
 
+SystemUI.setBackgroundColorAsync("black");
 if (Platform.OS === "android") {
   NavigationBar.setPositionAsync("absolute");
   NavigationBar.setBackgroundColorAsync("rgba(255,255,255,0.005)");
