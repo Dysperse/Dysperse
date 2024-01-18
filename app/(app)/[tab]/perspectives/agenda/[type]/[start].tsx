@@ -8,8 +8,8 @@ import Skeleton from "@/ui/Skeleton";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
-import { useLocalSearchParams } from "expo-router";
-import React, { useMemo } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useMemo } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
@@ -88,12 +88,7 @@ function Agenda() {
   );
   if (breakpoints.md) {
     return (
-      <ContentWrapper>
-        <PerspectivesNavbar
-          error={Boolean(error)}
-          currentDateStart={column?.start}
-          currentDateEnd={column?.end}
-        />
+      <>
         <ScrollView
           horizontal
           contentContainerStyle={{
@@ -121,7 +116,7 @@ function Agenda() {
             </View>
           )}
         </ScrollView>
-      </ContentWrapper>
+      </>
     );
   }
   return (
@@ -150,17 +145,22 @@ function Agenda() {
 }
 
 export default function Page() {
-  const { type, start } = useLocalSearchParams();
+  const { agendaView, start } = useLocalSearchParams();
+
+  useEffect(() => {
+    if (!start) router.setParams({ start: dayjs().format("YYYY-MM-DD") });
+    if (!agendaView) router.setParams({ agendaView: "week" });
+  }, [agendaView, start]);
 
   const agendaContextValue = useMemo(() => {
     return {
-      type: type as string,
-      start: dayjs(start as string).startOf(type as OpUnitType),
+      type: agendaView as string,
+      start: dayjs(start as string).startOf(agendaView as OpUnitType),
       end: dayjs(start as string)
-        .startOf(type as OpUnitType)
-        .add(1, type as ManipulateType),
+        .startOf(agendaView as OpUnitType)
+        .add(1, agendaView as ManipulateType),
     };
-  }, [type, start]);
+  }, [agendaView, start]);
 
   return (
     <AgendaContext.Provider value={agendaContextValue}>

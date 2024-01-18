@@ -1,3 +1,4 @@
+import Perspectives from "@/app/(app)/[tab]/perspectives/agenda/[type]/[start]";
 import { useCollectionContext } from "@/components/collections/context";
 import Task from "@/components/task";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
@@ -118,7 +119,7 @@ export default function Page() {
 
   switch (type) {
     case "agenda":
-      return <Text>Agenda</Text>;
+      return <Perspectives />;
     case "kanban":
       return <Text>Kanban</Text>;
     case "stream":
