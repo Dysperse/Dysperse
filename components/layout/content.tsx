@@ -24,7 +24,9 @@ export function ContentWrapper(props: ContentWrapperProps) {
 
   return props.enabled !== false ? (
     <View
+      {...props}
       style={[
+        props.style,
         styles.container,
         {
           borderRadius: breakpoints.md ? 20 : 0,
@@ -41,7 +43,6 @@ export function ContentWrapper(props: ContentWrapperProps) {
           borderColor: theme[6],
         },
       ]}
-      {...props}
     >
       {props.children}
     </View>

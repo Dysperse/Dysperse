@@ -1,8 +1,10 @@
+import { sendApiRequest } from "@/helpers/api";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 
 export const getSidebarItems = async (session) => {
-  // const req = await sendApiRequest(session, "GET", "space/tasks/boards", {});
+  const req = await sendApiRequest(session, "GET", "space/collections", {});
+
   return [
     {
       title: "Perspectives",
@@ -48,6 +50,14 @@ export const getSidebarItems = async (session) => {
       icon: "layers",
       theme: "blue",
       data: [
+        ...(req && Array.isArray(req)
+          ? req.map((collection) => ({
+              label: collection.name,
+              icon: "grid_view",
+              slug: `/[tab]/collections/[id]`,
+              params: { id: collection.id },
+            }))
+          : [{}]),
         {
           label: "Create",
           icon: "add",
@@ -56,12 +66,6 @@ export const getSidebarItems = async (session) => {
             router.push("/collections/create");
           },
         },
-        // ...(req && Array.isArray(req)
-        //   ? req.map((collection) => ({
-        //       collection,
-        //       slug: `/collections/${collection.id}`,
-        //     }))
-        //   : [{}]),
       ],
     },
     {

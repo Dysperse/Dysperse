@@ -6,7 +6,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { memo, useEffect } from "react";
-import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
@@ -118,7 +118,6 @@ const OpenTabsList = memo(function OpenTabsList() {
               style={{
                 backgroundColor: theme[2],
                 padding: 1,
-                margin: -1,
               }}
             >
               <Tab tab={item} selected={tab === item.id} />
@@ -128,14 +127,6 @@ const OpenTabsList = memo(function OpenTabsList() {
           contentContainerStyle={{ backgroundColor: theme[2] }}
           keyExtractor={(item) => item.id}
         />
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          style={{ flex: 1, width: "100%" }}
-        >
-          {/* {data.map((t) => (
-            <Tab tab={t} key={t.id} selected={tab === t.id} />
-          ))} */}
-        </ScrollView>
       </View>
     ) : (
       <Carousel

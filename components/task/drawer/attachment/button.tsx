@@ -127,7 +127,9 @@ export function TaskAttachmentButton({
           }
         />
       )}
-      {view === "Image" && <TaskImagePicker task={task} />}
+      {view === "Image" && (
+        <TaskImagePicker updateTask={updateTask} task={task} />
+      )}
       {view === "Note" && (
         <TaskAttachmentPicker
           type="NOTE"

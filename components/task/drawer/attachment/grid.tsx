@@ -42,13 +42,12 @@ export function AttachmentGrid({
       allowsEditing: true,
       quality: 1,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
     });
 
     if (!result.canceled) {
       // convert to File
-      const blob = await fetch("https://placehold.co/600x400/EEE/31343C").then(
-        (r) => r.blob()
-      );
+      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
       console.log(blob);
       const file = new File([blob], "image.png", { type: blob.type });
       const form = new FormData();
@@ -58,9 +57,6 @@ export function AttachmentGrid({
         "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
           body: form,
         }
       ).then((res) => res.json());

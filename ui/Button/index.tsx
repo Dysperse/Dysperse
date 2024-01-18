@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
+import Icon from "../Icon";
 import Spinner from "../Spinner";
 import Text, { DTextProps } from "../Text";
 import { useColorTheme } from "../color/theme-provider";
@@ -15,6 +16,9 @@ interface DButtonProps extends PressableProps {
   buttonStyle?: StyleProp<ViewStyle>;
   isLoading?: boolean;
   dense?: boolean;
+
+  text?: string;
+  icon?: string;
 }
 
 export function ButtonText(props: DTextProps) {
@@ -91,7 +95,16 @@ export function Button(props: DButtonProps) {
           : props.style,
       ]}
     >
-      {props.isLoading ? <Spinner /> : props.children}
+      {props.isLoading ? (
+        <Spinner />
+      ) : (
+        props.children ?? (
+          <>
+            <Icon>{props.icon}</Icon>
+            <ButtonText>{props.text}</ButtonText>
+          </>
+        )
+      )}
     </Pressable>
   );
 }

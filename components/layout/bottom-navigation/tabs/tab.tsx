@@ -24,11 +24,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     columnGap: 10,
-    borderWidth: 1,
   },
   text: { marginTop: -3, fontSize: 12, opacity: 0.6 },
   closeButton: {
-    marginRight: 5,
+    position: "absolute",
+    right: 0,
+    top: 0,
     backgroundColor: "transparent",
   },
   closeIcon: { opacity: 0.6 },
@@ -121,6 +122,7 @@ function Tab({
     <View
       style={{
         width: "100%",
+        height: 52,
         opacity: isClosedAnimation ? 0.5 : 1,
       }}
     >
@@ -142,12 +144,13 @@ function Tab({
           styles.button,
           {
             paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
-            borderRadius: breakpoints.md ? 99 : 99,
+            paddingRight: selected ? 30 : undefined,
+            borderRadius: 20,
             height: breakpoints.md ? 50 : 60,
             backgroundColor:
               theme[
                 selected
-                  ? 11
+                  ? 5
                   : pressed
                   ? 5
                   : hovered
@@ -156,72 +159,51 @@ function Tab({
                   ? 2
                   : 3
               ],
-            borderColor: theme[selected ? 11 : breakpoints.md ? 2 : 5],
+            ...(Platform.OS === "web" &&
+              selected && {
+                shadowColor: theme[1],
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowRadius: 2,
+                shadowOpacity: 1,
+              }),
           },
         ]}
       >
-        <Icon
-          size={tabData.icon === "alternate_email" ? 26 : 30}
-          style={{
-            ...(selected && {
-              color: theme[3],
-            }),
-          }}
-        >
+        <Icon size={tabData.icon === "alternate_email" ? 26 : 30}>
           {typeof tabData.icon === "function"
             ? tabData.icon(tab.params)
             : tabData.icon}
         </Icon>
         <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              color: theme[selected ? 3 : 11],
-              ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-            }}
-            weight={500}
-            numberOfLines={1}
-          >
+          <Text weight={500} numberOfLines={1}>
             {capitalizeFirstLetter(tabData.name(tab.params, tab.slug)[0] || "")}
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (
-            <Text
-              style={[
-                styles.text,
-                {
-                  color: theme[selected ? 3 : 11],
-                  ...(Platform.OS === "web" && ({ userSelect: "none" } as any)),
-                },
-              ]}
-              numberOfLines={1}
-            >
+            <Text style={[styles.text]} numberOfLines={1}>
               {capitalizeFirstLetter(
                 tabData.name(tab.params, tab.slug)[1] || ""
               )}
             </Text>
           )}
         </View>
-        <IconButton
-          style={[
-            styles.closeButton,
-            {
-              width: width > 600 ? 20 : 40,
-              height: width > 600 ? 20 : 40,
-              display:
-                width < 600
-                  ? isList
-                    ? "flex"
-                    : "none"
-                  : selected
-                  ? "flex"
-                  : "none",
-            },
-          ]}
-          onPress={async () => await handleDelete(tab.id)}
-        >
-          <Icon size={23} style={[styles.closeIcon, { color: theme[3] }]}>
-            close
-          </Icon>
-        </IconButton>
+        {breakpoints.lg && (
+          <IconButton
+            disabled={!selected}
+            style={({ hovered }: any) => [
+              styles.closeButton,
+              { opacity: hovered ? 1 : 0 },
+            ]}
+            size={50}
+            onPress={async () => await handleDelete(tab.id)}
+          >
+            <Icon size={23} style={[styles.closeIcon]}>
+              close
+            </Icon>
+          </IconButton>
+        )}
       </Pressable>
     </View>
   );

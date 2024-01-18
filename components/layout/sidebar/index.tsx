@@ -163,8 +163,8 @@ const LogoButton = memo(function LogoButton() {
             paddingLeft: 3,
           }}
         >
-          <Logo size={35} color={theme[6]} />
-          <Icon style={{ color: theme[6] }}>expand_more</Icon>
+          <Logo size={35} color={theme[8]} />
+          <Icon style={{ color: theme[8] }}>expand_more</Icon>
         </TouchableOpacity>
       </SpacesTrigger>
       {error && (

@@ -11,9 +11,11 @@ import Toast from "react-native-toast-message";
 
 export function ImagePickerItem({
   task,
+  updateTask,
   item,
 }: {
   task;
+  updateTask;
   item: MediaLibrary.Asset;
 }) {
   const [loading, setLoading] = useState(false);
@@ -38,6 +40,7 @@ export function ImagePickerItem({
           },
         }
       ).then((res) => res.json());
+
       const d = await sendApiRequest(
         session,
         "POST",
@@ -51,7 +54,8 @@ export function ImagePickerItem({
           }),
         }
       );
-      console.log(d, res);
+
+      updateTask("attachments", [...task.attachments, d]);
     } catch (e) {
       Toast.show({
         type: "error",
@@ -61,7 +65,7 @@ export function ImagePickerItem({
     } finally {
       setLoading(false);
     }
-  }, [item]);
+  }, [item, updateTask, task, session]);
 
   return (
     <View

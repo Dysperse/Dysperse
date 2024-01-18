@@ -10,7 +10,7 @@ import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { ImagePickerItem } from "./ImagePickerItem";
 
-export function TaskImagePicker({ task }) {
+export function TaskImagePicker({ task, updateTask }) {
   const [albums, setAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [assets, setAssets] = useState([]);
@@ -112,7 +112,9 @@ export function TaskImagePicker({ task }) {
           </View>
         }
         contentContainerStyle={{ paddingHorizontal: 20 }}
-        renderItem={({ item }) => <ImagePickerItem task={task} item={item} />}
+        renderItem={({ item }) => (
+          <ImagePickerItem task={task} item={item} updateTask={updateTask} />
+        )}
       />
     </>
   );

@@ -138,7 +138,7 @@ export default function AppLayout() {
           <MenuProvider
             customStyles={{
               backdrop: {
-                backgroundColor: "rgba(0,0,0,0.1)",
+                // backgroundColor: "rgba(0,0,0,0.1)",
                 flex: 1,
                 opacity: 1,
               },
