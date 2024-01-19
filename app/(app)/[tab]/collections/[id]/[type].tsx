@@ -71,7 +71,7 @@ const KanbanHeader = memo(function KanbanHeader({
           <IconButton icon="add" disabled />
         </CreateEntityTrigger>
       )}
-      <IconButton icon="expand_circle_down" />
+      <IconButton icon={grid ? "more_horiz" : "expand_circle_down"} />
     </LinearGradient>
   );
 });
