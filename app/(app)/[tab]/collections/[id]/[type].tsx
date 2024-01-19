@@ -55,15 +55,20 @@ const KanbanHeader = memo(function KanbanHeader({
       ]}
     >
       <Emoji emoji={label.emoji} size={grid ? 25 : 35} />
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          ...(grid && { flexDirection: "row", gap: 20, alignItems: "center" }),
+        }}
+      >
         <Text style={{ fontSize: 20 }} weight={800}>
           {label.name}
         </Text>
-        {!grid && <Text weight={200}>{label.entitiesLength} items</Text>}
+        <Text weight={200}>{label.entitiesLength} items</Text>
       </View>
       {grid && (
         <CreateEntityTrigger menuProps={{ style: { marginRight: -25 } }}>
-          <IconButton icon="add_circle" disabled />
+          <IconButton icon="add" disabled />
         </CreateEntityTrigger>
       )}
       <IconButton icon="expand_circle_down" />
@@ -74,6 +79,7 @@ const KanbanHeader = memo(function KanbanHeader({
 function KanbanColumn({ label, grid = false }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+
   return (
     <View
       style={
@@ -215,22 +221,24 @@ function Kanban() {
 
 function Grid() {
   const { data } = useCollectionContext();
-  if (data.labels.length % 2 !== 0) data.labels.push({ empty: true });
-  if (data.labels.length < 4)
-    data.labels = [
-      ...data.labels,
-      ...new Array(4 - data.labels.length).fill({
-        empty: true,
-      }),
-    ];
-
   const theme = useColorTheme();
+
+  // Create a new array for rendering purposes without modifying the original data
+  const displayLabels = [...data.labels];
+
+  if (displayLabels.length % 2 !== 0) displayLabels.push({ empty: true });
+  if (displayLabels.length < 4)
+    displayLabels.push(
+      ...new Array(4 - displayLabels.length).fill({
+        empty: true,
+      })
+    );
 
   const columnsPerRow = 2;
   const rows = [];
 
-  for (let i = 0; i < data.labels.length; i += columnsPerRow) {
-    const rowLabels = data.labels.slice(i, i + columnsPerRow);
+  for (let i = 0; i < displayLabels.length; i += columnsPerRow) {
+    const rowLabels = displayLabels.slice(i, i + columnsPerRow);
     const row = rowLabels.map((label) =>
       label.empty ? (
         <View
@@ -284,8 +292,8 @@ function Grid() {
       }}
     >
       {rows}
-      {data.labels.length <= columnsPerRow &&
-        [...new Array(columnsPerRow - data.labels.length)].map((_, i) => (
+      {displayLabels.length <= columnsPerRow &&
+        [...new Array(columnsPerRow - displayLabels.length)].map((_, i) => (
           <View
             key={i}
             style={{
