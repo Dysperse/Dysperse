@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
 
 const KanbanHeader = memo(function KanbanHeader({
   label,
+  grid,
 }: {
+  grid?: boolean;
   label: {
     id: string;
     emoji: string;
@@ -41,37 +43,60 @@ const KanbanHeader = memo(function KanbanHeader({
 }) {
   const theme = useColorTheme();
   return (
-    <LinearGradient colors={[theme[3], theme[2]]} style={columnStyles.header}>
-      <Emoji emoji={label.emoji} size={35} />
-      <View>
+    <LinearGradient
+      colors={[theme[3], theme[2]]}
+      style={[
+        columnStyles.header,
+        grid && {
+          height: 60,
+          borderBottomWidth: 1,
+          borderBottomColor: theme[5],
+        },
+      ]}
+    >
+      <Emoji emoji={label.emoji} size={grid ? 25 : 35} />
+      <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 20 }} weight={800}>
           {label.name}
         </Text>
-        <Text weight={200}>{label.entitiesLength} items</Text>
+        {!grid && <Text weight={200}>{label.entitiesLength} items</Text>}
       </View>
-      <IconButton icon="expand_circle_down" style={{ marginLeft: "auto" }} />
+      {grid && (
+        <CreateEntityTrigger menuProps={{ style: { marginRight: -25 } }}>
+          <IconButton icon="add_circle" disabled />
+        </CreateEntityTrigger>
+      )}
+      <IconButton icon="expand_circle_down" />
     </LinearGradient>
   );
 });
 
-function KanbanColumn({ label }) {
+function KanbanColumn({ label, grid = false }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   return (
     <View
-      style={{
-        ...(breakpoints.md && {
-          backgroundColor: theme[2],
-          borderRadius: 20,
-        }),
-        width: breakpoints.md ? 300 : "100%",
-        flex: 1,
-        minWidth: 5,
-        minHeight: 5,
-      }}
+      style={
+        grid
+          ? {
+              position: "relative",
+              height: "100%",
+            }
+          : {
+              ...(breakpoints.md && {
+                backgroundColor: theme[2],
+                borderRadius: 20,
+              }),
+              width: breakpoints.md ? 300 : "100%",
+              flex: 1,
+              minWidth: 5,
+              minHeight: 5,
+            }
+      }
     >
       {breakpoints.md && (
         <KanbanHeader
+          grid={grid}
           label={{
             ...label,
             entities: undefined,
@@ -91,71 +116,34 @@ function KanbanColumn({ label }) {
         //   />
         // }
         ListHeaderComponent={
-          <>
-            <View
-              style={[
-                styles.header,
-                {
-                  paddingHorizontal: breakpoints.md ? 0 : 15,
-                  paddingTop: breakpoints.md ? 0 : 20,
-                },
-              ]}
-            >
-              <CreateEntityTrigger
-                menuProps={{ style: { flex: 1 } }}
-                // defaultValues={{
-                //   date: dayjs(column.start),
-                //   agendaOrder: LexoRank.parse(
-                //     column.tasks[column.tasks.length - 1]?.agendaOrder ||
-                //       LexoRank.max().toString()
-                //   )
-                //     .genNext()
-                //     .toString(),
-                // }}
-                // mutate={(newTask) => {
-                //   console.log(newTask);
-                //   if (!newTask) return;
-                //   if (
-                //     !dayjs(newTask.due)
-                //       .utc()
-                //       .isBetween(
-                //         dayjs(column.start),
-                //         dayjs(column.end),
-                //         null,
-                //         "[]"
-                //       ) ||
-                //     !newTask.due
-                //   )
-                //     return;
-
-                //   mutate(
-                //     (oldData) =>
-                //       oldData.map((oldColumn) =>
-                //         oldColumn.start === column.start &&
-                //         oldColumn.end === column.end
-                //           ? {
-                //               ...oldColumn,
-                //               tasks: [...oldColumn.tasks, newTask],
-                //             }
-                //           : oldColumn
-                //       ),
-                //     {
-                //       revalidate: false,
-                //     }
-                //   );
-                // }}
+          grid ? undefined : (
+            <>
+              <View
+                style={[
+                  styles.header,
+                  {
+                    paddingHorizontal: breakpoints.md ? 0 : 15,
+                    paddingTop: breakpoints.md ? 0 : 20,
+                  },
+                ]}
               >
-                <Button
-                  disabled
-                  variant="filled"
-                  style={{ flex: 1, minHeight: 50 }}
-                >
-                  <Icon>add</Icon>
-                  <ButtonText>New</ButtonText>
-                </Button>
-              </CreateEntityTrigger>
-            </View>
-          </>
+                {
+                  <CreateEntityTrigger
+                    menuProps={grid ? undefined : { style: { flex: 1 } }}
+                  >
+                    <Button
+                      disabled
+                      variant="filled"
+                      style={{ flex: 1, minHeight: 50 }}
+                    >
+                      <Icon>add</Icon>
+                      <ButtonText>New</ButtonText>
+                    </Button>
+                  </CreateEntityTrigger>
+                }
+              </View>
+            </>
+          )
         }
         data={label.entities
           .sort((a, b) =>
@@ -193,6 +181,7 @@ function KanbanColumn({ label }) {
 
 function Kanban() {
   const { data } = useCollectionContext();
+  const theme = useColorTheme();
 
   return (
     <ScrollView
@@ -206,6 +195,109 @@ function Kanban() {
       {data.labels.map((label) => (
         <KanbanColumn key={label.id} label={label} />
       ))}
+      {data.labels.length <= 2 &&
+        [...new Array(3)].map((_, i) => (
+          <View
+            key={i}
+            style={{
+              width: 300,
+              flex: 1,
+              minWidth: 5,
+              minHeight: 5,
+              backgroundColor: theme[2],
+              borderRadius: 20,
+            }}
+          />
+        ))}
+    </ScrollView>
+  );
+}
+
+function Grid() {
+  const { data } = useCollectionContext();
+  if (data.labels.length % 2 !== 0) data.labels.push({ empty: true });
+  if (data.labels.length < 4)
+    data.labels = [
+      ...data.labels,
+      ...new Array(4 - data.labels.length).fill({
+        empty: true,
+      }),
+    ];
+
+  const theme = useColorTheme();
+
+  const columnsPerRow = 2;
+  const rows = [];
+
+  for (let i = 0; i < data.labels.length; i += columnsPerRow) {
+    const rowLabels = data.labels.slice(i, i + columnsPerRow);
+    const row = rowLabels.map((label) =>
+      label.empty ? (
+        <View
+          key={label.id || Math.random()}
+          style={{
+            flex: 1,
+            backgroundColor: theme[2],
+            width: "100%",
+            borderRadius: 25,
+          }}
+        />
+      ) : (
+        <View
+          key={label.id || Math.random()}
+          style={{
+            flex: 1,
+            backgroundColor: theme[2],
+            width: "100%",
+            borderRadius: 25,
+          }}
+        >
+          <KanbanColumn grid label={label} />
+        </View>
+      )
+    );
+    rows.push(
+      <View
+        key={i / columnsPerRow}
+        style={{
+          flexDirection: "column",
+          gap: 15,
+          width: "50%",
+        }}
+      >
+        {row}
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView
+      horizontal
+      contentContainerStyle={{
+        padding: 15,
+        gap: 15,
+        minWidth: "100%",
+        paddingRight: 30,
+      }}
+      style={{
+        minWidth: "100%",
+      }}
+    >
+      {rows}
+      {data.labels.length <= columnsPerRow &&
+        [...new Array(columnsPerRow - data.labels.length)].map((_, i) => (
+          <View
+            key={i}
+            style={{
+              width: 300,
+              flex: 1,
+              minWidth: 5,
+              minHeight: 5,
+              backgroundColor: theme[2],
+              borderRadius: 20,
+            }}
+          />
+        ))}
     </ScrollView>
   );
 }
@@ -223,7 +315,7 @@ export default function Page() {
     case "masonry":
       return <Masonry />;
     case "grid":
-      return <Text>Grid</Text>;
+      return <Grid />;
     case "difficulty":
       return <Text>Difficulty</Text>;
     default:
