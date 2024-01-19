@@ -361,12 +361,12 @@ function BottomSheetContent({
   };
 
   const handleSubmitButtonClick = () => {
-    if (Object.keys(errors).length > 0) {
+    handleSubmit(onSubmit, () =>
       Toast.show({
         type: "error",
         text1: "Type in a task name",
-      });
-    } else handleSubmit(onSubmit)();
+      })
+    )();
   };
 
   return (

@@ -1,15 +1,21 @@
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
+import { Menu } from "@/ui/Menu";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
 import { router, useGlobalSearchParams } from "expo-router";
-import { memo, useCallback } from "react";
+import { ReactElement, memo, useCallback, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
-import { useCollectionContext } from "./context";
+import Toast from "react-native-toast-message";
+import { LabelPicker } from "../labels/picker";
+import { CollectionContext, useCollectionContext } from "./context";
 
 const styles = StyleSheet.create({
   navbarIconButton: {
@@ -117,9 +123,109 @@ function AgendaNavbarButtons() {
   );
 }
 
-export const CollectionNavbar = memo(function CollectionNavbar() {
+const CollectionLabelMenu = memo(function CollectionLabelMenu({
+  children,
+}: {
+  children: ReactElement;
+}) {
   const theme = useColorTheme();
   const { data } = useCollectionContext();
+  const [labels, setLabels] = useState(data?.labels?.map((i) => i.id) || []);
+
+  return (
+    <LabelPicker
+      multiple
+      hideBack
+      sheetProps={{
+        enablePanDownToClose: false,
+        disableBackToClose: true,
+        disableEscapeToClose: true,
+        disableBackdropPressToClose: true,
+      }}
+      autoFocus={false}
+      label={labels}
+      setLabel={setLabels}
+      onClose={() => {}}
+    >
+      <MenuItem>
+        <Icon>label</Icon>
+        <Text variant="menuItem" weight={300}>
+          Edit labels
+        </Text>
+      </MenuItem>
+    </LabelPicker>
+  );
+});
+
+const CollectionRenameMenu = memo(function CollectionRenameMenu({
+  children,
+}: {
+  children: ReactElement;
+}) {
+  const { data } = useCollectionContext();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: data.name,
+    },
+  });
+
+  return (
+    <Menu
+      height={[205]}
+      trigger={
+        <MenuItem>
+          <Icon>edit</Icon>
+          <Text variant="menuItem" weight={300}>
+            Name & icon
+          </Text>
+        </MenuItem>
+      }
+    >
+      <View style={{ padding: 20, paddingTop: 0, gap: 20 }}>
+        <Controller
+          name="name"
+          rules={{ required: true }}
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              placeholder="Collection name"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              variant="filled+outlined"
+              style={{
+                paddingHorizontal: 20,
+                paddingVertical: 15,
+                fontSize: 20,
+                borderColor: errors.name ? "red" : undefined,
+              }}
+            />
+          )}
+        />
+        <Button
+          onPress={handleSubmit(
+            (data) => alert(data.name),
+            () => Toast.show({ type: "error", text1: "Please type in a name" })
+          )}
+          variant="filled"
+          style={{ height: 60 }}
+        >
+          <ButtonText style={{ fontSize: 20 }} weight={800}>
+            Save
+          </ButtonText>
+        </Button>
+      </View>
+    </Menu>
+  );
+});
+
+export const CollectionNavbar = memo(function CollectionNavbar() {
+  const theme = useColorTheme();
+  const { data, ...ctx } = useCollectionContext();
   const { type } = useGlobalSearchParams();
 
   const options = [
@@ -136,10 +242,43 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
   }));
 
   const collectionMenuOptions = [
-    { icon: "edit", text: "Rename", callback: () => alert("rename") },
-    { icon: "mood", text: "Change icon", callback: () => alert("mood") },
-    { icon: "label", text: "Edit labels", callback: () => alert("label") },
-    { icon: "delete", text: "Delete", callback: () => alert("delete") },
+    {
+      icon: "edit",
+      text: "Edit",
+      renderer: (props) => (
+        <CollectionContext.Provider value={{ data, ...ctx }}>
+          <CollectionRenameMenu {...props} />
+        </CollectionContext.Provider>
+      ),
+    },
+    {
+      icon: "label",
+      text: "Edit labels",
+      renderer: (props) => (
+        <CollectionContext.Provider value={{ data, ...ctx }}>
+          <CollectionLabelMenu {...props} />
+        </CollectionContext.Provider>
+      ),
+    },
+    {
+      icon: "delete",
+      text: "Delete",
+      renderer: () => (
+        <ConfirmationModal
+          height={450}
+          onSuccess={() => alert("coming soon")}
+          title="Delete collection?"
+          secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
+        >
+          <MenuItem>
+            <Icon>delete</Icon>
+            <Text variant="menuItem" weight={300}>
+              Delete
+            </Text>
+          </MenuItem>
+        </ConfirmationModal>
+      ),
+    },
   ];
 
   const filterOptions = [
@@ -170,13 +309,6 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
       (i) => i.text[0].toLowerCase() === key.split(" ")[1]
     );
     options[index].callback();
-  });
-
-  useKeyboardShortcut(["e r", "e i", "e e", "e d"], (key) => {
-    const index = collectionMenuOptions.findIndex(
-      (i) => i.text[0].toLowerCase() === key.split(" ")[1]
-    );
-    collectionMenuOptions[index].callback();
   });
 
   useKeyboardShortcut(["f a", "f d", "f l", "f t"], (key) => {
@@ -216,10 +348,10 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
               },
             ]}
           >
-            <Icon size={20}>
+            <Icon>
               {options.find((i) => i.selected)?.icon || "calendar_today"}
             </Icon>
-            <Icon>expand_more</Icon>
+            <Icon style={{ marginLeft: -4 }}>expand_more</Icon>
           </IconButton>
         }
         options={options}
@@ -235,13 +367,15 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
                 borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
                 justifyContent: "flex-start",
-                paddingLeft: 5,
+                paddingLeft: 15,
                 width: 140,
                 marginRight: "auto",
+                borderLeftWidth: 2,
+                borderLeftColor: theme[1],
               },
             ]}
           >
-            <Text style={{ fontSize: 17 }} weight={300}>
+            <Text style={{ fontSize: 20 }} weight={900}>
               {data.name}
             </Text>
           </IconButton>
@@ -260,12 +394,6 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
         options={filterOptions}
       />
       {type === "agenda" && <AgendaNavbarButtons />}
-      <IconButton variant="filled" style={styles.navbarIconButton}>
-        <Icon>timer</Icon>
-      </IconButton>
-      <IconButton variant="filled" style={styles.navbarIconButton}>
-        <Icon>upcoming</Icon>
-      </IconButton>
       <IconButton variant="filled" style={styles.navbarIconButton}>
         <Icon>magic_button</Icon>
       </IconButton>

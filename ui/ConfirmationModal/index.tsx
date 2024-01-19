@@ -23,10 +23,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
+    lineHeight: 47,
     textAlign: "center",
   },
   secondary: {
-    marginTop: -10,
     fontSize: 20,
     paddingHorizontal: 20,
     textAlign: "center",

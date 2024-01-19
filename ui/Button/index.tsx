@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   loading: { opacity: 0.5, pointerEvents: "none" },
+  disabled: { opacity: 0.5, pointerEvents: "none" },
 });
 
 export function Button(props: DButtonProps) {
@@ -62,6 +63,7 @@ export function Button(props: DButtonProps) {
       style={({ hovered, pressed }: any) => [
         styles.base,
         props.isLoading && styles.loading,
+        // props.disabled && styles.disabled,
         props.variant === "outlined" && styles.outlined,
         {
           height: props.dense ? 30 : 40,

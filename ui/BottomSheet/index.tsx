@@ -10,16 +10,16 @@ import { Platform, StyleSheet } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
-
-interface DBottomSheetProps extends BottomSheetProps {
+export interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: RefObject<BottomSheetModal>;
   onClose: () => void;
   maxWidth?: number;
   stackBehavior?: "replace" | "push";
   appearsOnIndex?: number;
   dismissible?: boolean;
-  disableBackHandler?: boolean;
-  disableEscapeHandler?: boolean;
+  disableBackToClose?: boolean;
+  disableEscapeToClose?: boolean;
+  disableBackdropPressToClose?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -58,7 +58,12 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       stackBehavior="push"
       ref={props.sheetRef}
       backdropComponent={(d) => (
-        <BottomSheetBackdropComponent {...d} dismissible={props.dismissible} />
+        <BottomSheetBackdropComponent
+          {...d}
+          dismissible={
+            props.disableBackdropPressToClose !== true && props.dismissible
+          }
+        />
       )}
       onChange={(e) => {
         if (e === -1) props.onClose();
@@ -68,10 +73,10 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       handleIndicatorStyle={{ backgroundColor: theme[5] }}
       {...props}
     >
-      {props.disableBackHandler !== true && Platform.OS !== "web" && (
+      {props.disableBackToClose !== true && Platform.OS !== "web" && (
         <BottomSheetBackHandler />
       )}
-      {Platform.OS === "web" && props.disableEscapeHandler !== true && (
+      {Platform.OS === "web" && props.disableEscapeToClose !== true && (
         <BottomSheetEscapeHandler handleClose={props.onClose} />
       )}
       {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}

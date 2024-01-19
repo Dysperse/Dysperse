@@ -17,7 +17,7 @@ export function NavbarProfilePicture() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <Skeleton rounded size={35} isLoading={Boolean(!session?.user)}>
+    <Skeleton rounded isLoading={Boolean(!session?.user)}>
       {session?.user && (
         <ProfilePicture
           onPress={() => router.push({ pathname: "/settings" })}

@@ -13,7 +13,7 @@ export interface DTextProps extends TextProps {
   textClassName?: string;
   textStyle?: StyleProp<TextStyle>;
   weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
-  variant?: "default" | "eyebrow";
+  variant?: "default" | "eyebrow" | "menuItem";
   heading?: boolean;
 }
 
@@ -27,6 +27,10 @@ const textStyles = StyleSheet.create({
   },
   heading: {
     textTransform: "uppercase",
+  },
+  menuItem: {
+    fontFamily: "body_300",
+    fontSize: 17,
   },
 });
 
@@ -49,6 +53,8 @@ function Text(props: DTextProps) {
           }),
         },
         props.variant === "eyebrow" && textStyles.eyebrow,
+        props.variant === "menuItem" && textStyles.menuItem,
+        props.variant === "menuItem" && { color: theme[11] },
         props.heading && textStyles.heading,
         props.textStyle,
         Array.isArray(props.style) ? [...props.style] : props.style,

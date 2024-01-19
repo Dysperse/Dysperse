@@ -15,12 +15,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { memo, useCallback, useEffect, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useSWR from "swr";
 
@@ -208,43 +203,6 @@ export default function Page() {
         <View style={{ flex: 1 }}>
           <FlashList
             contentContainerStyle={paletteStyles.contentContainer}
-            ListHeaderComponent={
-              query === "" && (
-                <>
-                  <View style={paletteStyles.sectionTitleContainer}>
-                    <Avatar>
-                      <Icon>add</Icon>
-                    </Avatar>
-                    <Text variant="eyebrow">Quick create</Text>
-                  </View>
-                  <View style={paletteStyles.quickCreateContainer}>
-                    {[
-                      { name: "Task", icon: "check_circle" },
-                      { name: "Note", icon: "sticky_note_2" },
-                      { name: "Item", icon: "inventory_2" },
-                    ].map((card) => (
-                      <Pressable
-                        key={card.name}
-                        style={({ pressed }) => [
-                          paletteStyles.quickCreateCard,
-                          {
-                            borderColor: theme[5],
-                            backgroundColor: theme[pressed ? 3 : 1],
-                          },
-                        ]}
-                      >
-                        <Icon size={30} style={{ marginLeft: -3 }}>
-                          {card.icon}
-                        </Icon>
-                        <Text style={{ color: theme[11] }} weight={900}>
-                          {card.name}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </>
-              )
-            }
             estimatedItemSize={50}
             data={
               // workaround section list because it doesn't use reanimated. flatten the filteredSections array. copy headings too

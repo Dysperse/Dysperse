@@ -1,6 +1,6 @@
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useLabelColors } from "@/components/labels/useLabelColors";
-import BottomSheet from "@/ui/BottomSheet";
+import BottomSheet, { DBottomSheetProps } from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -25,6 +25,18 @@ export function LabelPicker({
   autoFocus = true,
   multiple = false,
   hideBack = false,
+  triggerProp = "onPress",
+  sheetProps = {},
+}: {
+  children: React.ReactElement;
+  label: string | string[];
+  setLabel: (label: string | string[]) => void;
+  onClose: any;
+  autoFocus?: boolean;
+  multiple?: boolean;
+  hideBack?: boolean;
+  triggerProp?: string;
+  sheetProps?: Partial<DBottomSheetProps>;
 }) {
   const ref = useRef<BottomSheetModal>(null);
   const [query, setQuery] = useState("");
@@ -39,7 +51,7 @@ export function LabelPicker({
     onClose();
   }, [onClose]);
 
-  const trigger = cloneElement(children, { onPress: handleOpen });
+  const trigger = cloneElement(children, { [triggerProp]: handleOpen });
 
   const theme = useColorTheme();
   const colors = useLabelColors();
@@ -52,7 +64,12 @@ export function LabelPicker({
   return (
     <>
       {trigger}
-      <BottomSheet sheetRef={ref} onClose={handleClose} snapPoints={["80%"]}>
+      <BottomSheet
+        sheetRef={ref}
+        onClose={handleClose}
+        snapPoints={["80%"]}
+        {...sheetProps}
+      >
         <View style={{ padding: 15, height: "100%", paddingBottom: 0 }}>
           {multiple && (
             <View
@@ -66,7 +83,11 @@ export function LabelPicker({
               <Text heading style={{ fontSize: 40, textAlign: "center" }}>
                 Select labels
               </Text>
-              <Button onPress={handleClose} style={{ marginLeft: "auto" }}>
+              <Button
+                onPress={handleClose}
+                style={{ marginLeft: "auto" }}
+                disabled={label.length === 0}
+              >
                 <ButtonText>Done</ButtonText>
               </Button>
             </View>

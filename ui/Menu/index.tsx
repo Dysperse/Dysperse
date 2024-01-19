@@ -21,6 +21,7 @@ export function Menu({
   onClose = () => null,
   width = 400,
   stackBehavior = "push",
+  triggerProp = "onPress",
 }: {
   trigger: ReactElement;
   children: React.ReactNode;
@@ -31,6 +32,7 @@ export function Menu({
   onClose?: () => void;
   width?: number;
   stackBehavior?: "push" | "replace";
+  triggerProp?: string;
 }) {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
@@ -50,7 +52,7 @@ export function Menu({
     onClose();
   }, [ref, onClose]);
 
-  const _trigger = cloneElement(trigger, { onPress: handleOpen });
+  const _trigger = cloneElement(trigger, { [triggerProp]: handleOpen });
 
   return (
     <>
