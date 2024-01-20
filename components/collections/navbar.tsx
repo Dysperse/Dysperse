@@ -451,9 +451,7 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
               },
             ]}
           >
-            <Text style={{ fontSize: 20 }} weight={900}>
-              {data.name}
-            </Text>
+            <Text style={{ fontSize: 20 }}>{data.name}</Text>
           </IconButton>
         }
         options={collectionMenuOptions}
