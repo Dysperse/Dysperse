@@ -416,41 +416,16 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
             style={[
               styles.navbarIconButton,
               {
-                width: 60,
-                paddingLeft: 5,
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-                marginRight: -10,
+                backgroundColor: "transparent",
+                height: 30,
+                gap: 10,
+                width: "auto",
+                paddingLeft: 10,
+                paddingRight: 5,
               },
             ]}
           >
-            <Icon>
-              {options.find((i) => i.selected)?.icon || "calendar_today"}
-            </Icon>
-            <Icon style={{ marginLeft: -4 }}>expand_more</Icon>
-          </IconButton>
-        }
-        options={options}
-      />
-      <MenuPopover
-        trigger={
-          <IconButton
-            disabled
-            variant="filled"
-            style={[
-              styles.navbarIconButton,
-              {
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-                justifyContent: "flex-start",
-                paddingLeft: 15,
-                width: 140,
-                marginRight: "auto",
-                borderLeftWidth: 2,
-                borderLeftColor: theme[1],
-              },
-            ]}
-          >
+            <Emoji emoji={data.emoji} size={30} />
             <Text style={{ fontSize: 20 }}>{data.name}</Text>
           </IconButton>
         }
@@ -461,13 +436,41 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
           style: { marginRight: "auto" },
         }}
         trigger={
+          <IconButton
+            disabled
+            variant="filled"
+            style={[
+              styles.navbarIconButton,
+              {
+                width: 60,
+                height: 40,
+                paddingLeft: 5,
+                opacity: 0.7,
+                borderLeftColor: theme[7],
+                borderRadius: 0,
+                backgroundColor: "transparent",
+              },
+            ]}
+          >
+            <Icon style={{ color: theme[12] }} size={20}>
+              {options.find((i) => i.selected)?.icon || "calendar_today"}
+            </Icon>
+            <Icon style={{ marginLeft: -4, color: theme[12] }}>
+              expand_more
+            </Icon>
+          </IconButton>
+        }
+        options={options}
+      />
+      {type === "agenda" && <AgendaNavbarButtons />}
+      <MenuPopover
+        trigger={
           <IconButton disabled variant="filled" style={styles.navbarIconButton}>
             <Icon>filter_list</Icon>
           </IconButton>
         }
         options={filterOptions}
       />
-      {type === "agenda" && <AgendaNavbarButtons />}
       <IconButton variant="filled" style={styles.navbarIconButton}>
         <Icon>magic_button</Icon>
       </IconButton>

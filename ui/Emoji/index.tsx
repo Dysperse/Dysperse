@@ -1,7 +1,16 @@
-import { Image } from "expo-image";
+import { Image, ImageStyle } from "expo-image";
 import { memo } from "react";
+import { StyleProp } from "react-native";
 
-function Emoji({ size = 24, emoji, style = {} }) {
+function Emoji({
+  size = 24,
+  emoji,
+  style = {},
+}: {
+  size?: number;
+  emoji: string;
+  style?: StyleProp<ImageStyle>;
+}) {
   return (
     <Image
       style={[
