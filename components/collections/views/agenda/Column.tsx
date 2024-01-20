@@ -528,7 +528,8 @@ export function Column({
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
-          gap: 5,
+          paddingRight: 10,
+          gap: 0,
           paddingBottom: getBottomNavigationHeight(pathname),
         }}
         ListEmptyComponent={EmptyComponent}

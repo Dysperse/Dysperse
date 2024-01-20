@@ -32,13 +32,14 @@ const Task = memo(function Task({
     <TaskDrawer id={task.id} mutateList={onTaskUpdate}>
       <ListItemButton
         onLongPress={openColumnMenu}
-        style={({ pressed }) => ({
+        style={({ pressed, hovered }) => ({
           flexShrink: 0,
           paddingHorizontal: 15,
           paddingVertical: 15,
           borderRadius: 20,
           borderWidth: 1,
-          borderColor: theme[pressed ? 5 : 4],
+          borderColor: theme[pressed ? 6 : 5],
+          backgroundColor: theme[pressed ? 1 : 2],
           alignItems: "flex-start",
         })}
       >

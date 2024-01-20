@@ -443,10 +443,10 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
               styles.navbarIconButton,
               {
                 width: 60,
-                height: 40,
+                height: 30,
                 paddingLeft: 5,
-                opacity: 0.7,
-                borderLeftColor: theme[7],
+                borderLeftColor: theme[6],
+                borderLeftWidth: 2,
                 borderRadius: 0,
                 backgroundColor: "transparent",
               },

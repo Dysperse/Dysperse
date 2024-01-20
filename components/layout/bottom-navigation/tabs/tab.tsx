@@ -205,7 +205,9 @@ function Tab({
         />
         <View style={{ flex: 1 }}>
           <Text weight={500} numberOfLines={1}>
-            {capitalizeFirstLetter(tabData.name(tab.params, tab.slug)[0] || "")}
+            {capitalizeFirstLetter(
+              tab.profile?.name || tabData.name(tab.params, tab.slug)[0] || ""
+            )}
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (
             <Text style={[styles.text]} numberOfLines={1} weight={300}>

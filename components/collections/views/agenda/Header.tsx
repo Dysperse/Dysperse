@@ -3,7 +3,6 @@ import { useAgendaContext } from "@/components/collections/views/agenda-context"
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View } from "react-native";
 
@@ -26,34 +25,54 @@ export function Header({ start, end }) {
   const theme = useColorTheme();
 
   return (
-    <LinearGradient colors={[theme[3], theme[2]]} style={columnStyles.header}>
+    <View style={columnStyles.header}>
       <View
         style={{
-          borderRadius: 15,
-          minWidth: 45,
-          height: 35,
+          ...(isToday && {
+            backgroundColor: theme[3],
+            borderRadius: 20,
+            paddingVertical: 5,
+            paddingHorizontal: 10,
+          }),
+          flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
-          paddingHorizontal: 8,
-          backgroundColor: theme[isToday ? 11 : 4],
+          gap: 10,
         }}
       >
-        <Text
-          weight={700}
+        <View
           style={{
-            color: theme[isToday ? 2 : 11],
-            fontSize: 20,
+            minWidth: 40,
+            height: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 10,
+            borderColor: theme[isToday ? 7 : 5],
+            borderRightWidth: 2,
           }}
         >
-          {dayjs(start).format(formats.heading)}
-        </Text>
+          <Text
+            weight={600}
+            style={{
+              color: theme[11],
+              fontSize: 25,
+            }}
+          >
+            {dayjs(start).format(formats.heading)}
+          </Text>
+        </View>
+        {formats.subheading !== "-" && (
+          <Text
+            style={{ fontSize: 20, color: theme[11], opacity: 0.7 }}
+            weight={300}
+          >
+            {dayjs(start).format(formats.subheading)}
+            {type === "month" && (
+              <> - {dayjs(end).format(formats.subheading)}</>
+            )}
+          </Text>
+        )}
       </View>
-      {formats.subheading !== "-" && (
-        <Text style={{ fontSize: 20 }} weight={600}>
-          {dayjs(start).format(formats.subheading)}
-          {type === "month" && <> - {dayjs(end).format(formats.subheading)}</>}
-        </Text>
-      )}
-    </LinearGradient>
+    </View>
   );
 }

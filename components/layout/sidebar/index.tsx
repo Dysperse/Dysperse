@@ -1,7 +1,7 @@
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
+import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useUser } from "@/context/useUser";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
-import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
@@ -124,6 +124,8 @@ const LogoButton = memo(function LogoButton({
     Linking.openURL("https://feedback.dysperse.com");
   }, []);
 
+  const { isFocused, setFocus } = useFocusPanelContext();
+
   return (
     <View
       style={{
@@ -182,13 +184,7 @@ const LogoButton = memo(function LogoButton({
           },
         ]}
       />
-      {error && (
-        <Chip
-          style={{ backgroundColor: red[5], marginRight: -10 }}
-          color={red[11]}
-          icon={<Icon style={{ color: red[11] }}>cloud_off</Icon>}
-        />
-      )}
+      {error && <Icon style={{ color: red[11] }}>cloud_off</Icon>}
       <MenuPopover
         menuProps={{
           rendererProps: {
@@ -196,7 +192,7 @@ const LogoButton = memo(function LogoButton({
             anchorStyle: { opacity: 0 },
           },
         }}
-        containerStyle={{ marginTop: 10 }}
+        containerStyle={{ marginTop: 10, width: 200 }}
         trigger={
           <IconButton
             disabled
@@ -213,7 +209,12 @@ const LogoButton = memo(function LogoButton({
             callback: toggleHidden,
             selected: !isHidden,
           },
-          { icon: "dock_to_left", text: "Focus panel" },
+          {
+            icon: "dock_to_left",
+            text: "Focus panel",
+            selected: isFocused,
+            callback: () => setFocus(!isFocused),
+          },
         ]}
       />
     </View>
