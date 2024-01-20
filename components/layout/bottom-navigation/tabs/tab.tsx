@@ -176,7 +176,7 @@ function Tab({
           <Avatar
             disabled
             style={{
-              backgroundColor: theme[selected ? 7 : 4],
+              backgroundColor: "transparent",
               marginTop: tab.collection ? -10 : 0,
             }}
             size={23}

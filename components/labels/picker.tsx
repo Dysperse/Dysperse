@@ -161,7 +161,7 @@ const LabelPicker = memo(function LabelPicker({
               </IconButton>
             </CreateLabelModal>
           </View>
-          {data ? (
+          {Array.isArray(data) ? (
             <FlatListComponent
               data={data.filter((label) =>
                 label.name.toLowerCase().includes(query.toLowerCase())

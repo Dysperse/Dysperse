@@ -227,7 +227,11 @@ const QuickCreateButton = memo(function QuickCreateButton() {
       additional={[
         { divider: true, key: "1" },
         { icon: "label", text: "Label", callback: () => alert(1) },
-        { icon: "layers", text: "Collection", callback: () => alert(1) },
+        {
+          icon: "layers",
+          text: "Collection",
+          callback: () => router.push("/collections/create"),
+        },
       ]}
       menuProps={{
         style: { flex: 1, marginRight: -10 },

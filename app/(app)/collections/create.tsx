@@ -1,6 +1,7 @@
 import LabelPicker from "@/components/labels/picker";
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
@@ -10,9 +11,10 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 const styles = StyleSheet.create({
   headerContainer: { padding: 20 },
@@ -51,7 +53,8 @@ const Header = memo(() => {
 });
 
 export default function Page() {
-  const { session } = useUser();
+  const { session, sessionToken } = useUser();
+  const [loading, setLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -59,14 +62,30 @@ export default function Page() {
   } = useForm({
     defaultValues: {
       name: "",
-      about: "",
-      labels: [],
       emoji: "1f600",
+      description: "",
+      labels: [],
     },
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      await sendApiRequest(
+        sessionToken,
+        "POST",
+        "space/collections",
+        {},
+        {
+          body: JSON.stringify(data),
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      Toast.show({ type: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const theme = useColorTheme();
@@ -174,13 +193,14 @@ export default function Page() {
                   onChangeText={onChange}
                 />
               )}
-              name="about"
+              name="description"
             />
           </View>
           <Button
             style={{ height: 80 }}
             variant="filled"
             onPress={handleSubmit(onSubmit)}
+            isLoading={loading}
           >
             <ButtonText weight={900} style={{ fontSize: 20 }}>
               Done
