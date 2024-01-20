@@ -1,3 +1,4 @@
+import { useAgendaContext } from "@/components/collections/views/agenda-context";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -110,8 +111,9 @@ const SelectionButton = memo(function SelectionButton({
     </TouchableOpacity>
   );
 });
-export function AgendaSelector({ type, data, start }) {
+export function AgendaSelector({ data }) {
   const theme = useColorTheme();
+  const { type, start } = useAgendaContext();
   const flatListRef = useRef(null);
 
   return (

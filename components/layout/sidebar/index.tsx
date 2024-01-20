@@ -1,3 +1,4 @@
+import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { useUser } from "@/context/useUser";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import Chip from "@/ui/Chip";
@@ -106,33 +107,6 @@ const JumpToButton = memo(function JumpToButton() {
   );
 });
 
-const Footer = memo(function Footer() {
-  const theme = useColorTheme();
-  const openSupport = useCallback(() => {
-    Linking.openURL("https://blog.dysperse.com");
-  }, []);
-
-  return (
-    <View style={styles.footerContainer}>
-      <View
-        style={[
-          styles.footer,
-          {
-            borderTopColor: theme[5],
-          },
-        ]}
-      >
-        <IconButton
-          size={35}
-          variant="outlined"
-          icon="vertical_split"
-          style={{ marginLeft: "auto" }}
-        />
-      </View>
-    </View>
-  );
-});
-
 const LogoButton = memo(function LogoButton({
   toggleHidden,
   isHidden,
@@ -143,6 +117,13 @@ const LogoButton = memo(function LogoButton({
   const theme = useColorTheme();
   const { error } = useUser();
   const red = useColor("red", useColorScheme() === "dark");
+  const openSupport = useCallback(() => {
+    Linking.openURL("https://blog.dysperse.com");
+  }, []);
+  const openFeedback = useCallback(() => {
+    Linking.openURL("https://feedback.dysperse.com");
+  }, []);
+
   return (
     <View
       style={{
@@ -158,7 +139,7 @@ const LogoButton = memo(function LogoButton({
             anchorStyle: { opacity: 0 },
           },
         }}
-        containerStyle={{ width: 135, marginLeft: 10, marginTop: 5 }}
+        containerStyle={{ width: 160, marginLeft: 10, marginTop: 5 }}
         trigger={
           <View
             style={{
@@ -183,10 +164,21 @@ const LogoButton = memo(function LogoButton({
             text: "Settings",
             callback: () => router.push("/settings"),
           },
+          { divider: true, key: "1" },
           {
             icon: "question_mark",
             text: "Help",
-            callback: () => router.push("/space"),
+            callback: openSupport,
+          },
+          {
+            icon: "feedback",
+            text: "Feedback",
+            callback: openFeedback,
+          },
+          {
+            icon: "brand_awareness",
+            text: "What's new",
+            callback: openFeedback,
           },
         ]}
       />
@@ -231,20 +223,35 @@ const LogoButton = memo(function LogoButton({
 const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.button,
-        {
-          borderColor: theme[5],
-          backgroundColor: theme[1],
-          opacity: pressed ? 0.5 : 1,
-          flex: 1,
-        },
+    <CreateEntityTrigger
+      additional={[
+        { divider: true, key: "1" },
+        { icon: "label", text: "Label", callback: () => alert(1) },
+        { icon: "layers", text: "Collection", callback: () => alert(1) },
       ]}
+      menuProps={{
+        style: { flex: 1, marginRight: -10 },
+      }}
+      popoverProps={{
+        containerStyle: { marginLeft: 10, width: 200 },
+      }}
     >
-      <Icon>note_stack_add</Icon>
-      <Text style={{ color: theme[11] }}>New</Text>
-    </Pressable>
+      <Pressable
+        disabled
+        style={({ pressed }) => [
+          styles.button,
+          {
+            borderColor: theme[5],
+            backgroundColor: theme[1],
+            opacity: pressed ? 0.5 : 1,
+            flex: 1,
+          },
+        ]}
+      >
+        <Icon>note_stack_add</Icon>
+        <Text style={{ color: theme[11] }}>New</Text>
+      </Pressable>
+    </CreateEntityTrigger>
   );
 });
 

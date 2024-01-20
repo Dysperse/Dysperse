@@ -1,6 +1,10 @@
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
+import Emoji from "@/ui/Emoji";
+import { EmojiPicker } from "@/ui/EmojiPicker";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { Menu } from "@/ui/Menu";
@@ -8,13 +12,14 @@ import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType } from "dayjs";
 import { router, useGlobalSearchParams } from "expo-router";
-import { ReactElement, memo, useCallback, useState } from "react";
+import { ReactElement, memo, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { LabelPicker } from "../labels/picker";
+import LabelPicker from "../labels/picker";
 import { CollectionContext, useCollectionContext } from "./context";
 
 const styles = StyleSheet.create({
@@ -123,29 +128,46 @@ function AgendaNavbarButtons() {
   );
 }
 
-const CollectionLabelMenu = memo(function CollectionLabelMenu({
-  children,
-}: {
-  children: ReactElement;
-}) {
-  const theme = useColorTheme();
-  const { data } = useCollectionContext();
+const CollectionLabelMenu = memo(function CollectionLabelMenu() {
+  const { data, mutate } = useCollectionContext();
+  const { session } = useSession();
   const [labels, setLabels] = useState(data?.labels?.map((i) => i.id) || []);
+
+  const handleSave = async () => {
+    try {
+      if (labels === data.labels.map((i) => i.id)) return;
+      await sendApiRequest(
+        session,
+        "PUT",
+        "space/collections",
+        {},
+        {
+          body: JSON.stringify({ labels, id: data.id }),
+        }
+      );
+      await mutate();
+      Toast.show({ type: "success", text1: "Saved!" });
+    } catch (e) {
+      Toast.show({ type: "error", text1: "Something went wrong" });
+    }
+  };
 
   return (
     <LabelPicker
       multiple
       hideBack
-      sheetProps={{
-        enablePanDownToClose: false,
-        disableBackToClose: true,
-        disableEscapeToClose: true,
-        disableBackdropPressToClose: true,
-      }}
+      sheetProps={
+        {
+          // enablePanDownToClose: false,
+          // disableBackToClose: true,
+          // disableEscapeToClose: true,
+          // disableBackdropPressToClose: true,
+        }
+      }
       autoFocus={false}
       label={labels}
       setLabel={setLabels}
-      onClose={() => {}}
+      onClose={handleSave}
     >
       <MenuItem>
         <Icon>label</Icon>
@@ -162,7 +184,8 @@ const CollectionRenameMenu = memo(function CollectionRenameMenu({
 }: {
   children: ReactElement;
 }) {
-  const { data } = useCollectionContext();
+  const { session } = useSession();
+  const { data, mutate } = useCollectionContext();
   const {
     control,
     handleSubmit,
@@ -170,12 +193,38 @@ const CollectionRenameMenu = memo(function CollectionRenameMenu({
   } = useForm({
     defaultValues: {
       name: data.name,
+      emoji: data.emoji,
     },
   });
+  const [loading, setLoading] = useState(false);
+  const menuRef = useRef<BottomSheetModal>(null);
+
+  const handleSave = async (newData) => {
+    try {
+      setLoading(true);
+      await sendApiRequest(
+        session,
+        "PUT",
+        "space/collections",
+        {},
+        {
+          body: JSON.stringify({ ...newData, id: data.id }),
+        }
+      );
+      await mutate();
+      Toast.show({ type: "success", text1: "Saved!" });
+    } catch (e) {
+      Toast.show({ type: "error", text1: "Something went wrong" });
+    } finally {
+      setLoading(false);
+      setImmediate(() => menuRef.current?.close());
+    }
+  };
 
   return (
     <Menu
-      height={[205]}
+      height={[207]}
+      menuRef={menuRef}
       trigger={
         <MenuItem>
           <Icon>edit</Icon>
@@ -185,7 +234,30 @@ const CollectionRenameMenu = memo(function CollectionRenameMenu({
         </MenuItem>
       }
     >
-      <View style={{ padding: 20, paddingTop: 0, gap: 20 }}>
+      <View
+        style={{
+          padding: 20,
+          paddingVertical: 0,
+          gap: 20,
+          flexDirection: "row",
+        }}
+      >
+        <Controller
+          name="emoji"
+          rules={{ required: true }}
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <EmojiPicker emoji={value} setEmoji={onChange}>
+              <IconButton
+                variant="outlined"
+                style={{ borderStyle: "dashed", borderWidth: 2 }}
+                size={70}
+              >
+                <Emoji emoji={value} size={40} />
+              </IconButton>
+            </EmojiPicker>
+          )}
+        />
         <Controller
           name="name"
           rules={{ required: true }}
@@ -201,18 +273,22 @@ const CollectionRenameMenu = memo(function CollectionRenameMenu({
                 paddingHorizontal: 20,
                 paddingVertical: 15,
                 fontSize: 20,
+                flex: 1,
+                width: "100%",
                 borderColor: errors.name ? "red" : undefined,
               }}
             />
           )}
         />
+      </View>
+      <View style={{ padding: 20, paddingTop: 0 }}>
         <Button
-          onPress={handleSubmit(
-            (data) => alert(data.name),
-            () => Toast.show({ type: "error", text1: "Please type in a name" })
+          onPress={handleSubmit(handleSave, () =>
+            Toast.show({ type: "error", text1: "Please type in a name" })
           )}
           variant="filled"
-          style={{ height: 60 }}
+          isLoading={loading}
+          style={{ height: 60, marginTop: 20 }}
         >
           <ButtonText style={{ fontSize: 20 }} weight={800}>
             Save

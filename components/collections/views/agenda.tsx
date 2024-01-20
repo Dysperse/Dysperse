@@ -1,6 +1,6 @@
+import { Column } from "@/components/collections/views/agenda/Column";
+import { AgendaSelector } from "@/components/collections/views/agenda/Selector";
 import { ContentWrapper } from "@/components/layout/content";
-import { Column } from "@/components/perspectives/agenda/Column";
-import { AgendaSelector } from "@/components/perspectives/agenda/Selector";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Skeleton from "@/ui/Skeleton";
@@ -21,7 +21,7 @@ function Agenda() {
   const params = useLocalSearchParams();
   const { type, start, end } = useAgendaContext();
   const { data, mutate, error } = useSWR([
-    "space/perspectives/agenda",
+    "space/collections/collection/agenda",
     {
       start: start.toISOString(),
       end: end.toISOString(),
@@ -138,7 +138,7 @@ function Agenda() {
   );
 }
 
-export default function Page() {
+export function Perspectives() {
   let { agendaView, start } = useLocalSearchParams();
   if (!agendaView) agendaView = "week";
   if (!start) start = dayjs().format("YYYY-MM-DD");

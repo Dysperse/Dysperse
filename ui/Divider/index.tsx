@@ -10,6 +10,7 @@ export default function Divider({ style }: { style?: StyleProp<ViewStyle> }) {
           height: 2,
           backgroundColor: theme[5],
           borderRadius: 99,
+          marginHorizontal: "auto",
         },
         style,
       ]}

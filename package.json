@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start --tunnel --clear --reset-cache",
-    "start-prod": "expo start --tunnel --clear --reset-cache --no-dev --minify",
+    "start": "expo start --tunnel",
+    "start-no-cache": "expo start --clear --tunnel --reset-cache",
+    "start-prod": "expo start --tunnel --reset-cache --no-dev --minify",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",

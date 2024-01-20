@@ -1,4 +1,4 @@
-import { LabelPicker } from "@/components/labels/picker";
+import LabelPicker from "@/components/labels/picker";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";

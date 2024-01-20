@@ -1,4 +1,4 @@
-import { LabelPicker } from "@/components/labels/picker";
+import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";

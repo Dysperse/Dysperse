@@ -10,17 +10,20 @@ import {
   MenuTrigger,
   renderers,
 } from "react-native-popup-menu";
+import Divider from "../Divider";
 import Icon from "../Icon";
 import Text from "../Text";
 import { useColorTheme } from "../color/theme-provider";
 
-type MenuOption = MenuOptionProps & {
-  icon: string;
-  text: string;
-  callback?;
-  selected?: boolean;
-  renderer?: (children) => ReactElement;
-};
+export type MenuOption =
+  | { divider: boolean; key: string }
+  | (MenuOptionProps & {
+      icon: string;
+      text: string;
+      callback?;
+      selected?: boolean;
+      renderer?: (children) => ReactElement;
+    });
 export interface MenuProps {
   trigger: ReactElement;
   options: MenuOption[];
@@ -78,7 +81,6 @@ export default function MenuPopover({
           width: 5,
           height: 5,
           marginBottom: 8,
-          
         },
         ...menuProps?.rendererProps,
       }}
@@ -94,7 +96,13 @@ export default function MenuPopover({
             overflow: "hidden",
             backgroundColor: theme[3],
             borderColor: theme[6],
-            shadowColor: theme[11],
+            shadowColor: theme[1],
+            shadowRadius: 20,
+            shadowOpacity: 0.8,
+            shadowOffset: {
+              width: 10,
+              height: 10,
+            },
             ...(containerStyle as any),
           },
         }}
@@ -107,35 +115,44 @@ export default function MenuPopover({
               callback,
               renderer: Renderer = React.Fragment,
               ...props
-            }) => (
-              <Renderer key={text}>
-                <MenuOption
-                  key={text}
-                  onSelect={callback}
-                  customStyles={{
-                    OptionTouchableComponent: (props) => (
-                      <MenuItem {...props} removeExtraStyles />
-                    ),
-                    optionWrapper: {
-                      flexDirection: "row",
-                      alignItems: "center",
-                      paddingHorizontal: 15,
-                      paddingVertical: 10,
-                      gap: 13,
-                    },
-                  }}
-                  {...props}
-                >
-                  <Icon>{icon}</Icon>
-                  <Text weight={300} style={{ color: theme[11], fontSize: 17 }}>
-                    {text}
-                  </Text>
-                  {props.selected && (
-                    <Icon style={{ marginLeft: "auto" }}>check</Icon>
-                  )}
-                </MenuOption>
-              </Renderer>
-            )
+            }: any) =>
+              props.divider ? (
+                <Divider
+                  key={props.key}
+                  style={{ width: "90%", marginVertical: 5 }}
+                />
+              ) : (
+                <Renderer key={text}>
+                  <MenuOption
+                    key={text}
+                    onSelect={callback}
+                    customStyles={{
+                      OptionTouchableComponent: (props) => (
+                        <MenuItem {...props} removeExtraStyles />
+                      ),
+                      optionWrapper: {
+                        flexDirection: "row",
+                        alignItems: "center",
+                        paddingHorizontal: 15,
+                        paddingVertical: 10,
+                        gap: 13,
+                      },
+                    }}
+                    {...props}
+                  >
+                    <Icon>{icon}</Icon>
+                    <Text
+                      weight={300}
+                      style={{ color: theme[11], fontSize: 17 }}
+                    >
+                      {text}
+                    </Text>
+                    {props.selected && (
+                      <Icon style={{ marginLeft: "auto" }}>check</Icon>
+                    )}
+                  </MenuOption>
+                </Renderer>
+              )
           )}
         </LinearGradient>
       </MenuOptions>

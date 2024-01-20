@@ -1,4 +1,4 @@
-import { LabelPicker } from "@/components/labels/picker";
+import LabelPicker from "@/components/labels/picker";
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
 import { Button, ButtonText } from "@/ui/Button";

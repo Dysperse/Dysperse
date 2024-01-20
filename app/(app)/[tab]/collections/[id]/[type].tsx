@@ -1,11 +1,9 @@
 import { columnStyles } from "@/components/collections/columnStyles";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
-import Perspectives from "@/components/collections/views/agenda";
-import {
-  CreateEntityTrigger,
-  Masonry,
-} from "@/components/collections/views/masonry";
+import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
+import { Perspectives } from "@/components/collections/views/agenda";
+import { Masonry } from "@/components/collections/views/masonry";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -23,7 +21,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     paddingBottom: 10,
-    gap: 15,
+    gap: 10,
     marginTop: -15,
   },
 });
@@ -67,11 +65,13 @@ const KanbanHeader = memo(function KanbanHeader({
         <Text weight={200}>{label.entitiesLength} items</Text>
       </View>
       {grid && (
-        <CreateEntityTrigger menuProps={{ style: { marginRight: -25 } }}>
-          <IconButton icon="add" disabled />
-        </CreateEntityTrigger>
+        <>
+          <CreateEntityTrigger menuProps={{ style: { marginRight: -25 } }}>
+            <IconButton icon="add" disabled />
+          </CreateEntityTrigger>
+          <IconButton icon="more_horiz" />
+        </>
       )}
-      <IconButton icon={grid ? "more_horiz" : "expand_circle_down"} />
     </LinearGradient>
   );
 });
@@ -133,20 +133,21 @@ function KanbanColumn({ label, grid = false }) {
                   },
                 ]}
               >
-                {
-                  <CreateEntityTrigger
-                    menuProps={grid ? undefined : { style: { flex: 1 } }}
+                <CreateEntityTrigger
+                  menuProps={grid ? undefined : { style: { flex: 1 } }}
+                >
+                  <Button
+                    disabled
+                    variant="filled"
+                    style={{ flex: 1, minHeight: 50 }}
                   >
-                    <Button
-                      disabled
-                      variant="filled"
-                      style={{ flex: 1, minHeight: 50 }}
-                    >
-                      <Icon>add</Icon>
-                      <ButtonText>New</ButtonText>
-                    </Button>
-                  </CreateEntityTrigger>
-                }
+                    <ButtonText>New</ButtonText>
+                    <Icon>add</Icon>
+                  </Button>
+                </CreateEntityTrigger>
+                <Button disabled variant="outlined" style={{ minHeight: 50 }}>
+                  <Icon>more_horiz</Icon>
+                </Button>
               </View>
             </>
           )
@@ -169,9 +170,7 @@ function KanbanColumn({ label, grid = false }) {
           padding: breakpoints.md ? 15 : 0,
           paddingTop: 15,
           gap: 5,
-          // paddingBottom: getBottomNavigationHeight(pathname),
         }}
-        // ListEmptyComponent={PerspectivesEmptyComponent}
         renderItem={({ item }) => (
           <Entity
             item={item}

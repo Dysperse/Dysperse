@@ -1,4 +1,5 @@
 import * as React from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import Animated, {
   interpolate,
   runOnUI,
@@ -13,6 +14,7 @@ import { useColorTheme } from "../color/theme-provider";
 interface SpinnerProps {
   size?: number;
   color?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
 const duration = 1700;
@@ -46,7 +48,7 @@ const Spinner = (props: SpinnerProps) => {
   }));
 
   return (
-    <Animated.View style={animatedStyle}>
+    <Animated.View style={[animatedStyle, props.style]}>
       <Svg
         viewBox="0 0 100 100"
         {...props}

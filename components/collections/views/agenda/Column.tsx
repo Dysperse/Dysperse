@@ -1,6 +1,7 @@
+import { Entity } from "@/components/collections/entity";
 import { useAgendaContext } from "@/components/collections/views/agenda-context";
+import { Header } from "@/components/collections/views/agenda/Header";
 import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
-import { Header } from "@/components/perspectives/agenda/Header";
 import Task from "@/components/task";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -31,13 +32,13 @@ import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import SortableList from "react-native-ui-lib/sortableList";
 import { KeyedMutator } from "swr";
-import CreateTask from "../../task/create";
+import { CreateEntityTrigger } from "../CreateEntityTrigger";
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     paddingBottom: 10,
-    gap: 15,
+    gap: 10,
     marginTop: -15,
   },
   empty: {
@@ -75,7 +76,7 @@ function findChangedItem(oldArray, newArray) {
 function isEqual(obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
-const PerspectivesEmptyComponent = memo(function PerspectivesEmptyComponent() {
+const EmptyComponent = memo(function EmptyComponent() {
   const theme = useColorTheme();
 
   const shapesLength = Array.from({ length: 7 }, (_, i) => `shape${i + 1}`);
@@ -444,7 +445,8 @@ export function Column({
                 },
               ]}
             >
-              <CreateTask
+              <CreateEntityTrigger
+                // @ts-expect-error TODO
                 defaultValues={{
                   date: dayjs(column.start),
                   agendaOrder: LexoRank.parse(
@@ -454,6 +456,7 @@ export function Column({
                     .genNext()
                     .toString(),
                 }}
+                menuProps={{ style: { flex: 1 } }}
                 mutate={(newTask) => {
                   console.log(newTask);
                   if (!newTask) return;
@@ -487,11 +490,15 @@ export function Column({
                   );
                 }}
               >
-                <Button variant="filled" style={{ flex: 1, height: 50 }}>
-                  <ButtonText>Create</ButtonText>
+                <Button
+                  disabled
+                  variant="filled"
+                  style={{ flex: 1, minHeight: 50 }}
+                >
+                  <ButtonText>New</ButtonText>
                   <Icon>add</Icon>
                 </Button>
-              </CreateTask>
+              </CreateEntityTrigger>
               <ColumnMenu
                 column={column}
                 onTaskUpdate={onTaskUpdate}
@@ -524,8 +531,14 @@ export function Column({
           gap: 5,
           paddingBottom: getBottomNavigationHeight(pathname),
         }}
-        ListEmptyComponent={PerspectivesEmptyComponent}
-        renderItem={renderColumnItemWrapper}
+        ListEmptyComponent={EmptyComponent}
+        renderItem={({ item }) => (
+          <Entity
+            item={item}
+            onTaskUpdate={() => {}}
+            openColumnMenu={() => {}}
+          />
+        )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}
       />
     </View>

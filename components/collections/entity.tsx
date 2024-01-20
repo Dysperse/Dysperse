@@ -8,6 +8,7 @@ export const Entity = ({ onTaskUpdate, item, openColumnMenu }) => {
       <View
         style={{
           padding: 5,
+          paddingHorizontal: 3,
         }}
       >
         {children}

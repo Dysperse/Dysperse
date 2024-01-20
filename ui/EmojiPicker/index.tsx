@@ -1,9 +1,7 @@
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
 import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  TouchableOpacity,
-} from "@gorhom/bottom-sheet";
-import {
+  ReactElement,
   cloneElement,
   memo,
   useCallback,
@@ -17,14 +15,14 @@ import BottomSheet from "../BottomSheet";
 import Emoji from "../Emoji";
 import ErrorAlert from "../Error";
 import Icon from "../Icon";
+import IconButton from "../IconButton";
 import Text from "../Text";
 import TextField from "../TextArea";
-import { useColorTheme } from "../color/theme-provider";
 
 const emojiPickerStyles = StyleSheet.create({
   container: {
-    padding: 15,
-    paddingTop: 10,
+    padding: 5,
+    paddingTop: 5,
     flex: 1,
   },
   searchContainer: {
@@ -32,6 +30,10 @@ const emojiPickerStyles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 15,
     gap: 15,
+  },
+  closeButton: {
+    marginLeft: 15,
+    marginBottom: 15,
   },
   emptyContainer: {
     flex: 1,
@@ -50,8 +52,15 @@ const emojiPickerStyles = StyleSheet.create({
   },
 });
 
-export function EmojiPicker({ children, emoji, setEmoji }: any) {
-  const theme = useColorTheme();
+export function EmojiPicker({
+  children,
+  emoji,
+  setEmoji,
+}: {
+  children: ReactElement;
+  emoji: string;
+  setEmoji: (emoji: string) => void;
+}) {
   const ref = useRef<BottomSheetModal>(null);
   const [query, setQuery] = useState("");
 
@@ -63,11 +72,10 @@ export function EmojiPicker({ children, emoji, setEmoji }: any) {
   const handleClose = useCallback(() => ref.current?.close(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
 
-  const { data, error } = useSWR([
-    "data",
-    {},
-    "https://cdn.jsdelivr.net/npm/@emoji-mart",
-  ]);
+  const { data, error } = useSWR(
+    "https://assets.dysperse.com/emojis.json",
+    (e) => fetch(e).then((r) => r.json())
+  );
 
   const filteredData = useMemo(() => {
     return data?.emojis
@@ -107,35 +115,40 @@ export function EmojiPicker({ children, emoji, setEmoji }: any) {
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        snapPoints={["70%"]}
+        snapPoints={["80%"]}
         onClose={handleClose}
         stackBehavior="push"
       >
         {data ? (
           <View style={emojiPickerStyles.container}>
+            <IconButton
+              size={55}
+              variant="outlined"
+              style={emojiPickerStyles.closeButton}
+              onPress={handleClose}
+            >
+              <Icon>close</Icon>
+            </IconButton>
             <View style={emojiPickerStyles.searchContainer}>
-              <TouchableOpacity onPress={handleClose}>
-                <Icon>close</Icon>
-              </TouchableOpacity>
               <TextField
-                style={{ flex: 1 }}
+                style={{
+                  flex: 1,
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                }}
                 bottomSheet
-                variant="filled"
+                variant="filled+outlined"
                 placeholder="Find an emoji..."
                 onChangeText={(e) => setQuery(e.toLowerCase())}
               />
             </View>
-            <BottomSheetFlatList
+            <FlashList
               keyboardShouldPersistTaps="handled"
               data={filteredData}
-              getItemLayout={(data, index) => ({
-                length: 50,
-                offset: 50 * index,
-                index,
-              })}
-              initialNumToRender={30}
               style={{ flex: 1 }}
-              contentContainerStyle={{ flexGrow: 1 }}
+              estimatedItemSize={117.5}
+              contentContainerStyle={{ paddingTop: 10 }}
               ListEmptyComponent={
                 <View style={emojiPickerStyles.emptyContainer}>
                   <Emoji emoji="1f62d" size={50} />

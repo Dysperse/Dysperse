@@ -7,17 +7,50 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import ListItemText from "@/ui/ListItemText";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
+import {
+  BottomSheetFlatList,
+  BottomSheetModal,
+  useBottomSheet,
+} from "@gorhom/bottom-sheet";
+import React, {
+  cloneElement,
+  memo,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { ActivityIndicator, Platform, Pressable, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { labelPickerStyles } from "./labelPickerStyles";
 
-export function LabelPicker({
+const CloseButton = memo(function CloseButton({ onClose, disabled }) {
+  const { close } = useBottomSheet();
+  const [loading, setLoading] = useState(false);
+
+  const handleClose = useCallback(async () => {
+    setLoading(true);
+    await onClose();
+    close();
+    setLoading(false);
+  }, [close, onClose]);
+
+  return (
+    <Button
+      onPress={handleClose}
+      disabled={disabled}
+      style={{ marginLeft: "auto" }}
+    >
+      {loading ? <Spinner /> : <ButtonText>Done</ButtonText>}
+    </Button>
+  );
+});
+
+const LabelPicker = memo(function LabelPicker({
   children,
   label,
   setLabel,
@@ -42,13 +75,14 @@ export function LabelPicker({
   const [query, setQuery] = useState("");
   // callbacks
   const searchRef = useRef(null);
+
   const handleOpen = useCallback(() => {
     // Keyboard.dismiss();
     ref.current?.present();
   }, []);
-  const handleClose = useCallback(() => {
+  const handleClose = useCallback(async () => {
+    await onClose();
     ref.current?.close();
-    onClose();
   }, [onClose]);
 
   const trigger = cloneElement(children, { [triggerProp]: handleOpen });
@@ -83,13 +117,8 @@ export function LabelPicker({
               <Text heading style={{ fontSize: 40, textAlign: "center" }}>
                 Select labels
               </Text>
-              <Button
-                onPress={handleClose}
-                style={{ marginLeft: "auto" }}
-                disabled={label.length === 0}
-              >
-                <ButtonText>Done</ButtonText>
-              </Button>
+
+              <CloseButton disabled={label.length === 0} onClose={onClose} />
             </View>
           )}
           <View
@@ -236,4 +265,6 @@ export function LabelPicker({
       </BottomSheet>
     </>
   );
-}
+});
+
+export default LabelPicker;
