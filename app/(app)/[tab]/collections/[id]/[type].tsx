@@ -222,6 +222,8 @@ function Grid() {
   const { data } = useCollectionContext();
   const theme = useColorTheme();
 
+  if (!Array.isArray(data.labels)) return null;
+
   // Create a new array for rendering purposes without modifying the original data
   const displayLabels = [...data.labels];
 
