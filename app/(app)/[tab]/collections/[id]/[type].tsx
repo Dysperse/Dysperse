@@ -56,7 +56,12 @@ const KanbanHeader = memo(function KanbanHeader({
       (data) => {
         const labelIndex = data.labels.findIndex((l) => l.id === label.id);
         data.labels[labelIndex].entities.push(newTask);
-        return data;
+        return {
+          ...data,
+          labels: data.labels.map((l) =>
+            l.id === label.id ? { ...l, entities: [...l.entities, newTask] } : l
+          ),
+        };
       },
       {
         revalidate: false,
@@ -112,6 +117,37 @@ const KanbanHeader = memo(function KanbanHeader({
 function KanbanColumn({ label, grid = false }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { mutate } = useCollectionContext();
+
+  const onTaskUpdate = (updatedTask) => {
+    mutate(
+      (oldData) => {
+        const labelIndex = oldData.labels.findIndex(
+          (l) => l.id === updatedTask.label.id
+        );
+        const taskIndex = oldData.labels[labelIndex].entities.findIndex(
+          (t) => t.id === updatedTask.id
+        );
+
+        return {
+          ...oldData,
+          labels: [
+            ...oldData.labels.slice(0, labelIndex),
+            {
+              ...oldData.labels[labelIndex],
+              entities: oldData.labels[labelIndex].entities
+                .map((t, i) => (i === taskIndex ? updatedTask : t))
+                .filter((t) => !t.trash),
+            },
+            ...oldData.labels.slice(labelIndex + 1),
+          ],
+        };
+      },
+      {
+        revalidate: false,
+      }
+    );
+  };
 
   return (
     <View
@@ -168,6 +204,9 @@ function KanbanColumn({ label, grid = false }) {
               >
                 <CreateEntityTrigger
                   menuProps={grid ? undefined : { style: { flex: 1 } }}
+                  defaultValues={{
+                    label: omit(["entities"], label),
+                  }}
                 >
                   <Button
                     disabled
@@ -207,7 +246,7 @@ function KanbanColumn({ label, grid = false }) {
         renderItem={({ item }) => (
           <Entity
             item={item}
-            onTaskUpdate={() => {}}
+            onTaskUpdate={onTaskUpdate}
             openColumnMenu={() => {}}
           />
         )}
