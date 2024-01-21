@@ -12,7 +12,6 @@ export type CollectionType =
   | "agenda"
   | "kanban"
   | "stream"
-  | "masonry"
   | "grid"
   | "difficulty";
 export const useCollectionContext = () => useContext(CollectionContext);

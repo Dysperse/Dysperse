@@ -8,7 +8,6 @@ import { CollectionNavbar } from "@/components/collections/navbar";
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { Perspectives } from "@/components/collections/views/agenda";
 import { ColumnEmptyComponent } from "@/components/collections/views/agenda/Column";
-import { Masonry } from "@/components/collections/views/masonry";
 import { ContentWrapper } from "@/components/layout/content";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -653,9 +652,6 @@ export default function Page() {
       break;
     case "stream":
       content = <Stream />;
-      break;
-    case "masonry":
-      content = <Masonry />;
       break;
     case "grid":
       content = <Grid />;

@@ -309,7 +309,6 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
     { icon: "calendar_today", text: "Agenda" },
     { icon: "view_kanban", text: "Kanban" },
     { icon: "view_agenda", text: "Stream" },
-    { icon: "dashboard", text: "Masonry" },
     { icon: "view_cozy", text: "Grid" },
     { icon: "exercise", text: "Difficulty" },
   ].map((i) => ({

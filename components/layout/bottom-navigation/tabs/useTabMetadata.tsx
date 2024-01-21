@@ -22,7 +22,6 @@ export const useTabMetadata = (slug: string, tab: any) => {
           agenda: "calendar_today",
           kanban: "view_kanban",
           stream: "view_agenda",
-          masonry: "dashboard",
           grid: "view_cozy",
           difficulty: "exercise",
         }[params.type]),
