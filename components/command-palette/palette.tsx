@@ -241,9 +241,10 @@ const PaletteHeader = memo(function PaletteHeader({
         }}
         {...(Platform.OS === "web" && {
           onKeyUp: (e) => {
-            handleKeyPress();
             if (e.key === "Escape") {
               handleClose();
+            } else {
+              handleKeyPress();
             }
           },
         })}
