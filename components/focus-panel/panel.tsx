@@ -1,6 +1,8 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { memo, useEffect } from "react";
+import { Platform } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -30,9 +32,22 @@ const FocusPanel = memo(function FocusPanel() {
     }
   }, [isFocused, marginRight]);
 
-  return (
+  const breakpoints = useResponsiveBreakpoints();
+
+  return !breakpoints.md ? null : (
     <Animated.View
-      style={[animatedStyle, { padding: 10, width: 350, paddingLeft: 0 }]}
+      style={[
+        animatedStyle,
+        {
+          padding: 10,
+          width: 350,
+          paddingLeft: 0,
+          ...(Platform.OS === "web" &&
+            ({
+              marginTop: "env(titlebar-area-height,0)",
+            } as any)),
+        },
+      ]}
     >
       <ContentWrapper
         style={{

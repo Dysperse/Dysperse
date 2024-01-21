@@ -36,6 +36,10 @@ export const useTabMetadata = (slug: string, tab: any) => {
       icon: "tag",
       name: (params) => ["Space"],
     },
+    "/[tab]/labels/[id]": {
+      icon: "label",
+      name: () => [],
+    },
     "/[tab]/users/": {
       icon: "alternate_email",
       name: (params, slug) => [params.id],

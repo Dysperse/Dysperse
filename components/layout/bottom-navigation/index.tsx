@@ -1,3 +1,4 @@
+import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -47,12 +48,14 @@ const HomeButton = memo(function HomeButton({ filled }: { filled: boolean }) {
 });
 
 const PaletteButton = memo(function PaletteButton() {
+  const { handleOpen } = useCommandPaletteContext();
+
   return (
     <IconButton
       variant="filled"
       style={{ width: 80 }}
       size={45}
-      onPress={() => router.push("/open")}
+      onPress={handleOpen}
     >
       <Icon size={30}>bolt</Icon>
     </IconButton>

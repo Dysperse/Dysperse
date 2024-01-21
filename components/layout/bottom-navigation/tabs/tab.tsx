@@ -169,7 +169,7 @@ function Tab({
           },
         ]}
       >
-        {tab.collection && (
+        {(tab.collection || tab.label) && (
           <Avatar
             disabled
             style={{
@@ -178,22 +178,24 @@ function Tab({
             }}
             size={23}
           >
-            {tab.collection && (
-              <Emoji size={23} emoji={tab.collection?.emoji} />
-            )}
+            <Emoji
+              size={23}
+              emoji={tab.collection?.emoji || tab.label?.emoji}
+            />
           </Avatar>
         )}
         <Avatar
           disabled
-          size={tab.collection ? 23 : undefined}
+          size={tab.collection || tab.label ? 23 : undefined}
           style={{
-            backgroundColor: tab.collection
-              ? theme[selected ? 7 : 5]
-              : "transparent",
-            marginLeft: tab.collection ? -23 : 0,
-            marginBottom: tab.collection ? -10 : 0,
+            backgroundColor:
+              tab.collection || tab.label
+                ? theme[selected ? 7 : 5]
+                : "transparent",
+            marginLeft: tab.collection || tab.label ? -23 : 0,
+            marginBottom: tab.collection || tab.label ? -10 : 0,
           }}
-          iconProps={{ size: tab.collection ? 20 : 24 }}
+          iconProps={{ size: tab.collection || tab.label ? 20 : 24 }}
           icon={
             typeof tabData.icon === "function"
               ? tabData.icon(tab.params)
@@ -203,7 +205,10 @@ function Tab({
         <View style={{ flex: 1 }}>
           <Text weight={500} numberOfLines={1}>
             {capitalizeFirstLetter(
-              tab.profile?.name || tabData.name(tab.params, tab.slug)[0] || ""
+              tab.label?.name ||
+                tab.profile?.name ||
+                tabData.name(tab.params, tab.slug)[0] ||
+                ""
             )}
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (

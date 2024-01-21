@@ -210,8 +210,6 @@ export default function AppLayout() {
                               header: (props) => (
                                 <Navbar icon="arrow_back_ios_new" {...props} />
                               ),
-                              // cardStyle: { width: 500, marginLeft: "auto" },
-                              // detachPreviousScreen: false,
                               ...TransitionPresets.SlideFromRightIOS,
                               cardStyleInterpolator: forHorizontalIOS,
                             }}
@@ -255,10 +253,10 @@ export default function AppLayout() {
                           />
                         ))}
                       </JsStack>
+                      {!breakpoints.md && <BottomAppBar />}
                     </ThemeProvider>
                   </FocusPanelProvider>
                 </CommandPaletteProvider>
-                {!breakpoints.md && <BottomAppBar />}
               </View>
             </PortalProvider>
           </MenuProvider>

@@ -340,14 +340,12 @@ function CommandPaletteContent({ handleClose }) {
       return (
         sections
           .find((section) => section.title === item)
-          .items.find(
-            (item) =>
-              typeof item !== "string" &&
-              item.label.toLowerCase().includes(query.toLowerCase())
+          .items.find((item) =>
+            item.label?.toLowerCase()?.includes(query.toLowerCase())
           ) !== undefined
       );
     } else {
-      return item.label.toLowerCase().includes(query.toLowerCase());
+      return item.label?.toLowerCase()?.includes(query.toLowerCase());
     }
   });
 

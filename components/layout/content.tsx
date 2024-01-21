@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     overflow: "hidden",
-    //  borderRadius: 20,
   },
 });
 export function ContentWrapper(props: ContentWrapperProps) {
