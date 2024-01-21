@@ -101,10 +101,14 @@ function Tab({
         JSON.stringify(omit(["tab"], tabParams)) !==
         JSON.stringify(omit(["tab"], tab.params))
       ) {
-        mutate((oldData) =>
-          oldData.map((oldTab) =>
-            oldTab.id === tab.id ? { ...oldTab, params: tabParams } : oldTab
-          )
+        mutate(
+          (oldData) =>
+            oldData.map((oldTab) =>
+              oldTab.id === tab.id ? { ...oldTab, params: tabParams } : oldTab
+            ),
+          {
+            revalidate: false,
+          }
         );
         sendApiRequest(
           sessionToken,
