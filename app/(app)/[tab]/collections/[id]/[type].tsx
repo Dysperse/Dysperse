@@ -1,14 +1,21 @@
 import { columnStyles } from "@/components/collections/columnStyles";
-import { useCollectionContext } from "@/components/collections/context";
+import {
+  CollectionContext,
+  useCollectionContext,
+} from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
+import { CollectionNavbar } from "@/components/collections/navbar";
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { Perspectives } from "@/components/collections/views/agenda";
 import { Masonry } from "@/components/collections/views/masonry";
+import { ContentWrapper } from "@/components/layout/content";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,6 +23,7 @@ import { useLocalSearchParams } from "expo-router";
 import { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
+import useSWR from "swr";
 
 const styles = StyleSheet.create({
   header: {
@@ -314,22 +322,50 @@ function Grid() {
 }
 
 export default function Page() {
-  const { type } = useLocalSearchParams();
+  const { id, type } = useLocalSearchParams();
+  const { data, mutate, error } = useSWR(
+    id && type ? ["space/collections/collection", { id }] : null
+  );
 
+  let content = null;
   switch (type) {
     case "agenda":
-      return <Perspectives />;
+      content = <Perspectives />;
+      break;
     case "kanban":
-      return <Kanban />;
+      content = <Kanban />;
+      break;
     case "stream":
-      return <Text>Stream</Text>;
+      content = <Text>Stream</Text>;
+      break;
     case "masonry":
-      return <Masonry />;
+      content = <Masonry />;
+      break;
     case "grid":
-      return <Grid />;
+      content = <Grid />;
+      break;
     case "difficulty":
-      return <Text>Difficulty</Text>;
+      content = <Text>Difficulty</Text>;
+      break;
     default:
-      return <Text>404: {type}</Text>;
+      content = <Text>404: {type}</Text>;
+      break;
   }
+
+  return (
+    <CollectionContext.Provider value={{ data, mutate, error }}>
+      {data ? (
+        <ContentWrapper>
+          <CollectionNavbar />
+          {content}
+        </ContentWrapper>
+      ) : (
+        <ContentWrapper
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          {error ? <ErrorAlert /> : <Spinner />}
+        </ContentWrapper>
+      )}
+    </CollectionContext.Provider>
+  );
 }
