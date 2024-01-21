@@ -11,7 +11,7 @@ import { useFocusPanelContext } from "./context";
 
 const FocusPanel = memo(function FocusPanel() {
   const { isFocused } = useFocusPanelContext();
-  const marginRight = useSharedValue(0);
+  const marginRight = useSharedValue(-350);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {

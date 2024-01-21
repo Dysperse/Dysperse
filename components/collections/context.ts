@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
+import { KeyedMutator } from "swr";
 
 interface CollectionContext {
   data: any;
-  mutate: any;
+  mutate: KeyedMutator<any>;
   error: any;
 }
 

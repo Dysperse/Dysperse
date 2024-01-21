@@ -48,6 +48,20 @@ const KanbanHeader = memo(function KanbanHeader({
     entitiesLength: number;
   };
 }) {
+  const { mutate } = useCollectionContext();
+
+  const onEntityCreate = (newTask) => {
+    mutate(
+      (data) => {
+        const labelIndex = data.labels.findIndex((l) => l.id === label.id);
+        data.labels[labelIndex].entities.push(newTask);
+        return data;
+      },
+      {
+        revalidate: false,
+      }
+    );
+  };
   const theme = useColorTheme();
   return (
     <LinearGradient
@@ -82,6 +96,7 @@ const KanbanHeader = memo(function KanbanHeader({
             defaultValues={{
               label: omit(["entities"], label),
             }}
+            mutateList={onEntityCreate}
           >
             <IconButton icon="add" disabled />
           </CreateEntityTrigger>

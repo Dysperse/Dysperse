@@ -338,7 +338,7 @@ function BottomSheetContent({
             pinned: data.pinned,
             labelId: data.label?.id,
             type: "TASK",
-            collectionId: defaultValues.label?.id ? null : data.collectionId,
+            collectionId: data.label?.id ? null : data.collectionId,
           }),
         }
       )
