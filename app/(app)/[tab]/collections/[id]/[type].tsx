@@ -141,9 +141,10 @@ function KanbanColumn({ label, grid = false }) {
   const breakpoints = useResponsiveBreakpoints();
   const { mutate } = useCollectionContext();
 
-  const onTaskUpdate = (updatedTask) => {
+  const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
       (oldData) => {
+        console.log(updatedTask);
         const labelIndex = oldData.labels.findIndex(
           (l) => l.id === updatedTask.label.id
         );
@@ -153,7 +154,23 @@ function KanbanColumn({ label, grid = false }) {
           (t) => t.id === updatedTask.id
         );
 
-        if (taskIndex === -1) return oldData;
+        if (taskIndex === -1)
+          return {
+            ...oldData,
+            labels: oldData.labels.map((l) =>
+              l.id === updatedTask.label.id
+                ? {
+                    ...l,
+                    entities: [...l.entities, updatedTask],
+                  }
+                : l.id === oldTask.label.id
+                ? {
+                    ...l,
+                    entities: l.entities.filter((t) => t.id !== oldTask.id),
+                  }
+                : l
+            ),
+          };
 
         return {
           ...oldData,
@@ -274,7 +291,7 @@ function KanbanColumn({ label, grid = false }) {
         renderItem={({ item }) => (
           <Entity
             item={item}
-            onTaskUpdate={onTaskUpdate}
+            onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
             openColumnMenu={() => {}}
           />
         )}

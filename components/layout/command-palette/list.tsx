@@ -41,8 +41,8 @@ export const paletteItems = (
               icon: "label",
               key: label.id,
               emoji: label.emoji,
-              slug: `/[tab]/labels/[id]/[type]`,
-              params: { id: label.id, type: "agenda" },
+              slug: `/[tab]/labels/[id]`,
+              params: { id: label.id },
             }))
           : [{}]),
         {

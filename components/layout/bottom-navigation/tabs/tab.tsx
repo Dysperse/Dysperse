@@ -70,10 +70,7 @@ function Tab({
           router.replace({
             params: {
               tab: lastTab.id,
-              params: {
-                tab: lastTab.id,
-                ...(typeof lastTab.params === "object" && lastTab.params),
-              },
+              ...(typeof lastTab.params === "object" && lastTab.params),
             },
             pathname: lastTab.slug,
           });

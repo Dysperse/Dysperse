@@ -239,20 +239,6 @@ export default function AppLayout() {
                             }}
                           />
                         ))}
-
-                        <JsStack.Screen
-                          name="open"
-                          options={{
-                            presentation: "modal",
-                            ...TransitionPresets.ModalPresentationIOS,
-                            gestureResponseDistance: 100,
-                            cardStyle: {
-                              marginBottom: 0,
-                              ...(breakpoints.md &&
-                                (desktopPresentationModal as any)),
-                            },
-                          }}
-                        />
                         {["space"].map((d) => (
                           <JsStack.Screen
                             name={d}
