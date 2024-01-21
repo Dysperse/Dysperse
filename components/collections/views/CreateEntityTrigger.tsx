@@ -12,6 +12,7 @@ interface DefaultEntityProps {
   name: string;
   date: Dayjs;
   agendaOrder: string;
+  collectionId: string;
 }
 
 export const CreateEntityTrigger = ({

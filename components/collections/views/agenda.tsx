@@ -26,6 +26,7 @@ function Agenda() {
       start: start.toISOString(),
       end: end.toISOString(),
       type,
+      id: params.id,
     },
   ]);
 

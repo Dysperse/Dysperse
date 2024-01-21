@@ -307,17 +307,13 @@ function BottomSheetContent({
   const { sessionToken } = useUser();
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       name: defaultValues.name,
       date: defaultValues.date,
       pinned: false,
       label: defaultValues.label,
+      collectionId: defaultValues.collectionId,
     },
   });
 
@@ -342,6 +338,7 @@ function BottomSheetContent({
             pinned: data.pinned,
             labelId: data.label?.id,
             type: "TASK",
+            collectionId: defaultValues.label?.id ? null : data.collectionId,
           }),
         }
       )

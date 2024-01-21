@@ -344,9 +344,9 @@ export function Column({
   column: any;
 }) {
   const theme = useColorTheme();
-  const { width, height } = useWindowDimensions();
-  const { session } = useSession();
+  const { width } = useWindowDimensions();
   const pathname = usePathname();
+  const { id: collectionId } = useAgendaContext();
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -396,11 +396,7 @@ export function Column({
   };
 
   const columnMenuRef = useRef(null);
-  const openColumnMenu = useCallback(() => columnMenuRef.current.present(), []);
-
-  const renderColumnItemWrapper = (props) =>
-    renderColumnItem({ ...props, width, onTaskUpdate, openColumnMenu });
-
+  // const openColumnMenu = useCallback(() => columnMenuRef.current.present(), []);
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -440,6 +436,7 @@ export function Column({
             >
               <CreateEntityTrigger
                 defaultValues={{
+                  collectionId,
                   date: dayjs(column.start),
                   agendaOrder: LexoRank.parse(
                     column.tasks[column.tasks.length - 1]?.agendaOrder ||
