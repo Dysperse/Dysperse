@@ -139,7 +139,7 @@ function Agenda() {
 }
 
 export function Perspectives() {
-  let { agendaView, start } = useLocalSearchParams();
+  let { agendaView, start, id } = useLocalSearchParams();
   if (!agendaView) agendaView = "week";
   if (!start) start = dayjs().format("YYYY-MM-DD");
 
@@ -150,8 +150,9 @@ export function Perspectives() {
       end: dayjs(start as string)
         .startOf(agendaView as OpUnitType)
         .add(1, agendaView as ManipulateType),
+      id,
     };
-  }, [agendaView, start]);
+  }, [agendaView, start, id]);
 
   return (
     <AgendaContext.Provider value={agendaContextValue}>
