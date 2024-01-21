@@ -1,12 +1,12 @@
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import React, { memo, useRef } from "react";
+import React, { memo } from "react";
 import { View, useColorScheme } from "react-native";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
@@ -15,24 +15,24 @@ const Task = memo(function Task({
   task,
   onTaskUpdate,
   openColumnMenu,
+  showLabel,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
   openColumnMenu: () => void;
+  showLabel?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange", useColorScheme() === "dark");
-  const breakpoints = useResponsiveBreakpoints();
 
   const noChips = !task.pinned && task.dateOnly;
   const isCompleted = task.completionInstances.length > 0;
-  const ref = useRef();
 
   return (
     <TaskDrawer id={task.id} mutateList={onTaskUpdate}>
       <ListItemButton
         onLongPress={openColumnMenu}
-        style={({ pressed, hovered }) => ({
+        style={({ pressed }) => ({
           flexShrink: 0,
           paddingHorizontal: 15,
           paddingVertical: 15,
@@ -59,6 +59,18 @@ const Task = memo(function Task({
             {task.name}
           </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+            {showLabel && task.label && (
+              <Chip
+                disabled
+                dense
+                label={task.label.name}
+                colorTheme={task.label.color}
+                icon={<Emoji size={22} emoji={task.label.emoji} />}
+                style={{
+                  paddingHorizontal: 5,
+                }}
+              />
+            )}
             {task.pinned && (
               <Chip
                 dense

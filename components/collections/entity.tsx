@@ -2,7 +2,19 @@ import Task from "@/components/task";
 import Text from "@/ui/Text";
 import { View } from "react-native";
 
-export const Entity = ({ onTaskUpdate, item, openColumnMenu }) => {
+interface EntityProps {
+  item: any;
+  onTaskUpdate: any;
+  openColumnMenu: any;
+  showLabel?: boolean;
+}
+
+export const Entity = ({
+  onTaskUpdate,
+  item,
+  openColumnMenu,
+  showLabel = false,
+}: EntityProps) => {
   const Container = ({ children }: { children: JSX.Element }) => {
     return (
       <View
@@ -21,6 +33,7 @@ export const Entity = ({ onTaskUpdate, item, openColumnMenu }) => {
       return (
         <Container>
           <Task
+            showLabel={showLabel}
             onTaskUpdate={onTaskUpdate}
             task={item}
             openColumnMenu={openColumnMenu}

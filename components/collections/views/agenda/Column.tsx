@@ -536,6 +536,7 @@ export function Column({
         ListEmptyComponent={() => <ColumnEmptyComponent />}
         renderItem={({ item }) => (
           <Entity
+            showLabel
             item={item}
             onTaskUpdate={onTaskUpdate}
             openColumnMenu={() => {}}

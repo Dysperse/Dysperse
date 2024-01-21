@@ -1,7 +1,14 @@
-import { Pressable, StyleProp, TextStyle, ViewStyle } from "react-native";
+import { useUser } from "@/context/useUser";
+import {
+  Pressable,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+  useColorScheme,
+} from "react-native";
 import Icon from "../Icon";
 import Text from "../Text";
-import { useColorTheme } from "../color/theme-provider";
+import { useColor } from "../color";
 
 interface ChipProps {
   icon?: React.ReactNode;
@@ -14,6 +21,7 @@ interface ChipProps {
   disabled?: boolean;
   color?: string;
   textStyle?: StyleProp<TextStyle>;
+  colorTheme?: string;
 }
 
 export default function Chip({
@@ -27,8 +35,13 @@ export default function Chip({
   color,
   textStyle = {},
   disabled = false,
+  colorTheme,
 }: ChipProps) {
-  const theme = useColorTheme();
+  const { session } = useUser();
+  const theme = useColor(
+    colorTheme || session?.user?.profile?.theme || "violet",
+    useColorScheme() === "dark"
+  );
 
   return (
     <Pressable

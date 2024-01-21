@@ -67,7 +67,8 @@ function AgendaNavbarButtons() {
   const isTodaysView = dayjs().isBetween(
     dayjs(start).startOf(agendaView as ManipulateType),
     dayjs(start).endOf(agendaView as ManipulateType),
-    "day"
+    "day",
+    "[]"
   );
 
   const titleFormat = {

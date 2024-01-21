@@ -13,17 +13,18 @@ import { ContentWrapper } from "@/components/layout/content";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { memo } from "react";
+import { ReactElement, memo } from "react";
 import { StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
@@ -39,17 +40,34 @@ const styles = StyleSheet.create({
 
 const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   label,
+  children,
 }: {
   label: any;
+  children: ReactElement;
 }) {
   return (
     <>
       <MenuPopover
-        trigger={<IconButton disabled icon="more_horiz" />}
-        menuProps={{ rendererProps: { anchorStyle: { opacity: 0 } } }}
+        trigger={children}
+        containerStyle={{ width: 150 }}
+        // menuProps={{ rendererProps: { anchorStyle: { opacity: 0 } } }}
         options={[
           { icon: "edit", text: "Edit" },
-          { icon: "remove_circle", text: "Remove" },
+          {
+            renderer: () => (
+              <ConfirmationModal
+                height={410}
+                onSuccess={() => {}}
+                title="Remove label from collection?"
+                secondary="This label, or the items within it, will not be deleted."
+              >
+                <MenuItem>
+                  <Icon>remove_circle</Icon>
+                  <Text variant="menuItem">Remove</Text>
+                </MenuItem>
+              </ConfirmationModal>
+            ),
+          },
         ]}
       />
     </>
@@ -129,7 +147,9 @@ const KanbanHeader = memo(function KanbanHeader({
           >
             <IconButton icon="add" disabled />
           </CreateEntityTrigger>
-          <ColumnMenuTrigger label={label} />
+          <ColumnMenuTrigger label={label}>
+            <IconButton disabled icon="more_horiz" />
+          </ColumnMenuTrigger>
         </>
       )}
     </LinearGradient>
@@ -233,7 +253,7 @@ function KanbanColumn({ label, grid = false }) {
         //     tintColor={theme[11]}
         //   />
         // }
-        ListEmptyComponent={() => <ColumnEmptyComponent row />}
+        ListEmptyComponent={() => <ColumnEmptyComponent row={grid} />}
         ListHeaderComponent={
           grid ? undefined : (
             <>
@@ -261,9 +281,11 @@ function KanbanColumn({ label, grid = false }) {
                     <Icon>add</Icon>
                   </Button>
                 </CreateEntityTrigger>
-                <Button disabled variant="outlined" style={{ minHeight: 50 }}>
-                  <Icon>more_horiz</Icon>
-                </Button>
+                <ColumnMenuTrigger label={label}>
+                  <Button disabled variant="outlined" style={{ minHeight: 50 }}>
+                    <Icon>more_horiz</Icon>
+                  </Button>
+                </ColumnMenuTrigger>
               </View>
             </>
           )
@@ -428,6 +450,127 @@ function Grid() {
   );
 }
 
+function Stream() {
+  const { data, mutate } = useCollectionContext();
+  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
+  const onTaskUpdate = (updatedTask, oldTask) => {
+    mutate(
+      (oldData) => {
+        const labelIndex = oldData.labels.findIndex(
+          (l) => l.id === updatedTask.label.id
+        );
+        if (labelIndex === -1) return oldData;
+
+        const taskIndex = oldData.labels[labelIndex].entities.findIndex(
+          (t) => t.id === updatedTask.id
+        );
+
+        if (taskIndex === -1)
+          return {
+            ...oldData,
+            labels: oldData.labels.map((l) =>
+              l.id === updatedTask.label.id
+                ? {
+                    ...l,
+                    entities: [...l.entities, updatedTask],
+                  }
+                : l.id === oldTask.label.id
+                ? {
+                    ...l,
+                    entities: l.entities.filter((t) => t.id !== oldTask.id),
+                  }
+                : l
+            ),
+          };
+
+        return {
+          ...oldData,
+          labels: [
+            ...oldData.labels.slice(0, labelIndex),
+            {
+              ...oldData.labels[labelIndex],
+              entities: oldData.labels[labelIndex].entities
+                .map((t, i) => (i === taskIndex ? updatedTask : t))
+                .filter((t) => !t.trash),
+            },
+            ...oldData.labels.slice(labelIndex + 1),
+          ],
+        };
+      },
+      {
+        revalidate: false,
+      }
+    );
+  };
+
+  return (
+    <>
+      <FlatList
+        ListEmptyComponent={() => <ColumnEmptyComponent row />}
+        ListHeaderComponent={
+          <>
+            <View
+              style={[
+                styles.header,
+                {
+                  paddingHorizontal: breakpoints.md ? 0 : 15,
+                  paddingTop: breakpoints.md ? 0 : 20,
+                },
+              ]}
+            >
+              <CreateEntityTrigger
+                defaultValues={{
+                  collectionId: data.id,
+                }}
+              >
+                <Button
+                  disabled
+                  variant="filled"
+                  style={{ flex: 1, minHeight: 50 }}
+                >
+                  <ButtonText>New</ButtonText>
+                  <Icon>add</Icon>
+                </Button>
+              </CreateEntityTrigger>
+            </View>
+          </>
+        }
+        data={data.labels
+          .reduce((acc, curr) => [...acc, ...curr.entities], [])
+          .sort((a, b) =>
+            a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
+          )
+          .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
+          .sort((x, y) =>
+            x.completionInstances.length === y.completionInstances.length
+              ? 0
+              : x.completionInstances.length === 0
+              ? -1
+              : 0
+          )}
+        // estimatedItemSize={200}
+        initialNumToRender={10}
+        contentContainerStyle={{
+          padding: breakpoints.md ? 15 : 0,
+          paddingTop: 15,
+          gap: 5,
+          minHeight: "100%",
+        }}
+        renderItem={({ item }) => (
+          <Entity showLabel
+            item={item}
+            onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
+            openColumnMenu={() => {}}
+          />
+        )}
+        keyExtractor={(i: any, d) => `${i.id}-${d}`}
+      />
+    </>
+  );
+}
+
 export default function Page() {
   const { id, type } = useLocalSearchParams();
   const { data, mutate, error } = useSWR(
@@ -443,7 +586,7 @@ export default function Page() {
       content = <Kanban />;
       break;
     case "stream":
-      content = <Text>Stream</Text>;
+      content = <Stream />;
       break;
     case "masonry":
       content = <Masonry />;

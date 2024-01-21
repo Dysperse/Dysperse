@@ -23,7 +23,8 @@ export type MenuOption =
       callback?;
       selected?: boolean;
       renderer?: (children) => ReactElement;
-    });
+    })
+  | { renderer: (children) => ReactElement };
 export interface MenuProps {
   trigger: ReactElement;
   options: MenuOption[];
