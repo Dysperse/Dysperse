@@ -385,13 +385,6 @@ export function Column({
                       : oldTask
                   )
                   .filter((e) => e),
-
-                // .sort((a, b) => (a.pinned ? 0 : 1) - (b.pinned ? 0 : 1))
-                // .sort(
-                //   (a, b) =>
-                //     (a.completionInstances.length !== 0 ? 1 : 0) -
-                //     (b.completionInstances.length !== 0 ? 1 : 0)
-                // ),
               }
             : oldColumn
         );
@@ -446,7 +439,6 @@ export function Column({
               ]}
             >
               <CreateEntityTrigger
-                // @ts-expect-error TODO
                 defaultValues={{
                   date: dayjs(column.start),
                   agendaOrder: LexoRank.parse(
@@ -457,7 +449,7 @@ export function Column({
                     .toString(),
                 }}
                 menuProps={{ style: { flex: 1 } }}
-                mutate={(newTask) => {
+                mutateList={(newTask) => {
                   console.log(newTask);
                   if (!newTask) return;
                   if (

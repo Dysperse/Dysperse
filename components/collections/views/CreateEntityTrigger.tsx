@@ -10,7 +10,8 @@ import { MenuProps } from "react-native-popup-menu";
 interface DefaultEntityProps {
   label: object;
   name: string;
-  due: Dayjs;
+  date: Dayjs;
+  agendaOrder: string;
 }
 
 export const CreateEntityTrigger = ({
@@ -19,12 +20,14 @@ export const CreateEntityTrigger = ({
   additional,
   popoverProps,
   defaultValues,
+  mutateList,
 }: {
   children: ReactElement;
   menuProps?: MenuProps;
   additional?: MenuOption[];
   popoverProps?: Partial<DysperseMenuProps>;
   defaultValues: Partial<DefaultEntityProps>;
+  mutateList?: (e) => void;
 }) => {
   const createTaskRef = useRef<BottomSheetModal>(null);
   const handleCreateTask = useCallback(
@@ -46,9 +49,7 @@ export const CreateEntityTrigger = ({
       />
       <CreateTask
         defaultValues={defaultValues}
-        mutate={(e) => {
-          if (e !== null) alert(JSON.stringify(e));
-        }}
+        mutate={mutateList}
         sheetRef={createTaskRef}
       />
     </>

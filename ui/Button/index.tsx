@@ -25,6 +25,7 @@ export function ButtonText(props: DTextProps) {
   const theme = useColorTheme();
   return (
     <Text
+      numberOfLines={1}
       weight={500}
       {...props}
       style={[

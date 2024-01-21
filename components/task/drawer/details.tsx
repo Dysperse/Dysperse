@@ -75,62 +75,12 @@ function DatePickerModal({ date, onDateSelect, children, menuRef }) {
   );
 }
 
-function TaskAttachmentCategory({ category, attachments }) {
-  const theme = useColorTheme();
-  const { task } = useTaskDrawerContext();
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const icon = {
-    LINK: "link",
-    LOCATION: "location_on",
-  }[category];
-
-  return (
-    <View style={{ backgroundColor: theme[open ? 4 : 3], borderRadius: 20 }}>
-      <ListItemButton
-        style={{
-          backgroundColor: "transparent",
-          alignItems: attachments.length == 1 ? "center" : "flex-start",
-        }}
-      >
-        <Icon style={{ marginTop: 10 }}>{icon}</Icon>
-        <View style={{ flex: 1 }}>
-          {attachments.map((attachment) => (
-            <Pressable
-              style={{
-                paddingVertical: 10,
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
-              key={attachment.id}
-            >
-              <ListItemText primary={attachment.data} truncate />
-              <Button
-                variant="filled"
-                dense
-                style={{ backgroundColor: theme[4] }}
-              >
-                <ButtonText>Open</ButtonText>
-                <Icon>north_east</Icon>
-              </Button>
-            </Pressable>
-          ))}
-        </View>
-      </ListItemButton>
-    </View>
-  );
-}
-
 function isValidHttpUrl(string) {
   let url;
 
   try {
     url = new URL(string);
-  } catch (_) {
+  } catch {
     return false;
   }
 
@@ -253,7 +203,6 @@ function TaskAttachmentCard({ item }) {
               alignItems: "center",
               zIndex: 999,
               gap: 5,
-              backgroundColor: "rgba(0,0,0,0.9)",
               borderRadius: 5,
             }}
           >
