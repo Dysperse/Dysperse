@@ -101,6 +101,11 @@ function Tab({
         JSON.stringify(omit(["tab"], tabParams)) !==
         JSON.stringify(omit(["tab"], tab.params))
       ) {
+        mutate((oldData) =>
+          oldData.map((oldTab) =>
+            oldTab.id === tab.id ? { ...oldTab, params: tabParams } : oldTab
+          )
+        );
         sendApiRequest(
           sessionToken,
           "PUT",
@@ -112,7 +117,7 @@ function Tab({
               id: tab.id,
             }),
           }
-        ).then(() => mutate());
+        );
       }
     }
   }, [tabParams, selected, tab, sessionToken, mutate]);
