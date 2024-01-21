@@ -110,7 +110,6 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
 function CommandPaletteList({
   preview,
   setPreview,
-  query,
   filtered,
   setFilter,
   filter,
@@ -119,7 +118,6 @@ function CommandPaletteList({
 }: {
   preview: any;
   setPreview: (e) => void;
-  query: string;
   filtered: any[];
   setFilter: (e) => void;
   filter: string;
@@ -158,7 +156,7 @@ function CommandPaletteList({
         }
         keyExtractor={(item) => (typeof item === "string" ? item : item.key)}
         estimatedItemSize={50}
-        contentContainerStyle={{ padding: 15 }}
+        contentContainerStyle={{ padding: 20 }}
         renderItem={({ item }) => {
           if (typeof item === "string") {
             return (
@@ -382,7 +380,6 @@ function CommandPaletteContent({ handleClose }) {
         <View style={{ flex: 1.5 }}>
           <CommandPaletteList
             preview={preview}
-            query={query}
             setPreview={handlePreviewChange}
             filtered={filtered}
             filter={filter}
