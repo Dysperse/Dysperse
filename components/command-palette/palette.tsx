@@ -342,8 +342,10 @@ function CommandPaletteContent({ handleClose }) {
       return (
         sections
           .find((section) => section.title === item)
-          .items.find((item) =>
-            item.label.toLowerCase().includes(query.toLowerCase())
+          .items.find(
+            (item) =>
+              typeof item !== "string" &&
+              item.label.toLowerCase().includes(query.toLowerCase())
           ) !== undefined
       );
     } else {
