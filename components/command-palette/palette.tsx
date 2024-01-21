@@ -11,7 +11,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { TouchableOpacity } from "react-native-ui-lib";
@@ -195,6 +195,8 @@ const PaletteHeader = memo(function PaletteHeader({
   setPreview: (e) => void;
   filtered: any[];
 }) {
+  const ref = useRef(null);
+
   const theme = useColorTheme();
   const close = useMemo(
     () => (
@@ -207,6 +209,11 @@ const PaletteHeader = memo(function PaletteHeader({
   const handleKeyPress = () => {
     setPreview(filtered.length > 0 ? filtered[1] : null);
   };
+
+  useEffect(() => {
+    setTimeout(() => ref.current.focus(), 500);
+  }, []);
+
   return (
     <View
       style={{
@@ -219,6 +226,7 @@ const PaletteHeader = memo(function PaletteHeader({
     >
       <Icon size={30}>search</Icon>
       <TextField
+        inputRef={ref}
         style={{
           padding: 20,
           flex: 1,
@@ -232,7 +240,12 @@ const PaletteHeader = memo(function PaletteHeader({
           setQuery(e);
         }}
         {...(Platform.OS === "web" && {
-          onKeyUp: handleKeyPress,
+          onKeyUp: (e) => {
+            handleKeyPress();
+            if (e.key === "Escape") {
+              handleClose();
+            }
+          },
         })}
         onKeyPress={handleKeyPress}
       />
