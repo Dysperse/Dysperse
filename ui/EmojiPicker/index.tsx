@@ -9,13 +9,14 @@ import {
   useRef,
   useState,
 } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import useSWR from "swr";
 import BottomSheet from "../BottomSheet";
 import Emoji from "../Emoji";
 import ErrorAlert from "../Error";
 import Icon from "../Icon";
 import IconButton from "../IconButton";
+import Spinner from "../Spinner";
 import Text from "../Text";
 import TextField from "../TextArea";
 
@@ -163,16 +164,12 @@ export function EmojiPicker({
               renderItem={({ item }) => <EmojiItem item={item} />}
               keyExtractor={(item) => item}
               numColumns={4}
-              columnWrapperStyle={{
-                justifyContent: "space-between",
-                gap: 10,
-              }}
             />
           </View>
         ) : error ? (
           <ErrorAlert />
         ) : (
-          <ActivityIndicator />
+          <Spinner />
         )}
       </BottomSheet>
     </>

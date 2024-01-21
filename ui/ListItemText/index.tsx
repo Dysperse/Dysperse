@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import Text, { DTextProps } from "../Text";
 
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
   secondary: { opacity: 0.6, fontSize: 14 },
 });
 
-export default function ListItemText(props: DListItemTextProps) {
+function ListItemText(props: DListItemTextProps) {
   return (
     <View style={[styles.base, props.style]}>
       <Text
@@ -36,3 +37,5 @@ export default function ListItemText(props: DListItemTextProps) {
     </View>
   );
 }
+
+export default memo(ListItemText);

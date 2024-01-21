@@ -14,6 +14,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useTaskDrawerContext } from "./context";
+import Spinner from "@/ui/Spinner";
 
 const timelineStyles = StyleSheet.create({
   container: {
@@ -150,7 +151,7 @@ export function TaskStream({ children }) {
                   </View>
                 ))
               ) : (
-                <ActivityIndicator />
+                <Spinner />
               )}
             </View>
           </View>

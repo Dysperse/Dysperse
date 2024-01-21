@@ -1,17 +1,24 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import BottomSheet from "@/ui/BottomSheet";
-import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
+import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { ActivityIndicator, Keyboard, Pressable, View } from "react-native";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import React, {
+  ReactElement,
+  cloneElement,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Keyboard, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { useLabelColors } from "./useLabelColors";
@@ -21,7 +28,7 @@ export function CreateLabelModal({
   mutate,
   onClose = () => null,
 }: {
-  children: React.ReactNode;
+  children: ReactElement;
   mutate: any;
   onClose?: () => void;
 }) {
@@ -115,11 +122,7 @@ export function CreateLabelModal({
             }}
             variant="filled"
           >
-            {isLoading ? (
-              <ActivityIndicator size="small" />
-            ) : (
-              <Icon>check</Icon>
-            )}
+            {isLoading ? <Spinner /> : <Icon>check</Icon>}
           </IconButton>
         </View>
         <ScrollView>

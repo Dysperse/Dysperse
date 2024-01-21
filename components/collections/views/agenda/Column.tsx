@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
-    minHeight: 250,
   },
   emptyIcon: { transform: [{ rotate: "-45deg" }] },
   emptyIconContainer: {
@@ -76,7 +75,12 @@ function findChangedItem(oldArray, newArray) {
 function isEqual(obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
-const EmptyComponent = memo(function EmptyComponent() {
+
+export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
+  row,
+}: {
+  row?: boolean;
+}) {
   const theme = useColorTheme();
 
   const shapesLength = Array.from({ length: 7 }, (_, i) => `shape${i + 1}`);
@@ -100,7 +104,12 @@ const EmptyComponent = memo(function EmptyComponent() {
   const message = messages[Math.floor(Math.random() * messages.length)];
 
   return (
-    <View style={styles.empty}>
+    <View
+      style={[
+        styles.empty,
+        row && { flexDirection: "row", alignItems: "center", gap: 20 },
+      ]}
+    >
       <View style={{ position: "relative", marginBottom: 20 }}>
         <Shape color={theme[5]} size={100} />
         <View
@@ -117,10 +126,12 @@ const EmptyComponent = memo(function EmptyComponent() {
           <Emoji emoji={message[0]} size={50} />
         </View>
       </View>
-      <Text weight={300} style={{ fontSize: 30 }}>
-        {message[1]}
-      </Text>
-      <Text style={{ opacity: 0.6 }}>{message[2]}</Text>
+      <View style={row ? { marginTop: -30 } : { alignItems: "center" }}>
+        <Text weight={300} style={{ fontSize: 30 }}>
+          {message[1]}
+        </Text>
+        <Text style={{ opacity: 0.6 }}>{message[2]}</Text>
+      </View>
     </View>
   );
 });
@@ -520,8 +531,9 @@ export function Column({
           paddingRight: 10,
           gap: 0,
           paddingBottom: getBottomNavigationHeight(pathname),
+          minHeight: "100%",
         }}
-        ListEmptyComponent={EmptyComponent}
+        ListEmptyComponent={() => <ColumnEmptyComponent />}
         renderItem={({ item }) => (
           <Entity
             item={item}

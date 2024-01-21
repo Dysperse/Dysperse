@@ -23,7 +23,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ActivityIndicator, Platform, Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { labelPickerStyles } from "./labelPickerStyles";
@@ -259,7 +259,7 @@ const LabelPicker = memo(function LabelPicker({
           ) : error ? (
             <ErrorAlert />
           ) : (
-            <ActivityIndicator />
+            <Spinner />
           )}
         </View>
       </BottomSheet>

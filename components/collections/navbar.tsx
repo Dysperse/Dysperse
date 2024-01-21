@@ -337,7 +337,12 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
       ),
     },
     {
-      icon: "delete",
+      icon: "priority",
+      text: "Show completed",
+      selected: true,
+    },
+    {
+      icon: "remove_selection",
       text: "Delete",
       renderer: () => (
         <ConfirmationModal
@@ -409,6 +414,7 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
       }}
     >
       <MenuPopover
+        containerStyle={{ width: 230 }}
         trigger={
           <IconButton
             disabled

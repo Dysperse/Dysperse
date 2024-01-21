@@ -7,6 +7,7 @@ import { Entity } from "@/components/collections/entity";
 import { CollectionNavbar } from "@/components/collections/navbar";
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { Perspectives } from "@/components/collections/views/agenda";
+import { ColumnEmptyComponent } from "@/components/collections/views/agenda/Column";
 import { Masonry } from "@/components/collections/views/masonry";
 import { ContentWrapper } from "@/components/layout/content";
 import { omit } from "@/helpers/omit";
@@ -16,6 +17,7 @@ import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -33,6 +35,25 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: -15,
   },
+});
+
+const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
+  label,
+}: {
+  label: any;
+}) {
+  return (
+    <>
+      <MenuPopover
+        trigger={<IconButton disabled icon="more_horiz" />}
+        menuProps={{ rendererProps: { anchorStyle: { opacity: 0 } } }}
+        options={[
+          { icon: "edit", text: "Edit" },
+          { icon: "remove_circle", text: "Remove" },
+        ]}
+      />
+    </>
+  );
 });
 
 const KanbanHeader = memo(function KanbanHeader({
@@ -55,6 +76,7 @@ const KanbanHeader = memo(function KanbanHeader({
     mutate(
       (data) => {
         const labelIndex = data.labels.findIndex((l) => l.id === label.id);
+        if (labelIndex === -1) return data;
         data.labels[labelIndex].entities.push(newTask);
         return {
           ...data,
@@ -107,7 +129,7 @@ const KanbanHeader = memo(function KanbanHeader({
           >
             <IconButton icon="add" disabled />
           </CreateEntityTrigger>
-          <IconButton icon="more_horiz" />
+          <ColumnMenuTrigger label={label} />
         </>
       )}
     </LinearGradient>
@@ -125,9 +147,13 @@ function KanbanColumn({ label, grid = false }) {
         const labelIndex = oldData.labels.findIndex(
           (l) => l.id === updatedTask.label.id
         );
+        if (labelIndex === -1) return oldData;
+
         const taskIndex = oldData.labels[labelIndex].entities.findIndex(
           (t) => t.id === updatedTask.id
         );
+
+        if (taskIndex === -1) return oldData;
 
         return {
           ...oldData,
@@ -190,6 +216,7 @@ function KanbanColumn({ label, grid = false }) {
         //     tintColor={theme[11]}
         //   />
         // }
+        ListEmptyComponent={() => <ColumnEmptyComponent row />}
         ListHeaderComponent={
           grid ? undefined : (
             <>
@@ -242,6 +269,7 @@ function KanbanColumn({ label, grid = false }) {
           padding: breakpoints.md ? 15 : 0,
           paddingTop: 15,
           gap: 5,
+          minHeight: "100%",
         }}
         renderItem={({ item }) => (
           <Entity

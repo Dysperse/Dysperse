@@ -13,7 +13,7 @@ import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
 export interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: RefObject<BottomSheetModal>;
   onClose: () => void;
-  maxWidth?: number;
+  maxWidth?: number | string;
   stackBehavior?: "replace" | "push";
   appearsOnIndex?: number;
   dismissible?: boolean;

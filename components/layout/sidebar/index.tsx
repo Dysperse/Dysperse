@@ -1,4 +1,5 @@
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
+import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useUser } from "@/context/useUser";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
@@ -85,13 +86,13 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
-  useKeyboardShortcut(["ctrl+k", "ctrl+/", "ctrl+o"], () =>
-    router.push("/open")
-  );
+  const { handleOpen } = useCommandPaletteContext();
+
+  useKeyboardShortcut(["ctrl+k", "ctrl+/", "ctrl+o"], handleOpen);
 
   return (
     <Pressable
-      onPress={() => router.push("/open")}
+      onPress={handleOpen}
       style={({ pressed }) => [
         styles.button,
         {

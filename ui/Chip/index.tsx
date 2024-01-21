@@ -1,4 +1,5 @@
 import { Pressable, StyleProp, TextStyle, ViewStyle } from "react-native";
+import Icon from "../Icon";
 import Text from "../Text";
 import { useColorTheme } from "../color/theme-provider";
 
@@ -62,7 +63,8 @@ export default function Chip({
       ]}
       {...(onPress && { onPress })}
     >
-      {iconPosition === "before" && icon}
+      {iconPosition === "before" &&
+        (typeof icon === "string" ? <Icon>{icon}</Icon> : icon)}
       {typeof label === "string" ? (
         <Text
           style={[
@@ -79,7 +81,8 @@ export default function Chip({
       ) : (
         label
       )}
-      {iconPosition === "after" && icon}
+      {iconPosition === "after" &&
+        (typeof icon === "string" ? <Icon>{icon}</Icon> : icon)}
     </Pressable>
   );
 }

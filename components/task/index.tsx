@@ -49,7 +49,7 @@ const Task = memo(function Task({
             weight={300}
             numberOfLines={noChips ? undefined : 1}
             style={{
-              fontSize: 17,
+              fontSize: 16,
               ...(isCompleted && {
                 opacity: 0.6,
                 textDecorationLine: "line-through",
