@@ -122,7 +122,7 @@ const KanbanHeader = memo(function KanbanHeader({
         },
       ]}
     >
-      <Emoji emoji={label.emoji} size={grid ? 25 : 35} />
+      <Emoji emoji={label.emoji || "1f4ad"} size={grid ? 25 : 35} />
       <View
         style={{
           flex: 1,
@@ -130,7 +130,7 @@ const KanbanHeader = memo(function KanbanHeader({
         }}
       >
         <Text style={{ fontSize: 20 }} weight={800}>
-          {label.name}
+          {label.name || "Other"}
         </Text>
         <Text weight={200} numberOfLines={1}>
           {label.entitiesLength} item{label.entitiesLength !== 1 && "s"}
@@ -147,16 +147,30 @@ const KanbanHeader = memo(function KanbanHeader({
           >
             <IconButton icon="add" disabled />
           </CreateEntityTrigger>
-          <ColumnMenuTrigger label={label}>
-            <IconButton disabled icon="more_horiz" />
-          </ColumnMenuTrigger>
+          {label && (
+            <ColumnMenuTrigger label={label}>
+              <IconButton disabled icon="more_horiz" />
+            </ColumnMenuTrigger>
+          )}
         </>
       )}
     </LinearGradient>
   );
 });
 
-function KanbanColumn({ label, grid = false }) {
+type KanbanColumnProps =
+  | {
+      label?: any;
+      entities?: never;
+      grid?: boolean;
+    }
+  | {
+      label?: never;
+      entities?: any[];
+      grid?: boolean;
+    };
+
+function KanbanColumn(props: KanbanColumnProps) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { mutate } = useCollectionContext();
@@ -166,9 +180,15 @@ function KanbanColumn({ label, grid = false }) {
       (oldData) => {
         console.log(updatedTask);
         const labelIndex = oldData.labels.findIndex(
-          (l) => l.id === updatedTask.label.id
+          (l) => l.id === updatedTask.label?.id
         );
-        if (labelIndex === -1) return oldData;
+        if (labelIndex === -1)
+          return {
+            ...oldData,
+            entities: oldData.entities.map((t) =>
+              t.id === updatedTask.id ? updatedTask : t
+            ),
+          };
 
         const taskIndex = oldData.labels[labelIndex].entities.findIndex(
           (t) => t.id === updatedTask.id
@@ -178,7 +198,7 @@ function KanbanColumn({ label, grid = false }) {
           return {
             ...oldData,
             labels: oldData.labels.map((l) =>
-              l.id === updatedTask.label.id
+              l?.id === updatedTask.label?.id
                 ? {
                     ...l,
                     entities: [...l.entities, updatedTask],
@@ -215,7 +235,7 @@ function KanbanColumn({ label, grid = false }) {
   return (
     <View
       style={
-        grid
+        props.grid
           ? {
               position: "relative",
               height: "100%",
@@ -234,11 +254,11 @@ function KanbanColumn({ label, grid = false }) {
     >
       {breakpoints.md && (
         <KanbanHeader
-          grid={grid}
+          grid={props.grid}
           label={{
-            ...label,
+            ...props.label,
             entities: undefined,
-            entitiesLength: label.entities.length,
+            entitiesLength: (props.label || props).entities.length,
           }}
         />
       )}
@@ -253,9 +273,9 @@ function KanbanColumn({ label, grid = false }) {
         //     tintColor={theme[11]}
         //   />
         // }
-        ListEmptyComponent={() => <ColumnEmptyComponent row={grid} />}
+        ListEmptyComponent={() => <ColumnEmptyComponent row={props.grid} />}
         ListHeaderComponent={
-          grid ? undefined : (
+          props.grid ? undefined : (
             <>
               <View
                 style={[
@@ -267,9 +287,9 @@ function KanbanColumn({ label, grid = false }) {
                 ]}
               >
                 <CreateEntityTrigger
-                  menuProps={grid ? undefined : { style: { flex: 1 } }}
+                  menuProps={props.grid ? undefined : { style: { flex: 1 } }}
                   defaultValues={{
-                    label: omit(["entities"], label),
+                    label: omit(["entities"], props.label),
                   }}
                 >
                   <Button
@@ -281,16 +301,22 @@ function KanbanColumn({ label, grid = false }) {
                     <Icon>add</Icon>
                   </Button>
                 </CreateEntityTrigger>
-                <ColumnMenuTrigger label={label}>
-                  <Button disabled variant="outlined" style={{ minHeight: 50 }}>
-                    <Icon>more_horiz</Icon>
-                  </Button>
-                </ColumnMenuTrigger>
+                {props.label && (
+                  <ColumnMenuTrigger label={props.label}>
+                    <Button
+                      disabled
+                      variant="outlined"
+                      style={{ minHeight: 50 }}
+                    >
+                      <Icon>more_horiz</Icon>
+                    </Button>
+                  </ColumnMenuTrigger>
+                )}
               </View>
             </>
           )
         }
-        data={label.entities
+        data={(props.label ? props.label.entities : props.entities)
           .sort((a, b) =>
             a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
           )
@@ -339,6 +365,7 @@ function Kanban() {
       {data.labels.map((label) => (
         <KanbanColumn key={label.id} label={label} />
       ))}
+      {data.entities.length > 0 && <KanbanColumn entities={data.entities} />}
       {data.labels.length <= 2 &&
         [...new Array(3)].map((_, i) => (
           <View
@@ -459,9 +486,16 @@ function Stream() {
     mutate(
       (oldData) => {
         const labelIndex = oldData.labels.findIndex(
-          (l) => l.id === updatedTask.label.id
+          (l) => l.id === updatedTask.label?.id
         );
-        if (labelIndex === -1) return oldData;
+        if (labelIndex === -1) {
+          return {
+            ...oldData,
+            entities: oldData.entities.map((t) =>
+              t.id === updatedTask.id ? updatedTask : t
+            ),
+          };
+        }
 
         const taskIndex = oldData.labels[labelIndex].entities.findIndex(
           (t) => t.id === updatedTask.id
@@ -471,12 +505,12 @@ function Stream() {
           return {
             ...oldData,
             labels: oldData.labels.map((l) =>
-              l.id === updatedTask.label.id
+              l.id === updatedTask.label?.id
                 ? {
                     ...l,
                     entities: [...l.entities, updatedTask],
                   }
-                : l.id === oldTask.label.id
+                : l.id === oldTask.label?.id
                 ? {
                     ...l,
                     entities: l.entities.filter((t) => t.id !== oldTask.id),
@@ -524,11 +558,40 @@ function Stream() {
                 defaultValues={{
                   collectionId: data.id,
                 }}
+                mutateList={(newTask) => {
+                  if (!newTask) return;
+                  mutate(
+                    (oldData) => {
+                      const labelIndex = oldData.labels.findIndex(
+                        (l) => l.id === newTask.label.id
+                      );
+                      if (labelIndex === -1)
+                        return {
+                          ...oldData,
+                          entities: [...oldData.entities, newTask],
+                        };
+                      return {
+                        ...oldData,
+                        labels: oldData.labels.map((l) =>
+                          l.id === newTask.label.id
+                            ? {
+                                ...l,
+                                entities: [...l.entities, newTask],
+                              }
+                            : l
+                        ),
+                      };
+                    },
+                    {
+                      revalidate: false,
+                    }
+                  );
+                }}
               >
                 <Button
                   disabled
                   variant="filled"
-                  style={{ flex: 1, minHeight: 50 }}
+                  style={{ flex: 1, minHeight: 50, paddingHorizontal: 20 }}
                 >
                   <ButtonText>New</ButtonText>
                   <Icon>add</Icon>
@@ -537,8 +600,10 @@ function Stream() {
             </View>
           </>
         }
-        data={data.labels
-          .reduce((acc, curr) => [...acc, ...curr.entities], [])
+        data={[
+          ...data.entities,
+          ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
+        ]
           .sort((a, b) =>
             a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
           )
@@ -559,7 +624,8 @@ function Stream() {
           minHeight: "100%",
         }}
         renderItem={({ item }) => (
-          <Entity showLabel
+          <Entity
+            showLabel
             item={item}
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
             openColumnMenu={() => {}}
