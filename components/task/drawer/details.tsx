@@ -368,8 +368,8 @@ export function TaskDetails() {
               </View>
             ),
           },
-          {
-            trigger: (isActive) => (
+          task.due && {
+            trigger: () => (
               <ListItemButton variant="filled" disabled>
                 <Icon>calendar_today</Icon>
                 <ListItemText

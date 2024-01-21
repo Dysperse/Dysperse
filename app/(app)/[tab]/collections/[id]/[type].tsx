@@ -51,6 +51,7 @@ const KanbanHeader = memo(function KanbanHeader({
   const { mutate } = useCollectionContext();
 
   const onEntityCreate = (newTask) => {
+    if (!newTask) return;
     mutate(
       (data) => {
         const labelIndex = data.labels.findIndex((l) => l.id === label.id);
@@ -62,6 +63,7 @@ const KanbanHeader = memo(function KanbanHeader({
       }
     );
   };
+
   const theme = useColorTheme();
   return (
     <LinearGradient
