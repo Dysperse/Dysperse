@@ -9,6 +9,7 @@ import { CreateEntityTrigger } from "@/components/collections/views/CreateEntity
 import { Perspectives } from "@/components/collections/views/agenda";
 import { Masonry } from "@/components/collections/views/masonry";
 import { ContentWrapper } from "@/components/layout/content";
+import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -76,7 +77,12 @@ const KanbanHeader = memo(function KanbanHeader({
       </View>
       {grid && (
         <>
-          <CreateEntityTrigger menuProps={{ style: { marginRight: -25 } }}>
+          <CreateEntityTrigger
+            menuProps={{ style: { marginRight: -25 } }}
+            defaultValues={{
+              label: omit(["entities"], label),
+            }}
+          >
             <IconButton icon="add" disabled />
           </CreateEntityTrigger>
           <IconButton icon="more_horiz" />

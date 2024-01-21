@@ -4,19 +4,27 @@ import MenuPopover, {
   MenuOption,
 } from "@/ui/MenuPopover";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Dayjs } from "dayjs";
 import { ReactElement, useCallback, useRef } from "react";
 import { MenuProps } from "react-native-popup-menu";
+interface DefaultEntityProps {
+  label: object;
+  name: string;
+  due: Dayjs;
+}
 
 export const CreateEntityTrigger = ({
   children,
   menuProps,
   additional,
   popoverProps,
+  defaultValues,
 }: {
   children: ReactElement;
   menuProps?: MenuProps;
   additional?: MenuOption[];
   popoverProps?: Partial<DysperseMenuProps>;
+  defaultValues: Partial<DefaultEntityProps>;
 }) => {
   const createTaskRef = useRef<BottomSheetModal>(null);
   const handleCreateTask = useCallback(
@@ -37,6 +45,7 @@ export const CreateEntityTrigger = ({
         {...popoverProps}
       />
       <CreateTask
+        defaultValues={defaultValues}
         mutate={(e) => {
           if (e !== null) alert(JSON.stringify(e));
         }}

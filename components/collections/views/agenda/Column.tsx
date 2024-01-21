@@ -536,7 +536,7 @@ export function Column({
         renderItem={({ item }) => (
           <Entity
             item={item}
-            onTaskUpdate={() => {}}
+            onTaskUpdate={onTaskUpdate}
             openColumnMenu={() => {}}
           />
         )}

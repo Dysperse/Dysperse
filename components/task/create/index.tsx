@@ -314,10 +314,10 @@ function BottomSheetContent({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      date: dayjs(defaultValues.date),
+      name: defaultValues.name,
+      date: defaultValues.date,
       pinned: false,
-      label: null,
+      label: defaultValues.label,
     },
   });
 

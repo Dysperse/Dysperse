@@ -149,7 +149,7 @@ const LabelPicker = memo(function LabelPicker({
                 fontSize: 20,
               }}
               inputRef={searchRef}
-              autoFocus={autoFocus}
+              autoFocus={Platform.OS !== "web" && autoFocus}
               placeholder="Search..."
             />
             <CreateLabelModal
