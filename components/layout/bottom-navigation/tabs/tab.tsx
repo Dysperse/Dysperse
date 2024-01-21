@@ -97,9 +97,9 @@ function Tab({
 
   useEffect(() => {
     if (selected) {
-      console.log(tabParams);
       if (
-        JSON.stringify(omit(["tab"], tabParams)) !== JSON.stringify(tab.params)
+        JSON.stringify(omit(["tab"], tabParams)) !==
+        JSON.stringify(omit(["tab"], tab.params))
       ) {
         sendApiRequest(
           sessionToken,
@@ -108,7 +108,7 @@ function Tab({
           {},
           {
             body: JSON.stringify({
-              params: tabParams,
+              params: omit(["tab"], tabParams),
               id: tab.id,
             }),
           }
