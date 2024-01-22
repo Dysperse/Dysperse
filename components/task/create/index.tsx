@@ -283,6 +283,7 @@ function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
           style={{
             color: theme[11],
             fontFamily: "body_400",
+            shadowRadius: 0,
             fontSize: 25,
             paddingHorizontal: 20,
             paddingBottom: 55,

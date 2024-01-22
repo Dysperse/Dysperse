@@ -184,6 +184,7 @@ const PaletteHeader = memo(function PaletteHeader({
   query,
   setQuery,
   handleClose,
+  preview,
   setPreview,
   filtered,
 }: {
@@ -194,6 +195,7 @@ const PaletteHeader = memo(function PaletteHeader({
   filtered: any[];
 }) {
   const ref = useRef(null);
+  const { sessionToken } = useUser();
 
   const theme = useColorTheme();
   const close = useMemo(
@@ -246,6 +248,19 @@ const PaletteHeader = memo(function PaletteHeader({
             }
           },
         })}
+        // on enter key
+        onSubmitEditing={() => {
+          if (filtered.length > 0) {
+            const item = preview || filtered[1];
+            if (item.onPress) {
+              item.onPress();
+              handleClose();
+            } else {
+              createTab(sessionToken, item);
+              handleClose();
+            }
+          }
+        }}
         onKeyPress={handleKeyPress}
       />
       {close}
@@ -368,6 +383,7 @@ function CommandPaletteContent({ handleClose }) {
       }}
     >
       <PaletteHeader
+        preview={preview}
         handleClose={handleClose}
         query={query}
         setQuery={setQuery}

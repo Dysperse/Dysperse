@@ -310,7 +310,7 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
     { icon: "view_kanban", text: "Kanban" },
     { icon: "view_agenda", text: "Stream" },
     { icon: "view_cozy", text: "Grid" },
-    { icon: "exercise", text: "Difficulty" },
+    { icon: "exercise", text: "Workload" },
   ].map((i) => ({
     ...i,
     selected: i.text.toLowerCase() === type,

@@ -200,10 +200,7 @@ export function CreateLabelModal({
                           borderRadius: 999,
                           backgroundColor: colors[color][9],
                           borderWidth: 3,
-                          borderColor: colors[color][color === value ? 12 : 9],
-                          shadowColor: colors[color][9],
-                          shadowOffset: { width: 0, height: 0 },
-                          shadowRadius: 10,
+                          borderColor: colors[color][color === value ? 7 : 9],
                         })}
                       />
                     ))}

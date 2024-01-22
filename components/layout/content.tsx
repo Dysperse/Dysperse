@@ -35,11 +35,11 @@ export function ContentWrapper(props: ContentWrapperProps) {
             ? insets.top
             : insets.top + 64,
           backgroundColor: theme[1],
-          borderWidth: breakpoints.md ? 1 : 0,
+          borderWidth: breakpoints.md ? 2 : 0,
           paddingBottom: breakpoints.md
             ? 0
             : getBottomNavigationHeight(pathname),
-          borderColor: theme[6],
+          borderColor: theme[5],
         },
       ]}
     >

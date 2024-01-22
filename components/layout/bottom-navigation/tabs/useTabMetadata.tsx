@@ -23,7 +23,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
           kanban: "view_kanban",
           stream: "view_agenda",
           grid: "view_cozy",
-          difficulty: "exercise",
+          workload: "exercise",
         }[params.type]),
       name: (params) => [tab?.collection?.name, params.type],
     },

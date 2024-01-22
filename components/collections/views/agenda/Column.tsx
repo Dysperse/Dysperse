@@ -13,7 +13,7 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import ListItemText from "@/ui/ListItemText";
-import { Menu } from "@/ui/Menu";
+import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
@@ -298,52 +298,16 @@ function ReorderModal({ onTaskUpdate, column, children }) {
 
 function ColumnMenu({ column, children, onTaskUpdate, columnMenuRef }) {
   const { type } = useAgendaContext();
-
-  const formats = {
-    heading: {
-      week: "DD",
-      month: "[#]W",
-      year: "MMMM",
-    }[type],
-    subheading: {
-      week: "dddd",
-      month: "Do",
-      year: "-",
-    }[type],
-  };
   return (
-    <Menu menuRef={columnMenuRef} trigger={children} height={[400]}>
-      <View style={{ paddingHorizontal: 15, gap: 15 }}>
-        <Text
-          style={{ textAlign: "center", fontSize: 20, marginBottom: 10 }}
-          weight={900}
-        >
-          {dayjs(column.start).format(formats.heading)}
-        </Text>
-      </View>
-      <View style={{ paddingHorizontal: 15, gap: 15 }}>
-        <Button style={{ height: 90 }} variant="filled">
-          <Icon size={30}>select</Icon>
-          <ButtonText style={{ fontSize: 20 }} weight={800}>
-            Select
-          </ButtonText>
-        </Button>
-        <ReorderModal column={column} onTaskUpdate={onTaskUpdate}>
-          <Button style={{ height: 90 }} variant="filled">
-            <Icon size={30}>low_priority</Icon>
-            <ButtonText style={{ fontSize: 20 }} weight={800}>
-              Reorder
-            </ButtonText>
-          </Button>
-        </ReorderModal>
-        <Button style={{ height: 90 }} variant="filled">
-          <Icon size={30}>ios_share</Icon>
-          <ButtonText style={{ fontSize: 20 }} weight={800}>
-            Share progress
-          </ButtonText>
-        </Button>
-      </View>
-    </Menu>
+    <MenuPopover
+      trigger={children}
+      containerStyle={{ width: 200 }}
+      options={[
+        { icon: "reorder", text: "Reorder", callback: () => {} },
+        { icon: "select_all", text: "Select", callback: () => {} },
+        { icon: "ios_share", text: "Share progress", callback: () => {} },
+      ]}
+    />
   );
 }
 
@@ -504,7 +468,7 @@ export function Column({
                 onTaskUpdate={onTaskUpdate}
                 columnMenuRef={columnMenuRef}
               >
-                <Button variant="outlined" style={{ height: 50 }}>
+                <Button variant="outlined" disabled style={{ height: 50 }}>
                   <Icon>more_horiz</Icon>
                 </Button>
               </ColumnMenu>

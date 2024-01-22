@@ -19,6 +19,7 @@ interface DButtonProps extends PressableProps {
 
   text?: string;
   icon?: string;
+  iconPosition?: "start" | "end";
 }
 
 export function ButtonText(props: DTextProps) {
@@ -103,8 +104,9 @@ export function Button(props: DButtonProps) {
       ) : (
         props.children ?? (
           <>
-            <Icon>{props.icon}</Icon>
+            {props.iconPosition === "start" && <Icon>{props.icon}</Icon>}
             <ButtonText>{props.text}</ButtonText>
+            {props.iconPosition === "end" && <Icon>{props.icon}</Icon>}
           </>
         )
       )}

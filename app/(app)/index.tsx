@@ -1,9 +1,7 @@
 import { styles } from "@/components/home/styles";
 import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
 import { ContentWrapper } from "@/components/layout/content";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
-import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -48,23 +46,15 @@ function Greeting() {
     }
   }, []);
 
-  const breakpoints = useResponsiveBreakpoints();
-
   return (
     <Text
+      heading
       numberOfLines={1}
       style={{
+        textAlign: "center",
         fontFamily: "heading",
         color: theme[12],
-        textShadowColor: theme[7],
-        textShadowRadius: 30,
         fontSize: 55,
-        height: 200,
-        width: "100%",
-        marginVertical: breakpoints.md ? 0 : 20,
-        marginBottom: breakpoints.md ? -130 : -60,
-        paddingTop: breakpoints.md ? 0 : 70,
-        textShadowOffset: { height: 5, width: 5 },
       }}
     >
       {greeting}
@@ -298,26 +288,6 @@ function FriendActivity() {
   );
 }
 
-function SpaceInfo() {
-  const { width } = useWindowDimensions();
-
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: 10,
-        justifyContent: width > 600 ? "flex-end" : "center",
-      }}
-    >
-      <Button variant="outlined">
-        <Icon>palette</Icon>
-        <ButtonText>Edit</ButtonText>
-      </Button>
-    </View>
-  );
-}
-
 function JumpBackIn() {
   const theme = useColorTheme();
   const [data, setData] = useState<Record<
@@ -344,7 +314,7 @@ function JumpBackIn() {
     });
   }, [data]);
 
-  const tabMetadata = useTabMetadata(data?.slug as string);
+  const tabMetadata = useTabMetadata(data?.slug as string, data?.params);
 
   return (
     data !== null && (
@@ -357,7 +327,6 @@ function JumpBackIn() {
             isLoading={loading}
             height={60}
             style={{
-              marginTop: 10,
               marginBottom: 20,
             }}
           >
@@ -379,19 +348,19 @@ function JumpBackIn() {
               <Avatar size={40}>
                 <Icon size={30}>
                   {typeof tabMetadata.icon === "function"
-                    ? tabMetadata.icon(data.params)
+                    ? tabMetadata.icon(data?.params)
                     : tabMetadata.icon}
                 </Icon>
               </Avatar>
               <ListItemText
                 truncate
                 primary={capitalizeFirstLetter(
-                  tabMetadata.name(data.params)[0]
+                  tabMetadata.name(data?.params)[0]
                 )}
                 secondaryProps={{
                   style: { marginTop: -4, fontSize: 13, opacity: 0.6 },
                 }}
-                secondary={tabMetadata.name(data.params)[1]}
+                secondary={tabMetadata.name(data?.params)[1]}
               />
               <Icon>arrow_forward_ios</Icon>
             </View>
@@ -404,30 +373,23 @@ function JumpBackIn() {
 
 export default function Index() {
   const { width } = useWindowDimensions();
-  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <ContentWrapper>
       <ScrollView
         scrollEnabled={width < 600}
         style={Platform.OS === "web" ? { height: 0 } : undefined}
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          ...(width > 600 && {
-            flexDirection: "row",
-            height: "100%",
-            alignItems: "center",
-            gap: 50,
-            paddingHorizontal: 20,
+      >
+        <View
+          style={{
             maxWidth: 900,
+            paddingTop: 100,
             width: "100%",
             marginHorizontal: "auto",
-          }),
-        }}
-      >
-        <View style={{ flex: 1.3 }}>
+          }}
+        >
           <Greeting />
-          {!breakpoints.md && <JumpBackIn />}
+          <JumpBackIn />
           <Text variant="eyebrow">Today's rundown</Text>
           <View
             style={{
@@ -443,16 +405,6 @@ export default function Index() {
           </View>
           <PlanDayPrompt />
           <TodaysTasks />
-        </View>
-        <View
-          style={{
-            flex: width > 600 ? 1 : undefined,
-            gap: 10,
-            paddingBottom: width > 600 ? 0 : 70,
-          }}
-        >
-          <SpaceInfo />
-          {breakpoints.md && <JumpBackIn />}
           <Text variant="eyebrow">Friends</Text>
           <FriendActivity />
         </View>

@@ -8,24 +8,32 @@ import { CollectionNavbar } from "@/components/collections/navbar";
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { Perspectives } from "@/components/collections/views/agenda";
 import { ColumnEmptyComponent } from "@/components/collections/views/agenda/Column";
+import { useLabelColors } from "@/components/labels/useLabelColors";
 import { ContentWrapper } from "@/components/layout/content";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
+import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { ReactElement, memo } from "react";
-import { StyleSheet, View } from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -37,6 +45,131 @@ const styles = StyleSheet.create({
   },
 });
 
+const LabelEditModal = memo(function LabelEditModal({
+  label,
+  trigger,
+  onLabelUpdate,
+}: {
+  label: any;
+  trigger: ReactElement;
+  onLabelUpdate: any;
+}) {
+  const colors = useLabelColors();
+  const { session } = useSession();
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      emoji: label.emoji,
+      name: label.name,
+      color: label.color,
+    },
+  });
+
+  const onSubmit = (updatedLabel) => {
+    try {
+      onLabelUpdate(updatedLabel);
+      sendApiRequest(
+        session,
+        "PUT",
+        "spaces/label",
+        {},
+        { body: JSON.stringify(updatedLabel) }
+      );
+    } catch {
+      Toast.show({ type: "error" });
+    }
+  };
+
+  return (
+    <Menu trigger={trigger} height={[360]}>
+      <View style={{ padding: 15, gap: 15 }}>
+        <Text
+          style={{ fontSize: 20, marginLeft: 5, marginTop: -5 }}
+          weight={900}
+        >
+          Edit label
+        </Text>
+        <View style={{ flexDirection: "row", gap: 20 }}>
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <EmojiPicker emoji={value} setEmoji={onChange}>
+                <IconButton
+                  variant="outlined"
+                  size={90}
+                  style={{ borderWidth: 2, borderStyle: "dashed" }}
+                >
+                  <Emoji emoji={value || "1f4ad"} size={50} />
+                </IconButton>
+              </EmojiPicker>
+            )}
+            name="emoji"
+            control={control}
+          />
+          <View style={{ flex: 1 }}>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, value } }) => (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    marginTop: 10,
+                    gap: 10,
+                  }}
+                >
+                  {Object.keys(colors).map((color) => (
+                    <Pressable
+                      key={color}
+                      onPress={() => onChange(color)}
+                      style={() => ({
+                        width: 30,
+                        height: 30,
+                        borderRadius: 999,
+                        backgroundColor: colors[color][9],
+                        borderWidth: 3,
+                        borderColor: colors[color][color === value ? 7 : 9],
+                      })}
+                    />
+                  ))}
+                </View>
+              )}
+              name="color"
+            />
+          </View>
+        </View>
+        <Controller
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              variant="filled+outlined"
+              style={{ height: 60, fontSize: 20, borderRadius: 99 }}
+              placeholder="Label name"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+          name="name"
+          control={control}
+        />
+        <Button
+          style={{ height: 60 }}
+          onPress={handleSubmit(onSubmit, (err) =>
+            Toast.show({ type: "error", text1: "Please type a name" })
+          )}
+          text="Done"
+          icon="check"
+          iconPosition="end"
+          variant="filled"
+        />
+      </View>
+    </Menu>
+  );
+});
+
 const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   label,
   children,
@@ -44,14 +177,43 @@ const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   label: any;
   children: ReactElement;
 }) {
+  const { mutate } = useCollectionContext();
   return (
     <>
       <MenuPopover
         trigger={children}
         containerStyle={{ width: 150 }}
-        // menuProps={{ rendererProps: { anchorStyle: { opacity: 0 } } }}
         options={[
-          { icon: "edit", text: "Edit" },
+          {
+            renderer: () => (
+              <LabelEditModal
+                label={label}
+                onLabelUpdate={(newLabel) => {
+                  mutate(
+                    (oldData) => {
+                      const labelIndex = oldData.labels.findIndex(
+                        (l) => l.id === label.id
+                      );
+                      if (labelIndex === -1) return oldData;
+                      return {
+                        ...oldData,
+                        labels: oldData.labels.map((l) =>
+                          l.id === label.id ? { ...l, ...newLabel } : l
+                        ),
+                      };
+                    },
+                    { revalidate: false }
+                  );
+                }}
+                trigger={
+                  <MenuItem>
+                    <Icon>edit</Icon>
+                    <Text variant="menuItem">Edit</Text>
+                  </MenuItem>
+                }
+              />
+            ),
+          },
           {
             renderer: () => (
               <ConfirmationModal
@@ -386,6 +548,7 @@ function Kanban() {
 function Grid() {
   const { data } = useCollectionContext();
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
 
   if (!Array.isArray(data.labels)) return null;
 
@@ -437,6 +600,7 @@ function Grid() {
           flexDirection: "column",
           gap: 15,
           width: "50%",
+          maxWidth: width / 2 - 145,
         }}
       >
         {row}
@@ -656,8 +820,8 @@ export default function Page() {
     case "grid":
       content = <Grid />;
       break;
-    case "difficulty":
-      content = <Text>Difficulty</Text>;
+    case "workload":
+      content = <Text>Workload</Text>;
       break;
     default:
       content = <Text>404: {type}</Text>;

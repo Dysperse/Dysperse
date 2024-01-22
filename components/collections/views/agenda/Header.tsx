@@ -28,12 +28,11 @@ export function Header({ start, end }) {
     <View style={columnStyles.header}>
       <View
         style={{
-          ...(isToday && {
-            backgroundColor: theme[3],
-            borderRadius: 20,
-            paddingVertical: 5,
-            paddingHorizontal: 10,
-          }),
+          borderWidth: 1,
+          borderColor: theme[isToday ? 7 : 2],
+          borderRadius: 20,
+          paddingVertical: 10,
+          paddingHorizontal: 15,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
@@ -47,7 +46,7 @@ export function Header({ start, end }) {
             alignItems: "center",
             justifyContent: "center",
             paddingHorizontal: 10,
-            borderColor: theme[isToday ? 7 : 5],
+            borderColor: theme[6],
             borderRightWidth: 2,
           }}
         >
