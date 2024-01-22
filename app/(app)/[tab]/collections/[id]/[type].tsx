@@ -27,9 +27,10 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { ReactElement, memo } from "react";
+import { ReactElement, memo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
@@ -54,6 +55,7 @@ const LabelEditModal = memo(function LabelEditModal({
   trigger: ReactElement;
   onLabelUpdate: any;
 }) {
+  const menuRef = useRef<BottomSheetModal>(null);
   const colors = useLabelColors();
   const { session } = useSession();
   const { control, handleSubmit } = useForm({
@@ -64,23 +66,25 @@ const LabelEditModal = memo(function LabelEditModal({
     },
   });
 
-  const onSubmit = (updatedLabel) => {
+  const onSubmit = async (updatedLabel) => {
     try {
+      menuRef.current?.close();
       onLabelUpdate(updatedLabel);
-      sendApiRequest(
+      await sendApiRequest(
         session,
         "PUT",
-        "spaces/label",
+        "space/labels",
         {},
-        { body: JSON.stringify(updatedLabel) }
+        { body: JSON.stringify({ ...updatedLabel, id: label.id }) }
       );
+      Toast.show({ type: "success", text1: "Saved!" });
     } catch {
       Toast.show({ type: "error" });
     }
   };
 
   return (
-    <Menu trigger={trigger} height={[360]}>
+    <Menu trigger={trigger} height={[360]} menuRef={menuRef}>
       <View style={{ padding: 15, gap: 15 }}>
         <Text
           style={{ fontSize: 20, marginLeft: 5, marginTop: -5 }}
