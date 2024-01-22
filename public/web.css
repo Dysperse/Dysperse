@@ -10,6 +10,7 @@ body,
   overscroll-behavior-x: none;
   overscroll-behavior-y: none;
   background: black;
+  user-select: none;
 }
 
 * {

@@ -143,7 +143,7 @@ const CollectionLabelMenu = memo(function CollectionLabelMenu() {
         "space/collections",
         {},
         {
-          body: JSON.stringify({ labels, id: data.id }),
+          body: JSON.stringify({ labels, id: data.id, gridOrder: labels }),
         }
       );
       await mutate();
@@ -300,7 +300,15 @@ const CollectionRenameMenu = memo(function CollectionRenameMenu({
   );
 });
 
-export const CollectionNavbar = memo(function CollectionNavbar() {
+interface CollectionNavbarProps {
+  editOrderMode: boolean;
+  setEditOrderMode: (value: boolean) => void;
+}
+
+export const CollectionNavbar = memo(function CollectionNavbar({
+  editOrderMode,
+  setEditOrderMode,
+}: CollectionNavbarProps) {
   const theme = useColorTheme();
   const { data, ...ctx } = useCollectionContext();
   const { type } = useGlobalSearchParams();
@@ -340,6 +348,11 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
       icon: "priority",
       text: "Show completed",
       selected: true,
+    },
+    {
+      icon: "grid_on",
+      text: "Reorder labels",
+      callback: () => setEditOrderMode(true),
     },
     {
       icon: "remove_selection",
@@ -403,7 +416,31 @@ export const CollectionNavbar = memo(function CollectionNavbar() {
   useKeyboardShortcut(["a"], () => alert("Activity"));
   useKeyboardShortcut(["i"], () => alert("Share"));
 
-  return (
+  return editOrderMode ? (
+    <View
+      style={{
+        height: 80,
+        paddingHorizontal: 15,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: theme[6],
+      }}
+    >
+      <View>
+        <Text weight={900}>Reorder labels</Text>
+        <Text style={{ opacity: 0.6 }}>{data.name}</Text>
+      </View>
+      <IconButton
+        icon="check"
+        variant="filled"
+        size={55}
+        style={{ marginLeft: "auto" }}
+        onPress={() => setEditOrderMode(false)}
+      />
+    </View>
+  ) : (
     <View
       style={{
         height: 80,

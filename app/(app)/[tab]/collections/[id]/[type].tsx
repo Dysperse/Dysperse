@@ -15,7 +15,6 @@ import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
@@ -30,9 +29,10 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { ReactElement, memo, useRef } from "react";
+import { ReactElement, memo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { DraggableGrid } from "react-native-draggable-grid";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -219,19 +219,8 @@ const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
             ),
           },
           {
-            renderer: () => (
-              <ConfirmationModal
-                height={410}
-                onSuccess={() => {}}
-                title="Remove label from collection?"
-                secondary="This label, or the items within it, will not be deleted."
-              >
-                <MenuItem>
-                  <Icon>remove_circle</Icon>
-                  <Text variant="menuItem">Remove</Text>
-                </MenuItem>
-              </ConfirmationModal>
-            ),
+            text: "Move",
+            icon: "drag_handle",
           },
         ]}
       />
@@ -549,15 +538,95 @@ function Kanban() {
   );
 }
 
-function Grid() {
+function ReorderingGrid({ labels }) {
+  const { session } = useSession();
+  const theme = useColorTheme();
+  const { data: collectionData, mutate } = useCollectionContext();
+
+  const updateLabelOrder = async (newOrder) => {
+    const data = newOrder.map((l) => l.key).filter((e) => e);
+
+    console.log(data);
+
+    mutate(
+      (oldData) => ({
+        ...oldData,
+        gridOrder: data,
+        labels: newOrder.map((e) => e.label),
+      }),
+      {
+        revalidate: false,
+      }
+    );
+
+    await sendApiRequest(
+      session,
+      "PUT",
+      "space/collections",
+      {},
+      { body: JSON.stringify({ id: collectionData.id, gridOrder: data }) }
+    );
+  };
+
+  return (
+    <DraggableGrid
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      numColumns={labels.length / 2}
+      renderItem={(data) => (
+        <View
+          style={{
+            backgroundColor: theme[4],
+            flex: 1,
+            width: 200,
+            minHeight: 200,
+            borderRadius: 20,
+            padding: 20,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Emoji emoji={data.label.emoji} size={50} />
+          <Text
+            weight={900}
+            style={{
+              fontSize: 20,
+              textAlign: "center",
+              marginTop: 10,
+              paddingHorizontal: 10,
+              marginBottom: 5,
+            }}
+            numberOfLines={1}
+          >
+            {data.label.name}
+          </Text>
+          <Text>
+            {data.label.entities?.length} item
+            {data.label.entities?.length !== 1 && "s"}
+          </Text>
+        </View>
+      )}
+      data={labels.map((label) => ({
+        label,
+        key: label.id,
+      }))}
+      onDragRelease={updateLabelOrder}
+    />
+  );
+}
+
+function Grid({ editOrderMode, setEditOrderMode }) {
   const { data } = useCollectionContext();
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
 
   if (!Array.isArray(data.labels)) return null;
 
   // Create a new array for rendering purposes without modifying the original data
-  const displayLabels = [...data.labels];
+  const displayLabels = data.gridOrder.map((id) =>
+    data.labels.find((l) => l.id === id)
+  );
 
   if (displayLabels.length % 2 !== 0) displayLabels.push({ empty: true });
   if (displayLabels.length < 4)
@@ -567,47 +636,46 @@ function Grid() {
       })
     );
 
-  const columnsPerRow = 2;
+  if (editOrderMode) {
+    return <ReorderingGrid labels={displayLabels} />;
+  }
+
+  const rowCount = 2;
+  const itemsPerRow = displayLabels.length / rowCount;
   const rows = [];
 
-  for (let i = 0; i < displayLabels.length; i += columnsPerRow) {
-    const rowLabels = displayLabels.slice(i, i + columnsPerRow);
-    const row = rowLabels.map((label) =>
-      label.empty ? (
-        <View
-          key={label.id || Math.random()}
-          style={{
-            flex: 1,
-            backgroundColor: theme[2],
-            width: "100%",
-            borderRadius: 25,
-          }}
-        />
-      ) : (
-        <View
-          key={label.id || Math.random()}
-          style={{
-            flex: 1,
-            backgroundColor: theme[2],
-            width: "100%",
-            borderRadius: 25,
-          }}
-        >
-          <KanbanColumn grid label={label} />
-        </View>
-      )
-    );
+  for (let i = 0; i < rowCount; i++) {
+    const row = displayLabels.slice(i * itemsPerRow, (i + 1) * itemsPerRow);
     rows.push(
       <View
-        key={i / columnsPerRow}
+        key={i}
         style={{
-          flexDirection: "column",
+          flexDirection: "row",
           gap: 15,
-          width: "50%",
-          maxWidth: width / 2 - 145,
+          flex: 1,
+          minWidth: 5,
+          minHeight: 5,
         }}
       >
-        {row}
+        {row
+          .filter((e) => e)
+          .map((label) => (
+            <View key={label.id} style={{ flex: 1, minWidth: 5, minHeight: 5 }}>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: theme[2],
+                  borderRadius: 25,
+                }}
+              >
+                {label.empty ? (
+                  <></>
+                ) : (
+                  <KanbanColumn key={label.id} grid label={label} />
+                )}
+              </View>
+            </View>
+          ))}
       </View>
     );
   }
@@ -620,26 +688,13 @@ function Grid() {
         gap: 15,
         minWidth: "100%",
         paddingRight: 30,
+        flexDirection: "column",
       }}
       style={{
         minWidth: "100%",
       }}
     >
       {rows}
-      {displayLabels.length <= columnsPerRow &&
-        [...new Array(columnsPerRow - displayLabels.length)].map((_, i) => (
-          <View
-            key={i}
-            style={{
-              width: 300,
-              flex: 1,
-              minWidth: 5,
-              minHeight: 5,
-              backgroundColor: theme[2],
-              borderRadius: 20,
-            }}
-          />
-        ))}
     </ScrollView>
   );
 }
@@ -810,6 +865,8 @@ export default function Page() {
     id && type ? ["space/collections/collection", { id }] : null
   );
 
+  const [editOrderMode, setEditOrderMode] = useState(false);
+
   let content = null;
   switch (type) {
     case "agenda":
@@ -822,7 +879,12 @@ export default function Page() {
       content = <Stream />;
       break;
     case "grid":
-      content = <Grid />;
+      content = (
+        <Grid
+          editOrderMode={editOrderMode}
+          setEditOrderMode={setEditOrderMode}
+        />
+      );
       break;
     case "workload":
       content = <Text>Workload</Text>;
@@ -836,7 +898,10 @@ export default function Page() {
     <CollectionContext.Provider value={{ data, mutate, error }}>
       {data ? (
         <ContentWrapper>
-          <CollectionNavbar />
+          <CollectionNavbar
+            editOrderMode={editOrderMode}
+            setEditOrderMode={setEditOrderMode}
+          />
           {content}
         </ContentWrapper>
       ) : (
