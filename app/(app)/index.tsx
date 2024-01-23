@@ -427,7 +427,7 @@ function EditWallpaper() {
           paddingHorizontal: 40,
         }}
       >
-        <ButtonText>Open settings</ButtonText>
+        <ButtonText style={{ fontSize: 17 }}>Open settings</ButtonText>
       </Button>
       <Text variant="eyebrow">Pattern</Text>
       {
