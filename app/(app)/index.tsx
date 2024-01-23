@@ -104,44 +104,32 @@ function FriendActivity() {
   const handleFriendsPress = useCallback(() => router.push("/friends"), []);
 
   return (
-    <View
-      style={{
-        borderWidth: 1,
-        borderColor: theme[5],
-        borderRadius: 20,
-        height: data?.length <= 1 ? 180 : 180 * 2 + 2,
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "row",
-      }}
-    >
-      {isLoading ? (
-        <Spinner />
-      ) : error ? (
-        <ErrorAlert />
-      ) : (
-        Array.isArray(data) &&
-        [...data, "ALL_FRIENDS"].map((friend) =>
-          friend === "ALL_FRIENDS" ? (
-            <TouchableOpacity
-              key={"all"}
-              onPress={handleFriendsPress}
-              style={{
-                height: 180,
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-                flex: 0.5,
-              }}
-            >
-              <Avatar size={90} disabled>
-                <Icon size={30}>groups_2</Icon>
-              </Avatar>
-              <Text style={{ opacity: 0.6 }}>All Friends</Text>
-            </TouchableOpacity>
-          ) : (
-            <ProfileModal email={friend.user.email} key={friend.user.email}>
+    <>
+      <Text style={{ fontSize: 60, textAlign: "center", marginVertical: 20 }}>
+        Friends
+      </Text>
+      <View
+        style={{
+          borderWidth: 1,
+          borderColor: theme[5],
+          borderRadius: 20,
+          height: data?.length <= 1 ? 180 : 180 * 2 + 2,
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "row",
+        }}
+      >
+        {isLoading ? (
+          <Spinner />
+        ) : error ? (
+          <ErrorAlert />
+        ) : (
+          Array.isArray(data) &&
+          [...data, "ALL_FRIENDS"].map((friend) =>
+            friend === "ALL_FRIENDS" ? (
               <TouchableOpacity
+                key={"all"}
+                onPress={handleFriendsPress}
                 style={{
                   height: 180,
                   alignItems: "center",
@@ -150,57 +138,74 @@ function FriendActivity() {
                   flex: 0.5,
                 }}
               >
-                <View
+                <Avatar size={90} disabled>
+                  <Icon size={30}>groups_2</Icon>
+                </Avatar>
+                <Text style={{ opacity: 0.6 }}>All Friends</Text>
+              </TouchableOpacity>
+            ) : (
+              <ProfileModal email={friend.user.email} key={friend.user.email}>
+                <TouchableOpacity
                   style={{
-                    width: 90,
-                    height: 90,
-                    borderRadius: 999,
-                    position: "relative",
+                    height: 180,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 10,
+                    flex: 0.5,
                   }}
                 >
-                  <ProfilePicture
-                    style={{ pointerEvents: "none" }}
-                    name={friend.user.profile?.name || "--"}
-                    image={friend.user.profile?.picture}
-                    size={90}
-                  />
-                  <Chip
-                    // dense
-                    disabled
+                  <View
                     style={{
-                      position: "absolute",
-                      bottom: -3,
-                      right: -3,
-                      height: 30,
-                      borderWidth: 5,
-                      borderColor: theme[1],
+                      width: 90,
+                      height: 90,
+                      borderRadius: 999,
+                      position: "relative",
                     }}
-                    textStyle={{ fontSize: 13 }}
-                    label={
-                      dayjs(friend.user.profile?.lastActive)
-                        .fromNow(true)
-                        .includes("few")
-                        ? "NOW"
-                        : dayjs(friend.user.profile?.lastActive)
-                            .fromNow(true)
-                            .split(" ")[0]
-                            .replace("a", "1") +
-                          dayjs(friend.user.profile?.lastActive)
-                            .fromNow(true)
-                            .split(" ")?.[1]?.[0]
-                            .toUpperCase()
-                    }
-                  />
-                </View>
-                <Text style={{ opacity: 0.6 }}>
-                  {friend.user.profile?.name.split(" ")?.[0]}
-                </Text>
-              </TouchableOpacity>
-            </ProfileModal>
+                  >
+                    <ProfilePicture
+                      style={{ pointerEvents: "none" }}
+                      name={friend.user.profile?.name || "--"}
+                      image={friend.user.profile?.picture}
+                      size={90}
+                    />
+                    <Chip
+                      // dense
+                      disabled
+                      style={{
+                        position: "absolute",
+                        bottom: -3,
+                        right: -3,
+                        height: 30,
+                        borderWidth: 5,
+                        borderColor: theme[1],
+                      }}
+                      textStyle={{ fontSize: 13 }}
+                      label={
+                        dayjs(friend.user.profile?.lastActive)
+                          .fromNow(true)
+                          .includes("few")
+                          ? "NOW"
+                          : dayjs(friend.user.profile?.lastActive)
+                              .fromNow(true)
+                              .split(" ")[0]
+                              .replace("a", "1") +
+                            dayjs(friend.user.profile?.lastActive)
+                              .fromNow(true)
+                              .split(" ")?.[1]?.[0]
+                              .toUpperCase()
+                      }
+                    />
+                  </View>
+                  <Text style={{ opacity: 0.6 }}>
+                    {friend.user.profile?.name.split(" ")?.[0]}
+                  </Text>
+                </TouchableOpacity>
+              </ProfileModal>
+            )
           )
-        )
-      )}
-    </View>
+        )}
+      </View>
+    </>
   );
 }
 
@@ -331,7 +336,7 @@ function EditWallpaper({ pattern, setPattern }) {
       style={{ height: "100%" }}
       contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
     >
-      <Text style={{ fontSize: 70, marginBottom: 20 }}>Appearance</Text>
+      <Text style={{ fontSize: 60, marginVertical: 20 }}>Appearance</Text>
       <Text variant="eyebrow">Pattern</Text>
       {
         <View
