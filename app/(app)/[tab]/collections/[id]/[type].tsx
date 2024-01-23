@@ -634,6 +634,7 @@ function Grid({ editOrderMode }) {
     data.labels.find((l) => l.id === id)
   );
 
+  if (data.entities.length > 0) displayLabels.push({ other: true });
   if (displayLabels.length % 2 !== 0) displayLabels.push({ empty: true });
   if (displayLabels.length < 4)
     displayLabels.push(
@@ -680,6 +681,8 @@ function Grid({ editOrderMode }) {
               >
                 {label.empty ? (
                   <></>
+                ) : label.other ? (
+                  <KanbanColumn grid entities={data.entities} />
                 ) : (
                   <KanbanColumn key={label.id} grid label={label} />
                 )}
