@@ -284,6 +284,7 @@ const KanbanHeader = memo(function KanbanHeader({
         </Text>
         <Text weight={200} numberOfLines={1}>
           {label.entitiesLength}
+          {!grid && ` item${label.entities?.length !== 1 && "s"}`}
         </Text>
       </View>
       {grid && (

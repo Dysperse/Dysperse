@@ -18,7 +18,6 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Platform,
-  Pressable,
   TouchableOpacity,
   View,
   useWindowDimensions,
@@ -26,7 +25,6 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
-import { WeatherWidget } from "../../components/home/weather/widget";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -59,35 +57,6 @@ function Greeting() {
     >
       {greeting}
     </Text>
-  );
-}
-
-function TodaysDate() {
-  const theme = useColorTheme();
-  const handlePress = () => router.push("/clock");
-
-  return (
-    <Pressable
-      onPress={handlePress}
-      style={({ pressed, hovered }: any) => [
-        styles.card,
-        {
-          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-        },
-      ]}
-    >
-      <Icon size={40} style={{ marginLeft: -4 }}>
-        calendar_today
-      </Icon>
-      <Text
-        style={{ fontSize: 20, marginTop: 5 }}
-        weight={700}
-        numberOfLines={1}
-      >
-        {dayjs().format("MMM Do")}
-      </Text>
-      <Text numberOfLines={1}>{dayjs().format("YYYY")}</Text>
-    </Pressable>
   );
 }
 
@@ -399,10 +368,7 @@ export default function Index() {
               marginTop: 15,
               flexDirection: "row",
             }}
-          >
-            <WeatherWidget />
-            <TodaysDate />
-          </View>
+          ></View>
           <PlanDayPrompt />
           <TodaysTasks />
           <Text variant="eyebrow">Friends</Text>
