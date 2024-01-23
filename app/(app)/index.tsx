@@ -14,15 +14,11 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import {
-  ImageBackground,
-  Pressable,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ImageBackground, TouchableOpacity, View } from "react-native";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
 
@@ -52,6 +48,7 @@ function Greeting() {
         textAlign: "center",
         color: theme[12],
         fontSize: 70,
+        marginBottom: 10,
       }}
     >
       {greeting}
@@ -261,26 +258,30 @@ function JumpTo() {
   const theme = useColorTheme();
 
   return (
-    <Pressable
-      onPress={handleOpen}
-      style={{
-        backgroundColor: theme[2],
-        borderColor: theme[5],
-        borderWidth: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        borderRadius: 20,
-        gap: 20,
-      }}
-    >
-      <Icon size={35}>bolt</Icon>
-      <Text style={{ color: theme[11], fontSize: 20 }} weight={300}>
-        Jump to a collection, label, or more...
-      </Text>
-    </Pressable>
+    <TouchableOpacity onPress={handleOpen}>
+      <BlurView
+        tint="dark"
+        intensity={20}
+        style={{
+          backgroundColor: addHslAlpha(theme[2], 0.4),
+          borderColor: addHslAlpha(theme[5], 0.4),
+          borderWidth: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingHorizontal: 20,
+          paddingVertical: 15,
+          borderRadius: 20,
+          marginBottom: 10,
+          gap: 20,
+        }}
+      >
+        <Icon size={35}>bolt</Icon>
+        <Text style={{ color: theme[11], fontSize: 20 }} weight={300}>
+          Jump to a collection, label, or more...
+        </Text>
+      </BlurView>
+    </TouchableOpacity>
   );
 }
 
@@ -310,6 +311,7 @@ export default function Index() {
             options={[
               { icon: "home", value: "home" },
               { icon: "upcoming", value: "start" },
+              { icon: "more_horiz", value: "edit" },
             ]}
             containerStyle={{
               width: "auto",
@@ -322,7 +324,7 @@ export default function Index() {
           />
           <View
             style={{
-              maxWidth: 800,
+              maxWidth: 700,
               paddingHorizontal: 50,
               paddingBottom: 70,
               width: "100%",
