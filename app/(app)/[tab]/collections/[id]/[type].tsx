@@ -543,6 +543,7 @@ function Kanban() {
 function ReorderingGrid({ labels }) {
   const { session } = useSession();
   const theme = useColorTheme();
+
   const { data: collectionData, mutate } = useCollectionContext();
 
   const updateLabelOrder = async (newOrder) => {
@@ -614,10 +615,12 @@ function ReorderingGrid({ labels }) {
           )}
         </View>
       )}
-      data={labels.map((label) => ({
-        label,
-        key: label.id,
-      }))}
+      data={labels
+        .map((label) => ({
+          label,
+          key: label?.id,
+        }))
+        .filter((e) => e.key)}
       onDragRelease={updateLabelOrder}
     />
   );
