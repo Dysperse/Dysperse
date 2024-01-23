@@ -214,7 +214,8 @@ function Tab({
         <View style={{ flex: 1 }}>
           <Text weight={500} numberOfLines={1}>
             {capitalizeFirstLetter(
-              tab.label?.name ||
+              tab.collection?.name ||
+                tab.label?.name ||
                 tab.profile?.name ||
                 tabData.name(tab.params, tab.slug)[0] ||
                 ""

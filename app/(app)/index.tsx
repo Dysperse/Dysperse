@@ -133,7 +133,15 @@ function FriendActivity() {
         }}
       >
         {isLoading ? (
-          <Spinner />
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Spinner />
+          </View>
         ) : error ? (
           <ErrorAlert />
         ) : (
@@ -413,7 +421,11 @@ function EditWallpaper() {
   return (
     <ScrollView
       style={{ height: "100%" }}
-      contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+      contentContainerStyle={{
+        alignItems: "center",
+        justifyContent: "center",
+        paddingBottom: 100,
+      }}
     >
       <Text style={{ fontSize: 60, marginVertical: 20 }}>Appearance</Text>
       <Text variant="eyebrow">Color</Text>

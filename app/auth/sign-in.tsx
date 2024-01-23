@@ -153,6 +153,7 @@ export default function SignIn() {
                       borderColor: errors.password ? "red" : theme[6],
                       ...(Platform.OS === "web" && { outline: "none" }),
                     }}
+                    onSubmitEditing={handleSubmit(onSubmit)}
                     placeholder="Password"
                     secureTextEntry
                     onBlur={onBlur}
