@@ -588,24 +588,28 @@ function ReorderingGrid({ labels }) {
             justifyContent: "center",
           }}
         >
-          <Emoji emoji={data.label.emoji} size={50} />
-          <Text
-            weight={900}
-            style={{
-              fontSize: 20,
-              textAlign: "center",
-              marginTop: 10,
-              paddingHorizontal: 10,
-              marginBottom: 5,
-            }}
-            numberOfLines={1}
-          >
-            {data.label.name}
-          </Text>
-          <Text>
-            {data.label.entities?.length} item
-            {data.label.entities?.length !== 1 && "s"}
-          </Text>
+          {!data.key ? null : (
+            <>
+              <Emoji emoji={data.label.emoji} size={50} />
+              <Text
+                weight={900}
+                style={{
+                  fontSize: 20,
+                  textAlign: "center",
+                  marginTop: 10,
+                  paddingHorizontal: 10,
+                  marginBottom: 5,
+                }}
+                numberOfLines={1}
+              >
+                {data.label.name}
+              </Text>
+              <Text>
+                {data.label.entities?.length} item
+                {data.label.entities?.length !== 1 && "s"}
+              </Text>
+            </>
+          )}
         </View>
       )}
       data={labels.map((label) => ({
