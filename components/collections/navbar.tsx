@@ -349,7 +349,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       text: "Show completed",
       selected: true,
     },
-    {
+    type === "grid" && {
       icon: "grid_on",
       text: "Reorder labels",
       callback: () => setEditOrderMode(true),
@@ -373,7 +373,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
-  ];
+  ].filter((e) => e);
 
   const filterOptions = [
     {

@@ -31,7 +31,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { ReactElement, memo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { DraggableGrid } from "react-native-draggable-grid";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -218,10 +218,6 @@ const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
               />
             ),
           },
-          {
-            text: "Move",
-            icon: "drag_handle",
-          },
         ]}
       />
     </>
@@ -283,29 +279,34 @@ const KanbanHeader = memo(function KanbanHeader({
           ...(grid && { flexDirection: "row", gap: 20, alignItems: "center" }),
         }}
       >
-        <Text style={{ fontSize: 20 }} weight={800}>
+        <Text style={{ fontSize: 20 }} weight={800} numberOfLines={1}>
           {label.name || "Other"}
         </Text>
         <Text weight={200} numberOfLines={1}>
-          {label.entitiesLength} item{label.entitiesLength !== 1 && "s"}
+          {label.entitiesLength}
         </Text>
       </View>
       {grid && (
         <>
+          {label && (
+            <ColumnMenuTrigger label={label}>
+              <IconButton disabled icon="more_vert" />
+            </ColumnMenuTrigger>
+          )}
           <CreateEntityTrigger
-            menuProps={{ style: { marginRight: -25 } }}
+            menuProps={{ style: { marginRight: -25, marginLeft: -10 } }}
             defaultValues={{
               label: omit(["entities"], label),
             }}
             mutateList={onEntityCreate}
           >
-            <IconButton icon="add" disabled />
+            <IconButton
+              icon="add"
+              disabled
+              variant="outlined"
+              style={{ borderColor: theme[6] }}
+            />
           </CreateEntityTrigger>
-          {label && (
-            <ColumnMenuTrigger label={label}>
-              <IconButton disabled icon="more_horiz" />
-            </ColumnMenuTrigger>
-          )}
         </>
       )}
     </LinearGradient>
@@ -621,9 +622,10 @@ function ReorderingGrid({ labels }) {
   );
 }
 
-function Grid({ editOrderMode, setEditOrderMode }) {
+function Grid({ editOrderMode }) {
   const { data } = useCollectionContext();
   const theme = useColorTheme();
+  const { width } = useWindowDimensions();
 
   if (!Array.isArray(data.labels)) return null;
 
@@ -670,6 +672,10 @@ function Grid({ editOrderMode, setEditOrderMode }) {
                   flex: 1,
                   backgroundColor: theme[2],
                   borderRadius: 25,
+                  width:
+                    displayLabels.length > 4
+                      ? width / 2 - 230
+                      : width / 2 - 145,
                 }}
               >
                 {label.empty ? (
@@ -883,12 +889,7 @@ export default function Page() {
       content = <Stream />;
       break;
     case "grid":
-      content = (
-        <Grid
-          editOrderMode={editOrderMode}
-          setEditOrderMode={setEditOrderMode}
-        />
-      );
+      content = <Grid editOrderMode={editOrderMode} />;
       break;
     case "workload":
       content = <Text>Workload</Text>;
@@ -899,7 +900,7 @@ export default function Page() {
   }
 
   return (
-    <CollectionContext.Provider value={{ data, mutate, error }}>
+    <CollectionContext.Provider value={{ data, mutate, error, type }}>
       {data ? (
         <ContentWrapper>
           <CollectionNavbar
