@@ -627,8 +627,7 @@ function Grid({ editOrderMode }) {
   const { data } = useCollectionContext();
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
-
-  if (!Array.isArray(data.labels)) return null;
+  if (!Array.isArray(data.labels) || !data.gridOrder) return null;
 
   // Create a new array for rendering purposes without modifying the original data
   const displayLabels = data.gridOrder.map((id) =>
