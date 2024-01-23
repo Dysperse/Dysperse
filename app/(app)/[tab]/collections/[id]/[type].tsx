@@ -183,44 +183,42 @@ const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
 }) {
   const { mutate } = useCollectionContext();
   return (
-    <>
-      <MenuPopover
-        trigger={children}
-        containerStyle={{ width: 150 }}
-        options={[
-          {
-            renderer: () => (
-              <LabelEditModal
-                label={label}
-                onLabelUpdate={(newLabel) => {
-                  mutate(
-                    (oldData) => {
-                      const labelIndex = oldData.labels.findIndex(
-                        (l) => l.id === label.id
-                      );
-                      if (labelIndex === -1) return oldData;
-                      return {
-                        ...oldData,
-                        labels: oldData.labels.map((l) =>
-                          l.id === label.id ? { ...l, ...newLabel } : l
-                        ),
-                      };
-                    },
-                    { revalidate: false }
-                  );
-                }}
-                trigger={
-                  <MenuItem>
-                    <Icon>edit</Icon>
-                    <Text variant="menuItem">Edit</Text>
-                  </MenuItem>
-                }
-              />
-            ),
-          },
-        ]}
-      />
-    </>
+    <MenuPopover
+      trigger={children}
+      containerStyle={{ width: 150 }}
+      options={[
+        {
+          renderer: () => (
+            <LabelEditModal
+              label={label}
+              onLabelUpdate={(newLabel) => {
+                mutate(
+                  (oldData) => {
+                    const labelIndex = oldData.labels.findIndex(
+                      (l) => l.id === label.id
+                    );
+                    if (labelIndex === -1) return oldData;
+                    return {
+                      ...oldData,
+                      labels: oldData.labels.map((l) =>
+                        l.id === label.id ? { ...l, ...newLabel } : l
+                      ),
+                    };
+                  },
+                  { revalidate: false }
+                );
+              }}
+              trigger={
+                <MenuItem>
+                  <Icon>edit</Icon>
+                  <Text variant="menuItem">Edit</Text>
+                </MenuItem>
+              }
+            />
+          ),
+        },
+      ]}
+    />
   );
 });
 
@@ -878,7 +876,12 @@ function Stream() {
 export default function Page() {
   const { id, type } = useLocalSearchParams();
   const { data, mutate, error } = useSWR(
-    id && type ? ["space/collections/collection", { id }] : null
+    id && type
+      ? [
+          "space/collections/collection",
+          id === "all" ? { all: "true", id: "??" } : { id },
+        ]
+      : null
   );
 
   const [editOrderMode, setEditOrderMode] = useState(false);

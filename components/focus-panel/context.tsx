@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Platform } from "react-native";
 import FocusPanel from "./panel";
 
 interface FocusPanelContext {
@@ -10,7 +11,16 @@ const FocusPanelContext = createContext<FocusPanelContext>(null);
 export const useFocusPanelContext = () => useContext(FocusPanelContext);
 
 export const FocusPanelProvider = ({ children }) => {
-  const [isFocused, setFocus] = useState(false);
+  const [isFocused, setFocus] = useState(
+    Platform.OS === "web"
+      ? localStorage.getItem("focusPanelVisible") === "true"
+      : false
+  );
+
+  useEffect(() => {
+    if (Platform.OS === "web")
+      localStorage.setItem("focusPanelVisible", isFocused ? "true" : "false");
+  }, [isFocused]);
 
   return (
     <FocusPanelContext.Provider value={{ isFocused, setFocus }}>

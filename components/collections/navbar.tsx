@@ -311,7 +311,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
   const { data, ...ctx } = useCollectionContext();
-  const { type } = useGlobalSearchParams();
+  const { type, id } = useGlobalSearchParams();
+
+  const isAll = id === "all";
 
   const options = [
     { icon: "calendar_today", text: "Agenda" },
@@ -326,7 +328,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   }));
 
   const collectionMenuOptions = [
-    {
+    !isAll && {
       icon: "edit",
       text: "Edit",
       renderer: (props) => (
@@ -335,7 +337,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </CollectionContext.Provider>
       ),
     },
-    {
+    !isAll && {
       icon: "label",
       text: "Edit labels",
       renderer: (props) => (
@@ -349,12 +351,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       text: "Show completed",
       selected: true,
     },
-    type === "grid" && {
-      icon: "grid_on",
-      text: "Reorder labels",
-      callback: () => setEditOrderMode(true),
-    },
-    {
+    !isAll &&
+      type === "grid" && {
+        icon: "grid_on",
+        text: "Reorder labels",
+        callback: () => setEditOrderMode(true),
+      },
+    !isAll && {
       icon: "remove_selection",
       text: "Delete",
       renderer: () => (
@@ -468,8 +471,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               },
             ]}
           >
-            <Emoji emoji={data.emoji} size={30} />
-            <Text style={{ fontSize: 20 }}>{data.name}</Text>
+            {!isAll && <Emoji emoji={data.emoji} size={30} />}
+            <Text style={{ fontSize: 20 }}>{data.name || "All items"}</Text>
           </IconButton>
         }
         options={collectionMenuOptions}

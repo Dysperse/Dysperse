@@ -1,21 +1,7 @@
-import dayjs from "dayjs";
-
 export const useTabMetadata = (slug: string, tab: any) => {
   if (!slug) return { icon: "square" };
 
   const startWithMatchers = {
-    "/[tab]/perspectives/": {
-      icon: "asterisk",
-      name: (params) => [
-        params.type,
-        `${dayjs(params.start).startOf(params.type).format("MMM Do")} - ${dayjs(
-          params.start
-        )
-          .startOf(params.type)
-          .add(1, params.type)
-          .format("Do")}`,
-      ],
-    },
     "/[tab]/collections/": {
       icon: (params) =>
         ({
@@ -25,7 +11,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
           grid: "view_cozy",
           workload: "exercise",
         }[params.type]),
-      name: (params) => [tab?.collection?.name, params.type],
+      name: (params) => ["All", params.type],
     },
     "/[tab]/all/[type]": {
       icon: (params) => (params.type === "tasks" ? "task_alt" : "layers"),

@@ -27,6 +27,7 @@ function Agenda() {
       end: end.toISOString(),
       type,
       id: params.id,
+      ...(params.id === "all" && { all: true }),
     },
   ]);
 

@@ -1,14 +1,15 @@
+import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { styles } from "@/components/home/styles";
 import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
 import { ContentWrapper } from "@/components/layout/content";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
+import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import ListItemText from "@/ui/ListItemText";
-import Skeleton from "@/ui/Skeleton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,12 +18,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
-  Platform,
+  ImageBackground,
+  Pressable,
   TouchableOpacity,
   View,
-  useWindowDimensions,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
 
@@ -46,13 +46,12 @@ function Greeting() {
 
   return (
     <Text
-      heading
+      weight={100}
       numberOfLines={1}
       style={{
         textAlign: "center",
-        fontFamily: "heading",
         color: theme[12],
-        fontSize: 55,
+        fontSize: 70,
       }}
     >
       {greeting}
@@ -64,24 +63,12 @@ function PlanDayPrompt() {
   const theme = useColorTheme();
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity style={{ flex: 1 }}>
       <LinearGradient
         colors={[theme[3], theme[3]]}
         start={[0, 0]}
         end={[1, 1]}
-        style={[
-          styles.card,
-          {
-            marginBottom: 15,
-            height: 80,
-            borderRadius: 999,
-            alignItems: "center",
-            justifyContent: "flex-start",
-            gap: 20,
-            flex: 1,
-            flexDirection: "row",
-          },
-        ]}
+        style={[styles.card]}
       >
         <Icon size={30}>gesture</Icon>
         <View style={{ flex: 1 }}>
@@ -98,56 +85,6 @@ function PlanDayPrompt() {
         <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
       </LinearGradient>
     </TouchableOpacity>
-  );
-}
-
-function TodaysTasks() {
-  const theme = useColorTheme();
-  return (
-    <TouchableOpacity>
-      <View
-        style={[
-          styles.card,
-          {
-            marginBottom: 15,
-            height: 80,
-            borderRadius: 999,
-            alignItems: "center",
-            justifyContent: "flex-start",
-            gap: 20,
-            flexDirection: "row",
-            backgroundColor: theme[3],
-          },
-        ]}
-      >
-        <Icon size={30}>transition_push</Icon>
-
-        <View style={{ flex: 1 }}>
-          <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
-            Upcoming
-          </Text>
-          <Text
-            style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}
-            numberOfLines={1}
-          >
-            5 tasks, 7 notes
-          </Text>
-        </View>
-        <Icon style={{ marginLeft: "auto", marginRight: 10 }}>
-          arrow_forward_ios
-        </Icon>
-      </View>
-    </TouchableOpacity>
-  );
-}
-
-function RecentActivity() {
-  const theme = useColorTheme();
-  const { width } = useWindowDimensions();
-  return (
-    <View>
-      <Text>(TODO: show recent activity here)</Text>
-    </View>
   );
 }
 
@@ -287,94 +224,136 @@ function JumpBackIn() {
 
   return (
     data !== null && (
-      <>
-        <Text variant="eyebrow" style={{ marginLeft: 5 }}>
-          Recent
-        </Text>
-        <TouchableOpacity onPress={handlePress}>
-          <Skeleton
-            isLoading={loading}
-            height={60}
-            style={{
-              marginBottom: 20,
-            }}
-          >
-            <View
-              style={[
-                styles.card,
-                {
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  gap: 10,
-                  paddingHorizontal: 15,
-                  height: 60,
-                  borderRadius: 20,
-                  flexDirection: "row",
-                  backgroundColor: theme[3],
-                },
-              ]}
+      <TouchableOpacity onPress={handlePress} style={{ flex: 1 }}>
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: theme[3],
+            },
+          ]}
+        >
+          <Icon size={30}>
+            {typeof tabMetadata.icon === "function"
+              ? tabMetadata.icon(data?.params)
+              : tabMetadata.icon}
+          </Icon>
+          <View>
+            <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
+              {capitalizeFirstLetter(tabMetadata.name(data?.params)[0])}
+            </Text>
+            <Text
+              style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}
+              numberOfLines={1}
             >
-              <Avatar size={40}>
-                <Icon size={30}>
-                  {typeof tabMetadata.icon === "function"
-                    ? tabMetadata.icon(data?.params)
-                    : tabMetadata.icon}
-                </Icon>
-              </Avatar>
-              <ListItemText
-                truncate
-                primary={capitalizeFirstLetter(
-                  tabMetadata.name(data?.params)[0]
-                )}
-                secondaryProps={{
-                  style: { marginTop: -4, fontSize: 13, opacity: 0.6 },
-                }}
-                secondary={tabMetadata.name(data?.params)[1]}
-              />
-              <Icon>arrow_forward_ios</Icon>
-            </View>
-          </Skeleton>
-        </TouchableOpacity>
-      </>
+              {tabMetadata.name(data?.params)[1]}
+            </Text>
+          </View>
+          <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+        </View>
+      </TouchableOpacity>
     )
   );
 }
 
+function JumpTo() {
+  const { handleOpen } = useCommandPaletteContext();
+  const theme = useColorTheme();
+
+  return (
+    <Pressable
+      onPress={handleOpen}
+      style={{
+        backgroundColor: theme[2],
+        borderColor: theme[5],
+        borderWidth: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        borderRadius: 20,
+        gap: 20,
+      }}
+    >
+      <Icon size={35}>bolt</Icon>
+      <Text style={{ color: theme[11], fontSize: 20 }} weight={300}>
+        Jump to a collection, label, or more...
+      </Text>
+    </Pressable>
+  );
+}
+
 export default function Index() {
-  const { width } = useWindowDimensions();
+  const theme = useColorTheme();
+
+  const [view, setView] = useState("home");
 
   return (
     <ContentWrapper>
-      <ScrollView
-        scrollEnabled={width < 600}
-        style={Platform.OS === "web" ? { height: 0 } : undefined}
+      <ImageBackground
+        source={{
+          uri: "https://i.pinimg.com/736x/a0/33/a6/a033a6d215cfdc41dbfd92c5ac5dc8cf.jpg",
+        }}
+        style={{ flex: 1 }}
+        resizeMode="cover"
       >
         <View
           style={{
-            maxWidth: 900,
-            paddingTop: 100,
-            width: "100%",
-            marginHorizontal: "auto",
+            flex: 1,
+            backgroundColor: addHslAlpha(theme[1], 0.9),
+            alignItems: "center",
           }}
         >
-          <Greeting />
-          <JumpBackIn />
-          <Text variant="eyebrow">Today's rundown</Text>
+          <ButtonGroup
+            state={[view, setView]}
+            options={[
+              { icon: "home", value: "home" },
+              { icon: "upcoming", value: "start" },
+            ]}
+            containerStyle={{
+              width: "auto",
+              marginTop: 50,
+            }}
+            buttonStyle={{ flex: 1, borderBottomColor: "transparent" }}
+            scrollContainerStyle={{ flex: 1, gap: 15 }}
+            buttonTextStyle={{ textAlign: "center" }}
+            selectedButtonStyle={{ borderBottomColor: theme[11] }}
+          />
           <View
             style={{
-              columnGap: 15,
-              marginBottom: 15,
-              flexGrow: 1,
-              marginTop: 15,
-              flexDirection: "row",
+              maxWidth: 800,
+              paddingHorizontal: 50,
+              paddingBottom: 70,
+              width: "100%",
+              marginHorizontal: "auto",
+              marginVertical: "auto",
             }}
-          ></View>
-          <PlanDayPrompt />
-          <TodaysTasks />
-          <Text variant="eyebrow">Friends</Text>
-          <FriendActivity />
+          >
+            {view === "home" ? (
+              <>
+                <Greeting />
+                <JumpTo />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 20,
+                    marginTop: 20,
+                    width: "100%",
+                  }}
+                >
+                  <PlanDayPrompt />
+                  <JumpBackIn />
+                </View>
+              </>
+            ) : (
+              <FriendActivity />
+            )}
+          </View>
         </View>
-      </ScrollView>
+      </ImageBackground>
     </ContentWrapper>
   );
 }

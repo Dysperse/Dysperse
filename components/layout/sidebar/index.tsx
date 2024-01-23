@@ -3,6 +3,7 @@ import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useUser } from "@/context/useUser";
 import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
@@ -108,7 +109,7 @@ const JumpToButton = memo(function JumpToButton() {
   );
 });
 
-const LogoButton = memo(function LogoButton({
+export const LogoButton = memo(function LogoButton({
   toggleHidden,
   isHidden,
 }: {
@@ -117,6 +118,7 @@ const LogoButton = memo(function LogoButton({
 }) {
   const theme = useColorTheme();
   const { error } = useUser();
+  const breakpoints = useResponsiveBreakpoints();
   const red = useColor("red", useColorScheme() === "dark");
   const openSupport = useCallback(() => {
     Linking.openURL("https://blog.dysperse.com");
@@ -126,6 +128,17 @@ const LogoButton = memo(function LogoButton({
   }, []);
 
   const { isFocused, setFocus } = useFocusPanelContext();
+
+  const hiddenSidebarStyles = useAnimatedStyle(() => ({
+    marginRight: withSpring(isHidden ? -100 : 0, {
+      damping: 30,
+      stiffness: 400,
+    }),
+    marginLeft: withSpring(isHidden ? 15 : 0, {
+      damping: 30,
+      stiffness: 400,
+    }),
+  }));
 
   return (
     <View
@@ -186,38 +199,42 @@ const LogoButton = memo(function LogoButton({
         ]}
       />
       {error && <Icon style={{ color: red[11] }}>cloud_off</Icon>}
-      <MenuPopover
-        menuProps={{
-          rendererProps: {
-            placement: "right",
-            anchorStyle: { opacity: 0 },
-          },
-        }}
-        containerStyle={{ marginTop: 10, width: 200 }}
-        trigger={
-          <IconButton
-            disabled
-            size={40}
-            onPress={toggleHidden}
-            icon="dock_to_right"
-            style={{ opacity: 0.9 }}
-          />
-        }
-        options={[
-          {
-            icon: "dock_to_right",
-            text: "Sidebar",
-            callback: toggleHidden,
-            selected: !isHidden,
-          },
-          {
-            icon: "dock_to_left",
-            text: "Focus panel",
-            selected: isFocused,
-            callback: () => setFocus(!isFocused),
-          },
-        ]}
-      />
+      {breakpoints.md && (
+        <MenuPopover
+          menuProps={{
+            rendererProps: {
+              placement: "right",
+              anchorStyle: { opacity: 0 },
+            },
+          }}
+          containerStyle={{ marginTop: 10, width: 200 }}
+          trigger={
+            <Animated.View style={hiddenSidebarStyles}>
+              <IconButton
+                disabled
+                size={40}
+                onPress={toggleHidden}
+                icon="dock_to_right"
+                style={{ opacity: 0.9 }}
+              />
+            </Animated.View>
+          }
+          options={[
+            {
+              icon: "dock_to_right",
+              text: "Sidebar",
+              callback: toggleHidden,
+              selected: !isHidden,
+            },
+            {
+              icon: "dock_to_left",
+              text: "Focus panel",
+              selected: isFocused,
+              callback: () => setFocus(!isFocused),
+            },
+          ]}
+        />
+      )}
     </View>
   );
 });
@@ -321,14 +338,6 @@ export function Sidebar() {
     pointerEvents: isHidden ? "none" : "auto",
   }));
 
-  const hiddenSidebarStyles = useAnimatedStyle(() => ({
-    opacity: withSpring(isHidden ? 1 : 0),
-    position: "absolute",
-    top: 20,
-    left: 12,
-    zIndex: 1,
-  }));
-
   return (
     <>
       <Animated.View
@@ -359,18 +368,6 @@ export function Sidebar() {
         </View>
         <OpenTabsList />
       </Animated.View>
-      {isHidden && (
-        <Animated.View style={hiddenSidebarStyles}>
-          <IconButton
-            style={{
-              ...(Platform.OS === "web" &&
-                ({ marginTop: "env(titlebar-area-height,0)" } as any)),
-            }}
-            onPress={toggleHidden}
-            icon="dock_to_right"
-          />
-        </Animated.View>
-      )}
     </>
   );
 }

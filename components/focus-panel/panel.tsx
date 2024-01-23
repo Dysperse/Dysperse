@@ -53,6 +53,26 @@ function Tools() {
   );
 }
 
+function PanelContent() {
+  const { isFocused } = useFocusPanelContext();
+  // alert(isFocused);
+  return (
+    isFocused && (
+      <ContentWrapper
+        style={{
+          padding: 20,
+        }}
+      >
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 20 }}>
+          <TodaysDate />
+          <WeatherWidget />
+        </ScrollView>
+        <Tools />
+      </ContentWrapper>
+    )
+  );
+}
+
 const FocusPanel = memo(function FocusPanel() {
   const { isFocused } = useFocusPanelContext();
   const marginRight = useSharedValue(-350);
@@ -91,21 +111,7 @@ const FocusPanel = memo(function FocusPanel() {
         },
       ]}
     >
-      <ContentWrapper
-        style={{
-          padding: 20,
-        }}
-      >
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 20 }}>
-          {isFocused && (
-            <>
-              <TodaysDate />
-              <WeatherWidget />
-            </>
-          )}
-        </ScrollView>
-        <Tools />
-      </ContentWrapper>
+      <PanelContent />
     </Animated.View>
   );
 });

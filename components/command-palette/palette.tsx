@@ -79,6 +79,7 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
   return (
     <ScrollView
       horizontal
+      aria-label="Scrollbar-Hidden"
       contentContainerStyle={{
         gap: 10,
         paddingTop: 5,

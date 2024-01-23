@@ -86,6 +86,7 @@ body {
 }
 
 [aria-label="Bottom Sheet"]::-webkit-scrollbar,
+[aria-label="Scrollbar-Hidden"]::-webkit-scrollbar,
 [aria-label="Sidebar"]::-webkit-scrollbar {
   width: 0px;
   min-height: 0px;

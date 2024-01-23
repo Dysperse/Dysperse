@@ -1,20 +1,16 @@
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
-import Icon from "@/ui/Icon";
 import Skeleton from "@/ui/Skeleton";
 import { router } from "expo-router";
 import React from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUser } from "../../context/useUser";
 import Text from "../../ui/Text";
 import { useColorTheme } from "../../ui/color/theme-provider";
-import Logo from "../../ui/logo";
-import { SpacesTrigger } from "./sidebar/SpacesTrigger";
+import { LogoButton } from "./sidebar";
 
 export function NavbarProfilePicture() {
   const { session } = useUser();
-  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <Skeleton rounded isLoading={Boolean(!session?.user)}>
@@ -53,14 +49,7 @@ export default function AccountNavbar(props: any) {
         {props.options.headerTitle ? (
           <Text>{props.options.headerTitle}</Text>
         ) : (
-          <SpacesTrigger>
-            <TouchableOpacity
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-            >
-              <Logo size={35} color={theme[7]} />
-              <Icon style={{ color: theme[7] }}>expand_more</Icon>
-            </TouchableOpacity>
-          </SpacesTrigger>
+          <LogoButton toggleHidden={() => {}} isHidden={false} />
         )}
         <View style={{ flexGrow: 1 }} />
         {props.options.headerRight && props.options.headerRight()}
