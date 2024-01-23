@@ -2,7 +2,10 @@ import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { styles } from "@/components/home/styles";
 import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
 import { ContentWrapper } from "@/components/layout/content";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
+import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
@@ -103,20 +106,30 @@ function FriendActivity() {
   const { data, isLoading, error } = useSWR(["user/friends"]);
   const handleFriendsPress = useCallback(() => router.push("/friends"), []);
 
+  const friends = Array.isArray(data) && [...data, "ALL_FRIENDS"];
+
+  if (friends.length < 6)
+    for (let i = friends.length; i < 6; i++) {
+      friends.push({ placeholder: i });
+    }
+
   return (
     <>
-      <Text style={{ fontSize: 60, textAlign: "center", marginVertical: 20 }}>
+      <Text
+        style={{
+          fontSize: 60,
+          textAlign: "center",
+          marginVertical: 20,
+          marginBottom: 0,
+        }}
+      >
         Friends
       </Text>
       <View
         style={{
-          borderWidth: 1,
-          borderColor: theme[5],
-          borderRadius: 20,
-          height: data?.length <= 1 ? 180 : 180 * 2 + 2,
-          alignItems: "center",
-          justifyContent: "center",
           flexDirection: "row",
+          flexWrap: "wrap",
+          paddingHorizontal: 20,
         }}
       >
         {isLoading ? (
@@ -124,8 +137,7 @@ function FriendActivity() {
         ) : error ? (
           <ErrorAlert />
         ) : (
-          Array.isArray(data) &&
-          [...data, "ALL_FRIENDS"].map((friend) =>
+          friends.map((friend, i) =>
             friend === "ALL_FRIENDS" ? (
               <TouchableOpacity
                 key={"all"}
@@ -135,7 +147,7 @@ function FriendActivity() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
-                  flex: 0.5,
+                  width: "33.3333%",
                 }}
               >
                 <Avatar size={90} disabled>
@@ -143,6 +155,37 @@ function FriendActivity() {
                 </Avatar>
                 <Text style={{ opacity: 0.6 }}>All Friends</Text>
               </TouchableOpacity>
+            ) : !friend.user ? (
+              <View
+                key={Math.random()}
+                style={{
+                  height: 180,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  // flex: 0.5,
+                  width: "33.3333%",
+                }}
+              >
+                <View
+                  style={{
+                    width: 90,
+                    height: 90,
+                    borderRadius: 999,
+                    position: "relative",
+                    backgroundColor: theme[~~(6 - i / 2)],
+                  }}
+                />
+                <View
+                  style={{
+                    height: 15,
+                    width: 60,
+                    borderRadius: 99,
+                    marginTop: 2,
+                    backgroundColor: theme[~~(6 - i / 2)],
+                  }}
+                />
+              </View>
             ) : (
               <ProfileModal email={friend.user.email} key={friend.user.email}>
                 <TouchableOpacity
@@ -151,7 +194,8 @@ function FriendActivity() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 10,
-                    flex: 0.5,
+                    // flex: 0.5,
+                    width: "33.3333%",
                   }}
                 >
                   <View
@@ -329,14 +373,62 @@ const patterns = [
   "plus",
 ];
 
-function EditWallpaper({ pattern, setPattern }) {
+function EditWallpaper() {
   const theme = useColorTheme();
+  const { session, sessionToken, mutate } = useUser();
+  const selectedPattern = session?.user?.profile?.pattern || "none";
+
+  const handlePatternSelect = useCallback(
+    async (pattern) => {
+      mutate(
+        (d) => ({
+          ...d,
+          user: {
+            ...d.user,
+            profile: {
+              ...d.user.profile,
+              pattern,
+            },
+          },
+        }),
+        {
+          revalidate: false,
+        }
+      );
+      await sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/profile",
+        {},
+        {
+          body: JSON.stringify({
+            pattern,
+          }),
+        }
+      );
+    },
+    [sessionToken, mutate]
+  );
+
   return (
     <ScrollView
       style={{ height: "100%" }}
       contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
     >
       <Text style={{ fontSize: 60, marginVertical: 20 }}>Appearance</Text>
+      <Text variant="eyebrow">Color</Text>
+      <Button
+        onPress={() => router.push("/settings/appearance")}
+        variant="outlined"
+        style={{
+          marginVertical: 10,
+          marginBottom: 40,
+          height: 60,
+          paddingHorizontal: 40,
+        }}
+      >
+        <ButtonText>Open settings</ButtonText>
+      </Button>
       <Text variant="eyebrow">Pattern</Text>
       {
         <View
@@ -350,7 +442,9 @@ function EditWallpaper({ pattern, setPattern }) {
           }}
         >
           <Pressable
-            onPress={() => setPattern("none")}
+            onPress={() => {
+              handlePatternSelect("none");
+            }}
             style={[
               styles.patternCard,
               {
@@ -364,7 +458,9 @@ function EditWallpaper({ pattern, setPattern }) {
           {patterns.map((pattern) => (
             <Pressable
               key={pattern}
-              onPress={() => setPattern(pattern)}
+              onPress={() => {
+                handlePatternSelect(pattern);
+              }}
               style={[
                 styles.patternCard,
                 {
@@ -430,8 +526,9 @@ function TodayText() {
 
 export default function Index() {
   const theme = useColorTheme();
+  const { session } = useUser();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
-  const [pattern, setPattern] = useState("topography");
+  const pattern = session?.user?.profile?.pattern || "none";
 
   return (
     <ContentWrapper>
@@ -501,7 +598,7 @@ export default function Index() {
           ) : view === "activity" ? (
             <FriendActivity />
           ) : (
-            <EditWallpaper pattern={pattern} setPattern={setPattern} />
+            <EditWallpaper pattern={pattern} />
           )}
         </View>
       </ImageBackground>
