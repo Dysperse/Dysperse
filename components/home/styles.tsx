@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   card: {
     padding: 20,
     height: 80,
-    borderRadius: 999,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 20,
@@ -16,5 +16,14 @@ export const styles = StyleSheet.create({
     borderColor: "#000000",
     padding: 20,
     borderRadius: 20,
+  },
+  patternCard: {
+    width: 100,
+    height: 100,
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

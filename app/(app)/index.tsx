@@ -9,16 +9,20 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ImageBackground, TouchableOpacity, View } from "react-native";
+import {
+  ImageBackground,
+  Pressable,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
 
@@ -69,11 +73,20 @@ function PlanDayPrompt() {
       >
         <Icon size={30}>gesture</Icon>
         <View style={{ flex: 1 }}>
-          <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
+          <Text
+            weight={700}
+            style={{ fontSize: 20, color: theme[11] }}
+            numberOfLines={1}
+          >
             Plan your day
           </Text>
           <Text
-            style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}
+            style={{
+              fontSize: 14,
+              opacity: 0.7,
+              marginTop: 1.5,
+              color: theme[11],
+            }}
             numberOfLines={1}
           >
             Tap to begin
@@ -236,11 +249,20 @@ function JumpBackIn() {
               : tabMetadata.icon}
           </Icon>
           <View>
-            <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
+            <Text
+              weight={700}
+              style={{ fontSize: 20, color: theme[11] }}
+              numberOfLines={1}
+            >
               {capitalizeFirstLetter(tabMetadata.name(data?.params)[0])}
             </Text>
             <Text
-              style={{ fontSize: 14, opacity: 0.7, marginTop: 1.5 }}
+              style={{
+                fontSize: 14,
+                opacity: 0.7,
+                marginTop: 1.5,
+                color: theme[11],
+              }}
               numberOfLines={1}
             >
               {tabMetadata.name(data?.params)[1]}
@@ -258,102 +280,224 @@ function JumpTo() {
   const theme = useColorTheme();
 
   return (
-    <TouchableOpacity onPress={handleOpen}>
-      <BlurView
-        tint="dark"
-        intensity={20}
-        style={{
-          backgroundColor: addHslAlpha(theme[2], 0.4),
-          borderColor: addHslAlpha(theme[5], 0.4),
-          borderWidth: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          paddingHorizontal: 20,
-          paddingVertical: 15,
-          borderRadius: 20,
-          marginBottom: 10,
-          gap: 20,
-        }}
-      >
-        <Icon size={35}>bolt</Icon>
-        <Text style={{ color: theme[11], fontSize: 20 }} weight={300}>
-          Jump to a collection, label, or more...
-        </Text>
-      </BlurView>
-    </TouchableOpacity>
+    <Pressable
+      onPress={handleOpen}
+      style={({ pressed, hovered }: any) => ({
+        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        borderRadius: 20,
+        gap: 20,
+      })}
+    >
+      <Icon size={35}>bolt</Icon>
+      <Text style={{ color: theme[11], fontSize: 17 }} weight={700}>
+        Jump to a collection, label, or more...
+      </Text>
+    </Pressable>
+  );
+}
+const patterns = [
+  "dots",
+  "topography",
+  "hideout",
+  "triangles",
+  "dysperse",
+  "anchors",
+  "diamonds",
+  "leaves",
+  "skulls",
+  "tic-tac-toe",
+  "cash",
+  "shapes",
+  "venn",
+  "wiggle",
+  "motion",
+  "autumn",
+  "architect",
+  "sand",
+  "graph",
+  "hexagons",
+  "plus",
+];
+
+function EditWallpaper({ pattern, setPattern }) {
+  const theme = useColorTheme();
+  return (
+    <ScrollView
+      style={{ height: "100%" }}
+      contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+    >
+      <Text style={{ fontSize: 70, marginBottom: 20 }}>Appearance</Text>
+      <Text variant="eyebrow">Pattern</Text>
+      {
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            gap: 20,
+            marginTop: 10,
+          }}
+        >
+          <Pressable
+            onPress={() => setPattern("none")}
+            style={[
+              styles.patternCard,
+              {
+                backgroundColor: theme[1],
+                borderColor: theme[5],
+              },
+            ]}
+          >
+            <Icon size={30}>do_not_disturb_on</Icon>
+          </Pressable>
+          {patterns.map((pattern) => (
+            <Pressable
+              key={pattern}
+              onPress={() => setPattern(pattern)}
+              style={[
+                styles.patternCard,
+                {
+                  backgroundColor: theme[1],
+                  borderColor: theme[5],
+                },
+              ]}
+            >
+              <ImageBackground
+                source={{
+                  uri: `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
+                    ...theme[9]
+                      .replace("hsl", "")
+                      .replace("(", "")
+                      .replace(")", "")
+                      .replaceAll("%", "")
+                      .split(",")
+                  )}&pattern=${pattern}`,
+                }}
+                style={{ flex: 1, alignItems: "center", width: "100%" }}
+                resizeMode="repeat"
+              />
+            </Pressable>
+          ))}
+        </View>
+      }
+    </ScrollView>
+  );
+}
+
+function hslToHex(h, s, l) {
+  l /= 100;
+  const a = (s * Math.min(l, 1 - l)) / 100;
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0"); // convert to Hex and prefix "0" if needed
+  };
+  return `${f(0)}${f(8)}${f(4)}`;
+}
+
+function TodayText() {
+  const theme = useColorTheme();
+  return (
+    <Text
+      weight={200}
+      numberOfLines={1}
+      style={{
+        textAlign: "center",
+        color: theme[12],
+        fontSize: 20,
+        marginBottom: 25,
+        marginTop: -10,
+        opacity: 0.7,
+      }}
+    >
+      Today's {dayjs().format("MMMM Do, YYYY")}
+    </Text>
   );
 }
 
 export default function Index() {
   const theme = useColorTheme();
-
-  const [view, setView] = useState("home");
+  const [view, setView] = useState<"home" | "activity" | "edit">("home");
+  const [pattern, setPattern] = useState("topography");
 
   return (
     <ContentWrapper>
       <ImageBackground
         source={{
-          uri: "https://i.pinimg.com/736x/a0/33/a6/a033a6d215cfdc41dbfd92c5ac5dc8cf.jpg",
+          uri:
+            pattern === "none"
+              ? null
+              : `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
+                  ...theme[4]
+                    .replace("hsl", "")
+                    .replace("(", "")
+                    .replace(")", "")
+                    .replaceAll("%", "")
+                    .split(",")
+                )}&pattern=${pattern}`,
         }}
-        style={{ flex: 1 }}
-        resizeMode="cover"
+        style={{ flex: 1, alignItems: "center" }}
+        resizeMode="repeat"
       >
+        <ButtonGroup
+          state={[view, setView]}
+          options={[
+            { icon: "home", value: "home" },
+            { icon: "upcoming", value: "activity" },
+            { icon: "more_horiz", value: "edit" },
+          ]}
+          containerStyle={{
+            width: "auto",
+            marginTop: 50,
+          }}
+          buttonStyle={{ flex: 1, borderBottomColor: "transparent" }}
+          scrollContainerStyle={{ flex: 1, gap: 15 }}
+          buttonTextStyle={{ textAlign: "center" }}
+          selectedButtonStyle={{ borderBottomColor: theme[11] }}
+        />
         <View
           style={{
+            maxWidth: 650,
+            paddingHorizontal: 50,
+            paddingBottom: view === "edit" ? 0 : 70,
+            width: "100%",
+            marginHorizontal: "auto",
             flex: 1,
-            backgroundColor: addHslAlpha(theme[1], 0.9),
-            alignItems: "center",
+            marginVertical: "auto",
           }}
         >
-          <ButtonGroup
-            state={[view, setView]}
-            options={[
-              { icon: "home", value: "home" },
-              { icon: "upcoming", value: "start" },
-              { icon: "more_horiz", value: "edit" },
-            ]}
-            containerStyle={{
-              width: "auto",
-              marginTop: 50,
-            }}
-            buttonStyle={{ flex: 1, borderBottomColor: "transparent" }}
-            scrollContainerStyle={{ flex: 1, gap: 15 }}
-            buttonTextStyle={{ textAlign: "center" }}
-            selectedButtonStyle={{ borderBottomColor: theme[11] }}
-          />
-          <View
-            style={{
-              maxWidth: 700,
-              paddingHorizontal: 50,
-              paddingBottom: 70,
-              width: "100%",
-              marginHorizontal: "auto",
-              marginVertical: "auto",
-            }}
-          >
-            {view === "home" ? (
-              <>
-                <Greeting />
-                <JumpTo />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 20,
-                    marginTop: 20,
-                    width: "100%",
-                  }}
-                >
-                  <PlanDayPrompt />
-                  <JumpBackIn />
-                </View>
-              </>
-            ) : (
-              <FriendActivity />
-            )}
-          </View>
+          {view === "home" ? (
+            <View style={{ marginVertical: "auto" }}>
+              <Greeting />
+              <TodayText />
+              <JumpTo />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 20,
+                  marginTop: 20,
+                  width: "100%",
+                }}
+              >
+                <PlanDayPrompt />
+                <JumpBackIn />
+              </View>
+            </View>
+          ) : view === "activity" ? (
+            <FriendActivity />
+          ) : (
+            <EditWallpaper pattern={pattern} setPattern={setPattern} />
+          )}
         </View>
       </ImageBackground>
     </ContentWrapper>

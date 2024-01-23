@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start --tunnel",
+    "start": "expo start",
+    "start-codespaces": "expo start --tunnel",
     "start-no-cache": "expo start --clear --tunnel --reset-cache",
     "start-prod": "expo start --tunnel --reset-cache --no-dev --minify",
     "android": "expo start --android",
@@ -21,6 +22,7 @@
     "@gorhom/portal": "^1.0.14",
     "@radix-ui/colors": "^3.0.0",
     "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-community/slider": "^4.5.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
     "@sentry/react-native": "5.10.0",
