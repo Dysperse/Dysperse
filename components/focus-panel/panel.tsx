@@ -46,9 +46,10 @@ function Tools() {
           />
         </Svg>
       </IconButton>
-      <IconButton icon="music_note" />
-      <IconButton icon="timer" />
       <IconButton icon="wb_sunny" />
+      <IconButton icon="timer" />
+      <IconButton icon="auto_awesome" />
+      <IconButton icon="music_note" />
     </View>
   );
 }

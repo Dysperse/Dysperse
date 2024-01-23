@@ -517,9 +517,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         }
         options={filterOptions}
       />
-      <IconButton variant="filled" style={styles.navbarIconButton}>
-        <Icon>magic_button</Icon>
-      </IconButton>
       <Pressable
         style={({ pressed, hovered }: any) => [
           styles.navbarIconButton,

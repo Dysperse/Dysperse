@@ -15,6 +15,9 @@ export function ButtonGroup({
   buttonTextStyle = {},
   selectedButtonTextStyle = {},
   scrollContainerStyle = {},
+  activeComponent = null,
+  iconStyle = {},
+  selectedIconStyle = {},
 }: {
   options: { label?: string; icon?: string; value: string }[];
   state: [string, React.Dispatch<React.SetStateAction<string>>];
@@ -24,6 +27,9 @@ export function ButtonGroup({
   buttonTextStyle?: StyleProp<TextStyle>;
   selectedButtonTextStyle?: StyleProp<TextStyle>;
   scrollContainerStyle?: StyleProp<ViewStyle>;
+  activeComponent?: React.ReactNode;
+  iconStyle?: StyleProp<TextStyle>;
+  selectedIconStyle?: StyleProp<TextStyle>;
 }) {
   const theme = useColorTheme();
   return (
@@ -38,7 +44,7 @@ export function ButtonGroup({
           <Pressable
             key={option.value}
             onPress={() => state[1](option.value)}
-            style={({ pressed, hovered }: any) => [
+            style={[
               {
                 flexShrink: 0,
                 borderRadius: 0,
@@ -55,7 +61,14 @@ export function ButtonGroup({
           >
             {option.icon && (
               <Text style={buttonTextStyle}>
-                <Icon filled={state[0] === option.value} size={26}>
+                <Icon
+                  filled={state[0] === option.value}
+                  size={26}
+                  style={[
+                    iconStyle,
+                    state && state[0] === option.value && selectedIconStyle,
+                  ]}
+                >
                   {option.icon}
                 </Icon>
               </Text>
@@ -80,6 +93,7 @@ export function ButtonGroup({
                 {option.label}
               </ButtonText>
             )}
+            {option.value === state[0] && activeComponent}
           </Pressable>
         ))}
       </ScrollView>

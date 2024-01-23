@@ -16,7 +16,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -67,37 +66,35 @@ function PlanDayPrompt() {
   const theme = useColorTheme();
 
   return (
-    <TouchableOpacity style={{ flex: 1 }}>
-      <LinearGradient
-        colors={[theme[3], theme[3]]}
-        start={[0, 0]}
-        end={[1, 1]}
-        style={[styles.card]}
-      >
-        <Icon size={30}>gesture</Icon>
-        <View style={{ flex: 1 }}>
-          <Text
-            weight={700}
-            style={{ fontSize: 20, color: theme[11] }}
-            numberOfLines={1}
-          >
-            Plan your day
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              opacity: 0.7,
-              marginTop: 1.5,
-              color: theme[11],
-            }}
-            numberOfLines={1}
-          >
-            Tap to begin
-          </Text>
-        </View>
-        <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
-      </LinearGradient>
-    </TouchableOpacity>
+    <Pressable
+      style={({ pressed, hovered }: any) => [
+        styles.card,
+        { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+      ]}
+    >
+      <Icon size={30}>gesture</Icon>
+      <View style={{ flex: 1 }}>
+        <Text
+          weight={700}
+          style={{ fontSize: 20, color: theme[11] }}
+          numberOfLines={1}
+        >
+          Plan your day
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            opacity: 0.7,
+            marginTop: 1.5,
+            color: theme[11],
+          }}
+          numberOfLines={1}
+        >
+          Tap to begin
+        </Text>
+      </View>
+      <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+    </Pressable>
   );
 }
 
@@ -291,43 +288,39 @@ function JumpBackIn() {
 
   return (
     data !== null && (
-      <TouchableOpacity onPress={handlePress} style={{ flex: 1 }}>
-        <View
-          style={[
-            styles.card,
-            {
-              backgroundColor: theme[3],
-            },
-          ]}
-        >
-          <Icon size={30}>
-            {typeof tabMetadata.icon === "function"
-              ? tabMetadata.icon(data?.params)
-              : tabMetadata.icon}
-          </Icon>
-          <View>
-            <Text
-              weight={700}
-              style={{ fontSize: 20, color: theme[11] }}
-              numberOfLines={1}
-            >
-              {capitalizeFirstLetter(tabMetadata.name(data?.params)[0])}
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                opacity: 0.7,
-                marginTop: 1.5,
-                color: theme[11],
-              }}
-              numberOfLines={1}
-            >
-              {tabMetadata.name(data?.params)[1]}
-            </Text>
-          </View>
-          <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+      <Pressable
+        style={({ pressed, hovered }: any) => [
+          styles.card,
+          { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+        ]}
+      >
+        <Icon size={30}>
+          {typeof tabMetadata.icon === "function"
+            ? tabMetadata.icon(data?.params)
+            : tabMetadata.icon}
+        </Icon>
+        <View>
+          <Text
+            weight={700}
+            style={{ fontSize: 20, color: theme[11] }}
+            numberOfLines={1}
+          >
+            {capitalizeFirstLetter(tabMetadata.name(data?.params)[0])}
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              opacity: 0.7,
+              marginTop: 1.5,
+              color: theme[11],
+            }}
+            numberOfLines={1}
+          >
+            {tabMetadata.name(data?.params)[1]}
+          </Text>
         </View>
-      </TouchableOpacity>
+        <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+      </Pressable>
     )
   );
 }
@@ -572,10 +565,22 @@ export default function Index() {
             width: "auto",
             marginTop: 50,
           }}
-          buttonStyle={{ flex: 1, borderBottomColor: "transparent" }}
-          scrollContainerStyle={{ flex: 1, gap: 15 }}
+          buttonStyle={{ flex: 1, borderBottomWidth: 0 }}
+          activeComponent={
+            <View
+              style={{
+                height: 5,
+                width: 12,
+                borderRadius: 999,
+                backgroundColor: theme[11],
+                marginHorizontal: "auto",
+              }}
+            />
+          }
           buttonTextStyle={{ textAlign: "center" }}
-          selectedButtonStyle={{ borderBottomColor: theme[11] }}
+          iconStyle={{ color: theme[10] }}
+          selectedIconStyle={{ color: theme[11] }}
+          scrollContainerStyle={{ flex: 1, gap: 15 }}
         />
         <View
           style={{
