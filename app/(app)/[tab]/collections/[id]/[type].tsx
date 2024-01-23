@@ -289,7 +289,7 @@ const KanbanHeader = memo(function KanbanHeader({
       </View>
       {grid && (
         <>
-          {label && (
+          {label?.id && (
             <ColumnMenuTrigger label={label}>
               <IconButton disabled icon="more_vert" />
             </ColumnMenuTrigger>
