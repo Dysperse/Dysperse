@@ -9,6 +9,7 @@ import {
 import Icon from "../Icon";
 import Text from "../Text";
 import { useColor } from "../color";
+import { useColorTheme } from "../color/theme-provider";
 
 interface ChipProps {
   icon?: React.ReactNode;
@@ -38,10 +39,14 @@ export default function Chip({
   colorTheme,
 }: ChipProps) {
   const { session } = useUser();
-  const theme = useColor(
+  const colorScheme = useColorTheme();
+
+  const specifiedTheme = useColor(
     colorTheme || session?.user?.profile?.theme || "violet",
     useColorScheme() === "dark"
   );
+
+  const theme = colorTheme ? specifiedTheme : colorScheme;
 
   return (
     <Pressable

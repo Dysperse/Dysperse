@@ -1,8 +1,8 @@
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
@@ -29,11 +29,17 @@ const styles = StyleSheet.create({
 
 function ProfileModalContent({ email }) {
   const { data, error } = useSWR(["user/profile", { email }]);
-  const theme = useColor(data.profile.theme, useColorScheme() === "dark");
+  const theme = useColor(
+    data?.profile?.theme || "gray",
+    useColorScheme() === "dark"
+  );
 
   return data ? (
     <ColorThemeProvider theme={theme}>
-      <BottomSheetScrollView>
+      <BottomSheetScrollView
+        showsVerticalScrollIndicator={false}
+        aria-label="Scrollbar-Hidden"
+      >
         <View style={{ backgroundColor: theme[1], flex: 1 }}>
           <LinearGradient
             colors={[theme[9], theme[5]]}
@@ -42,17 +48,6 @@ function ProfileModalContent({ email }) {
               height: 140,
             }}
           >
-            <Button
-              style={{
-                position: "absolute",
-                top: 10,
-                right: 10,
-                backgroundColor: "transparent",
-              }}
-            >
-              <ButtonText style={{ color: theme[2] }}>Open</ButtonText>
-              <Icon style={{ color: theme[2] }}>north_east</Icon>
-            </Button>
             <ProfilePicture
               style={{ top: 80, position: "absolute" }}
               name={data.profile?.name || "--"}
@@ -124,9 +119,9 @@ function ProfileModalContent({ email }) {
       </BottomSheetScrollView>
     </ColorThemeProvider>
   ) : (
-    <Text style={{ color: theme[2], fontSize: 20 }}>
-      {error ? "Error" : "Loading..."}
-    </Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Spinner />
+    </View>
   );
 }
 
