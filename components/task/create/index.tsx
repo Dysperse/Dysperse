@@ -7,6 +7,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { Menu } from "@/ui/Menu";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -14,6 +15,7 @@ import {
   BottomSheetModal,
   BottomSheetTextInput,
   TouchableOpacity,
+  useBottomSheet,
 } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import React, {
@@ -37,7 +39,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import DateTimePicker from "react-native-ui-datepicker";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
@@ -45,7 +46,6 @@ import { TaskDrawerContext } from "../drawer/context";
 
 function Footer({ nameRef, menuRef, control }) {
   const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
 
   const dateMenuRef = useRef<BottomSheetModal>(null);
   const orange = useColor("orange", useColorScheme() === "dark");
@@ -70,37 +70,9 @@ function Footer({ nameRef, menuRef, control }) {
         alignItems: "center",
         gap: 5,
         paddingHorizontal: 15,
-        height: 60 + insets.bottom,
-        paddingBottom: insets.bottom,
-        shadowColor: theme[3],
-        shadowOffset: { width: 0, height: -40 },
-        shadowRadius: 40,
-        shadowOpacity: 0.5,
+        paddingVertical: 10,
       }}
     >
-      <View
-        style={{
-          backgroundColor: theme[2],
-          borderColor: theme[5],
-          ...(Platform.OS === "ios" && { width: "100%" }),
-          height: "100%",
-          alignItems: "center",
-          flexDirection: "row",
-          marginTop: "auto",
-        }}
-      >
-        <TaskDrawerContext.Provider
-          value={{ task: {}, mutateList: () => null, updateTask: () => null }}
-        >
-          <TaskAttachmentButton
-            onAttachmentCreate={(e) => console.log(e)}
-            onClose={() => nameRef.current.focus()}
-            onOpen={() => nameRef.current.focus()}
-          >
-            <Chip icon={<Icon>add</Icon>} />
-          </TaskAttachmentButton>
-        </TaskDrawerContext.Provider>
-      </View>
       <Controller
         control={control}
         rules={{ required: false }}
@@ -111,7 +83,7 @@ function Footer({ nameRef, menuRef, control }) {
             height={[440 + 23.5]}
             trigger={
               <Chip
-                style={{ marginLeft: "auto" }}
+                outlined
                 icon={<Icon>calendar_today</Icon>}
                 label={value ? value.format("MMM Do") : undefined}
               />
@@ -164,6 +136,7 @@ function Footer({ nameRef, menuRef, control }) {
         defaultValue={false}
         render={({ field: { onChange, value } }) => (
           <Chip
+            outlined
             onPress={() => {
               onChange(!value);
               rotate.value = withSpring(!value ? -35 : 0, {
@@ -223,6 +196,7 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
           onClose={onLabelPickerClose}
         >
           <Chip
+            outlined
             icon={
               value ? (
                 <Emoji emoji={value?.emoji} />
@@ -244,6 +218,7 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
 }
 function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
   const theme = useColorTheme();
+  const { forceClose } = useBottomSheet();
 
   useEffect(() => {
     Keyboard.addListener("keyboardWillHide", () => {
@@ -272,6 +247,9 @@ function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
             }
             if (e.key === "Enter") {
               handleSubmitButtonClick();
+            }
+            if (e.key === "Escape") {
+              forceClose();
             }
           }}
           onChangeText={(e) => {
@@ -368,41 +346,71 @@ function BottomSheetContent({
   };
 
   return (
-    <>
+    <View
+      style={{
+        height: 300,
+        maxWidth: 700,
+        width: "100%",
+        borderRadius: 20,
+        backgroundColor: theme[2],
+        borderWidth: 1,
+        borderColor: theme[5],
+        shadowColor: theme[1],
+        margin: "auto",
+        shadowOffset: { width: 0, height: 40 },
+        shadowRadius: 40,
+        padding: 10,
+        paddingHorizontal: 20,
+      }}
+    >
       <View style={{ flex: 1 }}>
         <View
           style={{
             gap: 10,
             flexDirection: "row",
-            paddingHorizontal: 20,
             alignItems: "center",
-            marginBottom: 10,
           }}
         >
           <TouchableOpacity onPress={handleClose}>
             <ButtonText style={{ color: theme[10] }}>Cancel</ButtonText>
           </TouchableOpacity>
-          <Chip
-            style={{ marginLeft: "auto", backgroundColor: theme[5] }}
-            icon={
-              <Icon bold style={{ color: theme[11] }}>
-                north
-              </Icon>
-            }
+          <IconButton
+            size={55}
+            variant="outlined"
+            style={{ marginLeft: "auto" }}
+            icon="north"
             onPress={handleSubmitButtonClick}
           />
         </View>
-        <View style={{ flex: 1 }}>
-          <TaskNameInput
-            control={control}
-            menuRef={menuRef}
-            handleSubmitButtonClick={handleSubmitButtonClick}
-            nameRef={nameRef}
-          />
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <TaskDrawerContext.Provider
+            value={{ task: {}, mutateList: () => null, updateTask: () => null }}
+          >
+            <TaskAttachmentButton
+              onAttachmentCreate={(e) => console.log(e)}
+              onClose={() => nameRef.current.focus()}
+              onOpen={() => nameRef.current.focus()}
+            >
+              <IconButton
+                style={{ marginTop: 55 }}
+                icon="add"
+                variant="filled"
+                size={40}
+              />
+            </TaskAttachmentButton>
+          </TaskDrawerContext.Provider>
+          <View>
+            <Footer nameRef={nameRef} menuRef={menuRef} control={control} />
+            <TaskNameInput
+              control={control}
+              menuRef={menuRef}
+              handleSubmitButtonClick={handleSubmitButtonClick}
+              nameRef={nameRef}
+            />
+          </View>
         </View>
       </View>
-      <Footer nameRef={nameRef} menuRef={menuRef} control={control} />
-    </>
+    </View>
   );
 }
 
@@ -447,9 +455,15 @@ export default function CreateTask({
       <BottomSheet
         onClose={handleClose}
         sheetRef={sheetRef || ref}
-        snapPoints={[300]}
-        maxWidth={500}
+        snapPoints={["100%"]}
+        maxWidth="100%"
         keyboardBehavior="interactive"
+        backgroundStyle={{ backgroundColor: "transparent" }}
+        handleComponent={null}
+        containerStyle={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
         <BottomSheetContent
           handleClose={handleClose}
