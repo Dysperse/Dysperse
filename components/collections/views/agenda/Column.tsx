@@ -111,7 +111,13 @@ export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
         row && { flexDirection: "row", alignItems: "center", gap: 20 },
       ]}
     >
-      <View style={{ position: "relative", marginBottom: 20 }}>
+      <View
+        style={{
+          paddingHorizontal: 20,
+          position: "relative",
+          marginBottom: 20,
+        }}
+      >
         <Shape color={theme[5]} size={100} />
         <View
           style={{
@@ -122,6 +128,7 @@ export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
             bottom: 0,
             justifyContent: "center",
             alignItems: "center",
+            marginLeft: "auto",
           }}
         >
           <Emoji emoji={message[0]} size={50} />

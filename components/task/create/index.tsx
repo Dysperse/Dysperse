@@ -433,7 +433,7 @@ export default function CreateTask({
 
   const handleClose = useCallback(() => {
     ref.current?.close();
-    mutate(null);
+    mutate?.(null);
   }, [mutate]);
 
   const trigger = useMemo(
