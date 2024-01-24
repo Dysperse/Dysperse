@@ -1,277 +1,208 @@
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  directUrl         = env("DIRECT_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id         String @id @unique @default(uuid())
-  identifier String @unique @default(uuid())
-
-  name     String
-  username String? @unique
-  email    String  @unique
-  password String
-  darkMode String  @default("system")
-  agreeTos Boolean @default(false)
-
-  lastActive       DateTime @default(now())
-  lastPlannedTasks DateTime @default(now())
-  homePagePattern  String?
-
-  color          String   @default("lime")
-  unlockedColors String[]
-
-  twoFactorSecret String @default("")
-  timeZone        String @default("America/Los_Angeles") @db.VarChar(255)
-
-  lastReleaseVersionViewed Int @default(77711209)
-
-  notifications      NotificationSettings?
-  Status             Status?
-  Profile            Profile?
-  PasswordResetToken PasswordResetToken[]
-
-  selectedProperty   Property?        @relation(fields: [selectedPropertyId], references: [id])
-  selectedPropertyId String?
-  properties         PropertyInvite[]
-
-  sessions    Session[]
-  Board       Board[]
-  Integration Integration[]
-  QrToken     QrToken[]
-
-  followers  Follows[]    @relation("following")
-  following  Follows[]    @relation("follower")
-  ShareToken ShareToken[]
-  Task       Task[]
-
-  rooms            Room[]
-  items            Item[]
-  Event            Event[]
-  EventParticipant EventParticipant[]
-  settings         Settings?
-}
-
-model Follows {
-  follower   User   @relation("follower", fields: [followerId], references: [email])
-  followerId String
-
-  following   User   @relation("following", fields: [followingId], references: [email])
-  followingId String
-
-  accepted Boolean @default(false)
-
-  @@id([followerId, followingId])
-  @@unique([followerId, followingId])
-}
-
-model Integration {
-  id   String @id @unique @default(uuid())
-  name String // Also used to identify the integration
-
-  lastSynced DateTime @default(now())
-
-  inputParams String // Stuff like urls, auth tokens, etc... (SHOULD BE ENCRYPTED!!!)
-  outputType  String @default("board")
-
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-
-  // Optional
-  boardId String?
-  board   Board?  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-
-  userId String
-  user   User   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
-}
-
-// Customizable notification settings (1 row per user)
-model NotificationSettings {
-  id               String @id @unique @default(uuid())
-  pushSubscription Json?
-
-  todoListUpdates Boolean @default(true)
-  planDay         Boolean @default(true)
-  followerUpdates Boolean @default(true)
-  statusUpdates   Boolean @default(true)
-  boardUpdates    Boolean @default(true)
-
-  planDayHour                   Int     @default(6)
-  notifyFriendsForStatusUpdates Boolean @default(true)
-
-  boards Boolean @default(true)
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
-}
-
-// Customizable notification settings (1 row per user)
-model Status {
-  id String @id @unique @default(uuid())
-
-  status String  @default("")
-  emoji  String?
-  text   String?
-
-  until   DateTime?
-  started DateTime?
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
-}
-
-// Customizable notification settings (1 row per user)
-model Profile {
-  id      String  @id @unique @default(uuid())
-  picture String?
-
-  spotify Json?
-  google  Json?
-
-  birthday     DateTime @default(now())
-  hobbies      String[]
-  badges       String[]
-  workingHours String?  @default("[]")
-
-  bio String @default("")
-
-  private Boolean @default(false)
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
-}
-
-model Settings {
-  id String @id @unique @default(uuid())
-
-  hiddenPerspectives String[] @default(["stream/backlog", "stream/upcoming", "stream/completed", "stream/unscheduled"])
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
-}
-
-// User sessions are stored on the server
-// Important: If there's way too much storage being used, just truncate this table 😭
 model Session {
-  id        String    @id @unique @default(uuid())
-  ip        String    @default("Unknown")
-  userId    String
-  timestamp DateTime? @default(now())
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-// Property modal box
-model Property {
-  id             String  @id @unique @default(uuid())
-  name           String  @default("My property")
-  type           String  @default("apartment")
-  vanishingTasks Boolean @default(false)
-  color          String  @default("cyan")
-
-  Board               Board[]
-  rooms               Room[]
-  inbox               InboxItem[]
-  inventory           Item[]
-  members             PropertyInvite[]
-  PropertyLinkInvites PropertyLinkInvite[]
-  Integration         Integration[]
-  Task                Task[]
-  ShareToken          ShareToken[]
-  User                User[]
-}
-
-// List of invited members to properties with their user permissions
-model PropertyInvite {
-  id          String  @id @unique @default(uuid())
-  userId      String
-  propertyId  String
-  selected    Boolean @default(false)
-  permission  String  @default("read-only")
-  accessToken String  @unique @default(uuid())
-  accepted    Boolean @default(false)
-
-  profile Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model PropertyLinkInvite {
-  id         String   @id @unique @default(uuid())
-  propertyId String
-  token      String   @unique @default(uuid())
-  accepted   Boolean  @default(false)
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-}
-
-model InboxItem {
-  id         String   @id @unique @default(uuid())
-  who        String
-  what       String
-  when       DateTime
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-}
-
-model PasswordResetToken {
   id        String   @id @unique @default(uuid())
-  userId    String
-  token     String   @unique @default(uuid())
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model ShareToken {
-  id String @id @unique @default(uuid())
-
-  createdAt DateTime  @default(now())
-  expiresAt DateTime?
-  token     String    @unique @default(uuid())
-
-  boardId String?
-  board   Board?  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-
-  readOnly Boolean @default(true)
-
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  ip        String   @default("Unknown")
+  timestamp DateTime @default(now())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Board {
-  id          String  @id @unique @default(uuid())
-  name        String
-  description String  @default("")
-  public      Boolean @default(true)
-  pinned      Boolean @default(false)
-  archived    Boolean @default(false)
-  wallpaper   String?
+model User {
+  id                       String  @id @unique @default(uuid())
+  username                 String? @unique
+  email                    String  @unique
+  password                 String
+  twoFactorSecret          String?
+  lastReleaseVersionViewed Int     @default(77711209)
+  timeZone                 String  @default("America/Los_Angeles")
 
-  userId String?
-  user   User?   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
+  profile  Profile?
+  agreeTos Boolean  @default(false)
 
-  shareTokens ShareToken[]
+  tabs         Tab[]
+  sessions     Session[]
+  spaces       SpaceInvite[]
+  collections  Collection[]
+  integrations Integration[]
 
-  propertyId   String
-  property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  columns      Column[]
+  notificationSettings      NotificationSettings?
+  notificationSubscriptions NotificationSubscription[]
+
+  // Friends
+  followers Follows[] @relation("following")
+  following Follows[] @relation("follower")
+
+  // etc
+  labels Label[]
+  audits Audit[]
+}
+
+model Profile {
+  name         String
+  bio          String   @default("")
+  birthday     DateTime @default(now())
+  picture      String?
+  badges       Json?
+  workingHours Json?
+  lastActive   DateTime @default(now())
+  private      Boolean  @default(false)
+  pattern      String?
+
+  theme          String   @default("violet")
+  darkMode       Boolean  @default(true)
+  unlockedThemes String[]
+
+  spotifyAuthTokens Json?
+  googleAuthTokens  Json?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Tab    Tab[]
+}
+
+// Notifications
+model NotificationSettings {
+  id String @id @unique @default(uuid())
+
+  dueDates Boolean @default(true)
+  planDay  Boolean @default(true)
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model NotificationSubscription {
+  id String @id @unique @default(uuid())
+
+  subscription Json
+  User         User?   @relation(fields: [userId], references: [id])
+  userId       String?
+}
+
+// Friends
+model Follows {
+  follower   User   @relation("follower", fields: [followerId], references: [id])
+  followerId String
+
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  accepted Boolean @default(false)
+  blocked  Boolean @default(false)
+
+  @@id([followerId, followingId])
+  @@unique([followerId, followingId])
+}
+
+// Tabs
+model Tab {
+  id     String @id @unique @default(uuid())
+  slug   String
+  params Json?
+
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId String?
+
+  labelId String?
+  label   Label?  @relation(fields: [labelId], references: [id])
+
+  order         String?
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  Profile       Profile? @relation(fields: [profileUserId], references: [userId])
+  profileUserId String?
+}
+
+// Spaces
+enum SpaceAccess {
+  READ_ONLY
+  ADMIN
+  OWNER
+}
+
+model Space {
+  id         String  @id @unique @default(uuid())
+  name       String
+  color      String  @default("violet")
+  pattern    String?
+  vanishMode Boolean @default(false)
+
+  collections  Collection[]
+  labels       Label[]
+  entities     Entity[]
+  members      SpaceInvite[]
   integrations Integration[]
 }
 
-model Column {
-  id      String @id @unique @default(uuid())
-  order   Int    @default(1)
-  name    String
-  emoji   String
-  boardId String
-  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  tasks   Task[]
+// Integrations
+enum IntegrationAdapter {
+  CANVAS_LMS
+  GOOGLE_CALENDAR
+}
+
+model Integration {
+  id   String             @id @unique @default(uuid())
+  name IntegrationAdapter
+
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId String?
+
+  lastSynced DateTime @default(now())
+  params     Json
+
+  space     Space  @relation(fields: [spaceId], references: [id])
+  createdBy User   @relation(fields: [userId], references: [id])
+  spaceId   String
+  userId    String
+}
+
+model SpaceInvite {
+  id       String      @id @unique @default(uuid())
+  selected Boolean     @default(true)
+  access   SpaceAccess @default(OWNER)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id])
+}
+
+// Labels & Entities 
+model Label {
+  id    String @id @unique @default(uuid())
+  // Appearance
+  name  String
+  emoji String
+  color String @default("violet")
+
+  // Location
+  entities  Entity[]
+  space     Space?   @relation(fields: [spaceId], references: [id])
+  spaceId   String
+  createdBy User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  // Collection?
+  collections Collection[]
+  tab         Tab[]
+}
+
+enum EntityType {
+  TASK
+  ITEM
+  NOTE
 }
 
 model CompletionInstance {
@@ -281,130 +212,102 @@ model CompletionInstance {
   // For recurring tasks
   iteration DateTime?
 
-  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task   Entity @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId String
 }
 
-model Task {
+model Collection {
   id          String  @id @unique @default(uuid())
+  // Info
   name        String
-  description String?
-  where       String?
-  color       String  @default("grey")
+  description String  @default("")
+  public      Boolean @default(true)
   pinned      Boolean @default(false)
+  archived    Boolean @default(false)
+  emoji       String?
 
+  gridOrder Json?
+
+  // Location
+  space   Space?  @relation(fields: [spaceId], references: [id])
+  spaceId String?
+
+  userId    String?
+  createdBy User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Stuff
+  labels       Label[]
+  integrations Integration[]
+  tab          Tab[]
+
+  entities Entity[]
+}
+
+enum EntityAttachmentType {
+  IMAGE
+  LINK
+  LOCATION
+}
+
+model EntityAttachment {
+  id   String               @id @unique @default(uuid())
+  type EntityAttachmentType @default(LINK)
+  data String
+
+  entity   Entity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  entityId String
+}
+
+enum AuditType {
+  CREATE
+  EDIT
+  POSTPONE
+  DELETE
+  COMPLETE_TASK
+}
+
+model Audit {
+  id        String    @id @unique @default(uuid())
+  data      String
+  type      AuditType @default(CREATE)
+  timestamp DateTime  @default(now())
+
+  userId String
+  who    User   @relation(fields: [userId], references: [id])
+
+  entity   Entity? @relation(fields: [entityId], references: [id])
+  entityId String?
+}
+
+model Entity {
+  id   String     @id @unique @default(uuid())
+  type EntityType
+
+  // For all "entities"
+  name        String
+  pinned      Boolean            @default(false)
+  label       Label?             @relation(fields: [labelId], references: [id])
+  note        String?
+  attachments EntityAttachment[]
+
+  trash          Boolean   @default(false)
   due            DateTime?
   dateOnly       Boolean   @default(true)
-  notifications  Int[]     @default([])
   recurrenceRule String?
+  notifications  Int[]     @default([10, 30, 60])
 
-  completed           Boolean              @default(false)
-  completedAt         DateTime?
+  // ONLY for tasks
   completionInstances CompletionInstance[]
 
-  createdBy User? @relation(fields: [userId], references: [id])
+  history Audit[]
 
-  image       String?
-  columnId    String?
-  lastUpdated DateTime @default(now())
-  column      Column?  @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId String?
 
-  parentTasks Task[] @relation("subtasks")
-  subTasks    Task[] @relation("subtasks")
+  agendaOrder String?
+  labelOrder  String?
 
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  userId     String?
-
-  Item Item[]
-}
-
-model QrToken {
-  id      String   @id @unique @default(uuid())
-  token   String   @unique @default(uuid())
-  expires DateTime
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
-}
-
-// Inventory redesign
-model Room {
-  id      String  @id @unique @default(uuid())
-  name    String  @default("My room")
-  note    String?
-  emoji   String  @default("📦")
-  private Boolean @default(false)
-
-  items Item[]
-
-  createdBy User   @relation(fields: [userId], references: [id])
-  userId    String
-
-  property   Property @relation(fields: [propertyId], references: [id])
-  propertyId String
-}
-
-model Item {
-  id             String   @id @unique @default(uuid())
-  name           String?
-  image          String?
-  quantity       String?
-  note           String?
-  categories     String[]
-  estimatedValue Int?
-  serialNumber   String?
-  condition      String?
-  starred        Boolean  @default(false)
-
-  createdBy User?     @relation(fields: [userId], references: [id])
-  userId    String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @default(now())
-
-  room   Room?   @relation(fields: [roomId], references: [id])
-  roomId String?
-
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-
-  // TODO: Users can attach tasks to items
-  tasks Task[]
-}
-
-// When2Meet style scheduling
-model Event {
-  id          String  @id @unique @default(uuid())
-  name        String
-  location    String?
-  description String?
-
-  startDate      DateTime
-  endDate        DateTime
-  excludingDates DateTime[]
-  excludingDays  String[]
-  excludingHours Int[]
-
-  timeZone String @default("America/Los_Angeles") @db.VarChar(255)
-
-  createdAt DateTime @default(now())
-  createdBy String
-  user      User     @relation(fields: [createdBy], references: [identifier], onDelete: Cascade)
-
-  participants EventParticipant[]
-}
-
-model EventParticipant {
-  id           String @id @unique @default(uuid())
-  availability Json   @default("[]")
-
-  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId String
-
-  // For users who aren't signed up
-  userData Json?
-
-  // For users who are signed up
-  userId String?
-  user   User?   @relation(fields: [userId], references: [identifier], onDelete: Cascade)
+  spaceId String?
+  space   Space?  @relation(fields: [spaceId], references: [id])
+  labelId String?
 }

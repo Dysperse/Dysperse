@@ -5,10 +5,10 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.organizeImports": true,
-    "source.sortMembers": true,
-    "source.fixAll.eslint": true
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
+    "source.sortMembers": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.validate": ["typescript"],
   "docwriter.style": "JSDoc",
