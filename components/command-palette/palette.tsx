@@ -75,7 +75,6 @@ const PaletteItem = memo(
 );
 
 const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
-  const theme = useColorTheme();
   return (
     <ScrollView
       horizontal
@@ -247,7 +246,8 @@ const PaletteHeader = memo(function PaletteHeader({
         {...(Platform.OS === "web" && {
           onKeyUp: (e) => {
             if (e.key === "Escape") {
-              handleClose();
+              // handleClose();
+              ref.current.blur();
             } else {
               handleKeyPress();
             }

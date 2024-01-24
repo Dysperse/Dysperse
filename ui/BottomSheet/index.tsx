@@ -20,6 +20,7 @@ export interface DBottomSheetProps extends BottomSheetProps {
   disableBackToClose?: boolean;
   disableEscapeToClose?: boolean;
   disableBackdropPressToClose?: boolean;
+  maxBackdropOpacity?: number;
 }
 
 const styles = StyleSheet.create({
@@ -70,6 +71,7 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       backdropComponent={(d) => (
         <BottomSheetBackdropComponent
           {...d}
+          maxBackdropOpacity={props.maxBackdropOpacity ?? 0.5}
           dismissible={
             props.disableBackdropPressToClose !== true && props.dismissible
           }

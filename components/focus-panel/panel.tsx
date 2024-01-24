@@ -1,9 +1,9 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Platform, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -16,8 +16,25 @@ import { WeatherWidget } from "../home/weather/widget";
 import { ContentWrapper } from "../layout/content";
 import { useFocusPanelContext } from "./context";
 
-function Tools() {
+const widgetStyles = StyleSheet.create({
+  text: { marginBottom: 5 },
+});
+
+type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
+
+function WidgetBar({ widgets, setWidgets }) {
   const theme = useColorTheme();
+
+  const handleWidgetToggle = (widget: Widget) => {
+    setWidgets((widgets) => {
+      if (widgets.includes(widget)) {
+        return widgets.filter((w) => w !== widget);
+      } else {
+        return [...widgets, widget];
+      }
+    });
+  };
+
   return (
     <View
       style={{
@@ -31,7 +48,10 @@ function Tools() {
         justifyContent: "space-around",
       }}
     >
-      <IconButton>
+      <IconButton
+        onPress={() => handleWidgetToggle("upcoming")}
+        style={widgets.includes("upcoming") && { backgroundColor: theme[4] }}
+      >
         <Svg
           fill="none"
           viewBox="0 0 24 24"
@@ -57,6 +77,7 @@ function Tools() {
 
 function PanelContent() {
   const { isFocused } = useFocusPanelContext();
+  const [widgets, setWidgets] = useState<Widget[]>([]);
 
   return (
     <ContentWrapper
@@ -70,7 +91,7 @@ function PanelContent() {
             <TodaysDate />
             <WeatherWidget />
           </ScrollView>
-          <Tools />
+          <WidgetBar widgets={widgets} setWidgets={setWidgets} />
         </>
       )}
     </ContentWrapper>

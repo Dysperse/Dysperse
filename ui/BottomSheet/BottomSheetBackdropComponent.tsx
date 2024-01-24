@@ -11,8 +11,10 @@ export const BottomSheetBackdropComponent = ({
   // animatedIndex,
   style,
   dismissible,
+  maxBackdropOpacity,
 }: BottomSheetBackdropProps & {
   dismissible: boolean;
+  maxBackdropOpacity: number;
 }) => {
   // animated variables
   const { forceClose, collapse, animatedIndex } = useBottomSheet();
@@ -22,7 +24,7 @@ export const BottomSheetBackdropComponent = ({
     opacity: interpolate(
       animatedIndex.value,
       [-1, 0],
-      [0, 0.5],
+      [0, maxBackdropOpacity],
       Extrapolate.CLAMP
     ),
   }));

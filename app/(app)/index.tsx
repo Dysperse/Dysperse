@@ -18,7 +18,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import {
   ImageBackground,
   Pressable,
@@ -535,8 +534,6 @@ export default function Index() {
   const { session } = useUser();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
-
-  useHotkeys("ctrl+k", () => alert(1), []);
 
   return (
     <ContentWrapper>

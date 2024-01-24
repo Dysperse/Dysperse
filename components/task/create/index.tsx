@@ -9,6 +9,7 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { Menu } from "@/ui/Menu";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
@@ -71,6 +72,7 @@ function Footer({ nameRef, menuRef, control }) {
         gap: 5,
         paddingHorizontal: 15,
         paddingVertical: 10,
+        marginBottom: 5,
       }}
     >
       <Controller
@@ -239,7 +241,7 @@ function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
           cursorColor={theme[9]}
           autoFocus={Platform.OS !== "web"}
           ref={nameRef}
-          placeholder="Task name"
+          placeholder="Type / for commands"
           onBlur={onBlur}
           onKeyPress={(e: any) => {
             if (e.key === "/") {
@@ -260,13 +262,12 @@ function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
           multiline
           style={{
             color: theme[11],
-            fontFamily: "body_400",
+            fontFamily: "body_700",
             shadowRadius: 0,
             fontSize: 25,
             paddingHorizontal: 20,
             paddingBottom: 55,
             flex: 1,
-            minHeight: "100%",
             textAlignVertical: "top",
             ...(Platform.OS === "web" && ({ outlineStyle: "none" } as any)),
           }}
@@ -284,6 +285,7 @@ function BottomSheetContent({
   mutateList,
 }) {
   const { sessionToken } = useUser();
+  const { forceClose } = useBottomSheet();
   const menuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
   const { control, handleSubmit, reset } = useForm({
@@ -354,10 +356,10 @@ function BottomSheetContent({
         borderRadius: 20,
         backgroundColor: theme[2],
         borderWidth: 1,
-        borderColor: theme[5],
+        borderColor: theme[6],
         shadowColor: theme[1],
         margin: "auto",
-        shadowOffset: { width: 0, height: 40 },
+        shadowOffset: { width: 20, height: 20 },
         shadowRadius: 40,
         padding: 10,
         paddingHorizontal: 20,
@@ -371,13 +373,20 @@ function BottomSheetContent({
             alignItems: "center",
           }}
         >
-          <TouchableOpacity onPress={handleClose}>
-            <ButtonText style={{ color: theme[10] }}>Cancel</ButtonText>
+          <TouchableOpacity onPress={() => forceClose()}>
+            <ButtonText style={{ color: theme[10] }} weight={300}>
+              Cancel
+            </ButtonText>
           </TouchableOpacity>
+          <Text
+            style={{ marginHorizontal: "auto", color: theme[9] }}
+            weight={800}
+          >
+            New task
+          </Text>
           <IconButton
             size={55}
             variant="outlined"
-            style={{ marginLeft: "auto" }}
             icon="north"
             onPress={handleSubmitButtonClick}
           />
@@ -392,14 +401,14 @@ function BottomSheetContent({
               onOpen={() => nameRef.current.focus()}
             >
               <IconButton
-                style={{ marginTop: 55 }}
+                style={{ marginTop: 63 }}
                 icon="add"
                 variant="filled"
-                size={40}
+                size={35}
               />
             </TaskAttachmentButton>
           </TaskDrawerContext.Provider>
-          <View>
+          <View style={{ flex: 1 }}>
             <Footer nameRef={nameRef} menuRef={menuRef} control={control} />
             <TaskNameInput
               control={control}
@@ -464,6 +473,7 @@ export default function CreateTask({
           alignItems: "center",
           justifyContent: "center",
         }}
+        maxBackdropOpacity={0.1}
       >
         <BottomSheetContent
           handleClose={handleClose}

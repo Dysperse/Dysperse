@@ -6,6 +6,7 @@ import MenuPopover, {
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Dayjs } from "dayjs";
 import { ReactElement, useCallback, useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { MenuProps } from "react-native-popup-menu";
 interface DefaultEntityProps {
   label: object;
@@ -22,6 +23,7 @@ export const CreateEntityTrigger = ({
   popoverProps,
   defaultValues,
   mutateList,
+  shortcutEnabled = false,
 }: {
   children: ReactElement;
   menuProps?: MenuProps;
@@ -29,12 +31,14 @@ export const CreateEntityTrigger = ({
   popoverProps?: Partial<DysperseMenuProps>;
   defaultValues: Partial<DefaultEntityProps>;
   mutateList?: (e) => void;
+  shortcutEnabled?: boolean;
 }) => {
   const createTaskRef = useRef<BottomSheetModal>(null);
   const handleCreateTask = useCallback(
     () => createTaskRef.current?.present(),
     []
   );
+  useHotkeys("alt+t", handleCreateTask, { enabled: shortcutEnabled });
   return (
     <>
       <MenuPopover

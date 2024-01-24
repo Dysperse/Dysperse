@@ -88,7 +88,10 @@ const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
   const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], handleOpen);
+  useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], (e) => {
+    e.preventDefault();
+    handleOpen();
+  });
 
   return (
     <Pressable
@@ -242,6 +245,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
   return (
     <CreateEntityTrigger
+      shortcutEnabled
       additional={[
         { divider: true, key: "1" },
         { icon: "label", text: "Label", callback: () => alert(1) },
