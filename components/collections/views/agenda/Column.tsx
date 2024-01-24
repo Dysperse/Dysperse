@@ -469,11 +469,7 @@ export function Column({
                   );
                 }}
               >
-                <Button
-                  disabled
-                  variant="filled"
-                  style={{ flex: 1, minHeight: 50 }}
-                >
+                <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
                   <ButtonText>New</ButtonText>
                   <Icon>add</Icon>
                 </Button>
@@ -483,7 +479,7 @@ export function Column({
                 onTaskUpdate={onTaskUpdate}
                 columnMenuRef={columnMenuRef}
               >
-                <Button variant="outlined" disabled style={{ height: 50 }}>
+                <Button variant="outlined" style={{ height: 50 }}>
                   <Icon>more_horiz</Icon>
                 </Button>
               </ColumnMenu>

@@ -11,7 +11,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams } from "expo-router";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { Pressable, StyleSheet, View, useColorScheme } from "react-native";
 import useSWR from "swr";
 
 const headerStyles = StyleSheet.create({
@@ -52,7 +52,7 @@ function LabelHeader({ data }) {
       <View style={headerStyles.container}>
         <MenuPopover
           trigger={
-            <View
+            <Pressable
               style={[
                 headerStyles.icon,
                 {
@@ -61,7 +61,7 @@ function LabelHeader({ data }) {
               ]}
             >
               <Emoji size={40} emoji={data.emoji} />
-            </View>
+            </Pressable>
           }
           options={[
             { text: "Edit icon", icon: "mood", callback: () => {} },

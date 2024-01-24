@@ -1,11 +1,12 @@
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
+import { CreateLabelModal } from "@/components/labels/createModal";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -27,6 +28,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { mutate } from "swr";
 import OpenTabsList from "../bottom-navigation/tabs/carousel";
 
 export const styles = StyleSheet.create({
@@ -149,7 +151,7 @@ export const LogoButton = memo(function LogoButton({
         }}
         containerStyle={{ width: 160, marginLeft: 10, marginTop: 5 }}
         trigger={
-          <View
+          <Pressable
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -159,7 +161,7 @@ export const LogoButton = memo(function LogoButton({
           >
             <Logo size={35} color={theme[8]} />
             <Icon style={{ color: theme[8] }}>expand_more</Icon>
-          </View>
+          </Pressable>
         }
         options={[
           {
@@ -236,7 +238,19 @@ const QuickCreateButton = memo(function QuickCreateButton() {
       shortcutEnabled
       additional={[
         { divider: true, key: "1" },
-        { icon: "label", text: "Label", callback: () => alert(1) },
+        {
+          renderer: () => (
+            <CreateLabelModal
+              mutate={() => mutate(() => true)}
+              // onClose={() => searchRef.current.focus()}
+            >
+              <MenuItem>
+                <Icon>label</Icon>
+                <Text variant="menuItem">Label</Text>
+              </MenuItem>
+            </CreateLabelModal>
+          ),
+        },
         {
           icon: "layers",
           text: "Collection",
@@ -251,7 +265,6 @@ const QuickCreateButton = memo(function QuickCreateButton() {
       }}
     >
       <Pressable
-        disabled
         style={({ pressed }) => [
           styles.button,
           {

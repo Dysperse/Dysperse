@@ -285,7 +285,7 @@ const KanbanHeader = memo(function KanbanHeader({
         <>
           {label?.id && (
             <ColumnMenuTrigger label={label}>
-              <IconButton disabled icon="more_horiz" />
+              <IconButton icon="more_horiz" />
             </ColumnMenuTrigger>
           )}
           <CreateEntityTrigger
@@ -295,7 +295,7 @@ const KanbanHeader = memo(function KanbanHeader({
             }}
             mutateList={onEntityCreate}
           >
-            <IconButton icon="add" disabled variant="filled" />
+            <IconButton icon="add" variant="filled" />
           </CreateEntityTrigger>
         </>
       )}
@@ -437,22 +437,14 @@ function KanbanColumn(props: KanbanColumnProps) {
                     label: omit(["entities"], props.label),
                   }}
                 >
-                  <Button
-                    disabled
-                    variant="filled"
-                    style={{ flex: 1, minHeight: 50 }}
-                  >
+                  <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
                     <ButtonText>New</ButtonText>
                     <Icon>add</Icon>
                   </Button>
                 </CreateEntityTrigger>
                 {props.label && (
                   <ColumnMenuTrigger label={props.label}>
-                    <Button
-                      disabled
-                      variant="outlined"
-                      style={{ minHeight: 50 }}
-                    >
+                    <Button variant="outlined" style={{ minHeight: 50 }}>
                       <Icon>more_horiz</Icon>
                     </Button>
                   </ColumnMenuTrigger>
@@ -819,7 +811,6 @@ function Stream() {
                 }}
               >
                 <Button
-                  disabled
                   variant="filled"
                   style={{ flex: 1, minHeight: 50, paddingHorizontal: 20 }}
                 >

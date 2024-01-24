@@ -1,4 +1,4 @@
-import React, { ReactElement, useRef } from "react";
+import React, { ReactElement, cloneElement, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
   Pressable,
@@ -77,6 +77,12 @@ export default function MenuPopover({
     if (menuRef?.current?.isOpen()) menuRef.current.close();
   });
 
+  const handleOpen = async () => {
+    menuRef.current.open();
+  };
+
+  const t = cloneElement(trigger, { onPress: handleOpen });
+
   return (
     <Menu
       {...menuProps}
@@ -92,7 +98,9 @@ export default function MenuPopover({
       }}
       renderer={renderers.Popover}
     >
-      <MenuTrigger>{trigger}</MenuTrigger>
+      <MenuTrigger disabled customStyles={{ TriggerTouchableComponent: View }}>
+        {t}
+      </MenuTrigger>
       <MenuOptions
         customStyles={{
           optionsContainer: {
@@ -144,7 +152,10 @@ export default function MenuPopover({
                       {...props}
                     >
                       <Icon>{icon}</Icon>
-                      <Text weight={300} style={{ color: theme[11] }}>
+                      <Text
+                        weight={300}
+                        style={{ color: theme[11], fontSize: 16 }}
+                      >
                         {text}
                       </Text>
                       {props.selected && (

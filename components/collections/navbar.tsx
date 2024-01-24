@@ -456,7 +456,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         containerStyle={{ width: 230 }}
         trigger={
           <IconButton
-            disabled
             variant="filled"
             style={[
               styles.navbarIconButton,
@@ -482,7 +481,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         }}
         trigger={
           <IconButton
-            disabled
             variant="filled"
             style={[
               styles.navbarIconButton,
@@ -510,7 +508,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       {type === "agenda" && <AgendaNavbarButtons />}
       <MenuPopover
         trigger={
-          <IconButton disabled variant="filled" style={styles.navbarIconButton}>
+          <IconButton variant="filled" style={styles.navbarIconButton}>
             <Icon>filter_list</Icon>
           </IconButton>
         }
@@ -526,7 +524,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           },
         ]}
       >
-        <Icon style={{ color: theme[1] }}>person_add</Icon>
+        <Icon style={{ color: theme[1] }}>ios_share</Icon>
         <Text style={{ color: theme[1] }} weight={400}>
           Share
         </Text>
