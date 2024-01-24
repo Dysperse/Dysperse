@@ -2,10 +2,13 @@ import { CreateEntityTrigger } from "@/components/collections/views/CreateEntity
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
+import { SpacePage } from "@/components/space";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { Menu } from "@/ui/Menu";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -15,6 +18,7 @@ import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
+  Dimensions,
   Linking,
   Platform,
   Pressable,
@@ -28,7 +32,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 import OpenTabsList from "../bottom-navigation/tabs/carousel";
 
 export const styles = StyleSheet.create({
@@ -86,6 +90,34 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
     </Pressable>
   );
 });
+
+function Space() {
+  const { session } = useUser();
+  const { data, error } = useSWR(
+    session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
+  );
+  useHotkeys("esc", () => router.back());
+
+  return (
+    <>
+      {data ? (
+        <SpacePage space={data} />
+      ) : error ? (
+        <ErrorAlert />
+      ) : (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <Spinner />
+        </View>
+      )}
+    </>
+  );
+}
 
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
@@ -165,9 +197,20 @@ export const LogoButton = memo(function LogoButton({
         }
         options={[
           {
-            icon: "communities",
-            text: "Space",
-            callback: () => router.push("/space"),
+            renderer: () => (
+              <Menu
+                height={[Dimensions.get("window").height - 100]}
+                width={500}
+                trigger={
+                  <MenuItem>
+                    <Icon>communities</Icon>
+                    <Text variant="menuItem">Space</Text>
+                  </MenuItem>
+                }
+              >
+                <Space />
+              </Menu>
+            ),
           },
           {
             icon: "settings",
@@ -204,7 +247,6 @@ export const LogoButton = memo(function LogoButton({
           containerStyle={{ marginTop: 10, width: 200 }}
           trigger={
             <IconButton
-              disabled
               size={40}
               onPress={toggleHidden}
               icon="dock_to_right"
@@ -427,12 +469,6 @@ export function Sidebar() {
             flexDirection: "column",
             maxHeight: "100%",
             backgroundColor: theme[2],
-            ...((pathname === "/open" || pathname.includes("space")) && {
-              filter: "brightness(70%)",
-              transition: "all .3s",
-              transitionDelay: ".1s",
-              pointerEvents: "none",
-            }),
             ...(Platform.OS === "web" &&
               ({
                 paddingTop: "env(titlebar-area-height,0)",

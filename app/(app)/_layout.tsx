@@ -198,6 +198,7 @@ export default function AppLayout() {
                           }}
                         />
                         {[
+                          "space",
                           "settings/index",
                           "settings/appearance",
                           "settings/personal-information",
@@ -207,9 +208,15 @@ export default function AppLayout() {
                             key={d}
                             options={{
                               headerTitle: d !== "settings/index" && "Settings",
-                              header: (props) => (
-                                <Navbar icon="arrow_back_ios_new" {...props} />
-                              ),
+                              header:
+                                d === "space"
+                                  ? () => null
+                                  : (props) => (
+                                      <Navbar
+                                        icon="arrow_back_ios_new"
+                                        {...props}
+                                      />
+                                    ),
                               ...TransitionPresets.SlideFromRightIOS,
                               cardStyleInterpolator: forHorizontalIOS,
                             }}
@@ -234,21 +241,6 @@ export default function AppLayout() {
                               gestureResponseDistance: width,
                               cardStyleInterpolator: forHorizontalIOS,
                               // cardStyle: { marginBottom: 0 },
-                            }}
-                          />
-                        ))}
-                        {["space"].map((d) => (
-                          <JsStack.Screen
-                            name={d}
-                            key={d}
-                            options={{
-                              presentation: "modal",
-                              ...TransitionPresets.ModalPresentationIOS,
-                              gestureResponseDistance: height,
-                              cardStyle: {
-                                marginBottom: 0,
-                                ...(breakpoints.md && desktopPresentationModal),
-                              },
                             }}
                           />
                         ))}

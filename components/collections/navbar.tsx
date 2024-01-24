@@ -1,5 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
@@ -304,6 +305,45 @@ interface CollectionNavbarProps {
   setEditOrderMode: (value: boolean) => void;
 }
 
+const ShareCollection = memo(function ShareCollection() {
+  const ref = useRef<BottomSheetModal>(null);
+  const { data } = useCollectionContext();
+  const { session } = useSession();
+  const theme = useColorTheme();
+
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+
+  return (
+    <>
+      <Pressable
+        onPress={handleOpen}
+        style={({ pressed, hovered }: any) => [
+          styles.navbarIconButton,
+          {
+            backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+            width: 120,
+            gap: 15,
+          },
+        ]}
+      >
+        <Icon style={{ color: theme[1] }}>ios_share</Icon>
+        <Text style={{ color: theme[1] }} weight={400}>
+          Share
+        </Text>
+      </Pressable>
+
+      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["60%"]}>
+        <View style={{ padding: 25 }}>
+          <Text weight={900} style={{ fontSize: 25 }}>
+            Share
+          </Text>
+        </View>
+      </BottomSheet>
+    </>
+  );
+});
+
 export const CollectionNavbar = memo(function CollectionNavbar({
   editOrderMode,
   setEditOrderMode,
@@ -514,21 +554,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         }
         options={filterOptions}
       />
-      <Pressable
-        style={({ pressed, hovered }: any) => [
-          styles.navbarIconButton,
-          {
-            backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-            width: 120,
-            gap: 15,
-          },
-        ]}
-      >
-        <Icon style={{ color: theme[1] }}>ios_share</Icon>
-        <Text style={{ color: theme[1] }} weight={400}>
-          Share
-        </Text>
-      </Pressable>
+      <ShareCollection />
     </View>
   );
 });

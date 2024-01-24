@@ -18,7 +18,7 @@ export const ColorThemeProvider = ({
       );
       document.body.style.cssText = variables.join(" ");
     }
-  });
+  }, [theme]);
   return (
     <ColorThemeContext.Provider value={theme}>
       {children}

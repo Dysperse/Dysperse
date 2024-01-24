@@ -82,7 +82,7 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       }}
       containerStyle={[styles.container, { maxWidth: props.maxWidth || 500 }]}
       backgroundStyle={[styles.background, { backgroundColor: theme[2] }]}
-      handleIndicatorStyle={{ backgroundColor: theme[5] }}
+      handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}
     >
       {props.disableBackToClose !== true && Platform.OS !== "web" && (
