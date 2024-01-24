@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
+    width: "100%",
   },
   emptyIcon: { transform: [{ rotate: "-45deg" }] },
   emptyIconContainer: {
@@ -126,11 +127,18 @@ export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
           <Emoji emoji={message[0]} size={50} />
         </View>
       </View>
-      <View style={row ? { marginTop: -30 } : { alignItems: "center" }}>
-        <Text weight={300} style={{ fontSize: 30 }}>
+      <View
+        style={[
+          row ? { marginTop: -30 } : { alignItems: "center" },
+          { flex: 1 },
+        ]}
+      >
+        <Text weight={300} style={{ fontSize: 30 }} numberOfLines={1}>
           {message[1]}
         </Text>
-        <Text style={{ opacity: 0.6 }}>{message[2]}</Text>
+        <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+          {message[2]}
+        </Text>
       </View>
     </View>
   );
