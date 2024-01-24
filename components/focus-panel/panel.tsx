@@ -50,7 +50,7 @@ function WidgetBar({ widgets, setWidgets }) {
     >
       <IconButton
         onPress={() => handleWidgetToggle("upcoming")}
-        style={widgets.includes("upcoming") && { backgroundColor: theme[4] }}
+        style={widgets.includes("upcoming") && { backgroundColor: theme[6] }}
       >
         <Svg
           fill="none"
@@ -67,10 +67,19 @@ function WidgetBar({ widgets, setWidgets }) {
           />
         </Svg>
       </IconButton>
-      <IconButton icon="wb_sunny" />
-      <IconButton icon="timer" />
-      <IconButton icon="auto_awesome" />
-      <IconButton icon="music_note" />
+      {[
+        { icon: "wb_sunny", widget: "weather" },
+        { icon: "timer", widget: "clock" },
+        { icon: "auto_awesome", widget: "assistant" },
+        { icon: "music_note", widget: "music" },
+      ].map(({ icon, widget }) => (
+        <IconButton
+          key={widget}
+          onPress={() => handleWidgetToggle(widget as any)}
+          style={widgets.includes(widget) && { backgroundColor: theme[6] }}
+          icon={icon}
+        />
+      ))}
     </View>
   );
 }

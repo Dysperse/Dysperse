@@ -25,10 +25,6 @@ export const useTabMetadata = (slug: string, tab: any) => {
       icon: "label",
       name: () => [],
     },
-    "/[tab]/users/": {
-      icon: "alternate_email",
-      name: (params, slug) => [params.id],
-    },
   };
 
   const match = Object.keys(startWithMatchers).find((key) =>
