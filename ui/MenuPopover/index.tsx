@@ -47,7 +47,7 @@ export function MenuItem(
       {...props}
       style={({ pressed, hovered }: any) => [
         {
-          backgroundColor: pressed ? theme[5] : hovered ? theme[6] : undefined,
+          backgroundColor: pressed ? theme[6] : hovered ? theme[5] : undefined,
           borderRadius: 20,
           zIndex: 2,
         },
@@ -111,7 +111,7 @@ export default function MenuPopover({
           },
         }}
       >
-        <View tint="dark" style={{ flex: 1, backgroundColor: theme[4] }}>
+        <View style={{ flex: 1, backgroundColor: theme[4], padding: 5 }}>
           {options.map(
             ({
               icon,
