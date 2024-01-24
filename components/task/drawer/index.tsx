@@ -90,6 +90,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
         }}
         {...(breakpoints.md && {
           handleComponent: () => <View style={{ paddingTop: 10 }} />,
+          maxBackdropOpacity: 0.3,
         })}
       >
         {data?.id ? (

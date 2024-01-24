@@ -527,7 +527,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         ]}
       >
         <Icon style={{ color: theme[1] }}>person_add</Icon>
-        <Text style={{ color: theme[1], fontSize: 17 }}>Share</Text>
+        <Text style={{ color: theme[1] }} weight={400}>
+          Share
+        </Text>
       </Pressable>
     </View>
   );

@@ -1,7 +1,12 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React, { ReactElement, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
+import {
+  Pressable,
+  PressableProps,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import {
   Menu,
   MenuOption,
@@ -81,14 +86,7 @@ export default function MenuPopover({
         closeAnimationDuration: 0,
         preferredPlacement: "bottom",
         anchorStyle: {
-          backgroundColor: theme[3],
-          borderTopWidth: 1,
-          borderLeftWidth: 1,
-          borderColor: theme[6],
-          zIndex: 1,
-          width: 5,
-          height: 5,
-          marginBottom: 8,
+          opacity: 0,
         },
         ...menuProps?.rendererProps,
       }}
@@ -99,11 +97,9 @@ export default function MenuPopover({
         customStyles={{
           optionsContainer: {
             width: 180,
-            borderWidth: 1,
             borderRadius: 20,
             overflow: "hidden",
-            backgroundColor: theme[3],
-            borderColor: theme[6],
+            backgroundColor: "transparent",
             shadowColor: theme[1],
             shadowRadius: 20,
             shadowOpacity: 0.8,
@@ -115,7 +111,7 @@ export default function MenuPopover({
           },
         }}
       >
-        <LinearGradient colors={[theme[3], theme[4]]} style={{ padding: 3 }}>
+        <View tint="dark" style={{ flex: 1, backgroundColor: theme[4] }}>
           {options.map(
             ({
               icon,
@@ -148,10 +144,7 @@ export default function MenuPopover({
                       {...props}
                     >
                       <Icon>{icon}</Icon>
-                      <Text
-                        weight={300}
-                        style={{ color: theme[11], fontSize: 17 }}
-                      >
+                      <Text weight={300} style={{ color: theme[11] }}>
                         {text}
                       </Text>
                       {props.selected && (
@@ -163,7 +156,7 @@ export default function MenuPopover({
               </React.Fragment>
             )
           )}
-        </LinearGradient>
+        </View>
       </MenuOptions>
     </Menu>
   );

@@ -3,8 +3,12 @@ import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Platform, StyleSheet, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
+import {
+  Gesture,
+  GestureDetector,
+  ScrollView,
+} from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -107,6 +111,63 @@ function PanelContent() {
   );
 }
 
+function PanelSwipeTrigger({ tapGesture }) {
+  const theme = useColorTheme();
+  const width = useSharedValue(15);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(width.value, { damping: 30, stiffness: 400 }),
+    };
+  });
+
+  const dotStyle = useAnimatedStyle(() => ({
+    height: withSpring(width.value === 15 ? 20 : 40, {
+      damping: 30,
+      stiffness: 400,
+    }),
+  }));
+
+  return (
+    <Pressable
+      onHoverIn={() => (width.value = 25)}
+      onHoverOut={() => (width.value = 15)}
+      onPressIn={() => (width.value = 25)}
+      onPressOut={() => (width.value = 15)}
+      style={{
+        height: "100%",
+        paddingHorizontal: 15,
+        justifyContent: "center",
+        marginHorizontal: -15,
+        marginLeft: -25,
+      }}
+    >
+      {({ pressed, hovered }: any) => (
+        <GestureDetector gesture={tapGesture}>
+          <Animated.View
+            style={[
+              animatedStyle,
+              { alignItems: "center", paddingVertical: 20 },
+            ]}
+          >
+            <Animated.View
+              style={[
+                dotStyle,
+                {
+                  width: 5,
+                  borderRadius: 99,
+                  backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+                  transform: pressed ? [{ scale: 1.1 }] : [],
+                },
+              ]}
+            />
+          </Animated.View>
+        </GestureDetector>
+      )}
+    </Pressable>
+  );
+}
+
 const FocusPanel = memo(function FocusPanel() {
   const { isFocused, setFocus } = useFocusPanelContext();
   const marginRight = useSharedValue(-350);
@@ -123,32 +184,48 @@ const FocusPanel = memo(function FocusPanel() {
   });
 
   useEffect(() => {
-    if (isFocused) {
-      marginRight.value = 0;
-    } else {
-      marginRight.value = -350;
-    }
+    marginRight.value = isFocused ? 0 : -350;
   }, [isFocused, marginRight]);
 
   const breakpoints = useResponsiveBreakpoints();
+  const pan = Gesture.Pan()
+    .onChange(({ changeX }) => {
+      const maxMargin = 350;
+      marginRight.value = Math.max(
+        -maxMargin,
+        Math.min(marginRight.value - changeX, 0)
+      );
+    })
+    .onEnd(({ velocityX }) => {
+      marginRight.value = velocityX > 0 ? -350 : 0;
+      setFocus(velocityX <= 0);
+    });
+
+  const tap = Gesture.Tap().onEnd(() => setFocus(!isFocused));
 
   return !breakpoints.md ? null : (
-    <Animated.View
-      style={[
-        animatedStyle,
-        {
-          padding: 10,
-          width: 350,
-          paddingLeft: 0,
-          ...(Platform.OS === "web" &&
-            ({
-              marginTop: "env(titlebar-area-height,0)",
-            } as any)),
-        },
-      ]}
-    >
-      <PanelContent />
-    </Animated.View>
+    <>
+      <GestureDetector gesture={pan}>
+        <PanelSwipeTrigger tapGesture={tap} />
+      </GestureDetector>
+
+      <Animated.View
+        style={[
+          animatedStyle,
+          {
+            padding: 10,
+            paddingLeft: 0,
+            width: 350,
+            ...(Platform.OS === "web" &&
+              ({
+                marginTop: "env(titlebar-area-height,0)",
+              } as any)),
+          },
+        ]}
+      >
+        <PanelContent />
+      </Animated.View>
+    </>
   );
 });
 

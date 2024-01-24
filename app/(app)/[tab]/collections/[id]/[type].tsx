@@ -27,7 +27,6 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { ReactElement, memo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -259,14 +258,11 @@ const KanbanHeader = memo(function KanbanHeader({
 
   const theme = useColorTheme();
   return (
-    <LinearGradient
-      colors={[theme[3], theme[2]]}
+    <View
       style={[
         columnStyles.header,
         grid && {
           height: 60,
-          borderBottomWidth: 1,
-          borderBottomColor: theme[5],
         },
       ]}
     >
@@ -289,7 +285,7 @@ const KanbanHeader = memo(function KanbanHeader({
         <>
           {label?.id && (
             <ColumnMenuTrigger label={label}>
-              <IconButton disabled icon="more_vert" />
+              <IconButton disabled icon="more_horiz" />
             </ColumnMenuTrigger>
           )}
           <CreateEntityTrigger
@@ -299,16 +295,11 @@ const KanbanHeader = memo(function KanbanHeader({
             }}
             mutateList={onEntityCreate}
           >
-            <IconButton
-              icon="add"
-              disabled
-              variant="outlined"
-              style={{ borderColor: theme[6] }}
-            />
+            <IconButton icon="add" disabled variant="filled" />
           </CreateEntityTrigger>
         </>
       )}
-    </LinearGradient>
+    </View>
   );
 });
 
