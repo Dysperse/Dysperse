@@ -1,6 +1,5 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
-import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
@@ -401,23 +400,23 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     },
   ];
 
-  useKeyboardShortcut(["v a", "v k", "v s", "v m", "v g", "v d"], (key) => {
-    const index = options.findIndex(
-      (i) => i.text[0].toLowerCase() === key.split(" ")[1]
-    );
-    options[index].callback();
-  });
+  // useKeyboardShortcut(["v a", "v k", "v s", "v m", "v g", "v d"], (key) => {
+  //   const index = options.findIndex(
+  //     (i) => i.text[0].toLowerCase() === key.split(" ")[1]
+  //   );
+  //   options[index].callback();
+  // });
 
-  useKeyboardShortcut(["f a", "f d", "f l", "f t"], (key) => {
-    const index = filterOptions.findIndex(
-      (i) => i.text[0].toLowerCase() === key.split(" ")[1]
-    );
-    filterOptions[index].callback();
-  });
+  // useKeyboardShortcut(["f a", "f d", "f l", "f t"], (key) => {
+  //   const index = filterOptions.findIndex(
+  //     (i) => i.text[0].toLowerCase() === key.split(" ")[1]
+  //   );
+  //   filterOptions[index].callback();
+  // });
 
-  useKeyboardShortcut(["s"], () => alert("Stopwatch"));
-  useKeyboardShortcut(["a"], () => alert("Activity"));
-  useKeyboardShortcut(["i"], () => alert("Share"));
+  // useKeyboardShortcut(["s"], () => alert("Stopwatch"));
+  // useKeyboardShortcut(["a"], () => alert("Activity"));
+  // useKeyboardShortcut(["i"], () => alert("Share"));
 
   return editOrderMode ? (
     <View

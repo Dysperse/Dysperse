@@ -3,7 +3,6 @@ import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -26,6 +25,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Keyboard, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -313,7 +313,7 @@ export default function Page() {
     "user/friends",
     { requests: "true" },
   ]);
-  useKeyboardShortcut(["esc"], () => router.back());
+  useHotkeys("esc", () => router.back());
 
   const Header = () => (
     <>

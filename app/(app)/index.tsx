@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import {
   ImageBackground,
   Pressable,
@@ -535,6 +536,8 @@ export default function Index() {
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
 
+  useHotkeys("ctrl+k", () => alert(1), []);
+
   return (
     <ContentWrapper>
       <ImageBackground
@@ -543,7 +546,7 @@ export default function Index() {
             pattern === "none"
               ? null
               : `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
-                  ...theme[4]
+                  ...theme[5]
                     .replace("hsl", "")
                     .replace("(", "")
                     .replace(")", "")
@@ -580,7 +583,7 @@ export default function Index() {
           buttonTextStyle={{ textAlign: "center" }}
           iconStyle={{ color: theme[10] }}
           selectedIconStyle={{ color: theme[11] }}
-          scrollContainerStyle={{ flex: 1, gap: 15 }}
+          scrollContainerStyle={{ flex: 1, gap: 10 }}
         />
         <View
           style={{

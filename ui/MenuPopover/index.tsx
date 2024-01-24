@@ -1,5 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
 import {
   Menu,
@@ -64,11 +65,17 @@ export default function MenuPopover({
   menuProps,
   containerStyle,
 }: MenuProps) {
+  const menuRef = useRef<Menu>(null);
   const theme = useColorTheme();
+
+  useHotkeys("esc", () => {
+    if (menuRef?.current?.isOpen()) menuRef.current.close();
+  });
 
   return (
     <Menu
       {...menuProps}
+      ref={menuRef}
       rendererProps={{
         openAnimationDuration: 0,
         closeAnimationDuration: 0,

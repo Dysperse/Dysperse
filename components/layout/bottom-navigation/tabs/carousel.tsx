@@ -1,4 +1,3 @@
-import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -6,6 +5,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams } from "expo-router";
 import React, { memo, useEffect } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -73,28 +73,31 @@ const OpenTabsList = memo(function OpenTabsList() {
     }
   }, [tab, data]);
 
-  useKeyboardShortcut(["ctrl+tab"], () => {
+  useHotkeys("ctrl+tab", (e) => {
+    e.preventDefault();
     const i = data.findIndex((i) => i.id === tab);
     let d = i + 1;
     if (d >= data.length || i === -1) d = 0;
     handleSnapToIndex(d);
   });
 
-  useKeyboardShortcut(["ctrl+shift+tab"], () => {
+  useHotkeys("ctrl+shift+tab", (e) => {
+    e.preventDefault();
     const i = data.findIndex((i) => i.id === tab);
     let d = i - 1;
     if (i === 0) d = data.length - 1;
     handleSnapToIndex(d);
   });
 
-  useKeyboardShortcut(
+  useHotkeys(
     Array(9)
       .fill(0)
       .map((_, index) => "ctrl+" + (index + 1)),
-    (combo) => {
-      const i = parseInt(combo.split("+")[1]) - 1;
-      if (i === 8) return handleSnapToIndex(data.length - 1);
-      if (data[i]) handleSnapToIndex(i);
+    (keyboardEvent, hotKeysEvent) => {
+      keyboardEvent.preventDefault();
+      const i = hotKeysEvent.keys[0];
+      if (i == "9") return handleSnapToIndex(data.length - 1);
+      if (data[i]) handleSnapToIndex(i - 1);
     }
   );
 

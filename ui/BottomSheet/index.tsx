@@ -1,4 +1,3 @@
-import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import {
   BottomSheetModal,
   BottomSheetProps,
@@ -6,6 +5,7 @@ import {
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
 import { RefObject, memo } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, StyleSheet } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
@@ -33,9 +33,19 @@ const styles = StyleSheet.create({
 });
 
 function BottomSheetEscapeHandler() {
-  const { forceClose } = useBottomSheet();
-  useKeyboardShortcut(["esc"], () =>
-    forceClose({ overshootClamping: true, damping: 1 })
+  const { forceClose, animatedIndex } = useBottomSheet();
+
+  useHotkeys(
+    "esc",
+    () => {
+      console.log(animatedIndex.value);
+      if (animatedIndex.value === -1) return;
+      forceClose();
+    },
+    {
+      enableOnFormTags: true,
+      enableOnContentEditable: true,
+    }
   );
   return null;
 }

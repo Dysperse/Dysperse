@@ -667,8 +667,11 @@ function Grid({ editOrderMode }) {
       >
         {row
           .filter((e) => e)
-          .map((label) => (
-            <View key={label.id} style={{ flex: 1, minWidth: 5, minHeight: 5 }}>
+          .map((label, i) => (
+            <View
+              key={label.id || i}
+              style={{ flex: 1, minWidth: 5, minHeight: 5 }}
+            >
               <View
                 style={{
                   flex: 1,

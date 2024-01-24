@@ -2,7 +2,6 @@ import { ContentWrapper } from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
-import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Avatar } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -17,6 +16,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import * as Updates from "expo-updates";
 import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import {
   Platform,
   StyleSheet,
@@ -107,7 +107,7 @@ export default function Index() {
   );
 
   const { height } = useWindowDimensions();
-  useKeyboardShortcut(["esc"], () => router.back());
+  useHotkeys("esc", () => router.back());
 
   return session ? (
     <ContentWrapper>

@@ -2,6 +2,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo, useEffect } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -56,27 +57,31 @@ function Tools() {
 
 function PanelContent() {
   const { isFocused } = useFocusPanelContext();
-  // alert(isFocused);
+
   return (
-    isFocused && (
-      <ContentWrapper
-        style={{
-          padding: 20,
-        }}
-      >
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 20 }}>
-          <TodaysDate />
-          <WeatherWidget />
-        </ScrollView>
-        <Tools />
-      </ContentWrapper>
-    )
+    <ContentWrapper
+      style={{
+        padding: 20,
+      }}
+    >
+      {isFocused && (
+        <>
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 20 }}>
+            <TodaysDate />
+            <WeatherWidget />
+          </ScrollView>
+          <Tools />
+        </>
+      )}
+    </ContentWrapper>
   );
 }
 
 const FocusPanel = memo(function FocusPanel() {
-  const { isFocused } = useFocusPanelContext();
+  const { isFocused, setFocus } = useFocusPanelContext();
   const marginRight = useSharedValue(-350);
+
+  useHotkeys("\\", () => setFocus(!isFocused), {}, [isFocused]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {

@@ -1,6 +1,5 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
-import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -14,6 +13,7 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useHotkeys } from "react-hotkeys-hook";
 import {
   Platform,
   StyleSheet,
@@ -224,7 +224,7 @@ export default function Page() {
   const { data, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
-  useKeyboardShortcut(["esc"], () => router.back());
+  useHotkeys("esc", () => router.back());
 
   return (
     <>

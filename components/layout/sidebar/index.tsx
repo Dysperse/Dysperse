@@ -2,7 +2,6 @@ import { CreateEntityTrigger } from "@/components/collections/views/CreateEntity
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useUser } from "@/context/useUser";
-import { useKeyboardShortcut } from "@/helpers/useKeyboardShortcut";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -13,6 +12,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import {
   Linking,
   Platform,
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
 const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const handleHome = () => router.push("/");
   const theme = useColorTheme();
-  useKeyboardShortcut(["ctrl+0"], () => router.push("/"));
+  useHotkeys("ctrl+0", () => router.push("/"));
 
   return (
     <Pressable
@@ -88,8 +88,7 @@ const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
   const { handleOpen } = useCommandPaletteContext();
-
-  useKeyboardShortcut(["ctrl+k", "ctrl+/", "ctrl+o"], handleOpen);
+  useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], handleOpen);
 
   return (
     <Pressable
@@ -314,8 +313,8 @@ export function Sidebar() {
   );
   const toggleHidden = useCallback(() => setIsHidden((prev) => !prev), []);
 
-  useKeyboardShortcut(["ctrl+,"], () => router.push("/settings"));
-  useKeyboardShortcut(["`"], toggleHidden);
+  useHotkeys("`", toggleHidden, {}, [isHidden]);
+  useHotkeys("ctrl+,", () => router.push("/settings"));
 
   const marginLeft = useSharedValue(0);
   const translateX = useSharedValue(0);
