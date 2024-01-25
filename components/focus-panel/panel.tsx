@@ -86,7 +86,17 @@ function WidgetBar({ widgets, setWidgets }) {
 
 function PanelContent() {
   const { isFocused } = useFocusPanelContext();
-  const [widgets, setWidgets] = useState<Widget[]>([]);
+  const [widgets, setWidgets] = useState<Widget[]>(
+    Platform.OS === "web"
+      ? Array.from(JSON.parse(localStorage.getItem("widgets") || "[]"))
+      : []
+  );
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      localStorage.setItem("widgets", JSON.stringify(widgets));
+    }
+  }, [widgets]);
 
   return (
     <ContentWrapper
