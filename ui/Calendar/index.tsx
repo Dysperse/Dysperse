@@ -1,0 +1,33 @@
+import { Calendar as Calendar_, CalendarProps } from "react-native-calendars";
+import { useColorTheme } from "../color/theme-provider";
+
+export default function Calendar(props: CalendarProps) {
+  const theme = useColorTheme();
+  return (
+    <Calendar_
+      {...props}
+      theme={{
+        backgroundColor: "transparent",
+        calendarBackground: "transparent",
+        dayTextColor: theme[9],
+        monthTextColor: theme[9],
+        selectedDayBackgroundColor: theme[9],
+        arrowColor: theme[9],
+        textDayFontFamily: "body_300",
+        textMonthFontFamily: "body_900",
+        textMonthFontSize: 20,
+        textDayFontSize: 15,
+        arrowHeight: 20,
+        textSectionTitleColor: theme[8],
+        todayBackgroundColor: theme[5],
+        todayTextColor: theme[9],
+        selectedDayTextColor: theme[1],
+        selectedDotColor: theme[9],
+        arrowStyle: {
+          paddingHorizontal: 0,
+        },
+        textDisabledColor: theme[7],
+      }}
+    />
+  );
+}

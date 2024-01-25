@@ -1,4 +1,5 @@
 import { Button, ButtonText } from "@/ui/Button";
+import Calendar from "@/ui/Calendar";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -21,7 +22,6 @@ import {
 import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import DateTimePicker from "react-native-ui-datepicker";
 import { TaskAttachmentButton } from "./attachment/button";
 import { TaskStream } from "./audit-log";
 import { useTaskDrawerContext } from "./context";
@@ -38,30 +38,22 @@ function DatePickerModal({
   enabled = true,
   closeOnSelect = false,
 }) {
-  const theme = useColorTheme();
-  const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
-
   return !enabled ? (
     children
   ) : (
     <Menu menuRef={menuRef} height={[365]} trigger={children}>
       <View style={{ paddingHorizontal: 20 }}>
-        <DateTimePicker
-          value={date}
-          selectedItemColor={theme[5]}
-          todayContainerStyle={{ borderColor: theme[4] }}
-          calendarTextStyle={calendarTextStyles}
-          headerTextStyle={calendarTextStyles}
-          todayTextStyle={calendarTextStyles}
-          selectedTextStyle={calendarTextStyles}
-          weekDaysTextStyle={calendarTextStyles}
-          timePickerTextStyle={calendarTextStyles}
-          buttonNextIcon={<Icon>arrow_forward_ios</Icon>}
-          buttonPrevIcon={<Icon>arrow_back_ios_new</Icon>}
-          weekDaysContainerStyle={{ borderColor: theme[4] }}
-          onValueChange={(date) => {
-            onDateSelect(dayjs(date));
-            if (closeOnSelect) menuRef.current?.forceClose();
+        <Calendar
+          date={date}
+          onDayPress={(date) => {
+            onDateSelect(dayjs(date.dateString, "YYYY-MM-DD"));
+            if (closeOnSelect) setTimeout(() => menuRef.current.close(), 100);
+          }}
+          markedDates={{
+            [dayjs(date).format("YYYY-MM-DD")]: {
+              selected: true,
+              disableTouchEvent: true,
+            },
           }}
         />
       </View>
@@ -396,7 +388,9 @@ export function TaskDetails() {
               <View style={collapsibleMenuStyles as any}>
                 <DatePickerModal
                   date={task.due}
-                  onDateSelect={handleEditDate}
+                  onDateSelect={(e) => {
+                    handleEditDate(e);
+                  }}
                   menuRef={dateMenuRef}
                   closeOnSelect
                 >

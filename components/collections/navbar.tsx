@@ -2,6 +2,7 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
+import Calendar from "@/ui/Calendar";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
@@ -18,7 +19,6 @@ import { router, useGlobalSearchParams } from "expo-router";
 import { ReactElement, memo, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Calendar } from "react-native-calendars";
 import Toast from "react-native-toast-message";
 import LabelPicker from "../labels/picker";
 import { CollectionContext, useCollectionContext } from "./context";
@@ -71,28 +71,6 @@ function AgendaCalendarButton() {
             selected: true,
             disableTouchEvent: true,
           },
-        }}
-        theme={{
-          backgroundColor: "transparent",
-          calendarBackground: "transparent",
-          dayTextColor: theme[9],
-          monthTextColor: theme[9],
-          selectedDayBackgroundColor: theme[9],
-          arrowColor: theme[9],
-          textDayFontFamily: "body_300",
-          textMonthFontFamily: "body_900",
-          textMonthFontSize: 20,
-          textDayFontSize: 15,
-          arrowHeight: 20,
-          textSectionTitleColor: theme[8],
-          todayBackgroundColor: theme[5],
-          todayTextColor: theme[9],
-          selectedDayTextColor: theme[1],
-          selectedDotColor: theme[9],
-          arrowStyle: {
-            paddingHorizontal: 0,
-          },
-          textDisabledColor: theme[7],
         }}
       />
     </MenuPopover>
