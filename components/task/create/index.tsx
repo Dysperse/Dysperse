@@ -332,6 +332,7 @@ function BottomSheetContent({
         type: "success",
         text1: "Created task!",
       });
+      nameRef.current.focus();
     } catch (e) {
       Toast.show({
         type: "error",
