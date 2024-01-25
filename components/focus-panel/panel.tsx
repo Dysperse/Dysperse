@@ -3,7 +3,7 @@ import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -15,14 +15,10 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Path, Svg } from "react-native-svg";
-import { TodaysDate } from "../home/TodaysDate";
+import { Clock } from "../home/clock";
 import { WeatherWidget } from "../home/weather/widget";
 import { ContentWrapper } from "../layout/content";
 import { useFocusPanelContext } from "./context";
-
-const widgetStyles = StyleSheet.create({
-  text: { marginBottom: 5 },
-});
 
 type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 
@@ -101,8 +97,8 @@ function PanelContent() {
       {isFocused && (
         <>
           <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 20 }}>
-            <TodaysDate />
-            <WeatherWidget />
+            {widgets.includes("clock") && <Clock />}
+            {widgets.includes("weather") && <WeatherWidget />}
           </ScrollView>
           <WidgetBar widgets={widgets} setWidgets={setWidgets} />
         </>
@@ -110,7 +106,6 @@ function PanelContent() {
     </ContentWrapper>
   );
 }
-
 function PanelSwipeTrigger() {
   const theme = useColorTheme();
   const width = useSharedValue(15);
@@ -128,12 +123,57 @@ function PanelSwipeTrigger() {
     }),
   }));
 
+  const isPullerActive = useSharedValue(0);
+  const isPullerHovered = useSharedValue(0);
+
+  const pullerStyles = useAnimatedStyle(() => ({
+    width: withSpring(!isPullerActive.value ? 5 : 9, {
+      damping: 30,
+      stiffness: 400,
+    }),
+    backgroundColor: withSpring(
+      theme[
+        !isPullerActive.value
+          ? isPullerHovered.value
+            ? 5
+            : 4
+          : isPullerHovered.value
+          ? 6
+          : 5
+      ],
+      {
+        damping: 30,
+        stiffness: 400,
+      }
+    ),
+  }));
+
+  const onPressIn = () => {
+    width.value = 25;
+    isPullerActive.value = 1;
+  };
+
+  const onPressOut = () => {
+    width.value = 15;
+    isPullerActive.value = 0;
+  };
+
+  const onHoverIn = () => {
+    isPullerHovered.value = 1;
+    width.value = 25;
+  };
+
+  const onHoverOut = () => {
+    isPullerHovered.value = 0;
+    width.value = 15;
+  };
+
   return (
     <Pressable
-      onHoverIn={() => (width.value = 25)}
-      onHoverOut={() => (width.value = 15)}
-      onPressIn={() => (width.value = 25)}
-      onPressOut={() => (width.value = 15)}
+      onHoverIn={onHoverIn}
+      onHoverOut={onHoverOut}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
       style={{
         height: "100%",
         paddingHorizontal: 15,
@@ -142,23 +182,21 @@ function PanelSwipeTrigger() {
         marginLeft: -25,
       }}
     >
-      {({ pressed, hovered }: any) => (
+      <Animated.View
+        style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}
+      >
         <Animated.View
-          style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}
-        >
-          <Animated.View
-            style={[
-              dotStyle,
-              {
-                width: 5,
-                borderRadius: 99,
-                backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-                transform: pressed ? [{ scale: 1.1 }] : [],
-              },
-            ]}
-          />
-        </Animated.View>
-      )}
+          style={[
+            pullerStyles,
+            dotStyle,
+            {
+              backgroundColor: theme[4],
+              width: 5,
+              borderRadius: 99,
+            },
+          ]}
+        />
+      </Animated.View>
     </Pressable>
   );
 }

@@ -24,7 +24,7 @@ import { useColorTheme } from "../color/theme-provider";
 export type MenuOption =
   | { divider: boolean; key: string }
   | (MenuOptionProps & {
-      icon: string;
+      icon?: string;
       text: string;
       callback?;
       selected?: boolean;
@@ -163,7 +163,7 @@ export default function MenuPopover({
                         }}
                         {...props}
                       >
-                        <Icon>{icon}</Icon>
+                        {icon && <Icon>{icon}</Icon>}
                         <Text
                           weight={300}
                           style={{ color: theme[11], fontSize: 16 }}

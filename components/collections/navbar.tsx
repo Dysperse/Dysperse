@@ -568,7 +568,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             ]}
           >
             {!isAll && <Emoji emoji={data.emoji} size={30} />}
-            <Text style={{ fontSize: 20 }}>{data.name || "All items"}</Text>
+            <Text style={{ fontSize: 20 }}>{data.name || "Everything"}</Text>
           </IconButton>
         }
         options={collectionMenuOptions}

@@ -76,40 +76,6 @@ export const paletteItems = (
       ],
     },
     {
-      title: "All",
-      icon: "asterisk",
-      items: [
-        {
-          key: "all-agenda",
-          label: "Tasks",
-          icon: "check_circle",
-          slug: "/[tab]/all/[type]",
-          params: { type: "tasks" },
-        },
-        {
-          key: "all-items",
-          label: "Items",
-          icon: "package_2",
-          slug: "/[tab]/all/[type]",
-          params: { type: "items" },
-        },
-        {
-          key: "all-notes",
-          label: "Notes",
-          icon: "sticky_note_2",
-          slug: "/[tab]/all/[type]",
-          params: { type: "notes" },
-        },
-        {
-          key: "all-trash",
-          label: "Trash",
-          icon: "delete",
-          slug: "/[tab]/all/[type]",
-          params: { type: "trash" },
-        },
-      ],
-    },
-    {
       title: "Friends",
       icon: "person",
       items: [],

@@ -11,11 +11,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
           grid: "view_cozy",
           workload: "exercise",
         }[params.type]),
-      name: (params) => ["All", params.type],
-    },
-    "/[tab]/all/[type]": {
-      icon: (params) => (params.type === "tasks" ? "task_alt" : "layers"),
-      name: (params) => [params.type, "All"],
+      name: (params) => ["Everything", params.type],
     },
     "/[tab]/spaces/": {
       icon: "tag",

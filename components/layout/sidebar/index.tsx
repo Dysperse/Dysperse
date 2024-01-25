@@ -349,13 +349,16 @@ const Header = memo(function Header() {
   );
 });
 
-function PanelSwipeTrigger({ tapGesture }) {
+function PanelSwipeTrigger({ isHidden }) {
   const theme = useColorTheme();
   const width = useSharedValue(15);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      width: withSpring(width.value, { damping: 30, stiffness: 400 }),
+      width: withSpring(isHidden ? width.value : 15, {
+        damping: 30,
+        stiffness: 400,
+      }),
     };
   });
 
@@ -366,12 +369,57 @@ function PanelSwipeTrigger({ tapGesture }) {
     }),
   }));
 
+  const isPullerActive = useSharedValue(0);
+  const isPullerHovered = useSharedValue(0);
+
+  const pullerStyles = useAnimatedStyle(() => ({
+    width: withSpring(!isPullerActive.value ? 5 : 9, {
+      damping: 30,
+      stiffness: 400,
+    }),
+    backgroundColor: withSpring(
+      theme[
+        !isPullerActive.value
+          ? isPullerHovered.value
+            ? 5
+            : 4
+          : isPullerHovered.value
+          ? 6
+          : 5
+      ],
+      {
+        damping: 30,
+        stiffness: 400,
+      }
+    ),
+  }));
+
+  const onPressIn = () => {
+    width.value = 25;
+    isPullerActive.value = 1;
+  };
+
+  const onPressOut = () => {
+    width.value = 15;
+    isPullerActive.value = 0;
+  };
+
+  const onHoverIn = () => {
+    isPullerHovered.value = 1;
+    width.value = 25;
+  };
+
+  const onHoverOut = () => {
+    isPullerHovered.value = 0;
+    width.value = 15;
+  };
+
   return (
     <Pressable
-      onHoverIn={() => (width.value = 25)}
-      onHoverOut={() => (width.value = 15)}
-      onPressIn={() => (width.value = 25)}
-      onPressOut={() => (width.value = 15)}
+      onHoverIn={onHoverIn}
+      onHoverOut={onHoverOut}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
       style={{
         height: "100%",
         marginRight: -10,
@@ -379,23 +427,21 @@ function PanelSwipeTrigger({ tapGesture }) {
         justifyContent: "center",
       }}
     >
-      {({ pressed, hovered }: any) => (
+      <Animated.View
+        style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}
+      >
         <Animated.View
-          style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}
-        >
-          <Animated.View
-            style={[
-              dotStyle,
-              {
-                width: 5,
-                borderRadius: 99,
-                backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-                transform: pressed ? [{ scale: 1.1 }] : [],
-              },
-            ]}
-          />
-        </Animated.View>
-      )}
+          style={[
+            pullerStyles,
+            dotStyle,
+            {
+              backgroundColor: theme[4],
+              width: 5,
+              borderRadius: 99,
+            },
+          ]}
+        />
+      </Animated.View>
     </Pressable>
   );
 }
@@ -479,7 +525,7 @@ export function Sidebar() {
       </Animated.View>
       <GestureDetector gesture={pan}>
         <GestureDetector gesture={tap}>
-          <PanelSwipeTrigger />
+          <PanelSwipeTrigger isHidden={isHidden} />
         </GestureDetector>
       </GestureDetector>
     </>

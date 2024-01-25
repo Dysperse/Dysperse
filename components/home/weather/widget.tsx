@@ -1,15 +1,16 @@
+import { widgetStyles } from "@/components/focus-panel/widgetStyles";
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { styles } from "../styles";
 import { WeatherModal } from "./modal";
 
 export function WeatherWidget() {
@@ -104,7 +105,7 @@ export function WeatherWidget() {
     () =>
       ({ pressed, hovered }: any) =>
         [
-          styles.card,
+          widgetStyles.card,
           {
             backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
           },
@@ -112,62 +113,111 @@ export function WeatherWidget() {
     [theme]
   );
 
-  return error || permissionStatus === "denied" ? (
-    <Pressable style={weatherCardStyles} onPress={onPressHandler}>
-      <Icon size={40} style={{ marginLeft: -2 }}>
-        error
-      </Icon>
-      <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
-        Error
-      </Text>
-      <Text>Tap to retry</Text>
-    </Pressable>
-  ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
-    <Pressable style={weatherCardStyles} onPress={onPressHandler}>
-      <Spinner />
-    </Pressable>
-  ) : data && airQualityData ? (
-    <WeatherModal
-      weather={data}
-      location={null}
-      airQuality={airQualityData}
-      isNight={isNight()}
-    >
-      <Pressable
-        style={({ pressed, hovered }: any) => [
-          styles.card,
-          {
-            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-          },
-        ]}
-      >
-        <Icon size={40} style={{ marginLeft: -2 }}>
-          {
-            weatherCodes[data.current_weather.weathercode][
-              isNight() ? "night" : "day"
-            ].icon
-          }
-        </Icon>
-        <Text style={{ fontSize: 20, marginTop: 5 }} weight={700}>
-          {Math.round(data.hourly.apparent_temperature[dayjs().hour()])}
-          &deg;
-        </Text>
-        <Text numberOfLines={1}>
-          {isNight()
-            ? weatherCodes[data.current_weather.weathercode].night.description
-            : weatherCodes[data.current_weather.weathercode].day.description}
-        </Text>
-      </Pressable>
-    </WeatherModal>
-  ) : (
-    <Pressable style={weatherCardStyles} onPress={onPressHandler}>
-      <Icon size={40} style={{ marginLeft: -2 }}>
-        near_me
-      </Icon>
-      <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
-        Weather
-      </Text>
-      <Text>Tap to enable</Text>
-    </Pressable>
+  const weatherDescription = useMemo(
+    () =>
+      data
+        ? weatherCodes[data.current_weather.weathercode][
+            isNight() ? "night" : "day"
+          ]
+        : {},
+    [data]
+  );
+
+  const gradient = useMemo(
+    () => weatherDescription.backgroundGradient?.reverse(),
+    [weatherDescription]
+  );
+
+  const base =
+    weatherDescription.textColor === "#fff"
+      ? "rgba(255, 255, 255, 0.1)"
+      : "rgba(0, 0, 0, 0.1)";
+
+  return (
+    <View style={widgetStyles.widget}>
+      <Text variant="eyebrow">Weather</Text>
+      {error || permissionStatus === "denied" ? (
+        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
+          <Icon size={40} style={{ marginLeft: -2 }}>
+            error
+          </Icon>
+          <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
+            Error
+          </Text>
+          <Text>Tap to retry</Text>
+        </Pressable>
+      ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
+        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
+          <Spinner />
+        </Pressable>
+      ) : data && airQualityData ? (
+        <WeatherModal
+          weather={data}
+          location={null}
+          airQuality={airQualityData}
+          isNight={isNight()}
+        >
+          <Pressable>
+            <LinearGradient
+              colors={gradient}
+              style={[
+                widgetStyles.card,
+                {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                },
+              ]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View>
+                <Text
+                  style={{
+                    fontSize: 40,
+                    color: weatherDescription.textColor,
+                  }}
+                  weight={600}
+                >
+                  {Math.round(data.hourly.apparent_temperature[dayjs().hour()])}
+                  &deg;
+                </Text>
+                <Text
+                  weight={200}
+                  numberOfLines={1}
+                  style={{ color: weatherDescription.textColor, marginTop: -5 }}
+                >
+                  {isNight()
+                    ? weatherCodes[data.current_weather.weathercode].night
+                        .description
+                    : weatherCodes[data.current_weather.weathercode].day
+                        .description}
+                </Text>
+              </View>
+              <Icon
+                size={40}
+                style={{ color: weatherDescription.textColor, marginRight: 10 }}
+              >
+                {
+                  weatherCodes[data.current_weather.weathercode][
+                    isNight() ? "night" : "day"
+                  ].icon
+                }
+              </Icon>
+            </LinearGradient>
+          </Pressable>
+        </WeatherModal>
+      ) : (
+        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
+          <Icon size={40} style={{ marginLeft: -2 }}>
+            near_me
+          </Icon>
+          <Text style={{ fontSize: 20, marginVertical: 5 }} weight={700}>
+            Weather
+          </Text>
+          <Text>Tap to enable</Text>
+        </Pressable>
+      )}
+    </View>
   );
 }
