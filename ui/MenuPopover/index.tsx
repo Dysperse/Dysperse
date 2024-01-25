@@ -57,21 +57,27 @@ export function MenuItem(
   return (
     <Pressable
       {...props}
-      style={({ pressed, hovered }: any) => [
-        {
-          backgroundColor: pressed ? theme[6] : hovered ? theme[5] : undefined,
-          borderRadius: 20,
-          zIndex: 2,
-        },
-        !props.removeExtraStyles && {
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 15,
-          paddingVertical: 10,
-          gap: 13,
-        },
-        props.style,
-      ]}
+      style={({ pressed, hovered }: any) =>
+        [
+          {
+            backgroundColor: pressed
+              ? theme[6]
+              : hovered
+              ? theme[5]
+              : undefined,
+            borderRadius: 20,
+            zIndex: 2,
+          },
+          !props.removeExtraStyles && {
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 15,
+            paddingVertical: 10,
+            gap: 13,
+          },
+          props.style,
+        ] as any
+      }
     />
   );
 }
