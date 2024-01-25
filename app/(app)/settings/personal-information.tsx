@@ -1,5 +1,5 @@
 import { ContentWrapper } from "@/components/layout/content";
-import { settingsStyles } from "@/components/settings/styles";
+import { settingsStyles } from "@/components/settings/layout";
 import { useUser } from "@/context/useUser";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";

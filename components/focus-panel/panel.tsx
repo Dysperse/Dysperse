@@ -1,6 +1,7 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { usePathname } from "expo-router";
 import { memo, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, Pressable, View } from "react-native";
@@ -252,8 +253,8 @@ const FocusPanel = memo(function FocusPanel() {
     });
 
   const tap = Gesture.Tap().onEnd(() => setFocus(!isFocused));
-
-  return !breakpoints.md ? null : (
+  const pathname = usePathname();
+  return !breakpoints.md || pathname.includes("settings") ? null : (
     <>
       <GestureDetector gesture={pan}>
         <GestureDetector gesture={tap}>

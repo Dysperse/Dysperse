@@ -1,5 +1,5 @@
 import { ContentWrapper } from "@/components/layout/content";
-import { settingsStyles } from "@/components/settings/styles";
+import { settingsStyles } from "@/components/settings/layout";
 import themes from "@/components/themes.json";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";

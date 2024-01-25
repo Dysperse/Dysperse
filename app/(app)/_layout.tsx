@@ -166,6 +166,7 @@ export default function AppLayout() {
                           gestureResponseDistance: width,
                           gestureEnabled: true,
                           cardStyle: {
+                            height,
                             backgroundColor: theme[breakpoints.sm ? 2 : 1],
                             padding: breakpoints.md ? 10 : 0,
                             ...(Platform.OS === "web" &&
@@ -188,27 +189,25 @@ export default function AppLayout() {
                           }}
                         />
                         {[
-                          "space",
-                          "settings/index",
                           "settings/appearance",
+                          "settings/customization/appearance",
+                          "settings/customization/profile",
+                          "settings/index",
                           "settings/personal-information",
+                          "settings/space/index",
+                          "settings/space/integrations",
                         ].map((d) => (
                           <JsStack.Screen
                             name={d}
                             key={d}
                             options={{
+                              cardStyle: { padding: 0 },
                               headerTitle: d !== "settings/index" && "Settings",
-                              header:
-                                d === "space"
-                                  ? () => null
-                                  : (props) => (
-                                      <Navbar
-                                        icon="arrow_back_ios_new"
-                                        {...props}
-                                      />
-                                    ),
                               ...TransitionPresets.SlideFromRightIOS,
                               cardStyleInterpolator: forHorizontalIOS,
+                              ...(breakpoints.md && {
+                                animationEnabled: false,
+                              }),
                             }}
                           />
                         ))}

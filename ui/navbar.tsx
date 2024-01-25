@@ -33,7 +33,7 @@ export default function Navbar(props: any) {
           backgroundColor: theme[1],
           ...(breakpoints.md && {
             borderRadius: 20,
-            margin: 1,
+            margin: 2,
             height: 80,
           }),
           flexDirection: "row",
