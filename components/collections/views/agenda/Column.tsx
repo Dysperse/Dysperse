@@ -135,10 +135,7 @@ export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
         </View>
       </View>
       <View
-        style={[
-          row ? { marginTop: -30 } : { alignItems: "center" },
-          { flex: 1 },
-        ]}
+        style={[row ? { marginTop: -30, flex: 1 } : { alignItems: "center" }]}
       >
         <Text weight={300} style={{ fontSize: 30 }} numberOfLines={1}>
           {message[1]}
@@ -426,7 +423,8 @@ export function Column({
             >
               <CreateEntityTrigger
                 defaultValues={{
-                  collectionId,
+                  collectionId:
+                    collectionId === "all" ? undefined : collectionId,
                   date: dayjs(column.start),
                   agendaOrder: LexoRank.parse(
                     column.tasks[column.tasks.length - 1]?.agendaOrder ||

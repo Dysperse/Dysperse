@@ -199,11 +199,12 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
         >
           <Chip
             outlined
+            label={value?.name || "Add label"}
             icon={
               value ? (
                 <Emoji emoji={value?.emoji} />
               ) : (
-                <Icon filled={value}>label</Icon>
+                <Icon filled={value}>new_label</Icon>
               )
             }
             {...(value && {
@@ -211,7 +212,7 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
                 backgroundColor: colors[value?.color]?.[4],
               },
             })}
-            color={value ? colors[value?.color]?.[3] : undefined}
+            colorTheme={value ? value?.color : undefined}
           />
         </LabelPicker>
       )}
@@ -251,6 +252,7 @@ function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
               handleSubmitButtonClick();
             }
             if (e.key === "Escape") {
+              if (value) return onChange("");
               forceClose();
             }
           }}
@@ -290,8 +292,8 @@ function BottomSheetContent({
   const theme = useColorTheme();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      name: defaultValues.name,
-      date: defaultValues.date,
+      name: defaultValues.name || "",
+      date: defaultValues.date || dayjs().utc(),
       pinned: false,
       label: defaultValues.label,
       collectionId: defaultValues.collectionId,
