@@ -106,7 +106,14 @@ function PanelContent() {
     >
       {isFocused && (
         <>
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 20 }}>
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              gap: 20,
+              justifyContent: "center",
+              minHeight: "100%",
+            }}
+          >
             {widgets.includes("clock") && <Clock />}
             {widgets.includes("weather") && <WeatherWidget />}
           </ScrollView>
