@@ -111,7 +111,7 @@ function PanelContent() {
   );
 }
 
-function PanelSwipeTrigger({ tapGesture }) {
+function PanelSwipeTrigger() {
   const theme = useColorTheme();
   const width = useSharedValue(15);
 
@@ -143,26 +143,21 @@ function PanelSwipeTrigger({ tapGesture }) {
       }}
     >
       {({ pressed, hovered }: any) => (
-        <GestureDetector gesture={tapGesture}>
+        <Animated.View
+          style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}
+        >
           <Animated.View
             style={[
-              animatedStyle,
-              { alignItems: "center", paddingVertical: 20 },
+              dotStyle,
+              {
+                width: 5,
+                borderRadius: 99,
+                backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+                transform: pressed ? [{ scale: 1.1 }] : [],
+              },
             ]}
-          >
-            <Animated.View
-              style={[
-                dotStyle,
-                {
-                  width: 5,
-                  borderRadius: 99,
-                  backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-                  transform: pressed ? [{ scale: 1.1 }] : [],
-                },
-              ]}
-            />
-          </Animated.View>
-        </GestureDetector>
+          />
+        </Animated.View>
       )}
     </Pressable>
   );
@@ -206,7 +201,9 @@ const FocusPanel = memo(function FocusPanel() {
   return !breakpoints.md ? null : (
     <>
       <GestureDetector gesture={pan}>
-        <PanelSwipeTrigger tapGesture={tap} />
+        <GestureDetector gesture={tap}>
+          <PanelSwipeTrigger />
+        </GestureDetector>
       </GestureDetector>
 
       <Animated.View
