@@ -28,8 +28,9 @@ export function Header({ start, end }) {
     <View style={columnStyles.header}>
       <View
         style={{
+          backgroundColor: theme[isToday ? 3 : 2],
           borderWidth: 1,
-          borderColor: theme[isToday ? 7 : 2],
+          borderColor: theme[isToday ? 4 : 2],
           borderRadius: 20,
           paddingVertical: 10,
           paddingHorizontal: 15,

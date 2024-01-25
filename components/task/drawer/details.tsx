@@ -30,46 +30,40 @@ const drawerStyles = StyleSheet.create({
   collapsibleMenuItem: { gap: 5, flex: 1, alignItems: "center" },
 });
 
-function DatePickerModal({ date, onDateSelect, children, menuRef }) {
+function DatePickerModal({
+  date,
+  onDateSelect,
+  children,
+  menuRef,
+  enabled = true,
+  closeOnSelect = false,
+}) {
   const theme = useColorTheme();
   const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
 
-  return (
-    <Menu menuRef={menuRef} height={[440 + 23.5]} trigger={children}>
-      <DateTimePicker
-        value={date}
-        selectedItemColor={theme[9]}
-        todayContainerStyle={{ borderColor: theme[4] }}
-        calendarTextStyle={calendarTextStyles}
-        headerTextStyle={calendarTextStyles}
-        todayTextStyle={calendarTextStyles}
-        selectedTextStyle={calendarTextStyles}
-        weekDaysTextStyle={calendarTextStyles}
-        timePickerTextStyle={calendarTextStyles}
-        buttonNextIcon={<Icon>arrow_forward_ios</Icon>}
-        buttonPrevIcon={<Icon>arrow_back_ios_new</Icon>}
-        weekDaysContainerStyle={{ borderColor: theme[4] }}
-        onValueChange={(date) => onDateSelect(dayjs(date))}
-      />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          padding: 10,
-          marginTop: 10,
-          paddingVertical: 5,
-          borderTopWidth: 2,
-          borderTopColor: theme[4],
-        }}
-      >
-        <Button onPress={() => menuRef.current?.forceClose()}>
-          <Icon>close</Icon>
-          <ButtonText>Cancel</ButtonText>
-        </Button>
-        <Button onPress={() => menuRef.current?.forceClose()} variant="filled">
-          <ButtonText>Done</ButtonText>
-          <Icon>check</Icon>
-        </Button>
+  return !enabled ? (
+    children
+  ) : (
+    <Menu menuRef={menuRef} height={[365]} trigger={children}>
+      <View style={{ paddingHorizontal: 20 }}>
+        <DateTimePicker
+          value={date}
+          selectedItemColor={theme[5]}
+          todayContainerStyle={{ borderColor: theme[4] }}
+          calendarTextStyle={calendarTextStyles}
+          headerTextStyle={calendarTextStyles}
+          todayTextStyle={calendarTextStyles}
+          selectedTextStyle={calendarTextStyles}
+          weekDaysTextStyle={calendarTextStyles}
+          timePickerTextStyle={calendarTextStyles}
+          buttonNextIcon={<Icon>arrow_forward_ios</Icon>}
+          buttonPrevIcon={<Icon>arrow_back_ios_new</Icon>}
+          weekDaysContainerStyle={{ borderColor: theme[4] }}
+          onValueChange={(date) => {
+            onDateSelect(dayjs(date));
+            if (closeOnSelect) menuRef.current?.forceClose();
+          }}
+        />
       </View>
     </Menu>
   );
@@ -336,7 +330,11 @@ export function TaskDetails() {
           task.note && {
             trigger: (isActive) => (
               <TaskAttachmentButton defaultView="Note" lockView>
-                <ListItemButton variant="filled" disabled>
+                <ListItemButton
+                  variant="filled"
+                  disabled
+                  style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+                >
                   <Icon>sticky_note_2</Icon>
                   <ListItemText primary={task.note} />
                 </ListItemButton>
@@ -368,15 +366,31 @@ export function TaskDetails() {
               </View>
             ),
           },
-          task.due && {
+          {
             trigger: () => (
-              <ListItemButton variant="filled" disabled>
-                <Icon>calendar_today</Icon>
-                <ListItemText
-                  primary={dayjs(task.due).format("MMM Do, YYYY")}
-                  secondary="Does not repeat"
-                />
-              </ListItemButton>
+              <DatePickerModal
+                date={task.due}
+                onDateSelect={handleEditDate}
+                menuRef={dateMenuRef}
+                enabled={!task.due}
+                closeOnSelect
+              >
+                <ListItemButton
+                  variant="filled"
+                  disabled={!!task.due}
+                  style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+                >
+                  <Icon>{task.due ? "calendar_today" : "calendar_add_on"}</Icon>
+                  <ListItemText
+                    primary={
+                      !task.due
+                        ? "Add date"
+                        : dayjs(task.due).format("MMM Do, YYYY")
+                    }
+                    secondary={task.due && "Does not repeat"}
+                  />
+                </ListItemButton>
+              </DatePickerModal>
             ),
             content: (
               <View style={collapsibleMenuStyles as any}>
@@ -384,6 +398,7 @@ export function TaskDetails() {
                   date={task.due}
                   onDateSelect={handleEditDate}
                   menuRef={dateMenuRef}
+                  closeOnSelect
                 >
                   <Pressable style={drawerStyles.collapsibleMenuItem}>
                     <IconButton
@@ -428,7 +443,10 @@ export function TaskDetails() {
           },
           !task.dateOnly && {
             trigger: (isActive) => (
-              <ListItemButton style={{ backgroundColor: theme[3] }}>
+              <ListItemButton
+                variant="filled"
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+              >
                 <Icon>access_time</Icon>
                 <ListItemText primary={dayjs(task.due).format("h:mm A")} />
               </ListItemButton>
@@ -437,7 +455,10 @@ export function TaskDetails() {
           },
           task.due && {
             trigger: (isActive) => (
-              <ListItemButton style={{ backgroundColor: theme[3] }}>
+              <ListItemButton
+                variant="filled"
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+              >
                 <Icon>notifications</Icon>
                 <ListItemText
                   primary={`${task.notifications.length} notification${
@@ -455,8 +476,11 @@ export function TaskDetails() {
       />
       <View style={{ gap: 10 }}>
         <TaskStream>
-          <ListItemButton variant="filled">
-            <Icon>timeline</Icon>
+          <ListItemButton
+            variant="filled"
+            style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+          >
+            <Icon>history</Icon>
             <ListItemText
               primary="History"
               secondary={`Last edit ${dayjs(

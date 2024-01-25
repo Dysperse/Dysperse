@@ -11,6 +11,7 @@ body,
   overscroll-behavior-y: none;
   background: black;
   user-select: none;
+  font-family: body_200;
 }
 
 * {
