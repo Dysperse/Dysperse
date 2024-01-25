@@ -79,6 +79,12 @@ export default function Page() {
               multiline
               placeholder="Tell the world about yourself <3"
             />
+            <Text style={settingStyles.heading}>Picture</Text>
+            <TextField
+              editable={false}
+              variant="filled+outlined"
+              value={data.profile.picture}
+            />
             <Text style={settingStyles.heading}>Email & Username</Text>
             <TextField
               editable={false}
@@ -95,24 +101,10 @@ export default function Page() {
             <Text style={settingStyles.heading}>Birthday</Text>
             <TextField
               editable={false}
-              multiline
-              variant="filled+outlined"
-              value={JSON.stringify(data)}
-            />
-            <Text style={settingStyles.heading}>Picture</Text>
-            <TextField
-              editable={false}
-              variant="filled+outlined"
-              value={data.profile.picture}
-            />
-            <Text style={settingStyles.heading}>Time zone</Text>
-            <TextField
-              editable={false}
               variant="filled+outlined"
               value={dayjs(data.profile.birthday).format("MMMM D, YYYY")}
               placeholder="Tell the world about yourself <3"
             />
-            {/* <Text style={settingStyles.heading}>Birthday</Text> */}
           </View>
         </>
       ) : error ? (
