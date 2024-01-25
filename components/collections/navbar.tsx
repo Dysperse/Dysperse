@@ -18,6 +18,7 @@ import { router, useGlobalSearchParams } from "expo-router";
 import { ReactElement, memo, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
+import { Calendar } from "react-native-calendars";
 import Toast from "react-native-toast-message";
 import LabelPicker from "../labels/picker";
 import { CollectionContext, useCollectionContext } from "./context";
@@ -33,6 +34,70 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 });
+
+function AgendaCalendarButton() {
+  const theme = useColorTheme();
+  const { start }: any = useGlobalSearchParams();
+  const [selected, setSelected] = useState("");
+
+  const titleFormat = {
+    week: "[Week #]W • MMM YYYY",
+    month: "YYYY",
+    year: "YYYY",
+  }["week"];
+
+  return (
+    <MenuPopover
+      containerStyle={{ width: 300, marginTop: 10 }}
+      trigger={
+        <Button>
+          <Text numberOfLines={1} weight={600}>
+            {dayjs(start).format(titleFormat).split("•")?.[0]}
+          </Text>
+          <Text numberOfLines={1} style={{ opacity: 0.6 }}>
+            {dayjs(start).format(titleFormat).split("• ")?.[1]}
+          </Text>
+        </Button>
+      }
+    >
+      <Calendar
+        onDayPress={(day) => {
+          router.setParams({
+            start: dayjs(day.dateString).format("YYYY-MM-DD"),
+          });
+        }}
+        markedDates={{
+          [dayjs(start).format("YYYY-MM-DD")]: {
+            selected: true,
+            disableTouchEvent: true,
+          },
+        }}
+        theme={{
+          backgroundColor: "transparent",
+          calendarBackground: "transparent",
+          dayTextColor: theme[9],
+          monthTextColor: theme[9],
+          selectedDayBackgroundColor: theme[9],
+          arrowColor: theme[9],
+          textDayFontFamily: "body_300",
+          textMonthFontFamily: "body_900",
+          textMonthFontSize: 20,
+          textDayFontSize: 15,
+          arrowHeight: 20,
+          textSectionTitleColor: theme[8],
+          todayBackgroundColor: theme[5],
+          todayTextColor: theme[9],
+          selectedDayTextColor: theme[1],
+          selectedDotColor: theme[9],
+          arrowStyle: {
+            paddingHorizontal: 0,
+          },
+          textDisabledColor: theme[7],
+        }}
+      />
+    </MenuPopover>
+  );
+}
 
 function AgendaNavbarButtons() {
   const theme = useColorTheme();
@@ -94,14 +159,7 @@ function AgendaNavbarButtons() {
         <IconButton onPress={handlePrev}>
           <Icon>west</Icon>
         </IconButton>
-        <Button>
-          <Text numberOfLines={1} weight={600}>
-            {dayjs(start).format(titleFormat).split("•")?.[0]}
-          </Text>
-          <Text numberOfLines={1} style={{ opacity: 0.6 }}>
-            {dayjs(start).format(titleFormat).split("• ")?.[1]}
-          </Text>
-        </Button>
+        <AgendaCalendarButton />
         <IconButton onPress={handleNext}>
           <Icon>east</Icon>
         </IconButton>

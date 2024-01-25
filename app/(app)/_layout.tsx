@@ -122,16 +122,6 @@ export default function AppLayout() {
 
   // This layout can be deferred because it's not the root layout.
 
-  const desktopPresentationModal = {
-    padding: 15,
-    maxWidth: 1000,
-    width: 1000,
-    paddingRight: 220,
-    paddingVertical: 60,
-    marginHorizontal: "auto",
-    backgroundColor: "transparent",
-  };
-
   return (
     <ColorThemeProvider theme={theme}>
       <GestureHandlerRootView
