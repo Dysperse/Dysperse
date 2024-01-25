@@ -39,6 +39,7 @@ export type MenuProps =
       menuProps?: MenuPropsType;
       containerStyle?: StyleProp<ViewStyle>;
       children?: never;
+      menuRef?: React.MutableRefObject<Menu>;
     }
   | {
       trigger: ReactElement;
@@ -46,6 +47,7 @@ export type MenuProps =
       menuProps?: MenuPropsType;
       containerStyle?: StyleProp<ViewStyle>;
       children: any;
+      menuRef?: React.MutableRefObject<Menu>;
     };
 
 export function MenuItem(
@@ -80,16 +82,18 @@ export default function MenuPopover({
   menuProps,
   children,
   containerStyle,
+  menuRef,
 }: MenuProps) {
-  const menuRef = useRef<Menu>(null);
+  const _menuRef = useRef<Menu>(null);
+  const menuPopupRef = menuRef || _menuRef;
   const theme = useColorTheme();
 
   useHotkeys("esc", () => {
-    if (menuRef?.current?.isOpen()) menuRef.current.close();
+    if (menuPopupRef?.current?.isOpen()) menuPopupRef.current.close();
   });
 
   const handleOpen = async () => {
-    menuRef.current.open();
+    menuPopupRef.current.open();
   };
 
   const t = cloneElement(trigger, { onPress: handleOpen });
@@ -97,7 +101,7 @@ export default function MenuPopover({
   return (
     <Menu
       {...menuProps}
-      ref={menuRef}
+      ref={menuPopupRef}
       rendererProps={{
         openAnimationDuration: 0,
         closeAnimationDuration: 0,

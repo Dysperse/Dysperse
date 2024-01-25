@@ -19,6 +19,7 @@ export function TaskAttachmentButton({
   onAttachmentCreate,
   defaultView = "Add",
   lockView = false,
+  menuRef,
 }: {
   children?: JSX.Element;
   onClose?: () => void;
@@ -26,17 +27,19 @@ export function TaskAttachmentButton({
   onAttachmentCreate?: (data: string) => void;
   defaultView?: TaskAttachmentType;
   lockView?: boolean;
+  menuRef?: React.MutableRefObject<BottomSheetModal>;
 }) {
   const { task, updateTask } = useTaskDrawerContext();
 
-  const menuRef = useRef<BottomSheetModal>(null);
+  const _menuRef = useRef<BottomSheetModal>(null);
+  const ref = menuRef || _menuRef;
   const theme = useColorTheme();
 
   const [view, setView] = useState<TaskAttachmentType>(defaultView);
 
   return (
     <Menu
-      menuRef={menuRef}
+      menuRef={ref}
       height={[view === "Image" ? "60%" : 390]}
       onClose={() => {
         onClose?.();

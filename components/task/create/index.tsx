@@ -3,12 +3,13 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import BottomSheet from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
+import { ButtonText } from "@/ui/Button";
+import Calendar from "@/ui/Calendar";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { Menu } from "@/ui/Menu";
+import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -35,23 +36,18 @@ import {
   View,
   useColorScheme,
 } from "react-native";
+import { Menu } from "react-native-popup-menu";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import DateTimePicker from "react-native-ui-datepicker";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { TaskDrawerContext } from "../drawer/context";
 
-function Footer({ nameRef, menuRef, control }) {
-  const theme = useColorTheme();
-
-  const dateMenuRef = useRef<BottomSheetModal>(null);
+function Footer({ nameRef, menuRef, dateMenuRef, control }) {
   const orange = useColor("orange", useColorScheme() === "dark");
-
-  const calendarTextStyles = { color: theme[11], fontFamily: "body_400" };
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -80,9 +76,10 @@ function Footer({ nameRef, menuRef, control }) {
         rules={{ required: false }}
         name="date"
         render={({ field: { onChange, value } }) => (
-          <Menu
+          <MenuPopover
             menuRef={dateMenuRef}
-            height={[440 + 23.5]}
+            // height={[400]}
+            containerStyle={{ width: 300 }}
             trigger={
               <Chip
                 outlined
@@ -91,45 +88,21 @@ function Footer({ nameRef, menuRef, control }) {
               />
             }
           >
-            <DateTimePicker
-              value={value}
-              selectedItemColor={theme[9]}
-              todayContainerStyle={{ borderColor: theme[4] }}
-              calendarTextStyle={calendarTextStyles}
-              headerTextStyle={calendarTextStyles}
-              todayTextStyle={calendarTextStyles}
-              selectedTextStyle={calendarTextStyles}
-              weekDaysTextStyle={calendarTextStyles}
-              timePickerTextStyle={calendarTextStyles}
-              buttonNextIcon={<Icon>arrow_forward_ios</Icon>}
-              buttonPrevIcon={<Icon>arrow_back_ios_new</Icon>}
-              weekDaysContainerStyle={{ borderColor: theme[4] }}
-              onValueChange={(e) => onChange(dayjs(e))}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                padding: 10,
-                marginTop: 10,
-                paddingVertical: 5,
-                borderTopWidth: 2,
-                borderTopColor: theme[4],
+            <Calendar
+              date={value}
+              onDayPress={(date) => {
+                onChange(dayjs(date.dateString, "YYYY-MM-DD"));
+                dateMenuRef.current.close();
+                nameRef?.current?.focus();
               }}
-            >
-              <Button onPress={() => dateMenuRef.current?.forceClose()}>
-                <Icon>close</Icon>
-                <ButtonText>Cancel</ButtonText>
-              </Button>
-              <Button
-                onPress={() => dateMenuRef.current?.forceClose()}
-                variant="filled"
-              >
-                <ButtonText>Done</ButtonText>
-                <Icon>check</Icon>
-              </Button>
-            </View>
-          </Menu>
+              markedDates={{
+                [dayjs(value).format("YYYY-MM-DD")]: {
+                  selected: true,
+                  disableTouchEvent: true,
+                },
+              }}
+            />
+          </MenuPopover>
         )}
       />
       <Controller
@@ -219,7 +192,19 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
     />
   );
 }
-function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
+function TaskNameInput({
+  control,
+  dateMenuRef,
+  handleSubmitButtonClick,
+  menuRef,
+  nameRef,
+}: {
+  control: any;
+  dateMenuRef: React.MutableRefObject<Menu>;
+  handleSubmitButtonClick: any;
+  menuRef: React.MutableRefObject<BottomSheetModal>;
+  nameRef: any;
+}) {
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
 
@@ -246,7 +231,12 @@ function TaskNameInput({ control, handleSubmitButtonClick, menuRef, nameRef }) {
           onBlur={onBlur}
           onKeyPress={(e: any) => {
             if (e.key === "/") {
+              e.preventDefault();
               menuRef.current.present();
+            }
+            if (e.key === "@") {
+              e.preventDefault();
+              dateMenuRef.current.open();
             }
             if (e.key === "Enter") {
               handleSubmitButtonClick();
@@ -289,6 +279,7 @@ function BottomSheetContent({
   const { sessionToken } = useUser();
   const { forceClose } = useBottomSheet();
   const menuRef = useRef<BottomSheetModal>(null);
+  const dateMenuRef = useRef<Menu>(null);
   const theme = useColorTheme();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -399,6 +390,7 @@ function BottomSheetContent({
             value={{ task: {}, mutateList: () => null, updateTask: () => null }}
           >
             <TaskAttachmentButton
+              menuRef={menuRef}
               onAttachmentCreate={(e) => console.log(e)}
               onClose={() => nameRef.current.focus()}
               onOpen={() => nameRef.current.focus()}
@@ -412,12 +404,18 @@ function BottomSheetContent({
             </TaskAttachmentButton>
           </TaskDrawerContext.Provider>
           <View style={{ flex: 1 }}>
-            <Footer nameRef={nameRef} menuRef={menuRef} control={control} />
+            <Footer
+              dateMenuRef={dateMenuRef}
+              nameRef={nameRef}
+              menuRef={menuRef}
+              control={control}
+            />
             <TaskNameInput
               control={control}
               menuRef={menuRef}
               handleSubmitButtonClick={handleSubmitButtonClick}
               nameRef={nameRef}
+              dateMenuRef={dateMenuRef}
             />
           </View>
         </View>
