@@ -3,6 +3,7 @@ import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -15,6 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View, useColorScheme } from "react-native";
 import Collapsible from "react-native-collapsible";
+import { useSharedValue } from "react-native-reanimated";
 import useSWR from "swr";
 
 function SpaceHeader({ data }) {
@@ -86,35 +88,100 @@ function SpaceMembers({ data }) {
 
 function SpaceStorage({ data }) {
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const handleToggle = () => setIsCollapsed(!isCollapsed);
+  const isOpen = useSharedValue(0);
+  const handleToggle = () => {
+    setIsCollapsed(!isCollapsed);
+    isOpen.value = isCollapsed ? 1 : 1;
+  };
   const theme = useColorTheme();
+  const orange = useColor("orange", useColorScheme() === "dark");
+
   return (
-    <View
-      style={{
-        backgroundColor: theme[isCollapsed ? 2 : 3],
-        paddingHorizontal: isCollapsed ? 0 : 10,
-        borderRadius: 20,
-      }}
-    >
-      <ListItemButton
-        onPress={handleToggle}
-        style={{ paddingHorizontal: 0, backgroundColor: "transparent" }}
+    <>
+      <View
+        style={{
+          alignItems: "center",
+          flexDirection: "row",
+          gap: 20,
+          padding: 10,
+          paddingHorizontal: 20,
+          marginHorizontal: -10,
+          marginBottom: 10,
+          marginTop: 5,
+          backgroundColor: orange[4],
+          borderRadius: 20,
+        }}
       >
-        <Avatar icon="storage" size={40} />
-        <ListItemText
-          primary={`${-~data.storage?.used} / ${
-            data.storage?.limit
-          } credits used`}
-          secondary={`${-~(data.storage.limit - data.storage.used)} left`}
-        />
-        <IconButton
-          icon="expand_more"
-          variant="outlined"
+        <Icon filled style={{ color: orange[11] }} size={30}>
+          diamond
+        </Icon>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 20, color: orange[11] }} weight={700}>
+            elite
+            <Text style={{ verticalAlign: "top", color: orange[11] }}>+</Text>
+          </Text>
+          <Text style={{ opacity: 0.6, color: orange[11] }}>
+            Join #elite and unlock unlimited storage. Plans coming soon.
+          </Text>
+        </View>
+        <Text style={{ fontSize: 20, color: orange[11] }} weight={200}>
+          $1.99/mo
+        </Text>
+      </View>
+      <View
+        style={{
+          backgroundColor: theme[isCollapsed ? 2 : 3],
+          borderRadius: 20,
+          paddingHorizontal: 10,
+          marginHorizontal: -10,
+        }}
+      >
+        <ListItemButton
           onPress={handleToggle}
-        />
-      </ListItemButton>
-      <Collapsible collapsed={isCollapsed}>Hi</Collapsible>
-    </View>
+          style={{ paddingHorizontal: 0, backgroundColor: "transparent" }}
+        >
+          <Avatar icon="storage" size={40} />
+          <ListItemText
+            primary={`${-~data.storage?.used} / ${
+              data.storage?.limit
+            } credits used`}
+            secondary={`${-~(data.storage.limit - data.storage.used)} left`}
+          />
+          <IconButton
+            icon="expand_more"
+            variant="outlined"
+            onPress={handleToggle}
+          />
+        </ListItemButton>
+        <Collapsible
+          collapsed={isCollapsed}
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+          }}
+        >
+          {[
+            { name: "tasks", icon: "task_alt" },
+            { name: "notes", icon: "sticky_note_2" },
+            { name: "items", icon: "package_2" },
+            { name: "labels", icon: "label" },
+            { name: "collections", icon: "shapes" },
+          ].map(({ name, icon }) => (
+            <ListItemButton
+              key={name}
+              disabled
+              style={{ paddingHorizontal: 0, width: "50%" }}
+            >
+              <Avatar icon={icon} size={40} />
+              <ListItemText
+                primary={-~data.storage.breakdown[name]}
+                secondary={capitalizeFirstLetter(name)}
+              />
+            </ListItemButton>
+          ))}
+        </Collapsible>
+      </View>
+    </>
   );
 }
 
