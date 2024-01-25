@@ -7,18 +7,20 @@ export const useColorTheme = () => useContext(ColorThemeContext);
 export const ColorThemeProvider = ({
   theme,
   children,
+  setHTMLAttributes = false,
 }: {
   theme: Record<string, string>;
   children: React.ReactNode;
+  setHTMLAttributes?: boolean;
 }) => {
   useEffect(() => {
-    if (Platform.OS === "web") {
+    if (Platform.OS === "web" && setHTMLAttributes) {
       const variables = Object.entries(theme).map(
         ([key, value]) => `--theme-${key}: ${value};`
       );
       document.body.style.cssText = variables.join(" ");
     }
-  }, [theme]);
+  }, [theme, setHTMLAttributes]);
   return (
     <ColorThemeContext.Provider value={theme}>
       {children}

@@ -5,5 +5,6 @@ export const settingStyles = StyleSheet.create({
     fontSize: 26,
     marginTop: 30,
     marginBottom: 5,
+    fontFamily: "body_700",
   },
 });

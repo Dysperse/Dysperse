@@ -134,6 +134,8 @@ function SpaceStorage({ data }) {
           borderRadius: 20,
           paddingHorizontal: 10,
           marginHorizontal: -10,
+          borderWidth: 1,
+          borderColor: theme[isCollapsed ? 4 : 3],
         }}
       >
         <ListItemButton
@@ -142,10 +144,13 @@ function SpaceStorage({ data }) {
         >
           <Avatar icon="storage" size={40} />
           <ListItemText
-            primary={`${-~data.storage?.used} / ${
-              data.storage?.limit
-            } credits used`}
-            secondary={`${-~(data.storage.limit - data.storage.used)} left`}
+            primary={`${-~(
+              (data.storage?.used / data.storage?.limit) *
+              100
+            )}% used`}
+            secondary={`${-~(
+              data.storage.limit - data.storage.used
+            )}/${data.storage.limit} credits left`}
           />
           <IconButton
             icon="expand_more"
@@ -174,8 +179,11 @@ function SpaceStorage({ data }) {
             >
               <Avatar icon={icon} size={40} />
               <ListItemText
-                primary={-~data.storage.breakdown[name]}
-                secondary={capitalizeFirstLetter(name)}
+                primary={`${~~parseInt(
+                  ((data.storage.breakdown[name] / data.storage.limit) *
+                    100) as any
+                )}%`}
+                secondary={`${capitalizeFirstLetter(name)}`}
               />
             </ListItemButton>
           ))}

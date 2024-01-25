@@ -123,7 +123,7 @@ export default function AppLayout() {
   // This layout can be deferred because it's not the root layout.
 
   return (
-    <ColorThemeProvider theme={theme}>
+    <ColorThemeProvider theme={theme} setHTMLAttributes>
       <GestureHandlerRootView
         style={{ flex: 1, overflow: "hidden", width, height }}
       >
