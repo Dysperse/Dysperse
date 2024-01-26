@@ -1,4 +1,5 @@
 import { SettingsLayout } from "@/components/settings/layout";
+import { settingStyles } from "@/components/settings/settingsStyles";
 import themes from "@/components/themes.json";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -33,9 +34,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: { height: 80 },
-  themeCardIcon: { textAlign: "center", marginBottom: 10 },
+  themeCardIcon: { textAlign: "center" },
   cardTitle: { fontSize: 25 },
-  cardDescription: { textAlign: "center", opacity: 0.7, maxWidth: 200 },
+  cardDescription: { opacity: 0.7, maxWidth: 300 },
 });
 
 const themePickerStyles = StyleSheet.create({
@@ -266,15 +267,25 @@ export default function Page() {
         Appearance
       </Text>
 
+      <Text style={settingStyles.heading}>Color</Text>
       <ThemePicker>
         <TouchableOpacity>
-          <Pressable style={[styles.card, { borderColor: theme[5] }]}>
-            <Text variant="eyebrow">Color</Text>
-            <View style={{ alignItems: "center", marginVertical: 10 }}>
-              <Icon style={styles.themeCardIcon} size={100}>
-                hexagon
-              </Icon>
-              <Text style={[styles.cardTitle, { marginTop: -20 }]} weight={900}>
+          <Pressable
+            style={[
+              styles.card,
+              {
+                borderColor: theme[5],
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 20,
+              },
+            ]}
+          >
+            <Icon style={styles.themeCardIcon} size={100}>
+              hexagon
+            </Icon>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.cardTitle} weight={900}>
                 {themeText.name}
               </Text>
               <Text style={styles.cardDescription}>
@@ -284,11 +295,11 @@ export default function Page() {
           </Pressable>
         </TouchableOpacity>
       </ThemePicker>
+      <Text style={settingStyles.heading}>Theme</Text>
       <Menu
         trigger={
           <TouchableOpacity>
             <View style={[styles.card, { borderColor: theme[5] }]}>
-              <Text variant="eyebrow">Theme</Text>
               <Text style={styles.cardTitle} weight={900}>
                 {session?.user?.profile?.darkMode ? "Dark" : "Light"}
               </Text>
@@ -309,6 +320,7 @@ export default function Page() {
               <ButtonText style={{ fontSize: 20 }} weight={900}>
                 {capitalizeFirstLetter(button)}
               </ButtonText>
+              {session.user.profile.darkMode === button && <Icon>check</Icon>}
             </Button>
           ))}
         </View>
