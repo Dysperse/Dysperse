@@ -1,6 +1,5 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import themes from "@/components/themes.json";
-import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import BottomSheet from "@/ui/BottomSheet";
@@ -72,7 +71,10 @@ function ThemedSlide({ theme, themeData, onSelect }) {
 }
 function ThemePicker({ children }) {
   const ref = useRef<BottomSheetModal>(null);
-  const [selectedTheme, setSelectedTheme] = useState("violet");
+  const { session, sessionToken, mutate } = useUser();
+  const [selectedTheme, setSelectedTheme] = useState(
+    session.user.profile.theme
+  );
   const colors = useColor(selectedTheme as any, useColorScheme() === "dark");
 
   const theme = {
@@ -80,7 +82,6 @@ function ThemePicker({ children }) {
     colors,
   };
 
-  const { session } = useSession();
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
   const handleClose = useCallback(() => ref.current?.close(), []);
@@ -88,9 +89,8 @@ function ThemePicker({ children }) {
 
   const handleSelect = async () => {
     try {
-      setLoading(true);
-      await sendApiRequest(
-        session,
+      sendApiRequest(
+        sessionToken,
         "PUT",
         "user/profile",
         {},
@@ -100,8 +100,22 @@ function ThemePicker({ children }) {
           }),
         }
       );
-      handleClose();
-      setLoading(false);
+      mutate(
+        (oldData) => ({
+          ...oldData,
+          user: {
+            ...oldData.user,
+            profile: {
+              ...oldData.user.profile,
+              theme: selectedTheme,
+            },
+          },
+        }),
+        {
+          revalidate: false,
+        }
+      );
+      setTimeout(handleClose, 100);
     } catch (e) {
       Toast.show({
         type: "error",
