@@ -148,9 +148,9 @@ function SpaceStorage({ data }) {
               (data.storage?.used / data.storage?.limit) *
               100
             )}% used`}
-            secondary={`${-~(
-              data.storage.limit - data.storage.used
-            )}/${data.storage.limit} credits left`}
+            secondary={`${-~(data.storage?.limit - data.storage?.used)}/${
+              data.storage?.limit
+            } credits left`}
           />
           <IconButton
             icon="expand_more"

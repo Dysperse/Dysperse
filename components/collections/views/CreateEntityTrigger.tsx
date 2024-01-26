@@ -50,7 +50,7 @@ export const CreateEntityTrigger = ({
           { icon: "package_2", text: "Item", callback: () => {} },
           ...(additional ?? []),
         ]}
-        {...popoverProps}
+        {...(popoverProps as any)}
       />
       <CreateTask
         defaultValues={defaultValues}
