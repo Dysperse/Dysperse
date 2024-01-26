@@ -160,7 +160,12 @@ function SettingsSidebar() {
               }
               {...(button.callback && { onPress: button.callback })}
             >
-              <Icon style={{ color: theme[11] }}>{button.icon}</Icon>
+              <Icon
+                filled={pathname === button.href}
+                style={{ color: theme[11] }}
+              >
+                {button.icon}
+              </Icon>
               <ListItemText
                 primary={button.name}
                 primaryProps={{ style: { color: theme[11] } }}
