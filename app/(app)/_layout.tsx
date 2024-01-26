@@ -191,6 +191,7 @@ export default function AppLayout() {
                         {[
                           "settings/appearance",
                           "settings/customization/appearance",
+                          "settings/customization/notifications",
                           "settings/customization/profile",
                           "settings/index",
                           "settings/personal-information",

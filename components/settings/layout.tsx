@@ -88,7 +88,7 @@ function SettingsSidebar() {
             {
               name: "Notifications",
               icon: "notifications",
-              href: "/settings/notifications",
+              href: "/settings/customization/notifications",
             },
           ],
         },

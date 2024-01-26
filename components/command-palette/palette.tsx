@@ -12,9 +12,13 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Platform, View, useWindowDimensions } from "react-native";
+import {
+  Platform,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { TouchableOpacity } from "react-native-ui-lib";
 import useSWR from "swr";
 import { paletteItems } from "../layout/command-palette/list";
 import { createTab } from "../layout/openTab";

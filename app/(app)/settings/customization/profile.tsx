@@ -8,7 +8,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import { View } from "react-native-ui-lib";
+import { View } from "react-native";
 import useSWR from "swr";
 
 function ProfileBanner({ data }) {
@@ -57,10 +57,10 @@ export default function Page() {
           >
             <ProfileBanner data={data} />
             <View style={{ paddingHorizontal: 40 }}>
-              <Text weight={800} style={{ fontSize: 35, marginTop: 15 }}>
+              <Text weight={800} style={{ fontSize: 30, marginTop: 20 }}>
                 {data.profile.name}
               </Text>
-              <Text style={{ fontSize: 20, opacity: 0.6, marginBottom: 40 }}>
+              <Text style={{ fontSize: 20, opacity: 0.6, marginBottom: 35 }}>
                 {data.username ? `@${data.username}` : data.email}
               </Text>
             </View>
