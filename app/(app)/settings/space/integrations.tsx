@@ -1,4 +1,5 @@
 import { SettingsLayout } from "@/components/settings/layout";
+import Alert from "@/ui/Alert";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
@@ -31,9 +32,17 @@ export default function Page() {
         Integrations
       </Text>
       <Text>
-        Soon, you'll be able to connect your account to other services like
-        Notion, Google Calendar, and more.
+        Introducing more chaos. Connect everything to your workspace, so you can
+        see everything in one place.
       </Text>
+      <Alert
+        style={{ marginTop: 20 }}
+        emoji="1f6a7"
+        title="Coming soon"
+        subtitle="Soon, you'll be able to connect your account to other services like
+      Notion, Google Calendar, and more."
+      />
+
       <View style={{ gap: 10 }}>
         {integrations.map((integration) => (
           <View

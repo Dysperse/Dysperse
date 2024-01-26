@@ -15,7 +15,11 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType } from "dayjs";
-import { router, useGlobalSearchParams } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 import { ReactElement, memo, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -344,35 +348,71 @@ interface CollectionNavbarProps {
 const ShareCollection = memo(function ShareCollection() {
   const ref = useRef<BottomSheetModal>(null);
   const { data } = useCollectionContext();
+  const { id } = useLocalSearchParams();
   const { session } = useSession();
   const theme = useColorTheme();
 
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
 
+  const copyInviteLink = useCallback(async () => {
+    try {
+      Toast.show({ type: "success", text1: "Coming soon!" });
+    } catch (e) {
+      Toast.show({ type: "error", text1: "Something went wrong" });
+    }
+  }, []);
+
   return (
     <>
-      <Pressable
-        onPress={handleOpen}
-        style={({ pressed, hovered }: any) => [
-          styles.navbarIconButton,
+      <MenuPopover
+        trigger={
+          <Pressable
+            style={({ pressed, hovered }: any) => [
+              styles.navbarIconButton,
+              {
+                backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+                width: 120,
+                gap: 15,
+              },
+              id === "all" && {
+                backgroundColor: theme[3],
+                opacity: 0.5,
+                pointerEvents: "none",
+              },
+            ]}
+          >
+            <Icon style={{ color: theme[id === "all" ? 8 : 1] }}>
+              ios_share
+            </Icon>
+            <Text style={{ color: theme[id === "all" ? 8 : 1] }} weight={400}>
+              Share
+            </Text>
+          </Pressable>
+        }
+        menuProps={{
+          rendererProps: {
+            placement: "bottom",
+          },
+        }}
+        containerStyle={{ marginLeft: -25 }}
+        options={[
           {
-            backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-            width: 120,
-            gap: 15,
+            icon: "link",
+            text: "Copy invite link",
+            callback: copyInviteLink,
+          },
+          {
+            icon: "person_add",
+            text: "Members",
+            callback: handleOpen,
           },
         ]}
-      >
-        <Icon style={{ color: theme[1] }}>ios_share</Icon>
-        <Text style={{ color: theme[1] }} weight={400}>
-          Share
-        </Text>
-      </Pressable>
-
+      />
       <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["60%"]}>
         <View style={{ padding: 25 }}>
           <Text weight={900} style={{ fontSize: 25 }}>
-            Share
+            Members
           </Text>
         </View>
       </BottomSheet>

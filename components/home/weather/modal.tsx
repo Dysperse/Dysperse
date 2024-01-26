@@ -20,13 +20,17 @@ const getAirQualityInfo = (index) => {
 
 const weatherStyles = StyleSheet.create({
   cardRow: { marginTop: 15, gap: 15, flexDirection: "row" },
-  description: { opacity: 0.9, fontSize: 20, textAlign: "center" },
+  description: {
+    marginBottom: 40,
+    opacity: 0.9,
+    fontSize: 20,
+    textAlign: "center",
+  },
   temperature: {
     marginRight: -13,
-    fontSize: 30,
+    fontSize: 60,
     textAlign: "center",
     marginTop: 10,
-    marginBottom: 5,
     marginLeft: -10,
   },
   weatherCard: {
@@ -128,7 +132,7 @@ export function WeatherModal({
         <BottomSheetScrollView>
           <View style={{ paddingHorizontal: 15, paddingVertical: 20 }}>
             <View style={{ alignItems: "center" }}>
-              <Icon size={60} style={{ color }}>
+              <Icon size={70} style={{ color, marginTop: 40 }}>
                 {
                   weatherCodes[weather.current_weather.weathercode][
                     isNight ? "night" : "day"
@@ -136,10 +140,10 @@ export function WeatherModal({
                 }
               </Icon>
             </View>
-            <Text weight={700} style={[weatherStyles.temperature, { color }]}>
+            <Text weight={200} style={[weatherStyles.temperature, { color }]}>
               {Math.round(weather.current_weather.temperature)}&deg;
             </Text>
-            <Text style={[weatherStyles.description, { color }]}>
+            <Text style={[weatherStyles.description, { color }]} weight={800}>
               {weatherDescription.description}
             </Text>
             {/* <Text

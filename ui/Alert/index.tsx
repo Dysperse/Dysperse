@@ -31,7 +31,7 @@ export default function Alert({ emoji, title, subtitle, style }: AlertProps) {
       ]}
     >
       <Emoji emoji={emoji} size={30} />
-      <View>
+      <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 20 }} weight={800}>
           {title}
         </Text>

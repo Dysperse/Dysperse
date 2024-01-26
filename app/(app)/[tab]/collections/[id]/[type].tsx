@@ -1,6 +1,7 @@
 import { columnStyles } from "@/components/collections/columnStyles";
 import {
   CollectionContext,
+  CollectionType,
   useCollectionContext,
 } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
@@ -14,6 +15,7 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
@@ -870,9 +872,28 @@ export default function Page() {
   );
 
   const [editOrderMode, setEditOrderMode] = useState(false);
-
+  const comingSoon = (
+    <View
+      style={{
+        padding: 20,
+        paddingTop: 0,
+        maxWidth: 800,
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        marginHorizontal: "auto",
+      }}
+    >
+      <Alert
+        style={{ marginTop: 20 }}
+        emoji="1f6a7"
+        title="Coming soon"
+        subtitle="We're working on this view. Choose another one for now."
+      />
+    </View>
+  );
   let content = null;
-  switch (type) {
+  switch (type as CollectionType) {
     case "agenda":
       content = <Perspectives />;
       break;
@@ -886,7 +907,7 @@ export default function Page() {
       content = <Grid editOrderMode={editOrderMode} />;
       break;
     case "workload":
-      content = <Text>Workload</Text>;
+      content = comingSoon;
       break;
     default:
       content = <Text>404: {type}</Text>;
