@@ -347,9 +347,7 @@ interface CollectionNavbarProps {
 
 const ShareCollection = memo(function ShareCollection() {
   const ref = useRef<BottomSheetModal>(null);
-  const { data } = useCollectionContext();
   const { id } = useLocalSearchParams();
-  const { session } = useSession();
   const theme = useColorTheme();
 
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -571,6 +569,11 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       }}
     >
       <MenuPopover
+        menuProps={{
+          rendererProps: {
+            placement: "bottom",
+          },
+        }}
         containerStyle={{ width: 230 }}
         trigger={
           <IconButton

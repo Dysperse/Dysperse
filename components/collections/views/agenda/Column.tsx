@@ -45,7 +45,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
+    paddingTop: 50,
     width: "100%",
+    minHeight: "100%",
   },
   emptyIcon: { transform: [{ rotate: "-45deg" }] },
   emptyIconContainer: {
@@ -501,10 +503,14 @@ export function Column({
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
-          paddingHorizontal: breakpoints.md ? 0 : 15,
+          paddingHorizontal: 15,
           gap: 0,
           paddingBottom: getBottomNavigationHeight(pathname),
-          minHeight: "100%",
+          flex: 1,
+        }}
+        style={{
+          flex: 1,
+          maxHeight: "100%",
         }}
         ListEmptyComponent={() => <ColumnEmptyComponent />}
         renderItem={({ item }) => (

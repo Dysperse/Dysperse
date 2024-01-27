@@ -41,7 +41,7 @@ function BottomSheetEscapeHandler() {
     () => {
       console.log(animatedIndex.value);
       if (animatedIndex.value === -1) return;
-      forceClose();
+      forceClose({ overshootClamping: true, damping: 1 });
     },
     {
       enableOnFormTags: true,

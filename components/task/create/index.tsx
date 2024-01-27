@@ -33,6 +33,7 @@ import {
   Keyboard,
   Platform,
   Pressable,
+  ScrollView,
   View,
   useColorScheme,
 } from "react-native";
@@ -61,15 +62,19 @@ function Footer({ nameRef, menuRef, dateMenuRef, control }) {
   });
 
   return (
-    <View
+    <ScrollView
+      horizontal
       style={{
-        flexDirection: "row",
+        maxHeight: 60,
+      }}
+      contentContainerStyle={{
         alignItems: "center",
-        gap: 5,
+        flexDirection: "row",
         paddingHorizontal: 15,
         paddingVertical: 10,
-        marginBottom: 5,
+        gap: 5,
       }}
+      showsHorizontalScrollIndicator={false}
     >
       <Controller
         control={control}
@@ -152,7 +157,7 @@ function Footer({ nameRef, menuRef, dateMenuRef, control }) {
           nameRef?.current?.focus();
         }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -345,8 +350,8 @@ function BottomSheetContent({
     <View
       style={{
         height: 300,
-        maxWidth: 700,
-        width: "100%",
+        maxWidth: "100%",
+        width: 700,
         borderRadius: 20,
         backgroundColor: theme[2],
         borderWidth: 1,
@@ -470,18 +475,23 @@ export default function CreateTask({
         keyboardBehavior="interactive"
         backgroundStyle={{ backgroundColor: "transparent" }}
         handleComponent={null}
-        containerStyle={{
-          alignItems: "center",
-          justifyContent: "center",
-        }}
         maxBackdropOpacity={0.1}
       >
-        <BottomSheetContent
-          handleClose={handleClose}
-          defaultValues={defaultValues}
-          nameRef={nameRef}
-          mutateList={mutate}
-        />
+        <View
+          style={{
+            alignItems: "center",
+            flex: 1,
+            padding: 20,
+            justifyContent: "center",
+          }}
+        >
+          <BottomSheetContent
+            handleClose={handleClose}
+            defaultValues={defaultValues}
+            nameRef={nameRef}
+            mutateList={mutate}
+          />
+        </View>
       </BottomSheet>
     </>
   );
