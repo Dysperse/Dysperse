@@ -348,6 +348,7 @@ interface CollectionNavbarProps {
 const ShareCollection = memo(function ShareCollection() {
   const ref = useRef<BottomSheetModal>(null);
   const { id } = useLocalSearchParams();
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
   const handleOpen = useCallback(() => ref.current?.present(), []);
@@ -370,7 +371,7 @@ const ShareCollection = memo(function ShareCollection() {
               styles.navbarIconButton,
               {
                 backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-                width: 120,
+                width: breakpoints.md ? 120 : 50,
                 gap: 15,
               },
               id === "all" && {
@@ -383,9 +384,11 @@ const ShareCollection = memo(function ShareCollection() {
             <Icon style={{ color: theme[id === "all" ? 8 : 1] }}>
               ios_share
             </Icon>
-            <Text style={{ color: theme[id === "all" ? 8 : 1] }} weight={400}>
-              Share
-            </Text>
+            {breakpoints.md && (
+              <Text style={{ color: theme[id === "all" ? 8 : 1] }} weight={400}>
+                Share
+              </Text>
+            )}
           </Pressable>
         }
         menuProps={{
