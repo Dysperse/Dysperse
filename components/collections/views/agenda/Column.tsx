@@ -416,7 +416,7 @@ export function Column({
               style={[
                 styles.header,
                 {
-                  paddingHorizontal: breakpoints.md ? 0 : 15,
+                  paddingHorizontal: breakpoints.md ? 0 : 5,
                   paddingTop: breakpoints.md ? 0 : 20,
                 },
               ]}
@@ -501,7 +501,7 @@ export function Column({
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingTop: 15,
-          paddingRight: 10,
+          paddingHorizontal: breakpoints.md ? 0 : 15,
           gap: 0,
           paddingBottom: getBottomNavigationHeight(pathname),
           minHeight: "100%",
