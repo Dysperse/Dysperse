@@ -1,6 +1,5 @@
 import { Column } from "@/components/collections/views/agenda/Column";
 import { AgendaSelector } from "@/components/collections/views/agenda/Selector";
-import { ContentWrapper } from "@/components/layout/content";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Skeleton from "@/ui/Skeleton";
@@ -121,7 +120,7 @@ function Agenda() {
     );
   }
   return (
-    <ContentWrapper noPaddingTop>
+    <>
       {data ? (
         <View
           style={{
@@ -136,7 +135,7 @@ function Agenda() {
       ) : (
         agendaFallback
       )}
-    </ContentWrapper>
+    </>
   );
 }
 

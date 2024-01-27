@@ -280,7 +280,7 @@ const KanbanHeader = memo(function KanbanHeader({
         </Text>
         <Text weight={200} numberOfLines={1}>
           {label.entitiesLength}
-          {!grid && ` item${label.entities?.length !== 1 && "s"}`}
+          {!grid && ` item${label.entitiesLength !== 1 && "s"}`}
         </Text>
       </View>
       {grid && (
@@ -561,7 +561,7 @@ function ReorderingGrid({ labels }) {
         justifyContent: "center",
       }}
       numColumns={labels.length / 2}
-      renderItem={(data) => (
+      renderItem={(data: any) => (
         <View
           style={{
             backgroundColor: theme[4],
@@ -861,7 +861,7 @@ function Stream() {
 }
 
 export default function Page() {
-  const { id, type } = useLocalSearchParams();
+  const { id, type }: any = useLocalSearchParams();
   const { data, mutate, error } = useSWR(
     id && type
       ? [
@@ -917,7 +917,7 @@ export default function Page() {
   return (
     <CollectionContext.Provider value={{ data, mutate, error, type }}>
       {data ? (
-        <ContentWrapper>
+        <ContentWrapper noPaddingTop>
           <CollectionNavbar
             editOrderMode={editOrderMode}
             setEditOrderMode={setEditOrderMode}

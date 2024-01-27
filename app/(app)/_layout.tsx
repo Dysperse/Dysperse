@@ -176,7 +176,7 @@ export default function AppLayout() {
                           },
                           // change opacity of the previous screen when swipe
                           cardOverlayEnabled: true,
-                          animationEnabled: true,
+                          animationEnabled: !breakpoints.md,
                           gestureVelocityImpact: 0.7,
                         }}
                       >

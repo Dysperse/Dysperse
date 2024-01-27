@@ -5,6 +5,7 @@ interface CollectionContext {
   data: any;
   mutate: KeyedMutator<any>;
   error: any;
+  type: CollectionType;
 }
 
 export const CollectionContext = createContext<CollectionContext>(null);

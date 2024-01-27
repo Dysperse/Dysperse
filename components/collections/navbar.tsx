@@ -1,5 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
@@ -15,6 +16,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType } from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   router,
   useGlobalSearchParams,
@@ -40,9 +42,7 @@ const styles = StyleSheet.create({
 });
 
 function AgendaCalendarButton() {
-  const theme = useColorTheme();
   const { start }: any = useGlobalSearchParams();
-  const [selected, setSelected] = useState("");
 
   const titleFormat = {
     week: "[Week #]W • MMM YYYY",
@@ -426,6 +426,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
   const { data, ...ctx } = useCollectionContext();
+  const breakpoints = useResponsiveBreakpoints();
   const { type, id } = useGlobalSearchParams();
 
   const isAll = id === "all";
@@ -559,7 +560,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       />
     </View>
   ) : (
-    <View
+    <LinearGradient
+      colors={[theme[2], theme[3]]}
       style={{
         height: 80,
         paddingHorizontal: 15,
@@ -621,7 +623,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         }
         options={options}
       />
-      {type === "agenda" && <AgendaNavbarButtons />}
+      {type === "agenda" && breakpoints.md && <AgendaNavbarButtons />}
       <MenuPopover
         trigger={
           <IconButton variant="filled" style={styles.navbarIconButton}>
@@ -631,6 +633,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         options={filterOptions}
       />
       <ShareCollection />
-    </View>
+    </LinearGradient>
   );
 });

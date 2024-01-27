@@ -4,13 +4,13 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
-import Carousel from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
+import Swiper from "react-native-web-swiper";
 import useSWR from "swr";
 import Tab from "./tab";
 
@@ -29,11 +29,7 @@ const OpenTabsList = memo(function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
   const { width } = useWindowDimensions();
   const ref = React.useRef<ICarouselInstance>(null);
-
-  const baseOptions = {
-    vertical: false,
-    width: width * 0.8,
-  } as const;
+  const carouselRef = useRef<Swiper>();
 
   const { data, error } = useSWR(["user/tabs"]);
 
@@ -101,6 +97,11 @@ const OpenTabsList = memo(function OpenTabsList() {
     }
   );
 
+  const handleAnimationEnd = () => {
+    const index = carouselRef.current?.getActiveIndex();
+    handleSnapToIndex(index);
+  };
+
   const theme = useColorTheme();
   return data && Array.isArray(data) ? (
     width > 600 ? (
@@ -132,25 +133,21 @@ const OpenTabsList = memo(function OpenTabsList() {
         />
       </View>
     ) : (
-      <Carousel
-        loop={false}
-        {...baseOptions}
-        ref={ref}
-        style={{
-          width: "100%",
-          justifyContent: "center",
-          height: 65,
-          padding: 5,
-        }}
-        data={data}
-        pagingEnabled
-        onSnapToItem={handleSnapToIndex}
-        renderItem={({ item }) => (
-          <View key={item.id} style={{ padding: 5, paddingHorizontal: 2.5 }}>
+      <Swiper
+        ref={carouselRef}
+        springConfig={{ damping: 30, stiffness: 400 }}
+        controlsEnabled={false}
+        containerStyle={{ width: "100%" }}
+        slideWrapperStyle={{ height: 65 }}
+        innerContainerStyle={{ height: 65 }}
+        onIndexChanged={handleSnapToIndex}
+      >
+        {data.map((item) => (
+          <View key={item.id} style={{ padding: 10, paddingHorizontal: 20 }}>
             <Tab key={item.id} tab={item} selected={tab === item.id} />
           </View>
-        )}
-      />
+        ))}
+      </Swiper>
     )
   ) : (
     <View style={{ alignItems: "center" }}>

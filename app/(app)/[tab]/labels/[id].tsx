@@ -138,7 +138,7 @@ export default function Page() {
         <IconButton size={55} variant="outlined" icon="delete" />
       </View>
       <View style={styles.scrollContainer}>
-        {data ? (
+        {data?.entities ? (
           <>
             <FlashList
               data={data.entities}

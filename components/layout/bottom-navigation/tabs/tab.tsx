@@ -130,7 +130,6 @@ function Tab({
     <View
       style={{
         width: "100%",
-        height: 52,
       }}
     >
       <Pressable
@@ -152,17 +151,19 @@ function Tab({
             paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
             paddingRight: selected ? 30 : undefined,
             borderRadius: 20,
-            height: breakpoints.md ? 50 : 60,
+            height: breakpoints.md ? 50 : 50,
             backgroundColor:
               theme[
-                selected
-                  ? 5
-                  : pressed
-                  ? 5
-                  : hovered
-                  ? 4
-                  : breakpoints.md
-                  ? 2
+                breakpoints.md
+                  ? selected
+                    ? 5
+                    : pressed
+                    ? 5
+                    : hovered
+                    ? 4
+                    : breakpoints.md
+                    ? 2
+                    : 3
                   : 3
               ],
             ...(Platform.OS === "web" &&
@@ -231,7 +232,7 @@ function Tab({
         </View>
         {breakpoints.lg && (
           <IconButton
-            disabled={!selected}
+            // disabled={!selected}
             style={({ hovered }: any) => [
               styles.closeButton,
               { opacity: hovered ? 1 : 0 },

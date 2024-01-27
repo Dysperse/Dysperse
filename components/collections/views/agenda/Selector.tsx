@@ -2,7 +2,7 @@ import { useAgendaContext } from "@/components/collections/views/agenda-context"
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { memo, useRef } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -57,19 +57,21 @@ const styles = StyleSheet.create({
 });
 
 const SelectionButton = memo(function SelectionButton({
-  start,
   itemStart,
   itemEnd,
   type,
 }: {
-  start: string;
   itemStart: string;
   itemEnd: string;
   type: string;
 }) {
+  const { start } = useLocalSearchParams();
   const theme = useColorTheme();
+  console.log(start);
+  const isSelected = dayjs(itemStart).format("YYYY-MM-DD") === start;
+
   const handlePress = () => {
-    if (itemStart === start) return;
+    if (isSelected) return;
     router.setParams({
       start: dayjs(itemStart).format("YYYY-MM-DD"),
     });
@@ -91,7 +93,7 @@ const SelectionButton = memo(function SelectionButton({
           styles.inner,
           {
             borderColor: theme[6],
-            ...(itemStart === start && {
+            ...(isSelected && {
               backgroundColor: theme[10],
               borderColor: theme[10],
             }),
@@ -102,7 +104,9 @@ const SelectionButton = memo(function SelectionButton({
           weight={500}
           style={[
             styles.innerText,
-            { color: theme[itemStart === start ? 1 : 12] },
+            {
+              color: theme[isSelected ? 1 : 12],
+            },
           ]}
         >
           {dayjs(itemStart).format(buttonTextFormats(type).big)}
