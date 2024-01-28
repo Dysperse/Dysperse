@@ -1,9 +1,10 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { styles } from "@/components/home/styles";
-import { useTabMetadata } from "@/components/layout/bottom-navigation/tabs/useTabMetadata";
 import { ContentWrapper } from "@/components/layout/content";
+import { useTabMetadata } from "@/components/layout/tabs/useTabMetadata";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
@@ -31,6 +32,7 @@ import { ProfileModal } from "../../components/ProfileModal";
 function Greeting() {
   const theme = useColorTheme();
   const [greeting, setGreeting] = useState("");
+  const breakpoints = useResponsiveBreakpoints();
 
   useEffect(() => {
     const now = new Date();
@@ -53,7 +55,7 @@ function Greeting() {
       style={{
         textAlign: "center",
         color: theme[12],
-        fontSize: 70,
+        fontSize: breakpoints.md ? 70 : 40,
         marginBottom: 10,
       }}
     >
@@ -536,7 +538,7 @@ export default function Index() {
   const pattern = session?.user?.profile?.pattern || "none";
 
   return (
-    <ContentWrapper>
+    <ContentWrapper noPaddingTop>
       <ImageBackground
         source={{
           uri:
@@ -562,20 +564,24 @@ export default function Index() {
             { icon: "more_horiz", value: "edit" },
           ]}
           containerStyle={{
-            width: "auto",
             marginTop: 50,
+            height: 50,
+            width: "auto",
+            maxWidth: 200,
           }}
           buttonStyle={{ flex: 1, borderBottomWidth: 0 }}
           activeComponent={
-            <View
-              style={{
-                height: 5,
-                width: 12,
-                borderRadius: 999,
-                backgroundColor: theme[11],
-                marginHorizontal: "auto",
-              }}
-            />
+            <View style={{ alignItems: "center" }}>
+              <View
+                style={{
+                  height: 5,
+                  width: 12,
+                  borderRadius: 999,
+                  backgroundColor: theme[11],
+                  marginHorizontal: "auto",
+                }}
+              />
+            </View>
           }
           buttonTextStyle={{ textAlign: "center" }}
           iconStyle={{ color: theme[10] }}

@@ -22,10 +22,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useHotkeys } from "react-hotkeys-hook";
 import { Keyboard, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -313,7 +311,7 @@ export default function Page() {
     "user/friends",
     { requests: "true" },
   ]);
-  useHotkeys("esc", () => router.back());
+  // useHotkeys("esc", () => router.back());
 
   const Header = () => (
     <>

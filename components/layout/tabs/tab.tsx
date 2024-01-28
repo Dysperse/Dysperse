@@ -153,19 +153,7 @@ function Tab({
             borderRadius: 20,
             height: breakpoints.md ? 50 : 50,
             backgroundColor:
-              theme[
-                breakpoints.md
-                  ? selected
-                    ? 5
-                    : pressed
-                    ? 5
-                    : hovered
-                    ? 4
-                    : breakpoints.md
-                    ? 2
-                    : 3
-                  : 3
-              ],
+              theme[selected ? 5 : pressed ? 5 : hovered ? 4 : 3],
             ...(Platform.OS === "web" &&
               selected && {
                 shadowColor: theme[1],

@@ -3,8 +3,8 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { memo, useRef } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { memo } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 const buttonTextFormats = (type: string) => ({
   small: {
@@ -37,19 +37,20 @@ const styles = StyleSheet.create({
   },
   item: {
     height: 65,
-    width: 55,
+    flex: 1,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     gap: 3,
+    padding: 3,
   },
   inner: {
-    width: 50,
-    height: 50,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 99,
     borderWidth: 1,
+    aspectRatio: "1 / 1",
+    width: "100%",
   },
   innerText: {
     fontSize: 18,
@@ -115,28 +116,29 @@ const SelectionButton = memo(function SelectionButton({
     </TouchableOpacity>
   );
 });
+
 export function AgendaSelector({ data }) {
   const theme = useColorTheme();
   const { type, start } = useAgendaContext();
-  const flatListRef = useRef(null);
 
   return (
-    <FlatList
-      ref={flatListRef}
-      horizontal
-      data={data}
-      contentContainerStyle={styles.contentContainer}
-      style={[styles.list, { backgroundColor: theme[3] }]}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({ item }) => (
+    <View
+      style={{
+        flexDirection: "row",
+        paddingHorizontal: 10,
+        backgroundColor: theme[3],
+        paddingBottom: 10,
+      }}
+    >
+      {data.map((item, index) => (
         <SelectionButton
           start={start}
+          key={index}
           itemStart={item?.start}
           itemEnd={item?.end}
           type={type}
         />
-      )}
-      keyExtractor={(i) => `${i.start}-${i.end}`}
-    />
+      ))}
+    </View>
   );
 }

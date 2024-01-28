@@ -12,7 +12,6 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
-import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -182,7 +181,7 @@ function SettingsSidebar() {
 export function SettingsLayout({ children }) {
   const { session, error } = useUser();
   const { height } = useWindowDimensions();
-  useHotkeys("esc", () => router.back());
+  // useHotkeys("esc", () => router.back());
 
   return session ? (
     <>

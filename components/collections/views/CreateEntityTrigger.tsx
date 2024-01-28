@@ -1,4 +1,5 @@
 import CreateTask from "@/components/task/create";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import MenuPopover, {
   MenuProps as DysperseMenuProps,
   MenuOption,
@@ -6,7 +7,6 @@ import MenuPopover, {
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Dayjs } from "dayjs";
 import { ReactElement, useCallback, useRef } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { MenuProps } from "react-native-popup-menu";
 interface DefaultEntityProps {
   label: object;
@@ -39,6 +39,7 @@ export const CreateEntityTrigger = ({
     []
   );
   useHotkeys("alt+t", handleCreateTask, { enabled: shortcutEnabled });
+
   return (
     <>
       <MenuPopover

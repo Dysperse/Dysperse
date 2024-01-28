@@ -3,7 +3,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { usePathname } from "expo-router";
 import { StyleSheet, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { getBottomNavigationHeight } from "./bottom-navigation";
 
 interface ContentWrapperProps extends ViewProps {
   enabled?: boolean;
@@ -36,9 +35,6 @@ export function ContentWrapper(props: ContentWrapperProps) {
             : insets.top + 64,
           backgroundColor: theme[1],
           borderWidth: breakpoints.md ? 2 : 0,
-          paddingBottom: breakpoints.md
-            ? 0
-            : getBottomNavigationHeight(pathname),
           borderColor: theme[5],
         },
       ]}

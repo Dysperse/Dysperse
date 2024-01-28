@@ -3,7 +3,6 @@ import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { usePathname } from "expo-router";
 import { memo, useEffect, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, Pressable, View } from "react-native";
 import {
   Gesture,
@@ -223,7 +222,7 @@ const FocusPanel = memo(function FocusPanel() {
   const { isFocused, setFocus } = useFocusPanelContext();
   const marginRight = useSharedValue(-350);
 
-  useHotkeys("\\", () => setFocus(!isFocused), {}, [isFocused]);
+  // useHotkeys("\\", () => setFocus(!isFocused), {}, [isFocused]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {

@@ -13,7 +13,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import {
   Linking,
   Platform,
@@ -29,7 +28,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { mutate } from "swr";
-import OpenTabsList from "../bottom-navigation/tabs/carousel";
+import OpenTabsList from "../tabs/carousel";
 
 export const styles = StyleSheet.create({
   header: {
@@ -68,7 +67,7 @@ export const styles = StyleSheet.create({
 const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const handleHome = () => router.push("/");
   const theme = useColorTheme();
-  useHotkeys("ctrl+0", () => router.push("/"));
+  // useHotkeys("ctrl+0", () => router.push("/"));
 
   return (
     <Pressable
@@ -91,10 +90,10 @@ const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
   const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], (e) => {
-    e.preventDefault();
-    handleOpen();
-  });
+  // useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], (e) => {
+  //   e.preventDefault();
+  //   handleOpen();
+  // });
 
   return (
     <Pressable
@@ -265,6 +264,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             backgroundColor: theme[1],
             opacity: pressed ? 0.5 : 1,
             flex: 1,
+            minHeight: 45,
           },
         ]}
       >
@@ -397,7 +397,7 @@ function PanelSwipeTrigger({ isHidden }) {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ SIDEBAR_WIDTH, sidebarMargin }) {
   const pathname = usePathname();
   const theme = useColorTheme();
 
@@ -410,8 +410,8 @@ export function Sidebar() {
     setIsHidden((prev) => !prev);
   }, [setIsHidden]);
 
-  useHotkeys("`", toggleHidden, {}, [isHidden]);
-  useHotkeys("ctrl+comma", () => router.push("/settings"));
+  // useHotkeys("`", toggleHidden, {}, [isHidden]);
+  // useHotkeys("ctrl+comma", () => router.push("/settings"));
 
   const marginLeft = useSharedValue(0);
   const translateX = useSharedValue(0);
@@ -425,9 +425,12 @@ export function Sidebar() {
       if (Platform.OS === "web") localStorage.setItem("sidebarHidden", "false");
     }
   }, [isHidden, marginLeft, translateX]);
-
+  const breakpoints = useResponsiveBreakpoints();
   const marginLeftStyle = useAnimatedStyle(() => ({
-    marginLeft: withSpring(marginLeft.value, { damping: 30, stiffness: 400 }),
+    marginLeft: withSpring(sidebarMargin.value, {
+      damping: 30,
+      stiffness: 400,
+    }),
     pointerEvents: isHidden ? "none" : "auto",
   }));
 
@@ -450,14 +453,14 @@ export function Sidebar() {
 
   console.log(isHidden);
 
-  return pathname.includes("settings") ? null : (
+  return (
     <>
       <Animated.View
         style={[
-          marginLeftStyle,
+          breakpoints.md && marginLeftStyle,
           {
             height: "100%",
-            width: 220,
+            width: SIDEBAR_WIDTH,
             flexDirection: "column",
             maxHeight: "100%",
             backgroundColor: theme[2],
@@ -474,11 +477,13 @@ export function Sidebar() {
         </View>
         <OpenTabsList />
       </Animated.View>
-      <GestureDetector gesture={pan}>
-        <GestureDetector gesture={tap}>
-          <PanelSwipeTrigger isHidden={isHidden} />
+      {breakpoints.md && (
+        <GestureDetector gesture={pan}>
+          <GestureDetector gesture={tap}>
+            <PanelSwipeTrigger isHidden={isHidden} />
+          </GestureDetector>
         </GestureDetector>
-      </GestureDetector>
+      )}
     </>
   );
 }

@@ -1,7 +1,6 @@
 import { Entity } from "@/components/collections/entity";
 import { useAgendaContext } from "@/components/collections/views/agenda-context";
 import { Header } from "@/components/collections/views/agenda/Header";
-import { getBottomNavigationHeight } from "@/components/layout/bottom-navigation";
 import Task from "@/components/task";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -505,7 +504,6 @@ export function Column({
           paddingTop: 15,
           paddingHorizontal: 15,
           gap: 0,
-          paddingBottom: getBottomNavigationHeight(pathname),
           flex: 1,
         }}
         style={{
