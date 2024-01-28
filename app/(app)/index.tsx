@@ -11,6 +11,7 @@ import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -18,7 +19,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -28,6 +29,7 @@ import {
 } from "react-native";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
+import { SidebarContext } from "./_layout";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -536,6 +538,7 @@ export default function Index() {
   const { session } = useUser();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
+  const { sidebarMargin } = useContext(SidebarContext);
 
   return (
     <ContentWrapper noPaddingTop>
@@ -556,6 +559,13 @@ export default function Index() {
         style={{ flex: 1, alignItems: "center" }}
         resizeMode="repeat"
       >
+        <IconButton
+          style={{ position: "absolute", top: 20, left: 20 }}
+          icon="menu"
+          size={55}
+          variant="outlined"
+          onPress={() => (sidebarMargin.value = 0)}
+        />
         <ButtonGroup
           state={[view, setView]}
           options={[
@@ -564,7 +574,7 @@ export default function Index() {
             { icon: "more_horiz", value: "edit" },
           ]}
           containerStyle={{
-            marginTop: 50,
+            marginTop: 100,
             height: 50,
             width: "auto",
             maxWidth: 200,

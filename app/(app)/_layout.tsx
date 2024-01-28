@@ -24,7 +24,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
-import React, { useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import {
   Platform,
   StatusBar,
@@ -53,6 +53,11 @@ dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
+
+export const SidebarContext = createContext<{
+  SIDEBAR_WIDTH: any;
+  sidebarMargin: any;
+}>(null);
 
 export function SessionLoadingScreen() {
   const theme = useColorScheme();
@@ -238,105 +243,110 @@ export default function AppLayout() {
                 >
                   <CommandPaletteProvider>
                     <FocusPanelProvider>
-                      <Sidebar
-                        SIDEBAR_WIDTH={SIDEBAR_WIDTH}
-                        sidebarMargin={sidebarMargin}
-                      />
-                      <ThemeProvider
-                        value={{
-                          ...DefaultTheme,
-                          colors: {
-                            ...DefaultTheme.colors,
-                            background: theme[breakpoints.sm ? 2 : 1],
-                          },
-                        }}
+                      <SidebarContext.Provider
+                        value={{ SIDEBAR_WIDTH, sidebarMargin }}
                       >
-                        <Animated.View
-                          style={[
-                            !breakpoints.md && panelStyle,
-                            { width: "100%" },
-                          ]}
+                        <Sidebar
+                          SIDEBAR_WIDTH={SIDEBAR_WIDTH}
+                          sidebarMargin={sidebarMargin}
+                        />
+                        <ThemeProvider
+                          value={{
+                            ...DefaultTheme,
+                            colors: {
+                              ...DefaultTheme.colors,
+                              background: theme[breakpoints.sm ? 2 : 1],
+                            },
+                          }}
                         >
-                          <JsStack
-                            screenOptions={{
-                              header: () => null,
-                              headerTransparent: true,
-                              gestureResponseDistance: width,
-                              gestureEnabled: false,
-                              cardStyle: {
-                                height,
-                                width: breakpoints.md ? "100%" : width,
-                                backgroundColor: theme[breakpoints.sm ? 2 : 1],
-                                padding: breakpoints.md ? 10 : 0,
-                                ...(Platform.OS === "web" &&
-                                  ({
-                                    marginTop: "env(titlebar-area-height,0)",
-                                  } as any)),
-                              },
-                              // change opacity of the previous screen when swipe
-                              cardOverlayEnabled: true,
-                              animationEnabled: !breakpoints.md,
-                              gestureVelocityImpact: 0.7,
-                            }}
+                          <Animated.View
+                            style={[
+                              !breakpoints.md && panelStyle,
+                              { width: "100%" },
+                            ]}
                           >
-                            <JsStack.Screen name="index" />
-                            {[
-                              "settings/appearance",
-                              "settings/customization/appearance",
-                              "settings/customization/notifications",
-                              "settings/privacy/login-security",
-                              "settings/privacy/devices",
-                              "settings/customization/profile",
-                              "settings/index",
-                              "settings/personal-information",
-                              "settings/space/index",
-                              "settings/space/integrations",
-                            ].map((d) => (
-                              <JsStack.Screen
-                                name={d}
-                                key={d}
-                                options={{
-                                  cardStyle: { padding: 0 },
-                                  gestureEnabled: true,
-                                  headerTitle:
-                                    d !== "settings/index" && "Settings",
-                                  ...TransitionPresets.SlideFromRightIOS,
-                                  cardStyleInterpolator: forHorizontalIOS,
-                                  ...(breakpoints.md && {
-                                    animationEnabled: false,
-                                  }),
-                                }}
-                              />
-                            ))}
-                            <JsStack.Screen
-                              name="friends"
-                              options={{
-                                gestureEnabled: true,
-                                header: (props) => (
-                                  <Navbar
-                                    icon="arrow_back_ios_new"
-                                    {...props}
-                                  />
-                                ),
-                                ...TransitionPresets.SlideFromRightIOS,
-                                cardStyleInterpolator: forHorizontalIOS,
+                            <JsStack
+                              screenOptions={{
+                                header: () => null,
+                                headerTransparent: true,
+                                gestureResponseDistance: width,
+                                gestureEnabled: false,
+                                cardStyle: {
+                                  height,
+                                  width: breakpoints.md ? "100%" : width,
+                                  backgroundColor:
+                                    theme[breakpoints.sm ? 2 : 1],
+                                  padding: breakpoints.md ? 10 : 0,
+                                  ...(Platform.OS === "web" &&
+                                    ({
+                                      marginTop: "env(titlebar-area-height,0)",
+                                    } as any)),
+                                },
+                                // change opacity of the previous screen when swipe
+                                cardOverlayEnabled: true,
+                                animationEnabled: !breakpoints.md,
+                                gestureVelocityImpact: 0.7,
                               }}
-                            />
-                            {["clock", "collections/create"].map((d) => (
+                            >
+                              <JsStack.Screen name="index" />
+                              {[
+                                "settings/appearance",
+                                "settings/customization/appearance",
+                                "settings/customization/notifications",
+                                "settings/privacy/login-security",
+                                "settings/privacy/devices",
+                                "settings/customization/profile",
+                                "settings/index",
+                                "settings/personal-information",
+                                "settings/space/index",
+                                "settings/space/integrations",
+                              ].map((d) => (
+                                <JsStack.Screen
+                                  name={d}
+                                  key={d}
+                                  options={{
+                                    cardStyle: { padding: 0 },
+                                    gestureEnabled: true,
+                                    headerTitle:
+                                      d !== "settings/index" && "Settings",
+                                    ...TransitionPresets.SlideFromRightIOS,
+                                    cardStyleInterpolator: forHorizontalIOS,
+                                    ...(breakpoints.md && {
+                                      animationEnabled: false,
+                                    }),
+                                  }}
+                                />
+                              ))}
                               <JsStack.Screen
-                                name={d}
-                                key={d}
+                                name="friends"
                                 options={{
+                                  gestureEnabled: true,
+                                  header: (props) => (
+                                    <Navbar
+                                      icon="arrow_back_ios_new"
+                                      {...props}
+                                    />
+                                  ),
                                   ...TransitionPresets.SlideFromRightIOS,
-                                  gestureResponseDistance: width,
                                   cardStyleInterpolator: forHorizontalIOS,
-                                  // cardStyle: { marginBottom: 0 },
                                 }}
                               />
-                            ))}
-                          </JsStack>
-                        </Animated.View>
-                      </ThemeProvider>
+                              {["clock", "collections/create"].map((d) => (
+                                <JsStack.Screen
+                                  name={d}
+                                  key={d}
+                                  options={{
+                                    ...TransitionPresets.SlideFromRightIOS,
+                                    gestureResponseDistance: width,
+                                    cardStyleInterpolator: forHorizontalIOS,
+                                    // cardStyle: { marginBottom: 0 },
+                                  }}
+                                />
+                              ))}
+                            </JsStack>
+                          </Animated.View>
+                        </ThemeProvider>
+                      </SidebarContext.Provider>
                     </FocusPanelProvider>
                   </CommandPaletteProvider>
                 </View>
