@@ -13,17 +13,6 @@
       "resizeMode": "cover",
       "backgroundColor": "#000000"
     },
-    "hooks": {
-      "postPublish": [
-        {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "dysperse",
-            "project": "new-dashboard"
-          }
-        }
-      ]
-    },
     "experiments": {
       "tsconfigPaths": true
     },
@@ -51,10 +40,24 @@
       [
         "@sentry/react-native/expo",
         {
-          "url": "https://sentry.io/",
-          "authToken": "--",
-          "project": "--",
-          "organization": "--"
+          "organization": "dysperse",
+          "project": "new-dashboard"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/jost/Jost_100Thin.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_200ExtraLight.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_300Light.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_400Regular.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_500Medium.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_600SemiBold.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_700Bold.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_800ExtraBold.ttf",
+            "node_modules/@expo-google-fonts/jost/Jost_900Black.ttf"
+          ]
         }
       ],
       "expo-router",

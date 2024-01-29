@@ -18,7 +18,7 @@ import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
-import { Slot } from "expo-router";
+import { Slot, useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
@@ -44,11 +44,19 @@ declare global {
   }
 }
 
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 Sentry.init({
   dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
   enableAutoSessionTracking: true,
   debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
   tracesSampleRate: 1.0,
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      // Pass instrumentation to be used as `routingInstrumentation`
+      routingInstrumentation,
+      // ...
+    }),
+  ],
 });
 
 SplashScreen.preventAutoHideAsync();
@@ -176,13 +184,20 @@ function SWRWrapper({ children }) {
   );
 }
 
-export default function Root() {
+function Root() {
   // CHANGE THIS LATER!!!
   const theme = useColor("violet", true);
+  const ref = useNavigationContainerRef();
+
+  React.useEffect(() => {
+    if (ref) {
+      routingInstrumentation.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   // Set up the auth context and render our layout inside of it.
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontsError] = useFonts({
     heading: require("../assets/fonts/heading.ttf"),
     body_100: Jost_100Thin,
     body_200: Jost_200ExtraLight,
@@ -199,10 +214,10 @@ export default function Root() {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
+    if (fontsLoaded || fontsError) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontsError]);
 
   if (!fontsLoaded) {
     return <SessionLoadingScreen />;
@@ -224,3 +239,5 @@ export default function Root() {
 if (Platform.OS === "web") {
   serviceWorkerRegistration.register();
 }
+
+export default Sentry.wrap(Root);
