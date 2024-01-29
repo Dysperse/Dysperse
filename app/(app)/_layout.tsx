@@ -44,6 +44,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import { SidebarContext } from "../../components/layout/sidebar/context";
@@ -112,16 +113,30 @@ export default function AppLayout() {
     isDark
     // sessionData?.user?.darkMode === "dark"
   );
-
+  const insets = useSafeAreaInsets();
   const panelStyle = useAnimatedStyle(() => {
     return {
       borderColor: theme?.[4],
-      borderWidth: withSpring(
+      borderWidth: withSpring(sidebarMargin.value !== 0 ? 0 : 2, {
+        damping: 30,
+        stiffness: 400,
+      }),
+      marginTop: withSpring(
         interpolate(
           Math.abs(sidebarMargin.value),
           [0, SIDEBAR_WIDTH],
-          [2, 0],
-          "clamp"
+          [insets.top, 0]
+        ),
+        {
+          damping: 30,
+          stiffness: 400,
+        }
+      ),
+      marginBottom: withSpring(
+        interpolate(
+          Math.abs(sidebarMargin.value),
+          [0, SIDEBAR_WIDTH],
+          [insets.bottom, 0]
         ),
         {
           damping: 30,

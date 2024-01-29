@@ -23,12 +23,12 @@ import {
   useColorScheme,
   useWindowDimensions,
 } from "react-native";
-import { Gesture } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { mutate } from "swr";
 import OpenTabsList from "../tabs/carousel";
 
@@ -307,6 +307,7 @@ const Header = memo(function Header() {
 });
 
 export function Sidebar() {
+  const insets = useSafeAreaInsets();
   const { sidebarMargin, SIDEBAR_WIDTH } = useSidebarContext();
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
@@ -351,10 +352,6 @@ export function Sidebar() {
     pointerEvents: isHidden ? "none" : "auto",
   }));
 
-  const tap = Gesture.Tap().onEnd(toggleHidden);
-
-  console.log(isHidden);
-
   return (
     <>
       <Animated.View
@@ -364,6 +361,7 @@ export function Sidebar() {
           {
             height: "100%",
             width: SIDEBAR_WIDTH,
+            marginTop: insets.top,
             flexDirection: "column",
             maxHeight: "100%",
             backgroundColor: theme[2],

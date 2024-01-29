@@ -501,10 +501,10 @@ export function Column({
         initialNumToRender={10}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
+          paddingBottom: 50,
           paddingTop: 15,
           paddingHorizontal: 15,
           gap: 0,
-          flex: 1,
         }}
         style={{
           flex: 1,

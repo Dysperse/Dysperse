@@ -6,7 +6,9 @@
     "start": "expo start",
     "start-tunnel": "expo start --tunnel",
     "lint": "eslint ./",
-    "build": "eas build --profile development --platform android"
+    "build": "eas build --profile development --platform android",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo-google-fonts/jost": "^0.2.3",
@@ -23,7 +25,7 @@
     "dayjs": "^1.11.10",
     "eas": "^0.1.0",
     "esbuild": "^0.20.0",
-    "expo": "~50.0.4",
+    "expo": "^50.0.4",
     "expo-application": "~5.8.3",
     "expo-blur": "~12.9.1",
     "expo-constants": "~15.4.5",

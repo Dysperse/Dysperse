@@ -23,10 +23,10 @@ import { useCallback, useEffect, useState } from "react";
 import {
   ImageBackground,
   Pressable,
-  ScrollView,
   TouchableOpacity,
   View,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
 import { useSidebarContext } from "../../components/layout/sidebar/context";

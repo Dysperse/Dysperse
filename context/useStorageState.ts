@@ -55,7 +55,8 @@ export function useStorageState(key: string): UseStateHook<string> {
         setState(value);
       });
     }
-  }, [key]);
+    return () => {};
+  }, [key, setState]);
 
   // Set
   const setValue = React.useCallback(

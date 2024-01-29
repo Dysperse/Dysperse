@@ -48,7 +48,7 @@ const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 Sentry.init({
   dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
   enableAutoSessionTracking: true,
-  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  // debug: true,
   tracesSampleRate: 1.0,
   integrations: [
     new Sentry.ReactNativeTracing({

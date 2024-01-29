@@ -26,6 +26,7 @@ import {
 import { ReactElement, memo, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import LabelPicker from "../labels/picker";
 import { CollectionContext, useCollectionContext } from "./context";
@@ -412,10 +413,7 @@ const ShareCollection = memo(function ShareCollection() {
               )}
             </Pressable>
           ) : (
-            <MenuItem>
-              <Icon>ios_share</Icon>
-              <Text variant="menuItem">Share</Text>
-            </MenuItem>
+            <IconButton variant="outlined" size={40} icon="ios_share" />
           )
         }
         menuProps={{
@@ -456,6 +454,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const { data, ...ctx } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
   const { type, id } = useGlobalSearchParams();
+  const insets = useSafeAreaInsets();
 
   const isAll = id === "all";
 
@@ -593,7 +592,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       <LinearGradient
         colors={breakpoints.md ? [theme[1]] : [theme[2], theme[3]]}
         style={{
-          height: 80,
+          height: 80 + insets.top,
+          paddingTop: insets.top,
           paddingHorizontal: 15,
           flexDirection: "row",
           alignItems: "center",
@@ -678,36 +678,11 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         {type === "agenda" && breakpoints.md && <AgendaNavbarButtons />}
         <MenuPopover
           trigger={
-            <IconButton variant="outlined" size={40} icon="more_horiz" />
+            <IconButton variant="outlined" size={40} icon="filter_list" />
           }
-          menuProps={{
-            rendererProps: {
-              placement: "bottom",
-            },
-          }}
-          options={[
-            {
-              renderer: () => (
-                <MenuPopover
-                  trigger={
-                    <MenuItem>
-                      <Icon>filter_list</Icon>
-                      <Text variant="menuItem" weight={300}>
-                        Filter
-                      </Text>
-                    </MenuItem>
-                  }
-                  options={filterOptions}
-                />
-              ),
-            },
-            {
-              renderer: () => <ShareCollection />,
-            },
-          ]}
+          options={filterOptions}
         />
-
-        {breakpoints.md && <ShareCollection />}
+        <ShareCollection />
       </LinearGradient>
       {type === "agenda" && !breakpoints.md && <AgendaNavbarButtons />}
     </>
