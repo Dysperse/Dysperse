@@ -24,7 +24,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
-import React, { createContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Platform,
   StatusBar,
@@ -46,6 +46,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
+import { SidebarContext } from "../../components/layout/sidebar/context";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -53,11 +54,6 @@ dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
-
-export const SidebarContext = createContext<{
-  SIDEBAR_WIDTH: any;
-  sidebarMargin: any;
-}>(null);
 
 export function SessionLoadingScreen() {
   const theme = useColorScheme();
@@ -114,12 +110,12 @@ export default function AppLayout() {
 
   const panelStyle = useAnimatedStyle(() => {
     return {
-      borderColor: theme?.[5],
+      borderColor: theme?.[4],
       borderWidth: withSpring(
         interpolate(
           Math.abs(sidebarMargin.value),
           [0, SIDEBAR_WIDTH],
-          [3, 0],
+          [2, 0],
           "clamp"
         ),
         {
@@ -244,12 +240,24 @@ export default function AppLayout() {
                   <CommandPaletteProvider>
                     <FocusPanelProvider>
                       <SidebarContext.Provider
-                        value={{ SIDEBAR_WIDTH, sidebarMargin }}
+                        value={{
+                          SIDEBAR_WIDTH,
+                          sidebarMargin,
+                          closeSidebarOnMobile: () => {
+                            if (!breakpoints.md) {
+                              sidebarMargin.value = -SIDEBAR_WIDTH;
+                            }
+                          },
+                          closeSidebar: () =>
+                            (sidebarMargin.value = -SIDEBAR_WIDTH),
+                          openSidebar: () => {
+                            if (!breakpoints.md) {
+                              sidebarMargin.value = 0;
+                            }
+                          },
+                        }}
                       >
-                        <Sidebar
-                          SIDEBAR_WIDTH={SIDEBAR_WIDTH}
-                          sidebarMargin={sidebarMargin}
-                        />
+                        <Sidebar />
                         <ThemeProvider
                           value={{
                             ...DefaultTheme,
@@ -262,7 +270,7 @@ export default function AppLayout() {
                           <Animated.View
                             style={[
                               !breakpoints.md && panelStyle,
-                              { width: "100%" },
+                              breakpoints.md ? { flex: 1 } : { width: "100%" },
                             ]}
                           >
                             <JsStack

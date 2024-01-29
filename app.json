@@ -27,14 +27,7 @@
     "experiments": {
       "tsconfigPaths": true
     },
-    "packagerOpts": {
-      "sourceExts": [
-        "cjs"
-      ]
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -55,7 +48,15 @@
       "display": "standalone"
     },
     "plugins": [
-      "sentry-expo",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "authToken": "--",
+          "project": "--",
+          "organization": "--"
+        }
+      ],
       "expo-router",
       [
         "expo-location",

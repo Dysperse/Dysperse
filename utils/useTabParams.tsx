@@ -32,5 +32,6 @@ export function useTabParams() {
     }
     return { ...params, ...query };
   }
+  console.log("params", params);
   return params;
 }

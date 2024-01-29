@@ -1,3 +1,4 @@
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -117,26 +118,32 @@ function AgendaNavbarButtons() {
     "day",
     "[]"
   );
-
-  const titleFormat = {
-    week: "[Week #]W • MMM YYYY",
-    month: "YYYY",
-    year: "YYYY",
-  }[agendaView || "week"];
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <>
+    <View style={!breakpoints.md && { backgroundColor: theme[3] }}>
       <View
-        style={{
-          marginRight: !isTodaysView ? undefined : "auto",
-          flexDirection: "row",
-          borderWidth: 1,
-          borderColor: theme[6],
-          height: 50,
-          borderRadius: 20,
-          alignItems: "center",
-          paddingHorizontal: 10,
-        }}
+        style={[
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            height: 50,
+            alignItems: "center",
+            paddingHorizontal: 10,
+          },
+          breakpoints.md
+            ? {
+                marginRight: !isTodaysView ? undefined : "auto",
+                borderWidth: 1,
+                borderRadius: 20,
+                borderColor: theme[6],
+              }
+            : {
+                paddingHorizontal: 15,
+                borderTopColor: theme[6],
+                borderTopWidth: 1,
+              },
+        ]}
       >
         <IconButton onPress={handlePrev}>
           <Icon>west</Icon>
@@ -165,7 +172,7 @@ function AgendaNavbarButtons() {
           </IconButton>
         </View>
       )}
-    </>
+    </View>
   );
 }
 
@@ -366,30 +373,40 @@ const ShareCollection = memo(function ShareCollection() {
     <>
       <MenuPopover
         trigger={
-          <Pressable
-            style={({ pressed, hovered }: any) => [
-              styles.navbarIconButton,
-              {
-                backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-                width: breakpoints.md ? 120 : 50,
-                gap: 15,
-              },
-              id === "all" && {
-                backgroundColor: theme[3],
-                opacity: 0.5,
-                pointerEvents: "none",
-              },
-            ]}
-          >
-            <Icon style={{ color: theme[id === "all" ? 8 : 1] }}>
-              ios_share
-            </Icon>
-            {breakpoints.md && (
-              <Text style={{ color: theme[id === "all" ? 8 : 1] }} weight={400}>
-                Share
-              </Text>
-            )}
-          </Pressable>
+          breakpoints.md ? (
+            <Pressable
+              style={({ pressed, hovered }: any) => [
+                styles.navbarIconButton,
+                {
+                  backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+                  width: breakpoints.md ? 120 : 50,
+                  gap: 15,
+                },
+                id === "all" && {
+                  backgroundColor: theme[3],
+                  opacity: 0.5,
+                  pointerEvents: "none",
+                },
+              ]}
+            >
+              <Icon style={{ color: theme[id === "all" ? 8 : 1] }}>
+                ios_share
+              </Icon>
+              {breakpoints.md && (
+                <Text
+                  style={{ color: theme[id === "all" ? 8 : 1] }}
+                  weight={400}
+                >
+                  Share
+                </Text>
+              )}
+            </Pressable>
+          ) : (
+            <MenuItem>
+              <Icon>ios_share</Icon>
+              <Text variant="menuItem">Share</Text>
+            </MenuItem>
+          )
         }
         menuProps={{
           rendererProps: {
@@ -517,6 +534,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       callback: () => alert("filter edited"),
     },
   ];
+  const { sidebarMargin } = useSidebarContext();
 
   // useKeyboardShortcut(["v a", "v k", "v s", "v m", "v g", "v d"], (key) => {
   //   const index = options.findIndex(
@@ -561,84 +579,120 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       />
     </View>
   ) : (
-    <LinearGradient
-      colors={breakpoints.md ? [theme[1]] : [theme[2], theme[3]]}
-      style={{
-        height: 80,
-        paddingHorizontal: 15,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-      }}
-    >
-      <MenuPopover
-        menuProps={{
-          rendererProps: {
-            placement: "bottom",
-          },
+    <>
+      <LinearGradient
+        colors={breakpoints.md ? [theme[1]] : [theme[2], theme[3]]}
+        style={{
+          height: 80,
+          paddingHorizontal: 15,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
         }}
-        containerStyle={{ width: 230 }}
-        trigger={
-          <IconButton
-            variant="filled"
-            style={[
-              styles.navbarIconButton,
-              {
-                backgroundColor: "transparent",
-                height: 30,
-                gap: 10,
-                width: "auto",
-                paddingLeft: 10,
-                paddingRight: 5,
+      >
+        <IconButton
+          icon="arrow_back_ios_new"
+          onPress={() => (sidebarMargin.value = 0)}
+        />
+        <View style={!breakpoints.md && { flex: 1 }}>
+          <MenuPopover
+            menuProps={{
+              rendererProps: {
+                placement: "bottom",
               },
-            ]}
-          >
-            {!isAll && <Emoji emoji={data.emoji} size={30} />}
-            <Text style={{ fontSize: 20 }}>{data.name || "Everything"}</Text>
-          </IconButton>
-        }
-        options={collectionMenuOptions}
-      />
-      <MenuPopover
-        menuProps={{
-          style: { marginRight: "auto" },
-        }}
-        trigger={
-          <IconButton
-            variant="filled"
-            style={[
-              styles.navbarIconButton,
-              {
-                width: 60,
-                height: 30,
-                paddingLeft: 5,
-                borderLeftColor: theme[6],
-                borderLeftWidth: 2,
-                borderRadius: 0,
-                backgroundColor: "transparent",
-              },
-            ]}
-          >
-            <Icon style={{ color: theme[12] }} size={20}>
-              {options.find((i) => i.selected)?.icon || "calendar_today"}
-            </Icon>
-            <Icon style={{ marginLeft: -4, color: theme[12] }}>
-              expand_more
-            </Icon>
-          </IconButton>
-        }
-        options={options}
-      />
-      {type === "agenda" && breakpoints.md && <AgendaNavbarButtons />}
-      <MenuPopover
-        trigger={
-          <IconButton variant="filled" style={styles.navbarIconButton}>
-            <Icon>filter_list</Icon>
-          </IconButton>
-        }
-        options={filterOptions}
-      />
-      <ShareCollection />
-    </LinearGradient>
+            }}
+            containerStyle={{ width: 230 }}
+            trigger={
+              <IconButton
+                variant="filled"
+                style={[
+                  styles.navbarIconButton,
+                  {
+                    backgroundColor: "transparent",
+                    height: 30,
+                    gap: 10,
+                    width: "auto",
+                    justifyContent: "flex-start",
+                    paddingRight: 5,
+                  },
+                ]}
+              >
+                {!isAll && <Emoji emoji={data.emoji} size={30} />}
+                <Text style={{ fontSize: 20 }}>
+                  {data.name || "Everything"}
+                </Text>
+              </IconButton>
+            }
+            options={collectionMenuOptions}
+          />
+        </View>
+        {breakpoints.md && (
+          <MenuPopover
+            menuProps={{
+              style: { marginRight: "auto" },
+            }}
+            trigger={
+              <IconButton
+                variant="filled"
+                style={[
+                  styles.navbarIconButton,
+                  {
+                    width: 60,
+                    height: 30,
+                    paddingLeft: 5,
+                    borderLeftColor: theme[6],
+                    borderLeftWidth: 2,
+                    borderRadius: 0,
+                    backgroundColor: "transparent",
+                  },
+                ]}
+              >
+                <Icon style={{ color: theme[12] }} size={20}>
+                  {options.find((i) => i.selected)?.icon || "calendar_today"}
+                </Icon>
+                <Icon style={{ marginLeft: -4, color: theme[12] }}>
+                  expand_more
+                </Icon>
+              </IconButton>
+            }
+            options={options}
+          />
+        )}
+        {type === "agenda" && breakpoints.md && <AgendaNavbarButtons />}
+        <MenuPopover
+          trigger={
+            <IconButton variant="outlined" size={55} icon="more_horiz" />
+          }
+          menuProps={{
+            rendererProps: {
+              placement: "bottom",
+            },
+          }}
+          options={[
+            {
+              renderer: () => (
+                <MenuPopover
+                  trigger={
+                    <MenuItem>
+                      <Icon>filter_list</Icon>
+                      <Text variant="menuItem" weight={300}>
+                        Filter
+                      </Text>
+                    </MenuItem>
+                  }
+                  options={filterOptions}
+                />
+              ),
+            },
+            {
+              renderer: () => <ShareCollection />,
+            },
+          ]}
+        />
+
+        {breakpoints.md && <ShareCollection />}
+      </LinearGradient>
+      {type === "agenda" && !breakpoints.md && <AgendaNavbarButtons />}
+    </>
   );
 });

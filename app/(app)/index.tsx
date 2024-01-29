@@ -19,7 +19,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -29,7 +29,7 @@ import {
 } from "react-native";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
-import { SidebarContext } from "./_layout";
+import { useSidebarContext } from "../../components/layout/sidebar/context";
 
 function Greeting() {
   const theme = useColorTheme();
@@ -538,7 +538,7 @@ export default function Index() {
   const { session } = useUser();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
-  const { sidebarMargin } = useContext(SidebarContext);
+  const { sidebarMargin } = useSidebarContext();
 
   return (
     <ContentWrapper noPaddingTop>

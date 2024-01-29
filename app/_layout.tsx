@@ -14,6 +14,7 @@ import {
   Jost_800ExtraBold,
   Jost_900Black,
 } from "@expo-google-fonts/jost";
+import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
@@ -24,13 +25,13 @@ import * as Updates from "expo-updates";
 import React, { useCallback } from "react";
 import { AppState, Platform, View } from "react-native";
 import "react-native-gesture-handler";
-import * as Sentry from "sentry-expo";
 import { SWRConfig } from "swr";
 import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
 import { SessionProvider, useSession } from "../context/AuthProvider";
 import { SessionLoadingScreen } from "./(app)/_layout";
 
 SystemUI.setBackgroundColorAsync("black");
+
 if (Platform.OS === "android") {
   NavigationBar.setPositionAsync("absolute");
   NavigationBar.setBackgroundColorAsync("rgba(255,255,255,0.005)");
@@ -45,7 +46,6 @@ declare global {
 
 Sentry.init({
   dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
-  enableInExpoDevelopment: false,
   enableAutoSessionTracking: true,
   debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
   tracesSampleRate: 1.0,
@@ -88,7 +88,10 @@ function ErrorBoundaryComponent() {
         </Text>
 
         <Button
-          onPress={() => Updates.reloadAsync()}
+          onPress={() => {
+            if (Platform.OS === "web") return window.location.reload();
+            Updates.reloadAsync();
+          }}
           variant="outlined"
           style={{ marginTop: 10 }}
         >

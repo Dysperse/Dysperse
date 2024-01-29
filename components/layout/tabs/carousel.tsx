@@ -3,14 +3,13 @@ import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { useTabParams } from "@/utils/useTabParams";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useGlobalSearchParams } from "expo-router";
-import React, { memo, useEffect, useRef } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { router } from "expo-router";
+import React, { memo, useEffect } from "react";
+import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Toast from "react-native-toast-message";
-import Swiper from "react-native-web-swiper";
 import useSWR from "swr";
 import Tab from "./tab";
 
@@ -26,10 +25,7 @@ const Header = memo(function Header() {
 });
 
 const OpenTabsList = memo(function OpenTabsList() {
-  const { tab } = useGlobalSearchParams();
-  const { width } = useWindowDimensions();
-  const ref = React.useRef<ICarouselInstance>(null);
-  const carouselRef = useRef<Swiper>();
+  const { tab }: { tab: string } = useTabParams() as any;
 
   const { data, error } = useSWR(["user/tabs"]);
 
@@ -93,7 +89,7 @@ const OpenTabsList = memo(function OpenTabsList() {
       keyboardEvent.preventDefault();
       const i = hotKeysEvent.keys[0];
       if (i == "9") return handleSnapToIndex(data.length - 1);
-      if (data[i]) handleSnapToIndex(i - 1);
+      if (data[i]) handleSnapToIndex(parseInt(i) - 1);
     }
   );
 

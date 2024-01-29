@@ -43,7 +43,12 @@ export const CreateEntityTrigger = ({
   return (
     <>
       <MenuPopover
-        menuProps={menuProps}
+        menuProps={{
+          rendererProps: {
+            placement: "bottom",
+          },
+          ...menuProps,
+        }}
         trigger={children}
         options={[
           { icon: "task_alt", text: "Task", callback: handleCreateTask },

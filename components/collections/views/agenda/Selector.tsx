@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     borderWidth: 1,
     aspectRatio: "1 / 1",
+    maxWidth: 55,
     width: "100%",
   },
   innerText: {
@@ -130,15 +131,16 @@ export function AgendaSelector({ data }) {
         paddingBottom: 10,
       }}
     >
-      {data.map((item, index) => (
-        <SelectionButton
-          start={start}
-          key={index}
-          itemStart={item?.start}
-          itemEnd={item?.end}
-          type={type}
-        />
-      ))}
+      {Array.isArray(data) &&
+        data.map((item, index) => (
+          <SelectionButton
+            start={start}
+            key={index}
+            itemStart={item?.start}
+            itemEnd={item?.end}
+            type={type}
+          />
+        ))}
     </View>
   );
 }

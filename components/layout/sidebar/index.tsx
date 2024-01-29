@@ -2,6 +2,7 @@ import { CreateEntityTrigger } from "@/components/collections/views/CreateEntity
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
@@ -12,7 +13,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   Linking,
   Platform,
@@ -20,11 +21,12 @@ import {
   StyleSheet,
   View,
   useColorScheme,
+  useWindowDimensions,
 } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Gesture } from "react-native-gesture-handler";
 import Animated, {
+  interpolate,
   useAnimatedStyle,
-  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { mutate } from "swr";
@@ -65,7 +67,11 @@ export const styles = StyleSheet.create({
 });
 
 const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
-  const handleHome = () => router.push("/");
+  const { closeSidebarOnMobile } = useSidebarContext();
+  const handleHome = () => {
+    router.push("/");
+    setTimeout(closeSidebarOnMobile, 100);
+  };
   const theme = useColorTheme();
   // useHotkeys("ctrl+0", () => router.push("/"));
 
@@ -300,106 +306,10 @@ const Header = memo(function Header() {
   );
 });
 
-function PanelSwipeTrigger({ isHidden }) {
+export function Sidebar() {
+  const { sidebarMargin, SIDEBAR_WIDTH } = useSidebarContext();
   const theme = useColorTheme();
-  const width = useSharedValue(15);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      width: withSpring(isHidden ? width.value : 15, {
-        damping: 30,
-        stiffness: 400,
-      }),
-    };
-  });
-
-  const dotStyle = useAnimatedStyle(() => ({
-    height: withSpring(width.value === 15 ? 20 : 40, {
-      damping: 30,
-      stiffness: 400,
-    }),
-  }));
-
-  const isPullerActive = useSharedValue(0);
-  const isPullerHovered = useSharedValue(0);
-
-  const pullerStyles = useAnimatedStyle(() => ({
-    width: withSpring(!isPullerActive.value ? 5 : 9, {
-      damping: 30,
-      stiffness: 400,
-    }),
-    backgroundColor: withSpring(
-      theme[
-        !isPullerActive.value
-          ? isPullerHovered.value
-            ? 5
-            : 4
-          : isPullerHovered.value
-          ? 6
-          : 5
-      ],
-      {
-        damping: 30,
-        stiffness: 400,
-      }
-    ),
-  }));
-
-  const onPressIn = () => {
-    width.value = 25;
-    isPullerActive.value = 1;
-  };
-
-  const onPressOut = () => {
-    width.value = 15;
-    isPullerActive.value = 0;
-  };
-
-  const onHoverIn = () => {
-    isPullerHovered.value = 1;
-    width.value = 25;
-  };
-
-  const onHoverOut = () => {
-    isPullerHovered.value = 0;
-    width.value = 15;
-  };
-
-  return (
-    <Pressable
-      onHoverIn={onHoverIn}
-      onHoverOut={onHoverOut}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}
-      style={{
-        height: "100%",
-        marginRight: -10,
-        zIndex: 999,
-        justifyContent: "center",
-      }}
-    >
-      <Animated.View
-        style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}
-      >
-        <Animated.View
-          style={[
-            pullerStyles,
-            dotStyle,
-            {
-              backgroundColor: theme[4],
-              width: 5,
-              borderRadius: 99,
-            },
-          ]}
-        />
-      </Animated.View>
-    </Pressable>
-  );
-}
-
-export function Sidebar({ SIDEBAR_WIDTH, sidebarMargin }) {
-  const pathname = usePathname();
-  const theme = useColorTheme();
+  const { width } = useWindowDimensions();
 
   const [isHidden, setIsHidden] = useState(
     Platform.OS === "web"
@@ -413,18 +323,6 @@ export function Sidebar({ SIDEBAR_WIDTH, sidebarMargin }) {
   // useHotkeys("`", toggleHidden, {}, [isHidden]);
   // useHotkeys("ctrl+comma", () => router.push("/settings"));
 
-  const marginLeft = useSharedValue(0);
-  const translateX = useSharedValue(0);
-
-  useEffect(() => {
-    if (isHidden) {
-      marginLeft.value = -220;
-      if (Platform.OS === "web") localStorage.setItem("sidebarHidden", "true");
-    } else {
-      marginLeft.value = 0;
-      if (Platform.OS === "web") localStorage.setItem("sidebarHidden", "false");
-    }
-  }, [isHidden, marginLeft, translateX]);
   const breakpoints = useResponsiveBreakpoints();
   const marginLeftStyle = useAnimatedStyle(() => ({
     marginLeft: withSpring(sidebarMargin.value, {
@@ -434,20 +332,24 @@ export function Sidebar({ SIDEBAR_WIDTH, sidebarMargin }) {
     pointerEvents: isHidden ? "none" : "auto",
   }));
 
-  const pan = Gesture.Pan()
-    .onChange(({ changeX }) => {
-      marginLeft.value += Math.min(changeX, 220);
-      if (marginLeft.value < -220) {
-        marginLeft.value = -220;
-      }
-      if (marginLeft.value > 0) {
-        marginLeft.value = 0;
-      }
-    })
-    .onEnd(({ velocityX }) => {
-      marginLeft.value = velocityX > 0 ? -220 : 0;
-      setIsHidden(velocityX <= 0);
-    });
+  const transformLeftStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: withSpring(
+          interpolate(sidebarMargin.value, [0, -220], [0, -width * 0.2]),
+          {
+            damping: 30,
+            stiffness: 400,
+          }
+        ),
+      },
+    ],
+    opacity: withSpring(interpolate(sidebarMargin.value, [0, -220], [1, 0.5]), {
+      damping: 30,
+      stiffness: 400,
+    }),
+    pointerEvents: isHidden ? "none" : "auto",
+  }));
 
   const tap = Gesture.Tap().onEnd(toggleHidden);
 
@@ -458,6 +360,7 @@ export function Sidebar({ SIDEBAR_WIDTH, sidebarMargin }) {
       <Animated.View
         style={[
           breakpoints.md && marginLeftStyle,
+          !breakpoints.md && transformLeftStyle,
           {
             height: "100%",
             width: SIDEBAR_WIDTH,
@@ -477,13 +380,6 @@ export function Sidebar({ SIDEBAR_WIDTH, sidebarMargin }) {
         </View>
         <OpenTabsList />
       </Animated.View>
-      {breakpoints.md && (
-        <GestureDetector gesture={pan}>
-          <GestureDetector gesture={tap}>
-            <PanelSwipeTrigger isHidden={isHidden} />
-          </GestureDetector>
-        </GestureDetector>
-      )}
     </>
   );
 }

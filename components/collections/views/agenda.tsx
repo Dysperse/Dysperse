@@ -130,7 +130,7 @@ function Agenda() {
           }}
         >
           <AgendaSelector type={type} data={data} start={column?.start} />
-          <Column mutate={mutate} column={column} />
+          {column && <Column mutate={mutate} column={column} />}
         </View>
       ) : (
         agendaFallback

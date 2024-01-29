@@ -1,3 +1,4 @@
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
@@ -52,6 +53,7 @@ function Tab({
   const tabData = useTabMetadata(tab.slug, tab);
   const { sessionToken } = useUser();
   const { data, error, mutate } = useSWR(["user/tabs"]);
+  const { closeSidebarOnMobile } = useSidebarContext();
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -101,6 +103,7 @@ function Tab({
         JSON.stringify(omit(["tab"], tabParams)) !==
         JSON.stringify(omit(["tab"], tab.params))
       ) {
+        if (Object.keys(omit(["tab"], tabParams)).length === 0) return;
         mutate(
           (oldData) =>
             oldData.map((oldTab) =>
@@ -144,6 +147,7 @@ function Tab({
             },
           });
           setImmediate(handleClose);
+          setTimeout(closeSidebarOnMobile, 200);
         }}
         style={({ pressed, hovered }: any) => [
           styles.button,
@@ -218,21 +222,19 @@ function Tab({
             </Text>
           )}
         </View>
-        {breakpoints.lg && (
-          <IconButton
-            // disabled={!selected}
-            style={({ hovered }: any) => [
-              styles.closeButton,
-              { opacity: hovered ? 1 : 0 },
-            ]}
-            size={50}
-            onPress={async () => await handleDelete(tab.id)}
-          >
-            <Icon size={23} style={[styles.closeIcon]}>
-              close
-            </Icon>
-          </IconButton>
-        )}
+        <IconButton
+          disabled={!selected}
+          style={({ hovered }: any) => [
+            styles.closeButton,
+            { opacity: breakpoints.md ? (hovered ? 1 : 0) : selected ? 1 : 0 },
+          ]}
+          size={50}
+          onPress={async () => await handleDelete(tab.id)}
+        >
+          <Icon size={23} style={[styles.closeIcon]}>
+            close
+          </Icon>
+        </IconButton>
       </Pressable>
     </View>
   );

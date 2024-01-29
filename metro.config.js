@@ -1,15 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { getDefaultConfig } = require("expo/metro-config");
+// This replaces `const { getDefaultConfig } = require('expo/metro-config');`
+const { getSentryExpoConfig } = require("@sentry/react-native/metro");
 
-module.exports = (async () => {
-  /** @type {import('expo/metro-config').MetroConfig} */
-  const config = getDefaultConfig(__dirname, {
-    // Enable CSS support.
-    isCSSEnabled: true,
-  });
+// This replaces `const config = getDefaultConfig(__dirname);`
+const config = getSentryExpoConfig(__dirname);
 
-  config.transformer.minifierConfig.compress.drop_console = true;
-  config.resolver.sourceExts = [...config.resolver.sourceExts, "mjs", "cjs"];
-
-  return config;
-})();
+module.exports = config;
