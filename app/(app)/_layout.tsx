@@ -87,7 +87,10 @@ export default function AppLayout() {
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
   const pan = Gesture.Pan()
-    .onChange(({ changeX }) => {
+    .onChange(({ changeX, velocityY, velocityX }) => {
+      if (Math.abs(velocityY) > Math.abs(velocityX)) {
+        return;
+      }
       sidebarMargin.value += Math.min(changeX, SIDEBAR_WIDTH);
       if (sidebarMargin.value < -SIDEBAR_WIDTH) {
         sidebarMargin.value = -SIDEBAR_WIDTH;
@@ -96,9 +99,11 @@ export default function AppLayout() {
         sidebarMargin.value = 0;
       }
     })
-    .onEnd(({ velocityX }) => {
+    .onEnd(({ velocityX, velocityY }) => {
+      if (Math.abs(velocityY) > Math.abs(velocityX)) {
+        return;
+      }
       sidebarMargin.value = velocityX <= 0 ? -SIDEBAR_WIDTH : 0;
-      // setIsHidden(velocityX <= 0);
     });
 
   const theme = useColor(
