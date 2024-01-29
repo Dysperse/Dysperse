@@ -195,7 +195,7 @@ export const LogoButton = memo(function LogoButton({
       <MenuPopover
         menuProps={{
           rendererProps: {
-            placement: "right",
+            placement: breakpoints.md ? "right" : "bottom",
             anchorStyle: { opacity: 0 },
           },
         }}
@@ -209,7 +209,7 @@ export const LogoButton = memo(function LogoButton({
           />
         }
         options={[
-          {
+          breakpoints.md && {
             icon: "dock_to_right",
             text: "Sidebar",
             callback: toggleHidden,

@@ -141,53 +141,55 @@ export default function MenuPopover({
       >
         <View style={{ flex: 1, backgroundColor: theme[4], padding: 5 }}>
           {children ||
-            options.map(
-              ({
-                icon,
-                text,
-                key,
-                callback,
-                renderer: Renderer = React.Fragment,
-                ...props
-              }: any) => (
-                // TODO: Fix key
-                <React.Fragment key={Math.random()}>
-                  {props.divider ? (
-                    <Divider style={{ width: "90%", marginVertical: 5 }} />
-                  ) : (
-                    <Renderer>
-                      <MenuOption
-                        onSelect={callback}
-                        customStyles={{
-                          OptionTouchableComponent: (props) => (
-                            <MenuItem {...props} removeExtraStyles />
-                          ),
-                          optionWrapper: {
-                            flexDirection: "row",
-                            alignItems: "center",
-                            paddingHorizontal: 15,
-                            paddingVertical: 10,
-                            gap: 13,
-                          },
-                        }}
-                        {...props}
-                      >
-                        {icon && <Icon>{icon}</Icon>}
-                        <Text
-                          weight={300}
-                          style={{ color: theme[11], fontSize: 16 }}
+            options
+              .filter((e) => e)
+              .map(
+                ({
+                  icon,
+                  text,
+                  key,
+                  callback,
+                  renderer: Renderer = React.Fragment,
+                  ...props
+                }: any) => (
+                  // TODO: Fix key
+                  <React.Fragment key={Math.random()}>
+                    {props.divider ? (
+                      <Divider style={{ width: "90%", marginVertical: 5 }} />
+                    ) : (
+                      <Renderer>
+                        <MenuOption
+                          onSelect={callback}
+                          customStyles={{
+                            OptionTouchableComponent: (props) => (
+                              <MenuItem {...props} removeExtraStyles />
+                            ),
+                            optionWrapper: {
+                              flexDirection: "row",
+                              alignItems: "center",
+                              paddingHorizontal: 15,
+                              paddingVertical: 10,
+                              gap: 13,
+                            },
+                          }}
+                          {...props}
                         >
-                          {text}
-                        </Text>
-                        {props.selected && (
-                          <Icon style={{ marginLeft: "auto" }}>check</Icon>
-                        )}
-                      </MenuOption>
-                    </Renderer>
-                  )}
-                </React.Fragment>
-              )
-            )}
+                          {icon && <Icon>{icon}</Icon>}
+                          <Text
+                            weight={300}
+                            style={{ color: theme[11], fontSize: 16 }}
+                          >
+                            {text}
+                          </Text>
+                          {props.selected && (
+                            <Icon style={{ marginLeft: "auto" }}>check</Icon>
+                          )}
+                        </MenuOption>
+                      </Renderer>
+                    )}
+                  </React.Fragment>
+                )
+              )}
         </View>
       </MenuOptions>
     </Menu>
