@@ -59,7 +59,8 @@ Sentry.init({
   ],
 });
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
+SplashScreen.hideAsync();
 
 function ErrorBoundaryComponent() {
   const theme = useColorTheme();

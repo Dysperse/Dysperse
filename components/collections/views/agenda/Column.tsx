@@ -29,7 +29,6 @@ import {
 } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import SortableList from "react-native-ui-lib/sortableList";
 import { KeyedMutator } from "swr";
 import { CreateEntityTrigger } from "../CreateEntityTrigger";
 
@@ -240,70 +239,6 @@ function ReorderModal({ onTaskUpdate, column, children }) {
             onPress={handleClose}
           />
         </View>
-        <SortableList
-          data={column.tasks}
-          onOrderChange={(newData: any) => {
-            const { fromIndex, toIndex } = findChangedItem(
-              column.tasks,
-              newData
-            );
-
-            const previousItem = LexoRank.parse(
-              newData[toIndex - 1]?.agendaOrder ?? LexoRank.min().toString()
-            );
-            const nextItem = LexoRank.parse(
-              newData[toIndex + 1]?.agendaOrder ?? LexoRank.max().toString()
-            );
-            const newId = previousItem.between(nextItem).toString();
-            const task = column.tasks[fromIndex];
-            onTaskUpdate({
-              ...task,
-              agendaOrder: newId,
-            });
-
-            sendApiRequest(session, "PUT", "space/entity", {
-              id: task.id,
-              agendaOrder: newId,
-            }).catch((e) => {
-              onTaskUpdate(task);
-              Toast.show({
-                type: "error",
-                text1: "Something went wrong. Please try again later.",
-              });
-            });
-          }}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          renderItem={({ item }: any) => (
-            <View
-              style={{
-                height: 100,
-                backgroundColor: theme[2],
-                alignItems: "center",
-                flexDirection: "row",
-                gap: 20,
-                paddingHorizontal: 20,
-              }}
-            >
-              <Avatar size={50} style={{ borderRadius: 20 }}>
-                <Icon size={30}>
-                  {item.type === "TASK" ? "task_alt" : "view_in_ar"}
-                </Icon>
-              </Avatar>
-              <ListItemText
-                // primary={item.name}
-                primary={item.agendaOrder + item.name}
-                secondary={
-                  item.note ||
-                  dayjs(item.due).format(
-                    item.dateOnly ? "MMM Do, YYYY" : "MMM Do @ hh:mm A"
-                  )
-                }
-              />
-              <Icon>drag_indicator</Icon>
-            </View>
-          )}
-          keyExtractor={(i, d) => `${i.id}-${d}`}
-        />
       </BottomSheet>
     </>
   );

@@ -192,39 +192,37 @@ export const LogoButton = memo(function LogoButton({
         ]}
       />
       {error && <Icon style={{ color: red[11] }}>cloud_off</Icon>}
-      {breakpoints.md && (
-        <MenuPopover
-          menuProps={{
-            rendererProps: {
-              placement: "right",
-              anchorStyle: { opacity: 0 },
-            },
-          }}
-          containerStyle={{ marginTop: 10, width: 200 }}
-          trigger={
-            <IconButton
-              size={40}
-              onPress={toggleHidden}
-              icon="dock_to_right"
-              style={{ opacity: 0.9 }}
-            />
-          }
-          options={[
-            {
-              icon: "dock_to_right",
-              text: "Sidebar",
-              callback: toggleHidden,
-              selected: !isHidden,
-            },
-            {
-              icon: "dock_to_left",
-              text: "Focus panel",
-              selected: isFocused,
-              callback: () => setFocus(!isFocused),
-            },
-          ]}
-        />
-      )}
+      <MenuPopover
+        menuProps={{
+          rendererProps: {
+            placement: "right",
+            anchorStyle: { opacity: 0 },
+          },
+        }}
+        containerStyle={{ marginTop: 10, width: 200 }}
+        trigger={
+          <IconButton
+            size={40}
+            onPress={toggleHidden}
+            icon="dock_to_right"
+            style={{ opacity: 0.9 }}
+          />
+        }
+        options={[
+          {
+            icon: "dock_to_right",
+            text: "Sidebar",
+            callback: toggleHidden,
+            selected: !isHidden,
+          },
+          {
+            icon: "dock_to_left",
+            text: "Focus panel",
+            selected: isFocused,
+            callback: () => setFocus(!isFocused),
+          },
+        ]}
+      />
     </View>
   );
 });
@@ -337,7 +335,7 @@ export function Sidebar() {
     transform: [
       {
         translateX: withSpring(
-          interpolate(sidebarMargin.value, [0, -220], [0, -width * 0.2]),
+          interpolate(sidebarMargin.value, [0, -220], [0, -width * 0.05]),
           {
             damping: 30,
             stiffness: 400,
@@ -361,7 +359,6 @@ export function Sidebar() {
           {
             height: "100%",
             width: SIDEBAR_WIDTH,
-            marginTop: insets.top,
             flexDirection: "column",
             maxHeight: "100%",
             backgroundColor: theme[2],
@@ -372,7 +369,7 @@ export function Sidebar() {
           },
         ]}
       >
-        <View style={styles.header}>
+        <View style={[styles.header, { marginTop: insets.top }]}>
           <LogoButton toggleHidden={toggleHidden} isHidden={isHidden} />
           <Header />
         </View>

@@ -26,6 +26,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
 import React, { useEffect } from "react";
 import {
+  ActivityIndicator,
   Platform,
   StatusBar,
   View,
@@ -73,6 +74,7 @@ export function SessionLoadingScreen() {
         size={Platform.OS === "web" ? 45 : 130}
         color={theme === "dark" ? "#ffffff" : "#000000"}
       />
+      <ActivityIndicator color={theme === "dark" ? "#ffffff" : "#000000"} />
     </View>
   );
 }
@@ -100,8 +102,13 @@ export default function AppLayout() {
         sidebarMargin.value = 0;
       }
     })
-    .onEnd(({ velocityX, velocityY }) => {
+    .onEnd(({ velocityX, velocityY, translationX }) => {
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
+        return;
+      }
+      if (Math.abs(translationX) < 80) {
+        sidebarMargin.value =
+          sidebarMargin.value > -SIDEBAR_WIDTH / 2 ? 0 : -SIDEBAR_WIDTH;
         return;
       }
       sidebarMargin.value = velocityX <= 0 ? -SIDEBAR_WIDTH : 0;
@@ -117,7 +124,7 @@ export default function AppLayout() {
   const panelStyle = useAnimatedStyle(() => {
     return {
       borderColor: theme?.[4],
-      borderWidth: withSpring(sidebarMargin.value !== 0 ? 0 : 2, {
+      borderWidth: withSpring(sidebarMargin.value !== -SIDEBAR_WIDTH ? 2 : 0, {
         damping: 30,
         stiffness: 400,
       }),
@@ -147,7 +154,7 @@ export default function AppLayout() {
         interpolate(
           Math.abs(sidebarMargin.value),
           [0, SIDEBAR_WIDTH],
-          [25, 0],
+          [30, 25],
           "clamp"
         ),
         {

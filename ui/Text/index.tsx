@@ -17,6 +17,29 @@ export interface DTextProps extends TextProps {
   heading?: boolean;
 }
 
+/**
+ * body_100: Jost_100Thin,
+    body_200: Jost_200ExtraLight,
+    body_300: Jost_300Light,
+    body_400: Jost_400Regular,
+    body_500: Jost_500Medium,
+    body_600: Jost_600SemiBold,
+    body_700: Jost_700Bold,
+    body_800: Jost_800ExtraBold,
+    body_900: Jost_900Black,
+ */
+const fonts = {
+  body_100: "Jost_100Thin",
+  body_200: "Jost_200ExtraLight",
+  body_300: "Jost_300Light",
+  body_400: "Jost_400Regular",
+  body_500: "Jost_500Medium",
+  body_600: "Jost_600SemiBold",
+  body_700: "Jost_700Bold",
+  body_800: "Jost_800ExtraBold",
+  body_900: "Jost_900Black",
+};
+
 const textStyles = StyleSheet.create({
   default: {
     fontSize: 16,
@@ -29,7 +52,7 @@ const textStyles = StyleSheet.create({
     textTransform: "uppercase",
   },
   menuItem: {
-    fontFamily: "body_300",
+    fontFamily: fonts.body_300,
     fontSize: 17,
   },
 });
@@ -45,7 +68,9 @@ function Text(props: DTextProps) {
         {
           fontSize: Platform.OS === "web" ? 15 : 16,
           color: theme[12],
-          fontFamily: props.heading ? "heading" : `body_${props.weight || 400}`,
+          fontFamily: props.heading
+            ? "heading"
+            : fonts[`body_${props.weight || 400}`],
           ...(props.variant === "eyebrow" && {
             textTransform: "uppercase",
             fontFamily: `body_${props.weight || 800}`,
