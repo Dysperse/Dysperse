@@ -92,12 +92,8 @@ const SelectionButton = memo(function SelectionButton({
       <View
         style={[
           styles.inner,
-          {
-            borderColor: theme[6],
-            ...(isSelected && {
-              backgroundColor: theme[10],
-              borderColor: theme[10],
-            }),
+          isSelected && {
+            backgroundColor: theme[10],
           },
         ]}
       >
