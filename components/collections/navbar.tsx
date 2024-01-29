@@ -121,7 +121,17 @@ function AgendaNavbarButtons() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <View style={!breakpoints.md && { backgroundColor: theme[3] }}>
+    <View
+      style={
+        !breakpoints.md && {
+          flexDirection: "row",
+          backgroundColor: theme[3],
+          paddingHorizontal: 15,
+          borderTopColor: theme[6],
+          borderTopWidth: 1,
+        }
+      }
+    >
       <View
         style={[
           {
@@ -138,11 +148,7 @@ function AgendaNavbarButtons() {
                 borderRadius: 20,
                 borderColor: theme[6],
               }
-            : {
-                paddingHorizontal: 15,
-                borderTopColor: theme[6],
-                borderTopWidth: 1,
-              },
+            : { flex: 1 },
         ]}
       >
         <IconButton onPress={handlePrev}>
@@ -156,16 +162,20 @@ function AgendaNavbarButtons() {
 
       {!isTodaysView && (
         <View
-          style={{
-            marginRight: "auto",
-            flexDirection: "row",
-            borderWidth: 1,
-            borderColor: theme[6],
-            height: 50,
-            borderRadius: 20,
-            alignItems: "center",
-            paddingHorizontal: 10,
-          }}
+          style={[
+            {
+              marginRight: "auto",
+              flexDirection: "row",
+              height: 50,
+              borderRadius: 20,
+              alignItems: "center",
+              paddingHorizontal: 10,
+            },
+            breakpoints.md && {
+              borderWidth: 1,
+              borderColor: theme[6],
+            },
+          ]}
         >
           <IconButton onPress={handleToday}>
             <Icon>today</Icon>
