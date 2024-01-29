@@ -626,42 +626,49 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             options={collectionMenuOptions}
           />
         </View>
-        {breakpoints.md && (
-          <MenuPopover
-            menuProps={{
-              style: { marginRight: "auto" },
-            }}
-            trigger={
-              <IconButton
-                variant="filled"
-                style={[
-                  styles.navbarIconButton,
-                  {
-                    width: 60,
-                    height: 30,
-                    paddingLeft: 5,
-                    borderLeftColor: theme[6],
-                    borderLeftWidth: 2,
-                    borderRadius: 0,
-                    backgroundColor: "transparent",
-                  },
-                ]}
-              >
-                <Icon style={{ color: theme[12] }} size={20}>
-                  {options.find((i) => i.selected)?.icon || "calendar_today"}
-                </Icon>
-                <Icon style={{ marginLeft: -4, color: theme[12] }}>
-                  expand_more
-                </Icon>
-              </IconButton>
-            }
-            options={options}
-          />
-        )}
+        <MenuPopover
+          menuProps={{
+            style: { marginRight: "auto" },
+            rendererProps: { placement: "bottom" },
+          }}
+          trigger={
+            <IconButton
+              variant={breakpoints.md ? "filled" : "outlined"}
+              style={[
+                breakpoints.md && styles.navbarIconButton,
+                breakpoints.md
+                  ? {
+                      width: 60,
+                      height: 30,
+                      paddingLeft: 5,
+                      borderLeftColor: theme[6],
+                      borderLeftWidth: 2,
+                      borderRadius: 0,
+                      backgroundColor: "transparent",
+                    }
+                  : {
+                      width: 60,
+                      height: 40,
+                      paddingLeft: 5,
+                      gap: 5,
+                      flexDirection: "row",
+                    },
+              ]}
+            >
+              <Icon style={{ color: theme[12] }} size={20}>
+                {options.find((i) => i.selected)?.icon || "calendar_today"}
+              </Icon>
+              <Icon style={{ marginLeft: -4, color: theme[12] }}>
+                expand_more
+              </Icon>
+            </IconButton>
+          }
+          options={options}
+        />
         {type === "agenda" && breakpoints.md && <AgendaNavbarButtons />}
         <MenuPopover
           trigger={
-            <IconButton variant="outlined" size={55} icon="more_horiz" />
+            <IconButton variant="outlined" size={40} icon="more_horiz" />
           }
           menuProps={{
             rendererProps: {
