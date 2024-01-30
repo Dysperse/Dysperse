@@ -42,7 +42,7 @@ export default function Chip({
   const colorScheme = useColorTheme();
 
   const specifiedTheme = useColor(
-    colorTheme || session?.user?.profile?.theme || "violet",
+    colorTheme || session?.user?.profile?.theme || "mint",
     useColorScheme() === "dark"
   );
 

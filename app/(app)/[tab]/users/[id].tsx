@@ -48,7 +48,7 @@ export default function Page() {
   const { session } = useUser();
 
   const theme = useColor(
-    data?.profile?.theme || session?.user?.profile?.theme || "violet",
+    data?.profile?.theme || session?.user?.profile?.theme || "mint",
     useColorScheme() === "dark"
   );
 

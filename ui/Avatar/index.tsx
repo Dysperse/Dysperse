@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 export function Avatar(props: DAvatarProps) {
   const { session } = useUser();
   const theme = useColor(
-    props.theme || session?.user?.profile?.theme || "violet",
+    props.theme || session?.user?.profile?.theme || "mint",
     useColorScheme() === "dark"
   );
 

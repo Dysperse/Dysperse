@@ -81,7 +81,7 @@ const HexagonButton = memo(function HexagonButton({
 
 function ThemePicker({ children }) {
   const ref = useRef<BottomSheetModal>(null);
-  const [selectedTheme, setSelectedTheme] = useState("violet");
+  const [selectedTheme, setSelectedTheme] = useState("mint");
   const colors = useColor(selectedTheme as any, useColorScheme() === "dark");
 
   const theme = {
@@ -202,7 +202,7 @@ function ThemePicker({ children }) {
 export default function Page() {
   const theme = useColorTheme();
   const { session } = useUser();
-  const themeText = themes[session?.user?.profile?.theme || "violet"];
+  const themeText = themes[session?.user?.profile?.theme || "mint"];
 
   return (
     <ContentWrapper>

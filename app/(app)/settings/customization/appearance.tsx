@@ -260,7 +260,7 @@ function ThemePicker({ children }) {
 export default function Page() {
   const theme = useColorTheme();
   const { session } = useUser();
-  const themeText = themes[session?.user?.profile?.theme || "violet"];
+  const themeText = themes[session?.user?.profile?.theme || "mint"];
   return (
     <SettingsLayout>
       <Text heading style={{ fontSize: 50 }}>

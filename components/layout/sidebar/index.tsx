@@ -162,11 +162,10 @@ export const LogoButton = memo(function LogoButton({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              gap: 5,
               paddingLeft: 3,
             }}
           >
-            <Logo size={35} />
+            <Logo size={40} />
             <Icon style={{ color: theme[8] }}>expand_more</Icon>
           </Pressable>
         }
