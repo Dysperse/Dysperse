@@ -64,7 +64,6 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
     "react-native-toast-message": "^2.2.0",
-    "react-native-ui-lib": "^7.15.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "^0.19.10",
     "react-native-web-swiper": "^2.2.4",

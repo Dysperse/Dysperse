@@ -279,7 +279,7 @@ const CollectionRenameMenu = memo(function CollectionRenameMenu({
       Toast.show({ type: "error", text1: "Something went wrong" });
     } finally {
       setLoading(false);
-      setImmediate(() => menuRef.current?.close());
+      menuRef.current?.close()
     }
   };
 

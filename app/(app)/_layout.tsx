@@ -86,7 +86,8 @@ export default function AppLayout() {
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
   const pan = Gesture.Pan()
-    .onChange(({ changeX, velocityY, velocityX }) => {
+    .onChange(({ changeX, velocityY, velocityX, absoluteX }) => {
+      if (breakpoints.md && absoluteX > 230) return;
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         return;
       }
@@ -98,7 +99,8 @@ export default function AppLayout() {
         sidebarMargin.value = 0;
       }
     })
-    .onEnd(({ velocityX, velocityY, translationX }) => {
+    .onEnd(({ velocityX, velocityY, translationX, absoluteX }) => {
+      if (breakpoints.md && absoluteX > 230) return;
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         return;
       }

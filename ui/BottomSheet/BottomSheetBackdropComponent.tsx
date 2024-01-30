@@ -48,7 +48,7 @@ export const BottomSheetBackdropComponent = ({
     if (Platform.OS !== "web" && Keyboard.isVisible()) {
       setTimeout(forceClose, 200);
     } else {
-      setImmediate(() => forceClose({ overshootClamping: true, damping: 1 }));
+      forceClose({ overshootClamping: true, damping: 1 });
     }
   };
 

@@ -146,7 +146,7 @@ function Tab({
               tab: tab.id,
             },
           });
-          setImmediate(handleClose);
+          handleClose();
           setTimeout(closeSidebarOnMobile, 200);
         }}
         style={({ pressed, hovered }: any) => [

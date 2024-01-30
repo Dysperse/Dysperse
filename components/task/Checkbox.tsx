@@ -19,12 +19,10 @@ const TaskCheckox = memo(function TaskCheckbox({
 
   const handlePress = async (e) => {
     const newArr = isCompleted ? [] : [...task.completionInstances, true];
-    // setImmediate(() => {
       mutateList({
         ...task,
         completionInstances: newArr,
       });
-    // });
     await sendApiRequest(
       session,
       isCompleted ? "DELETE" : "POST",

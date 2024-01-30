@@ -69,12 +69,10 @@ export function TaskDrawerContent({ handleClose }) {
     try {
       updateTask("trash", true);
       handleClose();
-      setImmediate(async () => {
-        mutateList({ ...task, trash: true });
-        Toast.show({
-          type: "success",
-          text1: "Task deleted!",
-        });
+      mutateList({ ...task, trash: true });
+      Toast.show({
+        type: "success",
+        text1: "Task deleted!",
       });
     } catch (e) {
       Toast.show({

@@ -39,7 +39,7 @@ export function CreateLabelModal({
 
   const handleOpen = useCallback(() => {
     Keyboard.dismiss();
-    setImmediate(() => ref.current?.present());
+    ref.current?.present();
   }, []);
   const handleClose = useCallback(() => {
     ref.current?.close();
