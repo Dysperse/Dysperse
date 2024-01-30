@@ -9,22 +9,37 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash-screen.png",
+      "image": "./assets/splash-screens/light.png",
       "resizeMode": "cover",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#DDF9F2"
     },
     "experiments": {
       "tsconfigPaths": true
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "splash": {
+        "resizeMode": "cover",
+        "image": "./assets/splash-screens/light.png",
+        "backgroundColor": "#DDF9F2",
+        "dark": {
+          "resizeMode": "cover",
+          "image": "./assets/splash-screens/dark.png",
+          "backgroundColor": "#092C2B"
+        }
+      }
     },
     "android": {
       "splash": {
         "resizeMode": "cover",
-        "image": "./assets/splash-screen.png",
-        "backgroundColor": "#000000"
+        "image": "./assets/splash-screens/light.png",
+        "backgroundColor": "#DDF9F2",
+        "dark": {
+          "resizeMode": "cover",
+          "image": "./assets/splash-screens/dark.png",
+          "backgroundColor": "#092C2B"
+        }
       },
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.manucodes.Dysperse"
