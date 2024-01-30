@@ -123,15 +123,18 @@ function AgendaNavbarButtons() {
 
   return (
     <View
-      style={
+      style={[
         !breakpoints.md && {
-          flexDirection: "row",
           backgroundColor: theme[3],
           paddingHorizontal: 15,
           borderTopColor: theme[6],
           borderTopWidth: 1,
-        }
-      }
+        },
+        {
+          flexDirection: "row",
+          gap: 10,
+        },
+      ]}
     >
       <View
         style={[

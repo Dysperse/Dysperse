@@ -123,7 +123,11 @@ function PanelContent() {
     </ContentWrapper>
   );
 }
-function PanelSwipeTrigger() {
+export function PanelSwipeTrigger({
+  side = "right",
+}: {
+  side?: "left" | "right";
+}) {
   const theme = useColorTheme();
   const width = useSharedValue(15);
 
@@ -191,13 +195,17 @@ function PanelSwipeTrigger() {
       onHoverOut={onHoverOut}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
-      style={{
-        height: "100%",
-        paddingHorizontal: 15,
-        justifyContent: "center",
-        marginHorizontal: -15,
-        marginLeft: -25,
-      }}
+      style={[
+        {
+          height: "100%",
+          paddingHorizontal: 15,
+          justifyContent: "center",
+          zIndex: 1,
+        },
+        side === "left"
+          ? { marginHorizontal: -15, marginRight: -25 }
+          : { marginHorizontal: -15, marginLeft: -25 },
+      ]}
     >
       <Animated.View
         style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}

@@ -534,6 +534,7 @@ function TodayText() {
 }
 
 export default function Index() {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const { session } = useUser();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
@@ -559,13 +560,15 @@ export default function Index() {
         style={{ flex: 1, alignItems: "center" }}
         resizeMode="repeat"
       >
-        <IconButton
-          style={{ position: "absolute", top: 20, left: 20 }}
-          icon="menu"
-          size={55}
-          variant="outlined"
-          onPress={() => (sidebarMargin.value = 0)}
-        />
+        {!breakpoints.md && (
+          <IconButton
+            style={{ position: "absolute", top: 20, left: 20 }}
+            icon="menu"
+            size={55}
+            variant="outlined"
+            onPress={() => (sidebarMargin.value = 0)}
+          />
+        )}
         <ButtonGroup
           state={[view, setView]}
           options={[

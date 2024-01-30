@@ -1,6 +1,7 @@
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
+import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
@@ -13,7 +14,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { router, usePathname } from "expo-router";
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import {
   Linking,
   Platform,
@@ -23,6 +24,7 @@ import {
   useColorScheme,
   useWindowDimensions,
 } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -201,12 +203,7 @@ export const LogoButton = memo(function LogoButton({
         }}
         containerStyle={{ marginTop: 10, width: 200 }}
         trigger={
-          <IconButton
-            size={40}
-            onPress={toggleHidden}
-            icon="dock_to_right"
-            style={{ opacity: 0.9 }}
-          />
+          <IconButton size={40} icon="dock_to_right" style={{ opacity: 0.9 }} />
         }
         options={[
           breakpoints.md && {
@@ -319,6 +316,10 @@ export function Sidebar() {
     setIsHidden((prev) => !prev);
   }, [setIsHidden]);
 
+  useEffect(() => {
+    sidebarMargin.value = isHidden ? -SIDEBAR_WIDTH : 0;
+  }, [isHidden, sidebarMargin, SIDEBAR_WIDTH]);
+
   // useHotkeys("`", toggleHidden, {}, [isHidden]);
   // useHotkeys("ctrl+comma", () => router.push("/settings"));
 
@@ -328,7 +329,7 @@ export function Sidebar() {
       damping: 30,
       stiffness: 400,
     }),
-    pointerEvents: isHidden ? "none" : "auto",
+    pointerEvents: sidebarMargin.value === -SIDEBAR_WIDTH ? "none" : "auto",
   }));
 
   const transformLeftStyle = useAnimatedStyle(() => ({
@@ -349,6 +350,10 @@ export function Sidebar() {
     }),
     pointerEvents: isHidden ? "none" : "auto",
   }));
+
+  const tap = Gesture.Tap().onEnd(() => {
+    toggleHidden();
+  });
 
   return (
     <>
@@ -375,6 +380,9 @@ export function Sidebar() {
         </View>
         <OpenTabsList />
       </Animated.View>
+      <GestureDetector gesture={tap}>
+        <PanelSwipeTrigger side="left" />
+      </GestureDetector>
     </>
   );
 }
