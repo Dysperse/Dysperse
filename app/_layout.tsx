@@ -187,7 +187,7 @@ function SWRWrapper({ children }) {
 
 function Root() {
   // CHANGE THIS LATER!!!
-  const theme = useColor("violet", true);
+  const theme = useColor("mint", true);
   const ref = useNavigationContainerRef();
 
   React.useEffect(() => {
@@ -220,17 +220,17 @@ function Root() {
     }
   }, [fontsLoaded, fontsError]);
 
-  if (!fontsLoaded) {
-    return <SessionLoadingScreen />;
-  }
-
   return (
     <ColorThemeProvider theme={theme}>
       <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
         <SessionProvider>
-          <SWRWrapper>
-            <Slot screenOptions={{ onLayoutRootView }} />
-          </SWRWrapper>
+          {fontsLoaded ? (
+            <SWRWrapper>
+              <Slot screenOptions={{ onLayoutRootView }} />
+            </SWRWrapper>
+          ) : (
+            <SessionLoadingScreen />
+          )}
         </SessionProvider>
       </ErrorBoundary>
     </ColorThemeProvider>

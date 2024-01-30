@@ -7,7 +7,7 @@ import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { addHslAlpha, useColor } from "@/ui/color";
-import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import Navbar from "@/ui/navbar";
 import { toastConfig } from "@/ui/toast.config";
@@ -40,6 +40,7 @@ import {
 } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import Animated, {
+  FadeIn,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -58,20 +59,20 @@ dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
 
 export function SessionLoadingScreen() {
-  const theme = useColorScheme();
+  const theme = useColorTheme();
 
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: theme === "dark" ? "#000" : "#fff",
+        backgroundColor: theme[2],
         alignItems: "center",
         justifyContent: "center",
         gap: 20,
       }}
     >
-      <Logo size={Platform.OS === "web" ? 45 : 130} />
-      <ActivityIndicator color={theme === "dark" ? "#ffffff" : "#000000"} />
+      <Logo size={150} />
+      <ActivityIndicator color={theme[9]} />
     </View>
   );
 }
@@ -112,7 +113,7 @@ export default function AppLayout() {
     });
 
   const theme = useColor(
-    sessionData?.user?.profile?.theme || "violet",
+    sessionData?.user?.profile?.theme || "mint",
     // CHANGE THIS LATER!!!
     isDark
     // sessionData?.user?.darkMode === "dark"
@@ -222,7 +223,11 @@ export default function AppLayout() {
   //   );
   // }
   if (isLoading || isUserLoading) {
-    return <SessionLoadingScreen />;
+    return (
+      <ColorThemeProvider theme={theme}>
+        <SessionLoadingScreen />
+      </ColorThemeProvider>
+    );
   }
 
   // Only require authentication within the (app) group's layout as users
@@ -238,155 +243,166 @@ export default function AppLayout() {
   return (
     <ColorThemeProvider theme={theme} setHTMLAttributes>
       <GestureHandlerRootView
-        style={{ flex: 1, overflow: "hidden", width, height }}
+        style={{
+          flex: 1,
+          overflow: "hidden",
+          width,
+          height,
+          backgroundColor: theme[2],
+        }}
       >
-        <BottomSheetModalProvider>
-          <MenuProvider
-            customStyles={{
-              backdrop: {
-                flex: 1,
-                opacity: 1,
-              },
-            }}
-          >
-            <PortalProvider>
-              <StatusBar
-                barStyle={!isDark ? "dark-content" : "light-content"}
-              />
-              <GestureDetector gesture={pan}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    backgroundColor: theme[2],
-                  }}
-                >
-                  <CommandPaletteProvider>
-                    <FocusPanelProvider>
-                      <SidebarContext.Provider
-                        value={{
-                          SIDEBAR_WIDTH,
-                          sidebarMargin,
-                          closeSidebarOnMobile: () => {
-                            if (!breakpoints.md) {
-                              sidebarMargin.value = -SIDEBAR_WIDTH;
-                            }
-                          },
-                          closeSidebar: () =>
-                            (sidebarMargin.value = -SIDEBAR_WIDTH),
-                          openSidebar: () => {
-                            if (!breakpoints.md) {
-                              sidebarMargin.value = 0;
-                            }
-                          },
-                        }}
-                      >
-                        <Sidebar />
-                        <ThemeProvider
+        <Animated.View style={{ flex: 1 }} entering={FadeIn}>
+          <BottomSheetModalProvider>
+            <MenuProvider
+              customStyles={{
+                backdrop: {
+                  flex: 1,
+                  opacity: 1,
+                },
+              }}
+            >
+              <PortalProvider>
+                <StatusBar
+                  barStyle={!isDark ? "dark-content" : "light-content"}
+                />
+                <GestureDetector gesture={pan}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flex: 1,
+                      backgroundColor: theme[2],
+                    }}
+                  >
+                    <CommandPaletteProvider>
+                      <FocusPanelProvider>
+                        <SidebarContext.Provider
                           value={{
-                            ...DefaultTheme,
-                            colors: {
-                              ...DefaultTheme.colors,
-                              background: theme[breakpoints.sm ? 2 : 1],
+                            SIDEBAR_WIDTH,
+                            sidebarMargin,
+                            closeSidebarOnMobile: () => {
+                              if (!breakpoints.md) {
+                                sidebarMargin.value = -SIDEBAR_WIDTH;
+                              }
+                            },
+                            closeSidebar: () =>
+                              (sidebarMargin.value = -SIDEBAR_WIDTH),
+                            openSidebar: () => {
+                              if (!breakpoints.md) {
+                                sidebarMargin.value = 0;
+                              }
                             },
                           }}
                         >
-                          <Animated.View
-                            style={[
-                              !breakpoints.md && panelStyle,
-                              breakpoints.md ? { flex: 1 } : { width: "100%" },
-                            ]}
+                          <Sidebar />
+                          <ThemeProvider
+                            value={{
+                              ...DefaultTheme,
+                              colors: {
+                                ...DefaultTheme.colors,
+                                background: theme[breakpoints.sm ? 2 : 1],
+                              },
+                            }}
                           >
-                            <JsStack
-                              screenOptions={{
-                                header: () => null,
-                                headerTransparent: true,
-                                gestureResponseDistance: width,
-                                gestureEnabled: false,
-                                cardStyle: {
-                                  height,
-                                  width: breakpoints.md ? "100%" : width,
-                                  backgroundColor:
-                                    theme[breakpoints.sm ? 2 : 1],
-                                  padding: breakpoints.md ? 10 : 0,
-                                  ...(Platform.OS === "web" &&
-                                    ({
-                                      marginTop: "env(titlebar-area-height,0)",
-                                    } as any)),
-                                },
-                                // change opacity of the previous screen when swipe
-                                cardOverlayEnabled: true,
-                                animationEnabled: !breakpoints.md,
-                                gestureVelocityImpact: 0.7,
-                              }}
+                            <Animated.View
+                              style={[
+                                !breakpoints.md && panelStyle,
+                                breakpoints.md
+                                  ? { flex: 1 }
+                                  : { width: "100%" },
+                              ]}
                             >
-                              <JsStack.Screen name="index" />
-                              {[
-                                "settings/appearance",
-                                "settings/customization/appearance",
-                                "settings/customization/notifications",
-                                "settings/privacy/login-security",
-                                "settings/privacy/devices",
-                                "settings/customization/profile",
-                                "settings/index",
-                                "settings/personal-information",
-                                "settings/space/index",
-                                "settings/space/integrations",
-                              ].map((d) => (
-                                <JsStack.Screen
-                                  name={d}
-                                  key={d}
-                                  options={{
-                                    cardStyle: { padding: 0 },
-                                    gestureEnabled: true,
-                                    headerTitle:
-                                      d !== "settings/index" && "Settings",
-                                    ...TransitionPresets.SlideFromRightIOS,
-                                    cardStyleInterpolator: forHorizontalIOS,
-                                    ...(breakpoints.md && {
-                                      animationEnabled: false,
-                                    }),
-                                  }}
-                                />
-                              ))}
-                              <JsStack.Screen
-                                name="friends"
-                                options={{
-                                  gestureEnabled: true,
-                                  header: (props) => (
-                                    <Navbar
-                                      icon="arrow_back_ios_new"
-                                      {...props}
-                                    />
-                                  ),
-                                  ...TransitionPresets.SlideFromRightIOS,
-                                  cardStyleInterpolator: forHorizontalIOS,
+                              <JsStack
+                                screenOptions={{
+                                  header: () => null,
+                                  headerTransparent: true,
+                                  gestureResponseDistance: width,
+                                  gestureEnabled: false,
+                                  cardStyle: {
+                                    height,
+                                    width: breakpoints.md ? "100%" : width,
+                                    backgroundColor:
+                                      theme[breakpoints.sm ? 2 : 1],
+                                    padding: breakpoints.md ? 10 : 0,
+                                    ...(Platform.OS === "web" &&
+                                      ({
+                                        marginTop:
+                                          "env(titlebar-area-height,0)",
+                                      } as any)),
+                                  },
+                                  // change opacity of the previous screen when swipe
+                                  cardOverlayEnabled: true,
+                                  animationEnabled: !breakpoints.md,
+                                  gestureVelocityImpact: 0.7,
                                 }}
-                              />
-                              {["clock", "collections/create"].map((d) => (
+                              >
+                                <JsStack.Screen name="index" />
+                                {[
+                                  "settings/appearance",
+                                  "settings/customization/appearance",
+                                  "settings/customization/notifications",
+                                  "settings/privacy/login-security",
+                                  "settings/privacy/devices",
+                                  "settings/customization/profile",
+                                  "settings/index",
+                                  "settings/personal-information",
+                                  "settings/space/index",
+                                  "settings/space/integrations",
+                                ].map((d) => (
+                                  <JsStack.Screen
+                                    name={d}
+                                    key={d}
+                                    options={{
+                                      cardStyle: { padding: 0 },
+                                      gestureEnabled: true,
+                                      headerTitle:
+                                        d !== "settings/index" && "Settings",
+                                      ...TransitionPresets.SlideFromRightIOS,
+                                      cardStyleInterpolator: forHorizontalIOS,
+                                      ...(breakpoints.md && {
+                                        animationEnabled: false,
+                                      }),
+                                    }}
+                                  />
+                                ))}
                                 <JsStack.Screen
-                                  name={d}
-                                  key={d}
+                                  name="friends"
                                   options={{
+                                    gestureEnabled: true,
+                                    header: (props) => (
+                                      <Navbar
+                                        icon="arrow_back_ios_new"
+                                        {...props}
+                                      />
+                                    ),
                                     ...TransitionPresets.SlideFromRightIOS,
-                                    gestureResponseDistance: width,
                                     cardStyleInterpolator: forHorizontalIOS,
-                                    // cardStyle: { marginBottom: 0 },
                                   }}
                                 />
-                              ))}
-                            </JsStack>
-                          </Animated.View>
-                        </ThemeProvider>
-                      </SidebarContext.Provider>
-                    </FocusPanelProvider>
-                  </CommandPaletteProvider>
-                </View>
-              </GestureDetector>
-            </PortalProvider>
-          </MenuProvider>
-        </BottomSheetModalProvider>
-        <Toast config={toastConfig(theme)} />
+                                {["clock", "collections/create"].map((d) => (
+                                  <JsStack.Screen
+                                    name={d}
+                                    key={d}
+                                    options={{
+                                      ...TransitionPresets.SlideFromRightIOS,
+                                      gestureResponseDistance: width,
+                                      cardStyleInterpolator: forHorizontalIOS,
+                                      // cardStyle: { marginBottom: 0 },
+                                    }}
+                                  />
+                                ))}
+                              </JsStack>
+                            </Animated.View>
+                          </ThemeProvider>
+                        </SidebarContext.Provider>
+                      </FocusPanelProvider>
+                    </CommandPaletteProvider>
+                  </View>
+                </GestureDetector>
+              </PortalProvider>
+            </MenuProvider>
+          </BottomSheetModalProvider>
+          <Toast config={toastConfig(theme)} />
+        </Animated.View>
       </GestureHandlerRootView>
     </ColorThemeProvider>
   );
