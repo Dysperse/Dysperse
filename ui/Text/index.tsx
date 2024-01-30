@@ -28,17 +28,30 @@ export interface DTextProps extends TextProps {
     body_800: Jost_800ExtraBold,
     body_900: Jost_900Black,
  */
-const fonts = {
-  body_100: "Jost_100Thin",
-  body_200: "Jost_200ExtraLight",
-  body_300: "Jost_300Light",
-  body_400: "Jost_400Regular",
-  body_500: "Jost_500Medium",
-  body_600: "Jost_600SemiBold",
-  body_700: "Jost_700Bold",
-  body_800: "Jost_800ExtraBold",
-  body_900: "Jost_900Black",
-};
+const fonts =
+  Platform.OS === "web"
+    ? {
+        body_100: "body_100",
+        body_200: "body_200",
+        body_300: "body_300",
+        body_400: "body_400",
+        body_500: "body_500",
+        body_600: "body_600",
+        body_700: "body_700",
+        body_800: "body_800",
+        body_900: "body_900",
+      }
+    : {
+        body_100: "Jost_100Thin",
+        body_200: "Jost_200ExtraLight",
+        body_300: "Jost_300Light",
+        body_400: "Jost_400Regular",
+        body_500: "Jost_500Medium",
+        body_600: "Jost_600SemiBold",
+        body_700: "Jost_700Bold",
+        body_800: "Jost_800ExtraBold",
+        body_900: "Jost_900Black",
+      };
 
 const textStyles = StyleSheet.create({
   default: {
