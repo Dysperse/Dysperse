@@ -26,7 +26,6 @@ import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
 import React, { useEffect } from "react";
 import {
-  ActivityIndicator,
   Platform,
   StatusBar,
   View,
@@ -72,7 +71,6 @@ export function SessionLoadingScreen() {
       }}
     >
       <Logo size={150} />
-      <ActivityIndicator color={theme[9]} />
     </View>
   );
 }
