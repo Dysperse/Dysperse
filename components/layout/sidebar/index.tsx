@@ -379,9 +379,11 @@ export function Sidebar() {
         </View>
         <OpenTabsList />
       </Animated.View>
-      <GestureDetector gesture={tap}>
-        <PanelSwipeTrigger side="left" />
-      </GestureDetector>
+      {breakpoints.md && (
+        <GestureDetector gesture={tap}>
+          <PanelSwipeTrigger side="left" />
+        </GestureDetector>
+      )}
     </>
   );
 }
