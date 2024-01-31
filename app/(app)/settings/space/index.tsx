@@ -180,7 +180,7 @@ function SpaceStorage({ data }) {
               <Avatar icon={icon} size={40} />
               <ListItemText
                 primary={`${~~parseInt(
-                  ((data.storage.breakdown[name] / data.storage.limit) *
+                  ((data.storage?.breakdown?.[name] / data.storage?.limit) *
                     100) as any
                 )}%`}
                 secondary={`${capitalizeFirstLetter(name)}`}

@@ -598,10 +598,12 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           gap: 10,
         }}
       >
-        <IconButton
-          icon="arrow_back_ios_new"
-          onPress={() => (sidebarMargin.value = 0)}
-        />
+        {!breakpoints.md && (
+          <IconButton
+            icon="arrow_back_ios_new"
+            onPress={() => (sidebarMargin.value = 0)}
+          />
+        )}
         <View style={!breakpoints.md && { flex: 1 }}>
           <MenuPopover
             containerStyle={{ width: 230 }}
