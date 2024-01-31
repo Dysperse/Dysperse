@@ -38,7 +38,7 @@ export const CreateEntityTrigger = ({
     () => createTaskRef.current?.present(),
     []
   );
-  useHotkeys("alt+t", handleCreateTask, { enabled: shortcutEnabled });
+  useHotkeys("t", handleCreateTask, { enabled: shortcutEnabled });
 
   return (
     <>
