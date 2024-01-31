@@ -146,8 +146,8 @@ function Tab({
               tab: tab.id,
             },
           });
-          closeSidebarOnMobile();
-          setTimeout(handleClose, 300);
+          handleClose();
+          setTimeout(closeSidebarOnMobile, 300);
         }}
         style={({ pressed, hovered }: any) => [
           styles.button,

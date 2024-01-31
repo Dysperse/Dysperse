@@ -346,7 +346,7 @@ export function Sidebar({ panGestureDesktop }) {
       // },
       {
         scale: withSpring(
-          interpolate(sidebarMargin.value, [-220, 0], [1.1, 1]),
+          interpolate(sidebarMargin.value, [-220, 0], [1.05, 1]),
           {
             damping: 30,
             stiffness: 400,
@@ -369,6 +369,39 @@ export function Sidebar({ panGestureDesktop }) {
   const closePressableStyle = useAnimatedStyle(() => ({
     display: !sidebarMargin.value ? "flex" : "none",
   }));
+
+  const children = (
+    <View style={{ zIndex: breakpoints.md ? 1 : 0, flexDirection: "row" }}>
+      <Animated.View
+        style={[
+          breakpoints.md && marginLeftStyle,
+          !breakpoints.md && transformLeftStyle,
+          {
+            height: "100%",
+            width: SIDEBAR_WIDTH,
+            flexDirection: "column",
+            maxHeight: "100%",
+            backgroundColor: theme[2],
+            ...(Platform.OS === "web" &&
+              ({
+                paddingTop: "env(titlebar-area-height,0)",
+              } as any)),
+          },
+        ]}
+      >
+        <View style={[styles.header, { marginTop: insets.top }]}>
+          <LogoButton toggleHidden={toggleHidden} isHidden={isHidden} />
+          <Header />
+        </View>
+        <OpenTabsList />
+      </Animated.View>
+      {breakpoints.md && (
+        <GestureDetector gesture={tap}>
+          <PanelSwipeTrigger side="left" />
+        </GestureDetector>
+      )}
+    </View>
+  );
 
   return (
     <>
@@ -394,40 +427,13 @@ export function Sidebar({ panGestureDesktop }) {
         </Animated.View>
       )}
 
-      <GestureDetector
-        gesture={breakpoints.md ? panGestureDesktop : Gesture.Tap()}
-      >
-        <View style={{ zIndex: breakpoints.md ? 1 : 0, flexDirection: "row" }}>
-          <Animated.View
-            style={[
-              breakpoints.md && marginLeftStyle,
-              !breakpoints.md && transformLeftStyle,
-              {
-                height: "100%",
-                width: SIDEBAR_WIDTH,
-                flexDirection: "column",
-                maxHeight: "100%",
-                backgroundColor: theme[2],
-                ...(Platform.OS === "web" &&
-                  ({
-                    paddingTop: "env(titlebar-area-height,0)",
-                  } as any)),
-              },
-            ]}
-          >
-            <View style={[styles.header, { marginTop: insets.top }]}>
-              <LogoButton toggleHidden={toggleHidden} isHidden={isHidden} />
-              <Header />
-            </View>
-            <OpenTabsList />
-          </Animated.View>
-          {breakpoints.md && (
-            <GestureDetector gesture={tap}>
-              <PanelSwipeTrigger side="left" />
-            </GestureDetector>
-          )}
-        </View>
-      </GestureDetector>
+      {breakpoints.md ? (
+        <GestureDetector gesture={panGestureDesktop}>
+          {children}
+        </GestureDetector>
+      ) : (
+        children
+      )}
     </>
   );
 }
