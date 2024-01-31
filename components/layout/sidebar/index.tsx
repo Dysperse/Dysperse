@@ -142,6 +142,7 @@ export const LogoButton = memo(function LogoButton({
   }, []);
 
   const { isFocused, setFocus } = useFocusPanelContext();
+  const { closeSidebarOnMobile } = useSidebarContext();
 
   return (
     <View
@@ -177,7 +178,10 @@ export const LogoButton = memo(function LogoButton({
           {
             icon: "settings",
             text: "Settings",
-            callback: () => router.push("/settings"),
+            callback: () => {
+              router.push("/settings");
+              setTimeout(closeSidebarOnMobile, 300);
+            },
           },
           {
             icon: "question_mark",
@@ -373,8 +377,19 @@ export function Sidebar({ panGestureDesktop }) {
     display: !sidebarMargin.value ? "flex" : "none",
   }));
 
+  const pathname = usePathname();
+
   const children = (
-    <View style={{ zIndex: breakpoints.md ? 1 : 0, flexDirection: "row" }}>
+    <View
+      style={[
+        { zIndex: breakpoints.md ? 1 : 0, flexDirection: "row" },
+        pathname.includes("settings") &&
+          breakpoints.md && {
+            maxWidth: 0,
+            overflow: "hidden",
+          },
+      ]}
+    >
       <Animated.View
         style={[
           breakpoints.md && marginLeftStyle,

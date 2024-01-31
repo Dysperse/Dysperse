@@ -1,17 +1,10 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Text from "@/ui/Text";
 import { Redirect } from "expo-router";
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   if (breakpoints.md) return <Redirect href="/settings/space" />;
 
-  return (
-    <SettingsLayout>
-      <Text heading style={{ fontSize: 50 }}>
-        Settings
-      </Text>
-    </SettingsLayout>
-  );
+  return <SettingsLayout />;
 }

@@ -204,22 +204,6 @@ export default function AppLayout() {
     }
   }, [theme, breakpoints.md]);
 
-  // You can keep the splash screen open, or render a loading screen like we do here.
-  // if (error) {
-  //   return (
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //         backgroundColor: theme[1],
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         padding: 20,
-  //       }}
-  //     >
-  //       <ErrorAlert message="Couldn't load your account. Check your internet connection and try again. " />
-  //     </View>
-  //   );
-  // }
   if (isLoading || isUserLoading) {
     return (
       <ColorThemeProvider theme={theme}>

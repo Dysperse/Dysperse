@@ -1,5 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -15,6 +16,7 @@ import * as Updates from "expo-updates";
 import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import { useSidebarContext } from "../layout/sidebar/context";
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -171,22 +173,42 @@ function SettingsSidebar() {
               />
             </ListItemButton>
           ))}
-          {index !== 3 && <Divider style={{ width: 170, marginTop: 10 }} />}
+          {index !== 3 && <Divider style={{ width: "90%", marginTop: 10 }} />}
         </View>
       ))}
     </ScrollView>
   );
 }
 
-export function SettingsLayout({ children }) {
+export function SettingsLayout({ children }: { children?: React.ReactNode }) {
   const { session, error } = useUser();
   const { height } = useWindowDimensions();
-  // useHotkeys("esc", () => router.back());
+  const breakpoints = useResponsiveBreakpoints();
+  const { openSidebar } = useSidebarContext();
+  const pathname = usePathname();
+  const isHome = pathname !== "/settings";
 
   return session ? (
     <>
+      {!breakpoints.md && (
+        <IconButton
+          variant="outlined"
+          onPress={() => {
+            if (!isHome) return openSidebar();
+            else router.push("/settings");
+          }}
+          size={55}
+          icon="arrow_back_ios_new"
+          style={{
+            margin: 12,
+            zIndex: 99,
+            marginBottom: -70,
+          }}
+        />
+      )}
       <View
         style={{
+          ...(!breakpoints.md && { marginTop: 30 }),
           maxHeight: height,
           flexDirection: "row",
           maxWidth: 900,
@@ -195,41 +217,46 @@ export function SettingsLayout({ children }) {
           gap: 40,
         }}
       >
-        <View style={{ width: 200 }}>
-          <SettingsSidebar />
-        </View>
+        {(!isHome || breakpoints.md) && (
+          <View style={{ width: children ? 200 : "100%" }}>
+            <SettingsSidebar />
+          </View>
+        )}
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{
             paddingVertical: 50,
+            paddingHorizontal: 20,
             flex: 1,
           }}
         >
           {children}
         </ScrollView>
       </View>
-      <View
-        style={{
-          position: "absolute",
-          right: 0,
-          top: 0,
-          margin: 50,
-          marginRight: 100,
-          gap: 5,
-          alignItems: "center",
-        }}
-      >
-        <IconButton
-          icon="close"
-          variant="filled"
-          size={55}
-          onPress={() => {
-            if (router.canGoBack()) return router.back();
-            router.replace("/");
+      {breakpoints.md && (
+        <View
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            margin: 50,
+            marginRight: 100,
+            gap: 5,
+            alignItems: "center",
           }}
-        />
-        <Text variant="eyebrow">ESC</Text>
-      </View>
+        >
+          <IconButton
+            icon="close"
+            variant="filled"
+            size={55}
+            onPress={() => {
+              if (router.canGoBack()) return router.back();
+              router.replace("/");
+            }}
+          />
+          <Text variant="eyebrow">ESC</Text>
+        </View>
+      )}
     </>
   ) : error ? (
     <View>

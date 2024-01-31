@@ -1,6 +1,7 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -21,6 +22,7 @@ import useSWR from "swr";
 
 function SpaceHeader({ data }) {
   const spaceTheme = useColor(data?.color, useColorScheme() === "dark");
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <LinearGradient
@@ -34,7 +36,9 @@ function SpaceHeader({ data }) {
         padding: 20,
       }}
     >
-      <Text style={{ fontSize: 40 }}>{data.name}</Text>
+      <Text numberOfLines={2} style={{ fontSize: breakpoints.md ? 40 : 30 }}>
+        {data.name}
+      </Text>
       <Text>
         {data.members.length} member{data.members.length === 1 ? "" : "s"}
       </Text>
