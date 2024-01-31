@@ -20,6 +20,7 @@ import React, {
   cloneElement,
   memo,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -28,7 +29,51 @@ import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { labelPickerStyles } from "./labelPickerStyles";
 
-const CloseButton = memo(function CloseButton({ onClose, disabled }) {
+const Search = ({ query, setQuery, autoFocus }) => {
+  const theme = useColorTheme();
+  const searchRef = useRef(null);
+  const { forceClose } = useBottomSheet();
+
+  useEffect(() => {
+    if (autoFocus) {
+      setTimeout(() => {
+        searchRef.current.focus();
+      }, 500);
+    }
+  }, [autoFocus]);
+
+  return (
+    <TextField
+      enterKeyHint="search"
+      value={query}
+      onChangeText={setQuery}
+      bottomSheet
+      style={{
+        backgroundColor: theme[3],
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 99,
+        flex: 1,
+        fontSize: 20,
+      }}
+      onKeyPress={({ nativeEvent }) => {
+        if (nativeEvent.key === "Escape") {
+          forceClose();
+        }
+      }}
+      inputRef={searchRef}
+      autoFocus={Platform.OS !== "web" && autoFocus}
+      placeholder="Search..."
+    />
+  );
+};
+const CloseButton = memo(function CloseButton({
+  onClose,
+  disabled,
+}: {
+  onClose: any;
+  disabled?: boolean;
+}) {
   const { close } = useBottomSheet();
   const [loading, setLoading] = useState(false);
 
@@ -77,7 +122,6 @@ const LabelPicker = memo(function LabelPicker({
   const searchRef = useRef(null);
 
   const handleOpen = useCallback(() => {
-    // Keyboard.dismiss();
     ref.current?.present();
   }, []);
   const handleClose = useCallback(async () => {
@@ -135,23 +179,7 @@ const LabelPicker = memo(function LabelPicker({
                 <Icon>arrow_back_ios_new</Icon>
               </IconButton>
             )}
-            <TextField
-              enterKeyHint="search"
-              value={query}
-              onChangeText={setQuery}
-              bottomSheet
-              style={{
-                backgroundColor: theme[3],
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderRadius: 99,
-                flex: 1,
-                fontSize: 20,
-              }}
-              inputRef={searchRef}
-              autoFocus={Platform.OS !== "web" && autoFocus}
-              placeholder="Search..."
-            />
+            <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
             <CreateLabelModal
               mutate={mutate}
               onClose={() => searchRef.current.focus()}

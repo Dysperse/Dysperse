@@ -47,7 +47,7 @@ import Toast from "react-native-toast-message";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { TaskDrawerContext } from "../drawer/context";
 
-function Footer({ nameRef, menuRef, dateMenuRef, control }) {
+function Footer({ nameRef, labelMenuRef, dateMenuRef, control }) {
   const orange = useColor("orange", useColorScheme() === "dark");
 
   const rotate = useSharedValue(0);
@@ -83,7 +83,6 @@ function Footer({ nameRef, menuRef, dateMenuRef, control }) {
         render={({ field: { onChange, value } }) => (
           <MenuPopover
             menuRef={dateMenuRef}
-            // height={[400]}
             containerStyle={{ width: 300 }}
             trigger={
               <Chip
@@ -153,6 +152,7 @@ function Footer({ nameRef, menuRef, dateMenuRef, control }) {
       />
       <CreateTaskLabelInput
         control={control}
+        labelMenuRef={labelMenuRef}
         onLabelPickerClose={() => {
           nameRef?.current?.focus();
         }}
@@ -161,7 +161,7 @@ function Footer({ nameRef, menuRef, dateMenuRef, control }) {
   );
 }
 
-function CreateTaskLabelInput({ control, onLabelPickerClose }) {
+function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
   const colors = useLabelColors();
 
   return (
@@ -173,6 +173,10 @@ function CreateTaskLabelInput({ control, onLabelPickerClose }) {
         <LabelPicker
           label={value}
           setLabel={onChange}
+          sheetProps={{
+            sheetRef: labelMenuRef,
+          }}
+          autoFocus
           onClose={onLabelPickerClose}
         >
           <Chip
@@ -203,12 +207,14 @@ function TaskNameInput({
   handleSubmitButtonClick,
   menuRef,
   nameRef,
+  labelMenuRef,
 }: {
   control: any;
   dateMenuRef: React.MutableRefObject<Menu>;
   handleSubmitButtonClick: any;
   menuRef: React.MutableRefObject<BottomSheetModal>;
   nameRef: any;
+  labelMenuRef: React.MutableRefObject<BottomSheetModal>;
 }) {
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
@@ -242,6 +248,10 @@ function TaskNameInput({
             if (e.key === "@") {
               e.preventDefault();
               dateMenuRef.current.open();
+            }
+            if (e.key === "#") {
+              e.preventDefault();
+              labelMenuRef.current.present();
             }
             if (e.key === "Enter") {
               handleSubmitButtonClick();
@@ -284,6 +294,7 @@ function BottomSheetContent({
   const { sessionToken } = useUser();
   const { forceClose } = useBottomSheet();
   const menuRef = useRef<BottomSheetModal>(null);
+  const labelMenuRef = useRef<BottomSheetModal>(null);
   const dateMenuRef = useRef<Menu>(null);
   const theme = useColorTheme();
   const { control, handleSubmit, reset } = useForm({
@@ -412,10 +423,11 @@ function BottomSheetContent({
             <Footer
               dateMenuRef={dateMenuRef}
               nameRef={nameRef}
-              menuRef={menuRef}
+              labelMenuRef={labelMenuRef}
               control={control}
             />
             <TaskNameInput
+              labelMenuRef={labelMenuRef}
               control={control}
               menuRef={menuRef}
               handleSubmitButtonClick={handleSubmitButtonClick}
