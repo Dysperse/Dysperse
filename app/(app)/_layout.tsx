@@ -98,7 +98,7 @@ export default function AppLayout() {
         sidebarMargin.value = 0;
       }
     })
-    .onEnd(({ velocityX, velocityY, translationX }) => {
+    .onEnd(({ velocityX, velocityY }) => {
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         sidebarMargin.value = velocityX > 0 ? 0 : -SIDEBAR_WIDTH;
         return;
