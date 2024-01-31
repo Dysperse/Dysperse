@@ -14,6 +14,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import {
@@ -159,15 +160,17 @@ export const LogoButton = memo(function LogoButton({
         }}
         containerStyle={{ width: 160, marginLeft: 10, marginTop: 5 }}
         trigger={
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingLeft: 3,
-            }}
-          >
-            <Logo size={40} />
-            <Icon style={{ color: theme[8] }}>expand_more</Icon>
+          <Pressable>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingLeft: 3,
+              }}
+            >
+              <Logo size={40} />
+              <Icon style={{ color: theme[8] }}>expand_more</Icon>
+            </TouchableOpacity>
           </Pressable>
         }
         options={[
