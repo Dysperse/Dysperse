@@ -5,6 +5,7 @@ import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -75,7 +76,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
     setTimeout(closeSidebarOnMobile, 100);
   };
   const theme = useColorTheme();
-  // useHotkeys("ctrl+0", () => router.push("/"));
+  useHotkeys("ctrl+0", () => router.push("/"));
 
   return (
     <Pressable
@@ -98,10 +99,10 @@ const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
   const { handleOpen } = useCommandPaletteContext();
-  // useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], (e) => {
-  //   e.preventDefault();
-  //   handleOpen();
-  // });
+  useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], (e) => {
+    e.preventDefault();
+    handleOpen();
+  });
 
   return (
     <Pressable
@@ -300,7 +301,7 @@ const Header = memo(function Header() {
   );
 });
 
-export function Sidebar() {
+export function Sidebar({ panGestureDesktop }) {
   const insets = useSafeAreaInsets();
   const { sidebarMargin, SIDEBAR_WIDTH } = useSidebarContext();
   const theme = useColorTheme();
@@ -319,8 +320,8 @@ export function Sidebar() {
     sidebarMargin.value = isHidden ? -SIDEBAR_WIDTH : 0;
   }, [isHidden, sidebarMargin, SIDEBAR_WIDTH]);
 
-  // useHotkeys("`", toggleHidden, {}, [isHidden]);
-  // useHotkeys("ctrl+comma", () => router.push("/settings"));
+  useHotkeys("`", toggleHidden, {}, [isHidden]);
+  useHotkeys("ctrl+comma", () => router.push("/settings"));
 
   const breakpoints = useResponsiveBreakpoints();
   const marginLeftStyle = useAnimatedStyle(() => ({
@@ -332,10 +333,20 @@ export function Sidebar() {
   }));
 
   const transformLeftStyle = useAnimatedStyle(() => ({
+    transformOrigin: "right",
     transform: [
+      // {
+      //   translateX: withSpring(
+      //     interpolate(sidebarMargin.value, [0, -220], [0, -width * 0.05]),
+      //     {
+      //       damping: 30,
+      //       stiffness: 400,
+      //     }
+      //   ),
+      // },
       {
-        translateX: withSpring(
-          interpolate(sidebarMargin.value, [0, -220], [0, -width * 0.05]),
+        scale: withSpring(
+          interpolate(sidebarMargin.value, [0, -220], [1, 1.1]),
           {
             damping: 30,
             stiffness: 400,
@@ -354,36 +365,66 @@ export function Sidebar() {
     toggleHidden();
   });
 
+  const closePressableStyle = useAnimatedStyle(() => ({
+    display: !sidebarMargin.value ? "flex" : "none",
+  }));
+
   return (
     <>
       <Animated.View
         style={[
-          breakpoints.md && marginLeftStyle,
-          !breakpoints.md && transformLeftStyle,
+          closePressableStyle,
           {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: width - SIDEBAR_WIDTH,
             height: "100%",
-            width: SIDEBAR_WIDTH,
-            flexDirection: "column",
-            maxHeight: "100%",
-            backgroundColor: theme[2],
-            ...(Platform.OS === "web" &&
-              ({
-                paddingTop: "env(titlebar-area-height,0)",
-              } as any)),
+            zIndex: 99,
           },
         ]}
       >
-        <View style={[styles.header, { marginTop: insets.top }]}>
-          <LogoButton toggleHidden={toggleHidden} isHidden={isHidden} />
-          <Header />
-        </View>
-        <OpenTabsList />
+        <Pressable
+          onPress={toggleHidden}
+          onPressIn={toggleHidden}
+          style={{ flex: 1 }}
+        />
       </Animated.View>
-      {breakpoints.md && (
-        <GestureDetector gesture={tap}>
-          <PanelSwipeTrigger side="left" />
-        </GestureDetector>
-      )}
+
+      <GestureDetector
+        gesture={breakpoints.md ? panGestureDesktop : Gesture.Tap()}
+      >
+        <View style={{ zIndex: breakpoints.md ? 1 : 0, flexDirection: "row" }}>
+          <Animated.View
+            style={[
+              breakpoints.md && marginLeftStyle,
+              !breakpoints.md && transformLeftStyle,
+              {
+                height: "100%",
+                width: SIDEBAR_WIDTH,
+                flexDirection: "column",
+                maxHeight: "100%",
+                backgroundColor: theme[2],
+                ...(Platform.OS === "web" &&
+                  ({
+                    paddingTop: "env(titlebar-area-height,0)",
+                  } as any)),
+              },
+            ]}
+          >
+            <View style={[styles.header, { marginTop: insets.top }]}>
+              <LogoButton toggleHidden={toggleHidden} isHidden={isHidden} />
+              <Header />
+            </View>
+            <OpenTabsList />
+          </Animated.View>
+          {breakpoints.md && (
+            <GestureDetector gesture={tap}>
+              <PanelSwipeTrigger side="left" />
+            </GestureDetector>
+          )}
+        </View>
+      </GestureDetector>
     </>
   );
 }

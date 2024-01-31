@@ -148,7 +148,7 @@ export function PanelSwipeTrigger({
   const isPullerHovered = useSharedValue(0);
 
   const pullerStyles = useAnimatedStyle(() => ({
-    width: withSpring(!isPullerActive.value ? 5 : 9, {
+    width: withSpring(!isPullerActive.value ? 7 : 11, {
       damping: 30,
       stiffness: 400,
     }),
@@ -169,8 +169,10 @@ export function PanelSwipeTrigger({
     ),
   }));
 
+  let t: any = null;
+
   const onPressIn = () => {
-    width.value = 25;
+    width.value = 20;
     isPullerActive.value = 1;
   };
 
@@ -181,10 +183,13 @@ export function PanelSwipeTrigger({
 
   const onHoverIn = () => {
     isPullerHovered.value = 1;
-    width.value = 25;
+    t = setTimeout(() => {
+      width.value = 20;
+    }, 500);
   };
 
   const onHoverOut = () => {
+    if (t) clearTimeout(t);
     isPullerHovered.value = 0;
     width.value = 15;
   };

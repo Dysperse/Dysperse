@@ -86,8 +86,7 @@ export default function AppLayout() {
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
   const pan = Gesture.Pan()
-    .onChange(({ changeX, velocityY, velocityX, absoluteX }) => {
-      if (breakpoints.md && absoluteX > SIDEBAR_WIDTH && changeX < 50) return;
+    .onChange(({ changeX, velocityY, velocityX }) => {
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         return;
       }
@@ -99,12 +98,11 @@ export default function AppLayout() {
         sidebarMargin.value = 0;
       }
     })
-    .onEnd(({ velocityX, velocityY, translationX, absoluteX, changeX }) => {
-      if (breakpoints.md && absoluteX > 230 && changeX < 50) return;
+    .onEnd(({ velocityX, velocityY, translationX }) => {
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         return;
       }
-      if (Math.abs(translationX) < 80) {
+      if (Math.abs(translationX) < SIDEBAR_WIDTH / 2) {
         sidebarMargin.value =
           sidebarMargin.value > -SIDEBAR_WIDTH / 2 ? 0 : -SIDEBAR_WIDTH;
         return;
@@ -122,10 +120,13 @@ export default function AppLayout() {
   const panelStyle = useAnimatedStyle(() => {
     return {
       borderColor: theme?.[4],
-      borderWidth: withSpring(sidebarMargin.value !== -SIDEBAR_WIDTH ? 2 : 0, {
-        damping: 30,
-        stiffness: 400,
-      }),
+      borderWidth: withSpring(
+        -sidebarMargin.value < SIDEBAR_WIDTH / 2 ? 2 : 0,
+        {
+          damping: 30,
+          stiffness: 400,
+        }
+      ),
       marginTop: withSpring(
         interpolate(
           Math.abs(sidebarMargin.value),
@@ -152,7 +153,7 @@ export default function AppLayout() {
         interpolate(
           Math.abs(sidebarMargin.value),
           [0, SIDEBAR_WIDTH],
-          [30, 25],
+          [30, 0],
           "clamp"
         ),
         {
@@ -265,7 +266,7 @@ export default function AppLayout() {
                 <StatusBar
                   barStyle={!isDark ? "dark-content" : "light-content"}
                 />
-                <GestureDetector gesture={pan}>
+                <GestureDetector gesture={breakpoints.md ? Gesture.Tap() : pan}>
                   <View
                     style={{
                       flexDirection: "row",
@@ -293,7 +294,7 @@ export default function AppLayout() {
                             },
                           }}
                         >
-                          <Sidebar />
+                          <Sidebar panGestureDesktop={pan} />
                           <ThemeProvider
                             value={{
                               ...DefaultTheme,
@@ -331,7 +332,7 @@ export default function AppLayout() {
                                   },
                                   // change opacity of the previous screen when swipe
                                   cardOverlayEnabled: true,
-                                  animationEnabled: !breakpoints.md,
+                                  animationEnabled: false,
                                   gestureVelocityImpact: 0.7,
                                 }}
                               >
