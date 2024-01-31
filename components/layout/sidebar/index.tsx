@@ -419,11 +419,7 @@ export function Sidebar({ panGestureDesktop }) {
             },
           ]}
         >
-          <Pressable
-            onPress={toggleHidden}
-            onPressIn={toggleHidden}
-            style={{ flex: 1 }}
-          />
+          <Pressable onPress={toggleHidden} style={{ flex: 1 }} />
         </Animated.View>
       )}
 

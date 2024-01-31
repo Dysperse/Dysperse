@@ -111,6 +111,7 @@ export default function MenuPopover({
         openAnimationDuration: 0,
         closeAnimationDuration: 0,
         preferredPlacement: "bottom",
+        placement: "bottom",
         anchorStyle: {
           opacity: 0,
         },

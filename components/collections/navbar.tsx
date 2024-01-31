@@ -279,7 +279,7 @@ const CollectionRenameMenu = memo(function CollectionRenameMenu({
       Toast.show({ type: "error", text1: "Something went wrong" });
     } finally {
       setLoading(false);
-      menuRef.current?.close()
+      menuRef.current?.close();
     }
   };
 
@@ -419,11 +419,6 @@ const ShareCollection = memo(function ShareCollection() {
             <IconButton variant="outlined" size={40} icon="ios_share" />
           )
         }
-        menuProps={{
-          rendererProps: {
-            placement: "bottom",
-          },
-        }}
         containerStyle={{ marginLeft: -25 }}
         options={[
           {
@@ -609,11 +604,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         />
         <View style={!breakpoints.md && { flex: 1 }}>
           <MenuPopover
-            menuProps={{
-              rendererProps: {
-                placement: "bottom",
-              },
-            }}
             containerStyle={{ width: 230 }}
             trigger={
               <IconButton
@@ -680,6 +670,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         />
         {type === "agenda" && breakpoints.md && <AgendaNavbarButtons />}
         <MenuPopover
+          menuProps={{
+            rendererProps: { placement: "bottom" },
+          }}
           trigger={
             <IconButton variant="outlined" size={40} icon="filter_list" />
           }
