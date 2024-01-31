@@ -24,7 +24,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Platform,
   StatusBar,
@@ -87,7 +87,7 @@ export default function AppLayout() {
 
   const pan = Gesture.Pan()
     .onChange(({ changeX, velocityY, velocityX, absoluteX }) => {
-      if (breakpoints.md && absoluteX > 230) return;
+      if (breakpoints.md && absoluteX > SIDEBAR_WIDTH && changeX < 50) return;
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         return;
       }
@@ -99,8 +99,8 @@ export default function AppLayout() {
         sidebarMargin.value = 0;
       }
     })
-    .onEnd(({ velocityX, velocityY, translationX, absoluteX }) => {
-      if (breakpoints.md && absoluteX > 230) return;
+    .onEnd(({ velocityX, velocityY, translationX, absoluteX, changeX }) => {
+      if (breakpoints.md && absoluteX > 230 && changeX < 50) return;
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         return;
       }
