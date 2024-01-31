@@ -116,7 +116,8 @@ const LabelPicker = memo(function LabelPicker({
   triggerProp?: string;
   sheetProps?: Partial<DBottomSheetProps>;
 }) {
-  const ref = useRef<BottomSheetModal>(null);
+  const _ref = useRef<BottomSheetModal>(null);
+  const ref = sheetProps.sheetRef || _ref;
   const [query, setQuery] = useState("");
   // callbacks
   const searchRef = useRef(null);
@@ -124,6 +125,7 @@ const LabelPicker = memo(function LabelPicker({
   const handleOpen = useCallback(() => {
     ref.current?.present();
   }, []);
+
   const handleClose = useCallback(async () => {
     await onClose();
     ref.current?.close();
