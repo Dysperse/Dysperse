@@ -100,14 +100,11 @@ export default function AppLayout() {
     })
     .onEnd(({ velocityX, velocityY, translationX }) => {
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
+        sidebarMargin.value = velocityX > 0 ? 0 : -SIDEBAR_WIDTH;
         return;
       }
-      if (Math.abs(translationX) < SIDEBAR_WIDTH / 2) {
-        sidebarMargin.value =
-          sidebarMargin.value > -SIDEBAR_WIDTH / 2 ? 0 : -SIDEBAR_WIDTH;
-        return;
-      }
-      sidebarMargin.value = velocityX <= 0 ? -SIDEBAR_WIDTH : 0;
+      console.log(velocityX);
+      sidebarMargin.value = velocityX > 0 ? 0 : -SIDEBAR_WIDTH;
     });
 
   const theme = useColor(

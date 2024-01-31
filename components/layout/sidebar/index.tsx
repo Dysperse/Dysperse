@@ -346,10 +346,11 @@ export function Sidebar({ panGestureDesktop }) {
       // },
       {
         scale: withSpring(
-          interpolate(sidebarMargin.value, [0, -220], [1, 1.1]),
+          interpolate(sidebarMargin.value, [-220, 0], [1.1, 1]),
           {
             damping: 30,
             stiffness: 400,
+            overshootClamping: true,
           }
         ),
       },
@@ -371,25 +372,27 @@ export function Sidebar({ panGestureDesktop }) {
 
   return (
     <>
-      <Animated.View
-        style={[
-          closePressableStyle,
-          {
-            position: "absolute",
-            top: 0,
-            right: 0,
-            width: width - SIDEBAR_WIDTH,
-            height: "100%",
-            zIndex: 99,
-          },
-        ]}
-      >
-        <Pressable
-          onPress={toggleHidden}
-          onPressIn={toggleHidden}
-          style={{ flex: 1 }}
-        />
-      </Animated.View>
+      {!breakpoints.md && (
+        <Animated.View
+          style={[
+            closePressableStyle,
+            {
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: width - SIDEBAR_WIDTH,
+              height: "100%",
+              zIndex: 99,
+            },
+          ]}
+        >
+          <Pressable
+            onPress={toggleHidden}
+            onPressIn={toggleHidden}
+            style={{ flex: 1 }}
+          />
+        </Animated.View>
+      )}
 
       <GestureDetector
         gesture={breakpoints.md ? panGestureDesktop : Gesture.Tap()}
