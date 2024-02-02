@@ -148,7 +148,13 @@ function SettingsSidebar() {
           </Text>
           {section.settings.map((button) => (
             <ListItemButton
-              variant={pathname === button.href ? "filled" : "default"}
+              variant={
+                pathname === button.href ||
+                (pathname.includes("integrations") &&
+                  button.href?.includes("integrations"))
+                  ? "filled"
+                  : "default"
+              }
               style={styles.sectionItem}
               key={button.name}
               onPress={() =>
@@ -162,7 +168,11 @@ function SettingsSidebar() {
               {...(button.callback && { onPress: button.callback })}
             >
               <Icon
-                filled={pathname === button.href}
+                filled={
+                  pathname === button.href ||
+                  (pathname.includes("integrations") &&
+                    button.href?.includes("integrations"))
+                }
                 style={{ color: theme[11] }}
               >
                 {button.icon}
