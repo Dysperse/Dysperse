@@ -239,6 +239,7 @@ export function SettingsLayout({ children }: { children?: React.ReactNode }) {
             paddingHorizontal: 20,
             flex: 1,
           }}
+          contentContainerStyle={{ height: "100%" }}
         >
           {children}
         </ScrollView>
