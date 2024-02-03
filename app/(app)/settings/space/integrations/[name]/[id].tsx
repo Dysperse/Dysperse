@@ -1,15 +1,14 @@
 import { SettingsLayout } from "@/components/settings/layout";
+import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
@@ -98,6 +97,13 @@ const CalendarPicker = () => {
           estimatedItemSize={70}
         />
       </View>
+      <Alert
+        title="Calendars create labels, which you can customize later."
+        emoji="1f3f7"
+        style={{ marginTop: 20 }}
+        dense
+        italicize
+      />
     </>
   );
 };
@@ -163,16 +169,26 @@ const CollectionsPicker = () => {
         <FlashList
           key={selected}
           data={data}
-          ListEmptyComponent={<></>}
+          ListEmptyComponent={
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: 297,
+              }}
+            >
+              <Text>You haven't created any collections yet.</Text>
+            </View>
+          }
           renderItem={({ item }) => <CollectionButton item={item} />}
           keyExtractor={(item: any) => item.id}
           estimatedItemSize={70}
-          ListFooterComponent={
-            <ListItemButton style={{ borderRadius: 0, height: 70 }}>
-              <Avatar icon="add" size={40} />
-              <ListItemText primary="Create new collection" />
-            </ListItemButton>
-          }
+          // ListFooterComponent={
+          //   <ListItemButton style={{ borderRadius: 0, height: 70 }}>
+          //     <Avatar icon="add" size={40} />
+          //     <ListItemText primary="Create new collection" />
+          //   </ListItemButton>
+          // }
         />
       </View>
     </>
@@ -188,27 +204,55 @@ export default function Page() {
   return (
     <SettingsLayout>
       <View style={{ flexDirection: "row" }}>
-        <Button variant="outlined" onPress={handleBack}>
-          <Icon>arrow_back_ios_new</Icon>
-          <ButtonText>Integrations</ButtonText>
-        </Button>
+        <ConfirmationModal
+          height={380}
+          title="Exit setup?"
+          secondary="This will discard any changes you've made."
+          onSuccess={handleBack}
+        >
+          <Button variant="outlined">
+            <Icon>arrow_back_ios_new</Icon>
+            <ButtonText>
+              {integration ? integration.about.name : "Back"}
+            </ButtonText>
+          </Button>
+        </ConfirmationModal>
       </View>
       {data ? (
         <View style={{ marginVertical: 20, paddingTop: 20 }}>
-          <Image
-            source={{ uri: data.integration.icon }}
+          <View
             style={{
-              width: 80,
-              height: 80,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 30,
+              marginBottom: 20,
             }}
-          />
-          <Text style={{ fontSize: 20 }} weight={700}>
-            Continue setting up{" "}
-            {capitalizeFirstLetter(integration.data.name.replaceAll("-", " "))}
-          </Text>
+          >
+            <Image
+              source={{ uri: integration.about?.icon }}
+              style={{
+                width: 50,
+                height: 50,
+              }}
+            />
+            <View>
+              <Text style={{ fontSize: 20 }} weight={700}>
+                Continue setup
+              </Text>
+              <Text style={{ opacity: 0.7 }}>{integration?.about?.name}</Text>
+            </View>
+          </View>
           <CollectionsPicker />
           <CalendarPicker />
-          <Text>{JSON.stringify(data)}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginVertical: 20,
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button text="Done" icon="check" variant="filled" large />
+          </View>
         </View>
       ) : error ? (
         <ErrorAlert />

@@ -8,9 +8,18 @@ interface AlertProps {
   title: string;
   subtitle?: string;
   style?: StyleProp<ViewStyle>;
+  dense?: boolean;
+  italicize?: boolean;
 }
 
-export default function Alert({ emoji, title, subtitle, style }: AlertProps) {
+export default function Alert({
+  emoji,
+  title,
+  subtitle,
+  style,
+  dense,
+  italicize,
+}: AlertProps) {
   const theme = useColorTheme();
 
   return (
@@ -30,9 +39,15 @@ export default function Alert({ emoji, title, subtitle, style }: AlertProps) {
         style,
       ]}
     >
-      <Emoji emoji={emoji} size={30} />
+      <Emoji emoji={emoji} size={dense ? 24 : 30} />
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 20 }} weight={800}>
+        <Text
+          style={{
+            fontSize: dense ? 16 : 20,
+            fontStyle: italicize ? "italic" : "normal",
+          }}
+          weight={dense ? 400 : 800}
+        >
           {title}
         </Text>
         {subtitle && <Text style={{ opacity: 0.7 }}>{subtitle}</Text>}
