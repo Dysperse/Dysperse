@@ -1,5 +1,10 @@
+import { SettingsLayout } from "@/components/settings/layout";
 import { View } from "react-native";
 
 export default function Page() {
-  return <View></View>;
+  return (
+    <SettingsLayout>
+      <View></View>
+    </SettingsLayout>
+  );
 }
