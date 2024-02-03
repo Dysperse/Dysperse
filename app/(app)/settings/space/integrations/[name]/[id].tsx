@@ -1,19 +1,31 @@
 import { SettingsLayout } from "@/components/settings/layout";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
+import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
+import {
+  Controller,
+  FormProvider,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
 import { Pressable, View } from "react-native";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const CalendarPicker = () => {
@@ -23,9 +35,10 @@ const CalendarPicker = () => {
     "space/integrations/settings/google-calendar",
     { id },
   ]);
-  const [selected, setSelected] = useState<string[]>([]);
 
-  const CalendarButton = ({ item }) => (
+  const { control } = useFormContext();
+
+  const CalendarButton = ({ value, onChange, item }) => (
     <Pressable
       style={({ pressed, hovered }) => ({
         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
@@ -38,10 +51,11 @@ const CalendarPicker = () => {
         alignItems: "center",
       })}
       onPress={() => {
-        if (selected.includes(item.id)) {
-          setSelected((prev) => prev.filter((i) => i !== item.id));
+        console.log(item);
+        if (value.includes(item.id)) {
+          onChange(value.filter((i) => i !== item.id));
         } else {
-          setSelected((prev) => [...prev, item.id]);
+          onChange([...value, item.id]);
         }
       }}
     >
@@ -58,8 +72,12 @@ const CalendarPicker = () => {
           {item.description}
         </Text>
       </View>
-      <Icon style={{ marginLeft: "auto" }} filled={selected.includes(item.id)}>
-        {selected.includes(item.id) ? "check_box" : "check_box_outline_blank"}
+      <Icon
+        size={30}
+        style={{ marginLeft: "auto" }}
+        filled={value.includes(item.id)}
+      >
+        {value.includes(item.id) ? "check_circle" : "circle"}
       </Icon>
     </Pressable>
   );
@@ -88,13 +106,31 @@ const CalendarPicker = () => {
           overflow: "hidden",
         }}
       >
-        <FlashList
-          key={JSON.stringify(selected)}
-          data={data.items}
-          ListEmptyComponent={<></>}
-          renderItem={({ item }) => <CalendarButton item={item} />}
-          keyExtractor={(item: any) => item.id}
-          estimatedItemSize={70}
+        <Controller
+          control={control}
+          name="calendars"
+          render={({ field: { value, onChange } }) => (
+            <FlashList
+              key={JSON.stringify(value)}
+              data={data.items}
+              ListEmptyComponent={() => (
+                <View
+                  style={{
+                    height: 297,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>No calendars found in your Google account</Text>
+                </View>
+              )}
+              renderItem={({ item }) => (
+                <CalendarButton value={value} onChange={onChange} item={item} />
+              )}
+              keyExtractor={(item: any) => item.id}
+              estimatedItemSize={70}
+            />
+          )}
         />
       </View>
       <Alert
@@ -111,36 +147,8 @@ const CalendarPicker = () => {
 const CollectionsPicker = () => {
   const theme = useColorTheme();
   const { data } = useSWR(["space/collections"]);
-  const [selected, setSelected] = useState<string | null>(null);
 
-  const CollectionButton = ({ item }) => (
-    <Pressable
-      style={({ pressed, hovered }) => ({
-        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-        flexDirection: "row",
-        height: 70,
-        gap: 20,
-        paddingHorizontal: 20,
-        paddingRight: 30,
-        paddingVertical: 20,
-        alignItems: "center",
-      })}
-      onPress={() => setSelected(item.id)}
-    >
-      <Emoji size={30} emoji={item.emoji || "1f4e6"} />
-      <View style={{ flex: 1 }}>
-        <Text numberOfLines={1} weight={900}>
-          {item.name}
-        </Text>
-        <Text numberOfLines={1} style={{ opacity: 0.6 }}>
-          {item._count.entities} items
-        </Text>
-      </View>
-      <Icon style={{ marginLeft: "auto" }}>
-        radio_button_{selected === item.id ? "checked" : "unchecked"}
-      </Icon>
-    </Pressable>
-  );
+  const { control } = useFormContext();
 
   return !data ? (
     <Spinner />
@@ -153,42 +161,48 @@ const CollectionsPicker = () => {
           marginTop: 20,
         }}
       >
-        Select a collection
+        Create collection
       </Text>
       <View
         style={{
           backgroundColor: theme[3],
-          height: 300,
+          height: 100,
           borderRadius: 20,
           borderColor: theme[4],
           borderWidth: 2,
           marginTop: 10,
           overflow: "hidden",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 20,
+          paddingHorizontal: 20,
         }}
       >
-        <FlashList
-          key={selected}
-          data={data}
-          ListEmptyComponent={
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                height: 297,
-              }}
-            >
-              <Text>You haven't created any collections yet.</Text>
-            </View>
-          }
-          renderItem={({ item }) => <CollectionButton item={item} />}
-          keyExtractor={(item: any) => item.id}
-          estimatedItemSize={70}
-          // ListFooterComponent={
-          //   <ListItemButton style={{ borderRadius: 0, height: 70 }}>
-          //     <Avatar icon="add" size={40} />
-          //     <ListItemText primary="Create new collection" />
-          //   </ListItemButton>
-          // }
+        <Controller
+          control={control}
+          name="collection.emoji"
+          rules={{ required: true }}
+          render={({ field: { onChange, value } }) => (
+            <EmojiPicker emoji={value} setEmoji={onChange}>
+              <IconButton style={{ borderStyle: "dashed" }} size={50}>
+                <Emoji emoji={value} size={40} />
+              </IconButton>
+            </EmojiPicker>
+          )}
+        />
+        <Controller
+          control={control}
+          name="collection.name"
+          rules={{ required: true }}
+          render={({ field: { onChange, value } }) => (
+            <TextField
+              placeholder="Name"
+              value={value}
+              onChangeText={onChange}
+              weight={700}
+              style={{ fontSize: 30, height: 100, flex: 1, shadowRadius: 0 }}
+            />
+          )}
         />
       </View>
     </>
@@ -196,10 +210,60 @@ const CollectionsPicker = () => {
 };
 
 export default function Page() {
+  const { session, sessionToken } = useUser();
   const { id } = useLocalSearchParams();
   const handleBack = () => router.replace("/settings/space/integrations");
   const { data, error } = useSWR(["space/integrations/integration", { id }]);
   const integration = data?.[0];
+
+  const methods = useForm({
+    defaultValues: {
+      collection: {
+        name: `${session.user.profile.name.split(" ")?.[0]}'s collection`,
+        emoji: "1f600",
+      },
+      calendars: [],
+    },
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      const collection = await sendApiRequest(
+        sessionToken,
+        "POST",
+        "space/collections",
+        {
+          body: JSON.stringify({
+            name: data.collection.name,
+            emoji: data.collection.emoji,
+            description: "",
+            labels: [],
+          }),
+        }
+      );
+
+      await sendApiRequest(
+        sessionToken,
+        "PUT",
+        "space/integrations/settings/google-calendar",
+        {
+          body: JSON.stringify({
+            id,
+            ...data,
+            collectionId: collection.id,
+          }),
+        }
+      );
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setLoading(false);
+    }
+    alert(JSON.stringify(data));
+  };
 
   return (
     <SettingsLayout>
@@ -219,41 +283,49 @@ export default function Page() {
         </ConfirmationModal>
       </View>
       {data ? (
-        <View style={{ marginVertical: 20, paddingTop: 20 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 30,
-              marginBottom: 20,
-            }}
-          >
-            <Image
-              source={{ uri: integration.about?.icon }}
+        <FormProvider {...methods}>
+          <View style={{ marginVertical: 20, paddingTop: 20 }}>
+            <View
               style={{
-                width: 50,
-                height: 50,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 30,
+                marginBottom: 20,
               }}
-            />
-            <View>
-              <Text style={{ fontSize: 20 }} weight={700}>
-                Continue setup
-              </Text>
-              <Text style={{ opacity: 0.7 }}>{integration?.about?.name}</Text>
+            >
+              <Image
+                source={{ uri: integration.about?.icon }}
+                style={{
+                  width: 50,
+                  height: 50,
+                }}
+              />
+              <View>
+                <Text style={{ fontSize: 20 }} weight={700}>
+                  Continue setup
+                </Text>
+                <Text style={{ opacity: 0.7 }}>{integration?.about?.name}</Text>
+              </View>
+            </View>
+            <CollectionsPicker />
+            <CalendarPicker />
+            <View
+              style={{
+                flexDirection: "row",
+                marginVertical: 20,
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                onPress={methods.handleSubmit(onSubmit)}
+                text="Done"
+                icon="check"
+                variant="filled"
+                large
+              />
             </View>
           </View>
-          <CollectionsPicker />
-          <CalendarPicker />
-          <View
-            style={{
-              flexDirection: "row",
-              marginVertical: 20,
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button text="Done" icon="check" variant="filled" large />
-          </View>
-        </View>
+        </FormProvider>
       ) : error ? (
         <ErrorAlert />
       ) : (
