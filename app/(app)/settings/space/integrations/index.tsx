@@ -1,3 +1,4 @@
+import integrations from "@/components/settings/integrations.json";
 import { SettingsLayout } from "@/components/settings/layout";
 import Alert from "@/ui/Alert";
 import Text from "@/ui/Text";
@@ -5,27 +6,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Pressable, View } from "react-native";
-
-const integrations = [
-  {
-    name: "Notion",
-    description: "Connect databases, pages, and more",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png",
-    slug: "notion",
-  },
-  {
-    name: "Google Calendar",
-    description: "Sync your calendar events with collections",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png",
-    slug: "google-calendar",
-  },
-  {
-    name: "Canvas LMS",
-    description: "Automatically sync assignments and quizzes",
-    icon: "https://s6.imgcdn.dev/fZLql.jpg",
-    slug: "canvas-lms",
-  },
-];
 
 export default function Page() {
   const theme = useColorTheme();
@@ -54,6 +34,7 @@ export default function Page() {
             style={({ pressed, hovered }) => ({
               flex: 1,
               padding: 10,
+              paddingHorizontal: 20,
               borderRadius: 20,
               alignItems: "center",
               gap: 20,
@@ -67,14 +48,17 @@ export default function Page() {
             <Image
               source={{ uri: integration.icon }}
               style={{
-                width: 50,
-                height: 50,
-                borderRadius: 10,
+                width: 30,
+                height: 30,
               }}
             />
             <View>
-              <Text style={{ fontSize: 30 }}>{integration.name}</Text>
-              <Text>{integration.description}</Text>
+              <Text weight={700} style={{ fontSize: 16 }}>
+                {integration.name}
+              </Text>
+              <Text weight={300} style={{ opacity: 0.6 }}>
+                {integration.description}
+              </Text>
             </View>
           </Pressable>
         ))}

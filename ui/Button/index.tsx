@@ -16,9 +16,11 @@ interface DButtonProps extends PressableProps {
   buttonStyle?: StyleProp<ViewStyle>;
   isLoading?: boolean;
   dense?: boolean;
+  large?: boolean;
 
   text?: string;
   icon?: string;
+  iconSize?: number;
   iconPosition?: "start" | "end";
 }
 
@@ -68,8 +70,8 @@ export function Button(props: DButtonProps) {
         // props.disabled && styles.disabled,
         props.variant === "outlined" && styles.outlined,
         {
-          height: props.dense ? 30 : 40,
-          minWidth: props.dense ? 50 : 70,
+          height: props.large ? 50 : props.dense ? 30 : 40,
+          minWidth: props.large ? 50 : props.dense ? 50 : 70,
           ...(variant === "outlined"
             ? {
                 backgroundColor: pressed
@@ -94,6 +96,7 @@ export function Button(props: DButtonProps) {
               }),
           gap: props.dense ? 3 : 10,
         },
+        props.large && { paddingHorizontal: 20 },
         typeof props.style === "function"
           ? props["style" as any]({ pressed, hovered })
           : props.style,
@@ -104,8 +107,12 @@ export function Button(props: DButtonProps) {
       ) : (
         props.children ?? (
           <>
-            {props.iconPosition === "start" && <Icon>{props.icon}</Icon>}
-            <ButtonText>{props.text}</ButtonText>
+            {(props.iconPosition === "start" || !props.iconPosition) && (
+              <Icon size={props.iconSize}>{props.icon}</Icon>
+            )}
+            <ButtonText style={props.large && { fontSize: 17 }}>
+              {props.text}
+            </ButtonText>
             {props.iconPosition === "end" && <Icon>{props.icon}</Icon>}
           </>
         )

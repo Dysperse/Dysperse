@@ -1,3 +1,4 @@
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -235,7 +236,7 @@ const FocusPanel = memo(function FocusPanel() {
   const { isFocused, setFocus } = useFocusPanelContext();
   const marginRight = useSharedValue(-350);
 
-  // useHotkeys("\\", () => setFocus(!isFocused), {}, [isFocused]);
+  useHotkeys("\\", () => setFocus(!isFocused), {}, [isFocused]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
