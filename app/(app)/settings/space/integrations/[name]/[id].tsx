@@ -1,3 +1,4 @@
+import { createTab } from "@/components/layout/openTab";
 import { SettingsLayout } from "@/components/settings/layout";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -241,14 +242,22 @@ export default function Page() {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      await sendApiRequest(
+      const collection = await sendApiRequest(
         sessionToken,
-        "PUT",
-        "space/integrations/settings/google-calendar",
+        "POST",
+        "space/integrations/connect",
+        {},
         {
           body: JSON.stringify({ id, ...data }),
         }
       );
+      Toast.show({ type: "success", text1: "Connected!" });
+      await createTab(sessionToken, {
+        label: collection.name,
+        icon: "view_kanban",
+        slug: `/[tab]/collections/[id]/[type]`,
+        params: { id: collection.id, type: "kanban" },
+      });
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
