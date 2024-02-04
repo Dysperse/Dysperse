@@ -59,7 +59,10 @@ const CalendarPicker = () => {
             {
               id: item.id,
               name: item.summary,
-              defaultNotifications: item.defaultReminders.map((i) => i.minutes),
+              // TODO: Add more functionality
+              integrationParams: {
+                calendarId: item.id,
+              },
             },
           ]);
         }
