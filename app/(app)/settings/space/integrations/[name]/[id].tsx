@@ -51,12 +51,19 @@ const CalendarPicker = () => {
         alignItems: "center",
       })}
       onPress={() => {
-        console.log(item);
-        if (value.includes(item.id)) {
-          onChange(value.filter((i) => i !== item.id));
+        if (value.find((i) => i.id === item.id)) {
+          onChange(value.filter((i) => i.id !== item.id));
         } else {
-          onChange([...value, item.id]);
+          onChange([
+            ...value,
+            {
+              id: item.id,
+              name: item.summary,
+              defaultNotifications: item.defaultReminders.map((i) => i.minutes),
+            },
+          ]);
         }
+        console.log(value);
       }}
     >
       <Avatar
@@ -75,9 +82,9 @@ const CalendarPicker = () => {
       <Icon
         size={30}
         style={{ marginLeft: "auto" }}
-        filled={value.includes(item.id)}
+        filled={value.find((i) => i.id === item.id)}
       >
-        {value.includes(item.id) ? "check_circle" : "circle"}
+        {value.find((i) => i.id === item.id) ? "check_circle" : "circle"}
       </Icon>
     </Pressable>
   );
@@ -108,7 +115,7 @@ const CalendarPicker = () => {
       >
         <Controller
           control={control}
-          name="calendars"
+          name="labels"
           render={({ field: { value, onChange } }) => (
             <FlashList
               key={JSON.stringify(value)}
@@ -219,10 +226,10 @@ export default function Page() {
   const methods = useForm({
     defaultValues: {
       collection: {
-        name: `${session.user.profile.name.split(" ")?.[0]}'s collection`,
+        name: `${session?.user?.profile?.name?.split(" ")?.[0]}'s collection`,
         emoji: "1f600",
       },
-      calendars: [],
+      labels: [],
     },
   });
 
@@ -231,30 +238,12 @@ export default function Page() {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      const collection = await sendApiRequest(
-        sessionToken,
-        "POST",
-        "space/collections",
-        {
-          body: JSON.stringify({
-            name: data.collection.name,
-            emoji: data.collection.emoji,
-            description: "",
-            labels: [],
-          }),
-        }
-      );
-
       await sendApiRequest(
         sessionToken,
         "PUT",
         "space/integrations/settings/google-calendar",
         {
-          body: JSON.stringify({
-            id,
-            ...data,
-            collectionId: collection.id,
-          }),
+          body: JSON.stringify({ id, ...data }),
         }
       );
     } catch (e) {
@@ -277,7 +266,7 @@ export default function Page() {
           <Button variant="outlined">
             <Icon>arrow_back_ios_new</Icon>
             <ButtonText>
-              {integration ? integration.about.name : "Back"}
+              {integration ? integration?.about?.name : "Back"}
             </ButtonText>
           </Button>
         </ConfirmationModal>
@@ -294,7 +283,7 @@ export default function Page() {
               }}
             >
               <Image
-                source={{ uri: integration.about?.icon }}
+                source={{ uri: integration?.about?.icon }}
                 style={{
                   width: 50,
                   height: 50,
@@ -317,6 +306,7 @@ export default function Page() {
               }}
             >
               <Button
+                isLoading={loading}
                 onPress={methods.handleSubmit(onSubmit)}
                 text="Done"
                 icon="check"
