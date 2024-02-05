@@ -655,6 +655,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </View>
         <MenuPopover
           menuProps={{
+            style: { marginRight: "auto" },
             rendererProps: { placement: "bottom" },
           }}
           trigger={

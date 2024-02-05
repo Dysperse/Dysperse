@@ -2,6 +2,7 @@ import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
@@ -291,6 +292,7 @@ function BottomSheetContent({
   defaultValues,
   mutateList,
 }) {
+  const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
   const { forceClose } = useBottomSheet();
   const menuRef = useRef<BottomSheetModal>(null);
@@ -388,14 +390,27 @@ function BottomSheetContent({
               Cancel
             </ButtonText>
           </TouchableOpacity>
-          <Text
-            style={{ marginHorizontal: "auto", color: theme[9] }}
-            weight={800}
-          >
-            New task
-          </Text>
+          <MenuPopover
+            menuProps={{
+              style: {
+                marginHorizontal: "auto",
+              },
+            }}
+            options={[
+              { text: "Task", icon: "check_circle" },
+              { text: "Note", icon: "sticky_note_2" },
+            ]}
+            trigger={
+              <Pressable
+                style={{ alignItems: "center", flexDirection: "row", gap: 3 }}
+              >
+                <Text variant="eyebrow">Task</Text>
+                <Icon style={{ color: theme[11] }}>expand_more</Icon>
+              </Pressable>
+            }
+          />
           <IconButton
-            size={55}
+            size={breakpoints.md ? 55 : 45}
             variant="outlined"
             icon="north"
             onPress={handleSubmitButtonClick}
@@ -476,6 +491,8 @@ export default function CreateTask({
     [handleOpen, children]
   );
 
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <>
       {trigger}
@@ -493,7 +510,7 @@ export default function CreateTask({
           style={{
             alignItems: "center",
             flex: 1,
-            padding: 20,
+            padding: breakpoints.md ? 10 : 20,
             justifyContent: "center",
           }}
         >

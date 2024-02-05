@@ -2,16 +2,14 @@ import { Entity } from "@/components/collections/entity";
 import { useAgendaContext } from "@/components/collections/views/agenda-context";
 import { Header } from "@/components/collections/views/agenda/Header";
 import Task from "@/components/task";
+import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
-import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -28,9 +26,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
 import { KeyedMutator } from "swr";
-import { CreateEntityTrigger } from "../CreateEntityTrigger";
 
 const styles = StyleSheet.create({
   header: {
@@ -357,7 +353,7 @@ export function Column({
                 },
               ]}
             >
-              <CreateEntityTrigger
+              <CreateTask
                 defaultValues={{
                   collectionId:
                     collectionId === "all" ? undefined : collectionId,
@@ -369,7 +365,6 @@ export function Column({
                     .genNext()
                     .toString(),
                 }}
-                menuProps={{ style: { flex: 1 } }}
                 mutateList={(newTask) => {
                   console.log(newTask);
                   if (!newTask) return;
@@ -407,7 +402,7 @@ export function Column({
                   <ButtonText>New</ButtonText>
                   <Icon>add</Icon>
                 </Button>
-              </CreateEntityTrigger>
+              </CreateTask>
               <ColumnMenu
                 column={column}
                 onTaskUpdate={onTaskUpdate}

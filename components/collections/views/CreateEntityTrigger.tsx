@@ -1,9 +1,6 @@
 import CreateTask from "@/components/task/create";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import MenuPopover, {
-  MenuProps as DysperseMenuProps,
-  MenuOption,
-} from "@/ui/MenuPopover";
+import { MenuProps as DysperseMenuProps, MenuOption } from "@/ui/MenuPopover";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Dayjs } from "dayjs";
 import { ReactElement, useCallback, useRef } from "react";
@@ -38,26 +35,17 @@ export const CreateEntityTrigger = ({
     () => createTaskRef.current?.present(),
     []
   );
-  useHotkeys("t", handleCreateTask, { enabled: shortcutEnabled });
+  useHotkeys("n", handleCreateTask, { enabled: shortcutEnabled });
 
   return (
     <>
-      <MenuPopover
-        menuProps={menuProps}
-        trigger={children}
-        options={[
-          { icon: "task_alt", text: "Task", callback: handleCreateTask },
-          { icon: "sticky_note_2", text: "Note", callback: () => {} },
-          { icon: "package_2", text: "Item", callback: () => {} },
-          ...(additional ?? []),
-        ]}
-        {...(popoverProps as any)}
-      />
       <CreateTask
         defaultValues={defaultValues}
         mutate={mutateList}
         sheetRef={createTaskRef}
-      />
+      >
+        {children}
+      </CreateTask>
     </>
   );
 };

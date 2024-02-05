@@ -6,11 +6,11 @@ import {
 } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { CollectionNavbar } from "@/components/collections/navbar";
-import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { Perspectives } from "@/components/collections/views/agenda";
 import { ColumnEmptyComponent } from "@/components/collections/views/agenda/Column";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { ContentWrapper } from "@/components/layout/content";
+import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
@@ -290,15 +290,12 @@ const KanbanHeader = memo(function KanbanHeader({
               <IconButton icon="more_horiz" />
             </ColumnMenuTrigger>
           )}
-          <CreateEntityTrigger
-            menuProps={{ style: { marginRight: -25, marginLeft: -10 } }}
-            defaultValues={{
-              label: omit(["entities"], label),
-            }}
+          <CreateTask
+            defaultValues={{ label: omit(["entities"], label) }}
             mutateList={onEntityCreate}
           >
             <IconButton icon="add" variant="filled" />
-          </CreateEntityTrigger>
+          </CreateTask>
         </>
       )}
     </View>
@@ -433,8 +430,7 @@ function KanbanColumn(props: KanbanColumnProps) {
                   },
                 ]}
               >
-                <CreateEntityTrigger
-                  menuProps={props.grid ? undefined : { style: { flex: 1 } }}
+                <CreateTask
                   defaultValues={{
                     label: omit(["entities"], props.label),
                   }}
@@ -443,7 +439,7 @@ function KanbanColumn(props: KanbanColumnProps) {
                     <ButtonText>New</ButtonText>
                     <Icon>add</Icon>
                   </Button>
-                </CreateEntityTrigger>
+                </CreateTask>
                 {props.label && (
                   <ColumnMenuTrigger label={props.label}>
                     <Button variant="outlined" style={{ minHeight: 50 }}>
@@ -778,7 +774,7 @@ function Stream() {
                 },
               ]}
             >
-              <CreateEntityTrigger
+              <CreateTask
                 defaultValues={{
                   collectionId: data.id,
                 }}
@@ -819,7 +815,7 @@ function Stream() {
                   <ButtonText>New</ButtonText>
                   <Icon>add</Icon>
                 </Button>
-              </CreateEntityTrigger>
+              </CreateTask>
             </View>
           </>
         }
