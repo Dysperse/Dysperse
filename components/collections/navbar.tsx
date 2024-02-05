@@ -637,11 +637,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                     }}
                   >
                     <Icon size={20}>sync_alt</Icon>
-                    <Text style={{ fontSize: 12, opacity: 0.6 }}>
-                      {capitalizeFirstLetter(
-                        data.integration.name.replaceAll("-", " ")
-                      )}
-                    </Text>
+                    {data.integration && (
+                      <Text style={{ fontSize: 12, opacity: 0.6 }}>
+                        {capitalizeFirstLetter(
+                          data.integration.name.replaceAll("-", " ")
+                        )}
+                      </Text>
+                    )}
                   </View>
                 </View>
               </IconButton>
