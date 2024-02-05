@@ -40,7 +40,7 @@ function SpaceHeader({ data }) {
         {data.name}
       </Text>
       <Text>
-        {data.members.length} member{data.members.length === 1 ? "" : "s"}
+        {data.members?.length} member{data.members?.length === 1 ? "" : "s"}
       </Text>
     </LinearGradient>
   );
