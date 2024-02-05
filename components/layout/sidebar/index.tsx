@@ -1,9 +1,9 @@
-import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
+import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -14,9 +14,9 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
-import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
 import { router, usePathname } from "expo-router";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Linking,
   Platform,
@@ -233,53 +233,57 @@ export const LogoButton = memo(function LogoButton({
 
 const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
+  const itemRef = useRef<BottomSheetModal>(null);
+
   return (
-    <CreateEntityTrigger
-      shortcutEnabled
-      additional={[
-        { divider: true, key: "1" },
-        {
-          renderer: () => (
-            <CreateLabelModal
-              mutate={() => mutate(() => true)}
-              // onClose={() => searchRef.current.focus()}
-            >
-              <MenuItem>
-                <Icon>label</Icon>
-                <Text variant="menuItem">Label</Text>
-              </MenuItem>
-            </CreateLabelModal>
-          ),
-        },
-        {
-          icon: "layers",
-          text: "Collection",
-          callback: () => router.push("/collections/create"),
-        },
-      ]}
-      menuProps={{
-        style: { flex: 1, marginRight: -10 },
-      }}
-      popoverProps={{
-        containerStyle: { marginLeft: 10, width: 200 },
-      }}
-    >
-      <Pressable
-        style={({ pressed }) => [
-          styles.button,
+    <>
+      <MenuPopover
+        options={[
           {
-            borderColor: theme[5],
-            backgroundColor: theme[1],
-            opacity: pressed ? 0.5 : 1,
-            flex: 1,
-            minHeight: 45,
+            icon: "add_circle",
+            text: "Item",
+            callback: () => itemRef.current?.present(),
+          },
+          {
+            renderer: () => (
+              <CreateLabelModal mutate={() => mutate(() => true)}>
+                <MenuItem>
+                  <Icon>label</Icon>
+                  <Text variant="menuItem">Label</Text>
+                </MenuItem>
+              </CreateLabelModal>
+            ),
+          },
+          {
+            icon: "layers",
+            text: "Collection",
+            callback: () => router.push("/collections/create"),
           },
         ]}
-      >
-        <Icon>note_stack_add</Icon>
-        <Text style={{ color: theme[11] }}>New</Text>
-      </Pressable>
-    </CreateEntityTrigger>
+        menuProps={{
+          style: { flex: 1, marginRight: -10 },
+          rendererProps: { containerStyle: { marginLeft: 10, width: 200 } },
+        }}
+        trigger={
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              {
+                borderColor: theme[5],
+                backgroundColor: theme[1],
+                opacity: pressed ? 0.5 : 1,
+                flex: 1,
+                minHeight: 45,
+              },
+            ]}
+          >
+            <Icon>note_stack_add</Icon>
+            <Text style={{ color: theme[11] }}>New</Text>
+          </Pressable>
+        }
+      />
+      <CreateTask mutate={() => mutate(() => true)} sheetRef={itemRef} />
+    </>
   );
 });
 
