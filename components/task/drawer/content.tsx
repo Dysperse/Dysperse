@@ -172,6 +172,7 @@ export function TaskDrawerContent({ handleClose }) {
               }}
               onClose={() => {}}
               autoFocus={false}
+              disabled={Boolean(task.label?.integrationParams)}
             >
               <Chip
                 icon={<Icon>new_label</Icon>}

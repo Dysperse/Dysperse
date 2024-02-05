@@ -64,7 +64,11 @@ const Task = memo(function Task({
               <Chip
                 disabled
                 dense
-                label={task.label.name}
+                label={
+                  task.label.name.length > 10
+                    ? `${task.label.name.slice(0, 10)}...`
+                    : `${task.label.name}`
+                }
                 colorTheme={task.label.color}
                 icon={<Emoji size={22} emoji={task.label.emoji} />}
                 style={{

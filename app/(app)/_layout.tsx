@@ -86,11 +86,13 @@ export default function AppLayout() {
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
   const pan = Gesture.Pan()
+    .minDistance(20)
     .onChange(({ changeX, velocityY, velocityX }) => {
       if (Math.abs(velocityY) > Math.abs(velocityX)) {
         return;
+      } else {
+        sidebarMargin.value += Math.min(changeX, SIDEBAR_WIDTH);
       }
-      sidebarMargin.value += Math.min(changeX, SIDEBAR_WIDTH);
       if (sidebarMargin.value < -SIDEBAR_WIDTH) {
         sidebarMargin.value = -SIDEBAR_WIDTH;
       }
@@ -98,13 +100,12 @@ export default function AppLayout() {
         sidebarMargin.value = 0;
       }
     })
-    .onEnd(({ velocityX, velocityY }) => {
-      if (Math.abs(velocityY) > Math.abs(velocityX)) {
-        sidebarMargin.value = velocityX > 0 ? 0 : -SIDEBAR_WIDTH;
-        return;
+    .onEnd(({ velocityX, velocityY, translationX }) => {
+      if (sidebarMargin.value < -SIDEBAR_WIDTH / 2) {
+        sidebarMargin.value = -SIDEBAR_WIDTH;
+      } else {
+        sidebarMargin.value = 0;
       }
-      console.log(velocityX);
-      sidebarMargin.value = velocityX > 0 ? 0 : -SIDEBAR_WIDTH;
     });
 
   const theme = useColor(

@@ -15,6 +15,7 @@ import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs, { ManipulateType } from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -623,9 +624,26 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 ]}
               >
                 {!isAll && <Emoji emoji={data.emoji} size={30} />}
-                <Text style={{ fontSize: 20 }}>
-                  {data.name || "Everything"}
-                </Text>
+                <View>
+                  <Text style={{ fontSize: 20 }}>
+                    {data.name || "Everything"}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 5,
+                      marginTop: -3,
+                    }}
+                  >
+                    <Icon size={20}>sync_alt</Icon>
+                    <Text style={{ fontSize: 12, opacity: 0.6 }}>
+                      {capitalizeFirstLetter(
+                        data.integration.name.replaceAll("-", " ")
+                      )}
+                    </Text>
+                  </View>
+                </View>
               </IconButton>
             }
             options={collectionMenuOptions}

@@ -105,6 +105,7 @@ const LabelPicker = memo(function LabelPicker({
   hideBack = false,
   triggerProp = "onPress",
   sheetProps = {},
+  disabled = false,
 }: {
   children: React.ReactElement;
   label: string | string[];
@@ -115,6 +116,7 @@ const LabelPicker = memo(function LabelPicker({
   hideBack?: boolean;
   triggerProp?: string;
   sheetProps?: Partial<DBottomSheetProps>;
+  disabled?: boolean;
 }) {
   const _ref = useRef<BottomSheetModal>(null);
   const ref = sheetProps.sheetRef || _ref;
@@ -131,7 +133,9 @@ const LabelPicker = memo(function LabelPicker({
     ref.current?.close();
   }, [onClose]);
 
-  const trigger = cloneElement(children, { [triggerProp]: handleOpen });
+  const trigger = cloneElement(children, {
+    [triggerProp]: disabled ? undefined : handleOpen,
+  });
 
   const theme = useColorTheme();
   const colors = useLabelColors();

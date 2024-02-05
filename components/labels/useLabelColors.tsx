@@ -10,6 +10,7 @@ export const useLabelColors = () => {
   const purple = useColor("purple", useColorScheme() === "dark");
   const pink = useColor("pink", useColorScheme() === "dark");
   const brown = useColor("brown", useColorScheme() === "dark");
+  const mint = useColor("mint", useColorScheme() === "dark");
   const gray = useColor("gray", useColorScheme() === "dark");
 
   const colors = {
@@ -21,6 +22,7 @@ export const useLabelColors = () => {
     purple,
     pink,
     brown,
+    mint,
     gray,
   };
 
