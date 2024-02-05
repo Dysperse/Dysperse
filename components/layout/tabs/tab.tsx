@@ -1,7 +1,6 @@
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import Emoji from "@/ui/Emoji";
@@ -12,7 +11,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { useTabParams } from "@/utils/useTabParams";
 import { router } from "expo-router";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -97,37 +96,37 @@ function Tab({
 
   const tabParams = useTabParams();
 
-  useEffect(() => {
-    if (selected) {
-      if (
-        JSON.stringify(omit(["tab"], tabParams)) !==
-        JSON.stringify(omit(["tab"], tab.params))
-      ) {
-        if (Object.keys(omit(["tab"], tabParams)).length === 0) return;
-        mutate(
-          (oldData) =>
-            oldData.map((oldTab) =>
-              oldTab.id === tab.id ? { ...oldTab, params: tabParams } : oldTab
-            ),
-          {
-            revalidate: false,
-          }
-        );
-        sendApiRequest(
-          sessionToken,
-          "PUT",
-          "user/tabs",
-          {},
-          {
-            body: JSON.stringify({
-              params: omit(["tab"], tabParams),
-              id: tab.id,
-            }),
-          }
-        );
-      }
-    }
-  }, [tabParams, selected, tab, sessionToken, mutate]);
+  // useEffect(() => {
+  //   if (selected) {
+  //     if (
+  //       JSON.stringify(omit(["tab"], tabParams)) !==
+  //       JSON.stringify(omit(["tab"], tab.params))
+  //     ) {
+  //       if (Object.keys(omit(["tab"], tabParams)).length === 0) return;
+  //       mutate(
+  //         (oldData) =>
+  //           oldData.map((oldTab) =>
+  //             oldTab.id === tab.id ? { ...oldTab, params: tabParams } : oldTab
+  //           ),
+  //         {
+  //           revalidate: false,
+  //         }
+  //       );
+  //       sendApiRequest(
+  //         sessionToken,
+  //         "PUT",
+  //         "user/tabs",
+  //         {},
+  //         {
+  //           body: JSON.stringify({
+  //             params: omit(["tab"], tabParams),
+  //             id: tab.id,
+  //           }),
+  //         }
+  //       );
+  //     }
+  //   }
+  // }, [tabParams, selected, tab, sessionToken, mutate]);
 
   return isClosedAnimation ? null : (
     <View
