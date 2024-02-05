@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 11,
+    marginBottom: 1,
+    marginTop: 2,
     opacity: 0.6,
     maxHeight: 13,
     textAlign: "center",
@@ -49,8 +51,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 99,
     aspectRatio: "1 / 1",
-    maxWidth: 55,
+    maxWidth: 45,
     width: "100%",
+    borderWidth: 1,
+    borderColor: "transparent",
   },
   innerText: {
     fontSize: 18,
@@ -68,7 +72,6 @@ const SelectionButton = memo(function SelectionButton({
 }) {
   const { start } = useLocalSearchParams();
   const theme = useColorTheme();
-  console.log(start);
   const isSelected = dayjs(itemStart).format("YYYY-MM-DD") === start;
 
   const handlePress = () => {
@@ -77,6 +80,8 @@ const SelectionButton = memo(function SelectionButton({
       start: dayjs(itemStart).format("YYYY-MM-DD"),
     });
   };
+
+  const isToday = dayjs(itemStart).isSame(dayjs(), "day");
 
   return (
     <TouchableOpacity style={styles.item} onPress={handlePress}>
@@ -94,6 +99,9 @@ const SelectionButton = memo(function SelectionButton({
           styles.inner,
           isSelected && {
             backgroundColor: theme[10],
+          },
+          isToday && {
+            borderColor: theme[isSelected ? 10 : 6],
           },
         ]}
       >
@@ -129,7 +137,6 @@ export function AgendaSelector({ data }) {
       {Array.isArray(data) &&
         data.map((item, index) => (
           <SelectionButton
-            start={start}
             key={index}
             itemStart={item?.start}
             itemEnd={item?.end}

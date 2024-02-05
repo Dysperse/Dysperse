@@ -601,7 +601,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       >
         {!breakpoints.md && (
           <IconButton
-            icon="arrow_back_ios_new"
+            icon="menu"
+            size={40}
             onPress={() => (sidebarMargin.value = 0)}
           />
         )}
@@ -654,7 +655,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </View>
         <MenuPopover
           menuProps={{
-            style: { marginRight: "auto" },
             rendererProps: { placement: "bottom" },
           }}
           trigger={
