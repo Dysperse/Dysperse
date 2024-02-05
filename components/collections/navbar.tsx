@@ -628,23 +628,24 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                   <Text style={{ fontSize: 20 }}>
                     {data.name || "Everything"}
                   </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 5,
-                      marginTop: -3,
-                    }}
-                  >
-                    <Icon size={20}>sync_alt</Icon>
-                    {data.integration && (
+                  {data.integration && (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 5,
+                        marginTop: -3,
+                      }}
+                    >
+                      <Icon size={20}>sync_alt</Icon>
+
                       <Text style={{ fontSize: 12, opacity: 0.6 }}>
                         {capitalizeFirstLetter(
                           data.integration.name.replaceAll("-", " ")
                         )}
                       </Text>
-                    )}
-                  </View>
+                    </View>
+                  )}
                 </View>
               </IconButton>
             }
