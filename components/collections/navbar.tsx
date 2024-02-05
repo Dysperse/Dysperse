@@ -150,6 +150,7 @@ function AgendaNavbarButtons() {
             ? {
                 marginRight: !isTodaysView ? undefined : "auto",
                 borderWidth: 1,
+                height: 50,
                 borderRadius: 20,
                 borderColor: theme[6],
               }
@@ -698,7 +699,12 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             rendererProps: { placement: "bottom" },
           }}
           trigger={
-            <IconButton variant="outlined" size={40} icon="filter_list" />
+            <IconButton
+              variant="outlined"
+              size={breakpoints.md ? 50 : 40}
+              style={breakpoints.md && { borderRadius: 20 }}
+              icon="filter_list"
+            />
           }
           options={filterOptions}
         />
