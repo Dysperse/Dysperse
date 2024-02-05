@@ -360,7 +360,8 @@ function BottomSheetContent({
   };
 
   return (
-    <View
+    <Pressable
+      onPress={(e) => e.stopPropagation()}
       style={{
         height: 300,
         maxWidth: "100%",
@@ -452,7 +453,7 @@ function BottomSheetContent({
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -506,7 +507,14 @@ export default function CreateTask({
         handleComponent={null}
         maxBackdropOpacity={0.1}
       >
-        <View
+        <Pressable
+          onPress={() =>
+            (sheetRef || ref).current.forceClose({
+              stiffness: 400,
+              damping: 30,
+              overshootClamping: false,
+            })
+          }
           style={{
             alignItems: "center",
             flex: 1,
@@ -520,7 +528,7 @@ export default function CreateTask({
             nameRef={nameRef}
             mutateList={mutate}
           />
-        </View>
+        </Pressable>
       </BottomSheet>
     </>
   );
