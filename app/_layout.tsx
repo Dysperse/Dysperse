@@ -22,11 +22,10 @@ import { Slot, useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { AppState, Platform, View } from "react-native";
 import "react-native-gesture-handler";
 import { SWRConfig } from "swr";
-import * as serviceWorkerRegistration from "../assets/serviceWorkerRegistration";
 import { SessionProvider, useSession } from "../context/AuthProvider";
 import { SessionLoadingScreen } from "./(app)/_layout";
 
@@ -196,6 +195,27 @@ function Root() {
     }
   }, [ref]);
 
+  useEffect(() => {
+    (function () {
+      const e =
+        "This is a browser feature intended for developers. Do not enter or paste code which you don't understand. It may allow attackers to steal your information or impersonate you.\nSee https://en.wikipedia.org/wiki/Self-XSS for more details";
+      if (navigator && navigator.userAgent) {
+        const o = navigator.userAgent.match(
+          /opera|chrome|safari|firefox|msie|trident(?=\/)/i
+        );
+        if (o && o[0].search(/trident|msie/i) < 0)
+          return (
+            window.console.log(
+              "%c🚫STOP!",
+              "color:red;font-size:xx-large;font-weight:bold;"
+            ),
+            void window.console.log("%c" + e, "font-size:large;")
+          );
+      }
+      window.console.log("🚫STOP!\n" + e);
+    })();
+  }, []);
+
   // Set up the auth context and render our layout inside of it.
 
   const [fontsLoaded, fontsError] = useFonts({
@@ -235,10 +255,6 @@ function Root() {
       </ErrorBoundary>
     </ColorThemeProvider>
   );
-}
-
-if (Platform.OS === "web") {
-  serviceWorkerRegistration.register();
 }
 
 export default Sentry.wrap(Root);
