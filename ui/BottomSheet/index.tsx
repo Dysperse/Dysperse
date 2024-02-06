@@ -1,3 +1,4 @@
+import { useHotkeys } from "@/helpers/useHotKeys";
 import {
   BottomSheetModal,
   BottomSheetProps,
@@ -35,18 +36,18 @@ const styles = StyleSheet.create({
 function BottomSheetEscapeHandler() {
   const { forceClose, animatedIndex } = useBottomSheet();
 
-  // useHotkeys(
-  //   "esc",
-  //   () => {
-  //     console.log(animatedIndex.value);
-  //     if (animatedIndex.value === -1) return;
-  //     forceClose({ overshootClamping: true, damping: 1 });
-  //   },
-  //   {
-  //     enableOnFormTags: true,
-  //     enableOnContentEditable: true,
-  //   }
-  // );
+  useHotkeys(
+    "esc",
+    () => {
+      console.log(animatedIndex.value);
+      if (animatedIndex.value === -1) return;
+      forceClose({ overshootClamping: true, damping: 1 });
+    },
+    {
+      enableOnFormTags: true,
+      enableOnContentEditable: true,
+    }
+  );
   return null;
 }
 
