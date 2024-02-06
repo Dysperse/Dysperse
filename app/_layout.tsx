@@ -207,8 +207,8 @@ function Root() {
           if (o && o[0].search(/trident|msie/i) < 0)
             return (
               window.console.log(
-                "%c🚫STOP!",
-                "color:red;font-size:xx-large;font-weight:bold;"
+                "%c🚫 STOP!",
+                "color:red;font-size:xxx-large;font-weight:bold;"
               ),
               void window.console.log("%c" + e, "font-size:large;")
             );
