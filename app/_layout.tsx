@@ -208,7 +208,7 @@ function Root() {
             return (
               window.console.log(
                 "%c🚫 STOP!",
-                "color:red;font-size:xxx-large;font-weight:bold;"
+                "color:red;font-size:100px;font-weight:bold;"
               ),
               void window.console.log("%c" + e, "font-size:large;")
             );
