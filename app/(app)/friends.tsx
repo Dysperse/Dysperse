@@ -3,6 +3,7 @@ import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -311,7 +312,7 @@ export default function Page() {
     "user/friends",
     { requests: "true" },
   ]);
-  // useHotkeys("esc", () => router.back());
+  useHotkeys("esc", () => router.back());
 
   const Header = () => (
     <>

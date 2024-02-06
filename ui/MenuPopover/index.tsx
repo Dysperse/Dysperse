@@ -1,3 +1,4 @@
+import { useHotkeys } from "@/helpers/useHotKeys";
 import React, { ReactElement, cloneElement, useRef } from "react";
 import {
   Pressable,
@@ -93,9 +94,9 @@ export default function MenuPopover({
   const menuPopupRef = menuRef || _menuRef;
   const theme = useColorTheme();
 
-  // useHotkeys("esc", () => {
-  //   if (menuPopupRef?.current?.isOpen()) menuPopupRef.current.close();
-  // });
+  useHotkeys("esc", () => {
+    if (menuPopupRef?.current?.isOpen()) menuPopupRef.current.close();
+  });
 
   const handleOpen = async () => {
     menuPopupRef.current.open();
