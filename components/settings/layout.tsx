@@ -1,5 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
@@ -198,6 +199,13 @@ export function SettingsLayout({ children }: { children?: React.ReactNode }) {
   const pathname = usePathname();
   const isHome = pathname !== "/settings";
 
+  const handleBack = () => {
+    if (router.canGoBack()) return router.back();
+    router.replace("/");
+  };
+
+  useHotkeys("esc", handleBack, { enabled: breakpoints.md });
+
   return session ? (
     <>
       {!breakpoints.md && (
@@ -260,10 +268,7 @@ export function SettingsLayout({ children }: { children?: React.ReactNode }) {
             icon="close"
             variant="filled"
             size={55}
-            onPress={() => {
-              if (router.canGoBack()) return router.back();
-              router.replace("/");
-            }}
+            onPress={handleBack}
           />
           <Text variant="eyebrow">ESC</Text>
         </View>
