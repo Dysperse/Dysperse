@@ -708,6 +708,12 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={filterOptions}
         />
+        <IconButton
+          variant="outlined"
+          size={breakpoints.md ? 50 : 40}
+          style={breakpoints.md && { borderRadius: 20 }}
+          icon="conversion_path"
+        />
         <ShareCollection />
       </LinearGradient>
       {type === "agenda" && !breakpoints.md && <AgendaNavbarButtons />}
