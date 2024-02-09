@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Platform } from "react-native";
+import React, { useEffect } from "react";
+import { Platform, View } from "react-native";
 import { WebView } from "react-native-webview";
 
 const Turnstile = ({ setToken }) => {
@@ -28,7 +28,7 @@ const Turnstile = ({ setToken }) => {
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=_turnstileCb" async defer></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
       </head>
-      <body style="margin:0;display:flex;justify-content:center;overflow:hidden">
+      <body style="margin:0;display:flex;justify-content:start;overflow:hidden">
         <div id="myWidget"></div>
         <script>
           function _turnstileCb() {

@@ -36,6 +36,16 @@ export default function Layout() {
           gestureResponseDistance: height,
         }}
       />
+      <JsStack.Screen
+        name="sign-up"
+        options={{
+          header: () => null,
+          animationEnabled: true,
+          presentation: "modal",
+          ...TransitionPresets.ModalPresentationIOS,
+          gestureResponseDistance: height,
+        }}
+      />
     </JsStack>
   );
 }

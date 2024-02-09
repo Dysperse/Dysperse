@@ -10,7 +10,6 @@ export const authStyles = StyleSheet.create({
   title: {
     fontSize: 60,
     lineHeight: 60,
-    fontFamily: "heading",
   },
   subtitleContainer: {
     flexDirection: "row",
@@ -19,7 +18,6 @@ export const authStyles = StyleSheet.create({
     rowGap: 10,
     opacity: 0.8,
     marginBottom: 10,
-    marginTop: -10,
   },
   word: {
     fontSize: 20,
@@ -31,7 +29,7 @@ export const authStyles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    height: 80,
+    height: 70,
     justifyContent: "center",
   },
   buttonText: { fontSize: 20, fontFamily: "body_900" },

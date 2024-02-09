@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
@@ -22,7 +23,6 @@ export default function SignIn() {
   const { signIn, session } = useSession();
   const [step, setStep] = useState(0);
   const insets = useSafeAreaInsets();
-
   const [token, setToken] = useState("");
 
   const {
@@ -83,9 +83,25 @@ export default function SignIn() {
 
   const handleBack = useCallback(() => router.back(), []);
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <View style={{ backgroundColor: theme[1], flex: 1 }}>
+    <View
+      style={[
+        authStyles.container,
+        { backgroundColor: theme[1] },
+        breakpoints.md && {
+          maxWidth: 500,
+          width: "100%",
+          marginHorizontal: "auto",
+          borderRadius: 20,
+          overflow: "hidden",
+          borderWidth: 1,
+          borderColor: theme[6],
+          marginVertical: 20,
+        },
+      ]}
+    >
       <IconButton
         variant="outlined"
         size={55}
@@ -107,10 +123,10 @@ export default function SignIn() {
               },
             ]}
           >
-            <Text heading style={[styles.title, { color: theme[11] }]}>
+            <Text weight={600} style={[styles.title, { color: theme[11] }]}>
               Sign in
             </Text>
-            <Text style={authStyles.subtitleContainer}>
+            <Text weight={300} style={authStyles.subtitleContainer}>
               Use your Dysperse ID to continue
             </Text>
             <View style={{ gap: 10 }}>
@@ -183,9 +199,15 @@ export default function SignIn() {
         </KeyboardAvoidingView>
       ) : (
         <View style={authStyles.container}>
-          <Text style={authStyles.title}>Verifying...</Text>
-          <Text>Checking if you're actually human 🤨</Text>
-          <Turnstile setToken={setToken} />
+          <View style={{ marginVertical: "auto", gap: 10 }}>
+            <Text weight={600} style={[styles.title, { color: theme[11] }]}>
+              Verifying...
+            </Text>
+            <Text weight={300} style={authStyles.subtitleContainer}>
+              Checking if you're actually human 🤨
+            </Text>
+            <Turnstile setToken={setToken} />
+          </View>
         </View>
       )}
     </View>

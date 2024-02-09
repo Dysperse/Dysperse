@@ -6,7 +6,7 @@ import { Button, ButtonText } from "../Button";
 import { Menu } from "../Menu";
 import Text from "../Text";
 
-interface ConfirmationModalProps {
+export interface ConfirmationModalProps {
   children: JSX.Element;
   height: number;
   title: string;
