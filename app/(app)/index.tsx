@@ -427,7 +427,7 @@ function EditWallpaper() {
       <Text style={{ fontSize: 60, marginVertical: 20 }}>Appearance</Text>
       <Text variant="eyebrow">Color</Text>
       <Button
-        onPress={() => router.push("/settings/appearance")}
+        onPress={() => router.push("/settings/customization/appearance")}
         variant="outlined"
         style={{
           marginVertical: 10,
