@@ -9,7 +9,10 @@ import { authStyles } from "./authStyles";
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
-  const handleBack = useCallback(() => router.back(), []);
+  const handleBack = useCallback(() => {
+    if (router.canGoBack()) router.back();
+    else router.push("/");
+  }, []);
   const theme = useColorTheme();
 
   return (

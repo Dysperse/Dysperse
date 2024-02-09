@@ -90,7 +90,11 @@ export default function SignIn() {
     }
   }, [session]);
 
-  const handleBack = useCallback(() => router.back(), []);
+  const handleBack = useCallback(() => {
+    if (router.canGoBack()) router.back();
+    else router.push("/");
+  }, []);
+
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const handleForgot = useCallback(
