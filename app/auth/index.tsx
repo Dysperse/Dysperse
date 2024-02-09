@@ -23,14 +23,9 @@ export default function Page() {
       style={[
         authStyles.container,
         { backgroundColor: theme[1] },
+        breakpoints.md && authStyles.containerDesktop,
         breakpoints.md && {
-          maxWidth: 500,
-          marginHorizontal: "auto",
-          borderRadius: 20,
-          overflow: "hidden",
-          borderWidth: 1,
           borderColor: theme[6],
-          marginVertical: 20,
         },
       ]}
     >

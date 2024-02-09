@@ -39,7 +39,7 @@ export default function Page() {
         }}
         weight={600}
       >
-        We're slowly rolling out the app to the public. {"\n"} Stay tuned!
+        Coming soon!
       </Text>
     </View>
   );

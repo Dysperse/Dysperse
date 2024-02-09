@@ -10,6 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
 import Turnstile from "../../ui/turnstile";
@@ -56,11 +57,19 @@ export default function SignIn() {
               },
             }
           );
-          if (!sessionRequest.session) throw new Error(sessionRequest);
+          if (!sessionRequest.session) {
+            Toast.show({
+              type: "error",
+              text1: "Incorrect email or password",
+            });
+            setToken("");
+            setStep(0);
+            return;
+          }
           signIn(sessionRequest.session);
         }
       } catch (e) {
-        alert("Something went wrong. Please try again later.");
+        Toast.show({ type: "error" });
         setToken("");
         setStep(0);
       }
@@ -84,21 +93,19 @@ export default function SignIn() {
   const handleBack = useCallback(() => router.back(), []);
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const handleForgot = useCallback(
+    () => router.push("/auth/forgot-password"),
+    []
+  );
 
   return (
     <View
       style={[
         authStyles.container,
         { backgroundColor: theme[1] },
+        breakpoints.md && authStyles.containerDesktop,
         breakpoints.md && {
-          maxWidth: 500,
-          width: "100%",
-          marginHorizontal: "auto",
-          borderRadius: 20,
-          overflow: "hidden",
-          borderWidth: 1,
           borderColor: theme[6],
-          marginVertical: 20,
         },
       ]}
     >
@@ -187,7 +194,12 @@ export default function SignIn() {
               >
                 <ButtonText style={authStyles.buttonText}>Continue</ButtonText>
               </Button>
-              <Button dense variant="outlined" style={[authStyles.button]}>
+              <Button
+                dense
+                onPress={handleForgot}
+                variant="outlined"
+                style={[authStyles.button]}
+              >
                 <ButtonText
                   style={[authStyles.buttonText, { fontFamily: "body_200" }]}
                 >

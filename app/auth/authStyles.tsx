@@ -7,6 +7,15 @@ export const authStyles = StyleSheet.create({
     gap: 15,
     justifyContent: "flex-end",
   },
+  containerDesktop: {
+    maxWidth: 500,
+    marginHorizontal: "auto",
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    width: "100%",
+    marginVertical: 20,
+  },
   title: {
     fontSize: 60,
     lineHeight: 60,
