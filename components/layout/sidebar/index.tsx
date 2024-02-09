@@ -100,9 +100,14 @@ const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
   const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+/", "ctrl+o"], (e) => {
+  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
     e.preventDefault();
     handleOpen();
+  });
+
+  useHotkeys(["ctrl+/"], (e) => {
+    e.preventDefault();
+    router.push("/shortcuts");
   });
 
   return (
