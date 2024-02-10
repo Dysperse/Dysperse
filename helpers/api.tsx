@@ -4,7 +4,7 @@ export function sendApiRequest(
   path,
   params,
   options = {},
-  etc = { host: process.env.API_HOSTNAME }
+  etc = { host: process.env.EXPO_PUBLIC_API_URL }
 ) {
   const url = `${etc.host}/${path}${
     Object.keys(params).length > 0 ? "?" : ""
@@ -18,7 +18,7 @@ export function sendApiRequest(
       ...(session && { Authorization: `Bearer ${session}` }),
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
-      Host: process.env.API_HOSTNAME.replace("https://", "").replace(
+      Host: process.env.EXPO_PUBLIC_API_URL.replace("https://", "").replace(
         "http://",
         ""
       ),

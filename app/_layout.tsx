@@ -135,7 +135,7 @@ function SWRWrapper({ children }) {
         fetcher: async ([
           resource,
           params,
-          host = process.env.API_HOSTNAME,
+          host = process.env.EXPO_PUBLIC_API_URL,
           init = {},
         ]) => {
           const url = `${host}/${resource}?${new URLSearchParams(
