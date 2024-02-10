@@ -4,7 +4,7 @@ export function sendApiRequest(
   path,
   params,
   options = {},
-  etc = { host: "https://api.dysperse.com" }
+  etc = { host: process.env.API_HOSTNAME }
 ) {
   const url = `${etc.host}/${path}${
     Object.keys(params).length > 0 ? "?" : ""
@@ -18,7 +18,10 @@ export function sendApiRequest(
       ...(session && { Authorization: `Bearer ${session}` }),
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
-      Host: "api.dysperse.com",
+      Host: process.env.API_HOSTNAME.replace("https://", "").replace(
+        "http://",
+        ""
+      ),
     },
     mode: "cors",
     keepalive: true,

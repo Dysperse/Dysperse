@@ -135,7 +135,7 @@ function SWRWrapper({ children }) {
         fetcher: async ([
           resource,
           params,
-          host = "https://api.dysperse.com",
+          host = process.env.API_HOSTNAME,
           init = {},
         ]) => {
           const url = `${host}/${resource}?${new URLSearchParams(

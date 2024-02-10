@@ -21,7 +21,7 @@ export default function Page() {
   const handleBack = () => router.replace("/settings/space/integrations");
   const handleOpen = () => {
     Linking.openURL(
-      `https://api.dysperse.com/space/integrations/redirect?session=${session}&id=${name}`
+      `${process.env.API_HOSTNAME}/space/integrations/redirect?session=${session}&id=${name}`
     );
   };
 
