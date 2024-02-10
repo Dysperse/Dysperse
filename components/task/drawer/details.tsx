@@ -8,6 +8,7 @@ import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { useCallback, useRef, useState } from "react";
@@ -22,6 +23,7 @@ import {
 import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import { RRule } from "rrule";
 import { TaskAttachmentButton } from "./attachment/button";
 import { TaskStream } from "./audit-log";
 import { useTaskDrawerContext } from "./context";
@@ -379,7 +381,14 @@ export function TaskDetails() {
                         ? "Add date"
                         : dayjs(task.due).format("MMM Do, YYYY")
                     }
-                    secondary={task.due && "Does not repeat"}
+                    secondary={
+                      task.due &&
+                      (task.recurrenceRule
+                        ? capitalizeFirstLetter(
+                            RRule.fromString(task.recurrenceRule).toText()
+                          )
+                        : "Does not repeat")
+                    }
                   />
                 </ListItemButton>
               </DatePickerModal>
