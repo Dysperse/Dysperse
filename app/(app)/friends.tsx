@@ -113,12 +113,12 @@ function AddFriend({ friends, mutate }) {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
                   bottomSheet
-                  autoFocus
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
                   placeholder="Email or username"
                   style={{
+                    flex: 1,
                     padding: 20,
                     fontSize: 20,
                   }}
@@ -324,7 +324,7 @@ export default function Page() {
           marginBottom: 10,
         }}
       >
-        <Text heading style={{ fontSize: 50 }}>
+        <Text style={{ fontSize: 50 }} weight={100}>
           Friends
         </Text>
         <AddFriend friends={data} mutate={mutate} />
@@ -335,6 +335,7 @@ export default function Page() {
           color: theme[11],
         }}
         selectedButtonStyle={{}}
+        scrollContainerStyle={{ minWidth: "100%" }}
         options={[
           { label: "All", value: "all" },
           { label: "Requests", value: "requests" },
