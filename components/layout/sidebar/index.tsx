@@ -10,11 +10,13 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
 import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -30,9 +32,11 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { mutate } from "swr";
 import OpenTabsList from "../tabs/carousel";
 
@@ -98,22 +102,75 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 
 const SyncButton = memo(function SyncButton() {
   const theme = useColorTheme();
-  const { closeSidebarOnMobile } = useSidebarContext();
+  const [isLoading, setIsLoading] = useState(false);
+  const { width: windowWidth } = useWindowDimensions();
   useHotkeys("ctrl+f", () => router.push("/search"));
 
+  const barWidth = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  const width = useAnimatedStyle(() => ({
+    width: barWidth.value,
+    opacity: withSpring(opacity.value),
+  }));
+
+  const handleSync = useCallback(() => {
+    setIsLoading(true);
+    opacity.value = 1;
+    barWidth.value = withSpring(windowWidth - 20, {
+      stiffness: 50,
+      damping: 9000,
+      mass: 100,
+    });
+    setTimeout(() => {
+      barWidth.value = withSpring(windowWidth, { overshootClamping: true });
+      setTimeout(() => {
+        opacity.value = 0;
+      }, 500);
+      setTimeout(() => {
+        barWidth.value = 0;
+      }, 1000);
+      Toast.show({ type: "success", text1: "Integrations are up to date!" });
+      setIsLoading(false);
+    }, 10000);
+  }, [barWidth, windowWidth, opacity]);
+
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.button,
-        {
-          borderColor: theme[5],
-          backgroundColor: theme[1],
-          opacity: pressed ? 0.5 : 1,
-        },
-      ]}
-    >
-      <Icon>sync</Icon>
-    </Pressable>
+    <>
+      <Portal>
+        <Animated.View
+          style={[
+            width,
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: 2,
+              backgroundColor: theme[11],
+              shadowColor: theme[11],
+              shadowRadius: 10,
+            },
+          ]}
+        />
+      </Portal>
+      <Pressable
+        onPress={handleSync}
+        style={({ pressed }) => [
+          styles.button,
+          {
+            borderColor: theme[5],
+            backgroundColor: theme[1],
+            opacity: pressed ? 0.5 : 1,
+          },
+        ]}
+      >
+        {isLoading ? (
+          <Spinner style={{ transform: "scale(.8)" }} size={24} />
+        ) : (
+          <Icon>sync</Icon>
+        )}
+      </Pressable>
+    </>
   );
 });
 const JumpToButton = memo(function JumpToButton() {

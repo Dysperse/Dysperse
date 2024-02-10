@@ -4,7 +4,6 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -102,7 +101,8 @@ function SpaceStorage({ data }) {
 
   return (
     <>
-      <View
+      {/* bruh */}
+      {/* <View
         style={{
           alignItems: "center",
           flexDirection: "row",
@@ -131,7 +131,7 @@ function SpaceStorage({ data }) {
         <Text style={{ fontSize: 20, color: orange[11] }} weight={200}>
           $1.99/mo
         </Text>
-      </View>
+      </View> */}
       <View
         style={{
           backgroundColor: theme[isCollapsed ? 2 : 3],

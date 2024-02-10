@@ -2,11 +2,9 @@ import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
-import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -110,6 +108,7 @@ function Connected() {
                   marginBottom: 20,
                   borderWidth: 1,
                   borderColor: theme[4],
+                  alignItems: "center",
                 }}
               >
                 <Image
@@ -120,42 +119,6 @@ function Connected() {
                   <Text style={{ fontSize: 20 }} weight={600}>
                     {about.name}
                   </Text>
-                  {integration.collection.length === 0 ? (
-                    <Button
-                      variant="outlined"
-                      dense
-                      style={{
-                        paddingLeft: 0,
-                        marginTop: 5,
-                        paddingRight: 0,
-                        width: 100,
-                      }}
-                      onPress={() =>
-                        router.push(
-                          `/settings/space/integrations/${about.slug}/${integration.id}`
-                        )
-                      }
-                    >
-                      <ButtonText style={{ fontSize: 12 }}>
-                        Tap to connect
-                      </ButtonText>
-                    </Button>
-                  ) : (
-                    integration.collection.map((collection) => (
-                      <View
-                        key={collection.id}
-                        style={{
-                          alignItems: "center",
-                          flexDirection: "row",
-                          gap: 10,
-                          marginTop: 5,
-                        }}
-                      >
-                        <Icon>sync_alt</Icon>
-                        <Text>{collection.name}</Text>
-                      </View>
-                    ))
-                  )}
                 </View>
                 <ConfirmationModal
                   title="Disconnect?"
@@ -165,7 +128,7 @@ function Connected() {
                 >
                   <IconButton
                     icon="remove_circle"
-                    style={{ marginLeft: "auto", alignSelf: "center" }}
+                    style={{ marginLeft: "auto" }}
                   />
                 </ConfirmationModal>
               </View>
