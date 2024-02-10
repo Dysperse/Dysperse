@@ -1,4 +1,4 @@
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import { useCallback, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -39,18 +39,16 @@ const styles = StyleSheet.create({
   },
 });
 
-function ConfirmationModalButton({ onSuccess, handleClose }) {
+function ConfirmationModalButton({ onSuccess }) {
   const [loading, setLoading] = useState(false);
+  const { forceClose } = useBottomSheet();
   const handleSuccess = async () => {
     try {
       setLoading(true);
       await onSuccess?.();
-      handleClose();
+      forceClose();
     } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later",
-      });
+      Toast.show({ type: "error" });
       console.log(e);
     } finally {
       setLoading(false);
@@ -73,8 +71,7 @@ function ConfirmationModalButton({ onSuccess, handleClose }) {
 
 export default function ConfirmationModal(props: ConfirmationModalProps) {
   const ref = useRef<BottomSheetModal>(null);
-
-  const handleClose = useCallback(() => ref.current.close(), []);
+  const handleClose = useCallback(() => ref.current?.forceClose(), []);
 
   return (
     <Menu height={[props.height]} trigger={props.children} menuRef={ref}>
@@ -85,10 +82,7 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
         <Text weight={300} style={styles.secondary}>
           {props.secondary}
         </Text>
-        <ConfirmationModalButton
-          onSuccess={props.onSuccess}
-          handleClose={handleClose}
-        />
+        <ConfirmationModalButton onSuccess={props.onSuccess} />
         <Button style={styles.button} variant="outlined" onPress={handleClose}>
           <ButtonText weight={900} style={styles.buttonText}>
             Cancel

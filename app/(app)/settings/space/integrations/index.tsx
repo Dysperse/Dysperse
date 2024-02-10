@@ -1,34 +1,28 @@
 import { SettingsLayout } from "@/components/settings/layout";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
+import { Button, ButtonText } from "@/ui/Button";
+import { ButtonGroup } from "@/ui/ButtonGroup";
+import ConfirmationModal from "@/ui/ConfirmationModal";
+import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { useState } from "react";
 import { Pressable, View } from "react-native";
 import useSWR from "swr";
 
-export default function Page() {
+function AllIntegrations() {
   const theme = useColorTheme();
   const { data } = useSWR(["space/integrations"]);
 
   return (
-    <SettingsLayout>
-      <Text heading style={{ fontSize: 50 }}>
-        Integrations
-      </Text>
-      <Text>
-        Introducing more chaos. Connect everything to your workspace, so you can
-        see everything in one place.
-      </Text>
-      <Alert
-        style={{ marginTop: 20 }}
-        emoji="1f6a7"
-        title="Coming soon"
-        subtitle="Soon, you'll be able to connect your account to other services like
-      Notion, Google Calendar, and more."
-      />
-
+    <>
       {!data ? (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -75,6 +69,154 @@ export default function Page() {
           ))}
         </View>
       )}
+    </>
+  );
+}
+
+function Connected() {
+  const theme = useColorTheme();
+  const { session } = useSession();
+  const { data, mutate, error } = useSWR(["space/integrations/integration"]);
+
+  const handleDelete = (id) => async () => {
+    mutate(
+      data.filter((i) => i.integration.id !== id),
+      { revalidate: false }
+    );
+
+    sendApiRequest(session, "DELETE", "space/integrations/integration", { id });
+  };
+
+  return (
+    <>
+      {data ? (
+        data.length === 0 ? (
+          <Alert
+            title="No integrations connected"
+            emoji="1f9d0"
+            subtitle="Connect your workspace to other services to see them here."
+          />
+        ) : (
+          <View style={{ paddingBottom: 50, paddingTop: 20 }}>
+            {data.map(({ integration, about }) => (
+              <View
+                key={integration.id}
+                style={{
+                  flexDirection: "row",
+                  padding: 20,
+                  paddingHorizontal: 30,
+                  borderRadius: 20,
+                  gap: 20,
+                  marginBottom: 20,
+                  borderWidth: 1,
+                  borderColor: theme[4],
+                }}
+              >
+                <Image
+                  source={{ uri: about.icon }}
+                  style={{ width: 30, height: 30, marginTop: 5 }}
+                />
+                <View>
+                  <Text style={{ fontSize: 20 }} weight={600}>
+                    {about.name}
+                  </Text>
+                  {integration.collection.length === 0 ? (
+                    <Button
+                      variant="outlined"
+                      dense
+                      style={{
+                        paddingLeft: 0,
+                        marginTop: 5,
+                        paddingRight: 0,
+                        width: 100,
+                      }}
+                      onPress={() =>
+                        router.push(
+                          `/settings/space/integrations/${about.slug}/${integration.id}`
+                        )
+                      }
+                    >
+                      <ButtonText style={{ fontSize: 12 }}>
+                        Tap to connect
+                      </ButtonText>
+                    </Button>
+                  ) : (
+                    integration.collection.map((collection) => (
+                      <View
+                        key={collection.id}
+                        style={{
+                          alignItems: "center",
+                          flexDirection: "row",
+                          gap: 10,
+                          marginTop: 5,
+                        }}
+                      >
+                        <Icon>sync_alt</Icon>
+                        <Text>{collection.name}</Text>
+                      </View>
+                    ))
+                  )}
+                </View>
+                <ConfirmationModal
+                  title="Disconnect?"
+                  secondary="All tasks connected to this integration will be removed"
+                  onSuccess={handleDelete(integration.id)}
+                  height={400}
+                >
+                  <IconButton
+                    icon="remove_circle"
+                    style={{ marginLeft: "auto", alignSelf: "center" }}
+                  />
+                </ConfirmationModal>
+              </View>
+            ))}
+          </View>
+        )
+      ) : error ? (
+        <ErrorAlert />
+      ) : (
+        <Spinner />
+      )}
+    </>
+  );
+}
+
+export default function Page() {
+  const [filter, setFilter] = useState("All");
+
+  return (
+    <SettingsLayout>
+      <Text heading style={{ fontSize: 50 }}>
+        Integrations
+      </Text>
+      <Text>
+        Introducing more chaos. Connect everything to your workspace, so you can
+        see everything in one place.
+      </Text>
+      <Alert
+        style={{ marginTop: 20 }}
+        emoji="1f6a7"
+        title="Coming soon"
+        subtitle="Soon, you'll be able to connect your account to other services like
+      Notion, Google Calendar, and more."
+      />
+
+      <ButtonGroup
+        state={[filter, setFilter]}
+        buttonStyle={{ width: 130 }}
+        containerStyle={{
+          justifyContent: "center",
+          width: "100%",
+          marginBottom: 10,
+        }}
+        scrollContainerStyle={{ width: "100%" }}
+        options={[
+          { value: "All", label: "All" },
+          { value: "Connected", label: "Connected" },
+        ]}
+      />
+      {filter === "All" && <AllIntegrations />}
+      {filter === "Connected" && <Connected />}
     </SettingsLayout>
   );
 }
