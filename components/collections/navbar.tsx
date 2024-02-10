@@ -44,6 +44,24 @@ const styles = StyleSheet.create({
   },
 });
 
+function CollectionIntegrations() {
+  const ref = useRef<BottomSheetModal>(null);
+  const breakpoints = useResponsiveBreakpoints();
+
+  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleClose = useCallback(() => ref.current?.close(), []);
+
+  return (
+    <IconButton
+      onPress={handleOpen}
+      variant="outlined"
+      size={breakpoints.md ? 50 : 40}
+      style={breakpoints.md && { borderRadius: 20 }}
+      icon="conversion_path"
+    />
+  );
+}
+
 function AgendaCalendarButton() {
   const { start }: any = useGlobalSearchParams();
 
@@ -708,12 +726,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={filterOptions}
         />
-        <IconButton
-          variant="outlined"
-          size={breakpoints.md ? 50 : 40}
-          style={breakpoints.md && { borderRadius: 20 }}
-          icon="conversion_path"
-        />
+        <CollectionIntegrations />
         <ShareCollection />
       </LinearGradient>
       {type === "agenda" && !breakpoints.md && <AgendaNavbarButtons />}
