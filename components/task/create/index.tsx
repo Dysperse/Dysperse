@@ -514,13 +514,7 @@ export default function CreateTask({
         })}
       >
         <Pressable
-          onPress={() =>
-            (sheetRef || ref).current.forceClose({
-              stiffness: 400,
-              damping: 30,
-              overshootClamping: false,
-            })
-          }
+          onPress={() => (sheetRef || ref).current.forceClose()}
           style={{
             alignItems: "center",
             flex: 1,
