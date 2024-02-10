@@ -381,6 +381,7 @@ const patterns = [
 function EditWallpaper() {
   const theme = useColorTheme();
   const { session, sessionToken, mutate } = useUser();
+  const selectedPattern = session?.user?.profile?.pattern || "none";
 
   const handlePatternSelect = useCallback(
     async (pattern) => {
@@ -457,7 +458,7 @@ function EditWallpaper() {
               styles.patternCard,
               {
                 backgroundColor: theme[1],
-                borderColor: theme[5],
+                borderColor: theme[selectedPattern === "none" ? 9 : 5],
               },
             ]}
           >
@@ -486,10 +487,34 @@ function EditWallpaper() {
                   styles.patternCard,
                   {
                     backgroundColor: theme[1],
-                    borderColor: theme[5],
+                    borderColor: theme[selectedPattern === pattern ? 9 : 5],
                   },
                 ]}
               >
+                {selectedPattern === pattern && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Icon
+                      style={{
+                        width: 40,
+                        marginLeft: -10,
+                        fontSize: 40,
+                        borderRadius: 999,
+                      }}
+                    >
+                      check
+                    </Icon>
+                  </View>
+                )}
                 <ImageBackground
                   source={{
                     uri: uri,

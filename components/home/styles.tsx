@@ -22,8 +22,9 @@ export const styles = StyleSheet.create({
     height: 100,
     borderRadius: 20,
     overflow: "hidden",
-    borderWidth: 1,
+    borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
   },
 });
