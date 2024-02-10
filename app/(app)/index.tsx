@@ -381,7 +381,6 @@ const patterns = [
 function EditWallpaper() {
   const theme = useColorTheme();
   const { session, sessionToken, mutate } = useUser();
-  const selectedPattern = session?.user?.profile?.pattern || "none";
 
   const handlePatternSelect = useCallback(
     async (pattern) => {
@@ -643,7 +642,7 @@ export default function Index() {
           ) : view === "activity" ? (
             <FriendActivity />
           ) : (
-            <EditWallpaper pattern={pattern} />
+            <EditWallpaper />
           )}
         </View>
       </ImageBackground>
