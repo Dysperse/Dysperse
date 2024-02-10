@@ -310,10 +310,13 @@ function BottomSheetContent({
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      nameRef.current.focus();
-    }, 500);
-  }, [nameRef]);
+    setTimeout(
+      () => {
+        nameRef.current.focus();
+      },
+      breakpoints.md ? 50 : 500
+    );
+  }, [nameRef, breakpoints]);
 
   const onSubmit = async (data) => {
     try {
@@ -506,6 +509,12 @@ export default function CreateTask({
         backgroundStyle={{ backgroundColor: "transparent" }}
         handleComponent={null}
         maxBackdropOpacity={0.1}
+        {...(breakpoints.md && {
+          animationConfigs: {
+            overshootClamping: true,
+            duration: 0.0001,
+          },
+        })}
       >
         <Pressable
           onPress={() =>

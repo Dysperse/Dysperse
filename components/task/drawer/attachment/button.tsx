@@ -70,7 +70,7 @@ export function TaskAttachmentButton({
         <IconButton
           onPress={() => {
             if (view === "Add" || lockView) {
-              menuRef.current.close();
+              ref.current.close();
             } else {
               onClose?.();
               setView("Add");
