@@ -464,36 +464,43 @@ function EditWallpaper() {
           >
             <Icon size={30}>do_not_disturb_on</Icon>
           </Pressable>
-          {patterns.map((pattern) => (
-            <Pressable
-              key={pattern}
-              onPress={() => {
-                handlePatternSelect(pattern);
-              }}
-              style={[
-                styles.patternCard,
-                {
-                  backgroundColor: theme[1],
-                  borderColor: theme[5],
-                },
-              ]}
-            >
-              <ImageBackground
-                source={{
-                  uri: `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
-                    ...theme[9]
-                      .replace("hsl", "")
-                      .replace("(", "")
-                      .replace(")", "")
-                      .replaceAll("%", "")
-                      .split(",")
-                  )}&pattern=${pattern}`,
+          {patterns.map((pattern) => {
+            const hslValues = theme[9]
+              .replace("hsl", "")
+              .replace("(", "")
+              .replace(")", "")
+              .replaceAll("%", "")
+              .split(",")
+              .map(Number) as [number, number, number];
+
+            const uri = `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
+              ...hslValues
+            )}&pattern=${pattern}`;
+
+            return (
+              <Pressable
+                key={pattern}
+                onPress={() => {
+                  handlePatternSelect(pattern);
                 }}
-                style={{ flex: 1, alignItems: "center", width: "100%" }}
-                resizeMode="repeat"
-              />
-            </Pressable>
-          ))}
+                style={[
+                  styles.patternCard,
+                  {
+                    backgroundColor: theme[1],
+                    borderColor: theme[5],
+                  },
+                ]}
+              >
+                <ImageBackground
+                  source={{
+                    uri: uri,
+                  }}
+                  style={{ flex: 1, alignItems: "center", width: "100%" }}
+                  resizeMode="repeat"
+                />
+              </Pressable>
+            );
+          })}
         </View>
       }
     </ScrollView>
@@ -541,21 +548,23 @@ export default function Index() {
   const pattern = session?.user?.profile?.pattern || "none";
   const { sidebarMargin } = useSidebarContext();
 
+  const hslValues = theme[5]
+    .replace("hsl", "")
+    .replace("(", "")
+    .replace(")", "")
+    .replaceAll("%", "")
+    .split(",")
+    .map(Number) as [number, number, number];
+
+  const uri = `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
+    ...hslValues
+  )}&pattern=${pattern}`;
+
   return (
     <ContentWrapper noPaddingTop>
       <ImageBackground
         source={{
-          uri:
-            pattern === "none"
-              ? null
-              : `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
-                  ...theme[5]
-                    .replace("hsl", "")
-                    .replace("(", "")
-                    .replace(")", "")
-                    .replaceAll("%", "")
-                    .split(",")
-                )}&pattern=${pattern}`,
+          uri: pattern === "none" ? null : uri,
         }}
         style={{ flex: 1, alignItems: "center" }}
         resizeMode="repeat"
