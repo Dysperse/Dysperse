@@ -96,6 +96,26 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   );
 });
 
+const SyncButton = memo(function SyncButton() {
+  const theme = useColorTheme();
+  const { closeSidebarOnMobile } = useSidebarContext();
+  useHotkeys("ctrl+f", () => router.push("/search"));
+
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.button,
+        {
+          borderColor: theme[5],
+          backgroundColor: theme[1],
+          opacity: pressed ? 0.5 : 1,
+        },
+      ]}
+    >
+      <Icon>sync</Icon>
+    </Pressable>
+  );
+});
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
@@ -119,11 +139,12 @@ const JumpToButton = memo(function JumpToButton() {
           borderColor: theme[5],
           backgroundColor: theme[1],
           opacity: pressed ? 0.5 : 1,
+          flex: 1,
         },
       ]}
     >
       <Icon>electric_bolt</Icon>
-      <Text style={{ color: theme[11] }}>Jump to</Text>
+      <Text style={{ color: theme[11] }}>Find</Text>
     </Pressable>
   );
 });
@@ -310,9 +331,17 @@ const Header = memo(function Header() {
         }}
       >
         <HomeButton isHome={isHome} />
-        <QuickCreateButton />
+        <JumpToButton />
       </View>
-      <JumpToButton />
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        <QuickCreateButton />
+        <SyncButton />
+      </View>
     </View>
   );
 });

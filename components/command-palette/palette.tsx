@@ -1,4 +1,5 @@
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
@@ -163,7 +164,7 @@ function CommandPaletteList({
           )
         }
         keyExtractor={(item) => (typeof item === "string" ? item : item.key)}
-        estimatedItemSize={50}
+        estimatedItemSize={44}
         contentContainerStyle={{ padding: 20 }}
         renderItem={({ item }) => {
           if (typeof item === "string") {
@@ -202,6 +203,7 @@ const PaletteHeader = memo(function PaletteHeader({
   setPreview: (e) => void;
   filtered: any[];
 }) {
+  const breakpoints = useResponsiveBreakpoints();
   const ref = useRef(null);
   const { sessionToken } = useUser();
 
@@ -214,13 +216,18 @@ const PaletteHeader = memo(function PaletteHeader({
     ),
     [handleClose, theme]
   );
-  const handleKeyPress = () => {
+  const handleKeyPress = (e) => {
+    if (Platform.OS === "web") {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    }
     setPreview(filtered.length > 0 ? filtered[1] : null);
   };
 
   useEffect(() => {
-    setTimeout(() => ref.current.focus(), 500);
-  }, []);
+    setTimeout(() => ref.current?.focus(), breakpoints.md ? 50 : 500);
+  }, [breakpoints]);
 
   return (
     <View
@@ -247,16 +254,6 @@ const PaletteHeader = memo(function PaletteHeader({
         onChangeText={(e) => {
           setQuery(e);
         }}
-        {...(Platform.OS === "web" && {
-          onKeyUp: (e) => {
-            if (e.key === "Escape") {
-              // handleClose();
-              ref.current.blur();
-            } else {
-              handleKeyPress();
-            }
-          },
-        })}
         // on enter key
         onSubmitEditing={() => {
           if (filtered.length > 0) {
@@ -419,6 +416,7 @@ function CommandPaletteContent({ handleClose }) {
 
 const CommandPalette = memo(function CommandPalette() {
   const { handleClose, sheetRef } = useCommandPaletteContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <BottomSheet
@@ -432,6 +430,12 @@ const CommandPalette = memo(function CommandPalette() {
         alignItems: "center",
         justifyContent: "center",
       }}
+      {...(breakpoints.md && {
+        animationConfigs: {
+          overshootClamping: true,
+          duration: 0.0001,
+        },
+      })}
     >
       <CommandPaletteContent handleClose={handleClose} />
     </BottomSheet>
