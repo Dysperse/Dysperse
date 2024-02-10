@@ -461,6 +461,7 @@ export default function CreateTask({
   defaultValues = {
     date: dayjs().utc(),
     agendaOrder: null,
+    collectionId: null,
   },
   mutate,
 }: {
@@ -469,6 +470,7 @@ export default function CreateTask({
   defaultValues?: {
     date?: Dayjs;
     agendaOrder?: string;
+    collectionId?: string;
   };
   mutate: (newTask) => void;
 }) {
