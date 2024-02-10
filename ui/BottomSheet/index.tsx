@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function BottomSheetEscapeHandler() {
+function BottomSheetEscapeHandler({ animationConfigs }) {
   const { forceClose, animatedIndex } = useBottomSheet();
 
   useHotkeys(
@@ -41,7 +41,7 @@ function BottomSheetEscapeHandler() {
     () => {
       console.log(animatedIndex.value);
       if (animatedIndex.value === -1) return;
-      forceClose({ overshootClamping: true, damping: 1 });
+      forceClose(animationConfigs || { overshootClamping: true, damping: 1 });
     },
     {
       enableOnFormTags: true,
@@ -89,7 +89,7 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
         <BottomSheetBackHandler />
       )}
       {Platform.OS === "web" && props.disableEscapeToClose !== true && (
-        <BottomSheetEscapeHandler handleClose={props.onClose} />
+        <BottomSheetEscapeHandler animationConfigs={props.animationConfigs} />
       )}
       {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
       {props.children}

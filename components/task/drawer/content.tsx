@@ -1,4 +1,5 @@
 import LabelPicker from "@/components/labels/picker";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -48,6 +49,7 @@ function TaskNameInput() {
 
 export function TaskDrawerContent({ handleClose }) {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
   const { task, updateTask, mutateList } = useTaskDrawerContext();
 
@@ -106,7 +108,7 @@ export function TaskDrawerContent({ handleClose }) {
       >
         <View
           style={{
-            paddingTop: 10,
+            paddingTop: breakpoints.md ? 20 : 10,
             flexDirection: "row",
             gap: 10,
             width: "100%",

@@ -7,7 +7,7 @@ import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { View } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
@@ -16,6 +16,7 @@ import { TaskDrawerContext } from "./context";
 export function TaskDrawer({ mutateList, children, id }: any) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
+  const { width, height } = useWindowDimensions();
   const { sessionToken } = useUser();
 
   // Fetch data
@@ -25,7 +26,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
 
   // callbacks
   const handleOpen = useCallback((e) => {
-    ref.current?.present();
+    ref.current.present();
     setOpen(true);
   }, []);
 
@@ -80,44 +81,71 @@ export function TaskDrawer({ mutateList, children, id }: any) {
         }
         onClose={handleClose}
         style={{
-          maxWidth: 500,
-          margin: "auto",
+          width: "100%",
         }}
+        maxWidth={width}
         backgroundStyle={{
-          backgroundColor: theme[2],
-          borderTopLeftRadius: breakpoints.md ? 0 : 25,
-          borderTopRightRadius: breakpoints.md ? 0 : 25,
+          backgroundColor: breakpoints.md ? "transparent" : theme[2],
         }}
         {...(breakpoints.md && {
           handleComponent: () => <View style={{ paddingTop: 10 }} />,
-          maxBackdropOpacity: 0.3,
+          maxBackdropOpacity: 0.05,
+          animationConfigs: {
+            overshootClamping: true,
+            duration: 0.0001,
+          },
         })}
       >
-        {data?.id ? (
-          <TaskDrawerContext.Provider
-            value={{
-              task: data,
-              updateTask,
-              mutateList,
-            }}
+        <Pressable onPress={handleClose} style={{ flex: 1, height: "100%" }}>
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={
+              breakpoints.md && {
+                margin: "auto",
+                width: 500,
+                maxWidth: width - 50,
+                height: height - 100,
+                borderWidth: 1,
+                shadowRadius: 50,
+                shadowOffset: {
+                  width: 20,
+                  height: 20,
+                },
+                shadowColor: theme[1],
+                borderColor: theme[6],
+                backgroundColor: theme[2],
+                borderRadius: 25,
+                overflow: "hidden",
+              }
+            }
           >
-            <TaskDrawerContent handleClose={handleClose} />
-          </TaskDrawerContext.Provider>
-        ) : error ? (
-          <View style={{ padding: 20 }}>
-            <ErrorAlert />
-          </View>
-        ) : (
-          <View
-            style={{
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Spinner />
-          </View>
-        )}
+            {data?.id ? (
+              <TaskDrawerContext.Provider
+                value={{
+                  task: data,
+                  updateTask,
+                  mutateList,
+                }}
+              >
+                <TaskDrawerContent handleClose={handleClose} />
+              </TaskDrawerContext.Provider>
+            ) : error ? (
+              <View style={{ padding: 20 }}>
+                <ErrorAlert />
+              </View>
+            ) : (
+              <View
+                style={{
+                  height: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Spinner />
+              </View>
+            )}
+          </Pressable>
+        </Pressable>
       </BottomSheet>
     </>
   );
