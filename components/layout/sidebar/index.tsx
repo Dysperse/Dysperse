@@ -4,7 +4,9 @@ import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
+import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
@@ -102,6 +104,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 
 const SyncButton = memo(function SyncButton() {
   const theme = useColorTheme();
+  const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const { width: windowWidth } = useWindowDimensions();
   useHotkeys("ctrl+f", () => router.push("/search"));
@@ -114,15 +117,20 @@ const SyncButton = memo(function SyncButton() {
     opacity: withSpring(opacity.value),
   }));
 
-  const handleSync = useCallback(() => {
+  const handleSync = useCallback(async () => {
     setIsLoading(true);
     opacity.value = 1;
     barWidth.value = withSpring(windowWidth - 20, {
       stiffness: 50,
       damping: 9000,
-      mass: 100,
+      mass: 200,
     });
-    setTimeout(() => {
+    try {
+      await sendApiRequest(session, "GET", "space/integrations/sync", {});
+      Toast.show({ type: "success", text1: "Integrations are up to date!" });
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
       barWidth.value = withSpring(windowWidth, { overshootClamping: true });
       setTimeout(() => {
         opacity.value = 0;
@@ -130,10 +138,9 @@ const SyncButton = memo(function SyncButton() {
       setTimeout(() => {
         barWidth.value = 0;
       }, 1000);
-      Toast.show({ type: "success", text1: "Integrations are up to date!" });
       setIsLoading(false);
-    }, 10000);
-  }, [barWidth, windowWidth, opacity]);
+    }
+  }, [barWidth, windowWidth, opacity, session]);
 
   return (
     <>
