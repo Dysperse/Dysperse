@@ -286,12 +286,7 @@ function TaskNameInput({
   );
 }
 
-function BottomSheetContent({
-  nameRef,
-  handleClose,
-  defaultValues,
-  mutateList,
-}) {
+function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
   const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
   const { forceClose } = useBottomSheet();
@@ -532,7 +527,6 @@ export default function CreateTask({
           }}
         >
           <BottomSheetContent
-            handleClose={handleClose}
             defaultValues={defaultValues}
             nameRef={nameRef}
             mutateList={mutate}

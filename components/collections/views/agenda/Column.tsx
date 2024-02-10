@@ -365,7 +365,7 @@ export function Column({
                     .genNext()
                     .toString(),
                 }}
-                mutateList={(newTask) => {
+                mutate={(newTask) => {
                   console.log(newTask);
                   if (!newTask) return;
                   if (
