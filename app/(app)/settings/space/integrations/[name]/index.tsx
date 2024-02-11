@@ -20,12 +20,19 @@ export default function Page() {
     name ? ["space/integrations/about", { id: name }] : null
   );
 
+  const { data: integrations } = useSWR(["space/integrations"]);
+
   const handleBack = () => router.replace("/settings/space/integrations");
   const handleOpen = () => {
+    if (isConnected) {
+      return;
+    }
     Linking.openURL(
       `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${name}`
     );
   };
+
+  const isConnected = integrations.find((i) => i.integration.name === name);
 
   return (
     <SettingsLayout>
@@ -72,10 +79,10 @@ export default function Page() {
             </Text>
             <Button
               large
-              variant="filled"
-              icon="add"
+              variant={isConnected ? "outlined" : "filled"}
+              icon={isConnected ? "check" : "add"}
               iconSize={30}
-              text="Connect"
+              text={isConnected ? "Connected" : "Connect"}
               onPress={handleOpen}
             />
           </View>
