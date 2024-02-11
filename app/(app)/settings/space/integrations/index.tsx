@@ -5,6 +5,7 @@ import Alert from "@/ui/Alert";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -15,9 +16,12 @@ import { useState } from "react";
 import { Pressable, View } from "react-native";
 import useSWR from "swr";
 
-function AllIntegrations() {
+function AllIntegrations({ connected }) {
   const theme = useColorTheme();
   const { data } = useSWR(["space/integrations/about"]);
+
+  const isConnected = (integration, connected) =>
+    connected?.find((i) => i.integration.name === integration.slug);
 
   return (
     <>
@@ -31,6 +35,7 @@ function AllIntegrations() {
         <View style={{ gap: 10 }}>
           {data.map((integration) => (
             <Pressable
+              disabled={isConnected(integration, connected)}
               key={integration.name}
               style={({ pressed, hovered }: any) => ({
                 flex: 1,
@@ -41,6 +46,7 @@ function AllIntegrations() {
                 gap: 20,
                 flexDirection: "row",
                 backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+                opacity: isConnected(integration, connected) ? 0.5 : 1,
               })}
               onPress={() =>
                 router.replace(
@@ -56,14 +62,15 @@ function AllIntegrations() {
                   height: 30,
                 }}
               />
-              <View>
-                <Text weight={700} style={{ fontSize: 16 }}>
+              <View style={{ flex: 1 }}>
+                <Text numberOfLines={1} weight={700} style={{ fontSize: 16 }}>
                   {integration.name}
                 </Text>
-                <Text weight={300} style={{ opacity: 0.6 }}>
+                <Text numberOfLines={1} weight={300} style={{ opacity: 0.6 }}>
                   {integration.description}
                 </Text>
               </View>
+              {isConnected(integration, connected) && <Icon>check</Icon>}
             </Pressable>
           ))}
         </View>
@@ -72,10 +79,9 @@ function AllIntegrations() {
   );
 }
 
-function Connected() {
+function Connected({ data, mutate, error }) {
   const theme = useColorTheme();
   const { session } = useSession();
-  const { data, mutate, error } = useSWR(["space/integrations"]);
 
   const handleDelete = (id) => async () => {
     mutate(
@@ -148,6 +154,8 @@ function Connected() {
 export default function Page() {
   const [filter, setFilter] = useState("All");
 
+  const { data, mutate, error } = useSWR(["space/integrations"]);
+
   return (
     <SettingsLayout>
       <Text heading style={{ fontSize: 50 }}>
@@ -179,8 +187,10 @@ export default function Page() {
           { value: "Connected", label: "Connected" },
         ]}
       />
-      {filter === "All" && <AllIntegrations />}
-      {filter === "Connected" && <Connected />}
+      {filter === "All" && <AllIntegrations connected={data} />}
+      {filter === "Connected" && (
+        <Connected data={data} mutate={mutate} error={error} />
+      )}
     </SettingsLayout>
   );
 }
