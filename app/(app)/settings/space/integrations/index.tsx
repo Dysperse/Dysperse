@@ -17,7 +17,7 @@ import useSWR from "swr";
 
 function AllIntegrations() {
   const theme = useColorTheme();
-  const { data } = useSWR(["space/integrations"]);
+  const { data } = useSWR(["space/integrations/about"]);
 
   return (
     <>
@@ -51,6 +51,7 @@ function AllIntegrations() {
               <Image
                 source={{ uri: integration.icon }}
                 style={{
+                  borderRadius: 5,
                   width: 30,
                   height: 30,
                 }}
@@ -74,7 +75,7 @@ function AllIntegrations() {
 function Connected() {
   const theme = useColorTheme();
   const { session } = useSession();
-  const { data, mutate, error } = useSWR(["space/integrations/integration"]);
+  const { data, mutate, error } = useSWR(["space/integrations"]);
 
   const handleDelete = (id) => async () => {
     mutate(
@@ -82,7 +83,7 @@ function Connected() {
       { revalidate: false }
     );
 
-    sendApiRequest(session, "DELETE", "space/integrations/integration", { id });
+    sendApiRequest(session, "DELETE", "space/integrations/", { id });
   };
 
   return (

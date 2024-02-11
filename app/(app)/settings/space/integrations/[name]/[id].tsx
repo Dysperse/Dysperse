@@ -224,7 +224,7 @@ export default function Page() {
   const { session, sessionToken } = useUser();
   const { id } = useLocalSearchParams();
   const handleBack = () => router.replace("/settings/space/integrations");
-  const { data, error } = useSWR(["space/integrations/integration", { id }]);
+  const { data, error } = useSWR(["space/integrations/about", { id }]);
   const integration = data?.[0];
 
   const methods = useForm({

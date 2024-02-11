@@ -16,7 +16,9 @@ export default function Page() {
   const { session } = useSession();
   const { name } = useLocalSearchParams();
 
-  const { data } = useSWR(name ? ["space/integrations", { id: name }] : null);
+  const { data } = useSWR(
+    name ? ["space/integrations/about", { id: name }] : null
+  );
 
   const handleBack = () => router.replace("/settings/space/integrations");
   const handleOpen = () => {
@@ -50,6 +52,7 @@ export default function Page() {
             <Image
               source={{ uri: data.icon }}
               style={{
+                borderRadius: 10,
                 width: 80,
                 height: 80,
               }}
