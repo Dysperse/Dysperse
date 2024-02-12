@@ -68,7 +68,10 @@ const Intro = ({ integration, setSlide }) => {
 const HelperText = ({ helper, index }) => {
   const theme = useColorTheme();
   return (
-    <View key={helper}>
+    <View
+      key={helper}
+      style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+    >
       <View
         style={{
           width: 30,
@@ -82,9 +85,9 @@ const HelperText = ({ helper, index }) => {
       >
         <Text>{index + 1}</Text>
       </View>
-      <Text key={helper} style={{ fontSize: 20, marginTop: 20 }}>
-        {helper}
-      </Text>
+      <View style={{ flex: 1 }}>
+        <Text key={helper}>{helper}</Text>
+      </View>
     </View>
   );
 };
