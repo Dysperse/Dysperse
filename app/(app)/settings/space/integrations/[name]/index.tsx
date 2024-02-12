@@ -88,11 +88,11 @@ const Intro = ({ integration }) => {
   );
 };
 
-const LabelCustomizer = ({ handleSubmit, setSlide }) => {
+const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
   const { getValues, control, setValue } = useFormContext();
   const { data, error } = useSWR([
     "space/integrations/get-labels",
-    getValues(),
+    { ...getValues().params, integration: getValues().integration },
   ]);
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const LabelCustomizer = ({ handleSubmit, setSlide }) => {
               <>
                 {data.map((label, index) => (
                   <ListItemButton
-                    key={label?.id}
+                    key={`${label?.id}-${index}`}
                     variant="filled"
                     disabled
                     style={{ marginBottom: 10 }}
@@ -140,7 +140,12 @@ const LabelCustomizer = ({ handleSubmit, setSlide }) => {
                       </IconButton>
                     </EmojiPicker>
                     <TextField
-                      value={value[index]?.text || label?.text}
+                      value={value[index]?.name || label?.name}
+                      onChangeText={(text) => {
+                        const newLabels = [...value];
+                        newLabels[index].name = text;
+                        onChange(newLabels);
+                      }}
                       style={{ flex: 1 }}
                     />
                   </ListItemButton>
@@ -148,13 +153,12 @@ const LabelCustomizer = ({ handleSubmit, setSlide }) => {
                 <View style={[styles.footer, { marginTop: "auto" }]}>
                   <Button
                     large
+                    isLoading={status === "loading"}
                     iconPosition="end"
                     variant="filled"
                     icon="done"
                     text="Finish setup"
-                    onPress={() => {
-                      console.log(getValues());
-                    }}
+                    onPress={handleSubmit}
                   />
                 </View>
               </>
@@ -208,7 +212,11 @@ const Outro = ({ integration, submit, setSlide }) => {
             Almost there...
           </Text>
           {supportsLabelMapping ? (
-            <LabelCustomizer handleSubmit={handleClick} setSlide={setSlide} />
+            <LabelCustomizer
+              status={status}
+              handleSubmit={handleClick}
+              setSlide={setSlide}
+            />
           ) : (
             <Text
               style={{
@@ -246,12 +254,11 @@ const Outro = ({ integration, submit, setSlide }) => {
           <View style={styles.footer}>
             <Button
               large
-              isLoading={(status as any) === "loading"}
               iconPosition="end"
               variant="filled"
               icon="done"
               text="Finish setup"
-              onPress={handleClick}
+              onPress={() => router.replace("/settings/space/integrations")}
             />
           </View>
         </>
@@ -318,7 +325,7 @@ const ParamSlide = ({ slide, currentSlide }) => {
       <Controller
         rules={{ required: slide.required }}
         control={control}
-        name={slide.id}
+        name={`params.${slide.id}`}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             value={value}
@@ -396,10 +403,12 @@ export default function Page() {
   const methods = useForm({
     defaultValues: {
       integration: name,
-      ...(data &&
-        Object.fromEntries(
-          data?.authorization?.params?.map((p) => [p.id, ""])
-        )),
+      params: {
+        ...(data &&
+          Object.fromEntries(
+            data?.authorization?.params?.map((p) => [p.id, ""])
+          )),
+      },
       ...(data?.supportLabelMapping && { labels: [] }),
     },
   });
@@ -419,7 +428,7 @@ export default function Page() {
       const values = getValues();
       if (
         data.authorization.params[slide - 1]?.required &&
-        !values[data.authorization.params[slide - 1].id]
+        !values.params[data.authorization.params[slide - 1].id]
       )
         return Toast.show({
           type: "error",
@@ -447,7 +456,7 @@ export default function Page() {
         "space/integrations/connect",
         {},
         {
-          body: JSON.stringify(values),
+          body: JSON.stringify({ ...values, createIntegration: true }),
         }
       );
     } catch (e) {
