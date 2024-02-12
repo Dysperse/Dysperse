@@ -1,22 +1,45 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
-import BottomSheet from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
-import Icon from "@/ui/Icon";
+import { sendApiRequest } from "@/helpers/api";
+import { Button } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
+import { EmojiPicker } from "@/ui/EmojiPicker";
+import ErrorAlert from "@/ui/Error";
+import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
+import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Linking, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Controller,
+  FormProvider,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
+import { Linking, StyleSheet, View, useWindowDimensions } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-const Intro = ({ integration, setSlide }) => {
+const styles = StyleSheet.create({
+  footer: {
+    paddingVertical: 20,
+    paddingTop: 0,
+    marginTop: -20,
+  },
+});
+const Intro = ({ integration }) => {
   const theme = useColorTheme();
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -54,14 +77,186 @@ const Intro = ({ integration, setSlide }) => {
         />
       </View>
       <View style={{ paddingHorizontal: 20, alignItems: "center", gap: 5 }}>
-        <Text style={{ fontSize: 30 }} weight={700}>
+        <Text style={{ textAlign: "center", fontSize: 30 }} weight={700}>
           Dysperse + {integration.name}
         </Text>
-        <Text weight={300} style={{ opacity: 0.7 }}>
+        <Text weight={300} style={{ textAlign: "center", opacity: 0.7 }}>
           {integration.description}
         </Text>
       </View>
     </View>
+  );
+};
+
+const LabelCustomizer = ({ handleSubmit, setSlide }) => {
+  const { getValues, control, setValue } = useFormContext();
+  const { data, error } = useSWR([
+    "space/integrations/get-labels",
+    getValues(),
+  ]);
+
+  useEffect(() => {
+    if (data?.error) {
+      setSlide(1);
+      Toast.show({
+        type: "error",
+        text1: "Couldn't find any labels",
+        text2: "Check if you entered everything correctly",
+      });
+    } else {
+      setValue("labels", data);
+    }
+  }, [data, setSlide, setValue]);
+
+  return (
+    <>
+      <Text style={{ opacity: 0.6, marginBottom: 10 }}>
+        We created some labels for you. Customize them if you want.
+      </Text>
+      {data ? (
+        <Controller
+          control={control}
+          name="labels"
+          render={({ field: { onChange, value } }) =>
+            value?.length > 0 && (
+              <>
+                {data.map((label, index) => (
+                  <ListItemButton
+                    key={label?.id}
+                    variant="filled"
+                    disabled
+                    style={{ marginBottom: 10 }}
+                  >
+                    <EmojiPicker
+                      emoji={value[index]?.emoji || label.emoji}
+                      setEmoji={(emoji) => {
+                        const newLabels = [...value];
+                        newLabels[index].emoji = emoji;
+                        onChange(newLabels);
+                      }}
+                    >
+                      <IconButton variant="filled" size={30}>
+                        <Emoji emoji={value[index]?.emoji || label?.emoji} />
+                      </IconButton>
+                    </EmojiPicker>
+                    <TextField
+                      value={value[index]?.text || label?.text}
+                      style={{ flex: 1 }}
+                    />
+                  </ListItemButton>
+                ))}
+                <View style={[styles.footer, { marginTop: "auto" }]}>
+                  <Button
+                    large
+                    iconPosition="end"
+                    variant="filled"
+                    icon="done"
+                    text="Finish setup"
+                    onPress={() => {
+                      console.log(getValues());
+                    }}
+                  />
+                </View>
+              </>
+            )
+          }
+        />
+      ) : error ? (
+        <ErrorAlert />
+      ) : (
+        <Spinner style={{ marginBottom: "auto" }} />
+      )}
+    </>
+  );
+};
+
+const Outro = ({ integration, submit, setSlide }) => {
+  const supportsLabelMapping = integration.supportsLabelMapping;
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+
+  const handleClick = async () => {
+    try {
+      setStatus("loading");
+      await submit();
+    } finally {
+      setStatus("success");
+    }
+  };
+
+  return (
+    <ScrollView
+      style={{
+        flex: 1,
+        paddingHorizontal: 20,
+      }}
+      contentContainerStyle={{
+        justifyContent: "center",
+        minHeight: "100%",
+      }}
+    >
+      {status !== "success" ? (
+        <>
+          <Text
+            style={{
+              width: "100%",
+              fontSize: 30,
+              marginBottom: 10,
+              marginTop: "auto",
+            }}
+            weight={700}
+          >
+            Almost there...
+          </Text>
+          {supportsLabelMapping ? (
+            <LabelCustomizer handleSubmit={handleClick} setSlide={setSlide} />
+          ) : (
+            <Text
+              style={{
+                width: "100%",
+                marginBottom: 20,
+                opacity: 0.8,
+                fontSize: 20,
+              }}
+            >
+              Tap the button below to finish connecting {integration.name}.
+            </Text>
+          )}
+        </>
+      ) : (
+        <>
+          <View style={{ marginVertical: "auto", paddingHorizontal: 20 }}>
+            <Text
+              style={{ width: "100%", fontSize: 30, marginBottom: 10 }}
+              weight={700}
+            >
+              Success!
+            </Text>
+            <Text
+              style={{
+                width: "100%",
+                marginBottom: 20,
+                opacity: 0.8,
+                fontSize: 20,
+              }}
+            >
+              {integration.name} is now connected to your account. You'll see
+              stuff from {integration.name} in your tasks.
+            </Text>
+          </View>
+          <View style={styles.footer}>
+            <Button
+              large
+              isLoading={(status as any) === "loading"}
+              iconPosition="end"
+              variant="filled"
+              icon="done"
+              text="Finish setup"
+              onPress={handleClick}
+            />
+          </View>
+        </>
+      )}
+    </ScrollView>
   );
 };
 
@@ -70,12 +265,17 @@ const HelperText = ({ helper, index }) => {
   return (
     <View
       key={helper}
-      style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+      style={{
+        flexDirection: "row",
+        gap: 15,
+        width: "100%",
+        marginBottom: 15,
+      }}
     >
       <View
         style={{
-          width: 30,
-          height: 30,
+          width: 25,
+          height: 25,
           alignItems: "center",
           justifyContent: "center",
           borderWidth: 1,
@@ -83,75 +283,104 @@ const HelperText = ({ helper, index }) => {
           borderColor: theme[6],
         }}
       >
-        <Text>{index + 1}</Text>
+        <Text style={{ color: theme[11], fontSize: 12 }}>{index + 1}</Text>
       </View>
-      <View style={{ flex: 1 }}>
-        <Text key={helper}>{helper}</Text>
+      <View style={{ flex: 1, paddingTop: 2 }}>
+        <Text key={helper} style={{ color: theme[11], fontSize: 14 }}>
+          {helper}
+        </Text>
       </View>
     </View>
   );
 };
 
-const ParamSlide = ({ slide }) => {
-  const theme = useColorTheme();
+const ParamSlide = ({ slide, currentSlide }) => {
+  const { control } = useFormContext();
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>{JSON.stringify(slide, null, 2)}</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 20,
+      }}
+    >
+      <Text
+        style={{ width: "100%", fontSize: 30, marginBottom: 20 }}
+        weight={700}
+      >
+        Step #{currentSlide}
+      </Text>
       {slide.helper.map((helper, index) => (
         <HelperText key={helper} helper={helper} index={index} />
       ))}
+      <Controller
+        rules={{ required: slide.required }}
+        control={control}
+        name={slide.id}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            value={value}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            variant="filled"
+            style={{
+              width: "100%",
+              marginTop: 20,
+            }}
+            placeholder={slide.name}
+          />
+        )}
+      />
     </View>
   );
 };
 
-function ParamsModal({ integration, paramsModalRef }) {
-  const handleClose = () => paramsModalRef.current?.close();
-  const slides = ["intro", ...integration.authorization.params];
-  const [slide, setSlide] = useState(0);
+const SlideProgressBar = ({ slide, length }) => {
+  const { width: windowWidth } = useWindowDimensions();
+  const theme = useColorTheme();
+  const width = useSharedValue(0);
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      ...Object.fromEntries(
-        integration.authorization.params.map((p) => [p, ""])
-      ),
-    },
+  const widthStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring((windowWidth / length) * width.value, {
+        damping: 30,
+        overshootClamping: false,
+        restDisplacementThreshold: 0.1,
+        restSpeedThreshold: 0.1,
+        stiffness: 400,
+      }),
+    };
   });
 
+  useEffect(() => {
+    width.value = slide;
+  }, [slide, width]);
+
   return (
-    <BottomSheet
-      sheetRef={paramsModalRef}
-      snapPoints={["90%"]}
-      onClose={handleClose}
-    >
-      {slide === 0 && <Intro integration={integration} setSlide={setSlide} />}
-      {slides.map(
-        (s, i) => i !== 0 && slide === i && <ParamSlide key={i} slide={s} />
-      )}
-      <View
-        style={{
-          padding: 20,
-          marginTop: "auto",
-          width: "100%",
-        }}
-      >
-        <Button
-          variant="outlined"
-          style={{ height: 60 }}
-          onPress={() => setSlide(1)}
-        >
-          <ButtonText style={{ fontSize: 20 }}>Connect</ButtonText>
-          <Icon>arrow_forward</Icon>
-        </Button>
-      </View>
-    </BottomSheet>
+    <Animated.View
+      style={[
+        widthStyle,
+        {
+          marginTop: -2,
+          height: 2,
+          zIndex: 2,
+          backgroundColor: theme[11],
+          shadowColor: theme[11],
+          borderRadius: 10,
+          shadowRadius: 10,
+        },
+      ]}
+    />
   );
-}
+};
 
 export default function Page() {
-  const paramsModalRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
   const { session } = useSession();
   const { name } = useLocalSearchParams();
+  const [slide, setSlide] = useState(0);
 
   const { data } = useSWR(
     name ? ["space/integrations/about", { id: name }] : null
@@ -159,121 +388,142 @@ export default function Page() {
 
   const { data: integrations } = useSWR(["space/integrations"]);
 
-  const handleBack = () => router.replace("/settings/space/integrations");
+  const handleBack = () => {
+    if (slide === 0) router.replace("/settings/space/integrations");
+    else setSlide(slide - 1);
+  };
+
+  const methods = useForm({
+    defaultValues: {
+      integration: name,
+      ...(data &&
+        Object.fromEntries(
+          data?.authorization?.params?.map((p) => [p.id, ""])
+        )),
+      ...(data?.supportLabelMapping && { labels: [] }),
+    },
+  });
+
+  const { handleSubmit, getValues } = methods;
+
   const handleOpen = () => {
     if (isConnected) {
       return;
     }
+    if (slide === 0) setSlide(1);
     if (data.authorization.type === "oauth2")
       Linking.openURL(
         `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${name}`
       );
-    else paramsModalRef.current?.present();
+    else if (data.authorization.type === "params") {
+      const values = getValues();
+      if (
+        data.authorization.params[slide - 1]?.required &&
+        !values[data.authorization.params[slide - 1].id]
+      )
+        return Toast.show({
+          type: "error",
+          text1: "This field is required",
+        });
+
+      setSlide(slide + 1);
+    }
   };
 
+  const insets = useSafeAreaInsets();
   const isConnected = integrations?.find((i) => i.integration.name === name);
 
+  const slidesLength =
+    data?.authorization.params.length +
+    (data?.authorization.type === "oauth2"
+      ? 1
+      : 1 + data?.authorization.params.length);
+
+  const onSubmit = async (values) => {
+    try {
+      await sendApiRequest(
+        session,
+        "POST",
+        "space/integrations/connect",
+        {},
+        {
+          body: JSON.stringify(values),
+        }
+      );
+    } catch (e) {
+      console.error(e);
+      Toast.show({ type: "error" });
+    }
+  };
+
   return (
-    <SettingsLayout>
-      <View style={{ flexDirection: "row" }}>
-        <Button variant="outlined" onPress={handleBack}>
-          <Icon>arrow_back_ios_new</Icon>
-          <ButtonText>Integrations</ButtonText>
-        </Button>
-      </View>
-      {data ? (
-        <>
-          {data.authorization.type === "params" && (
-            <ParamsModal integration={data} paramsModalRef={paramsModalRef} />
-          )}
-          <View
-            style={{
-              alignItems: "center",
-              marginTop: 50,
-              backgroundColor: addHslAlpha(theme[3], 0.5),
-              borderColor: theme[4],
-              borderWidth: 2,
-              borderRadius: 20,
-              padding: 20,
-              paddingVertical: 40,
-            }}
-          >
-            <Image
-              source={{ uri: data.icon }}
-              style={{
-                borderRadius: 10,
-                width: 80,
-                height: 80,
-              }}
-            />
-            <Text weight={900} style={{ fontSize: 30, marginTop: 15 }}>
-              {data.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                marginBottom: 20,
-                opacity: 0.6,
-                marginTop: 5,
-              }}
-            >
-              {data.description}
-            </Text>
-            <Button
-              large
-              variant={isConnected ? "outlined" : "filled"}
-              icon={isConnected ? "check" : "add"}
-              iconSize={30}
-              text={isConnected ? "Connected" : "Connect"}
-              onPress={handleOpen}
-            />
-          </View>
-          <View
-            style={{
-              marginTop: 20,
-              justifyContent: "space-between",
-              backgroundColor: addHslAlpha(theme[3], 0.5),
-              borderColor: theme[4],
-              borderWidth: 2,
-              borderRadius: 20,
-              padding: 20,
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <Text weight={700} style={{ fontSize: 20, paddingBottom: 10 }}>
-                About
-              </Text>
-              <Button
-                dense
-                iconPosition="end"
-                icon="north_east"
-                text="Source"
-                style={{ marginLeft: "auto" }}
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 16,
-                marginBottom: 10,
-                opacity: 0.6,
-                marginTop: 5,
-              }}
-            >
-              {data.about?.text}
-            </Text>
-          </View>
-        </>
-      ) : (
+    <FormProvider {...methods}>
+      <SettingsLayout hideBack>
         <View
           style={{
-            height: "100%",
+            flexDirection: "row",
+            borderBottomColor: theme[6],
+            borderBottomWidth: 2,
+            height: 80 + insets.top,
+            paddingTop: insets.top,
             alignItems: "center",
-            justifyContent: "center",
+            paddingHorizontal: 10,
+            zIndex: 1,
+            backgroundColor: theme[1],
           }}
         >
-          <Spinner />
+          <IconButton
+            icon="arrow_back_ios_new"
+            onPress={handleBack}
+            size={55}
+          />
         </View>
-      )}
-    </SettingsLayout>
+
+        <SlideProgressBar slide={slide + 1} length={slidesLength} />
+
+        {data ? (
+          <View style={{ flex: 1 }}>
+            {slide === 0 && <Intro integration={data} />}
+            {slide > 0 && slide <= data.authorization.params.length && (
+              <ParamSlide
+                currentSlide={slide}
+                slide={data.authorization.params[slide - 1]}
+              />
+            )}
+            {slide === slidesLength - 1 ? (
+              <Outro
+                setSlide={setSlide}
+                integration={data}
+                submit={handleSubmit(onSubmit)}
+              />
+            ) : (
+              <View style={[styles.footer, { paddingHorizontal: 20 }]}>
+                <Button
+                  large
+                  variant={isConnected ? "outlined" : "filled"}
+                  icon={isConnected ? "check" : "arrow_forward_ios"}
+                  iconPosition="end"
+                  iconSize={30}
+                  text={
+                    isConnected ? "Connected" : slide === 0 ? "Connect" : "Next"
+                  }
+                  onPress={handleOpen}
+                />
+              </View>
+            )}
+          </View>
+        ) : (
+          <View
+            style={{
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Spinner />
+          </View>
+        )}
+      </SettingsLayout>
+    </FormProvider>
   );
 }

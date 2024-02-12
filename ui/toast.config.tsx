@@ -7,7 +7,7 @@ const toastStyles = (theme): StyleProp<ViewStyle> => ({
   alignItems: "center",
   justifyContent: "center",
   borderLeftWidth: 0,
-  height: 50,
+  minHeight: 50,
   padding: 5,
   backgroundColor: theme[4],
 });
@@ -35,6 +35,7 @@ export const toastConfig = (theme) => ({
         {...props}
         style={toastStyles(theme)}
         text1NumberOfLines={null}
+        text2NumberOfLines={null}
         text1Props={text1Props(theme)}
         renderLeadingIcon={() => (
           <Icon
@@ -45,7 +46,7 @@ export const toastConfig = (theme) => ({
             check_circle
           </Icon>
         )}
-        text2Style={{ fontSize: 15, color: theme[11], opacity: 0.6 }}
+        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
       />
     </View>
   ),
@@ -56,8 +57,9 @@ export const toastConfig = (theme) => ({
         {...props}
         style={toastStyles(theme)}
         text1NumberOfLines={null}
+        text2NumberOfLines={null}
         text1Props={text1Props(theme)}
-        text2Style={{ fontSize: 15, color: theme[11], opacity: 0.6 }}
+        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
       />
     </View>
   ),
@@ -73,6 +75,8 @@ export const toastConfig = (theme) => ({
         style={toastStyles(theme)}
         text1={props.text1 || "Something went wrong. Please try again later"}
         text1NumberOfLines={null}
+        text2NumberOfLines={null}
+        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
         text1Props={text1Props(theme)}
         renderLeadingIcon={() => (
           <Icon
@@ -83,7 +87,6 @@ export const toastConfig = (theme) => ({
             error
           </Icon>
         )}
-        text2Style={{ fontSize: 15 }}
       />
     </View>
   ),

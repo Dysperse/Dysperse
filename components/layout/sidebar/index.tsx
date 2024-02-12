@@ -107,7 +107,6 @@ const SyncButton = memo(function SyncButton() {
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const { width: windowWidth } = useWindowDimensions();
-  useHotkeys("ctrl+f", () => router.push("/search"));
 
   const barWidth = useSharedValue(0);
   const opacity = useSharedValue(0);

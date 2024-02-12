@@ -191,7 +191,13 @@ function SettingsSidebar() {
   );
 }
 
-export function SettingsLayout({ children }: { children?: React.ReactNode }) {
+export function SettingsLayout({
+  children,
+  hideBack,
+}: {
+  children?: React.ReactNode;
+  hideBack?: boolean;
+}) {
   const { session, error } = useUser();
   const { height } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
@@ -211,7 +217,7 @@ export function SettingsLayout({ children }: { children?: React.ReactNode }) {
 
   return session ? (
     <>
-      {!breakpoints.md && (
+      {!breakpoints.md && !hideBack && (
         <IconButton
           variant="outlined"
           onPress={() => {
@@ -229,13 +235,14 @@ export function SettingsLayout({ children }: { children?: React.ReactNode }) {
       )}
       <View
         style={{
-          ...(!breakpoints.md && { marginTop: 30 }),
+          ...(!breakpoints.md && { marginTop: hideBack ? 0 : 30 }),
           maxHeight: height,
           flexDirection: "row",
           maxWidth: 900,
           width: "100%",
           marginHorizontal: "auto",
           gap: 40,
+          height: "100%",
         }}
       >
         {(!isHome || breakpoints.md) && (
@@ -246,8 +253,8 @@ export function SettingsLayout({ children }: { children?: React.ReactNode }) {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{
-            paddingVertical: 50,
-            paddingHorizontal: 20,
+            paddingVertical: hideBack ? 0 : 50,
+            paddingHorizontal: hideBack ? 0 : 20,
             flex: 1,
           }}
           contentContainerStyle={{ height: "100%" }}
