@@ -6,7 +6,7 @@ import {
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
 import { RefObject, memo } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
@@ -85,14 +85,16 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}
     >
-      {props.disableBackToClose !== true && Platform.OS !== "web" && (
-        <BottomSheetBackHandler />
-      )}
-      {Platform.OS === "web" && props.disableEscapeToClose !== true && (
-        <BottomSheetEscapeHandler animationConfigs={props.animationConfigs} />
-      )}
-      {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
-      {props.children}
+      <View aria-modal style={{ flex: 1 }}>
+        {props.disableBackToClose !== true && Platform.OS !== "web" && (
+          <BottomSheetBackHandler />
+        )}
+        {Platform.OS === "web" && props.disableEscapeToClose !== true && (
+          <BottomSheetEscapeHandler animationConfigs={props.animationConfigs} />
+        )}
+        {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
+        {props.children}
+      </View>
     </BottomSheetModal>
   );
 });

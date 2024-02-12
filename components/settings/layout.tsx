@@ -203,8 +203,11 @@ export function SettingsLayout({ children }: { children?: React.ReactNode }) {
     if (router.canGoBack()) return router.back();
     router.replace("/");
   };
-
-  useHotkeys("esc", handleBack, { enabled: breakpoints.md });
+  useHotkeys("esc", handleBack, {
+    enabled: breakpoints.md,
+    ignoreEventWhen: (event) =>
+      document.querySelectorAll('[aria-modal="true"]').length > 0,
+  });
 
   return session ? (
     <>
