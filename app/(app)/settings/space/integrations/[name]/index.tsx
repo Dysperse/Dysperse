@@ -447,7 +447,7 @@ export default function Page() {
   };
 
   const insets = useSafeAreaInsets();
-  const isConnected = !integrations?.find((i) => i.integration.name === name);
+  const isConnected = integrations?.find((i) => i.integration.name === name);
 
   const slidesLength =
     data?.authorization?.params?.length +
@@ -502,17 +502,21 @@ export default function Page() {
             <View style={{ flex: 1 }}>
               {slide === 0 && <Intro integration={data} />}
               {slide > 0 && slide <= data.authorization?.params?.length && (
-                <ParamSlide
-                  currentSlide={slide}
-                  slide={data.authorization.params[slide - 1]}
-                />
+                <FormProvider {...methods}>
+                  <ParamSlide
+                    currentSlide={slide}
+                    slide={data.authorization.params[slide - 1]}
+                  />
+                </FormProvider>
               )}
               {slide === slidesLength - 1 ? (
-                <Outro
-                  setSlide={setSlide}
-                  integration={data}
-                  submit={handleSubmit(onSubmit)}
-                />
+                <FormProvider {...methods}>
+                  <Outro
+                    setSlide={setSlide}
+                    integration={data}
+                    submit={handleSubmit(onSubmit)}
+                  />
+                </FormProvider>
               ) : (
                 <View style={[styles.footer, { paddingHorizontal: 20 }]}>
                   <Button
