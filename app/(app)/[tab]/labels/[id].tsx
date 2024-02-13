@@ -1,10 +1,11 @@
 import { Entity } from "@/components/collections/entity";
 import { ContentWrapper } from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -12,7 +13,9 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, View, useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
+import { LabelEditModal } from "../collections/[id]/[type]";
 
 const headerStyles = StyleSheet.create({
   container: {
@@ -44,32 +47,39 @@ const headerStyles = StyleSheet.create({
 });
 
 function LabelHeader({ data }) {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const color = useColor(data.color, useColorScheme() === "dark");
 
   return (
     <>
-      <View style={headerStyles.container}>
-        <MenuPopover
-          trigger={
-            <Pressable
-              style={[
-                headerStyles.icon,
-                {
-                  backgroundColor: color[4],
-                },
-              ]}
-            >
-              <Emoji size={40} emoji={data.emoji} />
-            </Pressable>
-          }
-          options={[
-            { text: "Edit icon", icon: "mood", callback: () => {} },
-            { text: "Change color", icon: "palette", callback: () => {} },
+      <View
+        style={[
+          headerStyles.container,
+          !breakpoints.md && { flexDirection: "column", alignItems: "center" },
+        ]}
+      >
+        <Pressable
+          style={[
+            headerStyles.icon,
+            {
+              backgroundColor: color[4],
+            },
           ]}
-        />
+        >
+          <Emoji size={40} emoji={data.emoji} />
+        </Pressable>
         <View style={{ flex: 1 }}>
-          <View style={headerStyles.row}>
+          <View
+            style={[
+              headerStyles.row,
+              !breakpoints.md && {
+                justifyContent: "center",
+                marginBottom: 10,
+                marginTop: -10,
+              },
+            ]}
+          >
             <Chip label="Label" icon="tag" dense />
           </View>
           <Text heading style={{ fontSize: 60 }} numberOfLines={1}>
@@ -90,6 +100,12 @@ function LabelHeader({ data }) {
           </Text>
           <View style={headerStyles.foundInContainer}>
             <Chip label={`${data._count.entities} items`} icon="shapes" />
+            {data.integration && (
+              <Chip
+                label={`Connected to ${data.integration.name}`}
+                icon="integration"
+              />
+            )}
             {data.collections.map((collection) => (
               <Chip
                 key={collection.id}
@@ -126,25 +142,48 @@ const styles = StyleSheet.create({
 });
 
 export default function Page() {
+  const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
+  const { openSidebar } = useSidebarContext();
   const { id } = useLocalSearchParams();
   const { data, error } = useSWR(id ? ["space/labels/label", { id }] : null);
 
   //   const handleBack = () => router.push("/all-labels");
 
   return (
-    <ContentWrapper>
-      <View style={styles.header}>
-        <IconButton size={55} variant="outlined" icon="edit" />
+    <ContentWrapper noPaddingTop>
+      <View
+        style={[
+          styles.header,
+          !breakpoints.md && { marginTop: insets.top + 15 },
+        ]}
+      >
+        <IconButton
+          size={55}
+          onPress={openSidebar}
+          variant="outlined"
+          icon="menu"
+          style={{ marginRight: "auto" }}
+        />
+        {data?.name && (
+          <LabelEditModal
+            label={data}
+            onLabelUpdate={() => {}}
+            trigger={<IconButton size={55} variant="outlined" icon="edit" />}
+          />
+        )}
         <IconButton size={55} variant="outlined" icon="delete" />
       </View>
       <View style={styles.scrollContainer}>
         {data?.entities ? (
           <>
             <FlashList
+              style={{ minHeight: 100 }}
+              estimatedItemSize={93}
               data={data.entities}
               ListHeaderComponent={<LabelHeader data={data} />}
               contentContainerStyle={{
-                paddingHorizontal: 100,
+                paddingHorizontal: breakpoints.md ? 100 : 20,
                 paddingBottom: 50,
               }}
               renderItem={({ item }) => (

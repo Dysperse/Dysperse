@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const LabelEditModal = memo(function LabelEditModal({
+export const LabelEditModal = memo(function LabelEditModal({
   label,
   trigger,
   onLabelUpdate,
@@ -155,6 +155,7 @@ const LabelEditModal = memo(function LabelEditModal({
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              bottomSheet
             />
           )}
           name="name"
