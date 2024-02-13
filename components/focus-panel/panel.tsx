@@ -209,7 +209,7 @@ export function PanelSwipeTrigger({
           zIndex: 1,
         },
         side === "left"
-          ? { marginHorizontal: -15, marginRight: -25 }
+          ? { marginHorizontal: -17, marginRight: -25 }
           : { marginHorizontal: -15, marginLeft: -25 },
       ]}
     >

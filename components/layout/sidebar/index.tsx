@@ -1,6 +1,5 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
-import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
@@ -20,7 +19,7 @@ import Logo from "@/ui/logo";
 import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { router, usePathname } from "expo-router";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useRef, useState } from "react";
 import {
   Linking,
   Platform,
@@ -30,7 +29,7 @@ import {
   useColorScheme,
   useWindowDimensions,
 } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useDrawerProgress } from "react-native-drawer-layout";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -409,79 +408,44 @@ const Header = memo(function Header() {
   );
 });
 
-export function Sidebar({}) {
+export function Sidebar() {
   const insets = useSafeAreaInsets();
-  const { sidebarMargin, SIDEBAR_WIDTH } = useSidebarContext();
+  const { SIDEBAR_WIDTH } = useSidebarContext();
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
+  const progress = useDrawerProgress();
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: interpolate(progress.value, [0, 1], [-(width / 10), 0]) },
+    ],
+  }));
 
   const [isHidden, setIsHidden] = useState(
     Platform.OS === "web"
       ? localStorage.getItem("sidebarHidden") === "true"
       : false
   );
+
   const toggleHidden = useCallback(() => {
     setIsHidden((prev) => !prev);
   }, [setIsHidden]);
-
-  useEffect(() => {
-    sidebarMargin.value = isHidden ? -SIDEBAR_WIDTH : 0;
-  }, [isHidden, sidebarMargin, SIDEBAR_WIDTH]);
 
   useHotkeys("`", toggleHidden, {}, [isHidden]);
   useHotkeys("ctrl+comma", () => router.push("/settings"));
 
   const breakpoints = useResponsiveBreakpoints();
-  const marginLeftStyle = useAnimatedStyle(() => ({
-    marginLeft: withSpring(sidebarMargin.value, {
-      damping: 30,
-      stiffness: 400,
-    }),
-  }));
-
-  const transformLeftStyle = useAnimatedStyle(() => ({
-    // transformOrigin: "right",
-    transform: [
-      // {
-      //   translateX: withSpring(
-      //     interpolate(sidebarMargin.value, [0, -220], [0, -width * 0.05]),
-      //     {
-      //       damping: 30,
-      //       stiffness: 400,
-      //     }
-      //   ),
-      // },
-      {
-        scale: withSpring(
-          interpolate(sidebarMargin.value, [-220, 0], [1.05, 1]),
-          {
-            damping: 30,
-            stiffness: 400,
-            overshootClamping: true,
-          }
-        ),
-      },
-    ],
-    opacity: withSpring(interpolate(sidebarMargin.value, [0, -220], [1, 0.5]), {
-      damping: 30,
-      stiffness: 400,
-    }),
-  }));
-
-  const tap = Gesture.Tap().onEnd(() => {
-    toggleHidden();
-  });
-
-  const closePressableStyle = useAnimatedStyle(() => ({
-    display: !sidebarMargin.value ? "flex" : "none",
-  }));
 
   const pathname = usePathname();
 
   const children = (
     <View
       style={[
-        { zIndex: breakpoints.md ? 1 : 0, flexDirection: "row" },
+        {
+          zIndex: breakpoints.md ? 1 : 0,
+          flexDirection: "row",
+          backgroundColor: theme[2],
+        },
         pathname.includes("settings") &&
           breakpoints.md && {
             maxWidth: 0,
@@ -491,8 +455,7 @@ export function Sidebar({}) {
     >
       <Animated.View
         style={[
-          breakpoints.md && marginLeftStyle,
-          !breakpoints.md && transformLeftStyle,
+          animatedStyle,
           {
             height: height,
             width: SIDEBAR_WIDTH,
@@ -512,11 +475,6 @@ export function Sidebar({}) {
         </View>
         <OpenTabsList />
       </Animated.View>
-      {breakpoints.md && (
-        <GestureDetector gesture={tap}>
-          <PanelSwipeTrigger side="left" />
-        </GestureDetector>
-      )}
     </View>
   );
 
@@ -525,7 +483,6 @@ export function Sidebar({}) {
       {!breakpoints.md && (
         <Animated.View
           style={[
-            closePressableStyle,
             {
               position: "absolute",
               top: 0,

@@ -1,6 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { usePathname } from "expo-router";
 import { StyleSheet, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -18,7 +17,6 @@ export function ContentWrapper(props: ContentWrapperProps) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
-  const pathname = usePathname();
 
   return props.enabled !== false ? (
     <View

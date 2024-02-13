@@ -27,6 +27,7 @@ import {
   View,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
@@ -567,10 +568,11 @@ function TodayText() {
 export default function Index() {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
   const { session } = useUser();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
-  const { sidebarMargin } = useSidebarContext();
+  const { openSidebar } = useSidebarContext();
 
   const hslValues = theme[5]
     .replace("hsl", "")
@@ -595,11 +597,16 @@ export default function Index() {
       >
         {!breakpoints.md && (
           <IconButton
-            style={{ position: "absolute", top: 20, left: 20 }}
+            style={{
+              position: "absolute",
+              top: 20,
+              left: 20,
+              marginTop: insets.top,
+            }}
             icon="menu"
             size={55}
             variant="outlined"
-            onPress={() => (sidebarMargin.value = 0)}
+            onPress={openSidebar}
           />
         )}
         <ButtonGroup
@@ -610,7 +617,7 @@ export default function Index() {
             { icon: "more_horiz", value: "edit" },
           ]}
           containerStyle={{
-            marginTop: 100,
+            marginTop: 100 + insets.top,
             height: 50,
             width: "auto",
             maxWidth: 200,
@@ -643,27 +650,29 @@ export default function Index() {
             marginHorizontal: "auto",
             flex: 1,
             marginVertical: "auto",
+            justifyContent: "center",
           }}
         >
           {view === "home" ? (
-            <View style={{ marginVertical: "auto" }}>
+            <>
               <Greeting />
               <TodayText />
               <JumpTo />
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
+                  flexDirection: breakpoints.md ? "row" : "column",
+                  alignItems: breakpoints.md ? "center" : undefined,
                   justifyContent: "center",
                   gap: 20,
                   marginTop: 20,
                   width: "100%",
+                  minHeight: 180,
                 }}
               >
                 <PlanDayPrompt />
                 <JumpBackIn />
               </View>
-            </View>
+            </>
           ) : view === "activity" ? (
             <FriendActivity />
           ) : (

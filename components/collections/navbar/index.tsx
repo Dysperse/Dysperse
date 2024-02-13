@@ -134,7 +134,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       callback: () => alert("filter edited"),
     },
   ];
-  const { sidebarMargin } = useSidebarContext();
+  const { openSidebar } = useSidebarContext();
 
   return editOrderMode ? (
     <View
@@ -174,11 +174,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         }}
       >
         {!breakpoints.md && (
-          <IconButton
-            icon="menu"
-            size={40}
-            onPress={() => (sidebarMargin.value = 0)}
-          />
+          <IconButton icon="menu" size={40} onPress={openSidebar} />
         )}
         <View style={!breakpoints.md && { flex: 1 }}>
           <MenuPopover
