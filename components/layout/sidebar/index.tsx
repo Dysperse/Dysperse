@@ -409,11 +409,11 @@ const Header = memo(function Header() {
   );
 });
 
-export function Sidebar({ panGestureDesktop }) {
+export function Sidebar({}) {
   const insets = useSafeAreaInsets();
   const { sidebarMargin, SIDEBAR_WIDTH } = useSidebarContext();
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   const [isHidden, setIsHidden] = useState(
     Platform.OS === "web"
@@ -437,11 +437,10 @@ export function Sidebar({ panGestureDesktop }) {
       damping: 30,
       stiffness: 400,
     }),
-    pointerEvents: sidebarMargin.value === -SIDEBAR_WIDTH ? "none" : "auto",
   }));
 
   const transformLeftStyle = useAnimatedStyle(() => ({
-    transformOrigin: "right",
+    // transformOrigin: "right",
     transform: [
       // {
       //   translateX: withSpring(
@@ -467,7 +466,6 @@ export function Sidebar({ panGestureDesktop }) {
       damping: 30,
       stiffness: 400,
     }),
-    pointerEvents: isHidden ? "none" : "auto",
   }));
 
   const tap = Gesture.Tap().onEnd(() => {
@@ -496,7 +494,7 @@ export function Sidebar({ panGestureDesktop }) {
           breakpoints.md && marginLeftStyle,
           !breakpoints.md && transformLeftStyle,
           {
-            height: "100%",
+            height: height,
             width: SIDEBAR_WIDTH,
             flexDirection: "column",
             maxHeight: "100%",
@@ -542,13 +540,7 @@ export function Sidebar({ panGestureDesktop }) {
         </Animated.View>
       )}
 
-      {breakpoints.md ? (
-        <GestureDetector gesture={panGestureDesktop}>
-          {children}
-        </GestureDetector>
-      ) : (
-        children
-      )}
+      {children}
     </>
   );
 }

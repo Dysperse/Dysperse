@@ -25,7 +25,6 @@ import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import { TaskAttachmentButton } from "./attachment/button";
-import { TaskStream } from "./audit-log";
 import { useTaskDrawerContext } from "./context";
 
 const drawerStyles = StyleSheet.create({
@@ -477,22 +476,6 @@ export function TaskDetails() {
         renderContent={(section) => section.content}
         onChange={setActiveSections}
       />
-      <View style={{ gap: 10 }}>
-        <TaskStream>
-          <ListItemButton
-            variant="filled"
-            style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-          >
-            <Icon>history</Icon>
-            <ListItemText
-              primary="History"
-              secondary={`Last edit ${dayjs(
-                task.history[0]?.timestamp
-              ).fromNow()}`}
-            />
-          </ListItemButton>
-        </TaskStream>
-      </View>
     </>
   );
 }

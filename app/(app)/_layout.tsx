@@ -33,8 +33,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import {
-  Gesture,
-  GestureDetector,
+  DrawerLayout,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
@@ -84,29 +83,6 @@ export default function AppLayout() {
 
   const sidebarMargin = useSharedValue(0);
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
-
-  const pan = Gesture.Pan()
-    .minDistance(20)
-    .onChange(({ changeX, velocityY, velocityX }) => {
-      if (Math.abs(velocityY) > Math.abs(velocityX)) {
-        return;
-      } else {
-        sidebarMargin.value += Math.min(changeX, SIDEBAR_WIDTH);
-      }
-      if (sidebarMargin.value < -SIDEBAR_WIDTH) {
-        sidebarMargin.value = -SIDEBAR_WIDTH;
-      }
-      if (sidebarMargin.value > 0) {
-        sidebarMargin.value = 0;
-      }
-    })
-    .onEnd(({ velocityX, velocityY, translationX }) => {
-      if (sidebarMargin.value < -SIDEBAR_WIDTH / 2) {
-        sidebarMargin.value = -SIDEBAR_WIDTH;
-      } else {
-        sidebarMargin.value = 0;
-      }
-    });
 
   const theme = useColor(
     sessionData?.user?.profile?.theme || "mint",
@@ -248,51 +224,59 @@ export default function AppLayout() {
                 <StatusBar
                   barStyle={!isDark ? "dark-content" : "light-content"}
                 />
-                <GestureDetector gesture={breakpoints.md ? Gesture.Tap() : pan}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      flex: 1,
-                      backgroundColor: theme[2],
-                    }}
-                  >
-                    <CommandPaletteProvider>
-                      <FocusPanelProvider>
-                        <SidebarContext.Provider
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                    backgroundColor: theme[2],
+                  }}
+                >
+                  <CommandPaletteProvider>
+                    <FocusPanelProvider>
+                      <SidebarContext.Provider
+                        value={{
+                          SIDEBAR_WIDTH,
+                          sidebarMargin,
+                          closeSidebarOnMobile: () => {
+                            if (!breakpoints.md) {
+                              sidebarMargin.value = -SIDEBAR_WIDTH;
+                            }
+                          },
+                          closeSidebar: () =>
+                            (sidebarMargin.value = -SIDEBAR_WIDTH),
+                          openSidebar: () => {
+                            if (!breakpoints.md) {
+                              sidebarMargin.value = 0;
+                            }
+                          },
+                        }}
+                      >
+                        <ThemeProvider
                           value={{
-                            SIDEBAR_WIDTH,
-                            sidebarMargin,
-                            closeSidebarOnMobile: () => {
-                              if (!breakpoints.md) {
-                                sidebarMargin.value = -SIDEBAR_WIDTH;
-                              }
-                            },
-                            closeSidebar: () =>
-                              (sidebarMargin.value = -SIDEBAR_WIDTH),
-                            openSidebar: () => {
-                              if (!breakpoints.md) {
-                                sidebarMargin.value = 0;
-                              }
+                            ...DefaultTheme,
+                            colors: {
+                              ...DefaultTheme.colors,
+                              background: theme[breakpoints.sm ? 2 : 1],
                             },
                           }}
                         >
-                          <Sidebar panGestureDesktop={pan} />
-                          <ThemeProvider
-                            value={{
-                              ...DefaultTheme,
-                              colors: {
-                                ...DefaultTheme.colors,
-                                background: theme[breakpoints.sm ? 2 : 1],
-                              },
-                            }}
+                          <Animated.View
+                            style={[
+                              breakpoints.md ? { flex: 1 } : { width: "100%" },
+                            ]}
                           >
-                            <Animated.View
-                              style={[
-                                !breakpoints.md && panelStyle,
-                                breakpoints.md
-                                  ? { flex: 1 }
-                                  : { width: "100%" },
-                              ]}
+                            <DrawerLayout
+                              drawerWidth={SIDEBAR_WIDTH}
+                              drawerPosition={"left"}
+                              drawerType="back"
+                              drawerBackgroundColor="transparent"
+                              overlayColor="transparent"
+                              edgeWidth={1000}
+                              drawerContainerStyle={{
+                                height: "100%",
+                              }}
+                              renderNavigationView={() => <Sidebar />}
+                              onDrawerSlide={() => {}}
                             >
                               <JsStack
                                 screenOptions={{
@@ -376,13 +360,13 @@ export default function AppLayout() {
                                   />
                                 ))}
                               </JsStack>
-                            </Animated.View>
-                          </ThemeProvider>
-                        </SidebarContext.Provider>
-                      </FocusPanelProvider>
-                    </CommandPaletteProvider>
-                  </View>
-                </GestureDetector>
+                            </DrawerLayout>
+                          </Animated.View>
+                        </ThemeProvider>
+                      </SidebarContext.Provider>
+                    </FocusPanelProvider>
+                  </CommandPaletteProvider>
+                </View>
               </PortalProvider>
             </MenuProvider>
           </BottomSheetModalProvider>
