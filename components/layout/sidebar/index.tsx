@@ -416,9 +416,13 @@ export function Sidebar() {
   const progress = useDrawerProgress();
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: interpolate(progress.value, [0, 1], [-(width / 10), 0]) },
-    ],
+    transform: breakpoints.md
+      ? []
+      : [
+          {
+            translateX: interpolate(progress.value, [0, 1], [-(width / 10), 0]),
+          },
+        ],
   }));
 
   const [isHidden, setIsHidden] = useState(
