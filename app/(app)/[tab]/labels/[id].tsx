@@ -95,17 +95,24 @@ function LabelHeader({ data }) {
             },
           ]}
         >
+          {data.integration && (
+            <>
+              <Text
+                variant="eyebrow"
+                style={{ marginTop: -5, marginBottom: 5 }}
+              >
+                Connected to
+              </Text>
+              <View style={headerStyles.foundInContainer}>
+                <Chip label={`${data.integration.name}`} icon="integration" />
+              </View>
+            </>
+          )}
           <Text variant="eyebrow" style={{ marginTop: -5, marginBottom: 5 }}>
             Found in
           </Text>
           <View style={headerStyles.foundInContainer}>
             <Chip label={`${data._count.entities} items`} icon="shapes" />
-            {data.integration && (
-              <Chip
-                label={`Connected to ${data.integration.name}`}
-                icon="integration"
-              />
-            )}
             {data.collections.map((collection) => (
               <Chip
                 key={collection.id}
