@@ -410,13 +410,13 @@ const Header = memo(function Header() {
 
 export function Sidebar() {
   const insets = useSafeAreaInsets();
-  const { SIDEBAR_WIDTH } = useSidebarContext();
+  const { SIDEBAR_WIDTH, desktopCollapsed } = useSidebarContext();
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
   const progress = useDrawerProgress();
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: breakpoints.md
+    transform: breakpoints?.md
       ? []
       : [
           {
@@ -449,6 +449,10 @@ export function Sidebar() {
           zIndex: breakpoints.md ? 1 : 0,
           flexDirection: "row",
           backgroundColor: theme[2],
+        },
+        desktopCollapsed && {
+          shadowColor: theme[2],
+          shadowRadius: 50,
         },
         pathname.includes("settings") &&
           breakpoints.md && {

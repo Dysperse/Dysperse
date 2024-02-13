@@ -237,9 +237,7 @@ export default function AppLayout() {
                                 backgroundColor: "transparent",
                               }}
                               overlayStyle={{
-                                backgroundColor: desktopCollapsed
-                                  ? "rgba(0,0,0,0.2)"
-                                  : "transparent",
+                                backgroundColor: "transparent",
                               }}
                               renderDrawerContent={() => (
                                 <GestureDetector
