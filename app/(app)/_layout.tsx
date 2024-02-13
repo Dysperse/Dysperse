@@ -326,7 +326,7 @@ export default function AppLayout() {
                                       key={d}
                                       options={{
                                         cardStyle: { padding: 0 },
-                                        gestureEnabled: true,
+                                        gestureEnabled: d !== "settings/index",
                                         headerTitle:
                                           d !== "settings/index" && "Settings",
                                         ...TransitionPresets.SlideFromRightIOS,

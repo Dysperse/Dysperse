@@ -124,6 +124,21 @@ function Tab({
   //     }
   //   }
   // }, [tabParams, selected, tab, sessionToken, mutate]);
+  const handleCloseTab = useCallback(
+    async () => await handleDelete(tab.id),
+    [handleDelete, tab]
+  );
+  const tabName = useMemo(
+    () =>
+      capitalizeFirstLetter(
+        tab.collection?.name ||
+          tab.label?.name ||
+          tab.profile?.name ||
+          tabData.name(tab.params, tab.slug)[0] ||
+          ""
+      ),
+    [tab, tabData]
+  );
 
   const tabContent = useMemo(
     () => (
@@ -163,13 +178,7 @@ function Tab({
         />
         <View style={{ flex: 1 }}>
           <Text weight={500} numberOfLines={1}>
-            {capitalizeFirstLetter(
-              tab.collection?.name ||
-                tab.label?.name ||
-                tab.profile?.name ||
-                tabData.name(tab.params, tab.slug)[0] ||
-                ""
-            )}
+            {tabName}
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (
             <Text style={[styles.text]} numberOfLines={1} weight={300}>
@@ -186,7 +195,7 @@ function Tab({
             { opacity: breakpoints.md ? (hovered ? 1 : 0) : selected ? 1 : 0 },
           ]}
           size={50}
-          onPress={async () => await handleDelete(tab.id)}
+          onPress={handleCloseTab}
         >
           <Icon size={23} style={[styles.closeIcon]}>
             close
@@ -194,7 +203,7 @@ function Tab({
         </IconButton>
       </>
     ),
-    [selected, tab, tabData, theme, breakpoints.md, handleDelete]
+    [selected, tab, tabData, theme, breakpoints, handleCloseTab, tabName]
   );
 
   return isClosedAnimation ? null : (

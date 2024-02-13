@@ -351,13 +351,18 @@ const SlideProgressBar = ({ slide, length }) => {
 
   const widthStyle = useAnimatedStyle(() => {
     return {
-      width: withSpring((windowWidth / length) * width.value, {
-        damping: 30,
-        overshootClamping: false,
-        restDisplacementThreshold: 0.1,
-        restSpeedThreshold: 0.1,
-        stiffness: 400,
-      }),
+      width: withSpring(
+        isNaN((windowWidth / length) * width.value)
+          ? 0
+          : (windowWidth / length) * width.value,
+        {
+          damping: 30,
+          overshootClamping: false,
+          restDisplacementThreshold: 0.1,
+          restSpeedThreshold: 0.1,
+          stiffness: 400,
+        }
+      ),
     };
   });
 
@@ -414,7 +419,7 @@ export default function Page() {
   });
 
   const { handleSubmit, getValues } = methods;
-
+  const { height } = useWindowDimensions();
   const handleOpen = () => {
     if (isConnected) {
       return;
@@ -470,68 +475,78 @@ export default function Page() {
       <SettingsLayout hideBack>
         <View
           style={{
-            flexDirection: "row",
-            borderBottomColor: theme[6],
-            borderBottomWidth: 2,
-            height: 80 + insets.top,
-            paddingTop: insets.top,
-            alignItems: "center",
-            paddingHorizontal: 10,
-            zIndex: 1,
-            backgroundColor: theme[1],
+            height,
           }}
         >
-          <IconButton
-            icon="arrow_back_ios_new"
-            onPress={handleBack}
-            size={55}
-          />
-        </View>
-
-        <SlideProgressBar slide={slide + 1} length={slidesLength} />
-
-        {data ? (
-          <View style={{ flex: 1 }}>
-            {slide === 0 && <Intro integration={data} />}
-            {slide > 0 && slide <= data.authorization.params.length && (
-              <ParamSlide
-                currentSlide={slide}
-                slide={data.authorization.params[slide - 1]}
-              />
-            )}
-            {slide === slidesLength - 1 ? (
-              <Outro
-                setSlide={setSlide}
-                integration={data}
-                submit={handleSubmit(onSubmit)}
-              />
-            ) : (
-              <View style={[styles.footer, { paddingHorizontal: 20 }]}>
-                <Button
-                  large
-                  variant={isConnected ? "outlined" : "filled"}
-                  icon={isConnected ? "check" : "arrow_forward_ios"}
-                  iconPosition="end"
-                  iconSize={30}
-                  text={
-                    isConnected ? "Connected" : slide === 0 ? "Connect" : "Next"
-                  }
-                  onPress={handleOpen}
-                />
-              </View>
-            )}
-          </View>
-        ) : (
           <View
             style={{
-              height: "100%",
+              flexDirection: "row",
+              borderBottomColor: theme[6],
+              borderBottomWidth: 2,
+              height: 80 + insets.top,
+              paddingTop: insets.top,
               alignItems: "center",
-              justifyContent: "center",
+              paddingHorizontal: 10,
+              zIndex: 1,
+              backgroundColor: theme[1],
             }}
           >
-            <Spinner />
+            <IconButton
+              icon="arrow_back_ios_new"
+              onPress={handleBack}
+              size={55}
+            />
           </View>
-        )}
+
+          <SlideProgressBar slide={slide + 1} length={slidesLength} />
+
+          {data ? (
+            <View style={{ flex: 1 }}>
+              {slide === 0 && <Intro integration={data} />}
+              {slide > 0 && slide <= data.authorization.params.length && (
+                <ParamSlide
+                  currentSlide={slide}
+                  slide={data.authorization.params[slide - 1]}
+                />
+              )}
+              {slide === slidesLength - 1 ? (
+                <Outro
+                  setSlide={setSlide}
+                  integration={data}
+                  submit={handleSubmit(onSubmit)}
+                />
+              ) : (
+                <View style={[styles.footer, { paddingHorizontal: 20 }]}>
+                  <Button
+                    large
+                    variant={isConnected ? "outlined" : "filled"}
+                    icon={isConnected ? "check" : "arrow_forward_ios"}
+                    iconPosition="end"
+                    iconSize={30}
+                    text={
+                      isConnected
+                        ? "Connected"
+                        : slide === 0
+                        ? "Connect"
+                        : "Next"
+                    }
+                    onPress={handleOpen}
+                  />
+                </View>
+              )}
+            </View>
+          ) : (
+            <View
+              style={{
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </View>
       </SettingsLayout>
     </FormProvider>
   );

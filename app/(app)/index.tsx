@@ -592,7 +592,7 @@ export default function Index() {
         source={{
           uri: pattern === "none" ? null : uri,
         }}
-        style={{ flex: 1, alignItems: "center" }}
+        style={{ height: "100%", width: "100%", flex: 1, alignItems: "center" }}
         resizeMode="repeat"
       >
         {!breakpoints.md && (

@@ -35,24 +35,23 @@ function AllIntegrations({ connected }) {
         <View style={{ gap: 10 }}>
           {data.map((integration) => (
             <Pressable
-              disabled={isConnected(integration, connected)}
               key={integration.name}
               style={({ pressed, hovered }: any) => ({
                 flex: 1,
                 padding: 10,
                 paddingHorizontal: 20,
                 borderRadius: 20,
+                minHeight: 80,
                 alignItems: "center",
                 gap: 20,
                 flexDirection: "row",
                 backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-                opacity: isConnected(integration, connected) ? 0.5 : 1,
               })}
-              onPress={() =>
+              onPress={() => {
                 router.replace(
                   `/settings/space/integrations/${integration.slug}`
-                )
-              }
+                );
+              }}
             >
               <Image
                 source={{ uri: integration.icon }}

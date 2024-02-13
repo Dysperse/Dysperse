@@ -77,10 +77,12 @@ export const styles = StyleSheet.create({
 
 const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const { closeSidebarOnMobile } = useSidebarContext();
-  const handleHome = () => {
+
+  const handleHome = useCallback(() => {
     router.push("/");
     setTimeout(closeSidebarOnMobile, 100);
-  };
+  }, [closeSidebarOnMobile]);
+
   const theme = useColorTheme();
   useHotkeys("ctrl+0", () => router.push("/"));
 
@@ -262,7 +264,7 @@ export const LogoButton = memo(function LogoButton() {
             icon: "settings",
             text: "Settings",
             callback: () => {
-              router.replace("/settings");
+              router.push("/settings");
               setTimeout(closeSidebarOnMobile, 300);
             },
           },
