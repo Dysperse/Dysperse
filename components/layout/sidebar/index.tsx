@@ -230,7 +230,8 @@ export const LogoButton = memo(function LogoButton({
   }, []);
 
   const { isFocused, setFocus } = useFocusPanelContext();
-  const { closeSidebarOnMobile } = useSidebarContext();
+  const { closeSidebarOnMobile, isOpen, openSidebar, closeSidebar } =
+    useSidebarContext();
 
   return (
     <View
@@ -304,8 +305,8 @@ export const LogoButton = memo(function LogoButton({
           breakpoints.md && {
             icon: "dock_to_right",
             text: "Sidebar",
-            callback: toggleHidden,
-            selected: !isHidden,
+            callback: isOpen ? closeSidebar : openSidebar,
+            selected: isOpen,
           },
           {
             icon: "dock_to_left",
