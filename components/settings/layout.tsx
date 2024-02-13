@@ -243,7 +243,7 @@ export function SettingsLayout({
   });
 
   return session ? (
-    <Portal>
+    <Portal name="settings">
       <View
         style={{
           position: "absolute",

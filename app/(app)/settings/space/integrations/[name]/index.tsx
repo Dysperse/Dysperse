@@ -90,6 +90,7 @@ const Intro = ({ integration }) => {
 
 const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
   const { getValues, control, setValue } = useFormContext();
+
   const { data, error } = useSWR([
     "space/integrations/get-labels",
     { ...getValues().params, integration: getValues().integration },
@@ -408,12 +409,13 @@ export default function Page() {
   const methods = useForm({
     defaultValues: {
       integration: name,
-      params: {
-        ...(data &&
-          Object.fromEntries(
+      ...(data?.authorization?.params && {
+        params: {
+          ...Object.fromEntries(
             data?.authorization?.params?.map((p) => [p.id, ""])
-          )),
-      },
+          ),
+        },
+      }),
       ...(data?.supportLabelMapping && { labels: [] }),
     },
   });
@@ -445,13 +447,13 @@ export default function Page() {
   };
 
   const insets = useSafeAreaInsets();
-  const isConnected = integrations?.find((i) => i.integration.name === name);
+  const isConnected = !integrations?.find((i) => i.integration.name === name);
 
   const slidesLength =
-    data?.authorization.params.length +
+    data?.authorization?.params?.length +
     (data?.authorization.type === "oauth2"
       ? 1
-      : 1 + data?.authorization.params.length);
+      : 1 + data?.authorization?.params?.length);
 
   const onSubmit = async (values) => {
     try {
@@ -473,11 +475,7 @@ export default function Page() {
   return (
     <FormProvider {...methods}>
       <SettingsLayout hideBack>
-        <View
-          style={{
-            height,
-          }}
-        >
+        <View style={{ height }}>
           <View
             style={{
               flexDirection: "row",
@@ -503,7 +501,7 @@ export default function Page() {
           {data ? (
             <View style={{ flex: 1 }}>
               {slide === 0 && <Intro integration={data} />}
-              {slide > 0 && slide <= data.authorization.params.length && (
+              {slide > 0 && slide <= data.authorization?.params?.length && (
                 <ParamSlide
                   currentSlide={slide}
                   slide={data.authorization.params[slide - 1]}
