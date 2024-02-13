@@ -94,7 +94,7 @@ const AppContainer = ({ children }) => {
           overflow: "hidden",
           transform: [
             {
-              scale: interpolate(progress.value, [0, 1], [1, 0.9]),
+              scale: interpolate(progress.value, [0, 1], [1, 0.93]),
             },
           ],
         };
@@ -231,9 +231,11 @@ export default function AppLayout() {
                               swipeEdgeWidth={1000}
                               drawerStyle={{
                                 height,
-                                width: desktopCollapsed
-                                  ? SIDEBAR_WIDTH
-                                  : "auto",
+                                width: breakpoints.md
+                                  ? desktopCollapsed
+                                    ? SIDEBAR_WIDTH
+                                    : "auto"
+                                  : SIDEBAR_WIDTH,
                                 backgroundColor: "transparent",
                               }}
                               overlayStyle={{
