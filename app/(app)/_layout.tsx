@@ -236,7 +236,11 @@ export default function AppLayout() {
                                   : "auto",
                                 backgroundColor: "transparent",
                               }}
-                              overlayStyle={{ backgroundColor: "transparent" }}
+                              overlayStyle={{
+                                backgroundColor: desktopCollapsed
+                                  ? "rgba(0,0,0,0.4)"
+                                  : "transparent",
+                              }}
                               renderDrawerContent={() => (
                                 <GestureDetector
                                   gesture={Gesture.Hover()
