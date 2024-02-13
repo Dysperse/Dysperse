@@ -130,4 +130,4 @@ const OpenTabsList = memo(function OpenTabsList() {
   );
 });
 
-export default OpenTabsList;
+export default memo(OpenTabsList);

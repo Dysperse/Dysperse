@@ -14,5 +14,6 @@ export type CollectionType =
   | "kanban"
   | "stream"
   | "grid"
-  | "workload";
+  | "workload"
+  | "matrix";
 export const useCollectionContext = () => useContext(CollectionContext);

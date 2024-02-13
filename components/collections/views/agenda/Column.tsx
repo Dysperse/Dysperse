@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     width: "100%",
-    minHeight: "100%",
   },
   emptyIcon: { transform: [{ rotate: "-45deg" }] },
   emptyIconContainer: {
@@ -50,28 +49,6 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "45deg" }],
   },
 });
-
-function findChangedItem(oldArray, newArray) {
-  if (oldArray.length !== newArray.length) {
-    return null;
-  }
-
-  for (let i = 0; i < oldArray.length; i++) {
-    if (!isEqual(oldArray[i], newArray[i])) {
-      return {
-        fromIndex: i,
-        toIndex: newArray.indexOf(oldArray[i]),
-        item: newArray[i],
-      };
-    }
-  }
-
-  return null;
-}
-
-function isEqual(obj1, obj2) {
-  return JSON.stringify(obj1) === JSON.stringify(obj2);
-}
 
 export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
   row,

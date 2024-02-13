@@ -9,9 +9,8 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { useTabParams } from "@/utils/useTabParams";
 import { router } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -94,8 +93,6 @@ function Tab({
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
   const breakpoints = useResponsiveBreakpoints();
 
-  const tabParams = useTabParams();
-
   // useEffect(() => {
   //   if (selected) {
   //     if (
@@ -128,48 +125,9 @@ function Tab({
   //   }
   // }, [tabParams, selected, tab, sessionToken, mutate]);
 
-  return isClosedAnimation ? null : (
-    <View
-      style={{
-        width: "100%",
-      }}
-    >
-      <Pressable
-        onLongPress={onLongPress}
-        disabled={disabled}
-        onPress={() => {
-          router.replace({
-            pathname: tab.slug,
-            params: {
-              ...tab.params,
-              tab: tab.id,
-            },
-          });
-          handleClose();
-          setTimeout(closeSidebarOnMobile, 300);
-        }}
-        style={({ pressed, hovered }: any) => [
-          styles.button,
-          {
-            paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
-            paddingRight: selected ? 30 : undefined,
-            borderRadius: 20,
-            height: breakpoints.md ? 50 : 50,
-            backgroundColor:
-              theme[selected ? 5 : pressed ? 5 : hovered ? 4 : 2],
-            ...(Platform.OS === "web" &&
-              selected && {
-                shadowColor: theme[1],
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowRadius: 2,
-                shadowOpacity: 1,
-              }),
-          },
-        ]}
-      >
+  const tabContent = useMemo(
+    () => (
+      <>
         {(tab.collection || tab.label) && (
           <Avatar
             disabled
@@ -234,6 +192,54 @@ function Tab({
             close
           </Icon>
         </IconButton>
+      </>
+    ),
+    [selected, tab, tabData, theme, breakpoints.md, handleDelete]
+  );
+
+  return isClosedAnimation ? null : (
+    <View
+      style={{
+        width: "100%",
+      }}
+    >
+      <Pressable
+        onLongPress={onLongPress}
+        disabled={disabled}
+        onPress={() => {
+          router.replace({
+            pathname: tab.slug,
+            params: {
+              ...tab.params,
+              tab: tab.id,
+            },
+          });
+          handleClose();
+          setTimeout(closeSidebarOnMobile, 300);
+        }}
+        style={({ pressed, hovered }: any) => [
+          styles.button,
+          {
+            paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
+            paddingRight: selected ? 30 : undefined,
+            borderRadius: 20,
+            height: breakpoints.md ? 50 : 50,
+            backgroundColor:
+              theme[selected ? 5 : pressed ? 5 : hovered ? 4 : 2],
+            ...(Platform.OS === "web" &&
+              selected && {
+                shadowColor: theme[1],
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowRadius: 2,
+                shadowOpacity: 1,
+              }),
+          },
+        ]}
+      >
+        {tabContent}
       </Pressable>
     </View>
   );

@@ -10,6 +10,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
           stream: "view_agenda",
           grid: "view_cozy",
           workload: "exercise",
+          matrix: "target",
         }[params.type]),
       name: (params) => ["Everything", params.type],
     },

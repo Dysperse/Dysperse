@@ -3,7 +3,7 @@ import { FocusPanelProvider } from "@/components/focus-panel/context";
 import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
-import { Sidebar } from "@/components/layout/sidebar";
+import Sidebar from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -25,7 +25,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Platform,
   StatusBar,
@@ -46,6 +46,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import { SidebarContext } from "../../components/layout/sidebar/context";
@@ -79,6 +80,8 @@ const AppContainer = ({ children }) => {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const progress = useDrawerProgress();
+  const insets = useSafeAreaInsets();
+
   const animatedStyle = useAnimatedStyle(() => {
     return breakpoints.md
       ? { flex: 1 }
@@ -92,15 +95,28 @@ const AppContainer = ({ children }) => {
           borderRadius: interpolate(progress.value, [0, 1], [20, 30]),
           borderColor: theme[5],
           overflow: "hidden",
+          marginTop: interpolate(progress.value, [0, 1], [0, insets.top]),
+          marginBottom: interpolate(progress.value, [0, 1], [0, insets.bottom]),
           transform: [
             {
-              scale: interpolate(progress.value, [0, 1], [1, 0.93]),
+              scale: interpolate(progress.value, [0, 1], [1, 0.95]),
             },
           ],
         };
   });
 
-  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
+  const marginTopStyle = useAnimatedStyle(() => {
+    return {
+      marginTop: interpolate(progress.value, [0, 1], [0, -insets.top]),
+    };
+  });
+
+  return (
+    <Animated.View style={animatedStyle}>
+      <Animated.View style={marginTopStyle} />
+      {children}
+    </Animated.View>
+  );
 };
 
 export default function AppLayout() {
@@ -110,6 +126,11 @@ export default function AppLayout() {
   const isDark = useColorScheme() === "dark";
   const breakpoints = useResponsiveBreakpoints();
 
+  const closeSidebarOnMobile = useCallback(() => {
+    if (!breakpoints.md) {
+      setOpen(false);
+    }
+  }, []);
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
   const theme = useColor(
@@ -195,11 +216,7 @@ export default function AppLayout() {
                           openSidebar: () => setOpen(true),
 
                           SIDEBAR_WIDTH,
-                          closeSidebarOnMobile: () => {
-                            if (!breakpoints.md) {
-                              setOpen(false);
-                            }
-                          },
+                          closeSidebarOnMobile,
                         }}
                       >
                         <ThemeProvider

@@ -7,6 +7,7 @@ const everythingKeys = {
   stream: "view_agenda",
   grid: "view_cozy",
   workload: "exercise",
+  matrix: "target",
 };
 export const paletteItems = (
   collections,

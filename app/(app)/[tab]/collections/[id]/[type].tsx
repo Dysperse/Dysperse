@@ -905,6 +905,9 @@ export default function Page() {
     case "workload":
       content = comingSoon;
       break;
+    case "matrix":
+      content = comingSoon;
+      break;
     default:
       content = <Text>404: {type}</Text>;
       break;

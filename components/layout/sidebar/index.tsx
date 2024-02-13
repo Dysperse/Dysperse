@@ -211,13 +211,7 @@ const JumpToButton = memo(function JumpToButton() {
   );
 });
 
-export const LogoButton = memo(function LogoButton({
-  toggleHidden,
-  isHidden,
-}: {
-  toggleHidden: (v) => void;
-  isHidden: boolean;
-}) {
+export const LogoButton = memo(function LogoButton() {
   const theme = useColorTheme();
   const { error } = useUser();
   const breakpoints = useResponsiveBreakpoints();
@@ -268,7 +262,7 @@ export const LogoButton = memo(function LogoButton({
             icon: "settings",
             text: "Settings",
             callback: () => {
-              router.push("/settings");
+              router.replace("/settings");
               setTimeout(closeSidebarOnMobile, 300);
             },
           },
@@ -409,7 +403,7 @@ const Header = memo(function Header() {
   );
 });
 
-export function Sidebar() {
+const Sidebar = () => {
   const insets = useSafeAreaInsets();
   const { SIDEBAR_WIDTH, desktopCollapsed } = useSidebarContext();
   const theme = useColorTheme();
@@ -443,7 +437,7 @@ export function Sidebar() {
 
   const pathname = usePathname();
 
-  const children = (
+  return (
     <View
       style={[
         {
@@ -479,34 +473,13 @@ export function Sidebar() {
         ]}
       >
         <View style={[styles.header, { marginTop: insets.top }]}>
-          <LogoButton toggleHidden={toggleHidden} isHidden={isHidden} />
+          <LogoButton />
           <Header />
         </View>
         <OpenTabsList />
       </Animated.View>
     </View>
   );
+};
 
-  return (
-    <>
-      {!breakpoints.md && (
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: width - SIDEBAR_WIDTH,
-              height: "100%",
-              zIndex: 99,
-            },
-          ]}
-        >
-          <Pressable onPress={toggleHidden} style={{ flex: 1 }} />
-        </Animated.View>
-      )}
-
-      {children}
-    </>
-  );
-}
+export default memo(Sidebar);

@@ -55,6 +55,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     { icon: "view_agenda", text: "Stream" },
     { icon: "view_cozy", text: "Grid" },
     { icon: "exercise", text: "Workload" },
+    { icon: "target", text: "Matrix" },
   ].map((i) => ({
     ...i,
     selected: i.text.toLowerCase() === type,
@@ -252,10 +253,10 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                     },
               ]}
             >
-              <Icon style={{ color: theme[12] }} size={20}>
+              <Icon style={{ color: theme[11] }} size={20}>
                 {options.find((i) => i.selected)?.icon || "calendar_today"}
               </Icon>
-              <Icon style={{ marginLeft: -4, color: theme[12] }}>
+              <Icon style={{ marginLeft: -4, color: theme[11] }}>
                 expand_more
               </Icon>
             </IconButton>

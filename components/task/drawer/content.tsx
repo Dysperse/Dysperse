@@ -134,7 +134,7 @@ export function TaskDrawerContent({ handleClose }) {
         </View>
       </View>
       <BottomSheetScrollView>
-        <View style={{ paddingBottom: 20, paddingHorizontal: 20 }}>
+        <View style={{ paddingBottom: 100, paddingHorizontal: 20 }}>
           <View
             style={{
               paddingHorizontal: 10,
