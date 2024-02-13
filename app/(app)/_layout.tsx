@@ -238,7 +238,7 @@ export default function AppLayout() {
                               }}
                               overlayStyle={{
                                 backgroundColor: desktopCollapsed
-                                  ? "rgba(0,0,0,0.4)"
+                                  ? "rgba(0,0,0,0.2)"
                                   : "transparent",
                               }}
                               renderDrawerContent={() => (
