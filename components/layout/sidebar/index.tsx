@@ -451,7 +451,7 @@ export function Sidebar() {
           backgroundColor: theme[2],
         },
         desktopCollapsed && {
-          shadowColor: theme[2],
+          shadowColor: theme[1],
           shadowRadius: 50,
         },
         pathname.includes("settings") &&
