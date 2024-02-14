@@ -7,6 +7,7 @@ interface EntityProps {
   onTaskUpdate: any;
   openColumnMenu: any;
   showLabel?: boolean;
+  isTrash?: boolean;
 }
 
 export const Entity = ({
@@ -14,6 +15,7 @@ export const Entity = ({
   item,
   openColumnMenu,
   showLabel = false,
+  isTrash = false,
 }: EntityProps) => {
   const Container = ({ children }: { children: JSX.Element }) => {
     return (
@@ -31,14 +33,16 @@ export const Entity = ({
   switch (item.type) {
     case "TASK":
       return (
-        <Container>
-          <Task
-            showLabel={showLabel}
-            onTaskUpdate={onTaskUpdate}
-            task={item}
-            openColumnMenu={openColumnMenu}
-          />
-        </Container>
+        (!item?.trash || isTrash) && (
+          <Container>
+            <Task
+              showLabel={showLabel}
+              onTaskUpdate={onTaskUpdate}
+              task={item}
+              openColumnMenu={openColumnMenu}
+            />
+          </Container>
+        )
       );
     default:
       return (

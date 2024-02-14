@@ -76,7 +76,7 @@ export default function Trash() {
         </View>
         <DeleteAllButton handleDelete={handleDelete} />
       </View>
-      {data ? (
+      {Array.isArray(data) ? (
         <FlashList
           data={data}
           style={{
@@ -86,7 +86,6 @@ export default function Trash() {
           contentContainerStyle={{
             paddingHorizontal: 35,
           }}
-          key={data.length}
           ListEmptyComponent={() => (
             <View
               style={{
@@ -110,6 +109,7 @@ export default function Trash() {
           renderItem={({ item }) => (
             <View style={{ maxWidth: 400, width: "100%" }}>
               <Entity
+                isTrash
                 onTaskUpdate={(newTask) => {
                   mutate(
                     data

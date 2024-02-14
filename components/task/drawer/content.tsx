@@ -71,9 +71,12 @@ export function TaskDrawerContent({ handleClose }) {
   const handleDelete = useCallback(async () => {
     try {
       const t = task.trash ? false : true;
-      updateTask("trash", t);
       handleClose();
-      mutateList({ ...task, trash: t });
+      updateTask("trash", t);
+      setTimeout(() => {
+        alert(t);
+        mutateList({ ...task, trash: t });
+      }, 0);
       Toast.show({
         type: "success",
         text1: t ? "Task restored!" : "Task deleted!",
