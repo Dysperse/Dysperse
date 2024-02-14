@@ -424,7 +424,12 @@ const Sidebar = () => {
   }));
 
   const toggleHidden = useCallback(() => {
-    setDesktopCollapsed((prev) => !prev);
+    if (Platform.OS === "web") {
+      setDesktopCollapsed((prev) => {
+        localStorage.setItem("desktopCollapsed", (!prev).toString());
+        return !prev;
+      });
+    }
   }, [setDesktopCollapsed]);
 
   useHotkeys("`", toggleHidden, {});
@@ -435,16 +440,10 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    localStorage.setItem(
-      "desktopCollapsed",
-      desktopCollapsed ? "true" : "false"
-    );
-  }, [desktopCollapsed]);
-
-  useEffect(() => {
-    console.log(localStorage.getItem("desktopCollapsed"));
-    if (localStorage.getItem("desktopCollapsed") === "true")
-      setDesktopCollapsed(true);
+    if (Platform.OS === "web") {
+      if (localStorage.getItem("desktopCollapsed") === "true")
+        setDesktopCollapsed(true);
+    }
   }, [setDesktopCollapsed]);
 
   return (

@@ -9,7 +9,5 @@ export const columnStyles = StyleSheet.create({
     padding: 20,
     paddingHorizontal: 25,
     height: 90,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
 });

@@ -1,0 +1,126 @@
+import { columnStyles } from "@/components/collections/columnStyles";
+import { useCollectionContext } from "@/components/collections/context";
+import CreateTask from "@/components/task/create";
+import { omit } from "@/helpers/omit";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Emoji from "@/ui/Emoji";
+import IconButton from "@/ui/IconButton";
+import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import { memo } from "react";
+import { View } from "react-native";
+import { ColumnMenuTrigger } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
+import { useKanbanContext } from "./context";
+
+export const KanbanHeader = memo(function KanbanHeader({
+  label,
+  grid,
+}: {
+  grid?: boolean;
+  label: {
+    id: string;
+    emoji: string;
+    color: string;
+    name: string;
+    entitiesLength: number;
+  };
+}) {
+  const breakpoints = useResponsiveBreakpoints();
+  const { mutate } = useCollectionContext();
+  const theme = useColorTheme();
+  const { previousColumn, nextColumn, columnsLength, currentColumn } =
+    useKanbanContext();
+
+  const onEntityCreate = (newTask) => {
+    if (!newTask) return;
+    mutate(
+      (data) => {
+        const labelIndex = data.labels.findIndex((l) => l.id === label.id);
+        if (labelIndex === -1) return data;
+        data.labels[labelIndex].entities.push(newTask);
+        return {
+          ...data,
+          labels: data.labels.map((l) =>
+            l.id === label.id ? { ...l, entities: [...l.entities, newTask] } : l
+          ),
+        };
+      },
+      {
+        revalidate: false,
+      }
+    );
+  };
+
+  return (
+    <View
+      style={[
+        columnStyles.header,
+        grid && {
+          height: 60,
+        },
+        breakpoints.md
+          ? {
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }
+          : {
+              borderTopWidth: 1,
+              borderTopColor: theme[6],
+              backgroundColor: theme[3],
+              height: 80,
+            },
+      ]}
+    >
+      <Emoji emoji={label.emoji || "1f4ad"} size={grid ? 25 : 35} />
+      <View
+        style={{
+          flex: 1,
+          ...(grid && { flexDirection: "row", gap: 20, alignItems: "center" }),
+        }}
+      >
+        <Text style={{ fontSize: 20 }} weight={800} numberOfLines={1}>
+          {label.name || "Other"}
+        </Text>
+        <Text weight={200} numberOfLines={1}>
+          {label.entitiesLength}
+          {!grid && ` item${label.entitiesLength !== 1 ? "s" : ""}`}
+        </Text>
+      </View>
+      <View style={{ flexDirection: "row", marginRight: -10 }}>
+        {!breakpoints.md && (
+          <IconButton
+            onPress={() => previousColumn()}
+            size={50}
+            icon="arrow_back_ios_new"
+            disabled={currentColumn === 0}
+            style={[currentColumn === 0 && { opacity: 0.5 }]}
+          />
+        )}
+        {!breakpoints.md && (
+          <IconButton
+            onPress={() => nextColumn()}
+            size={50}
+            icon="arrow_forward_ios"
+            disabled={currentColumn === columnsLength - 1}
+            style={[currentColumn === columnsLength - 1 && { opacity: 0.5 }]}
+          />
+        )}
+      </View>
+      {grid && (
+        <>
+          {label?.id && (
+            <ColumnMenuTrigger label={label}>
+              <IconButton icon="more_horiz" />
+            </ColumnMenuTrigger>
+          )}
+          <CreateTask
+            defaultValues={{ label: omit(["entities"], label) }}
+            mutateList={onEntityCreate}
+          >
+            <IconButton icon="add" variant="filled" />
+          </CreateTask>
+        </>
+      )}
+    </View>
+  );
+});
