@@ -442,7 +442,10 @@ const Sidebar = () => {
   }, [setDesktopCollapsed]);
 
   useHotkeys("`", toggleHidden, {});
-  useHotkeys("ctrl+comma", () => router.push("/settings"));
+  useHotkeys("ctrl+comma", () => {
+    if (pathname.includes("settings")) return;
+    router.push("/settings");
+  });
 
   const breakpoints = useResponsiveBreakpoints();
 
