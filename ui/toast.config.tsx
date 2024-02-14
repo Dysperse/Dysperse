@@ -13,7 +13,7 @@ const toastStyles = (theme): StyleProp<ViewStyle> => ({
 });
 
 const toastContainerStyles: StyleProp<ViewStyle> = {
-  marginTop: 20,
+  marginTop: 10,
 };
 
 const text1Props = (theme) => ({

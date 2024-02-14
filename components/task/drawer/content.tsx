@@ -74,7 +74,7 @@ export function TaskDrawerContent({ handleClose }) {
       updateTask("trash", t);
       Toast.show({
         type: "success",
-        text1: !t ? "Task deleted!" : "Task restored!",
+        text1: t ? "Task deleted!" : "Task restored!",
       });
     } catch (e) {
       Toast.show({
