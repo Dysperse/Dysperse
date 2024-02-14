@@ -133,7 +133,7 @@ export function TaskDrawerContent({ handleClose }) {
           <TaskAttachmentButton />
         </View>
       </View>
-      <BottomSheetScrollView>
+      <BottomSheetScrollView style={{ maxHeight: 500 }}>
         <View style={{ paddingBottom: 100, paddingHorizontal: 20 }}>
           <View
             style={{
