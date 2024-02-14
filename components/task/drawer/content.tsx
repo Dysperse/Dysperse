@@ -23,6 +23,7 @@ import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
 
 function TaskNameInput() {
+  const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
@@ -36,13 +37,13 @@ function TaskNameInput() {
       onChangeText={(text) => setName(text.replaceAll("\n", ""))}
       value={name}
       style={{
-        fontFamily: "body_200",
+        fontFamily: "body_800",
         color: theme[12],
         paddingHorizontal: 20,
         marginVertical: 20,
         textAlign: "center",
       }}
-      fontSize={50}
+      fontSize={breakpoints.md ? 50 : 30}
     />
   );
 }
@@ -133,7 +134,9 @@ export function TaskDrawerContent({ handleClose }) {
           <TaskAttachmentButton />
         </View>
       </View>
-      <BottomSheetScrollView style={{ maxHeight: 500 }}>
+      <BottomSheetScrollView
+        style={{ maxHeight: breakpoints.md ? undefined : 500 }}
+      >
         <View style={{ paddingBottom: 100, paddingHorizontal: 20 }}>
           <View
             style={{
