@@ -7,6 +7,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Icon from "@/ui/Icon";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
@@ -78,6 +79,15 @@ export function Stream() {
       }
     );
   };
+
+  const filteredTasks = [
+    ...data.entities,
+    ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
+  ].filter((t) => {
+    if (view === "backlog") return !t.completionInstances.length;
+    if (view === "upcoming") return dayjs(t.due).isAfter(dayjs());
+    if (view === "completed") return t.completionInstances.length;
+  });
 
   return (
     <>
@@ -172,21 +182,7 @@ export function Stream() {
             </View>
           </>
         }
-        data={[
-          ...data.entities,
-          ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
-        ]
-          .sort((a, b) =>
-            a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
-          )
-          .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
-          .sort((x, y) =>
-            x.completionInstances.length === y.completionInstances.length
-              ? 0
-              : x.completionInstances.length === 0
-              ? -1
-              : 0
-          )}
+        data={filteredTasks}
         // estimatedItemSize={200}
         initialNumToRender={10}
         contentContainerStyle={{
