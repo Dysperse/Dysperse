@@ -30,10 +30,13 @@ export function TaskDrawer({ mutateList, children, id }: any) {
     setOpen(true);
   }, []);
 
-  const handleClose = useCallback(() => {
-    ref.current?.forceClose();
-    mutateList(data);
-  }, [mutateList, data]);
+  const handleClose = useCallback(
+    (shouldMutate = true) => {
+      ref.current?.forceClose();
+      if (shouldMutate) mutateList(data);
+    },
+    [mutateList, data]
+  );
 
   const trigger = cloneElement(children, { onPress: handleOpen });
   const breakpoints = useResponsiveBreakpoints();
@@ -96,7 +99,12 @@ export function TaskDrawer({ mutateList, children, id }: any) {
           },
         })}
       >
-        <Pressable onPress={handleClose} style={{ flex: 1, height: "100%" }}>
+        <Pressable
+          onPress={() => {
+            handleClose();
+          }}
+          style={{ flex: 1, height: "100%" }}
+        >
           <Pressable
             onPress={(e) => e.stopPropagation()}
             style={

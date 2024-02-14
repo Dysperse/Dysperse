@@ -80,7 +80,10 @@ function BottomSheet(props: DBottomSheetProps) {
       onChange={(e) => {
         if (e === -1) props.onClose();
       }}
-      containerStyle={[styles.container, { maxWidth: props.maxWidth || 500 }]}
+      containerStyle={[
+        styles.container,
+        { maxWidth: props.maxWidth || 500 } as any,
+      ]}
       backgroundStyle={[styles.background, { backgroundColor: theme[2] }]}
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}

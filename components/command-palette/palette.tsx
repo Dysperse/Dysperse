@@ -200,6 +200,7 @@ const PaletteHeader = memo(function PaletteHeader({
   query: string;
   setQuery: (e) => void;
   handleClose: () => void;
+  preview: any;
   setPreview: (e) => void;
   filtered: any[];
 }) {

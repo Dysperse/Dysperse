@@ -9,9 +9,9 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { FlashList } from "@shopify/flash-list";
 import { useCallback } from "react";
 import { View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -49,6 +49,8 @@ export default function Trash() {
     }
   }, [session, data, mutate]);
 
+  console.log(data);
+
   return (
     <ContentWrapper>
       <View
@@ -77,8 +79,8 @@ export default function Trash() {
         <DeleteAllButton handleDelete={handleDelete} />
       </View>
       {Array.isArray(data) ? (
-        <FlashList
-          data={data}
+        <FlatList
+          data={data.filter((t) => t.trash)}
           style={{
             flex: 1,
             height: "100%",
@@ -109,13 +111,11 @@ export default function Trash() {
           renderItem={({ item }) => (
             <View style={{ maxWidth: 400, width: "100%" }}>
               <Entity
-                isTrash
+                showLabel
                 onTaskUpdate={(newTask) => {
-                  mutate(
-                    data
-                      .map((d) => (d.id === newTask.id ? newTask : d))
-                      .filter((e) => e.trash),
-                    { revalidate: false }
+                  console.log("New task recieved", newTask);
+                  mutate((oldData) =>
+                    oldData.map((t) => (t.id === newTask.id ? newTask : t))
                   );
                 }}
                 openColumnMenu={() => {}}
@@ -123,6 +123,7 @@ export default function Trash() {
               />
             </View>
           )}
+          //   ={100}
           keyExtractor={(item: any) => item.id}
         />
       ) : error ? (

@@ -1,5 +1,5 @@
 import { ContentWrapper } from "@/components/layout/content";
-import { settingsStyles } from "@/components/settings/layout";
+import { settingStyles } from "@/components/settings/settingsStyles";
 import themes from "@/components/themes.json";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
@@ -206,8 +206,8 @@ export default function Page() {
 
   return (
     <ContentWrapper>
-      <ScrollView contentContainerStyle={settingsStyles.contentContainer}>
-        <Text heading style={settingsStyles.heading}>
+      <ScrollView>
+        <Text heading style={settingStyles.heading}>
           Appearance
         </Text>
         <ThemePicker>

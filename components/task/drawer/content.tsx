@@ -70,16 +70,11 @@ export function TaskDrawerContent({ handleClose }) {
 
   const handleDelete = useCallback(async () => {
     try {
-      const t = task.trash ? false : true;
-      handleClose();
+      const t = !task.trash;
       updateTask("trash", t);
-      setTimeout(() => {
-        alert(t);
-        mutateList({ ...task, trash: t });
-      }, 0);
       Toast.show({
         type: "success",
-        text1: t ? "Task restored!" : "Task deleted!",
+        text1: !t ? "Task deleted!" : "Task restored!",
       });
     } catch (e) {
       Toast.show({
@@ -87,7 +82,7 @@ export function TaskDrawerContent({ handleClose }) {
         text1: "Something went wrong. Please try again later",
       });
     }
-  }, [handleClose, updateTask, mutateList, task]);
+  }, [handleClose, updateTask, task]);
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {
@@ -178,7 +173,7 @@ export function TaskDrawerContent({ handleClose }) {
             <LabelPicker
               label={task.labelId}
               setLabel={(e) => {
-                updateTask("labelId", e.id);
+                updateTask("labelId", (e as any).id);
                 updateTask("label", e, false);
               }}
               onClose={() => {}}
