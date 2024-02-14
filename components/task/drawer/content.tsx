@@ -70,12 +70,13 @@ export function TaskDrawerContent({ handleClose }) {
 
   const handleDelete = useCallback(async () => {
     try {
-      updateTask("trash", true);
+      const t = task.trash ? false : true;
+      updateTask("trash", t);
       handleClose();
-      mutateList({ ...task, trash: true });
+      mutateList({ ...task, trash: t });
       Toast.show({
         type: "success",
-        text1: "Task deleted!",
+        text1: t ? "Task restored!" : "Task deleted!",
       });
     } catch (e) {
       Toast.show({
@@ -129,7 +130,9 @@ export function TaskDrawerContent({ handleClose }) {
             size={55}
             onPress={handleDelete}
           >
-            <Icon size={27}>delete</Icon>
+            <Icon size={27}>
+              {task.trash ? "restore_from_trash" : "delete"}
+            </Icon>
           </IconButton>
           <TaskAttachmentButton />
         </View>

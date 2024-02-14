@@ -51,7 +51,7 @@ function BottomSheetEscapeHandler({ animationConfigs }) {
   return null;
 }
 
-const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
+function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
 
   const animationConfigs = useBottomSheetSpringConfigs({
@@ -97,6 +97,6 @@ const BottomSheet = memo(function BottomSheet(props: DBottomSheetProps) {
       </View>
     </BottomSheetModal>
   );
-});
+}
 
-export default BottomSheet;
+export default memo(BottomSheet);

@@ -16,11 +16,13 @@ const Task = memo(function Task({
   onTaskUpdate,
   openColumnMenu,
   showLabel,
+  isTrashed,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
   openColumnMenu: () => void;
   showLabel?: boolean;
+  isTrashed?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange", useColorScheme() === "dark");

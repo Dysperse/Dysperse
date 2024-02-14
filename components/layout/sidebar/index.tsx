@@ -270,6 +270,15 @@ export const LogoButton = memo(function LogoButton() {
         }
         options={[
           {
+            icon: "delete",
+            text: "Trash",
+            callback: () => {
+              router.push("/trash");
+              setTimeout(closeSidebarOnMobile, 300);
+            },
+          },
+          { divider: true, key: "1" },
+          {
             icon: "settings",
             text: "Settings",
             callback: () => {

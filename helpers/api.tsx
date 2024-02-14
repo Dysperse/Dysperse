@@ -2,7 +2,7 @@ export function sendApiRequest(
   session,
   method: "GET" | "POST" | "PUT" | "DELETE",
   path,
-  params,
+  params = {},
   options = {},
   etc = { host: process.env.EXPO_PUBLIC_API_URL }
 ) {
