@@ -11,7 +11,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -175,20 +174,17 @@ const SyncButton = memo(function SyncButton() {
       </Portal>
       <Pressable
         onPress={handleSync}
+        disabled={isLoading}
         style={({ pressed }) => [
           styles.button,
           {
             borderColor: theme[5],
             backgroundColor: theme[1],
-            opacity: pressed ? 0.5 : 1,
+            opacity: isLoading ? 0.4 : pressed ? 0.5 : 1,
           },
         ]}
       >
-        {isLoading ? (
-          <Spinner style={{ transform: "scale(.8)" }} size={24} />
-        ) : (
-          <Icon>sync</Icon>
-        )}
+        <Icon>sync</Icon>
       </Pressable>
     </>
   );
