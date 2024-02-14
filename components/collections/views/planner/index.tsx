@@ -19,6 +19,7 @@ function Agenda() {
   const breakpoints = useResponsiveBreakpoints();
   const params = useLocalSearchParams();
   const { type, start, end } = usePlannerContext();
+
   const { data, mutate, error } = useSWR([
     "space/collections/collection/planner",
     {

@@ -251,6 +251,7 @@ export default function Page() {
     </View>
   );
   let content = null;
+
   switch (type as CollectionType) {
     case "planner":
       content = <Perspectives />;

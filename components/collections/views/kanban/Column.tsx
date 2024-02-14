@@ -98,6 +98,8 @@ export function Column(props: ColumnProps) {
           ? {
               position: "relative",
               height: "100%",
+              width: "100%",
+              maxWidth: "100%",
             }
           : {
               ...(breakpoints.md && {

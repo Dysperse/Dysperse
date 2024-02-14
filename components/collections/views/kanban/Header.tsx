@@ -10,6 +10,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo } from "react";
 import { View } from "react-native";
 import { ColumnMenuTrigger } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
+import { useGridContext } from "../grid/context";
 import { useKanbanContext } from "./context";
 
 export const KanbanHeader = memo(function KanbanHeader({
@@ -28,7 +29,10 @@ export const KanbanHeader = memo(function KanbanHeader({
   const breakpoints = useResponsiveBreakpoints();
   const { mutate } = useCollectionContext();
   const theme = useColorTheme();
-  const { setCurrentColumn, currentColumn, columnsLength } = useKanbanContext();
+  const { setCurrentColumn, currentColumn, columnsLength } =
+    useKanbanContext() || {};
+
+  const { setCurrentColumn: setCurrentColumn_grid } = useGridContext() || {};
 
   const onEntityCreate = (newTask) => {
     if (!newTask) return;
@@ -88,32 +92,45 @@ export const KanbanHeader = memo(function KanbanHeader({
       <View style={{ flexDirection: "row", marginRight: -10 }}>
         {label?.id && (
           <ColumnMenuTrigger label={label}>
-            <IconButton size={40} icon="more_horiz" />
+            <IconButton size={40} icon={grid ? "edit" : "more_horiz"} />
           </ColumnMenuTrigger>
         )}
-        {!breakpoints.md && (
+        {grid ? (
           <IconButton
             size={40}
-            onPress={() =>
-              setCurrentColumn((d) => (d === -1 ? columnsLength - 1 : d - 1))
-            }
-            icon="arrow_back_ios_new"
-            disabled={currentColumn === 0}
-            style={[currentColumn === 0 && { opacity: 0.5 }]}
+            icon="expand_all"
+            onPress={() => setCurrentColumn_grid("HOME")}
+            style={{ marginRight: -5 }}
           />
-        )}
-        {!breakpoints.md && (
-          <IconButton
-            size={40}
-            onPress={() =>
-              setCurrentColumn((d) =>
-                d === -1 ? -1 : d === columnsLength - 1 ? -1 : d + 1
-              )
-            }
-            icon="arrow_forward_ios"
-            disabled={currentColumn === -1}
-            style={[currentColumn === -1 && { opacity: 0.5 }]}
-          />
+        ) : (
+          <>
+            {!breakpoints.md && (
+              <IconButton
+                size={40}
+                onPress={() =>
+                  setCurrentColumn((d) =>
+                    d === -1 ? columnsLength - 1 : d - 1
+                  )
+                }
+                icon="arrow_back_ios_new"
+                disabled={currentColumn === 0}
+                style={[currentColumn === 0 && { opacity: 0.5 }]}
+              />
+            )}
+            {!breakpoints.md && (
+              <IconButton
+                size={40}
+                onPress={() =>
+                  setCurrentColumn((d) =>
+                    d === -1 ? -1 : d === columnsLength - 1 ? -1 : d + 1
+                  )
+                }
+                icon="arrow_forward_ios"
+                disabled={currentColumn === -1}
+                style={[currentColumn === -1 && { opacity: 0.5 }]}
+              />
+            )}
+          </>
         )}
       </View>
       {grid && (
@@ -122,7 +139,16 @@ export const KanbanHeader = memo(function KanbanHeader({
             defaultValues={{ label: omit(["entities"], label) }}
             mutateList={onEntityCreate}
           >
-            <IconButton size={40} icon="add" variant="filled" />
+            <IconButton
+              size={40}
+              style={{
+                marginRight: -10,
+                backgroundColor: theme[4],
+                marginLeft: 5,
+              }}
+              icon="add"
+              variant="filled"
+            />
           </CreateTask>
         </>
       )}
