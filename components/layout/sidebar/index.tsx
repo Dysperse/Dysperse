@@ -19,7 +19,7 @@ import Logo from "@/ui/logo";
 import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { router, usePathname } from "expo-router";
-import React, { memo, useCallback, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Linking,
   Platform,
@@ -433,6 +433,19 @@ const Sidebar = () => {
   const breakpoints = useResponsiveBreakpoints();
 
   const pathname = usePathname();
+
+  useEffect(() => {
+    localStorage.setItem(
+      "desktopCollapsed",
+      desktopCollapsed ? "true" : "false"
+    );
+  }, [desktopCollapsed]);
+
+  useEffect(() => {
+    console.log(localStorage.getItem("desktopCollapsed"));
+    if (localStorage.getItem("desktopCollapsed") === "true")
+      setDesktopCollapsed(true);
+  }, [setDesktopCollapsed]);
 
   return (
     <View

@@ -144,7 +144,7 @@ export default function AppLayout() {
     NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
   }
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(!breakpoints.md);
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
   useEffect(() => {
