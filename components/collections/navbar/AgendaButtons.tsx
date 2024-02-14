@@ -52,7 +52,7 @@ export function AgendaButtons() {
         !breakpoints.md && {
           backgroundColor: theme[3],
           paddingHorizontal: 15,
-          borderTopColor: theme[6],
+          borderTopColor: theme[5],
           borderTopWidth: 1,
         },
         {

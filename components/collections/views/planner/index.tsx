@@ -36,6 +36,7 @@ function Agenda() {
           dayjs(params.start as any).isBetween(col.start, col.end, null, "[]")
         )
       : null;
+
   const agendaFallback = (
     <View
       style={{
@@ -129,7 +130,7 @@ function Agenda() {
               ({ maxHeight: "calc(100dvh - 120px)" } as any)),
           }}
         >
-          <AgendaSelector type={type} data={data} start={column?.start} />
+          <AgendaSelector data={data} />
           {column && <Column mutate={mutate} column={column} />}
         </View>
       ) : (
