@@ -1,10 +1,10 @@
-import { useAgendaContext } from "@/components/collections/views/agenda-context";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { usePlannerContext } from "./context";
 
 const buttonTextFormats = (type: string) => ({
   small: {
@@ -123,7 +123,7 @@ const SelectionButton = memo(function SelectionButton({
 
 export function AgendaSelector({ data }) {
   const theme = useColorTheme();
-  const { type, start } = useAgendaContext();
+  const { type } = usePlannerContext();
 
   return (
     <View

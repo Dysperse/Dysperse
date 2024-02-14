@@ -1,6 +1,5 @@
 import { Entity } from "@/components/collections/entity";
-import { useAgendaContext } from "@/components/collections/views/agenda-context";
-import { Header } from "@/components/collections/views/agenda/Header";
+import { Header } from "@/components/collections/views/planner/Header";
 import Task from "@/components/task";
 import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
@@ -27,6 +26,7 @@ import {
 } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { KeyedMutator } from "swr";
+import { usePlannerContext } from "./context";
 
 const styles = StyleSheet.create({
   header: {
@@ -218,7 +218,7 @@ function ReorderModal({ onTaskUpdate, column, children }) {
 }
 
 function ColumnMenu({ column, children, onTaskUpdate, columnMenuRef }) {
-  const { type } = useAgendaContext();
+  const { type } = usePlannerContext();
   return (
     <MenuPopover
       trigger={children}
@@ -242,7 +242,7 @@ export function Column({
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const pathname = usePathname();
-  const { id: collectionId } = useAgendaContext();
+  const { id: collectionId } = usePlannerContext();
 
   const [refreshing, setRefreshing] = React.useState(false);
 

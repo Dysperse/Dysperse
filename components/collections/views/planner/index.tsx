@@ -1,5 +1,5 @@
-import { Column } from "@/components/collections/views/agenda/Column";
-import { AgendaSelector } from "@/components/collections/views/agenda/Selector";
+import { Column } from "@/components/collections/views/planner/Column";
+import { AgendaSelector } from "@/components/collections/views/planner/Selector";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Skeleton from "@/ui/Skeleton";
@@ -11,16 +11,16 @@ import React, { useMemo } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
-import { AgendaContext, useAgendaContext } from "./agenda-context";
+import { AgendaContext, usePlannerContext } from "./context";
 
 function Agenda() {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const params = useLocalSearchParams();
-  const { type, start, end } = useAgendaContext();
+  const { type, start, end } = usePlannerContext();
   const { data, mutate, error } = useSWR([
-    "space/collections/collection/agenda",
+    "space/collections/collection/planner",
     {
       start: start.toISOString(),
       end: end.toISOString(),

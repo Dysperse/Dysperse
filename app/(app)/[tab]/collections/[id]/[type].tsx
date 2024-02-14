@@ -6,8 +6,8 @@ import {
 } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { CollectionNavbar } from "@/components/collections/navbar";
-import { Perspectives } from "@/components/collections/views/agenda";
-import { ColumnEmptyComponent } from "@/components/collections/views/agenda/Column";
+import { Perspectives } from "@/components/collections/views/planner";
+import { ColumnEmptyComponent } from "@/components/collections/views/planner/Column";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { ContentWrapper } from "@/components/layout/content";
 import CreateTask from "@/components/task/create";
@@ -891,7 +891,7 @@ export default function Page() {
   );
   let content = null;
   switch (type as CollectionType) {
-    case "agenda":
+    case "planner":
       content = <Perspectives />;
       break;
     case "kanban":
@@ -907,6 +907,9 @@ export default function Page() {
       content = comingSoon;
       break;
     case "matrix":
+      content = comingSoon;
+      break;
+    case "calendar":
       content = comingSoon;
       break;
     default:

@@ -54,7 +54,7 @@ const Logo = ({ size, color }: { size: number; color?: string }) => {
         />
       </Svg>
     );
-  }, [size, color]);
+  }, [size, theme]);
 
   return memoizedSvg;
 };

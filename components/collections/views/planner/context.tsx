@@ -15,4 +15,4 @@ export const AgendaContext = createContext<AgendaContextProps>({
   id: "",
 });
 
-export const useAgendaContext = () => useContext(AgendaContext);
+export const usePlannerContext = () => useContext(AgendaContext);

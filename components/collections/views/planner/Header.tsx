@@ -1,13 +1,13 @@
 import { columnStyles } from "@/components/collections/columnStyles";
-import { useAgendaContext } from "@/components/collections/views/agenda-context";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React from "react";
 import { View } from "react-native";
+import { usePlannerContext } from "./context";
 
 export function Header({ start, end }) {
-  const { type } = useAgendaContext();
+  const { type } = usePlannerContext();
   const isToday = dayjs().isBetween(start, end);
 
   const formats = {

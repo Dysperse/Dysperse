@@ -350,7 +350,7 @@ function JumpTo() {
     >
       <Icon size={35}>bolt</Icon>
       <Text style={{ color: theme[11], fontSize: 17 }} weight={700}>
-        Jump to a collection, label, or more...
+        Jump to...
       </Text>
     </Pressable>
   );
@@ -666,7 +666,7 @@ export default function Index() {
                   gap: 20,
                   marginTop: 20,
                   width: "100%",
-                  minHeight: 180,
+                  // minHeight: 180,
                 }}
               >
                 <PlanDayPrompt />

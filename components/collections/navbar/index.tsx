@@ -1,3 +1,4 @@
+import { collectionViews } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -49,17 +50,11 @@ export const CollectionNavbar = memo(function CollectionNavbar({
 
   const isAll = id === "all";
 
-  const options = [
-    { icon: "calendar_today", text: "Agenda" },
-    { icon: "view_kanban", text: "Kanban" },
-    { icon: "view_agenda", text: "Stream" },
-    { icon: "view_cozy", text: "Grid" },
-    { icon: "exercise", text: "Workload" },
-    { icon: "target", text: "Matrix" },
-  ].map((i) => ({
-    ...i,
-    selected: i.text.toLowerCase() === type,
-    callback: () => router.setParams({ type: i.text.toLowerCase() }),
+  const options = Object.keys(collectionViews).map((i) => ({
+    icon: collectionViews[i],
+    text: capitalizeFirstLetter(i),
+    selected: i.toLowerCase() === type,
+    callback: () => router.setParams({ type: i.toLowerCase() }),
   }));
 
   const collectionMenuOptions = [
@@ -263,7 +258,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={options}
         />
-        {type === "agenda" && breakpoints.md && <AgendaButtons />}
+        {type === "planner" && breakpoints.md && <AgendaButtons />}
         <MenuPopover
           menuProps={{
             rendererProps: { placement: "bottom" },
@@ -281,7 +276,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         <CollectionIntegrationsMenu />
         <CollectionShareMenu />
       </LinearGradient>
-      {type === "agenda" && !breakpoints.md && <AgendaButtons />}
+      {type === "planner" && !breakpoints.md && <AgendaButtons />}
     </>
   );
 });

@@ -375,11 +375,12 @@ function CommandPaletteContent({ handleClose }) {
       style={{
         backgroundColor: theme[2],
         borderWidth: 1,
+        borderColor: theme[6],
         margin: "auto",
         width: "100%",
         maxWidth: 900,
         borderRadius: 20,
-        shadowColor: "#000",
+        shadowColor: theme[1],
         shadowOffset: {
           width: 10,
           height: 10,
@@ -431,6 +432,7 @@ const CommandPalette = memo(function CommandPalette() {
         justifyContent: "center",
       }}
       {...(breakpoints.md && {
+        maxBackdropOpacity: 0.1,
         animationConfigs: {
           overshootClamping: true,
           duration: 0.0001,

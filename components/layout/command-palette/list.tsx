@@ -1,14 +1,16 @@
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 
-const everythingKeys = {
-  agenda: "calendar_today",
+export const collectionViews = {
+  planner: "view_column_2",
   kanban: "view_kanban",
   stream: "view_agenda",
   grid: "view_cozy",
   workload: "exercise",
   matrix: "target",
+  calendar: "calendar_today",
 };
+
 export const paletteItems = (
   collections,
   labels
@@ -17,10 +19,10 @@ export const paletteItems = (
     {
       title: "Everything",
       icon: "local_fire_department",
-      items: Object.keys(everythingKeys).map((key) => ({
+      items: Object.keys(collectionViews).map((key) => ({
         label: capitalizeFirstLetter(key),
         key,
-        icon: everythingKeys[key],
+        icon: collectionViews[key],
         slug: `/[tab]/collections/[id]/[type]`,
         params: { type: key, id: "all" },
       })),
@@ -37,7 +39,7 @@ export const paletteItems = (
               emoji: collection.emoji,
               data: collection,
               slug: `/[tab]/collections/[id]/[type]`,
-              params: { id: collection.id, type: "agenda" },
+              params: { id: collection.id, type: "planner" },
             }))
           : [{}]),
         {
