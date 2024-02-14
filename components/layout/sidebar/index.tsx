@@ -128,6 +128,9 @@ const SyncButton = memo(function SyncButton() {
     try {
       await sendApiRequest(session, "GET", "space/integrations/sync", {});
       Toast.show({ type: "success", text1: "Integrations are up to date!" });
+      if (Platform.OS === "web") {
+        localStorage.setItem("lastSyncedTimestamp", Date.now().toString());
+      }
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
@@ -141,6 +144,16 @@ const SyncButton = memo(function SyncButton() {
       setIsLoading(false);
     }
   }, [barWidth, windowWidth, opacity, session]);
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      const lastSynced = localStorage.getItem("lastSyncedTimestamp");
+      const diff = Date.now() - parseInt(lastSynced);
+      if (diff > 1000 * 60 * 60 || !lastSynced) {
+        handleSync();
+      }
+    }
+  }, [handleSync]);
 
   return (
     <>
