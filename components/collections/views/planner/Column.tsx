@@ -257,7 +257,7 @@ export function Column({
       (oldData) => {
         if (
           oldData
-            .find((oldColumn) => oldColumn.start === column.start)
+            ?.find((oldColumn) => oldColumn.start === column.start)
             ?.tasks.find((oldTask) => oldTask === newTask)
         ) {
           return oldData;

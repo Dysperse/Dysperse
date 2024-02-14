@@ -54,7 +54,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
       await sendApiRequest(sessionToken, "PUT", "space/entity", {
         id,
         [key]: String(value),
-      }).catch((e) => {
+      }).catch(() => {
         mutate(oldData, false);
         Toast.show({
           type: "error",

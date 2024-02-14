@@ -47,14 +47,6 @@ const OpenTabsList = memo(function OpenTabsList() {
     });
   };
 
-  // useEffect(() => {
-  //   if (data && Platform.OS !== "web") {
-  //     const index = data.findIndex((i) => i.id === tab);
-  //     if (ref.current.getCurrentIndex() !== index)
-  //       ref.current.scrollTo({ index });
-  //   }
-  // }, [data, tab]);
-
   useEffect(() => {
     if (tab && Array.isArray(data)) {
       const index = data?.findIndex((i) => i.id === tab);

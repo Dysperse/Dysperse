@@ -384,7 +384,9 @@ export function TaskDetails() {
                       task.due &&
                       (task.recurrenceRule
                         ? capitalizeFirstLetter(
-                            RRule.fromString(task.recurrenceRule).toText()
+                            RRule.fromString(
+                              task.recurrenceRule.replace(/^EXDATE.*$/, "")
+                            ).toText()
                           )
                         : "Does not repeat")
                     }
