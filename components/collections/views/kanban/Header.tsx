@@ -28,8 +28,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   const breakpoints = useResponsiveBreakpoints();
   const { mutate } = useCollectionContext();
   const theme = useColorTheme();
-  const { previousColumn, nextColumn, columnsLength, currentColumn } =
-    useKanbanContext();
+  const { setCurrentColumn, currentColumn, columnsLength } = useKanbanContext();
 
   const onEntityCreate = (newTask) => {
     if (!newTask) return;
@@ -65,7 +64,7 @@ export const KanbanHeader = memo(function KanbanHeader({
             }
           : {
               borderTopWidth: 1,
-              borderTopColor: theme[6],
+              borderTopColor: theme[5],
               backgroundColor: theme[3],
               height: 80,
             },
@@ -87,10 +86,17 @@ export const KanbanHeader = memo(function KanbanHeader({
         </Text>
       </View>
       <View style={{ flexDirection: "row", marginRight: -10 }}>
+        {label?.id && (
+          <ColumnMenuTrigger label={label}>
+            <IconButton size={40} icon="more_horiz" />
+          </ColumnMenuTrigger>
+        )}
         {!breakpoints.md && (
           <IconButton
-            onPress={() => previousColumn()}
-            size={50}
+            size={40}
+            onPress={() =>
+              setCurrentColumn((d) => (d === -1 ? columnsLength - 1 : d - 1))
+            }
             icon="arrow_back_ios_new"
             disabled={currentColumn === 0}
             style={[currentColumn === 0 && { opacity: 0.5 }]}
@@ -98,26 +104,25 @@ export const KanbanHeader = memo(function KanbanHeader({
         )}
         {!breakpoints.md && (
           <IconButton
-            onPress={() => nextColumn()}
-            size={50}
+            size={40}
+            onPress={() =>
+              setCurrentColumn((d) =>
+                d === -1 ? -1 : d === columnsLength - 1 ? -1 : d + 1
+              )
+            }
             icon="arrow_forward_ios"
-            disabled={currentColumn === columnsLength - 1}
-            style={[currentColumn === columnsLength - 1 && { opacity: 0.5 }]}
+            disabled={currentColumn === -1}
+            style={[currentColumn === -1 && { opacity: 0.5 }]}
           />
         )}
       </View>
       {grid && (
         <>
-          {label?.id && (
-            <ColumnMenuTrigger label={label}>
-              <IconButton icon="more_horiz" />
-            </ColumnMenuTrigger>
-          )}
           <CreateTask
             defaultValues={{ label: omit(["entities"], label) }}
             mutateList={onEntityCreate}
           >
-            <IconButton icon="add" variant="filled" />
+            <IconButton size={40} icon="add" variant="filled" />
           </CreateTask>
         </>
       )}

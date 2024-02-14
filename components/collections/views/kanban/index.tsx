@@ -18,9 +18,8 @@ export function Kanban() {
     <KanbanContext.Provider
       value={{
         currentColumn,
+        setCurrentColumn,
         columnsLength: data.labels.length,
-        previousColumn: () => setCurrentColumn(currentColumn - 1),
-        nextColumn: () => setCurrentColumn(currentColumn + 1),
       }}
     >
       <ScrollView

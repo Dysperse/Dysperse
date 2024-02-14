@@ -7,6 +7,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Icon from "@/ui/Icon";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -86,12 +87,29 @@ export function Stream() {
           { label: "Upcoming", value: "upcoming" },
           { label: "Completed", value: "completed" },
         ]}
-        state={[view, setView]}
+        state={[
+          view,
+          (e: any) => {
+            setView(e);
+            router.setParams({ view: e });
+          },
+        ]}
         scrollContainerStyle={{ width: "100%" }}
-        buttonStyle={{ paddingHorizontal: 0, borderBottomWidth: 0 }}
-        containerStyle={{ width: 300, marginHorizontal: "auto" }}
-        buttonTextStyle={{ color: theme[10] }}
-        selectedButtonTextStyle={{ color: theme[11] }}
+        buttonStyle={[
+          { paddingHorizontal: 0, borderBottomWidth: 0 },
+          !breakpoints.md && {
+            borderTopColor: theme[5],
+            borderTopWidth: 1,
+            paddingVertical: 10,
+            backgroundColor: theme[3],
+          },
+        ]}
+        containerStyle={{
+          width: breakpoints.md ? 300 : "100%",
+          marginHorizontal: "auto",
+        }}
+        buttonTextStyle={{ color: theme[10], fontFamily: "body_400" }}
+        selectedButtonTextStyle={{ color: theme[11], fontFamily: "body_600" }}
         activeComponent={
           <View
             style={{
@@ -108,15 +126,7 @@ export function Stream() {
         ListEmptyComponent={() => <ColumnEmptyComponent row />}
         ListHeaderComponent={
           <>
-            <View
-              style={[
-                styles.header,
-                {
-                  paddingHorizontal: breakpoints.md ? 0 : 15,
-                  paddingTop: breakpoints.md ? 0 : 20,
-                },
-              ]}
-            >
+            <View style={styles.header}>
               <CreateTask
                 defaultValues={{
                   collectionId: data.id,
@@ -180,7 +190,7 @@ export function Stream() {
         // estimatedItemSize={200}
         initialNumToRender={10}
         contentContainerStyle={{
-          padding: breakpoints.md ? 15 : 0,
+          padding: 15,
           paddingTop: 40,
           gap: 5,
           minHeight: "100%",

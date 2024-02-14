@@ -11,7 +11,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -132,6 +132,14 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   ];
   const { openSidebar } = useSidebarContext();
 
+  const menu = useMemo(
+    () =>
+      !breakpoints.md && (
+        <IconButton icon="menu" size={40} onPress={openSidebar} />
+      ),
+    [openSidebar, breakpoints.md]
+  );
+
   return editOrderMode ? (
     <View
       style={{
@@ -169,9 +177,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           gap: 10,
         }}
       >
-        {!breakpoints.md && (
-          <IconButton icon="menu" size={40} onPress={openSidebar} />
-        )}
+        {menu}
         <View style={!breakpoints.md && { flex: 1 }}>
           <MenuPopover
             containerStyle={{ width: 230 }}

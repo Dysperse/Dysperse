@@ -1,9 +1,8 @@
-import { createContext, useContext } from "react";
+import { Dispatch, SetStateAction, createContext, useContext } from "react";
 
 export const KanbanContext = createContext<{
   currentColumn: number;
   columnsLength: number;
-  previousColumn: () => void;
-  nextColumn: () => void;
+  setCurrentColumn: Dispatch<SetStateAction<number>>;
 }>(null);
 export const useKanbanContext = () => useContext(KanbanContext);

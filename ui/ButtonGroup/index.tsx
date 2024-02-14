@@ -43,7 +43,7 @@ export function ButtonGroup({
         {options.map((option) => (
           <Pressable
             key={option.value}
-            onPress={() => state[1](option.value)}
+            onPress={() => option.value !== state[0] && state[1](option.value)}
             style={[
               {
                 flexShrink: 0,
