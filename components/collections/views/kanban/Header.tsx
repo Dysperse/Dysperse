@@ -137,7 +137,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         <>
           <CreateTask
             defaultValues={{ label: omit(["entities"], label) }}
-            mutateList={onEntityCreate}
+            mutate={onEntityCreate}
           >
             <IconButton
               size={40}

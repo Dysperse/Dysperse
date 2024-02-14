@@ -471,6 +471,7 @@ export default function CreateTask({
     date?: Dayjs;
     agendaOrder?: string;
     collectionId?: string;
+    label?: any;
   };
   mutate: (newTask) => void;
 }) {

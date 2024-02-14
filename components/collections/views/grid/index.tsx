@@ -4,7 +4,7 @@ import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Column } from "../kanban/Column";
 import { ReorderingGrid } from "./ReorderingGrid";
@@ -17,7 +17,7 @@ export function Grid({ editOrderMode }) {
   const breakpoints = useResponsiveBreakpoints();
 
   const [currentColumn, setCurrentColumn] =
-    useState<GridContextSelectedColumn>(0);
+    useState<GridContextSelectedColumn>("HOME");
 
   if (!Array.isArray(data.labels) || !data.gridOrder) return null;
 
@@ -42,11 +42,11 @@ export function Grid({ editOrderMode }) {
   const rowCount = 2;
   const itemsPerRow = displayLabels.length / rowCount;
   const rows = [];
-
+  const isMobileHome = currentColumn === "HOME" && !breakpoints.md;
   for (let i = 0; i < rowCount; i++) {
     const row = displayLabels.slice(i * itemsPerRow, (i + 1) * itemsPerRow);
     rows.push(
-      currentColumn === "HOME" ? (
+      isMobileHome ? (
         <View
           key={i}
           style={{
@@ -59,31 +59,52 @@ export function Grid({ editOrderMode }) {
         >
           {row
             .filter((e) => e)
-            .map((label, i) => (
-              <View
-                key={i}
-                style={{
-                  flex: 1,
-                  minWidth: 200,
-                  minHeight: 5,
-                  borderWidth: 2,
-                  borderColor: theme[6],
-                  borderRadius: 25,
-                  justifyContent: "flex-end",
-                  padding: 20,
-                }}
-              >
-                <Emoji emoji={label.emoji || "1f4ad"} size={50} />
-                <Text style={{ fontSize: 20 }} weight={900}>
-                  {label.name}
-                </Text>
-                <Text weight={200}>
-                  {label._count?.entities}
-                  {" item"}
-                  {label._count?.entities !== 1 ? "s" : ""}
-                </Text>
-              </View>
-            ))}
+            .map(
+              (label, i) =>
+                !label.empty && (
+                  <Pressable
+                    key={i}
+                    onPress={() =>
+                      setCurrentColumn(
+                        label.other
+                          ? "OTHER"
+                          : data.labels.findIndex((l) => l.id == label.id)
+                      )
+                    }
+                    style={({ pressed }: any) => ({
+                      flex: 1,
+                      width: 220,
+                      minWidth: 220,
+                      maxWidth: 200,
+                      minHeight: 5,
+                      borderWidth: 2,
+                      borderColor: theme[pressed ? 7 : 6],
+                      borderRadius: 25,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: 20,
+                    })}
+                  >
+                    <Emoji
+                      emoji={label.emoji || "1f4ad"}
+                      size={50}
+                      style={{ marginBottom: 5 }}
+                    />
+                    <Text
+                      numberOfLines={1}
+                      style={{ fontSize: 20, marginTop: 5 }}
+                      weight={900}
+                    >
+                      {label.name}
+                    </Text>
+                    <Text weight={300} style={{ marginTop: 2, opacity: 0.7 }}>
+                      {label._count?.entities}
+                      {" item"}
+                      {label._count?.entities !== 1 ? "s" : ""}
+                    </Text>
+                  </Pressable>
+                )
+            )}
         </View>
       ) : (
         <View
@@ -138,16 +159,14 @@ export function Grid({ editOrderMode }) {
       <ScrollView
         horizontal
         contentContainerStyle={[
-          breakpoints.md || currentColumn === "HOME"
-            ? {
-                padding: 15,
-                gap: 15,
-                minWidth: "100%",
-                paddingRight: 30,
-                flexDirection: "column",
-              }
-            : { width: "100%" },
-          currentColumn === "HOME" && {
+          {
+            padding: 15,
+            gap: 15,
+            minWidth: "100%",
+            paddingRight: 30,
+            flexDirection: "column",
+          },
+          isMobileHome && {
             backgroundColor: theme[3],
           },
         ]}
