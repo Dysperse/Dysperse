@@ -10,6 +10,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, View, useColorScheme } from "react-native";
@@ -33,12 +34,7 @@ const headerStyles = StyleSheet.create({
     borderRadius: 40,
   },
   row: { flexDirection: "row", marginTop: 15 },
-  right: {
-    borderWidth: 1,
-    borderRadius: 20,
-    padding: 20,
-    width: 350,
-  },
+  right: { gap: 20, borderWidth: 1, borderRadius: 20, padding: 20, width: 350 },
   foundInContainer: {
     gap: 5,
     flexDirection: "row",
@@ -95,37 +91,43 @@ function LabelHeader({ data }) {
             },
           ]}
         >
-          {data.integration && (
-            <>
-              <Text
-                variant="eyebrow"
-                style={{ marginTop: -5, marginBottom: 5 }}
-              >
-                Connected to
-              </Text>
-              <View style={headerStyles.foundInContainer}>
-                <Chip label={`${data.integration.name}`} icon="integration" />
-              </View>
-            </>
-          )}
-          <Text variant="eyebrow" style={{ marginTop: -5, marginBottom: 5 }}>
-            Found in
-          </Text>
-          <View style={headerStyles.foundInContainer}>
-            <Chip label={`${data._count.entities} items`} icon="shapes" />
-            {data.collections.map((collection) => (
-              <Chip
-                key={collection.id}
-                label={collection.name}
-                icon={
-                  collection.emoji ? (
-                    <Emoji emoji={collection.emoji} />
-                  ) : (
-                    "grid_view"
-                  )
-                }
-              />
-            ))}
+          <View>
+            {data.integration && (
+              <>
+                <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+                  Connected to
+                </Text>
+                <View style={headerStyles.foundInContainer}>
+                  <Chip
+                    label={`${capitalizeFirstLetter(
+                      data.integration.name.replaceAll("-", " ")
+                    )}`}
+                    icon="sync_alt"
+                  />
+                </View>
+              </>
+            )}
+          </View>
+          <View>
+            <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+              Found in
+            </Text>
+            <View style={headerStyles.foundInContainer}>
+              <Chip label={`${data._count.entities} items`} icon="shapes" />
+              {data.collections.map((collection) => (
+                <Chip
+                  key={collection.id}
+                  label={collection.name}
+                  icon={
+                    collection.emoji ? (
+                      <Emoji emoji={collection.emoji} />
+                    ) : (
+                      "grid_view"
+                    )
+                  }
+                />
+              ))}
+            </View>
           </View>
         </View>
       </View>
