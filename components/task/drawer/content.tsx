@@ -52,7 +52,7 @@ export function TaskDrawerContent({ handleClose }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
-  const { task, updateTask, mutateList } = useTaskDrawerContext();
+  const { task, updateTask } = useTaskDrawerContext();
 
   const rotate = useSharedValue(task.pinned ? -35 : 0);
 
