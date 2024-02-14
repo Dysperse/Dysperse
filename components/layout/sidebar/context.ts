@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { Dispatch, SetStateAction, createContext, useContext } from "react";
 
 export const SidebarContext = createContext<{
   isOpen: boolean;
@@ -7,7 +7,7 @@ export const SidebarContext = createContext<{
   closeSidebarOnMobile: () => void;
 
   desktopCollapsed: boolean;
-  setDesktopCollapsed: (value: boolean) => void;
+  setDesktopCollapsed: Dispatch<SetStateAction<boolean>>;
 
   SIDEBAR_WIDTH: any;
 }>(null);

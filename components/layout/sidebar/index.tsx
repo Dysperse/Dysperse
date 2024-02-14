@@ -407,7 +407,8 @@ const Header = memo(function Header() {
 
 const Sidebar = () => {
   const insets = useSafeAreaInsets();
-  const { SIDEBAR_WIDTH, desktopCollapsed } = useSidebarContext();
+  const { SIDEBAR_WIDTH, desktopCollapsed, setDesktopCollapsed } =
+    useSidebarContext();
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
   const progress = useDrawerProgress();
@@ -422,17 +423,11 @@ const Sidebar = () => {
         ],
   }));
 
-  const [isHidden, setIsHidden] = useState(
-    Platform.OS === "web"
-      ? localStorage.getItem("sidebarHidden") === "true"
-      : false
-  );
-
   const toggleHidden = useCallback(() => {
-    setIsHidden((prev) => !prev);
-  }, [setIsHidden]);
+    setDesktopCollapsed((prev) => !prev);
+  }, [setDesktopCollapsed]);
 
-  useHotkeys("`", toggleHidden, {}, [isHidden]);
+  useHotkeys("`", toggleHidden, {});
   useHotkeys("ctrl+comma", () => router.push("/settings"));
 
   const breakpoints = useResponsiveBreakpoints();
@@ -447,14 +442,15 @@ const Sidebar = () => {
           flexDirection: "row",
           backgroundColor: theme[2],
         },
-        desktopCollapsed && {
-          shadowColor: theme[1],
-          shadowRadius: 50,
-        },
         pathname.includes("settings") &&
           breakpoints.md && {
             maxWidth: 0,
             overflow: "hidden",
+          },
+        desktopCollapsed &&
+          breakpoints.md && {
+            padding: 5,
+            backgroundColor: "transparent",
           },
       ]}
     >
@@ -472,6 +468,17 @@ const Sidebar = () => {
                 paddingTop: "env(titlebar-area-height,0)",
               } as any)),
           },
+          desktopCollapsed &&
+            breakpoints.md && {
+              shadowColor: theme[1],
+              shadowRadius: 50,
+              borderRadius: 20,
+              overflow: "hidden",
+              borderWidth: 2,
+              borderColor: theme[5],
+              width: SIDEBAR_WIDTH - 10,
+              height: height - 10,
+            },
         ]}
       >
         <View style={[styles.header, { marginTop: insets.top }]}>
