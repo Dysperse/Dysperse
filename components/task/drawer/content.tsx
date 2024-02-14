@@ -40,10 +40,10 @@ function TaskNameInput() {
         fontFamily: "body_800",
         color: theme[12],
         paddingHorizontal: 20,
-        marginVertical: 20,
+        marginTop: 20,
         textAlign: "center",
       }}
-      fontSize={breakpoints.md ? 50 : 30}
+      fontSize={breakpoints.md ? 40 : 30}
     />
   );
 }
