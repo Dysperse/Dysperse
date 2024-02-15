@@ -1,12 +1,10 @@
-import { useSession } from "@/context/AuthProvider";
-import { sendApiRequest } from "@/helpers/api";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, View } from "react-native";
+import { View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export function TaskAttachmentPicker({
@@ -41,36 +39,14 @@ export function TaskAttachmentPicker({
     },
   });
 
-  const { session } = useSession();
-
   const onSubmit = useCallback(
     async (values) => {
       try {
-        if (type === "NOTE") {
-          await updateTask("note", values.data);
-          setIsLoading(false);
-          return;
-        }
-        if (typeof onAttachmentCreate === "function") {
-          onAttachmentCreate(values.location);
-          return;
-        }
-        Keyboard.dismiss();
-        setIsLoading(true);
-        const d = await sendApiRequest(
-          session,
-          "POST",
-          "space/entity/attachments",
-          {},
-          {
-            body: JSON.stringify({
-              id: task.id,
-              type,
-              data: values.data,
-            }),
-          }
+        await updateTask(
+          type === "NOTE" ? "note" : "attachments",
+          type === "NOTE" ? values.data : [{ type, data: values.data }]
         );
-        updateTask("attachments", [...task.attachments, d], false);
+        setIsLoading(false);
       } catch {
         Toast.show({
           type: "error",
@@ -81,23 +57,20 @@ export function TaskAttachmentPicker({
         setIsLoading(false);
       }
     },
-    [session, task, updateTask, onAttachmentCreate, handleParentClose, type]
+    [updateTask, handleParentClose, type]
   );
-
-  useEffect(() => {
-    if (errors.data) {
-      Toast.show({
-        type: "error",
-        text1: "Please enter a " + type.toLowerCase(),
-      });
-    }
-  }, [errors.data, type]);
 
   return (
     <View style={{ padding: 20, gap: 20, flex: 1 }}>
       <Controller
         control={control}
-        rules={{ required: true }}
+        rules={{
+          required: true,
+          pattern:
+            type === "LINK"
+              ? /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+              : undefined,
+        }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             bottomSheet
@@ -123,7 +96,12 @@ export function TaskAttachmentPicker({
       />
       {footer}
       <Button
-        onPress={handleSubmit(onSubmit)}
+        onPress={handleSubmit(onSubmit, () => {
+          Toast.show({
+            type: "error",
+            text1: "Please enter a " + type.toLowerCase(),
+          });
+        })}
         isLoading={isLoading}
         style={({ pressed, hovered }: any) => ({
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],

@@ -8,12 +8,15 @@ const toastStyles = (theme): StyleProp<ViewStyle> => ({
   justifyContent: "center",
   borderLeftWidth: 0,
   minHeight: 50,
-  padding: 5,
+  width: "auto",
+  maxWidth: 300,
+  height: "auto",
+  padding: 2,
   backgroundColor: theme[4],
 });
 
 const toastContainerStyles: StyleProp<ViewStyle> = {
-  marginTop: 10,
+  marginTop: -20,
 };
 
 const text1Props = (theme) => ({

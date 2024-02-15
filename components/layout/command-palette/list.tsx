@@ -2,7 +2,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 
 export const collectionViews = {
-  planner: "view_column_2",
+  planner: "transition_slide",
   kanban: "view_kanban",
   stream: "whatshot",
   grid: "view_cozy",

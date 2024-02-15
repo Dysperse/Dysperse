@@ -305,7 +305,7 @@ export function TaskDetails() {
         showsHorizontalScrollIndicator={false}
         data={task.attachments}
         horizontal
-        keyExtractor={(i) => i.id}
+        keyExtractor={(_, index) => index.toString()}
         contentContainerStyle={{ gap: 20, paddingHorizontal: 20 }}
         style={{ marginBottom: 20, marginHorizontal: -20 }}
         renderItem={(i) => <TaskAttachmentCard {...i} />}

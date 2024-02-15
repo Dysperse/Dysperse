@@ -29,7 +29,7 @@ export function TaskAttachmentButton({
   lockView?: boolean;
   menuRef?: React.MutableRefObject<BottomSheetModal>;
 }) {
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task, updateTask } = useTaskDrawerContext() || {};
 
   const _menuRef = useRef<BottomSheetModal>(null);
   const ref = menuRef || _menuRef;

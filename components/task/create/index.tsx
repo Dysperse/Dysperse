@@ -46,7 +46,6 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
-import { TaskDrawerContext } from "../drawer/context";
 
 function Footer({ nameRef, labelMenuRef, dateMenuRef, control }) {
   const orange = useColor("orange", useColorScheme() === "dark");
@@ -416,23 +415,19 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
           />
         </View>
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <TaskDrawerContext.Provider
-            value={{ task: {}, mutateList: () => null, updateTask: () => null }}
+          <TaskAttachmentButton
+            menuRef={menuRef}
+            onAttachmentCreate={(e) => console.log(e)}
+            onClose={() => nameRef.current.focus()}
+            onOpen={() => nameRef.current.focus()}
           >
-            <TaskAttachmentButton
-              menuRef={menuRef}
-              onAttachmentCreate={(e) => console.log(e)}
-              onClose={() => nameRef.current.focus()}
-              onOpen={() => nameRef.current.focus()}
-            >
-              <IconButton
-                style={{ marginTop: 63 }}
-                icon="add"
-                variant="filled"
-                size={35}
-              />
-            </TaskAttachmentButton>
-          </TaskDrawerContext.Provider>
+            <IconButton
+              style={{ marginTop: 63 }}
+              icon="add"
+              variant="filled"
+              size={35}
+            />
+          </TaskAttachmentButton>
           <View style={{ flex: 1 }}>
             <Footer
               dateMenuRef={dateMenuRef}

@@ -1,5 +1,7 @@
 import { collectionViews } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
@@ -56,6 +58,18 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     selected: i.toLowerCase() === type,
     callback: () => router.setParams({ type: i.toLowerCase() }),
   }));
+  const { session } = useSession();
+
+  const toggleShowCompleted = async () => {
+    const showCompleted = !data.showCompleted;
+    await sendApiRequest(
+      session,
+      "PUT",
+      "space/collections",
+      {},
+      { body: JSON.stringify({ id: data.id, showCompleted }) }
+    );
+  };
 
   const collectionMenuOptions = [
     !isAll && {
@@ -80,6 +94,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       icon: "priority",
       text: "Show completed",
       selected: true,
+      callback: toggleShowCompleted,
     },
     !isAll &&
       type === "grid" && {

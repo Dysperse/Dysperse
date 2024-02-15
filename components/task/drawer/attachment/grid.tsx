@@ -1,5 +1,4 @@
 import { useSession } from "@/context/AuthProvider";
-import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -60,20 +59,10 @@ export function AttachmentGrid({
           body: form,
         }
       ).then((res) => res.json());
-
-      const d = await sendApiRequest(
-        session,
-        "POST",
-        "space/entity/attachments",
-        {},
-        {
-          body: JSON.stringify({
-            id: task.id,
-            type: "IMAGE",
-            data: res.data.display_url,
-          }),
-        }
-      );
+      updateTask("attachments", [
+        ...task.attachments,
+        { type: "IMAGE", data: res.data.display_url },
+      ]);
     } else {
       alert("You did not select any image.");
     }

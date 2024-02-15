@@ -86,7 +86,7 @@ const Task = memo(function Task({
                     priority_high
                   </Icon>
                 }
-                style={{ backgroundColor: orange[3] }}
+                style={{ backgroundColor: orange[6] }}
                 color={orange[11]}
               />
             )}

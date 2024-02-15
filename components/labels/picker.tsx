@@ -153,8 +153,15 @@ const LabelPicker = memo(function LabelPicker({
         onClose={handleClose}
         snapPoints={["80%"]}
         {...sheetProps}
+        enableContentPanningGesture={false}
       >
-        <View style={{ padding: 15, height: "100%", paddingBottom: 0 }}>
+        <View
+          style={{
+            padding: 15,
+            height: "100%",
+            paddingBottom: 0,
+          }}
+        >
           {multiple && (
             <View
               style={{
@@ -243,7 +250,7 @@ const LabelPicker = memo(function LabelPicker({
                         setLabel([...label, item.id]);
                       }
                     } else {
-                      setLabel(item);
+                      setLabel(label ? null : item);
                       setTimeout(handleClose, 200);
                     }
                   }}
@@ -253,8 +260,9 @@ const LabelPicker = memo(function LabelPicker({
                       backgroundColor:
                         theme[
                           (pressed ? 4 : hovered ? 3 : 2) +
-                            ((multiple && label.includes(item.id)) ||
-                            (!multiple && label == item.id)
+                            ((multiple &&
+                              (label?.id || label).includes(item.id)) ||
+                            (!multiple && (label?.id || label) == item.id)
                               ? 1
                               : 0)
                         ],
@@ -277,12 +285,13 @@ const LabelPicker = memo(function LabelPicker({
                       item._count.entities !== 1 ? "s" : ""
                     }`}
                   />
-                  {(label == item.id || multiple) && (
+                  {((label as any)?.id == item.id || multiple) && (
                     <Icon
                       filled={multiple && label.includes(item.id)}
                       size={30}
                     >
-                      {label == item.id || (multiple && label.includes(item.id))
+                      {(label as any)?.id == item.id ||
+                      (multiple && label.includes(item.id))
                         ? "check_circle"
                         : "circle"}
                     </Icon>
