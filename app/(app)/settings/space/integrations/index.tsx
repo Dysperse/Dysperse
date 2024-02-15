@@ -152,7 +152,6 @@ function Connected({ data, mutate, error }) {
 
 export default function Page() {
   const [filter, setFilter] = useState("All");
-
   const { data, mutate, error } = useSWR(["space/integrations"]);
 
   return (

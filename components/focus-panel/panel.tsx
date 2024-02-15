@@ -131,6 +131,7 @@ export function PanelSwipeTrigger({
 }) {
   const theme = useColorTheme();
   const width = useSharedValue(15);
+  const pathname = usePathname();
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -195,7 +196,7 @@ export function PanelSwipeTrigger({
     width.value = 15;
   };
 
-  return (
+  return pathname.includes("settings") ? null : (
     <Pressable
       onHoverIn={onHoverIn}
       onHoverOut={onHoverOut}

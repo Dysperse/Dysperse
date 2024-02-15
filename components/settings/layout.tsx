@@ -12,7 +12,6 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { Portal } from "@gorhom/portal";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
 import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
@@ -60,6 +59,8 @@ function SettingsSidebar() {
       <TextField
         variant="filled+outlined"
         style={{
+          paddingVertical: breakpoints.md ? undefined : 15,
+          paddingHorizontal: breakpoints.md ? undefined : 25,
           margin: 10,
           marginTop: 0,
         }}
@@ -181,7 +182,7 @@ function SettingsSidebar() {
                 ]}
                 key={button.name}
                 onPress={() =>
-                  router.replace(
+                  router.navigate(
                     button.href ||
                       `/settings/${button.name
                         .toLowerCase()
@@ -229,106 +230,102 @@ export function SettingsLayout({
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
-  const isHome = pathname !== "/settings";
+  const isHome = pathname === "/settings";
   const theme = useColorTheme();
 
   const handleBack = () => {
     if (router.canGoBack()) return router.back();
-    router.replace("/");
+    router.replace(isHome || breakpoints.md ? "/" : "/settings");
   };
+
   useHotkeys("esc", handleBack, {
     enabled: breakpoints.md,
-    ignoreEventWhen: (event) =>
+    ignoreEventWhen: () =>
       document.querySelectorAll('[aria-modal="true"]').length > 0,
   });
 
   return session ? (
-    <Portal name="settings">
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: theme[1],
-        }}
-      >
-        {!breakpoints.md && !hideBack && (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              margin: 12,
-              marginTop: insets.top + 12,
-              zIndex: 99,
-              justifyContent: "space-between",
-            }}
-          >
-            <IconButton
-              variant="outlined"
-              onPress={() => {
-                if (!router.canGoBack() || !isHome) router.push("/settings");
-                else router.back();
-              }}
-              size={55}
-              icon="arrow_back_ios_new"
-            />
-            <Text style={{ fontSize: 20 }} weight={200}>
-              Settings
-            </Text>
-            <View style={{ width: 55 }} />
-          </View>
-        )}
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: theme[1],
+      }}
+    >
+      {!breakpoints.md && !hideBack && (
         <View
           style={{
-            maxHeight: height,
             flexDirection: "row",
-            maxWidth: 900,
-            width: "100%",
-            marginHorizontal: "auto",
-            gap: 40,
-            flex: 1,
+            alignItems: "center",
+            margin: 12,
+            marginTop: insets.top + 12,
+            zIndex: 99,
+            justifyContent: "space-between",
           }}
         >
-          {(!isHome || breakpoints.md) && (
-            <View style={{ width: children ? 200 : "100%" }}>
-              <SettingsSidebar />
-            </View>
-          )}
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingVertical: hideBack ? 0 : 50,
-              paddingHorizontal: hideBack ? 0 : 20,
-            }}
-          >
-            {children}
-          </ScrollView>
+          <IconButton
+            variant="outlined"
+            onPress={handleBack}
+            size={55}
+            icon="arrow_back_ios_new"
+          />
+          <Text style={{ fontSize: 20 }} weight={200}>
+            Settings
+          </Text>
+          <View style={{ width: 55 }} />
         </View>
-        {breakpoints.md && (
-          <View
-            style={{
-              position: "absolute",
-              right: 0,
-              top: 0,
-              margin: 50,
-              marginRight: 100,
-              gap: 5,
-              alignItems: "center",
-            }}
-          >
-            <IconButton
-              icon="close"
-              variant="filled"
-              size={55}
-              onPress={handleBack}
-            />
-            <Text variant="eyebrow">ESC</Text>
+      )}
+      <View
+        style={{
+          maxHeight: height,
+          flexDirection: "row",
+          maxWidth: 900,
+          width: "100%",
+          marginHorizontal: "auto",
+          gap: 40,
+          flex: 1,
+        }}
+      >
+        {(isHome || breakpoints.md) && (
+          <View style={{ width: breakpoints.md ? 200 : "100%" }}>
+            <SettingsSidebar />
           </View>
         )}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingVertical: hideBack ? 0 : 50,
+            paddingHorizontal: hideBack ? 0 : 20,
+          }}
+        >
+          {children}
+        </ScrollView>
       </View>
-    </Portal>
+      {breakpoints.md && (
+        <View
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            margin: 50,
+            marginRight: 100,
+            gap: 5,
+            alignItems: "center",
+          }}
+        >
+          <IconButton
+            icon="close"
+            variant="filled"
+            size={55}
+            onPress={handleBack}
+          />
+          <Text variant="eyebrow">ESC</Text>
+        </View>
+      )}
+    </View>
   ) : error ? (
     <View>
       <ErrorAlert />
