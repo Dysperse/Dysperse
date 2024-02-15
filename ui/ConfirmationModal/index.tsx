@@ -1,5 +1,5 @@
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
-import { useCallback, useRef, useState } from "react";
+import { cloneElement, useCallback, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { Button, ButtonText } from "../Button";
@@ -12,6 +12,7 @@ export interface ConfirmationModalProps {
   title: string;
   secondary: string;
   onSuccess: () => void;
+  disabled?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -72,6 +73,11 @@ function ConfirmationModalButton({ onSuccess }) {
 export default function ConfirmationModal(props: ConfirmationModalProps) {
   const ref = useRef<BottomSheetModal>(null);
   const handleClose = useCallback(() => ref.current?.forceClose(), []);
+
+  if (props.disabled) {
+    const d = cloneElement(props.children, { onPress: props.onSuccess });
+    return d;
+  }
 
   return (
     <Menu height={[props.height]} trigger={props.children} menuRef={ref}>

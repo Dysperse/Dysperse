@@ -2,6 +2,7 @@ import { createTab } from "@/components/layout/openTab";
 import { SettingsLayout } from "@/components/settings/layout";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -265,82 +266,97 @@ export default function Page() {
     }
     alert(JSON.stringify(data));
   };
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
 
   return (
     <SettingsLayout>
-      <View style={{ flexDirection: "row" }}>
-        <ConfirmationModal
-          height={380}
-          title="Exit setup?"
-          secondary="This will discard any changes you've made."
-          onSuccess={handleBack}
-        >
-          <Button variant="outlined">
-            <Icon>arrow_back_ios_new</Icon>
-            <ButtonText>
-              {integration ? integration?.about?.name : "Back"}
-            </ButtonText>
-          </Button>
-        </ConfirmationModal>
-      </View>
-      {data ? (
-        <FormProvider {...methods}>
-          <View style={{ marginVertical: 20, paddingTop: 20 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 30,
-                marginBottom: 20,
-              }}
-            >
-              <Image
-                source={{ uri: integration?.about?.icon }}
+      <View
+        style={[
+          { flex: 1 },
+          breakpoints.md && {
+            borderWidth: 1,
+            borderColor: theme[6],
+            borderRadius: 20,
+          },
+        ]}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <ConfirmationModal
+            height={380}
+            title="Exit setup?"
+            secondary="This will discard any changes you've made."
+            onSuccess={handleBack}
+          >
+            <Button variant="outlined">
+              <Icon>arrow_back_ios_new</Icon>
+              <ButtonText>
+                {integration ? integration?.about?.name : "Back"}
+              </ButtonText>
+            </Button>
+          </ConfirmationModal>
+        </View>
+        {data ? (
+          <FormProvider {...methods}>
+            <View style={{ marginVertical: 20, paddingTop: 20 }}>
+              <View
                 style={{
-                  width: 50,
-                  height: 50,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 30,
+                  marginBottom: 20,
                 }}
-              />
-              <View>
-                <Text style={{ fontSize: 20 }} weight={700}>
-                  Continue setup
-                </Text>
-                <Text style={{ opacity: 0.7 }}>{integration?.about?.name}</Text>
+              >
+                <Image
+                  source={{ uri: integration?.about?.icon }}
+                  style={{
+                    width: 50,
+                    height: 50,
+                  }}
+                />
+                <View>
+                  <Text style={{ fontSize: 20 }} weight={700}>
+                    Continue setup
+                  </Text>
+                  <Text style={{ opacity: 0.7 }}>
+                    {integration?.about?.name}
+                  </Text>
+                </View>
+              </View>
+              <CollectionsPicker />
+              <CalendarPicker />
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginVertical: 20,
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Button
+                  isLoading={loading}
+                  onPress={methods.handleSubmit(onSubmit)}
+                  text="Done"
+                  icon="check"
+                  variant="filled"
+                  large
+                />
               </View>
             </View>
-            <CollectionsPicker />
-            <CalendarPicker />
-            <View
-              style={{
-                flexDirection: "row",
-                marginVertical: 20,
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                isLoading={loading}
-                onPress={methods.handleSubmit(onSubmit)}
-                text="Done"
-                icon="check"
-                variant="filled"
-                large
-              />
-            </View>
+          </FormProvider>
+        ) : error ? (
+          <ErrorAlert />
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
+            <Spinner />
           </View>
-        </FormProvider>
-      ) : error ? (
-        <ErrorAlert />
-      ) : (
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-          }}
-        >
-          <Spinner />
-        </View>
-      )}
+        )}
+      </View>
     </SettingsLayout>
   );
 }

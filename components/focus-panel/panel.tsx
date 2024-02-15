@@ -196,7 +196,7 @@ export function PanelSwipeTrigger({
     width.value = 15;
   };
 
-  return pathname.includes("settings") ? null : (
+  return (
     <Pressable
       onHoverIn={onHoverIn}
       onHoverOut={onHoverOut}
@@ -215,7 +215,11 @@ export function PanelSwipeTrigger({
       ]}
     >
       <Animated.View
-        style={[animatedStyle, { alignItems: "center", paddingVertical: 20 }]}
+        style={[
+          animatedStyle,
+          { alignItems: "center", paddingVertical: 20 },
+          pathname.includes("settings") && { display: "none" },
+        ]}
       >
         <Animated.View
           style={[

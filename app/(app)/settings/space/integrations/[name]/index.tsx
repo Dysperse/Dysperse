@@ -1,10 +1,13 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import Spinner from "@/ui/Spinner";
@@ -21,7 +24,7 @@ import {
   useForm,
   useFormContext,
 } from "react-hook-form";
-import { Linking, StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -88,7 +91,13 @@ const Intro = ({ integration }) => {
   );
 };
 
-const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
+const LabelCustomizer = ({
+  handleSubmit,
+  connectedIntegration,
+  status,
+  setSlide,
+}) => {
+  const theme = useColorTheme();
   const { getValues, control, setValue } = useFormContext();
 
   const { data, error } = useSWR([
@@ -112,7 +121,7 @@ const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
   return (
     <>
       <Text style={{ opacity: 0.6, marginBottom: 10 }}>
-        We created some labels for you. Customize them if you want.
+        We found some labels for you. Customize them if you want.
       </Text>
       {data ? (
         <Controller
@@ -124,9 +133,9 @@ const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
                 {data.map((label, index) => (
                   <ListItemButton
                     key={`${label?.id}-${index}`}
-                    variant="filled"
+                    variant={label.id ? "filled" : "outlined"}
                     disabled
-                    style={{ marginBottom: 10 }}
+                    style={{ marginBottom: 15 }}
                   >
                     <EmojiPicker
                       emoji={value[index]?.emoji || label.emoji}
@@ -136,7 +145,11 @@ const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
                         onChange(newLabels);
                       }}
                     >
-                      <IconButton variant="filled" size={30}>
+                      <IconButton
+                        variant="outlined"
+                        size={50}
+                        style={{ borderColor: theme[6] }}
+                      >
                         <Emoji emoji={value[index]?.emoji || label?.emoji} />
                       </IconButton>
                     </EmojiPicker>
@@ -147,18 +160,27 @@ const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
                         newLabels[index].name = text;
                         onChange(newLabels);
                       }}
-                      style={{ flex: 1 }}
+                      style={{
+                        flex: 1,
+                        fontSize: 20,
+                        minWidth: 10,
+                        fontFamily: "body_600",
+                      }}
                     />
+                    {label.id && (
+                      <Icon style={{ marginRight: 10 }}>check_circle</Icon>
+                    )}
                   </ListItemButton>
                 ))}
                 <View style={[styles.footer, { marginTop: "auto" }]}>
                   <Button
                     large
+                    style={{ marginTop: 20 }}
                     isLoading={status === "loading"}
                     iconPosition="end"
                     variant="filled"
                     icon="done"
-                    text="Finish setup"
+                    text={connectedIntegration ? "Save" : "Finish setup"}
                     onPress={handleSubmit}
                   />
                 </View>
@@ -175,7 +197,13 @@ const LabelCustomizer = ({ handleSubmit, status, setSlide }) => {
   );
 };
 
-const Outro = ({ integration, submit, setSlide }) => {
+const Outro = ({
+  setConnectedSuccess,
+  connectedIntegration,
+  integration,
+  submit,
+  setSlide,
+}) => {
   const supportsLabelMapping = integration.supportsLabelMapping;
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
@@ -183,6 +211,7 @@ const Outro = ({ integration, submit, setSlide }) => {
     try {
       setStatus("loading");
       await submit();
+      setConnectedSuccess(true);
     } finally {
       setStatus("success");
     }
@@ -207,6 +236,7 @@ const Outro = ({ integration, submit, setSlide }) => {
               fontSize: 30,
               marginBottom: 10,
               marginTop: "auto",
+              paddingTop: 50,
             }}
             weight={700}
           >
@@ -216,6 +246,7 @@ const Outro = ({ integration, submit, setSlide }) => {
             <LabelCustomizer
               status={status}
               handleSubmit={handleClick}
+              connectedIntegration={connectedIntegration}
               setSlide={setSlide}
             />
           ) : (
@@ -346,24 +377,18 @@ const ParamSlide = ({ slide, currentSlide }) => {
 };
 
 const SlideProgressBar = ({ slide, length }) => {
-  const { width: windowWidth } = useWindowDimensions();
   const theme = useColorTheme();
   const width = useSharedValue(0);
 
   const widthStyle = useAnimatedStyle(() => {
     return {
-      width: withSpring(
-        isNaN((windowWidth / length) * width.value)
-          ? 0
-          : (windowWidth / length) * width.value,
-        {
-          damping: 30,
-          overshootClamping: false,
-          restDisplacementThreshold: 0.1,
-          restSpeedThreshold: 0.1,
-          stiffness: 400,
-        }
-      ),
+      width: withSpring(`${(slide / length) * 100}%`, {
+        damping: 30,
+        overshootClamping: false,
+        restDisplacementThreshold: 0.1,
+        restSpeedThreshold: 0.1,
+        stiffness: 400,
+      }),
     };
   });
 
@@ -372,22 +397,35 @@ const SlideProgressBar = ({ slide, length }) => {
   }, [slide, width]);
 
   return (
-    <Animated.View
-      style={[
-        widthStyle,
-        {
-          marginTop: -2,
-          height: 2,
-          zIndex: 2,
-          backgroundColor: theme[11],
-          shadowColor: theme[11],
-          borderRadius: 10,
-          shadowRadius: 10,
-        },
-      ]}
-    />
+    <View style={{ backgroundColor: theme[6] }}>
+      <Animated.View
+        style={[
+          widthStyle,
+          {
+            height: 2,
+            backgroundColor: theme[11],
+            shadowColor: theme[11],
+            shadowOffset: { height: 2, width: 0 },
+            borderRadius: 10,
+            shadowRadius: 20,
+          },
+        ]}
+      />
+    </View>
   );
 };
+
+function OauthRedirect() {
+  return (
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+      Hi
+    </View>
+  );
+}
 
 export default function Page() {
   const theme = useColorTheme();
@@ -406,31 +444,30 @@ export default function Page() {
     else setSlide(slide - 1);
   };
 
+  const { height } = useWindowDimensions();
+  const connectedIntegration = integrations?.find(
+    (i) => i.integration.name === name
+  );
+
   const methods = useForm({
     defaultValues: {
       integration: name,
+      id: connectedIntegration?.integration?.id,
       ...(data?.authorization?.params && {
         params: {
           ...Object.fromEntries(
             data?.authorization?.params?.map((p) => [p.id, ""])
           ),
+          ...(connectedIntegration && connectedIntegration.integration?.params),
         },
       }),
       ...(data?.supportLabelMapping && { labels: [] }),
     },
   });
-
   const { handleSubmit, getValues } = methods;
-  const { height } = useWindowDimensions();
+
   const handleOpen = () => {
-    if (isConnected) {
-      return;
-    }
     if (slide === 0) setSlide(1);
-    if (data.authorization.type === "oauth2")
-      Linking.openURL(
-        `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${name}`
-      );
     else if (data.authorization.type === "params") {
       const values = getValues();
       if (
@@ -447,7 +484,8 @@ export default function Page() {
   };
 
   const insets = useSafeAreaInsets();
-  const isConnected = integrations?.find((i) => i.integration.name === name);
+
+  const [connectedSuccess, setConnectedSuccess] = useState(false);
 
   const slidesLength =
     data?.authorization?.params?.length +
@@ -472,35 +510,60 @@ export default function Page() {
     }
   };
 
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <FormProvider {...methods}>
       <SettingsLayout hideBack>
-        <View style={{ height }}>
+        <View
+          style={[
+            { height },
+            breakpoints.md && {
+              borderWidth: 1,
+              backgroundColor: theme[2],
+              borderRadius: 20,
+              borderColor: theme[6],
+              overflow: "hidden",
+              marginTop: 50,
+              height: height - 60,
+            },
+          ]}
+        >
           <View
             style={{
               flexDirection: "row",
-              borderBottomColor: theme[6],
-              borderBottomWidth: 2,
               height: 80 + insets.top,
               paddingTop: insets.top,
               alignItems: "center",
               paddingHorizontal: 10,
               zIndex: 1,
-              backgroundColor: theme[1],
+              backgroundColor: theme[breakpoints.md ? 2 : 1],
             }}
           >
-            <IconButton
-              icon="arrow_back_ios_new"
-              onPress={handleBack}
-              size={55}
-            />
+            <ConfirmationModal
+              onSuccess={handleBack}
+              title="Exit setup?"
+              secondary="This integration will not be created"
+              height={350}
+              disabled={slide !== 0}
+            >
+              <IconButton
+                icon="arrow_back_ios_new"
+                onPress={handleBack}
+                size={55}
+                disabled={connectedSuccess}
+              />
+            </ConfirmationModal>
           </View>
 
-          <SlideProgressBar slide={slide + 1} length={slidesLength} />
+          <SlideProgressBar slide={slide + 1} length={slidesLength + 1} />
 
           {data ? (
             <View style={{ flex: 1 }}>
               {slide === 0 && <Intro integration={data} />}
+              {slide === 1 && data.authorization.type === "oauth2" && (
+                <OauthRedirect />
+              )}
               {slide > 0 && slide <= data.authorization?.params?.length && (
                 <FormProvider {...methods}>
                   <ParamSlide
@@ -512,6 +575,8 @@ export default function Page() {
               {slide === slidesLength - 1 ? (
                 <FormProvider {...methods}>
                   <Outro
+                    setConnectedSuccess={setConnectedSuccess}
+                    connectedIntegration={connectedIntegration}
                     setSlide={setSlide}
                     integration={data}
                     submit={handleSubmit(onSubmit)}
@@ -521,13 +586,13 @@ export default function Page() {
                 <View style={[styles.footer, { paddingHorizontal: 20 }]}>
                   <Button
                     large
-                    variant={isConnected ? "outlined" : "filled"}
-                    icon={isConnected ? "check" : "arrow_forward_ios"}
+                    variant={connectedIntegration ? "outlined" : "filled"}
+                    icon="arrow_forward_ios"
                     iconPosition="end"
                     iconSize={30}
                     text={
-                      isConnected
-                        ? "Connected"
+                      connectedIntegration
+                        ? "Edit connection"
                         : slide === 0
                         ? "Connect"
                         : "Next"
