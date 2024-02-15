@@ -2,7 +2,7 @@ import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
@@ -17,6 +17,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import {
   Controller,
@@ -415,14 +416,43 @@ const SlideProgressBar = ({ slide, length }) => {
   );
 };
 
-function OauthRedirect() {
+function OauthRedirect({ integration }) {
+  const { session } = useSession();
+  const handleOpen = () =>
+    WebBrowser.openBrowserAsync(
+      `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${integration.slug}`
+    );
+
   return (
     <View
       style={{
         flex: 1,
+        padding: 20,
+        justifyContent: "center",
       }}
     >
-      Hi
+      <Text
+        style={{
+          fontSize: 20,
+          padding: 20,
+          textAlign: "center",
+          marginTop: "auto",
+        }}
+        weight={700}
+      >
+        Tap the button below to open {integration.name}. You'll be redirected to
+        another page to complete the setup.
+      </Text>
+      <Button
+        variant="filled"
+        onPress={handleOpen}
+        style={{ marginTop: "auto", width: "100%", height: 60 }}
+      >
+        <ButtonText style={{ fontSize: 20 }}>
+          Open {integration.name}
+        </ButtonText>
+        <Icon>open_in_new</Icon>
+      </Button>
     </View>
   );
 }
@@ -562,7 +592,7 @@ export default function Page() {
             <View style={{ flex: 1 }}>
               {slide === 0 && <Intro integration={data} />}
               {slide === 1 && data.authorization.type === "oauth2" && (
-                <OauthRedirect />
+                <OauthRedirect integration={data} />
               )}
               {slide > 0 && slide <= data.authorization?.params?.length && (
                 <FormProvider {...methods}>
@@ -583,23 +613,25 @@ export default function Page() {
                   />
                 </FormProvider>
               ) : (
-                <View style={[styles.footer, { paddingHorizontal: 20 }]}>
-                  <Button
-                    large
-                    variant={connectedIntegration ? "outlined" : "filled"}
-                    icon="arrow_forward_ios"
-                    iconPosition="end"
-                    iconSize={30}
-                    text={
-                      connectedIntegration
-                        ? "Edit connection"
-                        : slide === 0
-                        ? "Connect"
-                        : "Next"
-                    }
-                    onPress={handleOpen}
-                  />
-                </View>
+                !(data.authorization.type === "oauth2" && slide === 1) && (
+                  <View style={[styles.footer, { paddingHorizontal: 20 }]}>
+                    <Button
+                      large
+                      variant={connectedIntegration ? "outlined" : "filled"}
+                      icon="arrow_forward_ios"
+                      iconPosition="end"
+                      iconSize={30}
+                      text={
+                        connectedIntegration
+                          ? "Edit connection"
+                          : slide === 0
+                          ? "Connect"
+                          : "Next"
+                      }
+                      onPress={handleOpen}
+                    />
+                  </View>
+                )
               )}
             </View>
           ) : (
