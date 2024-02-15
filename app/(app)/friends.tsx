@@ -313,7 +313,10 @@ export default function Page() {
     "user/friends",
     { requests: "true" },
   ]);
-  useHotkeys("esc", () => router.back());
+  useHotkeys("esc", () => {
+    if (router.canGoBack()) router.back();
+    else router.push("/");
+  });
 
   const Header = () => (
     <>

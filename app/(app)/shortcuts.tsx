@@ -34,7 +34,10 @@ export default function Page() {
         size={55}
         variant="outlined"
         icon="close"
-        onPress={() => router.back()}
+        onPress={() => {
+          if (router.canGoBack()) router.back();
+          else router.push("/");
+        }}
         style={{ margin: 20 }}
       />
       <ScrollView

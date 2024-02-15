@@ -268,8 +268,8 @@ export function SettingsLayout({
             <IconButton
               variant="outlined"
               onPress={() => {
-                if (!isHome) router.back();
-                else router.replace("/settings");
+                if (!router.canGoBack() || !isHome) router.push("/settings");
+                else router.back();
               }}
               size={55}
               icon="arrow_back_ios_new"

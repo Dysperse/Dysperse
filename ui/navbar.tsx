@@ -16,7 +16,7 @@ export default function Navbar(props: any) {
 
   const handleBack = () => {
     try {
-      if (!router.canGoBack()) throw new Error("Can't go back");
+      if (!router.canGoBack()) router.push("/");
       router.back();
     } catch {
       router.replace("/");
