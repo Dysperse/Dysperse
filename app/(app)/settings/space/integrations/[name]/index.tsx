@@ -16,6 +16,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { Image } from "expo-image";
+import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
@@ -419,8 +420,12 @@ const SlideProgressBar = ({ slide, length }) => {
 function OauthRedirect({ integration }) {
   const { session } = useSession();
   const handleOpen = () =>
-    WebBrowser.openBrowserAsync(
-      `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${integration.slug}`
+    WebBrowser.openAuthSessionAsync(
+      `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${integration.slug}`,
+      // `${process.env.EXPO_PUBLIC_API_URL}/settings/space/integrations/${integration.slug}/redirect`
+      Linking.createURL(
+        `/settings/space/integrations/${integration.slug}/redirect`
+      )
     );
 
   return (
