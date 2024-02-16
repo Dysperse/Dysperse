@@ -338,6 +338,9 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
   const itemRef = useRef<BottomSheetModal>(null);
 
+  useHotkeys("ctrl+n", () => itemRef.current?.present());
+  useHotkeys("shift+n", () => itemRef.current?.present());
+
   return (
     <>
       <MenuPopover
