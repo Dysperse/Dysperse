@@ -47,7 +47,7 @@ function ConfirmationModalButton({ onSuccess }) {
     try {
       setLoading(true);
       await onSuccess?.();
-      setTimeout(() => forceClose(), 0);
+      setTimeout(() => forceClose({ overshootClamping: true, damping: 1 }), 0);
     } catch (e) {
       Toast.show({ type: "error" });
       console.log(e);

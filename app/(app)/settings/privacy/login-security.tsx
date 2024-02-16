@@ -28,9 +28,7 @@ function TwoFactorAuthSection() {
 export default function Page() {
   return (
     <SettingsLayout>
-      <Text heading style={{ fontSize: 50 }}>
-        Login Security
-      </Text>
+      <Text style={settingStyles.title}>Login Security</Text>
       <TwoFactorAuthSection />
       <Alert
         style={{ marginTop: 20 }}

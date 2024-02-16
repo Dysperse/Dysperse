@@ -221,9 +221,11 @@ function SettingsSidebar() {
 export function SettingsLayout({
   children,
   hideBack,
+  noScroll = false,
 }: {
   children?: React.ReactNode;
   hideBack?: boolean;
+  noScroll?: boolean;
 }) {
   const { session, error } = useUser();
   const { height } = useWindowDimensions();
@@ -243,6 +245,27 @@ export function SettingsLayout({
     ignoreEventWhen: () =>
       document.querySelectorAll('[aria-modal="true"]').length > 0,
   });
+
+  const ScrollComponent = (props) =>
+    noScroll ? (
+      <View
+        {...props}
+        style={{
+          flex: 1,
+          height,
+          paddingHorizontal: hideBack ? 0 : 20,
+        }}
+      />
+    ) : (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingVertical: hideBack ? 0 : 50,
+          paddingHorizontal: hideBack ? 0 : 20,
+        }}
+        {...props}
+      />
+    );
 
   return session ? (
     <View
@@ -294,15 +317,7 @@ export function SettingsLayout({
             <SettingsSidebar />
           </View>
         )}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingVertical: hideBack ? 0 : 50,
-            paddingHorizontal: hideBack ? 0 : 20,
-          }}
-        >
-          {children}
-        </ScrollView>
+        <ScrollComponent>{children}</ScrollComponent>
       </View>
       {breakpoints.md && (
         <View
