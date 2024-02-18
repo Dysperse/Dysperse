@@ -34,7 +34,14 @@ const headerStyles = StyleSheet.create({
     borderRadius: 40,
   },
   row: { flexDirection: "row", marginTop: 15 },
-  right: { gap: 20, borderWidth: 1, borderRadius: 20, padding: 20, width: 350 },
+  right: {
+    gap: 20,
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 20,
+    width: "100%",
+    maxWidth: 500,
+  },
   foundInContainer: {
     gap: 5,
     flexDirection: "row",
@@ -91,8 +98,8 @@ function LabelHeader({ data }) {
             },
           ]}
         >
-          <View>
-            {data.integration && (
+          {data.integration && (
+            <View>
               <>
                 <Text variant="eyebrow" style={{ marginBottom: 5 }}>
                   Connected to
@@ -106,8 +113,8 @@ function LabelHeader({ data }) {
                   />
                 </View>
               </>
-            )}
-          </View>
+            </View>
+          )}
           <View>
             <Text variant="eyebrow" style={{ marginBottom: 5 }}>
               Found in
@@ -187,6 +194,7 @@ export default function Page() {
         {data?.entities ? (
           <>
             <FlashList
+              showsVerticalScrollIndicator={false}
               style={{ minHeight: 100 }}
               estimatedItemSize={93}
               data={data.entities}
