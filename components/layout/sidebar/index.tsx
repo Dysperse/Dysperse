@@ -15,7 +15,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
-import { BottomSheetModal, TouchableOpacity } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -255,17 +255,17 @@ export const LogoButton = memo(function LogoButton() {
         }}
         containerStyle={{ width: 160, marginLeft: 10, marginTop: 5 }}
         trigger={
-          <Pressable>
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingLeft: 3,
-              }}
-            >
-              <Logo size={40} />
-              <Icon style={{ color: theme[8] }}>expand_more</Icon>
-            </TouchableOpacity>
+          <Pressable
+            onLongPress={openSupport}
+            style={({ pressed }) => ({
+              opacity: pressed ? 0.5 : 1,
+              flexDirection: "row",
+              alignItems: "center",
+              paddingLeft: 3,
+            })}
+          >
+            <Logo size={40} />
+            <Icon style={{ color: theme[8] }}>expand_more</Icon>
           </Pressable>
         }
         options={[

@@ -1,36 +1,51 @@
 import { Entity } from "@/components/collections/entity";
 import { ContentWrapper } from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useCallback } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-const DeleteAllButton = ({ handleDelete }) => (
-  <ConfirmationModal
-    height={400}
-    title="Permanently delete trash?"
-    secondary="Careful! You can't undo this."
-    onSuccess={handleDelete}
-  >
-    <Button variant="filled" large>
-      <Icon>delete_forever</Icon>
-      <ButtonText>Clear</ButtonText>
-    </Button>
-  </ConfirmationModal>
-);
+const DeleteAllButton = ({ handleDelete }) => {
+  const breakpoints = useResponsiveBreakpoints();
+
+  return (
+    <ConfirmationModal
+      height={400}
+      title="Permanently delete trash?"
+      secondary="Careful! You can't undo this."
+      onSuccess={handleDelete}
+    >
+      <Button
+        variant="filled"
+        large
+        style={[!breakpoints.md && { width: "100%", marginTop: 20 }]}
+      >
+        <Icon>delete_forever</Icon>
+        <ButtonText>Clear</ButtonText>
+      </Button>
+    </ConfirmationModal>
+  );
+};
 
 export default function Trash() {
   const { session } = useSession();
+  const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
+  const { openSidebar } = useSidebarContext();
   const { data, mutate, error } = useSWR(["space/trash"]);
 
   const handleDelete = useCallback(async () => {
@@ -52,14 +67,30 @@ export default function Trash() {
   console.log(data);
 
   return (
-    <ContentWrapper>
+    <ContentWrapper noPaddingTop>
+      {!breakpoints.md && (
+        <IconButton
+          style={{
+            position: "absolute",
+            top: 20,
+            left: 20,
+            marginTop: insets.top,
+            zIndex: 1,
+          }}
+          icon="menu"
+          size={55}
+          variant="outlined"
+          onPress={openSidebar}
+        />
+      )}
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: breakpoints.md ? "row" : "column",
           justifyContent: "space-between",
           alignItems: "center",
           padding: 40,
           paddingBottom: 20,
+          paddingTop: breakpoints.md ? 50 : 100 + insets.top,
         }}
       >
         <View>
@@ -129,7 +160,9 @@ export default function Trash() {
       ) : error ? (
         <ErrorAlert />
       ) : (
-        <Spinner />
+        <View style={{ margin: "auto" }}>
+          <Spinner />
+        </View>
       )}
     </ContentWrapper>
   );

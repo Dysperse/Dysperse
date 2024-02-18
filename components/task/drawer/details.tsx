@@ -42,21 +42,23 @@ function DatePickerModal({
   return !enabled ? (
     children
   ) : (
-    <Menu menuRef={menuRef} height={[365]} trigger={children}>
-      <View style={{ paddingHorizontal: 20 }}>
-        <Calendar
-          date={date}
-          onDayPress={(date) => {
-            onDateSelect(dayjs(date.dateString, "YYYY-MM-DD"));
-            if (closeOnSelect) setTimeout(() => menuRef.current.close(), 100);
-          }}
-          markedDates={{
-            [dayjs(date).format("YYYY-MM-DD")]: {
-              selected: true,
-              disableTouchEvent: true,
-            },
-          }}
-        />
+    <Menu menuRef={menuRef} height={[400]} trigger={children}>
+      <View style={{ marginVertical: "auto" }}>
+        <View style={{ paddingHorizontal: 20, marginTop: -15 }}>
+          <Calendar
+            date={date}
+            onDayPress={(date) => {
+              onDateSelect(dayjs(date.dateString, "YYYY-MM-DD"));
+              if (closeOnSelect) setTimeout(() => menuRef.current.close(), 100);
+            }}
+            markedDates={{
+              [dayjs(date).format("YYYY-MM-DD")]: {
+                selected: true,
+                disableTouchEvent: true,
+              },
+            }}
+          />
+        </View>
       </View>
     </Menu>
   );
