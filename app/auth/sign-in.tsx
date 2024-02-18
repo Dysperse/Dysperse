@@ -4,6 +4,7 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import * as Device from "expo-device";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -51,7 +52,16 @@ export default function SignIn() {
             "auth/login",
             {},
             {
-              body: JSON.stringify({ ...data, token }),
+              body: JSON.stringify({
+                ...data,
+                token,
+                deviceType: Device.deviceType,
+                deviceName:
+                  Device.deviceName ||
+                  (Platform.OS === "web"
+                    ? navigator.userAgent.split("(")[1].split(";")[0]
+                    : "Unknown device"),
+              }),
               headers: {
                 "Content-Type": "application/json",
               },
