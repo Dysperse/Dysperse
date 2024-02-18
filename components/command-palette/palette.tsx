@@ -422,6 +422,7 @@ const CommandPalette = memo(function CommandPalette() {
 
   return (
     <BottomSheet
+      enableContentPanningGesture={false}
       snapPoints={["100%"]}
       sheetRef={sheetRef}
       onClose={handleClose}
