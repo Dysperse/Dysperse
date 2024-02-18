@@ -15,6 +15,7 @@ import { FlashList } from "@shopify/flash-list";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Platform,
+  Pressable,
   TouchableOpacity,
   View,
   useWindowDimensions,
@@ -372,7 +373,8 @@ function CommandPaletteContent({ handleClose }) {
   });
 
   return (
-    <View
+    <Pressable
+      onPress={(e) => e.stopPropagation()}
       style={{
         backgroundColor: theme[2],
         borderWidth: 1,
@@ -412,7 +414,7 @@ function CommandPaletteContent({ handleClose }) {
         </View>
         <CommandPalettePreview preview={preview} />
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -441,7 +443,9 @@ const CommandPalette = memo(function CommandPalette() {
         },
       })}
     >
-      <CommandPaletteContent handleClose={handleClose} />
+      <Pressable onPress={handleClose} style={{ flex: 1 }}>
+        <CommandPaletteContent handleClose={handleClose} />
+      </Pressable>
     </BottomSheet>
   );
 });
