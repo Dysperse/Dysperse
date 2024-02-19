@@ -2,6 +2,7 @@ import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -116,8 +117,11 @@ function SettingsSidebar() {
             {
               name: "Sign out",
               icon: "logout",
-              callback: () => {
-                if (confirm("Are you sure you want to sign out?")) signOut();
+              callback: signOut,
+              confirm: {
+                title: "Sign out?",
+                secondary: "You'll have to sign in again.",
+                height: 360,
               },
             },
           ],
@@ -165,48 +169,54 @@ function SettingsSidebar() {
             }
           >
             {section.settings.map((button) => (
-              <ListItemButton
-                variant={
-                  pathname === button.href ||
-                  (pathname.includes("integrations") &&
-                    button.href?.includes("integrations"))
-                    ? "filled"
-                    : "default"
-                }
-                style={[
-                  styles.sectionItem,
-                  !breakpoints.md && {
-                    paddingVertical: 15,
-                    borderRadius: 0,
-                  },
-                ]}
+              <ConfirmationModal
+                disabled={!button.confirm}
                 key={button.name}
-                onPress={() =>
-                  router.navigate(
-                    button.href ||
-                      `/settings/${button.name
-                        .toLowerCase()
-                        .replaceAll(" ", "-")}`
-                  )
-                }
-                {...(button.callback && { onPress: button.callback })}
+                {...button.confirm}
               >
-                <Icon
-                  filled={
+                <ListItemButton
+                  variant={
                     pathname === button.href ||
                     (pathname.includes("integrations") &&
                       button.href?.includes("integrations"))
+                      ? "filled"
+                      : "default"
                   }
-                  style={{ color: theme[11] }}
-                  size={!breakpoints.md ? 30 : 24}
+                  style={[
+                    styles.sectionItem,
+                    !breakpoints.md && {
+                      paddingVertical: 15,
+                      borderRadius: 0,
+                    },
+                  ]}
+                  key={button.name}
+                  onPress={() =>
+                    router.navigate(
+                      button.href ||
+                        `/settings/${button.name
+                          .toLowerCase()
+                          .replaceAll(" ", "-")}`
+                    )
+                  }
+                  {...(button.callback && { onPress: button.callback })}
                 >
-                  {button.icon}
-                </Icon>
-                <ListItemText
-                  primary={button.name}
-                  primaryProps={{ style: { color: theme[11] } }}
-                />
-              </ListItemButton>
+                  <Icon
+                    filled={
+                      pathname === button.href ||
+                      (pathname.includes("integrations") &&
+                        button.href?.includes("integrations"))
+                    }
+                    style={{ color: theme[11] }}
+                    size={!breakpoints.md ? 30 : 24}
+                  >
+                    {button.icon}
+                  </Icon>
+                  <ListItemText
+                    primary={button.name}
+                    primaryProps={{ style: { color: theme[11] } }}
+                  />
+                </ListItemButton>
+              </ConfirmationModal>
             ))}
           </View>
           {index !== 3 && breakpoints.md && (

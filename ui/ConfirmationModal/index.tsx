@@ -75,7 +75,12 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
   const handleClose = useCallback(() => ref.current?.forceClose(), []);
 
   if (props.disabled) {
-    const d = cloneElement(props.children, { onPress: props.onSuccess });
+    const d = cloneElement(props.children, {
+      onPress: () => {
+        props.onSuccess?.();
+        props.children.props.onPress();
+      },
+    });
     return d;
   }
 
