@@ -487,7 +487,6 @@ const Sidebar = () => {
           },
         desktopCollapsed &&
           breakpoints.md && {
-            padding: 5,
             backgroundColor: "transparent",
           },
       ]}
@@ -510,12 +509,10 @@ const Sidebar = () => {
             breakpoints.md && {
               shadowColor: theme[1],
               shadowRadius: 50,
-              borderRadius: 20,
+              shadowOffset: { width: 10, height: 0 },
               overflow: "hidden",
-              borderWidth: 2,
+              borderRightWidth: 2,
               borderColor: theme[5],
-              width: SIDEBAR_WIDTH - 10,
-              height: height - 10,
             },
         ]}
       >
