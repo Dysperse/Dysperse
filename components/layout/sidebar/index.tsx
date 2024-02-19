@@ -337,6 +337,7 @@ export const LogoButton = memo(function LogoButton() {
 const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
   const itemRef = useRef<BottomSheetModal>(null);
+  const { closeSidebar } = useSidebarContext();
 
   useHotkeys(["ctrl+n", "shift+n"], (e) => {
     e.preventDefault();
@@ -365,7 +366,10 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           {
             icon: "layers",
             text: "Collection",
-            callback: () => router.push("/collections/create"),
+            callback: () => {
+              router.push("/collections/create");
+              closeSidebar();
+            },
           },
         ]}
         menuProps={{

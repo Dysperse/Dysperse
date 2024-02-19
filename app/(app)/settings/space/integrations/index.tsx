@@ -46,6 +46,9 @@ function AllIntegrations({ connected }) {
                   `/settings/space/integrations/${integration.slug}`
                 );
               }}
+              disabled={
+                integration.name === "Notion" || integration.name === "Gmail"
+              }
             >
               <Image
                 source={{ uri: integration.icon }}
@@ -73,7 +76,7 @@ function AllIntegrations({ connected }) {
 }
 
 export default function Page() {
-  const { data, mutate, error } = useSWR(["space/integrations"]);
+  const { data } = useSWR(["space/integrations"]);
 
   return (
     <SettingsLayout>

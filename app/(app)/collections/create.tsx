@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import { memo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 const styles = StyleSheet.create({
@@ -89,9 +90,10 @@ export default function Page() {
   };
 
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
 
   return (
-    <ContentWrapper>
+    <ContentWrapper noPaddingTop style={{ paddingTop: insets.top }}>
       <Header />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.containerContent}>
