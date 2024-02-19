@@ -1,7 +1,13 @@
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
+import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { useGlobalSearchParams } from "expo-router";
+import { useEffect } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import useSWR from "swr";
 
 interface ContentWrapperProps extends ViewProps {
   enabled?: boolean;
@@ -14,9 +20,42 @@ const styles = StyleSheet.create({
   },
 });
 export function ContentWrapper(props: ContentWrapperProps) {
+  const { sessionToken } = useUser();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
+
+  const params = useGlobalSearchParams();
+
+  const { mutate } = useSWR(["user/tabs"]);
+
+  useEffect(() => {
+    if (params.tab) {
+      mutate(
+        (oldData) =>
+          oldData.map((oldTab) =>
+            oldTab.id === params.tab
+              ? { ...oldTab, params: omit(["tab"], params) }
+              : oldTab
+          ),
+        {
+          revalidate: false,
+        }
+      );
+      sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/tabs",
+        {},
+        {
+          body: JSON.stringify({
+            params: omit(["tab"], params),
+            id: params.tab,
+          }),
+        }
+      );
+    }
+  }, [sessionToken, mutate, params]);
 
   return props.enabled !== false ? (
     <View
