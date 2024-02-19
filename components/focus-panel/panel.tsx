@@ -140,7 +140,7 @@ export function PanelSwipeTrigger({
   });
 
   const dotStyle = useAnimatedStyle(() => ({
-    height: withSpring(width.value === 15 ? 20 : 40, {
+    height: withSpring(width.value, {
       damping: 30,
       stiffness: 400,
     }),
@@ -150,7 +150,7 @@ export function PanelSwipeTrigger({
   const isPullerHovered = useSharedValue(0);
 
   const pullerStyles = useAnimatedStyle(() => ({
-    width: withSpring(!isPullerActive.value ? 7 : 11, {
+    width: withSpring(!isPullerActive.value ? 5 : 11, {
       damping: 30,
       stiffness: 400,
     }),
@@ -159,7 +159,7 @@ export function PanelSwipeTrigger({
         !isPullerActive.value
           ? isPullerHovered.value
             ? 5
-            : 4
+            : 2
           : isPullerHovered.value
           ? 6
           : 5

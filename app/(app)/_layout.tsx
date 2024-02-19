@@ -28,6 +28,7 @@ import { Redirect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Platform,
+  Pressable,
   StatusBar,
   View,
   useColorScheme,
@@ -267,7 +268,7 @@ export default function AppLayout() {
                                   .onEnd(() => setOpen(false))
                                   .enabled(breakpoints.md)}
                               >
-                                <View style={{ flexDirection: "row" }}>
+                                <Pressable style={{ flexDirection: "row" }}>
                                   <Sidebar />
                                   {breakpoints.md && (
                                     <GestureDetector
@@ -279,7 +280,7 @@ export default function AppLayout() {
                                       <PanelSwipeTrigger side="left" />
                                     </GestureDetector>
                                   )}
-                                </View>
+                                </Pressable>
                               </GestureDetector>
                             )}
                           >
@@ -321,7 +322,6 @@ export default function AppLayout() {
                                   "settings/space/index",
                                   "settings/space/integrations/index",
                                   "settings/space/integrations/[name]/[id]",
-                                  "settings/space/integrations/[name]/index",
                                 ].map((d) => (
                                   <JsStack.Screen
                                     name={d}

@@ -265,7 +265,7 @@ export const LogoButton = memo(function LogoButton() {
             })}
           >
             <Logo size={40} />
-            <Icon style={{ color: theme[8] }}>expand_more</Icon>
+            <Icon style={{ color: theme[11] }}>expand_more</Icon>
           </Pressable>
         }
         options={[
