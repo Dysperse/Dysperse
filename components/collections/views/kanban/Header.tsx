@@ -95,7 +95,7 @@ export const KanbanHeader = memo(function KanbanHeader({
             <IconButton size={40} icon={grid ? "edit" : "more_horiz"} />
           </ColumnMenuTrigger>
         )}
-        {grid ? (
+        {grid && !breakpoints.md ? (
           <IconButton
             size={40}
             icon="expand_all"

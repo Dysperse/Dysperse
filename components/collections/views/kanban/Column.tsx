@@ -12,6 +12,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
@@ -122,6 +123,17 @@ export function Column(props: ColumnProps) {
           entities: undefined,
           entitiesLength: (props.label || props).entities.length,
         }}
+      />
+      <LinearGradient
+        style={{
+          width: "100%",
+          height: 30,
+          zIndex: 1,
+          marginTop: 30,
+          marginBottom: -30,
+          pointerEvents: "none",
+        }}
+        colors={[theme[2], "transparent"]}
       />
       <FlatList
         refreshControl={
