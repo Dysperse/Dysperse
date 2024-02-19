@@ -154,7 +154,7 @@ export function Column(props: ColumnProps) {
                   styles.header,
                   {
                     paddingHorizontal: 0,
-                    paddingTop: breakpoints.md ? 0 : 20,
+                    paddingTop: 20,
                   },
                 ]}
               >
