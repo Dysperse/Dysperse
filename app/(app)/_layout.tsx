@@ -91,7 +91,11 @@ const AppContainer = ({ children }) => {
           borderWidth: withSpring(
             interpolate(Math.round(progress.value), [0, 1], [0, 2])
           ),
-          borderRadius: interpolate(progress.value, [0, 1], [20, 30]),
+          borderRadius: interpolate(
+            progress.value,
+            [0, 1],
+            [!breakpoints.md ? 0 : 20, 30]
+          ),
           borderColor: theme[5],
           overflow: "hidden",
           marginTop: interpolate(progress.value, [0, 1], [0, insets.top]),
