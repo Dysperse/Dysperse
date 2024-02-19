@@ -56,8 +56,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     icon: collectionViews[i],
     text: capitalizeFirstLetter(i),
     selected: i.toLowerCase() === type,
-    callback: () =>
-      router.setParams({ type: i.toLowerCase(), start: undefined }),
+    callback: () => router.setParams({ type: i.toLowerCase() }),
   }));
   const { session } = useSession();
 
