@@ -122,6 +122,7 @@ function SettingsSidebar() {
                 title: "Sign out?",
                 secondary: "You'll have to sign in again.",
                 height: 360,
+                onSuccess: signOut,
               },
             },
           ],
