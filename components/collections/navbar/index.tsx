@@ -248,7 +248,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           trigger={
             <IconButton
               variant={breakpoints.md ? "filled" : "outlined"}
-              style={[
+              style={({ pressed }) => [
                 breakpoints.md && styles.navbarIconButton,
                 breakpoints.md
                   ? {
@@ -259,6 +259,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                       borderLeftWidth: 2,
                       borderRadius: 0,
                       backgroundColor: "transparent",
+                      opacity: pressed ? 0.6 : 1,
                     }
                   : {
                       width: 60,

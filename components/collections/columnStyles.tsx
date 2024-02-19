@@ -7,7 +7,8 @@ export const columnStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
+    paddingBottom: 0,
     paddingHorizontal: 25,
-    height: 90,
+    marginBottom: -30,
   },
 });

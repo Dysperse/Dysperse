@@ -1,6 +1,5 @@
 import { Entity } from "@/components/collections/entity";
 import { Header } from "@/components/collections/views/planner/Header";
-import Task from "@/components/task";
 import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -15,16 +14,17 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
-import { usePathname } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { LexoRank } from "lexorank";
 import React, { cloneElement, memo, useCallback, useRef } from "react";
 import {
+  Pressable,
   RefreshControl,
   StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 import { KeyedMutator } from "swr";
 import { usePlannerContext } from "./context";
 
@@ -121,57 +121,6 @@ export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
   );
 });
 
-const renderColumnItem = ({
-  onTaskUpdate,
-  item,
-  width,
-  drag,
-  isActive,
-  openColumnMenu,
-}: any & {
-  width: any;
-  onTaskUpdate: any;
-  openColumnMenu: any;
-}) => {
-  const Container = ({ children }: { children: JSX.Element }) => {
-    const trigger = cloneElement(children, { drag, isActive });
-    return (
-      // <ScaleDecorator activeScale={1.05}>
-      <View
-        style={{
-          paddingHorizontal: width > 600 ? 0 : 15,
-          paddingVertical: 5,
-        }}
-      >
-        {trigger}
-      </View>
-      //</ScaleDecorator>
-    );
-  };
-
-  switch (item.type) {
-    case "TASK":
-      return (
-        <Container>
-          <Task
-            onTaskUpdate={onTaskUpdate}
-            task={item}
-            openColumnMenu={openColumnMenu}
-          />
-        </Container>
-      );
-    default:
-      return (
-        <Container>
-          <TouchableOpacity onLongPress={drag} disabled={isActive}>
-            <Text>{item.name}</Text>
-            <Text>{item.agendaOrder?.toString()}</Text>
-          </TouchableOpacity>
-        </Container>
-      );
-  }
-};
-
 function ReorderModal({ onTaskUpdate, column, children }) {
   const ref = useRef<BottomSheetModal>(null);
   const handleOpen = useCallback(() => ref.current.present(), []);
@@ -239,9 +188,9 @@ export function Column({
   mutate: KeyedMutator<any>;
   column: any;
 }) {
+  const columnRef = useRef<FlatList>(null);
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
-  const pathname = usePathname();
   const { id: collectionId } = usePlannerContext();
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -300,6 +249,8 @@ export function Column({
       style={{
         ...(breakpoints.md && {
           backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: theme[4],
           borderRadius: 20,
         }),
         width: breakpoints.md ? 300 : width,
@@ -308,8 +259,30 @@ export function Column({
         minHeight: 5,
       }}
     >
-      {breakpoints.md && <Header start={column.start} end={column.end} />}
+      <Pressable
+        style={({ hovered, pressed }) => ({
+          opacity: pressed ? 0.6 : hovered ? 0.9 : 1,
+        })}
+        onPress={() =>
+          columnRef.current.scrollToOffset({ offset: 0, animated: true })
+        }
+      >
+        {breakpoints.md && <Header start={column.start} end={column.end} />}
+      </Pressable>
+
+      <LinearGradient
+        style={{
+          width: "100%",
+          height: 30,
+          zIndex: 1,
+          marginTop: 30,
+          marginBottom: -30,
+          pointerEvents: "none",
+        }}
+        colors={[theme[2], "transparent"]}
+      />
       <FlatList
+        ref={columnRef}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -325,6 +298,7 @@ export function Column({
               style={[
                 styles.header,
                 {
+                  marginTop: 5,
                   paddingHorizontal: breakpoints.md ? 0 : 5,
                   paddingTop: breakpoints.md ? 0 : 20,
                 },

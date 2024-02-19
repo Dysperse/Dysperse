@@ -103,6 +103,8 @@ export function Column(props: ColumnProps) {
             }
           : {
               ...(breakpoints.md && {
+                borderWidth: 1,
+                borderColor: theme[4],
                 backgroundColor: theme[2],
                 borderRadius: 20,
               }),

@@ -76,7 +76,7 @@ export function AgendaButtons() {
                 borderWidth: 1,
                 height: 50,
                 borderRadius: 20,
-                borderColor: theme[6],
+                borderColor: theme[5],
               }
             : { flex: 1 },
         ]}

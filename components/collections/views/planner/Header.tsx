@@ -25,46 +25,34 @@ export function Header({ start, end }) {
   const theme = useColorTheme();
 
   return (
-    <View style={columnStyles.header}>
+    <View style={[columnStyles.header, { flexDirection: "column", gap: 0 }]}>
       <View
         style={{
-          backgroundColor: theme[isToday ? 3 : 2],
-          borderWidth: 1,
-          borderColor: theme[isToday ? 4 : 2],
           borderRadius: 20,
-          paddingVertical: 10,
-          paddingHorizontal: 15,
+          paddingVertical: 5,
+          paddingHorizontal: 10,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           gap: 10,
         }}
       >
-        <View
+        <Text
+          weight={900}
           style={{
-            minWidth: 40,
-            height: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            paddingHorizontal: 10,
-            borderColor: theme[6],
-            borderRightWidth: 2,
+            color: theme[isToday ? 11 : 10],
+            fontSize: 22,
           }}
         >
-          <Text
-            weight={600}
-            style={{
-              color: theme[11],
-              fontSize: 25,
-            }}
-          >
-            {dayjs(start).format(formats.heading)}
-          </Text>
-        </View>
+          {dayjs(start).format(formats.heading)}
+        </Text>
         {formats.subheading !== "-" && (
           <Text
-            style={{ fontSize: 20, color: theme[11], opacity: 0.7 }}
-            weight={300}
+            style={{
+              fontSize: 17,
+              color: theme[isToday ? 11 : 10],
+            }}
+            weight={700}
           >
             {dayjs(start).format(formats.subheading)}
             {type === "month" && (
@@ -73,6 +61,14 @@ export function Header({ start, end }) {
           </Text>
         )}
       </View>
+      <View
+        style={{
+          backgroundColor: theme[isToday ? 11 : 5],
+          width: 20,
+          height: 5,
+          borderRadius: 99,
+        }}
+      />
     </View>
   );
 }

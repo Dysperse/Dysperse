@@ -3,7 +3,7 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { memo } from "react";
@@ -34,13 +34,14 @@ const Task = memo(function Task({
         onLongPress={openColumnMenu}
         style={({ pressed, hovered }) => ({
           flexShrink: 0,
-          paddingHorizontal: 15,
-          paddingVertical: 15,
-          paddingBottom: 10,
-          borderRadius: 20,
-          borderWidth: 1,
-          borderColor: theme[pressed ? 6 : 5],
-          backgroundColor: theme[pressed ? 1 : hovered ? 3 : 2],
+          padding: 13,
+          paddingBottom: 8,
+          borderRadius: 25,
+          backgroundColor: pressed
+            ? addHslAlpha(theme[4], 0.7)
+            : hovered
+            ? addHslAlpha(theme[3], 0.7)
+            : undefined,
           alignItems: "flex-start",
         })}
       >
@@ -48,9 +49,9 @@ const Task = memo(function Task({
         <View style={{ gap: 5, flex: 1 }}>
           <Text
             weight={300}
-            numberOfLines={noChips ? undefined : 1}
+            // numberOfLines={noChips ?  : 1}
             style={{
-              fontSize: 16,
+              opacity: 0.8,
               ...(isCompleted && {
                 opacity: 0.6,
                 textDecorationLine: "line-through",
@@ -70,9 +71,9 @@ const Task = memo(function Task({
                     : `${task.label.name}`
                 }
                 colorTheme={task.label.color}
-                icon={<Emoji size={22} emoji={task.label.emoji} />}
+                icon={<Emoji size={17} emoji={task.label.emoji} />}
                 style={{
-                  paddingHorizontal: 5,
+                  paddingHorizontal: 10,
                 }}
               />
             )}

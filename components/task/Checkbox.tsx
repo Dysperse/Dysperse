@@ -3,7 +3,12 @@ import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import React, { memo } from "react";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 const TaskCheckox = memo(function TaskCheckbox({
   task,
@@ -15,14 +20,24 @@ const TaskCheckox = memo(function TaskCheckbox({
   const theme = useColorTheme();
   const { session } = useSession();
 
+  const isActive = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withSpring(isActive.value ? 0.9 : 1),
+      },
+    ],
+  }));
+
   const isCompleted = task.completionInstances.length > 0;
 
   const handlePress = async (e) => {
     const newArr = isCompleted ? [] : [...task.completionInstances, true];
-      mutateList({
-        ...task,
-        completionInstances: newArr,
-      });
+    mutateList({
+      ...task,
+      completionInstances: newArr,
+    });
     await sendApiRequest(
       session,
       isCompleted ? "DELETE" : "POST",
@@ -40,24 +55,32 @@ const TaskCheckox = memo(function TaskCheckbox({
   return (
     <>
       <Pressable
-        style={({ pressed, hovered }: any) => ({
+        style={() => ({
           padding: 10,
           margin: -10,
           marginTop: -11,
-          opacity: pressed ? 0.5 : hovered ? 0.6 : 1,
+        })}
+        onTouchStart={() => (isActive.value = 1)}
+        onTouchEnd={() => (isActive.value = 0)}
+        {...(Platform.OS === "web" && {
+          onMouseDown: () => (isActive.value = 1),
+          onMouseUp: () => (isActive.value = 0),
         })}
         onPress={handlePress}
       >
-        <View
-          style={{
-            borderColor: theme[isCompleted ? 8 : 6],
-            width: 25,
-            height: 25,
-            borderRadius: 99,
-            borderWidth: 1,
-            backgroundColor: isCompleted ? theme[8] : undefined,
-            alignItems: "center",
-          }}
+        <Animated.View
+          style={[
+            animatedStyle,
+            {
+              borderColor: theme[isCompleted ? 8 : 6],
+              width: 25,
+              height: 25,
+              borderWidth: 1,
+              borderRadius: 99,
+              backgroundColor: isCompleted ? theme[8] : undefined,
+              alignItems: "center",
+            },
+          ]}
         >
           {isCompleted && (
             <Icon
@@ -71,7 +94,7 @@ const TaskCheckox = memo(function TaskCheckbox({
               check
             </Icon>
           )}
-        </View>
+        </Animated.View>
       </Pressable>
     </>
   );

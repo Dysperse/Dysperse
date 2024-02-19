@@ -15,39 +15,22 @@ export const Entity = ({
   openColumnMenu,
   showLabel = false,
 }: EntityProps) => {
-  const Container = ({ children }: { children: JSX.Element }) => {
-    return (
-      <View
-        style={{
-          padding: 5,
-          paddingHorizontal: 3,
-        }}
-      >
-        {children}
-      </View>
-    );
-  };
-
   switch (item.type) {
     case "TASK":
       return (
-        <Container>
-          <Task
-            showLabel={showLabel}
-            onTaskUpdate={onTaskUpdate}
-            task={item}
-            openColumnMenu={openColumnMenu}
-          />
-        </Container>
+        <Task
+          showLabel={showLabel}
+          onTaskUpdate={onTaskUpdate}
+          task={item}
+          openColumnMenu={openColumnMenu}
+        />
       );
     default:
       return (
-        <Container>
-          <View>
-            <Text>{item.name}</Text>
-            <Text>{item.agendaOrder?.toString()}</Text>
-          </View>
-        </Container>
+        <View>
+          <Text>{item.name}</Text>
+          <Text>{item.agendaOrder?.toString()}</Text>
+        </View>
       );
   }
 };
