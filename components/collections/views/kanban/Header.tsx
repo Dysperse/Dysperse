@@ -71,6 +71,7 @@ export const KanbanHeader = memo(function KanbanHeader({
               borderTopColor: theme[5],
               backgroundColor: theme[3],
               height: 80,
+              paddingBottom: 20,
             },
       ]}
     >

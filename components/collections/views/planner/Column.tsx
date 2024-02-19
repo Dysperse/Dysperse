@@ -270,17 +270,19 @@ export function Column({
         {breakpoints.md && <Header start={column.start} end={column.end} />}
       </Pressable>
 
-      <LinearGradient
-        style={{
-          width: "100%",
-          height: 30,
-          zIndex: 1,
-          marginTop: 30,
-          marginBottom: -30,
-          pointerEvents: "none",
-        }}
-        colors={[theme[2], "transparent"]}
-      />
+      {breakpoints.md && (
+        <LinearGradient
+          style={{
+            width: "100%",
+            height: 30,
+            zIndex: 1,
+            marginTop: 30,
+            marginBottom: -30,
+            pointerEvents: "none",
+          }}
+          colors={[theme[2], "transparent"]}
+        />
+      )}
       <FlatList
         ref={columnRef}
         refreshControl={
@@ -300,7 +302,6 @@ export function Column({
                 {
                   marginTop: 5,
                   paddingHorizontal: breakpoints.md ? 0 : 5,
-                  paddingTop: breakpoints.md ? 0 : 20,
                 },
               ]}
             >

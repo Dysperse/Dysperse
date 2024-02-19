@@ -133,7 +133,7 @@ export function Column(props: ColumnProps) {
           marginBottom: -30,
           pointerEvents: "none",
         }}
-        colors={[theme[2], "transparent"]}
+        colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
       />
       <FlatList
         refreshControl={
