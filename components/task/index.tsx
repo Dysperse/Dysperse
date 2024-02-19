@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -25,7 +26,7 @@ const Task = memo(function Task({
   const theme = useColorTheme();
   const orange = useColor("orange", useColorScheme() === "dark");
 
-  const noChips = !task.pinned && task.dateOnly;
+  const breakpoints = useResponsiveBreakpoints();
   const isCompleted = task.completionInstances.length > 0;
 
   return (
@@ -34,9 +35,17 @@ const Task = memo(function Task({
         onLongPress={openColumnMenu}
         style={({ pressed, hovered }) => ({
           flexShrink: 0,
-          padding: 13,
-          paddingBottom: 8,
+          paddingTop: breakpoints.md ? 13 : 18,
+          paddingLeft: breakpoints.md ? 13 : 18,
+          paddingRight: breakpoints.md ? 13 : 18,
+          paddingBottom: breakpoints.md ? 8 : 18,
           borderRadius: 25,
+          ...(!breakpoints.md && {
+            borderWidth: 1,
+            borderColor: theme[4],
+            marginTop: breakpoints.md ? 0 : 5,
+            marginBottom: 8,
+          }),
           backgroundColor: pressed
             ? addHslAlpha(theme[4], 0.7)
             : hovered
