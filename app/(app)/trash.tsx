@@ -109,7 +109,7 @@ export default function Trash() {
         </View>
         <DeleteAllButton handleDelete={handleDelete} />
       </View>
-      {!Array.isArray(data) ? (
+      {Array.isArray(data) ? (
         <FlatList
           data={data.filter((t) => t.trash)}
           style={{
