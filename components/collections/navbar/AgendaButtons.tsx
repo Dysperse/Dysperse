@@ -1,7 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
 import { router, useGlobalSearchParams } from "expo-router";
@@ -76,7 +75,7 @@ export function AgendaButtons() {
                 marginRight: !isTodaysView ? undefined : "auto",
                 height: 50,
                 borderRadius: 20,
-                backgroundColor: addHslAlpha(theme[3], 0.6),
+                backgroundColor: theme[3],
               }
             : { flex: 1 },
         ]}

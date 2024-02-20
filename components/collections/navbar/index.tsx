@@ -9,7 +9,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
@@ -248,19 +247,14 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }}
           trigger={
             <IconButton
-              variant={breakpoints.md ? "filled" : "outlined"}
+              variant="outlined"
               style={({ pressed }) => [
                 breakpoints.md && styles.navbarIconButton,
                 breakpoints.md
                   ? {
                       width: 60,
-                      height: 30,
+                      height: 35,
                       paddingLeft: 5,
-                      borderLeftColor: theme[6],
-                      borderLeftWidth: 2,
-                      borderRadius: 0,
-                      backgroundColor: "transparent",
-                      opacity: pressed ? 0.6 : 1,
                     }
                   : {
                       width: 60,
@@ -289,13 +283,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           trigger={
             <IconButton
               size={breakpoints.md ? 50 : 40}
-              style={[
-                breakpoints.md && { borderRadius: 20 },
-                {
-                  backgroundColor: addHslAlpha(theme[3], 0.6),
-                },
-              ]}
+              style={[breakpoints.md && { borderRadius: 20 }]}
               icon="filter_list"
+              variant="filled"
             />
           }
           options={filterOptions}
