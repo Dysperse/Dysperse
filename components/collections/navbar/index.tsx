@@ -9,6 +9,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
@@ -287,9 +288,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }}
           trigger={
             <IconButton
-              variant="outlined"
               size={breakpoints.md ? 50 : 40}
-              style={breakpoints.md && { borderRadius: 20 }}
+              style={[
+                breakpoints.md && { borderRadius: 20 },
+                {
+                  backgroundColor: addHslAlpha(theme[3], 0.6),
+                },
+              ]}
               icon="filter_list"
             />
           }

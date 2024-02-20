@@ -504,6 +504,8 @@ const Sidebar = () => {
             flexDirection: "column",
             maxHeight: "100%",
             backgroundColor: theme[2],
+            borderRightWidth: 2,
+            borderColor: "transparent",
             ...(Platform.OS === "web" &&
               ({
                 paddingTop: "env(titlebar-area-height,0)",
@@ -515,7 +517,6 @@ const Sidebar = () => {
               shadowRadius: 50,
               shadowOffset: { width: 10, height: 0 },
               overflow: "hidden",
-              borderRightWidth: 2,
               borderColor: theme[5],
             },
         ]}

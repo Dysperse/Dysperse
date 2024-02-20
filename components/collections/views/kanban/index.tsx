@@ -50,8 +50,8 @@ export function Kanban() {
           (breakpoints.md || currentColumn === -1) && (
             <Column entities={data.entities} />
           )}
-        {data.labels?.length <= 2 &&
-          [...new Array(3)].map((_, i) => (
+        {data.labels?.length <= 4 &&
+          [...new Array(4 - data.labels?.length)].map((_, i) => (
             <View
               key={i}
               style={{
