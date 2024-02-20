@@ -249,8 +249,6 @@ export function Column({
       style={{
         ...(breakpoints.md && {
           backgroundColor: theme[2],
-          borderWidth: 1,
-          borderColor: theme[4],
           borderRadius: 20,
         }),
         width: breakpoints.md ? 300 : width,
