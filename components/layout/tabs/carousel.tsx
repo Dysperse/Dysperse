@@ -17,7 +17,7 @@ const Header = memo(function Header() {
   return (
     <Text
       variant="eyebrow"
-      style={{ marginVertical: 10, marginLeft: 5, marginTop: 15 }}
+      style={{ marginVertical: 3, marginLeft: 5, marginTop: 15 }}
     >
       Tabs
     </Text>
@@ -86,7 +86,7 @@ const OpenTabsList = memo(function OpenTabsList() {
   );
 
   const theme = useColorTheme();
-  return data && Array.isArray(data) ? (
+  return data && Array.isArray(data) && data.length > 0 ? (
     <View
       style={{
         flex: 1,
@@ -116,8 +116,29 @@ const OpenTabsList = memo(function OpenTabsList() {
       />
     </View>
   ) : (
-    <View style={{ alignItems: "center" }}>
-      {error ? <ErrorAlert /> : <Spinner />}
+    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+      {error ? (
+        <ErrorAlert />
+      ) : data && data.length === 0 ? (
+        <View style={{ alignItems: "center", padding: 20 }}>
+          <Text variant="eyebrow" style={{ marginTop: 10, fontSize: 13.5 }}>
+            It's quiet here...
+          </Text>
+          <Text
+            style={{
+              color: theme[11],
+              opacity: 0.5,
+              textAlign: "center",
+              fontSize: 13,
+              marginTop: 5,
+            }}
+          >
+            Try opening a collection or label
+          </Text>
+        </View>
+      ) : (
+        <Spinner />
+      )}
     </View>
   );
 });
