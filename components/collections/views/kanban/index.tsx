@@ -14,7 +14,7 @@ export function Kanban() {
 
   const [currentColumn, setCurrentColumn] = useState(0);
 
-  return (
+  return !data.labels ? null : (
     <KanbanContext.Provider
       value={{
         currentColumn,
@@ -40,15 +40,17 @@ export function Kanban() {
         scrollEnabled={breakpoints.md}
       >
         {breakpoints.md
-          ? data.labels.map((label) => <Column key={label.id} label={label} />)
+          ? data.labels.map(
+              (label) => label && <Column key={label.id} label={label} />
+            )
           : data.labels[currentColumn] && (
               <Column label={data.labels[currentColumn]} />
             )}
-        {data.entities.length > 0 &&
+        {data.entities?.length > 0 &&
           (breakpoints.md || currentColumn === -1) && (
             <Column entities={data.entities} />
           )}
-        {data.labels.length <= 2 &&
+        {data.labels?.length <= 2 &&
           [...new Array(3)].map((_, i) => (
             <View
               key={i}
