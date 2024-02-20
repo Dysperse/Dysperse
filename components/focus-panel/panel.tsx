@@ -130,7 +130,7 @@ export function PanelSwipeTrigger({
   side?: "left" | "right";
 }) {
   const theme = useColorTheme();
-  const width = useSharedValue(15);
+  const width = useSharedValue(10);
   const pathname = usePathname();
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -140,7 +140,7 @@ export function PanelSwipeTrigger({
   });
 
   const dotStyle = useAnimatedStyle(() => ({
-    height: withSpring(width.value, {
+    height: withSpring(width.value == 15 ? 30 : 20, {
       damping: 30,
       stiffness: 400,
     }),
@@ -150,7 +150,7 @@ export function PanelSwipeTrigger({
   const isPullerHovered = useSharedValue(0);
 
   const pullerStyles = useAnimatedStyle(() => ({
-    width: withSpring(!isPullerActive.value ? 5 : 11, {
+    width: withSpring(isPullerActive.value ? 11 : 7, {
       damping: 30,
       stiffness: 400,
     }),
@@ -174,26 +174,26 @@ export function PanelSwipeTrigger({
   let t: any = null;
 
   const onPressIn = () => {
-    width.value = 20;
+    width.value = 15;
     isPullerActive.value = 1;
   };
 
   const onPressOut = () => {
-    width.value = 15;
+    width.value = 10;
     isPullerActive.value = 0;
   };
 
   const onHoverIn = () => {
     isPullerHovered.value = 1;
     t = setTimeout(() => {
-      width.value = 20;
+      width.value = 15;
     }, 500);
   };
 
   const onHoverOut = () => {
     if (t) clearTimeout(t);
     isPullerHovered.value = 0;
-    width.value = 15;
+    width.value = 10;
   };
 
   return (
