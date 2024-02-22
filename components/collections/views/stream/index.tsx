@@ -5,7 +5,10 @@ import CreateTask from "@/components/task/create";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router } from "expo-router";
@@ -80,14 +83,18 @@ export function Stream() {
     );
   };
 
+  const [query, setQuery] = useState("");
+
   const filteredTasks = [
     ...data.entities,
     ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
-  ].filter((t) => {
-    if (view === "backlog") return !t.completionInstances.length;
-    if (view === "upcoming") return dayjs(t.due).isAfter(dayjs());
-    if (view === "completed") return t.completionInstances.length;
-  });
+  ]
+    .filter((t) => {
+      if (view === "backlog") return !t.completionInstances.length;
+      if (view === "upcoming") return dayjs(t.due).isAfter(dayjs());
+      if (view === "completed") return t.completionInstances.length;
+    })
+    .filter((t) => t.name.toLowerCase().includes(query));
 
   return (
     <>
@@ -133,10 +140,36 @@ export function Stream() {
         }
       />
       <FlatList
-        ListEmptyComponent={() => <ColumnEmptyComponent row />}
+        ListEmptyComponent={() =>
+          query === "" ? (
+            <ColumnEmptyComponent />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 20,
+                padding: 20,
+              }}
+            >
+              <Emoji emoji="1f62d" size={40} />
+              <Text style={{ fontSize: 20 }} weight={200}>
+                We couldn't find anything called{" "}
+                <Text weight={700}>"{query}"</Text>
+              </Text>
+            </View>
+          )
+        }
         ListHeaderComponent={
           <>
-            <View style={styles.header}>
+            <View style={[styles.header, { flexDirection: "column" }]}>
+              <TextField
+                variant="filled+outlined"
+                placeholder="Search items..."
+                onChangeText={setQuery}
+                style={{ height: 50, fontSize: 18 }}
+              />
               <CreateTask
                 defaultValues={{
                   collectionId: data.id,
