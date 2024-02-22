@@ -52,11 +52,12 @@ const PaletteItem = memo(
         }
         await createTab(sessionToken, tab);
         await mutate();
-        setLoading(false);
+
         handleClose();
       } catch (e) {
-        setLoading(false);
         alert("Something went wrong. Please try again later");
+      } finally {
+        setLoading(false);
       }
     };
     return (

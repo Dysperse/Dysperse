@@ -174,13 +174,15 @@ export default function Page() {
           !breakpoints.md && { marginTop: insets.top + 15 },
         ]}
       >
-        <IconButton
-          size={55}
-          onPress={openSidebar}
-          variant="outlined"
-          icon="menu"
-          style={{ marginRight: "auto" }}
-        />
+        {!breakpoints.md && (
+          <IconButton
+            size={55}
+            onPress={openSidebar}
+            variant="outlined"
+            icon="menu"
+            style={{ marginRight: "auto" }}
+          />
+        )}
         {data?.name && (
           <LabelEditModal
             label={data}
