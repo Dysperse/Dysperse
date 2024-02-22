@@ -242,7 +242,7 @@ function TaskAttachmentCard({ item }) {
             style={{ height: 90, paddingHorizontal: 30 }}
             onPress={handleOpenPress}
           >
-            <View>
+            <View style={{ flex: 1, overflow: "hidden" }}>
               <ButtonText weight={900}>
                 Open{" "}
                 {item.type === "IMAGE"

@@ -94,7 +94,7 @@ export function Stream() {
       if (view === "upcoming") return dayjs(t.due).isAfter(dayjs());
       if (view === "completed") return t.completionInstances.length;
     })
-    .filter((t) => t.name.toLowerCase().includes(query));
+    .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <>

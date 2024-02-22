@@ -57,6 +57,7 @@ export function AgendaButtons() {
         },
         {
           flexDirection: "row",
+          marginLeft: "auto",
           gap: 10,
         },
       ]}
