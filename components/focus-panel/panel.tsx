@@ -1,10 +1,13 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { usePathname } from "expo-router";
 import { memo, useEffect, useState } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, Pressable } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -37,51 +40,64 @@ function WidgetBar({ widgets, setWidgets }) {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: theme[3],
-        height: 50,
-        width: "100%",
-        borderRadius: 20,
-        marginBottom: 25,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-around",
-      }}
-    >
-      <IconButton
-        onPress={() => handleWidgetToggle("upcoming")}
-        style={widgets.includes("upcoming") && { backgroundColor: theme[6] }}
-      >
-        <Svg
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1}
-          width={24}
-          height={24}
-          stroke={theme[11]}
-        >
-          <Path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122"
-          />
-        </Svg>
-      </IconButton>
-      {[
-        { icon: "wb_sunny", widget: "weather" },
-        { icon: "timer", widget: "clock" },
-        { icon: "auto_awesome", widget: "assistant" },
-        { icon: "music_note", widget: "music" },
-      ].map(({ icon, widget }) => (
-        <IconButton
-          key={widget}
-          onPress={() => handleWidgetToggle(widget as any)}
-          style={widgets.includes(widget) && { backgroundColor: theme[6] }}
-          icon={icon}
-        />
-      ))}
-    </View>
+    <>
+      <MenuPopover
+        menuProps={{
+          style: {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            margin: 10,
+            width: 60,
+          },
+        }}
+        containerStyle={{
+          marginLeft: -15,
+        }}
+        trigger={
+          <IconButton
+            variant="filled"
+            style={{
+              width: 60,
+            }}
+          >
+            <Icon>add</Icon>
+          </IconButton>
+        }
+        options={[
+          {
+            text: "Upcoming",
+            renderer: () => (
+              <MenuItem>
+                <Svg
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1}
+                  width={24}
+                  height={24}
+                  stroke={theme[11]}
+                >
+                  <Path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122"
+                  />
+                </Svg>
+                <Text variant="menuItem">Up next</Text>
+              </MenuItem>
+            ),
+          },
+          { text: "Weather", icon: "wb_sunny" },
+          { text: "Clock", icon: "timer" },
+          { text: "Assistant", icon: "auto_awesome" },
+          { text: "Music", icon: "music_note" },
+        ].map((i) => ({
+          ...i,
+          selected: widgets.includes(i.text.toLowerCase()),
+          callback: () => handleWidgetToggle((i.text as any).toLowerCase()),
+        }))}
+      />
+    </>
   );
 }
 
@@ -103,6 +119,7 @@ function PanelContent() {
     <ContentWrapper
       style={{
         padding: 20,
+        position: "relative",
       }}
     >
       {isFocused && (
