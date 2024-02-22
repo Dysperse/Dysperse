@@ -198,13 +198,11 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             containerStyle={{ width: 230 }}
             trigger={
               <IconButton
-                variant="filled"
+                variant="text"
                 style={[
                   styles.navbarIconButton,
                   {
-                    backgroundColor: "transparent",
-                    height: 30,
-                    gap: 10,
+                    gap: 5,
                     width: "auto",
                     justifyContent: "flex-start",
                     paddingRight: 5,
@@ -212,29 +210,10 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 ]}
               >
                 {!isAll && <Emoji emoji={data.emoji} size={30} />}
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 20 }} numberOfLines={1}>
-                    {data.name || "Everything"}
-                  </Text>
-                  {data.integration && (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 5,
-                        marginTop: -3,
-                      }}
-                    >
-                      <Icon size={20}>sync_alt</Icon>
-
-                      <Text style={{ fontSize: 12, opacity: 0.6 }}>
-                        {capitalizeFirstLetter(
-                          data.integration.name.replaceAll("-", " ")
-                        )}
-                      </Text>
-                    </View>
-                  )}
-                </View>
+                <Text style={{ fontSize: 20 }} numberOfLines={1}>
+                  {data.name || "Everything"}
+                </Text>
+                <Icon>expand_more</Icon>
               </IconButton>
             }
             options={collectionMenuOptions}
@@ -242,18 +221,20 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </View>
         <MenuPopover
           menuProps={{
+            style: { marginRight: "auto" },
             rendererProps: { placement: "bottom" },
           }}
           trigger={
             <IconButton
               variant="outlined"
-              style={({ pressed }) => [
+              style={[
                 breakpoints.md && styles.navbarIconButton,
                 breakpoints.md
                   ? {
                       width: 60,
                       height: 35,
                       paddingLeft: 5,
+                      marginLeft: -5,
                     }
                   : {
                       width: 60,
