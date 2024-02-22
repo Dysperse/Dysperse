@@ -63,7 +63,7 @@ export function Column(props: ColumnProps) {
                     ...l,
                     entities: [...l.entities, updatedTask],
                   }
-                : l.id === oldTask.label.id
+                : l.id === oldTask.label?.id
                 ? {
                     ...l,
                     entities: l.entities.filter((t) => t.id !== oldTask.id),
