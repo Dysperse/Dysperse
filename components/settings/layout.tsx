@@ -192,7 +192,7 @@ function SettingsSidebar() {
                   ]}
                   key={button.name}
                   onPress={() =>
-                    router.navigate(
+                    router[breakpoints.md ? "replace" : "navigate"](
                       button.href ||
                         `/settings/${button.name
                           .toLowerCase()
@@ -286,7 +286,7 @@ export function SettingsLayout({
         left: 0,
         width: "100%",
         height: "100%",
-        backgroundColor: theme[1],
+        backgroundColor: theme[2],
       }}
     >
       {!breakpoints.md && !hideBack && (
