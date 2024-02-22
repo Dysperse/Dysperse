@@ -1,8 +1,8 @@
-import { useSession } from "@/context/AuthProvider";
 import { Avatar } from "@/ui/Avatar";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
 import { Platform, Pressable, View } from "react-native";
@@ -15,6 +15,13 @@ export function AttachmentGrid({
   onAttachmentCreate,
   onClose,
   menuRef,
+}: {
+  task: any;
+  updateTask: any;
+  setView: any;
+  onAttachmentCreate: any;
+  onClose: any;
+  menuRef: React.MutableRefObject<BottomSheetModal>;
 }) {
   const theme = useColorTheme();
 
@@ -33,8 +40,6 @@ export function AttachmentGrid({
       { icon: "camera_alt", text: "Image" },
     ],
   ];
-
-  const { session } = useSession();
 
   const pickImageAsync = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -60,9 +65,10 @@ export function AttachmentGrid({
         }
       ).then((res) => res.json());
       updateTask("attachments", [
-        ...task.attachments,
+        ...(task?.attachments || []),
         { type: "IMAGE", data: res.data.display_url },
       ]);
+      menuRef.current.forceClose();
     } else {
       alert("You did not select any image.");
     }
