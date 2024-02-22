@@ -73,8 +73,8 @@ export function Grid({ editOrderMode }) {
                     }
                     style={({ pressed }: any) => ({
                       flex: 1,
-                      width: 220,
-                      minWidth: 220,
+                      width: width - 150,
+                      minWidth: width - 150,
                       maxWidth: 200,
                       minHeight: 5,
                       borderWidth: 2,
@@ -95,7 +95,7 @@ export function Grid({ editOrderMode }) {
                       style={{ fontSize: 20, marginTop: 5 }}
                       weight={900}
                     >
-                      {label.name}
+                      {label.name || "Other"}
                     </Text>
                     <Text weight={300} style={{ marginTop: 2, opacity: 0.7 }}>
                       {label._count?.entities}
@@ -162,18 +162,25 @@ export function Grid({ editOrderMode }) {
           {
             padding: 15,
             gap: 15,
-            minWidth: "100%",
             paddingRight: 30,
             flexDirection: "column",
           },
-          isMobileHome && {
-            backgroundColor: theme[3],
-          },
+          !breakpoints.md &&
+            !isMobileHome && {
+              padding: 0,
+              width,
+            },
         ]}
         scrollEnabled={breakpoints.md || currentColumn === "HOME"}
-        style={{
-          minWidth: "100%",
-        }}
+        style={[
+          {
+            minWidth: "100%",
+          },
+          isMobileHome && {
+            backgroundColor: theme[3],
+            width,
+          },
+        ]}
       >
         {breakpoints.md ? (
           rows

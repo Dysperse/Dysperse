@@ -51,6 +51,7 @@ export function Kanban() {
             <Column entities={data.entities} />
           )}
         {data.labels?.length <= 4 &&
+          breakpoints.md &&
           [...new Array(4 - data.labels?.length)].map((_, i) => (
             <View
               key={i}
