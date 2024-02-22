@@ -212,8 +212,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 ]}
               >
                 {!isAll && <Emoji emoji={data.emoji} size={30} />}
-                <View>
-                  <Text style={{ fontSize: 20 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 20 }} numberOfLines={1}>
                     {data.name || "Everything"}
                   </Text>
                   {data.integration && (
@@ -242,7 +242,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </View>
         <MenuPopover
           menuProps={{
-            style: { marginRight: "auto" },
             rendererProps: { placement: "bottom" },
           }}
           trigger={
