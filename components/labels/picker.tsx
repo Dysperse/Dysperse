@@ -254,7 +254,7 @@ const LabelPicker = memo(function LabelPicker({
                 .filter((label) =>
                   selectedCollection
                     ? label.collections
-                        .map((c) => c?.id)
+                        ?.map((c) => c?.id)
                         .includes(selectedCollection)
                     : true
                 )}
