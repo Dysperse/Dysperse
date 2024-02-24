@@ -27,11 +27,12 @@ export default function Page() {
         breakpoints.md && {
           borderColor: theme[6],
         },
+        { padding: 20 },
       ]}
     >
       <LinearGradient
         colors={[theme[breakpoints.md ? 1 : 2], theme[1]]}
-        style={[StyleSheet.absoluteFill]}
+        style={StyleSheet.absoluteFill}
       />
       <Text style={[authStyles.title, !breakpoints.md && { fontSize: 40 }]}>
         We're here to{" "}

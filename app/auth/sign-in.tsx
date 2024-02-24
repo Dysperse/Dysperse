@@ -128,7 +128,7 @@ export default function SignIn() {
         size={55}
         icon="close"
         onPress={handleBack}
-        style={{ margin: 20 }}
+        style={{ margin: 10 }}
       />
       {step == 0 || step == 2 ? (
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>

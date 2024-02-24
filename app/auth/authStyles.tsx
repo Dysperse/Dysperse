@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const authStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     gap: 15,
     justifyContent: "flex-end",
   },
