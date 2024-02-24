@@ -5,6 +5,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
@@ -42,14 +43,24 @@ export function SessionCard({
     }
   };
 
+  const type = ["Unknown", "Phone", "Tablet", "Desktop", "TV"];
+  const icons = [
+    "device_unknown",
+    "phone_iphone",
+    "tablet_mac",
+    "desktop_mac",
+    "tv_gen",
+  ];
+
   return (
     <View style={{ height: 85 }}>
       <ListItemButton
         variant={isCurrentDevice ? "filled" : "outlined"}
         disabled
       >
+        <Icon>{icons[session.deviceType || 0]}</Icon>
         <ListItemText
-          primary={session.name || session.deviceType || "Unknown device"}
+          primary={session.name || type[session.deviceType] || "Unknown device"}
           secondary={`${session.ip} • ${dayjs(session.timestamp).fromNow()}`}
         />
         <ConfirmationModal
@@ -100,7 +111,7 @@ export default function Page() {
 
   return (
     <SettingsLayout noScroll>
-      {data ? (
+      {Array.isArray(data) ? (
         <FlashList
           estimatedItemSize={85}
           data={data.sort((a) => (a.id === session ? -1 : 0))}
