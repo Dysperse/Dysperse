@@ -333,7 +333,8 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
       )
         .then((e) => mutateList(e))
         .then((e) => console.log(e));
-      reset();
+      reset({ label: data.label });
+
       Toast.show({
         type: "success",
         text1: "Created task!",
