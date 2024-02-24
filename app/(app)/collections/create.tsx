@@ -97,7 +97,7 @@ export default function Page() {
       <Header />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.containerContent}>
-          <Text heading style={{ fontSize: 50 }}>
+          <Text weight={200} style={{ fontSize: 50 }}>
             New collection
           </Text>
           <Text style={styles.helper}>
