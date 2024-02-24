@@ -2,6 +2,7 @@ import { CreateLabelModal } from "@/components/labels/createModal";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import BottomSheet, { DBottomSheetProps } from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
+import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -53,6 +54,7 @@ const Search = ({ query, setQuery, autoFocus }) => {
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 99,
+        shadowRadius: 0,
         flex: 1,
         fontSize: 20,
       }}
@@ -67,6 +69,40 @@ const Search = ({ query, setQuery, autoFocus }) => {
     />
   );
 };
+function CollectionChips({
+  collections,
+  selectedCollection,
+  setSelectedCollection,
+}) {
+  return (
+    <View style={{ padding: 10, gap: 10 }}>
+      <Text variant="eyebrow">Collections</Text>
+      <FlatList
+        horizontal
+        renderItem={({ item }) => (
+          <Chip
+            key={item.id}
+            outlined={selectedCollection && selectedCollection !== item.id}
+            icon={<Emoji emoji={item.emoji || "270c"} size={20} />}
+            label={
+              <>
+                <Text>{item.name}</Text>
+                {selectedCollection === item.id && <Icon>check</Icon>}
+              </>
+            }
+            onPress={() =>
+              setSelectedCollection((i) => (i === item.id ? null : item.id))
+            }
+          />
+        )}
+        data={collections}
+        contentContainerStyle={{ gap: 10 }}
+        showsHorizontalScrollIndicator={false}
+      />
+    </View>
+  );
+}
+
 const CloseButton = memo(function CloseButton({
   onClose,
   disabled,
@@ -145,6 +181,13 @@ const LabelPicker = memo(function LabelPicker({
   const FlatListComponent =
     Platform.OS === "web" ? FlatList : BottomSheetFlatList;
 
+  const [selectedCollection, setSelectedCollection] = useState(null);
+  const collections =
+    data
+      ?.map((l) => l.collections.map((c) => c))
+      ?.flat()
+      ?.filter((c, i, arr) => arr.findIndex((a) => a.id === c.id) === i) || [];
+
   return (
     <>
       {trigger}
@@ -204,11 +247,26 @@ const LabelPicker = memo(function LabelPicker({
           </View>
           {Array.isArray(data) ? (
             <FlatListComponent
-              data={data.filter((label) =>
-                label.name.toLowerCase().includes(query.toLowerCase())
-              )}
+              data={data
+                .filter((label) =>
+                  label.name.toLowerCase().includes(query.toLowerCase())
+                )
+                .filter((label) =>
+                  selectedCollection
+                    ? label.collections
+                        .map((c) => c?.id)
+                        .includes(selectedCollection)
+                    : true
+                )}
               keyboardShouldPersistTaps="handled"
               style={{ flex: 1 }}
+              ListHeaderComponent={
+                <CollectionChips
+                  collections={collections}
+                  selectedCollection={selectedCollection}
+                  setSelectedCollection={setSelectedCollection}
+                />
+              }
               contentContainerStyle={{ paddingBottom: 100, gap: 10 }}
               ListEmptyComponent={
                 <View
