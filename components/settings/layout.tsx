@@ -53,7 +53,7 @@ function SettingsSidebar() {
       style={{ maxHeight: "100%" }}
       contentContainerStyle={{
         paddingVertical: breakpoints.md ? 50 : 0,
-        paddingBottom: 150,
+        paddingBottom: 50,
       }}
       showsVerticalScrollIndicator={false}
     >
