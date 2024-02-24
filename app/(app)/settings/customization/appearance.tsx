@@ -127,6 +127,7 @@ function ThemePicker({ children }) {
   };
   const { height } = useWindowDimensions();
   const carouselRef = useRef<Swiper>();
+  const dark = useColorScheme() === "dark";
 
   return (
     <>
@@ -189,14 +190,26 @@ function ThemePicker({ children }) {
                 dotProps: { Component: (() => null) as any },
                 NextComponent: (props) => (
                   <IconButton {...props} key={selectedTheme}>
-                    <Icon style={{ color: "rgba(255,255,255,.5)" }}>
+                    <Icon
+                      style={{
+                        color: dark
+                          ? "rgba(255,255,255,.5)"
+                          : "rgba(0,0,0,0.5)",
+                      }}
+                    >
                       arrow_forward_ios
                     </Icon>
                   </IconButton>
                 ),
                 PrevComponent: (props) => (
                   <IconButton {...props} key={selectedTheme}>
-                    <Icon style={{ color: "rgba(255,255,255,.5)" }}>
+                    <Icon
+                      style={{
+                        color: dark
+                          ? "rgba(255,255,255,.5)"
+                          : "rgba(0,0,0,0.5)",
+                      }}
+                    >
                       arrow_back_ios
                     </Icon>
                   </IconButton>
