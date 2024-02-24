@@ -261,11 +261,16 @@ const LabelPicker = memo(function LabelPicker({
               keyboardShouldPersistTaps="handled"
               style={{ flex: 1 }}
               ListHeaderComponent={
-                <CollectionChips
-                  collections={collections}
-                  selectedCollection={selectedCollection}
-                  setSelectedCollection={setSelectedCollection}
-                />
+                <>
+                  <CollectionChips
+                    collections={collections}
+                    selectedCollection={selectedCollection}
+                    setSelectedCollection={setSelectedCollection}
+                  />
+                  <View style={{ padding: 10, paddingBottom: 0 }}>
+                    <Text variant="eyebrow">Labels</Text>
+                  </View>
+                </>
               }
               contentContainerStyle={{ paddingBottom: 100, gap: 10 }}
               ListEmptyComponent={
