@@ -119,7 +119,9 @@ export function Column(props: ColumnProps) {
         label={{
           ...props.label,
           entities: undefined,
-          entitiesLength: (props.label || props).entities.length,
+          entitiesLength: (props.label || props).entities.filter(
+            (e) => e.completionInstances.length === 0
+          ).length,
         }}
       />
       <LinearGradient

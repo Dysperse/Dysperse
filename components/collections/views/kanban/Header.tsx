@@ -86,7 +86,11 @@ export const KanbanHeader = memo(function KanbanHeader({
           {label.name || "Other"}
         </Text>
         <Text weight={200} numberOfLines={1}>
-          {label.entitiesLength}
+          {grid
+            ? label.entitiesLength === 0
+              ? ""
+              : label.entitiesLength
+            : label.entitiesLength}
           {!grid && ` item${label.entitiesLength !== 1 ? "s" : ""}`}
         </Text>
       </View>
