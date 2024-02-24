@@ -363,6 +363,34 @@ export function Column({
                 </Button>
               </ColumnMenu>
             </View>
+
+            {column.tasks.length > 0 &&
+              column.tasks.filter((e) => e.completionInstances.length === 0)
+                .length === 0 && (
+                <View
+                  style={{
+                    marginVertical: 20,
+                    backgroundColor: theme[3],
+                    alignItems: "center",
+                    padding: 20,
+                    gap: 10,
+                    borderRadius: 20,
+                  }}
+                >
+                  <Emoji emoji="1f389" size={30} />
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        color: theme[11],
+                        textAlign: "center",
+                      }}
+                    >
+                      You finished everything!
+                    </Text>
+                  </View>
+                </View>
+              )}
           </>
         }
         data={column.tasks
