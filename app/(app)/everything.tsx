@@ -12,7 +12,7 @@ const Labels = () => {
 
   return (
     <>
-      {data ? (
+      {Array.isArray(data) ? (
         <View>
           {data.map((label) => (
             <View key={label.id}>
