@@ -1,4 +1,3 @@
-import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
@@ -12,7 +11,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -55,6 +54,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 10,
     gap: 7,
+    // borderWidth:1,
     flexDirection: "row",
     paddingHorizontal: 10,
     paddingVertical: 10,
@@ -87,11 +87,10 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   return (
     <Pressable
       onPress={handleHome}
-      style={({ pressed }) => [
+      style={({ pressed, hovered }) => [
         styles.button,
         {
-          backgroundColor: isHome ? theme[4] : addHslAlpha(theme[3], 0.8),
-          opacity: pressed ? 0.5 : 1,
+          backgroundColor: theme[isHome ? 4 : pressed ? 5 : hovered ? 4 : 3],
         },
       ]}
     >
@@ -175,37 +174,6 @@ const SyncButton = memo(function SyncButton() {
         <Text variant="menuItem">Sync now</Text>
       </MenuItem>
     </>
-  );
-});
-const JumpToButton = memo(function JumpToButton() {
-  const theme = useColorTheme();
-
-  const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
-    e.preventDefault();
-    handleOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/shortcuts");
-  });
-
-  return (
-    <Pressable
-      onPress={handleOpen}
-      style={({ pressed }) => [
-        styles.button,
-        {
-          backgroundColor: addHslAlpha(theme[3], 0.8),
-          opacity: pressed ? 0.5 : 1,
-          flex: 1,
-        },
-      ]}
-    >
-      <Icon>electric_bolt</Icon>
-      <Text style={{ color: theme[11] }}>Find</Text>
-    </Pressable>
   );
 });
 
@@ -366,10 +334,10 @@ const QuickCreateButton = memo(function QuickCreateButton() {
         }}
         trigger={
           <Pressable
-            style={({ pressed }) => [
+            style={({ pressed, hovered }) => [
               styles.button,
               {
-                backgroundColor: addHslAlpha(theme[3], 0.8),
+                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
                 opacity: pressed ? 0.5 : 1,
                 flex: 1,
                 minHeight: 45,
@@ -404,14 +372,6 @@ const Header = memo(function Header() {
         }}
       >
         <HomeButton isHome={isHome} />
-        <JumpToButton />
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 10,
-        }}
-      >
         <QuickCreateButton />
       </View>
     </View>

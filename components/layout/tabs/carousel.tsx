@@ -1,13 +1,10 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
-import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -16,7 +13,7 @@ import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -25,8 +22,45 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { useSidebarContext } from "../sidebar/context";
 import Tab from "./tab";
+
+const JumpToButton = memo(function JumpToButton() {
+  const theme = useColorTheme();
+
+  const { handleOpen } = useCommandPaletteContext();
+  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
+    e.preventDefault();
+    handleOpen();
+  });
+
+  useHotkeys(["ctrl+/"], (e) => {
+    e.preventDefault();
+    router.push("/shortcuts");
+  });
+
+  return (
+    <Pressable
+      onPress={handleOpen}
+      style={({ pressed, hovered }) => [
+        {
+          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+          opacity: pressed ? 0.5 : 1,
+          flexDirection: "row",
+          alignItems: "center",
+          columnGap: 15,
+          paddingHorizontal: 15,
+          borderRadius: 15,
+          height: 50,
+        },
+      ]}
+    >
+      <Icon>add</Icon>
+      <Text weight={500} style={{ color: theme[11] }}>
+        New tab
+      </Text>
+    </Pressable>
+  );
+});
 
 const SyncButton = memo(function SyncButton() {
   const theme = useColorTheme();
@@ -118,68 +152,6 @@ const EverythingButton = memo(function EverythingButton() {
   );
 });
 
-function CreateTabButton() {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-
-  const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
-    e.preventDefault();
-    handleOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/shortcuts");
-  });
-
-  const { isFocused, setFocus } = useFocusPanelContext();
-  const { isOpen, openSidebar, closeSidebar } = useSidebarContext();
-
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        paddingVertical: 10,
-        gap: 5,
-      }}
-    >
-      <EverythingButton />
-      <SyncButton />
-
-      <MenuPopover
-        menuProps={{
-          style: { marginLeft: "auto" },
-          rendererProps: {
-            placement: "top",
-            anchorStyle: { opacity: 0 },
-          },
-        }}
-        containerStyle={{ width: 200 }}
-        trigger={
-          <IconButton size={40}>
-            <Icon style={{ color: theme[8] }}>dock_to_left</Icon>
-          </IconButton>
-        }
-        options={[
-          breakpoints.md && {
-            icon: "dock_to_right",
-            text: "Sidebar",
-            callback: isOpen ? closeSidebar : openSidebar,
-            selected: isOpen,
-          },
-          {
-            icon: "dock_to_left",
-            text: "Focus panel",
-            selected: isFocused,
-            callback: () => setFocus(!isFocused),
-          },
-        ]}
-      />
-    </View>
-  );
-}
-
 const OpenTabsList = memo(function OpenTabsList() {
   const { tab }: { tab: string } = useTabParams() as any;
 
@@ -247,6 +219,7 @@ const OpenTabsList = memo(function OpenTabsList() {
       style={{
         flex: 1,
         paddingHorizontal: 15,
+        paddingBottom: 15,
         width: "100%",
         height: "100%",
       }}
@@ -268,6 +241,7 @@ const OpenTabsList = memo(function OpenTabsList() {
         contentContainerStyle={{ backgroundColor: theme[2] }}
         keyExtractor={(item) => item.id}
       />
+      <JumpToButton />
     </View>
   ) : (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
