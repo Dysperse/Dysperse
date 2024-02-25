@@ -1,13 +1,42 @@
 import { ContentWrapper } from "@/components/layout/content";
 import { ButtonGroup } from "@/ui/ButtonGroup";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View } from "react-native";
+import useSWR from "swr";
+
+const Labels = () => {
+  const { data, mutate, error } = useSWR(["space/labels"]);
+
+  return (
+    <>
+      {data ? (
+        <View>
+          {data.map((label) => (
+            <View key={label.id}>
+              <Text>{label.name}</Text>
+            </View>
+          ))}
+        </View>
+      ) : (
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      )}
+    </>
+  );
+};
+
+const Collections = () => {
+  return <View />;
+};
 
 export default function Page() {
   const theme = useColorTheme();
   const [view, setView] = useState<"labels" | "collections">("labels");
+
   return (
     <ContentWrapper>
       <LinearGradient
@@ -42,13 +71,14 @@ export default function Page() {
                 height: 4,
                 width: 10,
                 borderRadius: 99,
-                backgroundColor: theme[9],
+                backgroundColor: theme[11],
                 margin: "auto",
               }}
             />
           }
         />
       </LinearGradient>
+      {view === "labels" ? <Labels /> : <Collections />}
     </ContentWrapper>
   );
 }
