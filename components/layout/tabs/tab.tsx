@@ -192,12 +192,14 @@ function Tab({
           disabled={!selected}
           style={({ hovered }: any) => [
             styles.closeButton,
-            { opacity: breakpoints.md ? (hovered ? 1 : 0) : selected ? 1 : 0 },
+            {
+              opacity: selected ? (hovered ? 1 : 0.5) : 0,
+            },
           ]}
           size={50}
           onPress={handleCloseTab}
         >
-          <Icon size={23} style={[styles.closeIcon]}>
+          <Icon size={20} style={[styles.closeIcon]}>
             close
           </Icon>
         </IconButton>
@@ -231,19 +233,20 @@ function Tab({
           {
             paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
             paddingRight: selected ? 30 : undefined,
-            borderRadius: 20,
+            borderRadius: 15,
             height: breakpoints.md ? 50 : 50,
             backgroundColor:
-              theme[selected ? 5 : pressed ? 5 : hovered ? 4 : 2],
+              theme[selected ? 3 : pressed ? 4 : hovered ? 3 : 2],
             ...(Platform.OS === "web" &&
               selected && {
                 shadowColor: theme[1],
                 shadowOffset: {
                   width: 0,
-                  height: 2,
+                  height: 1,
                 },
-                shadowRadius: 2,
+                shadowRadius: 1,
                 shadowOpacity: 1,
+                zIndex: 199,
               }),
           },
         ]}

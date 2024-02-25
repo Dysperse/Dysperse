@@ -1,4 +1,3 @@
-import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
@@ -51,10 +50,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 10,
+    borderRadius: 15,
     gap: 7,
     flexDirection: "row",
     paddingHorizontal: 10,
@@ -91,8 +89,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
       style={({ pressed }) => [
         styles.button,
         {
-          borderColor: theme[5],
-          backgroundColor: theme[1],
+          backgroundColor: theme[isHome ? 3 : 1],
           opacity: pressed ? 0.5 : 1,
         },
       ]}
@@ -172,53 +169,11 @@ const SyncButton = memo(function SyncButton() {
           ]}
         />
       </Portal>
-      <Pressable
-        onPress={handleSync}
-        disabled={isLoading}
-        style={({ pressed }) => [
-          styles.button,
-          {
-            borderColor: theme[5],
-            backgroundColor: theme[1],
-            opacity: isLoading ? 0.4 : pressed ? 0.5 : 1,
-          },
-        ]}
-      >
+      <MenuItem onPress={handleSync} disabled={isLoading}>
         <Icon>sync</Icon>
-      </Pressable>
+        <Text variant="menuItem">Sync now</Text>
+      </MenuItem>
     </>
-  );
-});
-const JumpToButton = memo(function JumpToButton() {
-  const theme = useColorTheme();
-
-  const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
-    e.preventDefault();
-    handleOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/shortcuts");
-  });
-
-  return (
-    <Pressable
-      onPress={handleOpen}
-      style={({ pressed }) => [
-        styles.button,
-        {
-          borderColor: theme[5],
-          backgroundColor: theme[1],
-          opacity: pressed ? 0.5 : 1,
-          flex: 1,
-        },
-      ]}
-    >
-      <Icon>electric_bolt</Icon>
-      <Text style={{ color: theme[11] }}>Find</Text>
-    </Pressable>
   );
 });
 
@@ -269,6 +224,7 @@ export const LogoButton = memo(function LogoButton() {
           </Pressable>
         }
         options={[
+          { renderer: () => <SyncButton /> },
           {
             icon: "delete",
             text: "Trash",
@@ -381,7 +337,6 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             style={({ pressed }) => [
               styles.button,
               {
-                borderColor: theme[5],
                 backgroundColor: theme[1],
                 opacity: pressed ? 0.5 : 1,
                 flex: 1,
@@ -417,16 +372,7 @@ const Header = memo(function Header() {
         }}
       >
         <HomeButton isHome={isHome} />
-        <JumpToButton />
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 10,
-        }}
-      >
         <QuickCreateButton />
-        <SyncButton />
       </View>
     </View>
   );

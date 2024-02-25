@@ -1,5 +1,7 @@
+import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -7,20 +9,47 @@ import { useTabParams } from "@/utils/useTabParams";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { memo, useEffect } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import Tab from "./tab";
 
-const Header = memo(function Header() {
+const CreateTabButton = memo(function CreateTabButton() {
+  const theme = useColorTheme();
+
+  const { handleOpen } = useCommandPaletteContext();
+  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
+    e.preventDefault();
+    handleOpen();
+  });
+
+  useHotkeys(["ctrl+/"], (e) => {
+    e.preventDefault();
+    router.push("/shortcuts");
+  });
+
   return (
-    <Text
-      variant="eyebrow"
-      style={{ marginVertical: 3, marginLeft: 5, marginTop: 15 }}
+    <Pressable
+      onPress={handleOpen}
+      style={({ hovered, pressed }) => [
+        {
+          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+          flexDirection: "row",
+          height: 50,
+          alignItems: "center",
+          paddingHorizontal: 10,
+          paddingRight: 30,
+          borderRadius: 15,
+          columnGap: 10,
+        },
+      ]}
     >
-      Tabs
-    </Text>
+      <Icon filled>add</Icon>
+      <Text style={{ color: theme[11] }} weight={500}>
+        New tab
+      </Text>
+    </Pressable>
   );
 });
 
@@ -96,7 +125,6 @@ const OpenTabsList = memo(function OpenTabsList() {
         height: "100%",
       }}
     >
-      <Header />
       <FlatList
         aria-label="Sidebar"
         data={data}
@@ -114,6 +142,7 @@ const OpenTabsList = memo(function OpenTabsList() {
         contentContainerStyle={{ backgroundColor: theme[2] }}
         keyExtractor={(item) => item.id}
       />
+      <CreateTabButton />
     </View>
   ) : (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
@@ -139,6 +168,7 @@ const OpenTabsList = memo(function OpenTabsList() {
       ) : (
         <Spinner />
       )}
+      <CreateTabButton />
     </View>
   );
 });
