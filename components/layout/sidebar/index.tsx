@@ -90,7 +90,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
       style={({ pressed }) => [
         styles.button,
         {
-          backgroundColor: theme[isHome ? 4 : 3],
+          backgroundColor: isHome ? theme[4] : addHslAlpha(theme[3], 0.8),
           opacity: pressed ? 0.5 : 1,
         },
       ]}
@@ -170,19 +170,10 @@ const SyncButton = memo(function SyncButton() {
           ]}
         />
       </Portal>
-      <Pressable
-        onPress={handleSync}
-        disabled={isLoading}
-        style={({ pressed }) => [
-          styles.button,
-          {
-            backgroundColor: addHslAlpha(theme[3], 0.8),
-            opacity: isLoading ? 0.4 : pressed ? 0.5 : 1,
-          },
-        ]}
-      >
+      <MenuItem onPress={handleSync} disabled={isLoading}>
         <Icon>sync</Icon>
-      </Pressable>
+        <Text variant="menuItem">Sync now</Text>
+      </MenuItem>
     </>
   );
 });
@@ -206,7 +197,7 @@ const JumpToButton = memo(function JumpToButton() {
       style={({ pressed }) => [
         styles.button,
         {
-          backgroundColor: theme[3],
+          backgroundColor: addHslAlpha(theme[3], 0.8),
           opacity: pressed ? 0.5 : 1,
           flex: 1,
         },
@@ -252,7 +243,6 @@ export const LogoButton = memo(function LogoButton() {
         containerStyle={{ width: 160, marginLeft: 10, marginTop: 5 }}
         trigger={
           <Pressable
-            onLongPress={openSupport}
             style={({ pressed }) => ({
               opacity: pressed ? 0.5 : 1,
               flexDirection: "row",
@@ -266,6 +256,17 @@ export const LogoButton = memo(function LogoButton() {
         }
         options={[
           {
+            renderer: () => <SyncButton />,
+          },
+          {
+            icon: "category",
+            text: "Everything",
+            callback: () => {
+              router.push("/everything");
+              setTimeout(closeSidebarOnMobile, 300);
+            },
+          },
+          {
             icon: "delete",
             text: "Trash",
             callback: () => {
@@ -273,7 +274,6 @@ export const LogoButton = memo(function LogoButton() {
               setTimeout(closeSidebarOnMobile, 300);
             },
           },
-          { divider: true, key: "1" },
           {
             icon: "settings",
             text: "Settings",
@@ -282,18 +282,14 @@ export const LogoButton = memo(function LogoButton() {
               setTimeout(closeSidebarOnMobile, 300);
             },
           },
+          { divider: true, key: "1" },
           {
             icon: "question_mark",
             text: "Help",
             callback: openSupport,
           },
           {
-            icon: "feedback",
-            text: "Feedback",
-            callback: openFeedback,
-          },
-          {
-            icon: "brand_awareness",
+            icon: "verified",
             text: "What's new",
             callback: openFeedback,
           },
@@ -373,7 +369,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             style={({ pressed }) => [
               styles.button,
               {
-                backgroundColor: theme[3],
+                backgroundColor: addHslAlpha(theme[3], 0.8),
                 opacity: pressed ? 0.5 : 1,
                 flex: 1,
                 minHeight: 45,
@@ -417,7 +413,6 @@ const Header = memo(function Header() {
         }}
       >
         <QuickCreateButton />
-        <SyncButton />
       </View>
     </View>
   );
