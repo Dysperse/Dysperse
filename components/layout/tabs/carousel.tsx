@@ -268,7 +268,6 @@ const OpenTabsList = memo(function OpenTabsList() {
         contentContainerStyle={{ backgroundColor: theme[2] }}
         keyExtractor={(item) => item.id}
       />
-      <CreateTabButton />
     </View>
   ) : (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
@@ -294,7 +293,6 @@ const OpenTabsList = memo(function OpenTabsList() {
       ) : (
         <Spinner />
       )}
-      <CreateTabButton />
     </View>
   );
 });

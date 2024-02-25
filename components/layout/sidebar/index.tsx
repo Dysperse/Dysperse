@@ -1,19 +1,24 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
+import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
 import { router, usePathname } from "expo-router";
-import React, { memo, useCallback, useEffect, useRef } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Linking,
   Platform,
@@ -27,8 +32,11 @@ import { useDrawerProgress } from "react-native-drawer-layout";
 import Animated, {
   interpolate,
   useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { mutate } from "swr";
 import OpenTabsList from "../tabs/carousel";
 
@@ -45,7 +53,7 @@ export const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 15,
+    borderRadius: 10,
     gap: 7,
     flexDirection: "row",
     paddingHorizontal: 10,
@@ -82,12 +90,130 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
       style={({ pressed }) => [
         styles.button,
         {
-          backgroundColor: theme[isHome ? 3 : 1],
+          backgroundColor: theme[isHome ? 4 : 3],
           opacity: pressed ? 0.5 : 1,
         },
       ]}
     >
       <Icon filled={isHome}>home</Icon>
+    </Pressable>
+  );
+});
+
+const SyncButton = memo(function SyncButton() {
+  const theme = useColorTheme();
+  const { session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+  const { width: windowWidth } = useWindowDimensions();
+
+  const barWidth = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  const width = useAnimatedStyle(() => ({
+    width: barWidth.value,
+    opacity: withSpring(opacity.value),
+  }));
+
+  const handleSync = useCallback(async () => {
+    setIsLoading(true);
+    opacity.value = 1;
+    barWidth.value = withSpring(windowWidth - 20, {
+      stiffness: 50,
+      damping: 9000,
+      mass: 200,
+    });
+    try {
+      await sendApiRequest(session, "GET", "space/integrations/sync", {});
+      Toast.show({ type: "success", text1: "Integrations are up to date!" });
+      if (Platform.OS === "web") {
+        localStorage.setItem("lastSyncedTimestamp", Date.now().toString());
+      }
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      barWidth.value = withSpring(windowWidth, { overshootClamping: true });
+      setTimeout(() => {
+        opacity.value = 0;
+      }, 500);
+      setTimeout(() => {
+        barWidth.value = 0;
+      }, 1000);
+      setIsLoading(false);
+    }
+  }, [barWidth, windowWidth, opacity, session]);
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      const lastSynced = localStorage.getItem("lastSyncedTimestamp");
+      const diff = Date.now() - parseInt(lastSynced);
+      if (diff > 1000 * 60 * 60 || !lastSynced) {
+        handleSync();
+      }
+    }
+  }, [handleSync]);
+
+  return (
+    <>
+      <Portal>
+        <Animated.View
+          style={[
+            width,
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: 2,
+              backgroundColor: theme[11],
+              shadowColor: theme[11],
+              shadowRadius: 10,
+            },
+          ]}
+        />
+      </Portal>
+      <Pressable
+        onPress={handleSync}
+        disabled={isLoading}
+        style={({ pressed }) => [
+          styles.button,
+          {
+            backgroundColor: theme[3],
+            opacity: isLoading ? 0.4 : pressed ? 0.5 : 1,
+          },
+        ]}
+      >
+        <Icon>sync</Icon>
+      </Pressable>
+    </>
+  );
+});
+const JumpToButton = memo(function JumpToButton() {
+  const theme = useColorTheme();
+
+  const { handleOpen } = useCommandPaletteContext();
+  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
+    e.preventDefault();
+    handleOpen();
+  });
+
+  useHotkeys(["ctrl+/"], (e) => {
+    e.preventDefault();
+    router.push("/shortcuts");
+  });
+
+  return (
+    <Pressable
+      onPress={handleOpen}
+      style={({ pressed }) => [
+        styles.button,
+        {
+          backgroundColor: theme[3],
+          opacity: pressed ? 0.5 : 1,
+          flex: 1,
+        },
+      ]}
+    >
+      <Icon>electric_bolt</Icon>
+      <Text style={{ color: theme[11] }}>Find</Text>
     </Pressable>
   );
 });
@@ -104,6 +230,7 @@ export const LogoButton = memo(function LogoButton() {
     Linking.openURL("https://feedback.dysperse.com");
   }, []);
 
+  const { isFocused, setFocus } = useFocusPanelContext();
   const { closeSidebarOnMobile, isOpen, openSidebar, closeSidebar } =
     useSidebarContext();
 
@@ -134,10 +261,19 @@ export const LogoButton = memo(function LogoButton() {
             })}
           >
             <Logo size={40} />
-            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+            <Icon style={{ color: theme[8] }}>expand_more</Icon>
           </Pressable>
         }
         options={[
+          {
+            icon: "delete",
+            text: "Trash",
+            callback: () => {
+              router.push("/trash");
+              setTimeout(closeSidebarOnMobile, 300);
+            },
+          },
+          { divider: true, key: "1" },
           {
             icon: "settings",
             text: "Settings",
@@ -164,6 +300,32 @@ export const LogoButton = memo(function LogoButton() {
         ]}
       />
       {error && <Icon style={{ color: red[11] }}>cloud_off</Icon>}
+      <MenuPopover
+        menuProps={{
+          rendererProps: {
+            placement: breakpoints.md ? "right" : "bottom",
+            anchorStyle: { opacity: 0 },
+          },
+        }}
+        containerStyle={{ marginTop: 10, width: 200 }}
+        trigger={
+          <IconButton size={40} icon="dock_to_right" style={{ opacity: 0.9 }} />
+        }
+        options={[
+          breakpoints.md && {
+            icon: "dock_to_right",
+            text: "Sidebar",
+            callback: isOpen ? closeSidebar : openSidebar,
+            selected: isOpen,
+          },
+          {
+            icon: "dock_to_left",
+            text: "Focus panel",
+            selected: isFocused,
+            callback: () => setFocus(!isFocused),
+          },
+        ]}
+      />
     </View>
   );
 });
@@ -171,7 +333,6 @@ export const LogoButton = memo(function LogoButton() {
 const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
   const itemRef = useRef<BottomSheetModal>(null);
-  const { closeSidebar } = useSidebarContext();
 
   useHotkeys(["ctrl+n", "shift+n"], (e) => {
     e.preventDefault();
@@ -200,10 +361,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           {
             icon: "layers",
             text: "Collection",
-            callback: () => {
-              router.push("/collections/create");
-              closeSidebar();
-            },
+            callback: () => router.push("/collections/create"),
           },
         ]}
         menuProps={{
@@ -215,7 +373,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             style={({ pressed }) => [
               styles.button,
               {
-                backgroundColor: theme[1],
+                backgroundColor: theme[3],
                 opacity: pressed ? 0.5 : 1,
                 flex: 1,
                 minHeight: 45,
@@ -232,52 +390,35 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   );
 });
 
-const CreateTabButton = memo(function CreateTabButton() {
-  const theme = useColorTheme();
-
-  const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
-    e.preventDefault();
-    handleOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/shortcuts");
-  });
-
-  return (
-    <Pressable
-      onPress={handleOpen}
-      style={({ pressed }) => [
-        styles.button,
-        {
-          backgroundColor: theme[1],
-          opacity: pressed ? 0.5 : 1,
-          marginBottom: 10,
-        },
-      ]}
-    >
-      <Icon>electric_bolt</Icon>
-      <Text style={{ color: theme[11] }}>Jump to</Text>
-    </Pressable>
-  );
-});
-
 const Header = memo(function Header() {
   const isHome = usePathname() === "/";
 
   return (
     <View
       style={{
-        flexDirection: "row",
-        gap: 10,
         marginTop: 20,
         marginBottom: 10,
+        gap: 10,
       }}
     >
-      <HomeButton isHome={isHome} />
-      <QuickCreateButton />
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        <HomeButton isHome={isHome} />
+        <JumpToButton />
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        <QuickCreateButton />
+        <SyncButton />
+      </View>
     </View>
   );
 });
@@ -341,6 +482,7 @@ const Sidebar = () => {
           },
         desktopCollapsed &&
           breakpoints.md && {
+            padding: 5,
             backgroundColor: "transparent",
           },
       ]}
@@ -354,8 +496,6 @@ const Sidebar = () => {
             flexDirection: "column",
             maxHeight: "100%",
             backgroundColor: theme[2],
-            borderRightWidth: 2,
-            borderColor: "transparent",
             ...(Platform.OS === "web" &&
               ({
                 paddingTop: "env(titlebar-area-height,0)",
@@ -365,16 +505,18 @@ const Sidebar = () => {
             breakpoints.md && {
               shadowColor: theme[1],
               shadowRadius: 50,
-              shadowOffset: { width: 10, height: 0 },
+              borderRadius: 20,
               overflow: "hidden",
+              borderWidth: 2,
               borderColor: theme[5],
+              width: SIDEBAR_WIDTH - 10,
+              height: height - 10,
             },
         ]}
       >
         <View style={[styles.header, { marginTop: insets.top }]}>
           <LogoButton />
           <Header />
-          <CreateTabButton />
         </View>
         <OpenTabsList />
       </Animated.View>
