@@ -90,7 +90,8 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
       style={({ pressed, hovered }) => [
         styles.button,
         {
-          backgroundColor: theme[isHome ? 4 : pressed ? 5 : hovered ? 4 : 3],
+          borderWidth: 1,
+          borderColor: theme[isHome ? 4 : pressed ? 5 : hovered ? 4 : 3],
         },
       ]}
     >
@@ -337,8 +338,8 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             style={({ pressed, hovered }) => [
               styles.button,
               {
-                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                opacity: pressed ? 0.5 : 1,
+                borderWidth: 1,
+                borderColor: theme[pressed ? 5 : hovered ? 4 : 3],
                 flex: 1,
                 minHeight: 45,
               },
