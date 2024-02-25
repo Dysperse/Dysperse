@@ -12,7 +12,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -176,7 +176,7 @@ const SyncButton = memo(function SyncButton() {
         style={({ pressed }) => [
           styles.button,
           {
-            backgroundColor: theme[3],
+            backgroundColor: addHslAlpha(theme[3], 0.8),
             opacity: isLoading ? 0.4 : pressed ? 0.5 : 1,
           },
         ]}
