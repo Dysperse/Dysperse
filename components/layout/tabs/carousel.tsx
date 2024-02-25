@@ -105,7 +105,7 @@ const SyncButton = memo(function SyncButton() {
   );
 });
 
-const CreateTabButton = memo(function CreateTabButton() {
+function CreateTabButton() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
@@ -167,7 +167,7 @@ const CreateTabButton = memo(function CreateTabButton() {
       />
     </View>
   );
-});
+}
 
 const OpenTabsList = memo(function OpenTabsList() {
   const { tab }: { tab: string } = useTabParams() as any;
