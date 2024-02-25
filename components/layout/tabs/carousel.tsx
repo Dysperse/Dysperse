@@ -1,22 +1,113 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useFocusPanelContext } from "@/components/focus-panel/context";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useTabParams } from "@/utils/useTabParams";
+import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { memo, useEffect } from "react";
-import { Pressable, View } from "react-native";
+import React, { memo, useCallback, useEffect, useState } from "react";
+import { Platform, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { useSidebarContext } from "../sidebar/context";
 import Tab from "./tab";
+
+const SyncButton = memo(function SyncButton() {
+  const theme = useColorTheme();
+  const { session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+  const { width: windowWidth } = useWindowDimensions();
+
+  const barWidth = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  const width = useAnimatedStyle(() => ({
+    width: barWidth.value,
+    opacity: withSpring(opacity.value),
+  }));
+
+  const handleSync = useCallback(async () => {
+    setIsLoading(true);
+    opacity.value = 1;
+    barWidth.value = withSpring(windowWidth - 20, {
+      stiffness: 50,
+      damping: 9000,
+      mass: 200,
+    });
+    try {
+      await sendApiRequest(session, "GET", "space/integrations/sync", {});
+      Toast.show({ type: "success", text1: "Integrations are up to date!" });
+      if (Platform.OS === "web") {
+        localStorage.setItem("lastSyncedTimestamp", Date.now().toString());
+      }
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      barWidth.value = withSpring(windowWidth, { overshootClamping: true });
+      setTimeout(() => {
+        opacity.value = 0;
+      }, 500);
+      setTimeout(() => {
+        barWidth.value = 0;
+      }, 1000);
+      setIsLoading(false);
+    }
+  }, [barWidth, windowWidth, opacity, session]);
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      const lastSynced = localStorage.getItem("lastSyncedTimestamp");
+      const diff = Date.now() - parseInt(lastSynced);
+      if (diff > 1000 * 60 * 60 || !lastSynced) {
+        handleSync();
+      }
+    }
+  }, [handleSync]);
+
+  return (
+    <>
+      <Portal>
+        <Animated.View
+          style={[
+            width,
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: 2,
+              backgroundColor: theme[11],
+              shadowColor: theme[11],
+              shadowRadius: 10,
+            },
+          ]}
+        />
+      </Portal>
+      <IconButton size={40} onPress={handleSync} disabled={isLoading}>
+        <Icon style={{ color: theme[8] }}>sync</Icon>
+      </IconButton>
+    </>
+  );
+});
 
 const CreateTabButton = memo(function CreateTabButton() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   const { handleOpen } = useCommandPaletteContext();
   useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
@@ -29,27 +120,52 @@ const CreateTabButton = memo(function CreateTabButton() {
     router.push("/shortcuts");
   });
 
+  const { isFocused, setFocus } = useFocusPanelContext();
+  const { isOpen, openSidebar, closeSidebar } = useSidebarContext();
+
   return (
-    <Pressable
-      onPress={handleOpen}
-      style={({ hovered, pressed }) => [
-        {
-          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-          flexDirection: "row",
-          height: 50,
-          alignItems: "center",
-          paddingHorizontal: 10,
-          paddingRight: 30,
-          borderRadius: 15,
-          columnGap: 10,
-        },
-      ]}
+    <View
+      style={{
+        flexDirection: "row",
+        paddingVertical: 10,
+        gap: 5,
+      }}
     >
-      <Icon filled>add</Icon>
-      <Text style={{ color: theme[11] }} weight={500}>
-        New tab
-      </Text>
-    </Pressable>
+      <IconButton size={40}>
+        <Icon style={{ color: theme[8] }}>note_stack</Icon>
+      </IconButton>
+      <SyncButton />
+
+      <MenuPopover
+        menuProps={{
+          style: { marginLeft: "auto" },
+          rendererProps: {
+            placement: "top",
+            anchorStyle: { opacity: 0 },
+          },
+        }}
+        containerStyle={{ width: 200 }}
+        trigger={
+          <IconButton size={40}>
+            <Icon style={{ color: theme[8] }}>dock_to_left</Icon>
+          </IconButton>
+        }
+        options={[
+          breakpoints.md && {
+            icon: "dock_to_right",
+            text: "Sidebar",
+            callback: isOpen ? closeSidebar : openSidebar,
+            selected: isOpen,
+          },
+          {
+            icon: "dock_to_left",
+            text: "Focus panel",
+            selected: isFocused,
+            callback: () => setFocus(!isFocused),
+          },
+        ]}
+      />
+    </View>
   );
 });
 
@@ -119,8 +235,7 @@ const OpenTabsList = memo(function OpenTabsList() {
     <View
       style={{
         flex: 1,
-        padding: 15,
-        paddingTop: 0,
+        paddingHorizontal: 15,
         width: "100%",
         height: "100%",
       }}
