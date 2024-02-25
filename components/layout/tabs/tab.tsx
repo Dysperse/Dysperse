@@ -163,13 +163,14 @@ function Tab({
           size={tab.collection || tab.label ? 23 : undefined}
           style={{
             backgroundColor:
-              tab.collection || tab.label
-                ? theme[selected ? 7 : 5]
-                : "transparent",
+              tab.collection || tab.label ? theme[5] : "transparent",
             marginLeft: tab.collection || tab.label ? -23 : 0,
             marginBottom: tab.collection || tab.label ? -10 : 0,
           }}
-          iconProps={{ size: tab.collection || tab.label ? 20 : 24 }}
+          iconProps={{
+            size: tab.collection || tab.label ? 20 : 24,
+            filled: selected,
+          }}
           icon={
             typeof tabData.icon === "function"
               ? tabData.icon(tab.params)
