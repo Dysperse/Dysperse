@@ -14,7 +14,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useTabParams } from "@/utils/useTabParams";
 import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -105,6 +105,19 @@ const SyncButton = memo(function SyncButton() {
   );
 });
 
+const EverythingButton = memo(function EverythingButton() {
+  const pathname = usePathname();
+  const theme = useColorTheme();
+
+  return (
+    <IconButton size={40} onPress={() => router.push("/everything")}>
+      <Icon filled={pathname === "/everything"} style={{ color: theme[8] }}>
+        note_stack
+      </Icon>
+    </IconButton>
+  );
+});
+
 function CreateTabButton() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -131,9 +144,7 @@ function CreateTabButton() {
         gap: 5,
       }}
     >
-      <IconButton size={40}>
-        <Icon style={{ color: theme[8] }}>note_stack</Icon>
-      </IconButton>
+      <EverythingButton />
       <SyncButton />
 
       <MenuPopover
