@@ -118,42 +118,34 @@ const LabelDetails = ({ setSelectedLabel, label }: { label: any }) => {
           )}
         </View>
 
-        <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 10 }}>
-          Items
-        </Text>
         <View
           style={{
             padding: 20,
-            gap: 10,
+            gap: 3,
             backgroundColor: userTheme[2],
             borderWidth: 1,
             borderColor: userTheme[5],
             borderRadius: 20,
+            marginTop: 20,
           }}
         >
-          {data?.entities ? (
-            <>
-              <FlashList
-                showsVerticalScrollIndicator={false}
-                estimatedItemSize={93}
-                data={data.entities}
-                renderItem={({ item }) => (
-                  <Entity
-                    item={item}
-                    onTaskUpdate={() => {}}
-                    openColumnMenu={() => {}}
-                  />
-                )}
-                keyExtractor={(item: any) => item.id}
-              />
-            </>
-          ) : error ? (
-            <ErrorAlert />
-          ) : (
-            <View>
+          <Text variant="eyebrow">Items</Text>
+          <View style={{ marginHorizontal: -10 }}>
+            {data?.entities ? (
+              data.entities.map((entity) => (
+                <Entity
+                  item={entity}
+                  key={entity.id}
+                  onTaskUpdate={() => {}}
+                  openColumnMenu={() => {}}
+                />
+              ))
+            ) : error ? (
+              <ErrorAlert />
+            ) : (
               <Spinner />
-            </View>
-          )}
+            )}
+          </View>
         </View>
       </View>
     </ScrollView>
