@@ -35,7 +35,7 @@ export function TaskAttachmentPicker({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      data: type == "NOTE" ? task.note ?? "" : "",
+      data: type == "NOTE" ? task?.note ?? "" : "",
     },
   });
 

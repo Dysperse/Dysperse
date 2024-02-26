@@ -132,7 +132,7 @@ export function TaskDrawerContent({ handleClose }) {
               {task.trash ? "restore_from_trash" : "delete"}
             </Icon>
           </IconButton>
-          <TaskAttachmentButton />
+          <TaskAttachmentButton task={task} updateTask={updateTask} />
         </View>
       </View>
       <BottomSheetScrollView

@@ -6,7 +6,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { useRef, useState } from "react";
 import { View } from "react-native";
-import { useTaskDrawerContext } from "../context";
 import { TaskImagePicker } from "./TaskImagePicker";
 import { AttachmentGrid } from "./grid";
 import { TaskAttachmentPicker } from "./picker";
@@ -20,6 +19,9 @@ export function TaskAttachmentButton({
   defaultView = "Add",
   lockView = false,
   menuRef,
+
+  task,
+  updateTask,
 }: {
   children?: JSX.Element;
   onClose?: () => void;
@@ -28,9 +30,9 @@ export function TaskAttachmentButton({
   defaultView?: TaskAttachmentType;
   lockView?: boolean;
   menuRef?: React.MutableRefObject<BottomSheetModal>;
+  task: any;
+  updateTask: any;
 }) {
-  const { task, updateTask } = useTaskDrawerContext() || {};
-
   const _menuRef = useRef<BottomSheetModal>(null);
   const ref = menuRef || _menuRef;
   const theme = useColorTheme();

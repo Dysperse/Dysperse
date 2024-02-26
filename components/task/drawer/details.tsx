@@ -324,7 +324,12 @@ export function TaskDetails() {
         sections={[
           task.note && {
             trigger: (isActive) => (
-              <TaskAttachmentButton defaultView="Note" lockView>
+              <TaskAttachmentButton
+                defaultView="Note"
+                lockView
+                task={task}
+                updateTask={updateTask}
+              >
                 <ListItemButton
                   variant="filled"
                   disabled
@@ -337,7 +342,12 @@ export function TaskDetails() {
             ),
             content: (
               <View style={collapsibleMenuStyles as any}>
-                <TaskAttachmentButton defaultView="Note" lockView>
+                <TaskAttachmentButton
+                  defaultView="Note"
+                  lockView
+                  task={task}
+                  updateTask={updateTask}
+                >
                   <Pressable style={drawerStyles.collapsibleMenuItem}>
                     <IconButton
                       disabled
