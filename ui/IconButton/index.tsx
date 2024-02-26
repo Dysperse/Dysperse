@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import {
   Pressable,
   PressableProps,
@@ -14,7 +15,7 @@ interface DIconButtonProps extends PressableProps {
   style?:
     | StyleProp<ViewStyle>
     | (({ pressed, hovered }) => StyleProp<ViewStyle>);
-  icon?: string;
+  icon?: string | ReactNode;
 }
 
 const styles = StyleSheet.create({

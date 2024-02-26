@@ -1,5 +1,6 @@
 import { Entity } from "@/components/collections/entity";
 import { ContentWrapper } from "@/components/layout/content";
+import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -20,11 +21,34 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { View, useColorScheme } from "react-native";
+import { StyleSheet, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
 import { LabelEditModal } from "./[tab]/collections/[id]/[type]";
+
+const containerStyles = StyleSheet.create({
+  root: { flexDirection: "row", flex: 1 },
+  left: {
+    flex: 1,
+    borderRightWidth: 1,
+    padding: 20,
+    paddingBottom: 0,
+  },
+  rightEmpty: {
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  leftEmpty: {
+    flex: 1,
+    height: "100%",
+    minHeight: 500,
+    gap: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 const LabelDetails = ({
   setSelectedLabel,
@@ -229,17 +253,111 @@ const LabelDetails = ({
   );
 };
 
+const OpenCollectionButton = ({ collection }) => {
+  const { session } = useSession();
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <IconButton
+      onPress={async () => {
+        try {
+          setLoading(true);
+          await createTab(session, {
+            slug: `/[tab]/collections/[id]/[type]`,
+            params: {
+              id: collection.id,
+              type: "kanban",
+            },
+          });
+        } catch (e) {
+          console.log(e);
+          Toast.show({ type: "error" });
+        } finally {
+          setLoading(false);
+        }
+      }}
+      variant="outlined"
+      size={55}
+      icon="open_in_new"
+      disabled={loading}
+    />
+  );
+};
+
+const CollectionDetails = ({
+  mutateList,
+  setSelectedCollection,
+  collection,
+}: any) => {
+  const { session } = useSession();
+
+  const handleDelete = async () => {
+    try {
+      sendApiRequest(session, "DELETE", "space/collections", {
+        id: collection.id,
+      });
+      mutateList((d) => d.filter((f) => f.id !== collection.id), {
+        revalidate: false,
+      });
+      setSelectedCollection(null);
+    } catch (e) {
+      console.log(e);
+      Toast.show({ type: "error" });
+      mutateList();
+    }
+  };
+
+  return (
+    <View style={{ flex: 2, alignItems: "center", justifyContent: "center" }}>
+      <Emoji emoji={collection.emoji} size={60} />
+      <View style={{ gap: 5, marginVertical: 20, alignItems: "center" }}>
+        <Text style={{ fontSize: 40 }} weight={900}>
+          {collection.name}
+        </Text>
+        <Text style={{ fontSize: 20, opacity: 0.6 }}>
+          Created by {collection.createdBy.profile.name}
+        </Text>
+        {collection.integrationId && (
+          <Text style={{ fontSize: 20, opacity: 0.6 }}>
+            Connected to{" "}
+            {capitalizeFirstLetter(
+              collection.integration.name.replaceAll("-", " ")
+            )}
+          </Text>
+        )}
+        <Text style={{ fontSize: 20, opacity: 0.6 }}>
+          {collection._count.labels} label
+          {collection._count.labels !== 1 && "s"} &bull;{" "}
+          {collection._count.entities} item
+          {collection._count.entities !== 1 && "s"}
+        </Text>
+      </View>
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <OpenCollectionButton collection={collection} />
+        <ConfirmationModal
+          title="Delete collection?"
+          secondary="Items or labels won't be deleted"
+          onSuccess={handleDelete}
+          height={400}
+        >
+          <IconButton variant="outlined" size={55} icon="delete" />
+        </ConfirmationModal>
+      </View>
+    </View>
+  );
+};
+
 const Labels = () => {
   const [selectedLabel, setSelectedLabel] = useState<number | null>(null);
   const theme = useColorTheme();
-
   const [query, setQuery] = useState("");
-
   const { data, mutate, error } = useSWR(["space/labels"]);
+
   useHotkeys("esc", () => setSelectedLabel(null), {
     ignoreEventWhen: () =>
       document.querySelectorAll('[aria-modal="true"]').length > 0,
   });
+
   const d =
     Array.isArray(data) &&
     data.map((l) => ({ ...l, selected: l.id === selectedLabel }));
@@ -247,17 +365,16 @@ const Labels = () => {
   const selectedLabelData = selectedLabel && d.find((i) => i.selected);
 
   return (
-    <View style={{ flexDirection: "row", flex: 1 }}>
+    <View style={containerStyles.root}>
       {Array.isArray(d) ? (
         <>
           <View
-            style={{
-              flex: 1,
-              borderRightWidth: 1,
-              borderRightColor: theme[5],
-              padding: 20,
-              paddingBottom: 0,
-            }}
+            style={[
+              containerStyles.left,
+              {
+                borderRightColor: theme[5],
+              },
+            ]}
           >
             <TextField
               autoFocus
@@ -272,16 +389,7 @@ const Labels = () => {
                 l.name.toLowerCase().includes(query.toLowerCase())
               )}
               ListEmptyComponent={() => (
-                <View
-                  style={{
-                    flex: 1,
-                    height: "100%",
-                    minHeight: 500,
-                    gap: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <View style={containerStyles.leftEmpty}>
                   <Emoji emoji="1f937" size={40} />
                   <Text style={{ color: theme[9], fontSize: 20 }} weight={600}>
                     No labels found
@@ -296,14 +404,13 @@ const Labels = () => {
                   variant={item.selected ? "filled" : undefined}
                   onPress={() => setSelectedLabel(item.id)}
                 >
-                  <Emoji emoji={item.emoji} size={20} />
+                  <Emoji emoji={item.emoji} size={30} />
                   <ListItemText
                     primary={item.name}
                     secondary={`${item._count.entities} item${
                       item._count.entities.length !== 1 ? "s" : ""
                     }`}
                   />
-                  {/* {selectedLabel === item.id && <Icon>east</Icon>} */}
                 </ListItemButton>
               )}
               keyExtractor={(item) => item.id.toString()}
@@ -316,13 +423,7 @@ const Labels = () => {
               label={selectedLabelData}
             />
           ) : (
-            <View
-              style={{
-                flex: 2,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={containerStyles.rightEmpty}>
               <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
                 No label selected
               </Text>
@@ -337,7 +438,96 @@ const Labels = () => {
 };
 
 const Collections = () => {
-  return <View />;
+  const [selectedCollection, setSelectedCollection] = useState<number | null>(
+    null
+  );
+  const theme = useColorTheme();
+  const [query, setQuery] = useState("");
+  const { data, mutate, error } = useSWR(["space/collections"]);
+
+  useHotkeys("esc", () => setSelectedCollection(null), {
+    ignoreEventWhen: () =>
+      document.querySelectorAll('[aria-modal="true"]').length > 0,
+  });
+
+  const d =
+    Array.isArray(data) &&
+    data.map((l) => ({ ...l, selected: l.id === selectedCollection }));
+
+  const selectedCollectionData =
+    selectedCollection && d.find((i) => i.selected);
+
+  return (
+    <View style={containerStyles.root}>
+      {Array.isArray(d) ? (
+        <>
+          <View
+            style={[
+              containerStyles.left,
+              {
+                borderRightColor: theme[5],
+              },
+            ]}
+          >
+            <TextField
+              autoFocus
+              value={query}
+              onChangeText={setQuery}
+              variant="filled+outlined"
+              placeholder="Search collections..."
+            />
+            <FlashList
+              estimatedItemSize={60}
+              data={d.filter((l) =>
+                l.name.toLowerCase().includes(query.toLowerCase())
+              )}
+              ListEmptyComponent={() => (
+                <View style={containerStyles.leftEmpty}>
+                  <Emoji emoji="1f937" size={40} />
+                  <Text style={{ color: theme[9], fontSize: 20 }} weight={600}>
+                    No collections found
+                  </Text>
+                </View>
+              )}
+              contentContainerStyle={{ paddingTop: 20 }}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <ListItemButton
+                  style={{ height: 60 }}
+                  variant={item.selected ? "filled" : undefined}
+                  onPress={() => setSelectedCollection(item.id)}
+                >
+                  <Emoji emoji={item.emoji} size={30} />
+                  <ListItemText
+                    primary={item.name}
+                    secondary={`${item._count.entities} item${
+                      item._count.entities.length !== 1 ? "s" : ""
+                    }`}
+                  />
+                </ListItemButton>
+              )}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </View>
+          {selectedCollectionData ? (
+            <CollectionDetails
+              mutateList={mutate}
+              setSelectedCollection={setSelectedCollection}
+              collection={selectedCollectionData}
+            />
+          ) : (
+            <View style={containerStyles.rightEmpty}>
+              <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
+                No collection selected
+              </Text>
+            </View>
+          )}
+        </>
+      ) : (
+        <Spinner />
+      )}
+    </View>
+  );
 };
 
 export default function Page() {
