@@ -20,6 +20,7 @@ import { useState } from "react";
 import { View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
+import { LabelEditModal } from "./[tab]/collections/[id]/[type]";
 
 const LabelDetails = ({ setSelectedLabel, label }: { label: any }) => {
   const userTheme = useColorTheme();
@@ -54,7 +55,11 @@ const LabelDetails = ({ setSelectedLabel, label }: { label: any }) => {
               gap: 10,
             }}
           >
-            <IconButton variant="outlined" size={50} icon="edit" />
+            <LabelEditModal
+              label={data}
+              onLabelUpdate={() => {}}
+              trigger={<IconButton size={50} variant="outlined" icon="edit" />}
+            />
             <IconButton variant="outlined" size={50} icon="delete" />
           </View>
           <Emoji emoji={label.emoji} size={60} />
@@ -161,8 +166,10 @@ const Labels = () => {
   const [query, setQuery] = useState("");
 
   const { data, mutate, error } = useSWR(["space/labels"]);
-  useHotkeys("esc", () => setSelectedLabel(null));
-
+  useHotkeys("esc", () => setSelectedLabel(null), {
+    ignoreEventWhen: () =>
+      document.querySelectorAll('[aria-modal="true"]').length > 0,
+  });
   const d =
     Array.isArray(data) &&
     data.map((l) => ({ ...l, selected: l.id === selectedLabel }));
