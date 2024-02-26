@@ -181,14 +181,23 @@ const LabelDetails = ({
           <Text variant="eyebrow">Items</Text>
           <View style={{ marginHorizontal: -10 }}>
             {data?.entities ? (
-              data.entities.map((entity) => (
-                <Entity
-                  item={entity}
-                  key={entity.id}
-                  onTaskUpdate={() => {}}
-                  openColumnMenu={() => {}}
-                />
-              ))
+              data?.entities?.length === 0 ? (
+                <Text
+                  style={{ marginLeft: 10, color: userTheme[7] }}
+                  weight={600}
+                >
+                  No items found
+                </Text>
+              ) : (
+                data.entities.map((entity) => (
+                  <Entity
+                    item={entity}
+                    key={entity.id}
+                    onTaskUpdate={() => {}}
+                    openColumnMenu={() => {}}
+                  />
+                ))
+              )
             ) : error ? (
               <ErrorAlert />
             ) : (
