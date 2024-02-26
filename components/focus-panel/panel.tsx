@@ -221,6 +221,7 @@ export function PanelSwipeTrigger({
       onPressOut={onPressOut}
       style={[
         {
+          shadowRadius: 0,
           height: "100%",
           paddingHorizontal: 15,
           justifyContent: "center",

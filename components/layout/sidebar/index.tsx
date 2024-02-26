@@ -436,11 +436,6 @@ const Sidebar = () => {
             maxWidth: 0,
             overflow: "hidden",
           },
-        desktopCollapsed &&
-          breakpoints.md && {
-            padding: 5,
-            backgroundColor: "transparent",
-          },
       ]}
     >
       <Animated.View
@@ -451,6 +446,8 @@ const Sidebar = () => {
             width: SIDEBAR_WIDTH,
             flexDirection: "column",
             maxHeight: "100%",
+            borderRightWidth: 2,
+            borderRightColor: "transparent",
             backgroundColor: theme[2],
             ...(Platform.OS === "web" &&
               ({
@@ -461,12 +458,11 @@ const Sidebar = () => {
             breakpoints.md && {
               shadowColor: theme[1],
               shadowRadius: 50,
-              borderRadius: 20,
+              borderRadius: 0,
+              borderRightColor: theme[5],
               overflow: "hidden",
-              borderWidth: 2,
               borderColor: theme[5],
-              width: SIDEBAR_WIDTH - 10,
-              height: height - 10,
+              width: SIDEBAR_WIDTH,
             },
         ]}
       >
