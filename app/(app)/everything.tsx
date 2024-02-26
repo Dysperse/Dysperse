@@ -143,7 +143,9 @@ const LabelDetails = ({ setSelectedLabel, label }: { label: any }) => {
             ) : error ? (
               <ErrorAlert />
             ) : (
-              <Spinner />
+              <View style={{ alignItems: "center", paddingVertical: 100 }}>
+                <Spinner />
+              </View>
             )}
           </View>
         </View>
