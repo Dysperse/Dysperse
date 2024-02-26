@@ -97,7 +97,12 @@ function ErrorBoundaryComponent() {
 
         <Button
           onPress={() => {
-            if (Platform.OS === "web") return window.location.reload();
+            if (Platform.OS === "web") {
+              (window as any).disableSaveData = true;
+              localStorage.removeItem("app-cache");
+              window.location.reload();
+              return;
+            }
             Updates.reloadAsync();
           }}
           variant="outlined"
@@ -115,6 +120,7 @@ function localStorageProvider() {
   const map = new Map(JSON.parse(localStorage.getItem("app-cache") || "[]"));
 
   const save = () => {
+    if ((window as any).disableSaveData) return;
     const appCache = JSON.stringify(Array.from(map.entries()));
     localStorage.setItem("app-cache", appCache);
   };
