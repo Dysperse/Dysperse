@@ -300,7 +300,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
       pinned: false,
       label: defaultValues.label,
       collectionId: defaultValues.collectionId,
-      attachments: []
+      attachments: [],
     },
   });
 
@@ -417,24 +417,28 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
           />
         </View>
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <Controller name="attachments"  renderInput={() => (
-            <TaskAttachmentButton
-            menuRef={menuRef}
-            onClose={() => nameRef.current.focus()}
-            onOpen={() => nameRef.current.focus()}
-            task={{}}
-            updateTask={(key, value) => {
-              console.log(key, value);
-            }}
-          >
-            <IconButton
-              style={{ marginTop: 63 }}
-              icon="add"
-              variant="filled"
-              size={35}
-            />
-          </TaskAttachmentButton>
-          )}/>
+          <Controller
+            name="attachments"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TaskAttachmentButton
+                menuRef={menuRef}
+                onClose={() => nameRef.current.focus()}
+                onOpen={() => nameRef.current.focus()}
+                task={{}}
+                updateTask={(key, value) => {
+                  console.log(key, value);
+                }}
+              >
+                <IconButton
+                  style={{ marginTop: 63 }}
+                  icon="add"
+                  variant="filled"
+                  size={35}
+                />
+              </TaskAttachmentButton>
+            )}
+          />
           <View style={{ flex: 1 }}>
             <Footer
               dateMenuRef={dateMenuRef}
