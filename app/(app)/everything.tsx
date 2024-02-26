@@ -5,6 +5,7 @@ import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,17 +15,23 @@ import useSWR from "swr";
 
 const Labels = () => {
   const [selectedLabel, setSelectedLabel] = useState<number | null>(null);
+  const theme = useColorTheme();
 
   const { data, mutate, error } = useSWR(["space/labels"]);
 
-  const d = data?.map((l) => ({ ...l, selected: l.id === selectedLabel }));
-  const selectedLabelData =
-    selectedLabel && d.find((i) => i.id === selectedLabelData);
+  const d =
+    Array.isArray(data) &&
+    data.map((l) => ({ ...l, selected: l.id === selectedLabel }));
+
+  const selectedLabelData = selectedLabel && d.find((i) => i.selected);
+
   return (
     <View style={{ flexDirection: "row", flex: 1 }}>
-      {Array.isArray(data) ? (
+      {Array.isArray(d) ? (
         <>
-          <View style={{ flex: 1 }}>
+          <View
+            style={{ flex: 1, borderRightWidth: 1, borderRightColor: theme[5] }}
+          >
             <FlashList
               estimatedItemSize={60}
               data={d}
@@ -33,6 +40,7 @@ const Labels = () => {
               renderItem={({ item }) => (
                 <ListItemButton
                   style={{ height: 60 }}
+                  variant={item.selected ? "filled" : undefined}
                   onPress={() => setSelectedLabel(item.id)}
                 >
                   <Emoji emoji={item.emoji} size={20} />
@@ -48,7 +56,24 @@ const Labels = () => {
               keyExtractor={(item) => item.id.toString()}
             />
           </View>
-          <View style={{ flex: 2 }}>{selectedLabelData}</View>
+          {selectedLabelData ? (
+            <View style={{ flex: 2, padding: 20 }}>
+              <Text>{JSON.stringify(selectedLabelData, null, 2)}</Text>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 2,
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 20,
+              }}
+            >
+              <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
+                No label selected
+              </Text>
+            </View>
+          )}
         </>
       ) : (
         <Spinner />
