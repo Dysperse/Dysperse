@@ -72,7 +72,10 @@ function ConfirmationModalButton({ onSuccess }) {
 
 export default function ConfirmationModal(props: ConfirmationModalProps) {
   const ref = useRef<BottomSheetModal>(null);
-  const handleClose = useCallback(() => ref.current?.forceClose(), []);
+  const handleClose = useCallback(
+    () => ref.current?.forceClose({ overshootClamping: false }),
+    []
+  );
 
   if (props.disabled) {
     const d = cloneElement(props.children, {

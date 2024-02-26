@@ -1,5 +1,7 @@
 import { Entity } from "@/components/collections/entity";
 import { ContentWrapper } from "@/components/layout/content";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
@@ -20,14 +22,33 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import useSWR from "swr";
+import useSWR, { KeyedMutator } from "swr";
 import { LabelEditModal } from "./[tab]/collections/[id]/[type]";
 
-const LabelDetails = ({ setSelectedLabel, label }: { label: any }) => {
+const LabelDetails = ({
+  setSelectedLabel,
+  mutateList,
+  label,
+}: {
+  setSelectedLabel: any;
+  mutateList: KeyedMutator<any>;
+  label: any;
+}) => {
+  const { session } = useSession();
   const userTheme = useColorTheme();
   const labelTheme = useColor(label.color, useColorScheme() === "dark");
 
   const { data, error } = useSWR(["space/labels/label", { id: label.id }]);
+
+  const handleLabelDelete = async () => {
+    sendApiRequest(session, "DELETE", "space/labels/label", {
+      id: label.id,
+    });
+    mutateList((d) => d.filter((f) => f.id !== label.id), {
+      revalidate: false,
+    });
+    setSelectedLabel(null);
+  };
 
   return (
     <ScrollView style={{ flex: 2 }}>
@@ -56,15 +77,23 @@ const LabelDetails = ({ setSelectedLabel, label }: { label: any }) => {
               gap: 10,
             }}
           >
-            <LabelEditModal
-              label={data}
-              onLabelUpdate={() => {}}
-              trigger={<IconButton size={50} variant="outlined" icon="edit" />}
-            />
+            {data && (
+              <LabelEditModal
+                label={data}
+                onLabelUpdate={(updatedLabel) =>
+                  mutateList((d) =>
+                    d.map((l) => (l.id === updatedLabel.id ? updatedLabel : l))
+                  )
+                }
+                trigger={
+                  <IconButton size={50} variant="outlined" icon="edit" />
+                }
+              />
+            )}
             <ConfirmationModal
               title="Delete label?"
               secondary="Items won't be deleted"
-              onSuccess={() => setSelectedLabel(null)}
+              onSuccess={handleLabelDelete}
               height={350}
             >
               <IconButton variant="outlined" size={50} icon="delete" />
@@ -249,6 +278,7 @@ const Labels = () => {
           </View>
           {selectedLabelData ? (
             <LabelDetails
+              mutateList={mutate}
               setSelectedLabel={setSelectedLabel}
               label={selectedLabelData}
             />
