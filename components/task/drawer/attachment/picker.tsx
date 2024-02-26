@@ -44,7 +44,9 @@ export function TaskAttachmentPicker({
       try {
         await updateTask(
           type === "NOTE" ? "note" : "attachments",
-          type === "NOTE" ? values.data : [{ type, data: values.data }]
+          type === "NOTE"
+            ? values.data
+            : [...task.attachments, { type, data: values.data }]
         );
         setIsLoading(false);
       } catch {
@@ -57,7 +59,7 @@ export function TaskAttachmentPicker({
         setIsLoading(false);
       }
     },
-    [updateTask, handleParentClose, type]
+    [updateTask, handleParentClose, type, task]
   );
 
   return (
@@ -68,7 +70,8 @@ export function TaskAttachmentPicker({
           required: true,
           pattern:
             type === "LINK"
-              ? /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+              ? // eslint-disable-next-line no-useless-escape
+                /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
               : undefined,
         }}
         render={({ field: { onChange, onBlur, value } }) => (

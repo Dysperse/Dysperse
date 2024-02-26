@@ -285,6 +285,18 @@ function TaskNameInput({
   );
 }
 
+const TaskAttachments = ({ watch, getValues }) => {
+  const theme = useColorTheme();
+  // get value
+  const attachments = watch("attachments");
+  const values = getValues();
+
+  // alert(JSON.stringify(values));
+
+  // return <View>{JSON.stringify(values)}</View>;
+  return null;
+};
+
 function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
   const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
@@ -293,7 +305,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
   const labelMenuRef = useRef<BottomSheetModal>(null);
   const dateMenuRef = useRef<Menu>(null);
   const theme = useColorTheme();
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset, watch, getValues } = useForm({
     defaultValues: {
       name: defaultValues.name || "",
       date: defaultValues.date || dayjs().utc(),
@@ -421,22 +433,24 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             name="attachments"
             control={control}
             render={({ field: { onChange, value } }) => (
-              <TaskAttachmentButton
-                menuRef={menuRef}
-                onClose={() => nameRef.current.focus()}
-                onOpen={() => nameRef.current.focus()}
-                task={{}}
-                updateTask={(key, value) => {
-                  console.log(key, value);
-                }}
-              >
-                <IconButton
-                  style={{ marginTop: 63 }}
-                  icon="add"
-                  variant="filled"
-                  size={35}
-                />
-              </TaskAttachmentButton>
+              <>
+                <TaskAttachmentButton
+                  menuRef={menuRef}
+                  onClose={() => nameRef.current.focus()}
+                  onOpen={() => nameRef.current.focus()}
+                  task={{
+                    attachments: value,
+                  }}
+                  updateTask={(key, value) => onChange(value)}
+                >
+                  <IconButton
+                    style={{ marginTop: 63 }}
+                    icon="add"
+                    variant="filled"
+                    size={35}
+                  />
+                </TaskAttachmentButton>
+              </>
             )}
           />
           <View style={{ flex: 1 }}>
@@ -454,6 +468,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
               nameRef={nameRef}
               dateMenuRef={dateMenuRef}
             />
+            <TaskAttachments watch={watch} getValues={getValues} />
           </View>
         </View>
       </View>
