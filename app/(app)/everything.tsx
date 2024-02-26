@@ -396,7 +396,7 @@ const Labels = () => {
                   </Text>
                 </View>
               )}
-              contentContainerStyle={{ paddingTop: 20 }}
+              contentContainerStyle={{ paddingVertical: 20 }}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (
                 <ListItemButton
@@ -489,7 +489,7 @@ const Collections = () => {
                   </Text>
                 </View>
               )}
-              contentContainerStyle={{ paddingTop: 20 }}
+              contentContainerStyle={{ paddingVertical: 20 }}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (
                 <ListItemButton
