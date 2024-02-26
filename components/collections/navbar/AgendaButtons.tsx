@@ -55,9 +55,11 @@ export function AgendaButtons() {
           borderTopColor: theme[5],
           borderTopWidth: 1,
         },
+        breakpoints.md && {
+          marginLeft: "auto",
+        },
         {
           flexDirection: "row",
-          marginLeft: "auto",
           gap: 10,
         },
       ]}
