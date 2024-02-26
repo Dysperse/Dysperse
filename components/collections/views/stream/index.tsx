@@ -11,15 +11,16 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { styles } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
 
 export function Stream() {
+  const params = useLocalSearchParams();
   const [view, setView] = useState<"backlog" | "upcoming" | "completed">(
-    "backlog"
+    params.view || "backlog"
   );
 
   const { data, mutate } = useCollectionContext();
