@@ -39,7 +39,10 @@ const LabelDetails = ({
   const userTheme = useColorTheme();
   const labelTheme = useColor(label.color, useColorScheme() === "dark");
 
-  const { data, error } = useSWR(["space/labels/label", { id: label.id }]);
+  const { data, mutate, error } = useSWR([
+    "space/labels/label",
+    { id: label.id },
+  ]);
 
   const handleLabelDelete = async () => {
     try {
@@ -193,7 +196,21 @@ const LabelDetails = ({
                   <Entity
                     item={entity}
                     key={entity.id}
-                    onTaskUpdate={() => {}}
+                    onTaskUpdate={(newEntity) => {
+                      mutate(
+                        (oldData) => {
+                          const newData = oldData?.entities
+                            .map((e) => (e.id === newEntity.id ? newEntity : e))
+                            .sort(
+                              (a, b) =>
+                                a.completionInstances.length -
+                                b.completionInstances.length
+                            );
+                          return { ...oldData, entities: newData };
+                        },
+                        { revalidate: false }
+                      );
+                    }}
                     openColumnMenu={() => {}}
                   />
                 ))
