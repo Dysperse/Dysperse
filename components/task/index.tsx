@@ -72,6 +72,14 @@ const Task = memo(function Task({
             {task.name}
           </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+            {showRelativeTime && (
+              <Chip
+                disabled
+                dense
+                label={dayjs(task.due).fromNow()}
+                icon={<Icon>access_time</Icon>}
+              />
+            )}
             {showLabel && task.label && (
               <Chip
                 disabled
@@ -86,14 +94,6 @@ const Task = memo(function Task({
                 style={{
                   paddingHorizontal: 10,
                 }}
-              />
-            )}
-            {showRelativeTime && (
-              <Chip
-                disabled
-                dense
-                label={dayjs(task.due).fromNow()}
-                icon={<Icon>access_time</Icon>}
               />
             )}
             {task.pinned && (
