@@ -92,7 +92,11 @@ export function Stream() {
     .filter((t) => {
       if (view === "backlog")
         return !t.completionInstances.length && dayjs(t.due).isBefore(dayjs());
-      if (view === "upcoming") return dayjs(t.due).isAfter(dayjs());
+      if (view === "upcoming")
+        return (
+          dayjs(t.due).isAfter(dayjs().startOf("day")) &&
+          !t.completionInstances.length
+        );
       if (view === "completed") return t.completionInstances.length;
     })
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
