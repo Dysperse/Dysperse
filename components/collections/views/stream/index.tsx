@@ -20,7 +20,7 @@ import { styles } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
 export function Stream() {
   const params = useLocalSearchParams();
   const [view, setView] = useState<"backlog" | "upcoming" | "completed">(
-    params.view || "backlog"
+    (params.view as string) || "backlog"
   );
 
   const { data, mutate } = useCollectionContext();
