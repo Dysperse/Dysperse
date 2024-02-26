@@ -3,6 +3,7 @@ import { ContentWrapper } from "@/components/layout/content";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
@@ -60,7 +61,14 @@ const LabelDetails = ({ setSelectedLabel, label }: { label: any }) => {
               onLabelUpdate={() => {}}
               trigger={<IconButton size={50} variant="outlined" icon="edit" />}
             />
-            <IconButton variant="outlined" size={50} icon="delete" />
+            <ConfirmationModal
+              title="Delete label?"
+              secondary="Items won't be deleted"
+              onSuccess={() => setSelectedLabel(null)}
+              height={350}
+            >
+              <IconButton variant="outlined" size={50} icon="delete" />
+            </ConfirmationModal>
           </View>
           <Emoji emoji={label.emoji} size={60} />
           <View>

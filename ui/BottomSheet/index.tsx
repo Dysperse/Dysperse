@@ -7,7 +7,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { RefObject, memo } from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { useColorTheme } from "../color/theme-provider";
+import { ColorThemeProvider, useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
 export interface DBottomSheetProps extends BottomSheetProps {
@@ -88,16 +88,20 @@ function BottomSheet(props: DBottomSheetProps) {
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}
     >
-      <View aria-modal style={{ flex: 1 }}>
-        {props.disableBackToClose !== true && Platform.OS !== "web" && (
-          <BottomSheetBackHandler />
-        )}
-        {Platform.OS === "web" && props.disableEscapeToClose !== true && (
-          <BottomSheetEscapeHandler animationConfigs={props.animationConfigs} />
-        )}
-        {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
-        {props.children}
-      </View>
+      <ColorThemeProvider theme={theme}>
+        <View aria-modal style={{ flex: 1 }}>
+          {props.disableBackToClose !== true && Platform.OS !== "web" && (
+            <BottomSheetBackHandler />
+          )}
+          {Platform.OS === "web" && props.disableEscapeToClose !== true && (
+            <BottomSheetEscapeHandler
+              animationConfigs={props.animationConfigs}
+            />
+          )}
+          {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
+          {props.children}
+        </View>
+      </ColorThemeProvider>
     </BottomSheetModal>
   );
 }
