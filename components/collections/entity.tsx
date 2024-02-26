@@ -7,6 +7,7 @@ interface EntityProps {
   onTaskUpdate: any;
   openColumnMenu: any;
   showLabel?: boolean;
+  showRelativeTime?: boolean;
 }
 
 export const Entity = ({
@@ -14,6 +15,7 @@ export const Entity = ({
   item,
   openColumnMenu,
   showLabel = false,
+  showRelativeTime = false,
 }: EntityProps) => {
   switch (item.type) {
     case "TASK":
@@ -23,6 +25,7 @@ export const Entity = ({
           onTaskUpdate={onTaskUpdate}
           task={item}
           openColumnMenu={openColumnMenu}
+          showRelativeTime={showRelativeTime}
         />
       );
     default:

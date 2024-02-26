@@ -17,11 +17,13 @@ const Task = memo(function Task({
   onTaskUpdate,
   openColumnMenu,
   showLabel,
+  showRelativeTime,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
   openColumnMenu: () => void;
   showLabel?: boolean;
+  showRelativeTime?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange", useColorScheme() === "dark");
@@ -84,6 +86,14 @@ const Task = memo(function Task({
                 style={{
                   paddingHorizontal: 10,
                 }}
+              />
+            )}
+            {showRelativeTime && (
+              <Chip
+                disabled
+                dense
+                label={dayjs(task.due).fromNow()}
+                icon={<Icon>access_time</Icon>}
               />
             )}
             {task.pinned && (

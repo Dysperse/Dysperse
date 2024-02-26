@@ -229,6 +229,7 @@ export function Stream() {
         }}
         renderItem={({ item }) => (
           <Entity
+            showRelativeTime
             showLabel
             item={item}
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
