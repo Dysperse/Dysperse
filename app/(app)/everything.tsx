@@ -22,6 +22,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
 import { LabelEditModal } from "./[tab]/collections/[id]/[type]";
 
@@ -41,13 +42,19 @@ const LabelDetails = ({
   const { data, error } = useSWR(["space/labels/label", { id: label.id }]);
 
   const handleLabelDelete = async () => {
-    sendApiRequest(session, "DELETE", "space/labels/label", {
-      id: label.id,
-    });
-    mutateList((d) => d.filter((f) => f.id !== label.id), {
-      revalidate: false,
-    });
-    setSelectedLabel(null);
+    try {
+      sendApiRequest(session, "DELETE", "space/labels/label", {
+        id: label.id,
+      });
+      mutateList((d) => d.filter((f) => f.id !== label.id), {
+        revalidate: false,
+      });
+      setSelectedLabel(null);
+    } catch (e) {
+      console.log(e);
+      Toast.show({ type: "error" });
+      mutateList();
+    }
   };
 
   return (
