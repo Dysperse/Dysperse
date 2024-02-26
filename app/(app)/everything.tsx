@@ -406,6 +406,7 @@ const Labels = () => {
                 >
                   <Emoji emoji={item.emoji} size={30} />
                   <ListItemText
+                    truncate
                     primary={item.name}
                     secondary={`${item._count.entities} item${
                       item._count.entities !== 1 ? "s" : ""
@@ -499,6 +500,7 @@ const Collections = () => {
                 >
                   <Emoji emoji={item.emoji} size={30} />
                   <ListItemText
+                    truncate
                     primary={item.name}
                     secondary={`${item._count.entities} item${
                       item._count.entities !== 1 ? "s" : ""
