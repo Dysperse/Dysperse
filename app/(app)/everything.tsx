@@ -408,7 +408,7 @@ const Labels = () => {
                   <ListItemText
                     primary={item.name}
                     secondary={`${item._count.entities} item${
-                      item._count.entities.length !== 1 ? "s" : ""
+                      item._count.entities !== 1 ? "s" : ""
                     }`}
                   />
                 </ListItemButton>
@@ -501,7 +501,7 @@ const Collections = () => {
                   <ListItemText
                     primary={item.name}
                     secondary={`${item._count.entities} item${
-                      item._count.entities.length !== 1 ? "s" : ""
+                      item._count.entities !== 1 ? "s" : ""
                     }`}
                   />
                 </ListItemButton>
