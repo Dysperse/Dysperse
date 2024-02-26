@@ -90,7 +90,8 @@ export function Stream() {
     ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
   ]
     .filter((t) => {
-      if (view === "backlog") return !t.completionInstances.length;
+      if (view === "backlog")
+        return !t.completionInstances.length && dayjs(t.due).isBefore(dayjs());
       if (view === "upcoming") return dayjs(t.due).isAfter(dayjs());
       if (view === "completed") return t.completionInstances.length;
     })
