@@ -345,7 +345,7 @@ const CollectionDetails = ({
       <IconButton
         size={55}
         icon="arrow_back_ios_new"
-        style={{ position: "absolute", top: 20, left: 20 }}
+        style={{ position: "absolute", top: 10, left: 10 }}
         onPress={() => setSelectedCollection(null)}
       />
       <Emoji emoji={collection.emoji} size={60} />
