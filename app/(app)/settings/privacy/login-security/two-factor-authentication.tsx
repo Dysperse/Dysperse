@@ -71,7 +71,7 @@ export default function Page() {
       Toast.show({ type: "success", text1: "2FA enabled!" });
       router.push("/settings/privacy/login-security");
     } catch (err) {
-      Toast.show({ type: "error" });
+      Toast.show({ type: "error", text2: "Check your code?" });
       setError(err);
     } finally {
       setLoading(false);
