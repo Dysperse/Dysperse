@@ -35,6 +35,7 @@ export default function SignIn() {
     defaultValues: {
       email: "",
       password: "",
+      twoFactorCode: "",
     },
   });
 
@@ -67,6 +68,10 @@ export default function SignIn() {
               },
             }
           );
+          if (sessionRequest.twoFactorRequired) {
+            setStep(3);
+            return;
+          }
           if (!sessionRequest.session) {
             Toast.show({
               type: "error",
@@ -223,7 +228,7 @@ export default function SignIn() {
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
-      ) : (
+      ) : step === 1 ? (
         <View style={authStyles.container}>
           <View style={{ marginVertical: "auto", gap: 10 }}>
             <Text weight={600} style={[styles.title, { color: theme[11] }]}>
@@ -233,6 +238,59 @@ export default function SignIn() {
               Checking if you're actually human 🤨
             </Text>
             <Turnstile setToken={setToken} />
+          </View>
+        </View>
+      ) : (
+        <View style={authStyles.container}>
+          <View style={{ marginVertical: "auto", gap: 10 }}>
+            <Text weight={600} style={[styles.title, { color: theme[11] }]}>
+              Are you{" "}
+              <Text
+                weight={600}
+                style={[
+                  styles.title,
+                  { color: theme[11], fontStyle: "italic" },
+                ]}
+              >
+                you
+              </Text>
+              ?
+            </Text>
+            <Text weight={300} style={authStyles.subtitleContainer}>
+              Enter the code from your authenticator app
+            </Text>
+
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
+                  variant="filled+outlined"
+                  style={{
+                    paddingHorizontal: 30,
+                    paddingVertical: 20,
+                    fontSize: 20,
+                    borderColor: errors.email ? "red" : theme[6],
+                    ...(Platform.OS === "web" && { outline: "none" }),
+                  }}
+                  placeholder="2fa code"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="twoFactorCode"
+            />
+            <Button
+              variant="filled"
+              style={[authStyles.button, { marginTop: 20 }]}
+              onPress={handleSubmit(onSubmit)}
+              isLoading={step === 2}
+            >
+              <ButtonText style={authStyles.buttonText}>Continue</ButtonText>
+            </Button>
           </View>
         </View>
       )}
