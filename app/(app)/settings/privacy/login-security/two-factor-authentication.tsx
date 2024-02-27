@@ -1,6 +1,7 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -10,13 +11,72 @@ import TextField from "@/ui/TextArea";
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
-import useSWR from "swr";
 
 export default function Page() {
-  const { session } = useUser();
-  const { data, error } = useSWR(["user/2fa/setup"]);
+  const { session, sessionToken } = useUser();
+
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    sendApiRequest(
+      sessionToken,
+      "GET",
+      "user/2fa/setup",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${sessionToken}`,
+        },
+      }
+    )
+      .then((res) => {
+        setData(res);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }, [session, sessionToken]);
+
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      code: "",
+    },
+  });
+
+  const onSubmit = async (t) => {
+    try {
+      setLoading(true);
+      await sendApiRequest(
+        sessionToken,
+        "POST",
+        "user/2fa/setup",
+        {
+          secret: data.secret,
+          code: t.code,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionToken}`,
+          },
+        }
+      );
+      setLoading(false);
+      Toast.show({ type: "success", text1: "2FA enabled!" });
+      router.push("/settings/privacy/login-security");
+    } catch (err) {
+      Toast.show({ type: "error" });
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SettingsLayout>
@@ -78,18 +138,30 @@ export default function Page() {
               </Button>
             </View>
             <View style={{ flexDirection: "row", gap: 10 }}>
-              <TextField
-                keyboardType="number-pad"
-                variant="filled+outlined"
-                placeholder="Enter code"
-                style={{
-                  fontSize: 20,
-                  textAlign: "center",
-                  fontFamily: "body_900",
-                  height: 60,
-                }}
+              <Controller
+                rules={{ required: true, maxLength: 6 }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    keyboardType="number-pad"
+                    variant="filled+outlined"
+                    placeholder="Enter code"
+                    style={{
+                      fontSize: 20,
+                      textAlign: "center",
+                      fontFamily: "body_900",
+                      height: 60,
+                    }}
+                  />
+                )}
+                name="code"
+                control={control}
               />
               <Button
+                isLoading={loading}
+                onPress={handleSubmit(onSubmit)}
                 style={{
                   height: 60,
                   borderRadius: 10,
