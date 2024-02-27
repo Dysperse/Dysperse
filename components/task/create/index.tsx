@@ -3,6 +3,7 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
@@ -285,16 +286,80 @@ function TaskNameInput({
   );
 }
 
-const TaskAttachments = ({ watch, getValues }) => {
+const TaskAttachments = ({ watch, setValue }) => {
   const theme = useColorTheme();
-  // get value
   const attachments = watch("attachments");
-  const values = getValues();
 
-  // alert(JSON.stringify(values));
-
-  // return <View>{JSON.stringify(values)}</View>;
-  return null;
+  return (
+    <ScrollView
+      horizontal
+      style={{
+        marginLeft: 20,
+        marginTop: "auto",
+        maxHeight: 90,
+      }}
+      contentContainerStyle={{ alignItems: "center", gap: 15 }}
+      showsHorizontalScrollIndicator={false}
+    >
+      {attachments.map((attachment, i) => (
+        <View
+          key={i}
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            backgroundColor: theme[3],
+            borderRadius: 20,
+            width: 200,
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            height: 70,
+            position: "relative",
+          }}
+        >
+          <IconButton
+            icon="close"
+            size={30}
+            variant="filled"
+            onPress={() => {
+              setValue(
+                "attachments",
+                attachments.filter((_, index) => index !== i)
+              );
+            }}
+            style={{
+              position: "absolute",
+              top: -5,
+              right: -5,
+              zIndex: 10,
+              borderRadius: 7,
+              borderWidth: 5,
+              borderColor: theme[2],
+            }}
+          />
+          <Avatar
+            image={attachment.type === "IMAGE" ? attachment.data : null}
+            icon={
+              attachment.type === "LOCATION"
+                ? "location_on"
+                : attachment.type === "LINK"
+                ? "attachment"
+                : "image"
+            }
+          />
+          <View style={{ flex: 1, flexDirection: "column" }}>
+            <Text variant="eyebrow">{attachment.type}</Text>
+            <Text numberOfLines={1}>
+              {attachment.type === "IMAGE"
+                ? attachment.data.split("/")[4]
+                : attachment.data}
+            </Text>
+          </View>
+        </View>
+      ))}
+    </ScrollView>
+  );
+  // return null;
 };
 
 function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
@@ -305,7 +370,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
   const labelMenuRef = useRef<BottomSheetModal>(null);
   const dateMenuRef = useRef<Menu>(null);
   const theme = useColorTheme();
-  const { control, handleSubmit, reset, watch, getValues } = useForm({
+  const { control, handleSubmit, reset, watch, getValues, setValue } = useForm({
     defaultValues: {
       name: defaultValues.name || "",
       date: defaultValues.date || dayjs().utc(),
@@ -313,6 +378,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
       label: defaultValues.label,
       collectionId: defaultValues.collectionId,
       attachments: [],
+      note: "",
     },
   });
 
@@ -374,7 +440,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
     <Pressable
       onPress={(e) => e.stopPropagation()}
       style={{
-        height: 300,
+        height: 320,
         maxWidth: "100%",
         width: 700,
         borderRadius: 20,
@@ -441,7 +507,13 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
                   task={{
                     attachments: value,
                   }}
-                  updateTask={(key, value) => onChange(value)}
+                  updateTask={(key, value) => {
+                    if (key !== "note") {
+                      onChange(value);
+                    } else {
+                      setValue("note", value);
+                    }
+                  }}
                 >
                   <IconButton
                     style={{ marginTop: 63 }}
@@ -468,7 +540,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
               nameRef={nameRef}
               dateMenuRef={dateMenuRef}
             />
-            <TaskAttachments watch={watch} getValues={getValues} />
+            <TaskAttachments watch={watch} setValue={setValue} />
           </View>
         </View>
       </View>

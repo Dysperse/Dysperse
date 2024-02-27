@@ -30,6 +30,8 @@ export function ImagePickerItem({
         type: mime.lookup(item.filename),
       });
 
+      form.append("name", item.filename);
+
       const res = await fetch(
         "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
         {

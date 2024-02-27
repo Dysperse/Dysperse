@@ -52,8 +52,9 @@ export function AttachmentGrid({
     if (!result.canceled) {
       // convert to File
       const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
-      console.log(blob);
-      const file = new File([blob], "image.png", { type: blob.type });
+      const file = new File([blob], result.assets[0].fileName, {
+        type: blob.type,
+      });
       const form = new FormData();
       form.append("image", file);
 
