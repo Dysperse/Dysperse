@@ -97,7 +97,6 @@ export default function Page() {
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
-            height: "100%",
             minHeight: 300,
           }}
         >
