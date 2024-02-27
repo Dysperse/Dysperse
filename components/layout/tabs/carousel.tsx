@@ -42,6 +42,7 @@ const JumpToButton = memo(function JumpToButton() {
           paddingHorizontal: 15,
           borderRadius: 15,
           height: 50,
+          marginBottom: 10,
         },
       ]}
     >
