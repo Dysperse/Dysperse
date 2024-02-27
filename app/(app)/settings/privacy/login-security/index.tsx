@@ -1,5 +1,6 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
+import { useUser } from "@/context/useUser";
 import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -8,6 +9,8 @@ import { router } from "expo-router";
 import { View } from "react-native";
 
 function TwoFactorAuthSection() {
+  const { session } = useUser();
+
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
       <View style={{ flex: 1 }}>
@@ -27,7 +30,7 @@ function TwoFactorAuthSection() {
           )
         }
       >
-        <ButtonText>Enable</ButtonText>
+        <ButtonText>Enable{session.user.twoFactorSecret && "d"}</ButtonText>
         <Icon>arrow_forward_ios</Icon>
       </Button>
     </View>
