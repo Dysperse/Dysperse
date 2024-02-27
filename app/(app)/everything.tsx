@@ -1,9 +1,11 @@
 import { Entity } from "@/components/collections/entity";
 import { ContentWrapper } from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -23,6 +25,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
 import { LabelEditModal } from "./[tab]/collections/[id]/[type]";
@@ -59,6 +62,7 @@ const LabelDetails = ({
   mutateList: KeyedMutator<any>;
   label: any;
 }) => {
+  const breakpoints = useResponsiveBreakpoints();
   const { session } = useSession();
   const userTheme = useColorTheme();
   const labelTheme = useColor(label.color, useColorScheme() === "dark");
@@ -88,15 +92,21 @@ const LabelDetails = ({
     <ScrollView style={{ flex: 2 }}>
       <ColorThemeProvider theme={labelTheme}>
         <LinearGradient
-          style={{
-            height: 300,
-            padding: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            position: "relative",
-            gap: 25,
-          }}
+          style={[
+            {
+              height: 300,
+              padding: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: breakpoints.md ? "row" : "column",
+              position: "relative",
+              gap: 25,
+            },
+            !breakpoints.md && {
+              paddingTop: 100,
+              height: 350,
+            },
+          ]}
           colors={[labelTheme[3], labelTheme[2], userTheme[1]]}
         >
           <View
@@ -111,6 +121,12 @@ const LabelDetails = ({
               gap: 10,
             }}
           >
+            <IconButton
+              size={50}
+              icon="arrow_back_ios_new"
+              style={{ marginRight: "auto" }}
+              onPress={() => setSelectedLabel(null)}
+            />
             {data && (
               <LabelEditModal
                 label={data}
@@ -134,16 +150,26 @@ const LabelDetails = ({
             </ConfirmationModal>
           </View>
           <Emoji emoji={label.emoji} size={60} />
-          <View>
-            <Text style={{ fontSize: 40, color: labelTheme[11] }} weight={900}>
+          <View style={!breakpoints.md && { width: "100%" }}>
+            <Text
+              style={[
+                { fontSize: 40, color: labelTheme[11] },
+                !breakpoints.md && { textAlign: "center" },
+              ]}
+              numberOfLines={1}
+              weight={900}
+            >
               {label.name}
             </Text>
             <Text
-              style={{
-                fontSize: 20,
-                color: labelTheme[11],
-                opacity: 0.7,
-              }}
+              style={[
+                {
+                  fontSize: 20,
+                  color: labelTheme[11],
+                  opacity: 0.7,
+                },
+                !breakpoints.md && { textAlign: "center" },
+              ]}
             >
               {label._count.entities} item
               {label._count.entities !== 1 ? "s" : ""}
@@ -308,10 +334,31 @@ const CollectionDetails = ({
   };
 
   return (
-    <View style={{ flex: 2, alignItems: "center", justifyContent: "center" }}>
+    <View
+      style={{
+        flex: 2,
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
+      <IconButton
+        size={55}
+        icon="arrow_back_ios_new"
+        style={{ position: "absolute", top: 20, left: 20 }}
+        onPress={() => setSelectedCollection(null)}
+      />
       <Emoji emoji={collection.emoji} size={60} />
-      <View style={{ gap: 5, marginVertical: 20, alignItems: "center" }}>
-        <Text style={{ fontSize: 40 }} weight={900}>
+      <View
+        style={{
+          gap: 5,
+          marginVertical: 20,
+          alignItems: "center",
+          width: "100%",
+          paddingHorizontal: 20,
+        }}
+      >
+        <Text style={{ fontSize: 40 }} weight={900} numberOfLines={1}>
           {collection.name}
         </Text>
         <Text style={{ fontSize: 20, opacity: 0.6 }}>
@@ -352,6 +399,7 @@ const Labels = () => {
   const theme = useColorTheme();
   const [query, setQuery] = useState("");
   const { data, mutate, error } = useSWR(["space/labels"]);
+  const breakpoints = useResponsiveBreakpoints();
 
   useHotkeys("esc", () => setSelectedLabel(null), {
     ignoreEventWhen: () =>
@@ -368,55 +416,60 @@ const Labels = () => {
     <View style={containerStyles.root}>
       {Array.isArray(d) ? (
         <>
-          <View
-            style={[
-              containerStyles.left,
-              {
-                borderRightColor: theme[5],
-              },
-            ]}
-          >
-            <TextField
-              autoFocus
-              value={query}
-              onChangeText={setQuery}
-              variant="filled+outlined"
-              placeholder="Search labels..."
-            />
-            <FlashList
-              estimatedItemSize={60}
-              data={d.filter((l) =>
-                l.name.toLowerCase().includes(query.toLowerCase())
-              )}
-              ListEmptyComponent={() => (
-                <View style={containerStyles.leftEmpty}>
-                  <Emoji emoji="1f937" size={40} />
-                  <Text style={{ color: theme[9], fontSize: 20 }} weight={600}>
-                    No labels found
-                  </Text>
-                </View>
-              )}
-              contentContainerStyle={{ paddingVertical: 20 }}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <ListItemButton
-                  style={{ height: 60 }}
-                  variant={item.selected ? "filled" : undefined}
-                  onPress={() => setSelectedLabel(item.id)}
-                >
-                  <Emoji emoji={item.emoji} size={30} />
-                  <ListItemText
-                    truncate
-                    primary={item.name}
-                    secondary={`${item._count.entities} item${
-                      item._count.entities !== 1 ? "s" : ""
-                    }`}
-                  />
-                </ListItemButton>
-              )}
-              keyExtractor={(item) => item.id.toString()}
-            />
-          </View>
+          {(breakpoints.md || !selectedLabelData) && (
+            <View
+              style={[
+                containerStyles.left,
+                {
+                  borderRightColor: theme[5],
+                },
+              ]}
+            >
+              <TextField
+                value={query}
+                onChangeText={setQuery}
+                variant="filled+outlined"
+                placeholder="Search labels..."
+              />
+              {error && <ErrorAlert />}
+              <FlashList
+                estimatedItemSize={60}
+                data={d.filter((l) =>
+                  l.name.toLowerCase().includes(query.toLowerCase())
+                )}
+                ListEmptyComponent={() => (
+                  <View style={containerStyles.leftEmpty}>
+                    <Emoji emoji="1f937" size={40} />
+                    <Text
+                      style={{ color: theme[9], fontSize: 20 }}
+                      weight={600}
+                    >
+                      No labels found
+                    </Text>
+                  </View>
+                )}
+                contentContainerStyle={{ paddingVertical: 20 }}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <ListItemButton
+                    style={{ height: 60 }}
+                    variant={item.selected ? "filled" : undefined}
+                    onPress={() => setSelectedLabel(item.id)}
+                  >
+                    <Emoji emoji={item.emoji} size={30} />
+                    <ListItemText
+                      truncate
+                      primary={item.name}
+                      secondary={`${item._count.entities} item${
+                        item._count.entities !== 1 ? "s" : ""
+                      }`}
+                    />
+                  </ListItemButton>
+                )}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
           {selectedLabelData ? (
             <LabelDetails
               mutateList={mutate}
@@ -424,11 +477,13 @@ const Labels = () => {
               label={selectedLabelData}
             />
           ) : (
-            <View style={containerStyles.rightEmpty}>
-              <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
-                No label selected
-              </Text>
-            </View>
+            breakpoints.md && (
+              <View style={containerStyles.rightEmpty}>
+                <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
+                  No label selected
+                </Text>
+              </View>
+            )
           )}
         </>
       ) : (
@@ -457,60 +512,64 @@ const Collections = () => {
 
   const selectedCollectionData =
     selectedCollection && d.find((i) => i.selected);
-
+  const breakpoints = useResponsiveBreakpoints();
   return (
     <View style={containerStyles.root}>
       {Array.isArray(d) ? (
         <>
-          <View
-            style={[
-              containerStyles.left,
-              {
-                borderRightColor: theme[5],
-              },
-            ]}
-          >
-            <TextField
-              autoFocus
-              value={query}
-              onChangeText={setQuery}
-              variant="filled+outlined"
-              placeholder="Search collections..."
-            />
-            <FlashList
-              estimatedItemSize={60}
-              data={d.filter((l) =>
-                l.name.toLowerCase().includes(query.toLowerCase())
-              )}
-              ListEmptyComponent={() => (
-                <View style={containerStyles.leftEmpty}>
-                  <Emoji emoji="1f937" size={40} />
-                  <Text style={{ color: theme[9], fontSize: 20 }} weight={600}>
-                    No collections found
-                  </Text>
-                </View>
-              )}
-              contentContainerStyle={{ paddingVertical: 20 }}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <ListItemButton
-                  style={{ height: 60 }}
-                  variant={item.selected ? "filled" : undefined}
-                  onPress={() => setSelectedCollection(item.id)}
-                >
-                  <Emoji emoji={item.emoji} size={30} />
-                  <ListItemText
-                    truncate
-                    primary={item.name}
-                    secondary={`${item._count.entities} item${
-                      item._count.entities !== 1 ? "s" : ""
-                    }`}
-                  />
-                </ListItemButton>
-              )}
-              keyExtractor={(item) => item.id.toString()}
-            />
-          </View>
+          {(breakpoints.md || !selectedCollectionData) && (
+            <View
+              style={[
+                containerStyles.left,
+                {
+                  borderRightColor: theme[5],
+                },
+              ]}
+            >
+              <TextField
+                value={query}
+                onChangeText={setQuery}
+                variant="filled+outlined"
+                placeholder="Search collections..."
+              />
+              <FlashList
+                estimatedItemSize={60}
+                data={d.filter((l) =>
+                  l.name.toLowerCase().includes(query.toLowerCase())
+                )}
+                ListEmptyComponent={() => (
+                  <View style={containerStyles.leftEmpty}>
+                    <Emoji emoji="1f937" size={40} />
+                    <Text
+                      style={{ color: theme[9], fontSize: 20 }}
+                      weight={600}
+                    >
+                      No collections found
+                    </Text>
+                  </View>
+                )}
+                contentContainerStyle={{ paddingVertical: 20 }}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <ListItemButton
+                    style={{ height: 60 }}
+                    variant={item.selected ? "filled" : undefined}
+                    onPress={() => setSelectedCollection(item.id)}
+                  >
+                    <Emoji emoji={item.emoji} size={30} />
+                    <ListItemText
+                      truncate
+                      primary={item.name}
+                      secondary={`${item._count.entities} item${
+                        item._count.entities !== 1 ? "s" : ""
+                      }`}
+                    />
+                  </ListItemButton>
+                )}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
           {selectedCollectionData ? (
             <CollectionDetails
               mutateList={mutate}
@@ -518,11 +577,13 @@ const Collections = () => {
               collection={selectedCollectionData}
             />
           ) : (
-            <View style={containerStyles.rightEmpty}>
-              <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
-                No collection selected
-              </Text>
-            </View>
+            breakpoints.md && (
+              <View style={containerStyles.rightEmpty}>
+                <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
+                  No collection selected
+                </Text>
+              </View>
+            )
           )}
         </>
       ) : (
@@ -534,17 +595,34 @@ const Collections = () => {
 
 export default function Page() {
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
   const [view, setView] = useState<"labels" | "collections">("labels");
 
+  const { openSidebar } = useSidebarContext();
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
-    <ContentWrapper>
+    <ContentWrapper noPaddingTop>
       <LinearGradient
         colors={[theme[2], theme[3]]}
         style={{
+          paddingTop: insets.top,
           borderBottomWidth: 1,
           borderBottomColor: theme[5],
+          flexDirection: "row",
         }}
       >
+        {!breakpoints.md && (
+          <IconButton
+            icon="menu"
+            onPress={openSidebar}
+            style={{
+              position: "absolute",
+              left: 15,
+              top: insets.top + 15,
+            }}
+          />
+        )}
         <ButtonGroup
           options={[
             { label: "Labels", value: "labels" },
