@@ -4,6 +4,7 @@ import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { router } from "expo-router";
 import { View } from "react-native";
 
 function TwoFactorAuthSection() {
@@ -17,7 +18,15 @@ function TwoFactorAuthSection() {
           authenticator app.
         </Text>
       </View>
-      <Button style={{ marginTop: 30, padding: 30, gap: 20 }} variant="filled">
+      <Button
+        style={{ marginTop: 30, padding: 30, gap: 20 }}
+        variant="filled"
+        onPress={() =>
+          router.push(
+            "/settings/privacy/login-security/two-factor-authentication"
+          )
+        }
+      >
         <ButtonText>Enable</ButtonText>
         <Icon>arrow_forward_ios</Icon>
       </Button>

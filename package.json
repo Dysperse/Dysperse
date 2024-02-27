@@ -44,6 +44,7 @@
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
     "expo-updates": "~0.24.9",
+    "expo-web-browser": "~12.8.2",
     "lexorank": "^1.0.5",
     "mime-types": "^2.1.35",
     "npx": "^10.2.2",
@@ -72,7 +73,7 @@
     "rrule": "^2.8.1",
     "swr": "^2.2.4",
     "typescript": "^5.3.3",
-    "expo-web-browser": "~12.8.2"
+    "expo-clipboard": "~5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
