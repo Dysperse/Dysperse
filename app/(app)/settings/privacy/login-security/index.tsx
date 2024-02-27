@@ -64,7 +64,7 @@ function TwoFactorAuthSection() {
           variant="filled"
         >
           <ButtonText>Enable{isEnabled && "d"}</ButtonText>
-          <Icon>arrow_forward_ios</Icon>
+          <Icon>{isEnabled ? "check" : "arrow_forward_ios"}</Icon>
         </Button>
       </ConfirmationModal>
     </View>

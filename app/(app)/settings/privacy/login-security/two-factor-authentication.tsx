@@ -81,23 +81,35 @@ export default function Page() {
   };
 
   return (
-    <SettingsLayout>
+    <SettingsLayout hideBack={!breakpoints.md}>
       <View style={{ flexDirection: "row" }}>
         <Button
           variant="outlined"
           text="Login security"
           icon="arrow_back_ios"
           onPress={() => router.back()}
+          style={{ margin: breakpoints.md ? 0 : 20 }}
         />
       </View>
       {!data ? (
-        error ? (
-          <ErrorAlert />
-        ) : (
-          <Spinner />
-        )
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            minHeight: 300,
+          }}
+        >
+          {error ? <ErrorAlert /> : <Spinner />}
+        </View>
       ) : (
-        <View style={{ marginTop: 30 }}>
+        <View
+          style={[
+            { marginTop: 30 },
+            !breakpoints.md && { padding: 20, paddingTop: 0 },
+          ]}
+        >
           <Text style={settingStyles.title}>Two-factor authentication</Text>
           <Text
             style={{
@@ -169,6 +181,7 @@ export default function Page() {
               <Button
                 isLoading={loading}
                 onPress={handleSubmit(onSubmit)}
+                variant={breakpoints.md ? undefined : "filled"}
                 style={{
                   height: 60,
                   borderRadius: 10,
