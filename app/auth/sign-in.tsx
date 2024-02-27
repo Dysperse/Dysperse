@@ -45,7 +45,7 @@ export default function SignIn() {
         if (step === 0) {
           setStep(1);
         } else {
-          setStep(2);
+          setStep(step === 3 ? 4 : 2);
           console.log(data);
           const sessionRequest = await sendApiRequest(
             false,
@@ -69,6 +69,12 @@ export default function SignIn() {
             }
           );
           if (sessionRequest.twoFactorRequired) {
+            if (step === 3) {
+              Toast.show({
+                type: "error",
+                text1: "Incorrect 2fa code",
+              });
+            }
             setStep(3);
             return;
           }
@@ -135,7 +141,7 @@ export default function SignIn() {
         onPress={handleBack}
         style={{ margin: 10 }}
       />
-      {step == 0 || step == 2 ? (
+      {step === 0 || step === 2 ? (
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
           <ScrollView
             style={{ maxHeight: "100%" }}
@@ -287,7 +293,7 @@ export default function SignIn() {
               variant="filled"
               style={[authStyles.button, { marginTop: 20 }]}
               onPress={handleSubmit(onSubmit)}
-              isLoading={step === 2}
+              isLoading={step === 4}
             >
               <ButtonText style={authStyles.buttonText}>Continue</ButtonText>
             </Button>
