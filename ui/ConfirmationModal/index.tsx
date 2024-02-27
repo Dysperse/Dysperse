@@ -81,7 +81,7 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
     const d = cloneElement(props.children, {
       onPress: () => {
         props.onSuccess?.();
-        props.children.props.onPress();
+        props.children.props?.onPress?.();
       },
     });
     return d;

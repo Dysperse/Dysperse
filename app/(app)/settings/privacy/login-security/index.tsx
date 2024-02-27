@@ -1,15 +1,18 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { router } from "expo-router";
 import { View } from "react-native";
 
 function TwoFactorAuthSection() {
-  const { session } = useUser();
+  const { session, sessionToken, mutate } = useUser();
+  const isEnabled = session.user.twoFactorSecret;
 
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
@@ -21,18 +24,38 @@ function TwoFactorAuthSection() {
           authenticator app.
         </Text>
       </View>
-      <Button
-        style={{ marginTop: 30, padding: 30, gap: 20 }}
-        variant="filled"
-        onPress={() =>
-          router.push(
-            "/settings/privacy/login-security/two-factor-authentication"
-          )
-        }
+      <ConfirmationModal
+        title="Disable 2FA?"
+        secondary="Your account won't be as secure anymore. Are you sure?"
+        height={400}
+        onSuccess={async () => {
+          if (isEnabled) {
+            await sendApiRequest(sessionToken, "DELETE", "user/2fa/setup");
+            mutate(
+              (d) => ({
+                ...d,
+                user: { ...d.user, twoFactorSecret: null },
+              }),
+              {
+                revalidate: false,
+              }
+            );
+          } else {
+            router.push(
+              "/settings/privacy/login-security/two-factor-authentication"
+            );
+          }
+        }}
+        disabled={!isEnabled}
       >
-        <ButtonText>Enable{session.user.twoFactorSecret && "d"}</ButtonText>
-        <Icon>arrow_forward_ios</Icon>
-      </Button>
+        <Button
+          style={{ marginTop: 30, padding: 30, gap: 20 }}
+          variant="filled"
+        >
+          <ButtonText>Enable{isEnabled && "d"}</ButtonText>
+          <Icon>arrow_forward_ios</Icon>
+        </Button>
+      </ConfirmationModal>
     </View>
   );
 }
