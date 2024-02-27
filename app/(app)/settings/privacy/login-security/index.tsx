@@ -2,6 +2,7 @@ import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -11,11 +12,18 @@ import { router } from "expo-router";
 import { View } from "react-native";
 
 function TwoFactorAuthSection() {
+  const breakpoints = useResponsiveBreakpoints();
   const { session, sessionToken, mutate } = useUser();
   const isEnabled = session.user.twoFactorSecret;
 
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+    <View
+      style={{
+        flexDirection: breakpoints.md ? "row" : "column",
+        alignItems: "center",
+        gap: 20,
+      }}
+    >
       <View style={{ flex: 1 }}>
         <Text style={settingStyles.heading}>Two-Factor Authentication</Text>
         <Text style={{ opacity: 0.6 }}>
@@ -27,7 +35,7 @@ function TwoFactorAuthSection() {
       <ConfirmationModal
         title="Disable 2FA?"
         secondary="Your account won't be as secure anymore. Are you sure?"
-        height={400}
+        height={440}
         onSuccess={async () => {
           if (isEnabled) {
             await sendApiRequest(sessionToken, "DELETE", "user/2fa/setup");
@@ -49,7 +57,10 @@ function TwoFactorAuthSection() {
         disabled={!isEnabled}
       >
         <Button
-          style={{ marginTop: 30, padding: 30, gap: 20 }}
+          style={[
+            { padding: 30, gap: 20 },
+            breakpoints.md ? { marginTop: 30 } : { width: "100%" },
+          ]}
           variant="filled"
         >
           <ButtonText>Enable{isEnabled && "d"}</ButtonText>
@@ -69,7 +80,7 @@ export default function Page() {
         style={{ marginTop: 20 }}
         emoji="1f6a7"
         title="More coming soon"
-        subtitle="We're planning to add more login vulnerabilities soon. Stay tuned! (we're kidding)"
+        subtitle="We're improving our defenses. Stay tuned!"
       />
     </SettingsLayout>
   );

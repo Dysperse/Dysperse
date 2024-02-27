@@ -2,6 +2,7 @@ import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -17,6 +18,7 @@ import { View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
   const { session, sessionToken } = useUser();
 
   const [data, setData] = useState(null);
@@ -114,7 +116,7 @@ export default function Page() {
               alignItems: "center",
               marginTop: 30,
               gap: 50,
-              flexDirection: "row",
+              flexDirection: breakpoints.md ? "row" : "column",
             }}
           >
             <View>
@@ -137,7 +139,12 @@ export default function Page() {
                 <ButtonText>Can't scan?</ButtonText>
               </Button>
             </View>
-            <View style={{ flexDirection: "row", gap: 10 }}>
+            <View
+              style={{
+                flexDirection: breakpoints.md ? "row" : "column",
+                gap: 10,
+              }}
+            >
               <Controller
                 rules={{ required: true, maxLength: 6 }}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -167,7 +174,8 @@ export default function Page() {
                   borderRadius: 10,
                 }}
               >
-                <Icon>arrow_forward_ios</Icon>
+                {!breakpoints.md && <ButtonText>Continue</ButtonText>}
+                <Icon>{breakpoints.md ? "arrow_forward_ios" : "check"}</Icon>
               </Button>
             </View>
           </View>
