@@ -99,18 +99,24 @@ function SettingsSidebar() {
       ],
     },
     {
-      name: "Privacy settings",
+      name: "Login settings",
       settings: [
+        {
+          name: "Scan QR code",
+          icon: "qr_code_2",
+          href: "/settings/login/scan",
+          keywords: ["login", "security", "password", "2fa", "two", "factor"],
+        },
         {
           name: "Login security",
           icon: "vpn_key",
-          href: "/settings/privacy/login-security",
+          href: "/settings/login/login-security",
           keywords: ["login", "security", "password", "2fa", "two", "factor"],
         },
         {
           name: "Devices",
           icon: "home_max",
-          href: "/settings/privacy/devices",
+          href: "/settings/login/devices",
           keywords: ["devices", "sessions", "logins"],
         },
         {

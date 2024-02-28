@@ -50,7 +50,7 @@ function TwoFactorAuthSection() {
             );
           } else {
             router.push(
-              "/settings/privacy/login-security/two-factor-authentication"
+              "/settings/login/login-security/two-factor-authentication"
             );
           }
         }}
