@@ -1,5 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -14,7 +15,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { useSWRConfig } from "swr";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
 import Turnstile from "../../ui/turnstile";
@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
 
 function QrLogin() {
   const theme = useColorTheme();
-  const { fetcher } = useSWRConfig();
   const [data, setData] = useState<any>(null);
+  const [error, setError] = useState(false);
 
   const { signIn } = useSession();
 
@@ -37,7 +37,8 @@ function QrLogin() {
         method: "POST",
       })
         .then((r) => r.json())
-        .then(setData);
+        .then(setData)
+        .catch(() => setError(true));
     } catch (e) {
       Toast.show({ type: "error" });
     }
@@ -107,6 +108,8 @@ function QrLogin() {
         </Text>
       </View>
     </View>
+  ) : error ? (
+    <ErrorAlert message="Couldn't load an instant login QR code. Please try again later" />
   ) : (
     <Spinner />
   );
