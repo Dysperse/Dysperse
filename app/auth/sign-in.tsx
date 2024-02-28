@@ -56,9 +56,9 @@ function QrLogin() {
       }
     };
 
-    setInterval(t, 1000);
+    setInterval(t, 5000);
     return () => clearInterval(t);
-  }, [sessionData, signIn, data]);
+  }, [signIn, data]);
 
   return data ? (
     <View style={{ alignItems: "center", padding: 20, gap: 5 }}>
