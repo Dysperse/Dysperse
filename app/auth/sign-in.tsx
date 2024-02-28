@@ -55,7 +55,7 @@ function QrLogin() {
                 type: "success",
                 text1: "Logged in!",
               });
-              signIn(r);
+              signIn(r.sessionId);
             }
           });
       }
