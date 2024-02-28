@@ -16,6 +16,11 @@ import {
   MenuTrigger,
   renderers,
 } from "react-native-popup-menu";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import Divider from "../Divider";
 import Icon from "../Icon";
 import Text from "../Text";
@@ -104,6 +109,22 @@ export default function MenuPopover({
 
   const t = cloneElement(trigger, { onPress: handleOpen });
 
+  const s = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY:
+          s.value === 0
+            ? -100
+            : withSpring(0, {
+                damping: 180,
+                stiffness: 400,
+              }),
+      },
+    ],
+  }));
+
   return (
     <Menu
       {...menuProps}
@@ -118,81 +139,107 @@ export default function MenuPopover({
         },
         ...menuProps?.rendererProps,
       }}
+      onOpen={() => {
+        s.value = 1;
+        menuProps?.onOpen?.();
+      }}
+      onClose={() => {
+        s.value = 0;
+        menuProps?.onClose?.();
+      }}
       renderer={renderers.Popover}
     >
       <MenuTrigger disabled customStyles={{ TriggerTouchableComponent: View }}>
         {t}
       </MenuTrigger>
+
       <MenuOptions
         customStyles={{
           optionsContainer: {
             width: 180,
             borderRadius: 20,
             overflow: "hidden",
+            shadowRadius: 0,
             backgroundColor: "transparent",
-            shadowColor: theme[1],
-            shadowRadius: 20,
-            shadowOpacity: 0.8,
-            shadowOffset: {
-              width: 10,
-              height: 10,
-            },
             ...(containerStyle as any),
           },
         }}
       >
-        <View style={{ flex: 1, backgroundColor: theme[4], padding: 5 }}>
-          {children ||
-            options
-              .filter((e) => e)
-              .map(
-                ({
-                  icon,
-                  text,
-                  key,
-                  callback,
-                  renderer: Renderer = React.Fragment,
-                  ...props
-                }: any) => (
-                  // TODO: Fix key
-                  <React.Fragment key={Math.random()}>
-                    {props.divider ? (
-                      <Divider style={{ width: "90%", marginVertical: 5 }} />
-                    ) : (
-                      <Renderer>
-                        <MenuOption
-                          onSelect={callback}
-                          customStyles={{
-                            OptionTouchableComponent: (props) => (
-                              <MenuItem {...props} removeExtraStyles />
-                            ),
-                            optionWrapper: {
-                              flexDirection: "row",
-                              alignItems: "center",
-                              paddingHorizontal: 15,
-                              paddingVertical: 10,
-                              gap: 13,
-                            },
-                          }}
-                          {...props}
-                        >
-                          {icon && <Icon>{icon}</Icon>}
-                          <Text
-                            weight={300}
-                            style={{ color: theme[11], fontSize: 16 }}
+        <Animated.View
+          style={[
+            animatedStyle,
+            {
+              shadowColor: theme[1],
+              shadowRadius: 20,
+              shadowOpacity: 0.8,
+              shadowOffset: {
+                width: 10,
+                height: 10,
+              },
+            },
+          ]}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: theme[4],
+              padding: 5,
+              borderRadius: 20,
+              overflow: "hidden",
+            }}
+          >
+            {children ||
+              options
+                .filter((e) => e)
+                .map(
+                  ({
+                    icon,
+                    text,
+                    key,
+                    callback,
+                    renderer: Renderer = React.Fragment,
+                    ...props
+                  }: any) => (
+                    // TODO: Fix key
+                    <React.Fragment key={Math.random()}>
+                      {props.divider ? (
+                        <Divider style={{ width: "90%", marginVertical: 5 }} />
+                      ) : (
+                        <Renderer>
+                          <MenuOption
+                            onSelect={callback}
+                            customStyles={{
+                              OptionTouchableComponent: (props) => (
+                                <MenuItem {...props} removeExtraStyles />
+                              ),
+                              optionWrapper: {
+                                flexDirection: "row",
+                                alignItems: "center",
+                                paddingHorizontal: 15,
+                                paddingVertical: 10,
+                                gap: 13,
+                              },
+                            }}
+                            {...props}
                           >
-                            {text}
-                          </Text>
-                          {props.selected && (
-                            <Icon style={{ marginLeft: "auto" }}>check</Icon>
-                          )}
-                        </MenuOption>
-                      </Renderer>
-                    )}
-                  </React.Fragment>
-                )
-              )}
-        </View>
+                            {icon && <Icon>{icon}</Icon>}
+                            <Text
+                              weight={300}
+                              style={{ color: theme[11], fontSize: 16 }}
+                            >
+                              {text}
+                            </Text>
+                            {props.selected && (
+                              <Icon style={{ marginLeft: "auto" }}>check</Icon>
+                            )}
+                          </MenuOption>
+                        </Renderer>
+                      )}
+                    </React.Fragment>
+                  )
+                )}
+          </View>
+        </Animated.View>
       </MenuOptions>
     </Menu>
   );
