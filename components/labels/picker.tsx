@@ -178,9 +178,6 @@ const LabelPicker = memo(function LabelPicker({
 
   const { data, mutate, error } = useSWR(["space/labels"]);
 
-  const FlatListComponent =
-    Platform.OS === "web" ? FlatList : BottomSheetFlatList;
-
   const [selectedCollection, setSelectedCollection] = useState(null);
   const collections =
     data
@@ -196,7 +193,7 @@ const LabelPicker = memo(function LabelPicker({
         onClose={handleClose}
         snapPoints={["80%"]}
         {...sheetProps}
-        enableContentPanningGesture={false}
+        // enableContentPanningGesture={false}
       >
         <View
           style={{
@@ -246,7 +243,7 @@ const LabelPicker = memo(function LabelPicker({
             </CreateLabelModal>
           </View>
           {Array.isArray(data) ? (
-            <FlatListComponent
+            <BottomSheetFlatList
               data={data
                 .filter((label) =>
                   label.name.toLowerCase().includes(query.toLowerCase())

@@ -67,6 +67,7 @@ function BottomSheet(props: DBottomSheetProps) {
       keyboardBlurBehavior="restore"
       animationConfigs={animationConfigs}
       stackBehavior="push"
+      enableDynamicSizing={false}
       ref={props.sheetRef}
       backdropComponent={(d) => (
         <BottomSheetBackdropComponent
