@@ -316,6 +316,7 @@ export default function AppLayout() {
                                   "settings/customization/appearance",
                                   "settings/customization/notifications",
                                   "settings/login/login-security/index",
+                                  "settings/login/scan",
                                   "settings/login/login-security/two-factor-authentication",
                                   "settings/login/devices",
                                   "settings/customization/profile",

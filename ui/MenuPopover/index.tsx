@@ -118,8 +118,8 @@ export default function MenuPopover({
           s.value === 0
             ? -100
             : withSpring(0, {
-                damping: 180,
-                stiffness: 400,
+                damping: 250,
+                stiffness: 900,
               }),
       },
     ],
