@@ -53,12 +53,11 @@ function Greeting() {
 
   return (
     <Text
-      weight={100}
+      weight={900}
       numberOfLines={1}
       style={{
-        textAlign: "center",
         color: theme[12],
-        fontSize: breakpoints.md ? 70 : 40,
+        fontSize: breakpoints.md ? 40 : 30,
         marginBottom: 10,
       }}
     >
@@ -549,15 +548,14 @@ function TodayText() {
   const theme = useColorTheme();
   return (
     <Text
-      weight={200}
+      weight={500}
       numberOfLines={1}
       style={{
-        textAlign: "center",
         color: theme[12],
         fontSize: 20,
         marginBottom: 25,
         marginTop: -10,
-        opacity: 0.7,
+        opacity: 0.6,
       }}
     >
       Today's {dayjs().format("MMMM Do, YYYY")}
