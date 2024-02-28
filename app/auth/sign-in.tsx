@@ -14,7 +14,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import useSWR, { useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
 import Turnstile from "../../ui/turnstile";
@@ -42,14 +42,6 @@ function QrLogin() {
       Toast.show({ type: "error" });
     }
   }, []);
-
-  const { data: sessionData, isValidating } = useSWR(
-    data ? ["auth/qr"] : null,
-    fetcher,
-    {
-      refreshInterval: 1000,
-    }
-  );
 
   useEffect(() => {
     const t = () => {
