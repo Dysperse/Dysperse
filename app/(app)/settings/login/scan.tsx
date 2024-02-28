@@ -1,13 +1,16 @@
 import { SettingsLayout } from "@/components/settings/layout";
+import { useSession } from "@/context/AuthProvider";
 import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { CameraView, useCameraPermissions } from "expo-camera/next";
-import * as WebBrowser from "expo-web-browser";
+import { router } from "expo-router";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function Page() {
+  const { session } = useSession();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
@@ -38,19 +41,25 @@ export default function Page() {
     );
   }
 
-  const handleBarCodeScanned = ({ data }: { data: any }) => {
+  const handleBarCodeScanned = async (data) => {
     try {
       const { raw } = data;
       if (
-        raw.includes(
+        raw.startsWith(
           `${process.env.EXPO_PUBLIC_API_URL}/user/session/qr-auth?token=`
         ) ||
-        raw.includes(`https://api.dysperse.com/user/session/qr-auth?token=`)
+        raw.startsWith(`https://api.dysperse.com/user/session/qr-auth?token=`)
       ) {
-        WebBrowser.openBrowserAsync(raw);
+        const res = await fetch(`${raw}&session=${session}`).then((res) =>
+          res.json()
+        );
+        if (res.error) {
+          throw new Error(res.error);
+        }
       }
     } catch (e) {
       console.error(e);
+      Toast.show({ type: "error" });
     }
   };
 
@@ -71,7 +80,10 @@ export default function Page() {
             variant="outlined"
             size={55}
             icon="close"
-            onPress={() => {}}
+            onPress={() => {
+              if (router.canGoBack()) router.back();
+              else router.replace("/settings");
+            }}
           />
           <Text weight={700}>Scan QR Code</Text>
         </View>

@@ -1,4 +1,4 @@
-import { StyleProp, View, ViewStyle } from "react-native";
+import { Platform, StyleProp, View, ViewStyle } from "react-native";
 import { BaseToast } from "react-native-toast-message";
 import Icon from "./Icon";
 
@@ -36,7 +36,7 @@ export const toastConfig = (theme) => ({
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
-        style={toastStyles(theme)}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
         text1Props={text1Props(theme)}
@@ -58,7 +58,7 @@ export const toastConfig = (theme) => ({
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
-        style={toastStyles(theme)}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
         text1Props={text1Props(theme)}
@@ -75,7 +75,7 @@ export const toastConfig = (theme) => ({
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
-        style={toastStyles(theme)}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
         text1={props.text1 || "Something went wrong. Please try again later"}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
