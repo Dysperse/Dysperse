@@ -229,7 +229,7 @@ const PaletteHeader = memo(function PaletteHeader({
   };
 
   useEffect(() => {
-    setTimeout(() => ref.current?.focus(), breakpoints.md ? 50 : 500);
+    setTimeout(() => ref.current?.focus(), breakpoints.md ? 150 : 500);
   }, [breakpoints]);
 
   return (

@@ -1,5 +1,6 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
@@ -116,14 +117,14 @@ const OpenTabsList = memo(function OpenTabsList() {
   );
 
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   return data && Array.isArray(data) && data.length > 0 ? (
     <View
       style={{
         flex: 1,
         paddingHorizontal: 15,
         width: "100%",
-        // backgroundColor: "red",
-        marginBottom: -20,
+        marginBottom: breakpoints.md ? 10 : -20,
         height: "100%",
       }}
     >
