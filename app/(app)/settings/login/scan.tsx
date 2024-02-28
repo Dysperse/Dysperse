@@ -1,19 +1,33 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { CameraView, useCameraPermissions } from "expo-camera/next";
+import * as Device from "expo-device";
 import { router } from "expo-router";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { useState } from "react";
+import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+
+const isJson = (str) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
 
 export default function Page() {
   const { session } = useSession();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!permission) {
     // Camera permissions are still loading
@@ -44,22 +58,37 @@ export default function Page() {
   const handleBarCodeScanned = async (data) => {
     try {
       const { raw } = data;
-      if (
-        raw.startsWith(
-          `${process.env.EXPO_PUBLIC_API_URL}/user/session/qr-auth?token=`
-        ) ||
-        raw.startsWith(`https://api.dysperse.com/user/session/qr-auth?token=`)
-      ) {
-        const res = await fetch(`${raw}&session=${session}`).then((res) =>
-          res.json()
+      if (isJson(raw) && JSON.parse(raw)?.token && !isLoading) {
+        setIsLoading(true);
+        const res = await sendApiRequest(
+          session,
+          "PUT",
+          `auth/qr`,
+          {},
+          {
+            body: JSON.stringify({
+              token: JSON.parse(raw)?.token,
+              deviceType: Device.deviceType,
+              deviceName:
+                Device.deviceName ||
+                (Platform.OS === "web"
+                  ? navigator.userAgent.split("(")[1].split(";")[0]
+                  : "Unknown device"),
+            }),
+          }
         );
-        if (res.error) {
+        console.log(res);
+        if (res.error || !res.success) {
           throw new Error(res.error);
         }
+        Toast.show({ type: "success", text1: "Logged in successfully!" });
+        router.replace("/settings");
       }
     } catch (e) {
       console.error(e);
       Toast.show({ type: "error" });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -86,6 +115,9 @@ export default function Page() {
             }}
           />
           <Text weight={700}>Scan QR Code</Text>
+          <View style={{ marginLeft: "auto", marginRight: 20 }}>
+            {isLoading && <Spinner />}
+          </View>
         </View>
         <View style={{ flex: 1, position: "relative" }}>
           <CameraView
