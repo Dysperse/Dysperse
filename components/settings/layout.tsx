@@ -193,7 +193,7 @@ function SettingsSidebar() {
         placeholder="Search..."
       />
       {settingsOptions.length === 0 && (
-        <Text style={{ textAlign: "center", marginTop: 20 }}>
+        <Text style={{ textAlign: "center", marginTop: 20, opacity: 0.6 }}>
           No results found
         </Text>
       )}
