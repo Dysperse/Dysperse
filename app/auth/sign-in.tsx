@@ -51,14 +51,16 @@ function QrLogin() {
     }
   );
 
-  console.log(isValidating);
-
   useEffect(() => {
     const t = () => {
       if (data) {
         fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/qr?token=${data.token}`)
           .then((r) => r.json())
-          .then(console.log);
+          .then((r) => {
+            if (r.sessionId) {
+              signIn(r);
+            }
+          });
       }
     };
 
