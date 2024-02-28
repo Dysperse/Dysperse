@@ -13,7 +13,7 @@
   "dependencies": {
     "@expo-google-fonts/jost": "^0.2.3",
     "@expo/webpack-config": "~19.0.1",
-    "@gorhom/bottom-sheet": "^5.0.0-alpha.4",
+    "@gorhom/bottom-sheet": "^5.0.0-alpha.9",
     "@gorhom/portal": "^1.0.14",
     "@radix-ui/colors": "^3.0.0",
     "@react-native-async-storage/async-storage": "1.21.0",
