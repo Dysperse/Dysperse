@@ -1,10 +1,15 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { Button } from "@/ui/Button";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { CameraView, useCameraPermissions } from "expo-camera/next";
-import { StyleSheet, View } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Page() {
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
 
   if (!permission) {
@@ -33,16 +38,78 @@ export default function Page() {
     );
   }
 
+  const handleBarCodeScanned = ({ data }: { data: any }) => {
+    try {
+      const { raw } = data;
+      if (
+        raw.includes(
+          `${process.env.EXPO_PUBLIC_API_URL}/user/session/qr-auth?token=`
+        ) ||
+        raw.includes(`https://api.dysperse.com/user/session/qr-auth?token=`)
+      ) {
+        WebBrowser.openBrowserAsync(raw);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
-    <SettingsLayout noScroll>
-      <View style={{ flex: 1 }}>
-        <CameraView
-          style={styles.camera}
-          facing="back"
-          barCodeScannerSettings={{
-            barCodeTypes: ["qr"],
+    <SettingsLayout noScroll hideBack>
+      <View style={{ height: height + insets.top + insets.bottom }}>
+        <View
+          style={{
+            padding: 10,
+            paddingTop: 10 + insets.top,
+            height: insets.top + 80,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
           }}
-        />
+        >
+          <IconButton
+            variant="outlined"
+            size={55}
+            icon="close"
+            onPress={() => {}}
+          />
+          <Text weight={700}>Scan QR Code</Text>
+        </View>
+        <View style={{ flex: 1, position: "relative" }}>
+          <CameraView
+            style={styles.camera}
+            facing="back"
+            barCodeScannerSettings={{
+              barCodeTypes: ["qr"],
+            }}
+            onBarcodeScanned={handleBarCodeScanned}
+          />
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              gap: 10,
+            }}
+          >
+            <View
+              style={{
+                width: width - 100,
+                aspectRatio: "1/1",
+                borderWidth: 5,
+                borderRadius: 50,
+                borderColor: "rgba(255,255,255,.5)",
+              }}
+            />
+            <View style={{ maxWidth: 200 }}>
+              <Text
+                style={{ textAlign: "center", color: "rgba(255,255,255,.5)" }}
+              >
+                Center the QR code within the frame to instantly log in
+              </Text>
+            </View>
+          </View>
+        </View>
       </View>
     </SettingsLayout>
   );
@@ -55,6 +122,13 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   buttonContainer: {
     flex: 1,

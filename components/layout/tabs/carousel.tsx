@@ -121,8 +121,9 @@ const OpenTabsList = memo(function OpenTabsList() {
       style={{
         flex: 1,
         paddingHorizontal: 15,
-        paddingBottom: 15,
         width: "100%",
+        // backgroundColor: "red",
+        marginBottom: -20,
         height: "100%",
       }}
     >

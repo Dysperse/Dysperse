@@ -90,7 +90,8 @@ const AppContainer = ({ children }) => {
           width: "100%",
           height: "100%",
           borderWidth: withSpring(
-            interpolate(Math.round(progress.value), [0, 1], [0, 2])
+            interpolate(Math.round(progress.value), [0, 1], [0, 2]),
+            { overshootClamping: true }
           ),
           borderRadius: interpolate(
             progress.value,
