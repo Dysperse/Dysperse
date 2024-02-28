@@ -136,7 +136,6 @@ export default function SignIn() {
           setStep(1);
         } else {
           setStep(step === 3 ? 4 : 2);
-          console.log(data);
           const sessionRequest = await sendApiRequest(
             false,
             "POST",
@@ -219,10 +218,8 @@ export default function SignIn() {
         style={[
           authStyles.container,
           { backgroundColor: theme[1] },
-          breakpoints.md &&
-            (step === 0 || step === 2) &&
-            authStyles.containerDesktop,
-          breakpoints.md && (step === 0 || step === 2) && { maxWidth: 1000 },
+          breakpoints.md && authStyles.containerDesktop,
+          breakpoints.md && step === 0 && { maxWidth: 1000 },
           breakpoints.md && {
             borderColor: theme[6],
           },
@@ -332,7 +329,7 @@ export default function SignIn() {
                 </Button>
               </View>
             </ScrollView>
-            {breakpoints.md && (
+            {breakpoints.md && step === 0 && (
               <View
                 style={[
                   authStyles.container,
