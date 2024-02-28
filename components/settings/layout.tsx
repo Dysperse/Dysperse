@@ -15,10 +15,10 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
+import { useState } from "react";
 import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -48,6 +48,129 @@ function SettingsSidebar() {
   const theme = useColorTheme();
   const { signOut } = useSession();
 
+  const [search, setSearch] = useState("");
+
+  const settingsOptions = [
+    {
+      name: "Space settings",
+      settings: [
+        {
+          name: "Space",
+          icon: "communities",
+          href: "/settings/space",
+          keywords: ["space", "community", "communities"],
+        },
+        {
+          name: "Integrations",
+          icon: "interests",
+          href: "/settings/space/integrations",
+          keywords: [
+            "integrations",
+            "services",
+            "connect",
+            "notion",
+            "canvas",
+            "google",
+          ],
+        },
+      ],
+    },
+    {
+      name: "Customization",
+      settings: [
+        {
+          name: "Profile",
+          icon: "person",
+          href: "/settings/customization/profile",
+          keywords: ["profile", "account", "user", "personal"],
+        },
+        {
+          name: "Appearance",
+          icon: "palette",
+          href: "/settings/customization/appearance",
+          keywords: ["appearance", "theme", "color", "dark", "light"],
+        },
+        {
+          name: "Notifications",
+          icon: "notifications",
+          href: "/settings/customization/notifications",
+          keywords: ["notifications", "alerts", "emails"],
+        },
+      ],
+    },
+    {
+      name: "Privacy settings",
+      settings: [
+        {
+          name: "Login security",
+          icon: "vpn_key",
+          href: "/settings/privacy/login-security",
+          keywords: ["login", "security", "password", "2fa", "two", "factor"],
+        },
+        {
+          name: "Devices",
+          icon: "home_max",
+          href: "/settings/privacy/devices",
+          keywords: ["devices", "sessions", "logins"],
+        },
+        {
+          name: "Sign out",
+          icon: "logout",
+          callback: signOut,
+          confirm: {
+            title: "Sign out?",
+            secondary: "You'll have to sign in again.",
+            height: 360,
+            onSuccess: signOut,
+          },
+        },
+      ],
+    },
+    {
+      name: "Other",
+      settings: [
+        { name: "Terms of Service", icon: "info" },
+        { name: "Privacy Policy", icon: "info" },
+        { name: "Open Source", icon: "open_in_new" },
+        {
+          name: "Restart app",
+          icon: "refresh",
+          callback: () => {
+            if (Platform.OS === "web") {
+              localStorage.removeItem("app-cache");
+            }
+            if (Platform.OS == "web") {
+              window.location.reload();
+            } else {
+              Updates.reloadAsync();
+            }
+          },
+        },
+      ],
+    },
+  ]
+    .filter(
+      (section) =>
+        section.settings.some((button) =>
+          button.keywords?.some((keyword) =>
+            keyword.toLowerCase().includes(search.toLowerCase())
+          )
+        ) ||
+        !search ||
+        section.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .map((section) => ({
+      ...section,
+      settings: section.settings.filter(
+        (button) =>
+          button.keywords?.some((keyword) =>
+            keyword.toLowerCase().includes(search.toLowerCase())
+          ) ||
+          !search ||
+          section.name.toLowerCase().includes(search.toLowerCase())
+      ),
+    }));
+
   return (
     <ScrollView
       style={{ maxHeight: "100%" }}
@@ -65,91 +188,16 @@ function SettingsSidebar() {
           margin: 10,
           marginTop: 0,
         }}
-        editable={false}
-        onFocus={() => Toast.show({ type: "success", text1: "Coming soon!" })}
+        onChangeText={setSearch}
+        value={search}
         placeholder="Search..."
       />
-      {[
-        {
-          name: "Space settings",
-          settings: [
-            { name: "Space", icon: "communities", href: "/settings/space" },
-            {
-              name: "Integrations",
-              icon: "interests",
-              href: "/settings/space/integrations",
-            },
-          ],
-        },
-        {
-          name: "Customization",
-          settings: [
-            {
-              name: "Profile",
-              icon: "person",
-              href: "/settings/customization/profile",
-            },
-            {
-              name: "Appearance",
-              icon: "palette",
-              href: "/settings/customization/appearance",
-            },
-            {
-              name: "Notifications",
-              icon: "notifications",
-              href: "/settings/customization/notifications",
-            },
-          ],
-        },
-        {
-          name: "Privacy settings",
-          settings: [
-            {
-              name: "Login security",
-              icon: "vpn_key",
-              href: "/settings/privacy/login-security",
-            },
-            {
-              name: "Devices",
-              icon: "home_max",
-              href: "/settings/privacy/devices",
-            },
-            {
-              name: "Sign out",
-              icon: "logout",
-              callback: signOut,
-              confirm: {
-                title: "Sign out?",
-                secondary: "You'll have to sign in again.",
-                height: 360,
-                onSuccess: signOut,
-              },
-            },
-          ],
-        },
-        {
-          name: "Other",
-          settings: [
-            { name: "Terms of Service", icon: "info" },
-            { name: "Privacy Policy", icon: "info" },
-            { name: "Open Source", icon: "open_in_new" },
-            {
-              name: "Restart app",
-              icon: "refresh",
-              callback: () => {
-                if (Platform.OS === "web") {
-                  localStorage.removeItem("app-cache");
-                }
-                if (Platform.OS == "web") {
-                  window.location.reload();
-                } else {
-                  Updates.reloadAsync();
-                }
-              },
-            },
-          ],
-        },
-      ].map((section, index) => (
+      {settingsOptions.length === 0 && (
+        <Text style={{ textAlign: "center", marginTop: 20 }}>
+          No results found
+        </Text>
+      )}
+      {settingsOptions.map((section, index) => (
         <View key={index} style={[styles.sectionContainer]}>
           <Text
             variant="eyebrow"
@@ -220,7 +268,7 @@ function SettingsSidebar() {
               </ConfirmationModal>
             ))}
           </View>
-          {index !== 3 && breakpoints.md && (
+          {index !== settingsOptions.length - 1 && breakpoints.md && (
             <Divider style={{ width: "90%", marginTop: 10 }} />
           )}
         </View>

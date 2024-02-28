@@ -73,7 +73,8 @@
     "rrule": "^2.8.1",
     "swr": "^2.2.4",
     "typescript": "^5.3.3",
-    "expo-clipboard": "~5.0.1"
+    "expo-clipboard": "~5.0.1",
+    "expo-camera": "~14.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
