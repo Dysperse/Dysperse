@@ -50,6 +50,10 @@ function QrLogin() {
           .then((r) => r.json())
           .then((r) => {
             if (r.sessionId) {
+              Toast.show({
+                type: "success",
+                text1: "Logged in!",
+              });
               signIn(r);
             }
           });
