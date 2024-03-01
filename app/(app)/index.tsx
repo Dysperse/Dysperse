@@ -619,6 +619,7 @@ export default function Index() {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const { session } = useUser();
+  const { isFocused } = useFocusPanelContext();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
   const { openSidebar } = useSidebarContext();
@@ -662,7 +663,7 @@ export default function Index() {
           style={[
             {
               paddingHorizontal: 20,
-              maxWidth: 1200,
+              maxWidth: isFocused ? 1000 : 1200,
               paddingBottom: view === "edit" ? 0 : 70,
               width: "100%",
               marginHorizontal: "auto",
