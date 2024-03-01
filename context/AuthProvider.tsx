@@ -1,7 +1,7 @@
 import React from "react";
 import { useStorageState } from "./useStorageState";
 
-const AuthContext = React.createContext<{
+export const AuthContext = React.createContext<{
   signIn: (token) => void;
   signOut: () => void;
   session?: string | null;
@@ -13,7 +13,7 @@ export function useSession() {
   const value = React.useContext(AuthContext);
   if (process.env.NODE_ENV !== "production") {
     if (!value) {
-      throw new Error("useSession must be wrapped in a <SessionProvider />");
+      // throw new Error("useSession must be wrapped in a <SessionProvider />");
     }
   }
 

@@ -7,7 +7,7 @@ import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { Menu } from "@/ui/Menu";
+import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
@@ -272,7 +272,7 @@ function ThemePicker({ children }) {
 
 export default function Page() {
   const theme = useColorTheme();
-  const { session } = useUser();
+  const { session, mutate, sessionToken } = useUser();
   const themeText = themes[session?.user?.profile?.theme || "mint"];
   return (
     <SettingsLayout>
@@ -309,35 +309,71 @@ export default function Page() {
         </TouchableOpacity>
       </ThemePicker>
       <Text style={settingStyles.heading}>Theme</Text>
-      <Menu
+      <MenuPopover
         trigger={
           <TouchableOpacity>
-            <View style={[styles.card, { borderColor: theme[5] }]}>
+            <View
+              style={[
+                styles.card,
+                {
+                  borderColor: theme[5],
+                  flexDirection: "row",
+                  gap: 20,
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                },
+              ]}
+            >
+              <Icon size={30}>
+                {
+                  {
+                    dark: "dark_mode",
+                    light: "light_mode",
+                    system: "computer",
+                  }[session?.user?.profile?.darkMode]
+                }
+              </Icon>
               <Text style={styles.cardTitle} weight={900}>
-                {session?.user?.profile?.darkMode ? "Dark" : "Light"}
+                {capitalizeFirstLetter(session?.user?.profile?.darkMode)}
               </Text>
+              <Icon style={{ marginLeft: -10 }} size={30}>
+                expand_all
+              </Icon>
             </View>
           </TouchableOpacity>
         }
-        height={[320]}
-      >
-        <View style={{ padding: 10, gap: 10, paddingTop: 0 }}>
-          {["dark", "light", "system"].map((button) => (
-            <Button
-              variant={
-                session.user.profile.darkMode === button ? "filled" : "outlined"
+        options={[
+          { text: "Dark", icon: "dark_mode", callback: () => {} },
+          { text: "Light", icon: "light_mode", callback: () => {} },
+          { text: "System", icon: "computer", callback: () => {} },
+        ].map((e) => ({
+          ...e,
+          selected: e.text.toLowerCase() === session?.user?.profile?.darkMode,
+          callback: () => {
+            sendApiRequest(
+              sessionToken,
+              "PUT",
+              "user/profile",
+              {},
+              {
+                body: JSON.stringify({
+                  darkMode: e.text.toLowerCase(),
+                }),
               }
-              style={styles.button}
-              key={button}
-            >
-              <ButtonText style={{ fontSize: 20 }} weight={900}>
-                {capitalizeFirstLetter(button)}
-              </ButtonText>
-              {session.user.profile.darkMode === button && <Icon>check</Icon>}
-            </Button>
-          ))}
-        </View>
-      </Menu>
+            );
+            mutate((oldData) => ({
+              ...oldData,
+              user: {
+                ...oldData.user,
+                profile: {
+                  ...oldData.user.profile,
+                  darkMode: e.text.toLowerCase(),
+                },
+              },
+            }));
+          },
+        }))}
+      />
     </SettingsLayout>
   );
 }

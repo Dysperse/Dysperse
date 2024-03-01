@@ -192,7 +192,7 @@ function SWRWrapper({ children }) {
 
 function Root() {
   // CHANGE THIS LATER!!!
-  const theme = useColor("mint", true);
+  const theme = useColor("mint");
   const ref = useNavigationContainerRef();
 
   React.useEffect(() => {
