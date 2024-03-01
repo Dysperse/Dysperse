@@ -3,6 +3,7 @@ import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { styles } from "@/components/home/styles";
 import { ContentWrapper } from "@/components/layout/content";
 import { useTabMetadata } from "@/components/layout/tabs/useTabMetadata";
+import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -578,17 +579,24 @@ const actionStyles = StyleSheet.create({
 function Actions() {
   const theme = useColorTheme();
   const { handleOpen } = useCommandPaletteContext();
-  const { setFocus, isFocused } = useFocusPanelContext();
+  const { setFocus, isFocused }: any = useFocusPanelContext();
   const togglePanel = () => setFocus((d) => !d);
+  const openEverything = () => router.push("/everything");
 
   return (
     <View>
       <Text variant="eyebrow" style={actionStyles.title}>
         Start
       </Text>
-      <TouchableOpacity style={actionStyles.item}>
-        <Icon>note_stack_add</Icon>
-        <Text style={{ color: theme[11] }}>New item...</Text>
+      <CreateTask mutate={() => {}}>
+        <TouchableOpacity style={actionStyles.item}>
+          <Icon>note_stack_add</Icon>
+          <Text style={{ color: theme[11] }}>New item...</Text>
+        </TouchableOpacity>
+      </CreateTask>
+      <TouchableOpacity style={actionStyles.item} onPress={openEverything}>
+        <Icon>category</Icon>
+        <Text style={{ color: theme[11] }}>Labels & Collections...</Text>
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={handleOpen}>
         <Icon>electric_bolt</Icon>
@@ -599,10 +607,6 @@ function Actions() {
         <Text style={{ color: theme[11] }}>
           {isFocused ? "End" : "Start"} focus...
         </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={actionStyles.item}>
-        <Icon>loop</Icon>
-        <Text style={{ color: theme[11] }}>Sync now...</Text>
       </TouchableOpacity>
     </View>
   );
