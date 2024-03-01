@@ -657,15 +657,19 @@ export default function Index() {
           />
         )}
         <View
-          style={{
-            paddingHorizontal: 20,
-            maxWidth: 1200,
-            paddingBottom: view === "edit" ? 0 : 70,
-            width: "100%",
-            marginHorizontal: "auto",
-            flex: 1,
-            marginVertical: "auto",
-          }}
+          style={[
+            {
+              paddingHorizontal: 20,
+              maxWidth: 1200,
+              paddingBottom: view === "edit" ? 0 : 70,
+              width: "100%",
+              marginHorizontal: "auto",
+              marginVertical: "auto",
+            },
+            !breakpoints.md && {
+              paddingTop: 120,
+            },
+          ]}
         >
           <View style={{ marginTop: "auto" }} />
           <Greeting />
@@ -673,7 +677,7 @@ export default function Index() {
           <View
             style={{
               gap: 50,
-              flexDirection: "row",
+              flexDirection: breakpoints.md ? "row" : "column",
               marginBottom: "auto",
             }}
           >
