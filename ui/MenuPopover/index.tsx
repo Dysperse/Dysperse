@@ -116,7 +116,9 @@ export default function MenuPopover({
       {
         translateY:
           s.value === 0
-            ? -100
+            ? menuProps?.rendererProps?.placement === "top"
+              ? 150
+              : -150
             : withSpring(0, {
                 damping: 250,
                 stiffness: 900,

@@ -5,6 +5,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
+import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -30,6 +31,72 @@ import { useTaskDrawerContext } from "./context";
 const drawerStyles = StyleSheet.create({
   collapsibleMenuItem: { gap: 5, flex: 1, alignItems: "center" },
 });
+
+function TaskRescheduleButton() {
+  const { task, updateTask } = useTaskDrawerContext();
+  const handleSelect = (t, n) => {
+    updateTask("due", dayjs(task.due).add(n, t).toISOString());
+  };
+  const isSameDay = dayjs().isSame(dayjs(task.due), "day");
+
+  return (
+    <MenuPopover
+      trigger={
+        <IconButton size={55}>
+          <Icon>dark_mode</Icon>
+        </IconButton>
+      }
+      menuProps={{
+        rendererProps: {
+          placement: "top",
+        },
+      }}
+      options={[
+        {
+          renderer: () => (
+            <Text
+              variant="eyebrow"
+              style={{
+                textAlign: "center",
+                margin: 10,
+              }}
+            >
+              Snooze
+            </Text>
+          ),
+        },
+        {
+          text: isSameDay ? "Tomorrow" : "1 day",
+          callback: () => handleSelect("day", 1),
+        },
+        {
+          text: isSameDay ? "In 2 days" : "2 days",
+          callback: () => handleSelect("day", 2),
+        },
+        {
+          text: isSameDay ? "In 3 days" : "3 days",
+          callback: () => handleSelect("day", 3),
+        },
+        {
+          text: isSameDay ? "In 4 days" : "4 days",
+          callback: () => handleSelect("day", 5),
+        },
+        {
+          text: dayjs().isSame(dayjs(task.due), "week")
+            ? "Next week"
+            : "1 week",
+          callback: () => handleSelect("week", 1),
+        },
+        {
+          text: dayjs().isSame(dayjs(task.due), "month")
+            ? "Next month"
+            : "1 month",
+          callback: () => handleSelect("month", 1),
+        },
+      ]}
+    />
+  );
+}
 
 function DatePickerModal({
   date,
@@ -403,6 +470,7 @@ export function TaskDetails() {
                         : "Does not repeat")
                     }
                   />
+                  <TaskRescheduleButton />
                 </ListItemButton>
               </DatePickerModal>
             ),

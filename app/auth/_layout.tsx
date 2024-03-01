@@ -1,6 +1,6 @@
 import { JsStack } from "@/components/layout/_stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { useColorTheme } from "@/ui/color/theme-provider";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { TransitionPresets } from "@react-navigation/stack";
 import { View, useWindowDimensions } from "react-native";
@@ -12,7 +12,7 @@ export default function Layout() {
   const { height, width } = useWindowDimensions();
 
   return (
-    <>
+    <ColorThemeProvider theme={theme} setHTMLAttributes>
       <JsStack
         screenOptions={{
           header: () => <View />,
@@ -44,6 +44,6 @@ export default function Layout() {
         ))}
       </JsStack>
       <Toast config={toastConfig(theme)} />
-    </>
+    </ColorThemeProvider>
   );
 }
