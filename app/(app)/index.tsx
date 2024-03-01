@@ -163,7 +163,9 @@ function FriendActivity() {
                 <Avatar size={60} disabled>
                   <Icon size={30}>groups_2</Icon>
                 </Avatar>
-                <Text style={{ opacity: 0.6 }}>All Friends</Text>
+                <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+                  All Friends
+                </Text>
               </TouchableOpacity>
             ) : !friend.user ? (
               <View
@@ -665,6 +667,7 @@ export default function Index() {
               width: "100%",
               marginHorizontal: "auto",
               marginVertical: "auto",
+              paddingTop: 20,
             },
             !breakpoints.md && {
               paddingTop: 120,
