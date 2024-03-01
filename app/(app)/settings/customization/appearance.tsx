@@ -350,27 +350,32 @@ export default function Page() {
           ...e,
           selected: e.text.toLowerCase() === session?.user?.profile?.darkMode,
           callback: () => {
-            sendApiRequest(
-              sessionToken,
-              "PUT",
-              "user/profile",
-              {},
-              {
-                body: JSON.stringify({
-                  darkMode: e.text.toLowerCase(),
-                }),
-              }
-            );
-            mutate((oldData) => ({
-              ...oldData,
-              user: {
-                ...oldData.user,
-                profile: {
-                  ...oldData.user.profile,
-                  darkMode: e.text.toLowerCase(),
+            try {
+              sendApiRequest(
+                sessionToken,
+                "PUT",
+                "user/profile",
+                {},
+                {
+                  body: JSON.stringify({
+                    darkMode: e.text.toLowerCase(),
+                  }),
+                }
+              );
+              mutate((oldData) => ({
+                ...oldData,
+                user: {
+                  ...oldData.user,
+                  profile: {
+                    ...oldData.user.profile,
+                    darkMode: e.text.toLowerCase(),
+                  },
                 },
-              },
-            }));
+              }));
+            } catch (e) {
+              Toast.show({ type: "error" });
+              mutate(() => session);
+            }
           },
         }))}
       />
