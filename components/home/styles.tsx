@@ -2,8 +2,9 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   card: {
-    padding: 20,
-    height: 80,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    height: 50,
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "flex-start",

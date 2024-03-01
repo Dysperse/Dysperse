@@ -7,7 +7,6 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -73,14 +72,16 @@ function PlanDayPrompt() {
     <Pressable
       style={({ pressed, hovered }: any) => [
         styles.card,
-        { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+        {
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        },
       ]}
     >
       <Icon size={30}>gesture</Icon>
       <View style={{ flex: 1 }}>
         <Text
           weight={700}
-          style={{ fontSize: 20, color: theme[11] }}
+          style={{ fontSize: 17, color: theme[11] }}
           numberOfLines={1}
         >
           Plan your day
@@ -109,23 +110,14 @@ function FriendActivity() {
 
   const friends = Array.isArray(data) && [...data, "ALL_FRIENDS"];
 
-  if (friends.length < 6)
-    for (let i = friends.length; i < 6; i++) {
+  if (friends.length < 8)
+    for (let i = friends.length; i < 8; i++) {
       friends.push({ placeholder: i });
     }
 
   return (
     <>
-      <Text
-        style={{
-          fontSize: 60,
-          textAlign: "center",
-          marginVertical: 20,
-          marginBottom: 0,
-        }}
-      >
-        Friends
-      </Text>
+      <Text variant="eyebrow">Recent Activity</Text>
       <View
         style={{
           flexDirection: "row",
@@ -156,7 +148,7 @@ function FriendActivity() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
-                  width: "33.3333%",
+                  width: "24.99%",
                 }}
               >
                 <Avatar size={90} disabled>
@@ -172,8 +164,7 @@ function FriendActivity() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
-                  // flex: 0.5,
-                  width: "33.3333%",
+                  width: "24.99%",
                 }}
               >
                 <View
@@ -182,7 +173,7 @@ function FriendActivity() {
                     height: 90,
                     borderRadius: 999,
                     position: "relative",
-                    backgroundColor: theme[~~(6 - i / 2)],
+                    backgroundColor: theme[~~(7 - i / 2)],
                   }}
                 />
                 <View
@@ -191,7 +182,7 @@ function FriendActivity() {
                     width: 60,
                     borderRadius: 99,
                     marginTop: 2,
-                    backgroundColor: theme[~~(6 - i / 2)],
+                    backgroundColor: theme[~~(7 - i / 2)],
                   }}
                 />
               </View>
@@ -203,8 +194,7 @@ function FriendActivity() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 10,
-                    // flex: 0.5,
-                    width: "33.3333%",
+                    width: "24.99%",
                   }}
                 >
                   <View
@@ -306,7 +296,7 @@ function JumpBackIn() {
         <View>
           <Text
             weight={700}
-            style={{ fontSize: 20, color: theme[11] }}
+            style={{ fontSize: 17, color: theme[11] }}
             numberOfLines={1}
           >
             {capitalizeFirstLetter(tabMetadata.name(data?.params)[0])}
@@ -607,75 +597,34 @@ export default function Index() {
             onPress={openSidebar}
           />
         )}
-        <ButtonGroup
-          state={[view, setView]}
-          options={[
-            { icon: "home", value: "home" },
-            { icon: "upcoming", value: "activity" },
-            { icon: "more_horiz", value: "edit" },
-          ]}
-          containerStyle={{
-            marginTop: 100 + insets.top,
-            height: 50,
-            width: "auto",
-            maxWidth: 200,
-          }}
-          buttonStyle={{ flex: 1, borderBottomWidth: 0 }}
-          activeComponent={
-            <View style={{ alignItems: "center" }}>
-              <View
-                style={{
-                  height: 5,
-                  width: 12,
-                  borderRadius: 999,
-                  backgroundColor: theme[11],
-                  marginHorizontal: "auto",
-                }}
-              />
-            </View>
-          }
-          buttonTextStyle={{ textAlign: "center" }}
-          iconStyle={{ color: theme[10] }}
-          selectedIconStyle={{ color: theme[11] }}
-          scrollContainerStyle={{ flex: 1, gap: 10 }}
-        />
         <View
           style={{
-            maxWidth: 650,
             paddingHorizontal: 50,
             paddingBottom: view === "edit" ? 0 : 70,
             width: "100%",
             marginHorizontal: "auto",
             flex: 1,
             marginVertical: "auto",
-            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
           }}
         >
-          {view === "home" ? (
-            <>
-              <Greeting />
-              <TodayText />
-              <JumpTo />
-              <View
-                style={{
-                  flexDirection: breakpoints.md ? "row" : "column",
-                  alignItems: breakpoints.md ? "center" : undefined,
-                  justifyContent: "center",
-                  gap: 20,
-                  marginTop: 20,
-                  width: "100%",
-                  // minHeight: 180,
-                }}
-              >
-                <PlanDayPrompt />
-                <JumpBackIn />
-              </View>
-            </>
-          ) : view === "activity" ? (
+          <View style={{ flex: 1 }}>
+            <Greeting />
+            <TodayText />
+            <View
+              style={{
+                gap: 20,
+                width: "100%",
+              }}
+            >
+              <PlanDayPrompt />
+              <JumpBackIn />
+            </View>
+          </View>
+          <View style={{ flex: 1 }}>
             <FriendActivity />
-          ) : (
-            <EditWallpaper />
-          )}
+          </View>
         </View>
       </ImageBackground>
     </ContentWrapper>
