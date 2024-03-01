@@ -4,14 +4,80 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
+
+const ProfilePictureUploadButton = ({ control }) => {
+  const [loading, setLoading] = useState(false);
+
+  const pickImageAsync = async (onChange) => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        quality: 1,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
+      });
+
+      if (!result.canceled) {
+        setLoading(true);
+
+        // convert to File
+        const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
+        const file = new File([blob], result.assets[0].fileName, {
+          type: blob.type,
+        });
+        const form = new FormData();
+        form.append("image", file);
+
+        const res = await fetch(
+          "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
+          {
+            method: "POST",
+            body: form,
+          }
+        ).then((res) => res.json());
+        onChange(res.data.display_url);
+      } else {
+        alert("You did not select any image.");
+      }
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Controller
+      control={control}
+      name="picture"
+      render={({ field: { onChange, value } }) => (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+          <ProfilePicture name="Profile Picture" image={value} size={60} />
+          <Button
+            onPress={() => pickImageAsync(onChange)}
+            variant="filled"
+            isLoading={loading}
+            style={{ minWidth: 120 }}
+          >
+            <Icon>upload</Icon>
+            <ButtonText weight={700}>Upload</ButtonText>
+          </Button>
+        </View>
+      )}
+    />
+  );
+};
 
 function ProfileBanner({ data }) {
   const theme = useColorTheme();
@@ -129,11 +195,8 @@ export default function Page() {
           )}
         />
         <Text style={settingStyles.heading}>Picture</Text>
-        <TextField
-          editable={false}
-          variant="filled+outlined"
-          value={session.user.profile.picture}
-        />
+        <ProfilePictureUploadButton control={control} />
+
         <Text style={settingStyles.heading}>Email & Username</Text>
         <TextField
           editable={false}
