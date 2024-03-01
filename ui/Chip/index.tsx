@@ -1,11 +1,5 @@
 import { useUser } from "@/context/useUser";
-import {
-  Pressable,
-  StyleProp,
-  TextStyle,
-  ViewStyle,
-  useColorScheme,
-} from "react-native";
+import { Pressable, StyleProp, TextStyle, ViewStyle } from "react-native";
 import Icon from "../Icon";
 import Text from "../Text";
 import { useColor } from "../color";
@@ -23,6 +17,7 @@ interface ChipProps {
   color?: string;
   textStyle?: StyleProp<TextStyle>;
   colorTheme?: string;
+  textWeight?: number;
 }
 
 export default function Chip({
@@ -37,13 +32,13 @@ export default function Chip({
   textStyle = {},
   disabled = false,
   colorTheme,
+  textWeight = 400,
 }: ChipProps) {
   const { session } = useUser();
   const colorScheme = useColorTheme();
 
   const specifiedTheme = useColor(
-    colorTheme || session?.user?.profile?.theme || "mint",
-    useColorScheme() === "dark"
+    colorTheme || session?.user?.profile?.theme || "mint"
   );
 
   const theme = colorTheme ? specifiedTheme : colorScheme;
@@ -92,7 +87,7 @@ export default function Chip({
             },
             textStyle,
           ]}
-          weight={400}
+          weight={textWeight}
         >
           {label}
         </Text>

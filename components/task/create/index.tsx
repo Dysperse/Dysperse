@@ -387,7 +387,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
       () => {
         nameRef.current.focus();
       },
-      breakpoints.md ? 50 : 500
+      breakpoints.md ? 100 : 500
     );
   }, [nameRef, breakpoints]);
 

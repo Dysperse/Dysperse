@@ -1,4 +1,5 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { styles } from "@/components/home/styles";
 import { ContentWrapper } from "@/components/layout/content";
 import { useTabMetadata } from "@/components/layout/tabs/useTabMetadata";
@@ -22,6 +23,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   ImageBackground,
   Pressable,
+  StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -77,7 +79,7 @@ function PlanDayPrompt() {
         },
       ]}
     >
-      <Icon size={30}>gesture</Icon>
+      <Icon size={30}>tactic</Icon>
       <View style={{ flex: 1 }}>
         <Text
           weight={700}
@@ -117,12 +119,18 @@ function FriendActivity() {
 
   return (
     <>
-      <Text variant="eyebrow">Recent Activity</Text>
+      <Text variant="eyebrow" style={{ marginBottom: 10 }}>
+        Recent Activity
+      </Text>
       <View
         style={{
           flexDirection: "row",
           flexWrap: "wrap",
-          paddingHorizontal: 20,
+          borderWidth: 1,
+          borderColor: theme[4],
+          backgroundColor: theme[2],
+          borderRadius: 20,
+          paddingVertical: 10,
         }}
       >
         {isLoading ? (
@@ -144,14 +152,14 @@ function FriendActivity() {
                 key={"all"}
                 onPress={handleFriendsPress}
                 style={{
-                  height: 180,
+                  height: 110,
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
                   width: "24.99%",
                 }}
               >
-                <Avatar size={90} disabled>
+                <Avatar size={60} disabled>
                   <Icon size={30}>groups_2</Icon>
                 </Avatar>
                 <Text style={{ opacity: 0.6 }}>All Friends</Text>
@@ -160,7 +168,7 @@ function FriendActivity() {
               <View
                 key={Math.random()}
                 style={{
-                  height: 180,
+                  height: 110,
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
@@ -169,8 +177,8 @@ function FriendActivity() {
               >
                 <View
                   style={{
-                    width: 90,
-                    height: 90,
+                    width: 60,
+                    height: 60,
                     borderRadius: 999,
                     position: "relative",
                     backgroundColor: theme[~~(7 - i / 2)],
@@ -190,7 +198,7 @@ function FriendActivity() {
               <ProfileModal email={friend.user.email} key={friend.user.email}>
                 <TouchableOpacity
                   style={{
-                    height: 180,
+                    height: 110,
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 10,
@@ -199,8 +207,8 @@ function FriendActivity() {
                 >
                   <View
                     style={{
-                      width: 90,
-                      height: 90,
+                      width: 60,
+                      height: 60,
                       borderRadius: 999,
                       position: "relative",
                     }}
@@ -209,10 +217,10 @@ function FriendActivity() {
                       style={{ pointerEvents: "none" }}
                       name={friend.user.profile?.name || "--"}
                       image={friend.user.profile?.picture}
-                      size={90}
+                      size={60}
                     />
                     <Chip
-                      // dense
+                      dense
                       disabled
                       style={{
                         position: "absolute",
@@ -220,9 +228,11 @@ function FriendActivity() {
                         right: -3,
                         height: 30,
                         borderWidth: 5,
-                        borderColor: theme[1],
+                        borderColor: theme[2],
+                        paddingHorizontal: 7,
                       }}
                       textStyle={{ fontSize: 13 }}
+                      textWeight={700}
                       label={
                         dayjs(friend.user.profile?.lastActive)
                           .fromNow(true)
@@ -552,6 +562,51 @@ function TodayText() {
     </Text>
   );
 }
+const actionStyles = StyleSheet.create({
+  title: {
+    marginBottom: 10,
+  },
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 20,
+    paddingVertical: 5,
+  },
+});
+
+function Actions() {
+  const theme = useColorTheme();
+  const { handleOpen } = useCommandPaletteContext();
+  const { setFocus, isFocused } = useFocusPanelContext();
+  const togglePanel = () => setFocus((d) => !d);
+
+  return (
+    <View>
+      <Text variant="eyebrow" style={actionStyles.title}>
+        Start
+      </Text>
+      <TouchableOpacity style={actionStyles.item}>
+        <Icon>note_stack_add</Icon>
+        <Text style={{ color: theme[11] }}>New item...</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={actionStyles.item} onPress={handleOpen}>
+        <Icon>electric_bolt</Icon>
+        <Text style={{ color: theme[11] }}>Jump to...</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={actionStyles.item} onPress={togglePanel}>
+        <Icon>adjust</Icon>
+        <Text style={{ color: theme[11] }}>
+          {isFocused ? "End" : "Start"} focus...
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={actionStyles.item}>
+        <Icon>loop</Icon>
+        <Text style={{ color: theme[11] }}>Sync now...</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 export default function Index() {
   const breakpoints = useResponsiveBreakpoints();
@@ -599,31 +654,40 @@ export default function Index() {
         )}
         <View
           style={{
-            paddingHorizontal: 50,
+            paddingHorizontal: 20,
+            maxWidth: 1200,
             paddingBottom: view === "edit" ? 0 : 70,
             width: "100%",
             marginHorizontal: "auto",
             flex: 1,
             marginVertical: "auto",
-            alignItems: "center",
-            flexDirection: "row",
           }}
         >
-          <View style={{ flex: 1 }}>
-            <Greeting />
-            <TodayText />
-            <View
-              style={{
-                gap: 20,
-                width: "100%",
-              }}
-            >
-              <PlanDayPrompt />
-              <JumpBackIn />
+          <View style={{ marginTop: "auto" }} />
+          <Greeting />
+          <TodayText />
+          <View
+            style={{
+              gap: 50,
+              flexDirection: "row",
+              marginBottom: "auto",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  gap: 20,
+                  width: "100%",
+                }}
+              >
+                <Actions />
+                <PlanDayPrompt />
+                {/* <JumpBackIn /> */}
+              </View>
             </View>
-          </View>
-          <View style={{ flex: 1 }}>
-            <FriendActivity />
+            <View style={{ flex: 1 }}>
+              <FriendActivity />
+            </View>
           </View>
         </View>
       </ImageBackground>
