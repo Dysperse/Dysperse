@@ -1,20 +1,38 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
+import { ButtonGroup } from "@/ui/ButtonGroup";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
-import { memo, useCallback, useRef } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { styles } from ".";
+
+const CollectionMembers = () => {
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Members</Text>
+    </View>
+  );
+};
+
+const CollectionLink = () => {
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Link</Text>
+    </View>
+  );
+};
 
 export const CollectionShareMenu = memo(function CollectionShareMenu() {
   const ref = useRef<BottomSheetModal>(null);
   const { id } = useLocalSearchParams();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+  const viewState = useState("Members");
 
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
@@ -54,16 +72,31 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
         />
       )}
 
-      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["60%"]}>
-        <View style={{ padding: 25 }}>
-          <Text weight={900} style={{ fontSize: 25 }}>
-            Members
-          </Text>
-
-          <Text weight={900} style={{ fontSize: 25 }}>
-            Invite link
+      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["80%"]}>
+        <View
+          style={{
+            paddingHorizontal: 25,
+            paddingVertical: 10,
+            paddingBottom: 15,
+          }}
+        >
+          <Text style={{ fontSize: 30 }} weight={800}>
+            Share
           </Text>
         </View>
+        <ButtonGroup
+          options={[
+            { value: "Members", label: "Members" },
+            { value: "Link", label: "Link" },
+          ]}
+          scrollContainerStyle={{ width: "100%" }}
+          state={viewState}
+        />
+        {viewState[0] === "Members" ? (
+          <CollectionMembers />
+        ) : (
+          <CollectionLink />
+        )}
       </BottomSheet>
     </>
   );
