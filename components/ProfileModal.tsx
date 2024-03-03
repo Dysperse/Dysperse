@@ -1,3 +1,4 @@
+import { getProfileLastActiveRelativeTime } from "@/app/(app)";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
@@ -79,14 +80,12 @@ function ProfileModalContent({ email }) {
                   magic_button
                 </Icon>
                 <Text style={styles.gridHeading}>
-                  {dayjs(data.profile?.lastActive)
-                    .fromNow(true)
-                    .split(" ")[0]
-                    .replace("a", "1") +
-                    dayjs(data.profile?.lastActive)
-                      .fromNow(true)
-                      .split(" ")?.[1]?.[0]
-                      .toUpperCase() || "Timezone not set"}
+                  {getProfileLastActiveRelativeTime(data.profile.lastActive) ===
+                  "NOW"
+                    ? "Online"
+                    : getProfileLastActiveRelativeTime(
+                        data.profile.lastActive
+                      ) || "Unknown"}
                 </Text>
                 <Text variant="eyebrow">Last active</Text>
               </View>

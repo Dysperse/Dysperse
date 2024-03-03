@@ -110,6 +110,13 @@ function PlanDayPrompt() {
   );
 }
 
+export const getProfileLastActiveRelativeTime = (time) => {
+  const t = dayjs(time).fromNow(true);
+  return t.includes("few")
+    ? "NOW"
+    : t.split(" ")[0].replace("a", "1") + t.split(" ")?.[1]?.[0].toUpperCase();
+};
+
 function FriendActivity() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -232,31 +239,30 @@ function FriendActivity() {
                     <Chip
                       dense
                       disabled
-                      style={{
-                        position: "absolute",
-                        bottom: -3,
-                        right: -3,
-                        height: 30,
-                        borderWidth: 5,
-                        borderColor: theme[2],
-                        paddingHorizontal: 7,
-                      }}
+                      style={[
+                        {
+                          position: "absolute",
+                          bottom: -3,
+                          right: -3,
+                          height: 30,
+                          borderWidth: 5,
+                          borderColor: theme[2],
+                          paddingHorizontal: 7,
+                        },
+                        getProfileLastActiveRelativeTime(
+                          friend.user.profile?.lastActive
+                        ) === "NOW" && {
+                          backgroundColor: theme[10],
+                          height: 26,
+                          width: 26,
+                          paddingHorizontal: 0,
+                        },
+                      ]}
                       textStyle={{ fontSize: 13 }}
                       textWeight={700}
-                      label={
-                        dayjs(friend.user.profile?.lastActive)
-                          .fromNow(true)
-                          .includes("few")
-                          ? "NOW"
-                          : dayjs(friend.user.profile?.lastActive)
-                              .fromNow(true)
-                              .split(" ")[0]
-                              .replace("a", "1") +
-                            dayjs(friend.user.profile?.lastActive)
-                              .fromNow(true)
-                              .split(" ")?.[1]?.[0]
-                              .toUpperCase()
-                      }
+                      label={getProfileLastActiveRelativeTime(
+                        friend.user.profile?.lastActive
+                      ).replace("NOW", "")}
                     />
                   </View>
                   <Text style={{ opacity: 0.6 }}>
