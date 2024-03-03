@@ -665,6 +665,20 @@ export default function Index() {
         style={{ height: "100%", width: "100%", flex: 1, alignItems: "center" }}
         resizeMode="repeat"
       >
+        <IconButton
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            marginTop: insets.top,
+            margin: 20,
+            zIndex: 1,
+            opacity: 0.5,
+          }}
+          icon={view === "edit" ? "check" : "more_horiz"}
+          size={55}
+          onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
+        />
         <ScrollView
           scrollEnabled={!breakpoints.md}
           contentContainerStyle={
@@ -689,49 +703,53 @@ export default function Index() {
               onPress={openSidebar}
             />
           )}
-          <View
-            style={[
-              {
-                paddingHorizontal: 50,
-                maxWidth: isFocused ? 950 : 1150,
-                paddingBottom: view === "edit" ? 0 : 70,
-                width: "100%",
-                marginHorizontal: "auto",
-                marginVertical: "auto",
-                paddingTop: 60,
-              },
-              !breakpoints.md && {
-                paddingTop: 120,
-                paddingHorizontal: 20,
-              },
-            ]}
-          >
-            <View style={{ marginTop: "auto" }} />
-            <Greeting />
-            <TodayText />
+          {view === "edit" ? (
+            <EditWallpaper />
+          ) : (
             <View
-              style={{
-                gap: 50,
-                flexDirection: breakpoints.md ? "row" : "column",
-                marginBottom: "auto",
-              }}
+              style={[
+                {
+                  paddingHorizontal: 50,
+                  maxWidth: isFocused ? 950 : 1150,
+                  paddingBottom: 70,
+                  width: "100%",
+                  marginHorizontal: "auto",
+                  marginVertical: "auto",
+                  paddingTop: 60,
+                },
+                !breakpoints.md && {
+                  paddingTop: 120,
+                  paddingHorizontal: 20,
+                },
+              ]}
             >
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    gap: 20,
-                    width: "100%",
-                  }}
-                >
-                  <Actions />
-                  <PlanDayPrompt />
+              <View style={{ marginTop: "auto" }} />
+              <Greeting />
+              <TodayText />
+              <View
+                style={{
+                  gap: 50,
+                  flexDirection: breakpoints.md ? "row" : "column",
+                  marginBottom: "auto",
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <View
+                    style={{
+                      gap: 20,
+                      width: "100%",
+                    }}
+                  >
+                    <Actions />
+                    <PlanDayPrompt />
+                  </View>
+                </View>
+                <View style={breakpoints.md && { flex: 1 }}>
+                  <FriendActivity />
                 </View>
               </View>
-              <View style={breakpoints.md && { flex: 1 }}>
-                <FriendActivity />
-              </View>
             </View>
-          </View>
+          )}
         </ScrollView>
       </ImageBackground>
     </ContentWrapper>
