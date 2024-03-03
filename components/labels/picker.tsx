@@ -76,7 +76,7 @@ function CollectionChips({
 }) {
   return (
     <View style={{ padding: 10, gap: 10 }}>
-      <Text variant="eyebrow">Collections</Text>
+      {collections.length !== 0 && <Text variant="eyebrow">Collections</Text>}
       <FlatList
         horizontal
         renderItem={({ item }) => (
@@ -264,8 +264,16 @@ const LabelPicker = memo(function LabelPicker({
                     selectedCollection={selectedCollection}
                     setSelectedCollection={setSelectedCollection}
                   />
-                  <View style={{ padding: 10, paddingBottom: 0 }}>
-                    <Text variant="eyebrow">Labels</Text>
+                  <View
+                    style={{
+                      padding: 10,
+                      paddingBottom: 0,
+                      paddingTop: collections.length === 0 ? 0 : 10,
+                    }}
+                  >
+                    {collections.length > 0 && (
+                      <Text variant="eyebrow">Labels</Text>
+                    )}
                   </View>
                 </>
               }
