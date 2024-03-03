@@ -78,7 +78,7 @@ function ProfileModalContent({ email }) {
               </View>
               <View style={[styles.gridItem, { borderColor: theme[6] }]}>
                 <Icon size={40} style={styles.icon}>
-                  kid_star
+                  magic_button
                 </Icon>
                 <Text style={styles.gridHeading}>
                   {dayjs(data.profile?.lastActive)

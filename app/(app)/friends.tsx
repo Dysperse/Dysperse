@@ -1,8 +1,10 @@
+import { ProfileModal } from "@/components/ProfileModal";
 import { ContentWrapper } from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -268,9 +270,18 @@ export default function Page() {
     "user/friends",
     { requests: "true" },
   ]);
-  useHotkeys("esc", () => {
-    if (router.canGoBack()) router.back();
-    else router.push("/");
+
+  const breakpoints = useResponsiveBreakpoints();
+
+  const handleBack = () => {
+    if (router.canGoBack()) return router.back();
+    router.replace(breakpoints.md ? "/" : "/settings");
+  };
+
+  useHotkeys("esc", handleBack, {
+    enabled: breakpoints.md,
+    ignoreEventWhen: () =>
+      document.querySelectorAll('[aria-modal="true"]').length > 0,
   });
 
   const Header = () => (
@@ -385,41 +396,44 @@ export default function Page() {
             </View>
           }
           renderItem={({ item }: any) => (
-            <ListItemButton
-              style={{ paddingHorizontal: 0, paddingRight: 10, marginTop: 10 }}
-              disabled
-            >
-              <ProfilePicture
-                style={{ pointerEvents: "none" }}
-                name={item.user.profile?.name || "--"}
-                image={item.user.profile?.picture}
-                size={40}
-              />
-              <ListItemText
-                truncate
-                primary={item.user.profile?.name}
-                secondary={`Active ${dayjs(
-                  item.user.profile?.lastActive
-                ).fromNow()}`}
-              />
-              {view === "pending" ? (
-                <DeleteRequestButton mutate={mutate} id={item.user.id} />
-              ) : view === "requests" ? (
-                <>
-                  <BlockRequestButton mutate={mutate} id={item.user.id} />
-                  <DeleteRequestButton
-                    reject
-                    mutate={mutate}
-                    id={item.user.id}
-                  />
-                  <AcceptRequestButton mutate={mutate} id={item.user.id} />
-                </>
-              ) : (
-                <>
-                  <FriendOptionsButton />
-                </>
-              )}
-            </ListItemButton>
+            <ProfileModal email={item.user.email}>
+              <ListItemButton
+                style={{
+                  marginTop: 10,
+                }}
+              >
+                <ProfilePicture
+                  style={{ pointerEvents: "none" }}
+                  name={item.user.profile?.name || "--"}
+                  image={item.user.profile?.picture}
+                  size={40}
+                />
+                <ListItemText
+                  truncate
+                  primary={item.user.profile?.name}
+                  secondary={`Active ${dayjs(
+                    item.user.profile?.lastActive
+                  ).fromNow()}`}
+                />
+                {view === "pending" ? (
+                  <DeleteRequestButton mutate={mutate} id={item.user.id} />
+                ) : view === "requests" ? (
+                  <>
+                    <BlockRequestButton mutate={mutate} id={item.user.id} />
+                    <DeleteRequestButton
+                      reject
+                      mutate={mutate}
+                      id={item.user.id}
+                    />
+                    <AcceptRequestButton mutate={mutate} id={item.user.id} />
+                  </>
+                ) : (
+                  <>
+                    <FriendOptionsButton />
+                  </>
+                )}
+              </ListItemButton>
+            </ProfileModal>
           )}
           estimatedItemSize={100}
         />
