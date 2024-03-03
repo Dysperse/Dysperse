@@ -1,6 +1,7 @@
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -10,7 +11,7 @@ import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef } from "react";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { StyleSheet, View } from "react-native";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -29,12 +30,9 @@ const styles = StyleSheet.create({
 
 function ProfileModalContent({ email }) {
   const { data, error } = useSWR(["user/profile", { email }]);
-  const theme = useColor(
-    data?.profile?.theme || "gray",
-    useColorScheme() === "dark"
-  );
+  const theme = useColor(data?.profile?.theme || "gray");
 
-  return data ? (
+  return data?.profile ? (
     <ColorThemeProvider theme={theme}>
       <BottomSheetScrollView
         showsVerticalScrollIndicator={false}
@@ -120,7 +118,15 @@ function ProfileModalContent({ email }) {
     </ColorThemeProvider>
   ) : (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Spinner />
+      {error ? (
+        <ErrorAlert />
+      ) : data ? (
+        <View>
+          <Text>Profile not found</Text>
+        </View>
+      ) : (
+        <Spinner />
+      )}
     </View>
   );
 }
