@@ -288,7 +288,7 @@ export default function Page() {
       <View
         style={{
           paddingBottom: 40,
-          paddingTop: 30,
+          paddingTop: 10,
           alignItems: "center",
           justifyContent: "space-between",
           gap: 5,
@@ -337,7 +337,7 @@ export default function Page() {
       <IconButton
         onPress={handleBack}
         icon="arrow_back_ios_new"
-        style={{ marginBottom: 20, margin: 15 }}
+        style={{ marginBottom: 20, margin: 20 }}
         variant="outlined"
         size={55}
       />
