@@ -184,7 +184,7 @@ const OpenTabsList = memo(function OpenTabsList() {
                     marginTop: 5,
                   }}
                 >
-                  Try opening a collection or label
+                  Try opening a view or one of your collections
                 </Text>
               </View>
               <JumpToButton />
