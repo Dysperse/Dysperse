@@ -1,7 +1,4 @@
-import {
-  ColumnMenuTrigger,
-  styles,
-} from "@/app/(app)/[tab]/collections/[id]/[type]";
+import { styles } from "@/app/(app)/[tab]/collections/[id]/[type]";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { KanbanHeader } from "@/components/collections/views/kanban/Header";
@@ -168,13 +165,6 @@ export function Column(props: ColumnProps) {
                     <Icon>add</Icon>
                   </Button>
                 </CreateTask>
-                {props.label && (
-                  <ColumnMenuTrigger label={props.label}>
-                    <Button variant="outlined" style={{ minHeight: 50 }}>
-                      <Icon>more_horiz</Icon>
-                    </Button>
-                  </ColumnMenuTrigger>
-                )}
               </View>
             </>
           )
