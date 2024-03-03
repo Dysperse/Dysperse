@@ -243,7 +243,7 @@ export const LogoButton = memo(function LogoButton() {
               setTimeout(closeSidebarOnMobile, 300);
             },
           },
-          { divider: true, key: "1" },
+          // { divider: true, key: "1" },
           {
             icon: "question_mark",
             text: "Help",
