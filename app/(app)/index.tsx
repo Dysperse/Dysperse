@@ -598,20 +598,26 @@ function Actions() {
       <CreateTask mutate={() => {}}>
         <TouchableOpacity style={actionStyles.item}>
           <Icon>note_stack_add</Icon>
-          <Text style={{ color: theme[11] }}>New item...</Text>
+          <Text style={{ color: theme[11] }} numberOfLines={1}>
+            New item...
+          </Text>
         </TouchableOpacity>
       </CreateTask>
       <TouchableOpacity style={actionStyles.item} onPress={openEverything}>
         <Icon>category</Icon>
-        <Text style={{ color: theme[11] }}>Labels & Collections...</Text>
+        <Text style={{ color: theme[11] }} numberOfLines={1}>
+          Labels & Collections...
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={handleOpen}>
         <Icon>electric_bolt</Icon>
-        <Text style={{ color: theme[11] }}>Jump to...</Text>
+        <Text style={{ color: theme[11] }} numberOfLines={1}>
+          Jump to...
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={togglePanel}>
         <Icon>adjust</Icon>
-        <Text style={{ color: theme[11] }}>
+        <Text style={{ color: theme[11] }} numberOfLines={1}>
           {isFocused ? "End" : "Start"} focus...
         </Text>
       </TouchableOpacity>
