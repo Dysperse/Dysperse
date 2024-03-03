@@ -74,6 +74,8 @@ function Tab({
             },
             pathname: lastTab.slug,
           });
+        } else {
+          router.replace("/");
         }
         sendApiRequest(sessionToken, "DELETE", "user/tabs", {
           id,

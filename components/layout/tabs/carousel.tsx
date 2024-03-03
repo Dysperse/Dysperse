@@ -118,7 +118,7 @@ const OpenTabsList = memo(function OpenTabsList() {
 
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  return data && Array.isArray(data) && data.length > 0 ? (
+  return (
     <View
       style={{
         flex: 1,
@@ -128,48 +128,71 @@ const OpenTabsList = memo(function OpenTabsList() {
         height: "100%",
       }}
     >
-      <FlatList
-        aria-label="Sidebar"
-        data={data}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              backgroundColor: theme[2],
-              padding: 1,
-            }}
-          >
-            <Tab tab={item} selected={tab === item.id} />
-          </View>
-        )}
-        style={{ backgroundColor: theme[2] }}
-        contentContainerStyle={{ backgroundColor: theme[2] }}
-        keyExtractor={(item) => item.id}
-      />
-      <JumpToButton />
-    </View>
-  ) : (
-    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      {error ? (
-        <ErrorAlert />
-      ) : data && data.length === 0 ? (
-        <View style={{ alignItems: "center", padding: 20 }}>
-          <Text variant="eyebrow" style={{ marginTop: 10, fontSize: 13.5 }}>
-            It's quiet here...
-          </Text>
-          <Text
-            style={{
-              color: theme[11],
-              opacity: 0.5,
-              textAlign: "center",
-              fontSize: 13,
-              marginTop: 5,
-            }}
-          >
-            Try opening a collection or label
-          </Text>
-        </View>
+      {data && Array.isArray(data) && data.length > 0 ? (
+        <>
+          <FlatList
+            aria-label="Sidebar"
+            data={data}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  backgroundColor: theme[2],
+                  padding: 1,
+                }}
+              >
+                <Tab tab={item} selected={tab === item.id} />
+              </View>
+            )}
+            style={{ backgroundColor: theme[2] }}
+            contentContainerStyle={{ backgroundColor: theme[2] }}
+            keyExtractor={(item) => item.id}
+          />
+          <JumpToButton />
+        </>
       ) : (
-        <Spinner />
+        <View
+          style={{
+            justifyContent: "center",
+            flex: 1,
+            width: "100%",
+          }}
+        >
+          {error ? (
+            <ErrorAlert />
+          ) : data && data.length === 0 ? (
+            <>
+              <View
+                style={{
+                  alignItems: "center",
+                  padding: 20,
+                  marginTop: "auto",
+                  marginBottom: "auto",
+                }}
+              >
+                <Text
+                  variant="eyebrow"
+                  style={{ marginTop: 10, fontSize: 13.5 }}
+                >
+                  It's quiet here...
+                </Text>
+                <Text
+                  style={{
+                    color: theme[11],
+                    opacity: 0.5,
+                    textAlign: "center",
+                    fontSize: 13,
+                    marginTop: 5,
+                  }}
+                >
+                  Try opening a collection or label
+                </Text>
+              </View>
+              <JumpToButton />
+            </>
+          ) : (
+            <Spinner />
+          )}
+        </View>
       )}
     </View>
   );
