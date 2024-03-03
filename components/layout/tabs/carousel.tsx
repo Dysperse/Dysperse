@@ -1,6 +1,5 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
@@ -12,6 +11,7 @@ import { router } from "expo-router";
 import React, { memo, useEffect } from "react";
 import { Pressable, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import Tab from "./tab";
@@ -117,14 +117,14 @@ const OpenTabsList = memo(function OpenTabsList() {
   );
 
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
   return data && Array.isArray(data) && data.length > 0 ? (
     <View
       style={{
         flex: 1,
         paddingHorizontal: 15,
         width: "100%",
-        marginBottom: breakpoints.md ? 10 : -20,
+        marginBottom: insets.bottom + 10,
         height: "100%",
       }}
     >
