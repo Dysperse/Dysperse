@@ -1,5 +1,6 @@
 import LabelPicker from "@/components/labels/picker";
 import { ContentWrapper } from "@/components/layout/content";
+import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button, ButtonText } from "@/ui/Button";
@@ -72,7 +73,7 @@ export default function Page() {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      await sendApiRequest(
+      const { id } = await sendApiRequest(
         sessionToken,
         "POST",
         "space/collections",
@@ -81,6 +82,10 @@ export default function Page() {
           body: JSON.stringify(data),
         }
       );
+      await createTab(sessionToken, {
+        slug: `/[tab]/collections/[id]/[type]`,
+        params: { type: "kanban", id },
+      });
     } catch (err) {
       console.log(err);
       Toast.show({ type: "error" });
