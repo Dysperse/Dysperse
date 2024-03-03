@@ -114,9 +114,8 @@ export const getProfileLastActiveRelativeTime = (time) => {
   const t = dayjs(time).fromNow(true);
   return t.includes("few") || dayjs().diff(time, "minute") < 3
     ? "NOW"
-    : t === "an hour"
-    ? "1H"
-    : t.split(" ")[0].replace("a", "1") + t.split(" ")?.[1]?.[0].toUpperCase();
+    : t.split(" ")[0].replace("an", "1").replace("a", "1") +
+        t.split(" ")?.[1]?.[0].toUpperCase();
 };
 
 function FriendActivity() {
