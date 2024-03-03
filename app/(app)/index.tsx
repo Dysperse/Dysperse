@@ -708,7 +708,6 @@ export default function Index() {
                 >
                   <Actions />
                   <PlanDayPrompt />
-                  {/* <JumpBackIn /> */}
                 </View>
               </View>
               <View style={breakpoints.md && { flex: 1 }}>

@@ -1,5 +1,4 @@
 import { ContentWrapper } from "@/components/layout/content";
-import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -15,7 +14,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { Menu } from "@/ui/Menu";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -245,61 +244,17 @@ function BlockRequestButton({ mutate, id }) {
 
 function FriendOptionsButton() {
   return (
-    <Menu
-      height={[315]}
+    <MenuPopover
       trigger={
         <IconButton variant="outlined" size={40} style={{ marginRight: -10 }}>
           <Icon>more_vert</Icon>
         </IconButton>
       }
-    >
-      <View style={{ paddingHorizontal: 20, gap: 20 }}>
-        <Button style={{ height: 70 }} variant="outlined">
-          <ButtonText weight={900} style={{ fontSize: 20 }}>
-            Remove friend
-          </ButtonText>
-        </Button>
-        <Button style={{ height: 70 }} variant="outlined">
-          <ButtonText weight={900} style={{ fontSize: 20 }}>
-            Block
-          </ButtonText>
-        </Button>
-        <Button style={{ height: 70 }} variant="outlined">
-          <ButtonText weight={900} style={{ fontSize: 20 }}>
-            Cancel
-          </ButtonText>
-        </Button>
-      </View>
-    </Menu>
-  );
-}
-
-function ViewFriendButton({ email }: { email: string }) {
-  const { session } = useSession();
-  const [loading, setLoading] = useState(false);
-
-  return (
-    <IconButton
-      onPress={async () => {
-        try {
-          await createTab(session, {
-            slug: "/[tab]/users/[id]",
-            params: { id: email },
-          });
-        } catch (e) {
-          Toast.show({
-            type: "error",
-            text1: "Something went wrong. Please try again later",
-          });
-        } finally {
-          setLoading(false);
-        }
-      }}
-      variant="outlined"
-      size={40}
-    >
-      {loading ? <Spinner /> : <Icon>arrow_forward_ios</Icon>}
-    </IconButton>
+      options={[
+        { icon: "person_remove", text: "Remove friend" },
+        { icon: "block", text: "Block user" },
+      ]}
+    />
   );
 }
 
@@ -431,8 +386,7 @@ export default function Page() {
           }
           renderItem={({ item }: any) => (
             <ListItemButton
-              variant="outlined"
-              style={{ marginTop: 10 }}
+              style={{ paddingHorizontal: 0, paddingRight: 10, marginTop: 10 }}
               disabled
             >
               <ProfilePicture
@@ -463,7 +417,6 @@ export default function Page() {
               ) : (
                 <>
                   <FriendOptionsButton />
-                  <ViewFriendButton email={item.user.email} />
                 </>
               )}
             </ListItemButton>
