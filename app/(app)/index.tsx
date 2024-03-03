@@ -118,6 +118,8 @@ function FriendActivity() {
 
   const friends = Array.isArray(data) && [...data, "ALL_FRIENDS"];
 
+  console.log(data);
+
   if (friends.length < 8)
     for (let i = friends.length; i < 8; i++) {
       friends.push({ placeholder: i });
