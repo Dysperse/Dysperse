@@ -27,7 +27,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, View, useWindowDimensions } from "react-native";
+import { Keyboard, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -263,7 +263,6 @@ function FriendOptionsButton() {
 export default function Page() {
   const { session } = useUser();
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
   const [view, setView] = useState<FriendsPageView>("all");
 
   const { data, isLoading, mutate, error } = useSWR([
@@ -288,13 +287,14 @@ export default function Page() {
     <>
       <View
         style={{
-          flexDirection: "row",
+          paddingBottom: 40,
+          paddingTop: 30,
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: 10,
+          gap: 5,
         }}
       >
-        <Text style={{ fontSize: 50 }} weight={100}>
+        <Text weight={900} style={{ fontSize: 40 }}>
           Friends
         </Text>
         <AddFriend friends={data} mutate={mutate} />
@@ -304,6 +304,21 @@ export default function Page() {
         buttonTextStyle={{
           color: theme[11],
         }}
+        buttonStyle={{
+          borderBottomWidth: 0,
+        }}
+        activeComponent={
+          <View
+            style={{
+              width: 20,
+              height: 5,
+              marginLeft: "auto",
+              marginRight: "auto",
+              borderRadius: 99,
+              backgroundColor: theme[11],
+            }}
+          />
+        }
         selectedButtonStyle={{}}
         scrollContainerStyle={{ minWidth: "100%" }}
         options={[
@@ -318,23 +333,27 @@ export default function Page() {
   );
 
   return (
-    <ContentWrapper>
+    <ContentWrapper noPaddingTop>
+      <IconButton
+        onPress={handleBack}
+        icon="arrow_back_ios_new"
+        style={{ marginBottom: 20, margin: 15 }}
+        variant="outlined"
+        size={55}
+      />
       <View
         style={{
           flex: 1,
-          maxWidth: 500,
-          marginHorizontal: "auto",
           width: "100%",
           minWidth: 5,
           minHeight: 5,
+          maxWidth: 500,
+          marginHorizontal: "auto",
         }}
       >
         <FlashList
           ListHeaderComponent={Header}
-          contentContainerStyle={{
-            paddingHorizontal: 25,
-            paddingTop: width > 600 ? 64 : 25,
-          }}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
           data={
             data
               ? data.filter((user) => {

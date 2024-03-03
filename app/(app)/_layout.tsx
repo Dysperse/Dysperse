@@ -10,7 +10,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
-import Navbar from "@/ui/navbar";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
@@ -347,12 +346,6 @@ export default function AppLayout() {
                                   name="friends"
                                   options={{
                                     gestureEnabled: true,
-                                    header: (props) => (
-                                      <Navbar
-                                        icon="arrow_back_ios_new"
-                                        {...props}
-                                      />
-                                    ),
                                     ...TransitionPresets.SlideFromRightIOS,
                                     cardStyleInterpolator: forHorizontalIOS,
                                   }}
