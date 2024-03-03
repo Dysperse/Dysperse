@@ -74,9 +74,11 @@ function PlanDayPrompt() {
 
   return (
     <Pressable
+      disabled
       style={({ pressed, hovered }: any) => [
         styles.card,
         {
+          opacity: 0.4,
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         },
       ]}
@@ -99,7 +101,8 @@ function PlanDayPrompt() {
           }}
           numberOfLines={1}
         >
-          Tap to begin
+          {/* Tap to begin */}
+          Coming soon
         </Text>
       </View>
       <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
