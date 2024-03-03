@@ -698,7 +698,7 @@ export default function Index() {
                 width: "100%",
                 marginHorizontal: "auto",
                 marginVertical: "auto",
-                paddingTop: 20,
+                paddingTop: 60,
               },
               !breakpoints.md && {
                 paddingTop: 120,
