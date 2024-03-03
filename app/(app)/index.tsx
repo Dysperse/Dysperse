@@ -27,6 +27,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -108,6 +109,7 @@ function PlanDayPrompt() {
 
 function FriendActivity() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { data, isLoading, error } = useSWR(["user/friends"]);
   const handleFriendsPress = useCallback(() => router.push("/friends"), []);
 
@@ -157,7 +159,7 @@ function FriendActivity() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
-                  width: "24.99%",
+                  width: breakpoints.md ? "24.99%" : "33.3333%",
                 }}
               >
                 <Avatar size={60} disabled>
@@ -175,7 +177,7 @@ function FriendActivity() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
-                  width: "24.99%",
+                  width: breakpoints.md ? "24.99%" : "33.3333%",
                 }}
               >
                 <View
@@ -205,7 +207,7 @@ function FriendActivity() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 10,
-                    width: "24.99%",
+                    width: breakpoints.md ? "24.99%" : "33.3333%",
                   }}
                 >
                   <View
@@ -620,6 +622,7 @@ export default function Index() {
   const insets = useSafeAreaInsets();
   const { session } = useUser();
   const { isFocused } = useFocusPanelContext();
+  const { height } = useWindowDimensions();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
   const { openSidebar } = useSidebarContext();
@@ -645,63 +648,75 @@ export default function Index() {
         style={{ height: "100%", width: "100%", flex: 1, alignItems: "center" }}
         resizeMode="repeat"
       >
-        {!breakpoints.md && (
-          <IconButton
-            style={{
-              position: "absolute",
-              top: 20,
-              left: 20,
-              marginTop: insets.top,
-            }}
-            icon="menu"
-            size={55}
-            variant="outlined"
-            onPress={openSidebar}
-          />
-        )}
-        <View
-          style={[
-            {
-              paddingHorizontal: 20,
-              maxWidth: isFocused ? 1000 : 1200,
-              paddingBottom: view === "edit" ? 0 : 70,
-              width: "100%",
-              marginHorizontal: "auto",
-              marginVertical: "auto",
-              paddingTop: 20,
-            },
-            !breakpoints.md && {
-              paddingTop: 120,
-            },
-          ]}
+        <ScrollView
+          scrollEnabled={!breakpoints.md}
+          contentContainerStyle={
+            breakpoints.md && {
+              height,
+              flex: 1,
+            }
+          }
         >
-          <View style={{ marginTop: "auto" }} />
-          <Greeting />
-          <TodayText />
+          {!breakpoints.md && (
+            <IconButton
+              style={{
+                position: "absolute",
+                top: 20,
+                left: 20,
+                marginTop: insets.top,
+                zIndex: 1,
+              }}
+              icon="menu"
+              size={55}
+              variant="outlined"
+              onPress={openSidebar}
+            />
+          )}
           <View
-            style={{
-              gap: 50,
-              flexDirection: breakpoints.md ? "row" : "column",
-              marginBottom: "auto",
-            }}
+            style={[
+              {
+                paddingHorizontal: 50,
+                maxWidth: isFocused ? 950 : 1150,
+                paddingBottom: view === "edit" ? 0 : 70,
+                width: "100%",
+                marginHorizontal: "auto",
+                marginVertical: "auto",
+                paddingTop: 20,
+              },
+              !breakpoints.md && {
+                paddingTop: 120,
+                paddingHorizontal: 20,
+              },
+            ]}
           >
-            <View style={{ flex: 1 }}>
-              <View
-                style={{
-                  gap: 20,
-                  width: "100%",
-                }}
-              >
-                <Actions />
-                <PlanDayPrompt />
-                {/* <JumpBackIn /> */}
+            <View style={{ marginTop: "auto" }} />
+            <Greeting />
+            <TodayText />
+            <View
+              style={{
+                gap: 50,
+                flexDirection: breakpoints.md ? "row" : "column",
+                marginBottom: "auto",
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <View
+                  style={{
+                    gap: 20,
+                    width: "100%",
+                  }}
+                >
+                  <Actions />
+                  <PlanDayPrompt />
+                  {/* <JumpBackIn /> */}
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <FriendActivity />
               </View>
             </View>
-            <View style={{ flex: 1 }}>
-              <FriendActivity />
-            </View>
           </View>
-        </View>
+        </ScrollView>
       </ImageBackground>
     </ContentWrapper>
   );
