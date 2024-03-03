@@ -57,7 +57,6 @@ const JumpToButton = memo(function JumpToButton() {
 
 const OpenTabsList = memo(function OpenTabsList() {
   const { tab }: { tab: string } = useTabParams() as any;
-
   const { data, error } = useSWR(["user/tabs"]);
 
   const handleSnapToIndex = (index: number) => {
