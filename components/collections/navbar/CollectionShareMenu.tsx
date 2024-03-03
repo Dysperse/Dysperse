@@ -12,9 +12,10 @@ import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
 import { memo, useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { styles } from ".";
 import { useCollectionContext } from "../context";
 
-const styles = StyleSheet.create({
+const modalStyles = StyleSheet.create({
   eyebrow: { marginTop: 10, marginBottom: 5, marginLeft: 5 },
 });
 const CollectionMembers = ({ collection: { data: collection } }) => {
@@ -22,7 +23,7 @@ const CollectionMembers = ({ collection: { data: collection } }) => {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text variant="eyebrow" style={styles.eyebrow}>
+      <Text variant="eyebrow" style={modalStyles.eyebrow}>
         Group
       </Text>
       {collection.public && (
@@ -45,7 +46,7 @@ const CollectionMembers = ({ collection: { data: collection } }) => {
           </Icon>
         </ListItemButton>
       )}
-      <Text variant="eyebrow" style={[styles.eyebrow, { marginTop: 15 }]}>
+      <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 15 }]}>
         People
       </Text>
       <ListItemButton>
