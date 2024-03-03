@@ -271,7 +271,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           options={filterOptions}
         />
         <CollectionIntegrationsMenu />
-        <CollectionShareMenu />
+        <CollectionContext.Provider value={{ data, ...ctx }}>
+          <CollectionShareMenu />
+        </CollectionContext.Provider>
       </LinearGradient>
       {type === "planner" && !breakpoints.md && <AgendaButtons />}
     </>
