@@ -123,6 +123,7 @@ function AddFriend({ friends, mutate }) {
                     flex: 1,
                     padding: 20,
                     fontSize: 20,
+                    shadowRadius: 0,
                   }}
                 />
               )}
@@ -438,7 +439,7 @@ export default function Page() {
                   <DeleteRequestButton mutate={mutate} id={item.user.id} />
                 ) : view === "requests" ? (
                   <>
-                    <BlockRequestButton mutate={mutate} id={item.user.id} />
+                    {/* <BlockRequestButton mutate={mutate} id={item.user.id} /> */}
                     <DeleteRequestButton
                       reject
                       mutate={mutate}
