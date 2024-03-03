@@ -228,14 +228,6 @@ export const LogoButton = memo(function LogoButton() {
             renderer: () => <SyncButton />,
           },
           {
-            icon: "category",
-            text: "Everything",
-            callback: () => {
-              router.push("/everything");
-              setTimeout(closeSidebarOnMobile, 300);
-            },
-          },
-          {
             icon: "delete",
             text: "Trash",
             callback: () => {
