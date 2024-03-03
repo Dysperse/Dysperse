@@ -436,12 +436,17 @@ function EditWallpaper() {
     <ScrollView
       style={{ height: "100%" }}
       contentContainerStyle={{
-        alignItems: "center",
         justifyContent: "center",
         paddingBottom: 100,
+        paddingHorizontal: 30,
+        paddingTop: 100,
+        maxWidth: 800,
       }}
+      showsVerticalScrollIndicator={false}
     >
-      <Text style={{ fontSize: 60, marginVertical: 20 }}>Appearance</Text>
+      <Text style={{ fontSize: 40, marginVertical: 20 }} weight={800}>
+        Appearance
+      </Text>
       <Text variant="eyebrow">Color</Text>
       <Button
         onPress={() => router.push("/settings/customization/appearance")}
