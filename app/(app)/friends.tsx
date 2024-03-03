@@ -254,7 +254,7 @@ function FriendOptionsButton() {
       }
       options={[
         { icon: "person_remove", text: "Remove friend" },
-        { icon: "block", text: "Block user" },
+        // { icon: "block", text: "Block user" },
       ]}
     />
   );
@@ -310,7 +310,7 @@ export default function Page() {
           { label: "All", value: "all" },
           { label: "Requests", value: "requests" },
           { label: "Pending", value: "pending" },
-          { label: "Blocked", value: "blocked" },
+          // { label: "Blocked", value: "blocked" },
         ]}
         state={[view, setView]}
       />
