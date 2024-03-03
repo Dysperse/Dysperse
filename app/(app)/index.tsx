@@ -711,7 +711,7 @@ export default function Index() {
                   {/* <JumpBackIn /> */}
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
+              <View style={breakpoints.md && { flex: 1 }}>
                 <FriendActivity />
               </View>
             </View>
