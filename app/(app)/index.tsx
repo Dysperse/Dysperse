@@ -112,7 +112,7 @@ function PlanDayPrompt() {
 
 export const getProfileLastActiveRelativeTime = (time) => {
   const t = dayjs(time).fromNow(true);
-  return t.includes("few") || dayjs().diff(time, "minute") < 5
+  return t.includes("few") || dayjs().diff(time, "minute") < 3
     ? "NOW"
     : t.split(" ")[0].replace("a", "1") + t.split(" ")?.[1]?.[0].toUpperCase();
 };
