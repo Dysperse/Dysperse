@@ -265,7 +265,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               size={breakpoints.md ? 50 : 40}
               style={[breakpoints.md && { borderRadius: 20 }]}
               icon="filter_list"
-              variant="filled"
+              variant={breakpoints.md ? "filled" : "outlined"}
             />
           }
           options={filterOptions}
