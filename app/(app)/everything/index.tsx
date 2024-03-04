@@ -181,7 +181,13 @@ export const LabelDetails = ({
           </View>
         </LinearGradient>
       </ColorThemeProvider>
-      <View style={{ padding: 20, paddingHorizontal: 50, marginTop: 20 }}>
+      <View
+        style={{
+          padding: 20,
+          paddingHorizontal: breakpoints.md ? 50 : undefined,
+          marginTop: 20,
+        }}
+      >
         <View
           style={{
             padding: 20,
