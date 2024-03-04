@@ -6,8 +6,8 @@ import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { usePathname } from "expo-router";
-import { memo, useEffect, useState } from "react";
-import { Platform, Pressable } from "react-native";
+import { memo, useEffect } from "react";
+import { Platform, Pressable, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -22,7 +22,11 @@ import { Path, Svg } from "react-native-svg";
 import { Clock } from "../home/clock";
 import { WeatherWidget } from "../home/weather/widget";
 import { ContentWrapper } from "../layout/content";
-import { useFocusPanelContext } from "./context";
+import {
+  FocusPanelWidgetProvider,
+  useFocusPanelContext,
+  useFocusPanelWidgetContext,
+} from "./context";
 
 type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 
@@ -102,18 +106,9 @@ function WidgetBar({ widgets, setWidgets }) {
 }
 
 function PanelContent() {
+  const theme = useColorTheme();
   const { isFocused } = useFocusPanelContext();
-  const [widgets, setWidgets] = useState<Widget[]>(
-    Platform.OS === "web"
-      ? Array.from(JSON.parse(localStorage.getItem("widgets") || "[]"))
-      : []
-  );
-
-  useEffect(() => {
-    if (Platform.OS === "web") {
-      localStorage.setItem("widgets", JSON.stringify(widgets));
-    }
-  }, [widgets]);
+  const { widgets, setWidgets } = useFocusPanelWidgetContext();
 
   return (
     <ContentWrapper
@@ -124,17 +119,40 @@ function PanelContent() {
     >
       {isFocused && (
         <>
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={{
-              gap: 20,
-              justifyContent: "center",
-              minHeight: "100%",
-            }}
-          >
-            {widgets.includes("clock") && <Clock />}
-            {widgets.includes("weather") && <WeatherWidget />}
-          </ScrollView>
+          {widgets.length === 0 ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                maxWidth: 250,
+                marginHorizontal: "auto",
+                gap: 5,
+              }}
+            >
+              <Text style={{ textAlign: "center" }} variant="eyebrow">
+                This is the focus panel
+              </Text>
+              <Text
+                style={{ textAlign: "center", color: theme[11], opacity: 0.6 }}
+              >
+                Here, you can add widgets to enhance & supercharge your
+                productivity
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              style={{ flex: 1 }}
+              contentContainerStyle={{
+                gap: 20,
+                justifyContent: "center",
+                minHeight: "100%",
+              }}
+            >
+              {widgets.includes("clock") && <Clock />}
+              {widgets.includes("weather") && <WeatherWidget />}
+            </ScrollView>
+          )}
           <WidgetBar widgets={widgets} setWidgets={setWidgets} />
         </>
       )}
@@ -312,7 +330,9 @@ const FocusPanel = memo(function FocusPanel() {
           },
         ]}
       >
-        <PanelContent />
+        <FocusPanelWidgetProvider>
+          <PanelContent />
+        </FocusPanelWidgetProvider>
       </Animated.View>
     </>
   );

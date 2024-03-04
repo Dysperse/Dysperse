@@ -1,6 +1,8 @@
+import { useFocusPanelWidgetContext } from "@/components/focus-panel/context";
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -128,14 +130,27 @@ export function WeatherWidget() {
     [weatherDescription]
   );
 
-  const base =
-    weatherDescription.textColor === "#fff"
-      ? "rgba(255, 255, 255, 0.1)"
-      : "rgba(0, 0, 0, 0.1)";
+  const { setWidgets } = useFocusPanelWidgetContext();
 
   return (
     <View style={widgetStyles.widget}>
-      <Text variant="eyebrow">Weather</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text variant="eyebrow">Weather</Text>
+        <IconButton
+          icon="remove"
+          size={25}
+          style={{ opacity: 0.3, marginRight: 5 }}
+          onPress={() =>
+            setWidgets((widgets) => widgets.filter((w) => w !== "weather"))
+          }
+        />
+      </View>
       {error || permissionStatus === "denied" ? (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>
           <Icon size={40} style={{ marginLeft: -2 }}>

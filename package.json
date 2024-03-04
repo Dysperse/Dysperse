@@ -11,6 +11,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@expo-google-fonts/jetbrains-mono": "^0.2.3",
     "@expo-google-fonts/jost": "^0.2.3",
     "@expo/webpack-config": "~19.0.1",
     "@gorhom/bottom-sheet": "^5.0.0-alpha.9",

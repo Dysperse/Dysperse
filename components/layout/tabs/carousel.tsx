@@ -189,7 +189,7 @@ const OpenTabsList = memo(function OpenTabsList() {
               <JumpToButton />
             </>
           ) : (
-            <Spinner />
+            <Spinner style={{ marginHorizontal: "auto" }} />
           )}
         </View>
       )}
