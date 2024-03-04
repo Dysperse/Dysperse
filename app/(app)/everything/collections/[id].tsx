@@ -7,7 +7,7 @@ import { CollectionDetails } from "..";
 
 export default function Page() {
   const params = useLocalSearchParams();
-  const { data, error } = useSWR(["space/collections"]);
+  const { data, mutate, error } = useSWR(["space/collections"]);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -19,7 +19,10 @@ export default function Page() {
 
   return data ? (
     <CollectionDetails
-      mutateList={handleBack as any}
+      mutateList={(...d) => {
+        mutate(...d);
+        handleBack();
+      }}
       setSelectedCollection={handleBack}
       collection={data.find((i) => i.id === params.id)}
     />

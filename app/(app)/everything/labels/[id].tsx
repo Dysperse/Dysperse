@@ -7,7 +7,7 @@ import { LabelDetails } from "..";
 
 export default function Page() {
   const params = useLocalSearchParams();
-  const { data, error } = useSWR(["space/labels"]);
+  const { data, mutate, error } = useSWR(["space/labels"]);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -19,7 +19,12 @@ export default function Page() {
 
   return data ? (
     <LabelDetails
-      mutateList={handleBack as any}
+      mutateList={
+        ((...d) => {
+          mutate(...d);
+          handleBack();
+        }) as any
+      }
       setSelectedLabel={handleBack}
       label={data.find((i) => i.id === params.id)}
     />
