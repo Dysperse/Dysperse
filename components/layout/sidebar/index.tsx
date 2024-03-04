@@ -190,6 +190,7 @@ export const LogoButton = memo(function LogoButton() {
     Linking.openURL("https://feedback.dysperse.com");
   }, []);
 
+  const { session } = useUser();
   const { isFocused, setFocus } = useFocusPanelContext();
   const { closeSidebarOnMobile, isOpen, openSidebar, closeSidebar } =
     useSidebarContext();
@@ -224,7 +225,7 @@ export const LogoButton = memo(function LogoButton() {
           </Pressable>
         }
         options={[
-          {
+          session?.space?.space?._count?.integrations > 0 && {
             renderer: () => <SyncButton />,
           },
           {
