@@ -129,7 +129,10 @@ export function WeatherModal({
           />
         )}
       >
-        <BottomSheetScrollView>
+        <BottomSheetScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+        >
           <View style={{ paddingHorizontal: 15, paddingVertical: 20 }}>
             <View style={{ alignItems: "center" }}>
               <Icon size={70} style={{ color, marginTop: 40 }}>
@@ -139,6 +142,7 @@ export function WeatherModal({
                   ].icon
                 }
               </Icon>
+              !
             </View>
             <Text weight={200} style={[weatherStyles.temperature, { color }]}>
               {Math.round(weather.current_weather.temperature)}&deg;
