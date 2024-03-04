@@ -24,7 +24,6 @@ import {
   Pressable,
   StyleSheet,
   View,
-  useColorScheme,
   useWindowDimensions,
 } from "react-native";
 import { useDrawerProgress } from "react-native-drawer-layout";
@@ -182,7 +181,7 @@ export const LogoButton = memo(function LogoButton() {
   const theme = useColorTheme();
   const { error } = useUser();
   const breakpoints = useResponsiveBreakpoints();
-  const red = useColor("red", useColorScheme() === "dark");
+  const red = useColor("red");
   const openSupport = useCallback(() => {
     Linking.openURL("https://blog.dysperse.com");
   }, []);
