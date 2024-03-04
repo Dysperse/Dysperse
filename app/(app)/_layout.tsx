@@ -311,6 +311,20 @@ export default function AppLayout() {
                               >
                                 <JsStack.Screen name="index" />
                                 {[
+                                  "everything/labels/[id]",
+                                  "everything/collections/[id]",
+                                ].map((d) => (
+                                  <JsStack.Screen
+                                    key={d}
+                                    name={d}
+                                    options={{
+                                      presentation: "modal",
+                                      animationEnabled: true,
+                                      ...TransitionPresets.ModalPresentationIOS,
+                                    }}
+                                  />
+                                ))}
+                                {[
                                   "settings/appearance",
                                   "settings/customization/appearance",
                                   "settings/customization/notifications",

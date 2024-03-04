@@ -25,12 +25,12 @@ import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
-import { LabelEditModal } from "./[tab]/collections/[id]/[type]";
+import { LabelEditModal } from "../[tab]/collections/[id]/[type]";
 
 const containerStyles = StyleSheet.create({
   root: { flexDirection: "row", flex: 1 },
@@ -55,7 +55,7 @@ const containerStyles = StyleSheet.create({
   },
 });
 
-const LabelDetails = ({
+export const LabelDetails = ({
   setSelectedLabel,
   mutateList,
   label,
@@ -67,7 +67,7 @@ const LabelDetails = ({
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useSession();
   const userTheme = useColorTheme();
-  const labelTheme = useColor(label.color, useColorScheme() === "dark");
+  const labelTheme = useColor(label.color);
 
   const { data, mutate, error } = useSWR([
     "space/labels/label",
@@ -314,7 +314,7 @@ const OpenCollectionButton = ({ collection }) => {
   );
 };
 
-const CollectionDetails = ({
+export const CollectionDetails = ({
   mutateList,
   setSelectedCollection,
   collection,
@@ -462,7 +462,16 @@ const Labels = () => {
                   <ListItemButton
                     style={{ height: 60 }}
                     variant={item.selected ? "filled" : undefined}
-                    onPress={() => setSelectedLabel(item.id)}
+                    onPress={() => {
+                      if (breakpoints.md) {
+                        setSelectedLabel(item.id);
+                      } else {
+                        router.push({
+                          pathname: `/everything/labels/[id]`,
+                          params: { id: item.id },
+                        });
+                      }
+                    }}
                   >
                     <Emoji emoji={item.emoji} size={30} />
                     <ListItemText
@@ -562,7 +571,16 @@ const Collections = () => {
                   <ListItemButton
                     style={{ height: 60 }}
                     variant={item.selected ? "filled" : undefined}
-                    onPress={() => setSelectedCollection(item.id)}
+                    onPress={() => {
+                      if (breakpoints.md) {
+                        setSelectedCollection(item.id);
+                      } else {
+                        router.push({
+                          pathname: `/everything/collections/[id]`,
+                          params: { id: item.id },
+                        });
+                      }
+                    }}
                   >
                     <Emoji emoji={item.emoji} size={30} />
                     <ListItemText
@@ -594,6 +612,8 @@ const Collections = () => {
             )
           )}
         </>
+      ) : error ? (
+        <ErrorAlert />
       ) : (
         <Spinner />
       )}
