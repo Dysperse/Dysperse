@@ -11,6 +11,7 @@ import Chip from "@/ui/Chip";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -22,6 +23,7 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -121,12 +123,14 @@ const LabelDetails = ({
               gap: 10,
             }}
           >
-            <IconButton
-              size={50}
-              icon="arrow_back_ios_new"
-              style={{ marginRight: "auto" }}
-              onPress={() => setSelectedLabel(null)}
-            />
+            {!breakpoints.md && (
+              <IconButton
+                size={50}
+                icon="arrow_back_ios_new"
+                style={{ marginRight: "auto" }}
+                onPress={() => setSelectedLabel(null)}
+              />
+            )}
             {data && (
               <LabelEditModal
                 label={data}
@@ -333,6 +337,8 @@ const CollectionDetails = ({
     }
   };
 
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <View
       style={{
@@ -342,12 +348,14 @@ const CollectionDetails = ({
         position: "relative",
       }}
     >
-      <IconButton
-        size={55}
-        icon="arrow_back_ios_new"
-        style={{ position: "absolute", top: 10, left: 10 }}
-        onPress={() => setSelectedCollection(null)}
-      />
+      {!breakpoints.md && (
+        <IconButton
+          size={55}
+          icon="arrow_back_ios_new"
+          style={{ position: "absolute", top: 10, left: 10 }}
+          onPress={() => setSelectedCollection(null)}
+        />
+      )}
       <Emoji emoji={collection.emoji} size={60} />
       <View
         style={{
@@ -601,6 +609,11 @@ export default function Page() {
   const { openSidebar } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
 
+  const handleBack = () => {
+    if (breakpoints.md) router.replace("/");
+    else openSidebar();
+  };
+
   return (
     <ContentWrapper noPaddingTop>
       <LinearGradient
@@ -612,17 +625,24 @@ export default function Page() {
           flexDirection: "row",
         }}
       >
-        {!breakpoints.md && (
-          <IconButton
-            icon="menu"
-            onPress={openSidebar}
-            style={{
-              position: "absolute",
-              left: 15,
-              top: insets.top + 15,
-            }}
-          />
-        )}
+        <IconButton
+          icon={
+            <View
+              style={{ alignItems: "center", flexDirection: "row", gap: 15 }}
+            >
+              <Icon style={{ opacity: 0.6 }}>
+                {breakpoints.md ? "arrow_back_ios_new" : "menu"}
+              </Icon>
+              {breakpoints.md && <Text variant="eyebrow">Home</Text>}
+            </View>
+          }
+          onPress={handleBack}
+          style={{
+            position: "absolute",
+            left: 15,
+            top: insets.top + 15,
+          }}
+        />
         <ButtonGroup
           options={[
             { label: "Labels", value: "labels" },
