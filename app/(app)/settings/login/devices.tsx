@@ -60,6 +60,7 @@ export function SessionCard({
       >
         <Icon>{icons[session.deviceType || 0]}</Icon>
         <ListItemText
+          truncate
           primary={session.name || type[session.deviceType] || "Unknown device"}
           secondary={`${session.ip} • ${dayjs(session.timestamp).fromNow()}`}
         />
