@@ -220,6 +220,9 @@ export default function MenuPopover({
                                 paddingHorizontal: 15,
                                 paddingVertical: 10,
                                 gap: 13,
+                                ...(props.disabled && {
+                                  opacity: 0.7,
+                                }),
                               },
                             }}
                             {...props}

@@ -211,7 +211,7 @@ const LabelPicker = memo(function LabelPicker({
                 marginBottom: 10,
               }}
             >
-              <Text weight={200} style={{ fontSize: 40, textAlign: "center" }}>
+              <Text weight={900} style={{ fontSize: 30, textAlign: "center" }}>
                 Select labels
               </Text>
 
@@ -223,7 +223,7 @@ const LabelPicker = memo(function LabelPicker({
               labelPickerStyles.searchBox,
               {
                 backgroundColor: theme[3],
-                borderColor: theme[7],
+                borderColor: theme[6],
               },
             ]}
           >

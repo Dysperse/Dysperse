@@ -125,21 +125,32 @@ export const CollectionNavbar = memo(function CollectionNavbar({
 
   const filterOptions = [
     {
-      icon: "auto_awesome",
-      text: "Auto",
-      callback: () => alert("filter auto"),
+      renderer: () => (
+        <View style={{ alignItems: "center", paddingVertical: 10 }}>
+          <Text variant="eyebrow">Coming soon!</Text>
+        </View>
+      ),
     },
     {
+      selected: true,
+      icon: "auto_awesome",
+      text: "Auto",
+      callback: () => {},
+    },
+    {
+      disabled: true,
       icon: "sort_by_alpha",
       text: "Alphabetical",
       callback: () => alert("filter az"),
     },
     {
+      disabled: true,
       icon: "calendar_month",
       text: "Due date",
       callback: () => alert("filter due"),
     },
     {
+      disabled: true,
       icon: "timeline",
       text: "Last edited",
       callback: () => alert("filter edited"),
