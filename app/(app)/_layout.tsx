@@ -129,7 +129,7 @@ const ComingSoonScreen = () => {
   const { session } = useUser();
   const theme = useColorTheme();
 
-  if (session.user.hasEarlyAccess === false) {
+  if (session?.user?.hasEarlyAccess === false) {
     return (
       <Portal>
         <View
