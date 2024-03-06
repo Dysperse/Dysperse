@@ -115,6 +115,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             await sendApiRequest(session, "DELETE", "space/collections", {
               id: data.id,
             });
+            router.replace("/");
             await mutate();
           }}
           title="Delete collection?"
