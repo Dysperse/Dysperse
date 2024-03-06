@@ -386,6 +386,7 @@ export default function SignIn() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
+                    onSubmitEditing={handleSubmit(onSubmit)}
                     variant="filled+outlined"
                     style={{
                       paddingHorizontal: 30,
