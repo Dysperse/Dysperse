@@ -373,6 +373,7 @@ function CommandPaletteContent({ handleClose }) {
     }
   });
 
+  const breakpoints = useResponsiveBreakpoints();
   return (
     <Pressable
       onPress={(e) => e.stopPropagation()}
@@ -402,7 +403,7 @@ function CommandPaletteContent({ handleClose }) {
         filtered={filtered}
       />
       <View style={{ flexDirection: "row", height: height / 1.5 }}>
-        <View style={{ flex: 1.5 }}>
+        <View style={{ flex: breakpoints.md ? 1.5 : 1 }}>
           <CommandPaletteList
             preview={preview}
             setPreview={handlePreviewChange}
@@ -413,7 +414,7 @@ function CommandPaletteContent({ handleClose }) {
             handleClose={handleClose}
           />
         </View>
-        <CommandPalettePreview preview={preview} />
+        {breakpoints.md && <CommandPalettePreview preview={preview} />}
       </View>
     </Pressable>
   );
