@@ -16,6 +16,7 @@ import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
 import { CollectionIntegrationsMenu } from "./CollectionIntegrationsMenu";
@@ -71,6 +72,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     );
   };
 
+  const { mutate } = useSWR(["user/tabs"]);
+
   const collectionMenuOptions = [
     !isAll && {
       icon: "edit",
@@ -108,7 +111,12 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       renderer: () => (
         <ConfirmationModal
           height={450}
-          onSuccess={() => alert("coming soon")}
+          onSuccess={async () => {
+            await sendApiRequest(session, "DELETE", "space/collections", {
+              id: data.id,
+            });
+            await mutate();
+          }}
           title="Delete collection?"
           secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
         >
