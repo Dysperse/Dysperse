@@ -1,4 +1,7 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Avatar } from "@/ui/Avatar";
+import BottomSheet from "@/ui/BottomSheet";
+import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -6,11 +9,96 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
-import React, { memo } from "react";
-import { View, useColorScheme } from "react-native";
+import { Image } from "expo-image";
+import React, { cloneElement, memo, useCallback, useRef } from "react";
+import { Linking, View, useWindowDimensions } from "react-native";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
+
+const ImageViewer = ({ children, image }) => {
+  const ref = useRef<BottomSheetModal>();
+  const handleOpen = useCallback(() => ref.current.present(), []);
+  const handleClose = useCallback(() => ref.current.dismiss(), []);
+
+  const trigger = cloneElement(children, {
+    onPress: image ? handleOpen : undefined,
+  });
+
+  return (
+    <>
+      {trigger}
+      {image && (
+        <BottomSheet snapPoints={["60%"]} sheetRef={ref} onClose={handleClose}>
+          <View
+            style={{
+              width: "100%",
+              aspectRatio: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image source={{ uri: image }} style={{ width: "100%", flex: 1 }} />
+          </View>
+          <View style={{ padding: 10 }}>
+            <Button variant="filled" style={{ height: 60 }}>
+              <ButtonText
+                style={{ fontSize: 20 }}
+                onPress={() => Linking.openURL(image)}
+              >
+                Open
+              </ButtonText>
+              <Icon>open_in_new</Icon>
+            </Button>
+          </View>
+        </BottomSheet>
+      )}
+    </>
+  );
+};
+
+const TaskAttachmentChips = memo(function TaskAttachmentChips({
+  attachments,
+}: {
+  attachments: any[];
+}) {
+  const { width, height } = useWindowDimensions();
+  const getAttachmentIcon = (t) =>
+    ({
+      LINK: "link",
+      FILE: "attachment",
+    }[t]);
+
+  return attachments.map((attachment) => (
+    <ImageViewer
+      key={attachment.data + attachment.type}
+      image={attachment.type === "IMAGE" && attachment.data}
+    >
+      <Chip
+        dense
+        label={
+          attachment.type === "LINK"
+            ? new URL(attachment.data).hostname
+            : "File"
+        }
+        onPress={() => {
+          if (attachment.type === "LINK") {
+            Linking.openURL(attachment.data);
+          }
+        }}
+        icon={
+          attachment.type === "IMAGE" ? (
+            <Avatar size={22} image={attachment.data} disabled />
+          ) : (
+            <Icon>{getAttachmentIcon(attachment.type)}</Icon>
+          )
+        }
+        style={{ padding: 5 }}
+      />
+    </ImageViewer>
+  ));
+});
 
 const Task = memo(function Task({
   task,
@@ -26,7 +114,7 @@ const Task = memo(function Task({
   showRelativeTime?: boolean;
 }) {
   const theme = useColorTheme();
-  const orange = useColor("orange", useColorScheme() === "dark");
+  const orange = useColor("orange");
 
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = task.completionInstances.length > 0;
@@ -95,6 +183,9 @@ const Task = memo(function Task({
                   paddingHorizontal: 10,
                 }}
               />
+            )}
+            {task.attachments && (
+              <TaskAttachmentChips attachments={task.attachments} />
             )}
             {task.pinned && (
               <Chip
