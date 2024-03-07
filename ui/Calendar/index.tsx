@@ -26,6 +26,7 @@ export default function Calendar(props: CalendarProps) {
         arrowStyle: {
           paddingHorizontal: 0,
         },
+        weekVerticalMargin: 2,
         textDisabledColor: theme[7],
       }}
     />

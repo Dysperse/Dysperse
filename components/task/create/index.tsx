@@ -6,13 +6,17 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { ButtonText } from "@/ui/Button";
+import { ButtonGroup } from "@/ui/ButtonGroup";
 import Calendar from "@/ui/Calendar";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
@@ -29,16 +33,10 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Keyboard,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-  useColorScheme,
-} from "react-native";
+import { Keyboard, Platform, Pressable, ScrollView, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
 import Animated, {
   useAnimatedStyle,
@@ -48,8 +46,220 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 
-function Footer({ nameRef, labelMenuRef, dateMenuRef, control }) {
-  const orange = useColor("orange", useColorScheme() === "dark");
+const DueDatePicker = ({ value, setValue }) => {
+  const theme = useColorTheme();
+  const quickDates = useMemo(
+    () => [
+      { label: "Today", value: dayjs().startOf("day").utc() },
+      { label: "Tomorrow", value: dayjs().add(1, "day").utc() },
+      { label: "In 2 days", value: dayjs().add(2, "day").utc() },
+      { label: "Next week", value: dayjs().add(1, "week").utc() },
+    ],
+    []
+  );
+  return (
+    <View style={{ flexDirection: "row", gap: 10, padding: 10 }}>
+      <View
+        style={{
+          flex: 1,
+          borderColor: theme[5],
+          borderWidth: 2,
+          borderRadius: 25,
+        }}
+      >
+        <Calendar
+          date={value}
+          onDayPress={(date) => {
+            setValue("date", dayjs(date.dateString, "YYYY-MM-DD"));
+          }}
+          markedDates={{
+            [dayjs(value).format("YYYY-MM-DD")]: {
+              selected: true,
+              disableTouchEvent: true,
+            },
+          }}
+        />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 10, padding: 10 }}
+        >
+          {quickDates.map((date, i) => (
+            <Chip
+              key={i}
+              outlined={value?.toString() !== date.value.toString()}
+              label={date.label}
+              onPress={() => setValue("date", date.value)}
+              icon={
+                value?.toString() === date.value.toString() && (
+                  <Icon filled>check</Icon>
+                )
+              }
+            />
+          ))}
+        </ScrollView>
+      </View>
+      {value ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text weight={800} style={{ fontSize: 25 }}>
+            {dayjs(value).format("dddd, MMMM Do")}
+          </Text>
+          <Text style={{ fontSize: 20, opacity: 0.6, marginBottom: 20 }}>
+            {dayjs(value).isToday() ? "Today" : dayjs(value).fromNow()}
+          </Text>
+          <ListItemButton
+            onPress={() => setValue("date", null)}
+            style={{ height: 40 }}
+          >
+            <ListItemText
+              primaryProps={{ style: { color: theme[11] } }}
+              primary="All day"
+            />
+            <Icon size={30}>toggle_on</Icon>
+          </ListItemButton>
+          <ListItemButton
+            onPress={() => setValue("date", null)}
+            style={{ height: 40 }}
+          >
+            <ListItemText
+              primaryProps={{ style: { color: theme[11] } }}
+              primary="Clear"
+            />
+            <Icon>remove_circle</Icon>
+          </ListItemButton>
+        </View>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0.6,
+          }}
+        >
+          <Text weight={200} style={{ fontSize: 25 }}>
+            No date set
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+function RecurrencePicker({ value, setValue }) {
+  return (
+    <View style={{ flexDirection: "row", paddingHorizontal: 20, gap: 20 }}>
+      <View style={{ flex: 1 }}>
+        <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+          Repeat every
+        </Text>
+        <View>
+          <TextField variant="filled+outlined" placeholder="5" />
+        </View>
+        <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
+          On
+        </Text>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
+            <Icon>wb_sunny</Icon>
+            <ListItemText truncate primary="5 days" secondary="Select days" />
+          </ListItemButton>
+          <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
+            <Icon>calendar_today</Icon>
+            <ListItemText
+              truncate
+              primary="2 selected"
+              secondary="Select months"
+            />
+          </ListItemButton>
+        </View>
+        <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
+          Ends
+        </Text>
+        <ListItemButton style={{ height: 40 }} variant="filled">
+          <Icon>radio_button_checked</Icon>
+          <ListItemText truncate primary="Never" />
+        </ListItemButton>
+        <ListItemButton style={{ height: 40 }}>
+          <Icon>radio_button_unchecked</Icon>
+          <ListItemText truncate primary="On" />
+          <TextField
+            variant="outlined"
+            placeholder="Date"
+            style={{ padding: 4, borderRadius: 5 }}
+          />
+        </ListItemButton>
+        <ListItemButton style={{ height: 40 }}>
+          <Icon>radio_button_unchecked</Icon>
+          <ListItemText truncate primary="After" />
+          <TextField
+            variant="outlined"
+            placeholder="#"
+            style={{ padding: 4, borderRadius: 5, width: 50 }}
+          />
+          <ListItemText truncate primary="times" />
+        </ListItemButton>
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text variant="eyebrow">Preview</Text>
+        <Text>Coming soon!</Text>
+      </View>
+    </View>
+  );
+}
+
+function TaskDatePicker({ control, setValue, watch }) {
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const handleClose = useCallback(() => sheetRef.current?.close(), []);
+  const handleOpen = useCallback(() => sheetRef.current?.present(), []);
+
+  const dueDate = watch("date");
+  const recurrence = watch("recurrenceRule");
+
+  const [view, setView] = useState<"date" | "recurrence">("date");
+
+  return (
+    <>
+      <Chip
+        outlined
+        icon={<Icon>calendar_today</Icon>}
+        label={dueDate ? dueDate.format("MMM Do") : undefined}
+        onPress={handleOpen}
+      />
+      <BottomSheet
+        snapPoints={["65%"]}
+        sheetRef={sheetRef}
+        onClose={handleClose}
+        maxWidth={750}
+      >
+        <ButtonGroup
+          options={[
+            { value: "date", label: "Date" },
+            { value: "recurrence", label: "Repeat" },
+          ]}
+          state={[view, setView]}
+        />
+        {view === "date" ? (
+          <DueDatePicker setValue={setValue} value={dueDate} />
+        ) : (
+          <RecurrencePicker setValue={setValue} value={recurrence} />
+        )}
+      </BottomSheet>
+    </>
+  );
+}
+
+function Footer({
+  nameRef,
+  labelMenuRef,
+  setValue,
+  watch,
+  dateMenuRef,
+  control,
+}) {
+  const orange = useColor("orange");
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -77,39 +287,7 @@ function Footer({ nameRef, labelMenuRef, dateMenuRef, control }) {
       }}
       showsHorizontalScrollIndicator={false}
     >
-      <Controller
-        control={control}
-        rules={{ required: false }}
-        name="date"
-        render={({ field: { onChange, value } }) => (
-          <MenuPopover
-            menuRef={dateMenuRef}
-            containerStyle={{ width: 300 }}
-            trigger={
-              <Chip
-                outlined
-                icon={<Icon>calendar_today</Icon>}
-                label={value ? value.format("MMM Do") : undefined}
-              />
-            }
-          >
-            <Calendar
-              date={value}
-              onDayPress={(date) => {
-                onChange(dayjs(date.dateString, "YYYY-MM-DD"));
-                dateMenuRef.current.close();
-                nameRef?.current?.focus();
-              }}
-              markedDates={{
-                [dayjs(value).format("YYYY-MM-DD")]: {
-                  selected: true,
-                  disableTouchEvent: true,
-                },
-              }}
-            />
-          </MenuPopover>
-        )}
-      />
+      <TaskDatePicker control={control} setValue={setValue} watch={watch} />
       <Controller
         control={control}
         name="pinned"
@@ -527,6 +705,8 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
           />
           <View style={{ flex: 1 }}>
             <Footer
+              setValue={setValue}
+              watch={watch}
               dateMenuRef={dateMenuRef}
               nameRef={nameRef}
               labelMenuRef={labelMenuRef}

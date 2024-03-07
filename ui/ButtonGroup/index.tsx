@@ -38,7 +38,10 @@ export function ButtonGroup({
         showsHorizontalScrollIndicator={false}
         horizontal
         style={[{ width: "100%" }]}
-        contentContainerStyle={[{ flexDirection: "row" }, scrollContainerStyle]}
+        contentContainerStyle={[
+          { flexDirection: "row", width: "100%", justifyContent: "center" },
+          scrollContainerStyle,
+        ]}
       >
         {options.map((option) => (
           <Pressable
@@ -49,8 +52,6 @@ export function ButtonGroup({
                 flexShrink: 0,
                 borderRadius: 0,
                 backgroundColor: "transparent",
-                borderBottomWidth: 2,
-                borderBottomColor: theme[state[0] === option.value ? 11 : 3],
                 paddingHorizontal: 10,
                 paddingVertical: 4.5,
                 flex: 1,
@@ -78,22 +79,37 @@ export function ButtonGroup({
                 numberOfLines={1}
                 style={[
                   {
-                    color: theme[11],
-                    paddingHorizontal: 10,
                     paddingVertical: 5,
-                    fontFamily: "body_600",
                     textAlign: "center",
                     justifyContent: "center",
                     fontSize: 15,
+                    color: theme[9],
+                    fontFamily: "body_400",
+                    paddingHorizontal: 0,
                   },
                   buttonTextStyle,
+                  state[0] === option.value && {
+                    color: theme[11],
+                    fontFamily: "body_800",
+                  },
                   state[0] === option.value && selectedButtonTextStyle,
                 ]}
               >
                 {option.label}
               </ButtonText>
             )}
-            {option.value === state[0] && activeComponent}
+            {option.value === state[0] &&
+              (activeComponent || (
+                <View
+                  style={{
+                    height: 4,
+                    width: 10,
+                    borderRadius: 99,
+                    backgroundColor: theme[11],
+                    margin: "auto",
+                  }}
+                />
+              ))}
           </Pressable>
         ))}
       </ScrollView>

@@ -676,12 +676,6 @@ export default function Page() {
           ]}
           state={[view, setView]}
           buttonStyle={{ borderBottomWidth: 0 }}
-          buttonTextStyle={{
-            color: theme[9],
-            fontFamily: "body_400",
-            paddingHorizontal: 0,
-          }}
-          selectedButtonTextStyle={{ color: theme[11], fontFamily: "body_800" }}
           containerStyle={{
             width: 200,
             marginHorizontal: "auto",

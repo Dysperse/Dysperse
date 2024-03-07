@@ -19,6 +19,7 @@ import { TransitionPresets } from "@react-navigation/stack";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import isBetween from "dayjs/plugin/isBetween";
+import isToday from "dayjs/plugin/isToday";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
@@ -58,6 +59,7 @@ dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
+dayjs.extend(isToday);
 
 export function SessionLoadingScreen() {
   const theme = useColorTheme();
