@@ -21,6 +21,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import {
   BottomSheetModal,
+  BottomSheetScrollView,
   BottomSheetTextInput,
   TouchableOpacity,
   useBottomSheet,
@@ -47,6 +48,7 @@ import Toast from "react-native-toast-message";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 
 const DueDatePicker = ({ value, setValue }) => {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const quickDates = useMemo(
     () => [
@@ -58,10 +60,16 @@ const DueDatePicker = ({ value, setValue }) => {
     []
   );
   return (
-    <View style={{ flexDirection: "row", gap: 10, padding: 10 }}>
+    <View
+      style={{
+        flexDirection: breakpoints.md ? "row" : "column",
+        gap: 10,
+        padding: 10,
+      }}
+    >
       <View
         style={{
-          flex: 1,
+          flex: breakpoints.md ? 1 : undefined,
           borderColor: theme[5],
           borderWidth: 2,
           borderRadius: 25,
@@ -101,7 +109,12 @@ const DueDatePicker = ({ value, setValue }) => {
       </View>
       {value ? (
         <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          style={{
+            flex: breakpoints.md ? 1 : undefined,
+            paddingVertical: breakpoints.md ? undefined : 50,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
           <Text weight={800} style={{ fontSize: 25 }}>
             {dayjs(value).format("dddd, MMMM Do")}
@@ -149,9 +162,16 @@ const DueDatePicker = ({ value, setValue }) => {
 };
 
 function RecurrencePicker({ value, setValue }) {
+  const breakpoints = useResponsiveBreakpoints();
   return (
-    <View style={{ flexDirection: "row", paddingHorizontal: 20, gap: 20 }}>
-      <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flexDirection: breakpoints.md ? "row" : "column",
+        paddingHorizontal: 20,
+        gap: 20,
+      }}
+    >
+      <View style={{ flex: breakpoints.md ? 1 : undefined }}>
         <Text variant="eyebrow" style={{ marginBottom: 5 }}>
           Repeat every
         </Text>
@@ -202,7 +222,12 @@ function RecurrencePicker({ value, setValue }) {
           <ListItemText truncate primary="times" />
         </ListItemButton>
       </View>
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: breakpoints.md ? 1 : undefined,
+          marginTop: breakpoints.md ? 0 : 30,
+        }}
+      >
         <Text variant="eyebrow">Preview</Text>
         <Text>Coming soon!</Text>
       </View>
@@ -211,6 +236,7 @@ function RecurrencePicker({ value, setValue }) {
 }
 
 function TaskDatePicker({ control, setValue, watch }) {
+  const breakpoints = useResponsiveBreakpoints();
   const sheetRef = useRef<BottomSheetModal>(null);
   const handleClose = useCallback(() => sheetRef.current?.close(), []);
   const handleOpen = useCallback(() => sheetRef.current?.present(), []);
@@ -229,23 +255,26 @@ function TaskDatePicker({ control, setValue, watch }) {
         onPress={handleOpen}
       />
       <BottomSheet
-        snapPoints={["65%"]}
+        snapPoints={[breakpoints.md ? "65%" : "70%"]}
         sheetRef={sheetRef}
         onClose={handleClose}
         maxWidth={750}
       >
-        <ButtonGroup
-          options={[
-            { value: "date", label: "Date" },
-            { value: "recurrence", label: "Repeat" },
-          ]}
-          state={[view, setView]}
-        />
-        {view === "date" ? (
-          <DueDatePicker setValue={setValue} value={dueDate} />
-        ) : (
-          <RecurrencePicker setValue={setValue} value={recurrence} />
-        )}
+        <BottomSheetScrollView>
+          <ButtonGroup
+            options={[
+              { value: "date", label: "Date" },
+              { value: "recurrence", label: "Repeat" },
+            ]}
+            state={[view, setView]}
+            containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
+          />
+          {view === "date" ? (
+            <DueDatePicker setValue={setValue} value={dueDate} />
+          ) : (
+            <RecurrencePicker setValue={setValue} value={recurrence} />
+          )}
+        </BottomSheetScrollView>
       </BottomSheet>
     </>
   );
