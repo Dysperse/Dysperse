@@ -67,12 +67,14 @@ const DueDatePicker = ({ value, setValue }) => {
         flexDirection: breakpoints.md ? "row" : "column",
         gap: 10,
         padding: 10,
+        paddingTop: 20,
+        paddingHorizontal: 20,
       }}
     >
       <View
         style={{
           flex: breakpoints.md ? 1 : undefined,
-          borderColor: theme[5],
+          borderColor: theme[6],
           borderWidth: 2,
           borderRadius: 25,
         }}
@@ -115,6 +117,7 @@ const DueDatePicker = ({ value, setValue }) => {
             flex: breakpoints.md ? 1 : undefined,
             paddingVertical: breakpoints.md ? undefined : 50,
             alignItems: "center",
+            padding: 10,
             justifyContent: "center",
           }}
         >
@@ -166,15 +169,14 @@ const DueDatePicker = ({ value, setValue }) => {
 function RecurrencePicker({ value, setValue }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const recurrenceRule = RRule.fromString(
-    value?.toString() ||
-      new RRule({
-        freq: RRule.WEEKLY,
-        byweekday: [dayjs().day()],
-      }).toString()
-  );
+  const recurrenceRule =
+    value ||
+    new RRule({
+      freq: RRule.WEEKLY,
+      byweekday: [dayjs().day()],
+    });
 
-  const [previewRange, setPreviewRange] = useState<number>(dayjs().month());
+  const [previewRange, setPreviewRange] = useState<Date>(new Date());
 
   return (
     <View
@@ -185,7 +187,7 @@ function RecurrencePicker({ value, setValue }) {
       }}
     >
       <View style={{ flex: breakpoints.md ? 1 : undefined }}>
-        <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+        <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
           Repeat every
         </Text>
         <View>
@@ -254,21 +256,16 @@ function RecurrencePicker({ value, setValue }) {
             <Text variant="eyebrow">Preview</Text>
             <Text style={{ fontSize: 25 }} weight={800}>
               {capitalizeFirstLetter(recurrenceRule.toText())}
-              {JSON.stringify(previewRange)}
             </Text>
           </View>
           <Calendar
-            onMonthChange={(newMonth) => setPreviewRange(newMonth.month)}
+            onMonthChange={(newMonth) =>
+              setPreviewRange(newMonth.timestamp as any)
+            }
             markedDates={recurrenceRule
               .between(
-                dayjs()
-                  .set("month", previewRange - 1)
-                  .startOf("month")
-                  .toDate(),
-                dayjs()
-                  .set("month", previewRange - 1)
-                  .endOf("month")
-                  .toDate()
+                dayjs(previewRange).startOf("month").toDate(),
+                dayjs(previewRange).endOf("month").toDate()
               )
               .reduce((acc, date) => {
                 acc[dayjs(date).format("YYYY-MM-DD")] = {
@@ -304,7 +301,7 @@ function TaskDatePicker({ control, setValue, watch }) {
         onPress={handleOpen}
       />
       <BottomSheet
-        snapPoints={[breakpoints.md ? 460 : "70%"]}
+        snapPoints={[breakpoints.md ? 480 : "70%"]}
         sheetRef={sheetRef}
         onClose={handleClose}
         maxWidth={750}
