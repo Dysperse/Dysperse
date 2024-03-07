@@ -19,6 +19,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import {
   BottomSheetModal,
   BottomSheetScrollView,
@@ -45,6 +46,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { RRule } from "rrule";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 
 const DueDatePicker = ({ value, setValue }) => {
@@ -162,7 +164,18 @@ const DueDatePicker = ({ value, setValue }) => {
 };
 
 function RecurrencePicker({ value, setValue }) {
+  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const recurrenceRule = RRule.fromString(
+    value?.toString() ||
+      new RRule({
+        freq: RRule.WEEKLY,
+        byweekday: [dayjs().day()],
+      }).toString()
+  );
+
+  const [previewRange, setPreviewRange] = useState<number>(dayjs().month());
+
   return (
     <View
       style={{
@@ -224,12 +237,48 @@ function RecurrencePicker({ value, setValue }) {
       </View>
       <View
         style={{
+          padding: 10,
           flex: breakpoints.md ? 1 : undefined,
-          marginTop: breakpoints.md ? 0 : 30,
         }}
       >
-        <Text variant="eyebrow">Preview</Text>
-        <Text>Coming soon!</Text>
+        <View
+          style={{
+            marginTop: breakpoints.md ? 0 : 30,
+            borderWidth: 2,
+            borderColor: theme[6],
+            borderRadius: 25,
+            padding: 5,
+          }}
+        >
+          <View style={{ padding: 10, paddingBottom: 0 }}>
+            <Text variant="eyebrow">Preview</Text>
+            <Text style={{ fontSize: 25 }} weight={800}>
+              {capitalizeFirstLetter(recurrenceRule.toText())}
+              {JSON.stringify(previewRange)}
+            </Text>
+          </View>
+          <Calendar
+            onMonthChange={(newMonth) => setPreviewRange(newMonth.month)}
+            markedDates={recurrenceRule
+              .between(
+                dayjs()
+                  .set("month", previewRange - 1)
+                  .startOf("month")
+                  .toDate(),
+                dayjs()
+                  .set("month", previewRange - 1)
+                  .endOf("month")
+                  .toDate()
+              )
+              .reduce((acc, date) => {
+                acc[dayjs(date).format("YYYY-MM-DD")] = {
+                  selected: true,
+                  disableTouchEvent: true,
+                };
+                return acc;
+              }, {})}
+          />
+        </View>
       </View>
     </View>
   );
@@ -255,7 +304,7 @@ function TaskDatePicker({ control, setValue, watch }) {
         onPress={handleOpen}
       />
       <BottomSheet
-        snapPoints={[breakpoints.md ? "65%" : "70%"]}
+        snapPoints={[breakpoints.md ? 460 : "70%"]}
         sheetRef={sheetRef}
         onClose={handleClose}
         maxWidth={750}

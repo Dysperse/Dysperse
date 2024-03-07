@@ -7,7 +7,7 @@ import { useColorTheme } from "../color/theme-provider";
 
 interface DTextInputProps extends TextInputProps {
   style?: StyleProp<TextStyle>;
-  variant?: "default" | "filled" | "filled+outlined";
+  variant?: "default" | "filled" | "outlined" | "filled+outlined";
   bottomSheet?: boolean;
   inputRef?: Ref<TextInput>;
   weight?: DTextProps["weight"];
