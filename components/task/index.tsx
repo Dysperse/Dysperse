@@ -37,9 +37,15 @@ const ImageViewer = ({ children, image }) => {
               aspectRatio: 1,
               justifyContent: "center",
               alignItems: "center",
+              flex: 1,
             }}
           >
-            <Image source={{ uri: image }} style={{ width: "100%", flex: 1 }} />
+            <Image
+              contentFit="contain"
+              contentPosition="center"
+              source={{ uri: image }}
+              style={{ flex: 1, width: "100%", borderRadius: 20 }}
+            />
           </View>
           <View style={{ padding: 10 }}>
             <Button variant="filled" style={{ height: 60 }}>
