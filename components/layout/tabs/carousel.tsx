@@ -39,7 +39,7 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
 
   const [isHovered, setIsHovered] = useState(false);
 
-  if (isLoading || !isVisible) return null;
+  if (isLoading || (!isVisible && !isReached)) return null;
   if (isReached || isWarning) {
     return (
       <Pressable
