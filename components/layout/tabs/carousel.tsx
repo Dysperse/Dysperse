@@ -1,9 +1,11 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useTabParams } from "@/utils/useTabParams";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,6 +17,43 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import Tab from "./tab";
+
+const SpaceStorageAlert = memo(function SpaceStorageAlert() {
+  const redTheme = useColor("red");
+  const orangeTheme = useColor("orange");
+
+  const { isLoading, isReached, isWarning } = useStorageContext();
+  const alertTheme = { orangeTheme, redTheme }[
+    isReached ? "redTheme" : "orangeTheme"
+  ];
+
+  if (isLoading) return null;
+  if (isReached || isWarning) {
+    return (
+      <Pressable
+        onPress={() => router.push("/settings/space")}
+        style={({ pressed, hovered }) => ({
+          backgroundColor: alertTheme[pressed ? 7 : hovered ? 6 : 5],
+          padding: 15,
+          borderRadius: 20,
+          marginBottom: 5,
+          flexDirection: "row",
+          gap: 5,
+        })}
+      >
+        <View style={{ flex: 1 }}>
+          <Text weight={700} style={{ color: alertTheme[11], marginBottom: 5 }}>
+            Your space storage is {!isReached && isWarning && "almost "}full
+          </Text>
+          <Text style={{ color: alertTheme[11], opacity: 0.7, fontSize: 12 }}>
+            Try clearing up some items to free up space
+          </Text>
+        </View>
+        <Icon style={{ color: alertTheme[11] }}>north_east</Icon>
+      </Pressable>
+    );
+  }
+});
 
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
@@ -146,6 +185,7 @@ const OpenTabsList = memo(function OpenTabsList() {
             contentContainerStyle={{ backgroundColor: theme[2] }}
             keyExtractor={(item) => item.id}
           />
+          <SpaceStorageAlert />
           <JumpToButton />
         </>
       ) : (

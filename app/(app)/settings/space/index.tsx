@@ -97,7 +97,7 @@ function SpaceStorage({ data }) {
     isOpen.value = isCollapsed ? 1 : 1;
   };
   const theme = useColorTheme();
-  const orange = useColor("orange");
+  // const orange = useColor("orange");
 
   return (
     <>
