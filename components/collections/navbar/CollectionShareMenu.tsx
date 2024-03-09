@@ -79,38 +79,36 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
 
   return (
     <>
-      {breakpoints.md ? (
-        <Pressable
-          onPress={handleOpen}
-          style={({ pressed, hovered }: any) => [
-            styles.navbarIconButton,
-            {
-              backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-              width: breakpoints.md ? 120 : 50,
-              gap: 15,
-            },
-            id === "all" && {
-              backgroundColor: theme[3],
-              opacity: 0.5,
-              pointerEvents: "none",
-            },
-          ]}
-        >
-          <Icon style={{ color: theme[id === "all" ? 8 : 1] }}>ios_share</Icon>
-          {breakpoints.md && (
-            <Text style={{ color: theme[id === "all" ? 8 : 1] }} weight={400}>
-              Share
-            </Text>
-          )}
-        </Pressable>
-      ) : (
-        <IconButton
-          onPress={handleOpen}
-          variant="outlined"
-          size={40}
-          icon="ios_share"
-        />
-      )}
+      {id !== "all" &&
+        (breakpoints.md ? (
+          <Pressable
+            onPress={handleOpen}
+            style={({ pressed, hovered }: any) => [
+              styles.navbarIconButton,
+              {
+                backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+                width: breakpoints.md ? 120 : 50,
+                gap: 15,
+              },
+            ]}
+          >
+            <Icon style={{ color: theme[id === "all" ? 8 : 1] }}>
+              ios_share
+            </Icon>
+            {breakpoints.md && (
+              <Text style={{ color: theme[id === "all" ? 8 : 1] }} weight={400}>
+                Share
+              </Text>
+            )}
+          </Pressable>
+        ) : (
+          <IconButton
+            onPress={handleOpen}
+            variant="outlined"
+            size={40}
+            icon="ios_share"
+          />
+        ))}
 
       <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["80%"]}>
         <View
