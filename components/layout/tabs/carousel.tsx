@@ -3,6 +3,7 @@ import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -10,8 +11,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useTabParams } from "@/utils/useTabParams";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { memo, useEffect } from "react";
-import { Pressable, View } from "react-native";
+import React, { memo, useEffect, useState } from "react";
+import { Platform, Pressable, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -27,10 +28,23 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
     isReached ? "redTheme" : "orangeTheme"
   ];
 
-  if (isLoading) return null;
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      if (localStorage.getItem("spaceStorageAlert") === "false")
+        setIsVisible(false);
+    }
+  }, []);
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  if (isLoading || !isVisible) return null;
   if (isReached || isWarning) {
     return (
       <Pressable
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
         onPress={() => router.push("/settings/space")}
         style={({ pressed, hovered }) => ({
           backgroundColor: alertTheme[pressed ? 7 : hovered ? 6 : 5],
@@ -41,6 +55,24 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
           gap: 5,
         })}
       >
+        {isHovered && Platform.OS === "web" && (
+          <IconButton
+            onHoverIn={() => setIsHovered(true)}
+            onHoverOut={() => setIsHovered(false)}
+            icon={<Icon style={{ color: alertTheme[11] }}>close</Icon>}
+            style={{
+              position: "absolute",
+              top: -10,
+              right: -10,
+              zIndex: 999,
+              backgroundColor: alertTheme[7],
+            }}
+            onPress={() => {
+              localStorage.setItem("spaceStorageAlert", "false");
+              setIsVisible(false);
+            }}
+          />
+        )}
         <View style={{ flex: 1 }}>
           <Text
             weight={700}
