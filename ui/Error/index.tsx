@@ -1,4 +1,4 @@
-import { View, useColorScheme } from "react-native";
+import { View } from "react-native";
 import Icon from "../Icon";
 import Text from "../Text";
 import { useColor } from "../color";
@@ -7,7 +7,7 @@ export default function ErrorAlert({
   message = "Something went wrong. Please try again later.",
   icon = "error",
 }) {
-  const red = useColor("red", useColorScheme() === "dark");
+  const red = useColor("red");
   return (
     <View
       style={{

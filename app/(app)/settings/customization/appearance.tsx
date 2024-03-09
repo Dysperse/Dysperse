@@ -55,7 +55,7 @@ const themePickerStyles = StyleSheet.create({
 });
 
 function ThemedSlide({ theme, themeData, onSelect }) {
-  const colors = useColor(theme as any, useColorScheme() === "dark");
+  const colors = useColor(theme as any);
   return (
     <ColorThemeProvider theme={colors}>
       <Pressable onPress={onSelect}>
@@ -76,7 +76,7 @@ function ThemePicker({ children }) {
   const [selectedTheme, setSelectedTheme] = useState(
     session.user.profile.theme
   );
-  const colors = useColor(selectedTheme as any, useColorScheme() === "dark");
+  const colors = useColor(selectedTheme as any);
 
   const theme = {
     ...themes[selectedTheme],

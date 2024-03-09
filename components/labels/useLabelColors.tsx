@@ -1,17 +1,16 @@
 import { useColor } from "@/ui/color";
-import { useColorScheme } from "react-native";
 
 export const useLabelColors = () => {
-  const red = useColor("red", useColorScheme() === "dark");
-  const orange = useColor("orange", useColorScheme() === "dark");
-  const yellow = useColor("yellow", useColorScheme() === "dark");
-  const green = useColor("green", useColorScheme() === "dark");
-  const blue = useColor("blue", useColorScheme() === "dark");
-  const purple = useColor("purple", useColorScheme() === "dark");
-  const pink = useColor("pink", useColorScheme() === "dark");
-  const brown = useColor("brown", useColorScheme() === "dark");
-  const mint = useColor("mint", useColorScheme() === "dark");
-  const gray = useColor("gray", useColorScheme() === "dark");
+  const red = useColor("red");
+  const orange = useColor("orange");
+  const yellow = useColor("yellow");
+  const green = useColor("green");
+  const blue = useColor("blue");
+  const purple = useColor("purple");
+  const pink = useColor("pink");
+  const brown = useColor("brown");
+  const mint = useColor("mint");
+  const gray = useColor("gray");
 
   const colors = {
     red,

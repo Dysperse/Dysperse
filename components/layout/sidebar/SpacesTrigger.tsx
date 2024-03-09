@@ -12,7 +12,7 @@ import { useColor } from "@/ui/color";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
-import { Platform, View, useColorScheme } from "react-native";
+import { Platform, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 
@@ -82,7 +82,7 @@ export function SpacesTrigger({ children }) {
   );
 }
 export function SpaceButton({ handleClose, item }: any) {
-  const theme = useColor(item.space.color, useColorScheme() === "dark");
+  const theme = useColor(item.space.color);
 
   const handleSpacePress = useCallback(() => {
     handleClose();

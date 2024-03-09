@@ -14,13 +14,13 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { View, useColorScheme } from "react-native";
+import { View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { useSharedValue } from "react-native-reanimated";
 import useSWR from "swr";
 
 function SpaceHeader({ data }) {
-  const spaceTheme = useColor(data?.color, useColorScheme() === "dark");
+  const spaceTheme = useColor(data?.color);
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -97,7 +97,7 @@ function SpaceStorage({ data }) {
     isOpen.value = isCollapsed ? 1 : 1;
   };
   const theme = useColorTheme();
-  const orange = useColor("orange", useColorScheme() === "dark");
+  const orange = useColor("orange");
 
   return (
     <>
@@ -202,7 +202,7 @@ export default function Page() {
   const { data, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
-  const spaceTheme = useColor(data?.color, useColorScheme() === "dark");
+  const spaceTheme = useColor(data?.color);
 
   return (
     <SettingsLayout>
