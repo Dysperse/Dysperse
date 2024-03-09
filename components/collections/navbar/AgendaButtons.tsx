@@ -93,26 +93,14 @@ export function AgendaButtons() {
       </View>
 
       {!isTodaysView && (
-        <View
-          style={[
-            {
-              marginRight: "auto",
-              flexDirection: "row",
-              height: 50,
-              borderRadius: 20,
-              alignItems: "center",
-              paddingHorizontal: 10,
-            },
-            breakpoints.md && {
-              borderWidth: 1,
-              borderColor: theme[6],
-            },
-          ]}
+        <IconButton
+          variant="filled"
+          onPress={handleToday}
+          size={breakpoints.md ? 50 : 40}
+          style={[breakpoints.md && { borderRadius: 20 }]}
         >
-          <IconButton onPress={handleToday}>
-            <Icon>today</Icon>
-          </IconButton>
-        </View>
+          <Icon>today</Icon>
+        </IconButton>
       )}
     </View>
   );

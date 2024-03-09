@@ -86,17 +86,15 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
             style={({ pressed, hovered }: any) => [
               styles.navbarIconButton,
               {
-                backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+                backgroundColor: theme[pressed ? 8 : hovered ? 9 : 10],
                 width: breakpoints.md ? 120 : 50,
                 gap: 15,
               },
             ]}
           >
-            <Icon style={{ color: theme[id === "all" ? 8 : 1] }}>
-              ios_share
-            </Icon>
+            <Icon style={{ color: theme[11] }}>ios_share</Icon>
             {breakpoints.md && (
-              <Text style={{ color: theme[id === "all" ? 8 : 1] }} weight={400}>
+              <Text style={{ color: theme[11] }} weight={400}>
                 Share
               </Text>
             )}
