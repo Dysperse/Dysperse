@@ -22,9 +22,14 @@ const ImageViewer = ({ children, image }) => {
   const handleOpen = useCallback(() => ref.current.present(), []);
   const handleClose = useCallback(() => ref.current.dismiss(), []);
 
-  const trigger = cloneElement(children, {
-    onPress: image ? handleOpen : undefined,
-  });
+  const trigger = cloneElement(
+    children,
+    image
+      ? {
+          onPress: handleOpen,
+        }
+      : undefined
+  );
 
   return (
     <>
