@@ -7,6 +7,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
@@ -86,15 +87,18 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
             style={({ pressed, hovered }: any) => [
               styles.navbarIconButton,
               {
-                backgroundColor: theme[pressed ? 8 : hovered ? 9 : 10],
+                backgroundColor: addHslAlpha(
+                  theme[pressed ? 8 : hovered ? 9 : 10],
+                  0.7
+                ),
                 width: breakpoints.md ? 120 : 50,
                 gap: 15,
               },
             ]}
           >
-            <Icon style={{ color: theme[11] }}>ios_share</Icon>
+            <Icon style={{ color: theme[1] }}>ios_share</Icon>
             {breakpoints.md && (
-              <Text style={{ color: theme[11] }} weight={400}>
+              <Text style={{ color: theme[1] }} weight={400}>
                 Share
               </Text>
             )}
