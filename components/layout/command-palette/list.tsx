@@ -18,7 +18,7 @@ export const paletteItems = (
   return [
     {
       title: "Everything",
-      icon: "local_fire_department",
+      icon: "all_inclusive",
       items: Object.keys(collectionViews).map((key) => ({
         label: capitalizeFirstLetter(key),
         key,
@@ -78,11 +78,6 @@ export const paletteItems = (
     //     },
     //   ],
     // },
-    {
-      title: "Friends",
-      icon: "person",
-      items: [],
-    },
     {
       title: "Spaces",
       icon: "communities",

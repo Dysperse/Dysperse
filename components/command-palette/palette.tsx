@@ -88,7 +88,6 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
         gap: 10,
-        paddingTop: 5,
         paddingBottom: 10,
         paddingRight: 20,
       }}
@@ -385,7 +384,7 @@ function CommandPaletteContent({ handleClose }) {
         width: "100%",
         maxWidth: 900,
         borderRadius: 20,
-        shadowColor: theme[1],
+        shadowColor: "rgba(0, 0, 0, 0.12)",
         shadowOffset: {
           width: 10,
           height: 10,

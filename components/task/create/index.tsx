@@ -700,7 +700,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
         backgroundColor: theme[2],
         borderWidth: 1,
         borderColor: theme[6],
-        shadowColor: theme[1],
+        shadowColor: "rgba(0, 0, 0, 0.12)",
         margin: "auto",
         shadowOffset: { width: 20, height: 20 },
         shadowRadius: 40,
