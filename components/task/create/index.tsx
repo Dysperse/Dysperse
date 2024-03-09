@@ -1,5 +1,6 @@
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
+import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -836,9 +837,15 @@ export default function CreateTask({
     mutate?.(null);
   }, [mutate]);
 
+  const { isReached } = useStorageContext();
+
   const trigger = useMemo(
-    () => cloneElement(children || <Pressable />, { onPress: handleOpen }),
-    [handleOpen, children]
+    () =>
+      cloneElement(children || <Pressable />, {
+        onPress: handleOpen,
+        disabled: isReached,
+      }),
+    [handleOpen, children, isReached]
   );
 
   const breakpoints = useResponsiveBreakpoints();
