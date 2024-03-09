@@ -127,7 +127,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
                   width: 20,
                   height: 20,
                 },
-                shadowColor: theme[1],
+                shadowColor: "rgba(0,0,0,0.12)",
                 borderColor: theme[6],
                 backgroundColor: theme[2],
                 borderRadius: 25,
