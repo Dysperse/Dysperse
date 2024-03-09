@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
+import { Image } from "expo-image";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Platform,
@@ -63,7 +64,7 @@ const PaletteItem = memo(
     return (
       <ListItemButton
         variant={preview?.key === item.key ? "filled" : "default"}
-        style={{ paddingHorizontal: 10, marginLeft: -10 }}
+        style={{ paddingHorizontal: 10, marginLeft: -5 }}
         onPress={() => handlePress(item)}
         onHoverIn={() => {
           if (preview?.key !== item.key) {
@@ -145,13 +146,21 @@ function CommandPaletteList({
               alignItems: "center",
               justifyContent: "center",
               gap: 10,
-              height: height / 1.5 - 30,
+              height: height / 1.5 - 50,
             }}
           >
-            <Text style={{ textAlign: "center", fontSize: 40 }}>
-              .·´¯`(&gt;▂&lt;)´¯`·.
+            <Image
+              source={{
+                uri: "https://assets.dysperse.com/thonk.svg",
+              }}
+              style={{ width: 487 / 6, height: 397 / 6 }}
+            />
+            <Text
+              style={{ textAlign: "center", marginTop: 10, opacity: 0.7 }}
+              weight={500}
+            >
+              We couldn't find anything matching your search
             </Text>
-            <Text>We couldn't find anything matching your search</Text>
           </View>
         )}
         data={filtered}
@@ -213,10 +222,14 @@ const PaletteHeader = memo(function PaletteHeader({
   const close = useMemo(
     () => (
       <TouchableOpacity onPress={handleClose}>
-        <Text style={{ color: theme[11] }}>Cancel</Text>
+        {breakpoints.md ? (
+          <Text style={{ color: theme[11] }}>Cancel</Text>
+        ) : (
+          <Icon>close</Icon>
+        )}
       </TouchableOpacity>
     ),
-    [handleClose, theme]
+    [handleClose, theme, breakpoints]
   );
   const handleKeyPress = (e) => {
     if (Platform.OS === "web") {
@@ -236,19 +249,20 @@ const PaletteHeader = memo(function PaletteHeader({
       style={{
         flexDirection: "row",
         alignItems: "center",
-        paddingHorizontal: 20,
+        paddingHorizontal: breakpoints.md ? 20 : 20,
         borderBottomWidth: 1,
         borderColor: theme[6],
       }}
     >
-      <Icon size={30}>search</Icon>
+      <Icon size={breakpoints.md ? 30 : 24}>search</Icon>
       <TextField
         inputRef={ref}
         style={{
           padding: 20,
           flex: 1,
-          fontSize: 25,
-          fontFamily: "body_800",
+          paddingRight: 0,
+          fontSize: breakpoints.md ? 25 : 20,
+          fontFamily: `body_${breakpoints.md ? "8" : "4"}00`,
           shadowRadius: 0,
         }}
         placeholder="What are you looking for?"
@@ -332,7 +346,7 @@ function CommandPalettePreview({ preview }) {
   );
 }
 
-function CommandPaletteContent({ handleClose }) {
+export function CommandPaletteContent({ handleClose }) {
   const theme = useColorTheme();
   const { height } = useWindowDimensions();
 
@@ -372,26 +386,33 @@ function CommandPaletteContent({ handleClose }) {
     }
   });
 
+  const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   return (
     <Pressable
       onPress={(e) => e.stopPropagation()}
-      style={{
-        backgroundColor: theme[2],
-        borderWidth: 1,
-        borderColor: theme[6],
-        margin: "auto",
-        width: "100%",
-        maxWidth: 900,
-        borderRadius: 20,
-        shadowColor: "rgba(0, 0, 0, 0.12)",
-        shadowOffset: {
-          width: 10,
-          height: 10,
+      style={[
+        {
+          margin: "auto",
+          width: "100%",
+          flex: 1,
+          maxWidth: breakpoints.md ? 900 : width,
         },
-        shadowOpacity: 1,
-        shadowRadius: 30,
-      }}
+        breakpoints.md && {
+          maxHeight: height / 1.3,
+          backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: theme[6],
+          borderRadius: 20,
+          shadowColor: "rgba(0, 0, 0, 0.12)",
+          shadowOffset: {
+            width: 10,
+            height: 10,
+          },
+          shadowOpacity: 1,
+          shadowRadius: 30,
+        },
+      ]}
     >
       <PaletteHeader
         preview={preview}
@@ -401,7 +422,7 @@ function CommandPaletteContent({ handleClose }) {
         setPreview={setPreview}
         filtered={filtered}
       />
-      <View style={{ flexDirection: "row", height: height / 1.5 }}>
+      <View style={{ flexDirection: "row", flex: 1 }}>
         <View style={{ flex: breakpoints.md ? 1.5 : 1 }}>
           <CommandPaletteList
             preview={preview}

@@ -207,12 +207,7 @@ export default function AppLayout() {
   }, [breakpoints]);
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
-  const theme = useColor(
-    sessionData?.user?.profile?.theme || "mint",
-    // CHANGE THIS LATER!!!
-    isDark
-    // sessionData?.user?.darkMode === "dark"
-  );
+  const theme = useColor(sessionData?.user?.profile?.theme || "mint");
 
   if (Platform.OS === "android") {
     NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));

@@ -1,3 +1,4 @@
+import { JsStack } from "@/components/layout/_stack";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
@@ -15,6 +16,7 @@ import {
   Jost_800ExtraBold,
   Jost_900Black,
 } from "@expo-google-fonts/jost";
+import { TransitionPresets } from "@react-navigation/stack";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
@@ -251,19 +253,29 @@ function Root() {
   }, [fontsLoaded, fontsError]);
 
   return (
-    <ColorThemeProvider theme={theme}>
-      <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-        <SessionProvider>
+    <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
+      <SessionProvider>
+        <ColorThemeProvider theme={theme}>
           {fontsLoaded ? (
             <SWRWrapper>
-              <Slot screenOptions={{ onLayoutRootView }} />
+              <JsStack screenOptions={{ header: () => null }}>
+                <Slot screenOptions={{ onLayoutRootView }} />
+                <JsStack.Screen
+                  name="open"
+                  options={{
+                    presentation: "modal",
+                    animationEnabled: true,
+                    ...TransitionPresets.ModalPresentationIOS,
+                  }}
+                />
+              </JsStack>
             </SWRWrapper>
           ) : (
             <SessionLoadingScreen />
           )}
-        </SessionProvider>
-      </ErrorBoundary>
-    </ColorThemeProvider>
+        </ColorThemeProvider>
+      </SessionProvider>
+    </ErrorBoundary>
   );
 }
 
