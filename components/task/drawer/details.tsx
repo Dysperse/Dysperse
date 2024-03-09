@@ -1,5 +1,6 @@
 import { Button, ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
+import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -548,6 +549,10 @@ export function TaskDetails() {
                   primary={`${task.notifications.length} notification${
                     task.notifications.length == 1 ? "" : "s"
                   }`}
+                />
+                <Chip
+                  label="Coming soon"
+                  style={{ backgroundColor: theme[5] }}
                 />
               </ListItemButton>
             ),
