@@ -42,7 +42,10 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
         })}
       >
         <View style={{ flex: 1 }}>
-          <Text weight={700} style={{ color: alertTheme[11], marginBottom: 5 }}>
+          <Text
+            weight={700}
+            style={{ color: alertTheme[11], fontSize: 14, marginBottom: 2 }}
+          >
             Your space storage is {!isReached && isWarning && "almost "}full
           </Text>
           <Text style={{ color: alertTheme[11], opacity: 0.7, fontSize: 12 }}>
