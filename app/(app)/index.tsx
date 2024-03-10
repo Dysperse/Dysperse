@@ -138,19 +138,21 @@ function FriendActivity() {
       <Text variant="eyebrow" style={{ marginBottom: 10 }}>
         Recent Activity
       </Text>
-      <View
+      <ScrollView
+        contentContainerStyle={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          paddingVertical: 10,
+        }}
         style={[
           {
-            flexDirection: "row",
-            flexWrap: "wrap",
             borderWidth: 1,
             borderColor: theme[4],
             backgroundColor: theme[2],
             borderRadius: 20,
-            paddingVertical: 10,
             width: "100%",
           },
-          breakpoints.md && { height: 240 },
+          breakpoints.md && { height: 250 },
         ]}
       >
         {isLoading ? (
@@ -280,7 +282,7 @@ function FriendActivity() {
             )
           )
         )}
-      </View>
+      </ScrollView>
     </>
   );
 }

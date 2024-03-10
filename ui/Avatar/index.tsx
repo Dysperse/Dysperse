@@ -90,6 +90,7 @@ export const ProfilePicture = function ProfilePicture({
   size,
   style,
   onPress = () => {},
+  disabled = false,
 }: {
   name: string;
   image?: string;
@@ -98,6 +99,7 @@ export const ProfilePicture = function ProfilePicture({
     | StyleProp<ViewStyle>
     | (({ pressed, hovered }) => StyleProp<ViewStyle>);
   onPress?: () => void;
+  disabled?: boolean;
 }) {
   return (
     <Avatar
@@ -105,8 +107,9 @@ export const ProfilePicture = function ProfilePicture({
       size={size}
       style={style}
       onPress={onPress}
+      disabled={disabled}
     >
-      <Text style={{ fontSize: 17 }} weight={600}>
+      <Text style={{ fontSize: size / 2.5 }} weight={600}>
         {name[0].toUpperCase()}
         {name[1].toUpperCase()}
       </Text>

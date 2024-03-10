@@ -143,6 +143,7 @@ function SettingsSidebar() {
           icon: "refresh",
           callback: () => {
             if (Platform.OS === "web") {
+              (window as any).disableSaveData = true;
               localStorage.removeItem("app-cache");
             }
             if (Platform.OS == "web") {

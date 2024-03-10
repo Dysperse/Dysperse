@@ -1,27 +1,265 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar } from "@/ui/Avatar";
+import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { ButtonGroup } from "@/ui/ButtonGroup";
+import Emoji from "@/ui/Emoji";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
-import { memo, useCallback, useRef, useState } from "react";
+import { cloneElement, memo, useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import useSWR from "swr";
 import { styles } from ".";
 import { useCollectionContext } from "../context";
 
 const modalStyles = StyleSheet.create({
   eyebrow: { marginTop: 10, marginBottom: 5, marginLeft: 5 },
 });
-const CollectionMembers = ({ collection: { data: collection } }) => {
-  // const { session } = useUser();
 
+function FriendEmailSelection({ selected, setSelected, setQuery }) {
+  return (
+    <View>
+      <TextField
+        placeholder="Invite by email or username"
+        variant="filled+outlined"
+        onChangeText={setQuery}
+      />
+    </View>
+  );
+}
+
+function UserSearchResults({ selected, setSelected, query }) {
+  const theme = useColorTheme();
+
+  const { data, error, isLoading, isValidating } = useSWR([
+    "user/profile",
+    { email: query },
+  ]);
+
+  return (
+    <>
+      {data ? (
+        data.error ? (
+          <View>
+            <Emoji label="sad" symbol="😢" size={30} />
+            <Text>Couldn't find any users with that email or username.</Text>
+          </View>
+        ) : (
+          <ListItemButton
+            style={({ pressed, hovered }: any) => ({
+              backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+              marginTop: 10,
+              width: "100%",
+            })}
+            onPress={() => {
+              setSelected((oldData) => {
+                if (oldData.find((u) => u.email === data.email))
+                  return oldData.filter((u) => u.email !== data.email);
+                return [...oldData, data];
+              });
+            }}
+          >
+            <Avatar
+              image={data.profile.picture}
+              size={50}
+              style={{ marginRight: 10 }}
+            />
+            <ListItemText primary={data.profile.name} secondary={data.email} />
+            {selected.find((u) => u.email === data.email) ? (
+              <Icon>check</Icon>
+            ) : null}
+          </ListItemButton>
+        )
+      ) : error ? (
+        <ErrorAlert />
+      ) : isLoading || isValidating ? (
+        <Spinner />
+      ) : null}
+    </>
+  );
+}
+
+const friendModalStyles = StyleSheet.create({
+  listContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    padding: 20,
+  },
+  user: {
+    width: "20%",
+    alignItems: "center",
+    gap: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  check: {
+    position: "absolute",
+    bottom: -5,
+    right: -5,
+  },
+});
+
+const FriendUser = ({ friend, selected, setSelected }) => {
+  const theme = useColorTheme();
+  return (
+    <Pressable
+      style={({ pressed, hovered }: any) => [
+        friendModalStyles.user,
+        {
+          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+        },
+      ]}
+      onPress={() => {
+        if (selected.find((u) => u.email === friend.email))
+          setSelected(selected.filter((id) => id.email !== friend.email));
+        else setSelected([...selected, friend]);
+      }}
+    >
+      <View style={{ position: "relative" }}>
+        <ProfilePicture
+          disabled
+          name={friend?.profile?.name}
+          image={friend?.profile?.picture}
+          size={80}
+        />
+        {selected.find((i) => i.email === friend.email) && (
+          <Avatar
+            disabled
+            icon="check"
+            style={[
+              friendModalStyles.check,
+              {
+                backgroundColor: theme[9],
+              },
+            ]}
+            iconProps={{ style: { color: theme[1] }, bold: true }}
+          />
+        )}
+      </View>
+      <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+        {friend?.profile?.name}
+      </Text>
+    </Pressable>
+  );
+};
+
+const FriendModal = ({ children, onComplete }) => {
+  const { data, error } = useSWR(["user/friends"]);
+  const ref = useRef<BottomSheetModal>(null);
+  const theme = useColorTheme();
+
+  const [selected, setSelected] = useState([]);
+  const [query, setQuery] = useState("");
+
+  const trigger = cloneElement(children, {
+    onPress: () => ref.current?.present(),
+  });
+
+  const filteredData = data?.filter(
+    (friend) =>
+      friend.user.profile.name.toLowerCase().includes(query.toLowerCase()) ||
+      friend.user.email.toLowerCase().includes(query.toLowerCase()) ||
+      friend.user.username.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <>
+      {trigger}
+      <BottomSheet
+        onClose={() => ref.current?.close()}
+        sheetRef={ref}
+        snapPoints={["70%"]}
+        maxWidth={900}
+      >
+        <View style={{ padding: 20, paddingBottom: 0 }}>
+          <View style={friendModalStyles.header}>
+            <Text style={{ fontSize: 30 }} weight={900}>
+              Select friends
+            </Text>
+            <IconButton
+              icon={<Icon style={{ color: theme[1] }}>north</Icon>}
+              style={({ pressed, hovered }) => ({
+                width: 50,
+                backgroundColor: theme[pressed ? 8 : hovered ? 9 : 10],
+              })}
+              onPress={() => {
+                onComplete(selected);
+                ref.current?.close();
+              }}
+            />
+          </View>
+          <FriendEmailSelection
+            setQuery={setQuery}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        </View>
+        <ScrollView contentContainerStyle={friendModalStyles.listContainer}>
+          {data ? (
+            filteredData.length === 0 ? (
+              query ? (
+                <UserSearchResults
+                  selected={selected}
+                  setSelected={setSelected}
+                  query={query}
+                />
+              ) : (
+                <Text>
+                  You have no friends yet. Invite someone to join you on your
+                  journey.
+                </Text>
+              )
+            ) : (
+              filteredData.map((friend) => (
+                <FriendUser
+                  friend={friend.user}
+                  selected={selected}
+                  setSelected={setSelected}
+                  key={friend.user.email}
+                />
+              ))
+            )
+          ) : error ? (
+            <ErrorAlert />
+          ) : (
+            <Spinner />
+          )}
+          {data &&
+            filteredData.length > 0 &&
+            selected
+              .filter((i) => !data.find((f) => f.user.email === i.email))
+              .map((i) => (
+                <FriendUser
+                  friend={i}
+                  selected={selected}
+                  setSelected={setSelected}
+                  key={i.email}
+                />
+              ))}
+        </ScrollView>
+      </BottomSheet>
+    </>
+  );
+};
+
+const CollectionMembers = ({ collection: { data: collection } }) => {
   return (
     <View style={{ padding: 20 }}>
       <Text variant="eyebrow" style={modalStyles.eyebrow}>
@@ -50,10 +288,16 @@ const CollectionMembers = ({ collection: { data: collection } }) => {
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 15 }]}>
         People
       </Text>
-      <ListItemButton>
-        <Avatar icon="add" size={40} />
-        <ListItemText primary="Invite people" />
-      </ListItemButton>
+      <FriendModal
+        onComplete={(e) => {
+          console.log(e);
+        }}
+      >
+        <ListItemButton>
+          <Avatar icon="add" disabled size={40} />
+          <ListItemText primary="Invite people" />
+        </ListItemButton>
+      </FriendModal>
     </View>
   );
 };
@@ -117,7 +361,6 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           style={{
             paddingHorizontal: 25,
             paddingVertical: 10,
-            paddingBottom: 15,
           }}
         >
           <Text style={{ fontSize: 30 }} weight={800}>
