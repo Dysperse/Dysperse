@@ -212,18 +212,13 @@ const FriendModal = ({ children, onComplete }) => {
     try {
       setIsLoading(true);
       await onComplete(selected);
-      ref.current?.forceClose({
-        overshootClamping: true,
-        damping: 20,
-        stiffness: 400,
-      });
       setTimeout(() => {
         ref.current?.forceClose({
           overshootClamping: true,
           damping: 20,
           stiffness: 400,
         });
-      }, 1000);
+      }, 100);
     } catch (e) {
       setIsLoading(false);
       console.log(e);
@@ -329,7 +324,15 @@ const CollectionInvitedUser = ({ mutateList, user }) => {
     );
     if (res.error) return Toast.show({ type: "error" });
     Toast.show({ type: "success", text1: "Access removed" });
-    mutateList();
+    mutateList(
+      (d) => ({
+        ...d,
+        invitedUsers: d.invitedUsers.filter((i) => i.id !== user.id),
+      }),
+      {
+        revalidate: false,
+      }
+    );
     ref.current?.close();
   };
   return (
@@ -409,8 +412,8 @@ const CollectionMembers = ({
         }
       );
       if (res.error) throw new Error(res);
-      Toast.show({ type: "success", text1: "Invites sent!" });
       await mutateList();
+      Toast.show({ type: "success", text1: "Invites sent!" });
     } catch (e) {
       Toast.show({ type: "error" });
     }
