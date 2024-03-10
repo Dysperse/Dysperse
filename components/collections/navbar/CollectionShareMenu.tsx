@@ -254,7 +254,7 @@ const FriendModal = ({ children, onComplete }) => {
                 },
                 selected.length === 0 && { opacity: 0.3 },
               ]}
-              disabled={selected.length === 0}
+              disabled={selected.length === 0 || isLoading}
               onPress={handleSubmit}
             />
           </View>
@@ -333,7 +333,9 @@ const CollectionInvitedUser = ({ mutateList, user }) => {
         revalidate: false,
       }
     );
-    ref.current?.close();
+    setTimeout(() => {
+      ref.current?.close();
+    }, 100);
   };
   return (
     <ListItemButton disabled>
