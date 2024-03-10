@@ -191,7 +191,12 @@ const FriendModal = ({ children, onComplete }) => {
   const [query, setQuery] = useState("");
 
   const trigger = cloneElement(children, {
-    onPress: () => ref.current?.present(),
+    onPress: () => {
+      setIsLoading(false);
+      ref.current?.present();
+      setQuery("");
+      setSelected([]);
+    },
   });
 
   const filteredData = data?.filter(
@@ -202,6 +207,28 @@ const FriendModal = ({ children, onComplete }) => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      await onComplete(selected);
+      ref.current?.forceClose({
+        overshootClamping: true,
+        damping: 20,
+        stiffness: 400,
+      });
+      setTimeout(() => {
+        ref.current?.forceClose({
+          overshootClamping: true,
+          damping: 20,
+          stiffness: 400,
+        });
+      }, 1000);
+    } catch (e) {
+      setIsLoading(false);
+      console.log(e);
+    }
+  };
 
   return (
     <>
@@ -233,23 +260,7 @@ const FriendModal = ({ children, onComplete }) => {
                 selected.length === 0 && { opacity: 0.3 },
               ]}
               disabled={selected.length === 0}
-              onPress={async () => {
-                try {
-                  setIsLoading(true);
-                  await onComplete(selected);
-                  ref.current?.forceClose({
-                    overshootClamping: true,
-                    damping: 20,
-                    stiffness: 400,
-                  });
-                  setTimeout(() => {
-                    setIsLoading(false);
-                  }, 2000);
-                } catch (e) {
-                  setIsLoading(false);
-                  console.log(e);
-                }
-              }}
+              onPress={handleSubmit}
             />
           </View>
           <FriendEmailSelection
@@ -308,14 +319,18 @@ const FriendModal = ({ children, onComplete }) => {
 
 const CollectionInvitedUser = ({ mutateList, user }) => {
   const { session } = useSession();
+  const ref = useRef<BottomSheetModal>(null);
   const handleDelete = async () => {
-    await sendApiRequest(
+    const res = await sendApiRequest(
       session,
       "DELETE",
       "space/collections/collection/share",
       { id: user.id }
     );
+    if (res.error) return Toast.show({ type: "error" });
+    Toast.show({ type: "success", text1: "Access removed" });
     mutateList();
+    ref.current?.close();
   };
   return (
     <ListItemButton disabled>
@@ -331,7 +346,11 @@ const CollectionInvitedUser = ({ mutateList, user }) => {
           user.access.toLowerCase().replaceAll("_", " ")
         )}
       />
-      <Menu height={[410]} trigger={<IconButton icon="more_horiz" />}>
+      <Menu
+        height={[410]}
+        menuRef={ref}
+        trigger={<IconButton icon="more_horiz" />}
+      >
         <View style={{ padding: 20, gap: 20 }}>
           {[
             { label: "Read only", value: "READ_ONLY" },
