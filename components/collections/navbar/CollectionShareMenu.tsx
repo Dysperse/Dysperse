@@ -1,23 +1,30 @@
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
+import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
+import Divider from "@/ui/Divider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import { Menu } from "@/ui/Menu";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
 import { cloneElement, memo, useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { styles } from ".";
 import { useCollectionContext } from "../context";
@@ -194,6 +201,8 @@ const FriendModal = ({ children, onComplete }) => {
       friend.user.username?.toLowerCase()?.includes(query.toLowerCase())
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <>
       {trigger}
@@ -209,7 +218,13 @@ const FriendModal = ({ children, onComplete }) => {
               Select friends
             </Text>
             <IconButton
-              icon={<Icon style={{ color: theme[1] }}>north</Icon>}
+              icon={
+                isLoading ? (
+                  <Spinner color={theme[1]} size={24} />
+                ) : (
+                  <Icon style={{ color: theme[1] }}>north</Icon>
+                )
+              }
               style={({ pressed, hovered }) => [
                 {
                   width: 50,
@@ -218,13 +233,22 @@ const FriendModal = ({ children, onComplete }) => {
                 selected.length === 0 && { opacity: 0.3 },
               ]}
               disabled={selected.length === 0}
-              onPress={() => {
-                onComplete(selected);
-                ref.current?.forceClose({
-                  overshootClamping: true,
-                  damping: 20,
-                  stiffness: 400,
-                });
+              onPress={async () => {
+                try {
+                  setIsLoading(true);
+                  await onComplete(selected);
+                  ref.current?.forceClose({
+                    overshootClamping: true,
+                    damping: 20,
+                    stiffness: 400,
+                  });
+                  setTimeout(() => {
+                    setIsLoading(false);
+                  }, 2000);
+                } catch (e) {
+                  setIsLoading(false);
+                  console.log(e);
+                }
               }}
             />
           </View>
@@ -282,11 +306,95 @@ const FriendModal = ({ children, onComplete }) => {
   );
 };
 
-const CollectionMembers = ({ collection: { data: collection } }) => {
-  const handleSelectFriends = (friends) => {
-    const emails = friends.map((i) => i.email);
+const CollectionInvitedUser = ({ mutateList, user }) => {
+  const { session } = useSession();
+  const handleDelete = async () => {
+    await sendApiRequest(
+      session,
+      "DELETE",
+      "space/collections/collection/share",
+      { id: user.id }
+    );
+    mutateList();
+  };
+  return (
+    <ListItemButton disabled>
+      <ProfilePicture
+        name={user.user.profile.name}
+        image={user.user.profile.picture}
+        size={40}
+        disabled
+      />
+      <ListItemText
+        primary={user.user.profile.name}
+        secondary={capitalizeFirstLetter(
+          user.access.toLowerCase().replaceAll("_", " ")
+        )}
+      />
+      <Menu height={[410]} trigger={<IconButton icon="more_horiz" />}>
+        <View style={{ padding: 20, gap: 20 }}>
+          {[
+            { label: "Read only", value: "READ_ONLY" },
+            { label: "Editor", value: "EDITOR" },
+            { label: "Moderator", value: "MODERATOR" },
+          ].map((button) => (
+            <Button
+              variant="outlined"
+              style={{ height: 60 }}
+              key={button.value}
+              onPress={() => {
+                console.log(button.value);
+              }}
+            >
+              <ButtonText style={{ fontSize: 20 }} weight={700}>
+                {button.label}
+              </ButtonText>
+              {user.access === button.value && <Icon>check</Icon>}
+            </Button>
+          ))}
+          <Divider />
+          <Button
+            variant="outlined"
+            style={{ height: 60 }}
+            onPress={handleDelete}
+          >
+            <ButtonText weight={700} style={{ fontSize: 20 }}>
+              Remove access
+            </ButtonText>
+          </Button>
+        </View>
+      </Menu>
+    </ListItemButton>
+  );
+};
 
-    alert(emails);
+const CollectionMembers = ({
+  collection: { data: collection },
+  mutateList,
+}) => {
+  const { session } = useSession();
+
+  const handleSelectFriends = async (friends) => {
+    try {
+      const userList = friends.map((i) => i.id);
+      const res = await sendApiRequest(
+        session,
+        "POST",
+        "space/collections/collection/share",
+        {},
+        {
+          body: JSON.stringify({
+            userList,
+            id: collection.id,
+          }),
+        }
+      );
+      if (res.error) throw new Error(res);
+      Toast.show({ type: "success", text1: "Invites sent!" });
+      await mutateList();
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
   };
   return (
     <View style={{ padding: 20 }}>
@@ -316,6 +424,13 @@ const CollectionMembers = ({ collection: { data: collection } }) => {
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 15 }]}>
         People
       </Text>
+      {collection.invitedUsers.map((user) => (
+        <CollectionInvitedUser
+          mutateList={mutateList}
+          key={user.email}
+          user={user}
+        />
+      ))}
       <FriendModal onComplete={handleSelectFriends}>
         <ListItemButton>
           <Avatar icon="add" disabled size={40} />
@@ -380,7 +495,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           />
         ))}
 
-      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["80%"]}>
+      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["70%"]}>
         <View
           style={{
             paddingHorizontal: 25,
@@ -401,7 +516,10 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
         />
         <BottomSheetScrollView>
           {viewState[0] === "Members" ? (
-            <CollectionMembers collection={collection} />
+            <CollectionMembers
+              mutateList={collection.mutate}
+              collection={collection}
+            />
           ) : (
             <CollectionLink />
           )}
