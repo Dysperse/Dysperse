@@ -139,20 +139,25 @@ function FriendActivity() {
         Recent Activity
       </Text>
       <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          borderWidth: 1,
-          borderColor: theme[4],
-          backgroundColor: theme[2],
-          borderRadius: 20,
-          paddingVertical: 10,
-        }}
+        style={[
+          {
+            flexDirection: "row",
+            flexWrap: "wrap",
+            borderWidth: 1,
+            borderColor: theme[4],
+            backgroundColor: theme[2],
+            borderRadius: 20,
+            paddingVertical: 10,
+            width: "100%",
+          },
+          breakpoints.md && { height: 240 },
+        ]}
       >
         {isLoading ? (
           <View
             style={{
               flex: 1,
+              width: "100%",
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -658,7 +663,7 @@ export default function Index() {
     .replaceAll("%", "")
     .split(",")
     .map(Number) as [number, number, number];
-
+  const { width } = useWindowDimensions();
   const uri = `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
     ...hslValues
   )}&pattern=${pattern}`;
@@ -717,14 +722,14 @@ export default function Index() {
               style={[
                 {
                   paddingHorizontal: 50,
-                  maxWidth: isFocused ? 950 : 1150,
+                  width: width - (isFocused ? 550 : 300),
                   paddingBottom: 70,
-                  width: "100%",
                   marginHorizontal: "auto",
                   marginVertical: "auto",
                   paddingTop: 60,
                 },
                 !breakpoints.md && {
+                  width: "100%",
                   paddingTop: 120,
                   paddingHorizontal: 20,
                 },
@@ -738,6 +743,7 @@ export default function Index() {
                   gap: 50,
                   flexDirection: breakpoints.md ? "row" : "column",
                   marginBottom: "auto",
+                  width: "100%",
                 }}
               >
                 <View style={{ flex: 1 }}>
