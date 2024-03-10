@@ -210,13 +210,21 @@ const FriendModal = ({ children, onComplete }) => {
             </Text>
             <IconButton
               icon={<Icon style={{ color: theme[1] }}>north</Icon>}
-              style={({ pressed, hovered }) => ({
-                width: 50,
-                backgroundColor: theme[pressed ? 8 : hovered ? 9 : 10],
-              })}
+              style={({ pressed, hovered }) => [
+                {
+                  width: 50,
+                  backgroundColor: theme[pressed ? 8 : hovered ? 9 : 10],
+                },
+                selected.length === 0 && { opacity: 0.3 },
+              ]}
+              disabled={selected.length === 0}
               onPress={() => {
                 onComplete(selected);
-                ref.current?.close();
+                ref.current?.forceClose({
+                  overshootClamping: true,
+                  damping: 20,
+                  stiffness: 400,
+                });
               }}
             />
           </View>
@@ -275,6 +283,11 @@ const FriendModal = ({ children, onComplete }) => {
 };
 
 const CollectionMembers = ({ collection: { data: collection } }) => {
+  const handleSelectFriends = (friends) => {
+    const emails = friends.map((i) => i.email);
+
+    alert(emails);
+  };
   return (
     <View style={{ padding: 20 }}>
       <Text variant="eyebrow" style={modalStyles.eyebrow}>
@@ -303,11 +316,7 @@ const CollectionMembers = ({ collection: { data: collection } }) => {
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 15 }]}>
         People
       </Text>
-      <FriendModal
-        onComplete={(e) => {
-          console.log(e);
-        }}
-      >
+      <FriendModal onComplete={handleSelectFriends}>
         <ListItemButton>
           <Avatar icon="add" disabled size={40} />
           <ListItemText primary="Invite people" />
