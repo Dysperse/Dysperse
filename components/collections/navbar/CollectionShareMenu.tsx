@@ -50,9 +50,21 @@ function UserSearchResults({ selected, setSelected, query }) {
     <>
       {data ? (
         data.error ? (
-          <View>
-            <Emoji label="sad" symbol="😢" size={30} />
-            <Text>Couldn't find any users with that email or username.</Text>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 20,
+            }}
+          >
+            <Emoji emoji="1f62d" size={50} />
+            <Text weight={600} style={{ fontSize: 20 }}>
+              Oh no!
+            </Text>
+            <Text style={{ opacity: 0.6 }}>
+              Couldn't find any users with that email or username.
+            </Text>
           </View>
         ) : (
           <ListItemButton
@@ -96,7 +108,6 @@ const friendModalStyles = StyleSheet.create({
     padding: 20,
   },
   user: {
-    width: "20%",
     alignItems: "center",
     gap: 10,
     paddingVertical: 10,
@@ -117,12 +128,16 @@ const friendModalStyles = StyleSheet.create({
 });
 
 const FriendUser = ({ friend, selected, setSelected }) => {
+  const breakpoints = useResponsiveBreakpoints();
+
   const theme = useColorTheme();
   return (
     <Pressable
       style={({ pressed, hovered }: any) => [
         friendModalStyles.user,
         {
+          width: breakpoints.md ? "20%" : "33.333%",
+          paddingHorizontal: breakpoints.md ? 20 : 10,
           backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
         },
       ]}
@@ -137,7 +152,7 @@ const FriendUser = ({ friend, selected, setSelected }) => {
           disabled
           name={friend?.profile?.name}
           image={friend?.profile?.picture}
-          size={80}
+          size={breakpoints.md ? 70 : 80}
         />
         {selected.find((i) => i.email === friend.email) && (
           <Avatar
@@ -176,7 +191,7 @@ const FriendModal = ({ children, onComplete }) => {
     (friend) =>
       friend.user.profile.name.toLowerCase().includes(query.toLowerCase()) ||
       friend.user.email.toLowerCase().includes(query.toLowerCase()) ||
-      friend.user.username.toLowerCase().includes(query.toLowerCase())
+      friend.user.username?.toLowerCase()?.includes(query.toLowerCase())
   );
 
   return (
