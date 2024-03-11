@@ -34,6 +34,7 @@ export default function IconButton(props: DIconButtonProps) {
       {...props}
       style={({ pressed, hovered }: any) => [
         styles.base,
+        { opacity: props.disabled ? 0.5 : 1 },
         {
           borderColor: props.variant === "outlined" ? theme[5] : "transparent",
           width: props.size ?? 35,

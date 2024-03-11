@@ -4,13 +4,20 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { createContext, useCallback, useContext, useState } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import {
+  Controller,
+  FormProvider,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -21,9 +28,22 @@ import { authStyles } from "./authStyles";
 const SignupContext = createContext(null);
 const useSignupContext = () => useContext(SignupContext);
 
+const introStyles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    marginBottom: "auto",
+    maxWidth: "100%",
+    borderRadius: 20,
+    width: 300,
+  },
+});
 const Intro = () => {
   const { handleNext } = useSignupContext();
   const theme = useColorTheme();
+  const { control } = useForm();
 
   return (
     <View
@@ -53,25 +73,38 @@ const Intro = () => {
       >
         Let's make productivity work for you.
       </Text>
-
-      <Button
-        onPress={handleNext}
-        style={{
-          marginTop: "auto",
-          flexDirection: "row",
-          alignItems: "center",
-          width: "100%",
-          height: 70,
-        }}
-        variant="filled"
-      >
-        <ButtonText weight={900} style={{ fontSize: 20 }}>
-          Let's go!
-        </ButtonText>
-        <Icon bold style={{ marginLeft: 10 }}>
-          arrow_forward
-        </Icon>
-      </Button>
+      <Controller
+        rules={{ required: true }}
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <View
+            style={[introStyles.inputContainer, { backgroundColor: theme[3] }]}
+          >
+            <TextField
+              onBlur={onBlur}
+              onChangeText={onChange}
+              autoFocus
+              style={{
+                flex: 1,
+                height: "100%",
+                shadowRadius: 0,
+                paddingHorizontal: 20,
+              }}
+              onSubmitEditing={() => {
+                if (value !== "") handleNext();
+              }}
+              placeholder="What's your name?"
+            />
+            <IconButton
+              disabled={value === ""}
+              onPress={handleNext}
+              size={55}
+              icon="arrow_forward"
+            />
+          </View>
+        )}
+        name="name"
+      />
     </View>
   );
 };
@@ -144,15 +177,15 @@ const ColorPicker = () => {
   const orange = useColor("orange");
   const grass = useColor("grass");
   const crimson = useColor("crimson");
-  const { handleNext, setTheme } = useSignupContext();
+  const { handleNext } = useSignupContext();
   const { width } = useWindowDimensions();
-
+  const { setValue } = useFormContext();
   const barPosition = useSharedValue(-width);
 
   const barStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: barPosition.value }],
-      width: 200,
+      width: 300,
       height: "100%",
       position: "absolute",
       top: 0,
@@ -161,7 +194,7 @@ const ColorPicker = () => {
   });
 
   const handleSelect = (name) => {
-    setTheme(name);
+    setValue("theme", name);
     barPosition.value = -width;
     barPosition.value = withSpring(width * 1.5, {
       stiffness: 70,
@@ -236,8 +269,15 @@ const ColorPicker = () => {
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
-  const [selectedTheme, setSelectedTheme] = useState("mint");
-
+  const control = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      theme: "mint",
+    },
+  });
+  const selectedTheme = control.watch("theme");
   const theme = useColor(selectedTheme as any);
   const [step, setStep] = useState(0);
   const steps = [<Intro key="1" />, <ColorPicker key="2" />];
@@ -250,51 +290,52 @@ export default function Page() {
   }, [step]);
 
   return (
-    <ColorThemeProvider theme={theme}>
-      <SignupContext.Provider
-        value={{
-          handleNext: () => setStep(step + 1),
-          handleBack,
-          setTheme: setSelectedTheme,
-          selectedTheme,
-        }}
-      >
-        <View style={{ backgroundColor: theme[2], flex: 1 }}>
-          <View
-            style={[
-              authStyles.container,
-              { backgroundColor: theme[1] },
-              breakpoints.md && authStyles.containerDesktop,
-              breakpoints.md && {
-                borderColor: theme[6],
-              },
-            ]}
-          >
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              {["", ...steps].map((t, i) => (
-                <LinearGradient
-                  colors={
-                    i <= step ? [theme[9], theme[8]] : [theme[3], theme[3]]
-                  }
-                  key={i}
-                  style={{
-                    flex: 1,
-                    height: 5,
-                    borderRadius: 9,
-                  }}
-                />
-              ))}
+    <FormProvider {...control}>
+      <ColorThemeProvider theme={theme}>
+        <SignupContext.Provider
+          value={{
+            handleNext: () => setStep(step + 1),
+            handleBack,
+            selectedTheme,
+          }}
+        >
+          <View style={{ backgroundColor: theme[2], flex: 1 }}>
+            <View
+              style={[
+                authStyles.container,
+                { backgroundColor: theme[1] },
+                breakpoints.md && authStyles.containerDesktop,
+                breakpoints.md && {
+                  borderColor: theme[6],
+                },
+              ]}
+            >
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                {["", ...steps].map((t, i) => (
+                  <LinearGradient
+                    colors={
+                      i <= step ? [theme[9], theme[8]] : [theme[3], theme[3]]
+                    }
+                    key={i}
+                    style={{
+                      flex: 1,
+                      height: 5,
+                      borderRadius: 9,
+                    }}
+                  />
+                ))}
+              </View>
+              <IconButton
+                variant="outlined"
+                size={55}
+                icon={step === 0 ? "close" : "arrow_back"}
+                onPress={handleBack}
+              />
+              {steps[step]}
             </View>
-            <IconButton
-              variant="outlined"
-              size={55}
-              icon={step === 0 ? "close" : "arrow_back"}
-              onPress={handleBack}
-            />
-            {steps[step]}
           </View>
-        </View>
-      </SignupContext.Provider>
-    </ColorThemeProvider>
+        </SignupContext.Provider>
+      </ColorThemeProvider>
+    </FormProvider>
   );
 }
