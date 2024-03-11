@@ -76,12 +76,75 @@ const Intro = () => {
   );
 };
 
+const ColorPressable = ({ color, handleSelect }) => {
+  const { selectedTheme } = useSignupContext();
+  const interactionState = useSharedValue<"active" | "hovered" | null>(null);
+
+  const style = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withSpring(
+          interactionState.value === "active"
+            ? 0.98
+            : interactionState.value === "hovered"
+            ? 1.02
+            : 1,
+          {
+            stiffness: 400,
+            damping: 10,
+          }
+        ),
+      },
+    ],
+    flex: 1,
+  }));
+  const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+  return (
+    <AnimatedPressable
+      key={color.n}
+      style={style}
+      onPress={() => handleSelect(color.n)}
+      onPressIn={() => (interactionState.value = "active")}
+      onPressOut={() => (interactionState.value = null)}
+      onHoverIn={() => (interactionState.value = "hovered")}
+      onHoverOut={() => (interactionState.value = null)}
+    >
+      <LinearGradient
+        colors={[color.p[4], color.p[5], color.p[6]]}
+        style={{
+          flex: 1,
+          justifyContent: "space-between",
+          paddingHorizontal: 20,
+          alignItems: "center",
+          flexDirection: "row",
+          gap: 10,
+          borderRadius: 20,
+        }}
+      >
+        <Text style={{ fontSize: 30, color: color.p[11] }} weight={700}>
+          {themes[color.n].name}
+        </Text>
+        <Icon
+          size={40}
+          style={{ color: color.p[11] }}
+          filled={selectedTheme === color.n}
+        >
+          {selectedTheme === color.n
+            ? "check_circle"
+            : "radio_button_unchecked"}
+        </Icon>
+      </LinearGradient>
+    </AnimatedPressable>
+  );
+};
+
 const ColorPicker = () => {
   const theme = useColorTheme();
   const orange = useColor("orange");
   const grass = useColor("grass");
   const crimson = useColor("crimson");
-  const { handleNext, setTheme, selectedTheme } = useSignupContext();
+  const { handleNext, setTheme } = useSignupContext();
   const { width } = useWindowDimensions();
 
   const barPosition = useSharedValue(-width);
@@ -146,40 +209,7 @@ const ColorPicker = () => {
           { p: grass, n: "grass" },
           { p: crimson, n: "crimson" },
         ].map((color, i) => (
-          <Pressable
-            key={color.n}
-            style={({ pressed }) => ({
-              flex: 1,
-              transform: [{ scale: pressed ? 0.95 : 1 }],
-            })}
-            onPress={() => handleSelect(color.n)}
-          >
-            <LinearGradient
-              colors={[color.p[4], color.p[5], color.p[6]]}
-              style={{
-                flex: 1,
-                justifyContent: "space-between",
-                paddingHorizontal: 20,
-                alignItems: "center",
-                flexDirection: "row",
-                gap: 10,
-                borderRadius: 20,
-              }}
-            >
-              <Text style={{ fontSize: 30, color: color.p[11] }} weight={700}>
-                {themes[color.n].name}
-              </Text>
-              <Icon
-                size={40}
-                style={{ color: color.p[11] }}
-                filled={selectedTheme === color.n}
-              >
-                {selectedTheme === color.n
-                  ? "check_circle"
-                  : "radio_button_unchecked"}
-              </Icon>
-            </LinearGradient>
-          </Pressable>
+          <ColorPressable key={i} color={color} handleSelect={handleSelect} />
         ))}
       </View>
       <Button
