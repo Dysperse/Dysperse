@@ -10,6 +10,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { ColorThemeProvider, useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
+
 export interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: RefObject<BottomSheetModal>;
   onClose: () => void;
@@ -79,6 +80,7 @@ function BottomSheet(props: DBottomSheetProps) {
         />
       )}
       onChange={(e) => {
+        // alert(e);
         if (e === -1) props.onClose();
       }}
       containerStyle={[
