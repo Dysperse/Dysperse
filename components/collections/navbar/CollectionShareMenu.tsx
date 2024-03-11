@@ -336,6 +336,7 @@ const CollectionInvitedUser = ({ mutateList, user }) => {
       ref.current?.close();
     }, 100);
   };
+  const theme = useColorTheme();
   return (
     <ListItemButton disabled>
       <ProfilePicture
@@ -351,39 +352,33 @@ const CollectionInvitedUser = ({ mutateList, user }) => {
         )}
       />
       <Menu
-        height={[410]}
+        height={[320]}
         menuRef={ref}
         trigger={<IconButton icon="more_horiz" />}
       >
-        <View style={{ padding: 20, gap: 20 }}>
+        <View style={{ padding: 20, gap: 20, paddingTop: 10 }}>
           {[
-            { label: "Read only", value: "READ_ONLY" },
-            { label: "Editor", value: "EDITOR" },
-            { label: "Moderator", value: "MODERATOR" },
+            { label: "Can view", value: "READ_ONLY" },
+            { label: "Can edit", value: "EDITOR" },
+            { label: "Full access", value: "MODERATOR" },
           ].map((button) => (
             <Button
               variant="outlined"
-              style={{ height: 60 }}
               key={button.value}
+              style={
+                user.access === button.value && { backgroundColor: theme[3] }
+              }
               onPress={() => {
                 console.log(button.value);
               }}
             >
-              <ButtonText style={{ fontSize: 20 }} weight={700}>
-                {button.label}
-              </ButtonText>
+              <ButtonText>{button.label}</ButtonText>
               {user.access === button.value && <Icon>check</Icon>}
             </Button>
           ))}
           <Divider />
-          <Button
-            variant="outlined"
-            style={{ height: 60 }}
-            onPress={handleDelete}
-          >
-            <ButtonText weight={700} style={{ fontSize: 20 }}>
-              Remove access
-            </ButtonText>
+          <Button variant="outlined" onPress={handleDelete}>
+            <ButtonText>Remove access</ButtonText>
           </Button>
         </View>
       </Menu>
@@ -401,9 +396,37 @@ const CollectionShareLink = ({ collection }) => {
           primary="Invite link"
           secondary="Anyone with the link can join this collection"
         />
-        <IconButton style={{ marginRight: -10 }} size={40}>
-          <Icon>more_horiz</Icon>
-        </IconButton>
+        <Menu
+          trigger={
+            <IconButton style={{ marginRight: -10 }} size={40}>
+              <Icon>more_horiz</Icon>
+            </IconButton>
+          }
+          height={[390]}
+        >
+          <View style={{ padding: 20, gap: 10, paddingTop: 10 }}>
+            <Text variant="eyebrow">Access</Text>
+            {["No access", "Full access", "Can edit", "Can view"].map(
+              (button) => (
+                <Button
+                  variant="outlined"
+                  key={button}
+                  onPress={() => {
+                    console.log(button);
+                  }}
+                >
+                  <ButtonText>{button}</ButtonText>
+                </Button>
+              )
+            )}
+            <Text variant="eyebrow" style={{ marginTop: 10 }}>
+              Link
+            </Text>
+            <Button variant="outlined">
+              <ButtonText>Revoke link</ButtonText>
+            </Button>
+          </View>
+        </Menu>
         <IconButton variant="outlined" size={40}>
           <Icon>content_copy</Icon>
         </IconButton>
