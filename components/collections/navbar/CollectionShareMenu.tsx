@@ -4,7 +4,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Divider from "@/ui/Divider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -392,6 +391,27 @@ const CollectionInvitedUser = ({ mutateList, user }) => {
   );
 };
 
+const CollectionShareLink = ({ collection }) => {
+  return (
+    <>
+      <ListItemButton disabled>
+        <Avatar icon="link" size={40} disabled />
+        <ListItemText
+          truncate
+          primary="Invite link"
+          secondary="Anyone with the link can join this collection"
+        />
+        <IconButton style={{ marginRight: -10 }} size={40}>
+          <Icon>more_horiz</Icon>
+        </IconButton>
+        <IconButton variant="outlined" size={40}>
+          <Icon>content_copy</Icon>
+        </IconButton>
+      </ListItemButton>
+    </>
+  );
+};
+
 const CollectionMembers = ({
   collection: { data: collection },
   mutateList,
@@ -421,9 +441,13 @@ const CollectionMembers = ({
     }
   };
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20, paddingTop: 0 }}>
       <Text variant="eyebrow" style={modalStyles.eyebrow}>
-        Group
+        General
+      </Text>
+      <CollectionShareLink collection={collection} />
+      <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
+        People
       </Text>
       {collection.public && (
         <ListItemButton>
@@ -433,10 +457,11 @@ const CollectionMembers = ({
             disabled
           />
           <ListItemText
-            primary={collection.public ? "Public" : "Private"}
+            truncate
+            primary={collection.public ? collection.space?.name : "Private"}
             secondary={
               collection.public
-                ? "Members in this space have access"
+                ? `Visible to all members`
                 : "Only you & selected members have access"
             }
           />
@@ -445,13 +470,10 @@ const CollectionMembers = ({
           </Icon>
         </ListItemButton>
       )}
-      <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 15 }]}>
-        People
-      </Text>
       {collection.invitedUsers.map((user) => (
         <CollectionInvitedUser
           mutateList={mutateList}
-          key={user.email}
+          key={user.user.email}
           user={user}
         />
       ))}
@@ -465,20 +487,11 @@ const CollectionMembers = ({
   );
 };
 
-const CollectionLink = () => {
-  return (
-    <View style={{ padding: 20 }}>
-      <Text>Link</Text>
-    </View>
-  );
-};
-
 export const CollectionShareMenu = memo(function CollectionShareMenu() {
   const ref = useRef<BottomSheetModal>(null);
   const { id } = useLocalSearchParams();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-  const viewState = useState("Members");
 
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
@@ -519,7 +532,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           />
         ))}
 
-      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["70%"]}>
+      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["60%"]}>
         <View
           style={{
             paddingHorizontal: 25,
@@ -530,23 +543,11 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
             Share
           </Text>
         </View>
-        <ButtonGroup
-          options={[
-            { value: "Members", label: "Members" },
-            { value: "Link", label: "Link" },
-          ]}
-          scrollContainerStyle={{ width: "100%" }}
-          state={viewState}
-        />
         <BottomSheetScrollView>
-          {viewState[0] === "Members" ? (
-            <CollectionMembers
-              mutateList={collection.mutate}
-              collection={collection}
-            />
-          ) : (
-            <CollectionLink />
-          )}
+          <CollectionMembers
+            mutateList={collection.mutate}
+            collection={collection}
+          />
         </BottomSheetScrollView>
       </BottomSheet>
     </>

@@ -369,7 +369,7 @@ export function Column({
                 .length === 0 && (
                 <View
                   style={{
-                    marginVertical: 20,
+                    marginVertical: 50,
                     backgroundColor: theme[3],
                     alignItems: "center",
                     padding: 20,
