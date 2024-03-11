@@ -3,7 +3,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { JetBrainsMono_700Bold } from "@expo-google-fonts/jetbrains-mono";
 import {
   Jost_100Thin,
@@ -65,7 +65,7 @@ Sentry.init({
 SplashScreen.hideAsync();
 
 function ErrorBoundaryComponent() {
-  const theme = useColorTheme();
+  const theme = useColor("mint");
   return (
     <View
       style={{

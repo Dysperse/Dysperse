@@ -1,49 +1,270 @@
+import themes from "@/components/themes.json";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button, ButtonText } from "@/ui/Button";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
+import { addHslAlpha, useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { Portal } from "@gorhom/portal";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useCallback } from "react";
-import { View } from "react-native";
+import { createContext, useCallback, useContext, useState } from "react";
+import { Pressable, View, useWindowDimensions } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { authStyles } from "./authStyles";
 
-export default function Page() {
-  const breakpoints = useResponsiveBreakpoints();
-  const handleBack = useCallback(() => {
-    if (router.canGoBack()) router.back();
-    else router.push("/");
-  }, []);
+const SignupContext = createContext(null);
+const useSignupContext = () => useContext(SignupContext);
+
+const Intro = () => {
+  const { handleNext } = useSignupContext();
   const theme = useColorTheme();
 
   return (
     <View
-      style={[
-        authStyles.container,
-        { backgroundColor: theme[1] },
-        breakpoints.md && authStyles.containerDesktop,
-        breakpoints.md && {
-          borderColor: theme[6],
-        },
-      ]}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+      }}
     >
-      <IconButton
-        variant="outlined"
-        size={55}
-        icon="close"
-        onPress={handleBack}
-      />
+      <Icon size={60} style={{ marginBottom: 10, marginTop: "auto" }}>
+        waving_hand
+      </Icon>
+      <Text
+        style={{ fontSize: 30, color: theme[11], textAlign: "center" }}
+        weight={900}
+      >
+        Welcome to Dysperse.
+      </Text>
       <Text
         style={{
-          marginVertical: "auto",
+          color: theme[11],
+          opacity: 0.7,
+          fontSize: 20,
           textAlign: "center",
-          fontSize: 30,
-          paddingHorizontal: 30,
-          opacity: 0.5,
         }}
-        weight={600}
       >
-        We're slowly rolling out the app to the public. {"\n"} Stay tuned!
+        Let's make productivity work for you.
       </Text>
+
+      <Button
+        onPress={handleNext}
+        style={{
+          marginTop: "auto",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          height: 70,
+        }}
+        variant="filled"
+      >
+        <ButtonText weight={900} style={{ fontSize: 20 }}>
+          Let's go!
+        </ButtonText>
+        <Icon bold style={{ marginLeft: 10 }}>
+          arrow_forward
+        </Icon>
+      </Button>
     </View>
+  );
+};
+
+const ColorPicker = () => {
+  const theme = useColorTheme();
+  const orange = useColor("orange");
+  const grass = useColor("grass");
+  const crimson = useColor("crimson");
+  const { handleNext, setTheme, selectedTheme } = useSignupContext();
+  const { width } = useWindowDimensions();
+
+  const barPosition = useSharedValue(-width);
+
+  const barStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: barPosition.value }],
+      width: 200,
+      height: "100%",
+      position: "absolute",
+      top: 0,
+      left: 0,
+    };
+  });
+
+  const handleSelect = (name) => {
+    setTheme(name);
+    barPosition.value = -width;
+    barPosition.value = withSpring(width * 1.5, {
+      stiffness: 70,
+      damping: 20,
+    });
+  };
+
+  return (
+    <View style={{ flex: 1, padding: 20 }}>
+      <Portal>
+        <Animated.View style={barStyle}>
+          <LinearGradient
+            colors={["transparent", addHslAlpha(theme[7], 0.1), "transparent"]}
+            style={{ flex: 1, transform: [{ skewX: "-10deg" }] }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+          />
+        </Animated.View>
+      </Portal>
+      <Text
+        style={{
+          fontSize: 30,
+          textAlign: "center",
+          marginBottom: 10,
+          color: theme[11],
+        }}
+        weight={700}
+      >
+        Choose your theme
+      </Text>
+      <Text
+        style={{
+          textAlign: "center",
+          opacity: 0.7,
+          fontSize: 20,
+          color: theme[11],
+        }}
+      >
+        You've unlocked three themes. Unlock more by completing in-app
+        achievements.
+      </Text>
+      <View style={{ gap: 20, flex: 1, paddingVertical: 20 }}>
+        {[
+          { p: orange, n: "orange" },
+          { p: grass, n: "grass" },
+          { p: crimson, n: "crimson" },
+        ].map((color, i) => (
+          <Pressable
+            key={color.n}
+            style={({ pressed }) => ({
+              flex: 1,
+              transform: [{ scale: pressed ? 0.95 : 1 }],
+            })}
+            onPress={() => handleSelect(color.n)}
+          >
+            <LinearGradient
+              colors={[color.p[4], color.p[5], color.p[6]]}
+              style={{
+                flex: 1,
+                justifyContent: "space-between",
+                paddingHorizontal: 20,
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 10,
+                borderRadius: 20,
+              }}
+            >
+              <Text style={{ fontSize: 30, color: color.p[11] }} weight={700}>
+                {themes[color.n].name}
+              </Text>
+              <Icon
+                size={40}
+                style={{ color: color.p[11] }}
+                filled={selectedTheme === color.n}
+              >
+                {selectedTheme === color.n
+                  ? "check_circle"
+                  : "radio_button_unchecked"}
+              </Icon>
+            </LinearGradient>
+          </Pressable>
+        ))}
+      </View>
+      <Button
+        onPress={handleNext}
+        style={{
+          marginTop: "auto",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          height: 70,
+        }}
+        variant="filled"
+      >
+        <ButtonText weight={900} style={{ fontSize: 20 }}>
+          Next
+        </ButtonText>
+        <Icon bold style={{ marginLeft: 10 }}>
+          arrow_forward
+        </Icon>
+      </Button>
+    </View>
+  );
+};
+
+export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
+  const [selectedTheme, setSelectedTheme] = useState("mint");
+
+  const theme = useColor(selectedTheme as any);
+  const [step, setStep] = useState(0);
+  const steps = [<Intro key="1" />, <ColorPicker key="2" />];
+
+  const handleBack = useCallback(() => {
+    if (step === 0)
+      if (router.canGoBack()) router.back();
+      else router.push("/");
+    else setStep(step - 1);
+  }, [step]);
+
+  return (
+    <ColorThemeProvider theme={theme}>
+      <SignupContext.Provider
+        value={{
+          handleNext: () => setStep(step + 1),
+          handleBack,
+          setTheme: setSelectedTheme,
+          selectedTheme,
+        }}
+      >
+        <View style={{ backgroundColor: theme[2], flex: 1 }}>
+          <View
+            style={[
+              authStyles.container,
+              { backgroundColor: theme[1] },
+              breakpoints.md && authStyles.containerDesktop,
+              breakpoints.md && {
+                borderColor: theme[6],
+              },
+            ]}
+          >
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              {["", ...steps].map((t, i) => (
+                <LinearGradient
+                  colors={
+                    i <= step ? [theme[9], theme[8]] : [theme[3], theme[3]]
+                  }
+                  key={i}
+                  style={{
+                    flex: 1,
+                    height: 5,
+                    borderRadius: 9,
+                  }}
+                />
+              ))}
+            </View>
+            <IconButton
+              variant="outlined"
+              size={55}
+              icon={step === 0 ? "close" : "arrow_back"}
+              onPress={handleBack}
+            />
+            {steps[step]}
+          </View>
+        </View>
+      </SignupContext.Provider>
+    </ColorThemeProvider>
   );
 }
