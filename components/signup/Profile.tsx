@@ -107,11 +107,18 @@ export const Profile = ({ form }) => {
       >
         Create a profile
       </Text>
-      <Text style={{ fontSize: 20, marginBottom: 20 }}>
+      <Text
+        style={{
+          color: theme[11],
+          opacity: 0.7,
+          fontSize: 20,
+          marginBottom: 20,
+        }}
+      >
         Productivity profiles are a great way to instantly share collections and
         gather availability.
       </Text>
-      <View style={{ gap: 20, flexDirection: "row" }}>
+      <View style={{ gap: 20, marginTop: 20, flexDirection: "row" }}>
         <View>
           <Text variant="eyebrow" style={{ marginBottom: 5 }}>
             Picture
@@ -269,6 +276,23 @@ export const Profile = ({ form }) => {
               </View>
             )}
             name="birthday"
+          />
+          <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
+            Bio
+          </Text>
+          <Controller
+            control={control}
+            name="bio"
+            render={({ field }) => (
+              <TextField
+                multiline
+                onChangeText={field.onChange}
+                value={field.value}
+                variant="filled+outlined"
+                style={{ marginBottom: 10 }}
+                placeholder="Tell the world about yourself <3"
+              />
+            )}
           />
         </View>
       </View>

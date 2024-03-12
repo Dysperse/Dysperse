@@ -223,10 +223,12 @@ export default function Page() {
       broadnessPreference: 3,
       name: "",
       email: "",
+      picture: "",
       password: "",
       theme: "mint",
       methods: [],
       birthday: [dayjs().year(), dayjs().month() + 1, dayjs().date()],
+      bio: "",
     },
   });
 
@@ -254,7 +256,7 @@ export default function Page() {
   };
 
   return (
-    <ColorThemeProvider theme={theme}>
+    <ColorThemeProvider setHTMLAttributes theme={theme}>
       <SignupContext.Provider
         value={{
           handleNext: handleSubmit(onSubmit, () => {
