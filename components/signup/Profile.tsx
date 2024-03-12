@@ -308,6 +308,7 @@ export const Profile = ({ form }) => {
         <ButtonText weight={900} style={{ fontSize: 20 }}>
           Next
         </ButtonText>
+        <Icon>arrow_forward</Icon>
       </Button>
     </ScrollView>
   );

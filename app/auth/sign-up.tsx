@@ -18,9 +18,13 @@ import {
 } from "react";
 
 import { Customization } from "@/components/signup/Customization";
+import Spinner from "@/ui/Spinner";
+import TextField from "@/ui/TextArea";
+import Turnstile from "@/ui/turnstile";
 import dayjs from "dayjs";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Pressable, View, useWindowDimensions } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -29,6 +33,7 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { Intro } from "../../components/signup/Intro";
 import { Profile } from "../../components/signup/Profile";
+import { TaskCreator } from "../../components/signup/TaskCreator";
 import { authStyles } from "./authStyles";
 
 const SignupContext = createContext(null);
@@ -216,19 +221,191 @@ export const useDebouncedValue = (inputValue, delay) => {
   return debouncedValue;
 };
 
+const LoadingPage = ({ form }) => {
+  const theme = useColorTheme();
+  const { getValues } = form;
+
+  useEffect(() => {
+    const values = getValues();
+    console.log(JSON.stringify(values));
+  }, []);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 30,
+          marginBottom: 10,
+          color: theme[11],
+          textAlign: "center",
+        }}
+        weight={900}
+      >
+        Almost there!
+      </Text>
+      <Text
+        style={{
+          fontSize: 20,
+          color: theme[11],
+          opacity: 0.7,
+          marginBottom: 20,
+          textAlign: "center",
+        }}
+      >
+        Hang tight while we're bringing your productivity superpowers to life.
+        This might take a while.
+      </Text>
+      <Spinner />
+    </View>
+  );
+};
+
+const VerificationPage = ({ form }) => {
+  const theme = useColorTheme();
+  const { setValue } = form;
+  const { handleNext } = useSignupContext();
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        padding: 20,
+        justifyContent: "center",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 30,
+          marginBottom: 10,
+          color: theme[11],
+        }}
+        weight={900}
+      >
+        Verifying...
+      </Text>
+      <Text
+        style={{
+          fontSize: 20,
+          color: theme[11],
+          opacity: 0.7,
+          marginBottom: 20,
+        }}
+        weight={700}
+      >
+        Are you a human!? Let's find out...
+      </Text>
+      <Turnstile
+        setToken={(t) => {
+          setValue("captchaToken", t);
+          handleNext();
+        }}
+      />
+    </View>
+  );
+};
+
+const Password = ({ form }) => {
+  const theme = useColorTheme();
+  const { getValues } = form;
+  const { handleNext } = useSignupContext();
+
+  return (
+    <ScrollView centerContent style={{ flex: 1, padding: 20 }}>
+      <Text
+        style={{
+          fontSize: 30,
+          marginTop: "auto",
+          marginBottom: 10,
+          color: theme[11],
+        }}
+        weight={900}
+      >
+        Create a password
+      </Text>
+      <Text
+        style={{
+          fontSize: 20,
+          opacity: 0.7,
+          marginBottom: 20,
+          color: theme[11],
+        }}
+      >
+        Make sure it's at least 8 characters long, and it's something which
+        nobody can't easily guess.
+      </Text>
+      <Controller
+        rules={{
+          required: true,
+          validate: (v) => v.length >= 8,
+        }}
+        name="password"
+        control={form.control}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <TextField
+            value={value || ""}
+            onChangeText={onChange}
+            secureTextEntry
+            variant="filled+outlined"
+            placeholder="Password"
+            style={[{ marginBottom: 10 }, error && { borderColor: "red" }]}
+          />
+        )}
+      />
+      <Controller
+        rules={{
+          required: true,
+          validate: (v) =>
+            getValues("confirmPassword") === getValues("password"),
+        }}
+        name="confirmPassword"
+        control={form.control}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <TextField
+            value={value || ""}
+            onChangeText={onChange}
+            secureTextEntry
+            variant="filled+outlined"
+            placeholder="Confirm password"
+            style={[{ marginBottom: 10 }, error && { borderColor: "red" }]}
+          />
+        )}
+      />
+      <Button
+        style={{ height: 60, marginTop: "auto" }}
+        variant="filled"
+        onPress={handleNext}
+      >
+        <ButtonText weight={900} style={{ fontSize: 20 }}>
+          Finish
+        </ButtonText>
+        <Icon>check</Icon>
+      </Button>
+    </ScrollView>
+  );
+};
+
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const form = useForm({
     defaultValues: {
-      broadnessPreference: 3,
       name: "",
       email: "",
       picture: "",
       password: "",
+      confirmPassword: "",
       theme: "mint",
       methods: [],
       birthday: [dayjs().year(), dayjs().month() + 1, dayjs().date()],
+      tasks: ["", "", ""],
       bio: "",
+      captchaToken: "",
     },
   });
 
@@ -240,7 +417,9 @@ export default function Page() {
     <Intro form={form} key="1" />,
     <Customization form={form} key="2" />,
     <Profile form={form} key="3" />,
-    <ColorPicker form={form} key="4" />,
+    <TaskCreator form={form} key="4" />,
+    <ColorPicker form={form} key="5" />,
+    <Password form={form} key="6" />,
   ];
 
   const handleBack = useCallback(() => {
@@ -280,7 +459,15 @@ export default function Page() {
               },
             ]}
           >
-            <View style={{ flexDirection: "row", gap: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                padding: 10,
+                paddingHorizontal: 5,
+                paddingBottom: 0,
+              }}
+            >
               {["", ...steps].map((t, i) => (
                 <LinearGradient
                   colors={
@@ -300,8 +487,11 @@ export default function Page() {
               size={55}
               icon={step === 0 ? "close" : "arrow_back"}
               onPress={handleBack}
+              disabled={step === steps.length + 1}
             />
             {steps[step]}
+            {step === steps.length && <VerificationPage form={form} />}
+            {step === steps.length + 1 && <LoadingPage form={form} />}
           </View>
         </View>
       </SignupContext.Provider>

@@ -354,7 +354,7 @@ export default function SignIn() {
                 Verifying...
               </Text>
               <Text weight={300} style={authStyles.subtitleContainer}>
-                Checking if you're actually human 🤨
+                Are you a human!? Let's find out...
               </Text>
               <Turnstile setToken={setToken} />
             </View>

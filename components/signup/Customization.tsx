@@ -42,9 +42,9 @@ export const Customization = ({ form }) => {
       description: "List your tasks by day in a notebook/agenda",
     },
     {
-      key: "TODO",
+      key: "CHECKLIST",
       icon: "priority",
-      name: "To-do list",
+      name: "Checklist",
       description: "Write down all your tasks in a list",
     },
   ];
