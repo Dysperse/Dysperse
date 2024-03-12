@@ -18,7 +18,7 @@ export function AgendaButtons() {
     const newParams = {
       start: dayjs(start)
         .subtract(1, agendaView as ManipulateType)
-        .format("YYYY-MM-DD"),
+        .toISOString(),
     };
     router.setParams(newParams);
   }, [agendaView, start]);
@@ -28,13 +28,13 @@ export function AgendaButtons() {
       start: dayjs(start)
         .startOf(agendaView as ManipulateType)
         .add(1, agendaView as ManipulateType)
-        .format("YYYY-MM-DD"),
+        .toISOString(),
     });
   }, [agendaView, start]);
 
   const handleToday = useCallback(() => {
     router.setParams({
-      start: dayjs().format("YYYY-MM-DD"),
+      start: dayjs().toISOString(),
     });
   }, []);
 

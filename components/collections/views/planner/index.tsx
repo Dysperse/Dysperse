@@ -40,11 +40,6 @@ function Agenda() {
         )
       : null;
 
-  // console.log(
-  //   "TEST_DATA",
-  //   data.map((i) => [i.start, i.end])
-  // );
-
   const agendaFallback = (
     <View
       style={{

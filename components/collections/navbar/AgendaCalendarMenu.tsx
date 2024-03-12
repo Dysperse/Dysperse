@@ -3,7 +3,7 @@ import Calendar from "@/ui/Calendar";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
-import { router, useGlobalSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 
 export function AgendaCalendarMenu() {
   const { start }: any = useGlobalSearchParams();
@@ -31,7 +31,7 @@ export function AgendaCalendarMenu() {
       <Calendar
         onDayPress={(day) => {
           router.setParams({
-            start: dayjs(day.dateString).format("YYYY-MM-DD"),
+            start: dayjs(day.dateString, "YYYY-MM-DD").utc().toISOString(),
           });
         }}
         markedDates={{
