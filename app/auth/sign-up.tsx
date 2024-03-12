@@ -8,9 +8,11 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
+import Slider from "@react-native-community/slider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { createContext, useCallback, useContext, useState } from "react";
+
 import {
   Controller,
   FormProvider,
@@ -267,6 +269,91 @@ const ColorPicker = () => {
   );
 };
 
+const Customization = () => {
+  const theme = useColorTheme();
+  return (
+    <View
+      style={{
+        flex: 1,
+        padding: 20,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 30,
+          textAlign: "center",
+          marginBottom: 10,
+          color: theme[11],
+        }}
+        weight={900}
+      >
+        Dysperse is for all
+      </Text>
+      <Text
+        style={{
+          textAlign: "center",
+          color: theme[11],
+          opacity: 0.7,
+          fontSize: 20,
+          marginBottom: 10,
+        }}
+        weight={700}
+      >
+        Let's make productivity feel like home.
+      </Text>
+      <View
+        style={{
+          backgroundColor: theme[3],
+          padding: 20,
+          borderRadius: 20,
+        }}
+      >
+        <Text>How broad do you like seeing task deadlines?</Text>
+        <Slider
+          style={{ width: "100%", height: 40 }}
+          minimumValue={1}
+          maximumValue={5}
+          minimumTrackTintColor={theme[8]}
+          step={1}
+          maximumTrackTintColor={theme[5]}
+        />
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Icon>draw_collage</Icon>
+            <Text style={{ color: theme[11] }}>Broad</Text>
+          </View>
+          <View
+            style={{
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Text style={{ color: theme[11] }}>Specific</Text>
+            <Icon>calendar_today</Icon>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const Profile = () => {
+  return (
+    <View>
+      <Text>Dysperse is for all</Text>
+    </View>
+  );
+};
+
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const control = useForm({
@@ -280,7 +367,12 @@ export default function Page() {
   const selectedTheme = control.watch("theme");
   const theme = useColor(selectedTheme as any);
   const [step, setStep] = useState(0);
-  const steps = [<Intro key="1" />, <ColorPicker key="2" />];
+  const steps = [
+    <Intro key="1" />,
+    <Customization key="2" />,
+    <Profile key="3" />,
+    <ColorPicker key="4" />,
+  ];
 
   const handleBack = useCallback(() => {
     if (step === 0)

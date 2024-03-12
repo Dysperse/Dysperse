@@ -34,7 +34,9 @@ function Agenda() {
   const column =
     typeof data?.find === "function"
       ? data.find((col) =>
-          dayjs(params.start as any).isBetween(col.start, col.end, null, "[]")
+          dayjs(params.start as any)
+            .utc()
+            .isBetween(col.start, col.end, null, "[]")
         )
       : null;
 
