@@ -327,15 +327,9 @@ function TaskDatePicker({ control, setValue, watch }) {
   );
 }
 
-function Footer({
-  nameRef,
-  labelMenuRef,
-  setValue,
-  watch,
-  dateMenuRef,
-  control,
-}) {
+function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
   const orange = useColor("orange");
+  const pinned = watch("pinned");
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -346,6 +340,17 @@ function Footer({
         },
       ],
     };
+  });
+
+  useEffect(() => {
+    rotate.value = withSpring(pinned ? -35 : 0, {
+      mass: 1,
+      damping: 10,
+      stiffness: 200,
+      overshootClamping: false,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 2,
+    });
   });
 
   return (
@@ -371,17 +376,7 @@ function Footer({
         render={({ field: { onChange, value } }) => (
           <Chip
             outlined
-            onPress={() => {
-              onChange(!value);
-              rotate.value = withSpring(!value ? -35 : 0, {
-                mass: 1,
-                damping: 10,
-                stiffness: 200,
-                overshootClamping: false,
-                restDisplacementThreshold: 0.01,
-                restSpeedThreshold: 2,
-              });
-            }}
+            onPress={() => onChange(!value)}
             icon={
               <Animated.View style={rotateStyle}>
                 <Icon
@@ -463,6 +458,7 @@ function TaskNameInput({
   menuRef,
   nameRef,
   labelMenuRef,
+  setValue,
 }: {
   control: any;
   dateMenuRef: React.MutableRefObject<Menu>;
@@ -470,6 +466,7 @@ function TaskNameInput({
   menuRef: React.MutableRefObject<BottomSheetModal>;
   nameRef: any;
   labelMenuRef: React.MutableRefObject<BottomSheetModal>;
+  setValue: any;
 }) {
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
@@ -518,6 +515,11 @@ function TaskNameInput({
           }}
           onChangeText={(e) => {
             onChange(e.replaceAll("\n", ""));
+            if (e.includes("!!")) {
+              setValue("pinned", true);
+            } else if (e === "") {
+              setValue("pinned", false);
+            }
           }}
           value={value}
           placeholderTextColor={theme[5]}
@@ -783,7 +785,6 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             <Footer
               setValue={setValue}
               watch={watch}
-              dateMenuRef={dateMenuRef}
               nameRef={nameRef}
               labelMenuRef={labelMenuRef}
               control={control}
@@ -795,6 +796,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
               handleSubmitButtonClick={handleSubmitButtonClick}
               nameRef={nameRef}
               dateMenuRef={dateMenuRef}
+              setValue={setValue}
             />
             <TaskAttachments watch={watch} setValue={setValue} />
           </View>
