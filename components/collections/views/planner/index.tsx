@@ -35,7 +35,8 @@ function Agenda() {
     typeof data?.find === "function"
       ? data.find(
           (col) =>
-            dayjs(params.start).toISOString() === dayjs(col.start).toISOString()
+            dayjs(params.start as any).toISOString() ===
+            dayjs(col.start).toISOString()
         )
       : null;
 
