@@ -72,12 +72,12 @@ const SelectionButton = memo(function SelectionButton({
 }) {
   const { start } = useLocalSearchParams();
   const theme = useColorTheme();
-  const isSelected = dayjs(itemStart).format("YYYY-MM-DD") === start;
+  const isSelected = dayjs(itemStart).toISOString() === start;
 
   const handlePress = () => {
     if (isSelected) return;
     router.setParams({
-      start: dayjs(itemStart).format("YYYY-MM-DD"),
+      start: dayjs(itemStart).toISOString(),
     });
   };
 

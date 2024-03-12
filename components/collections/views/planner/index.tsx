@@ -33,12 +33,16 @@ function Agenda() {
 
   const column =
     typeof data?.find === "function"
-      ? data.find((col) =>
-          dayjs(params.start as any)
-            .utc()
-            .isBetween(col.start, col.end, null, "[]")
+      ? data.find(
+          (col) =>
+            dayjs(params.start).toISOString() === dayjs(col.start).toISOString()
         )
       : null;
+
+  // console.log(
+  //   "TEST_DATA",
+  //   data.map((i) => [i.start, i.end])
+  // );
 
   const agendaFallback = (
     <View
