@@ -3,7 +3,7 @@ import Calendar from "@/ui/Calendar";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
-import { useGlobalSearchParams } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 
 export function AgendaCalendarMenu() {
   const { start }: any = useGlobalSearchParams();
