@@ -624,7 +624,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
   const labelMenuRef = useRef<BottomSheetModal>(null);
   const dateMenuRef = useRef<Menu>(null);
   const theme = useColorTheme();
-  const { control, handleSubmit, reset, watch, getValues, setValue } = useForm({
+  const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
       name: defaultValues.name || "",
       date: defaultValues.date || dayjs().utc(),
@@ -666,7 +666,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
       )
         .then((e) => mutateList(e))
         .then((e) => console.log(e));
-      reset({ label: data.label });
+      reset(defaultValues);
 
       Toast.show({
         type: "success",
