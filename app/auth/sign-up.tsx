@@ -4,115 +4,35 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
-import TextField from "@/ui/TextArea";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { createContext, useCallback, useContext, useState } from "react";
-
-import { Avatar } from "@/ui/Avatar";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import {
-  Controller,
-  FormProvider,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
-import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+import { Customization } from "@/components/signup/Customization";
+import dayjs from "dayjs";
+import { useForm } from "react-hook-form";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { Intro } from "../../components/signup/Intro";
+import { Profile } from "../../components/signup/Profile";
 import { authStyles } from "./authStyles";
 
 const SignupContext = createContext(null);
-const useSignupContext = () => useContext(SignupContext);
-
-const introStyles = StyleSheet.create({
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-    marginBottom: "auto",
-    maxWidth: "100%",
-    borderRadius: 20,
-    width: 300,
-  },
-});
-const Intro = () => {
-  const { handleNext } = useSignupContext();
-  const theme = useColorTheme();
-  const { control } = useForm();
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-      }}
-    >
-      <Icon size={60} style={{ marginBottom: 10, marginTop: "auto" }}>
-        waving_hand
-      </Icon>
-      <Text
-        style={{ fontSize: 30, color: theme[11], textAlign: "center" }}
-        weight={900}
-      >
-        Welcome to Dysperse.
-      </Text>
-      <Text
-        style={{
-          color: theme[11],
-          opacity: 0.7,
-          fontSize: 20,
-          textAlign: "center",
-        }}
-      >
-        Let's make productivity work for you.
-      </Text>
-      <Controller
-        rules={{ required: true }}
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <View
-            style={[introStyles.inputContainer, { backgroundColor: theme[3] }]}
-          >
-            <TextField
-              onBlur={onBlur}
-              onChangeText={onChange}
-              style={{
-                flex: 1,
-                height: "100%",
-                shadowRadius: 0,
-                paddingHorizontal: 20,
-              }}
-              onSubmitEditing={() => {
-                if (value !== "") handleNext();
-              }}
-              value={value || ""}
-              placeholder="What's your name?"
-            />
-            <IconButton
-              disabled={value === ""}
-              onPress={handleNext}
-              size={55}
-              icon="arrow_forward"
-            />
-          </View>
-        )}
-        name="name"
-      />
-    </View>
-  );
-};
+export const useSignupContext = () => useContext(SignupContext);
 
 const ColorPressable = ({ color, handleSelect }) => {
   const { selectedTheme } = useSignupContext();
@@ -177,14 +97,14 @@ const ColorPressable = ({ color, handleSelect }) => {
   );
 };
 
-const ColorPicker = () => {
+const ColorPicker = ({ form }) => {
   const theme = useColorTheme();
   const orange = useColor("orange");
   const grass = useColor("grass");
   const crimson = useColor("crimson");
   const { handleNext } = useSignupContext();
   const { width } = useWindowDimensions();
-  const { setValue } = useFormContext();
+  const { setValue } = form;
   const barPosition = useSharedValue(-width);
 
   const barStyle = useAnimatedStyle(() => {
@@ -272,151 +192,53 @@ const ColorPicker = () => {
   );
 };
 
-const Customization = () => {
-  const theme = useColorTheme();
-  const { control } = useFormContext();
-  const { handleNext } = useSignupContext();
-
-  const methods = [
-    {
-      icon: "timer",
-      name: "Pomodoro",
-      description:
-        "Work for 25 minutes, then take a 5-minute break. Repeat 4 times, then take a 15-minute break.",
-    },
-    {
-      icon: "crisis_alert",
-      name: "Eisenhower matrix",
-      description: "Prioritize tasks based on urgency and importance.",
-    },
-    {
-      icon: "view_kanban",
-      name: "Kanban",
-      description:
-        "Organize your tasks into columns. Move them around as you make progress.",
-    },
-    {
-      icon: "transition_slide",
-      name: "Traditional planner",
-      description:
-        "Plan the stuff you need to do each day and check them off as you go.",
-    },
-    {
-      icon: "priority",
-      name: "To-do list",
-      description: "List all the things you need to do and check them off.",
-    },
-  ];
-
-  return (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{
-        padding: 20,
-      }}
-    >
-      <Text
-        style={{
-          marginTop: "auto",
-          fontSize: 30,
-          marginBottom: 10,
-          color: theme[11],
-        }}
-        weight={900}
-      >
-        What productivity methods do you already use?
-      </Text>
-      <Text
-        style={{
-          color: theme[11],
-          opacity: 0.7,
-          fontSize: 20,
-          marginBottom: 30,
-        }}
-      >
-        We'll incorporate them into your Dysperse experience.
-      </Text>
-      <Controller
-        control={control}
-        name="methods"
-        render={() => (
-          <View>
-            {methods.map((method, i) => (
-              <ListItemButton
-                variant="outlined"
-                key={i}
-                style={{
-                  flexDirection: "row",
-                  marginBottom: 15,
-                }}
-              >
-                <Avatar
-                  icon={method.icon}
-                  size={40}
-                  style={{
-                    backgroundColor: theme[3],
-                  }}
-                />
-                <ListItemText
-                  primary={method.name}
-                  secondary={method.description}
-                />
-              </ListItemButton>
-            ))}
-          </View>
-        )}
-      />
-      <Button
-        onPress={handleNext}
-        style={{
-          marginTop: "auto",
-          flexDirection: "row",
-          alignItems: "center",
-          width: "100%",
-          height: 70,
-        }}
-        variant="filled"
-      >
-        <ButtonText weight={900} style={{ fontSize: 20 }}>
-          Next
-        </ButtonText>
-        <Icon bold style={{ marginLeft: 10 }}>
-          arrow_forward
-        </Icon>
-      </Button>
-    </ScrollView>
-  );
+export const validateEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
 };
 
-const Profile = () => {
-  return (
-    <View>
-      <Text>Dysperse is for all</Text>
-    </View>
-  );
+export const useDebouncedValue = (inputValue, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(inputValue);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputValue, delay]);
+
+  return debouncedValue;
 };
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
-  const control = useForm({
+  const form = useForm({
     defaultValues: {
       broadnessPreference: 3,
       name: "",
       email: "",
       password: "",
       theme: "mint",
+      methods: [],
+      birthday: [dayjs().year(), dayjs().month() + 1, dayjs().date()],
     },
   });
 
-  const selectedTheme = control.watch("theme");
+  const selectedTheme = form.watch("theme");
   const theme = useColor(selectedTheme as any);
   const [step, setStep] = useState(0);
 
   const steps = [
-    <Intro key="1" />,
-    <Customization key="2" />,
-    <Profile key="3" />,
-    <ColorPicker key="4" />,
+    <Intro form={form} key="1" />,
+    <Customization form={form} key="2" />,
+    <Profile form={form} key="3" />,
+    <ColorPicker form={form} key="4" />,
   ];
 
   const handleBack = useCallback(() => {
@@ -426,53 +248,61 @@ export default function Page() {
     else setStep(step - 1);
   }, [step]);
 
+  const { handleSubmit } = form;
+  const onSubmit = (data) => {
+    setStep(step + 1);
+  };
+
   return (
-    <FormProvider {...control}>
-      <ColorThemeProvider theme={theme}>
-        <SignupContext.Provider
-          value={{
-            handleNext: () => setStep(step + 1),
-            handleBack,
-            selectedTheme,
-          }}
-        >
-          <View style={{ backgroundColor: theme[2], flex: 1 }}>
-            <View
-              style={[
-                authStyles.container,
-                { backgroundColor: theme[1] },
-                breakpoints.md && authStyles.containerDesktop,
-                breakpoints.md && {
-                  borderColor: theme[6],
-                },
-              ]}
-            >
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                {["", ...steps].map((t, i) => (
-                  <LinearGradient
-                    colors={
-                      i <= step ? [theme[9], theme[8]] : [theme[3], theme[3]]
-                    }
-                    key={i}
-                    style={{
-                      flex: 1,
-                      height: 5,
-                      borderRadius: 9,
-                    }}
-                  />
-                ))}
-              </View>
-              <IconButton
-                variant="outlined"
-                size={55}
-                icon={step === 0 ? "close" : "arrow_back"}
-                onPress={handleBack}
-              />
-              {steps[step]}
+    <ColorThemeProvider theme={theme}>
+      <SignupContext.Provider
+        value={{
+          handleNext: handleSubmit(onSubmit, () => {
+            Toast.show({
+              type: "error",
+              text1: "Please check your inputs and try again.",
+            });
+          }),
+          handleBack,
+          selectedTheme,
+        }}
+      >
+        <View style={{ backgroundColor: theme[2], flex: 1 }}>
+          <View
+            style={[
+              authStyles.container,
+              { backgroundColor: theme[1] },
+              breakpoints.md && authStyles.containerDesktop,
+              breakpoints.md && {
+                borderColor: theme[6],
+              },
+            ]}
+          >
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              {["", ...steps].map((t, i) => (
+                <LinearGradient
+                  colors={
+                    i <= step ? [theme[9], theme[8]] : [theme[3], theme[3]]
+                  }
+                  key={i}
+                  style={{
+                    flex: 1,
+                    height: 5,
+                    borderRadius: 9,
+                  }}
+                />
+              ))}
             </View>
+            <IconButton
+              variant="outlined"
+              size={55}
+              icon={step === 0 ? "close" : "arrow_back"}
+              onPress={handleBack}
+            />
+            {steps[step]}
           </View>
-        </SignupContext.Provider>
-      </ColorThemeProvider>
-    </FormProvider>
+        </View>
+      </SignupContext.Provider>
+    </ColorThemeProvider>
   );
 }

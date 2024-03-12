@@ -19,6 +19,7 @@ import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
 import isToday from "dayjs/plugin/isToday";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -54,6 +55,7 @@ import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import { SidebarContext } from "../../components/layout/sidebar/context";
 
+dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isBetween);

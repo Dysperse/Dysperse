@@ -11,51 +11,57 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 
-const ProfilePictureUploadButton = ({ control }) => {
-  const [loading, setLoading] = useState(false);
+export const pickImageAsync = async (setLoading, onChange) => {
+  try {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
+    });
 
-  const pickImageAsync = async (onChange) => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        quality: 1,
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
+    if (!result.canceled) {
+      setLoading(true);
+
+      // convert to File
+      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
+      const file = new File([blob], result.assets[0].fileName, {
+        type: blob.type,
       });
+      const form = new FormData();
+      form.append("image", file);
 
-      if (!result.canceled) {
-        setLoading(true);
-
-        // convert to File
-        const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
-        const file = new File([blob], result.assets[0].fileName, {
-          type: blob.type,
-        });
-        const form = new FormData();
-        form.append("image", file);
-
-        const res = await fetch(
-          "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
-          {
-            method: "POST",
-            body: form,
-          }
-        ).then((res) => res.json());
-        onChange(res.data.display_url);
-      } else {
-        alert("You did not select any image.");
-      }
-    } catch (e) {
-      Toast.show({ type: "error" });
-    } finally {
-      setLoading(false);
+      const res = await fetch(
+        "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
+        {
+          method: "POST",
+          body: form,
+        }
+      ).then((res) => res.json());
+      onChange(res.data.display_url);
+    } else {
+      alert("You did not select any image.");
     }
-  };
+  } catch (e) {
+    Toast.show({ type: "error" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const ProfilePictureUploadButton = ({
+  children,
+  control,
+}: {
+  children?: ReactElement;
+  control: any;
+}) => {
+  const [loading, setLoading] = useState(false);
 
   return (
     <Controller
@@ -65,7 +71,7 @@ const ProfilePictureUploadButton = ({ control }) => {
         <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
           <ProfilePicture name="Profile Picture" image={value} size={60} />
           <Button
-            onPress={() => pickImageAsync(onChange)}
+            onPress={() => pickImageAsync(setLoading, onChange)}
             variant="filled"
             isLoading={loading}
             style={{ minWidth: 120 }}
