@@ -8,11 +8,13 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
-import Slider from "@react-native-community/slider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { createContext, useCallback, useContext, useState } from "react";
 
+import { Avatar } from "@/ui/Avatar";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import {
   Controller,
   FormProvider,
@@ -20,6 +22,7 @@ import {
   useFormContext,
 } from "react-hook-form";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -85,7 +88,6 @@ const Intro = () => {
             <TextField
               onBlur={onBlur}
               onChangeText={onChange}
-              autoFocus
               style={{
                 flex: 1,
                 height: "100%",
@@ -95,6 +97,7 @@ const Intro = () => {
               onSubmitEditing={() => {
                 if (value !== "") handleNext();
               }}
+              value={value || ""}
               placeholder="What's your name?"
             />
             <IconButton
@@ -271,78 +274,116 @@ const ColorPicker = () => {
 
 const Customization = () => {
   const theme = useColorTheme();
+  const { control } = useFormContext();
+
+  const methods = [
+    {
+      icon: "timer",
+      name: "Pomodoro",
+      description:
+        "Work for 25 minutes, then take a 5-minute break. Repeat 4 times, then take a 15-minute break.",
+    },
+    {
+      icon: "crisis_alert",
+      name: "Eisenhower matrix",
+      description: "Prioritize tasks based on urgency and importance.",
+    },
+    {
+      icon: "view_kanban",
+      name: "Kanban",
+      description:
+        "Organize your tasks into columns. Move them around as you make progress.",
+    },
+    {
+      icon: "transition_slide",
+      name: "Traditional planner",
+      description:
+        "Plan the stuff you need to do each day and check them off as you go.",
+    },
+    {
+      icon: "priority",
+      name: "To-do list",
+      description: "List all the things you need to do and check them off.",
+    },
+  ];
+
   return (
-    <View
-      style={{
-        flex: 1,
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{
         padding: 20,
-        justifyContent: "center",
-        alignItems: "center",
       }}
     >
       <Text
         style={{
+          marginTop: "auto",
           fontSize: 30,
-          textAlign: "center",
           marginBottom: 10,
           color: theme[11],
         }}
         weight={900}
       >
-        Dysperse is for all
+        What productivity methods do you already use?
       </Text>
       <Text
         style={{
-          textAlign: "center",
           color: theme[11],
           opacity: 0.7,
           fontSize: 20,
-          marginBottom: 10,
+          marginBottom: 30,
         }}
-        weight={700}
       >
-        Let's make productivity feel like home.
+        We'll incorporate them into your Dysperse experience.
       </Text>
-      <View
+      <Controller
+        control={control}
+        name="methods"
+        render={() => (
+          <View>
+            {methods.map((method, i) => (
+              <ListItemButton
+                variant="outlined"
+                key={i}
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 15,
+                }}
+              >
+                <Avatar
+                  icon={method.icon}
+                  size={40}
+                  style={{
+                    backgroundColor: theme[3],
+                  }}
+                />
+                <ListItemText
+                  primary={method.name}
+                  secondary={method.description}
+                />
+              </ListItemButton>
+            ))}
+          </View>
+        )}
+      />
+      <Button
+        onPress={() => {}}
         style={{
-          backgroundColor: theme[3],
-          padding: 20,
-          borderRadius: 20,
+          marginTop: "auto",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          height: 70,
         }}
+        variant="filled"
       >
-        <Text>How broad do you like seeing task deadlines?</Text>
-        <Slider
-          style={{ width: "100%", height: 40 }}
-          minimumValue={1}
-          maximumValue={5}
-          minimumTrackTintColor={theme[8]}
-          step={1}
-          maximumTrackTintColor={theme[5]}
-        />
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View
-            style={{
-              alignItems: "center",
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
-            <Icon>draw_collage</Icon>
-            <Text style={{ color: theme[11] }}>Broad</Text>
-          </View>
-          <View
-            style={{
-              alignItems: "center",
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
-            <Text style={{ color: theme[11] }}>Specific</Text>
-            <Icon>calendar_today</Icon>
-          </View>
-        </View>
-      </View>
-    </View>
+        <ButtonText weight={900} style={{ fontSize: 20 }}>
+          Next
+        </ButtonText>
+        <Icon bold style={{ marginLeft: 10 }}>
+          arrow_forward
+        </Icon>
+      </Button>
+    </ScrollView>
   );
 };
 
@@ -358,15 +399,18 @@ export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const control = useForm({
     defaultValues: {
+      broadnessPreference: 3,
       name: "",
       email: "",
       password: "",
       theme: "mint",
     },
   });
+
   const selectedTheme = control.watch("theme");
   const theme = useColor(selectedTheme as any);
   const [step, setStep] = useState(0);
+
   const steps = [
     <Intro key="1" />,
     <Customization key="2" />,
