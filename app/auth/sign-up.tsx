@@ -275,6 +275,7 @@ const ColorPicker = () => {
 const Customization = () => {
   const theme = useColorTheme();
   const { control } = useFormContext();
+  const { handleNext } = useSignupContext();
 
   const methods = [
     {
@@ -366,7 +367,7 @@ const Customization = () => {
         )}
       />
       <Button
-        onPress={() => {}}
+        onPress={handleNext}
         style={{
           marginTop: "auto",
           flexDirection: "row",
