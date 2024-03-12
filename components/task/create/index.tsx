@@ -515,7 +515,10 @@ function TaskNameInput({
           }}
           onChangeText={(e) => {
             onChange(e.replaceAll("\n", ""));
-            if (e.includes("!!")) {
+            if (
+              e.includes("!!") ||
+              (e === e.toUpperCase() && e.trim().length > 4)
+            ) {
               setValue("pinned", true);
             } else if (e === "") {
               setValue("pinned", false);
