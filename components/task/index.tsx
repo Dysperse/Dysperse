@@ -153,23 +153,38 @@ const Task = memo(function Task({
             ? addHslAlpha(theme[3], 0.7)
             : undefined,
           alignItems: "flex-start",
+          ...(isCompleted && {
+            opacity: 0.6,
+          }),
         })}
       >
         <TaskCheckbox task={task} mutateList={onTaskUpdate} />
         <View style={{ gap: 5, flex: 1 }}>
-          <Text
-            weight={300}
-            // numberOfLines={noChips ?  : 1}
-            style={{
-              opacity: 0.8,
-              ...(isCompleted && {
-                opacity: 0.6,
-                textDecorationLine: "line-through",
-              }),
-            }}
-          >
-            {task.name}
-          </Text>
+          <View style={{ flex: 1 }}>
+            <Text
+              weight={300}
+              // numberOfLines={noChips ?  : 1}
+              style={{
+                opacity: 0.8,
+                ...(isCompleted && {
+                  textDecorationLine: "line-through",
+                }),
+              }}
+            >
+              {task.name}
+            </Text>
+            {task.note && (
+              <Text
+                numberOfLines={1}
+                weight={300}
+                style={{
+                  opacity: 0.7,
+                }}
+              >
+                {task.note.substring(0, 100).replaceAll("\n", " ")}
+              </Text>
+            )}
+          </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
             {showRelativeTime && (
               <Chip
