@@ -27,11 +27,13 @@ function TaskNameInput() {
   const { task, updateTask } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <>
       <AutoSizeTextArea
         onBlur={() => {
+          setIsFocused(false);
           if (name === task.name) return;
           setName(name.replaceAll("\n", ""));
           updateTask("name", name.replaceAll("\n", ""));
@@ -45,13 +47,24 @@ function TaskNameInput() {
             e.preventDefault();
           }
         }}
-        style={{
-          fontFamily: "body_800",
-          color: theme[12],
-          paddingHorizontal: 20,
-          marginTop: 20,
-          textAlign: "center",
-        }}
+        onFocus={() => setIsFocused(true)}
+        style={[
+          {
+            fontFamily: "body_800",
+            color: theme[12],
+            padding: 20,
+            paddingVertical: 10,
+            marginTop: 10,
+            textAlign: "center",
+            borderRadius: 20,
+            borderWidth: 2,
+            borderColor: "transparent",
+          },
+          isFocused && {
+            backgroundColor: theme[3],
+            borderColor: theme[6],
+          },
+        ]}
         fontSize={breakpoints.md ? 40 : 30}
       />
     </>

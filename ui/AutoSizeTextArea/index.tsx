@@ -38,12 +38,14 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
       onContentSizeChange={(event) => {
         const contentHeight = event.nativeEvent.contentSize.height;
         setLayoutHeight(Math.max(layoutHeight, contentHeight));
+        props.onContentSizeChange?.(event);
       }}
       onLayout={(event) => {
         const height = event.nativeEvent.layout.height;
         if (height) {
           setLayoutHeight(event.nativeEvent.layout.height);
         }
+        props.onLayout?.(event);
       }}
     />
   );
