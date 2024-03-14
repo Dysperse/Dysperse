@@ -16,7 +16,7 @@ import { TaskDrawerContext } from "./context";
 export function TaskDrawer({ mutateList, children, id }: any) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const { sessionToken } = useUser();
 
   // Fetch data
@@ -111,7 +111,10 @@ export function TaskDrawer({ mutateList, children, id }: any) {
           onPress={() => {
             handleClose();
           }}
-          style={{ flex: 1, height: "100%" }}
+          style={{
+            flex: 1,
+            height: "100%",
+          }}
         >
           <Pressable
             onPress={(e) => e.stopPropagation()}
@@ -119,8 +122,8 @@ export function TaskDrawer({ mutateList, children, id }: any) {
               breakpoints.md && {
                 margin: "auto",
                 width: 500,
-                maxWidth: width - 50,
-                height: height - 100,
+                height: 700,
+                maxHeight: width - 100,
                 borderWidth: 1,
                 shadowRadius: 50,
                 shadowOffset: {

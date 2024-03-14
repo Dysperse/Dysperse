@@ -30,7 +30,7 @@ function TaskNameInput() {
 
   return (
     <AutoSizeTextArea
-      onBlur={(e) => {
+      onBlur={() => {
         if (name === task.name) return;
         updateTask("name", name);
       }}

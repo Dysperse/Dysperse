@@ -395,7 +395,6 @@ export default function AppLayout() {
                                     />
                                   ))}
                                   {[
-                                    "settings/appearance",
                                     "settings/customization/appearance",
                                     "settings/customization/notifications",
                                     "settings/login/login-security/index",

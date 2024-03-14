@@ -14,6 +14,7 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
   const [size, setSize] = useState(props.fontSize || 15);
 
   const handleChange = (e) => {
+    console.log(e);
     setSize(e.nativeEvent.contentSize.height);
   };
 
@@ -31,7 +32,7 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
       multiline
       style={[
         {
-          height: Math.max(props.fontSize || 15, size),
+          height: size,
           overflow: "hidden",
           fontSize: props.fontSize || 15,
           lineHeight: props.fontSize + 10,

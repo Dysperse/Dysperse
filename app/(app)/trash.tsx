@@ -104,7 +104,7 @@ export default function Trash() {
             }}
             weight={200}
           >
-            Items are permanently deleted on the 1st of every month{" "}
+            Items are permanently deleted on the 1st of every month
           </Text>
         </View>
         <DeleteAllButton handleDelete={handleDelete} />

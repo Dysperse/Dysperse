@@ -163,7 +163,6 @@ const Task = memo(function Task({
           <View style={{ flex: 1 }}>
             <Text
               weight={300}
-              // numberOfLines={noChips ?  : 1}
               style={{
                 opacity: 0.8,
                 ...(isCompleted && {
@@ -173,7 +172,7 @@ const Task = memo(function Task({
             >
               {task.name}
             </Text>
-            {task.note && (
+            {task.note ? (
               <Text
                 numberOfLines={1}
                 weight={300}
@@ -183,7 +182,7 @@ const Task = memo(function Task({
               >
                 {task.note.substring(0, 100).replaceAll("\n", " ")}
               </Text>
-            )}
+            ) : null}
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
             {showRelativeTime && (
