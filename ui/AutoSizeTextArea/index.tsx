@@ -1,7 +1,6 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, StyleProp, TextInputProps } from "react-native";
-import Text from "../Text";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -23,33 +22,29 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
   }, [ref]);
 
   return (
-    <>
-      <Text>{layoutHeight}</Text>
-      <BottomSheetTextInput
-        ref={ref}
-        {...props}
-        defaultValue={props.inputDefaultValue}
-        multiline
-        style={[
-          {
-            height: layoutHeight,
-            overflow: "hidden",
-            fontSize: props.fontSize || 15,
-          },
-          props.style,
-        ]}
-        onContentSizeChange={(event) => {
-          const contentHeight = event.nativeEvent.contentSize.height;
-          setLayoutHeight(Math.max(layoutHeight, contentHeight));
-        }}
-        onKeyPress={() => setSize(props.fontSize || 15)}
-        onLayout={(event) => {
-          const height = event.nativeEvent.layout.height;
-          if (height) {
-            setLayoutHeight(event.nativeEvent.layout.height);
-          }
-        }}
-      />
-    </>
+    <BottomSheetTextInput
+      ref={ref}
+      {...props}
+      defaultValue={props.inputDefaultValue}
+      multiline
+      style={[
+        {
+          height: layoutHeight,
+          overflow: "hidden",
+          fontSize: props.fontSize || 15,
+        },
+        props.style,
+      ]}
+      onContentSizeChange={(event) => {
+        const contentHeight = event.nativeEvent.contentSize.height;
+        setLayoutHeight(Math.max(layoutHeight, contentHeight));
+      }}
+      onLayout={(event) => {
+        const height = event.nativeEvent.layout.height;
+        if (height) {
+          setLayoutHeight(event.nativeEvent.layout.height);
+        }
+      }}
+    />
   );
 }

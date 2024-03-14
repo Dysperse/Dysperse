@@ -37,7 +37,14 @@ function TaskNameInput() {
           updateTask("name", name.replaceAll("\n", ""));
         }}
         onChangeText={(text) => setName(text)}
+        enterKeyHint="done"
+        textAlign="center"
         value={name}
+        onKeyPress={(e) => {
+          if (e.nativeEvent.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
         style={{
           fontFamily: "body_800",
           color: theme[12],
