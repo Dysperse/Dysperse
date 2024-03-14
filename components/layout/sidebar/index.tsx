@@ -179,7 +179,6 @@ const SyncButton = memo(function SyncButton() {
 
 export const LogoButton = memo(function LogoButton() {
   const theme = useColorTheme();
-  const { error } = useUser();
   const breakpoints = useResponsiveBreakpoints();
   const red = useColor("red");
   const openSupport = useCallback(() => {
@@ -189,10 +188,14 @@ export const LogoButton = memo(function LogoButton() {
     Linking.openURL("https://feedback.dysperse.com");
   }, []);
 
-  const { session } = useUser();
+  const { session, error, sessionToken } = useUser();
   const { isFocused, setFocus } = useFocusPanelContext();
   const { closeSidebarOnMobile, isOpen, openSidebar, closeSidebar } =
     useSidebarContext();
+
+  useEffect(() => {
+    sendApiRequest(sessionToken, "GET", "space/integrations/sync", {});
+  }, [sessionToken]);
 
   return (
     <View
