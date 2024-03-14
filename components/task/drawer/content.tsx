@@ -29,22 +29,25 @@ function TaskNameInput() {
   const [name, setName] = useState(task.name);
 
   return (
-    <AutoSizeTextArea
-      onBlur={() => {
-        if (name === task.name) return;
-        updateTask("name", name);
-      }}
-      onChangeText={(text) => setName(text.replaceAll("\n", ""))}
-      value={name}
-      style={{
-        fontFamily: "body_800",
-        color: theme[12],
-        paddingHorizontal: 20,
-        marginTop: 20,
-        textAlign: "center",
-      }}
-      fontSize={breakpoints.md ? 40 : 30}
-    />
+    <>
+      <AutoSizeTextArea
+        onBlur={() => {
+          if (name === task.name) return;
+          setName(name.replaceAll("\n", ""));
+          updateTask("name", name.replaceAll("\n", ""));
+        }}
+        onChangeText={(text) => setName(text)}
+        value={name}
+        style={{
+          fontFamily: "body_800",
+          color: theme[12],
+          paddingHorizontal: 20,
+          marginTop: 20,
+          textAlign: "center",
+        }}
+        fontSize={breakpoints.md ? 40 : 30}
+      />
+    </>
   );
 }
 

@@ -1,6 +1,7 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, StyleProp, TextInputProps } from "react-native";
+import Text from "../Text";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -13,10 +14,7 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
   const ref: any = useRef();
   const [size, setSize] = useState(props.fontSize || 15);
 
-  const handleChange = (e) => {
-    console.log(e);
-    setSize(e.nativeEvent.contentSize.height);
-  };
+  const [layoutHeight, setLayoutHeight] = useState(0);
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidHide", () => {
@@ -25,22 +23,33 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
   }, [ref]);
 
   return (
-    <BottomSheetTextInput
-      ref={ref}
-      {...props}
-      defaultValue={props.inputDefaultValue}
-      multiline
-      style={[
-        {
-          height: size,
-          overflow: "hidden",
-          fontSize: props.fontSize || 15,
-          lineHeight: props.fontSize + 10,
-        },
-        props.style,
-      ]}
-      onContentSizeChange={handleChange}
-      onKeyPress={() => setSize(props.fontSize || 15)}
-    />
+    <>
+      <Text>{layoutHeight}</Text>
+      <BottomSheetTextInput
+        ref={ref}
+        {...props}
+        defaultValue={props.inputDefaultValue}
+        multiline
+        style={[
+          {
+            height: layoutHeight,
+            overflow: "hidden",
+            fontSize: props.fontSize || 15,
+          },
+          props.style,
+        ]}
+        onContentSizeChange={(event) => {
+          const contentHeight = event.nativeEvent.contentSize.height;
+          setLayoutHeight(Math.max(layoutHeight, contentHeight));
+        }}
+        onKeyPress={() => setSize(props.fontSize || 15)}
+        onLayout={(event) => {
+          const height = event.nativeEvent.layout.height;
+          if (height) {
+            setLayoutHeight(event.nativeEvent.layout.height);
+          }
+        }}
+      />
+    </>
   );
 }
