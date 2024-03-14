@@ -122,6 +122,7 @@ function FriendActivity() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { data, isLoading, error } = useSWR(["user/friends"]);
+  const { height } = useWindowDimensions();
   const handleFriendsPress = useCallback(() => router.push("/friends"), []);
 
   const friends = Array.isArray(data) && [...data, "ALL_FRIENDS"];
@@ -152,7 +153,7 @@ function FriendActivity() {
             borderRadius: 20,
             width: "100%",
           },
-          breakpoints.md && { height: 250 },
+          breakpoints.md && { height: height / 3 },
         ]}
       >
         {isLoading ? (

@@ -225,7 +225,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                     gap: 5,
                     width: "auto",
                     justifyContent: "flex-start",
-                    paddingRight: 5,
+                    paddingHorizontal: 10,
                   },
                 ]}
               >
@@ -268,7 +268,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               <Icon style={{ color: theme[11] }} size={20}>
                 {options.find((i) => i.selected)?.icon || "calendar_today"}
               </Icon>
-              <Icon style={{ marginLeft: -4, color: theme[11] }}>
+              <Icon style={{ marginLeft: -2, color: theme[11] }}>
                 expand_more
               </Icon>
             </IconButton>
