@@ -58,6 +58,7 @@ function TaskNameInput() {
             textAlign: "center",
             borderRadius: 20,
             borderWidth: 2,
+            shadowRadius: 0,
             borderColor: "transparent",
           },
           isFocused && {
