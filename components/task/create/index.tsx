@@ -433,10 +433,10 @@ function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
             outlined
             label={value?.name || "Add label"}
             icon={
-              value ? (
+              value?.emoji ? (
                 <Emoji emoji={value?.emoji} />
               ) : (
-                <Icon filled={value}>new_label</Icon>
+                <Icon>new_label</Icon>
               )
             }
             {...(value && {
