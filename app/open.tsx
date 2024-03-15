@@ -3,7 +3,7 @@ import { useUser } from "@/context/useUser";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { Redirect, router } from "expo-router";
-import { View } from "react-native";
+import { StatusBar, View } from "react-native";
 
 export default function Page() {
   const { session } = useUser();
@@ -16,6 +16,7 @@ export default function Page() {
 
   return (
     <ColorThemeProvider theme={theme}>
+      <StatusBar barStyle="light-content" />
       <View style={{ backgroundColor: theme[2], flex: 1 }}>
         <CommandPaletteContent handleClose={handleClose} />
       </View>

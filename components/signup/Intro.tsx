@@ -4,7 +4,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Controller } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { useSignupContext } from "../../app/auth/sign-up";
 
 const introStyles = StyleSheet.create({
@@ -25,7 +25,8 @@ export const Intro = ({ form }) => {
   const { control } = form;
 
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior="padding"
       style={{
         flex: 1,
         alignItems: "center",
@@ -40,11 +41,12 @@ export const Intro = ({ form }) => {
         style={{ fontSize: 30, color: theme[11], textAlign: "center" }}
         weight={900}
       >
-        Welcome to Dysperse.
+        Welcome&nbsp;to #dysperse.
       </Text>
       <Text
         style={{
           color: theme[11],
+          marginTop: 5,
           opacity: 0.7,
           fontSize: 20,
           textAlign: "center",
@@ -82,6 +84,6 @@ export const Intro = ({ form }) => {
           name="name"
         />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
