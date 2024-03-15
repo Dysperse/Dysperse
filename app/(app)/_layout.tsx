@@ -223,7 +223,7 @@ export default function AppLayout() {
     if (Platform.OS === "web") {
       document
         .querySelector(`meta[name="theme-color"]`)
-        .setAttribute("content", theme[breakpoints.md ? 2 : 1]);
+        .setAttribute("content", theme[2]);
     }
   }, [theme, breakpoints.md]);
 
