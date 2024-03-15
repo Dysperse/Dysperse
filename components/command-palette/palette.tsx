@@ -290,7 +290,7 @@ const PaletteHeader = memo(function PaletteHeader({
   );
 });
 
-function CommandPalettePreview({ preview }) {
+function CommandPalettePreview({ preview, handlePress }) {
   const theme = useColorTheme();
 
   return (
@@ -319,9 +319,8 @@ function CommandPalettePreview({ preview }) {
             </Icon>
           )}
         </Avatar>
-        <Text heading style={{ fontSize: 40 }}>
-          {preview.label}
-        </Text>
+        <Text style={{ fontSize: 40 }}>{preview.label}</Text>
+        <Text>{JSON.stringify(preview, null, 2)}</Text>
         {preview?.data?.description && <Text>{preview.data.description}</Text>}
         {preview.data?.createdBy && (
           <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>

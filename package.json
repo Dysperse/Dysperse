@@ -63,6 +63,7 @@
     "react-native-draggable-grid": "^2.1.8",
     "react-native-drawer-layout": "^3.2.2",
     "react-native-gesture-handler": "~2.14.0",
+    "react-native-markdown-display": "^7.0.2",
     "react-native-popup-menu": "^0.16.1",
     "react-native-qrcode-svg": "^6.3.0",
     "react-native-reanimated": "~3.6.2",
