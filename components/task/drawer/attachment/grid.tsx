@@ -69,7 +69,9 @@ export function AttachmentGrid({
         ...(task?.attachments || []),
         { type: "IMAGE", data: res.data.display_url },
       ]);
-      menuRef.current.forceClose();
+      setTimeout(() => {
+        menuRef.current.forceClose();
+      }, 0);
     } else {
       alert("You did not select any image.");
     }

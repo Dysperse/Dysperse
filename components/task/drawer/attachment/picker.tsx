@@ -55,7 +55,7 @@ export function TaskAttachmentPicker({
           text1: "Something went wrong. Please try again later",
         });
       } finally {
-        handleParentClose();
+        setTimeout(handleParentClose, 0);
         setIsLoading(false);
       }
     },

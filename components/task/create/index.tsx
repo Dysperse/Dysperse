@@ -39,7 +39,14 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Platform, Pressable, ScrollView, View } from "react-native";
+import {
+  Keyboard,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { Menu } from "react-native-popup-menu";
 import Animated, {
   useAnimatedStyle,
@@ -545,9 +552,32 @@ function TaskNameInput({
   );
 }
 
+const drawerStyles = StyleSheet.create({
+  attachmentCard: {
+    flexDirection: "row",
+    gap: 10,
+    borderRadius: 20,
+    width: 200,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    height: 70,
+    position: "relative",
+  },
+  closeIcon: {
+    position: "absolute",
+    top: -5,
+    right: -5,
+    zIndex: 10,
+    borderRadius: 7,
+    borderWidth: 5,
+  },
+});
+
 const TaskAttachments = ({ watch, setValue }) => {
   const theme = useColorTheme();
   const attachments = watch("attachments");
+  const note = watch("note");
 
   return (
     <ScrollView
@@ -560,21 +590,28 @@ const TaskAttachments = ({ watch, setValue }) => {
       contentContainerStyle={{ alignItems: "center", gap: 15 }}
       showsHorizontalScrollIndicator={false}
     >
+      {note && (
+        <View
+          style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
+        >
+          <IconButton
+            icon="close"
+            size={30}
+            variant="filled"
+            onPress={() => setValue("note", "")}
+            style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
+          />
+          <Avatar icon="sticky_note_2" />
+          <View style={{ flex: 1, flexDirection: "column" }}>
+            <Text variant="eyebrow">Note</Text>
+            <Text numberOfLines={1}>{note}</Text>
+          </View>
+        </View>
+      )}
       {attachments.map((attachment, i) => (
         <View
           key={i}
-          style={{
-            flexDirection: "row",
-            gap: 10,
-            backgroundColor: theme[3],
-            borderRadius: 20,
-            width: 200,
-            alignItems: "center",
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            height: 70,
-            position: "relative",
-          }}
+          style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
         >
           <IconButton
             icon="close"
@@ -586,15 +623,7 @@ const TaskAttachments = ({ watch, setValue }) => {
                 attachments.filter((_, index) => index !== i)
               );
             }}
-            style={{
-              position: "absolute",
-              top: -5,
-              right: -5,
-              zIndex: 10,
-              borderRadius: 7,
-              borderWidth: 5,
-              borderColor: theme[2],
-            }}
+            style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
           />
           <Avatar
             image={attachment.type === "IMAGE" ? attachment.data : null}
