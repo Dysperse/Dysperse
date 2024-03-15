@@ -81,6 +81,10 @@ body {
   min-height: 15px;
 }
 
+input::-webkit-scrollbar {
+  display: none;
+}
+
 /* vertical scrollbars only */
 ::-webkit-scrollbar-thumb:vertical {
   min-height: 50px;
