@@ -318,7 +318,7 @@ const LabelPicker = memo(function LabelPicker({
                         setLabel([...label, item.id]);
                       }
                     } else {
-                      setLabel(label ? null : item);
+                      setLabel(item.id === (label as any)?.id ? null : item);
                       setTimeout(handleClose, 0);
                     }
                   }}
