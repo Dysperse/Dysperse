@@ -464,10 +464,16 @@ export function TaskDetails() {
                     <Text>Edit</Text>
                   </Pressable>
                 </TaskAttachmentButton>
-                <Pressable style={drawerStyles.collapsibleMenuItem}>
+                <Pressable
+                  style={drawerStyles.collapsibleMenuItem}
+                  onPress={() => {
+                    updateTask("note", null);
+                  }}
+                >
                   <IconButton
                     style={{ borderWidth: 1, borderColor: theme[6] }}
                     size={50}
+                    disabled
                   >
                     <Icon>close</Icon>
                   </IconButton>
