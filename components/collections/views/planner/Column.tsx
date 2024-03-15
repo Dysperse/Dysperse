@@ -369,15 +369,16 @@ export function Column({
                 .length === 0 && (
                 <View
                   style={{
-                    marginVertical: 50,
+                    marginVertical: 20,
                     backgroundColor: theme[3],
                     alignItems: "center",
                     padding: 20,
-                    gap: 10,
+                    gap: 15,
                     borderRadius: 20,
+                    paddingVertical: 50,
                   }}
                 >
-                  <Emoji emoji="1f389" size={30} />
+                  <Emoji emoji="1f389" size={40} />
                   <View>
                     <Text
                       style={{
@@ -385,6 +386,7 @@ export function Column({
                         color: theme[11],
                         textAlign: "center",
                       }}
+                      weight={600}
                     >
                       You finished everything!
                     </Text>
