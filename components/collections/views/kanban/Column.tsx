@@ -10,8 +10,8 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
-import { View } from "react-native";
+import { useRef, useState } from "react";
+import { Pressable, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 
 export type ColumnProps =
@@ -28,6 +28,7 @@ export type ColumnProps =
 
 export function Column(props: ColumnProps) {
   const theme = useColorTheme();
+  const columnRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
   const { mutate } = useCollectionContext();
   const [refreshing, setRefreshing] = useState(false);
@@ -111,16 +112,25 @@ export function Column(props: ColumnProps) {
             }
       }
     >
-      <KanbanHeader
-        grid={props.grid}
-        label={{
-          ...props.label,
-          entities: undefined,
-          entitiesLength: (props.label || props).entities.filter(
-            (e) => e.completionInstances.length === 0
-          ).length,
-        }}
-      />
+      <Pressable
+        style={({ hovered, pressed }) => ({
+          opacity: pressed ? 0.6 : hovered ? 0.9 : 1,
+        })}
+        onPress={() =>
+          columnRef.current.scrollToOffset({ offset: 0, animated: true })
+        }
+      >
+        <KanbanHeader
+          grid={props.grid}
+          label={{
+            ...props.label,
+            entities: undefined,
+            entitiesLength: (props.label || props).entities.filter(
+              (e) => e.completionInstances.length === 0
+            ).length,
+          }}
+        />
+      </Pressable>
       <LinearGradient
         style={{
           width: "100%",
@@ -133,6 +143,7 @@ export function Column(props: ColumnProps) {
         colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
       />
       <FlatList
+        ref={columnRef}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
