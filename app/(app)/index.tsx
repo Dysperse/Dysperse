@@ -504,7 +504,7 @@ function EditWallpaper() {
               .split(",")
               .map(Number) as [number, number, number];
 
-            const uri = `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
+            const uri = `${process.env.EXPO_PUBLIC_API_URL}?color=%23${hslToHex(
               ...hslValues
             )}&pattern=${pattern}`;
 
@@ -667,7 +667,7 @@ export default function Index() {
     .split(",")
     .map(Number) as [number, number, number];
   const { width } = useWindowDimensions();
-  const uri = `https://my.dysperse.com/api/user/homePagePattern?color=%23${hslToHex(
+  const uri = `${process.env.EXPO_PUBLIC_API_URL}/pattern?color=%23${hslToHex(
     ...hslValues
   )}&pattern=${pattern}`;
 
