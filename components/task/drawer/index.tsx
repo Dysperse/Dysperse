@@ -16,7 +16,7 @@ import { TaskDrawerContext } from "./context";
 export function TaskDrawer({ mutateList, children, id }: any) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const { sessionToken } = useUser();
 
   // Fetch data
@@ -41,7 +41,6 @@ export function TaskDrawer({ mutateList, children, id }: any) {
   const trigger = cloneElement(children, { onPress: handleOpen });
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-
   const updateTask = useCallback(
     async (key, value, sendRequest = true) => {
       const oldData = data;
@@ -156,6 +155,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
               <View
                 style={{
                   height: "100%",
+                  minHeight: height * 0.65 - 20,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
