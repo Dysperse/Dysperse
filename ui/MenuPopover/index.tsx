@@ -142,12 +142,14 @@ export default function MenuPopover({
         ...menuProps?.rendererProps,
       }}
       onOpen={() => {
-        s.value = 1;
         menuProps?.onOpen?.();
+        setTimeout(() => {
+          s.value = 1;
+        });
       }}
       onClose={() => {
-        s.value = 0;
         menuProps?.onClose?.();
+        s.value = 0;
       }}
       renderer={renderers.Popover}
     >
@@ -162,25 +164,13 @@ export default function MenuPopover({
             borderRadius: 20,
             overflow: "hidden",
             shadowRadius: 0,
+            shadowColor: "transparent",
             backgroundColor: "transparent",
             ...(containerStyle as any),
           },
         }}
       >
-        <Animated.View
-          style={[
-            animatedStyle,
-            {
-              shadowColor: theme[1],
-              shadowRadius: 20,
-              shadowOpacity: 0.8,
-              shadowOffset: {
-                width: 10,
-                height: 10,
-              },
-            },
-          ]}
-        >
+        <Animated.View style={animatedStyle}>
           <View
             style={{
               flex: 1,

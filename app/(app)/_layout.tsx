@@ -9,7 +9,7 @@ import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Text from "@/ui/Text";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { toastConfig } from "@/ui/toast.config";
@@ -35,7 +35,6 @@ import {
   Pressable,
   StatusBar,
   View,
-  useColorScheme,
   useWindowDimensions,
 } from "react-native";
 import { Drawer, useDrawerProgress } from "react-native-drawer-layout";
@@ -200,7 +199,7 @@ export default function AppLayout() {
   const { session, isLoading } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
   const { width, height } = useWindowDimensions();
-  const isDark = useColorScheme() === "dark";
+  const isDark = useDarkMode();
   const breakpoints = useResponsiveBreakpoints();
 
   const closeSidebarOnMobile = useCallback(() => {

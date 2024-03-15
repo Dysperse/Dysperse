@@ -642,12 +642,14 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
   });
 
   useEffect(() => {
-    setTimeout(
-      () => {
-        nameRef.current.focus();
-      },
-      breakpoints.md ? 100 : 500
-    );
+    if (Platform.OS === "web") {
+      setTimeout(
+        () => {
+          nameRef.current.focus();
+        },
+        breakpoints.md ? 100 : 500
+      );
+    }
   }, [nameRef, breakpoints]);
 
   const onSubmit = async (data) => {
@@ -730,7 +732,8 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
           <MenuPopover
             menuProps={{
               style: {
-                marginHorizontal: "auto",
+                marginLeft: "auto",
+                marginRight: "auto",
               },
             }}
             options={[

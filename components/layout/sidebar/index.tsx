@@ -437,10 +437,9 @@ const Sidebar = () => {
         style={[
           animatedStyle,
           {
-            height: height,
+            height: height + insets.top + insets.bottom,
             width: SIDEBAR_WIDTH,
             flexDirection: "column",
-            maxHeight: "100%",
             borderRightWidth: 2,
             borderRightColor: "transparent",
             backgroundColor: theme[2],

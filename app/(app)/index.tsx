@@ -702,6 +702,9 @@ export default function Index() {
               flex: 1,
             }
           }
+          style={{
+            marginTop: insets.top,
+          }}
         >
           {!breakpoints.md && (
             <IconButton
@@ -709,7 +712,6 @@ export default function Index() {
                 position: "absolute",
                 top: 20,
                 left: 20,
-                marginTop: insets.top,
                 zIndex: 1,
               }}
               icon="menu"
@@ -732,8 +734,8 @@ export default function Index() {
                   paddingTop: 60,
                 },
                 !breakpoints.md && {
-                  width: "100%",
-                  paddingTop: 120,
+                  width,
+                  paddingTop: 150,
                   paddingHorizontal: 20,
                 },
               ]}
