@@ -167,7 +167,7 @@ const LabelPicker = memo(function LabelPicker({
   const handleClose = useCallback(async () => {
     await onClose();
     ref.current?.close();
-  }, [onClose]);
+  }, [ref, onClose]);
 
   const trigger = cloneElement(children, {
     [triggerProp]: disabled ? undefined : handleOpen,
@@ -319,7 +319,7 @@ const LabelPicker = memo(function LabelPicker({
                       }
                     } else {
                       setLabel(label ? null : item);
-                      setTimeout(handleClose, 200);
+                      setTimeout(handleClose, 0);
                     }
                   }}
                   style={({ pressed, hovered }: any) => [
