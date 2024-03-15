@@ -10,7 +10,6 @@ import Toast from "react-native-toast-message";
 export function TaskAttachmentPicker({
   placeholder,
   updateTask,
-  onAttachmentCreate,
   task,
   handleParentClose,
   footer = null,
@@ -19,7 +18,6 @@ export function TaskAttachmentPicker({
 }: {
   placeholder: string;
   updateTask?: any;
-  onAttachmentCreate: (newData) => void;
   task: any;
   handleParentClose: any;
   footer?: JSX.Element;

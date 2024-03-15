@@ -12,15 +12,11 @@ export function AttachmentGrid({
   task,
   updateTask,
   setView,
-  onAttachmentCreate,
-  onClose,
   menuRef,
 }: {
   task: any;
   updateTask: any;
   setView: any;
-  onAttachmentCreate: any;
-  onClose: any;
   menuRef: React.MutableRefObject<BottomSheetModal>;
 }) {
   const theme = useColorTheme();

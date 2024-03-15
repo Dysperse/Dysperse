@@ -15,7 +15,6 @@ export function TaskAttachmentButton({
   children,
   onClose,
   onOpen,
-  onAttachmentCreate,
   defaultView = "Add",
   lockView = false,
   menuRef,
@@ -26,7 +25,6 @@ export function TaskAttachmentButton({
   children?: JSX.Element;
   onClose?: () => void;
   onOpen?: () => void;
-  onAttachmentCreate?: (data: string) => void;
   defaultView?: TaskAttachmentType;
   lockView?: boolean;
   menuRef?: React.MutableRefObject<BottomSheetModal>;
@@ -94,8 +92,6 @@ export function TaskAttachmentButton({
           task={task}
           updateTask={updateTask}
           menuRef={menuRef}
-          onClose={onClose}
-          onAttachmentCreate={onAttachmentCreate}
           setView={setView}
         />
       )}
@@ -104,7 +100,6 @@ export function TaskAttachmentButton({
           type="LOCATION"
           placeholder="Enter a location"
           handleParentClose={() => menuRef.current?.close()}
-          onAttachmentCreate={onAttachmentCreate}
           task={task}
           updateTask={updateTask}
         />
@@ -114,7 +109,6 @@ export function TaskAttachmentButton({
           type="LINK"
           placeholder="Enter a link"
           handleParentClose={() => menuRef.current?.close()}
-          onAttachmentCreate={onAttachmentCreate}
           task={task}
           updateTask={updateTask}
           footer={
@@ -141,7 +135,6 @@ export function TaskAttachmentButton({
           multiline
           placeholder="Type in a note..."
           handleParentClose={() => menuRef.current?.close()}
-          onAttachmentCreate={onAttachmentCreate}
           task={task}
           updateTask={updateTask}
         />

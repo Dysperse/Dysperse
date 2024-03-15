@@ -393,7 +393,7 @@ export function TaskDetails() {
         underlayColor="transparent"
         sections={[
           task.note && {
-            trigger: (isActive) => (
+            trigger: () => (
               <TaskAttachmentButton
                 defaultView="Note"
                 lockView
