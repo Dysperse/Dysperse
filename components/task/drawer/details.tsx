@@ -236,8 +236,9 @@ function TaskAttachmentCard({ item, index }) {
   }, [item.data]);
 
   const handleDeletePress = useCallback(() => {
-    updateTask("attachments", () =>
-      task.attachments.filter((e, i) => i !== index)
+    updateTask(
+      "attachments",
+      task.attachments.filter((_, i) => i !== index)
     );
   }, [updateTask, task, index]);
 
