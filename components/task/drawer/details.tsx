@@ -205,10 +205,11 @@ function EditAttachment({ item, handleCancel }) {
   );
 }
 
-function TaskAttachmentCard({ item }) {
+function TaskAttachmentCard({ item, index }) {
   const theme = useColorTheme();
   const [isEditing, setIsEditing] = useState(false);
   const { height } = useWindowDimensions();
+  const { task, updateTask } = useTaskDrawerContext();
 
   let icon = "";
   let name = item.data;
@@ -233,6 +234,12 @@ function TaskAttachmentCard({ item }) {
       Linking.openURL(`https://maps.google.com/?q=${item.data}`);
     }
   }, [item.data]);
+
+  const handleDeletePress = useCallback(() => {
+    updateTask("attachments", () =>
+      task.attachments.filter((e, i) => i !== index)
+    );
+  }, [updateTask, task, index]);
 
   const handleEditPress = useCallback(() => setIsEditing(true), []);
   const handleCancelEditing = useCallback(() => setIsEditing(false), []);
@@ -331,7 +338,11 @@ function TaskAttachmentCard({ item }) {
             <Icon style={{ marginLeft: "auto" }}>north_east</Icon>
           </Button>
           <View style={{ flexDirection: "row", gap: 20 }}>
-            <Button variant="outlined" style={{ height: 70, flex: 1 }}>
+            <Button
+              variant="outlined"
+              style={{ height: 70, flex: 1 }}
+              onPress={handleDeletePress}
+            >
               <Icon>remove_circle</Icon>
               <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
             </Button>
