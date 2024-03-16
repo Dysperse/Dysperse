@@ -207,33 +207,33 @@ const LoadingErrors = () => {
   const insets = useSafeAreaInsets();
 
   return (
-    <View
-      style={{
-        backgroundColor: theme[11],
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 5,
-        paddingTop: insets.top + 5,
-        gap: 10,
-      }}
-    >
-      {(error || storageError) && (
+    (error || storageError) && (
+      <View
+        style={{
+          backgroundColor: theme[11],
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          paddingVertical: 5,
+          paddingTop: insets.top + 5,
+          gap: 10,
+        }}
+      >
         <Icon style={{ color: red[2] }} bold size={18}>
           cloud_off
         </Icon>
-      )}
-      <Text
-        style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
-        weight={700}
-      >
-        {error
-          ? error.message === "Failed to fetch"
-            ? "You're offline"
-            : "Can't connect to Dysperse"
-          : "Can't load storage data"}
-      </Text>
-    </View>
+        <Text
+          style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
+          weight={700}
+        >
+          {error
+            ? error.message === "Failed to fetch"
+              ? "You're offline"
+              : "Can't connect to Dysperse"
+            : "Can't load storage data"}
+        </Text>
+      </View>
+    )
   );
 };
 
