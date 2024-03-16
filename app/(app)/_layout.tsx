@@ -51,7 +51,6 @@ import { MenuProvider } from "react-native-popup-menu";
 import Animated, {
   interpolate,
   useAnimatedStyle,
-  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -206,24 +205,11 @@ const LoadingErrors = () => {
   const { error } = useUser();
   const { error: storageError } = useStorageContext();
   const insets = useSafeAreaInsets();
-  const negativeMargin = -1 * (insets.top + 30);
-  const marginValue = useSharedValue(negativeMargin);
-
-  const marginStyle = useAnimatedStyle(() => {
-    return {
-      marginTop: withSpring(marginValue.value, { overshootClamping: true }),
-    };
-  });
-
-  useEffect(() => {
-    marginValue.value = error || storageError ? 0 : negativeMargin;
-  }, [error, storageError, insets, marginValue, negativeMargin]);
 
   return (
     (error || storageError) && (
-      <Animated.View
+      <View
         style={[
-          marginStyle,
           {
             backgroundColor: theme[11],
             flexDirection: "row",
@@ -247,7 +233,7 @@ const LoadingErrors = () => {
               : "Can't connect to Dysperse"
             : "Can't load storage data"}
         </Text>
-      </Animated.View>
+      </View>
     )
   );
 };
@@ -376,7 +362,7 @@ export default function AppLayout() {
                               }
                               swipeEdgeWidth={1000}
                               drawerStyle={{
-                                height,
+                                // height,
                                 width: breakpoints.md
                                   ? desktopCollapsed
                                     ? SIDEBAR_WIDTH

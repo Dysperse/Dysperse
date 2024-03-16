@@ -419,6 +419,9 @@ const Sidebar = () => {
     }
   }, [setDesktopCollapsed]);
 
+  const { error } = useUser();
+  const { error: storageError } = useStorageContext();
+
   return (
     <View
       style={[
@@ -438,7 +441,11 @@ const Sidebar = () => {
         style={[
           animatedStyle,
           {
-            height: height + insets.top + insets.bottom,
+            height:
+              height +
+              insets.top +
+              insets.bottom +
+              (error || storageError ? -30 : 0),
             width: SIDEBAR_WIDTH,
             flexDirection: "column",
             borderRightWidth: 2,
