@@ -70,6 +70,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       {},
       { body: JSON.stringify({ id: data.id, showCompleted }) }
     );
+    await ctx.mutate();
   };
 
   const { mutate } = useSWR(["user/tabs"]);
@@ -94,10 +95,28 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       ),
     },
     {
-      icon: "priority",
-      text: "Show completed",
-      selected: true,
-      callback: toggleShowCompleted,
+      renderer: () => (
+        <ConfirmationModal
+          height={430}
+          onSuccess={toggleShowCompleted}
+          title={
+            data.showCompleted
+              ? "Hide completed tasks?"
+              : "Show completed tasks?"
+          }
+          secondary="This will affect all views in this collection"
+        >
+          <MenuItem>
+            <Icon>priority</Icon>
+            <Text variant="menuItem" weight={300}>
+              {data.showCompleted ? "Hide" : "Show"} completed
+            </Text>
+            {data.showCompleted && (
+              <Icon style={{ marginLeft: "auto" }}>check</Icon>
+            )}
+          </MenuItem>
+        </ConfirmationModal>
+      ),
     },
     !isAll &&
       type === "grid" && {
