@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { useCallback, useRef, useState } from "react";
@@ -207,6 +208,7 @@ function EditAttachment({ item, handleCancel }) {
 
 function TaskAttachmentCard({ item, index }) {
   const theme = useColorTheme();
+  const menuRef = useRef<BottomSheetModal>(null);
   const [isEditing, setIsEditing] = useState(false);
   const { height } = useWindowDimensions();
   const { task, updateTask } = useTaskDrawerContext();
@@ -240,6 +242,9 @@ function TaskAttachmentCard({ item, index }) {
       "attachments",
       task.attachments.filter((_, i) => i !== index)
     );
+    setTimeout(() => {
+      setTimeout(() => menuRef.current?.close(), 100);
+    }, 0);
   }, [updateTask, task, index]);
 
   const handleEditPress = useCallback(() => setIsEditing(true), []);
@@ -247,6 +252,7 @@ function TaskAttachmentCard({ item, index }) {
 
   return (
     <Menu
+      menuRef={menuRef}
       trigger={
         <Pressable
           style={({ pressed }) => ({

@@ -27,11 +27,7 @@ export function TaskAttachmentPicker({
   const theme = useColorTheme();
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       data: type == "NOTE" ? task?.note ?? "" : "",
     },
@@ -77,6 +73,13 @@ export function TaskAttachmentPicker({
             bottomSheet
             placeholder={placeholder}
             variant="filled+outlined"
+            onSubmitEditing={handleSubmit(onSubmit, () => {
+              Toast.show({
+                type: "error",
+                text1: "Please enter a " + type.toLowerCase(),
+              });
+            })}
+            blurOnSubmit={false}
             style={{
               paddingHorizontal: 25,
               paddingVertical: 15,

@@ -7,8 +7,8 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import React, { useCallback, useState } from "react";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import React, { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -77,6 +77,7 @@ export function TaskDrawerContent({ handleClose }) {
   const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
   const { task, updateTask } = useTaskDrawerContext();
+  const menuRef = useRef<BottomSheetModal>(null);
 
   const rotate = useSharedValue(task.pinned ? -35 : 0);
 
@@ -156,7 +157,11 @@ export function TaskDrawerContent({ handleClose }) {
               {task.trash ? "restore_from_trash" : "delete"}
             </Icon>
           </IconButton>
-          <TaskAttachmentButton task={task} updateTask={updateTask} />
+          <TaskAttachmentButton
+            menuRef={menuRef}
+            task={task}
+            updateTask={updateTask}
+          />
         </View>
       </View>
       <BottomSheetScrollView
