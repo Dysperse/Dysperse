@@ -443,9 +443,7 @@ const Sidebar = () => {
           {
             height:
               height +
-              insets.top +
-              insets.bottom +
-              (error || storageError ? -30 : 0),
+              (error || storageError ? -30 : insets.top + insets.bottom),
             width: SIDEBAR_WIDTH,
             flexDirection: "column",
             borderRightWidth: 2,
