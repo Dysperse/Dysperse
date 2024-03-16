@@ -79,6 +79,7 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
     ({
       LINK: "link",
       FILE: "attachment",
+      LOCATION: "location_on",
     }[t]);
 
   return attachments.map((attachment) => (
@@ -91,11 +92,17 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
         label={
           attachment.type === "LINK"
             ? new URL(attachment.data).hostname
+            : attachment.type === "LOCATION"
+            ? "Maps"
             : "File"
         }
         onPress={() => {
           if (attachment.type === "LINK") {
             Linking.openURL(attachment.data);
+          } else if (attachment.type === "LOCATION") {
+            Linking.openURL(
+              `https://www.google.com/maps/search/?api=1&query=${attachment.data}`
+            );
           }
         }}
         icon={
