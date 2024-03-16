@@ -590,7 +590,7 @@ const drawerStyles = StyleSheet.create({
 const TaskSuggestions = ({ watch, setValue }) => {
   const theme = useColorTheme();
   const name = watch("name");
-  const due = watch("due");
+  const currentDate = watch("date");
 
   const generateChipLabel = useCallback(() => {
     const regex = /(?:at|from|during|after|before)\s(\d+)/i;
@@ -622,21 +622,26 @@ const TaskSuggestions = ({ watch, setValue }) => {
       }
 
       if (Number(time) > 12) return null;
+      if (
+        dayjs(currentDate).hour() ===
+        Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0)
+      )
+        return null;
       return {
         label: `At ${time} ${amPm}`,
         onPress: () => {
           setValue(
             "date",
-            dayjs(due).hour(
-              Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0)
-            )
+            dayjs(currentDate)
+              .hour(Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0))
+              .minute(0)
           );
           setValue("dateOnly", false);
         },
         icon: "magic_button",
       };
     }
-  }, [name, setValue, due]);
+  }, [name, setValue, currentDate]);
 
   const suggestions = [generateChipLabel()];
 
