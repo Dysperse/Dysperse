@@ -227,7 +227,11 @@ const LoadingErrors = () => {
         style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
         weight={700}
       >
-        {error ? "Can't connect to Dysperse" : "Can't load storage data"}
+        {error
+          ? error.message === "Failed to fetch"
+            ? "You're offline"
+            : "Can't connect to Dysperse"
+          : "Can't load storage data"}
       </Text>
     </View>
   );
