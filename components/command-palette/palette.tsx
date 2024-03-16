@@ -2,6 +2,7 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
+import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -304,41 +305,93 @@ function CommandPalettePreview({ preview, handlePress }) {
           justifyContent: "center",
         }}
       >
-        <Avatar size={70} style={{ marginBottom: 10 }}>
-          {preview.emoji ? (
-            <Emoji emoji={preview.emoji} size={50} />
-          ) : (
-            <Icon
-              size={40}
-              style={{
-                color: theme[11],
-                opacity: preview ? 1 : 0.5,
-              }}
-            >
-              {preview?.icon}
-            </Icon>
-          )}
-        </Avatar>
-        <Text style={{ fontSize: 40 }}>{preview.label}</Text>
-        <Text>{JSON.stringify(preview, null, 2)}</Text>
-        {preview?.data?.description && <Text>{preview.data.description}</Text>}
-        {preview.data?.createdBy && (
-          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-            <ProfilePicture
-              size={30}
-              name={preview.data.createdBy.profile.name}
-              image={preview.data.createdBy.profile.picture}
-            />
-            <Text>Created by {preview.data.createdBy.profile.name}</Text>
-          </View>
-        )}
+        <View
+          style={{
+            marginTop: "auto",
+            flexDirection: "row",
+            width: "100%",
+            paddingHorizontal: 20,
+            gap: 20,
+          }}
+        >
+          <Avatar size={70}>
+            {preview.emoji ? (
+              <Emoji emoji={preview.emoji} size={50} />
+            ) : (
+              <Icon
+                size={40}
+                style={{
+                  color: theme[11],
+                  opacity: preview ? 1 : 0.5,
+                }}
+              >
+                {preview?.icon}
+              </Icon>
+            )}
+          </Avatar>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 40, lineHeight: 43 }}>
+              {preview.label}
+            </Text>
+            {(preview?.data?.description || preview?.about) && (
+              <Text style={{ marginTop: 5 }}>
+                {preview?.data?.description || preview?.about}
+              </Text>
+            )}
 
-        <View style={{ flexDirection: "row", gap: 5, marginTop: 10 }}>
-          {preview.data?._count?.labels && (
-            <Chip label={preview.data._count.labels + " labels"} />
-          )}
-          {preview.data?.pinned && <Chip label={"Pinned"} />}
-          {preview.data?.archived && <Chip label={"Archived"} />}
+            {preview.data?.createdBy && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <ProfilePicture
+                  size={30}
+                  name={preview.data.createdBy.profile.name}
+                  image={preview.data.createdBy.profile.picture}
+                />
+                <Text>Created by {preview.data.createdBy.profile.name}</Text>
+              </View>
+            )}
+
+            <View style={{ flexDirection: "row", gap: 5, marginTop: 10 }}>
+              {preview.data?._count?.labels && (
+                <Chip
+                  label={`${preview.data._count.labels} label${
+                    preview.data._count.labels === 1 ? "" : "s"
+                  }`}
+                />
+              )}
+              {preview.data?.pinned && <Chip label={"Pinned"} />}
+              {preview.data?.archived && <Chip label={"Archived"} />}
+            </View>
+          </View>
+        </View>
+
+        <View
+          style={{
+            width: "100%",
+            marginTop: "auto",
+            padding: 15,
+          }}
+        >
+          <Button
+            variant="filled"
+            style={({ pressed, hovered }) => ({
+              height: 60,
+              backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+            })}
+          >
+            <ButtonText style={{ fontSize: 20, color: theme[2] }} weight={900}>
+              Open
+            </ButtonText>
+            <Icon style={{ color: theme[2] }} bold>
+              north_east
+            </Icon>
+          </Button>
         </View>
       </View>
     )

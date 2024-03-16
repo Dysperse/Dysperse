@@ -90,6 +90,26 @@ export function Column(props: ColumnProps) {
     );
   };
 
+  const onEntityCreate = (newTask, label) => {
+    if (!newTask) return;
+    mutate(
+      (data) => {
+        const labelIndex = data.labels.findIndex((l) => l.id === label.id);
+        if (labelIndex === -1) return data;
+        data.labels[labelIndex].entities.push(newTask);
+        return {
+          ...data,
+          labels: data.labels.map((l) =>
+            l.id === label.id ? { ...l, entities: [...l.entities, newTask] } : l
+          ),
+        };
+      },
+      {
+        revalidate: false,
+      }
+    );
+  };
+
   return (
     <View
       style={
@@ -167,6 +187,7 @@ export function Column(props: ColumnProps) {
                 ]}
               >
                 <CreateTask
+                  mutate={(n) => onEntityCreate(n, props.label)}
                   defaultValues={{
                     label: omit(["entities"], props.label),
                   }}
