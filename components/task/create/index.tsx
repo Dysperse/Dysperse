@@ -57,9 +57,10 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 
-const DueDatePicker = ({ value, setValue }) => {
+const DueDatePicker = ({ watch, value, setValue }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+  const dateOnly = watch("dateOnly");
   const quickDates = useMemo(
     () => [
       { label: "Today", value: dayjs().startOf("day").utc() },
@@ -136,14 +137,16 @@ const DueDatePicker = ({ value, setValue }) => {
             {dayjs(value).isToday() ? "Today" : dayjs(value).fromNow()}
           </Text>
           <ListItemButton
-            onPress={() => setValue("date", null)}
+            onPress={() => setValue("dateOnly", !dateOnly)}
             style={{ height: 40 }}
           >
             <ListItemText
               primaryProps={{ style: { color: theme[11] } }}
-              primary="All day"
+              primary={dateOnly ? "All day" : dayjs(value).format("h:mm A")}
             />
-            <Icon size={30}>toggle_on</Icon>
+            <Icon size={30} style={!dateOnly && { opacity: 0.6 }}>
+              toggle_{dateOnly ? "on" : "off"}
+            </Icon>
           </ListItemButton>
           <ListItemButton
             onPress={() => setValue("date", null)}
@@ -163,6 +166,7 @@ const DueDatePicker = ({ value, setValue }) => {
             alignItems: "center",
             justifyContent: "center",
             opacity: 0.6,
+            padding: 10,
           }}
         >
           <Text weight={200} style={{ fontSize: 25 }}>
@@ -290,6 +294,7 @@ function RecurrencePicker({ value, setValue }) {
 }
 
 function TaskDatePicker({ control, setValue, watch }) {
+  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const sheetRef = useRef<BottomSheetModal>(null);
   const handleClose = useCallback(() => sheetRef.current?.close(), []);
@@ -303,7 +308,9 @@ function TaskDatePicker({ control, setValue, watch }) {
   return (
     <>
       <Chip
-        outlined
+        style={({ pressed, hovered }) => ({
+          backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+        })}
         icon={<Icon>calendar_today</Icon>}
         label={dueDate ? dueDate.format("MMM Do") : undefined}
         onPress={handleOpen}
@@ -324,7 +331,7 @@ function TaskDatePicker({ control, setValue, watch }) {
             containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
           />
           {view === "date" ? (
-            <DueDatePicker setValue={setValue} value={dueDate} />
+            <DueDatePicker watch={watch} setValue={setValue} value={dueDate} />
           ) : (
             <RecurrencePicker setValue={setValue} value={recurrence} />
           )}
@@ -336,6 +343,7 @@ function TaskDatePicker({ control, setValue, watch }) {
 
 function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
   const orange = useColor("orange");
+  const theme = useColorTheme();
   const pinned = watch("pinned");
 
   const rotate = useSharedValue(0);
@@ -382,7 +390,6 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
         defaultValue={false}
         render={({ field: { onChange, value } }) => (
           <Chip
-            outlined
             onPress={() => onChange(!value)}
             icon={
               <Animated.View style={rotateStyle}>
@@ -399,6 +406,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
               </Animated.View>
             }
             style={{
+              backgroundColor: theme[4],
               ...(value && {
                 backgroundColor: orange[4],
                 borderColor: orange[4],
@@ -414,11 +422,14 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
           nameRef?.current?.focus();
         }}
       />
+
+      <TaskSuggestions watch={watch} setValue={setValue} />
     </ScrollView>
   );
 }
 
 function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
+  const theme = useColorTheme();
   const colors = useLabelColors();
 
   return (
@@ -437,7 +448,9 @@ function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
           onClose={onLabelPickerClose}
         >
           <Chip
-            outlined
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+            })}
             label={value?.name || "Add label"}
             icon={
               value?.emoji ? (
@@ -574,78 +587,153 @@ const drawerStyles = StyleSheet.create({
   },
 });
 
+const TaskSuggestions = ({ watch, setValue }) => {
+  const theme = useColorTheme();
+  const name = watch("name");
+  const due = watch("due");
+
+  const generateChipLabel = useCallback(() => {
+    const regex = /(?:at|from|during|after|before)\s(\d+)/i;
+    const match = name.match(regex);
+
+    if (match) {
+      const time = match[1];
+      let amPm = name.toLowerCase().includes("p") ? "pm" : "am";
+
+      if (
+        !name.toLowerCase().includes("am") &&
+        !name.toLowerCase().includes("pm")
+      ) {
+        // make these values sensitive to a human's life
+        amPm = {
+          "1": "pm",
+          "2": "pm",
+          "3": "pm",
+          "4": "pm",
+          "5": "pm",
+          "6": "pm",
+          "7": "pm",
+          "8": "pm",
+          "9": "pm",
+          "10": "pm",
+          "11": "am",
+          "12": "pm",
+        }[time];
+      }
+
+      if (Number(time) > 12) return null;
+      return {
+        label: `At ${time} ${amPm}`,
+        onPress: () => {
+          setValue(
+            "date",
+            dayjs(due).hour(
+              Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0)
+            )
+          );
+          setValue("dateOnly", false);
+        },
+        icon: "magic_button",
+      };
+    }
+  }, [name, setValue, due]);
+
+  const suggestions = [generateChipLabel()];
+
+  return (
+    suggestions.length > 0 && (
+      <>
+        {suggestions
+          .filter((e) => e)
+          .map((suggestion, i) => (
+            <Chip
+              key={i}
+              outlined
+              style={{ borderColor: theme[5] }}
+              label={suggestion.label}
+              icon={suggestion.icon}
+              onPress={suggestion.onPress}
+            />
+          ))}
+      </>
+    )
+  );
+};
+
 const TaskAttachments = ({ watch, setValue }) => {
   const theme = useColorTheme();
   const attachments = watch("attachments");
   const note = watch("note");
 
   return (
-    <ScrollView
-      horizontal
-      style={{
-        marginLeft: 20,
-        marginTop: "auto",
-        maxHeight: 90,
-      }}
-      contentContainerStyle={{ alignItems: "center", gap: 15 }}
-      showsHorizontalScrollIndicator={false}
-    >
-      {note && (
-        <View
-          style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
-        >
-          <IconButton
-            icon="close"
-            size={30}
-            variant="filled"
-            onPress={() => setValue("note", "")}
-            style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
-          />
-          <Avatar icon="sticky_note_2" />
-          <View style={{ flex: 1, flexDirection: "column" }}>
-            <Text variant="eyebrow">Note</Text>
-            <Text numberOfLines={1}>{note}</Text>
+    attachments?.length > 0 && (
+      <ScrollView
+        horizontal
+        style={{
+          marginLeft: 20,
+          marginTop: "auto",
+          maxHeight: 90,
+        }}
+        contentContainerStyle={{ alignItems: "center", gap: 15 }}
+        showsHorizontalScrollIndicator={false}
+      >
+        {note && (
+          <View
+            style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
+          >
+            <IconButton
+              icon="close"
+              size={30}
+              variant="filled"
+              onPress={() => setValue("note", "")}
+              style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
+            />
+            <Avatar icon="sticky_note_2" />
+            <View style={{ flex: 1, flexDirection: "column" }}>
+              <Text variant="eyebrow">Note</Text>
+              <Text numberOfLines={1}>{note}</Text>
+            </View>
           </View>
-        </View>
-      )}
-      {attachments.map((attachment, i) => (
-        <View
-          key={i}
-          style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
-        >
-          <IconButton
-            icon="close"
-            size={30}
-            variant="filled"
-            onPress={() => {
-              setValue(
-                "attachments",
-                attachments.filter((_, index) => index !== i)
-              );
-            }}
-            style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
-          />
-          <Avatar
-            image={attachment.type === "IMAGE" ? attachment.data : null}
-            icon={
-              attachment.type === "LOCATION"
-                ? "location_on"
-                : attachment.type === "LINK"
-                ? "attachment"
-                : "image"
-            }
-          />
-          <View style={{ flex: 1, flexDirection: "column" }}>
-            <Text variant="eyebrow">{attachment.type}</Text>
-            <Text numberOfLines={1}>
-              {attachment.type === "IMAGE"
-                ? attachment.data.split("/")[4]
-                : attachment.data}
-            </Text>
+        )}
+        {attachments.map((attachment, i) => (
+          <View
+            key={i}
+            style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
+          >
+            <IconButton
+              icon="close"
+              size={30}
+              variant="filled"
+              onPress={() => {
+                setValue(
+                  "attachments",
+                  attachments.filter((_, index) => index !== i)
+                );
+              }}
+              style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
+            />
+            <Avatar
+              image={attachment.type === "IMAGE" ? attachment.data : null}
+              icon={
+                attachment.type === "LOCATION"
+                  ? "location_on"
+                  : attachment.type === "LINK"
+                  ? "attachment"
+                  : "image"
+              }
+            />
+            <View style={{ flex: 1, flexDirection: "column" }}>
+              <Text variant="eyebrow">{attachment.type}</Text>
+              <Text numberOfLines={1}>
+                {attachment.type === "IMAGE"
+                  ? attachment.data.split("/")[4]
+                  : attachment.data}
+              </Text>
+            </View>
           </View>
-        </View>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    )
   );
   // return null;
 };
@@ -660,6 +748,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
   const theme = useColorTheme();
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
+      dateOnly: true,
       name: defaultValues.name || "",
       date: defaultValues.date || dayjs().utc(),
       pinned: false,
@@ -807,7 +896,10 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
                   }}
                 >
                   <IconButton
-                    style={{ marginTop: 63 }}
+                    style={({ pressed, hovered }) => ({
+                      marginTop: 63,
+                      backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+                    })}
                     icon="add"
                     variant="filled"
                     size={35}
