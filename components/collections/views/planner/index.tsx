@@ -26,6 +26,7 @@ function Agenda() {
       start: start.toISOString(),
       end: end.toISOString(),
       type,
+      timezone: dayjs.tz.guess(),
       id: params.id,
       ...(params.id === "all" && { all: true }),
     },
