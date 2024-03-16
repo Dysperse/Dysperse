@@ -1,5 +1,5 @@
 {
-  "buildCommand": "expo export -p web && npx workbox-cli generateSW workbox-config.js",
+  "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
   "devCommand": "expo",
   "cleanUrls": true,

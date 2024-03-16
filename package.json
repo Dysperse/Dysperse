@@ -7,7 +7,7 @@
     "start-tunnel": "expo start --tunnel",
     "lint": "eslint ./",
     "build": "eas build --profile development --platform android",
-    "build:web": "expo export -p web && npx workbox-cli generateSW workbox-config.js",
+    "build:web": "expo export -p web && workbox generateSW workbox-config.js",
     "android": "expo run:android",
     "ios": "expo run:ios"
   },
