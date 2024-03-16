@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
-import Toast from "react-native-toast-message";
+import { createContext, useContext } from "react";
 import useSWR from "swr";
 import { useUser } from "./useUser";
 
@@ -12,19 +11,8 @@ export const StorageContextProvider = ({ children }) => {
     { spaceId: session?.space?.space?.id },
   ]);
 
-  useEffect(() => {
-    if (error)
-      Toast.show({
-        type: "error",
-        autoHide: false,
-        swipeable: false,
-        text1: "Couldn't load storage information. Please try again later.",
-      });
-  }, [error]);
-
-  console.log(data);
-
   const value = {
+    error,
     storage: data?.storage,
     isLoading: !data,
     isReached: !data || data?.storage?.used >= data?.storage?.limit,

@@ -5,9 +5,13 @@ import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import Sidebar from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
-import { StorageContextProvider } from "@/context/storageContext";
+import {
+  StorageContextProvider,
+  useStorageContext,
+} from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
@@ -195,6 +199,40 @@ const ComingSoonScreen = () => {
   return null;
 };
 
+const LoadingErrors = () => {
+  const red = useColor("red");
+  const theme = useColorTheme();
+  const { error } = useUser();
+  const { error: storageError } = useStorageContext();
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View
+      style={{
+        backgroundColor: theme[11],
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 5,
+        paddingTop: insets.top + 5,
+        gap: 10,
+      }}
+    >
+      {(error || storageError) && (
+        <Icon style={{ color: red[2] }} bold size={18}>
+          cloud_off
+        </Icon>
+      )}
+      <Text
+        style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
+        weight={700}
+      >
+        {error ? "Can't connect to Dysperse" : "Can't load storage data"}
+      </Text>
+    </View>
+  );
+};
+
 export default function AppLayout() {
   const { session, isLoading } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
@@ -304,6 +342,7 @@ export default function AppLayout() {
                               breakpoints.md ? { flex: 1 } : { width: "100%" },
                             ]}
                           >
+                            <LoadingErrors />
                             <Drawer
                               open={open}
                               onOpen={() => setOpen(true)}

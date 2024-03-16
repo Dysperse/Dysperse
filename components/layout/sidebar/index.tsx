@@ -3,6 +3,7 @@ import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
+import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -189,6 +190,7 @@ export const LogoButton = memo(function LogoButton() {
   }, []);
 
   const { session, error, sessionToken } = useUser();
+  const { error: storageError } = useStorageContext();
   const { isFocused, setFocus } = useFocusPanelContext();
   const { closeSidebarOnMobile, isOpen, openSidebar, closeSidebar } =
     useSidebarContext();
@@ -259,7 +261,6 @@ export const LogoButton = memo(function LogoButton() {
           },
         ]}
       />
-      {error && <Icon style={{ color: red[11] }}>cloud_off</Icon>}
       <MenuPopover
         menuProps={{
           rendererProps: {
