@@ -51,6 +51,7 @@ import { MenuProvider } from "react-native-popup-menu";
 import Animated, {
   interpolate,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -205,19 +206,33 @@ const LoadingErrors = () => {
   const { error } = useUser();
   const { error: storageError } = useStorageContext();
   const insets = useSafeAreaInsets();
+  const negativeMargin = -1 * (insets.top + 30);
+  const marginValue = useSharedValue(negativeMargin);
+
+  const marginStyle = useAnimatedStyle(() => {
+    return {
+      marginTop: withSpring(marginValue.value, { overshootClamping: true }),
+    };
+  });
+
+  useEffect(() => {
+    marginValue.value = error || storageError ? 0 : negativeMargin;
+  }, [error, storageError, insets, marginValue, negativeMargin]);
 
   return (
     (error || storageError) && (
-      <View
-        style={{
-          backgroundColor: theme[11],
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingVertical: 5,
-          paddingTop: insets.top + 5,
-          gap: 10,
-        }}
+      <Animated.View
+        style={[
+          marginStyle,
+          {
+            backgroundColor: theme[11],
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30 + insets.top,
+            gap: 10,
+          },
+        ]}
       >
         <Icon style={{ color: red[2] }} bold size={18}>
           cloud_off
@@ -232,7 +247,7 @@ const LoadingErrors = () => {
               : "Can't connect to Dysperse"
             : "Can't load storage data"}
         </Text>
-      </View>
+      </Animated.View>
     )
   );
 };
