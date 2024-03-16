@@ -593,6 +593,7 @@ const TaskSuggestions = ({ watch, setValue }) => {
   const currentDate = watch("date");
 
   const generateChipLabel = useCallback(() => {
+    if (!name) return null;
     const regex = /(?:at|from|during|after|before)\s(\d+)/i;
     const match = name.match(regex);
 
