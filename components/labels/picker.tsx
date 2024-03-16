@@ -179,11 +179,12 @@ const LabelPicker = memo(function LabelPicker({
   const { data, mutate, error } = useSWR(["space/labels"]);
 
   const [selectedCollection, setSelectedCollection] = useState(null);
-  const collections =
-    data
-      ?.map((l) => l.collections.map((c) => c))
-      ?.flat()
-      ?.filter((c, i, arr) => arr.findIndex((a) => a.id === c.id) === i) || [];
+  const collections = Array.isArray(data)
+    ? data
+        ?.map((l) => l.collections.map((c) => c))
+        ?.flat()
+        ?.filter((c, i, arr) => arr.findIndex((a) => a.id === c.id) === i) || []
+    : [];
 
   return (
     <>
