@@ -85,7 +85,10 @@ export function WeatherWidget() {
           },
           "https://air-quality-api.open-meteo.com/v1/air-quality",
         ]
-      : null
+      : null,
+    {
+      refreshInterval: 5 * 60 * 1000,
+    }
   );
 
   const isLoading = isWeatherLoading || isAirQualityLoading;
