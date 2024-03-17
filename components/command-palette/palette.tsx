@@ -228,7 +228,7 @@ const PaletteHeader = memo(function PaletteHeader({
         handleClose();
       }
     }
-    setPreview(filtered.length > 0 ? filtered[1] : null);
+    if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[1] : null);
   };
 
   useEffect(() => {
