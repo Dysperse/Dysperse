@@ -65,6 +65,7 @@ function WidgetBar({ widgets, setWidgets }) {
           width: "100%",
           flexDirection: "row",
           alignItems: "center",
+          justifyContent: "flex-end",
         },
         !breakpoints.md && {
           borderBottomWidth: 1,
