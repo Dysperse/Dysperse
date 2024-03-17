@@ -293,7 +293,7 @@ function RecurrencePicker({ value, setValue }) {
   );
 }
 
-function TaskDatePicker({ control, setValue, watch }) {
+export function TaskDatePicker({ setValue, watch, children }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const sheetRef = useRef<BottomSheetModal>(null);
@@ -305,16 +305,24 @@ function TaskDatePicker({ control, setValue, watch }) {
 
   const [view, setView] = useState<"date" | "recurrence">("date");
 
-  return (
-    <>
+  const trigger = cloneElement(
+    children || (
       <Chip
         style={({ pressed, hovered }) => ({
           backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
         })}
         icon={<Icon>calendar_today</Icon>}
         label={dueDate ? dueDate.format("MMM Do") : undefined}
-        onPress={handleOpen}
       />
+    ),
+    {
+      onPress: handleOpen,
+    }
+  );
+
+  return (
+    <>
+      {trigger}
       <BottomSheet
         snapPoints={[breakpoints.md ? 480 : "70%"]}
         sheetRef={sheetRef}
@@ -383,7 +391,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
       }}
       showsHorizontalScrollIndicator={false}
     >
-      <TaskDatePicker control={control} setValue={setValue} watch={watch} />
+      <TaskDatePicker setValue={setValue} watch={watch} />
       <Controller
         control={control}
         name="pinned"

@@ -2,9 +2,9 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export function TaskAttachmentPicker({
@@ -55,6 +55,14 @@ export function TaskAttachmentPicker({
     },
     [updateTask, handleParentClose, type, task]
   );
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    setTimeout(
+      () => inputRef.current?.focus(),
+      Platform.OS === "web" ? 200 : 0
+    );
+  }, []);
 
   return (
     <View style={{ padding: 20, gap: 20, flex: 1 }}>
@@ -71,6 +79,7 @@ export function TaskAttachmentPicker({
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             bottomSheet
+            inputRef={inputRef}
             placeholder={placeholder}
             variant="filled+outlined"
             onSubmitEditing={handleSubmit(onSubmit, () => {
@@ -80,6 +89,11 @@ export function TaskAttachmentPicker({
               });
             })}
             blurOnSubmit={false}
+            onKeyPress={(e) => {
+              if (e.nativeEvent.key === "Escape") {
+                handleParentClose();
+              }
+            }}
             style={{
               paddingHorizontal: 25,
               paddingVertical: 15,
@@ -90,7 +104,6 @@ export function TaskAttachmentPicker({
               }),
             }}
             multiline={multiline}
-            autoFocus
             onChangeText={onChange}
             onBlur={onBlur}
             value={value}

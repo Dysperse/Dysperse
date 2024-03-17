@@ -29,6 +29,7 @@ import { FlatList } from "react-native-gesture-handler";
 import Markdown from "react-native-markdown-display";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
+import { TaskDatePicker } from "../create";
 import { TaskAttachmentButton } from "./attachment/button";
 import { useTaskDrawerContext } from "./context";
 
@@ -376,18 +377,14 @@ export function TaskDetails() {
 
   const [activeSections, setActiveSections] = useState([]);
 
-  const dateMenuRef = useRef();
-
-  const handleEditDate = (date) => {
-    updateTask("due", date.toISOString());
-  };
-
   const collapsibleMenuStyles = {
     backgroundColor: theme[3],
     padding: 10,
     flexDirection: "row",
     paddingVertical: 10,
   };
+
+  const noteMenuRef = useRef<BottomSheetModal>(null);
 
   return (
     <>
@@ -467,6 +464,7 @@ export function TaskDetails() {
               <View style={collapsibleMenuStyles as any}>
                 <TaskAttachmentButton
                   defaultView="Note"
+                  menuRef={noteMenuRef}
                   lockView
                   task={task}
                   updateTask={updateTask}
@@ -502,49 +500,46 @@ export function TaskDetails() {
           },
           {
             trigger: () => (
-              <DatePickerModal
-                date={task.due}
-                onDateSelect={handleEditDate}
-                menuRef={dateMenuRef}
-                enabled={!task.due}
-                closeOnSelect
+              <ListItemButton
+                variant="filled"
+                disabled={!!task.due}
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
-                <ListItemButton
-                  variant="filled"
-                  disabled={!!task.due}
-                  style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-                >
-                  <Icon>{task.due ? "calendar_today" : "calendar_add_on"}</Icon>
-                  <ListItemText
-                    primary={
-                      !task.due
-                        ? "Add date"
-                        : dayjs(task.due).format("MMM Do, YYYY")
-                    }
-                    secondary={
-                      task.due &&
-                      (task.recurrenceRule
-                        ? capitalizeFirstLetter(
-                            RRule.fromString(
-                              task.recurrenceRule.replace(/^EXDATE.*$/, "")
-                            ).toText()
-                          )
-                        : "Does not repeat")
-                    }
-                  />
-                  <TaskRescheduleButton />
-                </ListItemButton>
-              </DatePickerModal>
+                <Icon>{task.due ? "calendar_today" : "calendar_add_on"}</Icon>
+                <ListItemText
+                  primary={
+                    !task.due
+                      ? "Add date"
+                      : dayjs(task.due).format("MMM Do, YYYY")
+                  }
+                  secondary={
+                    task.due &&
+                    (task.recurrenceRule
+                      ? capitalizeFirstLetter(
+                          RRule.fromString(
+                            task.recurrenceRule.replace(/^EXDATE.*$/, "")
+                          ).toText()
+                        )
+                      : "Does not repeat")
+                  }
+                />
+                <TaskRescheduleButton />
+              </ListItemButton>
             ),
             content: (
               <View style={collapsibleMenuStyles as any}>
-                <DatePickerModal
-                  date={task.due}
-                  onDateSelect={(e) => {
-                    handleEditDate(e);
+                <TaskDatePicker
+                  key="test"
+                  setValue={(name, value) =>
+                    updateTask(name === "date" ? "due" : name, value)
+                  }
+                  watch={(inputName) => {
+                    return {
+                      date: dayjs(task.due),
+                      dateOnly: task.dateOnly,
+                      recurrenceRule: task.recurrenceRule,
+                    }[inputName];
                   }}
-                  menuRef={dateMenuRef}
-                  closeOnSelect
                 >
                   <Pressable style={drawerStyles.collapsibleMenuItem}>
                     <IconButton
@@ -556,7 +551,7 @@ export function TaskDetails() {
                     </IconButton>
                     <Text>Edit</Text>
                   </Pressable>
-                </DatePickerModal>
+                </TaskDatePicker>
                 <Pressable
                   style={drawerStyles.collapsibleMenuItem}
                   onPress={() =>

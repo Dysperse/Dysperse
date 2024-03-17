@@ -53,9 +53,8 @@ export function TaskAttachmentButton({
           <IconButton
             style={{ borderWidth: 1, borderColor: theme[6] }}
             size={55}
-          >
-            <Icon size={27}>edit</Icon>
-          </IconButton>
+            icon="edit"
+          />
         )
       }
     >
@@ -78,11 +77,9 @@ export function TaskAttachmentButton({
           }}
           variant="outlined"
           size={55}
-        >
-          <Icon>
-            {view === "Add" || lockView ? "close" : "arrow_back_ios_new"}
-          </Icon>
-        </IconButton>
+          icon={view === "Add" || lockView ? "close" : "arrow_back_ios_new"}
+        />
+
         <Text weight={700} style={{ fontSize: 23 }}>
           {view}
         </Text>
