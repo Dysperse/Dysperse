@@ -335,14 +335,17 @@ export function SettingsLayout({
 
   return session ? (
     <View
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: theme[2],
-      }}
+      style={[
+        {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: theme[2],
+        },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+      ]}
     >
       {!breakpoints.md && !hideBack && (
         <View
