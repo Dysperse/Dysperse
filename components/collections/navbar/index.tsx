@@ -252,7 +252,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 <Text style={{ fontSize: 20 }} numberOfLines={1}>
                   {data.name || "Everything"}
                 </Text>
-                <Icon>expand_more</Icon>
+                <Icon style={{ color: theme[12] }}>expand_more</Icon>
               </IconButton>
             }
             options={collectionMenuOptions}

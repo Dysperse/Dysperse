@@ -504,9 +504,9 @@ function EditWallpaper() {
               .split(",")
               .map(Number) as [number, number, number];
 
-            const uri = `${process.env.EXPO_PUBLIC_API_URL}?color=%23${hslToHex(
-              ...hslValues
-            )}&pattern=${pattern}`;
+            const uri = `${
+              process.env.EXPO_PUBLIC_API_URL
+            }/pattern?color=%23${hslToHex(...hslValues)}&pattern=${pattern}`;
 
             return (
               <Pressable
