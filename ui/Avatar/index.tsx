@@ -103,7 +103,11 @@ export const ProfilePicture = function ProfilePicture({
 }) {
   return (
     <Avatar
-      image={image ? image : undefined}
+      image={
+        image
+          ? image
+          : `https://source.boringavatars.com/beam/120/${name}?colors=264653,2a9d8f,e9c46a,f4a261,e76f51`
+      }
       size={size}
       style={style}
       onPress={onPress}

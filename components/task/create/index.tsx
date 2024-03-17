@@ -191,105 +191,108 @@ function RecurrencePicker({ value, setValue }) {
   const [previewRange, setPreviewRange] = useState<Date>(new Date());
 
   return (
-    <View
-      style={{
-        flexDirection: breakpoints.md ? "row" : "column",
-        paddingHorizontal: 20,
-        gap: 20,
-      }}
-    >
-      <View style={{ flex: breakpoints.md ? 1 : undefined }}>
-        <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
-          Repeat every
-        </Text>
-        <View>
-          <TextField variant="filled+outlined" placeholder="5" />
-        </View>
-        <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-          On
-        </Text>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
-            <Icon>wb_sunny</Icon>
-            <ListItemText truncate primary="5 days" secondary="Select days" />
-          </ListItemButton>
-          <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
-            <Icon>calendar_today</Icon>
-            <ListItemText
-              truncate
-              primary="2 selected"
-              secondary="Select months"
-            />
-          </ListItemButton>
-        </View>
-        <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-          Ends
-        </Text>
-        <ListItemButton style={{ height: 40 }} variant="filled">
-          <Icon>radio_button_checked</Icon>
-          <ListItemText truncate primary="Never" />
-        </ListItemButton>
-        <ListItemButton style={{ height: 40 }}>
-          <Icon>radio_button_unchecked</Icon>
-          <ListItemText truncate primary="On" />
-          <TextField
-            variant="outlined"
-            placeholder="Date"
-            style={{ padding: 4, borderRadius: 5 }}
-          />
-        </ListItemButton>
-        <ListItemButton style={{ height: 40 }}>
-          <Icon>radio_button_unchecked</Icon>
-          <ListItemText truncate primary="After" />
-          <TextField
-            variant="outlined"
-            placeholder="#"
-            style={{ padding: 4, borderRadius: 5, width: 50 }}
-          />
-          <ListItemText truncate primary="times" />
-        </ListItemButton>
-      </View>
+    <>
+      <Text style={{ textAlign: "center" }}>Coming soon!</Text>
       <View
         style={{
-          padding: 10,
-          flex: breakpoints.md ? 1 : undefined,
+          flexDirection: breakpoints.md ? "row" : "column",
+          paddingHorizontal: 20,
+          gap: 20,
         }}
       >
+        <View style={{ flex: breakpoints.md ? 1 : undefined }}>
+          <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
+            Repeat every
+          </Text>
+          <View>
+            <TextField variant="filled+outlined" placeholder="5" />
+          </View>
+          <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
+            On
+          </Text>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
+              <Icon>wb_sunny</Icon>
+              <ListItemText truncate primary="5 days" secondary="Select days" />
+            </ListItemButton>
+            <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
+              <Icon>calendar_today</Icon>
+              <ListItemText
+                truncate
+                primary="2 selected"
+                secondary="Select months"
+              />
+            </ListItemButton>
+          </View>
+          <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
+            Ends
+          </Text>
+          <ListItemButton style={{ height: 40 }} variant="filled">
+            <Icon>radio_button_checked</Icon>
+            <ListItemText truncate primary="Never" />
+          </ListItemButton>
+          <ListItemButton style={{ height: 40 }}>
+            <Icon>radio_button_unchecked</Icon>
+            <ListItemText truncate primary="On" />
+            <TextField
+              variant="outlined"
+              placeholder="Date"
+              style={{ padding: 4, borderRadius: 5 }}
+            />
+          </ListItemButton>
+          <ListItemButton style={{ height: 40 }}>
+            <Icon>radio_button_unchecked</Icon>
+            <ListItemText truncate primary="After" />
+            <TextField
+              variant="outlined"
+              placeholder="#"
+              style={{ padding: 4, borderRadius: 5, width: 50 }}
+            />
+            <ListItemText truncate primary="times" />
+          </ListItemButton>
+        </View>
         <View
           style={{
-            marginTop: breakpoints.md ? 0 : 30,
-            borderWidth: 2,
-            borderColor: theme[6],
-            borderRadius: 25,
-            padding: 5,
+            padding: 10,
+            flex: breakpoints.md ? 1 : undefined,
           }}
         >
-          <View style={{ padding: 10, paddingBottom: 0 }}>
-            <Text variant="eyebrow">Preview</Text>
-            <Text style={{ fontSize: 25 }} weight={800}>
-              {capitalizeFirstLetter(recurrenceRule.toText())}
-            </Text>
+          <View
+            style={{
+              marginTop: breakpoints.md ? 0 : 30,
+              borderWidth: 2,
+              borderColor: theme[6],
+              borderRadius: 25,
+              padding: 5,
+            }}
+          >
+            <View style={{ padding: 10, paddingBottom: 0 }}>
+              <Text variant="eyebrow">Preview</Text>
+              <Text style={{ fontSize: 25 }} weight={800}>
+                {capitalizeFirstLetter(recurrenceRule.toText())}
+              </Text>
+            </View>
+            <Calendar
+              onMonthChange={(newMonth) =>
+                setPreviewRange(newMonth.timestamp as any)
+              }
+              markedDates={recurrenceRule
+                .between(
+                  dayjs(previewRange).startOf("month").toDate(),
+                  dayjs(previewRange).endOf("month").toDate()
+                )
+                .reduce((acc, date) => {
+                  acc[dayjs(date).format("YYYY-MM-DD")] = {
+                    selected: true,
+                    disableTouchEvent: true,
+                  };
+                  return acc;
+                }, {})}
+            />
           </View>
-          <Calendar
-            onMonthChange={(newMonth) =>
-              setPreviewRange(newMonth.timestamp as any)
-            }
-            markedDates={recurrenceRule
-              .between(
-                dayjs(previewRange).startOf("month").toDate(),
-                dayjs(previewRange).endOf("month").toDate()
-              )
-              .reduce((acc, date) => {
-                acc[dayjs(date).format("YYYY-MM-DD")] = {
-                  selected: true,
-                  disableTouchEvent: true,
-                };
-                return acc;
-              }, {})}
-          />
         </View>
       </View>
-    </View>
+    </>
   );
 }
 
