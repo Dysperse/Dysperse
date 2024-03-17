@@ -1,13 +1,29 @@
 import { CommandPaletteContent } from "@/components/command-palette/palette";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { Redirect, router } from "expo-router";
-import { StatusBar, View } from "react-native";
+import { useEffect } from "react";
+import { Platform, StatusBar, View } from "react-native";
 
 export default function Page() {
   const { session } = useUser();
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColor(session?.user?.profile?.theme || "mint");
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      document
+        .querySelector(`meta[name="theme-color"]`)
+        .setAttribute("content", "#000");
+      return () => {
+        document
+          .querySelector(`meta[name="theme-color"]`)
+          .setAttribute("content", theme[2]);
+      };
+    }
+  }, [theme, breakpoints.md]);
 
   if (!session || session?.error) return <Redirect href="/auth" />;
 
