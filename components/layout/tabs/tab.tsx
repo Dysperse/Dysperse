@@ -77,14 +77,12 @@ function Tab({
         } else {
           router.replace("/");
         }
+        mutate((oldData) => oldData.filter((oldTab: any) => oldTab.id !== id), {
+          revalidate: false,
+        });
         sendApiRequest(sessionToken, "DELETE", "user/tabs", {
           id,
-        }).then(() =>
-          mutate(
-            (oldData) => oldData.filter((oldTab: any) => oldTab.id !== id),
-            { revalidate: false }
-          )
-        );
+        });
       } catch (err) {
         setIsClosedAnimation(false);
         Toast.show({
