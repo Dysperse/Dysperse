@@ -1,4 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
@@ -26,7 +27,7 @@ import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
 import React, { useCallback, useEffect } from "react";
-import { AppState, Platform, View } from "react-native";
+import { AppState, Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
 import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "../context/AuthProvider";
@@ -66,55 +67,61 @@ SplashScreen.hideAsync();
 
 function ErrorBoundaryComponent() {
   const theme = useColor("mint");
+  const breakpoints = useResponsiveBreakpoints();
+  const { width } = useWindowDimensions();
+
   return (
-    <View
-      style={{
-        backgroundColor: theme[1],
-        justifyContent: "center",
-        alignItems: "center",
-        flex: 1,
-      }}
-    >
+    <ColorThemeProvider theme={theme}>
       <View
         style={{
-          maxWidth: 350,
+          backgroundColor: theme[1],
           justifyContent: "center",
           alignItems: "center",
-          borderWidth: 1,
-          borderColor: theme[6],
-          padding: 30,
-          borderRadius: 20,
+          flex: 1,
         }}
       >
-        <Emoji size={50} emoji="1F62C" />
-        <Text
-          heading
-          style={{ fontSize: 40, marginTop: 10, textAlign: "center" }}
-        >
-          Well, that's embarrassing...
-        </Text>
-        <Text style={{ textAlign: "center", opacity: 0.6 }}>
-          Dysperse unexpectedly crashed, and our team has been notified. Try
-          reopening the app to see if that fixes the issue.
-        </Text>
-
-        <Button
-          onPress={() => {
-            if (Platform.OS === "web") {
-              (window as any).disableSaveData = true;
-              localStorage.removeItem("app-cache");
-              window.location.reload();
-              return;
-            }
-            Updates.reloadAsync();
+        <View
+          style={{
+            width: 450,
+            maxWidth: width - 40,
+            justifyContent: "center",
+            borderWidth: 1,
+            borderColor: theme[6],
+            padding: 30,
+            borderRadius: 20,
+            flexDirection: breakpoints.md ? "row" : "column",
+            gap: 20,
           }}
-          variant="outlined"
-          style={{ marginTop: 10 }}
         >
-          <ButtonText>Reload</ButtonText>
-        </Button>
+          <Emoji size={50} style={{ marginTop: 10 }} emoji="1F62C" />
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 30 }} weight={900}>
+              Well, that's embarrassing...
+            </Text>
+            <Text style={{ fontSize: 20, opacity: 0.6 }}>
+              Dysperse unexpectedly crashed, and our team has been notified. Try
+              reopening the app to see if that fixes the issue.
+            </Text>
+
+            <Button
+              onPress={() => {
+                if (Platform.OS === "web") {
+                  (window as any).disableSaveData = true;
+                  localStorage.removeItem("app-cache");
+                  window.location.reload();
+                  return;
+                }
+                Updates.reloadAsync();
+              }}
+              variant="outlined"
+              style={{ marginTop: 10 }}
+            >
+              <ButtonText>Reload</ButtonText>
+            </Button>
+          </View>
+        </View>
       </View>
-    </View>
+    </ColorThemeProvider>
   );
 }
 

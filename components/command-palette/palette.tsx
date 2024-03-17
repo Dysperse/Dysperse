@@ -334,7 +334,7 @@ function CommandPalettePreview({ preview, handlePress }) {
               {preview.label}
             </Text>
             {(preview?.data?.description || preview?.about) && (
-              <Text style={{ marginTop: 5 }}>
+              <Text style={{ marginTop: 5, fontSize: 20, opacity: 0.6 }}>
                 {preview?.data?.description || preview?.about}
               </Text>
             )}
