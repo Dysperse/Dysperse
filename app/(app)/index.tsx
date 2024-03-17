@@ -35,23 +35,27 @@ import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
 
+const getGreeting = () => {
+  const now = new Date();
+  const hour = now.getHours();
+  if (hour < 10) {
+    return "Good morning";
+  } else if (hour < 16) {
+    return "Good afternoon";
+  } else if (hour < 20) {
+    return "Good evening";
+  } else {
+    return "Good night";
+  }
+};
+
 function Greeting() {
   const theme = useColorTheme();
-  const [greeting, setGreeting] = useState("");
+  const [greeting, setGreeting] = useState(getGreeting());
   const breakpoints = useResponsiveBreakpoints();
 
   useEffect(() => {
-    const now = new Date();
-    const hour = now.getHours();
-    if (hour < 10) {
-      setGreeting("Good morning");
-    } else if (hour < 16) {
-      setGreeting("Good afternoon");
-    } else if (hour < 20) {
-      setGreeting("Good evening");
-    } else {
-      setGreeting("Good night");
-    }
+    setGreeting(getGreeting());
   }, []);
 
   return (
