@@ -15,6 +15,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -131,18 +132,43 @@ function FriendActivity() {
 
   const friends = Array.isArray(data) && [...data, "ALL_FRIENDS"];
 
-  console.log(data);
+  const red = useColor("red");
 
   if (friends.length < 8)
     for (let i = friends.length; i < 8; i++) {
       friends.push({ placeholder: i });
     }
 
+  const { session } = useUser();
+  const { data: friendData } = useSWR(["user/friends", { requests: "true" }]);
+  const hasRequest = Boolean(
+    friendData?.find(
+      (user) => user.accepted === false && user.followingId === session.user.id
+    )
+  );
+
   return (
     <>
-      <Text variant="eyebrow" style={{ marginBottom: 10 }}>
-        Recent Activity
-      </Text>
+      <View
+        style={{
+          alignItems: "center",
+          flexDirection: "row",
+          marginBottom: 10,
+          gap: 10,
+        }}
+      >
+        <Text variant="eyebrow">Recent Activity</Text>
+        {hasRequest && (
+          <View
+            style={{
+              width: 10,
+              borderRadius: 99,
+              height: 10,
+              backgroundColor: red[9],
+            }}
+          />
+        )}
+      </View>
       <ScrollView
         contentContainerStyle={{
           flexDirection: "row",
@@ -191,9 +217,28 @@ function FriendActivity() {
                 <Avatar size={60} disabled>
                   <Icon size={30}>groups_2</Icon>
                 </Avatar>
-                <Text style={{ opacity: 0.6 }} numberOfLines={1}>
-                  All Friends
-                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 5,
+                  }}
+                >
+                  <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+                    All Friends
+                  </Text>
+                  {hasRequest && (
+                    <View
+                      style={{
+                        width: 10,
+                        borderRadius: 99,
+                        height: 10,
+                        backgroundColor: red[9],
+                      }}
+                    />
+                  )}
+                </View>
               </TouchableOpacity>
             ) : !friend.user ? (
               <View

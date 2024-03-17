@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
   ViewStyle,
-  useColorScheme,
 } from "react-native";
 import Icon, { DIconProps } from "../Icon";
 import Text from "../Text";
@@ -44,8 +43,7 @@ const styles = StyleSheet.create({
 export function Avatar(props: DAvatarProps) {
   const { session } = useUser();
   const theme = useColor(
-    props.theme || session?.user?.profile?.theme || "mint",
-    useColorScheme() === "dark"
+    props.theme || session?.user?.profile?.theme || "mint"
   );
 
   return (
