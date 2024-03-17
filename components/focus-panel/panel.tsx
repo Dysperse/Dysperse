@@ -32,10 +32,13 @@ import {
 
 type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 
+const WakeLock = () => {
+  useKeepAwake();
+  return null;
+};
 function WidgetBar({ widgets, setWidgets }) {
   const theme = useColorTheme();
   const { setFocus } = useFocusPanelContext();
-  useKeepAwake();
 
   const handleWidgetToggle = (widget: Widget) => {
     setWidgets((widgets) => {
@@ -52,19 +55,24 @@ function WidgetBar({ widgets, setWidgets }) {
 
   return (
     <View
-      style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        padding: 10,
-        paddingTop: 10 + insets.top,
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        borderBottomWidth: 1,
-        borderBottomColor: theme[3],
-      }}
+      style={[
+        {
+          position: "absolute",
+          top: 0,
+          right: 0,
+          padding: 10,
+          paddingTop: 10 + insets.top,
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "center",
+        },
+        !breakpoints.md && {
+          borderBottomWidth: 1,
+          borderBottomColor: theme[3],
+        },
+      ]}
     >
+      {process.env.NODE_ENV === "production" && <WakeLock />}
       {!breakpoints.md && (
         <>
           <IconButton
