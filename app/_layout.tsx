@@ -281,8 +281,12 @@ function Root() {
               isOpen: open,
               desktopCollapsed,
               setDesktopCollapsed,
-              closeSidebar: () => setOpen(false),
-              openSidebar: () => setOpen(true),
+              closeSidebar: () => {
+                if (open) setOpen(false);
+              },
+              openSidebar: () => {
+                if (!open) setOpen(true);
+              },
 
               SIDEBAR_WIDTH,
               closeSidebarOnMobile,

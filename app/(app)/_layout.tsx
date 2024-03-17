@@ -486,7 +486,7 @@ export default function AppLayout() {
                                 gesture={Gesture.Hover()
                                   .onStart(openSidebar)
                                   .onEnd(closeSidebar)
-                                  .enabled(breakpoints.md)}
+                                  .enabled(breakpoints.md && desktopCollapsed)}
                               >
                                 <Pressable style={{ flexDirection: "row" }}>
                                   <Sidebar />
