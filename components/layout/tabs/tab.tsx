@@ -151,6 +151,7 @@ function Tab({
             style={{
               backgroundColor: "transparent",
               marginTop: tab.collection ? -10 : 0,
+              shadowRadius: 0,
             }}
             size={23}
           >
