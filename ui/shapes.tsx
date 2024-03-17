@@ -70,27 +70,23 @@ export const shape3 = (props: shapeProps) => (
 );
 
 export const shape4 = (props: shapeProps) => (
-  <Svg
+  <svg
     width={props.size}
     height={props.size}
-    viewBox="0 0 200 200"
+    xmlns="http://www.w3.org/2000/svg"
     fill="none"
-    {...props}
+    viewBox="0 0 200 200"
+    version="1.1"
   >
-    <G clipPath="url(#a)">
-      <Path
+    <g clipPath="url(#clip0_105_480)">
+      <path
         fill={props.color}
         fillRule="evenodd"
-        d="M0 0h50v50H0V0Zm100 50H50v50H0v50h50v50h50v-50h50v50h50v-50h-50v-50h50V50h-50V0h-50v50Zm0 50h50V50h-50v50Zm0 0v50H50v-50h50Z"
+        d="M124.899 4.917 105.8 85.998l43.827-70.838a4 4 0 0 1 6.23-.724l29.707 29.707a4 4 0 0 1-.724 6.23L114.002 94.2l81.081-19.099A4 4 0 0 1 200 78.995v42.011a4 4 0 0 1-4.917 3.893L114.002 105.8l70.838 43.828a4 4 0 0 1 .724 6.23l-29.707 29.706a4 4 0 0 1-6.23-.724L105.8 114.002l19.099 81.081a4 4 0 0 1-3.893 4.917H78.994a4 4 0 0 1-3.893-4.917l19.1-81.081-43.828 70.838a4 4 0 0 1-6.23.724l-29.707-29.707a4 4 0 0 1 .724-6.23L85.998 105.8l-81.08 19.099A4 4 0 0 1 0 121.006V78.994a4 4 0 0 1 4.917-3.893l81.081 19.1L15.16 50.372a4 4 0 0 1-.724-6.23l29.707-29.707a4 4 0 0 1 6.23.724L94.2 85.998 75.1 4.918A4 4 0 0 1 78.995 0h42.012a4 4 0 0 1 3.893 4.917ZM100 111.43c6.312 0 11.429-5.117 11.429-11.429s-5.117-11.43-11.429-11.43S88.571 93.688 88.571 100s5.117 11.429 11.429 11.429Z"
         clipRule="evenodd"
-      />
-    </G>
-    <Defs>
-      <ClipPath id="a">
-        <Path fill="#fff" d="M0 0h200v200H0z" />
-      </ClipPath>
-    </Defs>
-  </Svg>
+      ></path>
+    </g>
+  </svg>
 );
 
 export const shape5 = (props: shapeProps) => (
