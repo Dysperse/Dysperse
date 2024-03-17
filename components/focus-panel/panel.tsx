@@ -8,7 +8,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { Fragment, memo, useEffect } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -158,6 +158,7 @@ function PanelContent() {
 
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
 
   const Wrapper = breakpoints.md
     ? Fragment
@@ -171,7 +172,7 @@ function PanelContent() {
             left: 0,
             backgroundColor: theme[1],
             zIndex: 9999,
-            width: "100%",
+            width: width,
             height: "100%",
           }}
         >
