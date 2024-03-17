@@ -6,7 +6,7 @@ import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { usePathname } from "expo-router";
-import { memo, useEffect } from "react";
+import { Fragment, memo, useEffect } from "react";
 import { Platform, Pressable, View } from "react-native";
 import {
   Gesture,
@@ -18,6 +18,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import { Clock } from "../home/clock";
 import { WeatherWidget } from "../home/weather/widget";
@@ -32,6 +33,7 @@ type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 
 function WidgetBar({ widgets, setWidgets }) {
   const theme = useColorTheme();
+  const { setFocus } = useFocusPanelContext();
 
   const handleWidgetToggle = (widget: Widget) => {
     setWidgets((widgets) => {
@@ -43,18 +45,51 @@ function WidgetBar({ widgets, setWidgets }) {
     });
   };
 
+  const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
+
   return (
-    <>
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        right: 0,
+        padding: 10,
+        paddingTop: 10 + insets.top,
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        borderBottomWidth: 1,
+        borderBottomColor: theme[3],
+      }}
+    >
+      {!breakpoints.md && (
+        <>
+          <IconButton
+            onPress={() => setFocus(false)}
+            variant={breakpoints.md ? "filled" : "text"}
+            style={{
+              width: 60,
+              opacity: 0.6,
+            }}
+          >
+            <Icon>west</Icon>
+          </IconButton>
+          <Text
+            style={{
+              color: theme[11],
+              marginLeft: "auto",
+              marginRight: "auto",
+              opacity: 0.7,
+              fontSize: 20,
+            }}
+            weight={200}
+          >
+            Focus
+          </Text>
+        </>
+      )}
       <MenuPopover
-        menuProps={{
-          style: {
-            position: "absolute",
-            top: 0,
-            right: 0,
-            margin: 10,
-            width: 60,
-          },
-        }}
         containerStyle={{
           marginLeft: -15,
         }}
@@ -101,7 +136,7 @@ function WidgetBar({ widgets, setWidgets }) {
           callback: () => handleWidgetToggle((i.text as any).toLowerCase()),
         }))}
       />
-    </>
+    </View>
   );
 }
 
@@ -110,53 +145,84 @@ function PanelContent() {
   const { isFocused } = useFocusPanelContext();
   const { widgets, setWidgets } = useFocusPanelWidgetContext();
 
+  const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
+
+  const Wrapper = breakpoints.md
+    ? Fragment
+    : ({ children }) => (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            backgroundColor: theme[1],
+            zIndex: 9999,
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {children}
+        </View>
+      );
+
   return (
-    <ContentWrapper
-      style={{
-        padding: 20,
-        position: "relative",
-      }}
-    >
-      {isFocused && (
-        <>
-          {widgets.length === 0 ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                maxWidth: 250,
-                marginHorizontal: "auto",
-                gap: 5,
-              }}
-            >
-              <Text style={{ textAlign: "center" }} variant="eyebrow">
-                This is the focus panel
-              </Text>
-              <Text
-                style={{ textAlign: "center", color: theme[11], opacity: 0.6 }}
+    <Wrapper>
+      <ContentWrapper
+        noPaddingTop={!breakpoints.md}
+        style={{
+          padding: 20,
+          paddingTop: insets.top + 20,
+          position: "relative",
+        }}
+      >
+        {isFocused && (
+          <>
+            {widgets.length === 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  maxWidth: 250,
+                  marginHorizontal: "auto",
+                  gap: 5,
+                }}
               >
-                Here, you can add widgets to enhance & supercharge your
-                productivity
-              </Text>
-            </View>
-          ) : (
-            <ScrollView
-              style={{ flex: 1 }}
-              contentContainerStyle={{
-                gap: 20,
-                justifyContent: "center",
-                minHeight: "100%",
-              }}
-            >
-              {widgets.includes("clock") && <Clock />}
-              {widgets.includes("weather") && <WeatherWidget />}
-            </ScrollView>
-          )}
-          <WidgetBar widgets={widgets} setWidgets={setWidgets} />
-        </>
-      )}
-    </ContentWrapper>
+                <Text style={{ textAlign: "center" }} variant="eyebrow">
+                  This is the focus panel
+                </Text>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: theme[11],
+                    opacity: 0.6,
+                  }}
+                >
+                  Here, you can add widgets to enhance & supercharge your
+                  productivity
+                </Text>
+              </View>
+            ) : (
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{
+                  gap: 20,
+                  paddingTop: 80,
+                  minHeight: "100%",
+                }}
+              >
+                {widgets.includes("clock") && <Clock />}
+                {widgets.includes("weather") && <WeatherWidget />}
+              </ScrollView>
+            )}
+            <WidgetBar widgets={widgets} setWidgets={setWidgets} />
+          </>
+        )}
+      </ContentWrapper>
+    </Wrapper>
   );
 }
 export function PanelSwipeTrigger({
@@ -308,7 +374,7 @@ const FocusPanel = memo(function FocusPanel() {
 
   const tap = Gesture.Tap().onEnd(() => setFocus(!isFocused));
   const pathname = usePathname();
-  return !breakpoints.md || pathname.includes("settings") ? null : (
+  return pathname.includes("settings") ? null : (
     <>
       <GestureDetector gesture={pan}>
         <GestureDetector gesture={tap}>

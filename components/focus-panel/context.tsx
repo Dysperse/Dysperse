@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import {
   Dispatch,
   createContext,
@@ -28,9 +29,11 @@ export const FocusPanelProvider = ({ children }) => {
       localStorage.setItem("focusPanelVisible", isFocused ? "true" : "false");
   }, [isFocused]);
 
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <FocusPanelContext.Provider value={{ isFocused, setFocus }}>
-      {children}
+      {(breakpoints.md || !isFocused) && children}
       <FocusPanel />
     </FocusPanelContext.Provider>
   );

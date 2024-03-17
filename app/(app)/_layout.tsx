@@ -208,6 +208,7 @@ const ComingSoonScreen = () => {
 const ReleaseModal = () => {
   const { session, mutate, sessionToken } = useUser();
   const theme = useColorTheme();
+  const isDark = useDarkMode();
   const { data } = useSWR("releases", {
     fetcher: () =>
       fetch(
@@ -242,7 +243,11 @@ const ReleaseModal = () => {
     session.user.lastReleaseVersionViewed !== data?.[0]?.id && (
       <Portal>
         <BlurView
-          tint="systemUltraThinMaterialLight"
+          tint={
+            isDark
+              ? "systemUltraThinMaterialDark"
+              : "systemUltraThinMaterialLight"
+          }
           intensity={50}
           style={{
             zIndex: 99,
