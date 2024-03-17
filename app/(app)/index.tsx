@@ -729,11 +729,14 @@ export default function Index() {
 
   const widthStyle = useAnimatedStyle(() => {
     return {
-      width: withSpring(width - (isFocused ? 550 : 300), {
-        damping: 30,
-        overshootClamping: true,
-        stiffness: 400,
-      }),
+      width: withSpring(
+        breakpoints.md ? width - (isFocused ? 550 : 300) : width - 20,
+        {
+          damping: 30,
+          overshootClamping: true,
+          stiffness: 400,
+        }
+      ),
     };
   });
 
