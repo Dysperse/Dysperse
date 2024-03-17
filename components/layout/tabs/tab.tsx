@@ -79,7 +79,12 @@ function Tab({
         }
         sendApiRequest(sessionToken, "DELETE", "user/tabs", {
           id,
-        }).then(() => mutate());
+        }).then(() =>
+          mutate(
+            (oldData) => oldData.filter((oldTab: any) => oldTab.id !== id),
+            { revalidate: false }
+          )
+        );
       } catch (err) {
         setIsClosedAnimation(false);
         Toast.show({
