@@ -18,7 +18,7 @@ import {
 } from "react";
 
 import { Customization } from "@/components/signup/Customization";
-import Spinner from "@/ui/Spinner";
+import { useSession } from "@/context/AuthProvider";
 import TextField from "@/ui/TextArea";
 import Turnstile from "@/ui/turnstile";
 import dayjs from "dayjs";
@@ -224,11 +224,47 @@ export const useDebouncedValue = (inputValue, delay) => {
 const LoadingPage = ({ form }) => {
   const theme = useColorTheme();
   const { getValues } = form;
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const { signIn } = useSession();
+
+  const handleSignup = useCallback(async () => {
+    try {
+      if (success) return;
+      setError(false);
+      const values = getValues();
+      const data = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/signup`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            ...values,
+            timeZone: dayjs.tz.guess(),
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Host: process.env.EXPO_PUBLIC_API_URL.replace(
+              "https://",
+              ""
+            ).replace("http://", ""),
+          },
+          mode: "cors",
+          keepalive: true,
+        }
+      ).then((res) => res.json());
+      if (data.error) throw new Error(data.error);
+      setSuccess(true);
+      signIn(data.id);
+      router.replace("/");
+    } catch (e) {
+      setError(true);
+    }
+  }, [getValues, signIn, success]);
 
   useEffect(() => {
-    const values = getValues();
-    console.log(JSON.stringify(values));
-  }, []);
+    handleSignup();
+  }, [handleSignup]);
 
   return (
     <View
@@ -244,25 +280,31 @@ const LoadingPage = ({ form }) => {
           fontSize: 30,
           marginBottom: 10,
           color: theme[11],
+          marginTop: "auto",
           textAlign: "center",
         }}
         weight={900}
       >
-        Almost there!
+        {error ? "Something went wrong" : "Almost there!"}
       </Text>
       <Text
         style={{
           fontSize: 20,
           color: theme[11],
           opacity: 0.7,
-          marginBottom: 20,
+          marginBottom: "auto",
           textAlign: "center",
         }}
       >
-        Hang tight while we're bringing your productivity superpowers to life.
-        This might take a while.
+        {error
+          ? "Well, that sucks — maybe try again?"
+          : "Hang tight while we're bringing your productivity superpowers to life. This might take a while."}
       </Text>
-      <Spinner />
+      <Button style={{ height: 60 }} variant="filled" isLoading={!error}>
+        <ButtonText weight={900} style={{ fontSize: 20 }}>
+          Retry
+        </ButtonText>
+      </Button>
     </View>
   );
 };
