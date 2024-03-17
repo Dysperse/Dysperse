@@ -79,7 +79,8 @@
     "react-native-webview": "13.6.4",
     "rrule": "^2.8.1",
     "swr": "^2.2.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "expo-keep-awake": "~12.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",

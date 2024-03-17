@@ -5,6 +5,7 @@ import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { Fragment, memo, useEffect } from "react";
 import { Platform, Pressable, View } from "react-native";
@@ -34,6 +35,7 @@ type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 function WidgetBar({ widgets, setWidgets }) {
   const theme = useColorTheme();
   const { setFocus } = useFocusPanelContext();
+  useKeepAwake();
 
   const handleWidgetToggle = (widget: Widget) => {
     setWidgets((widgets) => {
