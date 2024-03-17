@@ -1,4 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
+import { SidebarContext } from "@/components/layout/sidebar/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -26,7 +27,7 @@ import { Slot, useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AppState, Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
 import { SWRConfig } from "swr";
@@ -259,27 +260,52 @@ function Root() {
     }
   }, [fontsLoaded, fontsError]);
 
+  const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
+  const [open, setOpen] = useState(false);
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
+
+  const closeSidebarOnMobile = useCallback(() => {
+    if (!breakpoints.md) {
+      setOpen(false);
+    }
+  }, [breakpoints]);
+  const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
+
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
       <SessionProvider>
         <ColorThemeProvider theme={theme}>
-          {fontsLoaded ? (
-            <SWRWrapper>
-              <JsStack screenOptions={{ header: () => null }}>
-                <Slot screenOptions={{ onLayoutRootView }} />
-                <JsStack.Screen
-                  name="open"
-                  options={{
-                    presentation: "modal",
-                    animationEnabled: true,
-                    ...TransitionPresets.ModalPresentationIOS,
-                  }}
-                />
-              </JsStack>
-            </SWRWrapper>
-          ) : (
-            <SessionLoadingScreen />
-          )}
+          <SidebarContext.Provider
+            value={{
+              isOpen: open,
+              desktopCollapsed,
+              setDesktopCollapsed,
+              closeSidebar: () => setOpen(false),
+              openSidebar: () => setOpen(true),
+
+              SIDEBAR_WIDTH,
+              closeSidebarOnMobile,
+            }}
+          >
+            {fontsLoaded ? (
+              <SWRWrapper>
+                <JsStack screenOptions={{ header: () => null }}>
+                  <Slot screenOptions={{ onLayoutRootView }} />
+                  <JsStack.Screen
+                    name="open"
+                    options={{
+                      presentation: "modal",
+                      animationEnabled: true,
+                      ...TransitionPresets.ModalPresentationIOS,
+                    }}
+                  />
+                </JsStack>
+              </SWRWrapper>
+            ) : (
+              <SessionLoadingScreen />
+            )}
+          </SidebarContext.Provider>
         </ColorThemeProvider>
       </SessionProvider>
     </ErrorBoundary>

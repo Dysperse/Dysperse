@@ -12,7 +12,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -181,7 +180,6 @@ const SyncButton = memo(function SyncButton() {
 export const LogoButton = memo(function LogoButton() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const red = useColor("red");
   const openSupport = useCallback(() => {
     Linking.openURL("https://blog.dysperse.com");
   }, []);
@@ -189,8 +187,7 @@ export const LogoButton = memo(function LogoButton() {
     Linking.openURL("https://feedback.dysperse.com");
   }, []);
 
-  const { session, error, sessionToken } = useUser();
-  const { error: storageError } = useStorageContext();
+  const { session, sessionToken } = useUser();
   const { isFocused, setFocus } = useFocusPanelContext();
   const { closeSidebarOnMobile, isOpen, openSidebar, closeSidebar } =
     useSidebarContext();

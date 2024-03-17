@@ -32,7 +32,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Linking,
   Platform,
@@ -56,7 +56,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
-import { SidebarContext } from "../../components/layout/sidebar/context";
+import { useSidebarContext } from "../../components/layout/sidebar/context";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -243,23 +243,21 @@ export default function AppLayout() {
   const { session: sessionData, isLoading: isUserLoading } = useUser();
   const { width, height } = useWindowDimensions();
   const isDark = useDarkMode();
+  const {
+    SIDEBAR_WIDTH,
+    isOpen,
+    openSidebar,
+    closeSidebar,
+    desktopCollapsed,
+    setDesktopCollapsed,
+  } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
-
-  const closeSidebarOnMobile = useCallback(() => {
-    if (!breakpoints.md) {
-      setOpen(false);
-    }
-  }, [breakpoints]);
-  const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
 
   if (Platform.OS === "android") {
     NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
   }
-
-  const [open, setOpen] = useState(!breakpoints.md);
-  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -321,179 +319,166 @@ export default function AppLayout() {
                 >
                   <CommandPaletteProvider>
                     <FocusPanelProvider>
-                      <SidebarContext.Provider
+                      <ThemeProvider
                         value={{
-                          isOpen: open,
-                          desktopCollapsed,
-                          setDesktopCollapsed,
-                          closeSidebar: () => setOpen(false),
-                          openSidebar: () => setOpen(true),
-
-                          SIDEBAR_WIDTH,
-                          closeSidebarOnMobile,
+                          ...DefaultTheme,
+                          colors: {
+                            ...DefaultTheme.colors,
+                            background: theme[breakpoints.sm ? 2 : 1],
+                          },
                         }}
                       >
-                        <ThemeProvider
-                          value={{
-                            ...DefaultTheme,
-                            colors: {
-                              ...DefaultTheme.colors,
-                              background: theme[breakpoints.sm ? 2 : 1],
-                            },
-                          }}
+                        <Animated.View
+                          style={[
+                            breakpoints.md ? { flex: 1 } : { width: "100%" },
+                          ]}
                         >
-                          <Animated.View
-                            style={[
-                              breakpoints.md ? { flex: 1 } : { width: "100%" },
-                            ]}
+                          <LoadingErrors />
+                          <Drawer
+                            open={isOpen}
+                            onOpen={openSidebar}
+                            onClose={closeSidebar}
+                            drawerPosition={"left"}
+                            drawerType={
+                              breakpoints.md
+                                ? desktopCollapsed
+                                  ? "front"
+                                  : "permanent"
+                                : "back"
+                            }
+                            swipeEdgeWidth={1000}
+                            drawerStyle={{
+                              // height,
+                              width: breakpoints.md
+                                ? desktopCollapsed
+                                  ? SIDEBAR_WIDTH
+                                  : "auto"
+                                : SIDEBAR_WIDTH,
+                              backgroundColor: "transparent",
+                            }}
+                            overlayStyle={{
+                              backgroundColor: "transparent",
+                            }}
+                            renderDrawerContent={() => (
+                              <GestureDetector
+                                gesture={Gesture.Hover()
+                                  .onStart(openSidebar)
+                                  .onEnd(closeSidebar)
+                                  .enabled(breakpoints.md)}
+                              >
+                                <Pressable style={{ flexDirection: "row" }}>
+                                  <Sidebar />
+                                  {breakpoints.md && (
+                                    <GestureDetector
+                                      gesture={Gesture.Tap().onEnd(() => {
+                                        setDesktopCollapsed((t) => !t);
+                                        closeSidebar();
+                                      })}
+                                    >
+                                      <PanelSwipeTrigger side="left" />
+                                    </GestureDetector>
+                                  )}
+                                </Pressable>
+                              </GestureDetector>
+                            )}
                           >
-                            <LoadingErrors />
-                            <Drawer
-                              open={open}
-                              onOpen={() => setOpen(true)}
-                              onClose={() => setOpen(false)}
-                              drawerPosition={"left"}
-                              drawerType={
-                                breakpoints.md
-                                  ? desktopCollapsed
-                                    ? "front"
-                                    : "permanent"
-                                  : "back"
-                              }
-                              swipeEdgeWidth={1000}
-                              drawerStyle={{
-                                // height,
-                                width: breakpoints.md
-                                  ? desktopCollapsed
-                                    ? SIDEBAR_WIDTH
-                                    : "auto"
-                                  : SIDEBAR_WIDTH,
-                                backgroundColor: "transparent",
-                              }}
-                              overlayStyle={{
-                                backgroundColor: "transparent",
-                              }}
-                              renderDrawerContent={() => (
-                                <GestureDetector
-                                  gesture={Gesture.Hover()
-                                    .onStart(() => setOpen(true))
-                                    .onEnd(() => setOpen(false))
-                                    .enabled(breakpoints.md)}
-                                >
-                                  <Pressable style={{ flexDirection: "row" }}>
-                                    <Sidebar />
-                                    {breakpoints.md && (
-                                      <GestureDetector
-                                        gesture={Gesture.Tap().onEnd(() => {
-                                          setDesktopCollapsed((t) => !t);
-                                          setOpen(false);
-                                        })}
-                                      >
-                                        <PanelSwipeTrigger side="left" />
-                                      </GestureDetector>
-                                    )}
-                                  </Pressable>
-                                </GestureDetector>
-                              )}
-                            >
-                              <AppContainer>
-                                <ComingSoonScreen />
-                                <JsStack
-                                  screenOptions={{
-                                    header: () => null,
-                                    headerTransparent: true,
-                                    gestureResponseDistance: width,
-                                    gestureEnabled: false,
-                                    cardStyle: {
-                                      height,
-                                      width: breakpoints.md ? "100%" : width,
-                                      backgroundColor:
-                                        theme[breakpoints.sm ? 2 : 1],
-                                      padding: breakpoints.md ? 10 : 0,
-                                      ...(Platform.OS === "web" &&
-                                        ({
-                                          marginTop:
-                                            "env(titlebar-area-height,0)",
-                                        } as any)),
-                                    },
-                                    // change opacity of the previous screen when swipe
-                                    cardOverlayEnabled: true,
-                                    animationEnabled: false,
-                                    gestureVelocityImpact: 0.7,
-                                  }}
-                                >
-                                  <JsStack.Screen name="index" />
-                                  {[
-                                    "everything/labels/[id]",
-                                    "everything/collections/[id]",
-                                  ].map((d) => (
-                                    <JsStack.Screen
-                                      key={d}
-                                      name={d}
-                                      options={{
-                                        presentation: "modal",
-                                        animationEnabled: true,
-                                        ...TransitionPresets.ModalPresentationIOS,
-                                      }}
-                                    />
-                                  ))}
-                                  {[
-                                    "settings/customization/appearance",
-                                    "settings/customization/notifications",
-                                    "settings/login/login-security/index",
-                                    "settings/login/scan",
-                                    "settings/login/login-security/two-factor-authentication",
-                                    "settings/login/devices",
-                                    "settings/customization/profile",
-                                    "settings/index",
-                                    "settings/personal-information",
-                                    "settings/space/index",
-                                    "settings/space/integrations/index",
-                                    "settings/space/integrations/[name]/index",
-                                    "settings/space/integrations/[name]/[id]",
-                                  ].map((d) => (
-                                    <JsStack.Screen
-                                      name={d}
-                                      key={d}
-                                      options={{
-                                        cardStyle: { padding: 0 },
-                                        gestureEnabled: d !== "settings/index",
-                                        headerTitle:
-                                          d !== "settings/index" && "Settings",
-                                        ...TransitionPresets.SlideFromRightIOS,
-                                        cardStyleInterpolator: forHorizontalIOS,
-                                        ...(breakpoints.md && {
-                                          animationEnabled: false,
-                                        }),
-                                      }}
-                                    />
-                                  ))}
+                            <AppContainer>
+                              <ComingSoonScreen />
+                              <JsStack
+                                screenOptions={{
+                                  header: () => null,
+                                  headerTransparent: true,
+                                  gestureResponseDistance: width,
+                                  gestureEnabled: false,
+                                  cardStyle: {
+                                    height,
+                                    width: breakpoints.md ? "100%" : width,
+                                    backgroundColor:
+                                      theme[breakpoints.sm ? 2 : 1],
+                                    padding: breakpoints.md ? 10 : 0,
+                                    ...(Platform.OS === "web" &&
+                                      ({
+                                        marginTop:
+                                          "env(titlebar-area-height,0)",
+                                      } as any)),
+                                  },
+                                  // change opacity of the previous screen when swipe
+                                  cardOverlayEnabled: true,
+                                  animationEnabled: false,
+                                  gestureVelocityImpact: 0.7,
+                                }}
+                              >
+                                <JsStack.Screen name="index" />
+                                {[
+                                  "everything/labels/[id]",
+                                  "everything/collections/[id]",
+                                ].map((d) => (
                                   <JsStack.Screen
-                                    name="friends"
+                                    key={d}
+                                    name={d}
                                     options={{
-                                      gestureEnabled: true,
-                                      ...TransitionPresets.SlideFromRightIOS,
-                                      cardStyleInterpolator: forHorizontalIOS,
+                                      presentation: "modal",
+                                      animationEnabled: true,
+                                      ...TransitionPresets.ModalPresentationIOS,
                                     }}
                                   />
-                                  {["clock", "collections/create"].map((d) => (
-                                    <JsStack.Screen
-                                      name={d}
-                                      key={d}
-                                      options={{
-                                        ...TransitionPresets.SlideFromRightIOS,
-                                        gestureResponseDistance: width,
-                                        cardStyleInterpolator: forHorizontalIOS,
-                                        // cardStyle: { marginBottom: 0 },
-                                      }}
-                                    />
-                                  ))}
-                                </JsStack>
-                              </AppContainer>
-                            </Drawer>
-                          </Animated.View>
-                        </ThemeProvider>
-                      </SidebarContext.Provider>
+                                ))}
+                                {[
+                                  "settings/customization/appearance",
+                                  "settings/customization/notifications",
+                                  "settings/login/login-security/index",
+                                  "settings/login/scan",
+                                  "settings/login/login-security/two-factor-authentication",
+                                  "settings/login/devices",
+                                  "settings/customization/profile",
+                                  "settings/index",
+                                  "settings/personal-information",
+                                  "settings/space/index",
+                                  "settings/space/integrations/index",
+                                  "settings/space/integrations/[name]/index",
+                                  "settings/space/integrations/[name]/[id]",
+                                ].map((d) => (
+                                  <JsStack.Screen
+                                    name={d}
+                                    key={d}
+                                    options={{
+                                      cardStyle: { padding: 0 },
+                                      gestureEnabled: d !== "settings/index",
+                                      headerTitle:
+                                        d !== "settings/index" && "Settings",
+                                      ...TransitionPresets.SlideFromRightIOS,
+                                      cardStyleInterpolator: forHorizontalIOS,
+                                      ...(breakpoints.md && {
+                                        animationEnabled: false,
+                                      }),
+                                    }}
+                                  />
+                                ))}
+                                <JsStack.Screen
+                                  name="friends"
+                                  options={{
+                                    gestureEnabled: true,
+                                    ...TransitionPresets.SlideFromRightIOS,
+                                    cardStyleInterpolator: forHorizontalIOS,
+                                  }}
+                                />
+                                {["clock", "collections/create"].map((d) => (
+                                  <JsStack.Screen
+                                    name={d}
+                                    key={d}
+                                    options={{
+                                      ...TransitionPresets.SlideFromRightIOS,
+                                      gestureResponseDistance: width,
+                                      cardStyleInterpolator: forHorizontalIOS,
+                                      // cardStyle: { marginBottom: 0 },
+                                    }}
+                                  />
+                                ))}
+                              </JsStack>
+                            </AppContainer>
+                          </Drawer>
+                        </Animated.View>
+                      </ThemeProvider>
                     </FocusPanelProvider>
                   </CommandPaletteProvider>
                 </View>

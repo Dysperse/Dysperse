@@ -6,6 +6,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
@@ -14,6 +15,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Platform,
@@ -26,6 +28,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { paletteItems } from "../layout/command-palette/list";
 import { createTab } from "../layout/openTab";
+import { useSidebarContext } from "../layout/sidebar/context";
 import { useCommandPaletteContext } from "./context";
 
 const PaletteItem = memo(
@@ -34,40 +37,24 @@ const PaletteItem = memo(
     setPreview,
     item,
     handleClose,
+    onCreate,
   }: {
     preview: any;
     setPreview: (e) => void;
     item: any;
     handleClose;
+    onCreate: any;
   }) {
-    const { sessionToken } = useUser();
     const [loading, setLoading] = useState(false);
-    const { mutate } = useSWR(["user/tabs"]);
+    const breakpoints = useResponsiveBreakpoints();
 
-    const handlePress = async (tab) => {
-      try {
-        setLoading(true);
-        if (tab.onPress) {
-          await tab.onPress();
-          setLoading(false);
-          return;
-        }
-        await createTab(sessionToken, tab);
-        await mutate();
-
-        handleClose();
-      } catch (e) {
-        alert("Something went wrong. Please try again later");
-      } finally {
-        setLoading(false);
-      }
-    };
     return (
       <ListItemButton
         variant={preview?.key === item.key ? "filled" : "default"}
         style={{ paddingHorizontal: 10, marginLeft: -5 }}
-        onPress={() => handlePress(item)}
+        onPress={() => onCreate(item)}
         onHoverIn={() => {
+          if (!breakpoints.md) return;
           if (preview?.key !== item.key) {
             setPreview(item);
           }
@@ -127,6 +114,7 @@ function CommandPaletteList({
   filter,
   filters,
   handleClose,
+  onCreate,
 }: {
   preview: any;
   setPreview: (e) => void;
@@ -135,6 +123,7 @@ function CommandPaletteList({
   filter: string;
   filters: any[];
   handleClose: () => void;
+  onCreate: any;
 }) {
   const { height } = useWindowDimensions();
   return (
@@ -187,6 +176,7 @@ function CommandPaletteList({
           } else {
             return (
               <PaletteItem
+                onCreate={onCreate}
                 handleClose={handleClose}
                 setPreview={setPreview}
                 preview={preview}
@@ -246,53 +236,58 @@ const PaletteHeader = memo(function PaletteHeader({
   }, [breakpoints]);
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: breakpoints.md ? 20 : 20,
-        borderBottomWidth: 1,
-        borderColor: theme[6],
-      }}
-    >
-      <Icon size={breakpoints.md ? 30 : 24}>search</Icon>
-      <TextField
-        inputRef={ref}
+    (breakpoints.md || !preview) && (
+      <View
         style={{
-          padding: 20,
-          flex: 1,
-          paddingRight: 0,
-          fontSize: breakpoints.md ? 25 : 20,
-          fontFamily: `body_${breakpoints.md ? "8" : "4"}00`,
-          shadowRadius: 0,
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: breakpoints.md ? 20 : 20,
+          borderBottomWidth: 1,
+          borderColor: theme[6],
         }}
-        placeholder="What are you looking for?"
-        value={query}
-        onChangeText={(e) => {
-          setQuery(e);
-        }}
-        // on enter key
-        onSubmitEditing={() => {
-          if (filtered.length > 0) {
-            const item = preview || filtered[1];
-            if (item.onPress) {
-              item.onPress();
-              handleClose();
-            } else {
-              createTab(sessionToken, item);
-              handleClose();
+      >
+        <Icon size={breakpoints.md ? 30 : 24}>search</Icon>
+        <TextField
+          inputRef={ref}
+          style={{
+            padding: 20,
+            flex: 1,
+            paddingRight: 0,
+            fontSize: breakpoints.md ? 25 : 20,
+            fontFamily: `body_${breakpoints.md ? "8" : "4"}00`,
+            shadowRadius: 0,
+          }}
+          placeholder="What are you looking for?"
+          value={query}
+          onChangeText={(e) => {
+            setQuery(e);
+          }}
+          // on enter key
+          onSubmitEditing={() => {
+            if (filtered.length > 0) {
+              const item = preview || filtered[1];
+              if (item.onPress) {
+                item.onPress();
+                handleClose();
+              } else {
+                createTab(sessionToken, item);
+                handleClose();
+              }
             }
-          }
-        }}
-        onKeyPress={handleKeyPress}
-      />
-      {close}
-    </View>
+          }}
+          onKeyPress={handleKeyPress}
+        />
+        {close}
+      </View>
+    )
   );
 });
 
-function CommandPalettePreview({ preview, handlePress }) {
+function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
+  const handleClose = useCallback(() => setPreview(null), [setPreview]);
 
   return (
     preview && (
@@ -303,16 +298,33 @@ function CommandPalettePreview({ preview, handlePress }) {
           borderColor: theme[6],
           alignItems: "center",
           justifyContent: "center",
+          padding: !breakpoints.md ? 20 : 0,
         }}
       >
-        <View
+        <IconButton
+          icon="arrow_back_ios_new"
+          onPress={handleClose}
+          size={55}
+          variant="outlined"
           style={{
-            marginTop: "auto",
-            flexDirection: "row",
-            width: "100%",
-            paddingHorizontal: 20,
-            gap: 20,
+            position: "absolute",
+            top: 20,
+            left: 20,
+            zIndex: 100,
           }}
+        />
+        <View
+          style={[
+            {
+              marginTop: "auto",
+              flexDirection: breakpoints.md ? "row" : "column",
+              width: "100%",
+              paddingHorizontal: 20,
+              gap: 20,
+              paddingTop: 55,
+            },
+            !breakpoints.md && { alignItems: "center" },
+          ]}
         >
           <Avatar size={70}>
             {preview.emoji ? (
@@ -329,12 +341,24 @@ function CommandPalettePreview({ preview, handlePress }) {
               </Icon>
             )}
           </Avatar>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 40, lineHeight: 43 }}>
+          <View
+            style={[{ flex: 1 }, !breakpoints.md && { alignItems: "center" }]}
+          >
+            <Text
+              style={[
+                { fontSize: 40, lineHeight: 43 },
+                !breakpoints.md && { textAlign: "center" },
+              ]}
+            >
               {preview.label}
             </Text>
             {(preview?.data?.description || preview?.about) && (
-              <Text style={{ marginTop: 5, fontSize: 20, opacity: 0.6 }}>
+              <Text
+                style={[
+                  { marginTop: 5, fontSize: 20, opacity: 0.6 },
+                  !breakpoints.md && { textAlign: "center" },
+                ]}
+              >
                 {preview?.data?.description || preview?.about}
               </Text>
             )}
@@ -379,10 +403,13 @@ function CommandPalettePreview({ preview, handlePress }) {
           }}
         >
           <Button
+            isLoading={loading}
+            onPress={() => onCreate(preview)}
             variant="filled"
             style={({ pressed, hovered }) => ({
               height: 60,
-              backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+              backgroundColor:
+                theme[loading ? 5 : pressed ? 11 : hovered ? 10 : 9],
             })}
           >
             <ButtonText style={{ fontSize: 20, color: theme[2] }} weight={900}>
@@ -400,6 +427,8 @@ function CommandPalettePreview({ preview, handlePress }) {
 
 export function CommandPaletteContent({ handleClose }) {
   const theme = useColorTheme();
+  const { sessionToken } = useUser();
+  const { mutate } = useSWR(["user/tabs"]);
   const { height } = useWindowDimensions();
 
   const [query, setQuery] = useState("");
@@ -438,8 +467,46 @@ export function CommandPaletteContent({ handleClose }) {
     }
   });
 
+  const [loading, setLoading] = useState(false);
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
+  const { closeSidebar } = useSidebarContext() || {};
+
+  const onCreate = useCallback(
+    async (tab) => {
+      try {
+        if (!breakpoints.md && !preview) {
+          setPreview(tab);
+          return;
+        }
+        setLoading(true);
+        if (tab.onPress) {
+          await tab.onPress();
+          setLoading(false);
+          return;
+        }
+        const data = await createTab(sessionToken, tab, false);
+        mutate((oldData) => [...oldData, data], { revalidate: false });
+        handleClose();
+
+        router.replace({
+          pathname: data.slug,
+          params: {
+            tab: data.id,
+            ...tab.params,
+          },
+        });
+
+        closeSidebar();
+      } catch (e) {
+        alert("Something went wrong. Please try again later");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [handleClose, mutate, sessionToken, breakpoints.md, preview, closeSidebar]
+  );
+
   return (
     <Pressable
       onPress={(e) => e.stopPropagation()}
@@ -475,18 +542,28 @@ export function CommandPaletteContent({ handleClose }) {
         filtered={filtered}
       />
       <View style={{ flexDirection: "row", flex: 1 }}>
-        <View style={{ flex: breakpoints.md ? 1.5 : 1 }}>
-          <CommandPaletteList
+        {(!preview || breakpoints.md) && (
+          <View style={{ flex: breakpoints.md ? 1.5 : 1 }}>
+            <CommandPaletteList
+              preview={preview}
+              setPreview={handlePreviewChange}
+              filtered={filtered}
+              filter={filter}
+              setFilter={setFilter}
+              filters={filters}
+              handleClose={handleClose}
+              onCreate={onCreate}
+            />
+          </View>
+        )}
+        {(breakpoints.md || preview) && (
+          <CommandPalettePreview
+            setPreview={setPreview}
+            onCreate={onCreate}
             preview={preview}
-            setPreview={handlePreviewChange}
-            filtered={filtered}
-            filter={filter}
-            setFilter={setFilter}
-            filters={filters}
-            handleClose={handleClose}
+            loading={loading}
           />
-        </View>
-        {breakpoints.md && <CommandPalettePreview preview={preview} />}
+        )}
       </View>
     </Pressable>
   );

@@ -8,7 +8,8 @@ export const createTab = async (
     icon?: string;
     slug: string;
     params?: Record<string, string>;
-  }
+  },
+  shouldReplace = true
 ) => {
   const res = await sendApiRequest(
     sessionToken,
@@ -23,11 +24,16 @@ export const createTab = async (
       }),
     }
   );
-  router.replace({
-    pathname: tab.slug,
-    params: {
-      tab: res.id,
-      ...tab.params,
-    },
-  });
+
+  if (shouldReplace) {
+    router.replace({
+      pathname: tab.slug,
+      params: {
+        tab: res.id,
+        ...tab.params,
+      },
+    });
+  }
+
+  return res;
 };
