@@ -5,7 +5,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useGlobalSearchParams } from "expo-router";
 import { useEffect } from "react";
-import { StyleSheet, View, ViewProps } from "react-native";
+import { Platform, StyleSheet, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
@@ -74,6 +74,7 @@ export function ContentWrapper(props: ContentWrapperProps) {
           borderWidth: breakpoints.md ? 2 : 0,
           borderColor: theme[5],
         },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
       {props.children}

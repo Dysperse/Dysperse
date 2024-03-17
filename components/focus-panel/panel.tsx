@@ -322,6 +322,7 @@ export function PanelSwipeTrigger({
           justifyContent: "center",
           zIndex: 1,
         },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
         side === "left"
           ? { marginHorizontal: -17, marginRight: -25 }
           : { marginHorizontal: -15, marginLeft: -25 },

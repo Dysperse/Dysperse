@@ -92,6 +92,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
           borderWidth: 1,
           borderColor: theme[isHome ? 5 : pressed ? 6 : hovered ? 5 : 4],
         },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
       <Icon filled={isHome}>home</Icon>
@@ -198,11 +199,14 @@ export const LogoButton = memo(function LogoButton() {
 
   return (
     <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+      ]}
     >
       <MenuPopover
         menuProps={{
@@ -214,12 +218,15 @@ export const LogoButton = memo(function LogoButton() {
         containerStyle={{ width: 160, marginLeft: 10, marginTop: 5 }}
         trigger={
           <Pressable
-            style={({ pressed }) => ({
-              opacity: pressed ? 0.5 : 1,
-              flexDirection: "row",
-              alignItems: "center",
-              paddingLeft: 3,
-            })}
+            style={({ pressed }) => [
+              {
+                opacity: pressed ? 0.5 : 1,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingLeft: 3,
+              },
+              Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+            ]}
           >
             <Logo size={40} />
             <Icon style={{ color: theme[11] }}>expand_more</Icon>
@@ -336,6 +343,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                 flex: 1,
                 minHeight: 45,
               },
+              Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
             ]}
           >
             <Icon>note_stack_add</Icon>

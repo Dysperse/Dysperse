@@ -31,6 +31,10 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
@@ -141,11 +145,14 @@ function FriendActivity() {
 
   const { session } = useUser();
   const { data: friendData } = useSWR(["user/friends", { requests: "true" }]);
-  const hasRequest = Boolean(
-    friendData?.find(
-      (user) => user.accepted === false && user.followingId === session.user.id
-    )
-  );
+  const hasRequest =
+    Array.isArray(friendData) &&
+    Boolean(
+      friendData?.find(
+        (user) =>
+          user.accepted === false && user.followingId === session?.user?.id
+      )
+    );
 
   return (
     <>
@@ -720,6 +727,16 @@ export default function Index() {
     ...hslValues
   )}&pattern=${pattern}`;
 
+  const widthStyle = useAnimatedStyle(() => {
+    return {
+      width: withSpring(width - (isFocused ? 550 : 300), {
+        damping: 30,
+        overshootClamping: true,
+        stiffness: 400,
+      }),
+    };
+  });
+
   return (
     <ContentWrapper noPaddingTop>
       <ImageBackground
@@ -772,11 +789,11 @@ export default function Index() {
           {view === "edit" ? (
             <EditWallpaper />
           ) : (
-            <View
+            <Animated.View
               style={[
+                widthStyle,
                 {
                   paddingHorizontal: 50,
-                  width: width - (isFocused ? 550 : 300),
                   paddingBottom: 70,
                   marginHorizontal: "auto",
                   marginVertical: "auto",
@@ -815,7 +832,7 @@ export default function Index() {
                   <FriendActivity />
                 </View>
               </View>
-            </View>
+            </Animated.View>
           )}
         </ScrollView>
       </ImageBackground>

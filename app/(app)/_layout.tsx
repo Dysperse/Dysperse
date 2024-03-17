@@ -240,7 +240,7 @@ const ReleaseModal = () => {
   return (
     data &&
     data?.[0]?.id &&
-    session.user.lastReleaseVersionViewed !== data?.[0]?.id && (
+    session?.user?.lastReleaseVersionViewed !== data?.[0]?.id && (
       <Portal>
         <BlurView
           tint={
@@ -432,11 +432,15 @@ export default function AppLayout() {
                   barStyle={!isDark ? "dark-content" : "light-content"}
                 />
                 <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    backgroundColor: theme[2],
-                  }}
+                  style={[
+                    {
+                      flexDirection: "row",
+                      flex: 1,
+                      backgroundColor: theme[2],
+                    },
+                    Platform.OS === "web" &&
+                      ({ WebkitAppRegion: "drag" } as any),
+                  ]}
                 >
                   <CommandPaletteProvider>
                     <FocusPanelProvider>

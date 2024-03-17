@@ -98,37 +98,6 @@ function Tab({
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
   const breakpoints = useResponsiveBreakpoints();
 
-  // useEffect(() => {
-  //   if (selected) {
-  //     if (
-  //       JSON.stringify(omit(["tab"], tabParams)) !==
-  //       JSON.stringify(omit(["tab"], tab.params))
-  //     ) {
-  //       if (Object.keys(omit(["tab"], tabParams)).length === 0) return;
-  //       mutate(
-  //         (oldData) =>
-  //           oldData.map((oldTab) =>
-  //             oldTab.id === tab.id ? { ...oldTab, params: tabParams } : oldTab
-  //           ),
-  //         {
-  //           revalidate: false,
-  //         }
-  //       );
-  //       sendApiRequest(
-  //         sessionToken,
-  //         "PUT",
-  //         "user/tabs",
-  //         {},
-  //         {
-  //           body: JSON.stringify({
-  //             params: omit(["tab"], tabParams),
-  //             id: tab.id,
-  //           }),
-  //         }
-  //       );
-  //     }
-  //   }
-  // }, [tabParams, selected, tab, sessionToken, mutate]);
   const handleCloseTab = useCallback(
     async () => await handleDelete(tab.id),
     [handleDelete, tab]
@@ -217,9 +186,12 @@ function Tab({
 
   return isClosedAnimation ? null : (
     <View
-      style={{
-        width: "100%",
-      }}
+      style={[
+        {
+          width: "100%",
+        },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+      ]}
     >
       <Pressable
         onLongPress={onLongPress}

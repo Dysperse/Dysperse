@@ -119,6 +119,7 @@ const JumpToButton = memo(function JumpToButton() {
           height: 50,
           marginBottom: 10,
         },
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
       <Icon bold>add</Icon>
