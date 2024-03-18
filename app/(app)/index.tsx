@@ -757,10 +757,11 @@ export default function Index() {
             marginTop: insets.top,
             margin: 20,
             zIndex: 1,
-            opacity: 0.5,
+            opacity: 0.7,
           }}
-          icon={view === "edit" ? "check" : "more_horiz"}
+          icon={view === "edit" ? "check" : "palette"}
           size={55}
+          variant={view === "edit" ? "filled" : "text"}
           onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
         />
         <ScrollView
