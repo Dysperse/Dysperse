@@ -136,7 +136,7 @@ function CommandPaletteList({
               alignItems: "center",
               justifyContent: "center",
               gap: 10,
-              height: height / 1.5 - 50,
+              height: Math.min(600, height / 1.5) - 120,
             }}
           >
             <Image
@@ -146,8 +146,13 @@ function CommandPaletteList({
               style={{ width: 487 / 6, height: 397 / 6 }}
             />
             <Text
-              style={{ textAlign: "center", marginTop: 10, opacity: 0.7 }}
-              weight={500}
+              style={{
+                textAlign: "center",
+                marginTop: 10,
+                opacity: 0.7,
+                fontSize: 20,
+              }}
+              weight={700}
             >
               We couldn't find anything matching your search
             </Text>
@@ -301,18 +306,20 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
           padding: !breakpoints.md ? 20 : 0,
         }}
       >
-        <IconButton
-          icon="arrow_back_ios_new"
-          onPress={handleClose}
-          size={55}
-          variant="outlined"
-          style={{
-            position: "absolute",
-            top: 20,
-            left: 20,
-            zIndex: 100,
-          }}
-        />
+        {!breakpoints.md && (
+          <IconButton
+            icon="arrow_back_ios_new"
+            onPress={handleClose}
+            size={55}
+            variant="outlined"
+            style={{
+              position: "absolute",
+              top: 20,
+              left: 20,
+              zIndex: 100,
+            }}
+          />
+        )}
         <View
           style={[
             {
@@ -518,7 +525,7 @@ export function CommandPaletteContent({ handleClose }) {
           maxWidth: breakpoints.md ? 900 : width,
         },
         breakpoints.md && {
-          maxHeight: height / 1.3,
+          maxHeight: Math.min(600, height / 1.3),
           backgroundColor: theme[2],
           borderWidth: 1,
           borderColor: theme[6],
