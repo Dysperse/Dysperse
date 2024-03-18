@@ -112,7 +112,7 @@ export const ProfilePicture = function ProfilePicture({
       disabled={disabled}
     >
       <Text style={{ fontSize: size / 2.5 }} weight={600}>
-        {name[0].toUpperCase()}
+        {name[0]?.toUpperCase()}
         {name[1]?.toUpperCase()}
       </Text>
     </Avatar>
