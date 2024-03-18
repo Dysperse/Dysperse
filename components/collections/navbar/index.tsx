@@ -324,7 +324,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={filterOptions}
         />
-        <CollectionSearch />
+        {breakpoints.md && <CollectionSearch />}
         <CollectionIntegrationsMenu />
         <CollectionContext.Provider value={{ data, ...ctx }}>
           <CollectionShareMenu />
