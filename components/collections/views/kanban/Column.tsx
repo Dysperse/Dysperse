@@ -7,7 +7,9 @@ import CreateTask from "@/components/task/create";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
@@ -25,6 +27,38 @@ export type ColumnProps =
       entities?: any[];
       grid?: boolean;
     };
+
+export const ColumnFinishedComponent = () => {
+  const theme = useColorTheme();
+
+  return (
+    <View
+      style={{
+        marginVertical: 20,
+        backgroundColor: theme[3],
+        alignItems: "center",
+        padding: 20,
+        gap: 15,
+        borderRadius: 20,
+        paddingVertical: 50,
+      }}
+    >
+      <Emoji emoji="1f389" size={40} />
+      <View>
+        <Text
+          style={{
+            fontSize: 17,
+            color: theme[11],
+            textAlign: "center",
+          }}
+          weight={600}
+        >
+          You finished everything!
+        </Text>
+      </View>
+    </View>
+  );
+};
 
 export function Column(props: ColumnProps) {
   const theme = useColorTheme();
@@ -197,6 +231,12 @@ export function Column(props: ColumnProps) {
                   </Button>
                 </CreateTask>
               </View>
+
+              {(props.label ? props.label.entities : props.entities).length >
+                0 &&
+                (props.label ? props.label.entities : props.entities).filter(
+                  (e) => e.completionInstances.length === 0
+                ).length === 0 && <ColumnFinishedComponent />}
             </>
           )
         }

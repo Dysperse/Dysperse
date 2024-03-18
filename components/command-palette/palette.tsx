@@ -217,7 +217,13 @@ const PaletteHeader = memo(function PaletteHeader({
   const theme = useColorTheme();
   const close = useMemo(
     () => (
-      <TouchableOpacity onPress={handleClose}>
+      <TouchableOpacity
+        onPress={handleClose}
+        style={{
+          paddingVertical: 20,
+          paddingHorizontal: 10,
+        }}
+      >
         {breakpoints.md ? (
           <Text style={{ color: theme[11] }}>Cancel</Text>
         ) : (

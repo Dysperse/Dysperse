@@ -23,6 +23,7 @@ import { CollectionIntegrationsMenu } from "./CollectionIntegrationsMenu";
 import { CollectionLabelMenu } from "./CollectionLabelMenu";
 import { CollectionRenameMenu } from "./CollectionRenameMenu";
 import { CollectionShareMenu } from "./CollectionShareMenu";
+import Toast from "react-native-toast-message";
 
 export const styles = StyleSheet.create({
   navbarIconButton: {
@@ -40,6 +41,20 @@ interface CollectionNavbarProps {
   editOrderMode: boolean;
   setEditOrderMode: (value: boolean) => void;
 }
+
+const CollectionSearch = () => {
+  const breakpoints = useResponsiveBreakpoints();
+
+  return (
+    <IconButton
+      size={breakpoints.md ? 50 : 40}
+      style={[breakpoints.md && { borderRadius: 20 }]}
+      icon="search"
+      onPress={() => Toast.show({ text1: "Coming soon!" })}
+      variant={breakpoints.md ? "filled" : "outlined"}
+    />
+  );
+};
 
 export const CollectionNavbar = memo(function CollectionNavbar({
   editOrderMode,
@@ -309,6 +324,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={filterOptions}
         />
+        <CollectionSearch />
         <CollectionIntegrationsMenu />
         <CollectionContext.Provider value={{ data, ...ctx }}>
           <CollectionShareMenu />
