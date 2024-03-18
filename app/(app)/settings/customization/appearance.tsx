@@ -7,11 +7,11 @@ import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover from "@/ui/MenuPopover";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef, useState } from "react";
@@ -309,44 +309,12 @@ export default function Page() {
         </TouchableOpacity>
       </ThemePicker>
       <Text style={settingStyles.heading}>Theme</Text>
-      <MenuPopover
-        trigger={
-          <TouchableOpacity>
-            <View
-              style={[
-                styles.card,
-                {
-                  borderColor: theme[5],
-                  flexDirection: "row",
-                  gap: 20,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                },
-              ]}
-            >
-              <Icon size={30}>
-                {
-                  {
-                    dark: "dark_mode",
-                    light: "light_mode",
-                    system: "computer",
-                  }[session?.user?.profile?.darkMode]
-                }
-              </Icon>
-              <Text style={styles.cardTitle} weight={900}>
-                {capitalizeFirstLetter(session?.user?.profile?.darkMode)}
-              </Text>
-              <Icon style={{ marginLeft: -10 }} size={30}>
-                expand_all
-              </Icon>
-            </View>
-          </TouchableOpacity>
-        }
-        options={[
-          { text: "Dark", icon: "dark_mode", callback: () => {} },
-          { text: "Light", icon: "light_mode", callback: () => {} },
-          { text: "System", icon: "computer", callback: () => {} },
-        ].map((e) => ({
+      {[
+        { text: "Dark", icon: "dark_mode" },
+        { text: "Light", icon: "light_mode" },
+        { text: "System", icon: "computer" },
+      ]
+        .map((e) => ({
           ...e,
           selected: e.text.toLowerCase() === session?.user?.profile?.darkMode,
           callback: () => {
@@ -377,8 +345,16 @@ export default function Page() {
               mutate(() => session);
             }
           },
-        }))}
-      />
+        }))
+        .map((e) => (
+          <ListItemButton key={e.text} onPress={e.callback} variant="filled">
+            <Icon>{e.icon}</Icon>
+            <ListItemText primary={e.text} />
+            <Icon filled={e.selected}>
+              {e.selected ? "check_circle" : "radio_button_unchecked"}
+            </Icon>
+          </ListItemButton>
+        ))}
     </SettingsLayout>
   );
 }
