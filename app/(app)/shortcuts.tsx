@@ -14,6 +14,10 @@ export default function Page() {
       name: "Tab management",
       shorcuts: [
         {
+          keys: "ctrl+t",
+          action: "New tab",
+        },
+        {
           keys: "ctrl+tab",
           action: "Switch to the next tab",
         },
@@ -24,6 +28,27 @@ export default function Page() {
         {
           keys: "ctrl+[0-9]",
           action: "Switch to the specified tab",
+        },
+      ],
+    },
+    {
+      name: "Tasks & items",
+      shorcuts: [
+        {
+          keys: "shift+n",
+          action: "Create tasks",
+        },
+        {
+          keys: "#",
+          action: "Open label picker",
+        },
+        {
+          keys: "@",
+          action: "Open date picker",
+        },
+        {
+          keys: "/",
+          action: "Add attachment",
         },
       ],
     },
