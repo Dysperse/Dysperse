@@ -347,7 +347,12 @@ export default function Page() {
           },
         }))
         .map((e) => (
-          <ListItemButton key={e.text} onPress={e.callback} variant="filled">
+          <ListItemButton
+            key={e.text}
+            onPress={e.callback}
+            variant="filled"
+            style={{ marginBottom: 15 }}
+          >
             <Icon>{e.icon}</Icon>
             <ListItemText primary={e.text} />
             <Icon filled={e.selected}>
