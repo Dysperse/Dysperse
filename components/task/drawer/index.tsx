@@ -98,7 +98,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
           backgroundColor: breakpoints.md ? "transparent" : theme[2],
         }}
         {...(breakpoints.md && {
-          handleComponent: () => <View style={{ paddingTop: 10 }} />,
+          handleComponent: () => null,
           maxBackdropOpacity: 0.05,
           animationConfigs: {
             overshootClamping: true,
@@ -121,8 +121,7 @@ export function TaskDrawer({ mutateList, children, id }: any) {
               breakpoints.md && {
                 margin: "auto",
                 width: 500,
-                height: 700,
-                maxHeight: width - 100,
+                height: Math.min(700, height - 100),
                 borderWidth: 1,
                 shadowRadius: 50,
                 shadowOffset: {
