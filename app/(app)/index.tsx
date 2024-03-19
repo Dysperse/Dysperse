@@ -510,7 +510,7 @@ function EditWallpaper() {
       showsVerticalScrollIndicator={false}
     >
       <Text style={{ fontSize: 40, marginVertical: 20 }} weight={800}>
-        Appearance
+        Customize
       </Text>
       <Text variant="eyebrow">Color</Text>
       <Button
