@@ -192,6 +192,7 @@ export const Profile = ({ form }) => {
                   }}
                   value={value || ""}
                   variant="filled+outlined"
+                  style={{ flex: 1 }}
                   placeholder="hello@dysperse.com"
                 />
               )}
@@ -259,41 +260,45 @@ export const Profile = ({ form }) => {
                           variant="filled+outlined"
                           placeholder="MMMM"
                           style={[
-                            { flex: 1, pointerEvents: "none" },
+                            { width: "100%" },
                             error && { borderColor: "red" },
                           ]}
                         />
                       </Pressable>
                     }
                   />
-                  <TextField
-                    value={value[2]}
-                    variant="filled+outlined"
-                    placeholder="Date"
-                    style={[
-                      { flex: 1, width: "auto" },
-                      error && { borderColor: "red" },
-                    ]}
-                    onChangeText={(t) => {
-                      const v = value;
-                      v[2] = t;
-                      onChange(v);
-                    }}
-                  />
-                  <TextField
-                    value={value[0]}
-                    variant="filled+outlined"
-                    placeholder="Year"
-                    style={[
-                      { flex: 1, width: "auto" },
-                      error && { borderColor: "red" },
-                    ]}
-                    onChangeText={(t) => {
-                      const v = value;
-                      v[0] = t;
-                      onChange(v);
-                    }}
-                  />
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      value={value[2]}
+                      variant="filled+outlined"
+                      placeholder="Date"
+                      style={[
+                        { width: "100%" },
+                        error && { borderColor: "red" },
+                      ]}
+                      onChangeText={(t) => {
+                        const v = value;
+                        v[2] = t;
+                        onChange(v);
+                      }}
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <TextField
+                      value={value[0]}
+                      variant="filled+outlined"
+                      placeholder="Year"
+                      style={[
+                        { width: "100%" },
+                        error && { borderColor: "red" },
+                      ]}
+                      onChangeText={(t) => {
+                        const v = value;
+                        v[0] = t;
+                        onChange(v);
+                      }}
+                    />
+                  </View>
                 </View>
               )}
               name="birthday"
@@ -325,7 +330,7 @@ export const Profile = ({ form }) => {
           onPress={handleNext}
           variant="filled"
           style={[
-            { marginTop: 30, height: 60 },
+            { marginTop: 15, height: 60 },
             profileExists !== "available" && { opacity: 0.6 },
           ]}
           disabled={profileExists !== "available"}

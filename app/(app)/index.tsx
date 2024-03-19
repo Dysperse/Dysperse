@@ -196,7 +196,7 @@ function FriendActivity() {
         {isLoading ? (
           <View
             style={{
-              flex: 1,
+              height: breakpoints.md ? height / 3 - 25 : "100%",
               width: "100%",
               alignItems: "center",
               justifyContent: "center",
