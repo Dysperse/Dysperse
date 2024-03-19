@@ -16,7 +16,6 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import Swiper from "react-native-web-swiper";
 
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
   card: {
     padding: 20,
     borderRadius: 20,
-    borderWidth: 2,
+    borderWidth: 1,
     marginBottom: 20,
   },
   button: { height: 80 },
@@ -155,7 +154,15 @@ function ThemePicker({ children }) {
         }}
       >
         <View style={themePickerStyles.container}>
-          <Text variant="eyebrow" style={{ color: theme.colors[11] }}>
+          <Text
+            variant="eyebrow"
+            style={{
+              fontFamily: "monospace",
+              marginTop: 5,
+              fontSize: 20,
+              color: theme.colors[11],
+            }}
+          >
             #{(theme.key + 1).toString().padStart(2, "0")}
           </Text>
           <Swiper
@@ -270,31 +277,28 @@ export default function Page() {
 
       <Text style={settingStyles.heading}>Color</Text>
       <ThemePicker>
-        <TouchableOpacity>
-          <Pressable
-            style={[
-              styles.card,
-              {
-                borderColor: theme[5],
-                alignItems: "center",
-                flexDirection: "row",
-                gap: 20,
-              },
-            ]}
-          >
-            <Icon style={styles.themeCardIcon} size={100}>
-              hexagon
-            </Icon>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.cardTitle} weight={900}>
-                {themeText.name}
-              </Text>
-              <Text style={styles.cardDescription}>
-                {themeText.description}
-              </Text>
-            </View>
-          </Pressable>
-        </TouchableOpacity>
+        <Pressable
+          style={({ pressed, hovered }) => [
+            styles.card,
+            {
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 20,
+            },
+          ]}
+        >
+          <Icon style={styles.themeCardIcon} size={100}>
+            hexagon
+          </Icon>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.cardTitle} weight={900}>
+              {themeText.name}
+            </Text>
+            <Text style={styles.cardDescription}>{themeText.description}</Text>
+          </View>
+        </Pressable>
       </ThemePicker>
       <Text style={settingStyles.heading}>Theme</Text>
       {[
