@@ -26,6 +26,7 @@ import {
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { KeyedMutator } from "swr";
+import { ColumnFinishedComponent } from "../kanban/Column";
 import { usePlannerContext } from "./context";
 
 const styles = StyleSheet.create({
@@ -366,33 +367,7 @@ export function Column({
 
             {column.tasks.length > 0 &&
               column.tasks.filter((e) => e.completionInstances.length === 0)
-                .length === 0 && (
-                <View
-                  style={{
-                    marginVertical: 20,
-                    backgroundColor: theme[3],
-                    alignItems: "center",
-                    padding: 20,
-                    gap: 15,
-                    borderRadius: 20,
-                    paddingVertical: 50,
-                  }}
-                >
-                  <Emoji emoji="1f389" size={40} />
-                  <View>
-                    <Text
-                      style={{
-                        fontSize: 17,
-                        color: theme[11],
-                        textAlign: "center",
-                      }}
-                      weight={600}
-                    >
-                      You finished everything!
-                    </Text>
-                  </View>
-                </View>
-              )}
+                .length === 0 && <ColumnFinishedComponent />}
           </>
         }
         data={column.tasks

@@ -94,7 +94,7 @@ const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
 
   const { handleOpen } = useCommandPaletteContext();
-  useHotkeys(["ctrl+k", "ctrl+o"], (e) => {
+  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
     e.preventDefault();
     handleOpen();
   });
