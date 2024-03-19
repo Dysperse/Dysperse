@@ -211,9 +211,7 @@ export default function Page() {
 
   return (
     <SettingsLayout>
-      <Text heading style={{ fontSize: 50 }}>
-        Space
-      </Text>
+      <Text style={settingStyles.heading}>Space</Text>
       {data ? (
         <>
           <ColorThemeProvider theme={spaceTheme}>

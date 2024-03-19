@@ -95,9 +95,7 @@ export default function Page() {
 
   return (
     <SettingsLayout>
-      <Text heading style={{ fontSize: 50 }}>
-        Notifications
-      </Text>
+      <Text style={settingStyles.title}>Notifications</Text>
       <Text>
         Here, you can control how much you want to be{" "}
         <Text style={{ textDecorationLine: "line-through", opacity: 0.4 }}>

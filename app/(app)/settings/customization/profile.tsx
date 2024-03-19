@@ -149,9 +149,7 @@ export default function Page() {
 
   return (
     <SettingsLayout>
-      <Text heading style={{ fontSize: 50 }}>
-        Profile
-      </Text>
+      <Text style={settingStyles.title}>Profile</Text>
       <View
         style={{
           borderRadius: 20,

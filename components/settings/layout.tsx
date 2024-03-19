@@ -16,7 +16,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
 import { useState } from "react";
-import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
+import {
+  Linking,
+  Platform,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -135,9 +141,23 @@ function SettingsSidebar() {
     {
       name: "Other",
       settings: [
-        { name: "Terms of Service", icon: "info" },
-        { name: "Privacy Policy", icon: "info" },
-        { name: "Open Source", icon: "open_in_new" },
+        {
+          name: "Terms of Service",
+          icon: "info",
+          callback: () =>
+            Linking.openURL("https://blog.dysperse.com/terms-of-service"),
+        },
+        {
+          name: "Privacy Policy",
+          icon: "info",
+          callback: () =>
+            Linking.openURL("https://blog.dysperse.com/privacy-policy"),
+        },
+        {
+          name: "Open Source",
+          icon: "open_in_new",
+          callback: () => Linking.openURL("https://github.com/Dysperse"),
+        },
         {
           name: "Restart app",
           icon: "refresh",

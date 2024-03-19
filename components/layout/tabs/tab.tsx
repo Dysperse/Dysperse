@@ -153,11 +153,15 @@ function Tab({
           }
         />
         <View style={{ flex: 1 }}>
-          <Text weight={500} numberOfLines={1}>
+          <Text weight={500} numberOfLines={1} style={{ color: theme[11] }}>
             {tabName}
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (
-            <Text style={[styles.text]} numberOfLines={1} weight={300}>
+            <Text
+              style={[styles.text, { color: theme[11] }]}
+              numberOfLines={1}
+              weight={400}
+            >
               {capitalizeFirstLetter(
                 tabData.name(tab.params, tab.slug)[1] || ""
               )}

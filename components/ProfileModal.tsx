@@ -55,7 +55,7 @@ function ProfileModalContent({ email }) {
             />
           </LinearGradient>
           <View style={{ padding: 35, marginTop: 10 }}>
-            <Text weight={700} style={{ fontSize: 50 }} heading>
+            <Text weight={700} style={{ fontSize: 50 }}>
               {data.profile.name}
             </Text>
             <View style={{ flexDirection: "row" }}>

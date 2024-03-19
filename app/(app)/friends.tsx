@@ -253,6 +253,9 @@ function FriendOptionsButton() {
           <Icon>more_vert</Icon>
         </IconButton>
       }
+      menuProps={{
+        rendererProps: { placement: "left" },
+      }}
       options={[
         { icon: "person_remove", text: "Remove friend" },
         // { icon: "block", text: "Block user" },
