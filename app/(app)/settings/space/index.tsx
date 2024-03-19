@@ -72,18 +72,23 @@ function SpaceMembers({ data }) {
                 selected: member.access === access.toUpperCase(),
               })),
               { divider: true, key: "divider" },
-              { icon: "remove_circle", text: "Remove", callback: () => {} },
+              {
+                icon: "remove_circle",
+                text: "Remove",
+                callback: () => {},
+                disabled: member.access === "OWNER",
+              },
             ]}
           />
         </ListItemButton>
       ))}
-      <ListItemButton disabled style={{ paddingHorizontal: 0 }}>
+      <ListItemButton disabled style={{ paddingHorizontal: 0, opacity: 0.6 }}>
         <Avatar icon="add" size={40} />
-        <ListItemText primary="Invite member" />
+        <ListItemText primary="Invite member" secondary="Coming soon!" />
       </ListItemButton>
-      <ListItemButton disabled style={{ paddingHorizontal: 0 }}>
+      <ListItemButton disabled style={{ paddingHorizontal: 0, opacity: 0.6 }}>
         <Avatar icon="link" size={40} />
-        <ListItemText primary="Copy invite link" />
+        <ListItemText primary="Copy invite link" secondary="Coming soon!" />
       </ListItemButton>
     </>
   );
