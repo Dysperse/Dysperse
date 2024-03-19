@@ -10,18 +10,12 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef, useState } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  View,
-  useColorScheme,
-  useWindowDimensions,
-} from "react-native";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import Swiper from "react-native-web-swiper";
@@ -40,7 +34,7 @@ const styles = StyleSheet.create({
 });
 
 const themePickerStyles = StyleSheet.create({
-  title: { textAlign: "center", fontSize: 50 },
+  title: { textAlign: "center", fontSize: 50, lineHeight: 55, marginBottom: 5 },
   description: { height: 70, opacity: 0.6, textAlign: "center" },
   container: { alignItems: "center", height: "100%" },
   icon: { marginTop: "auto" },
@@ -63,7 +57,7 @@ function ThemedSlide({ theme, themeData, onSelect }) {
           hexagon
         </Icon>
       </Pressable>
-      <Text heading style={themePickerStyles.title}>
+      <Text weight={600} style={themePickerStyles.title}>
         {themeData.name}
       </Text>
       <Text style={themePickerStyles.description}>{themeData.description}</Text>
@@ -116,7 +110,7 @@ function ThemePicker({ children }) {
           revalidate: false,
         }
       );
-      setTimeout(handleClose, 100);
+      setTimeout(handleClose, 0);
     } catch (e) {
       Toast.show({
         type: "error",
@@ -127,17 +121,13 @@ function ThemePicker({ children }) {
   };
   const { height } = useWindowDimensions();
   const carouselRef = useRef<Swiper>();
-  const dark = useColorScheme() === "dark";
+  const dark = useDarkMode();
 
   return (
     <>
       {trigger}
       <BottomSheet
         sheetRef={ref}
-        disableBackToClose
-        disableBackdropPressToClose
-        disableEscapeToClose
-        enablePanDownToClose={false}
         snapPoints={[height - 20]}
         onClose={handleClose}
         backgroundStyle={{
@@ -247,7 +237,7 @@ function ThemePicker({ children }) {
             <Button
               style={[
                 themePickerStyles.button,
-                { backgroundColor: theme.colors[3] },
+                { backgroundColor: theme.colors[6] },
               ]}
               variant="filled"
               onPress={handleSelect}
@@ -276,9 +266,7 @@ export default function Page() {
   const themeText = themes[session?.user?.profile?.theme || "mint"];
   return (
     <SettingsLayout>
-      <Text heading style={{ fontSize: 50 }}>
-        Appearance
-      </Text>
+      <Text style={settingStyles.title}>Appearance</Text>
 
       <Text style={settingStyles.heading}>Color</Text>
       <ThemePicker>
@@ -351,7 +339,7 @@ export default function Page() {
             key={e.text}
             onPress={e.callback}
             variant="filled"
-            style={{ marginBottom: 15 }}
+            style={{ borderWidth: 1, borderColor: theme[5], marginBottom: 10 }}
           >
             <Icon>{e.icon}</Icon>
             <ListItemText primary={e.text} />
