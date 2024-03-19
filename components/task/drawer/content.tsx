@@ -29,6 +29,8 @@ function TaskNameInput() {
   const [name, setName] = useState(task.name);
   const [isFocused, setIsFocused] = useState(false);
 
+  const ref = useRef();
+
   return (
     <>
       <AutoSizeTextArea
@@ -45,6 +47,7 @@ function TaskNameInput() {
         onKeyPress={(e) => {
           if (e.nativeEvent.key === "Enter") {
             e.preventDefault();
+            e.target.blur();
           }
         }}
         onFocus={() => setIsFocused(true)}
