@@ -242,9 +242,11 @@ function ThemePicker({ children }) {
             }}
           >
             <Button
-              style={[
+              style={({ pressed, hovered }) => [
                 themePickerStyles.button,
-                { backgroundColor: theme.colors[6] },
+                {
+                  backgroundColor: theme.colors[pressed ? 8 : hovered ? 7 : 6],
+                },
               ]}
               variant="filled"
               onPress={handleSelect}
