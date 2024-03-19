@@ -859,7 +859,13 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             alignItems: "center",
           }}
         >
-          <TouchableOpacity onPress={() => forceClose()}>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 10,
+              paddingHorizontal: 5,
+            }}
+            onPress={() => forceClose()}
+          >
             <ButtonText style={{ color: theme[10] }} weight={300}>
               Cancel
             </ButtonText>
