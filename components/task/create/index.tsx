@@ -602,6 +602,7 @@ const TaskSuggestions = ({ watch, setValue }) => {
   const theme = useColorTheme();
   const name = watch("name");
   const currentDate = watch("date");
+  const currentRecurrenceRule = watch("recurrenceRule");
 
   const generateChipLabel = useCallback(() => {
     if (!name) return null;
@@ -636,7 +637,8 @@ const TaskSuggestions = ({ watch, setValue }) => {
       if (Number(time) > 12) return null;
       if (
         dayjs(currentDate).hour() ===
-        Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0)
+          Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0) ||
+        name.includes("every")
       )
         return null;
       return {
@@ -655,7 +657,29 @@ const TaskSuggestions = ({ watch, setValue }) => {
     }
   }, [name, setValue, currentDate]);
 
-  const suggestions = [generateChipLabel()];
+  const generateRecurrenceLabel = useCallback(() => {
+    try {
+      const split = name.toLowerCase().toString().split("every ");
+      const text = "Every " + split[split[1] ? 1 : 0];
+
+      const rule = RRule.fromText(text);
+
+      if (currentRecurrenceRule?.toText() === rule.toText()) return null;
+
+      return {
+        label: capitalizeFirstLetter(rule.toText()),
+        onPress: () => {
+          setValue("date", null);
+          setValue("recurrenceRule", rule);
+        },
+        icon: "magic_button",
+      };
+    } catch (e) {
+      return null;
+    }
+  }, [name, setValue, currentRecurrenceRule]);
+
+  const suggestions = [generateChipLabel(), generateRecurrenceLabel()];
 
   return (
     suggestions.length > 0 && (
