@@ -201,15 +201,8 @@ export default function Page() {
         <Text style={settingStyles.heading}>Picture</Text>
         <ProfilePictureUploadButton control={control} />
 
-        <Text style={settingStyles.heading}>Email & Username</Text>
+        <Text style={settingStyles.heading}>Username</Text>
         <TextField
-          editable={false}
-          variant="filled+outlined"
-          value={session.user.email}
-          style={{ marginBottom: 10 }}
-        />
-        <TextField
-          editable={false}
           variant="filled+outlined"
           value={session.user.username}
           style={{ marginBottom: 10 }}
@@ -233,6 +226,7 @@ export default function Page() {
           <ButtonText style={{ fontSize: 20 }} weight={700}>
             Save
           </ButtonText>
+          <Icon>check</Icon>
         </Button>
       </View>
     </SettingsLayout>

@@ -86,7 +86,7 @@ function SettingsSidebar() {
       settings: [
         {
           name: "Profile",
-          icon: "person",
+          icon: "alternate_email",
           href: "/settings/customization/profile",
           keywords: ["profile", "account", "user", "personal"],
         },
@@ -108,16 +108,16 @@ function SettingsSidebar() {
       name: "Login settings",
       settings: [
         {
+          name: "Account",
+          icon: "person",
+          href: "/settings/login/account",
+          keywords: ["email", "password", "account", "login", "security", "password", "2fa", "two", "factor"],
+        },
+        {
           name: "Scan QR code",
           icon: "qr_code_2",
           href: "/settings/login/scan",
-          keywords: ["login", "security", "password", "2fa", "two", "factor"],
-        },
-        {
-          name: "Login security",
-          icon: "vpn_key",
-          href: "/settings/login/login-security",
-          keywords: ["login", "security", "password", "2fa", "two", "factor"],
+          keywords: ["login", "scan","qr", "mobile"],
         },
         {
           name: "Devices",

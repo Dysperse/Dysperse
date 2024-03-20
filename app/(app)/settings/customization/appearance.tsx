@@ -324,19 +324,26 @@ export default function Page() {
                   }),
                 }
               );
-              mutate((oldData) => ({
-                ...oldData,
-                user: {
-                  ...oldData.user,
-                  profile: {
-                    ...oldData.user.profile,
-                    darkMode: e.text.toLowerCase(),
+              mutate(
+                (oldData) => ({
+                  ...oldData,
+                  user: {
+                    ...oldData.user,
+                    profile: {
+                      ...oldData.user.profile,
+                      darkMode: e.text.toLowerCase(),
+                    },
                   },
-                },
-              }));
+                }),
+                {
+                  revalidate: false,
+                }
+              );
             } catch (e) {
               Toast.show({ type: "error" });
-              mutate(() => session);
+              mutate(() => session, {
+                revalidate: false,
+              });
             }
           },
         }))

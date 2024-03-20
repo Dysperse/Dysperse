@@ -101,7 +101,7 @@ export default function Page() {
         <Text style={{ textDecorationLine: "line-through", opacity: 0.4 }}>
           annoyed
         </Text>{" "}
-        notified?
+        notified.
       </Text>
 
       <Alert
