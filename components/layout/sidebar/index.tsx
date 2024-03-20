@@ -170,7 +170,11 @@ const SyncButton = memo(function SyncButton() {
           ]}
         />
       </Portal>
-      <MenuItem onPress={handleSync} disabled={isLoading}>
+      <MenuItem
+        onPress={handleSync}
+        disabled={isLoading}
+        style={isLoading && { opacity: 0.6 }}
+      >
         <Icon>sync</Icon>
         <Text variant="menuItem">Sync now</Text>
       </MenuItem>
