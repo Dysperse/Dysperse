@@ -170,7 +170,9 @@ export default function SignIn() {
           if (!sessionRequest.session) {
             Toast.show({
               type: "error",
-              text1: "Incorrect email or password",
+              text1: sessionRequest.error.includes("captcha")
+                ? sessionRequest.error
+                : "Incorrect email or password",
             });
             setToken("");
             setStep(0);
