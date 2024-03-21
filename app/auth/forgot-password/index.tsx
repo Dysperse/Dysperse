@@ -121,7 +121,10 @@ const Token = ({ form }) => {
 
   useEffect(() => {
     const values = form.getValues();
-    if (values.captchaToken === "SENT") return;
+    if (values.captchaToken === "SENT") {
+      setLoading(false);
+      return;
+    }
     if (!values.captchaToken) {
       setLoading(false);
       Toast.show({ type: "error" });
