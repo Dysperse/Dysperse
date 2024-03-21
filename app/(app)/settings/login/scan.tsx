@@ -1,6 +1,7 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
@@ -23,6 +24,7 @@ const isJson = (str) => {
 };
 
 export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
   const { session } = useSession();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -123,8 +125,8 @@ export default function Page() {
           <CameraView
             style={styles.camera}
             facing="back"
-            barCodeScannerSettings={{
-              barCodeTypes: ["qr"],
+            barcodeScannerSettings={{
+              barcodeTypes: ["qr"],
             }}
             onBarcodeScanned={handleBarCodeScanned}
           />
@@ -138,7 +140,7 @@ export default function Page() {
           >
             <View
               style={{
-                width: width - 100,
+                width: breakpoints.md ? 300 : width - 100,
                 aspectRatio: "1/1",
                 borderWidth: 5,
                 borderRadius: 50,
