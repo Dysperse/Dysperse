@@ -1,3 +1,4 @@
+import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -8,6 +9,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Turnstile from "@/ui/turnstile";
+import * as Device from "expo-device";
 import { router } from "expo-router";
 import {
   createContext,
@@ -17,7 +19,7 @@ import {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { authStyles } from "../authStyles";
 
@@ -67,10 +69,11 @@ const Email = ({ form }) => {
       <Controller
         control={form.control}
         name="email"
-        render={({ field: { onChange, value } }) => (
+        rules={{ required: true }}
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
           <TextField
             variant="filled+outlined"
-            style={styles.input}
+            style={[styles.input, error && { borderColor: "red" }]}
             placeholder="Email or username"
             onChangeText={onChange}
             value={value || ""}
@@ -114,14 +117,15 @@ const Captcha = ({ form }) => {
 const Token = ({ form }) => {
   const theme = useColorTheme();
   const [loading, setLoading] = useState(true);
-  const { handlePrev, setStep } = usePasswordContext();
+  const { setStep, handleNext } = usePasswordContext();
 
   useEffect(() => {
     const values = form.getValues();
+    if (values.captchaToken === "SENT") return;
     if (!values.captchaToken) {
       setLoading(false);
       Toast.show({ type: "error" });
-      handlePrev();
+      setStep(1);
       return;
     }
     fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/forgot-password`, {
@@ -139,10 +143,17 @@ const Token = ({ form }) => {
           setStep(0);
         } else if (res.error) {
           Toast.show({ type: "error", text1: res.error });
-          handlePrev();
+          setStep(1);
+        } else if (!res.error) {
+          form.setValue("captchaToken", "SENT");
         }
+      })
+      .catch(() => {
+        setLoading(false);
+        Toast.show({ type: "error" });
+        setStep(0);
       });
-  }, [form, handlePrev, setStep]);
+  }, [form, setStep]);
 
   return loading ? (
     <Spinner />
@@ -156,11 +167,12 @@ const Token = ({ form }) => {
       </Text>
       <Controller
         control={form.control}
+        rules={{ required: true }}
         name="token"
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
           <TextField
             variant="filled+outlined"
-            style={styles.input}
+            style={[styles.input, error && { borderColor: "red" }]}
             placeholder="Verification code"
             onChangeText={onChange}
             value={value || ""}
@@ -170,19 +182,61 @@ const Token = ({ form }) => {
 
       <Button
         variant="filled"
-        onPress={handlePrev}
+        onPress={handleNext}
         style={{ marginTop: 10, width: "100%", height: 70 }}
       >
         <ButtonText style={{ fontSize: 20 }} weight={700}>
           Next
         </ButtonText>
-        <Icon>arrow_back_ios</Icon>
+        <Icon>arrow_forward_ios</Icon>
       </Button>
     </>
   );
 };
 const Password = ({ form }) => {
-  return <Text>Password</Text>;
+  const theme = useColorTheme();
+  const { handleNext } = usePasswordContext();
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <>
+      <Text weight={800} style={[styles.title, { color: theme[11] }]}>
+        Reset your password
+      </Text>
+      <Text style={[styles.subtitle, { color: theme[11] }]}>
+        Enter your new password and confirm it. Make sure it's at least 8
+        characters long.
+      </Text>
+      <Controller
+        control={form.control}
+        rules={{ required: true, minLength: 8 }}
+        name="password"
+        render={({ field: { onChange, value }, fieldState: { error } }) => (
+          <TextField
+            variant="filled+outlined"
+            style={[styles.input, error && { borderColor: "red" }]}
+            placeholder="New password"
+            onChangeText={onChange}
+            value={value || ""}
+          />
+        )}
+      />
+      <Button
+        variant="filled"
+        isLoading={loading}
+        onPress={() => {
+          setLoading(true);
+          handleNext();
+        }}
+        style={{ marginTop: 10, width: "100%", height: 70 }}
+      >
+        <ButtonText style={{ fontSize: 20 }} weight={700}>
+          Reset password
+        </ButtonText>
+        <Icon>arrow_forward_ios</Icon>
+      </Button>
+    </>
+  );
 };
 
 export default function Page() {
@@ -197,9 +251,9 @@ export default function Page() {
       captchaToken: "",
       token: "",
       password: "",
-      confirmPassword: "",
     },
   });
+  const { signIn } = useSession();
 
   const steps = [
     <Email form={form} key="1" />,
@@ -216,13 +270,38 @@ export default function Page() {
   }, [step]);
 
   const onSubmit = async (values) => {
-    switch (step) {
-      case 0:
-        setStep(1);
-        break;
-      case 1:
+    if (step < 3) {
+      setStep(step + 1);
+    } else {
+      const data = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/forgot-password`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...values,
+            deviceType: Device.deviceType,
+            deviceName:
+              Device.deviceName ||
+              (Platform.OS === "web"
+                ? navigator.userAgent.split("(")[1].split(";")[0]
+                : "Unknown device"),
+          }),
+        }
+      ).then((res) => res.json());
+      if (data.error) {
+        Toast.show({
+          type: "error",
+          text1: "Please check your inputs and try again.",
+        });
         setStep(2);
-        break;
+      } else {
+        Toast.show({ type: "success", text1: "Password changed!" });
+        signIn(data.id);
+        router.replace("/");
+      }
     }
   };
 
