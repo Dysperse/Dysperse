@@ -6,11 +6,13 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Turnstile from "@/ui/turnstile";
 import { router } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
-import { authStyles } from "./authStyles";
+import Toast from "react-native-toast-message";
+import { authStyles } from "../authStyles";
 
 const styles = StyleSheet.create({
   title: {
@@ -20,10 +22,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     textAlign: "center",
   },
+  input: {
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    marginBottom: 20,
+    fontSize: 20,
+    width: "100%",
+  },
 });
 
 export default function Page() {
   const theme = useColorTheme();
+  const [step, setStep] = useState(0);
   const breakpoints = useResponsiveBreakpoints();
 
   const handleBack = useCallback(() => {
@@ -31,16 +41,29 @@ export default function Page() {
     else router.push("/");
   }, []);
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       email: "",
-      emailToken: "",
       captchaToken: "",
     },
   });
 
-  const onSubmit = useCallback((data) => {
-    console.log(data);
+  const onSubmit = useCallback(async (values) => {
+    try {
+      const data = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/forgot-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      ).then((res) => res.json());
+      if (data.error) throw new Error(data.error);
+    } catch (error) {
+      Toast.show({ type: "error", text1: error.message });
+    }
   }, []);
 
   return (
@@ -89,27 +112,27 @@ export default function Page() {
         <Controller
           control={control}
           rules={{ required: true }}
-          render={({
-            field: { onChange, onBlur, value },
-            fieldState: { error },
-          }) => (
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
               variant="filled+outlined"
-              style={{
-                paddingHorizontal: 30,
-                paddingVertical: 20,
-                fontSize: 20,
-                width: "100%",
-                borderColor: error ? "red" : theme[6],
-                ...(Platform.OS === "web" && { outline: "none" }),
-              }}
+              style={[
+                styles.input,
+                {
+                  borderColor: error ? "red" : theme[6],
+                  ...(Platform.OS === "web" && { outline: "none" }),
+                },
+              ]}
               placeholder="Email or username"
-              onBlur={onBlur}
               onChangeText={onChange}
               value={value}
             />
           )}
           name="email"
+        />
+        <Turnstile
+          setToken={(token) => {
+            setValue("captchaToken", token);
+          }}
         />
         <Button
           style={{ marginTop: "auto", height: 64, width: "100%" }}

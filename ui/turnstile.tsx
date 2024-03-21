@@ -48,11 +48,26 @@ const Turnstile = ({ setToken }) => {
   if (Platform.OS === "web") {
     // For web, use an iframe
     return (
-      <iframe
-        srcDoc={htmlContent}
-        style={{ height: 65, width: "100%", border: "none" }}
-        sandbox="allow-scripts allow-same-origin"
-      ></iframe>
+      <View
+        style={{
+          borderRadius: 99,
+          width: 300,
+          height: 65,
+          overflow: "hidden",
+          borderWidth: 2,
+          borderColor: "#e0e0e0",
+        }}
+      >
+        <iframe
+          srcDoc={htmlContent}
+          style={{
+            height: 65,
+            width: 300,
+            border: "none",
+          }}
+          sandbox="allow-scripts allow-same-origin"
+        ></iframe>
+      </View>
     );
   } else {
     // For mobile, use WebView
