@@ -2,6 +2,7 @@ import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import BottomSheet from "@/ui/BottomSheet";
@@ -9,14 +10,16 @@ import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
+import Toast from "react-native-toast-message";
 
 function TwoFactorAuthSection() {
   const breakpoints = useResponsiveBreakpoints();
@@ -78,7 +81,8 @@ function TwoFactorAuthSection() {
 
 function EmailSection() {
   const theme = useColorTheme();
-  const { session, sessionToken } = useUser();
+  const { session, mutate, sessionToken } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: session.user.email,
@@ -88,17 +92,62 @@ function EmailSection() {
 
   const sheetRef = useRef<BottomSheetModal>(null);
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     if (!values.token) {
-      sheetRef.current.present();
-      sendApiRequest(sessionToken, "POST", "user/account/email", {
-        email: values.email,
-      });
+      try {
+        setIsLoading(true);
+        const data = await sendApiRequest(
+          sessionToken,
+          "POST",
+          "user/account/email",
+          {
+            email: values.email,
+          }
+        );
+        if (data.error) {
+          Toast.show({ type: "error", text1: data.error });
+          return;
+        }
+        sheetRef.current.present();
+      } catch (e) {
+        Toast.show({ type: "error" });
+      } finally {
+        setIsLoading(false);
+      }
+
       return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = await sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/account/email",
+        {
+          token: values.token,
+        }
+      );
+      if (data.error) {
+        Toast.show({
+          type: "error",
+          text1: "Incorrect code. Please try again",
+        });
+        return;
+      }
+      sheetRef.current.close();
+      Toast.show({ type: "success", text1: "Email updated!" });
+      mutate((d) => ({ ...d, user: { ...d.user, email: values.email } }), {
+        revalidate: false,
+      });
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleClose = useCallback(() => sheetRef.current.close(), []);
+  const handleClose = useCallback(() => sheetRef.current?.close(), []);
 
   return (
     <>
@@ -107,19 +156,32 @@ function EmailSection() {
         <Controller
           name="email"
           control={control}
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: "Invalid email",
+            },
+          }}
           render={({ field }) => (
             <>
               <TextField
                 style={{ flex: 1 }}
+                editable={!isLoading}
+                onSubmitEditing={handleSubmit(onSubmit, () =>
+                  Toast.show({ type: "error", text1: "Please enter an email" })
+                )}
                 variant="filled+outlined"
-                {...field}
+                {...omit(["ref"], field)}
               />
               <IconButton
                 disabled={session.user.email === field.value}
-                icon="check"
+                icon={isLoading ? <Spinner size={24} /> : "check"}
                 size={40}
                 variant="filled"
-                onPress={handleSubmit(onSubmit)}
+                onPress={handleSubmit(onSubmit, () =>
+                  Toast.show({ type: "error", text1: "Please enter an email" })
+                )}
                 style={{ borderWidth: 1, borderColor: theme[5] }}
               />
             </>
@@ -127,32 +189,45 @@ function EmailSection() {
         />
       </View>
 
-      <BottomSheet
-        onClose={handleClose}
-        snapPoints={[300]}
-        disableBackToClose
-        disableBackdropPressToClose
-        disableEscapeToClose
-        enablePanDownToClose={false}
-        sheetRef={sheetRef}
-      >
-        <View style={{ padding: 20 }}>
-          <Text weight={800} style={{ fontSize: 20 }}>
+      <BottomSheet onClose={handleClose} snapPoints={[400]} sheetRef={sheetRef}>
+        <BottomSheetScrollView contentContainerStyle={{ padding: 30 }}>
+          <Text weight={800} style={{ fontSize: 30 }}>
             Verify your email
           </Text>
-          <Text style={{ marginVertical: 10 }}>
+          <Text style={{ marginVertical: 10, fontSize: 20, opacity: 0.7 }}>
             We sent a verification email to your new email address. Please enter
             the code to confirm your new email.
           </Text>
-          <TextField
-            placeholder="Verification code"
-            variant="filled+outlined"
+          <Controller
+            name="token"
+            control={control}
+            rules={{
+              required: true,
+              pattern:
+                /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
+            }}
+            render={({ field }) => (
+              <TextField
+                placeholder="Verification code"
+                variant="filled+outlined"
+                {...omit(["ref"], field)}
+              />
+            )}
           />
-          <Button>
-            <ButtonText>Confirm</ButtonText>
+          <Button
+            style={{ height: 60, marginTop: 10 }}
+            variant="filled"
+            isLoading={isLoading}
+            onPress={handleSubmit(onSubmit, () =>
+              Toast.show({ type: "error", text1: "Please enter a code" })
+            )}
+          >
+            <ButtonText weight={700} style={{ fontSize: 20 }}>
+              Confirm
+            </ButtonText>
             <Icon>check</Icon>
           </Button>
-        </View>
+        </BottomSheetScrollView>
       </BottomSheet>
     </>
   );
