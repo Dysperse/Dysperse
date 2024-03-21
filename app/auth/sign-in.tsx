@@ -144,7 +144,7 @@ export default function SignIn() {
             {
               body: JSON.stringify({
                 ...data,
-                token,
+                captchaToken: token,
                 deviceType: Device.deviceType,
                 deviceName:
                   Device.deviceName ||
@@ -258,9 +258,7 @@ export default function SignIn() {
               <View style={{ gap: 10 }}>
                 <Controller
                   control={control}
-                  rules={{
-                    required: true,
-                  }}
+                  rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextField
                       variant="filled+outlined"
