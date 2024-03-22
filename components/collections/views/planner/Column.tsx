@@ -401,7 +401,6 @@ export function Column({
             showLabel
             item={item}
             onTaskUpdate={onTaskUpdate}
-            openColumnMenu={() => {}}
           />
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}

@@ -265,7 +265,6 @@ export function Column(props: ColumnProps) {
             item={item}
             showDate
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
-            openColumnMenu={() => {}}
           />
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}

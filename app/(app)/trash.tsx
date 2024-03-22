@@ -149,7 +149,6 @@ export default function Trash() {
                     oldData.map((t) => (t.id === newTask.id ? newTask : t))
                   );
                 }}
-                openColumnMenu={() => {}}
                 item={item}
               />
             </View>

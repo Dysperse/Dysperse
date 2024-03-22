@@ -1,3 +1,4 @@
+import { useSelectionContext } from "@/context/SelectionContext";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
@@ -13,7 +14,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { cloneElement, memo, useCallback, useRef } from "react";
-import { Linking, View } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
 
@@ -120,51 +121,78 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
 const Task = memo(function Task({
   task,
   onTaskUpdate,
-  openColumnMenu,
   showLabel,
   showRelativeTime,
   showDate,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
-  openColumnMenu: () => void;
   showLabel?: boolean;
   showRelativeTime?: boolean;
   showDate?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange");
+  const blue = useColor("blue");
 
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = task.completionInstances.length > 0;
 
+  const { selection, setSelection } = useSelectionContext();
+
+  const handleSelect = () => {
+    if (selection.includes(task.id)) {
+      setSelection((d) => d.filter((e) => e !== task.id));
+    } else {
+      setSelection((d) => [...d, task.id]);
+    }
+  };
+
   return (
-    <TaskDrawer id={task.id} mutateList={onTaskUpdate}>
+    <TaskDrawer
+      id={task.id}
+      mutateList={onTaskUpdate}
+      disabled={selection.length > 0}
+    >
       <ListItemButton
-        onLongPress={openColumnMenu}
-        style={({ pressed, hovered }) => ({
-          flexShrink: 0,
-          paddingTop: breakpoints.md ? 13 : 18,
-          paddingLeft: breakpoints.md ? 13 : 18,
-          paddingRight: breakpoints.md ? 13 : 18,
-          paddingBottom: breakpoints.md ? 8 : 18,
-          borderRadius: 25,
-          ...(!breakpoints.md && {
-            borderWidth: 1,
-            borderColor: theme[4],
-            marginTop: breakpoints.md ? 0 : 5,
-            marginBottom: 8,
-          }),
-          backgroundColor: pressed
-            ? addHslAlpha(theme[4], 0.7)
-            : hovered
-            ? addHslAlpha(theme[3], 0.7)
-            : undefined,
-          alignItems: "flex-start",
-          ...(isCompleted && {
-            opacity: 0.6,
-          }),
+        onLongPress={handleSelect}
+        {...(Platform.OS === "web" && {
+          onContextMenu: handleSelect,
         })}
+        {...(selection.length > 0 && {
+          onPress: handleSelect,
+        })}
+        style={({ pressed, hovered }) => [
+          {
+            flexShrink: 0,
+            paddingTop: breakpoints.md ? 13 : 18,
+            paddingLeft: breakpoints.md ? 13 : 18,
+            paddingRight: breakpoints.md ? 13 : 18,
+            paddingBottom: breakpoints.md ? 8 : 18,
+            borderRadius: 25,
+            borderWidth: 2,
+            borderColor: "transparent",
+            ...(!breakpoints.md && {
+              borderWidth: 1,
+              borderColor: theme[4],
+              marginTop: breakpoints.md ? 0 : 5,
+              marginBottom: 8,
+            }),
+            backgroundColor: pressed
+              ? addHslAlpha(theme[4], 0.7)
+              : hovered
+              ? addHslAlpha(theme[3], 0.7)
+              : undefined,
+            alignItems: "flex-start",
+          },
+          isCompleted && {
+            opacity: 0.6,
+          },
+          selection.includes(task.id) && {
+            backgroundColor: blue[2],
+            borderColor: blue[6],
+          },
+        ]}
       >
         <TaskCheckbox task={task} mutateList={onTaskUpdate} />
         <View style={{ gap: 5, flex: 1 }}>

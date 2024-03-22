@@ -13,7 +13,7 @@ import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
 
-export function TaskDrawer({ mutateList, children, id }: any) {
+export function TaskDrawer({ mutateList, children, id, disabled }: any) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
   const { width, height } = useWindowDimensions();
@@ -74,6 +74,8 @@ export function TaskDrawer({ mutateList, children, id }: any) {
     },
     [data, mutate, id, sessionToken]
   );
+
+  if (disabled) return children;
 
   return (
     <>

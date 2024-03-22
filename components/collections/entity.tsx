@@ -5,7 +5,6 @@ import { View } from "react-native";
 interface EntityProps {
   item: any;
   onTaskUpdate: any;
-  openColumnMenu: any;
   showLabel?: boolean;
   showRelativeTime?: boolean;
   showDate?: boolean;
@@ -14,7 +13,6 @@ interface EntityProps {
 export const Entity = ({
   onTaskUpdate,
   item,
-  openColumnMenu,
   showLabel = false,
   showRelativeTime = false,
   showDate = false,
@@ -26,7 +24,6 @@ export const Entity = ({
           showLabel={showLabel}
           onTaskUpdate={onTaskUpdate}
           task={item}
-          openColumnMenu={openColumnMenu}
           showDate={showDate}
           showRelativeTime={showRelativeTime}
         />

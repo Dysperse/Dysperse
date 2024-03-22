@@ -271,7 +271,6 @@ export const LabelDetails = ({
                         { revalidate: false }
                       );
                     }}
-                    openColumnMenu={() => {}}
                   />
                 ))
               )

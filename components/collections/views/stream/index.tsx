@@ -222,7 +222,6 @@ export function Stream() {
           </>
         }
         data={filteredTasks}
-        // estimatedItemSize={200}
         initialNumToRender={10}
         contentContainerStyle={{
           padding: 15,
@@ -239,7 +238,6 @@ export function Stream() {
             showLabel
             item={item}
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
-            openColumnMenu={() => {}}
           />
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}
