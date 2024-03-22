@@ -4,7 +4,7 @@ import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useGlobalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { Platform, StyleSheet, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 });
-export function ContentWrapper(props: ContentWrapperProps) {
+ function ContentWrapper(props: ContentWrapperProps) {
   const { sessionToken } = useUser();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
@@ -83,3 +83,5 @@ export function ContentWrapper(props: ContentWrapperProps) {
     props.children
   );
 }
+
+export default memo(ContentWrapper)

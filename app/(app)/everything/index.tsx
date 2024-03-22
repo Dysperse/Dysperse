@@ -1,5 +1,5 @@
 import { Entity } from "@/components/collections/entity";
-import { ContentWrapper } from "@/components/layout/content";
+import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";

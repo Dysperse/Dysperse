@@ -1,5 +1,5 @@
 import { ProfileModal } from "@/components/ProfileModal";
-import { ContentWrapper } from "@/components/layout/content";
+import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";

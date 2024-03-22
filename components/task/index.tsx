@@ -13,7 +13,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { cloneElement, memo, useCallback, useRef } from "react";
-import { Linking, View, useWindowDimensions } from "react-native";
+import { Linking, View } from "react-native";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
 
@@ -74,7 +74,6 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
 }: {
   attachments: any[];
 }) {
-  const { width, height } = useWindowDimensions();
   const getAttachmentIcon = (t) =>
     ({
       LINK: "link",
@@ -124,12 +123,14 @@ const Task = memo(function Task({
   openColumnMenu,
   showLabel,
   showRelativeTime,
+  showDate,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
   openColumnMenu: () => void;
   showLabel?: boolean;
   showRelativeTime?: boolean;
+  showDate?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange");
@@ -200,6 +201,14 @@ const Task = memo(function Task({
                 icon={<Icon>access_time</Icon>}
               />
             )}
+            {showDate && (
+              <Chip
+                disabled
+                dense
+                label={dayjs(task.due).format("MMM Do")}
+                icon={<Icon>calendar_today</Icon>}
+              />
+            )}
             {showLabel && task.label && (
               <Chip
                 disabled
@@ -247,4 +256,4 @@ const Task = memo(function Task({
   );
 });
 
-export default Task;
+export default React.memo(Task);

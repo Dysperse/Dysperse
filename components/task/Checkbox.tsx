@@ -10,13 +10,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-const TaskCheckox = memo(function TaskCheckbox({
-  task,
-  mutateList,
-}: {
-  task: any;
-  mutateList: any;
-}) {
+function TaskCheckbox({ task, mutateList }: { task: any; mutateList: any }) {
   const theme = useColorTheme();
   const { session } = useSession();
 
@@ -32,7 +26,7 @@ const TaskCheckox = memo(function TaskCheckbox({
 
   const isCompleted = task.completionInstances.length > 0;
 
-  const handlePress = async (e) => {
+  const handlePress = async () => {
     const newArr = isCompleted ? [] : [...task.completionInstances, true];
     mutateList({
       ...task,
@@ -98,6 +92,6 @@ const TaskCheckox = memo(function TaskCheckbox({
       </Pressable>
     </>
   );
-});
+}
 
-export default TaskCheckox;
+export default memo(TaskCheckbox);

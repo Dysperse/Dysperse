@@ -1,4 +1,4 @@
-import { ContentWrapper } from "@/components/layout/content";
+import ContentWrapper from "@/components/layout/content";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";

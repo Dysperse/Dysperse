@@ -263,6 +263,7 @@ export function Column(props: ColumnProps) {
         renderItem={({ item }) => (
           <Entity
             item={item}
+            showDate
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
             openColumnMenu={() => {}}
           />

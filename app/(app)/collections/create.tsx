@@ -1,5 +1,5 @@
 import LabelPicker from "@/components/labels/picker";
-import { ContentWrapper } from "@/components/layout/content";
+import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";

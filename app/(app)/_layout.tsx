@@ -63,6 +63,7 @@ import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import useSWR from "swr";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
+import { SelectionContextProvider } from "@/context/SelectionContext";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -410,6 +411,7 @@ export default function AppLayout() {
   // This layout can be deferred because it's not the root layout.
 
   return (
+    <SelectionContextProvider>
     <StorageContextProvider>
       <ColorThemeProvider theme={theme} setHTMLAttributes>
         <GestureHandlerRootView
@@ -618,5 +620,6 @@ export default function AppLayout() {
         </GestureHandlerRootView>
       </ColorThemeProvider>
     </StorageContextProvider>
+    </SelectionContextProvider>
   );
 }

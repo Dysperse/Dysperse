@@ -8,7 +8,7 @@ import { Grid } from "@/components/collections/views/grid";
 import { Kanban } from "@/components/collections/views/kanban";
 import { Perspectives } from "@/components/collections/views/planner";
 import { useLabelColors } from "@/components/labels/useLabelColors";
-import { ContentWrapper } from "@/components/layout/content";
+import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";

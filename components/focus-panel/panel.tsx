@@ -23,7 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import { Clock } from "../home/clock";
 import { WeatherWidget } from "../home/weather/widget";
-import { ContentWrapper } from "../layout/content";
+import ContentWrapper from "../layout/content";
 import {
   FocusPanelWidgetProvider,
   useFocusPanelContext,

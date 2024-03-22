@@ -1,7 +1,7 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { styles } from "@/components/home/styles";
-import { ContentWrapper } from "@/components/layout/content";
+import ContentWrapper from "@/components/layout/content";
 import { useTabMetadata } from "@/components/layout/tabs/useTabMetadata";
 import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";

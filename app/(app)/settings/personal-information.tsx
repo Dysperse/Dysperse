@@ -1,4 +1,4 @@
-import { ContentWrapper } from "@/components/layout/content";
+import ContentWrapper from "@/components/layout/content";
 import { settingsStyles } from "@/components/settings/layout";
 import { useUser } from "@/context/useUser";
 import Text from "@/ui/Text";
