@@ -392,6 +392,9 @@ const SelectionNavbar = () => {
               height: 64,
               backgroundColor: blue[5],
               flexDirection: "row",
+              borderRadius: 999,
+              gap: 10,
+              paddingHorizontal: 20,
               alignItems: "center",
             }}
           >
