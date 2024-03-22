@@ -6,6 +6,10 @@ import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import Sidebar from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
 import {
+  SelectionContextProvider,
+  useSelectionContext,
+} from "@/context/SelectionContext";
+import {
   StorageContextProvider,
   useStorageContext,
 } from "@/context/storageContext";
@@ -14,13 +18,13 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { useSelectionContext } from "@/context/SelectionContext";
 import { Portal, PortalProvider } from "@gorhom/portal";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
@@ -64,8 +68,6 @@ import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import useSWR from "swr";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
-import { SelectionContextProvider } from "@/context/SelectionContext";
-import IconButton from "@/ui/IconButton";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -372,26 +374,33 @@ const SelectionNavbar = () => {
   const clearSelection = () => setSelection([]);
 
   return selection.length > 0 ? (
-    <View
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        alignItems: "center",
-      }}
-    >
-      <View
-        style={{
-          width: 300,
-          height: 64,
-          backgroundColor: blue[5],
-        }}
-      >
-        <IconButton icon="close" size={50} onPress={clearSelection} />
-        <Text>{selection.length} selected</Text>
-      </View>
-    </View>
+    <Portal>
+      <ColorThemeProvider theme={blue}>
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            alignItems: "center",
+            marginTop: 20,
+          }}
+        >
+          <View
+            style={{
+              width: 300,
+              height: 64,
+              backgroundColor: blue[5],
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <IconButton icon="close" size={50} onPress={clearSelection} />
+            <Text>{selection.length} selected</Text>
+          </View>
+        </View>
+      </ColorThemeProvider>
+    </Portal>
   ) : null;
 };
 
