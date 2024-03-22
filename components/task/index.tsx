@@ -229,7 +229,7 @@ const Task = memo(function Task({
                 icon={<Icon>access_time</Icon>}
               />
             )}
-            {showDate && (
+            {showDate && task.due && (
               <Chip
                 disabled
                 dense
