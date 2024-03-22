@@ -394,12 +394,14 @@ const SelectionNavbar = () => {
               flexDirection: "row",
               borderRadius: 999,
               gap: 10,
-              paddingHorizontal: 20,
+              paddingHorizontal: 10,
               alignItems: "center",
             }}
           >
             <IconButton icon="close" size={50} onPress={clearSelection} />
-            <Text>{selection.length} selected</Text>
+            <Text weight={900} style={{ fontSize: 20 }}>
+              {selection.length} selected
+            </Text>
           </View>
         </View>
       </ColorThemeProvider>
