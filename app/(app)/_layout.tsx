@@ -368,6 +368,7 @@ const LoadingErrors = () => {
 };
 
 const SelectionNavbar = () => {
+  const { width } = useWindowDimensions();
   const { selection, setSelection } = useSelectionContext();
   const blue = useColor("blue");
 
@@ -378,31 +379,25 @@ const SelectionNavbar = () => {
       <ColorThemeProvider theme={blue}>
         <View
           style={{
+            width: 300,
+            height: 64,
             position: "absolute",
             top: 0,
-            left: 0,
-            width: "100%",
-            alignItems: "center",
+            left: width / 2 - 150,
             marginTop: 20,
+            backgroundColor: blue[5],
+            flexDirection: "row",
+            borderRadius: 999,
+            zIndex: 999999,
+            gap: 10,
+            paddingHorizontal: 10,
+            alignItems: "center",
           }}
         >
-          <View
-            style={{
-              width: 300,
-              height: 64,
-              backgroundColor: blue[5],
-              flexDirection: "row",
-              borderRadius: 999,
-              gap: 10,
-              paddingHorizontal: 10,
-              alignItems: "center",
-            }}
-          >
-            <IconButton icon="close" size={50} onPress={clearSelection} />
-            <Text weight={900} style={{ fontSize: 20 }}>
-              {selection.length} selected
-            </Text>
-          </View>
+          <IconButton icon="close" size={50} onPress={clearSelection} />
+          <Text weight={900} style={{ fontSize: 20 }}>
+            {selection.length} selected
+          </Text>
         </View>
       </ColorThemeProvider>
     </Portal>
