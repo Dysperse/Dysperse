@@ -26,6 +26,7 @@ import {
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { KeyedMutator } from "swr";
+import { useCollectionContext } from "../../context";
 import { ColumnFinishedComponent } from "../kanban/Column";
 import { usePlannerContext } from "./context";
 
@@ -193,6 +194,9 @@ export function Column({
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const { id: collectionId } = usePlannerContext();
+  const { access } = useCollectionContext();
+
+  const isReadOnly = access?.access === "READ_ONLY";
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -294,81 +298,83 @@ export function Column({
           />
         }
         ListHeaderComponent={
-          <>
-            <View
-              style={[
-                styles.header,
-                {
-                  marginTop: 5,
-                  paddingHorizontal: breakpoints.md ? 0 : 5,
-                },
-              ]}
-            >
-              <CreateTask
-                defaultValues={{
-                  collectionId:
-                    collectionId === "all" ? undefined : collectionId,
-                  date: dayjs(column.start),
-                  agendaOrder: LexoRank.parse(
-                    column.tasks[column.tasks.length - 1]?.agendaOrder ||
-                      LexoRank.max().toString()
-                  )
-                    .genNext()
-                    .toString(),
-                }}
-                mutate={(newTask) => {
-                  console.log(newTask);
-                  if (!newTask) return;
-                  if (
-                    !dayjs(newTask.due)
-                      .utc()
-                      .isBetween(
-                        dayjs(column.start),
-                        dayjs(column.end),
-                        null,
-                        "[]"
-                      ) ||
-                    !newTask.due
-                  )
-                    return;
-
-                  mutate(
-                    (oldData) =>
-                      oldData.map((oldColumn) =>
-                        oldColumn.start === column.start &&
-                        oldColumn.end === column.end
-                          ? {
-                              ...oldColumn,
-                              tasks: [...oldColumn.tasks, newTask],
-                            }
-                          : oldColumn
-                      ),
-                    {
-                      revalidate: false,
-                    }
-                  );
-                }}
+          isReadOnly ? null : (
+            <>
+              <View
+                style={[
+                  styles.header,
+                  {
+                    marginTop: 5,
+                    paddingHorizontal: breakpoints.md ? 0 : 5,
+                  },
+                ]}
               >
-                <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
-                  <ButtonText>New</ButtonText>
-                  <Icon>add</Icon>
-                </Button>
-              </CreateTask>
-              <ColumnMenu
-                column={column}
-                onTaskUpdate={onTaskUpdate}
-                columnMenuRef={columnMenuRef}
-              >
-                <Button variant="outlined" style={{ height: 50 }}>
-                  <Icon>more_horiz</Icon>
-                </Button>
-              </ColumnMenu>
-            </View>
+                <CreateTask
+                  defaultValues={{
+                    collectionId:
+                      collectionId === "all" ? undefined : collectionId,
+                    date: dayjs(column.start),
+                    agendaOrder: LexoRank.parse(
+                      column.tasks[column.tasks.length - 1]?.agendaOrder ||
+                        LexoRank.max().toString()
+                    )
+                      .genNext()
+                      .toString(),
+                  }}
+                  mutate={(newTask) => {
+                    console.log(newTask);
+                    if (!newTask) return;
+                    if (
+                      !dayjs(newTask.due)
+                        .utc()
+                        .isBetween(
+                          dayjs(column.start),
+                          dayjs(column.end),
+                          null,
+                          "[]"
+                        ) ||
+                      !newTask.due
+                    )
+                      return;
 
-            {column.tasks.length > 0 &&
-              column.tasks.filter((e) => e.completionInstances.length === 0)
-                .length === 0 && <ColumnFinishedComponent />}
-          </>
+                    mutate(
+                      (oldData) =>
+                        oldData.map((oldColumn) =>
+                          oldColumn.start === column.start &&
+                          oldColumn.end === column.end
+                            ? {
+                                ...oldColumn,
+                                tasks: [...oldColumn.tasks, newTask],
+                              }
+                            : oldColumn
+                        ),
+                      {
+                        revalidate: false,
+                      }
+                    );
+                  }}
+                >
+                  <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
+                    <ButtonText>New</ButtonText>
+                    <Icon>add</Icon>
+                  </Button>
+                </CreateTask>
+                <ColumnMenu
+                  column={column}
+                  onTaskUpdate={onTaskUpdate}
+                  columnMenuRef={columnMenuRef}
+                >
+                  <Button variant="outlined" style={{ height: 50 }}>
+                    <Icon>more_horiz</Icon>
+                  </Button>
+                </ColumnMenu>
+              </View>
+
+              {column.tasks.length > 0 &&
+                column.tasks.filter((e) => e.completionInstances.length === 0)
+                  .length === 0 && <ColumnFinishedComponent />}
+            </>
+          )
         }
         data={column.tasks
           .sort((a, b) =>
@@ -399,6 +405,7 @@ export function Column({
         renderItem={({ item }) => (
           <Entity
             showLabel
+            isReadOnly={isReadOnly}
             item={item}
             onTaskUpdate={onTaskUpdate}
           />

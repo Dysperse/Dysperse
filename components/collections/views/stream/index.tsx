@@ -23,9 +23,11 @@ export function Stream() {
     (params?.view as any) || "backlog"
   );
 
-  const { data, mutate } = useCollectionContext();
+  const { data, mutate, access } = useCollectionContext();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+
+  const isReadOnly = access?.access === "READ_ONLY";
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
@@ -176,48 +178,50 @@ export function Stream() {
                 onChangeText={setQuery}
                 style={{ height: 50, fontSize: 18 }}
               />
-              <CreateTask
-                defaultValues={{
-                  collectionId: data.id,
-                }}
-                mutate={(newTask) => {
-                  if (!newTask) return;
-                  mutate(
-                    (oldData) => {
-                      const labelIndex = oldData.labels.findIndex(
-                        (l) => l.id === newTask.label.id
-                      );
-                      if (labelIndex === -1)
+              {!isReadOnly && (
+                <CreateTask
+                  defaultValues={{
+                    collectionId: data.id,
+                  }}
+                  mutate={(newTask) => {
+                    if (!newTask) return;
+                    mutate(
+                      (oldData) => {
+                        const labelIndex = oldData.labels.findIndex(
+                          (l) => l.id === newTask.label.id
+                        );
+                        if (labelIndex === -1)
+                          return {
+                            ...oldData,
+                            entities: [...oldData.entities, newTask],
+                          };
                         return {
                           ...oldData,
-                          entities: [...oldData.entities, newTask],
+                          labels: oldData.labels.map((l) =>
+                            l.id === newTask.label.id
+                              ? {
+                                  ...l,
+                                  entities: [...l.entities, newTask],
+                                }
+                              : l
+                          ),
                         };
-                      return {
-                        ...oldData,
-                        labels: oldData.labels.map((l) =>
-                          l.id === newTask.label.id
-                            ? {
-                                ...l,
-                                entities: [...l.entities, newTask],
-                              }
-                            : l
-                        ),
-                      };
-                    },
-                    {
-                      revalidate: false,
-                    }
-                  );
-                }}
-              >
-                <Button
-                  variant="filled"
-                  style={{ flex: 1, minHeight: 50, paddingHorizontal: 20 }}
+                      },
+                      {
+                        revalidate: false,
+                      }
+                    );
+                  }}
                 >
-                  <ButtonText>New</ButtonText>
-                  <Icon>add</Icon>
-                </Button>
-              </CreateTask>
+                  <Button
+                    variant="filled"
+                    style={{ flex: 1, minHeight: 50, paddingHorizontal: 20 }}
+                  >
+                    <ButtonText>New</ButtonText>
+                    <Icon>add</Icon>
+                  </Button>
+                </CreateTask>
+              )}
             </View>
           </>
         }
