@@ -689,9 +689,9 @@ function Actions() {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={handleOpen}>
-        <Icon>electric_bolt</Icon>
+        <Icon>group</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          Jump to...
+          Shared with me...
         </Text>
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={togglePanel}>

@@ -7,6 +7,7 @@ interface DTextAreaProps extends TextInputProps {
   fontSize?: number;
   inputStyle?: StyleProp<any>;
   inputDefaultValue?: string;
+  disabled?: boolean;
 }
 
 export default function AutoSizeTextArea(props: DTextAreaProps) {

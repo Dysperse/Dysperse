@@ -311,7 +311,7 @@ const FriendModal = ({ children, onComplete }) => {
   );
 };
 
-const CollectionInvitedUser = ({ mutateList, user }) => {
+const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
   const { session } = useSession();
   const ref = useRef<BottomSheetModal>(null);
   const handleDelete = async () => {
@@ -351,42 +351,44 @@ const CollectionInvitedUser = ({ mutateList, user }) => {
           user.access.toLowerCase().replaceAll("_", " ")
         )}
       />
-      <Menu
-        height={[320]}
-        menuRef={ref}
-        trigger={<IconButton icon="more_horiz" />}
-      >
-        <View style={{ padding: 20, gap: 20, paddingTop: 10 }}>
-          {[
-            { label: "Can view", value: "READ_ONLY" },
-            { label: "Can edit", value: "EDITOR" },
-            { label: "Full access", value: "MODERATOR" },
-          ].map((button) => (
-            <Button
-              variant="outlined"
-              key={button.value}
-              style={
-                user.access === button.value && { backgroundColor: theme[3] }
-              }
-              onPress={() => {
-                console.log(button.value);
-              }}
-            >
-              <ButtonText>{button.label}</ButtonText>
-              {user.access === button.value && <Icon>check</Icon>}
+      {!isReadOnly && (
+        <Menu
+          height={[320]}
+          menuRef={ref}
+          trigger={<IconButton icon="more_horiz" />}
+        >
+          <View style={{ padding: 20, gap: 20, paddingTop: 10 }}>
+            {[
+              { label: "Can view", value: "READ_ONLY" },
+              { label: "Can edit", value: "EDITOR" },
+              { label: "Full access", value: "MODERATOR" },
+            ].map((button) => (
+              <Button
+                variant="outlined"
+                key={button.value}
+                style={
+                  user.access === button.value && { backgroundColor: theme[3] }
+                }
+                onPress={() => {
+                  console.log(button.value);
+                }}
+              >
+                <ButtonText>{button.label}</ButtonText>
+                {user.access === button.value && <Icon>check</Icon>}
+              </Button>
+            ))}
+            <Divider />
+            <Button variant="outlined" onPress={handleDelete}>
+              <ButtonText>Remove access</ButtonText>
             </Button>
-          ))}
-          <Divider />
-          <Button variant="outlined" onPress={handleDelete}>
-            <ButtonText>Remove access</ButtonText>
-          </Button>
-        </View>
-      </Menu>
+          </View>
+        </Menu>
+      )}
     </ListItemButton>
   );
 };
 
-const CollectionShareLink = ({ collection }) => {
+const CollectionShareLink = ({ isReadOnly, collection }) => {
   return (
     <>
       <ListItemButton disabled>
@@ -396,37 +398,39 @@ const CollectionShareLink = ({ collection }) => {
           primary="Invite link"
           secondary="Anyone with the link can join this collection"
         />
-        <Menu
-          trigger={
-            <IconButton style={{ marginRight: -10 }} size={40}>
-              <Icon>more_horiz</Icon>
-            </IconButton>
-          }
-          height={[390]}
-        >
-          <View style={{ padding: 20, gap: 10, paddingTop: 10 }}>
-            <Text variant="eyebrow">Access</Text>
-            {["No access", "Full access", "Can edit", "Can view"].map(
-              (button) => (
-                <Button
-                  variant="outlined"
-                  key={button}
-                  onPress={() => {
-                    console.log(button);
-                  }}
-                >
-                  <ButtonText>{button}</ButtonText>
-                </Button>
-              )
-            )}
-            <Text variant="eyebrow" style={{ marginTop: 10 }}>
-              Link
-            </Text>
-            <Button variant="outlined">
-              <ButtonText>Revoke link</ButtonText>
-            </Button>
-          </View>
-        </Menu>
+        {!isReadOnly && (
+          <Menu
+            trigger={
+              <IconButton style={{ marginRight: -10 }} size={40}>
+                <Icon>more_horiz</Icon>
+              </IconButton>
+            }
+            height={[390]}
+          >
+            <View style={{ padding: 20, gap: 10, paddingTop: 10 }}>
+              <Text variant="eyebrow">Access</Text>
+              {["No access", "Full access", "Can edit", "Can view"].map(
+                (button) => (
+                  <Button
+                    variant="outlined"
+                    key={button}
+                    onPress={() => {
+                      console.log(button);
+                    }}
+                  >
+                    <ButtonText>{button}</ButtonText>
+                  </Button>
+                )
+              )}
+              <Text variant="eyebrow" style={{ marginTop: 10 }}>
+                Link
+              </Text>
+              <Button variant="outlined">
+                <ButtonText>Revoke link</ButtonText>
+              </Button>
+            </View>
+          </Menu>
+        )}
         <IconButton variant="outlined" size={40}>
           <Icon>content_copy</Icon>
         </IconButton>
@@ -436,10 +440,11 @@ const CollectionShareLink = ({ collection }) => {
 };
 
 const CollectionMembers = ({
-  collection: { data: collection },
+  collection: { access, data: collection },
   mutateList,
 }) => {
   const { session } = useSession();
+  const isReadOnly = access?.access === "READ_ONLY";
 
   const handleSelectFriends = async (friends) => {
     try {
@@ -468,12 +473,12 @@ const CollectionMembers = ({
       <Text variant="eyebrow" style={modalStyles.eyebrow}>
         General
       </Text>
-      <CollectionShareLink collection={collection} />
+      <CollectionShareLink isReadOnly={isReadOnly} collection={collection} />
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
         People
       </Text>
       {collection.public && (
-        <ListItemButton>
+        <ListItemButton disabled={isReadOnly}>
           <Avatar
             icon={collection.public ? "people" : "lock"}
             size={40}
@@ -498,14 +503,17 @@ const CollectionMembers = ({
           mutateList={mutateList}
           key={user.user.email}
           user={user}
+          isReadOnly={isReadOnly}
         />
       ))}
-      <FriendModal onComplete={handleSelectFriends}>
-        <ListItemButton>
-          <Avatar icon="add" disabled size={40} />
-          <ListItemText primary="Invite people" />
-        </ListItemButton>
-      </FriendModal>
+      {!isReadOnly && (
+        <FriendModal onComplete={handleSelectFriends}>
+          <ListItemButton>
+            <Avatar icon="add" disabled size={40} />
+            <ListItemText primary="Invite people" />
+          </ListItemButton>
+        </FriendModal>
+      )}
     </View>
   );
 };
@@ -550,6 +558,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           <IconButton
             onPress={handleOpen}
             variant="outlined"
+            disabled={isReadOnly}
             size={40}
             icon="ios_share"
           />

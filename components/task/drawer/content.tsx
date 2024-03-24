@@ -24,12 +24,10 @@ import { TaskDetails } from "./details";
 
 function TaskNameInput() {
   const breakpoints = useResponsiveBreakpoints();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
   const [isFocused, setIsFocused] = useState(false);
-
-  const ref = useRef();
 
   return (
     <>
@@ -50,6 +48,7 @@ function TaskNameInput() {
             e.target.blur();
           }
         }}
+        disabled={isReadOnly}
         onFocus={() => setIsFocused(true)}
         style={[
           {
@@ -79,7 +78,7 @@ export function TaskDrawerContent({ handleClose }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const menuRef = useRef<BottomSheetModal>(null);
 
   const rotate = useSharedValue(task.pinned ? -35 : 0);
@@ -110,7 +109,7 @@ export function TaskDrawerContent({ handleClose }) {
         text1: "Something went wrong. Please try again later",
       });
     }
-  }, [handleClose, updateTask, task]);
+  }, [updateTask, task]);
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {
@@ -151,20 +150,24 @@ export function TaskDrawerContent({ handleClose }) {
           </IconButton>
           <View style={{ flex: 1 }} />
           <TaskCompleteButton />
-          <IconButton
-            style={{ borderWidth: 1, borderColor: theme[6] }}
-            size={55}
-            onPress={handleDelete}
-          >
-            <Icon size={27}>
-              {task.trash ? "restore_from_trash" : "delete"}
-            </Icon>
-          </IconButton>
-          <TaskAttachmentButton
-            menuRef={menuRef}
-            task={task}
-            updateTask={updateTask}
-          />
+          {!isReadOnly && (
+            <IconButton
+              style={{ borderWidth: 1, borderColor: theme[6] }}
+              size={55}
+              onPress={handleDelete}
+            >
+              <Icon size={27}>
+                {task.trash ? "restore_from_trash" : "delete"}
+              </Icon>
+            </IconButton>
+          )}
+          {!isReadOnly && (
+            <TaskAttachmentButton
+              menuRef={menuRef}
+              task={task}
+              updateTask={updateTask}
+            />
+          )}
         </View>
       </View>
       <BottomSheetScrollView
@@ -181,6 +184,7 @@ export function TaskDrawerContent({ handleClose }) {
             }}
           >
             <Chip
+              disabled={isReadOnly}
               onPress={handlePriorityChange}
               icon={
                 <Animated.View style={rotateStyle}>
@@ -213,6 +217,7 @@ export function TaskDrawerContent({ handleClose }) {
               disabled={Boolean(task.label?.integrationParams)}
             >
               <Chip
+                disabled={isReadOnly}
                 icon={<Icon>new_label</Icon>}
                 label="Add label"
                 style={({ pressed }) => ({

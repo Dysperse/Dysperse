@@ -3,6 +3,7 @@ import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Chip from "@/ui/Chip";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -16,6 +17,7 @@ import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
@@ -23,7 +25,6 @@ import { CollectionIntegrationsMenu } from "./CollectionIntegrationsMenu";
 import { CollectionLabelMenu } from "./CollectionLabelMenu";
 import { CollectionRenameMenu } from "./CollectionRenameMenu";
 import { CollectionShareMenu } from "./CollectionShareMenu";
-import Toast from "react-native-toast-message";
 
 export const styles = StyleSheet.create({
   navbarIconButton: {
@@ -61,7 +62,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   setEditOrderMode,
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
-  const { data, ...ctx } = useCollectionContext();
+  const { data, access, ...ctx } = useCollectionContext();
+  const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
   const { type, id } = useGlobalSearchParams();
   const insets = useSafeAreaInsets();
@@ -249,14 +251,17 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         {menu}
         <View style={!breakpoints.md && { flex: 1 }}>
           <MenuPopover
+            {...(isReadOnly && { menuProps: { opened: false } })}
             containerStyle={{ width: 230 }}
             trigger={
               <IconButton
+                disabled={isReadOnly}
                 variant="text"
                 style={[
                   styles.navbarIconButton,
                   {
-                    gap: 5,
+                    gap: 13,
+                    opacity: 1,
                     width: "auto",
                     justifyContent: "flex-start",
                     paddingHorizontal: 10,
@@ -267,10 +272,19 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 <Text style={{ fontSize: 20 }} numberOfLines={1}>
                   {data.name || "Everything"}
                 </Text>
-                <Icon style={{ color: theme[12] }}>expand_more</Icon>
+                {isReadOnly ? (
+                  <Chip
+                    icon="visibility"
+                    disabled
+                    style={{ marginLeft: 10 }}
+                    label="Read only"
+                  />
+                ) : (
+                  <Icon style={{ color: theme[12] }}>expand_more</Icon>
+                )}
               </IconButton>
             }
-            options={collectionMenuOptions}
+            options={isReadOnly ? [] : collectionMenuOptions}
           />
         </View>
         <MenuPopover

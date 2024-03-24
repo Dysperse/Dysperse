@@ -7,6 +7,15 @@ interface CollectionContext {
   mutate: KeyedMutator<any>;
   error: any;
   type: CollectionType;
+  access: null | {
+    id: string;
+    hasSeen: boolean;
+    access: "READ_ONLY" | "EDITOR" | "MODERATOR";
+    user: any;
+    collection: any;
+    userId: string;
+    collectionId: string;
+  };
 }
 
 export const CollectionContext = createContext<CollectionContext>(null);

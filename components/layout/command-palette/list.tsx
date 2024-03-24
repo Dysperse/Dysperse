@@ -23,7 +23,7 @@ const collectionViewDescriptions = {
 
 export const paletteItems = (
   collections,
-  labels
+  sharedCollections
 ): { title: string; icon: string; items: any[] }[] => {
   return [
     {
@@ -90,9 +90,20 @@ export const paletteItems = (
     //   ],
     // },
     {
-      title: "Spaces",
-      icon: "communities",
-      items: [],
+      title: "Shared with me",
+      icon: "group",
+      items:
+        sharedCollections && Array.isArray(sharedCollections)
+          ? sharedCollections.map((access) => ({
+              label: access.collection.name,
+              key: access.collection.id,
+              icon: "grid_view",
+              emoji: access.collection.emoji,
+              data: access.collection,
+              slug: `/[tab]/collections/[id]/[type]`,
+              params: { id: access.collection.id, type: "planner" },
+            }))
+          : [],
     },
   ];
 };

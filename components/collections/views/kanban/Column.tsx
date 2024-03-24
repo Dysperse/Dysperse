@@ -64,8 +64,10 @@ export function Column(props: ColumnProps) {
   const theme = useColorTheme();
   const columnRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
-  const { mutate } = useCollectionContext();
+  const { mutate, access } = useCollectionContext();
   const [refreshing, setRefreshing] = useState(false);
+
+  const isReadOnly = access?.access === "READ_ONLY";
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
@@ -210,27 +212,29 @@ export function Column(props: ColumnProps) {
         ListHeaderComponent={
           props.grid ? undefined : (
             <>
-              <View
-                style={[
-                  styles.header,
-                  {
-                    paddingHorizontal: 0,
-                    paddingTop: 20,
-                  },
-                ]}
-              >
-                <CreateTask
-                  mutate={(n) => onEntityCreate(n, props.label)}
-                  defaultValues={{
-                    label: omit(["entities"], props.label),
-                  }}
+              {!isReadOnly && (
+                <View
+                  style={[
+                    styles.header,
+                    {
+                      paddingHorizontal: 0,
+                      paddingTop: 20,
+                    },
+                  ]}
                 >
-                  <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
-                    <ButtonText>New</ButtonText>
-                    <Icon>add</Icon>
-                  </Button>
-                </CreateTask>
-              </View>
+                  <CreateTask
+                    mutate={(n) => onEntityCreate(n, props.label)}
+                    defaultValues={{
+                      label: omit(["entities"], props.label),
+                    }}
+                  >
+                    <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
+                      <ButtonText>New</ButtonText>
+                      <Icon>add</Icon>
+                    </Button>
+                  </CreateTask>
+                </View>
+              )}
 
               {(props.label ? props.label.entities : props.entities).length >
                 0 &&
@@ -262,6 +266,7 @@ export function Column(props: ColumnProps) {
         }}
         renderItem={({ item }) => (
           <Entity
+            isReadOnly={isReadOnly}
             item={item}
             showDate
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}

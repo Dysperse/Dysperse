@@ -451,9 +451,9 @@ export function CommandPaletteContent({ handleClose }) {
 
   const [filter, setFilter] = useState<null | string>(null);
   const { data: collections } = useSWR(["space/collections"]);
-  const { data: labels } = useSWR(["space/labels"]);
+  const { data: sharedCollections } = useSWR(["user/collectionAccess"]);
 
-  const sections = paletteItems(collections, labels);
+  const sections = paletteItems(collections, sharedCollections);
   const filters = sections
     .map(({ title, icon }) => ({ name: title, icon }))
     .filter((i) => i.name !== "All");

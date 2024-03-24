@@ -2,22 +2,19 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import Spinner from "@/ui/Spinner";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
-import React, { useState } from "react";
-import { useColorScheme } from "react-native";
+import React from "react";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
 
 export function TaskCompleteButton() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
-  const { task, updateTask, mutateList } = useTaskDrawerContext();
-  const green = useColor("green", useColorScheme() == "dark");
+  const { task, updateTask, mutateList, isReadOnly } = useTaskDrawerContext();
+  const green = useColor("green");
   const isCompleted = task.completionInstances.length > 0;
-  const [isLoading, setIsLoading] = useState(false);
   const { animatedIndex } = useBottomSheet();
 
   const handlePress = async () => {
@@ -53,8 +50,10 @@ export function TaskCompleteButton() {
   return (
     <>
       <IconButton
+        disabled={isReadOnly}
         style={({ pressed, hovered }) => ({
           borderWidth: 1,
+          opacity: 1,
           borderColor: isCompleted
             ? green[pressed ? 8 : hovered ? 7 : 6]
             : theme[pressed ? 8 : hovered ? 7 : 6],
@@ -65,18 +64,14 @@ export function TaskCompleteButton() {
         size={55}
         onPress={handlePress}
       >
-        {isLoading ? (
-          <Spinner color={isCompleted ? green[11] : theme[11]} />
-        ) : (
-          <Icon
-            size={27}
-            style={{
-              color: isCompleted ? green[11] : theme[11],
-            }}
-          >
-            done_outline
-          </Icon>
-        )}
+        <Icon
+          size={27}
+          style={{
+            color: isCompleted ? green[11] : theme[11],
+          }}
+        >
+          done_outline
+        </Icon>
       </IconButton>
     </>
   );

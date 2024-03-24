@@ -212,7 +212,7 @@ function TaskAttachmentCard({ item, index }) {
   const menuRef = useRef<BottomSheetModal>(null);
   const [isEditing, setIsEditing] = useState(false);
   const { height } = useWindowDimensions();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   let icon = "";
   let name = item.data;
@@ -303,7 +303,15 @@ function TaskAttachmentCard({ item, index }) {
           )}
         </Pressable>
       }
-      height={[item.type === "IMAGE" ? height - 50 : isEditing ? 350 : 250]}
+      height={[
+        item.type === "IMAGE"
+          ? height - 50
+          : isReadOnly
+          ? 155
+          : isEditing
+          ? 350
+          : 250,
+      ]}
     >
       {item.type === "IMAGE" && (
         <View style={{ flex: 1, padding: 25 }}>
@@ -346,15 +354,17 @@ function TaskAttachmentCard({ item, index }) {
             <Icon style={{ marginLeft: "auto" }}>north_east</Icon>
           </Button>
           <View style={{ flexDirection: "row", gap: 20 }}>
-            <Button
-              variant="outlined"
-              style={{ height: 70, flex: 1 }}
-              onPress={handleDeletePress}
-            >
-              <Icon>remove_circle</Icon>
-              <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
-            </Button>
-            {item.type !== "IMAGE" && (
+            {!isReadOnly && (
+              <Button
+                variant="outlined"
+                style={{ height: 70, flex: 1 }}
+                onPress={handleDeletePress}
+              >
+                <Icon>remove_circle</Icon>
+                <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
+              </Button>
+            )}
+            {item.type !== "IMAGE" && !isReadOnly && (
               <Button
                 variant="outlined"
                 style={{ height: 70, flex: 1 }}
@@ -373,7 +383,7 @@ function TaskAttachmentCard({ item, index }) {
 
 export function TaskDetails() {
   const theme = useColorTheme();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   const [activeSections, setActiveSections] = useState([]);
 
@@ -523,10 +533,10 @@ export function TaskDetails() {
                       : "Does not repeat")
                   }
                 />
-                <TaskRescheduleButton />
+                {!isReadOnly && <TaskRescheduleButton />}
               </ListItemButton>
             ),
-            content: (
+            content: isReadOnly ? null : (
               <View style={collapsibleMenuStyles as any}>
                 <TaskDatePicker
                   key="test"
@@ -595,7 +605,7 @@ export function TaskDetails() {
             content: <Text>bruh</Text>,
           },
           task.due && {
-            trigger: (isActive) => (
+            trigger: () => (
               <ListItemButton
                 variant="filled"
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
@@ -606,10 +616,12 @@ export function TaskDetails() {
                     task.notifications.length == 1 ? "" : "s"
                   }`}
                 />
-                <Chip
-                  label="Coming soon"
-                  style={{ backgroundColor: theme[5] }}
-                />
+                {!isReadOnly && (
+                  <Chip
+                    label="Coming soon"
+                    style={{ backgroundColor: theme[5] }}
+                  />
+                )}
               </ListItemButton>
             ),
             content: <Text></Text>,

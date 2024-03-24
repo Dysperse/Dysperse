@@ -178,6 +178,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   children: ReactElement;
 }) {
   const { mutate } = useCollectionContext();
+
   return (
     <MenuPopover
       trigger={children}
@@ -280,7 +281,9 @@ export default function Page() {
   }
 
   return (
-    <CollectionContext.Provider value={{ data, mutate, error, type }}>
+    <CollectionContext.Provider
+      value={{ data, mutate, error, type, access: data?.access }}
+    >
       {data ? (
         <ContentWrapper noPaddingTop>
           <CollectionNavbar

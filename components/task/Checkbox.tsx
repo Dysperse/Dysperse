@@ -10,7 +10,15 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-function TaskCheckbox({ task, mutateList }: { task: any; mutateList: any }) {
+function TaskCheckbox({
+  task,
+  mutateList,
+  isReadOnly,
+}: {
+  task: any;
+  mutateList: any;
+  isReadOnly: boolean;
+}) {
   const theme = useColorTheme();
   const { session } = useSession();
 
@@ -54,6 +62,7 @@ function TaskCheckbox({ task, mutateList }: { task: any; mutateList: any }) {
           margin: -10,
           marginTop: -11,
         })}
+        disabled={isReadOnly}
         onTouchStart={() => (isActive.value = 1)}
         onTouchEnd={() => (isActive.value = 0)}
         {...(Platform.OS === "web" && {

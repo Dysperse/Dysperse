@@ -27,7 +27,8 @@ export const KanbanHeader = memo(function KanbanHeader({
   };
 }) {
   const breakpoints = useResponsiveBreakpoints();
-  const { mutate } = useCollectionContext();
+  const { mutate, access } = useCollectionContext();
+  const isReadOnly = access?.access === "READ_ONLY";
   const theme = useColorTheme();
   const { setCurrentColumn, currentColumn, columnsLength } =
     useKanbanContext() || {};
@@ -95,7 +96,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         </Text>
       </View>
       <View style={{ flexDirection: "row", marginRight: -10 }}>
-        {label?.id && (
+        {label?.id && !isReadOnly && (
           <ColumnMenuTrigger label={label}>
             <IconButton size={40} icon={grid ? "edit" : "more_horiz"} />
           </ColumnMenuTrigger>

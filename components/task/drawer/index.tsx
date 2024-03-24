@@ -13,7 +13,19 @@ import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
 
-export function TaskDrawer({ mutateList, children, id, disabled }: any) {
+export function TaskDrawer({
+  mutateList,
+  children,
+  id,
+  disabled,
+  isReadOnly,
+}: {
+  mutateList: any;
+  children: any;
+  id: any;
+  disabled?: boolean;
+  isReadOnly?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
   const { width, height } = useWindowDimensions();
@@ -144,6 +156,7 @@ export function TaskDrawer({ mutateList, children, id, disabled }: any) {
                   task: data,
                   updateTask,
                   mutateList,
+                  isReadOnly,
                 }}
               >
                 <TaskDrawerContent handleClose={handleClose} />

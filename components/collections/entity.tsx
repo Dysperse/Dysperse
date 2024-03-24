@@ -8,6 +8,7 @@ interface EntityProps {
   showLabel?: boolean;
   showRelativeTime?: boolean;
   showDate?: boolean;
+  isReadOnly: boolean;
 }
 
 export const Entity = ({
@@ -16,6 +17,7 @@ export const Entity = ({
   showLabel = false,
   showRelativeTime = false,
   showDate = false,
+  isReadOnly = false,
 }: EntityProps) => {
   switch (item.type) {
     case "TASK":
@@ -24,6 +26,7 @@ export const Entity = ({
           showLabel={showLabel}
           onTaskUpdate={onTaskUpdate}
           task={item}
+          isReadOnly={isReadOnly}
           showDate={showDate}
           showRelativeTime={showRelativeTime}
         />

@@ -128,12 +128,14 @@ const Task = memo(function Task({
   showLabel,
   showRelativeTime,
   showDate,
+  isReadOnly,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
   showLabel?: boolean;
   showRelativeTime?: boolean;
   showDate?: boolean;
+  isReadOnly?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange");
@@ -170,6 +172,7 @@ const Task = memo(function Task({
       <TaskDrawer
         id={task.id}
         mutateList={onTaskUpdate}
+        isReadOnly={isReadOnly}
         disabled={selection.length > 0}
       >
         <ListItemButton
@@ -211,7 +214,11 @@ const Task = memo(function Task({
             },
           ]}
         >
-          <TaskCheckbox task={task} mutateList={onTaskUpdate} />
+          <TaskCheckbox
+            isReadOnly={isReadOnly}
+            task={task}
+            mutateList={onTaskUpdate}
+          />
           <View style={{ gap: 5, flex: 1 }}>
             <View style={{ flex: 1 }}>
               <Text
