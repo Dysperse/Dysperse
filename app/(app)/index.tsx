@@ -669,6 +669,9 @@ function Actions() {
   const togglePanel = () => setFocus((d) => !d);
   const openEverything = () => router.push("/everything");
 
+  const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
+  const hasUnread = sharedWithMe?.filter((c) => !c.hasSeen);
+
   return (
     <View>
       <Text variant="eyebrow" style={actionStyles.title}>
@@ -691,8 +694,25 @@ function Actions() {
       <TouchableOpacity style={actionStyles.item} onPress={handleOpen}>
         <Icon>group</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          Shared with me...
+          Shared with me
         </Text>
+        {hasUnread?.length > 0 && (
+          <View
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 99,
+              marginLeft: -10,
+              backgroundColor: theme[9],
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ fontSize: 12, paddingTop: 1 }} weight={900}>
+              {sharedWithMe.length}
+            </Text>
+          </View>
+        )}
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={togglePanel}>
         <Icon>adjust</Icon>
