@@ -340,7 +340,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         />
         {breakpoints.md && <CollectionSearch />}
         <CollectionIntegrationsMenu />
-        <CollectionContext.Provider value={{ data, ...ctx }}>
+        <CollectionContext.Provider value={{ data, access, ...ctx }}>
           <CollectionShareMenu />
         </CollectionContext.Provider>
       </LinearGradient>
