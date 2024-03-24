@@ -9,7 +9,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -36,18 +35,15 @@ const PaletteItem = memo(
     preview,
     setPreview,
     item,
-    handleClose,
     onCreate,
   }: {
     preview: any;
     setPreview: (e) => void;
     item: any;
-    handleClose;
     onCreate: any;
   }) {
-    const [loading, setLoading] = useState(false);
     const breakpoints = useResponsiveBreakpoints();
-
+    const theme = useColorTheme();
     return (
       <ListItemButton
         variant={preview?.key === item.key ? "filled" : "default"}
@@ -62,8 +58,18 @@ const PaletteItem = memo(
       >
         {item.emoji ? <Emoji emoji={item.emoji} /> : <Icon>{item.icon}</Icon>}
         <ListItemText primary={item.label} />
-
-        {loading && <Spinner />}
+        {item.hasSeen === false && (
+          <Chip
+            dense
+            icon={
+              <Icon style={{ color: theme[1] }} filled>
+                fiber_manual_record
+              </Icon>
+            }
+            label={<Text style={{ color: theme[1] }}>New</Text>}
+            style={{ backgroundColor: theme[11] }}
+          />
+        )}
       </ListItemButton>
     );
   },
@@ -182,7 +188,6 @@ function CommandPaletteList({
             return (
               <PaletteItem
                 onCreate={onCreate}
-                handleClose={handleClose}
                 setPreview={setPreview}
                 preview={preview}
                 item={item}
@@ -419,7 +424,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             isLoading={loading}
             onPress={() => onCreate(preview)}
             variant="filled"
-            style={({ pressed, hovered }) => ({
+            style={({ pressed, hovered }: any) => ({
               height: 60,
               backgroundColor:
                 theme[loading ? 5 : pressed ? 11 : hovered ? 10 : 9],

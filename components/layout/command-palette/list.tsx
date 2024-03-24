@@ -95,6 +95,7 @@ export const paletteItems = (
       items:
         sharedCollections && Array.isArray(sharedCollections)
           ? sharedCollections.map((access) => ({
+              hasSeen: access.hasSeen,
               label: access.collection.name,
               key: access.collection.id,
               icon: "grid_view",
