@@ -277,7 +277,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                     icon="visibility"
                     disabled
                     style={{ marginLeft: 10 }}
-                    label="Read only"
+                    label={breakpoints.md ? "Read only" : undefined}
                   />
                 ) : (
                   <Icon style={{ color: theme[12] }}>expand_more</Icon>
