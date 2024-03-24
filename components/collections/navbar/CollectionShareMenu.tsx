@@ -558,7 +558,6 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           <IconButton
             onPress={handleOpen}
             variant="outlined"
-            disabled={isReadOnly}
             size={40}
             icon="ios_share"
           />
