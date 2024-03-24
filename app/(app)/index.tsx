@@ -670,7 +670,8 @@ function Actions() {
   const openEverything = () => router.push("/everything");
 
   const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
-  const hasUnread = sharedWithMe?.filter((c) => !c.hasSeen);
+  const hasUnread =
+    Array.isArray(sharedWithMe) && sharedWithMe?.filter((c) => !c.hasSeen);
 
   return (
     <View>
@@ -691,12 +692,15 @@ function Actions() {
           Labels & Collections...
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={actionStyles.item} onPress={handleOpen}>
+      <TouchableOpacity
+        style={actionStyles.item}
+        onPress={() => handleOpen("Shared with me")}
+      >
         <Icon>group</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
           Shared with me
         </Text>
-        {hasUnread?.length > 0 && (
+        {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
           <View
             style={{
               width: 20,

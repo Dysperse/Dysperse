@@ -438,7 +438,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
   );
 }
 
-export function CommandPaletteContent({ handleClose }) {
+export function CommandPaletteContent({ handleClose, defaultFilter }) {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
   const { mutate } = useSWR(["user/tabs"]);
@@ -449,7 +449,7 @@ export function CommandPaletteContent({ handleClose }) {
 
   const handlePreviewChange = useCallback((e) => setPreview(e), []);
 
-  const [filter, setFilter] = useState<null | string>(null);
+  const [filter, setFilter] = useState<null | string>(defaultFilter || null);
   const { data: collections } = useSWR(["space/collections"]);
   const { data: sharedCollections } = useSWR(["user/collectionAccess"]);
 
@@ -583,7 +583,7 @@ export function CommandPaletteContent({ handleClose }) {
 }
 
 const CommandPalette = memo(function CommandPalette() {
-  const { handleClose, sheetRef } = useCommandPaletteContext();
+  const { handleClose, sheetRef, defaultFilter } = useCommandPaletteContext();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -608,7 +608,10 @@ const CommandPalette = memo(function CommandPalette() {
       })}
     >
       <Pressable onPress={handleClose} style={{ flex: 1 }}>
-        <CommandPaletteContent handleClose={handleClose} />
+        <CommandPaletteContent
+          defaultFilter={defaultFilter}
+          handleClose={handleClose}
+        />
       </Pressable>
     </BottomSheet>
   );
