@@ -62,7 +62,7 @@ export function MenuItem(
   return (
     <Pressable
       {...props}
-      style={({ pressed, hovered }: any) =>
+      style={({ pressed, hovered }) =>
         [
           {
             backgroundColor: pressed

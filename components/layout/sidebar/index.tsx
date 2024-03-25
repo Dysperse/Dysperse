@@ -141,7 +141,7 @@ const SyncButton = memo(function SyncButton() {
       }, 1000);
       setIsLoading(false);
     }
-  }, [barWidth, windowWidth, opacity, session]);
+  }, [barWidth, windowWidth, opacity, session, mutate]);
 
   useEffect(() => {
     if (Platform.OS === "web") {

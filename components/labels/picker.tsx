@@ -326,7 +326,7 @@ const LabelPicker = memo(function LabelPicker({
                       setTimeout(handleClose, 0);
                     }
                   }}
-                  style={({ pressed, hovered }: any) => [
+                  style={({ pressed, hovered }) => [
                     labelPickerStyles.labelOption,
                     {
                       backgroundColor:

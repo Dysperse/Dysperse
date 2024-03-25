@@ -32,7 +32,7 @@ export function ListItemButton(props: DListitemButtonProps) {
   return (
     <Pressable
       {...props}
-      style={({ pressed, hovered }: any) => [
+      style={({ pressed, hovered }) => [
         styles.base,
         {
           backgroundColor: pressed

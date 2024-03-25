@@ -32,7 +32,7 @@ export default function IconButton(props: DIconButtonProps) {
   return (
     <Pressable
       {...props}
-      style={({ pressed, hovered }: any) => [
+      style={({ pressed, hovered }) => [
         styles.base,
         { opacity: props.disabled ? 0.5 : 1 },
         {

@@ -42,7 +42,7 @@ const CalendarPicker = () => {
 
   const CalendarButton = ({ value, onChange, item }) => (
     <Pressable
-      style={({ pressed, hovered }: any) => ({
+      style={({ pressed, hovered }) => ({
         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         flexDirection: "row",
         height: 70,

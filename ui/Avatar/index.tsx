@@ -49,7 +49,7 @@ export function Avatar(props: DAvatarProps) {
   return (
     <Pressable
       {...props}
-      style={({ pressed, hovered }: any) => [
+      style={({ pressed, hovered }) => [
         styles.container,
         {
           width: props.size || 30,

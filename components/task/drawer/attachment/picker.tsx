@@ -120,7 +120,7 @@ export function TaskAttachmentPicker({
           });
         })}
         isLoading={isLoading}
-        style={({ pressed, hovered }: any) => ({
+        style={({ pressed, hovered }) => ({
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
           width: "100%",
           height: 60,

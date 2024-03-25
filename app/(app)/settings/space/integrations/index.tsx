@@ -30,7 +30,7 @@ function AllIntegrations({ connected }) {
           {data.map((integration) => (
             <Pressable
               key={integration.name}
-              style={({ pressed, hovered }: any) => ({
+              style={({ pressed, hovered }) => ({
                 flex: 1,
                 padding: 10,
                 paddingHorizontal: 20,

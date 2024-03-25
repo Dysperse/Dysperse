@@ -74,7 +74,7 @@ function UserSearchResults({ selected, setSelected, query }) {
           </View>
         ) : (
           <ListItemButton
-            style={({ pressed, hovered }: any) => ({
+            style={({ pressed, hovered }) => ({
               backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
               marginTop: 10,
               width: "100%",
@@ -139,7 +139,7 @@ const FriendUser = ({ friend, selected, setSelected }) => {
   const theme = useColorTheme();
   return (
     <Pressable
-      style={({ pressed, hovered }: any) => [
+      style={({ pressed, hovered }) => [
         friendModalStyles.user,
         {
           width: breakpoints.md ? "20%" : "33.333%",
@@ -535,7 +535,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
         (breakpoints.md ? (
           <Pressable
             onPress={handleOpen}
-            style={({ pressed, hovered }: any) => [
+            style={({ pressed, hovered }) => [
               styles.navbarIconButton,
               {
                 backgroundColor: addHslAlpha(

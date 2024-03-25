@@ -21,7 +21,7 @@ export function AttachmentGrid({
 }) {
   const theme = useColorTheme();
 
-  const taskMenuCardStyle = ({ pressed, hovered }: any) => [
+  const taskMenuCardStyle = ({ pressed, hovered }) => [
     styles.attachmentCard,
     { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
   ];

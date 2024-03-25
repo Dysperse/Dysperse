@@ -170,7 +170,7 @@ function Tab({
         </View>
         <IconButton
           disabled={!selected}
-          style={({ hovered }: any) => [
+          style={({ hovered }) => [
             styles.closeButton,
             {
               opacity: selected ? (hovered ? 1 : 0.5) : 0,
@@ -211,7 +211,7 @@ function Tab({
           handleClose();
           setTimeout(closeSidebarOnMobile, 300);
         }}
-        style={({ pressed, hovered }: any) => [
+        style={({ pressed, hovered }) => [
           styles.button,
           {
             paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,

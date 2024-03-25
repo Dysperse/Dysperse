@@ -84,7 +84,7 @@ function PlanDayPrompt() {
   return (
     <Pressable
       disabled
-      style={({ pressed, hovered }: any) => [
+      style={({ pressed, hovered }) => [
         styles.card,
         {
           opacity: 0.4,
@@ -375,7 +375,7 @@ function JumpBackIn() {
   return (
     data !== null && (
       <Pressable
-        style={({ pressed, hovered }: any) => [
+        style={({ pressed, hovered }) => [
           styles.card,
           { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
         ]}
@@ -418,7 +418,7 @@ function JumpTo() {
   return (
     <Pressable
       onPress={handleOpen}
-      style={({ pressed, hovered }: any) => ({
+      style={({ pressed, hovered }) => ({
         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         flexDirection: "row",
         alignItems: "center",

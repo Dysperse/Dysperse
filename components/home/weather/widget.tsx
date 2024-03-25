@@ -108,7 +108,7 @@ export function WeatherWidget() {
 
   const weatherCardStyles = useMemo(
     () =>
-      ({ pressed, hovered }: any) =>
+      ({ pressed, hovered }) =>
         [
           widgetStyles.card,
           {
