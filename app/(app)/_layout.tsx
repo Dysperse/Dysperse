@@ -459,10 +459,12 @@ const SelectionNavbar = () => {
             </LabelPicker>
             <ConfirmationModal
               onSuccess={() => handleSelect({ trash: true }, true)}
-              title="Delete"
+              title={`Move ${selection.length} item${
+                selection.length === 1 ? "" : "s"
+              } to trash?`}
               height={400}
               skipLoading
-              secondary="Are you sure you want to delete these items?"
+              secondary="You can undo this later"
             >
               <IconButton disabled={isLoading} icon="delete" size={45} />
             </ConfirmationModal>
