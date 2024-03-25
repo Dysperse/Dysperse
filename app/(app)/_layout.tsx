@@ -382,7 +382,7 @@ const SelectionNavbar = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSelect = useCallback(
-    async (t) => {
+    async (t, shouldClear = false) => {
       try {
         setIsLoading(true);
         await sendApiRequest(
@@ -395,7 +395,7 @@ const SelectionNavbar = () => {
           }
         );
         await mutate(() => true);
-        clearSelection();
+        if (shouldClear) clearSelection();
       } catch (e) {
         Toast.show({ type: "error" });
       } finally {
@@ -408,6 +408,8 @@ const SelectionNavbar = () => {
   useHotkeys("Escape", clearSelection, {
     enabled: selection.length > 0,
   });
+
+  const [pinned, setPinned] = useState(true);
 
   return selection.length > 0 ? (
     <Portal>
@@ -442,8 +444,11 @@ const SelectionNavbar = () => {
           <View style={{ flexDirection: "row" }}>
             <IconButton
               disabled={isLoading}
-              onPress={() => handleSelect({ pinned: true })}
-              icon="priority_high"
+              onPress={() => {
+                setPinned((t) => !t);
+                handleSelect({ pinned });
+              }}
+              icon={<Icon filled={pinned}>push_pin</Icon>}
               size={45}
             />
             <LabelPicker
@@ -453,7 +458,7 @@ const SelectionNavbar = () => {
               <IconButton disabled={isLoading} icon="new_label" size={45} />
             </LabelPicker>
             <ConfirmationModal
-              onSuccess={() => handleSelect({ trash: true })}
+              onSuccess={() => handleSelect({ trash: true }, true)}
               title="Delete"
               height={400}
               skipLoading
