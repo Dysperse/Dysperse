@@ -230,7 +230,7 @@ export const LogoButton = memo(function LogoButton() {
                 alignItems: "center",
                 paddingLeft: 3,
               },
-              Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+              Platform.OS === "web" && { WebkitAppRegion: "no-drag" },
             ]}
           >
             <Logo size={40} />
