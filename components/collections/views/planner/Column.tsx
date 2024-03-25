@@ -256,7 +256,7 @@ export function Column({
           backgroundColor: theme[2],
           borderRadius: 20,
         }),
-        width: breakpoints.md ? 300 : width,
+        width: breakpoints.md ? 320 : width,
         flex: 1,
         minWidth: 5,
         minHeight: 5,

@@ -160,7 +160,7 @@ export function Column(props: ColumnProps) {
                 backgroundColor: theme[2],
                 borderRadius: 20,
               }),
-              width: breakpoints.md ? 300 : "100%",
+              width: breakpoints.md ? 320 : "100%",
               flex: 1,
               minWidth: 5,
               minHeight: 5,
