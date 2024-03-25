@@ -19,9 +19,9 @@ import { styles } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
 
 export function Stream() {
   const params = useLocalSearchParams();
-  const [view, setView] = useState<"backlog" | "upcoming" | "completed">(
-    (params?.view as any) || "backlog"
-  );
+  const [view, setView] = useState<
+    "backlog" | "upcoming" | "completed" | "unscheduled"
+  >((params?.view as any) || "backlog");
 
   const { data, mutate, access } = useCollectionContext();
   const theme = useColorTheme();
@@ -93,14 +93,16 @@ export function Stream() {
     ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
   ]
     .filter((t) => {
+      if (t.trash) return false;
       if (view === "backlog")
         return !t.completionInstances.length && dayjs(t.due).isBefore(dayjs());
-      if (view === "upcoming")
+      else if (view === "upcoming")
         return (
           dayjs(t.due).isAfter(dayjs().startOf("day")) &&
           !t.completionInstances.length
         );
-      if (view === "completed") return t.completionInstances.length;
+      else if (view === "completed") return t.completionInstances.length;
+      else if (view === "unscheduled") return !t.due && !t.recurrenceRule;
     })
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
@@ -111,6 +113,7 @@ export function Stream() {
           { label: "Backlog", value: "backlog" },
           { label: "Upcoming", value: "upcoming" },
           { label: "Completed", value: "completed" },
+          { label: "Unscheduled", value: "unscheduled" },
         ]}
         state={[
           view,
@@ -130,7 +133,7 @@ export function Stream() {
           },
         ]}
         containerStyle={{
-          width: breakpoints.md ? 300 : "100%",
+          width: breakpoints.md ? 450 : "100%",
           marginHorizontal: "auto",
         }}
         buttonTextStyle={{ color: theme[10], fontFamily: "body_400" }}
@@ -238,7 +241,8 @@ export function Stream() {
         }}
         renderItem={({ item }) => (
           <Entity
-            showRelativeTime
+            isReadOnly={isReadOnly}
+            showRelativeTime={view !== "unscheduled"}
             showLabel
             item={item}
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
