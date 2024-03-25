@@ -76,6 +76,26 @@ const ImageViewer = ({ children, image }) => {
   );
 };
 
+export const videoChatPlatforms = [
+  "zoom.us",
+  "meet.google.com",
+  "teams.microsoft.com",
+  "skype.com",
+  "appear.in",
+  "gotomeeting.com",
+  "webex.com",
+  "hangouts.google.com",
+  "whereby.com",
+  "discord.com",
+  "vsee.com",
+  "bluejeans.com",
+  "join.me",
+  "tokbox.com",
+  "talky.io",
+  "amazonchime.com",
+  "viber.com",
+];
+
 const TaskAttachmentChips = memo(function TaskAttachmentChips({
   attachments,
 }: {
@@ -88,6 +108,9 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
       LOCATION: "location_on",
     }[t]);
 
+  const isVideoChatPlatform = (t) =>
+    videoChatPlatforms.some((platform) => t?.includes(platform));
+
   return attachments.map((attachment) => (
     <ImageViewer
       key={attachment.data + attachment.type}
@@ -97,7 +120,9 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
         dense
         label={
           attachment.type === "LINK"
-            ? new URL(attachment.data).hostname
+            ? isVideoChatPlatform(attachment.data)
+              ? "Join meeting"
+              : new URL(attachment.data).hostname
             : attachment.type === "LOCATION"
             ? "Maps"
             : "File"
@@ -114,8 +139,10 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
         icon={
           attachment.type === "IMAGE" ? (
             <Avatar size={22} image={attachment.data} disabled />
+          ) : isVideoChatPlatform(attachment.data) ? (
+            "call"
           ) : (
-            <Icon>{getAttachmentIcon(attachment.type)}</Icon>
+            getAttachmentIcon(attachment.type)
           )
         }
         style={{ padding: 5 }}

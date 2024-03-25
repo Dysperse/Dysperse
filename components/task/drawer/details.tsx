@@ -512,14 +512,25 @@ export function TaskDetails() {
             trigger: () => (
               <ListItemButton
                 variant="filled"
-                disabled={!!task.due}
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
-                <Icon>{task.due ? "calendar_today" : "calendar_add_on"}</Icon>
+                <Icon>
+                  {task.due
+                    ? "calendar_today"
+                    : task.recurrenceRule
+                    ? "loop"
+                    : "calendar_add_on"}
+                </Icon>
                 <ListItemText
                   primary={
-                    !task.due
+                    !task.due && !task.recurrenceRule
                       ? "Add date"
+                      : task.recurrenceRule
+                      ? capitalizeFirstLetter(
+                          RRule.fromString(
+                            task.recurrenceRule.replace(/^EXDATE.*$/, "")
+                          ).toText()
+                        )
                       : dayjs(task.due).format("MMM Do, YYYY")
                   }
                   secondary={
@@ -533,7 +544,9 @@ export function TaskDetails() {
                       : "Does not repeat")
                   }
                 />
-                {!isReadOnly && <TaskRescheduleButton />}
+                {!isReadOnly && !task.recurrenceRule && (
+                  <TaskRescheduleButton />
+                )}
               </ListItemButton>
             ),
             content: isReadOnly ? null : (
