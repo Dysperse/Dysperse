@@ -54,6 +54,28 @@ export const toastConfig = (theme) => ({
     </View>
   ),
 
+  info: (props) => (
+    <View style={toastContainerStyles}>
+      <BaseToast
+        {...props}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
+        text1NumberOfLines={null}
+        text2NumberOfLines={null}
+        text1Props={text1Props(theme)}
+        renderLeadingIcon={() => (
+          <Icon
+            style={{ color: theme[8], marginLeft: 10, marginRight: -10 }}
+            filled
+            size={30}
+          >
+            info
+          </Icon>
+        )}
+        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
+      />
+    </View>
+  ),
+
   plain: (props) => (
     <View style={toastContainerStyles}>
       <BaseToast

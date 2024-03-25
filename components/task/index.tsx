@@ -19,6 +19,8 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { RRule } from "rrule";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
 
@@ -259,6 +261,19 @@ const Task = memo(function Task({
                   dense
                   label={dayjs(task.due).format("MMM Do")}
                   icon={<Icon>calendar_today</Icon>}
+                />
+              )}
+              {task.recurrenceRule && (
+                <Chip
+                  dense
+                  label="Repeats"
+                  icon="loop"
+                  onPress={() => {
+                    Toast.show({
+                      type: "info",
+                      text1: RRule.fromString(task.recurrenceRule).toText(),
+                    });
+                  }}
                 />
               )}
               {showLabel && task.label && (

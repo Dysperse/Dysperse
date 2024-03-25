@@ -659,6 +659,7 @@ const TaskSuggestions = ({ watch, setValue }) => {
 
   const generateRecurrenceLabel = useCallback(() => {
     try {
+      if (!name.includes("every")) return null;
       const split = name.toLowerCase().toString().split("every ");
       const text = "Every " + split[split[1] ? 1 : 0];
 
@@ -824,6 +825,9 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             due: data?.date?.toISOString(),
             agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,
+            ...(data.recurrenceRule && {
+              recurrenceRule: data.recurrenceRule.toString(),
+            }),
             labelId: data.label?.id,
             type: "TASK",
             collectionId: data.label?.id ? null : data.collectionId,
