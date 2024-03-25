@@ -13,6 +13,7 @@ export interface ConfirmationModalProps {
   secondary: string;
   onSuccess: () => void;
   disabled?: boolean;
+  skipLoading?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -40,12 +41,20 @@ const styles = StyleSheet.create({
   },
 });
 
-function ConfirmationModalButton({ onSuccess }) {
+function ConfirmationModalButton({ skipLoading, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const { forceClose } = useBottomSheet();
+
   const handleSuccess = async () => {
     try {
       setLoading(true);
+      if (skipLoading) {
+        onSuccess?.();
+        return setTimeout(
+          () => forceClose({ overshootClamping: true, damping: 1 }),
+          100
+        );
+      }
       await onSuccess?.();
       setTimeout(() => forceClose({ overshootClamping: true, damping: 1 }), 0);
     } catch (e) {
@@ -96,7 +105,10 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
         <Text weight={300} style={styles.secondary}>
           {props.secondary}
         </Text>
-        <ConfirmationModalButton onSuccess={props.onSuccess} />
+        <ConfirmationModalButton
+          skipLoading={props.skipLoading}
+          onSuccess={props.onSuccess}
+        />
         <Button style={styles.button} variant="outlined" onPress={handleClose}>
           <ButtonText weight={900} style={styles.buttonText}>
             Cancel

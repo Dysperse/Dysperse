@@ -1,6 +1,7 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
 import { FocusPanelProvider } from "@/components/focus-panel/context";
 import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
+import LabelPicker from "@/components/labels/picker";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import Sidebar from "@/components/layout/sidebar";
@@ -15,8 +16,10 @@ import {
 } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
@@ -369,27 +372,42 @@ const LoadingErrors = () => {
 
 const SelectionNavbar = () => {
   const { mutate } = useSWRConfig();
+  const { session } = useSession();
   const { width } = useWindowDimensions();
   const { selection, setSelection } = useSelectionContext();
   const blue = useColor("blue");
 
   const barWidth = 440;
   const clearSelection = useCallback(() => setSelection([]), [setSelection]);
-
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDeletePress = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      await mutate(() => true);
-      console.log("delete", selection);
-      clearSelection();
-    } catch (e) {
-      Toast.show({ type: "error" });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selection, clearSelection, mutate]);
+  const handleSelect = useCallback(
+    async (t) => {
+      try {
+        setIsLoading(true);
+        await sendApiRequest(
+          session,
+          "PUT",
+          "space/entity",
+          {},
+          {
+            body: JSON.stringify({ id: selection, ...t }),
+          }
+        );
+        await mutate(() => true);
+        clearSelection();
+      } catch (e) {
+        Toast.show({ type: "error" });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [selection, clearSelection, mutate, session]
+  );
+
+  useHotkeys("Escape", clearSelection, {
+    enabled: selection.length > 0,
+  });
 
   return selection.length > 0 ? (
     <Portal>
@@ -424,28 +442,25 @@ const SelectionNavbar = () => {
           <View style={{ flexDirection: "row" }}>
             <IconButton
               disabled={isLoading}
-              onPress={handleDeletePress}
+              onPress={() => handleSelect({ starred: true })}
               icon="priority_high"
               size={45}
             />
-            <IconButton
-              disabled={isLoading}
-              onPress={handleDeletePress}
-              icon="new_label"
-              size={45}
-            />
-            <IconButton
-              disabled={isLoading}
-              onPress={handleDeletePress}
-              icon="done_outline"
-              size={45}
-            />
-            <IconButton
-              disabled={isLoading}
-              onPress={handleDeletePress}
-              icon="delete"
-              size={45}
-            />
+            <LabelPicker
+              setLabel={(e: any) => handleSelect({ labelId: e.id })}
+              autoFocus
+            >
+              <IconButton disabled={isLoading} icon="new_label" size={45} />
+            </LabelPicker>
+            <ConfirmationModal
+              onSuccess={() => handleSelect({ trash: true })}
+              title="Delete"
+              height={400}
+              skipLoading
+              secondary="Are you sure you want to delete these items?"
+            >
+              <IconButton disabled={isLoading} icon="delete" size={45} />
+            </ConfirmationModal>
           </View>
         </View>
       </ColorThemeProvider>

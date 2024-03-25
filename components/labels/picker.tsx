@@ -73,7 +73,7 @@ function CollectionChips({
   collections,
   selectedCollection,
   setSelectedCollection,
-}) {
+}: any) {
   return (
     <View style={{ padding: 10, gap: 10 }}>
       {collections.length !== 0 && <Text variant="eyebrow">Collections</Text>}
@@ -115,7 +115,7 @@ const CloseButton = memo(function CloseButton({
 
   const handleClose = useCallback(async () => {
     setLoading(true);
-    await onClose();
+    await onClose?.();
     close();
     setLoading(false);
   }, [close, onClose]);
@@ -144,9 +144,9 @@ const LabelPicker = memo(function LabelPicker({
   disabled = false,
 }: {
   children: React.ReactElement;
-  label: string | string[];
+  label?: string | string[];
   setLabel: (label: string | string[]) => void;
-  onClose: any;
+  onClose?: any;
   autoFocus?: boolean;
   multiple?: boolean;
   hideBack?: boolean;
@@ -162,10 +162,10 @@ const LabelPicker = memo(function LabelPicker({
 
   const handleOpen = useCallback(() => {
     ref.current?.present();
-  }, []);
+  }, [ref]);
 
   const handleClose = useCallback(async () => {
-    await onClose();
+    await onClose?.();
     ref.current?.close();
   }, [ref, onClose]);
 
@@ -313,7 +313,10 @@ const LabelPicker = memo(function LabelPicker({
                 <Pressable
                   onPress={() => {
                     if (multiple) {
-                      if (label.includes(item.id)) {
+                      if (
+                        label.includes(item.id) &&
+                        typeof label === "object"
+                      ) {
                         setLabel(label.filter((id) => id !== item.id));
                       } else {
                         setLabel([...label, item.id]);

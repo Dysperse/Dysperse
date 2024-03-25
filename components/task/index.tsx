@@ -176,6 +176,7 @@ const Task = memo(function Task({
   const { selection, setSelection } = useSelectionContext();
 
   const handleSelect = () => {
+    if (isReadOnly) return;
     if (selection.includes(task.id)) {
       setSelection((d) => d.filter((e) => e !== task.id));
     } else {
