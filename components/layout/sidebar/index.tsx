@@ -35,7 +35,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { mutate } from "swr";
+import { mutate, useSWRConfig } from "swr";
 import OpenTabsList from "../tabs/carousel";
 
 export const styles = StyleSheet.create({
@@ -113,7 +113,7 @@ const SyncButton = memo(function SyncButton() {
     width: barWidth.value,
     opacity: withSpring(opacity.value),
   }));
-
+  const { mutate } = useSWRConfig();
   const handleSync = useCallback(async () => {
     setIsLoading(true);
     opacity.value = 1;
@@ -124,6 +124,7 @@ const SyncButton = memo(function SyncButton() {
     });
     try {
       await sendApiRequest(session, "GET", "space/integrations/sync", {});
+      await mutate(() => true);
       Toast.show({ type: "success", text1: "Integrations are up to date!" });
       if (Platform.OS === "web") {
         localStorage.setItem("lastSyncedTimestamp", Date.now().toString());
