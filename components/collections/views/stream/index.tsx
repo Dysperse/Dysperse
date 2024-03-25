@@ -102,7 +102,10 @@ export function Stream() {
           !t.completionInstances.length
         );
       else if (view === "completed") return t.completionInstances.length;
-      else if (view === "unscheduled") return !t.due && !t.recurrenceRule;
+      else if (view === "unscheduled")
+        return (
+          !t.due && !t.recurrenceRule && t.completionInstances.length === 0
+        );
     })
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
