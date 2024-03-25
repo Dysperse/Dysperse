@@ -17,11 +17,12 @@ import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { styles } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
 
+type streamType = "backlog" | "upcoming" | "completed" | "unscheduled";
 export function Stream() {
   const params = useLocalSearchParams();
-  const [view, setView] = useState<
-    "backlog" | "upcoming" | "completed" | "unscheduled"
-  >((params?.view as any) || "backlog");
+  const [view, setView] = useState<streamType>(
+    (params?.view as streamType) || "backlog"
+  );
 
   const { data, mutate, access } = useCollectionContext();
   const theme = useColorTheme();
@@ -251,7 +252,7 @@ export function Stream() {
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
           />
         )}
-        keyExtractor={(i: any, d) => `${i.id}-${d}`}
+        keyExtractor={(i, d) => `${i.id}-${d}`}
       />
     </>
   );
