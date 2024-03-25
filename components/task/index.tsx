@@ -207,7 +207,7 @@ const Task = memo(function Task({
       >
         <ListItemButton
           onLongPress={handleSelect}
-          {...(Platform.OS === "web" && {
+          {...(Platform.OS === "web" && breakpoints.md && {
             onContextMenu: handleSelect,
           })}
           {...(selection.length > 0 && {
