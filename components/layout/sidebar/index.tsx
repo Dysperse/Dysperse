@@ -35,7 +35,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { mutate, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import OpenTabsList from "../tabs/carousel";
 
 export const styles = StyleSheet.create({
@@ -302,6 +302,7 @@ export const LogoButton = memo(function LogoButton() {
 
 const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
+  const { mutate } = useSWRConfig();
   const itemRef = useRef<BottomSheetModal>(null);
 
   useHotkeys(["ctrl+n", "shift+n"], (e) => {
