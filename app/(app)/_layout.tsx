@@ -442,7 +442,7 @@ const SelectionNavbar = () => {
           <View style={{ flexDirection: "row" }}>
             <IconButton
               disabled={isLoading}
-              onPress={() => handleSelect({ starred: true })}
+              onPress={() => handleSelect({ pinned: true })}
               icon="priority_high"
               size={45}
             />
