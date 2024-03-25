@@ -40,7 +40,7 @@ import utc from "dayjs/plugin/utc";
 import { BlurView } from "expo-blur";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Linking,
   Platform,
@@ -66,7 +66,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
 
 dayjs.extend(customParseFormat);
@@ -368,22 +368,39 @@ const LoadingErrors = () => {
 };
 
 const SelectionNavbar = () => {
+  const { mutate } = useSWRConfig();
   const { width } = useWindowDimensions();
   const { selection, setSelection } = useSelectionContext();
   const blue = useColor("blue");
 
-  const clearSelection = () => setSelection([]);
+  const barWidth = 440;
+  const clearSelection = useCallback(() => setSelection([]), [setSelection]);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDeletePress = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await mutate(() => true);
+      console.log("delete", selection);
+      clearSelection();
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selection, clearSelection, mutate]);
 
   return selection.length > 0 ? (
     <Portal>
       <ColorThemeProvider theme={blue}>
         <View
           style={{
-            width: 300,
+            width: barWidth,
             height: 64,
             position: "absolute",
             top: 0,
-            left: width / 2 - 150,
+            left: (width - barWidth) / 2,
             marginTop: 20,
             backgroundColor: blue[5],
             flexDirection: "row",
@@ -391,13 +408,45 @@ const SelectionNavbar = () => {
             zIndex: 999999,
             gap: 10,
             paddingHorizontal: 10,
+            paddingRight: 15,
             alignItems: "center",
           }}
         >
           <IconButton icon="close" size={50} onPress={clearSelection} />
-          <Text weight={900} style={{ fontSize: 20 }}>
-            {selection.length} selected
-          </Text>
+          <View style={{ flexGrow: 1 }}>
+            <Text weight={900} style={{ fontSize: 20 }}>
+              {selection.length} selected
+            </Text>
+            {isLoading && (
+              <Text style={{ opacity: 0.6, fontSize: 12 }}>Processing...</Text>
+            )}
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <IconButton
+              disabled={isLoading}
+              onPress={handleDeletePress}
+              icon="priority_high"
+              size={45}
+            />
+            <IconButton
+              disabled={isLoading}
+              onPress={handleDeletePress}
+              icon="new_label"
+              size={45}
+            />
+            <IconButton
+              disabled={isLoading}
+              onPress={handleDeletePress}
+              icon="done_outline"
+              size={45}
+            />
+            <IconButton
+              disabled={isLoading}
+              onPress={handleDeletePress}
+              icon="delete"
+              size={45}
+            />
+          </View>
         </View>
       </ColorThemeProvider>
     </Portal>
