@@ -628,7 +628,7 @@ export default function AppLayout() {
                               )}
                             >
                               <AppContainer>
-                                <ComingSoonScreen />
+                                {/* <ComingSoonScreen /> */}
                                 <SelectionNavbar />
                                 <JsStack
                                   screenOptions={{
