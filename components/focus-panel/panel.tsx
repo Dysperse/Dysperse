@@ -1,5 +1,6 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import Alert from "@/ui/Alert";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
@@ -36,6 +37,49 @@ const WakeLock = () => {
   useKeepAwake();
   return null;
 };
+
+const UpNext = () => {
+  return (
+    <View>
+      <Text variant="eyebrow">Up next</Text>
+      <Alert
+        style={{ marginTop: 10 }}
+        title="Coming soon"
+        emoji="1f6a7"
+        subtitle="We're working on this widget - stay tuned!"
+      />
+    </View>
+  );
+};
+
+const Assistant = () => {
+  return (
+    <View>
+      <Text variant="eyebrow">Assistant</Text>
+      <Alert
+        style={{ marginTop: 10 }}
+        title="Coming soon"
+        emoji="1f6a7"
+        subtitle="We're working on this widget - stay tuned!"
+      />
+    </View>
+  );
+};
+
+const Music = () => {
+  return (
+    <View>
+      <Text variant="eyebrow">Music</Text>
+      <Alert
+        style={{ marginTop: 10 }}
+        title="Coming soon"
+        emoji="1f6a7"
+        subtitle="We're working on this widget - stay tuned!"
+      />
+    </View>
+  );
+};
+
 function WidgetBar({ widgets, setWidgets }) {
   const theme = useColorTheme();
   const { setFocus } = useFocusPanelContext();
@@ -118,7 +162,7 @@ function WidgetBar({ widgets, setWidgets }) {
           {
             text: "Upcoming",
             renderer: () => (
-              <MenuItem>
+              <MenuItem onPress={() => handleWidgetToggle("upcoming")}>
                 <Svg
                   fill="none"
                   viewBox="0 0 24 24"
@@ -134,6 +178,9 @@ function WidgetBar({ widgets, setWidgets }) {
                   />
                 </Svg>
                 <Text variant="menuItem">Up next</Text>
+                {widgets.includes("upcoming") && (
+                  <Icon style={{ marginLeft: "auto" }}>check</Icon>
+                )}
               </MenuItem>
             ),
           },
@@ -158,7 +205,7 @@ function PanelContent() {
 
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   const Wrapper = breakpoints.md
     ? Fragment
@@ -185,54 +232,63 @@ function PanelContent() {
       <ContentWrapper
         noPaddingTop={!breakpoints.md}
         style={{
-          padding: 20,
-          paddingTop: insets.top + 20,
           position: "relative",
+          maxHeight: height - 20,
         }}
       >
-        {isFocused && (
-          <>
-            {widgets.length === 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  maxWidth: 250,
-                  marginHorizontal: "auto",
-                  gap: 5,
-                }}
-              >
-                <Text style={{ textAlign: "center" }} variant="eyebrow">
-                  This is the focus panel
-                </Text>
-                <Text
+        <ScrollView
+          contentContainerStyle={{
+            padding: 20,
+            paddingTop: insets.top + 20,
+          }}
+        >
+          {isFocused && (
+            <>
+              {widgets.length === 0 ? (
+                <View
                   style={{
-                    textAlign: "center",
-                    color: theme[11],
-                    opacity: 0.6,
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    maxWidth: 250,
+                    marginHorizontal: "auto",
+                    gap: 5,
                   }}
                 >
-                  Here, you can add widgets to enhance & supercharge your
-                  productivity
-                </Text>
-              </View>
-            ) : (
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{
-                  gap: 20,
-                  paddingTop: 80,
-                  minHeight: "100%",
-                }}
-              >
-                {widgets.includes("clock") && <Clock />}
-                {widgets.includes("weather") && <WeatherWidget />}
-              </ScrollView>
-            )}
-            <WidgetBar widgets={widgets} setWidgets={setWidgets} />
-          </>
-        )}
+                  <Text style={{ textAlign: "center" }} variant="eyebrow">
+                    This is the focus panel
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: theme[11],
+                      opacity: 0.6,
+                    }}
+                  >
+                    Here, you can add widgets to enhance & supercharge your
+                    productivity
+                  </Text>
+                </View>
+              ) : (
+                <ScrollView
+                  style={{ flex: 1 }}
+                  contentContainerStyle={{
+                    gap: 20,
+                    paddingTop: 80,
+                    minHeight: "100%",
+                  }}
+                >
+                  {widgets.includes("upcoming") && <UpNext />}
+                  {widgets.includes("clock") && <Clock />}
+                  {widgets.includes("weather") && <WeatherWidget />}
+                  {widgets.includes("assistant") && <Assistant />}
+                  {widgets.includes("music") && <Music />}
+                </ScrollView>
+              )}
+              <WidgetBar widgets={widgets} setWidgets={setWidgets} />
+            </>
+          )}
+        </ScrollView>
       </ContentWrapper>
     </Wrapper>
   );

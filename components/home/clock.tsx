@@ -251,7 +251,13 @@ const Timer = () => {
         }}
       >
         {time !== 0 && (
-          <Button dense onPress={() => setPaused(!paused)}>
+          <Button
+            dense
+            onPress={() => setPaused(!paused)}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
+          >
             <Icon>{paused ? "play_arrow" : "pause"}</Icon>
             <ButtonText>{paused ? "Resume" : "Pause"}</ButtonText>
           </Button>
@@ -266,6 +272,9 @@ const Timer = () => {
               setRestartKey((key) => key + 1);
               setTime(duration);
             }}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
           >
             <Icon>replay</Icon>
             <ButtonText>Reset</ButtonText>
