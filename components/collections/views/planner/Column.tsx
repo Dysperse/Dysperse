@@ -359,7 +359,7 @@ export function Column({
                     <Icon>add</Icon>
                   </Button>
                 </CreateTask>
-                <ColumnMenu
+                {/* <ColumnMenu
                   column={column}
                   onTaskUpdate={onTaskUpdate}
                   columnMenuRef={columnMenuRef}
@@ -367,7 +367,7 @@ export function Column({
                   <Button variant="outlined" style={{ height: 50 }}>
                     <Icon>more_horiz</Icon>
                   </Button>
-                </ColumnMenu>
+                </ColumnMenu> */}
               </View>
 
               {column.tasks.length > 0 &&

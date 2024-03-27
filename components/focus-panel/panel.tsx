@@ -111,7 +111,7 @@ function WidgetBar({ widgets, setWidgets }) {
               width: 60,
             }}
           >
-            <Icon>add</Icon>
+            <Icon>edit</Icon>
           </IconButton>
         }
         options={[
@@ -371,7 +371,6 @@ const FocusPanel = memo(function FocusPanel() {
     marginRight.value = isFocused ? 0 : -350;
   }, [isFocused, marginRight]);
 
-  const breakpoints = useResponsiveBreakpoints();
   const pan = Gesture.Pan()
     .onChange(({ changeX }) => {
       const maxMargin = 350;
