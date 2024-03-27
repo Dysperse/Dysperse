@@ -195,8 +195,12 @@ export const LogoButton = memo(function LogoButton() {
 
   const { session, sessionToken } = useUser();
   const { isFocused, setFocus } = useFocusPanelContext();
-  const { closeSidebarOnMobile, isOpen, openSidebar, closeSidebar } =
-    useSidebarContext();
+  const {
+    closeSidebarOnMobile,
+    isOpen,
+    setDesktopCollapsed,
+    desktopCollapsed,
+  } = useSidebarContext();
 
   useEffect(() => {
     sendApiRequest(sessionToken, "GET", "space/integrations/sync", {});
@@ -285,8 +289,8 @@ export const LogoButton = memo(function LogoButton() {
           breakpoints.md && {
             icon: "dock_to_right",
             text: "Sidebar",
-            callback: isOpen ? closeSidebar : openSidebar,
-            selected: isOpen,
+            callback: () => setDesktopCollapsed(!desktopCollapsed),
+            selected: desktopCollapsed,
           },
           {
             icon: "dock_to_left",
