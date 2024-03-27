@@ -45,7 +45,6 @@ import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
-  Linking,
   Platform,
   Pressable,
   StatusBar,
@@ -145,72 +144,6 @@ const AppContainer = ({ children }) => {
       {children}
     </Animated.View>
   );
-};
-
-const ComingSoonScreen = () => {
-  const { session } = useUser();
-  const theme = useColorTheme();
-
-  if (session?.user?.hasEarlyAccess === false) {
-    return (
-      <Portal>
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: theme[1],
-            zIndex: 99,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 30,
-          }}
-        >
-          <Logo size={100} />
-          <View style={{ maxWidth: 400 }}>
-            <Text
-              style={{
-                marginTop: 10,
-                textAlign: "center",
-                fontSize: 30,
-                color: theme[11],
-              }}
-              weight={900}
-            >
-              Arriving Spring 2024
-            </Text>
-            <Text
-              style={{
-                fontSize: 20,
-                marginTop: 5,
-                textAlign: "center",
-                color: theme[11],
-              }}
-            >
-              Dysperse is in a closed beta. Follow{" "}
-              <Text
-                style={{
-                  color: theme[12],
-                  fontSize: 20,
-                  textDecorationLine: "underline",
-                }}
-                weight={700}
-                onPress={() =>
-                  Linking.openURL("https://instagram.com/dysperse")
-                }
-              >
-                @dysperse
-              </Text>{" "}
-              on Instagram for updates!
-            </Text>
-          </View>
-        </View>
-      </Portal>
-    );
-  }
-  return null;
 };
 
 const ReleaseModal = () => {
@@ -628,7 +561,6 @@ export default function AppLayout() {
                               )}
                             >
                               <AppContainer>
-                                {/* <ComingSoonScreen /> */}
                                 <SelectionNavbar />
                                 <JsStack
                                   screenOptions={{
