@@ -380,6 +380,64 @@ function TaskAttachmentCard({ item, index }) {
   );
 }
 
+function TaskNote() {
+  const theme = useColorTheme();
+  const { task, updateTask } = useTaskDrawerContext();
+
+  return (
+    <TaskAttachmentButton
+      defaultView="Note"
+      lockView
+      task={task}
+      updateTask={updateTask}
+    >
+      <ListItemButton
+        variant="filled"
+        disabled
+        style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+      >
+        <View style={{ flex: 1 }}>
+          <Markdown
+            style={{
+              body: {
+                fontFamily: "body_400",
+                fontSize: 15,
+                color: theme[12],
+              },
+              link: { color: blue.blue9 },
+              image: {
+                borderRadius: 20,
+                overflow: "hidden",
+                objectFit: "cover",
+              },
+              blockquote: {
+                borderLeftColor: theme[9],
+                borderLeftWidth: 3,
+                paddingHorizontal: 20,
+                backgroundColor: "transparent",
+                marginVertical: 10,
+              },
+              bullet_list_icon: {
+                width: 5,
+                height: 5,
+                borderRadius: 99,
+                backgroundColor: theme[9],
+                color: "transparent",
+                marginTop: 8,
+              },
+              ordered_list_icon: {
+                color: theme[11],
+              },
+            }}
+          >
+            {task.note?.replaceAll("] (http", "](http")?.trim()}
+          </Markdown>
+        </View>
+      </ListItemButton>
+    </TaskAttachmentButton>
+  );
+}
+
 export function TaskDetails() {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
@@ -417,58 +475,7 @@ export function TaskDetails() {
         underlayColor="transparent"
         sections={[
           task.note && {
-            trigger: () => (
-              <TaskAttachmentButton
-                defaultView="Note"
-                lockView
-                task={task}
-                updateTask={updateTask}
-              >
-                <ListItemButton
-                  variant="filled"
-                  disabled
-                  style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-                >
-                  <View style={{ flex: 1 }}>
-                    <Markdown
-                      style={{
-                        body: {
-                          fontFamily: "body_400",
-                          fontSize: 15,
-                          color: theme[12],
-                        },
-                        link: { color: blue.blue9 },
-                        image: {
-                          borderRadius: 20,
-                          overflow: "hidden",
-                          objectFit: "cover",
-                        },
-                        blockquote: {
-                          borderLeftColor: theme[9],
-                          borderLeftWidth: 3,
-                          paddingHorizontal: 20,
-                          backgroundColor: "transparent",
-                          marginVertical: 10,
-                        },
-                        bullet_list_icon: {
-                          width: 5,
-                          height: 5,
-                          borderRadius: 99,
-                          backgroundColor: theme[9],
-                          color: "transparent",
-                          marginTop: 8,
-                        },
-                        ordered_list_icon: {
-                          color: theme[11],
-                        },
-                      }}
-                    >
-                      {task.note?.replaceAll("] (http", "](http")?.trim()}
-                    </Markdown>
-                  </View>
-                </ListItemButton>
-              </TaskAttachmentButton>
-            ),
+            trigger: () => <TaskNote />,
             content: (
               <View style={collapsibleMenuStyles as any}>
                 <TaskAttachmentButton
