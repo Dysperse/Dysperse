@@ -290,7 +290,7 @@ export const LogoButton = memo(function LogoButton() {
             icon: "dock_to_right",
             text: "Sidebar",
             callback: () => setDesktopCollapsed(!desktopCollapsed),
-            selected: desktopCollapsed,
+            selected: !desktopCollapsed,
           },
           {
             icon: "dock_to_left",
