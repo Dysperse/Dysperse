@@ -183,7 +183,11 @@ const SyncButton = memo(function SyncButton() {
   );
 });
 
-export const LogoButton = memo(function LogoButton() {
+export const LogoButton = memo(function LogoButton({
+  toggleHidden,
+}: {
+  toggleHidden: any;
+}) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const openSupport = useCallback(() => {
@@ -195,12 +199,7 @@ export const LogoButton = memo(function LogoButton() {
 
   const { session, sessionToken } = useUser();
   const { isFocused, setFocus } = useFocusPanelContext();
-  const {
-    closeSidebarOnMobile,
-    isOpen,
-    setDesktopCollapsed,
-    desktopCollapsed,
-  } = useSidebarContext();
+  const { closeSidebarOnMobile, desktopCollapsed } = useSidebarContext();
 
   useEffect(() => {
     sendApiRequest(sessionToken, "GET", "space/integrations/sync", {});
@@ -289,7 +288,7 @@ export const LogoButton = memo(function LogoButton() {
           breakpoints.md && {
             icon: "dock_to_right",
             text: "Sidebar",
-            callback: () => setDesktopCollapsed(!desktopCollapsed),
+            callback: toggleHidden,
             selected: !desktopCollapsed,
           },
           {
@@ -482,7 +481,7 @@ const Sidebar = () => {
         ]}
       >
         <View style={[styles.header, { marginTop: insets.top }]}>
-          <LogoButton />
+          <LogoButton toggleHidden={toggleHidden} />
           <Header />
         </View>
         <OpenTabsList />
