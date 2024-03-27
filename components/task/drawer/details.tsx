@@ -27,7 +27,6 @@ import {
 import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
 import Markdown from "react-native-markdown-display";
-import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import { TaskDatePicker } from "../create";
 import { TaskAttachmentButton } from "./attachment/button";
@@ -513,7 +512,7 @@ export function TaskDetails() {
               <ListItemButton
                 variant="filled"
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-disabled={task.due || task.recurrenceRule}
+                disabled={task.due || task.recurrenceRule}
               >
                 <Icon>
                   {task.due
@@ -568,7 +567,11 @@ disabled={task.due || task.recurrenceRule}
                   <Pressable style={drawerStyles.collapsibleMenuItem}>
                     <IconButton
                       disabled
-                      style={{ borderWidth: 1, borderColor: theme[6] }}
+                      style={{
+                        opacity: 1,
+                        borderWidth: 1,
+                        borderColor: theme[6],
+                      }}
                       size={50}
                     >
                       <Icon>edit</Icon>
@@ -576,24 +579,6 @@ disabled={task.due || task.recurrenceRule}
                     <Text>Edit</Text>
                   </Pressable>
                 </TaskDatePicker>
-                <Pressable
-                  style={drawerStyles.collapsibleMenuItem}
-                  onPress={() =>
-                    Toast.show({
-                      type: "success",
-                      text1: "Coming soon!",
-                    })
-                  }
-                >
-                  <IconButton
-                    disabled
-                    style={{ borderWidth: 1, borderColor: theme[6] }}
-                    size={50}
-                  >
-                    <Icon>autorenew</Icon>
-                  </IconButton>
-                  <Text>Repeat</Text>
-                </Pressable>
                 <Pressable style={drawerStyles.collapsibleMenuItem}>
                   <IconButton
                     style={{ borderWidth: 1, borderColor: theme[6] }}

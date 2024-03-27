@@ -213,7 +213,7 @@ export function TaskDrawerContent({ handleClose }) {
                 updateTask("label", e, false);
               }}
               onClose={() => {}}
-              autoFocus={false}
+              autoFocus
               disabled={Boolean(task.label?.integrationParams)}
             >
               <Chip
