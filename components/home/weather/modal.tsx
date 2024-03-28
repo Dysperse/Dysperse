@@ -1,5 +1,6 @@
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import BottomSheet from "@/ui/BottomSheet";
+import { addHslAlpha, useColor } from "@/ui/color";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
@@ -58,11 +59,10 @@ export function WeatherModal({
     weatherCodes[weather.current_weather.weathercode][
       isNight ? "night" : "day"
     ];
+  const theme = useColor(weatherDescription.colorTheme);
 
-  const gradient = useMemo(
-    () => weatherDescription.backgroundGradient,
-    [weatherDescription]
-  );
+  const gradient = [theme[1], theme[2]];
+
   const color = useMemo(
     () => weatherDescription.textColor,
     [weatherDescription]
@@ -78,42 +78,39 @@ export function WeatherModal({
   }, []);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
-  const base =
-    weatherDescription.textColor === "#fff"
-      ? "rgba(255, 255, 255, 0.1)"
-      : "rgba(0, 0, 0, 0.1)";
+  const base = addHslAlpha(theme[3], 0.6);
 
-  const WeatherCard = useMemo(() => {
-    return ({ icon, heading, subheading, onPress = () => {} }: any) => (
-      <Pressable
-        onPress={onPress}
-        style={[weatherStyles.weatherCard, { backgroundColor: base }]}
-      >
-        <Icon style={{ color }} size={30}>
-          {icon}
-        </Icon>
-        <View style={{ minWidth: 0, flex: 1 }}>
-          <Text
-            variant="eyebrow"
-            numberOfLines={1}
-            style={{ color, marginBottom: 3 }}
-          >
-            {heading}
-          </Text>
-          <Text style={{ color }}>{subheading}</Text>
-        </View>
-      </Pressable>
-    );
-  }, [base, color]); // Note: The second argument to useMemo is the dependency array. Since there are no dependencies, it's an empty array.
+  const WeatherCard = ({
+    icon,
+    heading,
+    subheading,
+    onPress = () => {},
+  }: any) => (
+    <Pressable
+      onPress={onPress}
+      style={[weatherStyles.weatherCard, { backgroundColor: base }]}
+    >
+      <Icon style={{ color }} size={30}>
+        {icon}
+      </Icon>
+      <View style={{ minWidth: 0, flex: 1 }}>
+        <Text
+          variant="eyebrow"
+          numberOfLines={1}
+          style={{ color, marginBottom: 3 }}
+        >
+          {heading}
+        </Text>
+        <Text style={{ color }}>{subheading}</Text>
+      </View>
+    </Pressable>
+  );
 
   return (
     <>
       {trigger}
       <BottomSheet
         onClose={handleClose}
-        handleIndicatorStyle={{
-          backgroundColor: base.replace("0.1", "0.3"),
-        }}
         sheetRef={ref}
         style={{ maxWidth: 500, marginHorizontal: "auto" }}
         snapPoints={width > 600 ? ["90"] : ["60%", "90%"]}
