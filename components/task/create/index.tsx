@@ -270,7 +270,7 @@ function RecurrencePicker({ value, setValue }) {
               />
             </View>
             <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-              On
+              Repeat on
             </Text>
             <View style={{ flexDirection: "row", gap: 10 }}>
               <MenuPopover
