@@ -15,7 +15,7 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
-import { Fragment, memo, useEffect } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import {
   Gesture,
