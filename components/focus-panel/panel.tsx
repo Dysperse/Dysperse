@@ -346,6 +346,7 @@ const Assistant = () => {
       >
         <FlatList
           inverted
+          centerContent
           contentContainerStyle={{
             padding: 10,
             borderRadius: 10,
