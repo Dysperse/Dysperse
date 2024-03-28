@@ -54,8 +54,10 @@ const styles = StyleSheet.create({
 
 export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
   row,
+  dense,
 }: {
   row?: boolean;
+  dense?: boolean;
 }) {
   const theme = useColorTheme();
 
@@ -112,7 +114,11 @@ export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
       <View
         style={[row ? { marginTop: -30, flex: 1 } : { alignItems: "center" }]}
       >
-        <Text weight={300} style={{ fontSize: 30 }} numberOfLines={1}>
+        <Text
+          weight={dense ? 900 : 300}
+          style={{ fontSize: dense ? 20 : 30 }}
+          numberOfLines={1}
+        >
           {message[1]}
         </Text>
         <Text style={{ opacity: 0.6 }} numberOfLines={1}>

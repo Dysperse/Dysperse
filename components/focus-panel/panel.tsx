@@ -31,7 +31,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import useSWR from "swr";
 import { Entity } from "../collections/entity";
-import { onTaskUpdate } from "../collections/views/planner/Column";
+import {
+  ColumnEmptyComponent,
+  onTaskUpdate,
+} from "../collections/views/planner/Column";
 import { Clock } from "../home/clock";
 import { WeatherWidget } from "../home/weather/widget";
 import ContentWrapper from "../layout/content";
@@ -220,7 +223,25 @@ const UpNext = () => {
                       ))}
                     </View>
                   ) : (
-                    <Text>No tasks today!</Text>
+                    <>
+                      <Text
+                        variant="eyebrow"
+                        style={{
+                          textAlign: "center",
+                          marginTop: 10,
+                        }}
+                      >
+                        No tasks today! 🎉
+                      </Text>
+                      <View
+                        style={{
+                          marginTop: -30,
+                          marginBottom: 10,
+                        }}
+                      >
+                        <ColumnEmptyComponent dense />
+                      </View>
+                    </>
                   )}
                 </View>
               )}
