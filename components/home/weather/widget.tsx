@@ -1,18 +1,120 @@
 import { useFocusPanelWidgetContext } from "@/components/focus-panel/context";
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
 import weatherCodes from "@/components/home/weather/weatherCodes.json";
+import { useUser } from "@/context/useUser";
+import { Avatar } from "@/ui/Avatar";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { WeatherModal } from "./modal";
+
+const gridStyles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 10,
+  },
+  avatar: {
+    borderRadius: 10,
+  },
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  subtitle: {
+    fontSize: 12,
+    opacity: 0.7,
+  },
+});
+
+const WeatherGridDetails = ({ data, weatherDescription, theme }) => {
+  return (
+    <>
+      <View style={gridStyles.container}>
+        <View style={gridStyles.item}>
+          <Avatar
+            size={30}
+            icon="wb_sunny"
+            theme={weatherDescription.colorTheme}
+            style={gridStyles.avatar}
+          />
+          <View style={gridStyles.textContainer}>
+            <Text weight={700} style={{ color: theme[11] }}>
+              {dayjs(data.daily.sunrise[0]).format("h A")}
+            </Text>
+            <Text style={[gridStyles.subtitle, { color: theme[11] }]}>
+              Sunrise
+            </Text>
+          </View>
+        </View>
+        <View style={gridStyles.item}>
+          <Avatar
+            size={30}
+            icon="wb_twilight"
+            theme={weatherDescription.colorTheme}
+            style={gridStyles.avatar}
+          />
+          <View style={gridStyles.textContainer}>
+            <Text weight={700} style={{ color: theme[11] }}>
+              {dayjs(data.daily.sunset[0]).format("h A")}
+            </Text>
+            <Text style={[gridStyles.subtitle, { color: theme[11] }]}>
+              Sunset
+            </Text>
+          </View>
+        </View>
+      </View>
+      {/* Second row */}
+      <View style={gridStyles.container}>
+        <View style={gridStyles.item}>
+          <Avatar
+            size={30}
+            icon="north"
+            theme={weatherDescription.colorTheme}
+            style={gridStyles.avatar}
+          />
+          <View style={gridStyles.textContainer}>
+            <Text weight={700} style={{ color: theme[11] }}>
+              {~~data.daily.temperature_2m_max[0]}&deg;F
+            </Text>
+            <Text style={[gridStyles.subtitle, { color: theme[11] }]}>
+              High
+            </Text>
+          </View>
+        </View>
+        <View style={gridStyles.item}>
+          <Avatar
+            size={30}
+            icon="south"
+            theme={weatherDescription.colorTheme}
+            style={gridStyles.avatar}
+          />
+          <View style={gridStyles.textContainer}>
+            <Text weight={700} style={{ color: theme[11] }}>
+              {~~data.daily.temperature_2m_min[0]}&deg;F
+            </Text>
+            <Text style={[gridStyles.subtitle, { color: theme[11] }]}>Low</Text>
+          </View>
+        </View>
+      </View>
+    </>
+  );
+};
 
 export function WeatherWidget() {
   const [location, setLocation] = useState(null);
@@ -93,6 +195,7 @@ export function WeatherWidget() {
   const isLoading = isWeatherLoading || isAirQualityLoading;
 
   const isNight = () => {
+    if (data?.current_weather) return !data.current_weather.is_day;
     const currentHour = new Date().getHours();
     return currentHour >= 18 || currentHour <= 6; // Assuming night is between 6 PM and 6 AM
   };
@@ -105,17 +208,14 @@ export function WeatherWidget() {
 
   const theme = useColorTheme();
 
-  const weatherCardStyles = useMemo(
-    () =>
-      ({ pressed, hovered }) =>
-        [
-          widgetStyles.card,
-          {
-            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-          },
-        ],
-    [theme]
-  );
+  const weatherCardStyles = ({ pressed, hovered }) => [
+    widgetStyles.card,
+    {
+      backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+      borderWidth: 1,
+      borderColor: theme[5],
+    },
+  ];
 
   const weatherDescription = useMemo(
     () =>
@@ -127,12 +227,13 @@ export function WeatherWidget() {
     [data]
   );
 
-  const gradient = useMemo(
-    () => weatherDescription.backgroundGradient?.reverse(),
-    [weatherDescription]
+  const { session } = useUser();
+  const weatherColor = useColor(
+    weatherDescription?.colorTheme || session.user.profile.theme
   );
-
   const { setWidgets } = useFocusPanelWidgetContext();
+
+  const gradient = [weatherColor[3], weatherColor[4]];
 
   return (
     <View style={widgetStyles.widget}>
@@ -144,14 +245,6 @@ export function WeatherWidget() {
         }}
       >
         <Text variant="eyebrow">Weather</Text>
-        {/* <IconButton
-          icon="remove"
-          size={25}
-          style={{ opacity: 0.3, marginRight: 5 }}
-          onPress={() =>
-            setWidgets((widgets) => widgets.filter((w) => w !== "weather"))
-          }
-        /> */}
       </View>
       {error || permissionStatus === "denied" ? (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>
@@ -168,62 +261,91 @@ export function WeatherWidget() {
           <Spinner />
         </Pressable>
       ) : data && airQualityData ? (
-        <WeatherModal
-          weather={data}
-          location={null}
-          airQuality={airQualityData}
-          isNight={isNight()}
-        >
-          <Pressable>
-            <LinearGradient
-              colors={gradient}
-              style={[
-                widgetStyles.card,
-                {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                },
-              ]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <View>
-                <Text
-                  style={{
-                    fontSize: 40,
-                    color: weatherDescription.textColor,
-                  }}
-                  weight={600}
-                >
-                  {Math.round(data.hourly.apparent_temperature[dayjs().hour()])}
-                  &deg;
-                </Text>
-                <Text
-                  weight={200}
-                  numberOfLines={1}
-                  style={{ color: weatherDescription.textColor, marginTop: -5 }}
-                >
-                  {isNight()
-                    ? weatherCodes[data.current_weather.weathercode].night
-                        .description
-                    : weatherCodes[data.current_weather.weathercode].day
-                        .description}
-                </Text>
-              </View>
-              <Icon
-                size={40}
-                style={{ color: weatherDescription.textColor, marginRight: 10 }}
+        <ColorThemeProvider theme={weatherColor}>
+          <WeatherModal
+            weather={data}
+            location={null}
+            airQuality={airQualityData}
+            isNight={isNight()}
+          >
+            <Pressable>
+              <LinearGradient
+                colors={gradient}
+                style={[
+                  widgetStyles.card,
+                  {
+                    borderWidth: 1,
+                    borderColor: weatherColor[6],
+                  },
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
               >
-                {
-                  weatherCodes[data.current_weather.weathercode][
-                    isNight() ? "night" : "day"
-                  ].icon
-                }
-              </Icon>
-            </LinearGradient>
-          </Pressable>
-        </WeatherModal>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 40,
+                        color: weatherColor[11],
+                        fontFamily: "mono",
+                      }}
+                      weight={600}
+                    >
+                      {Math.round(data.current_weather.temperature)}&deg;F
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        opacity: 0.8,
+                        marginBottom: 5,
+                        color: weatherColor[11],
+                      }}
+                      weight={300}
+                    >
+                      {
+                        weatherCodes[data.current_weather.weathercode][
+                          isNight() ? "night" : "day"
+                        ].description
+                      }{" "}
+                      &bull; Feels like{" "}
+                      {Math.round(
+                        data.hourly.apparent_temperature[dayjs().hour()]
+                      )}
+                      &deg;
+                    </Text>
+                  </View>
+                  <Avatar
+                    size={50}
+                    style={{
+                      marginTop: 10,
+                      marginRight: 10,
+                    }}
+                    theme={weatherDescription.colorTheme}
+                  >
+                    <Icon size={35} bold>
+                      {
+                        weatherCodes[data.current_weather.weathercode][
+                          isNight() ? "night" : "day"
+                        ].icon
+                      }
+                    </Icon>
+                  </Avatar>
+                </View>
+                <WeatherGridDetails
+                  weatherDescription={weatherDescription}
+                  data={data}
+                  theme={weatherColor}
+                />
+              </LinearGradient>
+            </Pressable>
+          </WeatherModal>
+        </ColorThemeProvider>
       ) : (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>
           <Icon size={40} style={{ marginLeft: -2 }}>

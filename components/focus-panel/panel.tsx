@@ -241,6 +241,7 @@ function PanelContent() {
             padding: 20,
             paddingTop: insets.top + 20,
           }}
+          centerContent
         >
           {isFocused && (
             <>

@@ -4,15 +4,13 @@
       "description": "Sunny",
       "image": "http://openweathermap.org/img/wn/01d@2x.png",
       "icon": "light_mode",
-      "backgroundGradient": ["#00aaff", "#0077ff"],
-      "textColor": "#fff"
+      "colorTheme": "sky"
     },
     "night": {
       "description": "Clear",
       "image": "http://openweathermap.org/img/wn/01n@2x.png",
       "icon": "light_mode",
-      "backgroundGradient": ["#001133", "#002266"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "1": {
@@ -20,15 +18,13 @@
       "description": "Mainly Sunny",
       "image": "http://openweathermap.org/img/wn/01d@2x.png",
       "icon": "light_mode",
-      "backgroundGradient": ["#00aaff", "#0077ff"],
-      "textColor": "#fff"
+      "colorTheme": "amber"
     },
     "night": {
       "description": "Mainly Clear",
       "image": "http://openweathermap.org/img/wn/01n@2x.png",
       "icon": "light_mode",
-      "backgroundGradient": ["#001133", "#002266"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "2": {
@@ -36,15 +32,13 @@
       "description": "Partly Cloudy",
       "image": "http://openweathermap.org/img/wn/02d@2x.png",
       "icon": "partly_cloudy_day",
-      "backgroundGradient": ["#66ccff", "#3399ff"],
-      "textColor": "#fff"
+      "colorTheme": "sky"
     },
     "night": {
       "description": "Partly Cloudy",
       "image": "http://openweathermap.org/img/wn/02n@2x.png",
       "icon": "partly_cloudy_night",
-      "backgroundGradient": ["#001133", "#002266"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "3": {
@@ -52,15 +46,13 @@
       "description": "Cloudy",
       "image": "http://openweathermap.org/img/wn/03d@2x.png",
       "icon": "cloud",
-      "backgroundGradient": ["#d0d0d0", "#b0b0b0"],
-      "textColor": "#000"
+      "colorTheme": "slate"
     },
     "night": {
       "description": "Cloudy",
       "image": "http://openweathermap.org/img/wn/03n@2x.png",
       "icon": "cloud",
-      "backgroundGradient": ["#333333", "#555555"],
-      "textColor": "#fff"
+      "colorTheme": "slate"
     }
   },
   "45": {
@@ -68,15 +60,13 @@
       "description": "Foggy",
       "image": "http://openweathermap.org/img/wn/50d@2x.png",
       "icon": "foggy",
-      "backgroundGradient": ["#c0c0c0", "#a0a0a0"],
-      "textColor": "#000"
+      "colorTheme": "gray"
     },
     "night": {
       "description": "Foggy",
       "image": "http://openweathermap.org/img/wn/50n@2x.png",
       "icon": "foggy",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "slate"
     }
   },
   "48": {
@@ -84,15 +74,13 @@
       "description": "Rime Fog",
       "image": "http://openweathermap.org/img/wn/50d@2x.png",
       "icon": "mist",
-      "backgroundGradient": ["#c0c0c0", "#a0a0a0"],
-      "textColor": "#000"
+      "colorTheme": "gray"
     },
     "night": {
       "description": "Rime Fog",
       "image": "http://openweathermap.org/img/wn/50n@2x.png",
       "icon": "mist",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "slate"
     }
   },
   "51": {
@@ -100,15 +88,13 @@
       "description": "Light Drizzle",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "cyan"
     },
     "night": {
       "description": "Light Drizzle",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "53": {
@@ -116,15 +102,13 @@
       "description": "Drizzle",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "cyan"
     },
     "night": {
       "description": "Drizzle",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "blue"
     }
   },
   "55": {
@@ -132,15 +116,13 @@
       "description": "Heavy Drizzle",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "teal"
     },
     "night": {
       "description": "Heavy Drizzle",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "56": {
@@ -148,15 +130,13 @@
       "description": "Light Freezing Drizzle",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "mint"
     },
     "night": {
       "description": "Light Freezing Drizzle",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "blue"
     }
   },
   "57": {
@@ -164,15 +144,13 @@
       "description": "Freezing Drizzle",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "cyan"
     },
     "night": {
       "description": "Freezing Drizzle",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "61": {
@@ -180,15 +158,13 @@
       "description": "Light Rain",
       "image": "http://openweathermap.org/img/wn/10d@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#6699ff", "#3366ff"],
-      "textColor": "#fff"
+      "colorTheme": "mint"
     },
     "night": {
       "description": "Light Rain",
       "image": "http://openweathermap.org/img/wn/10n@2x.png",
       "icon": "rainy_light",
-      "backgroundGradient": ["#003366", "#004499"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "63": {
@@ -196,15 +172,13 @@
       "description": "Rain",
       "image": "http://openweathermap.org/img/wn/10d@2x.png",
       "icon": "rainy",
-      "backgroundGradient": ["#6699ff", "#3366ff"],
-      "textColor": "#fff"
+      "colorTheme": "teal"
     },
     "night": {
       "description": "Rain",
       "image": "http://openweathermap.org/img/wn/10n@2x.png",
       "icon": "rainy",
-      "backgroundGradient": ["#003366", "#004499"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "65": {
@@ -212,15 +186,13 @@
       "description": "Heavy Rain",
       "image": "http://openweathermap.org/img/wn/10d@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#6699ff", "#3366ff"],
-      "textColor": "#fff"
+      "colorTheme": "grass"
     },
     "night": {
       "description": "Heavy Rain",
       "image": "http://openweathermap.org/img/wn/10n@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#003366", "#004499"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "66": {
@@ -228,15 +200,13 @@
       "description": "Freezing Rain",
       "image": "http://openweathermap.org/img/wn/10d@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#6699ff", "#3366ff"],
-      "textColor": "#fff"
+      "colorTheme": "mint"
     },
     "night": {
       "description": "Freezing Rain",
       "image": "http://openweathermap.org/img/wn/10n@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#003366", "#004499"],
-      "textColor": "#fff"
+      "colorTheme": "blue"
     }
   },
   "67": {
@@ -244,15 +214,13 @@
       "description": "Freezing Rain",
       "image": "http://openweathermap.org/img/wn/10d@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#6699ff", "#3366ff"],
-      "textColor": "#fff"
+      "colorTheme": "cyan"
     },
     "night": {
       "description": "Freezing Rain",
       "image": "http://openweathermap.org/img/wn/10n@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#003366", "#004499"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "71": {
@@ -260,15 +228,13 @@
       "description": "Light Snow",
       "image": "http://openweathermap.org/img/wn/13d@2x.png",
       "icon": "weather_snowy",
-      "backgroundGradient": ["#ffffff", "#e0e0e0"],
-      "textColor": "#000"
+      "colorTheme": "mint"
     },
     "night": {
       "description": "Light Snow",
       "image": "http://openweathermap.org/img/wn/13n@2x.png",
       "icon": "weather_snowy",
-      "backgroundGradient": ["#e0e0e0", "#cccccc"],
-      "textColor": "#000"
+      "colorTheme": "blue"
     }
   },
   "73": {
@@ -276,15 +242,13 @@
       "description": "Snow",
       "image": "http://openweathermap.org/img/wn/13d@2x.png",
       "icon": "snowing",
-      "backgroundGradient": ["#ffffff", "#e0e0e0"],
-      "textColor": "#000"
+      "colorTheme": "mint"
     },
     "night": {
       "description": "Snow",
       "image": "http://openweathermap.org/img/wn/13n@2x.png",
       "icon": "snowing",
-      "backgroundGradient": ["#e0e0e0", "#cccccc"],
-      "textColor": "#000"
+      "colorTheme": "blue"
     }
   },
   "75": {
@@ -292,15 +256,13 @@
       "description": "Heavy Snow",
       "image": "http://openweathermap.org/img/wn/13d@2x.png",
       "icon": "snowing_heavy",
-      "backgroundGradient": ["#ffffff", "#e0e0e0"],
-      "textColor": "#000"
+      "colorTheme": "sky"
     },
     "night": {
       "description": "Heavy Snow",
       "image": "http://openweathermap.org/img/wn/13n@2x.png",
       "icon": "snowing_heavy",
-      "backgroundGradient": ["#e0e0e0", "#cccccc"],
-      "textColor": "#000"
+      "colorTheme": "indigo"
     }
   },
   "77": {
@@ -308,15 +270,13 @@
       "description": "Snow Grains",
       "image": "http://openweathermap.org/img/wn/13d@2x.png",
       "icon": "weather_mix",
-      "backgroundGradient": ["#ffffff", "#e0e0e0"],
-      "textColor": "#000"
+      "colorTheme": "mint"
     },
     "night": {
       "description": "Snow Grains",
       "image": "http://openweathermap.org/img/wn/13n@2x.png",
       "icon": "weather_mix",
-      "backgroundGradient": ["#e0e0e0", "#cccccc"],
-      "textColor": "#000"
+      "colorTheme": "blue"
     }
   },
   "80": {
@@ -324,15 +284,13 @@
       "description": "Light Showers",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "teal"
     },
     "night": {
       "description": "Light Showers",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "81": {
@@ -340,15 +298,13 @@
       "description": "Showers",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "green"
     },
     "night": {
       "description": "Showers",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "82": {
@@ -356,15 +312,13 @@
       "description": "Heavy Showers",
       "image": "http://openweathermap.org/img/wn/09d@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#99ccff", "#66aaff"],
-      "textColor": "#000"
+      "colorTheme": "grass"
     },
     "night": {
       "description": "Heavy Showers",
       "image": "http://openweathermap.org/img/wn/09n@2x.png",
       "icon": "rainy_heavy",
-      "backgroundGradient": ["#555555", "#777777"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "85": {
@@ -372,15 +326,13 @@
       "description": "Snow Showers",
       "image": "http://openweathermap.org/img/wn/13d@2x.png",
       "icon": "rainy_snow",
-      "backgroundGradient": ["#ffffff", "#e0e0e0"],
-      "textColor": "#000"
+      "colorTheme": "sky"
     },
     "night": {
       "description": "Snow Showers",
       "image": "http://openweathermap.org/img/wn/13n@2x.png",
       "icon": "rainy_snow",
-      "backgroundGradient": ["#e0e0e0", "#cccccc"],
-      "textColor": "#000"
+      "colorTheme": "indigo"
     }
   },
   "86": {
@@ -388,15 +340,13 @@
       "description": "Snow Showers",
       "image": "http://openweathermap.org/img/wn/13d@2x.png",
       "icon": "rainy_snow",
-      "backgroundGradient": ["#ffffff", "#e0e0e0"],
-      "textColor": "#000"
+      "colorTheme": "sky"
     },
     "night": {
       "description": "Snow Showers",
       "image": "http://openweathermap.org/img/wn/13n@2x.png",
       "icon": "rainy_snow",
-      "backgroundGradient": ["#e0e0e0", "#cccccc"],
-      "textColor": "#000"
+      "colorTheme": "indigo"
     }
   },
   "95": {
@@ -404,15 +354,13 @@
       "description": "Thunderstorm",
       "image": "http://openweathermap.org/img/wn/11d@2x.png",
       "icon": "thunderstorm",
-      "backgroundGradient": ["#4d4d4d", "#333333"],
-      "textColor": "#fff"
+      "colorTheme": "orange"
     },
     "night": {
       "description": "Thunderstorm",
       "image": "http://openweathermap.org/img/wn/11n@2x.png",
       "icon": "thunderstorm",
-      "backgroundGradient": ["#000000", "#1a1a1a"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "96": {
@@ -420,15 +368,13 @@
       "description": "Thunderstorm With Hail",
       "image": "http://openweathermap.org/img/wn/11d@2x.png",
       "icon": "weather_hail",
-      "backgroundGradient": ["#4d4d4d", "#333333"],
-      "textColor": "#fff"
+      "colorTheme": "tomato"
     },
     "night": {
       "description": "Thunderstorm With Hail",
       "image": "http://openweathermap.org/img/wn/11n@2x.png",
       "icon": "weather_hail",
-      "backgroundGradient": ["#000000", "#1a1a1a"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   },
   "99": {
@@ -436,15 +382,13 @@
       "description": "Thunderstorm With Hail",
       "image": "http://openweathermap.org/img/wn/11d@2x.png",
       "icon": "weather_hail",
-      "backgroundGradient": ["#4d4d4d", "#333333"],
-      "textColor": "#fff"
+      "colorTheme": "tomato"
     },
     "night": {
       "description": "Thunderstorm With Hail",
       "image": "http://openweathermap.org/img/wn/11n@2x.png",
       "icon": "weather_hail",
-      "backgroundGradient": ["#000000", "#1a1a1a"],
-      "textColor": "#fff"
+      "colorTheme": "indigo"
     }
   }
 }
