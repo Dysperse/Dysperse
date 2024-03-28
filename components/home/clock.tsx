@@ -256,8 +256,9 @@ const Timer = () => {
           {({ remainingTime }) => (
             <View style={{ position: "relative" }}>
               <Pressable
+                disabled={!paused}
                 style={({ hovered }) => ({
-                  backgroundColor: theme[hovered ? 6 : 3],
+                  backgroundColor: theme[isCompleted ? 9 : hovered ? 6 : 3],
                   borderRadius: 10,
                 })}
               >
@@ -298,14 +299,20 @@ const Timer = () => {
                     ":" +
                     (remainingTime % 60).toString().padStart(2, "0")
                   }
-                  style={{
-                    color: theme[isCompleted ? 12 : 11],
-                    fontSize: 40,
-                    fontFamily: "mono",
-                    textAlign: "center",
-                    width: 130,
-                    borderRadius: 10,
-                  }}
+                  editable={paused}
+                  style={[
+                    {
+                      color: theme[isCompleted ? 12 : 11],
+                      fontSize: 40,
+                      fontFamily: "mono",
+                      textAlign: "center",
+                      width: 130,
+                      borderRadius: 10,
+                    },
+                    !paused && {
+                      pointerEvents: "none",
+                    },
+                  ]}
                 />
               </Pressable>
             </View>
