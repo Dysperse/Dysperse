@@ -356,7 +356,7 @@ const Timer = () => {
             <Icon size={22}>replay</Icon>
           </Button>
         )}
-        {time === duration * 60 && (
+        {(time === duration * 60 || paused) && time !== 0 && (
           <Button
             dense
             onPress={() => editRef?.current?.focus()}
