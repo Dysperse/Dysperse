@@ -183,6 +183,45 @@ function ColumnMenu({ column, children, onTaskUpdate, columnMenuRef }) {
   );
 }
 
+export const onTaskUpdate = (newTask, mutate, column) => {
+  mutate(
+    (oldData) => {
+      if (
+        oldData
+          ?.find((oldColumn) => oldColumn.start === column.start)
+          ?.tasks.find((oldTask) => oldTask === newTask)
+      ) {
+        return oldData;
+      }
+      return oldData.map((oldColumn) =>
+        oldColumn.start === column.start
+          ? {
+              ...oldColumn,
+              tasks: oldColumn.tasks
+                .map((oldTask) =>
+                  oldTask?.id === newTask?.id
+                    ? newTask.trash === true ||
+                      !dayjs(newTask.due).isBetween(
+                        column.start,
+                        column.end,
+                        null,
+                        "[]"
+                      )
+                      ? undefined
+                      : newTask
+                    : oldTask
+                )
+                .filter((e) => e),
+            }
+          : oldColumn
+      );
+    },
+    {
+      revalidate: false,
+    }
+  );
+};
+
 export function Column({
   mutate,
   column,
@@ -205,45 +244,6 @@ export function Column({
     await mutate();
     setRefreshing(false);
   }, [mutate]);
-
-  const onTaskUpdate = (newTask) => {
-    mutate(
-      (oldData) => {
-        if (
-          oldData
-            ?.find((oldColumn) => oldColumn.start === column.start)
-            ?.tasks.find((oldTask) => oldTask === newTask)
-        ) {
-          return oldData;
-        }
-        return oldData.map((oldColumn) =>
-          oldColumn.start === column.start
-            ? {
-                ...oldColumn,
-                tasks: oldColumn.tasks
-                  .map((oldTask) =>
-                    oldTask?.id === newTask?.id
-                      ? newTask.trash === true ||
-                        !dayjs(newTask.due).isBetween(
-                          column.start,
-                          column.end,
-                          null,
-                          "[]"
-                        )
-                        ? undefined
-                        : newTask
-                      : oldTask
-                  )
-                  .filter((e) => e),
-              }
-            : oldColumn
-        );
-      },
-      {
-        revalidate: false,
-      }
-    );
-  };
 
   const columnMenuRef = useRef(null);
   // const openColumnMenu = useCallback(() => columnMenuRef.current.present(), []);
@@ -407,7 +407,7 @@ export function Column({
             showLabel
             isReadOnly={isReadOnly}
             item={item}
-            onTaskUpdate={onTaskUpdate}
+            onTaskUpdate={(newItem) => onTaskUpdate(newItem, mutate, column)}
           />
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}

@@ -1,11 +1,18 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
+import { Button, ButtonText } from "@/ui/Button";
+import Chip from "@/ui/Chip";
+import Emoji from "@/ui/Emoji";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import dayjs from "dayjs";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { Fragment, memo, useEffect } from "react";
@@ -22,14 +29,19 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
+import useSWR from "swr";
+import { Entity } from "../collections/entity";
+import { onTaskUpdate } from "../collections/views/planner/Column";
 import { Clock } from "../home/clock";
 import { WeatherWidget } from "../home/weather/widget";
 import ContentWrapper from "../layout/content";
+import { TaskDrawer } from "../task/drawer";
 import {
   FocusPanelWidgetProvider,
   useFocusPanelContext,
   useFocusPanelWidgetContext,
 } from "./context";
+import { widgetStyles } from "./widgetStyles";
 
 type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 
@@ -39,15 +51,140 @@ const WakeLock = () => {
 };
 
 const UpNext = () => {
+  const userTheme = useColorTheme();
+  const theme = useColor("green");
+  const { data, mutate, error } = useSWR([
+    "space/collections/collection/planner",
+    {
+      all: true,
+      start: dayjs().startOf("week").toISOString(),
+      end: dayjs().endOf("week").toISOString(),
+      type: "week",
+      timezone: dayjs.tz.guess(),
+      id: "-",
+    },
+  ]);
+
+  const today = data?.find((col) =>
+    dayjs().isBetween(dayjs(col.start), dayjs(col.end))
+  );
+
+  // find task which is closest in future to current time
+  const nextTask = today?.tasks
+    .filter((task) => dayjs().isBefore(dayjs(task.due)))
+    .filter((t) => t.completionInstances?.length === 0)
+    .sort((a, b) => dayjs(a.due).diff(dayjs(b.due)))[0];
+
+  const nextUncompletedTask = today?.tasks
+    .sort((a, b) => dayjs(a.due).diff(dayjs(b.due)))
+    .filter((t) => t.completionInstances?.length === 0);
+
   return (
     <View>
-      <Text variant="eyebrow">Up next</Text>
-      <Alert
-        style={{ marginTop: 10 }}
-        title="Coming soon"
-        emoji="1f6a7"
-        subtitle="We're working on this widget - stay tuned!"
-      />
+      <Text variant="eyebrow" style={{ marginBottom: 10 }}>
+        Up next
+      </Text>
+      <ColorThemeProvider theme={theme}>
+        {error && <ErrorAlert />}
+        <View
+          style={[
+            widgetStyles.card,
+            {
+              backgroundColor: theme[2],
+              borderWidth: 1,
+              borderColor: theme[4],
+            },
+          ]}
+        >
+          {data ? (
+            <>
+              {nextTask ? (
+                <>
+                  <View style={{ flexDirection: "row" }}>
+                    {nextTask.label && (
+                      <Chip
+                        disabled
+                        dense
+                        label={
+                          nextTask.label.name.length > 10
+                            ? `${nextTask.label.name.slice(0, 10)}...`
+                            : `${nextTask.label.name}`
+                        }
+                        icon={<Emoji size={17} emoji={nextTask.label.emoji} />}
+                        style={{
+                          marginBottom: 5,
+                          paddingHorizontal: 10,
+                        }}
+                      />
+                    )}
+                  </View>
+                  <Text style={{ fontSize: 35 }}>{nextTask.name}</Text>
+                  <Text
+                    style={{
+                      fontFamily: "mono",
+                      marginTop: 5,
+                    }}
+                  >
+                    {dayjs(nextTask.due).fromNow()}
+                  </Text>
+                  <ColorThemeProvider theme={userTheme}>
+                    <TaskDrawer
+                      id={nextTask.id}
+                      mutateList={(n) => onTaskUpdate(n, mutate, today)}
+                    >
+                      <Button
+                        style={({ pressed, hovered }) => ({
+                          backgroundColor:
+                            theme[pressed ? 11 : hovered ? 10 : 9],
+                          marginTop: 10,
+                        })}
+                      >
+                        <ButtonText style={{ color: theme[1] }} weight={900}>
+                          View task
+                        </ButtonText>
+                        <Icon bold style={{ color: theme[1] }}>
+                          north_east
+                        </Icon>
+                      </Button>
+                    </TaskDrawer>
+                  </ColorThemeProvider>
+                </>
+              ) : (
+                <View>
+                  {nextUncompletedTask.length > 0 ? (
+                    <View style={{ marginTop: 10, marginHorizontal: -10 }}>
+                      <Text
+                        style={{
+                          paddingHorizontal: 10,
+                          marginBottom: 10,
+                          textAlign: "center",
+                        }}
+                        variant="eyebrow"
+                      >
+                        You didn't finish...
+                      </Text>
+                      {nextUncompletedTask.slice(0, 3).map((task) => (
+                        <Entity
+                          isReadOnly={false}
+                          key={task.id}
+                          item={task}
+                          onTaskUpdate={(n) => onTaskUpdate(n, mutate, today)}
+                          showLabel
+                          showRelativeTime
+                        />
+                      ))}
+                    </View>
+                  ) : (
+                    <Text>No tasks today!</Text>
+                  )}
+                </View>
+              )}
+            </>
+          ) : (
+            <Spinner />
+          )}
+        </View>
+      </ColorThemeProvider>
     </View>
   );
 };
@@ -184,8 +321,8 @@ function WidgetBar({ widgets, setWidgets }) {
               </MenuItem>
             ),
           },
-          { text: "Weather", icon: "wb_sunny" },
           { text: "Clock", icon: "timer" },
+          { text: "Weather", icon: "wb_sunny" },
           { text: "Assistant", icon: "auto_awesome" },
           { text: "Music", icon: "music_note" },
         ].map((i) => ({
@@ -274,7 +411,7 @@ function PanelContent() {
                 <ScrollView
                   style={{ flex: 1 }}
                   contentContainerStyle={{
-                    gap: 20,
+                    gap: 5,
                     paddingTop: 80,
                     minHeight: "100%",
                   }}
