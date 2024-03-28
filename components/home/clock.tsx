@@ -328,17 +328,6 @@ const Timer = () => {
           marginBottom: 10,
         }}
       >
-        {time !== 0 && (
-          <Button
-            dense
-            onPress={() => setPaused(!paused)}
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
-          >
-            <Icon>{paused ? "play_arrow" : "pause"}</Icon>
-          </Button>
-        )}
         {hasNotStarted && (
           <Button
             dense
@@ -353,7 +342,18 @@ const Timer = () => {
               backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
             })}
           >
-            <Icon size={22}>replay</Icon>
+            <Icon size={18}>replay</Icon>
+          </Button>
+        )}
+        {time !== 0 && (
+          <Button
+            dense
+            onPress={() => setPaused(!paused)}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
+          >
+            <Icon size={29}>{paused ? "play_arrow" : "pause"}</Icon>
           </Button>
         )}
         {(time === duration * 60 || paused) && time !== 0 && (
