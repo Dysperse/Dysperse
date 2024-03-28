@@ -9,11 +9,11 @@ import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Audio } from "expo-av";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { useFocusPanelWidgetContext } from "../focus-panel/context";
 import { widgetStyles } from "../focus-panel/widgetStyles";
@@ -184,6 +184,7 @@ const Timer = () => {
   const [time, setTime] = useState(0);
   const [restartKey, setRestartKey] = useState(0);
   const [restartInputKey, setRestartInputKey] = useState(0);
+  const editRef = useRef<TextInput>(null);
 
   const toHex = (hsl: string): any =>
     ("#" +
@@ -261,6 +262,7 @@ const Timer = () => {
                 })}
               >
                 <TextField
+                  inputRef={editRef}
                   onBlur={(e) => {
                     const input = e.nativeEvent.text;
                     // Match it with hh:mm format. Make sure the minutes are less than 60
@@ -351,7 +353,18 @@ const Timer = () => {
               backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
             })}
           >
-            <Icon>replay</Icon>
+            <Icon size={22}>replay</Icon>
+          </Button>
+        )}
+        {time === duration * 60 && (
+          <Button
+            dense
+            onPress={() => editRef?.current?.focus()}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
+          >
+            <Icon size={22}>edit</Icon>
           </Button>
         )}
       </View>
@@ -466,7 +479,7 @@ export function Clock() {
             backgroundColor: theme[3],
             borderWidth: 1,
             paddingVertical: 30,
-            paddingBottom: 25,
+            paddingBottom: 15,
             borderColor: theme[6],
           },
           view === "Timer" && {
