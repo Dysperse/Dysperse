@@ -53,6 +53,7 @@ const WakeLock = () => {
 const UpNext = () => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
+  const orange = useColor("orange");
   const [todayDateString, setTodayDateString] = useState(dayjs().toISOString());
 
   useEffect(() => {
@@ -129,7 +130,9 @@ const UpNext = () => {
             <>
               {nextTask ? (
                 <>
-                  <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{ flexDirection: "row", marginBottom: 5, gap: 10 }}
+                  >
                     {nextTask.label && (
                       <Chip
                         disabled
@@ -141,9 +144,22 @@ const UpNext = () => {
                         }
                         icon={<Emoji size={17} emoji={nextTask.label.emoji} />}
                         style={{
-                          marginBottom: 5,
                           paddingHorizontal: 10,
                         }}
+                      />
+                    )}
+                    {nextTask.pinned && (
+                      <Chip
+                        dense
+                        disabled
+                        label="Urgent"
+                        icon={
+                          <Icon size={22} style={{ color: orange[11] }}>
+                            priority_high
+                          </Icon>
+                        }
+                        style={{ backgroundColor: orange[4] }}
+                        color={orange[11]}
                       />
                     )}
                   </View>
