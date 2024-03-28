@@ -53,17 +53,46 @@ const WakeLock = () => {
 const UpNext = () => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
-  const { data, mutate, error } = useSWR([
-    "space/collections/collection/planner",
+  const [todayDateString, setTodayDateString] = useState(dayjs().toISOString());
+
+  useEffect(() => {
+    const interval = setInterval(
+      () => {
+        setTodayDateString(dayjs().toISOString());
+      },
+      // every 5 minutes
+      1000 * 60 * 5
+    );
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // check if the day has changed every 5 seconds and update the date string if it has
+    const interval = setInterval(() => {
+      if (!dayjs().isSame(dayjs(todayDateString), "day")) {
+        setTodayDateString(dayjs().toISOString());
+      }
+    }, 1000 * 5);
+    return () => clearInterval(interval);
+  }, [todayDateString]);
+
+  const { data, mutate, error } = useSWR(
+    [
+      "space/collections/collection/planner",
+      {
+        all: true,
+        start: dayjs(todayDateString).startOf("week").toISOString(),
+        end: dayjs(todayDateString).endOf("week").toISOString(),
+        type: "week",
+        timezone: dayjs.tz.guess(),
+        id: "-",
+      },
+    ],
     {
-      all: true,
-      start: dayjs().startOf("week").toISOString(),
-      end: dayjs().endOf("week").toISOString(),
-      type: "week",
-      timezone: dayjs.tz.guess(),
-      id: "-",
-    },
-  ]);
+      refreshInterval: 1000 * 60 * 5,
+      refreshWhenHidden: true,
+    }
+  );
 
   const today = data?.find((col) =>
     dayjs().isBetween(dayjs(col.start), dayjs(col.end))
