@@ -381,6 +381,21 @@ const Assistant = () => {
               </View>
             </View>
           )}
+          ListFooterComponent={() => (
+            <Text
+              style={{
+                textAlign: "center",
+                color: theme[11],
+                opacity: 0.6,
+                marginTop: 20,
+                paddingHorizontal: 20,
+                fontSize: 11,
+              }}
+            >
+              Dysperse AI is a work in progress - and it might say things which
+              don't represent our values. Double-check any information it gives
+            </Text>
+          )}
           ListHeaderComponent={
             loading && (
               <View
