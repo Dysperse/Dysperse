@@ -1,5 +1,5 @@
 import { hslToHex } from "@/app/(app)";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
@@ -159,9 +159,8 @@ const Stopwatch = () => {
           })}
         >
           <Icon>{running ? "pause" : "play_arrow"}</Icon>
-          <Text style={{ color: theme[11] }}>{running ? "Stop" : "Start"}</Text>
         </Button>
-        {time !== 0 && (
+        {time !== 0 && !running && (
           <Button
             dense
             onPress={() => setTime(0)}
@@ -171,7 +170,6 @@ const Stopwatch = () => {
             })}
           >
             <Icon size={20}>replay</Icon>
-            <Text style={{ color: theme[11] }}>Reset</Text>
           </Button>
         )}
       </View>
@@ -325,7 +323,7 @@ const Timer = () => {
           justifyContent: "center",
           gap: 10,
           marginTop: 10,
-          marginBottom: -10,
+          marginBottom: 10,
         }}
       >
         {time !== 0 && (
@@ -337,7 +335,6 @@ const Timer = () => {
             })}
           >
             <Icon>{paused ? "play_arrow" : "pause"}</Icon>
-            <ButtonText>{paused ? "Resume" : "Pause"}</ButtonText>
           </Button>
         )}
         {hasNotStarted && (
@@ -355,15 +352,16 @@ const Timer = () => {
             })}
           >
             <Icon>replay</Icon>
-            <ButtonText>Reset</ButtonText>
           </Button>
         )}
       </View>
       <Collapsible collapsed={time !== duration * 60}>
         <ScrollView
           horizontal
-          style={{ marginTop: 20 }}
-          contentContainerStyle={{ gap: 10, paddingHorizontal: 30 }}
+          contentContainerStyle={{
+            gap: 10,
+            paddingHorizontal: 20,
+          }}
           showsHorizontalScrollIndicator={false}
         >
           {[
@@ -468,6 +466,7 @@ export function Clock() {
             backgroundColor: theme[3],
             borderWidth: 1,
             paddingVertical: 30,
+            paddingBottom: 25,
             borderColor: theme[6],
           },
           view === "Timer" && {
