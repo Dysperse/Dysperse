@@ -17,6 +17,7 @@ import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
@@ -313,7 +314,26 @@ const Assistant = () => {
 
   return (
     <View>
-      <Text variant="eyebrow">Assistant</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+        }}
+      >
+        <Text variant="eyebrow">Assistant</Text>
+        {messages.length > 0 && (
+          <TouchableOpacity
+            style={{
+              paddingHorizontal: 10,
+            }}
+            onPress={() => setMessages([])}
+          >
+            <Text style={{ opacity: 0.6, color: theme[11] }}>Clear</Text>
+          </TouchableOpacity>
+        )}
+      </View>
       <View
         style={{
           backgroundColor: theme[2],
@@ -382,19 +402,31 @@ const Assistant = () => {
             </View>
           )}
           ListFooterComponent={() => (
-            <Text
+            <View
               style={{
-                textAlign: "center",
-                color: theme[11],
-                opacity: 0.6,
+                alignItems: "center",
+                gap: 10,
                 marginTop: 20,
-                fontSize: 12,
-                fontStyle: "italic",
               }}
             >
-              Dysperse AI is a work in progress, and it might say things which
-              don't represent our values.
-            </Text>
+              <Avatar
+                icon="experiment"
+                size={40}
+                style={{ borderRadius: 15 }}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: theme[11],
+                  opacity: 0.6,
+                  fontSize: 12,
+                  fontStyle: "italic",
+                }}
+              >
+                Dysperse AI is a work in progress, and it might say things which
+                don't represent our values.
+              </Text>
+            </View>
           )}
           ListHeaderComponent={
             loading && (
