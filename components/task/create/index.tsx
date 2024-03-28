@@ -181,117 +181,227 @@ const DueDatePicker = ({ watch, value, setValue }) => {
 function RecurrencePicker({ value, setValue }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const recurrenceRule =
+  const recurrenceRule = new RRule(
     value ||
-    new RRule({
-      freq: RRule.WEEKLY,
-      byweekday: [dayjs().day()],
-    });
+      new RRule({
+        freq: RRule.WEEKLY,
+        byweekday: [],
+      }).options
+  );
 
   const [previewRange, setPreviewRange] = useState<Date>(new Date());
 
+  useEffect(() => {
+    setValue("date", null);
+    if (!value) {
+      setValue(
+        "recurrenceRule",
+        new RRule({
+          freq: RRule.WEEKLY,
+          byweekday: [],
+        }).options
+      );
+    }
+  }, [value, setValue]);
+
+  const handleEdit = (key, newValue) => {
+    setValue("recurrenceRule", {
+      ...value,
+      [key]: newValue,
+    });
+  };
+
+  console.log(value);
+
   return (
     <>
-      <Text style={{ textAlign: "center" }}>Coming soon!</Text>
-      <View
-        style={{
-          flexDirection: breakpoints.md ? "row" : "column",
-          paddingHorizontal: 20,
-          gap: 20,
-        }}
-      >
-        <View style={{ flex: breakpoints.md ? 1 : undefined }}>
-          <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
-            Repeat every
-          </Text>
-          <View>
-            <TextField variant="filled+outlined" placeholder="5" />
-          </View>
-          <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-            On
-          </Text>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
-              <Icon>wb_sunny</Icon>
-              <ListItemText truncate primary="5 days" secondary="Select days" />
-            </ListItemButton>
-            <ListItemButton style={{ height: 60, flex: 1 }} variant="filled">
-              <Icon>calendar_today</Icon>
-              <ListItemText
-                truncate
-                primary="2 selected"
-                secondary="Select months"
-              />
-            </ListItemButton>
-          </View>
-          <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-            Ends
-          </Text>
-          <ListItemButton style={{ height: 40 }} variant="filled">
-            <Icon>radio_button_checked</Icon>
-            <ListItemText truncate primary="Never" />
-          </ListItemButton>
-          <ListItemButton style={{ height: 40 }}>
-            <Icon>radio_button_unchecked</Icon>
-            <ListItemText truncate primary="On" />
-            <TextField
-              variant="outlined"
-              placeholder="Date"
-              style={{ padding: 4, borderRadius: 5 }}
-            />
-          </ListItemButton>
-          <ListItemButton style={{ height: 40 }}>
-            <Icon>radio_button_unchecked</Icon>
-            <ListItemText truncate primary="After" />
-            <TextField
-              variant="outlined"
-              placeholder="#"
-              style={{ padding: 4, borderRadius: 5, width: 50 }}
-            />
-            <ListItemText truncate primary="times" />
-          </ListItemButton>
-        </View>
+      {recurrenceRule && (
         <View
           style={{
-            padding: 10,
-            flex: breakpoints.md ? 1 : undefined,
+            flexDirection: breakpoints.md ? "row" : "column",
+            paddingHorizontal: 20,
+            gap: 20,
           }}
         >
+          <View style={{ flex: breakpoints.md ? 1 : undefined }}>
+            <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
+              Repeat every
+            </Text>
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: theme[6],
+                backgroundColor: theme[3],
+                borderRadius: 15,
+                flexDirection: "row",
+              }}
+            >
+              <TextField
+                placeholder="1"
+                style={{ flex: 1, paddingHorizontal: 20 }}
+                value={value?.interval || 1}
+                onChange={(e) => {
+                  const t = e.nativeEvent.text;
+                  if (parseInt(t) && parseInt(t) > 0)
+                    handleEdit("interval", e.nativeEvent.text);
+                }}
+              />
+              <MenuPopover
+                options={[
+                  { text: "Week", value: RRule.WEEKLY },
+                  { text: "Month", value: RRule.MONTHLY },
+                  { text: "Year", value: RRule.YEARLY },
+                ].map((e) => ({
+                  ...e,
+                  callback: () => handleEdit("freq", e.value),
+                  selected: value?.freq === e.value,
+                }))}
+                trigger={
+                  <ListItemButton style={{ height: 40 }}>
+                    <ListItemText
+                      truncate
+                      primary={
+                        ["days", "weeks", "months", "years"][3 - value?.freq]
+                      }
+                    />
+                    <Icon>expand_more</Icon>
+                  </ListItemButton>
+                }
+              />
+            </View>
+            <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
+              On
+            </Text>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <MenuPopover
+                menuProps={{ style: { flex: 1 } }}
+                options={[
+                  { text: "Sunday", value: RRule.SU },
+                  { text: "Monday", value: RRule.MO },
+                  { text: "Tuesday", value: RRule.TU },
+                  { text: "Wednesday", value: RRule.WE },
+                  { text: "Thursday", value: RRule.TH },
+                  { text: "Friday", value: RRule.FR },
+                  { text: "Saturday", value: RRule.SA },
+                ].map((e) => ({
+                  ...e,
+                  callback: () => {
+                    handleEdit(
+                      "byweekday",
+                      (value.byweekday
+                        ? value.byweekday.includes(e.value)
+                          ? value.byweekday.filter((day) => day !== e.value)
+                          : [...value.byweekday, e.value]
+                        : []
+                      ).sort()
+                    );
+                  },
+                  selected: value?.byweekday?.includes(e.value),
+                }))}
+                closeOnSelect={false}
+                trigger={
+                  <ListItemButton
+                    style={{ height: 60, flex: 1 }}
+                    variant="filled"
+                  >
+                    <Icon>wb_sunny</Icon>
+                    <ListItemText
+                      truncate
+                      primary="5 days"
+                      secondary="Select days"
+                    />
+                  </ListItemButton>
+                }
+              />
+              {/* <MenuPopover
+                options={[
+                  {text:"January", value: RRule.},
+                ]}
+                menuProps={{ style: { flex: 1 } }}
+                trigger={
+                  <ListItemButton
+                    style={{ height: 60, flex: 1 }}
+                    variant="filled"
+                  >
+                    <Icon>calendar_today</Icon>
+                    <ListItemText
+                      truncate
+                      primary="2 selected"
+                      secondary="Select months"
+                    />
+                  </ListItemButton>
+                }
+              /> */}
+            </View>
+            <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
+              Ends
+            </Text>
+            <ListItemButton style={{ height: 40 }} variant="filled">
+              <Icon>radio_button_checked</Icon>
+              <ListItemText truncate primary="Never" />
+            </ListItemButton>
+            <ListItemButton style={{ height: 40 }}>
+              <Icon>radio_button_unchecked</Icon>
+              <ListItemText truncate primary="On" />
+              <TextField
+                variant="outlined"
+                placeholder="Date"
+                style={{ padding: 4, borderRadius: 5 }}
+              />
+            </ListItemButton>
+            <ListItemButton style={{ height: 40 }}>
+              <Icon>radio_button_unchecked</Icon>
+              <ListItemText truncate primary="After" />
+              <TextField
+                variant="outlined"
+                placeholder="#"
+                style={{ padding: 4, borderRadius: 5, width: 50 }}
+              />
+              <ListItemText truncate primary="times" />
+            </ListItemButton>
+          </View>
           <View
             style={{
-              marginTop: breakpoints.md ? 0 : 30,
-              borderWidth: 2,
-              borderColor: theme[6],
-              borderRadius: 25,
-              padding: 5,
+              padding: 10,
+              flex: breakpoints.md ? 1 : undefined,
             }}
           >
-            <View style={{ padding: 10, paddingBottom: 0 }}>
-              <Text variant="eyebrow">Preview</Text>
-              <Text style={{ fontSize: 25 }} weight={800}>
-                {capitalizeFirstLetter(recurrenceRule.toText())}
-              </Text>
+            <View
+              style={{
+                marginTop: breakpoints.md ? 0 : 30,
+                borderWidth: 2,
+                borderColor: theme[6],
+                borderRadius: 25,
+                padding: 5,
+              }}
+            >
+              <View style={{ padding: 10, paddingBottom: 0 }}>
+                <Text variant="eyebrow">Preview</Text>
+                <Text style={{ fontSize: 25 }} weight={800}>
+                  {capitalizeFirstLetter(recurrenceRule.toText())}
+                </Text>
+              </View>
+              <Calendar
+                onMonthChange={(newMonth) => {
+                  setPreviewRange(new Date(newMonth.timestamp));
+                }}
+                markedDates={recurrenceRule
+                  .between(
+                    dayjs(previewRange).startOf("month").toDate(),
+                    dayjs(previewRange).endOf("month").toDate()
+                  )
+                  .reduce((acc, date) => {
+                    acc[dayjs(date).format("YYYY-MM-DD")] = {
+                      selected: true,
+                      disableTouchEvent: true,
+                    };
+                    return acc;
+                  }, {})}
+              />
             </View>
-            <Calendar
-              onMonthChange={(newMonth) =>
-                setPreviewRange(newMonth.timestamp as any)
-              }
-              markedDates={recurrenceRule
-                .between(
-                  dayjs(previewRange).startOf("month").toDate(),
-                  dayjs(previewRange).endOf("month").toDate()
-                )
-                .reduce((acc, date) => {
-                  acc[dayjs(date).format("YYYY-MM-DD")] = {
-                    selected: true,
-                    disableTouchEvent: true,
-                  };
-                  return acc;
-                }, {})}
-            />
           </View>
         </View>
-      </View>
+      )}
     </>
   );
 }
@@ -314,8 +424,14 @@ export function TaskDatePicker({ setValue, watch, children }) {
         style={({ pressed, hovered }) => ({
           backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
         })}
-        icon={<Icon>calendar_today</Icon>}
-        label={dueDate ? dueDate.format("MMM Do") : undefined}
+        icon={<Icon>{recurrence ? "loop" : "calendar_today"}</Icon>}
+        label={
+          recurrence
+            ? capitalizeFirstLetter(new RRule(recurrence).toText())
+            : dueDate
+            ? dueDate.format("MMM Do")
+            : undefined
+        }
       />
     ),
     {
@@ -327,26 +443,45 @@ export function TaskDatePicker({ setValue, watch, children }) {
     <>
       {trigger}
       <BottomSheet
-        snapPoints={[breakpoints.md ? 480 : "70%"]}
+        snapPoints={["100%"]}
         sheetRef={sheetRef}
         onClose={handleClose}
         maxWidth={750}
+        backgroundStyle={{ backgroundColor: "transparent" }}
+        handleComponent={() => null}
       >
-        <BottomSheetScrollView>
-          <ButtonGroup
-            options={[
-              { value: "date", label: "Date" },
-              { value: "recurrence", label: "Repeat" },
-            ]}
-            state={[view, setView]}
-            containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
-          />
-          {view === "date" ? (
-            <DueDatePicker watch={watch} setValue={setValue} value={dueDate} />
-          ) : (
-            <RecurrencePicker setValue={setValue} value={recurrence} />
-          )}
-        </BottomSheetScrollView>
+        <Pressable onPress={handleClose} style={{ flex: 1 }}>
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={{
+              marginTop: "auto",
+              backgroundColor: theme[2],
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              paddingVertical: 15,
+            }}
+          >
+            <BottomSheetScrollView>
+              <ButtonGroup
+                options={[
+                  { value: "date", label: "Date" },
+                  { value: "recurrence", label: "Repeat" },
+                ]}
+                state={[view, setView]}
+                containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
+              />
+              {view === "date" ? (
+                <DueDatePicker
+                  watch={watch}
+                  setValue={setValue}
+                  value={dueDate}
+                />
+              ) : (
+                <RecurrencePicker setValue={setValue} value={recurrence} />
+              )}
+            </BottomSheetScrollView>
+          </Pressable>
+        </Pressable>
       </BottomSheet>
     </>
   );
@@ -671,7 +806,7 @@ const TaskSuggestions = ({ watch, setValue }) => {
         label: capitalizeFirstLetter(rule.toText()),
         onPress: () => {
           setValue("date", null);
-          setValue("recurrenceRule", rule);
+          setValue("recurrenceRule", rule.options);
         },
         icon: "magic_button",
       };
@@ -826,7 +961,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,
             ...(data.recurrenceRule && {
-              recurrenceRule: data.recurrenceRule.toString(),
+              recurrenceRule: new RRule(data.recurrenceRule).toString(),
             }),
             labelId: data.label?.id,
             type: "TASK",

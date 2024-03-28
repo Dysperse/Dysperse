@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import {
   Menu,
-  MenuOption,
   MenuOptionProps,
   MenuOptions,
   MenuProps as MenuPropsType,
@@ -45,6 +44,7 @@ export type MenuProps =
       containerStyle?: StyleProp<ViewStyle>;
       children?: never;
       menuRef?: React.MutableRefObject<Menu>;
+      closeOnSelect?: boolean;
     }
   | {
       trigger: ReactElement;
@@ -53,6 +53,7 @@ export type MenuProps =
       containerStyle?: StyleProp<ViewStyle>;
       children: any;
       menuRef?: React.MutableRefObject<Menu>;
+      closeOnSelect?: boolean;
     };
 
 export function MenuItem(
@@ -94,6 +95,7 @@ export default function MenuPopover({
   children,
   containerStyle,
   menuRef,
+  closeOnSelect = true,
 }: MenuProps) {
   const _menuRef = useRef<Menu>(null);
   const menuPopupRef = menuRef || _menuRef;
@@ -198,22 +200,10 @@ export default function MenuPopover({
                         <Divider style={{ width: "90%", marginVertical: 5 }} />
                       ) : (
                         <Renderer>
-                          <MenuOption
-                            onSelect={callback}
-                            customStyles={{
-                              OptionTouchableComponent: (props) => (
-                                <MenuItem {...props} removeExtraStyles />
-                              ),
-                              optionWrapper: {
-                                flexDirection: "row",
-                                alignItems: "center",
-                                paddingHorizontal: 15,
-                                paddingVertical: 10,
-                                gap: 13,
-                                ...(props.disabled && {
-                                  opacity: 0.7,
-                                }),
-                              },
+                          <MenuItem
+                            onPress={() => {
+                              callback();
+                              if (closeOnSelect) menuPopupRef.current.close();
                             }}
                             {...props}
                           >
@@ -227,7 +217,7 @@ export default function MenuPopover({
                             {props.selected && (
                               <Icon style={{ marginLeft: "auto" }}>check</Icon>
                             )}
-                          </MenuOption>
+                          </MenuItem>
                         </Renderer>
                       )}
                     </React.Fragment>
