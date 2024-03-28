@@ -6,7 +6,7 @@ import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
-import { JetBrainsMono_700Bold } from "@expo-google-fonts/jetbrains-mono";
+import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
 import {
   Jost_100Thin,
   Jost_200ExtraLight,
@@ -248,7 +248,7 @@ function Root() {
     body_700: Jost_700Bold,
     body_800: Jost_800ExtraBold,
     body_900: Jost_900Black,
-    mono: JetBrainsMono_700Bold,
+    mono: JetBrainsMono_500Medium,
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
     symbols_filled: require("../assets/fonts/symbols/filled.ttf"),
     symbols_bold_outlined: require("../assets/fonts/symbols/bold.ttf"),

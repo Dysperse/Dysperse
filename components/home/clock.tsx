@@ -4,14 +4,17 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Audio } from "expo-av";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
+import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import { useFocusPanelWidgetContext } from "../focus-panel/context";
 import { widgetStyles } from "../focus-panel/widgetStyles";
 
@@ -182,6 +185,7 @@ const Timer = () => {
   const [paused, setPaused] = useState(true);
   const [time, setTime] = useState(0);
   const [restartKey, setRestartKey] = useState(0);
+  const [restartInputKey, setRestartInputKey] = useState(0);
 
   const toHex = (hsl: string): any =>
     ("#" +
@@ -212,12 +216,27 @@ const Timer = () => {
     await sound?.stopAsync();
   };
 
+  const isCompleted = time === 0;
+  const hasNotStarted = (paused && time !== duration * 60) || time === 0;
+
   return (
     <>
       <View
-        style={{
-          alignItems: "center",
-        }}
+        style={[
+          {
+            alignItems: "center",
+            aspectRatio: "1/1",
+            borderRadius: 99,
+            width: 200,
+            height: 200,
+            marginHorizontal: "auto",
+            marginTop: -10,
+            justifyContent: "center",
+          },
+          isCompleted && {
+            backgroundColor: theme[9],
+          },
+        ]}
       >
         <CountdownCircleTimer
           isPlaying={!paused}
@@ -228,17 +247,68 @@ const Timer = () => {
           }}
           key={`${duration}-${restartKey}`}
           rotation="counterclockwise"
-          colors={[toHex(theme[11])] as any}
-          trailColor={toHex(theme[5])}
+          colors={[toHex(theme[isCompleted ? 10 : 11])] as any}
+          trailColor={toHex(theme[isCompleted ? 12 : 5])}
           onComplete={() => {
             playSound();
           }}
         >
           {({ remainingTime }) => (
-            <Text style={{ color: theme[11], fontSize: 40 }} weight={400}>
-              {Math.floor(remainingTime / 60)}:
-              {(remainingTime % 60).toString().padStart(2, "0")}
-            </Text>
+            <View style={{ position: "relative" }}>
+              <Pressable
+                style={({ hovered }) => ({
+                  backgroundColor: theme[hovered ? 6 : 3],
+                  borderRadius: 10,
+                })}
+              >
+                <TextField
+                  onBlur={(e) => {
+                    const input = e.nativeEvent.text;
+                    // Match it with hh:mm format. Make sure the minutes are less than 60
+                    const match = input.match(/^([0-5]?[0-9]):([0-5]?[0-9])$/);
+                    if (!match || input === "00:00") {
+                      setTime(remainingTime);
+                      setRestartInputKey((key) => key + 1);
+                      return;
+                    }
+                    if (
+                      match &&
+                      // if it isn't the same as the current time
+                      Number(match[1]) * 60 + Number(match[2]) !== remainingTime
+                    ) {
+                      setTime(
+                        Number(match[1]) * 60 + Number(match[2]) > 0
+                          ? Number(match[1]) * 60 + Number(match[2])
+                          : 1
+                      );
+                      setDuration(Number(match[1]) + Number(match[2]) / 60);
+                      setPaused(false);
+
+                      Toast.show({
+                        type: "success",
+                        text1: "Timer set successfully!",
+                      });
+                    }
+                  }}
+                  key={remainingTime + restartInputKey + restartKey}
+                  defaultValue={
+                    Math.floor(remainingTime / 60)
+                      .toString()
+                      .padStart(2, "0") +
+                    ":" +
+                    (remainingTime % 60).toString().padStart(2, "0")
+                  }
+                  style={{
+                    color: theme[isCompleted ? 12 : 11],
+                    fontSize: 40,
+                    fontFamily: "mono",
+                    textAlign: "center",
+                    width: 130,
+                    borderRadius: 10,
+                  }}
+                />
+              </Pressable>
+            </View>
           )}
         </CountdownCircleTimer>
       </View>
@@ -248,6 +318,7 @@ const Timer = () => {
           justifyContent: "center",
           gap: 10,
           marginTop: 10,
+          marginBottom: -10,
         }}
       >
         {time !== 0 && (
@@ -262,7 +333,7 @@ const Timer = () => {
             <ButtonText>{paused ? "Resume" : "Pause"}</ButtonText>
           </Button>
         )}
-        {((paused && time !== duration * 60) || time === 0) && (
+        {hasNotStarted && (
           <Button
             dense
             onPress={() => {
@@ -281,56 +352,56 @@ const Timer = () => {
           </Button>
         )}
       </View>
-      <ScrollView
-        horizontal
-        style={{ marginTop: 10 }}
-        contentContainerStyle={{ gap: 10, paddingHorizontal: 30 }}
-        showsHorizontalScrollIndicator={false}
-      >
-        {[
-          { m: 5 },
-          { m: 10 },
-          { m: 15 },
-          { m: 20 },
-          { m: 25 },
-          { m: 30 },
-          { m: 35 },
-          { m: 40 },
-          { m: 45 },
-          { m: 50 },
-          { m: 55 },
-          { m: 60 },
-        ].map((time) => (
-          <IconButton
-            key={time.m}
-            size={50}
-            onPress={() => {
-              setDuration(time.m);
-              setPaused(false);
-              setRestartKey((key) => key + 1);
-            }}
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: 5,
-            })}
-          >
-            <Text
-              style={{ textAlign: "center", color: theme[11] }}
-              weight={900}
+      <Collapsible collapsed={time !== duration * 60}>
+        <ScrollView
+          horizontal
+          style={{ marginTop: 20 }}
+          contentContainerStyle={{ gap: 10, paddingHorizontal: 30 }}
+          showsHorizontalScrollIndicator={false}
+        >
+          {[
+            { m: 1 },
+            { m: 3 },
+            { m: 5 },
+            { m: 10 },
+            { m: 15 },
+            { m: 20 },
+            { m: 25 },
+            { m: 30 },
+            { m: 45 },
+            { m: 60 },
+          ].map((time) => (
+            <IconButton
+              key={time.m}
+              size={50}
+              onPress={() => {
+                setDuration(time.m);
+                setPaused(false);
+                setRestartKey((key) => key + 1);
+              }}
+              style={({ pressed, hovered }) => ({
+                backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: 5,
+              })}
             >
-              {time.m}
-            </Text>
-            <Text
-              style={{ textAlign: "center", color: theme[11], fontSize: 12 }}
-            >
-              min
-            </Text>
-          </IconButton>
-        ))}
-      </ScrollView>
+              <Text
+                style={{ textAlign: "center", color: theme[11] }}
+                weight={900}
+              >
+                {time.m}
+              </Text>
+              <Text
+                style={{ textAlign: "center", color: theme[11], fontSize: 12 }}
+              >
+                min
+              </Text>
+            </IconButton>
+          ))}
+        </ScrollView>
+      </Collapsible>
     </>
   );
 };
