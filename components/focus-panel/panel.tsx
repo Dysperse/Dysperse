@@ -2,6 +2,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { blueA } from "@/themes";
 import Alert from "@/ui/Alert";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -30,6 +31,7 @@ import {
   GestureDetector,
   ScrollView,
 } from "react-native-gesture-handler";
+import Markdown from "react-native-markdown-display";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -382,7 +384,6 @@ const Assistant = () => {
               <View
                 style={[
                   {
-                    padding: 10,
                     paddingHorizontal: 20,
                     borderRadius: 20,
                     maxWidth: 200,
@@ -398,7 +399,57 @@ const Assistant = () => {
                   },
                 ]}
               >
-                <Text>{item.message}</Text>
+                <Markdown
+                  style={{
+                    body: {
+                      fontFamily: "body_400",
+                      fontSize: 15,
+                      color: theme[12],
+                    },
+                    link: { color: blueA.blueA9 },
+                    code_inline: {
+                      backgroundColor: theme[5],
+                      color: theme[12],
+                      padding: 2,
+                      borderWidth: 1,
+                      borderColor: theme[7],
+                      borderRadius: 5,
+                    },
+                    code_block: {
+                      backgroundColor: theme[5],
+                      color: theme[12],
+                      padding: 5,
+                      borderWidth: 1,
+                      borderColor: theme[7],
+                      borderRadius: 5,
+                    },
+                    image: {
+                      borderRadius: 20,
+                      overflow: "hidden",
+                      objectFit: "cover",
+                    },
+                    blockquote: {
+                      borderLeftColor: theme[9],
+                      borderLeftWidth: 3,
+                      paddingHorizontal: 20,
+                      backgroundColor: "transparent",
+                      marginVertical: 10,
+                    },
+                    bullet_list_icon: {
+                      width: 5,
+                      height: 5,
+                      borderRadius: 99,
+                      backgroundColor: theme[9],
+                      color: "transparent",
+                      marginTop: 8,
+                    },
+                    ordered_list_icon: {
+                      color: theme[11],
+                    },
+                  }}
+                >
+                  {item.message}
+                </Markdown>
               </View>
             </View>
           )}
