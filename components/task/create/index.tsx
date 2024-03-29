@@ -185,7 +185,7 @@ function RecurrencePicker({ value, setValue }) {
     value ||
       new RRule({
         freq: RRule.WEEKLY,
-        byweekday: [],
+        byweekday: [dayjs().day() - 1],
       }).options
   );
 
@@ -198,7 +198,7 @@ function RecurrencePicker({ value, setValue }) {
         "recurrenceRule",
         new RRule({
           freq: RRule.WEEKLY,
-          byweekday: [],
+          byweekday: [dayjs().day() - 1],
         }).options
       );
     }
@@ -248,6 +248,7 @@ function RecurrencePicker({ value, setValue }) {
               />
               <MenuPopover
                 options={[
+                  { text: "Daily", value: RRule.DAILY },
                   { text: "Week", value: RRule.WEEKLY },
                   { text: "Month", value: RRule.MONTHLY },
                   { text: "Year", value: RRule.YEARLY },
@@ -270,19 +271,19 @@ function RecurrencePicker({ value, setValue }) {
               />
             </View>
             <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-              Repeat on
+              ON
             </Text>
             <View style={{ flexDirection: "row", gap: 10 }}>
               <MenuPopover
                 menuProps={{ style: { flex: 1 } }}
                 options={[
-                  { text: "Sunday", value: RRule.SU },
-                  { text: "Monday", value: RRule.MO },
-                  { text: "Tuesday", value: RRule.TU },
-                  { text: "Wednesday", value: RRule.WE },
-                  { text: "Thursday", value: RRule.TH },
-                  { text: "Friday", value: RRule.FR },
-                  { text: "Saturday", value: RRule.SA },
+                  { text: "Sunday", value: 6 },
+                  { text: "Monday", value: 0 },
+                  { text: "Tuesday", value: 1 },
+                  { text: "Wednesday", value: 2 },
+                  { text: "Thursday", value: 3 },
+                  { text: "Friday", value: 4 },
+                  { text: "Saturday", value: 5 },
                 ].map((e) => ({
                   ...e,
                   callback: () => {
@@ -307,7 +308,9 @@ function RecurrencePicker({ value, setValue }) {
                     <Icon>wb_sunny</Icon>
                     <ListItemText
                       truncate
-                      primary="5 days"
+                      primary={`${value?.byweekday?.length || 0} day${
+                        value?.byweekday?.length === 1 ? "" : "s"
+                      }`}
                       secondary="Select days"
                     />
                   </ListItemButton>
@@ -387,8 +390,11 @@ function RecurrencePicker({ value, setValue }) {
                 }}
                 markedDates={recurrenceRule
                   .between(
-                    dayjs(previewRange).startOf("month").toDate(),
-                    dayjs(previewRange).endOf("month").toDate()
+                    dayjs(previewRange)
+                      .startOf("month")
+                      .subtract(1, "month")
+                      .toDate(),
+                    dayjs(previewRange).endOf("month").add(1, "month").toDate()
                   )
                   .reduce((acc, date) => {
                     acc[dayjs(date).format("YYYY-MM-DD")] = {
