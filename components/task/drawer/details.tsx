@@ -608,7 +608,7 @@ export function TaskDetails() {
                 <ListItemText primary={dayjs(task.due).format("h:mm A")} />
               </ListItemButton>
             ),
-            content: <Text>bruh</Text>,
+            content: <></>,
           },
           task.due && {
             trigger: () => (
@@ -630,7 +630,25 @@ export function TaskDetails() {
                 )}
               </ListItemButton>
             ),
-            content: <Text></Text>,
+            content: <></>,
+          },
+          task.collection && {
+            trigger: () => (
+              <ListItemButton
+                variant="filled"
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+              >
+                <Icon>notifications</Icon>
+                <ListItemText primary={`Found in ${task.collection.name}`} />
+                {!isReadOnly && (
+                  <Chip
+                    label="Coming soon"
+                    style={{ backgroundColor: theme[5] }}
+                  />
+                )}
+              </ListItemButton>
+            ),
+            content: <></>,
           },
         ].filter((e) => e)}
         renderHeader={(section, _, isActive) => section.trigger(isActive)}
