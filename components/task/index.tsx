@@ -173,7 +173,18 @@ const Task = memo(function Task({
   const blue = useColor("blue");
 
   const breakpoints = useResponsiveBreakpoints();
-  const isCompleted = task.completionInstances.length > 0;
+
+  const isCompleted = task.recurrenceRule
+    ? dateRange &&
+      task.completionInstances.find((instance) =>
+        dayjs(instance.iteration).isBetween(
+          dateRange[0],
+          dateRange[1],
+          "day",
+          "[]"
+        )
+      )
+    : task.completionInstances.length > 0;
 
   const { selection, setSelection } = useSelectionContext();
 
@@ -248,6 +259,7 @@ const Task = memo(function Task({
           ]}
         >
           <TaskCheckbox
+            dateRange={dateRange}
             isReadOnly={isReadOnly}
             task={task}
             mutateList={onTaskUpdate}

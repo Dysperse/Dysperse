@@ -377,8 +377,18 @@ export function Column({
               </View>
 
               {column.tasks.length > 0 &&
-                column.tasks.filter((e) => e.completionInstances.length === 0)
-                  .length === 0 && <ColumnFinishedComponent />}
+                !column.tasks.find((task) =>
+                  task.recurrenceRule
+                    ? !task.completionInstances.find((instance) =>
+                        dayjs(instance.iteration).isBetween(
+                          dayjs(column.start),
+                          dayjs(column.end),
+                          "day",
+                          "[]"
+                        )
+                      )
+                    : task.completionInstances.length === 0
+                ) && <ColumnFinishedComponent />}
             </>
           )
         }
@@ -411,7 +421,7 @@ export function Column({
         renderItem={({ item }) => (
           <Entity
             showLabel
-            dateRange={[column.start, column.end]}
+            dateRange={[new Date(column.start), new Date(column.end)]}
             isReadOnly={isReadOnly}
             item={item}
             onTaskUpdate={(newItem) => onTaskUpdate(newItem, mutate, column)}
