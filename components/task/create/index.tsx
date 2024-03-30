@@ -55,7 +55,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { RRule } from "rrule";
+import { Options, RRule } from "rrule";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 
 const DueDatePicker = ({ watch, value, setValue }) => {
@@ -183,10 +183,14 @@ function RecurrencePicker({ value, setValue }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
-  const defaultOptions = {
-    freq: RRule.WEEKLY,
-    byweekday: [dayjs().day() - 1],
-  };
+  const defaultOptions = useMemo(
+    (): Partial<Options> => ({
+      freq: RRule.WEEKLY,
+      byweekday: [dayjs().day() - 1],
+      dtstart: dayjs().utc().startOf("day").toDate(),
+    }),
+    []
+  );
 
   const recurrenceRule = new RRule(value || new RRule(defaultOptions).options);
 
@@ -199,7 +203,7 @@ function RecurrencePicker({ value, setValue }) {
     if (!value) {
       setValue("recurrenceRule", new RRule(defaultOptions).options);
     }
-  }, [value, setValue]);
+  }, [value, setValue, defaultOptions]);
 
   const handleEdit = (key, newValue) => {
     setValue("recurrenceRule", {

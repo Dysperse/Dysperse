@@ -411,6 +411,7 @@ export function Column({
         renderItem={({ item }) => (
           <Entity
             showLabel
+            dateRange={[column.start, column.end]}
             isReadOnly={isReadOnly}
             item={item}
             onTaskUpdate={(newItem) => onTaskUpdate(newItem, mutate, column)}

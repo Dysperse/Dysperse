@@ -568,8 +568,9 @@ export function TaskDetails() {
                     return {
                       date: dayjs(task.due),
                       dateOnly: task.dateOnly,
-                      recurrenceRule: RRule.fromString(task.recurrenceRule)
-                        .options,
+                      recurrenceRule: task.recurrenceRule
+                        ? RRule.fromString(task.recurrenceRule)?.options
+                        : null,
                     }[inputName];
                   }}
                 >

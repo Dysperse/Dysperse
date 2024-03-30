@@ -158,6 +158,7 @@ const Task = memo(function Task({
   showRelativeTime,
   showDate,
   isReadOnly,
+  dateRange,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
@@ -165,6 +166,7 @@ const Task = memo(function Task({
   showRelativeTime?: boolean;
   showDate?: boolean;
   isReadOnly?: boolean;
+  dateRange?: [Date, Date];
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange");
@@ -207,9 +209,10 @@ const Task = memo(function Task({
       >
         <ListItemButton
           onLongPress={handleSelect}
-          {...(Platform.OS === "web" && breakpoints.md && {
-            onContextMenu: handleSelect,
-          })}
+          {...(Platform.OS === "web" &&
+            breakpoints.md && {
+              onContextMenu: handleSelect,
+            })}
           {...(selection.length > 0 && {
             onPress: handleSelect,
           })}

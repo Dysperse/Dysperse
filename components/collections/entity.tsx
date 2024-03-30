@@ -9,6 +9,7 @@ interface EntityProps {
   showRelativeTime?: boolean;
   showDate?: boolean;
   isReadOnly: boolean;
+  dateRange: [Date, Date];
 }
 
 export const Entity = ({
@@ -18,11 +19,13 @@ export const Entity = ({
   showRelativeTime = false,
   showDate = false,
   isReadOnly = false,
+  dateRange,
 }: EntityProps) => {
   switch (item.type) {
     case "TASK":
       return (
         <Task
+          dateRange={dateRange}
           showLabel={showLabel}
           onTaskUpdate={onTaskUpdate}
           task={item}
