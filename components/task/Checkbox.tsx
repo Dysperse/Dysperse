@@ -37,7 +37,7 @@ function TaskCheckbox({
   }));
 
   const isCompleted = task.recurrenceRule
-    ? task.dateRange &&
+    ? dateRange &&
       task.completionInstances.find((instance) =>
         dayjs(instance.iteration).isBetween(
           dateRange[0],
@@ -53,7 +53,10 @@ function TaskCheckbox({
     let iteration = null;
 
     if (task.recurrenceRule) {
-      const rule = new RRule(task.recurrenceRule);
+      const rule = new RRule({
+        ...task.recurrenceRule,
+        dtstart: new Date(task.recurrenceRule.dtstart),
+      });
       const instances = rule.between(dateRange[0], dateRange[1]);
       iteration = instances[0].toISOString();
       newArr = isCompleted
