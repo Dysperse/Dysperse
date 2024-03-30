@@ -47,6 +47,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
 import { Menu } from "react-native-popup-menu";
 import Animated, {
   useAnimatedStyle,
@@ -190,6 +191,8 @@ function RecurrencePicker({ value, setValue }) {
   );
 
   const [previewRange, setPreviewRange] = useState<Date>(new Date());
+  const endsInputCountRef = useRef<TextInput>(null);
+  const endsInputDateRef = useRef<TextInput>(null);
 
   useEffect(() => {
     setValue("date", null);
@@ -229,6 +232,9 @@ function RecurrencePicker({ value, setValue }) {
     ],
     []
   );
+
+  console.log(value);
+
   return (
     <>
       {recurrenceRule && (
@@ -255,11 +261,11 @@ function RecurrencePicker({ value, setValue }) {
               <TextField
                 placeholder="1"
                 style={{ flex: 1, paddingHorizontal: 20 }}
-                value={value?.interval || 1}
+                defaultValue={value?.interval || 1}
                 onChange={(e) => {
                   const t = e.nativeEvent.text;
                   if (parseInt(t) && parseInt(t) > 0)
-                    handleEdit("interval", e.nativeEvent.text);
+                    handleEdit("interval", parseInt(e.nativeEvent.text));
                 }}
               />
               <MenuPopover
@@ -270,7 +276,15 @@ function RecurrencePicker({ value, setValue }) {
                   { text: "Year", value: RRule.YEARLY },
                 ].map((e) => ({
                   ...e,
-                  callback: () => handleEdit("freq", e.value),
+                  callback: () => {
+                    setValue(
+                      "recurrenceRule",
+                      new RRule({
+                        freq: e.value,
+                        interval: value?.interval || 1,
+                      }).options
+                    );
+                  },
                   selected: value?.freq === e.value,
                 }))}
                 trigger={
@@ -286,95 +300,161 @@ function RecurrencePicker({ value, setValue }) {
                 }
               />
             </View>
-            <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
-              ON
-            </Text>
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              <MenuPopover
-                menuProps={{ style: { flex: 1 } }}
-                options={[
-                  { text: "Sunday", value: 6 },
-                  { text: "Monday", value: 0 },
-                  { text: "Tuesday", value: 1 },
-                  { text: "Wednesday", value: 2 },
-                  { text: "Thursday", value: 3 },
-                  { text: "Friday", value: 4 },
-                  { text: "Saturday", value: 5 },
-                ].map((e) => ({
-                  ...e,
-                  callback: () => {
-                    handleEdit(
-                      "byweekday",
-                      (value.byweekday
-                        ? value.byweekday.includes(e.value)
-                          ? value.byweekday.filter((day) => day !== e.value)
-                          : [...value.byweekday, e.value]
-                        : []
-                      ).sort()
-                    );
-                  },
-                  selected: value?.byweekday?.includes(e.value),
-                }))}
-                closeOnSelect={false}
-                trigger={
-                  <ListItemButton
-                    style={{ height: 60, flex: 1 }}
-                    variant="filled"
-                  >
-                    <Icon>wb_sunny</Icon>
-                    <ListItemText
-                      truncate
-                      primary={`${value?.byweekday?.length || 0} day${
-                        value?.byweekday?.length === 1 ? "" : "s"
-                      }`}
-                      secondary="Select days"
-                    />
-                  </ListItemButton>
-                }
-              />
-              {/* <MenuPopover
-                options={[
-                  {text:"January", value: RRule.},
-                ]}
-                menuProps={{ style: { flex: 1 } }}
-                trigger={
-                  <ListItemButton
-                    style={{ height: 60, flex: 1 }}
-                    variant="filled"
-                  >
-                    <Icon>calendar_today</Icon>
-                    <ListItemText
-                      truncate
-                      primary="2 selected"
-                      secondary="Select months"
-                    />
-                  </ListItemButton>
-                }
-              /> */}
-            </View>
+            {/* {value?.freq === RRule.WEEKLY && ( */}
+            <>
+              <Text
+                variant="eyebrow"
+                style={{ marginTop: 20, marginBottom: 5 }}
+              >
+                ON
+              </Text>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <MenuPopover
+                  menuProps={{ style: { flex: 1 } }}
+                  options={[
+                    { text: "Sunday", value: 0 },
+                    { text: "Monday", value: 1 },
+                    { text: "Tuesday", value: 2 },
+                    { text: "Wednesday", value: 3 },
+                    { text: "Thursday", value: 4 },
+                    { text: "Friday", value: 5 },
+                    { text: "Saturday", value: 6 },
+                  ].map((e) => ({
+                    ...e,
+                    callback: () => {
+                      handleEdit(
+                        "byweekday",
+                        (value.byweekday
+                          ? value.byweekday.includes(e.value)
+                            ? value.byweekday.filter((day) => day !== e.value)
+                            : [...value.byweekday, e.value]
+                          : []
+                        ).sort()
+                      );
+                    },
+                    selected: value?.byweekday?.includes(e.value),
+                  }))}
+                  closeOnSelect={false}
+                  trigger={
+                    <ListItemButton
+                      style={{ height: 60, flex: 1 }}
+                      variant="filled"
+                    >
+                      <Icon>wb_sunny</Icon>
+                      <ListItemText
+                        truncate
+                        primary={
+                          value?.byweekday?.length === 0
+                            ? "All days"
+                            : `${value?.byweekday?.length || 0} day${
+                                value?.byweekday?.length === 1 ? "" : "s"
+                              }`
+                        }
+                        secondary="Select days"
+                      />
+                    </ListItemButton>
+                  }
+                />
+              </View>
+            </>
             <Text variant="eyebrow" style={{ marginTop: 20, marginBottom: 5 }}>
               Ends
             </Text>
-            <ListItemButton style={{ height: 40 }} variant="filled">
-              <Icon>radio_button_checked</Icon>
+            <ListItemButton
+              style={{ height: 40 }}
+              variant={!value?.until && !value?.count ? "filled" : null}
+              onPress={() => {
+                setValue("recurrenceRule", {
+                  ...value,
+                  until: null,
+                  count: null,
+                });
+              }}
+            >
+              <Icon>
+                {!value?.until && !value?.count
+                  ? "radio_button_checked"
+                  : "radio_button_unchecked"}
+              </Icon>
               <ListItemText truncate primary="Never" />
             </ListItemButton>
-            <ListItemButton style={{ height: 40 }}>
-              <Icon>radio_button_unchecked</Icon>
+            <ListItemButton
+              style={{ height: 40 }}
+              variant={value?.until && !value?.count ? "filled" : null}
+              onPress={() => {
+                endsInputCountRef.current?.clear();
+                setTimeout(() => {
+                  endsInputDateRef.current?.focus();
+                }, 0);
+              }}
+            >
+              <Icon>
+                {value?.until && !value?.count
+                  ? "radio_button_checked"
+                  : "radio_button_unchecked"}
+              </Icon>
               <ListItemText truncate primary="On" />
               <TextField
+                inputRef={endsInputDateRef}
                 variant="outlined"
                 placeholder="Date"
                 style={{ padding: 4, borderRadius: 5 }}
+                onBlur={(e) => {
+                  const n = dayjs(e.nativeEvent.text);
+                  if (n.isValid())
+                    setValue("recurrenceRule", {
+                      ...value,
+                      until: n.toDate(),
+                      count: null,
+                    });
+                  else if (e.nativeEvent.text) {
+                    endsInputDateRef.current?.clear();
+                    Toast.show({
+                      type: "error",
+                      text1: "Please type a valid date",
+                    });
+                  }
+                }}
               />
             </ListItemButton>
-            <ListItemButton style={{ height: 40 }}>
-              <Icon>radio_button_unchecked</Icon>
+            <ListItemButton
+              style={{ height: 40 }}
+              variant={value?.count && !value?.until ? "filled" : null}
+              onPress={() => {
+                endsInputDateRef.current?.clear();
+                setTimeout(() => {
+                  endsInputCountRef.current?.focus();
+                }, 0);
+              }}
+            >
+              <Icon>
+                {value?.count && !value?.until
+                  ? "radio_button_checked"
+                  : "radio_button_unchecked"}
+              </Icon>
               <ListItemText truncate primary="After" />
               <TextField
+                inputRef={endsInputCountRef}
                 variant="outlined"
                 placeholder="#"
                 style={{ padding: 4, borderRadius: 5, width: 50 }}
+                onBlur={(e) => {
+                  const n = parseInt(e.nativeEvent.text);
+                  if (n === 0) endsInputCountRef.current?.clear();
+                  if (n && !isNaN(n))
+                    setValue("recurrenceRule", {
+                      ...value,
+                      until: null,
+                      count: n === 0 ? null : n,
+                    });
+                  else if (e.nativeEvent.text) {
+                    endsInputCountRef.current?.clear();
+                    Toast.show({
+                      type: "error",
+                      text1: "Please type a number",
+                    });
+                  }
+                }}
               />
               <ListItemText truncate primary="times" />
             </ListItemButton>
