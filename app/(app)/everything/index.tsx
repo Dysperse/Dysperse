@@ -97,6 +97,7 @@ export const LabelDetails = ({
           style={[
             {
               height: 300,
+              paddingHorizontal: breakpoints.md ? 100 : 30,
               padding: 20,
               alignItems: "center",
               justifyContent: "center",
@@ -121,6 +122,7 @@ export const LabelDetails = ({
               flexDirection: "row",
               justifyContent: "flex-end",
               gap: 10,
+              flex: 1,
             }}
           >
             {!breakpoints.md && (
@@ -154,7 +156,9 @@ export const LabelDetails = ({
             </ConfirmationModal>
           </View>
           <Emoji emoji={label.emoji} size={60} />
-          <View style={!breakpoints.md && { width: "100%" }}>
+          <View
+            style={[!breakpoints.md && { width: "100%" }, { maxWidth: "100%" }]}
+          >
             <Text
               style={[
                 { fontSize: 40, color: labelTheme[11] },
