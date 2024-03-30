@@ -211,8 +211,24 @@ function RecurrencePicker({ value, setValue }) {
     });
   };
 
-  console.log(value);
-
+  const quickRules = useMemo(
+    () => [
+      { label: "Every day", value: new RRule({ freq: RRule.DAILY }) },
+      {
+        label: `Every ${dayjs().format("dddd")}`,
+        value: new RRule({ freq: RRule.WEEKLY }),
+      },
+      {
+        label: `Monthly on the ${dayjs().format("Do")}`,
+        value: new RRule({ freq: RRule.MONTHLY }),
+      },
+      {
+        label: `Yearly on ${dayjs().format("MMM Do")}`,
+        value: new RRule({ freq: RRule.YEARLY }),
+      },
+    ],
+    []
+  );
   return (
     <>
       {recurrenceRule && (
@@ -376,14 +392,9 @@ function RecurrencePicker({ value, setValue }) {
                 borderColor: theme[6],
                 borderRadius: 25,
                 padding: 5,
+                flex: 1,
               }}
             >
-              <View style={{ padding: 10, paddingBottom: 0 }}>
-                <Text variant="eyebrow">Preview</Text>
-                <Text style={{ fontSize: 25 }} weight={800}>
-                  {capitalizeFirstLetter(recurrenceRule.toText())}
-                </Text>
-              </View>
               <Calendar
                 onMonthChange={(newMonth) => {
                   setPreviewRange(new Date(newMonth.timestamp));
@@ -404,6 +415,23 @@ function RecurrencePicker({ value, setValue }) {
                     return acc;
                   }, {})}
               />
+              <ScrollView horizontal contentContainerStyle={{ gap: 10 }}>
+                {quickRules.map((date, i) => (
+                  <Chip
+                    key={i}
+                    outlined={value?.toString() !== date.value.toString()}
+                    label={date.label}
+                    onPress={() =>
+                      setValue("recurrenceRule", date.value.options)
+                    }
+                    icon={
+                      value?.toString() === date.value.toString() && (
+                        <Icon filled>check</Icon>
+                      )
+                    }
+                  />
+                ))}
+              </ScrollView>
             </View>
           </View>
         </View>
