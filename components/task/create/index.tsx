@@ -1106,9 +1106,6 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             due: data?.date?.toISOString(),
             agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,
-            ...(data.recurrenceRule && {
-              recurrenceRule: new RRule(data.recurrenceRule).toString(),
-            }),
             labelId: data.label?.id,
             type: "TASK",
             collectionId: data.label?.id ? null : data.collectionId,
