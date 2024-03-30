@@ -534,9 +534,7 @@ export function TaskDetails() {
                       ? "Add date"
                       : task.recurrenceRule
                       ? capitalizeFirstLetter(
-                          RRule.fromString(
-                            task.recurrenceRule.replace(/^EXDATE.*$/, "")
-                          ).toText()
+                          new RRule(task.recurrenceRule).toText()
                         )
                       : dayjs(task.due).format("MMM Do, YYYY")
                   }
@@ -544,9 +542,7 @@ export function TaskDetails() {
                     task.due &&
                     (task.recurrenceRule
                       ? capitalizeFirstLetter(
-                          RRule.fromString(
-                            task.recurrenceRule.replace(/^EXDATE.*$/, "")
-                          ).toText()
+                          new RRule(task.recurrenceRule).toText()
                         )
                       : "Does not repeat")
                   }
