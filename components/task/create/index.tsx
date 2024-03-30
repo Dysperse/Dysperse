@@ -182,14 +182,15 @@ const DueDatePicker = ({ watch, value, setValue }) => {
 function RecurrencePicker({ value, setValue }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-
+  const { session } = useUser();
   const defaultOptions = useMemo(
     (): Partial<Options> => ({
       freq: RRule.WEEKLY,
       byweekday: [dayjs().day() - 1],
       dtstart: dayjs().utc().startOf("day").toDate(),
+      wkst: session?.space?.space?.weekStart === "SUNDAY" ? RRule.SU : RRule.MO,
     }),
-    []
+    [session]
   );
 
   const recurrenceRule = new RRule(value || new RRule(defaultOptions).options);

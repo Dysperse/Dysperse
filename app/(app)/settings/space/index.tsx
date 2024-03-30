@@ -1,9 +1,12 @@
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
+import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -17,6 +20,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { useSharedValue } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 function SpaceHeader({ data }) {
@@ -203,11 +207,25 @@ function SpaceStorage({ data }) {
 }
 
 export default function Page() {
-  const { session } = useUser();
-  const { data, error } = useSWR(
+  const { session, sessionToken } = useUser();
+  const { data, mutate, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
+
   const spaceTheme = useColor(data?.color);
+  const handleSpaceEdit = async (key, value) => {
+    try {
+      mutate({ ...data, [key]: value }, { revalidate: false });
+      await sendApiRequest(sessionToken, "PUT", "space", {
+        [key]: value,
+      });
+      Toast.show({ type: "success", text1: "Saved!" });
+    } catch (e) {
+      mutate(data, { revalidate: false });
+      console.error(e);
+      Toast.show({ type: "error" });
+    }
+  };
 
   return (
     <SettingsLayout>
@@ -222,6 +240,35 @@ export default function Page() {
               Storage
             </Text>
             <SpaceStorage data={data} />
+            <Text style={settingStyles.heading} weight={700}>
+              General
+            </Text>
+            <ListItemButton
+              disabled
+              onPress={() => {}}
+              style={{ paddingHorizontal: 0 }}
+            >
+              <ListItemText
+                primary="Week start"
+                secondary="This setting affects all tasks for all members in this space."
+              />
+              <MenuPopover
+                trigger={
+                  <Button variant="filled">
+                    <ButtonText>
+                      {data?.weekStart === "SUNDAY" ? "Sunday" : "Monday"}
+                    </ButtonText>
+                    <Icon>expand_more</Icon>
+                  </Button>
+                }
+                options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
+                  ...e,
+                  selected: e.text.toUpperCase() === data?.weekStart,
+                  callback: () =>
+                    handleSpaceEdit("weekStart", e.text.toUpperCase()),
+                }))}
+              />
+            </ListItemButton>
             <Text style={settingStyles.heading} weight={700}>
               Members
             </Text>
