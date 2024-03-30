@@ -40,6 +40,10 @@ function AllIntegrations({ connected }) {
                 gap: 20,
                 flexDirection: "row",
                 backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+                opacity:
+                  integration.name === "Notion" || integration.name === "Gmail"
+                    ? 0.5
+                    : 1,
               })}
               onPress={() => {
                 router.replace(
