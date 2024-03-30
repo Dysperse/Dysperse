@@ -638,7 +638,7 @@ export function TaskDetails() {
                 variant="filled"
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
-                <Icon>notifications</Icon>
+                <Icon>interests</Icon>
                 <ListItemText primary={`Found in ${task.collection.name}`} />
               </ListItemButton>
             ),
