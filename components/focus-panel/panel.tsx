@@ -909,13 +909,17 @@ const FocusPanel = memo(function FocusPanel() {
 
   const tap = Gesture.Tap().onEnd(() => setFocus(!isFocused));
   const pathname = usePathname();
+  const breakpoints = useResponsiveBreakpoints();
+
   return pathname.includes("settings") ? null : (
     <>
-      <GestureDetector gesture={pan}>
-        <GestureDetector gesture={tap}>
-          <PanelSwipeTrigger />
+      {breakpoints.md && (
+        <GestureDetector gesture={pan}>
+          <GestureDetector gesture={tap}>
+            <PanelSwipeTrigger />
+          </GestureDetector>
         </GestureDetector>
-      </GestureDetector>
+      )}
 
       <Animated.View
         style={[
