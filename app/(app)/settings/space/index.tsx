@@ -206,16 +206,19 @@ function SpaceStorage({ data }) {
   );
 }
 
-export default function Page() {
-  const { session, sessionToken } = useUser();
-  const { data, mutate, error } = useSWR(
-    session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
-  );
+function GeneralSettings({ mutate, data }) {
+  const { mutate: mutateUser, sessionToken } = useUser();
 
-  const spaceTheme = useColor(data?.color);
   const handleSpaceEdit = async (key, value) => {
     try {
       mutate({ ...data, [key]: value }, { revalidate: false });
+      mutateUser(
+        (prev) => ({
+          ...prev,
+          space: { ...prev.space, [key]: value },
+        }),
+        { revalidate: false }
+      );
       await sendApiRequest(sessionToken, "PUT", "space", {
         [key]: value,
       });
@@ -226,6 +229,48 @@ export default function Page() {
       Toast.show({ type: "error" });
     }
   };
+
+  return (
+    <>
+      <Text style={settingStyles.heading} weight={700}>
+        General
+      </Text>
+      <ListItemButton
+        disabled
+        onPress={() => {}}
+        style={{ paddingHorizontal: 0 }}
+      >
+        <ListItemText
+          primary="Week start"
+          secondary="This setting affects all tasks for all members in this space."
+        />
+        <MenuPopover
+          trigger={
+            <Button variant="filled">
+              <ButtonText>
+                {data?.weekStart === "SUNDAY" ? "Sunday" : "Monday"}
+              </ButtonText>
+              <Icon>expand_more</Icon>
+            </Button>
+          }
+          options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
+            ...e,
+            selected: e.text.toUpperCase() === data?.weekStart,
+            callback: () => handleSpaceEdit("weekStart", e.text.toUpperCase()),
+          }))}
+        />
+      </ListItemButton>
+    </>
+  );
+}
+
+export default function Page() {
+  const { session, sessionToken } = useUser();
+  const { data, mutate, error } = useSWR(
+    session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
+  );
+
+  const spaceTheme = useColor(data?.color);
 
   return (
     <SettingsLayout>
@@ -240,35 +285,7 @@ export default function Page() {
               Storage
             </Text>
             <SpaceStorage data={data} />
-            <Text style={settingStyles.heading} weight={700}>
-              General
-            </Text>
-            <ListItemButton
-              disabled
-              onPress={() => {}}
-              style={{ paddingHorizontal: 0 }}
-            >
-              <ListItemText
-                primary="Week start"
-                secondary="This setting affects all tasks for all members in this space."
-              />
-              <MenuPopover
-                trigger={
-                  <Button variant="filled">
-                    <ButtonText>
-                      {data?.weekStart === "SUNDAY" ? "Sunday" : "Monday"}
-                    </ButtonText>
-                    <Icon>expand_more</Icon>
-                  </Button>
-                }
-                options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
-                  ...e,
-                  selected: e.text.toUpperCase() === data?.weekStart,
-                  callback: () =>
-                    handleSpaceEdit("weekStart", e.text.toUpperCase()),
-                }))}
-              />
-            </ListItemButton>
+            <GeneralSettings data={data} mutate={mutate} />
             <Text style={settingStyles.heading} weight={700}>
               Members
             </Text>
