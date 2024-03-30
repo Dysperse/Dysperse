@@ -304,15 +304,18 @@ export default function Page() {
           marginBottom: 20,
           flexDirection: "row",
           alignItems: "center",
+          justifyContent: "center",
           gap: 20,
         }}
       >
         <View style={{ flex: 1 }}>
-          <Text variant="eyebrow">LAUNCH DAY SPECIAL</Text>
-          <Text style={{ fontSize: 25 }} weight={900}>
-            Preview all themes for until April 30th, 2024.
+          <Text variant="eyebrow" style={{ textAlign: "center" }}>
+            LAUNCH DAY SPECIAL
           </Text>
-          <Text style={{ fontSize: 12 }} weight={200}>
+          <Text style={{ fontSize: 25, textAlign: "center" }} weight={900}>
+            Preview all themes until April 30th, 2024.
+          </Text>
+          <Text style={{ fontSize: 12, textAlign: "center" }} weight={200}>
             After 30 days, the theme you select will be reset. You can earn more
             by achieving in-app milestones.
           </Text>
