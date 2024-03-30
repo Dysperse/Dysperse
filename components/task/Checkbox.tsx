@@ -53,7 +53,7 @@ function TaskCheckbox({
     let iteration = null;
 
     if (task.recurrenceRule) {
-      const rule = RRule.fromString(task.recurrenceRule);
+      const rule = new RRule(task.recurrenceRule);
       const instances = rule.between(dateRange[0], dateRange[1]);
       iteration = instances[0].toISOString();
       newArr = isCompleted

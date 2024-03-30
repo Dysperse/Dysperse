@@ -10,6 +10,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
@@ -314,7 +315,9 @@ const Task = memo(function Task({
                   onPress={() => {
                     Toast.show({
                       type: "info",
-                      text1: RRule.fromString(task.recurrenceRule).toText(),
+                      text1: capitalizeFirstLetter(
+                        new RRule(task.recurrenceRule).toText()
+                      ),
                     });
                   }}
                 />
