@@ -536,7 +536,17 @@ function RecurrencePicker({ value, setValue }) {
   );
 }
 
-export function TaskDatePicker({ setValue, watch, children }) {
+export function TaskDatePicker({
+  defaultView,
+  setValue,
+  watch,
+  children,
+}: {
+  defaultView?: "date" | "recurrence";
+  setValue: any;
+  watch: any;
+  children?: any;
+}) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const sheetRef = useRef<BottomSheetModal>(null);
@@ -546,7 +556,9 @@ export function TaskDatePicker({ setValue, watch, children }) {
   const dueDate = watch("date");
   const recurrence = watch("recurrenceRule");
 
-  const [view, setView] = useState<"date" | "recurrence">("date");
+  const [view, setView] = useState<"date" | "recurrence">(
+    defaultView || "date"
+  );
 
   const trigger = cloneElement(
     children || (

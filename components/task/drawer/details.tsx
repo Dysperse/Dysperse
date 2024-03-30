@@ -560,6 +560,7 @@ export function TaskDetails() {
               <View style={collapsibleMenuStyles as any}>
                 <TaskDatePicker
                   key="test"
+                  defaultView={task.recurrenceRule ? "recurrence" : "date"}
                   setValue={(name, value) =>
                     updateTask(name === "date" ? "due" : name, value)
                   }
@@ -567,7 +568,8 @@ export function TaskDetails() {
                     return {
                       date: dayjs(task.due),
                       dateOnly: task.dateOnly,
-                      recurrenceRule: task.recurrenceRule,
+                      recurrenceRule: RRule.fromString(task.recurrenceRule)
+                        .options,
                     }[inputName];
                   }}
                 >
