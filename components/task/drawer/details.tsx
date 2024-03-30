@@ -639,7 +639,12 @@ export function TaskDetails() {
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
                 <Icon>interests</Icon>
-                <ListItemText primary={`Found in ${task.collection.name}`} />
+                <ListItemText
+                  primary={`Found in ${task.collection.name}`}
+                  secondary={
+                    task.label ? `Label: ${task.label?.name}` : "No label set"
+                  }
+                />
               </ListItemButton>
             ),
             content: <></>,
