@@ -19,12 +19,14 @@ export function TaskDrawer({
   id,
   disabled,
   isReadOnly,
+  dateRange,
 }: {
   mutateList: any;
   children: any;
   id: any;
   disabled?: boolean;
   isReadOnly?: boolean;
+  dateRange?: [Date, Date];
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<BottomSheetModal>(null);
@@ -153,6 +155,7 @@ export function TaskDrawer({
             {data?.id ? (
               <TaskDrawerContext.Provider
                 value={{
+                  dateRange,
                   task: data,
                   updateTask,
                   mutateList,

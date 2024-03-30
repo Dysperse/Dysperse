@@ -216,6 +216,7 @@ const Task = memo(function Task({
       <TaskDrawer
         id={task.id}
         mutateList={onTaskUpdate}
+        dateRange={dateRange}
         isReadOnly={isReadOnly}
         disabled={selection.length > 0}
       >
