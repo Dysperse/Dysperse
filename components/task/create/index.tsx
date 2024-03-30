@@ -373,6 +373,8 @@ function RecurrencePicker({ value, setValue }) {
                   until: null,
                   count: null,
                 });
+                endsInputDateRef.current?.clear();
+                endsInputCountRef.current?.clear();
               }}
             >
               <Icon>
