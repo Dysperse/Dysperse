@@ -188,7 +188,7 @@ export function WeatherWidget() {
         ]
       : null,
     {
-      refreshInterval: 5 * 60 * 1000,
+      refreshInterval: 2 * 60 * 1000,
     }
   );
 

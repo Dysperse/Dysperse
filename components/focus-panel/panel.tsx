@@ -104,7 +104,7 @@ const UpNext = () => {
       },
     ],
     {
-      refreshInterval: 1000 * 60 * 5,
+      refreshInterval: 1000 * 60 * 1,
       refreshWhenHidden: true,
     }
   );
