@@ -640,12 +640,6 @@ export function TaskDetails() {
               >
                 <Icon>notifications</Icon>
                 <ListItemText primary={`Found in ${task.collection.name}`} />
-                {!isReadOnly && (
-                  <Chip
-                    label="Coming soon"
-                    style={{ backgroundColor: theme[5] }}
-                  />
-                )}
               </ListItemButton>
             ),
             content: <></>,
