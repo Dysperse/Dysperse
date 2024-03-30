@@ -182,13 +182,13 @@ const DueDatePicker = ({ watch, value, setValue }) => {
 function RecurrencePicker({ value, setValue }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const recurrenceRule = new RRule(
-    value ||
-      new RRule({
-        freq: RRule.WEEKLY,
-        byweekday: [dayjs().day() - 1],
-      }).options
-  );
+
+  const defaultOptions = {
+    freq: RRule.WEEKLY,
+    byweekday: [dayjs().day() - 1],
+  };
+
+  const recurrenceRule = new RRule(value || new RRule(defaultOptions).options);
 
   const [previewRange, setPreviewRange] = useState<Date>(new Date());
   const endsInputCountRef = useRef<TextInput>(null);
@@ -197,13 +197,7 @@ function RecurrencePicker({ value, setValue }) {
   useEffect(() => {
     setValue("date", null);
     if (!value) {
-      setValue(
-        "recurrenceRule",
-        new RRule({
-          freq: RRule.WEEKLY,
-          byweekday: [dayjs().day() - 1],
-        }).options
-      );
+      setValue("recurrenceRule", new RRule(defaultOptions).options);
     }
   }, [value, setValue]);
 
@@ -497,11 +491,16 @@ function RecurrencePicker({ value, setValue }) {
                     dayjs(previewRange)
                       .startOf("month")
                       .subtract(1, "month")
+                      .utc()
                       .toDate(),
-                    dayjs(previewRange).endOf("month").add(1, "month").toDate()
+                    dayjs(previewRange)
+                      .utc()
+                      .endOf("month")
+                      .add(1, "month")
+                      .toDate()
                   )
                   .reduce((acc, date) => {
-                    acc[dayjs(date).format("YYYY-MM-DD")] = {
+                    acc[dayjs(date).utc().format("YYYY-MM-DD")] = {
                       selected: true,
                       disableTouchEvent: true,
                     };
