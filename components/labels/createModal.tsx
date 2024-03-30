@@ -44,7 +44,7 @@ export function CreateLabelModal({
     ref.current?.present();
   }, []);
   const handleClose = useCallback(() => {
-    ref.current?.close();
+    ref.current?.close?.();
     onClose();
   }, [onClose]);
   const trigger = cloneElement(children, { onPress: handleOpen });

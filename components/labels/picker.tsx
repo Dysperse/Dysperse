@@ -236,10 +236,18 @@ const LabelPicker = memo(function LabelPicker({
             <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
             <CreateLabelModal
               mutate={mutate}
-              onClose={() => searchRef.current.focus()}
-              onCreate={(label) => {
-                setLabel(label.id);
-                handleClose();
+              onClose={() => searchRef.current?.focus()}
+              onCreate={(item) => {
+                if (multiple) {
+                  if (label.includes(item.id) && typeof label === "object") {
+                    setLabel(label.filter((id) => id !== item.id));
+                  } else {
+                    setLabel([...label, item.id]);
+                  }
+                } else {
+                  setLabel(item.id === (label as any)?.id ? null : item);
+                  setTimeout(handleClose, 0);
+                }
               }}
             >
               <IconButton style={{ marginRight: 20 }} size={30}>
