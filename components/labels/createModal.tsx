@@ -27,10 +27,12 @@ export function CreateLabelModal({
   children,
   mutate,
   onClose = () => null,
+  onCreate = (newLabel) => null,
 }: {
   children: ReactElement;
   mutate: any;
   onClose?: () => void;
+  onCreate?: (newLabel: any) => void;
 }) {
   const theme = useColorTheme();
   const ref = useRef<BottomSheetModal>(null);
@@ -64,7 +66,7 @@ export function CreateLabelModal({
   const onSubmit = async (e) => {
     try {
       setIsLoading(true);
-      await sendApiRequest(
+      const data = await sendApiRequest(
         sessionToken,
         "POST",
         "space/labels",
@@ -73,6 +75,7 @@ export function CreateLabelModal({
           body: JSON.stringify(e),
         }
       );
+      onCreate?.(data);
       Toast.show({
         type: "success",
         text1: "Created label!",

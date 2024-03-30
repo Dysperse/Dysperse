@@ -237,6 +237,10 @@ const LabelPicker = memo(function LabelPicker({
             <CreateLabelModal
               mutate={mutate}
               onClose={() => searchRef.current.focus()}
+              onCreate={(label) => {
+                setLabel(label.id);
+                handleClose();
+              }}
             >
               <IconButton style={{ marginRight: 20 }} size={30}>
                 <Icon>add_circle</Icon>
