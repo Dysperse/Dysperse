@@ -328,7 +328,11 @@ function RecurrencePicker({ value, setValue }) {
                           ? value.byweekday.includes(e.value)
                             ? value.byweekday.filter((day) => day !== e.value)
                             : [...value.byweekday, e.value]
-                          : []
+                          : [
+                              ...new Set(
+                                [...(value?.byweekday || []), e.value].sort()
+                              ),
+                            ]
                         ).sort()
                       );
                     },
@@ -344,7 +348,7 @@ function RecurrencePicker({ value, setValue }) {
                       <ListItemText
                         truncate
                         primary={
-                          value?.byweekday?.length === 0
+                          value?.byweekday?.length === 0 || !value?.byweekday
                             ? "All days"
                             : `${value?.byweekday?.length || 0} day${
                                 value?.byweekday?.length === 1 ? "" : "s"
@@ -382,7 +386,6 @@ function RecurrencePicker({ value, setValue }) {
               style={{ height: 40 }}
               variant={value?.until && !value?.count ? "filled" : null}
               onPress={() => {
-                endsInputCountRef.current?.clear();
                 setTimeout(() => {
                   endsInputDateRef.current?.focus();
                 }, 0);
@@ -400,14 +403,22 @@ function RecurrencePicker({ value, setValue }) {
                 placeholder="Date"
                 style={{ padding: 4, borderRadius: 5 }}
                 onBlur={(e) => {
-                  const n = dayjs(e.nativeEvent.text);
-                  if (n.isValid())
+                  let n = dayjs(e.nativeEvent.text);
+                  if (
+                    n.year() === 2001 &&
+                    !e.nativeEvent.text.split(" ").includes("2001")
+                  ) {
+                    n = n.year(dayjs().year());
+                  }
+                  console.log(n);
+                  if (n.isValid()) {
+                    endsInputCountRef.current?.clear();
                     setValue("recurrenceRule", {
                       ...value,
                       until: n.toDate(),
                       count: null,
                     });
-                  else if (e.nativeEvent.text) {
+                  } else if (e.nativeEvent.text) {
                     endsInputDateRef.current?.clear();
                     Toast.show({
                       type: "error",
@@ -421,7 +432,6 @@ function RecurrencePicker({ value, setValue }) {
               style={{ height: 40 }}
               variant={value?.count && !value?.until ? "filled" : null}
               onPress={() => {
-                endsInputDateRef.current?.clear();
                 setTimeout(() => {
                   endsInputCountRef.current?.focus();
                 }, 0);
@@ -441,13 +451,14 @@ function RecurrencePicker({ value, setValue }) {
                 onBlur={(e) => {
                   const n = parseInt(e.nativeEvent.text);
                   if (n === 0) endsInputCountRef.current?.clear();
-                  if (n && !isNaN(n))
+                  if (n && !isNaN(n)) {
+                    endsInputDateRef.current?.clear();
                     setValue("recurrenceRule", {
                       ...value,
                       until: null,
                       count: n === 0 ? null : n,
                     });
-                  else if (e.nativeEvent.text) {
+                  } else if (e.nativeEvent.text) {
                     endsInputCountRef.current?.clear();
                     Toast.show({
                       type: "error",
@@ -495,7 +506,11 @@ function RecurrencePicker({ value, setValue }) {
                     return acc;
                   }, {})}
               />
-              <ScrollView horizontal contentContainerStyle={{ gap: 10 }}>
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                contentContainerStyle={{ gap: 10, padding: 10 }}
+              >
                 {quickRules.map((date, i) => (
                   <Chip
                     key={i}
