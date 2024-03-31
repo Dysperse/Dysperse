@@ -91,7 +91,10 @@ export const LabelDetails = ({
   };
 
   return (
-    <ScrollView style={{ flex: 2 }}>
+    <ScrollView
+      style={{ flex: 2 }}
+      showsVerticalScrollIndicator={Boolean(data?.entities)}
+    >
       <ColorThemeProvider theme={labelTheme}>
         <LinearGradient
           style={[
