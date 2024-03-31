@@ -8,7 +8,11 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  createBottomSheetScrollableComponent,
+} from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
@@ -92,6 +96,11 @@ function SearchList({ collection, listRef }) {
           )
         : true;
     });
+
+  const BottomSheetFlashList = createBottomSheetScrollableComponent(
+    2,
+    FlashList
+  );
 
   return (
     <>
