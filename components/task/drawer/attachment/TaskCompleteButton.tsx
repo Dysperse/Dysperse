@@ -85,13 +85,15 @@ export function TaskCompleteButton() {
     }
   };
 
+  const disabled = isReadOnly || (task.recurrenceRule && !dateRange);
+
   return (
     <>
       <IconButton
-        disabled={isReadOnly}
+        disabled={disabled}
         style={({ pressed, hovered }) => ({
           borderWidth: 1,
-          opacity: 1,
+          opacity: disabled ? undefined : 1,
           borderColor: isCompleted
             ? green[pressed ? 11 : hovered ? 10 : 9]
             : theme[pressed ? 8 : hovered ? 7 : 6],

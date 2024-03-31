@@ -91,6 +91,8 @@ function TaskCheckbox({
     );
   };
 
+  const disabled = isReadOnly || (task.recurrenceRule && !dateRange);
+
   return (
     <>
       <Pressable
@@ -98,8 +100,9 @@ function TaskCheckbox({
           padding: 10,
           margin: -10,
           marginTop: -11,
+          opacity: disabled ? 0.5 : 1,
         })}
-        disabled={isReadOnly || (task.recurrenceRule && !dateRange)}
+        disabled={disabled}
         onTouchStart={() => (isActive.value = 1)}
         onTouchEnd={() => (isActive.value = 0)}
         {...(Platform.OS === "web" && {
