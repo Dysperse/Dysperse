@@ -235,31 +235,43 @@ function GeneralSettings({ mutate, data }) {
       <Text style={settingStyles.heading} weight={700}>
         General
       </Text>
-      <ListItemButton
-        disabled
-        onPress={() => {}}
-        style={{ paddingHorizontal: 0 }}
-      >
-        <ListItemText
-          primary="Week start"
-          secondary="This setting affects recurring tasks"
-        />
-        <MenuPopover
-          trigger={
-            <Button variant="filled">
-              <ButtonText>
-                {data?.weekStart === "SUNDAY" ? "Sunday" : "Monday"}
-              </ButtonText>
-              <Icon>expand_more</Icon>
-            </Button>
-          }
-          options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
-            ...e,
-            selected: e.text.toUpperCase() === data?.weekStart,
-            callback: () => handleSpaceEdit("weekStart", e.text.toUpperCase()),
-          }))}
-        />
-      </ListItemButton>
+      <View style={{ marginHorizontal: -15 }}>
+        <ListItemButton disabled onPress={() => {}}>
+          <ListItemText
+            primary="Week start"
+            secondary="This setting affects recurring tasks"
+          />
+          <MenuPopover
+            trigger={
+              <Button variant="filled">
+                <ButtonText>
+                  {data?.weekStart === "SUNDAY" ? "Sunday" : "Monday"}
+                </ButtonText>
+                <Icon>expand_more</Icon>
+              </Button>
+            }
+            options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
+              ...e,
+              selected: e.text.toUpperCase() === data?.weekStart,
+              callback: () =>
+                handleSpaceEdit("weekStart", e.text.toUpperCase()),
+            }))}
+          />
+        </ListItemButton>
+        <ListItemButton
+          onPress={() => {
+            Toast.show({ type: "info", text1: "Coming soon!" });
+          }}
+        >
+          <ListItemText
+            primary="Vanish mode"
+            secondary="Delete completed tasks after 14 days"
+          />
+          <Icon style={{ opacity: 0.6 }} size={40}>
+            toggle_off
+          </Icon>
+        </ListItemButton>
+      </View>
     </>
   );
 }
