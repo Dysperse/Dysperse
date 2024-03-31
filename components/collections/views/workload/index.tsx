@@ -132,12 +132,11 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
   const filteredTasks = [
     ...data.entities,
     ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
-  ].filter((t) => t.storyPoints === scale);
+  ].filter((t) => t.storyPoints === scale && !t.trash);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
       (oldData) => {
-        if (updatedTask.trash) return oldData;
         const labelIndex = oldData.labels.findIndex(
           (l) => l.id === updatedTask.label?.id
         );
