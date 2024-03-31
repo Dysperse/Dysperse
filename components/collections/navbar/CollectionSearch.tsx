@@ -1,6 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
-import BottomSheetFlashList from "@/ui/BottomSheet/BottomSheetFlashList";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -10,6 +9,7 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -151,7 +151,7 @@ function SearchList({ collection, listRef }) {
           ))}
         </BottomSheetScrollView>
       </View>
-      <BottomSheetFlashList
+      <FlashList
         ref={listRef}
         data={filtered}
         contentContainerStyle={{
@@ -251,6 +251,7 @@ export const CollectionSearch = ({ data }) => {
         sheetRef={ref}
         snapPoints={["90%"]}
         index={0}
+        enableContentPanningGesture={false}
         onClose={handleClose}
       >
         <Pressable style={styles.header} onPress={scrollToTop}>
