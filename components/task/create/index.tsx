@@ -1077,6 +1077,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
       date: defaultValues.date || dayjs().utc(),
       pinned: false,
       label: defaultValues.label,
+      storyPoints: defaultValues.storyPoints,
       collectionId: defaultValues.collectionId,
       attachments: [],
       note: "",
@@ -1270,6 +1271,7 @@ export default function CreateTask({
     date: dayjs().utc(),
     agendaOrder: null,
     collectionId: null,
+    storyPoints: 2,
   },
   mutate,
 }: {
@@ -1280,6 +1282,7 @@ export default function CreateTask({
     agendaOrder?: string;
     collectionId?: string;
     label?: any;
+    storyPoints?: number;
   };
   mutate: (newTask) => void;
 }) {

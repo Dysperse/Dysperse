@@ -185,6 +185,7 @@ const StoryPoint = ({ scale, index }) => {
                   defaultValues={{
                     collectionId: data?.id === "all" ? undefined : data?.id,
                     date: dayjs(),
+                    storyPoints: scale,
                   }}
                   mutate={(newTask) => {}}
                 >
