@@ -663,6 +663,7 @@ export function TaskDetails() {
                 />
                 <Slider
                   style={{ flex: 1, height: 40 }}
+                  thumbTintColor={theme[11]}
                   value={
                     complexityScale.findIndex((i) => i === task.storyPoints) ||
                     0
