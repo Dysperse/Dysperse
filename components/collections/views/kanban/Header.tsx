@@ -30,7 +30,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   const { mutate, access } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const theme = useColorTheme();
-  const { setCurrentColumn, currentColumn, columnsLength } =
+  const { setCurrentColumn, currentColumn, columnsLength, hasOther } =
     useKanbanContext() || {};
 
   const { setCurrentColumn: setCurrentColumn_grid } = useGridContext() || {};
@@ -132,7 +132,7 @@ export const KanbanHeader = memo(function KanbanHeader({
                   )
                 }
                 icon="arrow_forward_ios"
-                disabled={currentColumn === -1}
+                disabled={currentColumn === (hasOther ? -1 : columnsLength - 1)}
                 style={[currentColumn === -1 && { opacity: 0.5 }]}
               />
             )}

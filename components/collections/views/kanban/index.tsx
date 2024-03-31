@@ -59,6 +59,7 @@ export function Kanban() {
         currentColumn,
         setCurrentColumn,
         columnsLength: data.labels.length,
+        hasOther: data.entities.length > 0,
       }}
     >
       {data.labels.length === 0 ? (
