@@ -13,6 +13,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import Slider from "@react-native-community/slider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { useCallback, useRef, useState } from "react";
@@ -452,6 +453,15 @@ export function TaskDetails() {
   };
 
   const noteMenuRef = useRef<BottomSheetModal>(null);
+  const complexityMeasurements = [
+    "Minimum effort",
+    "Little effort",
+    "Moderate effort",
+    "Significant effort",
+    "Maximum effort",
+  ];
+
+  const complexityScale = [2, 4, 8, 16, 32];
 
   return (
     <>
@@ -613,6 +623,7 @@ export function TaskDetails() {
           task.due && {
             trigger: () => (
               <ListItemButton
+                disabled
                 variant="filled"
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
@@ -628,6 +639,46 @@ export function TaskDetails() {
                     style={{ backgroundColor: theme[5] }}
                   />
                 )}
+              </ListItemButton>
+            ),
+            content: <></>,
+          },
+
+          {
+            trigger: () => (
+              <ListItemButton
+                variant="filled"
+                onTouchStart={(e) => e.stopPropagation()}
+                disabled
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+              >
+                <Icon>exercise</Icon>
+                <ListItemText
+                  primary="Complexity"
+                  secondary={
+                    complexityMeasurements[
+                      complexityScale.findIndex((i) => i === task.storyPoints)
+                    ]
+                  }
+                />
+                <Slider
+                  style={{ flex: 1, height: 40 }}
+                  value={
+                    complexityScale.findIndex((i) => i === task.storyPoints) ||
+                    0
+                  }
+                  step={1}
+                  minimumValue={0}
+                  maximumValue={4}
+                  onValueChange={(value) =>
+                    updateTask("storyPoints", complexityScale[value], false)
+                  }
+                  onSlidingComplete={(value) =>
+                    updateTask("storyPoints", complexityScale[value])
+                  }
+                  minimumTrackTintColor={theme[9]}
+                  maximumTrackTintColor={theme[6]}
+                />
               </ListItemButton>
             ),
             content: <></>,
