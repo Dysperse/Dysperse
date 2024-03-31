@@ -3,10 +3,12 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import * as shapes from "@/ui/shapes";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
-import React, { useRef } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useRef, useState } from "react";
 import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
@@ -35,8 +37,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const StoryPointHeader = ({ scale, index, columnRef }) => {
+const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const Shape = shapes[`shape${index + 1}`] || React.Fragment;
 
   const measurements = [
@@ -47,48 +50,79 @@ const StoryPointHeader = ({ scale, index, columnRef }) => {
     "Maximum effort",
   ];
 
+  const handleBack = setSelectedScale((t) => (t === 0 ? 0 : t - 1));
+  const handleNext = setSelectedScale((t) => (t === 4 ? 4 : t + 1));
+
   return (
-    <Pressable
-      onPress={() =>
-        columnRef.current.scrollToOffset({ index: 0, animated: true })
-      }
+    <LinearGradient
+      colors={[theme[breakpoints.md ? 2 : 3], theme[breakpoints.md ? 2 : 1]]}
       style={{
+        borderRadius: breakpoints.md ? 20 : 0,
+        flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
+        paddingHorizontal: breakpoints.md ? 0 : 10,
+        justifyContent: "space-between",
         padding: 20,
-        gap: 10,
+        paddingTop: breakpoints.md ? 10 : 0,
       }}
     >
-      <View
+      {!breakpoints.md && (
+        <IconButton
+          onPress={handleBack}
+          size={30}
+          icon="arrow_back"
+          disabled={index === 0}
+        />
+      )}
+      <Pressable
+        onPress={() =>
+          columnRef.current.scrollToOffset({ index: 0, animated: true })
+        }
         style={{
-          flexDirection: "column",
           alignItems: "center",
-          width: 60,
-          height: 60,
           justifyContent: "center",
-          marginHorizontal: "auto",
-          position: "relative",
+          gap: 10,
         }}
       >
         <View
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
+            flexDirection: "column",
+            alignItems: "center",
+            width: 60,
+            height: 60,
+            justifyContent: "center",
+            marginHorizontal: "auto",
+            position: "relative",
           }}
         >
-          <Shape size={60} color={theme[4]} />
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+          >
+            <Shape size={60} color={theme[4]} />
+          </View>
+          <Text style={{ color: theme[11], fontSize: 20, fontFamily: "mono" }}>
+            {scale}
+          </Text>
         </View>
-        <Text style={{ color: theme[11], fontSize: 20, fontFamily: "mono" }}>
-          {scale}
-        </Text>
-      </View>
-      <Text variant="eyebrow">{measurements[index]}</Text>
-    </Pressable>
+        <Text variant="eyebrow">{measurements[index]}</Text>
+      </Pressable>
+      {!breakpoints.md && (
+        <IconButton
+          onPress={handleNext}
+          size={30}
+          icon="arrow_forward"
+          disabled={index === 4}
+        />
+      )}
+    </LinearGradient>
   );
 };
 
-const StoryPoint = ({ scale, index }) => {
+const StoryPoint = ({ scale, index, setSelectedScale }) => {
   const breakpoints = useResponsiveBreakpoints();
   const { data, access, mutate } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
@@ -162,12 +196,18 @@ const StoryPoint = ({ scale, index }) => {
     <View
       style={{
         marginBottom: 10,
-        backgroundColor: theme[2],
+        backgroundColor: theme[breakpoints.md ? 2 : 1],
         width: 320,
-        borderRadius: 20,
+        borderRadius: breakpoints.md ? 20 : 0,
+        flex: 1,
       }}
     >
-      <StoryPointHeader columnRef={columnRef} scale={scale} index={index} />
+      <StoryPointHeader
+        setSelectedScale={setSelectedScale}
+        columnRef={columnRef}
+        scale={scale}
+        index={index}
+      />
       <FlatList
         ref={columnRef}
         ListHeaderComponent={
@@ -227,7 +267,6 @@ const StoryPoint = ({ scale, index }) => {
               ? -1
               : 0
           )}
-        // estimatedItemSize={200}
         initialNumToRender={10}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
@@ -257,14 +296,26 @@ const StoryPoint = ({ scale, index }) => {
 };
 
 export function Workload() {
-  const { data } = useCollectionContext();
+  const breakpoints = useResponsiveBreakpoints();
   const scale = [2, 4, 8, 16, 32];
+  const [selectedScale, setSelectedScale] = useState(0);
 
-  return (
+  return breakpoints.md ? (
     <ScrollView horizontal contentContainerStyle={{ padding: 15, gap: 15 }}>
       {scale.map((s, i) => (
-        <StoryPoint key={s} scale={s} index={i} />
+        <StoryPoint
+          key={s}
+          scale={s}
+          index={i}
+          setSelectedScale={setSelectedScale}
+        />
       ))}
     </ScrollView>
+  ) : (
+    <StoryPoint
+      scale={scale[selectedScale]}
+      setSelectedScale={setSelectedScale}
+      index={selectedScale}
+    />
   );
 }
