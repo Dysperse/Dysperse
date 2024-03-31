@@ -1,11 +1,16 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
+import { Button } from "@/ui/Button";
+import Chip from "@/ui/Chip";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
+import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useCollectionContext } from "../context";
@@ -36,32 +41,129 @@ const styles = StyleSheet.create({
 });
 
 function SearchList({ collection, listRef }) {
+  const theme = useColorTheme();
   const { data, mutate } = collection;
   const [query, setQuery] = useState("");
+  const [activeFilters, setActiveFilters] = useState([]);
+  const inputRef = useRef(null);
+
+  const filters = [
+    { label: "Important", icon: "push_pin", filter: (item) => item.pinned },
+    {
+      label: "Today",
+      icon: "calendar_today",
+      filter: (item) => item.due && dayjs(item.due).isToday(),
+    },
+    {
+      label: "Overdue",
+      icon: "schedule",
+      filter: (item) =>
+        item.due &&
+        dayjs(item.due).isBefore(dayjs(), "day") &&
+        !item.completionInstances.length,
+    },
+    {
+      label: "Completed",
+      icon: "check",
+      filter: (task) => !task.recurrenceRule && task.completionInstances.length,
+    },
+    {
+      label: "Repeats",
+      icon: "loop",
+      filter: (task) => task.recurrenceRule,
+    },
+  ];
+
+  const handleSearch = (text) => setQuery(text);
 
   const filtered = [
     ...data.entities,
     ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
-  ].filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
-
-  const handleSearch = (text) => setQuery(text);
+  ]
+    .filter(
+      (item) =>
+        item.name.toLowerCase().includes(query.toLowerCase()) ||
+        item.note?.toLowerCase()?.includes(query.toLowerCase())
+    )
+    .filter((item) => {
+      return activeFilters.length
+        ? activeFilters.some((filter) =>
+            filters.find((f) => f.label === filter)?.filter(item)
+          )
+        : true;
+    });
 
   return (
     <>
-      <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-        <TextField
-          placeholder="Search"
-          variant="filled+outlined"
-          onChangeText={handleSearch}
-        />
+      <View style={{ paddingTop: 20, gap: 10 }}>
+        <View
+          style={{
+            paddingHorizontal: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <TextField
+            inputRef={inputRef}
+            placeholder="Search"
+            variant="filled+outlined"
+            onChangeText={handleSearch}
+            style={{ flex: 1, height: 40 }}
+          />
+          {(query || activeFilters.length > 0) && (
+            <Button
+              variant="outlined"
+              onPress={() => {
+                setQuery("");
+                setActiveFilters([]);
+              }}
+              style={{ height: 40 }}
+            >
+              <Text style={{ color: theme[11] }}>Clear</Text>
+            </Button>
+          )}
+        </View>
+        <BottomSheetScrollView
+          horizontal
+          contentContainerStyle={{ gap: 10, paddingHorizontal: 20 }}
+          showsHorizontalScrollIndicator={false}
+        >
+          {filters.map((filter) => (
+            <Chip
+              key={filter.label}
+              label={filter.label}
+              icon={
+                <Icon filled={activeFilters.includes(filter.label)}>
+                  {filter.icon}
+                </Icon>
+              }
+              outlined={!activeFilters.includes(filter.label)}
+              onPress={() => {
+                setActiveFilters((prev) =>
+                  prev.includes(filter.label)
+                    ? prev.filter((f) => f !== filter.label)
+                    : [...prev, filter.label]
+                );
+                inputRef.current.focus();
+              }}
+            />
+          ))}
+        </BottomSheetScrollView>
       </View>
       <FlashList
         ref={listRef}
         data={filtered}
-        contentContainerStyle={{ padding: 25 }}
+        contentContainerStyle={{
+          padding: 25,
+          paddingTop: 15,
+          paddingHorizontal: 15,
+        }}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Entity
+            showDate
+            showLabel
             isReadOnly={collection.isReadOnly}
             item={item}
             onTaskUpdate={(newTask) => {
@@ -112,7 +214,7 @@ function SearchList({ collection, listRef }) {
         centerContent={filtered.length === 0}
         ListHeaderComponent={
           filtered.length && (
-            <View>
+            <View style={{ paddingHorizontal: 15, paddingBottom: 5 }}>
               <Text variant="eyebrow">
                 {filtered.length} result{filtered.length !== 1 && "s"}
               </Text>
