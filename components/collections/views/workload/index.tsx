@@ -50,8 +50,8 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
     "Maximum effort",
   ];
 
-  const handleBack = setSelectedScale((t) => (t === 0 ? 0 : t - 1));
-  const handleNext = setSelectedScale((t) => (t === 4 ? 4 : t + 1));
+  const handleBack = () => setSelectedScale((t) => (t === 0 ? 0 : t - 1));
+  const handleNext = () => setSelectedScale((t) => (t === 4 ? 4 : t + 1));
 
   return (
     <LinearGradient
@@ -60,17 +60,15 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
         borderRadius: breakpoints.md ? 20 : 0,
         flexDirection: "row",
         alignItems: "center",
-        paddingHorizontal: breakpoints.md ? 0 : 10,
-        justifyContent: "space-between",
         padding: 20,
-        paddingTop: breakpoints.md ? 10 : 0,
+        paddingTop: breakpoints.md ? 20 : 0,
       }}
     >
       {!breakpoints.md && (
         <IconButton
           onPress={handleBack}
           size={30}
-          icon="arrow_back"
+          icon="arrow_back_ios_new"
           disabled={index === 0}
         />
       )}
@@ -80,6 +78,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
         }
         style={{
           alignItems: "center",
+          marginHorizontal: "auto",
           justifyContent: "center",
           gap: 10,
         }}
@@ -114,7 +113,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
         <IconButton
           onPress={handleNext}
           size={30}
-          icon="arrow_forward"
+          icon="arrow_forward_ios"
           disabled={index === 4}
         />
       )}
