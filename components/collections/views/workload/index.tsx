@@ -137,6 +137,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
       (oldData) => {
+        if (updatedTask.trash) return oldData;
         const labelIndex = oldData.labels.findIndex(
           (l) => l.id === updatedTask.label?.id
         );
