@@ -226,9 +226,40 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
                     date: dayjs(),
                     storyPoints: scale,
                   }}
-                  mutate={(newTask) => {}}
+                  mutate={(newTask) => {
+                    mutate((oldData) => {
+                      const labelIndex = oldData.labels.findIndex(
+                        (l) => l.id === newTask.label?.id
+                      );
+                      if (labelIndex === -1) {
+                        return {
+                          ...oldData,
+                          entities: [...oldData.entities, newTask],
+                        };
+                      }
+
+                      return {
+                        ...oldData,
+                        labels: [
+                          ...oldData.labels.slice(0, labelIndex),
+                          {
+                            ...oldData.labels[labelIndex],
+                            entities: [
+                              ...oldData.labels[labelIndex].entities,
+                              newTask,
+                            ],
+                          },
+                          ...oldData.labels.slice(labelIndex + 1),
+                        ],
+                      };
+                    });
+                  }}
                 >
-                  <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
+                  <Button
+                    variant="filled"
+                    style={{ flex: 1, minHeight: 50 }}
+                    disabled={isReadOnly}
+                  >
                     <ButtonText>New</ButtonText>
                     <Icon>add</Icon>
                   </Button>
