@@ -145,6 +145,16 @@ export function Column(props: ColumnProps) {
     );
   };
 
+  const data = (props.label ? props.label.entities : props.entities)
+    .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
+    .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
+    .sort((x, y) =>
+      x.completionInstances.length === y.completionInstances.length
+        ? 0
+        : x.completionInstances.length === 0
+        ? -1
+        : 0
+    );
   return (
     <View
       style={
@@ -208,6 +218,7 @@ export function Column(props: ColumnProps) {
             tintColor={theme[11]}
           />
         }
+        centerContent={data.length === 0}
         ListEmptyComponent={() => <ColumnEmptyComponent row={props.grid} />}
         ListHeaderComponent={
           props.grid ? undefined : (
@@ -244,18 +255,7 @@ export function Column(props: ColumnProps) {
             </>
           )
         }
-        data={(props.label ? props.label.entities : props.entities)
-          .sort((a, b) =>
-            a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
-          )
-          .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
-          .sort((x, y) =>
-            x.completionInstances.length === y.completionInstances.length
-              ? 0
-              : x.completionInstances.length === 0
-              ? -1
-              : 0
-          )}
+        data={data}
         // estimatedItemSize={200}
         initialNumToRender={10}
         contentContainerStyle={{
