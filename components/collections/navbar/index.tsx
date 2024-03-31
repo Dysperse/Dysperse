@@ -17,13 +17,12 @@ import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
-import { CollectionIntegrationsMenu } from "./CollectionIntegrationsMenu";
 import { CollectionLabelMenu } from "./CollectionLabelMenu";
 import { CollectionRenameMenu } from "./CollectionRenameMenu";
+import { CollectionSearch } from "./CollectionSearch";
 import { CollectionShareMenu } from "./CollectionShareMenu";
 
 export const styles = StyleSheet.create({
@@ -42,20 +41,6 @@ interface CollectionNavbarProps {
   editOrderMode: boolean;
   setEditOrderMode: (value: boolean) => void;
 }
-
-const CollectionSearch = () => {
-  const breakpoints = useResponsiveBreakpoints();
-
-  return (
-    <IconButton
-      size={breakpoints.md ? 50 : 40}
-      style={[breakpoints.md && { borderRadius: 20 }]}
-      icon="search"
-      onPress={() => Toast.show({ text1: "Coming soon!" })}
-      variant={breakpoints.md ? "filled" : "outlined"}
-    />
-  );
-};
 
 export const CollectionNavbar = memo(function CollectionNavbar({
   editOrderMode,
@@ -324,7 +309,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           options={options}
         />
         {type === "planner" && breakpoints.md && <AgendaButtons />}
-        <MenuPopover
+        {/* <MenuPopover
           menuProps={{
             rendererProps: { placement: "bottom" },
           }}
@@ -337,10 +322,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             />
           }
           options={filterOptions}
-        />
-        {breakpoints.md && <CollectionSearch />}
-        <CollectionIntegrationsMenu />
+        /> */}
         <CollectionContext.Provider value={{ data, access, ...ctx }}>
+          <CollectionSearch data={data} />
           <CollectionShareMenu />
         </CollectionContext.Provider>
       </LinearGradient>

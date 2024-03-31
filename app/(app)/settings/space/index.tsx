@@ -242,7 +242,7 @@ function GeneralSettings({ mutate, data }) {
       >
         <ListItemText
           primary="Week start"
-          secondary="This setting affects all tasks for all members in this space."
+          secondary="This setting affects recurring tasks"
         />
         <MenuPopover
           trigger={

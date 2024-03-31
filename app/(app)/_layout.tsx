@@ -40,6 +40,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import weekday from "dayjs/plugin/weekday";
 import { BlurView } from "expo-blur";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
@@ -78,6 +79,7 @@ dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
+dayjs.extend(weekday);
 dayjs.extend(isToday);
 
 export function SessionLoadingScreen() {
