@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 1,
-    paddingTop: 50,
     width: "100%",
   },
   emptyIcon: { transform: [{ rotate: "-45deg" }] },
@@ -417,6 +416,7 @@ export function Column({
           flex: 1,
           maxHeight: "100%",
         }}
+        centerContent={column.tasks.length === 0}
         ListEmptyComponent={() => <ColumnEmptyComponent />}
         renderItem={({ item }) => (
           <Entity

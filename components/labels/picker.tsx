@@ -1,6 +1,7 @@
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import BottomSheet, { DBottomSheetProps } from "@/ui/BottomSheet";
+import BottomSheetFlashList from "@/ui/BottomSheet/BottomSheetFlashList";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -12,11 +13,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  useBottomSheet,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import React, {
   cloneElement,
   memo,
@@ -256,7 +253,8 @@ const LabelPicker = memo(function LabelPicker({
             </CreateLabelModal>
           </View>
           {Array.isArray(data) ? (
-            <BottomSheetFlatList
+            <BottomSheetFlashList
+              estimatedItemSize={55}
               data={data
                 .filter((label) =>
                   label.name.toLowerCase().includes(query.toLowerCase())
