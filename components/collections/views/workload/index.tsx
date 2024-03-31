@@ -196,7 +196,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
       style={{
         marginBottom: 10,
         backgroundColor: theme[breakpoints.md ? 2 : 1],
-        width: 320,
+        width: breakpoints.md ? 320 : "100%",
         borderRadius: breakpoints.md ? 20 : 0,
         flex: 1,
       }}
