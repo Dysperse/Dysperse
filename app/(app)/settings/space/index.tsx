@@ -29,20 +29,25 @@ function SpaceHeader({ data }) {
 
   return (
     <LinearGradient
-      colors={[spaceTheme[4], spaceTheme[2], spaceTheme[3]]}
-      start={[0, 0]}
-      end={[1, 1]}
+      colors={[spaceTheme[9], spaceTheme[11], spaceTheme[10]]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{
         borderRadius: 25,
         height: 200,
+        marginTop: 10,
         justifyContent: "flex-end",
         padding: 20,
       }}
     >
-      <Text numberOfLines={2} style={{ fontSize: breakpoints.md ? 40 : 30 }}>
+      <Text
+        weight={700}
+        numberOfLines={2}
+        style={{ fontSize: breakpoints.md ? 40 : 30, color: spaceTheme[1] }}
+      >
         {data.name}
       </Text>
-      <Text>
+      <Text style={{ color: spaceTheme[1], opacity: 0.7 }} weight={700}>
         {data.members?.length} member{data.members?.length === 1 ? "" : "s"}
       </Text>
     </LinearGradient>
@@ -286,7 +291,7 @@ export default function Page() {
 
   return (
     <SettingsLayout>
-      <Text style={settingStyles.heading}>Space</Text>
+      <Text style={settingStyles.title}>Space</Text>
       {data ? (
         <>
           <ColorThemeProvider theme={spaceTheme}>
