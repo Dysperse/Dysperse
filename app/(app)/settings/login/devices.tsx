@@ -13,6 +13,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { Image } from "expo-image";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
@@ -52,8 +53,10 @@ export function SessionCard({
     "tv_gen",
   ];
 
+  const { data, error } = useSWR(["user/sessions/device", { ip: session.ip }]);
+
   return (
-    <View style={{ height: 85 }}>
+    <View style={{ height: 150 }}>
       <ListItemButton
         variant={isCurrentDevice ? "filled" : "outlined"}
         disabled
@@ -63,6 +66,10 @@ export function SessionCard({
           truncate
           primary={session.name || type[session.deviceType] || "Unknown device"}
           secondary={`${session.ip} • ${dayjs(session.timestamp).fromNow()}`}
+        />
+        <Image
+          source={{ uri: data?.preview }}
+          style={{ width: 300, height: 300, borderRadius: 25 }}
         />
         <ConfirmationModal
           title="Sign out?"

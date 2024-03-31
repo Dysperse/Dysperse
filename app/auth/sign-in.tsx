@@ -7,6 +7,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as Device from "expo-device";
+import * as Network from "expo-network";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -136,6 +137,7 @@ export default function SignIn() {
           setStep(1);
         } else {
           setStep(step === 3 ? 4 : 2);
+          const ip = await Network.getIpAddressAsync();
           const sessionRequest = await sendApiRequest(
             false,
             "POST",
@@ -146,6 +148,7 @@ export default function SignIn() {
                 ...data,
                 captchaToken: token,
                 deviceType: Device.deviceType,
+                ip,
                 deviceName:
                   Device.deviceName ||
                   (Platform.OS === "web"
