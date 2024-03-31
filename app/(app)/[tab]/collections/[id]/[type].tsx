@@ -31,6 +31,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Stream } from "../../../../../components/collections/views/stream";
+import { Workload } from "../../../../../components/collections/views/workload";
 
 export const styles = StyleSheet.create({
   header: {
@@ -267,7 +268,7 @@ export default function Page() {
       content = <Grid editOrderMode={editOrderMode} />;
       break;
     case "workload":
-      content = comingSoon;
+      content = <Workload />;
       break;
     case "matrix":
       content = comingSoon;

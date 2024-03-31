@@ -89,7 +89,7 @@ export const shape4 = (props: shapeProps) => (
   </svg>
 );
 
-export const shape5 = (props: shapeProps) => (
+export const shape7 = (props: shapeProps) => (
   <Svg
     width={props.size}
     height={props.size}
@@ -111,7 +111,7 @@ export const shape5 = (props: shapeProps) => (
   </Svg>
 );
 
-export const shape6 = (props: shapeProps) => (
+export const shape5 = (props: shapeProps) => (
   <Svg
     width={props.size}
     height={props.size}
@@ -133,7 +133,7 @@ export const shape6 = (props: shapeProps) => (
   </Svg>
 );
 
-export const shape7 = (props: shapeProps) => (
+export const shape6 = (props: shapeProps) => (
   <Svg
     width={props.size}
     height={props.size}
