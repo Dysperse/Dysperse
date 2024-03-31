@@ -208,8 +208,9 @@ const StoryPoint = ({ scale, index }) => {
               {filteredTasks.length > 0 &&
                 !filteredTasks.find(
                   (task) =>
-                    !task.recurrenceRule &&
-                    task.completionInstances.length === 0
+                    task.recurrenceRule ||
+                    (!task.recurrenceRule &&
+                      task.completionInstances.length === 0)
                 ) && <ColumnFinishedComponent />}
             </>
           )
