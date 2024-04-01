@@ -195,7 +195,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
   return (
     <View
       style={{
-        marginBottom: 10,
+        marginBottom: breakpoints.md ? 10 : 0,
         backgroundColor: theme[breakpoints.md ? 2 : 1],
         width: breakpoints.md ? 320 : "100%",
         borderRadius: breakpoints.md ? 20 : 0,
@@ -300,10 +300,8 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
           )}
         initialNumToRender={10}
         contentContainerStyle={{
-          padding: breakpoints.md ? 15 : 0,
+          padding: 15,
           paddingBottom: 50,
-          paddingTop: 15,
-          paddingHorizontal: 15,
           gap: 0,
         }}
         style={{
