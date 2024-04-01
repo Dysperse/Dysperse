@@ -55,7 +55,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
 
   return (
     <LinearGradient
-      colors={[theme[breakpoints.md ? 2 : 3], theme[breakpoints.md ? 2 : 1]]}
+      colors={[theme[breakpoints.md ? 2 : 3], theme[breakpoints.md ? 2 : 3]]}
       style={{
         borderRadius: breakpoints.md ? 20 : 0,
         flexDirection: "row",
@@ -300,7 +300,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
           )}
         initialNumToRender={10}
         contentContainerStyle={{
-          padding: width > 600 ? 15 : 0,
+          padding: breakpoints.md ? 15 : 0,
           paddingBottom: 50,
           paddingTop: 15,
           paddingHorizontal: 15,
