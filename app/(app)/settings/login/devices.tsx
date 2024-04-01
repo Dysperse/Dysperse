@@ -148,8 +148,8 @@ export function SessionCard({
       ) : (
         <View
           style={{
-            width: 300,
-            height: 300,
+            width: breakpoints.md ? 300 : "100%",
+            height: breakpoints.md ? 300 : "100%",
             borderRadius: 25,
             backgroundColor: theme[4],
             justifyContent: "center",
