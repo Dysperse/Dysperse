@@ -213,14 +213,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
         ListHeaderComponent={
           isReadOnly ? null : (
             <>
-              <View
-                style={[
-                  styles.header,
-                  {
-                    paddingHorizontal: breakpoints.md ? 0 : 5,
-                  },
-                ]}
-              >
+              <View style={styles.header}>
                 <CreateTask
                   defaultValues={{
                     collectionId: data?.id === "all" ? undefined : data?.id,
