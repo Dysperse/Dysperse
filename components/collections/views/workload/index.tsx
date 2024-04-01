@@ -258,7 +258,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
                 >
                   <Button
                     variant="filled"
-                    style={{ flex: 1, minHeight: 50 }}
+                    style={{ flex: 1, minHeight: 50, marginTop: 15 }}
                     disabled={isReadOnly}
                   >
                     <ButtonText>New</ButtonText>
