@@ -68,7 +68,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
       {!breakpoints.md && (
         <IconButton
           onPress={handleBack}
-          size={30}
+          size={55}
           icon="arrow_back_ios_new"
           disabled={index === 0}
         />
@@ -113,7 +113,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
       {!breakpoints.md && (
         <IconButton
           onPress={handleNext}
-          size={30}
+          size={55}
           icon="arrow_forward_ios"
           disabled={index === 4}
         />
