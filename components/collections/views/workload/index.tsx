@@ -62,6 +62,8 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
         alignItems: "center",
         padding: 20,
         paddingTop: breakpoints.md ? 20 : 0,
+        borderTopWidth: breakpoints.md ? 0 : 1,
+        borderTopColor: theme[5]
       }}
     >
       {!breakpoints.md && (
