@@ -102,7 +102,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
               left: 0,
             }}
           >
-            <Shape size={60} color={theme[4]} />
+            <Shape size={60} color={theme[5]} />
           </View>
           <Text style={{ color: theme[11], fontSize: 20, fontFamily: "mono" }}>
             {scale}
