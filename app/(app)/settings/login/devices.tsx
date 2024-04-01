@@ -138,8 +138,8 @@ export function SessionCard({
               dark && {
                 filter: "invert(5) brightness(2) contrast(0.8)",
               }),
-            width: 300,
-            height: 300,
+            width: breakpoints.md ? 300 : "100%",
+            height: breakpoints.md ? 300 : "100%",
             borderRadius: 25,
             maxWidth: "100%",
             aspectRatio: "1/1",
