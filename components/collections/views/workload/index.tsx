@@ -55,7 +55,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
 
   return (
     <LinearGradient
-      colors={[theme[2], theme[breakpoints.md ? 2 : 1]]}
+      colors={[theme[breakpoints.md ? 3: 2], theme[breakpoints.md ? 2 : 1]]}
       style={{
         borderRadius: breakpoints.md ? 20 : 0,
         flexDirection: "row",
