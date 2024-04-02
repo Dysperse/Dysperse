@@ -190,4 +190,11 @@ declare module "react-native" {
   }
 }
 
+// add workbox to window
+declare global {
+  interface Window {
+    workbox: import("workbox-window").Workbox;
+  }
+}
+
 export {};

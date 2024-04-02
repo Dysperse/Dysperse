@@ -6,6 +6,8 @@ export function WorkboxInitializer() {
     if ("serviceWorker" in navigator) {
       const wb = new Workbox("/sw.js");
       wb.register();
+
+      window.workbox = wb;
     }
   }, []);
 
