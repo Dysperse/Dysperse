@@ -8,6 +8,11 @@ export function WorkboxInitializer() {
       wb.register();
 
       window.workbox = wb;
+
+      wb.addEventListener("installed", (event) => {
+        console.log(`Event ${event.type} is triggered.`);
+        console.log(event);
+      });
     }
   }, []);
 
