@@ -17,6 +17,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import PWAInstallerPrompt from "../PWAInstaller";
 import Tab from "./tab";
 
 const SpaceStorageAlert = memo(function SpaceStorageAlert() {
@@ -193,6 +194,30 @@ const WebPWAInstallButton = () => {
           <Spinner />
         </Pressable>
       )}
+
+      <PWAInstallerPrompt
+        render={({ onClick }) => (
+          <Pressable
+            onClick={onClick}
+            // action={
+            //   <IconButton
+            //     onClick={(e) => {
+            //       e.stopPropagation();
+            //       setButton(false);
+            //     }}
+            //     color="inherit"
+            //   >
+            //     <Icon>close</Icon>
+            //   </IconButton>
+            // }
+          >
+            <Text style={{ color: theme[11], fontSize: 12 }}>
+              Tap to install Dysperse
+            </Text>
+            <Icon>download</Icon>
+          </Pressable>
+        )}
+      />
     </View>
   );
 };
