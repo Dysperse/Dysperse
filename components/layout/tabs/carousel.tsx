@@ -1,18 +1,19 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { Avatar } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useTabParams } from "@/utils/useTabParams";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -132,6 +133,17 @@ const JumpToButton = memo(function JumpToButton() {
   );
 });
 
+const pwaPromptStyles = StyleSheet.create({
+  banner: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 20,
+    padding: 15,
+    gap: 10,
+    marginBottom: 5,
+  },
+});
+
 const WebPWAInstallButton = () => {
   const theme = useColorTheme();
   const [updating, setUpdating] = useState(false);
@@ -171,14 +183,10 @@ const WebPWAInstallButton = () => {
       {updating && (
         <Pressable
           onPress={handleReload}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: theme[3],
-            borderRadius: 20,
-            padding: 15,
-            gap: 10,
-          }}
+          style={({ pressed, hovered }) => [
+            pwaPromptStyles.banner,
+            { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+          ]}
         >
           <View style={{ flex: 1 }}>
             <Text weight={900} style={{ marginBottom: 3, color: theme[11] }}>
@@ -199,20 +207,20 @@ const WebPWAInstallButton = () => {
         render={({ onClick }) => (
           <Pressable
             onClick={onClick}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: theme[3],
-              borderRadius: 20,
-              padding: 15,
-              gap: 10,
-              marginTop: 10,
-            }}
+            style={({ pressed, hovered }) => [
+              pwaPromptStyles.banner,
+              { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+            ]}
           >
-            <Text style={{ color: theme[11], fontSize: 12 }}>
+            <Text style={{ color: theme[11], flex: 1 }} weight={900}>
               Tap to install Dysperse
             </Text>
-            <Icon>download</Icon>
+            <Avatar
+              icon="download"
+              size={40}
+              disabled
+              style={{ backgroundColor: addHslAlpha(theme[7], 0.3) }}
+            />
           </Pressable>
         )}
       />
