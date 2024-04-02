@@ -1,3 +1,6 @@
+/**
+ * @source https://github.com/shnaveen25/react-pwa-installer-prompt/blob/main/src/index.js
+ */
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 
