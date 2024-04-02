@@ -32,7 +32,6 @@ import { AppState, Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
 import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "../context/AuthProvider";
-import { SessionLoadingScreen } from "./(app)/_layout";
 
 SystemUI.setBackgroundColorAsync("black");
 
@@ -292,23 +291,19 @@ function Root() {
               closeSidebarOnMobile,
             }}
           >
-            {fontsLoaded ? (
-              <SWRWrapper>
-                <JsStack screenOptions={{ header: () => null }}>
-                  <Slot screenOptions={{ onLayoutRootView }} />
-                  <JsStack.Screen
-                    name="open"
-                    options={{
-                      presentation: "modal",
-                      animationEnabled: true,
-                      ...TransitionPresets.ModalPresentationIOS,
-                    }}
-                  />
-                </JsStack>
-              </SWRWrapper>
-            ) : (
-              <SessionLoadingScreen />
-            )}
+            <SWRWrapper>
+              <JsStack screenOptions={{ header: () => null }}>
+                <Slot screenOptions={{ onLayoutRootView }} />
+                <JsStack.Screen
+                  name="open"
+                  options={{
+                    presentation: "modal",
+                    animationEnabled: true,
+                    ...TransitionPresets.ModalPresentationIOS,
+                  }}
+                />
+              </JsStack>
+            </SWRWrapper>
           </SidebarContext.Provider>
         </ColorThemeProvider>
       </SessionProvider>
