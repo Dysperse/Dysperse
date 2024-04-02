@@ -1,13 +1,12 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import { Avatar } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useTabParams } from "@/utils/useTabParams";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -212,15 +211,10 @@ const WebPWAInstallButton = () => {
               { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
             ]}
           >
+            <Icon>download</Icon>
             <Text style={{ color: theme[11], flex: 1 }} weight={900}>
-              Tap to install Dysperse
+              Install app
             </Text>
-            <Avatar
-              icon="download"
-              size={40}
-              disabled
-              style={{ backgroundColor: addHslAlpha(theme[7], 0.3) }}
-            />
           </Pressable>
         )}
       />
