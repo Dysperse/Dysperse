@@ -205,7 +205,7 @@ const WebPWAInstallButton = () => {
       <PWAInstallerPrompt
         render={({ onClick }) => (
           <Pressable
-            onClick={onClick}
+            onPress={onClick}
             style={({ pressed, hovered }) => [
               pwaPromptStyles.banner,
               { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
