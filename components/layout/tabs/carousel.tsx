@@ -199,17 +199,15 @@ const WebPWAInstallButton = () => {
         render={({ onClick }) => (
           <Pressable
             onClick={onClick}
-            // action={
-            //   <IconButton
-            //     onClick={(e) => {
-            //       e.stopPropagation();
-            //       setButton(false);
-            //     }}
-            //     color="inherit"
-            //   >
-            //     <Icon>close</Icon>
-            //   </IconButton>
-            // }
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: theme[3],
+              borderRadius: 20,
+              padding: 15,
+              gap: 10,
+              marginTop: 10,
+            }}
           >
             <Text style={{ color: theme[11], fontSize: 12 }}>
               Tap to install Dysperse
