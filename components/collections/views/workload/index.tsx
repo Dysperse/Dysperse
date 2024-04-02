@@ -55,19 +55,20 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
 
   return (
     <LinearGradient
-      colors={[theme[breakpoints.md ? 2 : 3], theme[breakpoints.md ? 2 : 1]]}
+      colors={[theme[breakpoints.md ? 2 : 3], theme[breakpoints.md ? 2 : 3]]}
       style={{
         borderRadius: breakpoints.md ? 20 : 0,
         flexDirection: "row",
         alignItems: "center",
         padding: 20,
-        paddingTop: breakpoints.md ? 20 : 0,
+        borderTopWidth: breakpoints.md ? 0 : 1,
+        borderTopColor: theme[5]
       }}
     >
       {!breakpoints.md && (
         <IconButton
           onPress={handleBack}
-          size={30}
+          size={55}
           icon="arrow_back_ios_new"
           disabled={index === 0}
         />
@@ -101,7 +102,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
               left: 0,
             }}
           >
-            <Shape size={60} color={theme[4]} />
+            <Shape size={60} color={theme[5]} />
           </View>
           <Text style={{ color: theme[11], fontSize: 20, fontFamily: "mono" }}>
             {scale}
@@ -112,7 +113,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
       {!breakpoints.md && (
         <IconButton
           onPress={handleNext}
-          size={30}
+          size={55}
           icon="arrow_forward_ios"
           disabled={index === 4}
         />
@@ -194,9 +195,9 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
   return (
     <View
       style={{
-        marginBottom: 10,
+        marginBottom: breakpoints.md ? 10 : 0,
         backgroundColor: theme[breakpoints.md ? 2 : 1],
-        width: 320,
+        width: breakpoints.md ? 320 : "100%",
         borderRadius: breakpoints.md ? 20 : 0,
         flex: 1,
       }}
@@ -212,14 +213,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
         ListHeaderComponent={
           isReadOnly ? null : (
             <>
-              <View
-                style={[
-                  styles.header,
-                  {
-                    paddingHorizontal: breakpoints.md ? 0 : 5,
-                  },
-                ]}
-              >
+              <View style={styles.header}>
                 <CreateTask
                   defaultValues={{
                     collectionId: data?.id === "all" ? undefined : data?.id,
@@ -257,7 +251,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
                 >
                   <Button
                     variant="filled"
-                    style={{ flex: 1, minHeight: 50 }}
+                    style={{ flex: 1, minHeight: 50, marginTop: 15 }}
                     disabled={isReadOnly}
                   >
                     <ButtonText>New</ButtonText>
@@ -299,10 +293,8 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
           )}
         initialNumToRender={10}
         contentContainerStyle={{
-          padding: width > 600 ? 15 : 0,
+          padding: 15,
           paddingBottom: 50,
-          paddingTop: 15,
-          paddingHorizontal: 15,
           gap: 0,
         }}
         style={{
