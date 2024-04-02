@@ -155,7 +155,7 @@ const ReleaseModal = () => {
   const { data } = useSWR("releases", {
     fetcher: () =>
       fetch(
-        `https://api.github.com/repos/dysperse/dysperse/releases?per_page=1`
+        `https://api.github.com/repos/dysperse/API/releases?per_page=1`
       ).then((res) => res.json()),
   });
 
