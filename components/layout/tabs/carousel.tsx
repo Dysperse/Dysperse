@@ -138,7 +138,7 @@ const pwaPromptStyles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     padding: 15,
-    gap: 10,
+    gap: 15,
     marginBottom: 5,
   },
 });
@@ -188,7 +188,7 @@ const WebPWAInstallButton = () => {
           ]}
         >
           <View style={{ flex: 1 }}>
-            <Text weight={900} style={{ marginBottom: 3, color: theme[11] }}>
+            <Text weight={700} style={{ marginBottom: 3, color: theme[11] }}>
               Dysperse is ready to update!
             </Text>
             <Text
@@ -212,7 +212,7 @@ const WebPWAInstallButton = () => {
             ]}
           >
             <Icon>download</Icon>
-            <Text style={{ color: theme[11], flex: 1 }} weight={900}>
+            <Text style={{ color: theme[11] }} weight={700}>
               Install app
             </Text>
           </Pressable>
