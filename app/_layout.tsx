@@ -1,3 +1,4 @@
+import { WorkboxInitializer } from "@/components/layout/WorkboxInitializer";
 import { JsStack } from "@/components/layout/_stack";
 import { SidebarContext } from "@/components/layout/sidebar/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -292,6 +293,7 @@ function Root() {
             }}
           >
             <SWRWrapper>
+              {Platform.OS === "web" && <WorkboxInitializer />}
               <JsStack screenOptions={{ header: () => null }}>
                 <Slot screenOptions={{ onLayoutRootView }} />
                 <JsStack.Screen

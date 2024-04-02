@@ -30,6 +30,7 @@
     "esbuild": "^0.20.0",
     "expo": "~50.0.8",
     "expo-application": "~5.8.3",
+    "expo-av": "~13.10.5",
     "expo-blur": "~12.9.2",
     "expo-camera": "~14.0.5",
     "expo-clipboard": "~5.0.1",
@@ -45,6 +46,7 @@
     "expo-location": "~16.5.4",
     "expo-media-library": "~15.9.1",
     "expo-navigation-bar": "~2.8.1",
+    "expo-network": "~5.8.0",
     "expo-router": "~3.4.7",
     "expo-secure-store": "~12.8.1",
     "expo-status-bar": "~1.11.1",
@@ -82,8 +84,7 @@
     "rrule": "^2.8.1",
     "swr": "^2.2.4",
     "typescript": "^5.3.3",
-    "expo-av": "~13.10.5",
-    "expo-network": "~5.8.0"
+    "workbox-window": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
