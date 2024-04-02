@@ -132,8 +132,9 @@ const JumpToButton = memo(function JumpToButton() {
 });
 
 const WebPWAInstallButton = () => {
-  // This hook only run once in browser after the component is rendered for the first time.
-  // It has same effect as the old componentDidMount lifecycle callback.
+  const theme = useColorTheme();
+  const [updating, setUpdating] = useState(false);
+
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
@@ -141,62 +142,59 @@ const WebPWAInstallButton = () => {
       window.workbox !== undefined
     ) {
       const wb = window.workbox;
-      // add event listeners to handle any of PWA lifecycle event
-      // https://developers.google.com/web/tools/workbox/reference-docs/latest/module-workbox-window.Workbox#events
-      wb.addEventListener("installed", (event) => {
-        console.log(`Event ${event.type} is triggered.`);
-        console.log(event);
-      });
+      const promptNewVersionAvailable = () => {
+        setUpdating(true);
+        wb.addEventListener("controlling", () => {
+          window.location.reload();
+        });
 
-      wb.addEventListener("controlling", (event) => {
-        console.log(`Event ${event.type} is triggered.`);
-        console.log(event);
-      });
-
-      wb.addEventListener("activated", (event) => {
-        console.log(`Event ${event.type} is triggered.`);
-        console.log(event);
-      });
-
-      // A common UX pattern for progressive web apps is to show a banner when a service worker has updated and waiting to install.
-      // NOTE: MUST set skipWaiting to false in next.config.js pwa object
-      // https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offer_a_page_reload_for_users
-      const promptNewVersionAvailable = (event) => {
-        // `event.wasWaitingBeforeRegister` will be false if this is the first time the updated service worker is waiting.
-        // When `event.wasWaitingBeforeRegister` is true, a previously updated service worker is still waiting.
-        // You may want to customize the UI prompt accordingly.
-        if (
-          confirm(
-            "A newer version of this web app is available, reload to update?"
-          )
-        ) {
-          wb.addEventListener("controlling", (event) => {
-            window.location.reload();
-          });
-
-          // Send a message to the waiting service worker, instructing it to activate.
-          wb.messageSkipWaiting();
-        } else {
-          console.log(
-            "User rejected to reload the web app, keep using old version. New version will be automatically load when user open the app next time."
-          );
-        }
+        wb.messageSkipWaiting();
       };
 
       wb.addEventListener("waiting", promptNewVersionAvailable);
-
-      // ISSUE - this is not working as expected, why?
-      // I could only make message event listenser work when I manually add this listenser into sw.js file
-      wb.addEventListener("message", (event) => {
-        console.log(`Event ${event.type} is triggered.`);
-        console.log(event);
-      });
-
       wb.register();
     }
   }, []);
 
-  return <View></View>;
+  const handleReload = () => {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        registration.unregister();
+      });
+    });
+    window.location.reload();
+  };
+
+  return (
+    <View>
+      {updating && (
+        <Pressable
+          onPress={handleReload}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: theme[3],
+            borderRadius: 20,
+            padding: 15,
+            gap: 10,
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text weight={900} style={{ marginBottom: 3, color: theme[11] }}>
+              Dysperse is ready to update!
+            </Text>
+            <Text
+              style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
+              weight={500}
+            >
+              App will reload after installing. Tap to reload now.
+            </Text>
+          </View>
+          <Spinner />
+        </Pressable>
+      )}
+    </View>
+  );
 };
 
 const OpenTabsList = memo(function OpenTabsList() {
