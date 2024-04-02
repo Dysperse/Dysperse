@@ -195,7 +195,7 @@ const WebPWAInstallButton = () => {
               style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
               weight={500}
             >
-              App will reload after installing. Tap to reload now.
+              App will automatically reload after update
             </Text>
           </View>
           <Spinner />
