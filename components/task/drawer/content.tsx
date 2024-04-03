@@ -123,7 +123,7 @@ function TaskShareButton() {
       />
       <BottomSheet
         onClose={handleClose}
-        snapPoints={[175]}
+        snapPoints={[180]}
         sheetRef={menuRef}
         maxWidth={400}
       >
