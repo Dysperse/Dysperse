@@ -225,7 +225,7 @@ const Info = () => {
           <MarkdownRenderer>{data.note}</MarkdownRenderer>
         </View>
       )}
-      <View style={{ flexDirection: breakpoints.md ? "row : "column", gap: 20 }}>
+      <View style={{ flexDirection: breakpoints.md ? "row" : "column", gap: 20 }}>
         {data.due && (
           <View style={{ gap: 5, flex: 1 }}>
             <Text variant="eyebrow">Due</Text>
