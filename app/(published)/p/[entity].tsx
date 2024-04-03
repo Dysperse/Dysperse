@@ -111,6 +111,8 @@ const TaskChips = () => {
 
 const TaskAttachmentCard = ({ item }) => {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
   let icon = "";
   let name = item.data;
   switch (item.type) {
@@ -142,7 +144,7 @@ const TaskAttachmentCard = ({ item }) => {
         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         padding: 20,
         borderRadius: 20,
-        width: 300,
+        width: breakpoints.md ? 300 : "100%",
         gap: 5,
       })}
     >
@@ -223,7 +225,7 @@ const Info = () => {
           <MarkdownRenderer>{data.note}</MarkdownRenderer>
         </View>
       )}
-      <View style={{ flexDirection: "row", gap: 20 }}>
+      <View style={{ flexDirection: breakpoints.md ? "row : "column", gap: 20 }}>
         {data.due && (
           <View style={{ gap: 5, flex: 1 }}>
             <Text variant="eyebrow">Due</Text>
