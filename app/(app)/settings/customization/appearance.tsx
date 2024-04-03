@@ -280,6 +280,8 @@ export default function Page() {
   const purple = useColor("purple");
   const blue = useColor("blue");
   const cyan = useColor("cyan");
+  const indigo = useColor("indigo");
+  const jade = useColor("jade");
 
   return (
     <SettingsLayout>
@@ -293,8 +295,10 @@ export default function Page() {
           red[9],
           pink[9],
           purple[9],
+          indigo[9],
           blue[9],
           cyan[9],
+          jade[9],
         ]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
