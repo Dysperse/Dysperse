@@ -86,7 +86,7 @@ function TaskShareButton() {
 
   const handleClose = useCallback(() => menuRef.current?.close(), []);
   const handleOpen = useCallback(() => menuRef.current?.present(), []);
-  const link = `https://app.dysperse.com/p/${task.id}`;
+  const link = `https://app.dysperse.com/p/${task.shortId || task.id}`;
 
   const handleCopy = useCallback(async () => {
     setStringAsync(link);
