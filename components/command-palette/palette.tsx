@@ -310,7 +310,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
       <View
         style={{
           flex: 1,
-          borderLeftWidth: 1,
+          borderLeftWidth: breakpoints.md ? 1 : 0,
           borderColor: theme[6],
           alignItems: "center",
           justifyContent: "center",
