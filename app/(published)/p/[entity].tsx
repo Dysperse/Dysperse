@@ -311,18 +311,28 @@ export default function Page() {
   return (
     <PublishedEntityContext.Provider value={{ data }}>
       <ColorThemeProvider setHTMLAttributes theme={theme}>
-        <ScrollView
-          centerContent
-          style={{ backgroundColor: theme[2], height }}
-          contentContainerStyle={{
-            padding: breakpoints.md ? 50 : 20,
-            alignItems: "center",
-            paddingTop: 100,
-          }}
-        >
-          {!error && <Header />}
-          {data ? <Info /> : isLoading ? <Spinner /> : <ErrorPage />}
-        </ScrollView>
+        {!isLoading && !data?.name ? (
+          <ErrorPage />
+        ) : (
+          <ScrollView
+            centerContent
+            style={{ backgroundColor: theme[2], height }}
+            contentContainerStyle={{
+              padding: breakpoints.md ? 50 : 20,
+              alignItems: "center",
+              paddingTop: 100,
+            }}
+          >
+            {(isLoading || data?.name) && <Header />}
+            {data?.name ? (
+              <Info />
+            ) : isLoading ? (
+              <Spinner color={theme[9]} />
+            ) : (
+              <ErrorPage />
+            )}
+          </ScrollView>
+        )}
       </ColorThemeProvider>
     </PublishedEntityContext.Provider>
   );
