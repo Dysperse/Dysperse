@@ -42,7 +42,7 @@ const Header = () => {
         left: 20,
       }}
     >
-      <Logo size={50} />
+      <Logo size={50} color="mint" />
       <Text
         style={{
           fontSize: 20,
