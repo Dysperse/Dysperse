@@ -1,13 +1,18 @@
 import LabelPicker from "@/components/labels/picker";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
+import { Avatar } from "@/ui/Avatar";
+import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { setStringAsync } from "expo-clipboard";
 import React, { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -70,6 +75,82 @@ function TaskNameInput() {
         ]}
         fontSize={breakpoints.md ? 40 : 30}
       />
+    </>
+  );
+}
+
+function TaskShareButton() {
+  const theme = useColorTheme();
+  const { isReadOnly, task, updateTask } = useTaskDrawerContext();
+  const menuRef = useRef<BottomSheetModal>(null);
+
+  const handleClose = useCallback(() => menuRef.current?.close(), []);
+  const handleOpen = useCallback(() => menuRef.current?.present(), []);
+  const link = `https://app.dysperse.com/p/${task.id}`;
+
+  const handleCopy = useCallback(async () => {
+    setStringAsync(link);
+    Toast.show({
+      type: "success",
+      text1: "Copied link to clipboard!",
+    });
+  }, [link]);
+
+  const handleShare = useCallback(async () => {
+    try {
+      updateTask("published", !task.published);
+      if (!task.published) handleCopy();
+      else Toast.show({ type: "success", text1: "Task sharing disabled" });
+
+      setTimeout(() => {
+        setTimeout(handleClose, 200);
+      }, 0);
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+    }
+  }, [task, updateTask, handleClose, handleCopy]);
+
+  return isReadOnly ? null : (
+    <>
+      <IconButton
+        style={{ borderWidth: 1, borderColor: theme[6] }}
+        size={50}
+        icon="ios_share"
+        onPress={handleOpen}
+      />
+      <BottomSheet
+        onClose={handleClose}
+        snapPoints={[175]}
+        sheetRef={menuRef}
+        maxWidth={400}
+      >
+        <View style={{ padding: 10 }}>
+          <ListItemButton onPress={handleShare}>
+            <Avatar size={40} icon="ios_share" />
+            <ListItemText
+              primary={`Sharing ${task.published ? "enabled" : "disabled"}`}
+              secondary={
+                task.published
+                  ? "Anyone with the link can view this task"
+                  : "Only you can view this task"
+              }
+            />
+            <Icon
+              size={35}
+              style={{ marginRight: 10, opacity: task.published ? 1 : 0.7 }}
+            >
+              {task.published ? "toggle_on" : "toggle_off"}
+            </Icon>
+          </ListItemButton>
+          <ListItemButton onPress={handleCopy}>
+            <Avatar size={40} icon="link" />
+            <ListItemText primary="Copy link" />
+          </ListItemButton>
+        </View>
+      </BottomSheet>
     </>
   );
 }
@@ -144,22 +225,19 @@ export function TaskDrawerContent({ handleClose }) {
           <IconButton
             onPress={handleClose}
             style={{ borderWidth: 1, borderColor: theme[6] }}
-            size={55}
-          >
-            <Icon size={28}>close</Icon>
-          </IconButton>
+            size={50}
+            icon="close"
+          />
           <View style={{ flex: 1 }} />
+          <TaskShareButton />
           <TaskCompleteButton />
           {!isReadOnly && (
             <IconButton
               style={{ borderWidth: 1, borderColor: theme[6] }}
-              size={55}
+              size={50}
               onPress={handleDelete}
-            >
-              <Icon size={27}>
-                {task.trash ? "restore_from_trash" : "delete"}
-              </Icon>
-            </IconButton>
+              icon={task.trash ? "restore_from_trash" : "delete"}
+            />
           )}
           {!isReadOnly && (
             <TaskAttachmentButton

@@ -1,4 +1,5 @@
 import CreateTask from "@/components/task/create";
+import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -42,14 +43,6 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
   const breakpoints = useResponsiveBreakpoints();
   const Shape = shapes[`shape${index + 1}`] || React.Fragment;
 
-  const measurements = [
-    "Minimum effort",
-    "Little effort",
-    "Moderate effort",
-    "Significant effort",
-    "Maximum effort",
-  ];
-
   const handleBack = () => setSelectedScale((t) => (t === 0 ? 0 : t - 1));
   const handleNext = () => setSelectedScale((t) => (t === 4 ? 4 : t + 1));
 
@@ -62,7 +55,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
         alignItems: "center",
         padding: 20,
         borderTopWidth: breakpoints.md ? 0 : 1,
-        borderTopColor: theme[5]
+        borderTopColor: theme[5],
       }}
     >
       {!breakpoints.md && (
@@ -108,7 +101,7 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
             {scale}
           </Text>
         </View>
-        <Text variant="eyebrow">{measurements[index]}</Text>
+        <Text variant="eyebrow">{STORY_POINT_SCALE[index]}</Text>
       </Pressable>
       {!breakpoints.md && (
         <IconButton

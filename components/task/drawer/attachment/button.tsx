@@ -52,7 +52,7 @@ export function TaskAttachmentButton({
         children || (
           <IconButton
             style={{ borderWidth: 1, borderColor: theme[6] }}
-            size={55}
+            size={50}
             icon="edit"
           />
         )

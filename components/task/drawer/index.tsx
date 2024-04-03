@@ -96,6 +96,7 @@ export function TaskDrawer({
       {trigger}
       <BottomSheet
         sheetRef={ref}
+        animateOnMount={!breakpoints.md}
         snapPoints={
           error
             ? ["50%"]

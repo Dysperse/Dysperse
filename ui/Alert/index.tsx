@@ -10,6 +10,7 @@ interface AlertProps {
   style?: StyleProp<ViewStyle>;
   dense?: boolean;
   italicize?: boolean;
+  direction?: "row" | "column";
 }
 
 export default function Alert({
@@ -19,6 +20,7 @@ export default function Alert({
   style,
   dense,
   italicize,
+  direction = "row",
 }: AlertProps) {
   const theme = useColorTheme();
 
@@ -30,7 +32,7 @@ export default function Alert({
           padding: 20,
           paddingHorizontal: 30,
           borderRadius: 25,
-          flexDirection: "row",
+          flexDirection: direction,
           alignItems: "center",
           justifyContent: "flex-start",
           marginBottom: 20,
@@ -39,10 +41,14 @@ export default function Alert({
         style,
       ]}
     >
-      <Emoji emoji={emoji} size={dense ? 24 : 30} />
+      <Emoji
+        emoji={emoji}
+        size={direction === "row" ? (dense ? 24 : 30) : 50}
+      />
       <View style={{ flex: 1 }}>
         <Text
           style={{
+            textAlign: direction === "row" ? "left" : "center",
             fontSize: dense ? 16 : 20,
             fontStyle: italicize ? "italic" : "normal",
           }}
@@ -50,7 +56,17 @@ export default function Alert({
         >
           {title}
         </Text>
-        {subtitle && <Text style={{ opacity: 0.7 }}>{subtitle}</Text>}
+        {subtitle && (
+          <Text
+            style={{
+              opacity: 0.7,
+              marginTop: 5,
+              textAlign: direction === "row" ? "left" : "center",
+            }}
+          >
+            {subtitle}
+          </Text>
+        )}
       </View>
     </View>
   );

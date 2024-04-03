@@ -152,6 +152,63 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
   ));
 });
 
+export const TaskImportantChip = ({
+  large,
+  published,
+}: {
+  large?: boolean;
+  published?: boolean;
+}) => {
+  const orange = useColor("orange");
+  return (
+    <Chip
+      dense={!large}
+      disabled
+      label="Urgent"
+      icon={
+        <Icon size={large ? 24 : 22} style={{ color: orange[11] }}>
+          priority_high
+        </Icon>
+      }
+      style={{ backgroundColor: orange[published ? 4 : 6] }}
+      color={orange[11]}
+    />
+  );
+};
+export const TaskLabelChip = ({
+  task,
+  published = false,
+  large = false,
+}: {
+  task: any;
+  published?: boolean;
+  large?: boolean;
+}) => {
+  const theme = useColor(task.label.color);
+
+  return (
+    <Chip
+      disabled
+      dense={!large}
+      label={
+        task.label.name.length > 10
+          ? `${task.label.name.slice(0, 10)}...`
+          : `${task.label.name}`
+      }
+      colorTheme={task.label.color}
+      icon={<Emoji size={large ? 23 : 17} emoji={task.label.emoji} />}
+      style={[
+        {
+          paddingHorizontal: 10,
+        },
+        published && {
+          backgroundColor: theme[4],
+        },
+      ]}
+    />
+  );
+};
+
 const Task = memo(function Task({
   task,
   onTaskUpdate,
@@ -323,39 +380,11 @@ const Task = memo(function Task({
                   }}
                 />
               )}
-              {showLabel && task.label && (
-                <Chip
-                  disabled
-                  dense
-                  label={
-                    task.label.name.length > 10
-                      ? `${task.label.name.slice(0, 10)}...`
-                      : `${task.label.name}`
-                  }
-                  colorTheme={task.label.color}
-                  icon={<Emoji size={17} emoji={task.label.emoji} />}
-                  style={{
-                    paddingHorizontal: 10,
-                  }}
-                />
-              )}
+              {showLabel && task.label && <TaskLabelChip task={task} />}
               {task.attachments && (
                 <TaskAttachmentChips attachments={task.attachments} />
               )}
-              {task.pinned && (
-                <Chip
-                  dense
-                  disabled
-                  label="Urgent"
-                  icon={
-                    <Icon size={22} style={{ color: orange[11] }}>
-                      priority_high
-                    </Icon>
-                  }
-                  style={{ backgroundColor: orange[6] }}
-                  color={orange[11]}
-                />
-              )}
+              {task.pinned && <TaskImportantChip />}
               {!task.dateOnly && (
                 <Chip
                   dense

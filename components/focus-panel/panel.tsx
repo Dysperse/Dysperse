@@ -64,6 +64,24 @@ const WakeLock = () => {
   return null;
 };
 
+const ImportantChip = () => {
+  const orange = useColor("orange");
+  return (
+    <Chip
+      dense
+      disabled
+      label="Urgent"
+      icon={
+        <Icon size={22} style={{ color: orange[11] }}>
+          priority_high
+        </Icon>
+      }
+      style={{ backgroundColor: orange[4] }}
+      color={orange[11]}
+    />
+  );
+};
+
 const UpNext = () => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
@@ -162,20 +180,7 @@ const UpNext = () => {
                         }}
                       />
                     )}
-                    {nextTask.pinned && (
-                      <Chip
-                        dense
-                        disabled
-                        label="Urgent"
-                        icon={
-                          <Icon size={22} style={{ color: orange[11] }}>
-                            priority_high
-                          </Icon>
-                        }
-                        style={{ backgroundColor: orange[4] }}
-                        color={orange[11]}
-                      />
-                    )}
+                    {nextTask.pinned && <ImportantChip />}
                   </View>
                   <Text style={{ fontSize: 35 }}>{nextTask.name}</Text>
                   <Text

@@ -101,12 +101,12 @@ export function TaskCompleteButton() {
             ? green[pressed ? 11 : hovered ? 10 : 9]
             : theme[pressed ? 4 : hovered ? 3 : 2],
         })}
-        size={55}
+        size={50}
         onPress={handlePress}
       >
         <Icon
+          filled={isCompleted}
           size={27}
-          bold={isCompleted}
           style={{
             color: isCompleted ? green[1] : theme[11],
           }}

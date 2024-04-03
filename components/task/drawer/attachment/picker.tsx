@@ -36,18 +36,15 @@ export function TaskAttachmentPicker({
   const onSubmit = useCallback(
     async (values) => {
       try {
-        await updateTask(
+        updateTask(
           type === "NOTE" ? "note" : "attachments",
           type === "NOTE"
             ? values.data
-            : [...task.attachments, { type, data: values.data }]
+            : [...(task.attachments || []), { type, data: values.data }]
         );
         setIsLoading(false);
-      } catch {
-        Toast.show({
-          type: "error",
-          text1: "Something went wrong. Please try again later",
-        });
+      } catch (e) {
+        Toast.show({ type: "error" });
       } finally {
         setTimeout(handleParentClose, 0);
         setIsLoading(false);

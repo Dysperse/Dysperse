@@ -1,14 +1,12 @@
 import { useUser } from "@/context/useUser";
 import * as React from "react";
-import { useColorScheme } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useColor } from "./color";
 
 const Logo = ({ size, color }: { size: number; color?: string }) => {
   const session = useUser();
   const theme = useColor(
-    color || session?.session?.user?.profile?.theme || "mint",
-    useColorScheme() === "dark"
+    color || session?.session?.user?.profile?.theme || "mint"
   );
 
   const memoizedSvg = React.useMemo(() => {

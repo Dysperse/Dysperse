@@ -1,4 +1,5 @@
-import { blue } from "@/themes";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
+import { STORY_POINT_SCALE } from "@/constants/workload";
 import { Button, ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
 import Chip from "@/ui/Chip";
@@ -27,7 +28,6 @@ import {
 } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
-import Markdown from "react-native-markdown-display";
 import { RRule } from "rrule";
 import { TaskDatePicker } from "../create";
 import { TaskAttachmentButton } from "./attachment/button";
@@ -136,7 +136,7 @@ function DatePickerModal({
   );
 }
 
-function isValidHttpUrl(string) {
+export function isValidHttpUrl(string) {
   let url;
 
   try {
@@ -382,7 +382,6 @@ function TaskAttachmentCard({ item, index }) {
 }
 
 function TaskNote() {
-  const theme = useColorTheme();
   const { task, updateTask } = useTaskDrawerContext();
 
   return (
@@ -398,41 +397,9 @@ function TaskNote() {
         style={{ paddingVertical: 15, paddingHorizontal: 20 }}
       >
         <View style={{ flex: 1 }}>
-          <Markdown
-            style={{
-              body: {
-                fontFamily: "body_400",
-                fontSize: 15,
-                color: theme[12],
-              },
-              link: { color: blue.blue9 },
-              image: {
-                borderRadius: 20,
-                overflow: "hidden",
-                objectFit: "cover",
-              },
-              blockquote: {
-                borderLeftColor: theme[9],
-                borderLeftWidth: 3,
-                paddingHorizontal: 20,
-                backgroundColor: "transparent",
-                marginVertical: 10,
-              },
-              bullet_list_icon: {
-                width: 5,
-                height: 5,
-                borderRadius: 99,
-                backgroundColor: theme[9],
-                color: "transparent",
-                marginTop: 8,
-              },
-              ordered_list_icon: {
-                color: theme[11],
-              },
-            }}
-          >
+          <MarkdownRenderer>
             {task.note?.replaceAll("] (http", "](http")?.trim()}
-          </Markdown>
+          </MarkdownRenderer>
         </View>
       </ListItemButton>
     </TaskAttachmentButton>
@@ -453,13 +420,6 @@ export function TaskDetails() {
   };
 
   const noteMenuRef = useRef<BottomSheetModal>(null);
-  const complexityMeasurements = [
-    "Minimum effort",
-    "Little effort",
-    "Moderate effort",
-    "Significant effort",
-    "Maximum effort",
-  ];
 
   const complexityScale = [2, 4, 8, 16, 32];
 
@@ -656,7 +616,7 @@ export function TaskDetails() {
                 <ListItemText
                   primary="Complexity"
                   secondary={
-                    complexityMeasurements[
+                    STORY_POINT_SCALE[
                       complexityScale.findIndex((i) => i === task.storyPoints)
                     ]
                   }
