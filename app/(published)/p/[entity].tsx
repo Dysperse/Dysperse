@@ -161,7 +161,9 @@ const TaskAttachmentCard = ({ item }) => {
         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         padding: 20,
         borderRadius: 20,
-        ...(breakpoints.md ? { flex: 1 } : { width: "100%" }),
+        ...(breakpoints.md
+          ? { flex: 1, maxWidth: "33.33333%" }
+          : { width: "100%" }),
         gap: 5,
       })}
     >
