@@ -1,4 +1,3 @@
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { Menu } from "@/ui/Menu";
 import Text from "@/ui/Text";
@@ -108,19 +107,6 @@ export function TaskAttachmentButton({
           handleParentClose={() => menuRef.current?.close()}
           task={task}
           updateTask={updateTask}
-          footer={
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-                paddingHorizontal: 10,
-              }}
-            >
-              <Icon>lightbulb</Icon>
-              <Text>Supports YouTube, Canvas, Zoom, and more.</Text>
-            </View>
-          }
         />
       )}
       {view === "Image" && (

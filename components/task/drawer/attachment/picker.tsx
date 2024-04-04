@@ -30,6 +30,7 @@ export function TaskAttachmentPicker({
   const { control, handleSubmit } = useForm({
     defaultValues: {
       data: type == "NOTE" ? task?.note ?? "" : "",
+      name: type == "LINK" ? task?.name ?? "" : undefined,
     },
   });
 
@@ -61,6 +62,13 @@ export function TaskAttachmentPicker({
     );
   }, []);
 
+  const submit = handleSubmit(onSubmit, () => {
+    Toast.show({
+      type: "error",
+      text1: "Please enter a " + type.toLowerCase(),
+    });
+  });
+
   return (
     <View style={{ padding: 20, gap: 20, flex: 1 }}>
       <Controller
@@ -79,12 +87,7 @@ export function TaskAttachmentPicker({
             inputRef={inputRef}
             placeholder={placeholder}
             variant="filled+outlined"
-            onSubmitEditing={handleSubmit(onSubmit, () => {
-              Toast.show({
-                type: "error",
-                text1: "Please enter a " + type.toLowerCase(),
-              });
-            })}
+            onSubmitEditing={submit}
             blurOnSubmit={false}
             onKeyPress={(e) => {
               if (e.nativeEvent.key === "Escape") {
@@ -108,6 +111,43 @@ export function TaskAttachmentPicker({
         )}
         name="data"
       />
+      {type === "LINK" && (
+        <Controller
+          control={control}
+          rules={{
+            required: false,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              bottomSheet
+              inputRef={inputRef}
+              placeholder="Name (optional)"
+              variant="filled+outlined"
+              onSubmitEditing={submit}
+              blurOnSubmit={false}
+              onKeyPress={(e) => {
+                if (e.nativeEvent.key === "Escape") {
+                  handleParentClose();
+                }
+              }}
+              style={{
+                paddingHorizontal: 25,
+                paddingVertical: 15,
+                fontSize: 20,
+                borderRadius: 30,
+                ...(multiline && {
+                  flex: 1,
+                }),
+              }}
+              multiline={multiline}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+            />
+          )}
+          name="name"
+        />
+      )}
       {footer}
       <Button
         onPress={handleSubmit(onSubmit, () => {
