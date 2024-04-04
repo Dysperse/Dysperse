@@ -30,7 +30,7 @@ export function TaskAttachmentPicker({
   const { control, handleSubmit } = useForm({
     defaultValues: {
       data: type == "NOTE" ? task?.note ?? "" : "",
-      name: type == "LINK" ? task?.name ?? "" : undefined,
+      name: type == "LINK" ? "" : undefined,
     },
   });
 
@@ -41,7 +41,10 @@ export function TaskAttachmentPicker({
           type === "NOTE" ? "note" : "attachments",
           type === "NOTE"
             ? values.data
-            : [...(task.attachments || []), { type, data: values.data }]
+            : [
+                ...(task.attachments || []),
+                { type, data: values.data, name: values.name },
+              ]
         );
         setIsLoading(false);
       } catch (e) {
@@ -120,7 +123,6 @@ export function TaskAttachmentPicker({
           render={({ field: { onChange, onBlur, value } }) => (
             <TextField
               bottomSheet
-              inputRef={inputRef}
               placeholder="Name (optional)"
               variant="filled+outlined"
               onSubmitEditing={submit}
