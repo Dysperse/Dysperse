@@ -145,7 +145,7 @@ function TaskShareButton() {
               {task.published ? "toggle_on" : "toggle_off"}
             </Icon>
           </ListItemButton>
-          <ListItemButton onPress={handleCopy}>
+          <ListItemButton onPress={() => handleCopy()}>
             <Avatar size={40} icon="link" />
             <ListItemText primary="Copy link" />
           </ListItemButton>
