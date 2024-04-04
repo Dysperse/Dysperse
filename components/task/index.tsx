@@ -120,13 +120,14 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
       <Chip
         dense
         label={
-          attachment.name || attachment.type === "LINK"
+          attachment.name ||
+          (attachment.type === "LINK"
             ? isVideoChatPlatform(attachment.data)
               ? "Join meeting"
               : new URL(attachment.data).hostname
             : attachment.type === "LOCATION"
             ? "Maps"
-            : "File"
+            : "File")
         }
         onPress={() => {
           if (attachment.type === "LINK") {
