@@ -276,7 +276,7 @@ const Info = () => {
             <ListItemText
               primary={`${data.storyPoints} points`}
               secondary={`Marked as requiring ${
-                STORY_POINT_SCALE[STORY_POINT_SCALE.indexOf(data.storyPoints)]
+                STORY_POINT_SCALE[[2, 4, 8, 16, 32].indexOf(data.storyPoints)]
               }`}
             />
           </ListItemButton>
