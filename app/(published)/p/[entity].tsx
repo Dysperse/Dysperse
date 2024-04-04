@@ -131,6 +131,7 @@ const TaskAttachmentCard = ({ item }) => {
 
   let icon = "";
   let name = item.data;
+
   switch (item.type) {
     case "LINK":
       icon = "link";
@@ -174,7 +175,7 @@ const TaskAttachmentCard = ({ item }) => {
       />
       <View style={{ paddingHorizontal: 5 }}>
         <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
-          {name}
+          {item.name || name}
         </Text>
         <View
           style={{
