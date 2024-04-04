@@ -256,11 +256,12 @@ function TaskAttachmentCard({ item, index }) {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   let icon = "";
-  let name = item.data;
+  let name = item.name || item.data;
   switch (item.type) {
     case "LINK":
       icon = "link";
-      if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
+      if (!item.name)
+        if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
       break;
     case "LOCATION":
       icon = isValidHttpUrl(item.data) ? "link" : "map";
