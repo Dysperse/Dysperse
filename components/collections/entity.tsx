@@ -10,6 +10,7 @@ interface EntityProps {
   showDate?: boolean;
   isReadOnly: boolean;
   dateRange?: [Date, Date];
+  planMode?: boolean;
 }
 
 export const Entity = ({
@@ -20,6 +21,7 @@ export const Entity = ({
   showDate = false,
   isReadOnly = false,
   dateRange,
+  planMode = false,
 }: EntityProps) => {
   switch (item.type) {
     case "TASK":
@@ -32,6 +34,7 @@ export const Entity = ({
           isReadOnly={isReadOnly}
           showDate={showDate}
           showRelativeTime={showRelativeTime}
+          planMode={planMode}
         />
       );
     default:

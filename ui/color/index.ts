@@ -32,11 +32,19 @@ export const addHslAlpha = (hsl: string, alpha: number) =>
  * @returns Color palette
  */
 
-export function useColor(base: keyof typeof colors) {
+export function useColor(base: keyof typeof colors, forceMode?: boolean) {
   const isDark = useDarkMode();
 
   const getColorPalette = useMemo(() => {
-    const paletteKey = isDark ? `${base}Dark` : base;
+    const paletteKey =
+      typeof forceMode === "boolean"
+        ? forceMode
+          ? `${base}Dark`
+          : base
+        : isDark
+        ? `${base}Dark`
+        : base;
+
     const colorPalette = colors[paletteKey];
     const _colorPalette: Record<string, string> = {};
 

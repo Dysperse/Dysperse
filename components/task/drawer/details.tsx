@@ -656,6 +656,7 @@ export function TaskDetails() {
             trigger: () => (
               <ListItemButton
                 variant="filled"
+                onTouchMove={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
                 disabled
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}

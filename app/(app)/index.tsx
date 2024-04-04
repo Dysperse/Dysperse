@@ -40,7 +40,7 @@ import useSWR from "swr";
 import { ProfileModal } from "../../components/ProfileModal";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
 
-const getGreeting = () => {
+export const getGreeting = () => {
   const now = new Date();
   const hour = now.getHours();
   if (hour < 10) {
@@ -80,14 +80,16 @@ function Greeting() {
 
 function PlanDayPrompt() {
   const theme = useColorTheme();
+  const handlePress = useCallback(() => {
+    router.push("/plan");
+  }, []);
 
   return (
     <Pressable
-      disabled
+      onPress={handlePress}
       style={({ pressed, hovered }) => [
         styles.card,
         {
-          opacity: 0.4,
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         },
       ]}
@@ -110,8 +112,7 @@ function PlanDayPrompt() {
           }}
           numberOfLines={1}
         >
-          {/* Tap to begin */}
-          Coming soon
+          Tap to begin
         </Text>
       </View>
       <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>

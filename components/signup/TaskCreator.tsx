@@ -5,36 +5,39 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Controller } from "react-hook-form";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-const TaskInput = ({ form, index }) => {
+export const taskInputStyles = StyleSheet.create({
+  container: {
+    borderRadius: 20,
+    marginBottom: 10,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 10,
+  },
+  check: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 30,
+    height: 30,
+    margin: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+});
+
+export const TaskInput = ({ form, index }) => {
   const theme = useColorTheme();
 
   return (
     <View
-      style={{
-        backgroundColor: theme[2],
-        borderRadius: 20,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: theme[5],
-        flexDirection: "row",
-        gap: 10,
-      }}
+      style={[
+        taskInputStyles.container,
+        { backgroundColor: theme[2], borderColor: theme[5] },
+      ]}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: 30,
-          height: 30,
-          margin: 10,
-          borderRadius: 20,
-          borderWidth: 1,
-          borderColor: theme[6],
-        }}
-      />
+      <View style={[taskInputStyles.check, { borderColor: theme[6] }]} />
       <Controller
         rules={{
           validate: (v) => v.find((t) => t.trim().length === 0),
@@ -49,7 +52,7 @@ const TaskInput = ({ form, index }) => {
               t[parseInt(index)] = s;
               onChange(t);
             }}
-            placeholder="Task"
+            placeholder={`Task #${index + 1}`}
             style={[
               { flex: 1, height: "100%", shadowRadius: 0 },
               error && { borderColor: "red" },

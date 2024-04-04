@@ -304,6 +304,29 @@ function Root() {
                     ...TransitionPresets.ModalPresentationIOS,
                   }}
                 />
+
+                <JsStack.Screen
+                  name="plan"
+                  options={{
+                    presentation: "modal",
+                    detachPreviousScreen: false,
+                    animationEnabled: true,
+                    ...TransitionPresets.ModalPresentationIOS,
+                    cardStyle: {
+                      maxWidth: 900,
+                      width: "100%",
+                      marginHorizontal: "auto",
+                      marginVertical: 20,
+                      borderRadius: 25,
+                      shadowRadius: 20,
+                      shadowColor: "rgba(0,0,0,0.1)",
+                      shadowOffset: {
+                        width: 0,
+                        height: 10,
+                      },
+                    },
+                  }}
+                />
               </JsStack>
             </SWRWrapper>
           </SidebarContext.Provider>

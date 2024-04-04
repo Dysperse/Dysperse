@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { forwardRef, ForwardRefRenderFunction, memo } from "react";
 import {
   Text as NText,
   Platform,
@@ -70,12 +70,13 @@ const textStyles = StyleSheet.create({
   },
 });
 
-function Text(props: DTextProps) {
+const Text: ForwardRefRenderFunction<NText, DTextProps> = (props, ref) => {
   const theme = useColorTheme();
 
   return (
     <NText
       {...props}
+      ref={ref}
       maxFontSizeMultiplier={1.1}
       style={[
         {
@@ -99,6 +100,6 @@ function Text(props: DTextProps) {
       ]}
     />
   );
-}
+};
 
-export default memo(Text);
+export default memo(forwardRef(Text));

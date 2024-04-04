@@ -220,6 +220,7 @@ const Task = memo(function Task({
   showDate,
   isReadOnly,
   dateRange,
+  planMode,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
@@ -228,6 +229,7 @@ const Task = memo(function Task({
   showDate?: boolean;
   isReadOnly?: boolean;
   dateRange?: [Date, Date];
+  planMode?: boolean;
 }) {
   const theme = useColorTheme();
   const orange = useColor("orange");
@@ -309,6 +311,13 @@ const Task = memo(function Task({
                 : hovered
                 ? addHslAlpha(theme[3], 0.7)
                 : undefined,
+              ...(planMode && {
+                borderWidth: 1,
+                borderColor: theme[5],
+                backgroundColor: theme[2],
+                marginBottom: 10,
+                borderRadius: 20,
+              }),
               alignItems: "flex-start",
             },
             isCompleted && {
