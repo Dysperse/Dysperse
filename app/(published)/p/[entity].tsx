@@ -161,7 +161,9 @@ const TaskAttachmentCard = ({ item }) => {
         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         padding: 20,
         borderRadius: 20,
-        width: breakpoints.md ? 320 : "100%",
+        ...(!breakpoints.md && {
+          width: "100%",
+        }),
         gap: 5,
       })}
     >
@@ -288,7 +290,7 @@ const Info = () => {
           <Text variant="eyebrow">Attachments</Text>
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: breakpoints.md ? "row" : "column",
               flexWrap: "wrap",
               gap: 10,
               marginTop: 5,
