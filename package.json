@@ -84,7 +84,8 @@
     "rrule": "^2.8.1",
     "swr": "^2.2.4",
     "typescript": "^5.3.3",
-    "workbox-window": "^7.0.0"
+    "workbox-window": "^7.0.0",
+    "expo-sharing": "~11.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
