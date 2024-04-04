@@ -191,7 +191,9 @@ export const TaskLabelChip = ({
       disabled
       dense={!large}
       label={
-        task.label.name.length > 10
+        large
+          ? task.label.name
+          : task.label.name.length > 10
           ? `${task.label.name.slice(0, 10)}...`
           : `${task.label.name}`
       }

@@ -157,7 +157,7 @@ const TaskAttachmentCard = ({ item }) => {
         }}
       />
       <View style={{ paddingHorizontal: 5 }}>
-        <Text weight={700} style={{ fontSize: 20 }}>
+        <Text weight={700} style={{ fontSize: 20 }} numberOfLines={1}>
           {name}
         </Text>
         <View
@@ -225,7 +225,9 @@ const Info = () => {
           <MarkdownRenderer>{data.note}</MarkdownRenderer>
         </View>
       )}
-      <View style={{ flexDirection: breakpoints.md ? "row" : "column", gap: 20 }}>
+      <View
+        style={{ flexDirection: breakpoints.md ? "row" : "column", gap: 20 }}
+      >
         {data.due && (
           <View style={{ gap: 5, flex: 1 }}>
             <Text variant="eyebrow">Due</Text>
