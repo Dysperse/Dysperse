@@ -9,6 +9,7 @@ import Chip from "@/ui/Chip";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Logo from "@/ui/logo";
@@ -16,6 +17,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
+import * as Sharing from "expo-sharing";
 import { createContext, useCallback, useContext } from "react";
 import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -28,32 +30,46 @@ const usePublishedEntityContext = () => useContext(PublishedEntityContext);
 
 const Header = () => {
   const theme = useColor("mint");
+  const params = useLocalSearchParams();
+
+  const handleShare = useCallback(() => {
+    Sharing.shareAsync(`https://dys.us.to/${params.entity}`);
+  }, [params]);
 
   return (
-    <Pressable
-      onPress={() => Linking.openURL("https://dysperse.com")}
-      accessibilityRole="button"
-      style={{
-        alignItems: "center",
-        gap: 10,
-        flexDirection: "row",
-        position: "absolute",
-        top: 20,
-        left: 20,
-      }}
-    >
-      <Logo size={50} color="mint" />
-      <Text
+    <>
+      <Pressable
+        onPress={() => Linking.openURL("https://dysperse.com")}
+        accessibilityRole="button"
         style={{
-          fontSize: 20,
-          color: theme[11],
+          alignItems: "center",
+          gap: 10,
+          flexDirection: "row",
+          position: "absolute",
+          top: 20,
+          left: 20,
         }}
-        weight={900}
       >
-        #dysperse
-      </Text>
-      <Icon>north_east</Icon>
-    </Pressable>
+        <Logo size={50} color="mint" />
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme[11],
+          }}
+          weight={900}
+        >
+          #dysperse
+        </Text>
+        <Icon>north_east</Icon>
+      </Pressable>
+      <IconButton
+        style={{ position: "absolute", top: 20, right: 20 }}
+        icon="ios_share"
+        size={50}
+        variant="outlined"
+        onPress={handleShare}
+      />
+    </>
   );
 };
 
