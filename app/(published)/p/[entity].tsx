@@ -277,7 +277,7 @@ const Info = () => {
               primary={`${data.storyPoints} points`}
               secondary={`Marked as requiring ${STORY_POINT_SCALE.find(
                 (e, i) => i == data.storyPoints.toString()
-              ).toLocaleLowerCase()}`}
+              )?.toLocaleLowerCase()}`}
             />
           </ListItemButton>
         </View>
