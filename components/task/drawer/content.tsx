@@ -129,7 +129,7 @@ function TaskShareButton() {
       >
         <View style={{ padding: 10 }}>
           <ListItemButton onPress={handleShare}>
-            <Avatar size={40} icon="ios_share" />
+            <Avatar size={40} icon="ios_share" disabled />
             <ListItemText
               primary={`Sharing ${task.published ? "enabled" : "disabled"}`}
               secondary={
@@ -146,7 +146,7 @@ function TaskShareButton() {
             </Icon>
           </ListItemButton>
           <ListItemButton onPress={() => handleCopy()}>
-            <Avatar size={40} icon="link" />
+            <Avatar size={40} icon="link" disabled />
             <ListItemText primary="Copy link" />
           </ListItemButton>
         </View>
