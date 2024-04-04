@@ -275,9 +275,9 @@ const Info = () => {
             <Avatar icon="exercise" theme="mint" size={40} />
             <ListItemText
               primary={`${data.storyPoints} points`}
-              secondary={`Marked as requiring ${STORY_POINT_SCALE.find(
-                (e, i) => i == data.storyPoints.toString()
-              )?.toLocaleLowerCase()}`}
+              secondary={`Marked as requiring ${
+                STORY_POINT_SCALE[STORY_POINT_SCALE.indexOf(data.storyPoints)]
+              }`}
             />
           </ListItemButton>
         </View>
