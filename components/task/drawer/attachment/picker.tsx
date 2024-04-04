@@ -131,6 +131,7 @@ export function TaskAttachmentPicker({
                 }
               }}
               style={{
+                backgroundColor: "transparent",
                 paddingHorizontal: 25,
                 paddingVertical: 15,
                 fontSize: 20,
