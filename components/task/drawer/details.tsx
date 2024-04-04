@@ -148,11 +148,22 @@ export function isValidHttpUrl(string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function EditAttachment({ item, handleCancel }) {
+function EditAttachment({ task, updateTask, item, handleCancel }) {
   const { control, handleSubmit } = useForm({
-    defaultValues: { attachment: item.data },
+    defaultValues: { data: item.data, name: item.name },
   });
-  const onSubmit = (data) => console.log(data);
+
+  const onSubmit = (data) => {
+    updateTask(
+      "attachments",
+      task.attachments.map((attachment, i) =>
+        i === task.attachments.indexOf(item)
+          ? { ...attachment, ...data }
+          : attachment
+      )
+    );
+    setTimeout(handleCancel, 0);
+  };
 
   return (
     <>
@@ -179,11 +190,11 @@ function EditAttachment({ item, handleCancel }) {
         />
       </View>
       <View style={{ paddingHorizontal: 20, flex: 1, paddingTop: 20 }}>
+        <Text variant="eyebrow">{item.type}</Text>
         <Controller
           rules={{ required: true }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextField
-              multiline
               bottomSheet
               onBlur={onBlur}
               onChangeText={onChange}
@@ -191,17 +202,47 @@ function EditAttachment({ item, handleCancel }) {
               variant="filled+outlined"
               placeholder="Edit attachment..."
               style={{
-                flex: 1,
                 fontSize: 20,
+                marginTop: 5,
                 paddingHorizontal: 20,
                 paddingVertical: 20,
               }}
             />
           )}
-          name="attachment"
+          name="data"
           control={control}
           defaultValue={item.data}
         />
+        {item.type === "LINK" && (
+          <>
+            <Text variant="eyebrow" style={{ marginTop: 10 }}>
+              Name
+            </Text>
+            <Controller
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
+                  bottomSheet
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  variant="filled+outlined"
+                  placeholder="Display name (optional)"
+                  style={{
+                    backgroundColor: "transparent",
+                    fontSize: 20,
+                    marginTop: 5,
+                    paddingHorizontal: 20,
+                    paddingVertical: 20,
+                  }}
+                />
+              )}
+              name="name"
+              control={control}
+              defaultValue={item.name}
+            />
+          </>
+        )}
       </View>
     </>
   );
@@ -309,7 +350,9 @@ function TaskAttachmentCard({ item, index }) {
           : isReadOnly
           ? 155
           : isEditing
-          ? 350
+          ? item.type === "LINK"
+            ? 370
+            : 350
           : 250,
       ]}
     >
@@ -327,7 +370,12 @@ function TaskAttachmentCard({ item, index }) {
         </View>
       )}
       {isEditing ? (
-        <EditAttachment handleCancel={handleCancelEditing} item={item} />
+        <EditAttachment
+          task={task}
+          updateTask={updateTask}
+          handleCancel={handleCancelEditing}
+          item={item}
+        />
       ) : (
         <View style={{ paddingHorizontal: 20, gap: 20 }}>
           <Button
