@@ -1,5 +1,6 @@
 import { JsStack } from "@/components/layout/_stack";
 import { PlanContextProvider } from "@/context/planContext";
+import { SelectionContextProvider } from "@/context/SelectionContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useColor } from "@/ui/color";
@@ -86,25 +87,27 @@ export default function Layout() {
   if (!session || session?.error) return <Redirect href="/auth" />;
 
   return (
-    <StorageContextProvider>
-      <MenuProvider>
-        <BottomSheetModalProvider>
-          <PlanContextProvider>
-            <ColorThemeProvider theme={theme}>
-              <JsStack
-                screenOptions={{
-                  ...TransitionPresets.SlideFromRightIOS,
-                  header: () => <PlanNavbar />,
-                  headerMode: "float",
-                  detachPreviousScreen: false,
-                  cardStyle: { backgroundColor: theme[1], display: "flex" },
-                }}
-              />
-            </ColorThemeProvider>
-          </PlanContextProvider>
-        </BottomSheetModalProvider>
-      </MenuProvider>
-      <Toast config={toastConfig(theme)} />
-    </StorageContextProvider>
+    <SelectionContextProvider>
+      <StorageContextProvider>
+        <MenuProvider>
+          <BottomSheetModalProvider>
+            <PlanContextProvider>
+              <ColorThemeProvider theme={theme}>
+                <JsStack
+                  screenOptions={{
+                    ...TransitionPresets.SlideFromRightIOS,
+                    header: () => <PlanNavbar />,
+                    headerMode: "float",
+                    detachPreviousScreen: false,
+                    cardStyle: { backgroundColor: theme[1], display: "flex" },
+                  }}
+                />
+              </ColorThemeProvider>
+            </PlanContextProvider>
+          </BottomSheetModalProvider>
+        </MenuProvider>
+        <Toast config={toastConfig(theme)} />
+      </StorageContextProvider>
+    </SelectionContextProvider>
   );
 }

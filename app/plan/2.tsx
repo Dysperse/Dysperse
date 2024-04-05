@@ -1,7 +1,6 @@
 import { Entity } from "@/components/collections/entity";
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import CreateTask from "@/components/task/create";
-import { SelectionContextProvider } from "@/context/SelectionContext";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -18,7 +17,7 @@ import { styles } from ".";
 const SubmitButton = ({ todaysTasks }) => {
   const theme = useColorTheme();
 
-  const disabled = todaysTasks.length < 3;
+  const disabled = todaysTasks?.length < 3;
 
   const handleNext = () => {
     router.push("/plan/3");
@@ -53,55 +52,62 @@ const SubmitButton = ({ todaysTasks }) => {
 function TodaysTasks({ data, mutate, error }) {
   return (
     <View>
-      <SelectionContextProvider>
-        {Array.isArray(data) ? (
-          data
-            .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-            .tasks.map(
-              (e) =>
-                e?.id && (
-                  <Entity
-                    planMode
-                    isReadOnly={false}
-                    key={e.id}
-                    item={e}
-                    onTaskUpdate={(newTask) =>
-                      mutate(
-                        (oldData) => {
-                          const day = oldData.find((d) =>
-                            dayjs().isBetween(dayjs(d.start), dayjs(d.end))
-                          );
-                          return oldData.map((d) =>
-                            d.id === day.id
-                              ? {
-                                  ...d,
-                                  tasks: d.tasks
-                                    .map((t) =>
-                                      t.id === newTask.id ? newTask : t
-                                    )
-                                    .filter((t) => !t.trash),
-                                }
-                              : d
-                          );
-                        },
-                        { revalidate: false }
-                      )
-                    }
-                    showLabel
-                  />
-                )
-            )
-        ) : (
+      {Array.isArray(data) ? (
+        data
+          .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
+          .tasks.map(
+            (e) =>
+              e?.id && (
+                <Entity
+                  planMode
+                  isReadOnly={false}
+                  key={e.id}
+                  item={e}
+                  onTaskUpdate={(newTask) =>
+                    mutate(
+                      (oldData) => {
+                        const day = oldData.find((d) =>
+                          dayjs().isBetween(dayjs(d.start), dayjs(d.end))
+                        );
+                        return oldData.map((d) =>
+                          d.id === day.id
+                            ? {
+                                ...d,
+                                tasks: d.tasks
+                                  .map((t) =>
+                                    t.id === newTask.id ? newTask : t
+                                  )
+                                  .filter((t) => !t.trash),
+                              }
+                            : d
+                        );
+                      },
+                      { revalidate: false }
+                    )
+                  }
+                  showLabel
+                />
+              )
+          )
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: 200,
+          }}
+        >
           <Spinner />
-        )}
-      </SelectionContextProvider>
+        </View>
+      )}
     </View>
   );
 }
 
 export default function Page() {
   const theme = useColorTheme();
-  const handleNext = () => router.push("/plan/3");
 
   const { data, mutate, error } = useSWR([
     "space/collections/collection/planner",
@@ -120,7 +126,7 @@ export default function Page() {
   ).tasks;
 
   return (
-    <LinearGradient colors={[theme[1], theme[2]]} style={{ flex: 1 }}>
+    <LinearGradient colors={[theme[1], theme[2], theme[3]]} style={{ flex: 1 }}>
       <ScrollView
         centerContent
         contentContainerStyle={{
@@ -134,7 +140,7 @@ export default function Page() {
           style={{ fontSize: 35, color: theme[11], marginTop: "auto" }}
           weight={900}
         >
-          {todaysTasks.length < 3
+          {todaysTasks?.length < 3
             ? "What's your plan?"
             : "Let's review your day."}
         </Text>
@@ -146,7 +152,7 @@ export default function Page() {
             marginBottom: 10,
           }}
         >
-          {todaysTasks.length < 3
+          {todaysTasks?.length < 3
             ? "Create at least 3 tasks you'd want to focus on for today."
             : "Here are your tasks for today. Edit them if you want."}
         </Text>
