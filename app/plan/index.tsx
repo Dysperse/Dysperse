@@ -1,4 +1,5 @@
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -10,6 +11,7 @@ import { getGreeting } from "../(app)";
 
 export const styles = StyleSheet.create({
   container: {
+    padding: 20,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -35,6 +37,7 @@ export const styles = StyleSheet.create({
 });
 
 export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const handleNext = () => router.push("/plan/1");
   const greeting = getGreeting();
@@ -45,10 +48,19 @@ export default function Page() {
       colors={[theme[1], theme[2], theme[3], theme[4], theme[5], theme[6]]}
       style={styles.container}
     >
-      <Text style={[styles.title, { color: theme[11] }]} weight={700}>
+      <Text
+        style={[
+          styles.title,
+          {
+            fontSize: breakpoints.md ? 50 : 30,
+            color: theme[11],
+          },
+        ]}
+        weight={700}
+      >
         {greeting}, {session.user.profile.name.split(" ")[0]}
       </Text>
-      <Text style={[styles.subtitle, { color: theme[9] }]} weight={800}>
+      <Text style={[styles.subtitle, { color: theme[9] }]} weight={500}>
         Let's plan your day!
       </Text>
       <View style={styles.buttonContainer}>

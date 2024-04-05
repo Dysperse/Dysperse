@@ -1,6 +1,7 @@
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -123,6 +124,7 @@ const SubmitButton = ({ watch, handleSubmit }) => {
 
 export default function Page() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   const { control, watch, handleSubmit } = useForm({
     defaultValues: {
@@ -138,7 +140,7 @@ export default function Page() {
       <ScrollView
         centerContent
         contentContainerStyle={{
-          padding: 50,
+          padding: breakpoints.md ? 50 : 20,
           maxWidth: 700,
           width: "100%",
           marginHorizontal: "auto",

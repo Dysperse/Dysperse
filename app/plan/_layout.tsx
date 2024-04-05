@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const SLIDE_NUM = 3;
+const SLIDE_NUM = 4;
 
 function PlanNavbar() {
   const theme = useColorTheme();
