@@ -312,19 +312,21 @@ function Root() {
                     detachPreviousScreen: false,
                     animationEnabled: true,
                     ...TransitionPresets.ModalPresentationIOS,
-                    cardStyle: {
-                      maxWidth: 900,
-                      width: "100%",
-                      marginHorizontal: "auto",
-                      marginVertical: 20,
-                      borderRadius: 25,
-                      shadowRadius: 20,
-                      shadowColor: "rgba(0,0,0,0.1)",
-                      shadowOffset: {
-                        width: 0,
-                        height: 10,
-                      },
-                    },
+                    cardStyle: breakpoints.md
+                      ? {
+                          maxWidth: 900,
+                          width: "100%",
+                          marginHorizontal: "auto",
+                          marginVertical: 20,
+                          borderRadius: 25,
+                          shadowRadius: 20,
+                          shadowColor: "rgba(0,0,0,0.1)",
+                          shadowOffset: {
+                            width: 0,
+                            height: 10,
+                          },
+                        }
+                      : undefined,
                   }}
                 />
               </JsStack>
