@@ -266,9 +266,7 @@ const Info = () => {
             <Text variant="eyebrow">Repeats</Text>
             <ListItemButton disabled variant="filled">
               <Avatar icon="loop" theme="mint" size={40} />
-              <ListItemText
-                primary={RRule.fromString(data.recurrenceRule).toText()}
-              />
+              <ListItemText primary={new RRule(data.recurrenceRule).toText()} />
             </ListItemButton>
           </View>
         )}
