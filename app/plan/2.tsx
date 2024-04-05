@@ -1,6 +1,7 @@
 import { Entity } from "@/components/collections/entity";
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import CreateTask from "@/components/task/create";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -125,12 +126,13 @@ export default function Page() {
     dayjs().isBetween(dayjs(d.start), dayjs(d.end))
   ).tasks;
 
+  const breakpoints = useResponsiveBreakpoints();
   return (
     <LinearGradient colors={[theme[1], theme[2], theme[3]]} style={{ flex: 1 }}>
       <ScrollView
         centerContent
         contentContainerStyle={{
-          padding: 50,
+          padding: breakpoints.md ? 50 : 20,
           maxWidth: 700,
           width: "100%",
           marginHorizontal: "auto",

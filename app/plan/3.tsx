@@ -1,4 +1,5 @@
 import { Entity } from "@/components/collections/entity";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
@@ -43,6 +44,7 @@ const SubmitButton = () => {
 };
 
 export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
   const { data, mutate, error } = useSWR([
@@ -96,7 +98,7 @@ export default function Page() {
           </View>
         )}
         contentContainerStyle={{
-          padding: 50,
+          padding: breakpoints.md ? 50 : 20,
         }}
         centerContent
         data={filteredTasks}
