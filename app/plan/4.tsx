@@ -1,0 +1,112 @@
+import { createTab } from "@/components/layout/openTab";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
+import { Button, ButtonText } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import { useEffect } from "react";
+import { styles } from ".";
+
+const SubmitButton = () => {
+  const theme = useColorTheme();
+
+  const handleNext = () => router.replace("/");
+
+  return (
+    <Button
+      onPress={handleNext}
+      style={({ pressed, hovered }) => [
+        styles.button,
+        {
+          backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
+          marginHorizontal: "auto",
+          marginBottom: 20,
+        },
+      ]}
+    >
+      <ButtonText style={[styles.buttonText, { color: theme[1] }]}>
+        Done
+      </ButtonText>
+      <Icon style={{ color: theme[1] }} bold>
+        check
+      </Icon>
+    </Button>
+  );
+};
+
+const PlannerButton = () => {
+  const { sessionToken } = useUser();
+  const handleNext = () => {
+    createTab(sessionToken, {
+      slug: "/[tab]/collections/[id]/[type]",
+      icon: "transition_slide",
+      params: { type: "planner", id: "all" },
+    });
+    router.replace("/");
+  };
+
+  return (
+    <Button
+      onPress={handleNext}
+      style={({ pressed, hovered }) => [
+        styles.button,
+        {
+          marginTop: "auto",
+          marginHorizontal: "auto",
+        },
+      ]}
+    >
+      <ButtonText>Open planner</ButtonText>
+      <Icon bold>north_east</Icon>
+    </Button>
+  );
+};
+
+export default function Page() {
+  const { sessionToken } = useUser();
+  const theme = useColorTheme();
+
+  useEffect(() => {
+    sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/profile",
+      {},
+      {
+        body: JSON.stringify({
+          lastPlanned: new Date().toISOString(),
+        }),
+      }
+    );
+  });
+
+  return (
+    <LinearGradient
+      colors={[theme[1], theme[2], theme[3]]}
+      style={{ flex: 1, alignItems: "center" }}
+    >
+      <Text
+        style={{ fontSize: 80, color: theme[11], marginTop: "auto" }}
+        weight={300}
+      >
+        You're all set!
+      </Text>
+      <Text
+        weight={500}
+        style={{
+          fontSize: 20,
+          opacity: 0.6,
+          color: theme[11],
+          marginBottom: 10,
+        }}
+      >
+        Conquer your day with confidence. You've got this!
+      </Text>
+      <PlannerButton />
+      <SubmitButton />
+    </LinearGradient>
+  );
+}
