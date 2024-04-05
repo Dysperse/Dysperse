@@ -15,6 +15,7 @@ import ListItemText from "@/ui/ListItemText";
 import Logo from "@/ui/logo";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
@@ -266,7 +267,11 @@ const Info = () => {
             <Text variant="eyebrow">Repeats</Text>
             <ListItemButton disabled variant="filled">
               <Avatar icon="loop" theme="mint" size={40} />
-              <ListItemText primary={new RRule(data.recurrenceRule).toText()} />
+              <ListItemText
+                primary={capitalizeFirstLetter(
+                  new RRule(data.recurrenceRule).toText()
+                )}
+              />
             </ListItemButton>
           </View>
         )}
