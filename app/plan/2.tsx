@@ -20,8 +20,13 @@ const SubmitButton = ({ todaysTasks }) => {
 
   const disabled = todaysTasks.length < 3;
 
+  const handleNext = () => {
+    router.push("/plan/3");
+  };
+
   return (
     <Button
+      onPress={handleNext}
       disabled={disabled}
       style={({ pressed, hovered }) => [
         styles.button,
