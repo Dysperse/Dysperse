@@ -79,6 +79,7 @@ function Greeting() {
 }
 
 function PlanDayPrompt() {
+  const { session } = useUser();
   const theme = useColorTheme();
   const handlePress = useCallback(() => {
     router.push("/plan");
@@ -112,7 +113,9 @@ function PlanDayPrompt() {
           }}
           numberOfLines={1}
         >
-          Tap to begin
+          {dayjs(session.user.profile.lastPlanned).isToday()
+            ? "Complete!"
+            : "Tap to begin"}
         </Text>
       </View>
       <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
