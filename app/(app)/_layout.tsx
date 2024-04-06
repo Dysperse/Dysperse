@@ -614,6 +614,7 @@ export default function AppLayout() {
                                     "settings/index",
                                     "settings/personal-information",
                                     "settings/space/index",
+                                    "settings/other/apps",
                                     "settings/space/integrations/index",
                                     "settings/space/integrations/[name]/index",
                                     "settings/space/integrations/[name]/[id]",
