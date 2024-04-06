@@ -33,7 +33,12 @@ export default function Layout() {
               gestureVelocityImpact: 0.7,
             }}
           >
-            {["sign-in", "sign-up", "forgot-password"].map((screen) => (
+            {[
+              "sign-in",
+              "sign-up",
+              "forgot-password/[id]",
+              "forgot-password/index",
+            ].map((screen) => (
               <JsStack.Screen
                 name={screen}
                 options={{
