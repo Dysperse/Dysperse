@@ -118,7 +118,27 @@ function PlanDayPrompt() {
             : "Tap to begin"}
         </Text>
       </View>
-      <Icon style={{ marginLeft: "auto" }}>arrow_forward_ios</Icon>
+      <Avatar
+        disabled
+        icon={
+          dayjs(session.user.profile.lastPlanned).isToday()
+            ? "check"
+            : "arrow_forward_ios"
+        }
+        style={{
+          backgroundColor: dayjs(session.user.profile.lastPlanned).isToday()
+            ? theme[8]
+            : "transparent",
+        }}
+        iconProps={{
+          bold: true,
+          style: {
+            color: dayjs(session.user.profile.lastPlanned).isToday()
+              ? theme[1]
+              : theme[11],
+          },
+        }}
+      />
     </Pressable>
   );
 }
