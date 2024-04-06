@@ -1,3 +1,4 @@
+import PWAInstallerPrompt from "@/components/layout/PWAInstaller";
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { Avatar } from "@/ui/Avatar";
@@ -5,7 +6,28 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
-import { Linking, Pressable, TextStyle, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  Pressable,
+  StyleSheet,
+  TextStyle,
+  View,
+} from "react-native";
+
+const styles = StyleSheet.create({
+  card: {
+    borderWidth: 1,
+    marginTop: 15,
+    marginBottom: 5,
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 20,
+    gap: 20,
+    paddingRight: 30,
+  },
+});
 
 export default function Page() {
   const theme = useColorTheme();
@@ -18,8 +40,8 @@ export default function Page() {
   const cardDescription: TextStyle = {
     fontSize: 15,
     fontFamily: "body_400",
-    color: theme[11],
     opacity: 0.7,
+    color: theme[11],
   };
 
   return (
@@ -31,13 +53,37 @@ export default function Page() {
       </Text>
 
       <View>
+        {Platform.OS === "web" && (
+          <PWAInstallerPrompt
+            render={({ onClick }) => (
+              <Pressable
+                onPress={onClick}
+                style={({ pressed, hovered }) => [
+                  styles.card,
+                  {
+                    borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                    backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+                  },
+                ]}
+              >
+                <Avatar
+                  icon="install_desktop"
+                  style={{ backgroundColor: addHslAlpha(theme[11], 0.1) }}
+                  size={40}
+                />
+                <View style={{ flex: 1 }}>
+                  <Text style={cardHeading}>PWA</Text>
+                  <Text style={cardDescription}>
+                    Create a lightweight app on your desktop. Works on Windows,
+                    Mac, iOS & Android.
+                  </Text>
+                </View>
+                <Icon>north_east</Icon>
+              </Pressable>
+            )}
+          />
+        )}
         {[
-          {
-            icon: "install_desktop",
-            filled: true,
-            name: "PWA",
-            description: "Install #dysperse on your desktop",
-          },
           {
             icon: "window",
             filled: true,
@@ -53,43 +99,44 @@ export default function Page() {
           },
           { icon: "ios", name: "iOS", comingSoon: true },
           { icon: "android", name: "Android", comingSoon: true },
-        ].map((app) => (
-          <Pressable
-            onPress={() => {
-              Linking.openURL(app.href);
-            }}
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-              borderWidth: 1,
-              borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-              marginTop: 15,
-              marginBottom: 5,
-              borderRadius: 20,
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 20,
-              gap: 20,
-              paddingRight: 30,
-              opacity: app.comingSoon ? 0.7 : 1,
-            })}
-            key={app.name}
-            disabled={app.comingSoon}
-          >
-            <Avatar
-              icon={app.icon}
-              style={{ backgroundColor: addHslAlpha(theme[11], 0.1) }}
-              iconProps={{ filled: app.filled }}
-              size={40}
-            />
-            <View style={{ flex: 1 }}>
-              <Text style={cardHeading}>{app.name}</Text>
-              <Text style={cardDescription}>
-                {app.comingSoon ? "Coming soon" : app.description}
-              </Text>
-            </View>
-            <Icon>north_east</Icon>
-          </Pressable>
-        ))}
+        ].map(
+          (app) =>
+            app && (
+              <Pressable
+                onPress={() => {
+                  if (app.name === "PWA") {
+                    window.open(app.href, "_blank");
+                    return;
+                  }
+                  Linking.openURL(app.href);
+                }}
+                style={({ pressed, hovered }) => [
+                  styles.card,
+                  {
+                    borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                    backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+                    opacity: app.comingSoon ? 0.7 : 1,
+                  },
+                ]}
+                key={app.name}
+                disabled={app.comingSoon}
+              >
+                <Avatar
+                  icon={app.icon}
+                  style={{ backgroundColor: addHslAlpha(theme[11], 0.1) }}
+                  iconProps={{ filled: app.filled }}
+                  size={40}
+                />
+                <View style={{ flex: 1 }}>
+                  <Text style={cardHeading}>{app.name}</Text>
+                  <Text style={cardDescription}>
+                    {app.comingSoon ? "Coming soon" : app.description}
+                  </Text>
+                </View>
+                <Icon>north_east</Icon>
+              </Pressable>
+            )
+        )}
       </View>
     </SettingsLayout>
   );

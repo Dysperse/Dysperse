@@ -202,22 +202,24 @@ const WebPWAInstallButton = () => {
         </Pressable>
       )}
 
-      <PWAInstallerPrompt
-        render={({ onClick }) => (
-          <Pressable
-            onPress={onClick}
-            style={({ pressed, hovered }) => [
-              pwaPromptStyles.banner,
-              { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
-            ]}
-          >
-            <Icon>download</Icon>
-            <Text style={{ color: theme[11] }} weight={700}>
-              Install app
-            </Text>
-          </Pressable>
-        )}
-      />
+      {Platform.OS === "web" && (
+        <PWAInstallerPrompt
+          render={({ onClick }) => (
+            <Pressable
+              onPress={onClick}
+              style={({ pressed, hovered }) => [
+                pwaPromptStyles.banner,
+                { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+              ]}
+            >
+              <Icon>download</Icon>
+              <Text style={{ color: theme[11] }} weight={700}>
+                Install app
+              </Text>
+            </Pressable>
+          )}
+        />
+      )}
     </View>
   );
 };
