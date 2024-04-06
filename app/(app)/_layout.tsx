@@ -472,6 +472,7 @@ export default function AppLayout() {
           >
             <BottomSheetModalProvider>
               <MenuProvider
+                skipInstanceCheck
                 customStyles={{
                   backdrop: {
                     flex: 1,

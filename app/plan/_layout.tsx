@@ -89,7 +89,7 @@ export default function Layout() {
   return (
     <SelectionContextProvider>
       <StorageContextProvider>
-        <MenuProvider>
+        <MenuProvider skipInstanceCheck>
           <BottomSheetModalProvider>
             <PlanContextProvider>
               <ColorThemeProvider theme={theme}>

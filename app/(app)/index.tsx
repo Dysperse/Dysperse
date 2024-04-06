@@ -91,6 +91,7 @@ function PlanDayPrompt() {
       style={({ pressed, hovered }) => [
         styles.card,
         {
+          minHeight: 80,
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         },
       ]}
