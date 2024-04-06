@@ -46,6 +46,14 @@
     },
     "web": {
       "name": "Dysperse",
+      "lang": "en",
+      "orientation": "portrait",
+      "splash": {
+        "image": "./assets/splash-screens/light.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#DDF9F2"
+      },
+      "themeColor": "#DDF9F2",
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
       "backgroundColor": "#ffffff",
