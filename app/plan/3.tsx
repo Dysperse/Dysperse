@@ -2,7 +2,7 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import Checkbox from "@/components/task/Checkbox";
-import CreateTask from "@/components/task/create";
+import CreateTask, { TaskDatePicker } from "@/components/task/create";
 import { TaskDrawer } from "@/components/task/drawer";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useUser } from "@/context/useUser";
@@ -145,8 +145,7 @@ function CurrentTaskFooter({
     taskAnimationState.value = "PREVIOUS";
     setTimeout(() => {
       setSlide((s) => s - 1);
-      taskAnimationState.value = "NEXT";
-      setTimeout(() => (taskAnimationState.value = "IDLE"), 0);
+      taskAnimationState.value = "IDLE";
     }, 100);
   };
 
@@ -168,21 +167,28 @@ function CurrentTaskFooter({
           Back
         </Text>
       </Pressable>
-      <Pressable
-        style={({ pressed, hovered }) => [
-          taskStyles.footerButton,
-          {
-            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-            opacity: task.recurrenceRule ? 0.5 : 1,
-          },
-        ]}
-        disabled={task.recurrenceRule}
+      <TaskDatePicker
+        setValue={(date) => handleEdit("due", date)}
+        watch={(n) => task.due}
+        defaultView="date"
+        dueDateOnly
       >
-        <Avatar disabled icon="pan_tool" size={40} />
-        <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-          Reschedule
-        </Text>
-      </Pressable>
+        <Pressable
+          style={({ pressed, hovered }) => [
+            taskStyles.footerButton,
+            {
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              opacity: task.recurrenceRule ? 0.5 : 1,
+            },
+          ]}
+          disabled={task.recurrenceRule}
+        >
+          <Avatar disabled icon="pan_tool" size={40} />
+          <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
+            Reschedule
+          </Text>
+        </Pressable>
+      </TaskDatePicker>
       <Pressable
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
@@ -254,8 +260,9 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
   const t = useMemo(
     () =>
       Array.isArray(data)
-        ? data.find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-            ?.tasks
+        ? data
+            .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
+            ?.tasks?.filter((i) => dayjs(i.due).isSame(dayjs(), "day"))
         : [],
     [data]
   );

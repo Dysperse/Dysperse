@@ -546,11 +546,13 @@ export function TaskDatePicker({
   setValue,
   watch,
   children,
+  dueDateOnly,
 }: {
   defaultView?: "date" | "recurrence";
   setValue: any;
   watch: any;
   children?: any;
+  dueDateOnly?: boolean;
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -562,7 +564,7 @@ export function TaskDatePicker({
   const recurrence = watch("recurrenceRule");
 
   const [view, setView] = useState<"date" | "recurrence">(
-    defaultView || "date"
+    dueDateOnly ? "date" : defaultView || "date"
   );
 
   const trigger = cloneElement(
@@ -609,14 +611,16 @@ export function TaskDatePicker({
             }}
           >
             <BottomSheetScrollView>
-              <ButtonGroup
-                options={[
-                  { value: "date", label: "Date" },
-                  { value: "recurrence", label: "Repeat" },
-                ]}
-                state={[view, setView]}
-                containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
-              />
+              {dueDateOnly !== true && (
+                <ButtonGroup
+                  options={[
+                    { value: "date", label: "Date" },
+                    { value: "recurrence", label: "Repeat" },
+                  ]}
+                  state={[view, setView]}
+                  containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
+                />
+              )}
               {view === "date" ? (
                 <DueDatePicker
                   watch={watch}
