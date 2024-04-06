@@ -435,31 +435,6 @@ function JumpBackIn() {
   );
 }
 
-function JumpTo() {
-  const { handleOpen } = useCommandPaletteContext();
-  const theme = useColorTheme();
-
-  return (
-    <Pressable
-      onPress={handleOpen}
-      style={({ pressed, hovered }) => ({
-        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        borderRadius: 20,
-        gap: 20,
-      })}
-    >
-      <Icon size={35}>bolt</Icon>
-      <Text style={{ color: theme[11], fontSize: 17 }} weight={700}>
-        Jump to...
-      </Text>
-    </Pressable>
-  );
-}
 const patterns = [
   "dots",
   "topography",
