@@ -123,7 +123,7 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate }) {
       >
         <Avatar disabled icon="undo" size={40} />
         <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-          Undo
+          Back
         </Text>
       </Pressable>
       <Pressable
