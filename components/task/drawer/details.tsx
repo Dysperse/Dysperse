@@ -219,7 +219,6 @@ function EditAttachment({ task, updateTask, item, handleCancel }) {
               Name
             </Text>
             <Controller
-              rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
                   bottomSheet
