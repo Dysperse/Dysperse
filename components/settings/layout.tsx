@@ -259,7 +259,7 @@ function SettingsSidebar() {
               }
             }
           >
-            {section.settings.map((button) => (
+            {section.settings.map((button: any) => (
               <ConfirmationModal
                 disabled={!button.confirm}
                 key={button.name}
