@@ -1,3 +1,4 @@
+import { Entity } from "@/components/collections/entity";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
@@ -232,7 +233,12 @@ function CurrentTaskFooter({
         dateRange={dateRange}
         task={task}
         isReadOnly={false}
-        mutateList={onTaskUpdate}
+        mutateList={(...t) => {
+          onTaskUpdate(...t);
+          setTimeout(() => {
+            handleNext();
+          }, 100);
+        }}
       >
         <Pressable
           style={({ pressed, hovered }) => [
@@ -264,18 +270,12 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
             .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
             ?.tasks?.filter(
               (i) =>
-                (i.due || !i.recurrenceRule) &&
-                dayjs(i.due).isSame(dayjs(), "day")
+                (i.due && dayjs(i.due).isSame(dayjs(), "day")) ||
+                i.recurrenceRule
             )
         : [],
     [data]
   );
-
-  useEffect(() => {
-    if (t?.length === 0) {
-      setStage(2);
-    }
-  }, [t, setStage]);
 
   const onTaskUpdate = (newTask) =>
     mutate(
@@ -365,6 +365,12 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
       ],
     };
   });
+
+  useEffect(() => {
+    if (t?.length === 0 || slide + 1 > slidesLength) {
+      setStage(2);
+    }
+  }, [t, setStage, slide, slidesLength]);
 
   return data ? (
     <View style={{ alignItems: "center", flex: 1 }}>
@@ -573,49 +579,89 @@ export default function Page() {
           />
         )}
         {stage === 2 && (
-          <CreateTask
-            mutate={(newTask) => setCreatedTasks((old) => [...old, newTask])}
-            defaultValues={{ date: dayjs() }}
-          >
-            <Pressable
-              style={({ pressed, hovered }) => [
-                taskInputStyles.container,
-                {
-                  backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-                  borderColor: theme[pressed ? 6 : hovered ? 5 : 4],
-                  marginBottom: 20,
-                  paddingLeft: 3,
-                  alignItems: "center",
-                },
-              ]}
+          <>
+            <Emoji
+              emoji="1f4a1"
+              size={50}
+              style={{ marginTop: "auto", marginBottom: 10 }}
+            />
+            <Text style={{ fontSize: 35, color: theme[11] }} weight={900}>
+              {todaysTasks.length === 0
+                ? "Let's create some tasks!"
+                : "Anything else?"}
+            </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                opacity: 0.6,
+                color: theme[11],
+                marginBottom: 10,
+              }}
             >
-              <View
-                style={[
-                  taskInputStyles.check,
+              List out any other tasks you'd like to complete today.
+            </Text>
+            <CreateTask
+              mutate={(newTask) => setCreatedTasks((old) => [...old, newTask])}
+              defaultValues={{ date: dayjs() }}
+            >
+              <Pressable
+                style={({ pressed, hovered }) => [
+                  taskInputStyles.container,
                   {
-                    borderColor: "transparent",
+                    backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+                    borderColor: theme[pressed ? 6 : hovered ? 5 : 4],
+                    marginBottom: 20,
+                    paddingLeft: 3,
                     alignItems: "center",
-                    justifyContent: "center",
                   },
                 ]}
               >
-                <Icon
-                  size={30}
-                  style={{
-                    color: theme[10],
-                  }}
+                <View
+                  style={[
+                    taskInputStyles.check,
+                    {
+                      borderColor: "transparent",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    },
+                  ]}
                 >
-                  add
-                </Icon>
-              </View>
-              <Text
-                weight={700}
-                style={{ marginLeft: -10, opacity: 0.8, color: theme[11] }}
-              >
-                New task...
-              </Text>
-            </Pressable>
-          </CreateTask>
+                  <Icon
+                    size={30}
+                    style={{
+                      color: theme[10],
+                    }}
+                  >
+                    add
+                  </Icon>
+                </View>
+                <Text
+                  weight={700}
+                  style={{ marginLeft: -10, opacity: 0.8, color: theme[11] }}
+                >
+                  New task...
+                </Text>
+              </Pressable>
+            </CreateTask>
+
+            {createdTasks.map(
+              (task) =>
+                task?.id && (
+                  <Entity
+                    key={task.id}
+                    item={task}
+                    isReadOnly={false}
+                    onTaskUpdate={(newTask) => {
+                      setCreatedTasks((old) =>
+                        old.map((t) => (t.id === newTask.id ? newTask : t))
+                      );
+                    }}
+                    planMode
+                    showLabel
+                  />
+                )
+            )}
+          </>
         )}
         {stage === 2 && (
           <SubmitButton
