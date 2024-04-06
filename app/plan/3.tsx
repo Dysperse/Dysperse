@@ -262,7 +262,11 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
       Array.isArray(data)
         ? data
             .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-            ?.tasks?.filter((i) => dayjs(i.due).isSame(dayjs(), "day"))
+            ?.tasks?.filter(
+              (i) =>
+                (i.due || !i.recurrenceRule) &&
+                dayjs(i.due).isSame(dayjs(), "day")
+            )
         : [],
     [data]
   );
