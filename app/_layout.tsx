@@ -314,10 +314,10 @@ function Root() {
                     ...TransitionPresets.ModalPresentationIOS,
                     cardStyle: breakpoints.md
                       ? {
-                          maxWidth: 900,
+                          maxWidth: 800,
                           width: "100%",
                           marginHorizontal: "auto",
-                          marginVertical: 20,
+                          marginVertical: 30,
                           borderRadius: 25,
                           shadowRadius: 20,
                           shadowColor: "rgba(0,0,0,0.1)",
