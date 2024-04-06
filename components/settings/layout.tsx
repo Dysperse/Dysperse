@@ -111,13 +111,23 @@ function SettingsSidebar() {
           name: "Account",
           icon: "person",
           href: "/settings/login/account",
-          keywords: ["email", "password", "account", "login", "security", "password", "2fa", "two", "factor"],
+          keywords: [
+            "email",
+            "password",
+            "account",
+            "login",
+            "security",
+            "password",
+            "2fa",
+            "two",
+            "factor",
+          ],
         },
         {
           name: "Scan QR code",
           icon: "qr_code_2",
           href: "/settings/login/scan",
-          keywords: ["login", "scan","qr", "mobile"],
+          keywords: ["login", "scan", "qr", "mobile"],
         },
         {
           name: "Devices",
@@ -141,6 +151,11 @@ function SettingsSidebar() {
     {
       name: "Other",
       settings: [
+        {
+          name: "Get the app",
+          icon: "download",
+          href: "/settings/other/apps",
+        },
         {
           name: "Terms of Service",
           icon: "info",
