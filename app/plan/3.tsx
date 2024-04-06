@@ -509,6 +509,7 @@ export default function Page() {
       },
     ],
     {
+      // Prevent task from first step from appearing here?
       revalidateOnMount: false,
       revalidateIfStale: false,
       revalidateOnFocus: false,
