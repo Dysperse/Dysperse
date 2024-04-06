@@ -11,6 +11,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -24,6 +25,11 @@ import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
@@ -80,7 +86,14 @@ const taskStyles = StyleSheet.create({
   },
 });
 
-function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate, dateRange }) {
+function CurrentTaskFooter({
+  taskAnimationState,
+  slide,
+  setSlide,
+  task,
+  onTaskUpdate,
+  dateRange,
+}) {
   const { sessionToken } = useUser();
   const theme = useColorTheme();
 
@@ -107,7 +120,14 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate, dateRange }) {
     });
   };
 
-  const handleNext = () => setSlide((s) => s + 1);
+  const handleNext = () => {
+    taskAnimationState.value = "NEXT";
+    setTimeout(() => {
+      setSlide((s) => s + 1);
+      taskAnimationState.value = "INTRO";
+      setTimeout(() => (taskAnimationState.value = "IDLE"), 0);
+    }, 100);
+  };
 
   const isCompleted = task.recurrenceRule
     ? dateRange &&
@@ -121,6 +141,15 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate, dateRange }) {
       )
     : task.completionInstances.length > 0;
 
+  const handleBack = () => {
+    taskAnimationState.value = "PREVIOUS";
+    setTimeout(() => {
+      setSlide((s) => s - 1);
+      taskAnimationState.value = "NEXT";
+      setTimeout(() => (taskAnimationState.value = "IDLE"), 0);
+    }, 100);
+  };
+
   return (
     <View style={[taskStyles.footer]}>
       <Pressable
@@ -132,7 +161,7 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate, dateRange }) {
           },
         ]}
         disabled={slide === 0}
-        onPress={() => setSlide((s) => s - 1)}
+        onPress={handleBack}
       >
         <Avatar disabled icon="undo" size={40} />
         <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
@@ -151,7 +180,7 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate, dateRange }) {
       >
         <Avatar disabled icon="pan_tool" size={40} />
         <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-          Postpone
+          Reschedule
         </Text>
       </Pressable>
       <Pressable
@@ -179,12 +208,18 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate, dateRange }) {
         ]}
         onPress={() => {
           handleEdit("pinned", !task.pinned);
-          handleNext();
+          taskAnimationState.value = task.pinned ? "IDLE" : "PINNED";
+          setTimeout(
+            () => {
+              handleNext();
+            },
+            !task.pinned ? 450 : 100
+          );
         }}
       >
         <Avatar disabled icon="priority_high" size={40} />
         <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-          {task.pinned ? "Remove priority" : "Prioritize"}
+          {task.pinned ? "Deprioritize" : "Prioritize"}
         </Text>
       </Pressable>
       <Checkbox
@@ -255,6 +290,70 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
   const slidesLength = t?.length || 0;
 
   const currentTask = t?.[slide];
+  const taskAnimationState = useSharedValue<
+    "INTRO" | "IDLE" | "PINNED" | "NEXT" | "PREVIOUS"
+  >("IDLE");
+
+  const taskAnimationStyle = useAnimatedStyle(() => {
+    return {
+      marginTop: "auto",
+      width: "100%",
+      marginBottom: "auto",
+      opacity: withSpring(
+        taskAnimationState.value === "NEXT" ||
+          taskAnimationState.value === "INTRO" ||
+          taskAnimationState.value === "PREVIOUS"
+          ? 0
+          : 1
+      ),
+      transform: [
+        {
+          scale: withSpring(taskAnimationState.value === "PINNED" ? 1.1 : 1, {
+            damping: 1,
+            stiffness: 150,
+          }),
+        },
+
+        {
+          translateY:
+            taskAnimationState.value === "INTRO"
+              ? 100
+              : withSpring(
+                  taskAnimationState.value === "NEXT"
+                    ? -100
+                    : taskAnimationState.value === "PREVIOUS"
+                    ? 100
+                    : 0,
+                  {
+                    damping: 30,
+                    stiffness: 400,
+                  }
+                ),
+        },
+      ],
+    };
+  });
+
+  const taskPinnedAnimation = useAnimatedStyle(() => {
+    return {
+      width: 300,
+      position: "absolute",
+      zIndex: 99,
+      top: 0,
+      left: 0,
+      height: "100%",
+      transform: [
+        {
+          translateX:
+            taskAnimationState.value === "PINNED"
+              ? withSpring(700, {
+                  overshootClamping: true,
+                })
+              : -300,
+        },
+      ],
+    };
+  });
 
   return data ? (
     <View style={{ alignItems: "center", flex: 1 }}>
@@ -263,80 +362,104 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
       </Text>
       {currentTask && (
         <>
-          <TaskDrawer
-            mutateList={onTaskUpdate}
-            id={currentTask.id}
-            dateRange={dateRange}
-          >
-            <Pressable
-              style={({ pressed, hovered }) => ({
-                padding: 20,
-                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                shadowColor: theme[pressed ? 9 : hovered ? 8 : 7],
-                shadowRadius: 20,
-                shadowOpacity: pressed ? 0.2 : 0.3,
-                shadowOffset: { width: 5, height: 5 },
-                borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
-                borderWidth: 1,
-                borderRadius: 20,
-                marginBottom: 20,
-                width: "100%",
-              })}
+          <Animated.View style={taskAnimationStyle}>
+            <TaskDrawer
+              mutateList={onTaskUpdate}
+              id={currentTask.id}
+              dateRange={dateRange}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 10,
-                }}
+              <Pressable
+                style={({ pressed, hovered }) => ({
+                  padding: 20,
+                  backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+                  shadowColor: theme[pressed ? 9 : hovered ? 8 : 7],
+                  shadowRadius: 20,
+                  shadowOpacity: pressed ? 0.2 : 0.3,
+                  shadowOffset: { width: 5, height: 5 },
+                  borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
+                  borderWidth: 1,
+                  borderRadius: 20,
+                  marginBottom: 20,
+                  width: "100%",
+                  overflow: "hidden",
+                })}
               >
-                {currentTask.pinned && <TaskImportantChip published large />}
-                {currentTask.label && (
-                  <TaskLabelChip large published task={currentTask} />
+                {currentTask.pinned && (
+                  <Animated.View style={taskPinnedAnimation}>
+                    <LinearGradient
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      colors={[
+                        "transparent",
+                        addHslAlpha(theme[8], 0.4),
+                        "transparent",
+                      ]}
+                      style={{
+                        flex: 1,
+                        width: "100%",
+                        transform: [{ skewX: "-15deg" }],
+                      }}
+                    />
+                  </Animated.View>
                 )}
-              </View>
-              <Text style={{ fontSize: 40 }} weight={700}>
-                {currentTask.name}
-              </Text>
-              <Chip
-                disabled
-                style={taskStyles.chip}
-                icon="calendar_today"
-                label={capitalizeFirstLetter(
-                  currentTask.recurrenceRule
-                    ? new RRule(currentTask.recurrenceRule).toText()
-                    : dayjs(currentTask.due).fromNow()
-                )}
-              />
-              <Chip
-                disabled
-                style={taskStyles.chip}
-                icon="exercise"
-                label={`${
-                  STORY_POINT_SCALE[
-                    [2, 4, 8, 16, 32].indexOf(currentTask.storyPoints)
-                  ]
-                }`}
-              />
-              {currentTask.attachments?.length > 0 && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  {currentTask.pinned && <TaskImportantChip published large />}
+                  {currentTask.label && (
+                    <TaskLabelChip large published task={currentTask} />
+                  )}
+                </View>
+                <Text style={{ fontSize: 40 }} weight={700}>
+                  {currentTask.name}
+                </Text>
                 <Chip
                   disabled
                   style={taskStyles.chip}
-                  icon="attachment"
-                  label={`${currentTask.attachments?.length} attachment${
-                    currentTask.attachments?.length > 1 ? "s" : ""
+                  icon="calendar_today"
+                  label={capitalizeFirstLetter(
+                    currentTask.recurrenceRule
+                      ? new RRule(currentTask.recurrenceRule).toText()
+                      : dayjs(currentTask.due).fromNow()
+                  )}
+                />
+                <Chip
+                  disabled
+                  style={taskStyles.chip}
+                  icon="exercise"
+                  label={`${
+                    STORY_POINT_SCALE[
+                      [2, 4, 8, 16, 32].indexOf(currentTask.storyPoints)
+                    ]
                   }`}
                 />
-              )}
-              {currentTask.note && (
-                <View style={{ marginTop: 10, gap: 5, pointerEvents: "none" }}>
-                  <Text variant="eyebrow">Note</Text>
-                  <MarkdownRenderer>{currentTask.note}</MarkdownRenderer>
-                </View>
-              )}
-            </Pressable>
-          </TaskDrawer>
+                {currentTask.attachments?.length > 0 && (
+                  <Chip
+                    disabled
+                    style={taskStyles.chip}
+                    icon="attachment"
+                    label={`${currentTask.attachments?.length} attachment${
+                      currentTask.attachments?.length > 1 ? "s" : ""
+                    }`}
+                  />
+                )}
+                {currentTask.note && (
+                  <View
+                    style={{ marginTop: 10, gap: 5, pointerEvents: "none" }}
+                  >
+                    <Text variant="eyebrow">Note</Text>
+                    <MarkdownRenderer>{currentTask.note}</MarkdownRenderer>
+                  </View>
+                )}
+              </Pressable>
+            </TaskDrawer>
+          </Animated.View>
           <CurrentTaskFooter
+            taskAnimationState={taskAnimationState}
             dateRange={dateRange}
             onTaskUpdate={onTaskUpdate}
             task={currentTask}
