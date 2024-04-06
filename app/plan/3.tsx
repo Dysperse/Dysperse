@@ -4,6 +4,8 @@ import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import CreateTask from "@/components/task/create";
 import { TaskDrawer } from "@/components/task/drawer";
 import { STORY_POINT_SCALE } from "@/constants/workload";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -21,6 +23,7 @@ import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
 import { styles } from ".";
@@ -76,8 +79,35 @@ const taskStyles = StyleSheet.create({
   },
 });
 
-function CurrentTaskFooter({ slide, setSlide, task }) {
+function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate }) {
+  const { sessionToken } = useUser();
   const theme = useColorTheme();
+
+  const handleEdit = async (key, value) => {
+    onTaskUpdate({ ...task, [key]: value });
+
+    await sendApiRequest(
+      sessionToken,
+      "PUT",
+      "space/entity",
+      {},
+      {
+        body: JSON.stringify({
+          id: task.id,
+          [key]: value,
+        }),
+      }
+    ).catch(() => {
+      onTaskUpdate(task);
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+    });
+  };
+
+  const handleNext = () => setSlide((s) => s + 1);
+
   return (
     <View style={[taskStyles.footer]}>
       <Pressable
@@ -99,8 +129,12 @@ function CurrentTaskFooter({ slide, setSlide, task }) {
       <Pressable
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
-          { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+          {
+            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            opacity: task.recurrenceRule ? 0.5 : 1,
+          },
         ]}
+        disabled={task.recurrenceRule}
       >
         <Avatar disabled icon="pan_tool" size={40} />
         <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
@@ -112,6 +146,7 @@ function CurrentTaskFooter({ slide, setSlide, task }) {
           taskStyles.footerButton,
           { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
         ]}
+        onPress={() => handleNext()}
       >
         <Avatar
           disabled
@@ -129,6 +164,10 @@ function CurrentTaskFooter({ slide, setSlide, task }) {
           taskStyles.footerButton,
           { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
         ]}
+        onPress={() => {
+          handleEdit("pinned", !task.pinned);
+          handleNext();
+        }}
       >
         <Avatar disabled icon="priority_high" size={40} />
         <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
@@ -150,7 +189,7 @@ function CurrentTaskFooter({ slide, setSlide, task }) {
   );
 }
 
-function TodaysTasks({ data, mutate, error, setStage }) {
+function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
   const theme = useColorTheme();
   const t = useMemo(
     () =>
@@ -199,7 +238,11 @@ function TodaysTasks({ data, mutate, error, setStage }) {
       </Text>
       {currentTask && (
         <>
-          <TaskDrawer mutateList={onTaskUpdate} id={currentTask.id}>
+          <TaskDrawer
+            mutateList={onTaskUpdate}
+            id={currentTask.id}
+            dateRange={dateRange}
+          >
             <Pressable
               style={({ pressed, hovered }) => ({
                 padding: 20,
@@ -269,6 +312,7 @@ function TodaysTasks({ data, mutate, error, setStage }) {
             </Pressable>
           </TaskDrawer>
           <CurrentTaskFooter
+            onTaskUpdate={onTaskUpdate}
             task={currentTask}
             slide={slide}
             setSlide={setSlide}
@@ -350,6 +394,18 @@ export default function Page() {
         )}
         {stage === 1 && (
           <TodaysTasks
+            dateRange={[
+              new Date(
+                data?.find((d) =>
+                  dayjs().isBetween(dayjs(d.start), dayjs(d.end))
+                ).start
+              ),
+              new Date(
+                data?.find((d) =>
+                  dayjs().isBetween(dayjs(d.start), dayjs(d.end))
+                ).end
+              ),
+            ]}
             setStage={setStage}
             data={data}
             mutate={mutate}
