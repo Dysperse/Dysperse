@@ -147,7 +147,7 @@ function Agenda() {
 export function Perspectives() {
   let { agendaView, start, id } = useLocalSearchParams();
   if (!agendaView) agendaView = "week";
-  if (!start) start = dayjs().format("YYYY-MM-DD");
+  if (!start) start = dayjs().startOf("day").toISOString();
 
   const agendaContextValue = useMemo(() => {
     return {

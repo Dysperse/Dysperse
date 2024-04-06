@@ -97,11 +97,17 @@ export const videoChatPlatforms = [
   "viber.com",
 ];
 
-const TaskAttachmentChips = memo(function TaskAttachmentChips({
+export const TaskAttachmentChips = memo(function TaskAttachmentChips({
   attachments,
+  large,
+  published,
 }: {
   attachments: any[];
+  large?: boolean;
+  published?: boolean;
 }) {
+  const theme = useColorTheme();
+
   const getAttachmentIcon = (t) =>
     ({
       LINK: "link",
@@ -118,7 +124,7 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
       image={attachment.type === "IMAGE" && attachment.data}
     >
       <Chip
-        dense
+        dense={!large}
         label={
           attachment.name ||
           (attachment.type === "LINK"
@@ -147,7 +153,7 @@ const TaskAttachmentChips = memo(function TaskAttachmentChips({
             getAttachmentIcon(attachment.type)
           )
         }
-        style={{ padding: 5 }}
+        style={[{ padding: 5 }, published && { backgroundColor: theme[5] }]}
       />
     </ImageViewer>
   ));
