@@ -37,7 +37,7 @@ function PlanNavbar() {
   const currentSlide = parseInt(route.replace("/plan/", "")) || 0;
 
   return (
-    <View style={{ backgroundColor: theme[1] }}>
+    <View style={{ backgroundColor: theme[2] }}>
       <View
         style={{
           height: 7,

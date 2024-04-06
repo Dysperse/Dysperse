@@ -87,7 +87,7 @@ export default function Page() {
 
   return (
     <LinearGradient
-      colors={[theme[1], theme[2], theme[3]]}
+      colors={[theme[2], theme[3]]}
       style={{ flex: 1, alignItems: "center", padding: 20 }}
     >
       <Text

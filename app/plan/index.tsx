@@ -19,9 +19,8 @@ export const styles = StyleSheet.create({
   title: {
     marginTop: "auto",
     textAlign: "center",
-    fontSize: 50,
   },
-  subtitle: { textAlign: "center", fontSize: 20, opacity: 0.7 },
+  subtitle: { textAlign: "center", fontSize: 40, opacity: 0.7 },
   buttonContainer: {
     padding: 20,
     marginTop: "auto",
@@ -45,14 +44,14 @@ export default function Page() {
 
   return (
     <LinearGradient
-      colors={[theme[1], theme[2], theme[3], theme[4], theme[5], theme[6]]}
+      colors={[theme[2], theme[3], theme[4], theme[5], theme[6]]}
       style={styles.container}
     >
       <Text
         style={[
           styles.title,
           {
-            fontSize: breakpoints.md ? 50 : 30,
+            fontSize: breakpoints.md ? 60 : 30,
             color: theme[11],
           },
         ]}

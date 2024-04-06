@@ -116,7 +116,7 @@ const SubmitButton = ({ watch, handleSubmit }) => {
         Next
       </ButtonText>
       <Icon style={{ color: theme[name ? 1 : 10] }} bold>
-        east
+        arrow_forward_ios
       </Icon>
     </Button>
   );
@@ -134,7 +134,7 @@ export default function Page() {
 
   return (
     <LinearGradient
-      colors={[theme[1], theme[2], theme[3], theme[4], theme[5], theme[6]]}
+      colors={[theme[2], theme[3], theme[4], theme[5], theme[6]]}
       style={{ flex: 1 }}
     >
       <ScrollView
