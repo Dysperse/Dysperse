@@ -56,7 +56,7 @@ function TodaysTasks({ data, mutate, error }) {
       {Array.isArray(data) ? (
         data
           .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-          .tasks.map(
+          ?.tasks.map(
             (e) =>
               e?.id && (
                 <Entity
@@ -124,7 +124,7 @@ export default function Page() {
 
   const todaysTasks = data?.find((d) =>
     dayjs().isBetween(dayjs(d.start), dayjs(d.end))
-  ).tasks;
+  )?.tasks;
 
   const breakpoints = useResponsiveBreakpoints();
   return (
