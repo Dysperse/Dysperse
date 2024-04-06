@@ -496,17 +496,25 @@ export default function Page() {
 
   const start = dayjs().startOf("week").utc().toISOString();
 
-  const { data, mutate, error } = useSWR([
-    "space/collections/collection/planner",
+  const { data, mutate, error } = useSWR(
+    [
+      "space/collections/collection/planner",
+      {
+        start: dayjs(start).startOf("week").toISOString(),
+        end: dayjs(start).startOf("week").add(1, "week").toISOString(),
+        type: "week",
+        timezone: dayjs.tz.guess(),
+        all: true,
+        id: "true",
+      },
+    ],
     {
-      start: dayjs(start).startOf("week").toISOString(),
-      end: dayjs(start).startOf("week").add(1, "week").toISOString(),
-      type: "week",
-      timezone: dayjs.tz.guess(),
-      all: true,
-      id: "true",
-    },
-  ]);
+      revalidateOnMount: false,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
   const todaysTasks = Array.isArray(data)
     ? data?.find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))?.tasks
