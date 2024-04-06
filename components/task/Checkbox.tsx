@@ -3,7 +3,7 @@ import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import React, { memo } from "react";
+import React, { cloneElement, memo } from "react";
 import { Platform, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -17,11 +17,13 @@ function TaskCheckbox({
   mutateList,
   isReadOnly,
   dateRange,
+  children,
 }: {
   task: any;
   mutateList: any;
   isReadOnly: boolean;
   dateRange: [Date, Date];
+  children: any;
 }) {
   const theme = useColorTheme();
   const { session } = useSession();
@@ -92,8 +94,13 @@ function TaskCheckbox({
   };
 
   const disabled = isReadOnly || (task.recurrenceRule && !dateRange);
+  const trigger = cloneElement(children || <Pressable />, {
+    onPress: handlePress,
+  });
 
-  return (
+  return children ? (
+    trigger
+  ) : (
     <>
       <Pressable
         style={() => ({

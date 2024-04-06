@@ -1,6 +1,7 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
+import Checkbox from "@/components/task/Checkbox";
 import CreateTask from "@/components/task/create";
 import { TaskDrawer } from "@/components/task/drawer";
 import { STORY_POINT_SCALE } from "@/constants/workload";
@@ -79,7 +80,7 @@ const taskStyles = StyleSheet.create({
   },
 });
 
-function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate }) {
+function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate, dateRange }) {
   const { sessionToken } = useUser();
   const theme = useColorTheme();
 
@@ -107,6 +108,18 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate }) {
   };
 
   const handleNext = () => setSlide((s) => s + 1);
+
+  const isCompleted = task.recurrenceRule
+    ? dateRange &&
+      task.completionInstances.find((instance) =>
+        dayjs(instance.iteration).isBetween(
+          dateRange[0],
+          dateRange[1],
+          "day",
+          "[]"
+        )
+      )
+    : task.completionInstances.length > 0;
 
   return (
     <View style={[taskStyles.footer]}>
@@ -174,17 +187,29 @@ function CurrentTaskFooter({ slide, setSlide, task, onTaskUpdate }) {
           {task.pinned ? "Remove priority" : "Prioritize"}
         </Text>
       </Pressable>
-      <Pressable
-        style={({ pressed, hovered }) => [
-          taskStyles.footerButton,
-          { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
-        ]}
+      <Checkbox
+        dateRange={dateRange}
+        task={task}
+        isReadOnly={false}
+        mutateList={onTaskUpdate}
       >
-        <Avatar disabled icon="verified" size={40} />
-        <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
-          Mark done
-        </Text>
-      </Pressable>
+        <Pressable
+          style={({ pressed, hovered }) => [
+            taskStyles.footerButton,
+            { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+          ]}
+        >
+          <Avatar
+            disabled
+            iconProps={{ filled: isCompleted }}
+            icon="verified"
+            size={40}
+          />
+          <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
+            {isCompleted ? "Marked done" : "Mark done"}
+          </Text>
+        </Pressable>
+      </Checkbox>
     </View>
   );
 }
@@ -312,6 +337,7 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
             </Pressable>
           </TaskDrawer>
           <CurrentTaskFooter
+            dateRange={dateRange}
             onTaskUpdate={onTaskUpdate}
             task={currentTask}
             slide={slide}
