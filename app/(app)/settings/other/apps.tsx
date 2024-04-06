@@ -43,8 +43,14 @@ export default function Page() {
             filled: true,
             name: "Windows",
             href: "https://click.dysperse.com/ms",
+            description: "Works on Windows 8 & higher",
           },
-          { icon: "language", name: "Web" },
+          {
+            icon: "language",
+            name: "Web",
+            href: "https://app.dysperse.com",
+            description: "Use #dysperse in your browser. Works on any device.",
+          },
           { icon: "ios", name: "iOS", comingSoon: true },
           { icon: "android", name: "Android", comingSoon: true },
         ].map((app) => (
