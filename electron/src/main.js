@@ -84,7 +84,7 @@ app.whenReady().then(() => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 
   if (!tray) {
-    tray = new Tray(path.join(__dirname, "favicon.ico"), "Dysperse");
+    tray = new Tray(path.join(__dirname, "favicon.ico"));
     const contextMenu = Menu.buildFromTemplate([
       {
         label: "Open Dysperse",
