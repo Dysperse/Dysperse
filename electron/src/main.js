@@ -2,9 +2,12 @@
 const { app, BrowserWindow, shell, Tray, Menu } = require("electron");
 const path = require("path");
 
+let mainWindow;
+let tray;
+
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     autoHideMenuBar: true,
@@ -34,29 +37,6 @@ function createWindow() {
   mainWindow.on("close", (event) => {
     event.preventDefault();
     mainWindow.hide();
-  });
-
-  // Create a tray icon
-  const tray = new Tray(path.join(__dirname, "favicon.ico"));
-
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: "Open Dysperse",
-      click: () => mainWindow.show(),
-    },
-    {
-      label: "Quit",
-      click: () => {
-        app.quit();
-        app.exit();
-      },
-    },
-  ]);
-
-  tray.setToolTip("Dysperse");
-  tray.setContextMenu(contextMenu);
-  tray.on("click", () => {
-    mainWindow.show();
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -99,8 +79,30 @@ function createWindow() {
     setInterval(setColor, 1000);
   });
 }
+
 app.whenReady().then(() => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
+
+  if (!tray) {
+    tray = new Tray(path.join(__dirname, "favicon.ico"), "Dysperse");
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: "Open Dysperse",
+        click: () => mainWindow && mainWindow.show(),
+      },
+      {
+        label: "Quit",
+        click: () => {
+          app.quit();
+          app.exit();
+        },
+      },
+    ]);
+
+    tray.setToolTip("Dysperse");
+    tray.setContextMenu(contextMenu);
+    tray.on("click", () => mainWindow && mainWindow.show());
+  }
 });
 
 app.on("window-all-closed", function () {
