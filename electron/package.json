@@ -1,16 +1,31 @@
 {
   "name": "electron",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Dysperse",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "keywords": [],
-  "author": "",
+  "author": "Dysperse",
   "license": "ISC",
   "dependencies": {
+    "@electron-forge/plugin-fuses": "^7.3.1",
     "cors": "^2.8.5",
+    "electron-squirrel-startup": "^1.0.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.3.1",
+    "@electron-forge/maker-deb": "^7.3.1",
+    "@electron-forge/maker-rpm": "^7.3.1",
+    "@electron-forge/maker-squirrel": "^7.3.1",
+    "@electron-forge/maker-zip": "^7.3.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
+    "@types/cors": "^2.8.17",
     "electron": "^29.2.0"
   }
 }
