@@ -34,11 +34,12 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       scrollBounce: true,
-      devTools: true,
+      devTools: false,
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
+  // prevent users from doing CTRL+R. refactor this in the future
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
     mainWindow.removeMenu();
