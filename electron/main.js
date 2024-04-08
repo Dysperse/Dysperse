@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, shell } = require("electron");
+const { app, BrowserWindow, shell, Tray, Menu } = require("electron");
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
@@ -23,7 +23,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     autoHideMenuBar: true,
-    icon: path.join(__dirname, "dist/favicon.ico"),
+    icon: path.join(__dirname, "icon.png"),
     center: true,
     titleBarOverlay: {
       color: "rgba(0,0,0,0)",
@@ -32,8 +32,42 @@ function createWindow() {
     titleBarStyle: "hidden",
     backgroundColor: "#000",
     webPreferences: {
+      nodeIntegration: true,
+      scrollBounce: true,
+      devTools: true,
       preload: path.join(__dirname, "preload.js"),
     },
+  });
+
+  mainWindow.on("ready-to-show", () => {
+    mainWindow.show();
+    mainWindow.removeMenu();
+  });
+
+  // prevent window from closing on close button click
+  mainWindow.on("close", (event) => {
+    event.preventDefault();
+    mainWindow.hide();
+  });
+
+  // Create a tray icon
+  const tray = new Tray(path.join(__dirname, "dist/favicon.ico"));
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "Open Dysperse",
+      click: () => mainWindow.show(),
+    },
+    {
+      label: "Quit",
+      click: () => app.quit(),
+    },
+  ]);
+
+  tray.setToolTip("Dysperse");
+  tray.setContextMenu(contextMenu);
+  tray.on("click", () => {
+    mainWindow.show();
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -46,7 +80,10 @@ function createWindow() {
   //   mainWindow.loadFile('index.html')
   mainWindow.loadURL("http://localhost:" + PORT);
 
-  mainWindow.webContents.on("dom-ready", () => {
+  const setColor = () => {
+    // if window is out of focus, don't change the color
+    if (!mainWindow.isFocused()) return;
+
     const metaTags = mainWindow.webContents.executeJavaScript(`
       Array.from(document.querySelectorAll('meta')).map(tag => ({
         name: tag.getAttribute('name'),
@@ -69,6 +106,11 @@ function createWindow() {
       .catch((error) => {
         console.error("Error retrieving meta tags:", error);
       });
+  };
+
+  mainWindow.webContents.on("dom-ready", () => {
+    setColor();
+    setInterval(setColor, 1000);
   });
 
   // Open the DevTools.
