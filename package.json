@@ -8,6 +8,7 @@
     "lint": "eslint ./",
     "build": "eas build --profile development --platform android",
     "build:web": "expo export -p web && npm install workbox-cli --global && workbox generateSW workbox-config.js",
+    "build:electron": "expo export -p web --output-dir ./electron/src/dist",
     "android": "expo run:android",
     "ios": "expo run:ios"
   },
