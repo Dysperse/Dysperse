@@ -1,17 +1,24 @@
 const { FusesPlugin } = require("@electron-forge/plugin-fuses");
 const { FuseV1Options, FuseVersion } = require("@electron/fuses");
+const path = require("path");
 
 module.exports = {
-  name: "Dysperse",
   packagerConfig: {
     asar: true,
-    icon: "src/icon",
+    icon: "./src/icon",
+    name: "Dysperse",
   },
   rebuildConfig: {},
   makers: [
     {
       name: "@electron-forge/maker-squirrel",
-      config: {},
+      config: {
+        iconUrl: "https://assets.dysperse.com/desktop.ico",
+        setupExe: "Dysperse.exe",
+        setupIcon: path.join(__dirname, "src/icon.ico"),
+        loadingGif: path.join(__dirname, "src/icon.gif"),
+        skipUpdateIcon: true,
+      },
     },
     {
       name: "@electron-forge/maker-zip",
@@ -19,7 +26,18 @@ module.exports = {
     },
     {
       name: "@electron-forge/maker-deb",
-      config: {},
+      config: {
+        options: {
+          icon: path.join(__dirname, "src/icon.png"),
+        },
+      },
+    },
+    {
+      // Path to the icon to use for the app in the DMG window
+      name: "@electron-forge/maker-dmg",
+      config: {
+        icon: path.join(__dirname, "src/icon.icns"),
+      },
     },
     {
       name: "@electron-forge/maker-rpm",
