@@ -5,7 +5,7 @@ module.exports = {
   name: "Dysperse",
   packagerConfig: {
     asar: true,
-    icon: "icon.png",
+    icon: "src/icon",
   },
   rebuildConfig: {},
   makers: [

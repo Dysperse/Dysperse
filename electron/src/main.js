@@ -86,7 +86,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     autoHideMenuBar: true,
-    icon: path.join(__dirname, "icon.png"),
+    icon: path.join(__dirname, "icon.ico"),
     center: true,
     titleBarOverlay: {
       color: "rgba(0,0,0,0)",
@@ -119,6 +119,21 @@ function createWindow() {
     return { action: "deny" };
   });
 
+  let loadingTimer;
+
+  mainWindow.webContents.on("did-start-loading", () => {
+    // Start a timer to check if loading takes more than 500ms
+    loadingTimer = setTimeout(() => {
+      mainWindow.setProgressBar(2, { mode: "indeterminate" });
+    }, 200);
+  });
+
+  mainWindow.webContents.on("did-stop-loading", () => {
+    // Clear the timer when loading finishes
+    clearTimeout(loadingTimer);
+    mainWindow.setProgressBar(-1);
+  });
+
   // and load the index.html of the app.
   mainWindow.loadURL("https://app.dysperse.com");
 
@@ -137,7 +152,7 @@ function createWindow() {
         const t = tags.filter((tag) => tag.name === "theme-color")?.[0];
         if (t) {
           // get 98.0% from hsl(240, 20.0%, 98.0%)
-          const color = t.content.split(",")[2].split("%")[0];
+          const color = t.content?.split(",")?.[2]?.split("%")?.[0];
           mainWindow.setTitleBarOverlay({
             color: `rgba(0,0,0,0)`,
             symbolColor: color > 50 ? "#000" : "#fff",
