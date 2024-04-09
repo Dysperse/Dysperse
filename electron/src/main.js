@@ -1,6 +1,81 @@
+if (require("electron-squirrel-startup")) return;
+
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, shell, Tray, Menu } = require("electron");
+
+// Squirrel event
+if (handleSquirrelEvent()) {
+  // squirrel event handled and app will exit in 1000ms, so don't do anything else
+  return;
+}
+
+function handleSquirrelEvent() {
+  if (process.argv.length === 1) {
+    return false;
+  }
+
+  const ChildProcess = require("child_process");
+  const path = require("path");
+
+  const appFolder = path.resolve(process.execPath, "..");
+  const rootAtomFolder = path.resolve(appFolder, "..");
+  const updateDotExe = path.resolve(path.join(rootAtomFolder, "Update.exe"));
+  const exeName = path.basename(process.execPath);
+
+  const spawn = function (command, args) {
+    let spawnedProcess, error;
+
+    try {
+      spawnedProcess = ChildProcess.spawn(command, args, { detached: true });
+    } catch (error) {
+      console.log(error);
+    }
+
+    return spawnedProcess;
+  };
+
+  const spawnUpdate = function (args) {
+    return spawn(updateDotExe, args);
+  };
+
+  const squirrelEvent = process.argv[1];
+  switch (squirrelEvent) {
+    case "--squirrel-install":
+    case "--squirrel-updated":
+      // Optionally do things such as:
+      // - Add your .exe to the PATH
+      // - Write to the registry for things like file associations and
+      //   explorer context menus
+
+      // Install desktop and start menu shortcuts
+      spawnUpdate(["--createShortcut", exeName]);
+
+      setTimeout(app.quit, 1000);
+      return true;
+
+    case "--squirrel-uninstall":
+      // Undo anything you did in the --squirrel-install and
+      // --squirrel-updated handlers
+
+      // Remove desktop and start menu shortcuts
+      spawnUpdate(["--removeShortcut", exeName]);
+
+      setTimeout(app.quit, 1000);
+      return true;
+
+    case "--squirrel-obsolete":
+      // This is called on the outgoing version of your app before
+      // we update to the new version - it's the opposite of
+      // --squirrel-updated
+
+      app.quit();
+      return true;
+  }
+}
+
 const path = require("path");
+
+const gotTheLock = app.requestSingleInstanceLock();
 
 let mainWindow;
 let tray;
@@ -80,30 +155,49 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on(
+    "second-instance",
+    (event, commandLine, workingDirectory, additionalData) => {
+      // Print out data received from the second instance.
+      console.log(additionalData);
 
-  if (!tray) {
-    tray = new Tray(path.join(__dirname, "favicon.ico"));
-    const contextMenu = Menu.buildFromTemplate([
-      {
-        label: "Open Dysperse",
-        click: () => mainWindow && mainWindow.show(),
-      },
-      {
-        label: "Quit",
-        click: () => {
-          app.quit();
-          app.exit();
+      // Someone tried to run a second instance, we should focus our window.
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.show();
+        mainWindow.focus();
+      }
+    }
+  );
+
+  app.whenReady().then(() => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+
+    if (!tray) {
+      tray = new Tray(path.join(__dirname, "favicon.ico"));
+      const contextMenu = Menu.buildFromTemplate([
+        {
+          label: "Open Dysperse",
+          click: () => mainWindow && mainWindow.show(),
         },
-      },
-    ]);
+        {
+          label: "Quit",
+          click: () => {
+            app.quit();
+            app.exit();
+          },
+        },
+      ]);
 
-    tray.setToolTip("Dysperse");
-    tray.setContextMenu(contextMenu);
-    tray.on("click", () => mainWindow && mainWindow.show());
-  }
-});
+      tray.setToolTip("Dysperse");
+      tray.setContextMenu(contextMenu);
+      tray.on("click", () => mainWindow && mainWindow.show());
+    }
+  });
+}
 
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
