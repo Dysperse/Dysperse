@@ -156,7 +156,7 @@ function CurrentTaskFooter({
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
           {
-            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined,
             opacity: slide === 0 ? 0.5 : 1,
           },
         ]}
@@ -178,7 +178,7 @@ function CurrentTaskFooter({
           style={({ pressed, hovered }) => [
             taskStyles.footerButton,
             {
-              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined,
               opacity: task.recurrenceRule ? 0.5 : 1,
             },
           ]}
@@ -193,7 +193,7 @@ function CurrentTaskFooter({
       <Pressable
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
-          { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+          { backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined },
         ]}
         onPress={() => handleNext()}
       >
@@ -211,7 +211,7 @@ function CurrentTaskFooter({
       <Pressable
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
-          { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+          { backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined },
         ]}
         onPress={() => {
           handleEdit("pinned", !task.pinned);
@@ -243,7 +243,7 @@ function CurrentTaskFooter({
         <Pressable
           style={({ pressed, hovered }) => [
             taskStyles.footerButton,
-            { backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3] },
+            { backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined },
           ]}
         >
           <Avatar
