@@ -10,7 +10,7 @@ module.exports = {
   },
   targets: {
     mac: ["zip"],
-    win: ["squirrel", "appx"],
+    win: ["squirrel"],
   },
   rebuildConfig: {},
   makers: [
