@@ -8,6 +8,10 @@ module.exports = {
     icon: "./src/icon",
     name: "Dysperse",
   },
+  targets: {
+    mac: ["zip"],
+    win: ["squirrel", "appx"],
+  },
   rebuildConfig: {},
   makers: [
     {
@@ -40,8 +44,10 @@ module.exports = {
       },
     },
     {
-      name: "@electron-forge/maker-rpm",
-      config: {},
+      name: "@electron-forge/maker-appx",
+      config: {
+        publisher: "CN=05A5E870-040E-4832-AE11-60DF88D43653",
+      },
     },
   ],
   plugins: [
