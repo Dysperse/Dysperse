@@ -226,7 +226,7 @@ const WebPWAInstallButton = () => {
 
 const OpenTabsList = memo(function OpenTabsList() {
   const { tab }: { tab: string } = useTabParams() as any;
-  const { data, error } = useSWR(["user/tabs"]);
+  const { data, error } = useSWR(["user/tabs"], { refreshInterval: 15000 });
 
   const handleSnapToIndex = (index: number) => {
     if (error)
