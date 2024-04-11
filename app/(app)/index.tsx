@@ -85,6 +85,8 @@ function PlanDayPrompt() {
     router.push("/plan");
   }, []);
 
+  const hasCompleted = dayjs(session.user.profile.lastPlanned).isToday();
+
   return (
     <Pressable
       onPress={handlePress}
@@ -92,6 +94,8 @@ function PlanDayPrompt() {
         styles.card,
         {
           minHeight: 80,
+          borderWidth: 2,
+          borderColor: hasCompleted ? "transparent" : theme[8],
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         },
       ]}
@@ -114,29 +118,19 @@ function PlanDayPrompt() {
           }}
           numberOfLines={1}
         >
-          {dayjs(session.user.profile.lastPlanned).isToday()
-            ? "Complete!"
-            : "Tap to begin"}
+          {hasCompleted ? "Complete!" : "Tap to begin"}
         </Text>
       </View>
       <Avatar
         disabled
-        icon={
-          dayjs(session.user.profile.lastPlanned).isToday()
-            ? "check"
-            : "arrow_forward_ios"
-        }
+        icon={hasCompleted ? "check" : "arrow_forward_ios"}
         style={{
-          backgroundColor: dayjs(session.user.profile.lastPlanned).isToday()
-            ? theme[8]
-            : "transparent",
+          backgroundColor: hasCompleted ? theme[9] : "transparent",
         }}
         iconProps={{
           bold: true,
           style: {
-            color: dayjs(session.user.profile.lastPlanned).isToday()
-              ? theme[1]
-              : theme[11],
+            color: hasCompleted ? theme[1] : theme[11],
           },
         }}
       />
