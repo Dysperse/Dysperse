@@ -96,7 +96,7 @@ export function Stream() {
     .filter((t) => {
       if (t.trash) return false;
       if (view === "backlog")
-        return !t.completionInstances.length && dayjs(t.due).isBefore(dayjs());
+        return !t.completionInstances.length && dayjs(t.due).isBefore(dayjs()) && (!t.dateOnly || !dayjs(t.due).isToday());
       else if (view === "upcoming")
         return (
           dayjs(t.due).isAfter(dayjs().startOf("day")) &&
