@@ -1169,6 +1169,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             gap: 10,
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between"
           }}
         >
           <TouchableOpacity
@@ -1182,7 +1183,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
               Cancel
             </ButtonText>
           </TouchableOpacity>
-          <MenuPopover
+{/*           <MenuPopover
             menuProps={{
               style: {
                 marginLeft: "auto",
@@ -1201,7 +1202,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
                 <Icon style={{ color: theme[11] }}>expand_more</Icon>
               </Pressable>
             }
-          />
+          /> */}
           <IconButton
             size={breakpoints.md ? 55 : 45}
             variant="outlined"
