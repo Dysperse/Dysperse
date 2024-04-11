@@ -54,7 +54,10 @@ export const BottomSheetBackdropComponent = ({
 
   return (
     <Animated.View
-      style={containerStyle as any}
+      style={[
+        containerStyle as any,
+        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+      ]}
       onPointerUp={dismissible === false ? handlePushDown : handleClose}
       onTouchEnd={dismissible === false ? handlePushDown : handleClose}
     />

@@ -477,6 +477,8 @@ export default function AppLayout() {
                   backdrop: {
                     flex: 1,
                     opacity: 1,
+                    ...(Platform.OS === "web" &&
+                      ({ WebkitAppRegion: "no-drag" } as any)),
                   },
                 }}
               >

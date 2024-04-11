@@ -153,7 +153,7 @@ function Tab({
           }
         />
         <View style={{ flex: 1 }}>
-          <Text weight={500} numberOfLines={1} style={{ color: theme[11] }}>
+          <Text weight={400} numberOfLines={1} style={{ color: theme[11] }}>
             {tabName}
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (
@@ -185,7 +185,7 @@ function Tab({
         </IconButton>
       </>
     ),
-    [selected, tab, tabData, theme, breakpoints, handleCloseTab, tabName]
+    [selected, tab, tabData, theme, handleCloseTab, tabName]
   );
 
   return isClosedAnimation ? null : (
