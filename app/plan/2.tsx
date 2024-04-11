@@ -9,6 +9,7 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useEffect } from "react";
 import { View } from "react-native";
 import useSWR from "swr";
 import { styles } from ".";
@@ -65,6 +66,10 @@ export default function Page() {
         })
       : []
   ).sort((a, b) => dayjs(a.due).diff(dayjs(b.due)));
+
+  useEffect(() => {
+    if (filteredTasks.length === 0) router.push("/plan/3");
+  }, [filteredTasks]);
 
   return (
     <LinearGradient colors={[theme[2], theme[3]]} style={{ flex: 1 }}>
