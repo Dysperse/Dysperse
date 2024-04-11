@@ -100,7 +100,7 @@ function PlanDayPrompt() {
         },
       ]}
     >
-      <Icon size={30}>tactic</Icon>
+      <Icon size={30}>stylus_note</Icon>
       <View style={{ flex: 1 }}>
         <Text
           weight={700}
