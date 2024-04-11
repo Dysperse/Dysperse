@@ -7,7 +7,11 @@ export const useTabMetadata = (slug: string, tab: any) => {
     "/[tab]/collections/": {
       icon: (params) => collectionViews[params.type],
       name: (params) =>
-        [tab.collection ? "-" : undefined, params.type].filter(Boolean),
+        [
+          tab.collection ? "-" : undefined,
+          params.type,
+          tab.collection ? undefined : "Everything",
+        ].filter(Boolean),
     },
     "/[tab]/spaces/": {
       icon: "tag",
