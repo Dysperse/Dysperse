@@ -130,17 +130,7 @@ function CurrentTaskFooter({
     }, 100);
   };
 
-  const isCompleted = task.recurrenceRule
-    ? dateRange &&
-      task.completionInstances.find((instance) =>
-        dayjs(instance.iteration).isBetween(
-          dateRange[0],
-          dateRange[1],
-          "day",
-          "[]"
-        )
-      )
-    : task.completionInstances.length > 0;
+  const isCompleted = getCompletionStatus(task, dateRange);
 
   const handleBack = () => {
     taskAnimationState.value = "PREVIOUS";
@@ -156,7 +146,11 @@ function CurrentTaskFooter({
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
           {
-            backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined,
+            backgroundColor: pressed
+              ? theme[5]
+              : hovered
+              ? theme[4]
+              : undefined,
             opacity: slide === 0 ? 0.5 : 1,
           },
         ]}
@@ -178,7 +172,11 @@ function CurrentTaskFooter({
           style={({ pressed, hovered }) => [
             taskStyles.footerButton,
             {
-              backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined,
+              backgroundColor: pressed
+                ? theme[5]
+                : hovered
+                ? theme[4]
+                : undefined,
               opacity: task.recurrenceRule ? 0.5 : 1,
             },
           ]}
@@ -193,7 +191,13 @@ function CurrentTaskFooter({
       <Pressable
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
-          { backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined },
+          {
+            backgroundColor: pressed
+              ? theme[5]
+              : hovered
+              ? theme[4]
+              : undefined,
+          },
         ]}
         onPress={() => handleNext()}
       >
@@ -211,7 +215,13 @@ function CurrentTaskFooter({
       <Pressable
         style={({ pressed, hovered }) => [
           taskStyles.footerButton,
-          { backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined },
+          {
+            backgroundColor: pressed
+              ? theme[5]
+              : hovered
+              ? theme[4]
+              : undefined,
+          },
         ]}
         onPress={() => {
           handleEdit("pinned", !task.pinned);
@@ -243,7 +253,13 @@ function CurrentTaskFooter({
         <Pressable
           style={({ pressed, hovered }) => [
             taskStyles.footerButton,
-            { backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined },
+            {
+              backgroundColor: pressed
+                ? theme[5]
+                : hovered
+                ? theme[4]
+                : undefined,
+            },
           ]}
         >
           <Avatar
@@ -260,6 +276,24 @@ function CurrentTaskFooter({
     </View>
   );
 }
+
+const getCompletionStatus = (task, dateRange): boolean => {
+  if (task.recurrenceRule) {
+    return (
+      dateRange &&
+      task.completionInstances.find((instance) =>
+        dayjs(instance.iteration).isBetween(
+          dateRange[0],
+          dateRange[1],
+          "day",
+          "[]"
+        )
+      )
+    );
+  } else {
+    return task.completionInstances.length > 0;
+  }
+};
 
 function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
   const theme = useColorTheme();
@@ -399,8 +433,23 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
                   marginBottom: 20,
                   width: "100%",
                   overflow: "hidden",
+                  position: "relative",
                 })}
               >
+                {getCompletionStatus(currentTask, dateRange) && (
+                  <Icon
+                    filled
+                    style={{
+                      position: "absolute",
+                      top: 25,
+                      right: 25,
+                      zIndex: 999,
+                    }}
+                    size={40}
+                  >
+                    done_outline
+                  </Icon>
+                )}
                 {currentTask.pinned && (
                   <Animated.View style={taskPinnedAnimation}>
                     <LinearGradient
