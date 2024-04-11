@@ -6,7 +6,8 @@ export const useTabMetadata = (slug: string, tab: any) => {
   const startWithMatchers = {
     "/[tab]/collections/": {
       icon: (params) => collectionViews[params.type],
-      name: (params) => ["Everything", params.type],
+      name: (params) =>
+        [tab.collection ? "-" : undefined, params.type].filter(Boolean),
     },
     "/[tab]/spaces/": {
       icon: "tag",
@@ -21,7 +22,9 @@ export const useTabMetadata = (slug: string, tab: any) => {
   const match = Object.keys(startWithMatchers).find((key) =>
     slug.startsWith(key)
   );
+
   if (!startWithMatchers[match])
     return { icon: "square", name: (params, slug) => [match] };
+
   return startWithMatchers[match];
 };
