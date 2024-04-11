@@ -240,7 +240,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             containerStyle={{ width: 230 }}
             trigger={
               <IconButton
-                disabled={isReadOnly}
+                disabled={isReadOnly || !data.name}
                 variant="text"
                 style={[
                   styles.navbarIconButton,
@@ -264,7 +264,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                     style={{ marginLeft: 10 }}
                     label={breakpoints.md ? "Read only" : undefined}
                   />
-                ) : (
+                ) : data.name && (
                   <Icon style={{ color: theme[12] }}>expand_more</Icon>
                 )}
               </IconButton>
