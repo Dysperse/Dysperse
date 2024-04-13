@@ -75,6 +75,7 @@ export function AgendaButtons() {
             marginLeft: -40,
             marginRight: -10,
           },
+          !breakpoints.md && !isTodaysView && { display: "none" },
           { opacity: isTodaysView ? 0 : 1 },
         ]}
       >
