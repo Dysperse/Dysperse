@@ -1,4 +1,4 @@
-import { StyleProp, View, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import Emoji from "../Emoji";
 import Text from "../Text";
 import { useColorTheme } from "../color/theme-provider";
@@ -12,6 +12,22 @@ interface AlertProps {
   italicize?: boolean;
   direction?: "row" | "column";
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginBottom: 20,
+    gap: 25,
+  },
+  subtitle: {
+    opacity: 0.7,
+    marginTop: 5,
+  },
+});
 
 export default function Alert({
   emoji,
@@ -27,17 +43,8 @@ export default function Alert({
   return (
     <View
       style={[
-        {
-          backgroundColor: theme[3],
-          padding: 20,
-          paddingHorizontal: 30,
-          borderRadius: 25,
-          flexDirection: direction,
-          alignItems: "center",
-          justifyContent: "flex-start",
-          marginBottom: 20,
-          gap: 25,
-        },
+        styles.container,
+        { flexDirection: direction, backgroundColor: theme[3] },
         style,
       ]}
     >
@@ -58,11 +65,12 @@ export default function Alert({
         </Text>
         {subtitle && (
           <Text
-            style={{
-              opacity: 0.7,
-              marginTop: 5,
-              textAlign: direction === "row" ? "left" : "center",
-            }}
+            style={[
+              styles.subtitle,
+              {
+                textAlign: direction === "row" ? "left" : "center",
+              },
+            ]}
           >
             {subtitle}
           </Text>

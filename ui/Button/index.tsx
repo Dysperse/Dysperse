@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import {
   Pressable,
   PressableProps,
@@ -17,7 +18,6 @@ interface DButtonProps extends PressableProps {
   isLoading?: boolean;
   dense?: boolean;
   large?: boolean;
-
   text?: string;
   icon?: string;
   iconSize?: number;
@@ -32,9 +32,7 @@ export function ButtonText(props: DTextProps) {
       weight={500}
       {...props}
       style={[
-        {
-          color: theme[11],
-        },
+        { color: theme[11] },
         Array.isArray(props.style) ? [...props.style] : props.style,
       ]}
     />
@@ -57,17 +55,17 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.5, pointerEvents: "none" },
 });
 
-export function Button(props: DButtonProps) {
+export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
   const variant = props.variant || "text";
   const theme = useColorTheme();
 
   return (
     <Pressable
       {...props}
+      ref={ref}
       style={({ hovered, pressed }: any) => [
         styles.base,
         props.isLoading && styles.loading,
-        // props.disabled && styles.disabled,
         props.variant === "outlined" && styles.outlined,
         {
           height: props.large ? 50 : props.dense ? 30 : 40,
@@ -119,4 +117,4 @@ export function Button(props: DButtonProps) {
       )}
     </Pressable>
   );
-}
+});

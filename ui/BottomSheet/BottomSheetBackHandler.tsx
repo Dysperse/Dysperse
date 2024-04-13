@@ -7,13 +7,11 @@ export function BottomSheetBackHandler() {
 
   useEffect(() => {
     const handleBackPress = () => {
-      console.log("back handler triggered", animatedIndex.value);
       if (animatedIndex.value !== -1) {
         close();
         return true;
-      } else {
-        return false;
       }
+      return false;
     };
 
     if (animatedIndex)

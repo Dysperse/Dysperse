@@ -1,5 +1,11 @@
 import { useUser } from "@/context/useUser";
-import { Pressable, StyleProp, TextStyle, ViewStyle } from "react-native";
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 import { useColor } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 import Icon from "../Icon";
@@ -21,6 +27,15 @@ interface ChipProps {
   textWeight?: number;
   onDismiss?: () => void;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 2,
+    borderRadius: 999,
+  },
+});
 
 export default function Chip({
   icon,
@@ -50,11 +65,8 @@ export default function Chip({
     <Pressable
       disabled={disabled}
       style={({ hovered, pressed }: any) => [
+        styles.container,
         {
-          flexDirection: "row",
-          alignItems: "center",
-          borderWidth: 2,
-          borderRadius: 999,
           paddingHorizontal: dense ? 5 : 10,
           ...(icon && {
             paddingRight: dense ? 7 : 12,

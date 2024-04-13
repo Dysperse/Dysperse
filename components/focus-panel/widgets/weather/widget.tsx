@@ -1,6 +1,5 @@
 import { useFocusPanelWidgetContext } from "@/components/focus-panel/context";
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
-import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import Icon from "@/ui/Icon";
@@ -16,6 +15,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { WeatherModal } from "./modal";
+import weatherCodes from "./weatherCodes.json";
 
 const gridStyles = StyleSheet.create({
   container: {

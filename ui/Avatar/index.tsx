@@ -64,10 +64,7 @@ export function Avatar(props: DAvatarProps) {
       <View
         style={[
           styles.view,
-          {
-            width: props.size || 30,
-            height: props.size || 30,
-          },
+          { width: props.size || 30, height: props.size || 30 },
         ]}
       >
         {props.children ||

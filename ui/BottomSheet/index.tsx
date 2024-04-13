@@ -40,14 +40,10 @@ function BottomSheetEscapeHandler({ animationConfigs }) {
   useHotkeys(
     "esc",
     () => {
-      console.log(animatedIndex.value);
       if (animatedIndex.value === -1) return;
       forceClose(animationConfigs || { overshootClamping: true, damping: 1 });
     },
-    {
-      enableOnFormTags: true,
-      enableOnContentEditable: true,
-    }
+    { enableOnFormTags: true, enableOnContentEditable: true }
   );
   return null;
 }
@@ -80,7 +76,6 @@ function BottomSheet(props: DBottomSheetProps) {
         />
       )}
       onChange={(e) => {
-        // alert(e);
         if (e === -1) props.onClose();
       }}
       containerStyle={[
@@ -101,7 +96,6 @@ function BottomSheet(props: DBottomSheetProps) {
               animationConfigs={props.animationConfigs}
             />
           )}
-          {/* {Platform.OS !== "web" && <BottomSheetKeyboardHandler />} */}
           {props.children}
         </View>
       </ColorThemeProvider>

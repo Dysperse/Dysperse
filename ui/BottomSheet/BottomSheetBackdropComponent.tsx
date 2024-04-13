@@ -31,25 +31,15 @@ export const BottomSheetBackdropComponent = ({
 
   // styles
   const containerStyle = useMemo(
-    () => [
-      style,
-      {
-        backgroundColor: "#000",
-      },
-      containerAnimatedStyle,
-    ],
+    () => [style, { backgroundColor: "#000" }, containerAnimatedStyle],
     [style, containerAnimatedStyle]
   );
 
   const handleClose = () => {
-    if (Platform.OS !== "web") {
-      Keyboard.dismiss();
-    }
-    if (Platform.OS !== "web" && Keyboard.isVisible()) {
+    if (Platform.OS !== "web") Keyboard.dismiss();
+    if (Platform.OS !== "web" && Keyboard.isVisible())
       setTimeout(forceClose, 200);
-    } else {
-      forceClose({ overshootClamping: true, damping: 1 });
-    }
+    else forceClose({ overshootClamping: true, damping: 1 });
   };
 
   return (
