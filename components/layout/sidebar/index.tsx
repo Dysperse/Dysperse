@@ -86,6 +86,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   return (
     <Pressable
       onPress={handleHome}
+      onMouseDown={handleHome}
       style={({ pressed, hovered }) => [
         styles.button,
         {
