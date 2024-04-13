@@ -135,16 +135,17 @@ function Tab({
         )}
         <Avatar
           disabled
-          size={tab.collection || tab.label ? 23 : undefined}
+          size={tab.collection ? 23 : undefined}
           style={{
-            backgroundColor:
-              tab.collection || tab.label ? theme[5] : "transparent",
-            marginLeft: tab.collection || tab.label ? -23 : 0,
-            marginBottom: tab.collection || tab.label ? -10 : 0,
+            backgroundColor: tab.collection ? theme[5] : "transparent",
+            marginLeft: tab.collection ? -23 : 0,
+            marginBottom: tab.collection ? -10 : 0,
+            borderRadius: 10,
           }}
           iconProps={{
-            size: tab.collection || tab.label ? 20 : 24,
+            size: tab.collection ? 17 : 24,
             filled: selected,
+            style: { marginTop: -1 },
           }}
           icon={
             typeof tabData.icon === "function"
