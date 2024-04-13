@@ -15,8 +15,8 @@ import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import { useFocusPanelWidgetContext } from "../focus-panel/context";
-import { widgetStyles } from "../focus-panel/widgetStyles";
+import { useFocusPanelWidgetContext } from "../context";
+import { widgetStyles } from "../widgetStyles";
 
 function Time() {
   const theme = useColor("orange");
