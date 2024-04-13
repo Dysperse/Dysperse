@@ -241,6 +241,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             style: {
               marginRight: "auto",
               maxWidth: "100%",
+              width: breakpoints.md ? 220 : "100%",
               minWidth: 0,
               flexShrink: 1,
             },
@@ -259,7 +260,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               }}
             >
               {!isAll && <Emoji emoji={data.emoji} size={30} />}
-              <View style={{ flex: 1 }}>
+              <View style={{ minWidth: 0, flexShrink: 1 }}>
                 <Text
                   numberOfLines={1}
                   variant="eyebrow"
@@ -297,18 +298,26 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={filterOptions}
         /> */}
-        <CollectionContext.Provider value={{ data, access, ...ctx }}>
-          <CollectionSearch />
-          {data.name && !isReadOnly && (
-            <MenuPopover
-              {...(isReadOnly && { menuProps: { opened: false } })}
-              containerStyle={{ width: 230 }}
-              trigger={<IconButton icon="pending" size={40} />}
-              options={isReadOnly ? [] : collectionMenuOptions}
-            />
-          )}
-          <CollectionShareMenu />
-        </CollectionContext.Provider>
+        <View
+          style={{
+            width: breakpoints.md ? 220 : "100%",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+          }}
+        >
+          <CollectionContext.Provider value={{ data, access, ...ctx }}>
+            <CollectionSearch />
+            {data.name && !isReadOnly && (
+              <MenuPopover
+                {...(isReadOnly && { menuProps: { opened: false } })}
+                containerStyle={{ width: 230 }}
+                trigger={<IconButton icon="pending" size={40} />}
+                options={isReadOnly ? [] : collectionMenuOptions}
+              />
+            )}
+            <CollectionShareMenu />
+          </CollectionContext.Provider>
+        </View>
       </LinearGradient>
       {type === "planner" && !breakpoints.md && <AgendaButtons />}
     </>
