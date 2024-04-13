@@ -1,4 +1,3 @@
-import weatherCodes from "@/components/home/weather/weatherCodes.json";
 import BottomSheet from "@/ui/BottomSheet";
 import { addHslAlpha, useColor } from "@/ui/color";
 import Icon from "@/ui/Icon";
@@ -10,6 +9,7 @@ import React, { cloneElement, useCallback, useMemo, useRef } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import airQuality from "./airQuality.json";
+import weatherCodes from "./weatherCodes.json";
 
 const getAirQualityInfo = (index) => {
   const result = airQuality.find(
