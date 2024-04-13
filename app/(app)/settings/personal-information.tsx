@@ -45,15 +45,11 @@ export default function Page() {
               <TextField
                 editable={!input.disabled}
                 multiline={input.multiline}
-                variant="filled"
+                variant="filled+outlined"
                 placeholder={
                   input.placeholder || capitalizeFirstLetter(input.key)
                 }
-                style={[
-                  settingStyles.input,
-                  { borderColor: theme[5] },
-                  input.disabled && { opacity: 0.6 },
-                ]}
+                style={[input.disabled && { opacity: 0.6 }]}
                 onChangeText={onChange}
                 onBlur={onBlur}
                 value={value}
