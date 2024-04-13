@@ -1,4 +1,5 @@
 import ContentWrapper from "@/components/layout/content";
+import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -51,7 +52,7 @@ export default function Page() {
                   input.placeholder || capitalizeFirstLetter(input.key)
                 }
                 style={[
-                  settingsStyles.input,
+                  settingStyles.input,
                   { borderColor: theme[5] },
                   input.disabled && { opacity: 0.6 },
                 ]}
