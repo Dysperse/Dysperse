@@ -38,7 +38,7 @@ import Toast from "react-native-toast-message";
 import { useSWRConfig } from "swr";
 import OpenTabsList from "../tabs/carousel";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   header: {
     padding: 15,
     paddingBottom: 0,
@@ -53,22 +53,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 10,
     gap: 7,
-    // borderWidth:1,
     flexDirection: "row",
     paddingHorizontal: 10,
     paddingVertical: 10,
-  },
-  footerContainer: {
-    marginTop: "auto",
-    padding: 15,
-    paddingTop: 0,
-  },
-  footer: {
-    gap: 10,
-    paddingTop: 15,
-    alignItems: "center",
-    flexDirection: "row",
-    borderTopWidth: 1,
   },
 });
 
