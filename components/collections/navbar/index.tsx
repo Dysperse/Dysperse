@@ -242,32 +242,31 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             rendererProps: { placement: "bottom" },
           }}
           trigger={
-            <Pressable>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 13,
-                  paddingLeft: 10,
-                }}
-              >
-                {!isAll && <Emoji emoji={data.emoji} size={30} />}
-                <View>
-                  <Text variant="eyebrow" style={{ fontSize: 11 }}>
-                    {type}
-                  </Text>
-                  <Text
-                    numberOfLines={1}
-                    style={{ color: theme[11] }}
-                    weight={900}
-                  >
-                    {data.name || "All tasks"}
-                  </Text>
-                </View>
-                <Icon size={30} style={{ marginLeft: -5 }}>
-                  expand_more
-                </Icon>
+            <Pressable
+              style={{
+                maxWidth: 220,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 13,
+                paddingLeft: 10,
+              }}
+            >
+              {!isAll && <Emoji emoji={data.emoji} size={30} />}
+              <View style={{ flex: 1 }}>
+                <Text variant="eyebrow" style={{ fontSize: 11 }}>
+                  {type}
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  style={{ color: theme[11] }}
+                  weight={900}
+                >
+                  {data.name || "All tasks"}
+                </Text>
               </View>
+              <Icon size={30} style={{ marginLeft: -5 }}>
+                expand_more
+              </Icon>
             </Pressable>
           }
           options={options}
