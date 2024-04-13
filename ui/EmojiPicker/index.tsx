@@ -153,9 +153,7 @@ export function EmojiPicker({
               ListEmptyComponent={
                 <View style={emojiPickerStyles.emptyContainer}>
                   <Emoji emoji="1f62d" size={50} />
-                  <Text heading style={emojiPickerStyles.emptyHeading}>
-                    No emojis
-                  </Text>
+                  <Text style={emojiPickerStyles.emptyHeading}>No emojis</Text>
                   <Text style={emojiPickerStyles.emptySubHeading}>
                     Couldn't find any emojis matching your search!
                   </Text>

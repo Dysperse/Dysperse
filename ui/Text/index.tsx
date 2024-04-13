@@ -14,7 +14,6 @@ export interface DTextProps extends TextProps {
   textStyle?: StyleProp<TextStyle>;
   weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
   variant?: "default" | "eyebrow" | "menuItem";
-  heading?: boolean;
 }
 
 /**
@@ -61,9 +60,6 @@ const textStyles = StyleSheet.create({
     opacity: 0.6,
     textTransform: "uppercase",
   },
-  heading: {
-    textTransform: "uppercase",
-  },
   menuItem: {
     fontFamily: fonts.body_300,
     fontSize: 17,
@@ -82,9 +78,7 @@ const Text: ForwardRefRenderFunction<NText, DTextProps> = (props, ref) => {
         {
           fontSize: Platform.OS === "web" ? 15 : 16,
           color: theme[12],
-          fontFamily: props.heading
-            ? "heading"
-            : fonts[`body_${props.weight || 400}`],
+          fontFamily: fonts[`body_${props.weight || 400}`],
           ...(props.variant === "eyebrow" && {
             textTransform: "uppercase",
             fontFamily: `body_${props.weight || 800}`,
@@ -94,7 +88,6 @@ const Text: ForwardRefRenderFunction<NText, DTextProps> = (props, ref) => {
         props.variant === "eyebrow" && textStyles.eyebrow,
         props.variant === "menuItem" && textStyles.menuItem,
         props.variant === "menuItem" && { color: theme[11] },
-        props.heading && textStyles.heading,
         props.textStyle,
         Array.isArray(props.style) ? [...props.style] : props.style,
       ]}

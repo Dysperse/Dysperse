@@ -238,7 +238,6 @@ function Root() {
   // Set up the auth context and render our layout inside of it.
 
   const [fontsLoaded, fontsError] = useFonts({
-    heading: require("../assets/fonts/heading.ttf"),
     body_100: Jost_100Thin,
     body_200: Jost_200ExtraLight,
     body_300: Jost_300Light,
