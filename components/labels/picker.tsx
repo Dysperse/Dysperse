@@ -343,8 +343,11 @@ const LabelPicker = memo(function LabelPicker({
                         theme[
                           (pressed ? 4 : hovered ? 3 : 2) +
                             ((multiple &&
-                              (label?.id || label).includes(item.id)) ||
-                            (!multiple && (label?.id || label) == item.id)
+                              ((label as any)?.id || label).includes(
+                                item.id
+                              )) ||
+                            (!multiple &&
+                              ((label as any)?.id || label) == item.id)
                               ? 1
                               : 0)
                         ],

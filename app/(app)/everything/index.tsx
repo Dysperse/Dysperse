@@ -261,6 +261,7 @@ export const LabelDetails = ({
               ) : (
                 data.entities.map((entity) => (
                   <Entity
+                    isReadOnly={false}
                     item={entity}
                     key={entity.id}
                     onTaskUpdate={(newEntity) => {
