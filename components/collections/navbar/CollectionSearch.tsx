@@ -91,6 +91,15 @@ function SearchList({ collection, sheetRef, inputRef, listRef }) {
             filters.find((f) => f.label === filter)?.filter(item)
           )
         : true;
+    })
+    .sort((a, b) => {
+      if (a.completionInstances.length && !b.completionInstances.length)
+        return 1;
+      if (!a.completionInstances.length && b.completionInstances.length)
+        return -1;
+      if (a.recurrenceRule && !b.recurrenceRule) return -1;
+      if (!a.recurrenceRule && b.recurrenceRule) return 1;
+      return 0;
     });
 
   return (
