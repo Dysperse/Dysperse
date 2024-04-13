@@ -142,6 +142,7 @@ export default function Trash() {
           renderItem={({ item }) => (
             <View style={{ maxWidth: 400, width: "100%" }}>
               <Entity
+                isReadOnly={false}
                 showLabel
                 onTaskUpdate={(newTask) => {
                   console.log("New task recieved", newTask);
