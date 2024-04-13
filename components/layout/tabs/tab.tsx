@@ -189,6 +189,18 @@ function Tab({
     [selected, tab, tabData, theme, handleCloseTab, tabName]
   );
 
+  const handlePress = () => {
+    router.replace({
+      pathname: tab.slug,
+      params: {
+        ...tab.params,
+        tab: tab.id,
+      },
+    });
+    handleClose();
+    setTimeout(closeSidebarOnMobile, 300);
+  };
+
   return isClosedAnimation ? null : (
     <View
       style={[
@@ -201,17 +213,8 @@ function Tab({
       <Pressable
         onLongPress={onLongPress}
         disabled={disabled}
-        onPress={() => {
-          router.replace({
-            pathname: tab.slug,
-            params: {
-              ...tab.params,
-              tab: tab.id,
-            },
-          });
-          handleClose();
-          setTimeout(closeSidebarOnMobile, 300);
-        }}
+        onMouseDown={handlePress}
+        onPress={handlePress}
         style={({ pressed, hovered }) => [
           styles.button,
           {
@@ -220,7 +223,7 @@ function Tab({
             borderRadius: 15,
             height: breakpoints.md ? 50 : 50,
             backgroundColor:
-              theme[selected ? 3 : pressed ? 4 : hovered ? 3 : 2],
+              theme[selected ? 4 : pressed ? 4 : hovered ? 3 : 2],
             ...(Platform.OS === "web" &&
               selected && {
                 shadowColor: theme[1],
