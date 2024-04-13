@@ -240,7 +240,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           menuProps={{
             style: {
               marginRight: "auto",
-              flex: breakpoints.md ? undefined : 1,
+              maxWidth: "100%",
+              minWidth: 0,
+              flexShrink: 1,
             },
             rendererProps: { placement: "bottom" },
           }}
@@ -253,6 +255,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 alignItems: "center",
                 gap: 13,
                 paddingLeft: 10,
+                minWidth: 0,
               }}
             >
               {!isAll && <Emoji emoji={data.emoji} size={30} />}
