@@ -15,7 +15,6 @@ import { Menu } from "@/ui/Menu";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
@@ -538,21 +537,16 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
             style={({ pressed, hovered }) => [
               styles.navbarIconButton,
               {
-                backgroundColor: addHslAlpha(
-                  theme[pressed ? 8 : hovered ? 9 : 10],
-                  0.7
-                ),
-                width: breakpoints.md ? 120 : 50,
-                gap: 15,
+                height: 43,
+                backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                gap: 10,
+                marginLeft: breakpoints.md ? 5 : 0,
+                width: breakpoints.md ? 103 : 50,
               },
             ]}
           >
-            <Icon style={{ color: theme[1] }}>ios_share</Icon>
-            {breakpoints.md && (
-              <Text style={{ color: theme[1] }} weight={400}>
-                Share
-              </Text>
-            )}
+            <Icon>ios_share</Icon>
+            {breakpoints.md && <ButtonText weight={400}>Share</ButtonText>}
           </Pressable>
         ) : (
           <IconButton

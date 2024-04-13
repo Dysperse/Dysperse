@@ -241,11 +241,11 @@ export const CollectionSearch = ({ data }) => {
   return (
     <>
       <IconButton
-        size={breakpoints.md ? 50 : 40}
+        size={40}
         style={[breakpoints.md && { borderRadius: 20 }]}
         icon="search"
         onPress={handleOpen}
-        variant={breakpoints.md ? "filled" : "outlined"}
+        variant={breakpoints.md ? "text" : "outlined"}
       />
       <BottomSheet
         sheetRef={ref}

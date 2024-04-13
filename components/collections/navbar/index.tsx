@@ -3,7 +3,6 @@ import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Chip from "@/ui/Chip";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -15,7 +14,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -28,7 +27,7 @@ import { CollectionShareMenu } from "./CollectionShareMenu";
 export const styles = StyleSheet.create({
   navbarIconButton: {
     flexDirection: "row",
-    height: 50,
+    height: 40,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -223,88 +222,53 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   ) : (
     <>
       <LinearGradient
-        colors={breakpoints.md ? [theme[1]] : [theme[2], theme[3]]}
+        colors={[theme[2], theme[3]]}
         style={{
-          height: 80 + insets.top,
+          backgroundColor: theme[3],
+          height: 60 + insets.top,
           paddingTop: insets.top,
-          paddingHorizontal: 15,
+          paddingHorizontal: 10,
           flexDirection: "row",
+          borderBottomWidth: 2,
+          borderBottomColor: theme[5],
           alignItems: "center",
-          gap: 10,
+          gap: 5,
         }}
       >
         {menu}
-        <View style={!breakpoints.md && { flex: 1 }}>
-          <MenuPopover
-            {...(isReadOnly && { menuProps: { opened: false } })}
-            containerStyle={{ width: 230 }}
-            trigger={
-              <IconButton
-                disabled={isReadOnly || !data.name}
-                variant="text"
-                style={[
-                  styles.navbarIconButton,
-                  {
-                    gap: 13,
-                    opacity: 1,
-                    width: "auto",
-                    justifyContent: "flex-start",
-                    paddingHorizontal: 10,
-                  },
-                ]}
-              >
-                {!isAll && <Emoji emoji={data.emoji} size={30} />}
-                <Text style={{ fontSize: 20 }} numberOfLines={1}>
-                  {data.name || "Everything"}
-                </Text>
-                {isReadOnly ? (
-                  <Chip
-                    icon="visibility"
-                    disabled
-                    style={{ marginLeft: 10 }}
-                    label={breakpoints.md ? "Read only" : undefined}
-                  />
-                ) : data.name && (
-                  <Icon style={{ color: theme[12] }}>expand_more</Icon>
-                )}
-              </IconButton>
-            }
-            options={isReadOnly ? [] : collectionMenuOptions}
-          />
-        </View>
         <MenuPopover
           menuProps={{
             style: { marginRight: "auto" },
             rendererProps: { placement: "bottom" },
           }}
           trigger={
-            <IconButton
-              variant="outlined"
-              style={[
-                breakpoints.md && styles.navbarIconButton,
-                breakpoints.md
-                  ? {
-                      width: 60,
-                      height: 35,
-                      paddingLeft: 5,
-                      marginLeft: -5,
-                    }
-                  : {
-                      width: 60,
-                      height: 40,
-                      paddingLeft: 5,
-                      gap: 5,
-                      flexDirection: "row",
-                    },
-              ]}
-            >
-              <Icon style={{ color: theme[11] }} size={20}>
-                {options.find((i) => i.selected)?.icon || "calendar_today"}
-              </Icon>
-              <Icon style={{ marginLeft: -2, color: theme[11] }}>
-                expand_more
-              </Icon>
-            </IconButton>
+            <Pressable>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 13,
+                  paddingLeft: 10,
+                }}
+              >
+                {!isAll && <Emoji emoji={data.emoji} size={30} />}
+                <View>
+                  <Text variant="eyebrow" style={{ fontSize: 11 }}>
+                    {type}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={{ color: theme[11] }}
+                    weight={900}
+                  >
+                    {data.name || "All tasks"}
+                  </Text>
+                </View>
+                <Icon size={30} style={{ marginLeft: -5 }}>
+                  expand_more
+                </Icon>
+              </View>
+            </Pressable>
           }
           options={options}
         />
@@ -325,6 +289,14 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         /> */}
         <CollectionContext.Provider value={{ data, access, ...ctx }}>
           <CollectionSearch data={data} />
+          {data.name && !isReadOnly && (
+            <MenuPopover
+              {...(isReadOnly && { menuProps: { opened: false } })}
+              containerStyle={{ width: 230 }}
+              trigger={<IconButton icon="pending" size={40} />}
+              options={isReadOnly ? [] : collectionMenuOptions}
+            />
+          )}
           <CollectionShareMenu />
         </CollectionContext.Provider>
       </LinearGradient>

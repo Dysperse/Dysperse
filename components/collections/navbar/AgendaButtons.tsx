@@ -56,7 +56,7 @@ export function AgendaButtons() {
           borderTopWidth: 1,
         },
         breakpoints.md && {
-          marginLeft: "auto",
+          marginRight: "auto",
         },
         {
           flexDirection: "row",
@@ -64,21 +64,35 @@ export function AgendaButtons() {
         },
       ]}
     >
+      <IconButton
+        variant="text"
+        onPress={handleToday}
+        size={40}
+        disabled={isTodaysView}
+        style={[
+          breakpoints.md && {
+            borderRadius: 20,
+            marginLeft: -40,
+            marginRight: -10,
+          },
+          { opacity: isTodaysView ? 0 : 1 },
+        ]}
+      >
+        <Icon>today</Icon>
+      </IconButton>
       <View
         style={[
           {
             flexDirection: "row",
             justifyContent: "space-between",
-            height: 50,
+            height: 40,
             alignItems: "center",
             paddingHorizontal: 10,
           },
           breakpoints.md
             ? {
                 marginRight: !isTodaysView ? undefined : "auto",
-                height: 50,
                 borderRadius: 20,
-                backgroundColor: theme[3],
               }
             : { flex: 1 },
         ]}
@@ -91,17 +105,6 @@ export function AgendaButtons() {
           <Icon>east</Icon>
         </IconButton>
       </View>
-
-      {!isTodaysView && (
-        <IconButton
-          variant="filled"
-          onPress={handleToday}
-          size={breakpoints.md ? 50 : 40}
-          style={[breakpoints.md && { borderRadius: 20 }]}
-        >
-          <Icon>today</Icon>
-        </IconButton>
-      )}
     </View>
   );
 }

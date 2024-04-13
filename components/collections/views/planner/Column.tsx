@@ -10,6 +10,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -259,6 +260,8 @@ export function Column({
       style={{
         ...(breakpoints.md && {
           backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: addHslAlpha(theme[5], 0.5),
           borderRadius: 20,
         }),
         width: breakpoints.md ? 320 : width,
