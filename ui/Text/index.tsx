@@ -16,17 +16,6 @@ export interface DTextProps extends TextProps {
   variant?: "default" | "eyebrow" | "menuItem";
 }
 
-/**
- * body_100: Jost_100Thin,
-    body_200: Jost_200ExtraLight,
-    body_300: Jost_300Light,
-    body_400: Jost_400Regular,
-    body_500: Jost_500Medium,
-    body_600: Jost_600SemiBold,
-    body_700: Jost_700Bold,
-    body_800: Jost_800ExtraBold,
-    body_900: Jost_900Black,
- */
 const fonts =
   Platform.OS === "web"
     ? {

@@ -9,7 +9,22 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Keyboard, Platform, View } from "react-native";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 23.5,
+    paddingTop: 0,
+    height: "100%",
+  },
+  content: {
+    borderWidth: 1,
+    overflow: "hidden",
+    borderRadius: 20,
+    paddingVertical: 20,
+    height: "100%",
+  },
+});
 
 export function Menu({
   trigger,
@@ -69,23 +84,15 @@ export function Menu({
         handleComponent={() => null}
         bottomInset={isKeyboardVisible ? Keyboard.metrics()?.height ?? 0 : 0}
       >
-        <View
-          style={{
-            padding: 23.5,
-            paddingTop: 0,
-            height: "100%",
-          }}
-        >
+        <View style={styles.container}>
           <View
-            style={{
-              backgroundColor: theme[2],
-              borderWidth: 1,
-              borderColor: theme[4],
-              overflow: "hidden",
-              borderRadius: 20,
-              paddingVertical: 20,
-              height: "100%",
-            }}
+            style={[
+              styles.content,
+              {
+                backgroundColor: theme[2],
+                borderColor: theme[4],
+              },
+            ]}
           >
             {children}
           </View>

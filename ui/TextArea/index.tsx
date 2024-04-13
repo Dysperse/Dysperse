@@ -18,21 +18,6 @@ export default function TextField(props: DTextInputProps) {
   const Component = props.bottomSheet ? BottomSheetTextInput : TextInput;
 
   return (
-    // <View style={{ position: "relative" }}>
-    // {props.placeholder && (
-    //   <Text
-    //     style={{
-    //       position: "absolute",
-    //       zIndex: 1,
-    //       top: -10,
-    //       left: 15,
-    //       color: theme[8],
-    //     }}
-    //     weight={700}
-    //   >
-    //     {props.placeholder}
-    //   </Text>
-    // )}
     <Component
       placeholderTextColor={theme[8]}
       cursorColor={theme[8]}
@@ -60,6 +45,5 @@ export default function TextField(props: DTextInputProps) {
           : props.style,
       ]}
     />
-    // </View>
   );
 }

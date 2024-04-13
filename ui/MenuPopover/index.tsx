@@ -4,6 +4,7 @@ import {
   Pressable,
   PressableProps,
   StyleProp,
+  StyleSheet,
   View,
   ViewStyle,
 } from "react-native";
@@ -56,6 +57,10 @@ export type MenuProps =
       closeOnSelect?: boolean;
     };
 
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 5, borderRadius: 20, overflow: "hidden" },
+});
+
 export function MenuItem(
   props: PressableProps & { removeExtraStyles?: boolean }
 ) {
@@ -105,12 +110,8 @@ export default function MenuPopover({
     if (menuPopupRef?.current?.isOpen()) menuPopupRef.current.close();
   });
 
-  const handleOpen = async () => {
-    menuPopupRef.current.open();
-  };
-
+  const handleOpen = () => menuPopupRef.current.open();
   const t = cloneElement(trigger, { onPress: handleOpen });
-
   const s = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -137,7 +138,6 @@ export default function MenuPopover({
         openAnimationDuration: 0,
         closeAnimationDuration: 0,
         preferredPlacement: "bottom",
-        // placement: "bottom",
         anchorStyle: {
           opacity: 0,
         },
@@ -173,15 +173,7 @@ export default function MenuPopover({
         }}
       >
         <Animated.View style={animatedStyle}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: theme[4],
-              padding: 5,
-              borderRadius: 20,
-              overflow: "hidden",
-            }}
-          >
+          <View style={[styles.container, { backgroundColor: theme[4] }]}>
             {children ||
               options
                 .filter((e) => e)

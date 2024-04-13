@@ -1,25 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Platform, View } from "react-native";
 import { WebView } from "react-native-webview";
 
 const Turnstile = ({ setToken }) => {
-  const handleMessage = (event) => {
-    console.log(event);
-
-    const newToken =
-      Platform.OS === "web" ? event?.data : event?.nativeEvent?.data;
-    if (newToken && newToken.length > 100) {
-      console.log(newToken);
-      setToken(newToken);
-    }
-  };
+  const handleMessage = useCallback(
+    (event) => {
+      const newToken =
+        Platform.OS === "web" ? event?.data : event?.nativeEvent?.data;
+      if (newToken && newToken.length > 100) {
+        console.log(newToken);
+        setToken(newToken);
+      }
+    },
+    [setToken]
+  );
 
   // listen for messages from the iframe
   useEffect(() => {
     if (Platform.OS === "web") {
       window.addEventListener("message", handleMessage);
     }
-  }, []);
+  }, [handleMessage]);
 
   const htmlContent = `
     <!DOCTYPE html>

@@ -4,7 +4,6 @@ import {
   StyleProp,
   StyleSheet,
   ViewStyle,
-  useWindowDimensions,
 } from "react-native";
 import { useColorTheme } from "../color/theme-provider";
 
@@ -27,7 +26,6 @@ const styles = StyleSheet.create({
 
 export function ListItemButton(props: DListitemButtonProps) {
   const theme = useColorTheme();
-  const { width } = useWindowDimensions();
 
   return (
     <Pressable

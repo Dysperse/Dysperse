@@ -28,10 +28,6 @@ const text1Props = (theme) => ({
 });
 
 export const toastConfig = (theme) => ({
-  /*
-    Overwrite 'success' type,
-    by modifying the existing `BaseToast` component
-  */
   success: (props) => (
     <View style={toastContainerStyles}>
       <BaseToast
@@ -89,10 +85,6 @@ export const toastConfig = (theme) => ({
     </View>
   ),
 
-  /*
-    Overwrite 'error' type,
-    by modifying the existing `ErrorToast` component
-  */
   error: (props) => (
     <View style={toastContainerStyles}>
       <BaseToast

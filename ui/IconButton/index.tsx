@@ -51,7 +51,6 @@ export default function IconButton(props: DIconButtonProps) {
           ? props.style({ pressed, hovered })
           : props.style,
       ]}
-      // className={`${props.className}`}
     >
       {props.children || <Icon>{props.icon}</Icon>}
     </Pressable>

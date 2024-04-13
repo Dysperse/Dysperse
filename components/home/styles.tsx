@@ -1,6 +1,35 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  imageBackground: {
+    height: "100%",
+    width: "100%",
+    flex: 1,
+    alignItems: "center",
+  },
+
+  menuButton: {
+    position: "absolute",
+    top: 20,
+    left: 20,
+    zIndex: 1,
+  },
+  content: {
+    paddingHorizontal: 50,
+    paddingBottom: 70,
+    marginHorizontal: "auto",
+    marginVertical: "auto",
+    paddingTop: 60,
+  },
+  contentColumnContainer: {
+    gap: 50,
+    marginBottom: "auto",
+    width: "100%",
+  },
+  leftContainer: {
+    gap: 20,
+    width: "100%",
+  },
   card: {
     paddingVertical: 15,
     paddingHorizontal: 20,
@@ -12,11 +41,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
   },
-  cardOutline: {
-    borderWidth: 1,
-    borderColor: "#000000",
-    padding: 20,
-    borderRadius: 20,
+  settingsButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    margin: 20,
+    zIndex: 1,
+    opacity: 0.7,
   },
   patternCard: {
     width: 100,
@@ -27,5 +58,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+  },
+  patternContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: 20,
+    marginTop: 10,
   },
 });
