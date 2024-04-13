@@ -245,7 +245,7 @@ export const CollectionSearch = ({ data }) => {
         style={[breakpoints.md && { borderRadius: 20 }]}
         icon="search"
         onPress={handleOpen}
-        variant={breakpoints.md ? "text" : "outlined"}
+        variant="text"
       />
       <BottomSheet
         sheetRef={ref}

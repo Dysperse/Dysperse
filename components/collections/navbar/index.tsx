@@ -229,7 +229,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           paddingTop: insets.top,
           paddingHorizontal: 10,
           flexDirection: "row",
-          borderBottomWidth: 2,
+          borderBottomWidth: breakpoints.md ? 2 : 0,
           borderBottomColor: theme[5],
           alignItems: "center",
           gap: 5,
@@ -238,13 +238,16 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         {menu}
         <MenuPopover
           menuProps={{
-            style: { marginRight: "auto" },
+            style: {
+              marginRight: "auto",
+              flex: breakpoints.md ? undefined : 1,
+            },
             rendererProps: { placement: "bottom" },
           }}
           trigger={
             <Pressable
               style={{
-                maxWidth: breakpoints.md ? 220 : undefined,
+                maxWidth: breakpoints.md ? 220 : "100%",
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 13,
@@ -253,7 +256,11 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             >
               {!isAll && <Emoji emoji={data.emoji} size={30} />}
               <View style={{ flex: 1 }}>
-                <Text variant="eyebrow" style={{ fontSize: 11 }}>
+                <Text
+                  numberOfLines={1}
+                  variant="eyebrow"
+                  style={{ fontSize: 11 }}
+                >
                   {type}
                 </Text>
                 <Text
