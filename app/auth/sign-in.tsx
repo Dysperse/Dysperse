@@ -1,4 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
@@ -118,6 +119,13 @@ export default function SignIn() {
   const insets = useSafeAreaInsets();
   const [token, setToken] = useState("");
 
+  const theme = useColorTheme();
+
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
+
   const {
     control,
     handleSubmit,
@@ -210,7 +218,6 @@ export default function SignIn() {
     else router.push("/");
   }, []);
 
-  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const handleForgot = useCallback(
     () => router.push("/auth/forgot-password"),

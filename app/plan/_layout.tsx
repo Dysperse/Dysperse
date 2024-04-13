@@ -3,6 +3,7 @@ import { PlanContextProvider } from "@/context/planContext";
 import { SelectionContextProvider } from "@/context/SelectionContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -83,6 +84,11 @@ function PlanNavbar() {
 export default function Layout() {
   const { session } = useUser();
   const theme = useColor(session?.user?.profile?.theme || "mint");
+
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
 
   if (!session || session?.error) return <Redirect href="/auth" />;
 

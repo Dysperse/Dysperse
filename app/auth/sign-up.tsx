@@ -19,6 +19,7 @@ import {
 
 import { Customization } from "@/components/signup/Customization";
 import { useSession } from "@/context/AuthProvider";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import TextField from "@/ui/TextArea";
 import Turnstile from "@/ui/turnstile";
 import dayjs from "dayjs";
@@ -131,6 +132,11 @@ const ColorPicker = ({ form }) => {
       damping: 20,
     });
   };
+
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
