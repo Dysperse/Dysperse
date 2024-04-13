@@ -295,7 +295,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           options={filterOptions}
         /> */}
         <CollectionContext.Provider value={{ data, access, ...ctx }}>
-          <CollectionSearch data={data} />
+          <CollectionSearch />
           {data.name && !isReadOnly && (
             <MenuPopover
               {...(isReadOnly && { menuProps: { opened: false } })}

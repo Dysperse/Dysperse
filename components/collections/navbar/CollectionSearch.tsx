@@ -1,3 +1,4 @@
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
@@ -40,12 +41,11 @@ const styles = StyleSheet.create({
   },
 });
 
-function SearchList({ collection, listRef }) {
+function SearchList({ collection, sheetRef, inputRef, listRef }) {
   const theme = useColorTheme();
   const { data, mutate } = collection;
   const [query, setQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState([]);
-  const inputRef = useRef(null);
 
   const filters = [
     { label: "Important", icon: "push_pin", filter: (item) => item.pinned },
@@ -110,6 +110,11 @@ function SearchList({ collection, listRef }) {
             variant="filled+outlined"
             onChangeText={handleSearch}
             style={{ flex: 1, height: 40 }}
+            onKeyPress={(e) => {
+              if (e.nativeEvent.key === "Escape") {
+                sheetRef.current?.dismiss();
+              }
+            }}
           />
           {(query || activeFilters.length > 0) && (
             <Button
@@ -226,17 +231,29 @@ function SearchList({ collection, listRef }) {
   );
 }
 
-export const CollectionSearch = ({ data }) => {
+export const CollectionSearch = () => {
   const breakpoints = useResponsiveBreakpoints();
-  const ref = useRef<BottomSheetModal>(null);
-  const handleOpen = () => ref.current?.present();
-  const handleClose = () => ref.current?.dismiss();
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const inputRef = useRef(null);
+
+  const handleOpen = () => {
+    sheetRef.current?.present();
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 300);
+  };
+  const handleClose = () => sheetRef.current?.dismiss();
   const collection = useCollectionContext();
   const listRef = useRef(null);
 
   const scrollToTop = () => {
     listRef.current?.scrollToOffset({ animated: true, offset: 0 });
   };
+
+  useHotkeys("ctrl+f", (e) => {
+    e.preventDefault();
+    handleOpen();
+  });
 
   return (
     <>
@@ -248,7 +265,7 @@ export const CollectionSearch = ({ data }) => {
         variant="text"
       />
       <BottomSheet
-        sheetRef={ref}
+        sheetRef={sheetRef}
         snapPoints={["90%"]}
         index={0}
         enableContentPanningGesture={false}
@@ -263,7 +280,12 @@ export const CollectionSearch = ({ data }) => {
           />
           <Text style={styles.title}>Search</Text>
         </Pressable>
-        <SearchList listRef={listRef} collection={collection} />
+        <SearchList
+          sheetRef={sheetRef}
+          inputRef={inputRef}
+          listRef={listRef}
+          collection={collection}
+        />
       </BottomSheet>
     </>
   );

@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 });
- function ContentWrapper(props: ContentWrapperProps) {
+function ContentWrapper(props: ContentWrapperProps) {
   const { sessionToken } = useUser();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         (oldData) =>
           oldData.map((oldTab) =>
             oldTab.id === params.tab
-              ? { ...oldTab, params: omit(["tab"], params) }
+              ? { ...oldTab, params: omit(["tab", "params", "screen"], params) }
               : oldTab
           ),
         {
@@ -84,4 +84,4 @@ const styles = StyleSheet.create({
   );
 }
 
-export default memo(ContentWrapper)
+export default memo(ContentWrapper);
