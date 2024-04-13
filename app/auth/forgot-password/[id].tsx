@@ -124,11 +124,7 @@ export default function Page() {
           )}
           name="email"
         />
-        <Turnstile
-          setToken={() => {
-            setValue("captchaToken", token);
-          }}
-        />
+        <Turnstile setToken={(token) => setValue("captchaToken", token)} />
         <Button
           style={{ marginTop: "auto", height: 64, width: "100%" }}
           variant="filled"

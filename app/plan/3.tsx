@@ -27,6 +27,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -339,7 +340,7 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
     "INTRO" | "IDLE" | "PINNED" | "NEXT" | "PREVIOUS"
   >("IDLE");
 
-  const taskAnimationStyle = useAnimatedStyle(() => {
+  const taskAnimationStyle = useAnimatedProps(() => {
     return {
       marginTop: "auto",
       width: "100%",

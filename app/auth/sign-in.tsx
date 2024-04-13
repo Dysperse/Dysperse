@@ -47,7 +47,7 @@ function QrLogin() {
   }, []);
 
   useEffect(() => {
-    const t = () => {
+    const t: any = () => {
       if (data) {
         fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/qr?token=${data.token}`)
           .then((r) => r.json())
