@@ -244,6 +244,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             },
             rendererProps: { placement: "bottom" },
           }}
+          containerStyle={{ marginLeft: 10 }}
           trigger={
             <Pressable
               style={{
