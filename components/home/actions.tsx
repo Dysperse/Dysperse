@@ -7,7 +7,19 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import useSWR from "swr";
-import { actionStyles } from "../../app/(app)";
+
+const actionStyles = StyleSheet.create({
+  title: {
+    marginBottom: 10,
+  },
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 20,
+    paddingVertical: 5,
+  },
+});
 
 const styles = StyleSheet.create({
   badge: {
