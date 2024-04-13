@@ -229,7 +229,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           paddingTop: insets.top,
           paddingHorizontal: 10,
           flexDirection: "row",
-          borderBottomWidth: breakpoints.md ? 2 : 0,
+          borderBottomWidth: breakpoints.md ? 1 : 0,
           borderBottomColor: theme[5],
           alignItems: "center",
           gap: 5,

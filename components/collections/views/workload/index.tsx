@@ -2,6 +2,7 @@ import CreateTask from "@/components/task/create";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -187,13 +188,19 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
 
   return (
     <View
-      style={{
-        marginBottom: breakpoints.md ? 10 : 0,
-        backgroundColor: theme[breakpoints.md ? 2 : 1],
-        width: breakpoints.md ? 320 : "100%",
-        borderRadius: breakpoints.md ? 20 : 0,
-        flex: 1,
-      }}
+      style={[
+        {
+          marginBottom: breakpoints.md ? 10 : 0,
+          backgroundColor: theme[breakpoints.md ? 2 : 1],
+          width: breakpoints.md ? 320 : "100%",
+          borderRadius: breakpoints.md ? 20 : 0,
+          flex: 1,
+        },
+        breakpoints.md && {
+          borderWidth: 1,
+          borderColor: addHslAlpha(theme[5], 0.7),
+        },
+      ]}
     >
       <StoryPointHeader
         setSelectedScale={setSelectedScale}

@@ -96,7 +96,11 @@ export function Stream() {
     .filter((t) => {
       if (t.trash) return false;
       if (view === "backlog")
-        return !t.completionInstances.length && dayjs(t.due).isBefore(dayjs()) && (!t.dateOnly || !dayjs(t.due).isToday());
+        return (
+          !t.completionInstances.length &&
+          dayjs(t.due).isBefore(dayjs()) &&
+          (!t.dateOnly || !dayjs(t.due).isToday())
+        );
       else if (view === "upcoming")
         return (
           dayjs(t.due).isAfter(dayjs().startOf("day")) &&
@@ -138,6 +142,7 @@ export function Stream() {
         ]}
         containerStyle={{
           width: breakpoints.md ? 450 : "100%",
+          marginTop: breakpoints.md ? 20 : 0,
           marginHorizontal: "auto",
         }}
         buttonTextStyle={{ color: theme[10], fontFamily: "body_400" }}

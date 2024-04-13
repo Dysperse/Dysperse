@@ -10,6 +10,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
@@ -164,11 +165,18 @@ export function Column(props: ColumnProps) {
               height: "100%",
               width: "100%",
               maxWidth: "100%",
+              borderRadius: 20,
+              ...(breakpoints.md && {
+                borderWidth: 1,
+                borderColor: addHslAlpha(theme[5], 0.7),
+              }),
             }
           : {
               ...(breakpoints.md && {
                 backgroundColor: theme[2],
                 borderRadius: 20,
+                borderWidth: 1,
+                borderColor: addHslAlpha(theme[5], 0.7),
               }),
               width: breakpoints.md ? 320 : "100%",
               flex: 1,
