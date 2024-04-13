@@ -141,7 +141,7 @@ const LabelPicker = memo(function LabelPicker({
   disabled = false,
 }: {
   children: React.ReactElement;
-  label?: string | string[];
+  label?: string | any[];
   setLabel: (label: string | string[]) => void;
   onClose?: any;
   autoFocus?: boolean;
@@ -288,7 +288,7 @@ const LabelPicker = memo(function LabelPicker({
                   </View>
                 </>
               }
-              contentContainerStyle={{ paddingBottom: 100, gap: 10 }}
+              contentContainerStyle={{ paddingBottom: 100 }}
               ListEmptyComponent={
                 <View
                   style={{
@@ -301,7 +301,7 @@ const LabelPicker = memo(function LabelPicker({
                   }}
                 >
                   <Emoji emoji={query ? "1f914" : "1f62d"} size={50} />
-                  <Text heading style={{ fontSize: 35, marginTop: 10 }}>
+                  <Text style={{ fontSize: 35, marginTop: 10 }}>
                     {query ? "No labels found" : "No labels yet"}
                   </Text>
                   <Text style={{ opacity: 0.6, textAlign: "center" }}>

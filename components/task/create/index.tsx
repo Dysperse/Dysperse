@@ -977,15 +977,13 @@ const TaskAttachments = ({ watch, setValue }) => {
         showsHorizontalScrollIndicator={false}
       >
         {note && (
-          <View
-            style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
-          >
+          <View style={[{ backgroundColor: theme[3] }]}>
             <IconButton
               icon="close"
               size={30}
               variant="filled"
               onPress={() => setValue("note", "")}
-              style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
+              style={[{ borderColor: theme[2] }]}
             />
             <Avatar icon="sticky_note_2" />
             <View style={{ flex: 1, flexDirection: "column" }}>
@@ -995,10 +993,7 @@ const TaskAttachments = ({ watch, setValue }) => {
           </View>
         )}
         {attachments.map((attachment, i) => (
-          <View
-            key={i}
-            style={[drawerStyles.attachmentCard, { backgroundColor: theme[3] }]}
-          >
+          <View key={i} style={[{ backgroundColor: theme[3] }]}>
             <IconButton
               icon="close"
               size={30}
@@ -1009,7 +1004,7 @@ const TaskAttachments = ({ watch, setValue }) => {
                   attachments.filter((_, index) => index !== i)
                 );
               }}
-              style={[drawerStyles.closeIcon, { borderColor: theme[2] }]}
+              style={[{ borderColor: theme[2] }]}
             />
             <Avatar
               image={attachment.type === "IMAGE" ? attachment.data : null}

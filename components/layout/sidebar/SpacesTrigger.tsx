@@ -51,9 +51,7 @@ export function SpacesTrigger({ children }) {
                 <IconButton size={55} variant="outlined" onPress={handleClose}>
                   <Icon>close</Icon>
                 </IconButton>
-                <Text heading style={{ fontSize: 40 }}>
-                  Spaces
-                </Text>
+                <Text style={{ fontSize: 40 }}>Spaces</Text>
               </View>
               <ButtonGroup
                 scrollContainerStyle={{ width: "100%" }}

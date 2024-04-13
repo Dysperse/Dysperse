@@ -62,7 +62,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
   return (
     <Pressable
       {...props}
-      ref={ref}
+      ref={ref as any}
       style={({ hovered, pressed }: any) => [
         styles.base,
         props.isLoading && styles.loading,

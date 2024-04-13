@@ -2,7 +2,6 @@ import { Column } from "@/components/collections/views/planner/Column";
 import { AgendaSelector } from "@/components/collections/views/planner/Selector";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
-import Skeleton from "@/ui/Skeleton";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
@@ -49,46 +48,7 @@ function Agenda() {
         justifyContent: "center",
       }}
     >
-      {error ? (
-        <ErrorAlert />
-      ) : (
-        <>
-          <View
-            style={{
-              backgroundColor: theme[3],
-              flexDirection: "row",
-              width: "100%",
-              paddingBottom: 12,
-              paddingHorizontal: 15,
-              gap: 25,
-              alignItems: "center",
-            }}
-          >
-            {[...new Array(5)].map((_, i) => (
-              <View key={i} style={{ alignItems: "center", gap: 3 }}>
-                <Skeleton width={20} height={10} isLoading />
-                <Skeleton size={50} rounded isLoading />
-              </View>
-            ))}
-          </View>
-          <View
-            style={{
-              paddingHorizontal: 10,
-              flexDirection: "row",
-              gap: 20,
-              paddingVertical: 20,
-            }}
-          >
-            <Skeleton width={width * 0.8 - 70} height={35} isLoading />
-            <Skeleton width={width * 0.2} height={35} isLoading />
-          </View>
-          <View style={{ gap: 20 }}>
-            {[...new Array(5)].map((_, i) => (
-              <Skeleton width={width - 50} height={70} key={i} isLoading />
-            ))}
-          </View>
-        </>
-      )}
+      {error ? <ErrorAlert /> : <Spinner />}
     </View>
   );
   if (breakpoints.md) {
@@ -151,12 +111,12 @@ export function Perspectives() {
 
   const agendaContextValue = useMemo(() => {
     return {
-      type: agendaView as string,
+      type: agendaView as any,
       start: dayjs(start as string).startOf(agendaView as OpUnitType),
       end: dayjs(start as string)
         .startOf(agendaView as OpUnitType)
         .add(1, agendaView as ManipulateType),
-      id,
+      id: id as any,
     };
   }, [agendaView, start, id]);
 

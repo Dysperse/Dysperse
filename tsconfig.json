@@ -3,6 +3,7 @@
     "module": "esnext",
     "baseUrl": ".",
     "jsx": "react-native",
+    "skipLibCheck": true,
     "lib": ["dom", "ES2023"],
     "paths": {
       "@/*": ["./*"]

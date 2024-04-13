@@ -24,7 +24,7 @@ export default function Page() {
     <ColorThemeProvider theme={theme}>
       <StatusBar barStyle="light-content" />
       <View style={{ backgroundColor: theme[2], flex: 1 }}>
-        <CommandPaletteContent handleClose={handleClose} />
+        <CommandPaletteContent defaultFilter={null} handleClose={handleClose} />
       </View>
     </ColorThemeProvider>
   );

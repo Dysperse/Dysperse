@@ -23,7 +23,7 @@ function TaskCheckbox({
   mutateList: any;
   isReadOnly: boolean;
   dateRange: [Date, Date];
-  children: any;
+  children?: any;
 }) {
   const theme = useColorTheme();
   const { session } = useSession();
