@@ -1,9 +1,10 @@
 import { useUser } from "@/context/useUser";
 import { Pressable, StyleProp, TextStyle, ViewStyle } from "react-native";
-import Icon from "../Icon";
-import Text from "../Text";
 import { useColor } from "../color";
 import { useColorTheme } from "../color/theme-provider";
+import Icon from "../Icon";
+import IconButton from "../IconButton";
+import Text from "../Text";
 
 interface ChipProps {
   icon?: React.ReactNode;
@@ -18,6 +19,7 @@ interface ChipProps {
   textStyle?: StyleProp<TextStyle>;
   colorTheme?: string;
   textWeight?: number;
+  onDismiss?: () => void;
 }
 
 export default function Chip({
@@ -33,6 +35,7 @@ export default function Chip({
   disabled = false,
   colorTheme,
   textWeight = 400,
+  onDismiss,
 }: ChipProps) {
   const { session } = useUser();
   const colorScheme = useColorTheme();
@@ -87,7 +90,7 @@ export default function Chip({
             },
             textStyle,
           ]}
-          weight={textWeight}
+          weight={textWeight as any}
         >
           {label}
         </Text>
@@ -96,6 +99,18 @@ export default function Chip({
       )}
       {iconPosition === "after" &&
         (typeof icon === "string" ? <Icon>{icon}</Icon> : icon)}
+
+      {onDismiss && (
+        <IconButton
+          onPress={(e) => {
+            e.stopPropagation();
+            onDismiss();
+          }}
+          icon="close"
+          style={{ marginRight: -5 }}
+          size={dense ? 20 : 33}
+        />
+      )}
     </Pressable>
   );
 }

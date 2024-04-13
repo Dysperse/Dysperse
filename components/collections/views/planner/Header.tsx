@@ -40,7 +40,8 @@ export function Header({ start, end }) {
         <Text
           weight={900}
           style={{
-            color: theme[isToday ? 11 : 10],
+            color: theme[11],
+            opacity: isToday ? 1 : 0.7,
             fontSize: 22,
           }}
         >
@@ -50,7 +51,8 @@ export function Header({ start, end }) {
           <Text
             style={{
               fontSize: 17,
-              color: theme[isToday ? 11 : 10],
+              color: theme[11],
+              opacity: isToday ? 1 : 0.7,
             }}
             weight={700}
           >
@@ -64,7 +66,7 @@ export function Header({ start, end }) {
       <View
         style={{
           backgroundColor: theme[isToday ? 11 : 5],
-          width: 20,
+          width: 25,
           height: 5,
           borderRadius: 99,
         }}

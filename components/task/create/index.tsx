@@ -39,14 +39,7 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Keyboard,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Keyboard, Platform, Pressable, ScrollView, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { Menu } from "react-native-popup-menu";
 import Animated, {
@@ -570,10 +563,14 @@ export function TaskDatePicker({
   const trigger = cloneElement(
     children || (
       <Chip
-        style={({ pressed, hovered }) => ({
-          backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-        })}
         icon={<Icon>{recurrence ? "loop" : "calendar_today"}</Icon>}
+        onDismiss={
+          (recurrence || dueDate) &&
+          (() => {
+            setValue("date", null);
+            setValue("recurrenceRule", null);
+          })
+        }
         label={
           recurrence
             ? capitalizeFirstLetter(new RRule(recurrence).toText())
@@ -703,7 +700,6 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
               </Animated.View>
             }
             style={{
-              backgroundColor: theme[4],
               ...(value && {
                 backgroundColor: orange[4],
                 borderColor: orange[4],
@@ -745,9 +741,6 @@ function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
           onClose={onLabelPickerClose}
         >
           <Chip
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-            })}
             label={value?.name || "Add label"}
             icon={
               value?.emoji ? (
@@ -861,28 +854,6 @@ function TaskNameInput({
     />
   );
 }
-
-const drawerStyles = StyleSheet.create({
-  attachmentCard: {
-    flexDirection: "row",
-    gap: 10,
-    borderRadius: 20,
-    width: 200,
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    height: 70,
-    position: "relative",
-  },
-  closeIcon: {
-    position: "absolute",
-    top: -5,
-    right: -5,
-    zIndex: 10,
-    borderRadius: 7,
-    borderWidth: 5,
-  },
-});
 
 const TaskSuggestions = ({ watch, setValue }) => {
   const theme = useColorTheme();
@@ -1152,7 +1123,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
         maxWidth: "100%",
         width: 700,
         borderRadius: 20,
-        backgroundColor: theme[2],
+        backgroundColor: theme[1],
         borderWidth: 1,
         borderColor: theme[6],
         shadowColor: "rgba(0, 0, 0, 0.12)",
@@ -1169,7 +1140,7 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             gap: 10,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
           }}
         >
           <TouchableOpacity
@@ -1179,11 +1150,11 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             }}
             onPress={() => forceClose()}
           >
-            <ButtonText style={{ color: theme[10] }} weight={300}>
+            <ButtonText style={{ color: theme[10] }} weight={400}>
               Cancel
             </ButtonText>
           </TouchableOpacity>
-{/*           <MenuPopover
+          {/*           <MenuPopover
             menuProps={{
               style: {
                 marginLeft: "auto",
@@ -1204,9 +1175,18 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
             }
           /> */}
           <IconButton
-            size={breakpoints.md ? 55 : 45}
-            variant="outlined"
-            icon="north"
+            size={breakpoints.md ? 50 : 45}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
+              marginRight: -5,
+              height: 35,
+            })}
+            variant="filled"
+            icon={
+              <Icon bold style={{ color: theme[1] }}>
+                arrow_upward
+              </Icon>
+            }
             onPress={handleSubmitButtonClick}
           />
         </View>
@@ -1234,7 +1214,6 @@ function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
                   <IconButton
                     style={({ pressed, hovered }) => ({
                       marginTop: 63,
-                      backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
                     })}
                     icon="add"
                     variant="filled"
