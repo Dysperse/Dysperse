@@ -29,10 +29,8 @@ export default function Page() {
 
   return (
     <ContentWrapper>
-      <ScrollView contentContainerStyle={settingsStyles.contentContainer}>
-        <Text heading style={settingsStyles.heading}>
-          Personal info
-        </Text>
+      <ScrollView>
+        <Text style={settingStyles.title}>Personal info</Text>
         {[
           { key: "name" },
           { key: "username" },
