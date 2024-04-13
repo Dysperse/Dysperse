@@ -222,7 +222,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   ) : (
     <>
       <LinearGradient
-        colors={[theme[2], theme[3]]}
+        colors={[theme[1], theme[2]]}
         style={{
           backgroundColor: theme[3],
           height: 60 + insets.top,
