@@ -244,7 +244,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           trigger={
             <Pressable
               style={{
-                maxWidth: 220,
+                maxWidth: breakpoints.md ? 220 : undefined,
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 13,
