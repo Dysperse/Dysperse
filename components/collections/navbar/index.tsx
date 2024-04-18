@@ -241,7 +241,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             style: {
               marginRight: "auto",
               maxWidth: "100%",
-              width: breakpoints.md ? 220 : "100%",
+              width: breakpoints.md ? 220 : undefined,
               minWidth: 0,
               flexShrink: 1,
             },
