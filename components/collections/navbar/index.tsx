@@ -243,7 +243,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               maxWidth: "100%",
               width: breakpoints.md ? 220 : undefined,
               minWidth: 0,
-              flexShrink: 1,
             },
             rendererProps: { placement: "bottom" },
           }}
@@ -283,23 +282,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           options={options}
         />
         {type === "planner" && breakpoints.md && <AgendaButtons />}
-        {/* <MenuPopover
-          menuProps={{
-            rendererProps: { placement: "bottom" },
-          }}
-          trigger={
-            <IconButton
-              size={breakpoints.md ? 50 : 40}
-              style={[breakpoints.md && { borderRadius: 20 }]}
-              icon="filter_list"
-              variant={breakpoints.md ? "filled" : "outlined"}
-            />
-          }
-          options={filterOptions}
-        /> */}
         <View
           style={{
-            width: breakpoints.md ? 220 : "100%",
+            width: breakpoints.md ? 220 : undefined,
             flexDirection: "row",
             justifyContent: "flex-end",
           }}

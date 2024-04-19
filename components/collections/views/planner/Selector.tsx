@@ -72,7 +72,9 @@ const SelectionButton = memo(function SelectionButton({
 }) {
   const { start } = useLocalSearchParams();
   const theme = useColorTheme();
-  const isSelected = dayjs(itemStart).toISOString() === start;
+  const isSelected =
+    dayjs(itemStart).toISOString() === start ||
+    (!start && dayjs().isBetween(itemStart, itemEnd));
 
   const handlePress = () => {
     if (isSelected) return;

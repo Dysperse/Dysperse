@@ -3,18 +3,15 @@ import { AgendaSelector } from "@/components/collections/views/planner/Selector"
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { AgendaContext, usePlannerContext } from "./context";
 
 function Agenda() {
-  const theme = useColorTheme();
-  const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const params = useLocalSearchParams();
   const { type, start, end } = usePlannerContext();
@@ -37,7 +34,7 @@ function Agenda() {
           (col) =>
             dayjs(params.start as any).toISOString() ===
             dayjs(col.start).toISOString()
-        )
+        ) || data.find((col) => dayjs().isBetween(col.start, col.end))
       : null;
 
   const agendaFallback = (
