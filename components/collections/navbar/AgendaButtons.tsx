@@ -49,21 +49,17 @@ export function AgendaButtons() {
   return (
     <View
       style={[
-        {
-          flexDirection: "row",
-          gap: 10,
-        },
-        !breakpoints.md && {
-          backgroundColor: theme[3],
-          paddingHorizontal: 15,
-          paddingVertical: 5,
-          borderTopColor: theme[5],
-          borderTopWidth: 1,
-          flexDirection: "row-reverse",
-        },
-        breakpoints.md && {
-          marginRight: "auto",
-        },
+        { flexDirection: "row", gap: 10 },
+        breakpoints.md
+          ? { marginRight: "auto" }
+          : {
+              borderTopColor: theme[5],
+              backgroundColor: theme[3],
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              borderTopWidth: 1,
+              flexDirection: "row-reverse",
+            },
       ]}
     >
       <IconButton
