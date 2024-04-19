@@ -49,6 +49,10 @@ export function AgendaButtons() {
   return (
     <View
       style={[
+        {
+          flexDirection: "row",
+          gap: 10,
+        },
         !breakpoints.md && {
           backgroundColor: theme[3],
           paddingHorizontal: 15,
@@ -59,10 +63,6 @@ export function AgendaButtons() {
         },
         breakpoints.md && {
           marginRight: "auto",
-        },
-        {
-          flexDirection: "row",
-          gap: 10,
         },
       ]}
     >
