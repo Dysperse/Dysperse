@@ -43,6 +43,7 @@ function Agenda() {
         width: "100%",
         alignItems: "center",
         justifyContent: "center",
+        flex: 1,
       }}
     >
       {error ? <ErrorAlert /> : <Spinner />}
