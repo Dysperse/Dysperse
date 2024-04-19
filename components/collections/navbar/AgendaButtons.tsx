@@ -55,12 +55,13 @@ export function AgendaButtons() {
           paddingVertical: 5,
           borderTopColor: theme[5],
           borderTopWidth: 1,
+          flexDirection: "row-reverse",
         },
         breakpoints.md && {
           marginRight: "auto",
         },
         {
-          flexDirection: "row-reverse",
+          flexDirection: "row",
           gap: 10,
         },
       ]}
