@@ -6,6 +6,7 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Linking,
   Platform,
@@ -86,16 +87,22 @@ export default function Page() {
         {[
           {
             icon: "window",
-            filled: true,
             name: "Windows",
             href: "https://click.dysperse.com/ms",
-            description: "Works on Windows 8 & higher",
+            description: "Requires Windows 10 or higher",
           },
           {
-            icon: "language",
+            icon: "desktop_mac",
+            name: "Mac",
+            experimental: true,
+            href: "https://click.dysperse.com/mac",
+            description: "Unstable. Requires macOS Yosemite (10.10) or higher",
+          },
+          {
+            icon: "globe",
             name: "Web",
             href: "https://app.dysperse.com",
-            description: "Use #dysperse in your browser. Works on any device.",
+            description: "Works on all modern browsers on any device",
           },
           { icon: "ios", name: "iOS", comingSoon: true },
           { icon: "android", name: "Android", comingSoon: true },
@@ -122,13 +129,36 @@ export default function Page() {
                 disabled={app.comingSoon}
               >
                 <Avatar
+                  disabled
                   icon={app.icon}
                   style={{ backgroundColor: addHslAlpha(theme[11], 0.1) }}
-                  iconProps={{ filled: app.filled }}
+                  iconProps={{ filled: true }}
                   size={40}
                 />
                 <View style={{ flex: 1 }}>
-                  <Text style={cardHeading}>{app.name}</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <Text style={cardHeading}>{app.name}</Text>
+                    {app.experimental && (
+                      <LinearGradient
+                        colors={["#ff0f7b", "#f89b29"]}
+                        style={{
+                          paddingHorizontal: 10,
+                          borderRadius: 99,
+                          paddingVertical: 3,
+                        }}
+                      >
+                        <Text style={{ fontSize: 12, color: "#fff" }}>
+                          Experimental
+                        </Text>
+                      </LinearGradient>
+                    )}
+                  </View>
                   <Text style={cardDescription}>
                     {app.comingSoon ? "Coming soon" : app.description}
                   </Text>
