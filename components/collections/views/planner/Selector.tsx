@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 99,
     aspectRatio: "1 / 1",
-    maxWidth: 45,
+    maxWidth: 40,
     width: "100%",
     borderWidth: 1,
     borderColor: "transparent",
@@ -113,11 +113,13 @@ const SelectionButton = memo(function SelectionButton({
       </View>
       <View
         style={{
-          height: 5,
+          height: 4,
           flexDirection: "row",
           width: "100%",
           justifyContent: "center",
           gap: 3,
+          marginBottom: -6,
+          marginTop: 1,
         }}
       >
         {[...new Array(Math.min(3, items?.length))].map((_, index) => (
