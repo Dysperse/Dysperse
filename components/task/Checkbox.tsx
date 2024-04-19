@@ -122,7 +122,7 @@ function TaskCheckbox({
           style={[
             animatedStyle,
             {
-              borderColor: theme[isCompleted ? 8 : 6],
+              borderColor: theme[isCompleted ? 8 : 7],
               width: 25,
               height: 25,
               borderWidth: 1,
