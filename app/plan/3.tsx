@@ -1,5 +1,5 @@
-import { Entity } from "@/components/collections/entity";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import { Entity } from "@/components/collections/entity";
 import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import Checkbox from "@/components/task/Checkbox";
@@ -12,13 +12,13 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
-import { addHslAlpha } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -35,6 +35,7 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
 import { styles } from ".";
+import { getTaskCompletionStatus } from "../../helpers/getTaskCompletionStatus";
 
 const SubmitButton = ({ text = "Done", icon = "check", onPress, disabled }) => {
   const theme = useColorTheme();
@@ -130,7 +131,7 @@ function CurrentTaskFooter({
     }, 100);
   };
 
-  const isCompleted = getCompletionStatus(task, dateRange);
+  const isCompleted = getTaskCompletionStatus(task, dateRange);
 
   const handleBack = () => {
     taskAnimationState.value = "PREVIOUS";
@@ -277,24 +278,6 @@ function CurrentTaskFooter({
   );
 }
 
-const getCompletionStatus = (task, dateRange): boolean => {
-  if (task.recurrenceRule) {
-    return (
-      dateRange &&
-      task.completionInstances.find((instance) =>
-        dayjs(instance.iteration).isBetween(
-          dateRange[0],
-          dateRange[1],
-          "day",
-          "[]"
-        )
-      )
-    );
-  } else {
-    return task.completionInstances.length > 0;
-  }
-};
-
 function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
   const theme = useColorTheme();
   const t = useMemo(
@@ -436,7 +419,7 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
                   position: "relative",
                 })}
               >
-                {getCompletionStatus(currentTask, dateRange) && (
+                {getTaskCompletionStatus(currentTask, dateRange) && (
                   <Icon
                     filled
                     style={{

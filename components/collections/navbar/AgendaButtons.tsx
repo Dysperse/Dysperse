@@ -34,7 +34,7 @@ export function AgendaButtons() {
 
   const handleToday = useCallback(() => {
     router.setParams({
-      start: dayjs().toISOString(),
+      start: dayjs().startOf("day").utc().toISOString(),
     });
   }, []);
 
@@ -52,6 +52,7 @@ export function AgendaButtons() {
         !breakpoints.md && {
           backgroundColor: theme[3],
           paddingHorizontal: 15,
+          paddingVertical: 5,
           borderTopColor: theme[5],
           borderTopWidth: 1,
         },
@@ -59,7 +60,7 @@ export function AgendaButtons() {
           marginRight: "auto",
         },
         {
-          flexDirection: "row",
+          flexDirection: "row-reverse",
           gap: 10,
         },
       ]}
@@ -75,7 +76,7 @@ export function AgendaButtons() {
             marginLeft: -40,
             marginRight: -10,
           },
-          !breakpoints.md && !isTodaysView && { display: "none" },
+          !breakpoints.md && isTodaysView && { display: "none" },
           { opacity: isTodaysView ? 0 : 1 },
         ]}
       >

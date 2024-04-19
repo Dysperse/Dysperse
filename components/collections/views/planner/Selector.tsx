@@ -1,3 +1,4 @@
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -65,16 +66,18 @@ const SelectionButton = memo(function SelectionButton({
   itemStart,
   itemEnd,
   type,
+  items,
 }: {
   itemStart: string;
   itemEnd: string;
   type: string;
+  items: any;
 }) {
   const { start } = useLocalSearchParams();
   const theme = useColorTheme();
   const isSelected =
     dayjs(itemStart).toISOString() === start ||
-    (!start && dayjs().isBetween(itemStart, itemEnd));
+    (!start && dayjs().startOf("day").isBetween(itemStart, itemEnd));
 
   const handlePress = () => {
     if (isSelected) return;
@@ -92,32 +95,42 @@ const SelectionButton = memo(function SelectionButton({
           {dayjs(itemStart)
             .format(buttonTextFormats(type).small)
             .substring(0, type === "week" ? 1 : 999)}
-          {type === "month" &&
-            " - " + dayjs(itemEnd).format(buttonTextFormats(type).small)}
         </Text>
       )}
       <View
         style={[
           styles.inner,
-          isSelected && {
-            backgroundColor: theme[10],
-          },
-          isToday && {
-            borderColor: theme[isSelected ? 10 : 6],
-          },
+          isSelected && { backgroundColor: theme[10] },
+          isToday && { borderColor: theme[isSelected ? 10 : 6] },
         ]}
       >
         <Text
           weight={500}
-          style={[
-            styles.innerText,
-            {
-              color: theme[isSelected ? 1 : 12],
-            },
-          ]}
+          style={[styles.innerText, { color: theme[isSelected ? 1 : 12] }]}
         >
           {dayjs(itemStart).format(buttonTextFormats(type).big)}
         </Text>
+      </View>
+      <View
+        style={{
+          height: 5,
+          flexDirection: "row",
+          width: "100%",
+          justifyContent: "center",
+          gap: 3,
+        }}
+      >
+        {[...new Array(Math.min(3, items?.length))].map((_, index) => (
+          <View
+            key={index}
+            style={{
+              width: 4,
+              height: 4,
+              backgroundColor: theme[11],
+              borderRadius: 99,
+            }}
+          />
+        ))}
       </View>
     </TouchableOpacity>
   );
@@ -141,6 +154,13 @@ export function AgendaSelector({ data }) {
           <SelectionButton
             key={index}
             itemStart={item?.start}
+            items={
+              item?.tasks &&
+              item.tasks.filter(
+                (task) =>
+                  !getTaskCompletionStatus(task, [item?.start, item?.end])
+              )
+            }
             itemEnd={item?.end}
             type={type}
           />
