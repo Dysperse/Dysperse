@@ -259,7 +259,7 @@ export const LogoButton = memo(function LogoButton({
             callback: openSupport,
           },
           {
-            icon: "emoji_objects",
+            icon: "lightbulb",
             text: "Want a feature?",
             callback: openFeedback,
           },
