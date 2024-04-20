@@ -176,16 +176,19 @@ export const LogoButton = memo(function LogoButton({
 }: {
   toggleHidden: any;
 }) {
+  const { session, sessionToken } = useUser();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const openSupport = useCallback(() => {
     Linking.openURL("https://blog.dysperse.com");
   }, []);
   const openFeedback = useCallback(() => {
-    Linking.openURL("https://feedback.dysperse.com");
+    Linking.openURL("https://tally.so/r/wLdz5O");
   }, []);
+  const openBug = useCallback(() => {
+    Linking.openURL("https://tally.so/r/mVZjvE?email=" + session.user.email);
+  }, [session.user.email]);
 
-  const { session, sessionToken } = useUser();
   const { isFocused, setFocus } = useFocusPanelContext();
   const { closeSidebarOnMobile, desktopCollapsed } = useSidebarContext();
 
@@ -257,8 +260,13 @@ export const LogoButton = memo(function LogoButton({
           },
           {
             icon: "verified",
-            text: "What's new",
+            text: "Want a feature?",
             callback: openFeedback,
+          },
+          {
+            icon: "warning",
+            text: "Report a bug",
+            callback: openBug,
           },
         ]}
       />
