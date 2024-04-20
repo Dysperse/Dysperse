@@ -183,8 +183,8 @@ export const LogoButton = memo(function LogoButton({
     Linking.openURL("https://blog.dysperse.com");
   }, []);
   const openFeedback = useCallback(() => {
-    Linking.openURL("https://tally.so/r/wLdz5O");
-  }, []);
+    Linking.openURL("https://tally.so/r/wLdz5O?email=" + session.user.email);
+  }, [session]);
   const openBug = useCallback(() => {
     Linking.openURL("https://tally.so/r/mVZjvE?email=" + session.user.email);
   }, [session.user.email]);
@@ -259,12 +259,12 @@ export const LogoButton = memo(function LogoButton({
             callback: openSupport,
           },
           {
-            icon: "verified",
+            icon: "emoji_objects",
             text: "Want a feature?",
             callback: openFeedback,
           },
           {
-            icon: "warning",
+            icon: "heart_broken",
             text: "Report a bug",
             callback: openBug,
           },
