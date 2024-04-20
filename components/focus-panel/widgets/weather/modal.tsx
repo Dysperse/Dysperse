@@ -139,7 +139,6 @@ export function WeatherModal({
                   ].icon
                 }
               </Icon>
-              !
             </View>
             <Text weight={200} style={[weatherStyles.temperature, { color }]}>
               {Math.round(weather.current_weather.temperature)}&deg;

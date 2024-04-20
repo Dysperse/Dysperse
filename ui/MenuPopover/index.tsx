@@ -1,4 +1,5 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { BlurView } from "expo-blur";
 import React, { ReactElement, cloneElement, useRef } from "react";
 import {
   Pressable,
@@ -24,6 +25,7 @@ import Animated, {
 import Divider from "../Divider";
 import Icon from "../Icon";
 import Text from "../Text";
+import { addHslAlpha } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 
 export type MenuOption =
@@ -72,9 +74,9 @@ export function MenuItem(
         [
           {
             backgroundColor: pressed
-              ? theme[6]
+              ? addHslAlpha(theme[8], 0.4)
               : hovered
-              ? theme[5]
+              ? addHslAlpha(theme[7], 0.4)
               : undefined,
             borderRadius: 20,
             zIndex: 2,
@@ -173,48 +175,60 @@ export default function MenuPopover({
         }}
       >
         <Animated.View style={animatedStyle}>
-          <View style={[styles.container, { backgroundColor: theme[4] }]}>
-            {children ||
-              options
-                .filter((e) => e)
-                .map(
-                  ({
-                    icon,
-                    text,
-                    key,
-                    callback,
-                    renderer: Renderer = React.Fragment,
-                    ...props
-                  }: any) => (
-                    // TODO: Fix key
-                    <React.Fragment key={Math.random()}>
-                      {props.divider ? (
-                        <Divider style={{ width: "90%", marginVertical: 5 }} />
-                      ) : (
-                        <Renderer>
-                          <MenuItem
-                            onPress={() => {
-                              callback();
-                              if (closeOnSelect) menuPopupRef.current.close();
-                            }}
-                            {...props}
-                          >
-                            {icon && <Icon>{icon}</Icon>}
-                            <Text
-                              weight={300}
-                              style={{ color: theme[11], fontSize: 16 }}
+          <View
+            style={{
+              backgroundColor: addHslAlpha(theme[6], 0.4),
+              borderRadius: 25,
+              overflow: "hidden",
+            }}
+          >
+            <BlurView tint="prominent" style={[styles.container]}>
+              {children ||
+                options
+                  .filter((e) => e)
+                  .map(
+                    ({
+                      icon,
+                      text,
+                      key,
+                      callback,
+                      renderer: Renderer = React.Fragment,
+                      ...props
+                    }: any) => (
+                      // TODO: Fix key
+                      <React.Fragment key={Math.random()}>
+                        {props.divider ? (
+                          <Divider
+                            style={{ width: "90%", marginVertical: 5 }}
+                          />
+                        ) : (
+                          <Renderer>
+                            <MenuItem
+                              onPress={() => {
+                                callback();
+                                if (closeOnSelect) menuPopupRef.current.close();
+                              }}
+                              {...props}
                             >
-                              {text}
-                            </Text>
-                            {props.selected && (
-                              <Icon style={{ marginLeft: "auto" }}>check</Icon>
-                            )}
-                          </MenuItem>
-                        </Renderer>
-                      )}
-                    </React.Fragment>
-                  )
-                )}
+                              {icon && <Icon>{icon}</Icon>}
+                              <Text
+                                weight={300}
+                                style={{ color: theme[11], fontSize: 16 }}
+                              >
+                                {text}
+                              </Text>
+                              {props.selected && (
+                                <Icon style={{ marginLeft: "auto" }}>
+                                  check
+                                </Icon>
+                              )}
+                            </MenuItem>
+                          </Renderer>
+                        )}
+                      </React.Fragment>
+                    )
+                  )}
+            </BlurView>
           </View>
         </Animated.View>
       </MenuOptions>
