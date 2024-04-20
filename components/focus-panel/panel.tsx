@@ -7,6 +7,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { CrimsonPro_800ExtraBold } from "@expo-google-fonts/crimson-pro";
 import { useFonts } from "expo-font";
@@ -81,7 +82,13 @@ const Music = () => {
 
 function Quotes() {
   const { data, mutate, error } = useSWR(
-    [``, {}, "https://api.quotable.io/random"],
+    [
+      ``,
+      {
+        tags: "famous-quotes|sports|success|failure|ethics|health|honor|leadership|pain|power-quotes|weakness|work",
+      },
+      "https://api.quotable.io/random",
+    ],
     null,
     {
       refreshInterval: 1000 * 60 * 60,
@@ -132,17 +139,23 @@ function Quotes() {
           },
         ]}
       >
-        <Text
-          style={{
-            fontSize: data.container > 100 ? 25 : 35,
-            fontFamily: "serifText",
-          }}
-        >
-          &ldquo;{data?.content}&rdquo;
-        </Text>
-        <Text style={{ marginTop: 10, opacity: 0.6 }} weight={600}>
-          &mdash; {data?.author}
-        </Text>
+        {data ? (
+          <>
+            <Text
+              style={{
+                fontSize: data.content.length > 100 ? 23 : 30,
+                fontFamily: "serifText",
+              }}
+            >
+              &ldquo;{data?.content}&rdquo;
+            </Text>
+            <Text style={{ marginTop: 10, opacity: 0.6 }} weight={600}>
+              &mdash; {data?.author}
+            </Text>
+          </>
+        ) : (
+          <Spinner />
+        )}
       </View>
     </View>
   );
