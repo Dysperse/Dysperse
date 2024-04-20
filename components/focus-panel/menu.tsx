@@ -48,45 +48,47 @@ export function WidgetMenu({ widgets, setWidgets }) {
           paddingTop: 10 + insets.top,
         },
         !breakpoints.md && {
-          borderBottomWidth: 1,
-          borderBottomColor: theme[3],
+          borderRadius: 999,
+          gap: 5,
+          marginTop: 10,
+          paddingHorizontal: 20,
+          paddingRight: 10,
         },
       ]}
     >
       {process.env.NODE_ENV === "production" && <WakeLock />}
       {!breakpoints.md && (
         <>
-          <IconButton
-            onPress={() => setFocus(false)}
-            variant={breakpoints.md ? "filled" : "text"}
-            style={{
-              width: 60,
-              opacity: 0.6,
-            }}
-          >
-            <Icon>west</Icon>
-          </IconButton>
           <Text
-            style={{
-              color: theme[11],
-              marginLeft: "auto",
-              marginRight: "auto",
-              opacity: 0.7,
-              fontSize: 20,
-            }}
-            weight={200}
+            weight={900}
+            style={{ marginRight: "auto", opacity: 0.6, color: theme[12] }}
           >
             Focus
           </Text>
+          <IconButton
+            onPress={() => setFocus(false)}
+            variant={breakpoints.md ? "filled" : "text"}
+            style={{ opacity: 0.6 }}
+            size={40}
+          >
+            <Icon style={{ color: theme[12] }}>stop_circle</Icon>
+          </IconButton>
         </>
       )}
       <MenuPopover
-        containerStyle={{ marginLeft: -15 }}
         trigger={
-          <IconButton variant="filled" style={{ width: 60 }}>
-            <Icon>edit</Icon>
+          <IconButton
+            variant={breakpoints.md ? "filled" : "text"}
+            style={{
+              width: breakpoints.md ? 60 : undefined,
+              opacity: breakpoints.md ? undefined : 0.6,
+            }}
+            size={breakpoints.md ? undefined : 40}
+          >
+            <Icon style={{ color: theme[12] }}>edit</Icon>
           </IconButton>
         }
+        containerStyle={{ marginLeft: -20 }}
         options={[
           {
             text: "Upcoming",

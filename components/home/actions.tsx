@@ -83,7 +83,7 @@ export function Actions() {
         )}
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={togglePanel}>
-        <Icon>adjust</Icon>
+        <Icon>psychiatry</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
           {isFocused ? "End" : "Start"} focus...
         </Text>

@@ -192,6 +192,7 @@ export const LogoButton = memo(function LogoButton({
   useEffect(() => {
     sendApiRequest(sessionToken, "GET", "space/integrations/sync", {});
   }, [sessionToken]);
+  const toggleFocus = () => setFocus(!isFocused);
 
   return (
     <View
@@ -261,32 +262,46 @@ export const LogoButton = memo(function LogoButton({
           },
         ]}
       />
-      <MenuPopover
-        menuProps={{
-          rendererProps: {
-            placement: breakpoints.md ? "right" : "bottom",
-            anchorStyle: { opacity: 0 },
-          },
-        }}
-        containerStyle={{ marginTop: 10, width: 200 }}
-        trigger={
-          <IconButton size={40} icon="dock_to_right" style={{ opacity: 0.9 }} />
-        }
-        options={[
-          breakpoints.md && {
-            icon: "dock_to_right",
-            text: "Sidebar",
-            callback: toggleHidden,
-            selected: !desktopCollapsed,
-          },
-          {
-            icon: "dock_to_left",
-            text: "Focus panel",
-            selected: isFocused,
-            callback: () => setFocus(!isFocused),
-          },
-        ]}
-      />
+      {breakpoints.md ? (
+        <MenuPopover
+          menuProps={{
+            rendererProps: {
+              placement: breakpoints.md ? "right" : "bottom",
+              anchorStyle: { opacity: 0 },
+            },
+          }}
+          containerStyle={{ marginTop: 10, width: 200 }}
+          trigger={
+            <IconButton
+              size={40}
+              icon="dock_to_right"
+              style={{ opacity: 0.9 }}
+            />
+          }
+          options={[
+            {
+              icon: "dock_to_right",
+              text: "Sidebar",
+              callback: toggleHidden,
+              selected: !desktopCollapsed,
+            },
+            {
+              icon: "dock_to_left",
+              text: "Focus panel",
+              selected: isFocused,
+              callback: toggleFocus,
+            },
+          ]}
+        />
+      ) : (
+        <IconButton
+          size={40}
+          icon="psychiatry"
+          variant="outlined"
+          style={{ opacity: 0.9 }}
+          onPress={toggleFocus}
+        />
+      )}
     </View>
   );
 });
