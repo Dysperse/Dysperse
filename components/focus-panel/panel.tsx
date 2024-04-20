@@ -4,11 +4,15 @@ import Alert from "@/ui/Alert";
 import Chip from "@/ui/Chip";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import { CrimsonPro_800ExtraBold } from "@expo-google-fonts/crimson-pro";
+import { useFonts } from "expo-font";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
-import { Fragment, memo, useEffect } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import {
   Gesture,
@@ -21,6 +25,8 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import useSWR from "swr";
 import ContentWrapper from "../layout/content";
 import {
   FocusPanelWidgetProvider,
@@ -32,6 +38,7 @@ import { Assistant } from "./widgets/Assistant";
 import { Clock } from "./widgets/clock";
 import { UpNext } from "./widgets/UpNext";
 import { WeatherWidget } from "./widgets/weather/widget";
+import { widgetStyles } from "./widgetStyles";
 
 export type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 
@@ -71,6 +78,75 @@ const Music = () => {
     </View>
   );
 };
+
+function Quotes() {
+  const { data, mutate, error } = useSWR(
+    [``, {}, "https://api.quotable.io/random"],
+    null,
+    {
+      refreshInterval: 1000 * 60 * 60,
+    }
+  );
+
+  const [refreshed, setRefreshed] = useState(false);
+
+  const [_, fontsError] = useFonts({
+    serifText: CrimsonPro_800ExtraBold,
+  });
+
+  const handleRefresh = () => {
+    if (!refreshed) {
+      setRefreshed(true);
+      Toast.show({ type: "info", text1: "Quotes refresh every hour" });
+    }
+    mutate();
+  };
+  const theme = useColorTheme();
+
+  return (
+    <View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingRight: 10,
+          marginBottom: 10,
+        }}
+      >
+        <Text variant="eyebrow">Quotes</Text>
+        <IconButton
+          size={30}
+          style={{ marginTop: -4 }}
+          icon="refresh"
+          onPress={handleRefresh}
+        />
+      </View>
+      {(error || fontsError) && <ErrorAlert />}
+      <View
+        style={[
+          widgetStyles.card,
+          {
+            backgroundColor: theme[3],
+            borderWidth: 1,
+            borderColor: theme[6],
+          },
+        ]}
+      >
+        <Text
+          style={{
+            fontSize: data.container > 100 ? 25 : 35,
+            fontFamily: "serifText",
+          }}
+        >
+          &ldquo;{data?.content}&rdquo;
+        </Text>
+        <Text style={{ marginTop: 10, opacity: 0.6 }} weight={600}>
+          &mdash; {data?.author}
+        </Text>
+      </View>
+    </View>
+  );
+}
 
 function PanelContent() {
   const theme = useColorTheme();
@@ -154,6 +230,7 @@ function PanelContent() {
                   }}
                 >
                   {widgets.includes("upcoming") && <UpNext />}
+                  {widgets.includes("quotes") && <Quotes />}
                   {widgets.includes("clock") && <Clock />}
                   {widgets.includes("weather") && <WeatherWidget />}
                   {widgets.includes("assistant") && <Assistant />}

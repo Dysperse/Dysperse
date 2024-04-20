@@ -13,6 +13,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@expo-google-fonts/crimson-pro": "^0.2.3",
     "@expo-google-fonts/jetbrains-mono": "^0.2.3",
     "@expo-google-fonts/jost": "^0.2.3",
     "@expo/webpack-config": "~19.0.1",
@@ -50,6 +51,7 @@
     "expo-network": "~5.8.0",
     "expo-router": "~3.4.8",
     "expo-secure-store": "~12.8.1",
+    "expo-sharing": "~11.10.0",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
     "expo-updates": "~0.24.12",
@@ -85,8 +87,7 @@
     "rrule": "^2.8.1",
     "swr": "^2.2.4",
     "typescript": "^5.3.3",
-    "workbox-window": "^7.0.0",
-    "expo-sharing": "~11.10.0"
+    "workbox-window": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",

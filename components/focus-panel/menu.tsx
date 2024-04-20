@@ -113,6 +113,7 @@ export function WidgetMenu({ widgets, setWidgets }) {
               </MenuItem>
             ),
           },
+          { text: "Quotes", icon: "format_quote" },
           { text: "Clock", icon: "timer" },
           { text: "Weather", icon: "wb_sunny" },
           { text: "Assistant", icon: "auto_awesome" },
