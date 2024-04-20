@@ -13,6 +13,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
+import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -526,64 +527,66 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
   );
 
   return (
-    <Pressable
-      onPress={(e) => e.stopPropagation()}
-      style={[
-        {
-          margin: "auto",
-          width: "100%",
-          flex: 1,
-          maxWidth: breakpoints.md ? 900 : width,
-        },
-        breakpoints.md && {
-          maxHeight: Math.min(600, height / 1.3),
-          backgroundColor: theme[2],
-          borderWidth: 1,
-          borderColor: theme[6],
-          borderRadius: 20,
-          shadowColor: "rgba(0, 0, 0, 0.12)",
-          shadowOffset: {
-            width: 10,
-            height: 10,
+    <BlurView style={{ flex: 1 }} tint="prominent" intensity={20}>
+      <Pressable
+        onPress={(e) => e.stopPropagation()}
+        style={[
+          {
+            margin: "auto",
+            width: "100%",
+            flex: 1,
+            maxWidth: breakpoints.md ? 900 : width,
           },
-          shadowOpacity: 1,
-          shadowRadius: 30,
-        },
-      ]}
-    >
-      <PaletteHeader
-        preview={preview}
-        handleClose={handleClose}
-        query={query}
-        setQuery={setQuery}
-        setPreview={setPreview}
-        filtered={filtered}
-      />
-      <View style={{ flexDirection: "row", flex: 1 }}>
-        {(!preview || breakpoints.md) && (
-          <View style={{ flex: breakpoints.md ? 1.5 : 1 }}>
-            <CommandPaletteList
-              preview={preview}
-              setPreview={handlePreviewChange}
-              filtered={filtered}
-              filter={filter}
-              setFilter={setFilter}
-              filters={filters}
-              handleClose={handleClose}
+          breakpoints.md && {
+            maxHeight: Math.min(600, height / 1.3),
+            backgroundColor: theme[2],
+            borderWidth: 1,
+            borderColor: theme[6],
+            borderRadius: 20,
+            shadowColor: "rgba(0, 0, 0, 0.12)",
+            shadowOffset: {
+              width: 10,
+              height: 10,
+            },
+            shadowOpacity: 1,
+            shadowRadius: 30,
+          },
+        ]}
+      >
+        <PaletteHeader
+          preview={preview}
+          handleClose={handleClose}
+          query={query}
+          setQuery={setQuery}
+          setPreview={setPreview}
+          filtered={filtered}
+        />
+        <View style={{ flexDirection: "row", flex: 1 }}>
+          {(!preview || breakpoints.md) && (
+            <View style={{ flex: breakpoints.md ? 1.5 : 1 }}>
+              <CommandPaletteList
+                preview={preview}
+                setPreview={handlePreviewChange}
+                filtered={filtered}
+                filter={filter}
+                setFilter={setFilter}
+                filters={filters}
+                handleClose={handleClose}
+                onCreate={onCreate}
+              />
+            </View>
+          )}
+          {(breakpoints.md || preview) && (
+            <CommandPalettePreview
+              setPreview={setPreview}
               onCreate={onCreate}
+              preview={preview}
+              loading={loading}
             />
-          </View>
-        )}
-        {(breakpoints.md || preview) && (
-          <CommandPalettePreview
-            setPreview={setPreview}
-            onCreate={onCreate}
-            preview={preview}
-            loading={loading}
-          />
-        )}
-      </View>
-    </Pressable>
+          )}
+        </View>
+      </Pressable>
+    </BlurView>
   );
 }
 
@@ -605,7 +608,7 @@ const CommandPalette = memo(function CommandPalette() {
         justifyContent: "center",
       }}
       {...(breakpoints.md && {
-        maxBackdropOpacity: 0.1,
+        maxBackdropOpacity: 0.05,
         animationConfigs: {
           overshootClamping: true,
           duration: 0.0001,
