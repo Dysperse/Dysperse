@@ -1,4 +1,3 @@
-import { useFocusPanelWidgetContext } from "@/components/focus-panel/context";
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
 import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
@@ -55,7 +54,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }) => {
           />
           <View style={gridStyles.textContainer}>
             <Text weight={700} style={{ color: theme[11] }}>
-              {dayjs(data.daily.sunrise[0]).format("h A")}
+              {dayjs(data.daily.sunrise[0]).format("h:mm A")}
             </Text>
             <Text style={[gridStyles.subtitle, { color: theme[11] }]}>
               Sunrise
@@ -71,7 +70,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }) => {
           />
           <View style={gridStyles.textContainer}>
             <Text weight={700} style={{ color: theme[11] }}>
-              {dayjs(data.daily.sunset[0]).format("h A")}
+              {dayjs(data.daily.sunset[0]).format("h:mm A")}
             </Text>
             <Text style={[gridStyles.subtitle, { color: theme[11] }]}>
               Sunset
@@ -194,11 +193,11 @@ export function WeatherWidget() {
 
   const isLoading = isWeatherLoading || isAirQualityLoading;
 
-  const isNight = () => {
+  const isNight = useCallback(() => {
     if (data?.current_weather) return !data.current_weather.is_day;
     const currentHour = new Date().getHours();
     return currentHour >= 18 || currentHour <= 6; // Assuming night is between 6 PM and 6 AM
-  };
+  }, [data]);
 
   const onPressHandler = async () => {
     if (!location) {
@@ -224,14 +223,13 @@ export function WeatherWidget() {
             isNight() ? "night" : "day"
           ]
         : {},
-    [data]
+    [data, isNight]
   );
 
   const { session } = useUser();
   const weatherColor = useColor(
     weatherDescription?.colorTheme || session.user.profile.theme
   );
-  const { setWidgets } = useFocusPanelWidgetContext();
 
   const gradient = [weatherColor[3], weatherColor[4]];
 
