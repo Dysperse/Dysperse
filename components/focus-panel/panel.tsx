@@ -154,7 +154,9 @@ function Quotes() {
             </Text>
           </>
         ) : (
-          <Spinner />
+          <View style={{ alignItems: "center", paddingVertical: 70 }}>
+            <Spinner />
+          </View>
         )}
       </View>
     </View>
