@@ -215,7 +215,7 @@ export const LogoButton = memo(function LogoButton({
             anchorStyle: { opacity: 0 },
           },
         }}
-        containerStyle={{ width: 160, marginLeft: 10, marginTop: 5 }}
+        containerStyle={{ width: 190, marginLeft: 10, marginTop: 5 }}
         trigger={
           <Pressable
             style={({ pressed }) => [
