@@ -258,7 +258,9 @@ export function WeatherWidget() {
         </Pressable>
       ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>
-          <Spinner />
+          <View style={{ alignItems: "center", paddingVertical: 80 }}>
+            <Spinner />
+          </View>
         </Pressable>
       ) : data && airQualityData ? (
         <ColorThemeProvider theme={weatherColor}>
