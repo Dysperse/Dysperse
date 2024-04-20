@@ -85,7 +85,7 @@ function Quotes() {
     [
       ``,
       {
-        tags: "famous-quotes|sports|success|failure|ethics|health|honor|leadership|pain|power-quotes|weakness|work",
+        tags: "famous-quotes|success|failure|ethics|health|honor|leadership|power-quotes|work",
       },
       "https://api.quotable.io/random",
     ],
