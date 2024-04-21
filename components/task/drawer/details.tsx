@@ -681,11 +681,11 @@ export function TaskDetails() {
                     minimumValue={0}
                     maximumValue={4}
                     onValueChange={(value) =>
-                      updateTask("storyPoints", complexityScale[value], false)
-                    }
-                    onSlidingComplete={(value) =>
                       updateTask("storyPoints", complexityScale[value])
                     }
+                    // onSlidingComplete={(value) =>
+                    //   updateTask("storyPoints", complexityScale[value])
+                    // }
                     minimumTrackTintColor={theme[9]}
                     maximumTrackTintColor={theme[6]}
                   />
