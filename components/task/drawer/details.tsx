@@ -669,27 +669,25 @@ export function TaskDetails() {
                     ]
                   }
                 />
-                {complexityScale.findIndex((i) => i === task.storyPoints) !==
-                  -1 && (
-                  <Slider
-                    style={{ flex: 1, height: 40 }}
-                    thumbTintColor={theme[11]}
-                    value={complexityScale.findIndex(
-                      (i) => i === task.storyPoints
-                    )}
-                    step={1}
-                    minimumValue={0}
-                    maximumValue={4}
-                    onValueChange={(value) =>
-                      updateTask("storyPoints", complexityScale[value])
-                    }
-                    // onSlidingComplete={(value) =>
-                    //   updateTask("storyPoints", complexityScale[value])
-                    // }
-                    minimumTrackTintColor={theme[9]}
-                    maximumTrackTintColor={theme[6]}
-                  />
-                )}
+                {task.storyPoints &&
+                  complexityScale.findIndex((i) => i === task.storyPoints) !==
+                    -1 && (
+                    <Slider
+                      style={{ flex: 1, height: 40 }}
+                      thumbTintColor={theme[11]}
+                      value={complexityScale.findIndex(
+                        (i) => i === task.storyPoints
+                      )}
+                      step={1}
+                      minimumValue={0}
+                      maximumValue={4}
+                      onValueChange={(value) =>
+                        updateTask("storyPoints", complexityScale[value])
+                      }
+                      minimumTrackTintColor={theme[9]}
+                      maximumTrackTintColor={theme[6]}
+                    />
+                  )}
               </ListItemButton>
             ),
             content: <></>,
