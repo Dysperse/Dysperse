@@ -106,7 +106,7 @@ function TaskCheckbox({
         style={() => ({
           padding: 10,
           margin: -10,
-          marginTop: -11,
+          marginTop: -5,
           opacity: disabled ? 0.5 : 1,
         })}
         disabled={disabled}
@@ -122,12 +122,13 @@ function TaskCheckbox({
           style={[
             animatedStyle,
             {
-              borderColor: theme[isCompleted ? 8 : 7],
+              borderColor: theme[isCompleted ? 11 : 12],
+              opacity: isCompleted ? 0.7 : 0.45,
               width: 25,
               height: 25,
-              borderWidth: 1,
+              borderWidth: 1.5,
               borderRadius: 99,
-              backgroundColor: isCompleted ? theme[8] : undefined,
+              backgroundColor: isCompleted ? theme[11] : undefined,
               alignItems: "center",
             },
           ]}

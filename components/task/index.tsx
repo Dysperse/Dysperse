@@ -344,9 +344,7 @@ const Task = memo(function Task({
           <View style={{ gap: 5, flex: 1 }}>
             <View style={{ flex: 1 }}>
               <Text
-                weight={300}
                 style={{
-                  opacity: 0.8,
                   ...(isCompleted && {
                     textDecorationLine: "line-through",
                   }),
