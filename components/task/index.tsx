@@ -327,7 +327,7 @@ const Task = memo(function Task({
               alignItems: "stretch",
             },
             isCompleted && {
-              opacity: 0.6,
+              opacity: 0.4,
             },
             selection.includes(task.id) && {
               backgroundColor: blue[3],
