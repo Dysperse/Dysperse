@@ -324,7 +324,7 @@ const Task = memo(function Task({
                 marginBottom: 10,
                 borderRadius: 20,
               }),
-              alignItems: "flex-start",
+              alignItems: "stretch",
             },
             isCompleted && {
               opacity: 0.6,
@@ -345,6 +345,17 @@ const Task = memo(function Task({
             <View style={{ flex: 1 }}>
               <Text
                 style={{
+                  marginTop:
+                    task.note ||
+                    showRelativeTime ||
+                    (showDate && task.due) ||
+                    task.recurrenceRule ||
+                    (showLabel && task.label) ||
+                    task.pinned ||
+                    !task.dateOnly ||
+                    task.attachments?.length > 0
+                      ? -5
+                      : 0,
                   ...(isCompleted && {
                     textDecorationLine: "line-through",
                   }),
