@@ -166,7 +166,7 @@ export default function MenuPopover({
         customStyles={{
           optionsContainer: {
             width: 180,
-            borderRadius: 20,
+            borderRadius: 25,
             overflow: "hidden",
             shadowRadius: 0,
             shadowColor: "transparent",
