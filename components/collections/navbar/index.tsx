@@ -127,7 +127,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
-    {
+    !isAll && {
       divider: true,
     },
     {
