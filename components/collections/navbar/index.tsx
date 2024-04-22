@@ -78,11 +78,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const { mutate } = useSWR(["user/tabs"]);
 
   const collectionMenuOptions = [
-    {
-      icon: "kid_star",
-      text: "Customize task chips",
-      callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
-    },
     !isAll && {
       icon: "edit",
       text: "Edit",
@@ -99,36 +94,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         <CollectionContext.Provider value={{ data, ...ctx, access: null }}>
           <CollectionLabelMenu {...props} />
         </CollectionContext.Provider>
-      ),
-    },
-    {
-      renderer: () => (
-        <ConfirmationModal
-          height={430}
-          onSuccess={toggleShowCompleted}
-          title={
-            data.showCompleted
-              ? "Hide completed tasks?"
-              : "Show completed tasks?"
-          }
-          disabled={!data.name}
-          secondary="This will affect all views in this collection"
-        >
-          <MenuItem
-            onPress={() => {
-              if (!data.name)
-                Toast.show({ type: "info", text1: "Coming soon" });
-            }}
-          >
-            <Icon>priority</Icon>
-            <Text variant="menuItem" weight={300}>
-              {data.showCompleted ? "Hide" : "Show"} completed
-            </Text>
-            {data.showCompleted && (
-              <Icon style={{ marginLeft: "auto" }}>check</Icon>
-            )}
-          </MenuItem>
-        </ConfirmationModal>
       ),
     },
     !isAll &&
@@ -162,41 +127,46 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
-  ].filter((e) => e);
-
-  const filterOptions = [
+    {
+      divider: true,
+    },
+    {
+      icon: "fluorescent",
+      text: "Customize task chips",
+      callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
+    },
     {
       renderer: () => (
-        <View style={{ alignItems: "center", paddingVertical: 10 }}>
-          <Text variant="eyebrow">Coming soon!</Text>
-        </View>
+        <ConfirmationModal
+          height={430}
+          onSuccess={toggleShowCompleted}
+          title={
+            data.showCompleted
+              ? "Hide completed tasks?"
+              : "Show completed tasks?"
+          }
+          disabled={!data.name}
+          secondary="This will affect all views in this collection"
+        >
+          <MenuItem
+            onPress={() => {
+              if (!data.name)
+                Toast.show({ type: "info", text1: "Coming soon" });
+            }}
+          >
+            <Icon>edit_attributes</Icon>
+            <Text variant="menuItem" weight={300}>
+              {data.showCompleted ? "Hide" : "Show"} completed
+            </Text>
+            {data.showCompleted && (
+              <Icon style={{ marginLeft: "auto" }}>check</Icon>
+            )}
+          </MenuItem>
+        </ConfirmationModal>
       ),
     },
-    {
-      selected: true,
-      icon: "auto_awesome",
-      text: "Auto",
-      callback: () => {},
-    },
-    {
-      disabled: true,
-      icon: "sort_by_alpha",
-      text: "Alphabetical",
-      callback: () => alert("filter az"),
-    },
-    {
-      disabled: true,
-      icon: "calendar_month",
-      text: "Due date",
-      callback: () => alert("filter due"),
-    },
-    {
-      disabled: true,
-      icon: "timeline",
-      text: "Last edited",
-      callback: () => alert("filter edited"),
-    },
-  ];
+  ].filter((e) => e);
+
   const { openSidebar } = useSidebarContext();
 
   const menu = useMemo(
