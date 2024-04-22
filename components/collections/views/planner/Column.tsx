@@ -2,6 +2,7 @@ import { Entity } from "@/components/collections/entity";
 import { Header } from "@/components/collections/views/planner/Header";
 import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -398,14 +399,30 @@ export function Column({
           .sort((a, b) =>
             a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
           )
-          .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
-          .sort((x, y) =>
-            x.completionInstances.length === y.completionInstances.length
-              ? 0
-              : x.completionInstances.length === 0
-              ? -1
-              : 0
-          )}
+          .sort((x, y) => {
+            const dateRange = [new Date(column.start), new Date(column.end)];
+
+            // Get task completion status for both x and y
+            const xCompleted = getTaskCompletionStatus(x, dateRange);
+            const yCompleted = getTaskCompletionStatus(y, dateRange);
+
+            // If completion status is the same, sort by pinned status
+            if (xCompleted === yCompleted) {
+              // If both are pinned or both are not pinned, return 0
+              if (x.pinned === y.pinned) {
+                return 0;
+              } else {
+                // If x is pinned and y is not pinned, x should come before y
+                // If x is not pinned and y is pinned, y should come before x
+                return x.pinned ? -1 : 1;
+              }
+            } else {
+              // Sort by completion status
+              // If x is completed and y is not completed, x should come after y
+              // If y is completed and x is not completed, y should come after x
+              return xCompleted ? 1 : -1;
+            }
+          })}
         // estimatedItemSize={200}
         initialNumToRender={10}
         contentContainerStyle={{
