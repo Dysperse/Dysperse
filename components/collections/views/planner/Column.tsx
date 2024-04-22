@@ -394,6 +394,7 @@ export function Column({
           )
         }
         data={column.tasks
+          .slice()
           .sort((a, b) =>
             a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
           )

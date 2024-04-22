@@ -49,7 +49,9 @@ import {
   Platform,
   Pressable,
   StatusBar,
+  TextStyle,
   View,
+  ViewStyle,
   useWindowDimensions,
 } from "react-native";
 import { Drawer, useDrawerProgress } from "react-native-drawer-layout";
@@ -311,8 +313,9 @@ const SelectionNavbar = () => {
   const { width } = useWindowDimensions();
   const { selection, setSelection } = useSelectionContext();
   const blue = useColor("blue");
+  const breakpoints = useResponsiveBreakpoints();
 
-  const barWidth = 440;
+  const barWidth = breakpoints.md ? 440 : width;
   const clearSelection = useCallback(() => setSelection([]), [setSelection]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -343,68 +346,181 @@ const SelectionNavbar = () => {
   useHotkeys("Escape", clearSelection, {
     enabled: selection.length > 0,
   });
+  const isDark = useDarkMode();
 
   const [pinned, setPinned] = useState(true);
+
+  const itemStyle: ViewStyle = breakpoints.md
+    ? undefined
+    : {
+        alignItems: "center",
+        width: 90,
+        gap: 5,
+      };
+
+  const textStyle: TextStyle = {
+    color: blue[11],
+    fontSize: 12,
+    textAlign: "center",
+    fontFamily: "body_800",
+  };
+
+  const marginStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: withSpring(
+          selection.length > 0 ? 0 : breakpoints.md ? -84 : 140,
+          {
+            damping: 100,
+            stiffness: 400,
+          }
+        ),
+      },
+    ],
+  }));
 
   return selection.length > 0 ? (
     <Portal>
       <ColorThemeProvider theme={blue}>
-        <View
-          style={{
-            width: barWidth,
-            height: 64,
-            position: "absolute",
-            top: 0,
-            left: (width - barWidth) / 2,
-            marginTop: 20,
-            backgroundColor: blue[5],
-            flexDirection: "row",
-            borderRadius: 999,
-            zIndex: 999999,
-            gap: 10,
-            paddingHorizontal: 10,
-            paddingRight: 15,
-            alignItems: "center",
-          }}
+        <Animated.View
+          style={[
+            marginStyle,
+            {
+              zIndex: 999999,
+              height: breakpoints.md ? 64 : 140,
+              overflow: "hidden",
+              borderRadius: 25,
+              width: barWidth,
+              position: "absolute",
+              top: 0,
+              left: (width - barWidth) / 2,
+              marginTop: breakpoints.md ? 20 : 0,
+            },
+            !breakpoints.md && {
+              bottom: 0,
+              left: 0,
+              top: "auto",
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+            },
+          ]}
         >
-          <IconButton icon="close" size={50} onPress={clearSelection} />
-          <View style={{ flexGrow: 1 }}>
-            <Text weight={900} style={{ fontSize: 20 }}>
-              {selection.length} selected
-            </Text>
-            {isLoading && (
-              <Text style={{ opacity: 0.6, fontSize: 12 }}>Processing...</Text>
-            )}
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <IconButton
-              disabled={isLoading}
-              onPress={() => {
-                setPinned((t) => !t);
-                handleSelect({ pinned });
-              }}
-              icon={<Icon filled={pinned}>push_pin</Icon>}
-              size={45}
-            />
-            <LabelPicker
-              setLabel={(e: any) => handleSelect({ labelId: e.id })}
-              autoFocus
+          <BlurView
+            intensity={40}
+            tint={isDark ? "dark" : "prominent"}
+            style={{ height: breakpoints.md ? 64 : 140 }}
+          >
+            <View
+              style={[
+                {
+                  backgroundColor: addHslAlpha(blue[4], 0.5),
+                  flexDirection: "row",
+                  gap: 10,
+                  paddingHorizontal: 10,
+                  paddingRight: 15,
+                  height: "100%",
+                  alignItems: "center",
+                },
+                !breakpoints.md && {
+                  height: 140,
+                  paddingTop: 10,
+                  gap: 0,
+                  flexDirection: "column",
+                  paddingHorizontal: 0,
+                  paddingRight: 0,
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                },
+              ]}
             >
-              <IconButton disabled={isLoading} icon="new_label" size={45} />
-            </LabelPicker>
-            <ConfirmationModal
-              onSuccess={() => handleSelect({ trash: true }, true)}
-              title={`Move ${selection.length} item${
-                selection.length === 1 ? "" : "s"
-              } to trash?`}
-              height={400}
-              skipLoading
-              secondary="You can undo this later"
-            >
-              <IconButton disabled={isLoading} icon="delete" size={45} />
-            </ConfirmationModal>
-          </View>
-        </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingLeft: 10,
+                }}
+              >
+                <IconButton icon="close" size={50} onPress={clearSelection} />
+                <View style={{ flexGrow: 1 }}>
+                  <Text weight={900} style={{ fontSize: 20 }}>
+                    {selection.length} selected
+                  </Text>
+                  {isLoading && (
+                    <Text style={{ opacity: 0.6, fontSize: 12 }}>
+                      Processing...
+                    </Text>
+                  )}
+                </View>
+              </View>
+              <ScrollView
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                }}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+              >
+                <View style={itemStyle}>
+                  <IconButton
+                    variant={breakpoints.md ? "text" : "outlined"}
+                    disabled={isLoading}
+                    onPress={() => {
+                      setPinned((t) => !t);
+                      handleSelect({ pinned });
+                    }}
+                    icon={<Icon filled={pinned}>push_pin</Icon>}
+                    size={45}
+                  />
+                  {!breakpoints.md && (
+                    <Text style={textStyle}>{pinned ? "Unpin" : "Pin"}</Text>
+                  )}
+                </View>
+                <View style={itemStyle}>
+                  <LabelPicker
+                    setLabel={(e: any) => handleSelect({ labelId: e.id })}
+                    autoFocus
+                  >
+                    <IconButton
+                      variant={breakpoints.md ? "text" : "outlined"}
+                      disabled={isLoading}
+                      icon="new_label"
+                      size={45}
+                    />
+                  </LabelPicker>
+                  {!breakpoints.md && <Text style={textStyle}>Label</Text>}
+                </View>
+                <View style={itemStyle}>
+                  <IconButton
+                    variant={breakpoints.md ? "text" : "outlined"}
+                    disabled={isLoading}
+                    icon="today"
+                    size={45}
+                  />
+                  {!breakpoints.md && <Text style={textStyle}>Schedule</Text>}
+                </View>
+                <View style={itemStyle}>
+                  <ConfirmationModal
+                    onSuccess={() => handleSelect({ trash: true }, true)}
+                    title={`Move ${selection.length} item${
+                      selection.length === 1 ? "" : "s"
+                    } to trash?`}
+                    height={400}
+                    skipLoading
+                    secondary="You can undo this later"
+                  >
+                    <IconButton
+                      variant={breakpoints.md ? "text" : "outlined"}
+                      disabled={isLoading}
+                      icon="delete"
+                      size={45}
+                    />
+                  </ConfirmationModal>
+                  {!breakpoints.md && <Text style={textStyle}>Delete</Text>}
+                </View>
+              </ScrollView>
+            </View>
+          </BlurView>
+        </Animated.View>
       </ColorThemeProvider>
     </Portal>
   ) : null;
