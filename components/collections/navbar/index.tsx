@@ -16,6 +16,7 @@ import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
@@ -77,6 +78,11 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const { mutate } = useSWR(["user/tabs"]);
 
   const collectionMenuOptions = [
+    {
+      icon: "kid_star",
+      text: "Customize task chips",
+      callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
+    },
     !isAll && {
       icon: "edit",
       text: "Edit",
@@ -105,9 +111,15 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               ? "Hide completed tasks?"
               : "Show completed tasks?"
           }
+          disabled={!data.name}
           secondary="This will affect all views in this collection"
         >
-          <MenuItem>
+          <MenuItem
+            onPress={() => {
+              if (!data.name)
+                Toast.show({ type: "info", text1: "Coming soon" });
+            }}
+          >
             <Icon>priority</Icon>
             <Text variant="menuItem" weight={300}>
               {data.showCompleted ? "Hide" : "Show"} completed
@@ -295,6 +307,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               <MenuPopover
                 {...(isReadOnly && { menuProps: { opened: false } })}
                 containerStyle={{ width: 230 }}
+                menuProps={{
+                  rendererProps: { placement: "bottom" },
+                }}
                 trigger={<IconButton icon="pending" size={40} />}
                 options={isReadOnly ? [] : collectionMenuOptions}
               />

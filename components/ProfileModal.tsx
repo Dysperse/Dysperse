@@ -77,7 +77,7 @@ function ProfileModalContent({ email }) {
               </View>
               <View style={[styles.gridItem, { borderColor: theme[6] }]}>
                 <Icon size={40} style={styles.icon}>
-                  magic_button
+                  web_traffic
                 </Icon>
                 <Text style={styles.gridHeading}>
                   {getProfileLastActiveRelativeTime(data.profile.lastActive) ===
@@ -102,15 +102,17 @@ function ProfileModalContent({ email }) {
                 <Text variant="eyebrow">Birthday</Text>
               </View>
             </View>
-            <View style={styles.gridRow}>
-              <View style={[styles.gridItem, { borderColor: theme[6] }]}>
-                <Icon size={40} style={styles.icon}>
-                  sticky_note_2
-                </Icon>
-                <Text style={styles.gridHeading}>{data.profile.bio}</Text>
-                <Text variant="eyebrow">About</Text>
+            {data.profile.bio && (
+              <View style={styles.gridRow}>
+                <View style={[styles.gridItem, { borderColor: theme[6] }]}>
+                  <Icon size={40} style={styles.icon}>
+                    sticky_note_2
+                  </Icon>
+                  <Text style={styles.gridHeading}>{data.profile.bio}</Text>
+                  <Text variant="eyebrow">About</Text>
+                </View>
               </View>
-            </View>
+            )}
           </View>
         </View>
       </BottomSheetScrollView>
