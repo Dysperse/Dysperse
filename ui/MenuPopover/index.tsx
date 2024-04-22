@@ -25,7 +25,7 @@ import Animated, {
 import Divider from "../Divider";
 import Icon from "../Icon";
 import Text from "../Text";
-import { addHslAlpha } from "../color";
+import { addHslAlpha, useDarkMode } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 
 export type MenuOption =
@@ -105,6 +105,7 @@ export default function MenuPopover({
   closeOnSelect = true,
 }: MenuProps) {
   const _menuRef = useRef<Menu>(null);
+  const isDark = useDarkMode();
   const menuPopupRef = menuRef || _menuRef;
   const theme = useColorTheme();
 
@@ -182,7 +183,10 @@ export default function MenuPopover({
               overflow: "hidden",
             }}
           >
-            <BlurView tint="prominent" style={[styles.container]}>
+            <BlurView
+              tint={isDark ? "dark" : "prominent"}
+              style={[styles.container]}
+            >
               {children ||
                 options
                   .filter((e) => e)
