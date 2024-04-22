@@ -10,9 +10,11 @@ import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
+import { setStringAsync } from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef } from "react";
 import { StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -60,6 +62,10 @@ function ProfileModalContent({ email }) {
             </Text>
             <View style={{ flexDirection: "row" }}>
               <Chip
+                onPress={() => {
+                  setStringAsync(data.email);
+                  Toast.show({ type: "success", text1: "Copied to clipboard" });
+                }}
                 icon={<Icon>alternate_email</Icon>}
                 label={data.username || data.email}
               />
