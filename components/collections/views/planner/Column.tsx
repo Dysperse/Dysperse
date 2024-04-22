@@ -252,8 +252,6 @@ export function Column({
     setRefreshing(false);
   }, [mutate]);
 
-  const columnMenuRef = useRef(null);
-  // const openColumnMenu = useCallback(() => columnMenuRef.current.present(), []);
   const breakpoints = useResponsiveBreakpoints();
 
   return (
