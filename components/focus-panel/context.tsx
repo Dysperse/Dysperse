@@ -1,3 +1,5 @@
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import {
   Dispatch,
@@ -50,17 +52,33 @@ export const useFocusPanelWidgetContext = () =>
   useContext(FocusPanelWidgetContext);
 
 export const FocusPanelWidgetProvider = ({ children }) => {
-  const [widgets, setWidgets] = useState<Widget[]>(
-    Platform.OS === "web"
-      ? Array.from(JSON.parse(localStorage.getItem("widgets") || "[]"))
-      : []
-  );
+  const { sessionToken, session, mutate } = useUser();
 
-  useEffect(() => {
-    if (Platform.OS === "web") {
-      localStorage.setItem("widgets", JSON.stringify(widgets));
-    }
-  }, [widgets]);
+  const widgets = session?.user?.profile?.widgets || [];
+
+  const setWidgets = async (widgets: Widget[]) => {
+    mutate(
+      (session) => ({
+        ...session,
+        user: {
+          ...session.user,
+          profile: { ...session.user.profile, widgets },
+        },
+      }),
+      {
+        revalidate: false,
+      }
+    );
+    sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/profile",
+      {},
+      {
+        body: JSON.stringify({ widgets }),
+      }
+    );
+  };
 
   return (
     <FocusPanelWidgetContext.Provider value={{ widgets, setWidgets }}>

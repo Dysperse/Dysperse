@@ -1,9 +1,9 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
@@ -28,13 +28,11 @@ export function WidgetMenu({ widgets, setWidgets }) {
   const { setFocus } = useFocusPanelContext();
 
   const handleWidgetToggle = (widget: Widget) => {
-    setWidgets((widgets) => {
-      if (widgets.includes(widget)) {
-        return widgets.filter((w) => w !== widget);
-      } else {
-        return [...widgets, widget];
-      }
-    });
+    setWidgets(
+      widgets.find((w) => w.type === widget)
+        ? widgets.filter((w) => w.type !== widget)
+        : [...widgets, { type: widget, params: {} }]
+    );
   };
 
   const breakpoints = useResponsiveBreakpoints();
