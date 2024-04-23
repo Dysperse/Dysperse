@@ -2,6 +2,8 @@ import { hslToHex } from "@/app/(app)";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -15,9 +17,10 @@ import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import timezones from "timezones-list";
 import { widgetStyles } from "../widgetStyles";
 
-function Time() {
+const TimeZone = () => {
   const theme = useColor("orange");
   const [time, setTime] = useState(dayjs());
   useEffect(() => {
@@ -32,9 +35,9 @@ function Time() {
       <View
         style={{
           position: "relative",
-          height: 50,
+          height: 32,
           width: 195,
-          marginHorizontal: "auto",
+          marginTop: -10,
         }}
       >
         <Text
@@ -43,8 +46,7 @@ function Time() {
             position: "absolute",
             top: 0,
             left: 0,
-            fontSize: 40,
-            textAlign: "center",
+            fontSize: 30,
             fontFamily: "mono",
             color: theme[11],
           }}
@@ -58,8 +60,7 @@ function Time() {
             position: "absolute",
             top: 0,
             left: 0,
-            fontSize: 40,
-            textAlign: "center",
+            fontSize: 30,
             fontFamily: "mono",
             color: theme[10],
             opacity: 0.2,
@@ -71,10 +72,7 @@ function Time() {
       </View>
       <Text
         style={{
-          fontSize: 20,
-          marginBottom: 5,
-          marginTop: 2,
-          textAlign: "center",
+          marginTop: 5,
           opacity: 0.7,
           color: theme[11],
         }}
@@ -82,6 +80,31 @@ function Time() {
       >
         {time.format("dddd, MMMM D")}
       </Text>
+    </>
+  );
+};
+
+function Time() {
+  const theme = useColor("orange");
+  console.log(timezones);
+
+  return (
+    <>
+      <TimeZone />
+      <ListItemButton
+        style={{
+          padding: 0,
+          paddingVertical: 5,
+          opacity: 0.5,
+          backgroundColor: "transparent",
+        }}
+      >
+        <Icon>add</Icon>
+        <ListItemText
+          primaryProps={{ style: { color: theme[11] } }}
+          primary="Add timezone"
+        />
+      </ListItemButton>
     </>
   );
 }

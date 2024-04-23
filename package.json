@@ -86,6 +86,7 @@
     "react-native-webview": "^13.6.4",
     "rrule": "^2.8.1",
     "swr": "^2.2.4",
+    "timezones-list": "^3.0.3",
     "typescript": "^5.3.3",
     "workbox-window": "^7.0.0"
   },
