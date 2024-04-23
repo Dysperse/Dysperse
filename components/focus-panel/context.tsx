@@ -57,18 +57,18 @@ export const FocusPanelWidgetProvider = ({ children }) => {
   const widgets = session?.user?.profile?.widgets || [];
 
   const setWidgets = async (widgets: Widget[]) => {
-    mutate(
-      (session) => ({
-        ...session,
-        user: {
-          ...session.user,
-          profile: { ...session.user.profile, widgets },
-        },
-      }),
-      {
-        revalidate: false,
-      }
-    );
+    const d = (session) => ({
+      ...session,
+      user: {
+        ...session.user,
+        profile: { ...session.user.profile, widgets },
+      },
+    });
+    mutate(d, {
+      revalidate: false,
+      populateCache: d,
+      optimisticData: d,
+    });
     sendApiRequest(
       sessionToken,
       "PUT",

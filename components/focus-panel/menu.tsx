@@ -107,7 +107,7 @@ export function WidgetMenu({ widgets, setWidgets }) {
                   />
                 </Svg>
                 <Text variant="menuItem">Up next</Text>
-                {widgets.includes("upcoming") && (
+                {widgets.find((d) => d.type === "upcoming") && (
                   <Icon style={{ marginLeft: "auto" }}>check</Icon>
                 )}
               </MenuItem>
@@ -120,7 +120,10 @@ export function WidgetMenu({ widgets, setWidgets }) {
           { text: "Music", icon: "music_note" },
         ].map((i) => ({
           ...i,
-          selected: widgets.includes(i.text.toLowerCase()),
+          selected: widgets.find(
+            (d) =>
+              (d.type as any).toLowerCase() === (i.text as any).toLowerCase()
+          ),
           callback: () => handleWidgetToggle((i.text as any).toLowerCase()),
         }))}
       />
