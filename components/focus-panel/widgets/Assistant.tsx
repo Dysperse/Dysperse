@@ -16,7 +16,7 @@ import { FlatList } from "react-native-gesture-handler";
 import Markdown from "react-native-markdown-display";
 import Toast from "react-native-toast-message";
 
-export const Assistant = () => {
+export const Assistant = ({ params }) => {
   const { session, sessionToken } = useUser();
   const theme = useColorTheme();
   const [messages, setMessages] = useState([]);

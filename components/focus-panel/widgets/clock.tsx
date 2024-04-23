@@ -15,7 +15,6 @@ import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
-import { useFocusPanelWidgetContext } from "../context";
 import { widgetStyles } from "../widgetStyles";
 
 function Time() {
@@ -426,10 +425,9 @@ const Timer = () => {
 
 type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
 
-export function Clock() {
+export function Clock({ params }) {
   const theme = useColor("orange");
   const [view, setView] = useState<ClockViewType>("Clock");
-  const { setWidgets } = useFocusPanelWidgetContext();
 
   return (
     <View style={widgetStyles.widget}>

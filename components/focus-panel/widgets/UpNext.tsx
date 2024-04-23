@@ -1,12 +1,12 @@
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
-import { useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -20,7 +20,7 @@ import { TaskDrawer } from "../../task/drawer";
 import { ImportantChip } from "../panel";
 import { widgetStyles } from "../widgetStyles";
 
-export const UpNext = () => {
+export const UpNext = ({params}) => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
   const orange = useColor("orange");

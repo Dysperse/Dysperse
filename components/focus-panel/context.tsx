@@ -43,7 +43,7 @@ export const FocusPanelProvider = ({ children }) => {
 
 type Widget = "clock" | "weather";
 interface FocusPanelWidgetContext {
-  widgets: string[];
+  widgets: { type: string; params: any }[];
   setWidgets: Dispatch<React.SetStateAction<Widget[]>>;
 }
 

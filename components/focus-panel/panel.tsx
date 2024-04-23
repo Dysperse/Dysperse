@@ -2,13 +2,13 @@ import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import Chip from "@/ui/Chip";
-import { useColor } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { CrimsonPro_800ExtraBold } from "@expo-google-fonts/crimson-pro";
 import { useFonts } from "expo-font";
 import { useKeepAwake } from "expo-keep-awake";
@@ -35,11 +35,11 @@ import {
   useFocusPanelWidgetContext,
 } from "./context";
 import { WidgetMenu } from "./menu";
-import { Assistant } from "./widgets/Assistant";
-import { Clock } from "./widgets/clock";
-import { UpNext } from "./widgets/UpNext";
-import { WeatherWidget } from "./widgets/weather/widget";
 import { widgetStyles } from "./widgetStyles";
+import { Assistant } from "./widgets/Assistant";
+import { UpNext } from "./widgets/UpNext";
+import { Clock } from "./widgets/clock";
+import { WeatherWidget } from "./widgets/weather/widget";
 
 export type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
 
@@ -66,7 +66,7 @@ export const ImportantChip = () => {
   );
 };
 
-const Music = () => {
+const Music = ({ params }) => {
   return (
     <View>
       <Text variant="eyebrow">Music</Text>
@@ -80,7 +80,7 @@ const Music = () => {
   );
 };
 
-function Quotes() {
+function Quotes({ params }) {
   const { data, mutate, error } = useSWR(
     [
       ``,
@@ -244,12 +244,26 @@ function PanelContent() {
                     minHeight: "100%",
                   }}
                 >
-                  {widgets.includes("upcoming") && <UpNext />}
-                  {widgets.includes("quotes") && <Quotes />}
-                  {widgets.includes("clock") && <Clock />}
-                  {widgets.includes("weather") && <WeatherWidget />}
-                  {widgets.includes("assistant") && <Assistant />}
-                  {widgets.includes("music") && <Music />}
+                  {widgets.map((widget, index) => {
+                    switch (widget.type) {
+                      case "upcoming":
+                        return <UpNext params={widget.params} key={index} />;
+                      case "quotes":
+                        return <Quotes params={widget.params} key={index} />;
+                      case "clock":
+                        return <Clock params={widget.params} key={index} />;
+                      case "weather":
+                        return (
+                          <WeatherWidget params={widget.params} key={index} />
+                        );
+                      case "assistant":
+                        return <Assistant params={widget.params} key={index} />;
+                      case "music":
+                        return <Music params={widget.params} key={index} />;
+                      default:
+                        return null;
+                    }
+                  })}
                 </ScrollView>
               )}
               <WidgetMenu widgets={widgets} setWidgets={setWidgets} />
