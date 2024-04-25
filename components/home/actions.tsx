@@ -1,6 +1,5 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
-import CreateTask from "@/components/task/create";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -52,14 +51,15 @@ export function Actions() {
       <Text variant="eyebrow" style={actionStyles.title}>
         Start
       </Text>
-      <CreateTask mutate={() => {}}>
-        <TouchableOpacity style={actionStyles.item}>
-          <Icon>note_stack_add</Icon>
-          <Text style={{ color: theme[11] }} numberOfLines={1}>
-            New item...
-          </Text>
-        </TouchableOpacity>
-      </CreateTask>
+      <TouchableOpacity
+        style={actionStyles.item}
+        onPress={() => router.push("/insights")}
+      >
+        <Icon>magic_button</Icon>
+        <Text style={{ color: theme[11] }} numberOfLines={1}>
+          My insights...
+        </Text>
+      </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={openEverything}>
         <Icon>category</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>

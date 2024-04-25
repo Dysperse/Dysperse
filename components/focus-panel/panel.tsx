@@ -9,8 +9,6 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { CrimsonPro_800ExtraBold } from "@expo-google-fonts/crimson-pro";
-import { useFonts } from "expo-font";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { Fragment, memo, useEffect, useState } from "react";
@@ -96,10 +94,6 @@ function Quotes({ params }) {
   );
 
   const [refreshed, setRefreshed] = useState(false);
-
-  const [_, fontsError] = useFonts({
-    serifText: CrimsonPro_800ExtraBold,
-  });
 
   const handleRefresh = () => {
     if (!refreshed) {

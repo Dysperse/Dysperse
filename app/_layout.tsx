@@ -7,6 +7,7 @@ import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import { CrimsonPro_800ExtraBold } from "@expo-google-fonts/crimson-pro";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
 import {
   Jost_100Thin,
@@ -242,6 +243,7 @@ function Root() {
     body_200: Jost_200ExtraLight,
     body_300: Jost_300Light,
     body_400: Jost_400Regular,
+    serifText: CrimsonPro_800ExtraBold,
     body_500: Jost_500Medium,
     body_600: Jost_600SemiBold,
     body_700: Jost_700Bold,
