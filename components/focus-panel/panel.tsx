@@ -122,7 +122,7 @@ function Quotes({ params }) {
           onPress={handleRefresh}
         />
       </View>
-      {(error || fontsError) && <ErrorAlert />}
+      {error && <ErrorAlert />}
       <View
         style={[
           widgetStyles.card,
