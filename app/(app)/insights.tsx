@@ -258,7 +258,7 @@ const LabelChart = ({ width, data }) => {
   const pieData = Object.entries(data.byLabel).map(([label, count]) => ({
     name: data.byLabel[label].label.name,
     count: data.byLabel[label].count,
-    color: colors[data.byLabel[label].label.color][9],
+    color: colors[data.byLabel[label].label.color][11],
     legendFontColor: theme[11],
     legendFontSize: 15,
   }));
