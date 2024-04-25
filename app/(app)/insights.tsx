@@ -22,6 +22,7 @@ import { ContributionGraph, PieChart } from "react-native-chart-kit";
 import { AbstractChartConfig } from "react-native-chart-kit/dist/AbstractChart";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const Activity = ({ width, data }) => {
@@ -125,20 +126,38 @@ const Co2 = ({ data }) => {
         borderRadius: 25,
         padding: 20,
         marginTop: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
-      <Text variant="eyebrow" weight={900}>
-        By using #dysperse, you've saved
-      </Text>
-      <Text style={{ fontSize: 45 }} weight={700}>
-        {(data?.co2 || 0).toFixed(2)} grams of CO
-        <Text style={{ fontSize: 18 }} weight={300}>
-          2
+      <View>
+        <Text variant="eyebrow" weight={900}>
+          By using #dysperse, you've saved
         </Text>
-      </Text>
-      <Text style={{ fontSize: 20, opacity: 0.5, marginTop: -3 }} weight={500}>
-        from being polluted into the atmosphere
-      </Text>
+        <Text style={{ fontSize: 45 }} weight={700}>
+          {(data?.co2 || 0).toFixed(2)} grams of CO
+          <Text style={{ fontSize: 18 }} weight={300}>
+            2
+          </Text>
+        </Text>
+        <Text
+          style={{ fontSize: 20, opacity: 0.5, marginTop: -3 }}
+          weight={500}
+        >
+          from being polluted into the atmosphere
+        </Text>
+      </View>
+      <IconButton
+        icon="help"
+        onPress={() =>
+          Toast.show({
+            type: "info",
+            text1:
+              "CO2 is measured by taking all of your tasks and listing them on traditional notebook paper (1 line per task). The amount of CO2 saved is calculated by the amount of paper you would've used.",
+          })
+        }
+      />
     </View>
   );
 };

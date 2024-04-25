@@ -3,7 +3,7 @@ import { BaseToast } from "react-native-toast-message";
 import Icon from "./Icon";
 
 const toastStyles = (theme): StyleProp<ViewStyle> => ({
-  borderRadius: 99,
+  borderRadius: 25,
   alignItems: "center",
   justifyContent: "center",
   borderLeftWidth: 0,
