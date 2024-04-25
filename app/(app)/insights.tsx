@@ -100,6 +100,7 @@ const Activity = ({ width, data }) => {
       </View>
       <ContributionGraph
         values={commitsData}
+        tooltipDataAttrs={(value) => ({} as any)}
         style={{ padding: 0, marginTop: -30 }}
         endDate={new Date()}
         showMonthLabels={false}
