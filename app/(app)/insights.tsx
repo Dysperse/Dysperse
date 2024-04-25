@@ -25,8 +25,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-const Activity = ({ width, data }) => {
+const Activity = ({ data }) => {
   const theme = useColorTheme();
+  const [width, setWidth] = useState(0);
   const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: "transparent",
     backgroundGradientTo: "transparent",
@@ -52,7 +53,7 @@ const Activity = ({ width, data }) => {
         }, [])
     : [];
 
-  const squareSize = (width - 90) / 52 - 2;
+  const squareSize = (width - 20) / 52 - 2;
 
   return (
     <View
@@ -62,6 +63,7 @@ const Activity = ({ width, data }) => {
         borderColor: theme[5],
         borderRadius: 25,
       }}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <Text
         style={{
@@ -104,7 +106,7 @@ const Activity = ({ width, data }) => {
         style={{ padding: 0, marginTop: -30 }}
         endDate={new Date()}
         showMonthLabels={false}
-        width={width - 90}
+        width={width}
         height={7 * (squareSize + 2) + 60}
         numDays={365}
         chartConfig={chartConfig}
@@ -299,15 +301,19 @@ const LabelChart = ({ width, data }) => {
   );
 };
 
-const HourChart = ({ width, data }) => {
+const HourChart = ({ data }) => {
   const theme = useColorTheme();
+  const [width, setWidth] = useState(400);
   const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: "transparent",
     backgroundGradientTo: "transparent",
     color: (n = 1) => addHslAlpha(theme[11], n),
-    barPercentage: 0.5,
-    barRadius: 5,
     paddingRight: 0,
+    barPercentage: 0.5,
+    propsForVerticalLabels: {
+      fontFamily: "body_500",
+      fontSize: 11,
+    },
   };
 
   const barData = {
@@ -322,6 +328,20 @@ const HourChart = ({ width, data }) => {
       "7AM",
       "8AM",
       "9AM",
+      "10AM",
+      "11AM",
+      "12PM",
+      "1PM",
+      "2PM",
+      "3PM",
+      "4PM",
+      "5PM",
+      "6PM",
+      "7PM",
+      "8PM",
+      "9PM",
+      "10PM",
+      "11PM",
     ],
     datasets: [
       {
@@ -339,13 +359,27 @@ const HourChart = ({ width, data }) => {
         borderRadius: 25,
         padding: 20,
         marginTop: 20,
+        flex: 1,
       }}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
+      <Text
+        style={{
+          fontSize: 30,
+          marginVertical: 10,
+          marginBottom: 5,
+          marginLeft: 22,
+        }}
+        weight={700}
+      >
+        Productivity by hour
+      </Text>
       <BarChart
         style={{}}
         data={barData}
-        width={width / 2 - 90}
-        height={220}
+        width={width - 40}
+        height={300}
+        withHorizontalLabels={false}
         chartConfig={chartConfig}
         verticalLabelRotation={40}
       />
