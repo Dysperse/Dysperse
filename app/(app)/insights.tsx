@@ -344,11 +344,10 @@ const HourChart = ({ width, data }) => {
       <BarChart
         style={{}}
         data={barData}
-        width={width / 2 - 30}
+        width={width / 2 - 90}
         height={220}
-        yAxisLabel="$"
         chartConfig={chartConfig}
-        verticalLabelRotation={30}
+        verticalLabelRotation={40}
       />
     </View>
   );
