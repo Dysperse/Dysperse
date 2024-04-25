@@ -314,6 +314,9 @@ const HourChart = ({ data }) => {
       fontFamily: "body_500",
       fontSize: 11,
     },
+    propsForBackgroundLines: {
+      translateX: 50,
+    },
   };
 
   const barData = {
@@ -381,7 +384,7 @@ const HourChart = ({ data }) => {
         height={300}
         withHorizontalLabels={false}
         chartConfig={chartConfig}
-        verticalLabelRotation={40}
+        verticalLabelRotation={90}
       />
     </View>
   );
