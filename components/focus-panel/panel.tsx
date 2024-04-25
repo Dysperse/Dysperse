@@ -138,7 +138,7 @@ function Quotes({ params }) {
             <Text
               style={{
                 fontSize: data.content.length > 100 ? 23 : 30,
-                fontFamily: "serifText",
+                fontFamily: "serifText800",
               }}
             >
               &ldquo;{data?.content}&rdquo;

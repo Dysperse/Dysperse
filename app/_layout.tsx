@@ -243,7 +243,7 @@ function Root() {
     body_200: Jost_200ExtraLight,
     body_300: Jost_300Light,
     body_400: Jost_400Regular,
-    serifText: CrimsonPro_800ExtraBold,
+    serifText800: CrimsonPro_800ExtraBold,
     body_500: Jost_500Medium,
     body_600: Jost_600SemiBold,
     body_700: Jost_700Bold,
