@@ -15,7 +15,7 @@ const Activity = ({ width, data }) => {
   const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: "transparent",
     backgroundGradientTo: "transparent",
-    color: (opacity = 1) => addHslAlpha(theme[11], opacity),
+    color: (n = 1) => addHslAlpha(theme[11], n),
     barPercentage: 0.5,
     barRadius: 5,
     paddingRight: 0,
