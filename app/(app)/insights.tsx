@@ -18,7 +18,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
-import { ContributionGraph, PieChart } from "react-native-chart-kit";
+import { BarChart, ContributionGraph, PieChart } from "react-native-chart-kit";
 import { AbstractChartConfig } from "react-native-chart-kit/dist/AbstractChart";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -299,6 +299,61 @@ const LabelChart = ({ width, data }) => {
   );
 };
 
+const HourChart = ({ width, data }) => {
+  const theme = useColorTheme();
+  const chartConfig: AbstractChartConfig = {
+    backgroundGradientFrom: "transparent",
+    backgroundGradientTo: "transparent",
+    color: (n = 1) => addHslAlpha(theme[11], n),
+    barPercentage: 0.5,
+    barRadius: 5,
+    paddingRight: 0,
+  };
+
+  const barData = {
+    labels: [
+      "12AM",
+      "1AM",
+      "2AM",
+      "3AM",
+      "4AM",
+      "5AM",
+      "6AM",
+      "7AM",
+      "8AM",
+      "9AM",
+    ],
+    datasets: [
+      {
+        data: data.byHour,
+      },
+    ],
+  };
+
+  return (
+    <View
+      style={{
+        backgroundColor: theme[3],
+        borderWidth: 1,
+        borderColor: theme[5],
+        borderRadius: 25,
+        padding: 20,
+        marginTop: 20,
+      }}
+    >
+      <BarChart
+        style={{}}
+        data={barData}
+        width={width / 2 - 30}
+        height={220}
+        yAxisLabel="$"
+        chartConfig={chartConfig}
+        verticalLabelRotation={30}
+      />
+    </View>
+  );
+};
+
 export default function Page() {
   const { data, error } = useSWR(["user/insights"]);
   const [width, setWidth] = useState(0);
@@ -356,9 +411,16 @@ export default function Page() {
             </View>
             <Activity width={width} data={data} />
             <LabelChart width={width} data={data} />
-            {/* <Text style={{ fontFamily: "mono" }}>
-              {JSON.stringify(data, null, 2)}
-            </Text> */}
+            <View
+              style={{
+                flexDirection: breakpoints.md ? "row" : "column",
+                marginBottom: 20,
+                gap: 20,
+              }}
+            >
+              <HourChart width={width} data={data} />
+              <HourChart width={width} data={data} />
+            </View>
           </ScrollView>
         </View>
       ) : (
