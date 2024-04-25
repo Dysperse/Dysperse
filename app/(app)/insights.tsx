@@ -360,10 +360,10 @@ export default function Page() {
             </Text> */}
           </ScrollView>
         </View>
-      ) : error ? (
-        <ErrorAlert />
       ) : (
-        <Spinner />
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          {error ? <ErrorAlert /> : <Spinner />}
+        </View>
       )}
     </ContentWrapper>
   );
