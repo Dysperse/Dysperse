@@ -484,14 +484,6 @@ export function Clock({ params }) {
             </Pressable>
           }
         />
-        {/* <IconButton
-          icon="remove"
-          size={25}
-          style={{ opacity: 0.3, marginRight: 5 }}
-          onPress={() =>
-            setWidgets((widgets) => widgets.filter((w) => w !== "clock"))
-          }
-        /> */}
       </View>
       <View
         style={[
