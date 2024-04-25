@@ -87,6 +87,7 @@ function TaskCheckbox({
       {
         body: JSON.stringify({
           id: task.id,
+          date: new Date().toISOString(),
           ...(iteration && { iteration }),
         }),
       }
