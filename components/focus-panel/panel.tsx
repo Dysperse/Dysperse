@@ -1,5 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
@@ -14,9 +15,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
-import { Fragment, useState } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  ScrollView,
+} from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -185,18 +190,10 @@ function RenderWidget({ widget, index }) {
           revalidate: false,
         }
       );
-      await sendApiRequest(
-        sessionToken,
-        "PUT",
-        "user/focus-panel",
-        {},
-        {
-          body: JSON.stringify({
-            id: widget.id,
-            [key]: value,
-          }),
-        }
-      );
+      await sendApiRequest(sessionToken, "PUT", "user/focus-panel", {
+        id: widget.id,
+        [key]: value,
+      });
     } catch (e) {
       Toast.show({ type: "error" });
     }
@@ -496,5 +493,71 @@ export function PanelSwipeTrigger({
     </Pressable>
   );
 }
+
+const FocusPanel = memo(function FocusPanel() {
+  const { isFocused, setFocus } = useFocusPanelContext();
+  const marginRight = useSharedValue(-350);
+
+  useHotkeys("\\", () => setFocus(!isFocused), {}, [isFocused]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      marginRight: withSpring(marginRight.value, {
+        damping: 30,
+        stiffness: 400,
+      }),
+    };
+  });
+
+  useEffect(() => {
+    marginRight.value = isFocused ? 0 : -350;
+  }, [isFocused, marginRight]);
+
+  const pan = Gesture.Pan()
+    .onChange(({ changeX }) => {
+      const maxMargin = 350;
+      marginRight.value = Math.max(
+        -maxMargin,
+        Math.min(marginRight.value - changeX, 0)
+      );
+    })
+    .onEnd(({ velocityX }) => {
+      marginRight.value = velocityX > 0 ? -350 : 0;
+      setFocus(velocityX <= 0);
+    });
+
+  const tap = Gesture.Tap().onEnd(() => setFocus(!isFocused));
+  const pathname = usePathname();
+  const breakpoints = useResponsiveBreakpoints();
+
+  return pathname.includes("settings") ? null : (
+    <>
+      {breakpoints.md && (
+        <GestureDetector gesture={pan}>
+          <GestureDetector gesture={tap}>
+            <PanelSwipeTrigger />
+          </GestureDetector>
+        </GestureDetector>
+      )}
+
+      <Animated.View
+        style={[
+          animatedStyle,
+          {
+            padding: 10,
+            paddingLeft: 0,
+            width: 350,
+            ...(Platform.OS === "web" &&
+              ({
+                marginTop: "env(titlebar-area-height,0)",
+              } as any)),
+          },
+        ]}
+      >
+        <PanelContent />
+      </Animated.View>
+    </>
+  );
+});
 
 export default FocusPanel;
