@@ -1,5 +1,5 @@
 import { useUser } from "@/context/useUser";
-import { useHotkeys } from "@/helpers/useHotKeys";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
@@ -14,13 +14,9 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
-import { Fragment, memo, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
-import {
-  Gesture,
-  GestureDetector,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -91,7 +87,7 @@ const Music = ({ params, menuActions }) => {
   );
 };
 
-function Quotes({ params, menuActions }) {
+function Quotes({ widget, menuActions }) {
   const { data, mutate, error } = useSWR(
     [
       ``,
@@ -181,17 +177,40 @@ function RenderWidget({ widget, index }) {
   });
 
   const handleWidgetEdit = async (key, value) => {
-    // try {
-    mutate((oldData) =>
-      oldData.map((w, i) => (w.id === widget.id ? { ...w, [key]: value } : w))
-    );
-    // await sendApiRequest(sessionToken, "PUT", "user/focus-panel", {
-    //   id: widget.id,
-    //   [key]: value,
-    // });
-    // } catch (e) {
-    // Toast.show({ type: "error" });
-    // }
+    try {
+      mutate(
+        (oldData) =>
+          oldData.map((w) => (w.id === widget.id ? { ...w, [key]: value } : w)),
+        {
+          revalidate: false,
+        }
+      );
+      await sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/focus-panel",
+        {},
+        {
+          body: JSON.stringify({
+            id: widget.id,
+            [key]: value,
+          }),
+        }
+      );
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      mutate((oldData) => oldData.filter((w) => w.id !== widget.id));
+      sendApiRequest(sessionToken, "DELETE", "user/focus-panel", {
+        id: widget.id,
+      });
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
   };
 
   const menuActions = [
@@ -202,9 +221,12 @@ function RenderWidget({ widget, index }) {
       callback: () =>
         handleWidgetEdit(
           "order",
-          LexoRank.parse(data[index].order)
-            .between(LexoRank.parse(data[index - 1].order))
-            .toString()
+          index === 1
+            ? LexoRank.parse(data[0].order).genPrev().toString()
+            : // get 2 ranks before the current widget, and generate the next rank between them
+              LexoRank.parse(data[index - 2].order)
+                .between(LexoRank.parse(data[index - 1].order))
+                .toString()
         ),
     },
     {
@@ -214,15 +236,20 @@ function RenderWidget({ widget, index }) {
       callback: () =>
         handleWidgetEdit(
           "order",
-          LexoRank.parse(data[index].order)
-            .between(LexoRank.parse(data[index + 1].order))
-            .toString()
+          index === data.length - 2
+            ? LexoRank.parse(data[data.length - 1].order)
+                .genNext()
+                .toString()
+            : // get 2 ranks after the current widget, and generate the next rank between them
+              LexoRank.parse(data[index + 1].order)
+                .between(LexoRank.parse(data[index + 2].order))
+                .toString()
         ),
     },
     {
       icon: "remove_circle",
       text: "Remove",
-      callback: () => {},
+      callback: handleDelete,
     },
   ] as MenuOption[];
 
@@ -337,7 +364,11 @@ function PanelContent() {
                   }}
                 >
                   {data
-                    .sort((a, b) => a.order.localeCompare(b.order))
+                    .sort(function (a, b) {
+                      if (a.order < b.order) return -1;
+                      if (a.order > b.order) return 1;
+                      return 0;
+                    })
                     .map((widget, index) => (
                       <RenderWidget key={index} index={index} widget={widget} />
                     ))}
@@ -465,71 +496,5 @@ export function PanelSwipeTrigger({
     </Pressable>
   );
 }
-
-const FocusPanel = memo(function FocusPanel() {
-  const { isFocused, setFocus } = useFocusPanelContext();
-  const marginRight = useSharedValue(-350);
-
-  useHotkeys("\\", () => setFocus(!isFocused), {}, [isFocused]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      marginRight: withSpring(marginRight.value, {
-        damping: 30,
-        stiffness: 400,
-      }),
-    };
-  });
-
-  useEffect(() => {
-    marginRight.value = isFocused ? 0 : -350;
-  }, [isFocused, marginRight]);
-
-  const pan = Gesture.Pan()
-    .onChange(({ changeX }) => {
-      const maxMargin = 350;
-      marginRight.value = Math.max(
-        -maxMargin,
-        Math.min(marginRight.value - changeX, 0)
-      );
-    })
-    .onEnd(({ velocityX }) => {
-      marginRight.value = velocityX > 0 ? -350 : 0;
-      setFocus(velocityX <= 0);
-    });
-
-  const tap = Gesture.Tap().onEnd(() => setFocus(!isFocused));
-  const pathname = usePathname();
-  const breakpoints = useResponsiveBreakpoints();
-
-  return pathname.includes("settings") ? null : (
-    <>
-      {breakpoints.md && (
-        <GestureDetector gesture={pan}>
-          <GestureDetector gesture={tap}>
-            <PanelSwipeTrigger />
-          </GestureDetector>
-        </GestureDetector>
-      )}
-
-      <Animated.View
-        style={[
-          animatedStyle,
-          {
-            padding: 10,
-            paddingLeft: 0,
-            width: 350,
-            ...(Platform.OS === "web" &&
-              ({
-                marginTop: "env(titlebar-area-height,0)",
-              } as any)),
-          },
-        ]}
-      >
-        <PanelContent />
-      </Animated.View>
-    </>
-  );
-});
 
 export default FocusPanel;

@@ -4,9 +4,11 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LexoRank } from "lexorank";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
@@ -34,10 +36,11 @@ export function WidgetMenu() {
   const { sessionToken } = useUser();
 
   const { data, error, mutate } = useSWR(["user/focus-panel"]);
+  const [loading, setLoading] = useState(true);
 
   const handleWidgetToggle = async (type: Widget) => {
     try {
-      if (!data) Toast.show({ text1: "Please wait a moment", type: "info" });
+      setLoading(true);
       await sendApiRequest(
         sessionToken,
         "POST",
@@ -59,11 +62,19 @@ export function WidgetMenu() {
         text1: "Something went wrong. Please try again later",
         type: "error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    if (data) {
+      setLoading(false);
+    }
+  }, [data]);
 
   return !data ? null : (
     <View
@@ -109,11 +120,13 @@ export function WidgetMenu() {
               opacity: breakpoints.md ? undefined : 0.6,
             }}
             size={breakpoints.md ? undefined : 40}
+            disabled={loading}
           >
-            <Icon>add</Icon>
+            {loading ? <Spinner /> : <Icon>add</Icon>}
           </IconButton>
         }
         containerStyle={{ marginLeft: -20 }}
+        closeOnSelect
         options={[
           {
             text: "Upcoming",

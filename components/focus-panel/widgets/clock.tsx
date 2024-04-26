@@ -433,7 +433,7 @@ const Timer = () => {
 
 type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
 
-export function Clock({ params, menuActions }) {
+export function Clock({ widget, menuActions }) {
   const theme = useColor("orange");
   const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");

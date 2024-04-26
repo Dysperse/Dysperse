@@ -22,7 +22,7 @@ import { ImportantChip } from "../panel";
 import { widgetMenuStyles } from "../widgetMenuStyles";
 import { widgetStyles } from "../widgetStyles";
 
-export const UpNext = ({ params, menuActions }) => {
+export const UpNext = ({ widget, menuActions }) => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
   const [todayDateString, setTodayDateString] = useState(dayjs().toISOString());
