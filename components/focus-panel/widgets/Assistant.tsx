@@ -2,21 +2,24 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { blueA } from "@/themes";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
+import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Markdown from "react-native-markdown-display";
 import Toast from "react-native-toast-message";
+import { widgetMenuStyles } from "../widgetMenuStyles";
 
-export const Assistant = ({ params }) => {
+export const Assistant = ({ widget, menuActions }) => {
   const { session, sessionToken } = useUser();
   const theme = useColorTheme();
   const [messages, setMessages] = useState([]);
@@ -66,33 +69,33 @@ export const Assistant = ({ params }) => {
 
   return (
     <View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 10,
-        }}
-      >
-        <Text variant="eyebrow">Assistant</Text>
-        {messages.length > 0 && (
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 10,
-            }}
-            onPress={() => setMessages([])}
-          >
-            <Text style={{ opacity: 0.6, color: theme[11] }}>Clear</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <MenuPopover
+        options={[
+          {
+            text: "Clear history",
+            icon: "clear_all",
+            callback: () => setMessages([]),
+          },
+          { divider: true },
+          ...menuActions,
+        ]}
+        containerStyle={{ marginTop: -15 }}
+        trigger={
+          <Button style={widgetMenuStyles.button} dense>
+            <ButtonText weight={800} style={widgetMenuStyles.text}>
+              Assistant
+            </ButtonText>
+            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+          </Button>
+        }
+      />
       <View
         style={{
           backgroundColor: theme[2],
           borderWidth: 1,
           borderColor: theme[5],
-          marginVertical: 10,
           borderRadius: 20,
+          marginBottom: 20,
           overflow: "hidden",
         }}
       >

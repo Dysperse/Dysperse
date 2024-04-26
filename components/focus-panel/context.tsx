@@ -1,13 +1,5 @@
-import { useUser } from "@/context/useUser";
-import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import {
-  Dispatch,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Platform } from "react-native";
 import FocusPanel from "./panel";
 
@@ -38,51 +30,5 @@ export const FocusPanelProvider = ({ children }) => {
       {(breakpoints.md || !isFocused) && children}
       <FocusPanel />
     </FocusPanelContext.Provider>
-  );
-};
-
-type Widget = "clock" | "weather";
-interface FocusPanelWidgetContext {
-  widgets: { type: string; params: any }[];
-  setWidgets: Dispatch<React.SetStateAction<Widget[]>>;
-}
-
-const FocusPanelWidgetContext = createContext<FocusPanelWidgetContext>(null);
-export const useFocusPanelWidgetContext = () =>
-  useContext(FocusPanelWidgetContext);
-
-export const FocusPanelWidgetProvider = ({ children }) => {
-  const { sessionToken, session, mutate } = useUser();
-
-  const widgets = session?.user?.profile?.widgets || [];
-
-  const setWidgets = async (widgets: Widget[]) => {
-    const d = (session) => ({
-      ...session,
-      user: {
-        ...session.user,
-        profile: { ...session.user.profile, widgets },
-      },
-    });
-    mutate(d, {
-      revalidate: false,
-      populateCache: d,
-      optimisticData: d,
-    });
-    sendApiRequest(
-      sessionToken,
-      "PUT",
-      "user/profile",
-      {},
-      {
-        body: JSON.stringify({ widgets }),
-      }
-    );
-  };
-
-  return (
-    <FocusPanelWidgetContext.Provider value={{ widgets, setWidgets }}>
-      {children}
-    </FocusPanelWidgetContext.Provider>
   );
 };

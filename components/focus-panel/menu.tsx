@@ -1,12 +1,17 @@
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { LexoRank } from "lexorank";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
+import Toast from "react-native-toast-message";
+import useSWR from "swr";
 import { useFocusPanelContext } from "./context";
 import { WakeLock, Widget } from "./panel";
 
@@ -23,22 +28,44 @@ const styles = StyleSheet.create({
   },
 });
 
-export function WidgetMenu({ widgets, setWidgets }) {
+export function WidgetMenu() {
   const theme = useColorTheme();
   const { setFocus } = useFocusPanelContext();
+  const { sessionToken } = useUser();
 
-  const handleWidgetToggle = (widget: Widget) => {
-    setWidgets(
-      widgets.find((w) => w.type === widget)
-        ? widgets.filter((w) => w.type !== widget)
-        : [...widgets, { type: widget, params: {} }]
-    );
+  const { data, error, mutate } = useSWR(["user/focus-panel"]);
+
+  const handleWidgetToggle = async (type: Widget) => {
+    try {
+      if (!data) Toast.show({ text1: "Please wait a moment", type: "info" });
+      await sendApiRequest(
+        sessionToken,
+        "POST",
+        "user/focus-panel",
+        {},
+        {
+          body: JSON.stringify({
+            type,
+            order: data[0]
+              ? LexoRank.parse(data[0].order).genPrev().toString()
+              : LexoRank.middle().toString(),
+            params: {},
+          }),
+        }
+      );
+      mutate();
+    } catch (e) {
+      Toast.show({
+        text1: "Something went wrong. Please try again later",
+        type: "error",
+      });
+    }
   };
 
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
 
-  return (
+  return !data ? null : (
     <View
       style={[
         styles.menu,
@@ -83,7 +110,7 @@ export function WidgetMenu({ widgets, setWidgets }) {
             }}
             size={breakpoints.md ? undefined : 40}
           >
-            <Icon style={{ color: theme[12] }}>edit</Icon>
+            <Icon>add</Icon>
           </IconButton>
         }
         containerStyle={{ marginLeft: -20 }}
@@ -107,9 +134,6 @@ export function WidgetMenu({ widgets, setWidgets }) {
                   />
                 </Svg>
                 <Text variant="menuItem">Up next</Text>
-                {widgets.find((d) => d.type === "upcoming") && (
-                  <Icon style={{ marginLeft: "auto" }}>check</Icon>
-                )}
               </MenuItem>
             ),
           },
@@ -120,11 +144,7 @@ export function WidgetMenu({ widgets, setWidgets }) {
           { text: "Music", icon: "music_note" },
         ].map((i) => ({
           ...i,
-          selected: widgets.find(
-            (d) =>
-              (d.type as any).toLowerCase() === (i.text as any).toLowerCase()
-          ),
-          callback: () => handleWidgetToggle((i.text as any).toLowerCase()),
+          callback: () => handleWidgetToggle(i.text.toLowerCase() as Widget),
         }))}
       />
     </View>

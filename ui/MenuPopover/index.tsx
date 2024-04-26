@@ -88,6 +88,7 @@ export function MenuItem(
             paddingVertical: 10,
             gap: 13,
           },
+          props.disabled && { opacity: 0.5 },
           props.style,
         ] as any
       }
@@ -203,7 +204,11 @@ export default function MenuPopover({
                       <React.Fragment key={Math.random()}>
                         {props.divider ? (
                           <Divider
-                            style={{ width: "90%", marginVertical: 5 }}
+                            style={{
+                              width: "90%",
+                              marginVertical: 5,
+                              backgroundColor: addHslAlpha(theme[9], 0.2),
+                            }}
                           />
                         ) : (
                           <Renderer>

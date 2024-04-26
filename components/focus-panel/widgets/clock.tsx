@@ -1,14 +1,12 @@
 import { hslToHex } from "@/app/(app)";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
-import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +16,7 @@ import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import timezones from "timezones-list";
+import { widgetMenuStyles } from "../widgetMenuStyles";
 import { widgetStyles } from "../widgetStyles";
 
 const TimeZone = () => {
@@ -91,20 +90,6 @@ function Time() {
   return (
     <>
       <TimeZone />
-      <ListItemButton
-        style={{
-          padding: 0,
-          paddingVertical: 5,
-          opacity: 0.5,
-          backgroundColor: "transparent",
-        }}
-      >
-        <Icon>add</Icon>
-        <ListItemText
-          primaryProps={{ style: { color: theme[11] } }}
-          primary="Add timezone"
-        />
-      </ListItemButton>
     </>
   );
 }
@@ -448,43 +433,44 @@ const Timer = () => {
 
 type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
 
-export function Clock({ params }) {
+export function Clock({ params, menuActions }) {
   const theme = useColor("orange");
+  const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");
 
   return (
-    <View style={widgetStyles.widget}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
-          justifyContent: "space-between",
-        }}
-      >
-        <MenuPopover
-          containerStyle={{ maxWidth: 160, marginLeft: 7 }}
-          options={["Clock", "Stopwatch", "Timer", "Pomodoro"].map(
-            (option: ClockViewType) => ({
-              text: option,
-              selected: view === option,
-              callback: () => setView(option),
-            })
-          )}
-          trigger={
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-              }}
-            >
-              <Text variant="eyebrow">{view}</Text>
-              <Icon>expand_more</Icon>
-            </Pressable>
-          }
-        />
-      </View>
+    <View>
+      <MenuPopover
+        options={[
+          ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
+            text: d,
+            callback: () => setView(d as ClockViewType),
+            selected: d === view,
+          })),
+          { divider: true },
+          ...(view === "Clock"
+            ? [
+                {
+                  text: "Timezones",
+                  icon: "explore",
+                  callback: () =>
+                    Toast.show({ type: "info", text1: "Coming soon!" }),
+                },
+                { divider: true },
+              ]
+            : []),
+          ...menuActions,
+        ]}
+        containerStyle={{ marginTop: -15 }}
+        trigger={
+          <Button style={widgetMenuStyles.button} dense>
+            <ButtonText weight={800} style={widgetMenuStyles.text}>
+              {view}
+            </ButtonText>
+            <Icon style={{ color: userTheme[11] }}>expand_more</Icon>
+          </Button>
+        }
+      />
       <View
         style={[
           widgetStyles.card,

@@ -1,16 +1,19 @@
+import { useUser } from "@/context/useUser";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
+import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
+import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
+import { LexoRank } from "lexorank";
 import { Fragment, memo, useEffect, useState } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import {
@@ -27,12 +30,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import ContentWrapper from "../layout/content";
-import {
-  FocusPanelWidgetProvider,
-  useFocusPanelContext,
-  useFocusPanelWidgetContext,
-} from "./context";
+import { useFocusPanelContext } from "./context";
 import { WidgetMenu } from "./menu";
+import { widgetMenuStyles } from "./widgetMenuStyles";
 import { widgetStyles } from "./widgetStyles";
 import { Assistant } from "./widgets/Assistant";
 import { UpNext } from "./widgets/UpNext";
@@ -64,10 +64,23 @@ export const ImportantChip = () => {
   );
 };
 
-const Music = ({ params }) => {
+const Music = ({ params, menuActions }) => {
+  const theme = useColorTheme();
+
   return (
     <View>
-      <Text variant="eyebrow">Music</Text>
+      <MenuPopover
+        options={menuActions}
+        containerStyle={{ marginTop: -15 }}
+        trigger={
+          <Button style={widgetMenuStyles.button} dense>
+            <ButtonText weight={800} style={widgetMenuStyles.text}>
+              Assistant
+            </ButtonText>
+            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+          </Button>
+        }
+      />
       <Alert
         style={{ marginTop: 10 }}
         title="Coming soon"
@@ -78,7 +91,7 @@ const Music = ({ params }) => {
   );
 };
 
-function Quotes({ params }) {
+function Quotes({ params, menuActions }) {
   const { data, mutate, error } = useSWR(
     [
       ``,
@@ -106,22 +119,26 @@ function Quotes({ params }) {
 
   return (
     <View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingRight: 10,
-          marginBottom: 10,
-        }}
-      >
-        <Text variant="eyebrow">Quotes</Text>
-        <IconButton
-          size={30}
-          style={{ marginTop: -4 }}
-          icon="refresh"
-          onPress={handleRefresh}
-        />
-      </View>
+      <MenuPopover
+        options={[
+          {
+            text: "Refresh",
+            icon: "refresh",
+            callback: handleRefresh,
+          },
+          { divider: true },
+          ...menuActions,
+        ]}
+        containerStyle={{ marginTop: -15 }}
+        trigger={
+          <Button style={widgetMenuStyles.button} dense>
+            <ButtonText weight={800} style={widgetMenuStyles.text}>
+              Quotes
+            </ButtonText>
+            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+          </Button>
+        }
+      />
       {error && <ErrorAlert />}
       <View
         style={[
@@ -157,14 +174,91 @@ function Quotes({ params }) {
   );
 }
 
+function RenderWidget({ widget, index }) {
+  const { sessionToken } = useUser();
+  const { data, mutate, error } = useSWR(["user/focus-panel"], null, {
+    refreshInterval: 1000 * 60,
+  });
+
+  const handleWidgetEdit = async (key, value) => {
+    // try {
+    mutate((oldData) =>
+      oldData.map((w, i) => (w.id === widget.id ? { ...w, [key]: value } : w))
+    );
+    // await sendApiRequest(sessionToken, "PUT", "user/focus-panel", {
+    //   id: widget.id,
+    //   [key]: value,
+    // });
+    // } catch (e) {
+    // Toast.show({ type: "error" });
+    // }
+  };
+
+  const menuActions = [
+    {
+      icon: "move_up",
+      text: "Move up",
+      disabled: index === 0,
+      callback: () =>
+        handleWidgetEdit(
+          "order",
+          LexoRank.parse(data[index].order)
+            .between(LexoRank.parse(data[index - 1].order))
+            .toString()
+        ),
+    },
+    {
+      icon: "move_down",
+      text: "Move down",
+      disabled: index === data.length - 1,
+      callback: () =>
+        handleWidgetEdit(
+          "order",
+          LexoRank.parse(data[index].order)
+            .between(LexoRank.parse(data[index + 1].order))
+            .toString()
+        ),
+    },
+    {
+      icon: "remove_circle",
+      text: "Remove",
+      callback: () => {},
+    },
+  ] as MenuOption[];
+
+  switch (widget.type) {
+    case "upcoming":
+      return <UpNext menuActions={menuActions} widget={widget} key={index} />;
+    case "quotes":
+      return <Quotes menuActions={menuActions} widget={widget} key={index} />;
+    case "clock":
+      return <Clock menuActions={menuActions} widget={widget} key={index} />;
+    case "weather":
+      return (
+        <WeatherWidget menuActions={menuActions} widget={widget} key={index} />
+      );
+    case "assistant":
+      return (
+        <Assistant menuActions={menuActions} widget={widget} key={index} />
+      );
+    case "music":
+      return <Music menuActions={menuActions} params={widget} key={index} />;
+    default:
+      return null;
+  }
+}
+
 function PanelContent() {
   const theme = useColorTheme();
   const { isFocused } = useFocusPanelContext();
-  const { widgets, setWidgets } = useFocusPanelWidgetContext();
 
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
+
+  const { data } = useSWR(["user/focus-panel"], null, {
+    refreshInterval: 1000 * 60,
+  });
 
   const Wrapper = breakpoints.md
     ? Fragment
@@ -204,7 +298,11 @@ function PanelContent() {
         >
           {isFocused && (
             <>
-              {widgets.length === 0 ? (
+              {!data ? (
+                <View style={{ marginHorizontal: "auto" }}>
+                  <Spinner />
+                </View>
+              ) : data.length === 0 ? (
                 <View
                   style={{
                     flex: 1,
@@ -222,7 +320,7 @@ function PanelContent() {
                     style={{
                       textAlign: "center",
                       color: theme[11],
-                      opacity: 0.6,
+                      opacity: 0.45,
                     }}
                   >
                     Here, you can add widgets to enhance & supercharge your
@@ -238,29 +336,14 @@ function PanelContent() {
                     minHeight: "100%",
                   }}
                 >
-                  {widgets.map((widget, index) => {
-                    switch (widget.type) {
-                      case "upcoming":
-                        return <UpNext params={widget.params} key={index} />;
-                      case "quotes":
-                        return <Quotes params={widget.params} key={index} />;
-                      case "clock":
-                        return <Clock params={widget.params} key={index} />;
-                      case "weather":
-                        return (
-                          <WeatherWidget params={widget.params} key={index} />
-                        );
-                      case "assistant":
-                        return <Assistant params={widget.params} key={index} />;
-                      case "music":
-                        return <Music params={widget.params} key={index} />;
-                      default:
-                        return null;
-                    }
-                  })}
+                  {data
+                    .sort((a, b) => a.order.localeCompare(b.order))
+                    .map((widget, index) => (
+                      <RenderWidget key={index} index={index} widget={widget} />
+                    ))}
                 </ScrollView>
               )}
-              <WidgetMenu widgets={widgets} setWidgets={setWidgets} />
+              <WidgetMenu />
             </>
           )}
         </ScrollView>
@@ -443,9 +526,7 @@ const FocusPanel = memo(function FocusPanel() {
           },
         ]}
       >
-        <FocusPanelWidgetProvider>
-          <PanelContent />
-        </FocusPanelWidgetProvider>
+        <PanelContent />
       </Animated.View>
     </>
   );

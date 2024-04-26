@@ -1,7 +1,9 @@
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
 import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
+import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -13,6 +15,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { widgetMenuStyles } from "../../widgetMenuStyles";
 import { WeatherModal } from "./modal";
 import weatherCodes from "./weatherCodes.json";
 
@@ -115,7 +118,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }) => {
   );
 };
 
-export function WeatherWidget({ params }) {
+export function WeatherWidget({ widget, menuActions }) {
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
@@ -150,6 +153,7 @@ export function WeatherWidget({ params }) {
     data,
     isLoading: isWeatherLoading,
     error,
+    mutate: mutateWeather,
   } = useSWR(
     location
       ? [
@@ -171,10 +175,17 @@ export function WeatherWidget({ params }) {
           },
           "https://api.open-meteo.com/v1/forecast",
         ]
-      : null
+      : null,
+    {
+      refreshInterval: 2 * 60 * 1000,
+    }
   );
 
-  const { data: airQualityData, isLoading: isAirQualityLoading } = useSWR(
+  const {
+    data: airQualityData,
+    isLoading: isAirQualityLoading,
+    mutate: mutateAirQuality,
+  } = useSWR(
     location
       ? [
           ``,
@@ -234,16 +245,30 @@ export function WeatherWidget({ params }) {
   const gradient = [weatherColor[3], weatherColor[4]];
 
   return (
-    <View style={widgetStyles.widget}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text variant="eyebrow">Weather</Text>
-      </View>
+    <View>
+      <MenuPopover
+        options={[
+          {
+            text: "Refresh",
+            icon: "refresh",
+            callback: () => {
+              mutateWeather();
+              mutateAirQuality();
+            },
+          },
+          { divider: true },
+          ...menuActions,
+        ]}
+        containerStyle={{ marginTop: -15 }}
+        trigger={
+          <Button style={widgetMenuStyles.button} dense>
+            <ButtonText weight={800} style={widgetMenuStyles.text}>
+              Weather
+            </ButtonText>
+            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+          </Button>
+        }
+      />
       {error || permissionStatus === "denied" ? (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>
           <Icon size={40} style={{ marginLeft: -2 }}>

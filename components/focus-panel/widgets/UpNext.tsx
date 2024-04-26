@@ -3,6 +3,7 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -18,12 +19,12 @@ import {
 } from "../../collections/views/planner/Column";
 import { TaskDrawer } from "../../task/drawer";
 import { ImportantChip } from "../panel";
+import { widgetMenuStyles } from "../widgetMenuStyles";
 import { widgetStyles } from "../widgetStyles";
 
-export const UpNext = ({params}) => {
+export const UpNext = ({ params, menuActions }) => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
-  const orange = useColor("orange");
   const [todayDateString, setTodayDateString] = useState(dayjs().toISOString());
 
   useEffect(() => {
@@ -81,9 +82,18 @@ export const UpNext = ({params}) => {
 
   return (
     <View>
-      <Text variant="eyebrow" style={{ marginBottom: 10 }}>
-        Up next
-      </Text>
+      <MenuPopover
+        options={menuActions}
+        containerStyle={{ marginTop: -15 }}
+        trigger={
+          <Button style={widgetMenuStyles.button} dense>
+            <ButtonText weight={800} style={widgetMenuStyles.text}>
+              Up Next
+            </ButtonText>
+            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+          </Button>
+        }
+      />
       <ColorThemeProvider theme={theme}>
         {error && <ErrorAlert />}
         <View
