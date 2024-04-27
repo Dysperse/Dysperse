@@ -272,7 +272,7 @@ const LabelChart = ({ data }) => {
         flexDirection: breakpoints.md ? "row" : "column",
       }}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: breakpoints.md ? 1 : undefined }}>
         <Text
           style={{
             fontSize: 30,
@@ -297,7 +297,12 @@ const LabelChart = ({ data }) => {
           absolute
         />
       </View>
-      <View style={{ flex: 1, marginTop: breakpoints.md ? 70 : 0 }}>
+      <View
+        style={{
+          flex: breakpoints.md ? 1 : undefined,
+          marginTop: breakpoints.md ? 70 : 0,
+        }}
+      >
         {pieData.map((label, i) => (
           <View
             key={i}
@@ -325,23 +330,31 @@ const LabelChart = ({ data }) => {
   );
 };
 
+const barDefaultProps = {
+  showBarTops: false,
+  fromZero: true,
+  xAxisLabel: "",
+  yAxisLabel: "",
+  yAxisSuffix: "",
+  flatColor: true,
+  withCustomBarColorFromData: true,
+  style: {
+    paddingRight: 0,
+    height: 320,
+  },
+};
 const HourChart = ({ data }) => {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const [width, setWidth] = useState(400);
   const chartConfig: AbstractChartConfig = {
-    backgroundGradientFrom: "transparent",
-    backgroundGradientTo: "transparent",
     color: (n = 1) => addHslAlpha(theme[11], n),
-    paddingRight: 0,
-    barPercentage: 0.5,
+    barPercentage: breakpoints.md ? 0.5 : 0.2,
     propsForVerticalLabels: {
       fontFamily: "body_500",
       fontSize: 11,
     },
-    propsForBackgroundLines: {
-      translateX: 50,
-    },
+    barRadius: 5,
   };
 
   const barData = {
@@ -374,6 +387,74 @@ const HourChart = ({ data }) => {
     datasets: [
       {
         data: data.byHour,
+        colors: new Array(data.byHour.length).fill(() => theme[7]),
+      },
+    ],
+  };
+
+  return (
+    <View
+      style={{
+        backgroundColor: theme[3],
+        borderWidth: 1,
+        borderColor: theme[5],
+        borderRadius: 25,
+        flex: 1,
+        padding: 20,
+        gap: 10,
+      }}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+    >
+      <Text
+        style={{
+          fontSize: breakpoints.md ? 30 : 25,
+        }}
+        weight={700}
+      >
+        Productivity by hour
+      </Text>
+      <BarChart
+        {...barDefaultProps}
+        data={barData}
+        width={width - 40}
+        height={350}
+        withHorizontalLabels={false}
+        chartConfig={chartConfig}
+        hidePointsAtIndex={
+          breakpoints.md
+            ? [1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 22]
+            : [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19,
+                20, 21, 22,
+              ]
+        }
+      />
+    </View>
+  );
+};
+
+const DayChart = ({ data }) => {
+  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+  const [width, setWidth] = useState(400);
+  const chartConfig: AbstractChartConfig = {
+    color: (n = 1) => addHslAlpha(theme[11], n),
+    barPercentage: breakpoints.md ? 0.5 : 0.2,
+    propsForVerticalLabels: {
+      fontFamily: "body_500",
+      fontSize: 11,
+    },
+    barRadius: 5,
+  };
+
+  const barData = {
+    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) =>
+      day.slice(0, breakpoints.md ? undefined : 1)
+    ),
+    datasets: [
+      {
+        data: data.byDay,
+        colors: new Array(data.byDay).fill(() => theme[7]),
       },
     ],
   };
@@ -386,30 +467,26 @@ const HourChart = ({ data }) => {
         borderColor: theme[5],
         borderRadius: 25,
         padding: 20,
-        marginTop: 20,
         flex: 1,
+        gap: 10,
       }}
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <Text
         style={{
           fontSize: breakpoints.md ? 30 : 25,
-          marginVertical: 10,
-          marginBottom: 5,
-          marginLeft: 22,
         }}
         weight={700}
       >
         Productivity by hour
       </Text>
       <BarChart
-        style={{}}
+        {...barDefaultProps}
         data={barData}
         width={width - 40}
-        height={300}
+        height={350}
         withHorizontalLabels={false}
         chartConfig={chartConfig}
-        verticalLabelRotation={90}
       />
     </View>
   );
@@ -478,12 +555,12 @@ export default function Page() {
             <View
               style={{
                 flexDirection: breakpoints.md ? "row" : "column",
-                marginBottom: 20,
+                marginTop: 20,
                 gap: 20,
               }}
             >
               <HourChart width={width} data={data} />
-              <HourChart width={width} data={data} />
+              <DayChart width={width} data={data} />
             </View>
           </ScrollView>
         </View>
