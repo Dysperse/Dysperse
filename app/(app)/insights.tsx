@@ -269,32 +269,35 @@ const LabelChart = ({ data }) => {
         borderColor: theme[5],
         borderRadius: 25,
         marginTop: 20,
+        flexDirection: breakpoints.md ? "row" : "column",
       }}
     >
-      <Text
-        style={{
-          fontSize: 30,
-          marginTop: 20,
-          marginBottom: 5,
-          marginLeft: 22,
-        }}
-        weight={700}
-      >
-        Completed tasks by label
-      </Text>
-      <PieChart
-        paddingLeft="0"
-        data={pieData}
-        width={breakpoints.md ? 150 : width}
-        height={breakpoints.md ? 150 : width}
-        hasLegend={false}
-        chartConfig={chartConfig}
-        accessor={"count"}
-        center={[width / 4, 0]}
-        backgroundColor="transparent"
-        absolute
-      />
-      <View>
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            fontSize: 30,
+            marginTop: 20,
+            marginBottom: 5,
+            marginLeft: 22,
+          }}
+          weight={700}
+        >
+          Completed tasks by label
+        </Text>
+        <PieChart
+          paddingLeft="0"
+          data={pieData}
+          width={breakpoints.md ? width / 2 - 20 : width}
+          height={breakpoints.md ? width / 2 - 20 : width}
+          hasLegend={false}
+          chartConfig={chartConfig}
+          accessor={"count"}
+          center={breakpoints.md ? [width / 8.5, 0] : [width / 4, 0]}
+          backgroundColor="transparent"
+          absolute
+        />
+      </View>
+      <View style={{ flex: 1, marginTop: breakpoints.md ? 70 : 0 }}>
         {pieData.map((label, i) => (
           <View
             key={i}
