@@ -47,7 +47,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   setEditOrderMode,
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
-  const { data, mutate: mutateCollection, access, ...ctx } = useCollectionContext();
+  const { data, access, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
   const { type, id } = useGlobalSearchParams();
@@ -134,7 +134,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       icon: "sync",
       text: "Refresh",
       callback: async () => {
-       await mutateCollection();
+       await ctx.mutate();
        Toast.show({ type: "success", text1: "Collection up to date!" }),
       }
     },
