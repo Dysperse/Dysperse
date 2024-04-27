@@ -7,6 +7,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -26,6 +27,7 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const Activity = ({ data }) => {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const [width, setWidth] = useState(0);
   const chartConfig: AbstractChartConfig = {
@@ -36,6 +38,12 @@ const Activity = ({ data }) => {
     barRadius: 5,
     paddingRight: 0,
     useShadowColorFromDataset: false, // optional
+    propsForLabels: {
+      fontFamily: "body_700",
+      opacity: 0.5,
+      fontSize: breakpoints.md ? 16 : 12,
+      translateY: breakpoints.md ? 10 : 25,
+    },
   };
   const commitsData = data
     ? // must be unique days with { date: "2021-09-01", count: 1 }. There can be multiple entries for the same day, so reduce them to a single entry
@@ -67,7 +75,7 @@ const Activity = ({ data }) => {
     >
       <Text
         style={{
-          fontSize: 30,
+          fontSize: breakpoints.md ? 30 : 25,
           marginTop: 20,
           marginBottom: 5,
           marginLeft: 22,
@@ -78,34 +86,14 @@ const Activity = ({ data }) => {
         {data.completionInstances.length === 1 ? "task" : "tasks"} completed in
         the last year
       </Text>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        {Array.from({ length: 12 }, (_, i) =>
-          dayjs().subtract(i, "month").format("MMM")
-        )
-          .reverse()
-          .map((month, i) => (
-            <Text
-              key={month}
-              style={{
-                paddingHorizontal: 30,
-                fontSize: 12,
-                marginBottom: -10,
-                marginTop: 10,
-                minWidth: 0,
-              }}
-              weight={400}
-              numberOfLines={1}
-            >
-              {month}
-            </Text>
-          ))}
-      </View>
       <ContributionGraph
         values={commitsData}
-        tooltipDataAttrs={(value) => ({} as any)}
+        tooltipDataAttrs={() => ({} as any)}
         style={{ padding: 0, marginTop: -30 }}
         endDate={new Date()}
-        showMonthLabels={false}
+        getMonthLabel={
+          breakpoints.md ? undefined : (m) => dayjs().month(m).format("MMM")[0]
+        }
         width={width}
         height={7 * (squareSize + 2) + 60}
         numDays={365}
@@ -119,6 +107,8 @@ const Activity = ({ data }) => {
 
 const Co2 = ({ data }) => {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <View
       style={{
@@ -128,21 +118,31 @@ const Co2 = ({ data }) => {
         borderColor: theme[5],
         borderRadius: 25,
         padding: 20,
-        marginTop: 20,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
       }}
     >
-      <View>
+      <View style={{ flex: 1 }}>
         <Text variant="eyebrow" weight={900}>
           By using #dysperse, you've saved
         </Text>
-        <Text style={{ fontSize: 45 }} weight={700}>
+        <Text style={{ fontSize: breakpoints.md ? 45 : 35 }} weight={700}>
           {(data?.co2 || 0).toFixed(2)} grams of CO
           <Text style={{ fontSize: 18 }} weight={300}>
             2
           </Text>
+          <IconButton
+            icon={<Icon style={{ fontSize: 20 }}>info</Icon>}
+            style={{ opacity: 0.5, marginLeft: 10 }}
+            onPress={() =>
+              Toast.show({
+                type: "info",
+                text1:
+                  "CO2 is measured by taking all of your tasks and listing them on traditional notebook paper (1 line per task). The amount of CO2 saved is calculated by the amount of paper you would've used.",
+              })
+            }
+          />
         </Text>
         <Text
           style={{ fontSize: 20, opacity: 0.5, marginTop: -3 }}
@@ -151,32 +151,23 @@ const Co2 = ({ data }) => {
           from being polluted into the atmosphere
         </Text>
       </View>
-      <IconButton
-        icon="help"
-        onPress={() =>
-          Toast.show({
-            type: "info",
-            text1:
-              "CO2 is measured by taking all of your tasks and listing them on traditional notebook paper (1 line per task). The amount of CO2 saved is calculated by the amount of paper you would've used.",
-          })
-        }
-      />
     </View>
   );
 };
 
 const TasksCreated = ({ data }) => {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <View
       style={{
-        flex: 1,
+        flex: breakpoints.md ? 1 : undefined,
         backgroundColor: theme[3],
         borderWidth: 1,
         borderColor: theme[5],
         borderRadius: 25,
         padding: 20,
-        marginTop: 20,
       }}
     >
       <Text style={{ fontSize: 70, fontFamily: "mono", textAlign: "center" }}>
@@ -245,7 +236,8 @@ function Header({ scrollRef }) {
   );
 }
 
-const LabelChart = ({ width, data }) => {
+const LabelChart = ({ data }) => {
+  const [width, setWidth] = useState(0);
   const theme = useColorTheme();
   const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: "transparent",
@@ -257,10 +249,12 @@ const LabelChart = ({ width, data }) => {
   };
 
   const colors = useLabelColors();
+  const breakpoints = useResponsiveBreakpoints();
 
   const pieData = Object.entries(data.byLabel).map(([label, count]) => ({
     name: data.byLabel[label].label.name,
     count: data.byLabel[label].count,
+    emoji: data.byLabel[label].label.emoji,
     color: colors[data.byLabel[label].label.color][11],
     legendFontColor: theme[11],
     legendFontSize: 15,
@@ -268,6 +262,7 @@ const LabelChart = ({ width, data }) => {
 
   return (
     <View
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       style={{
         backgroundColor: theme[3],
         borderWidth: 1,
@@ -290,19 +285,46 @@ const LabelChart = ({ width, data }) => {
       <PieChart
         paddingLeft="0"
         data={pieData}
-        width={width}
-        height={480}
+        width={breakpoints.md ? 150 : width}
+        height={breakpoints.md ? 150 : width}
+        hasLegend={false}
         chartConfig={chartConfig}
         accessor={"count"}
-        backgroundColor={"transparent"}
+        center={[width / 4, 0]}
+        backgroundColor="transparent"
         absolute
       />
+      <View>
+        {pieData.map((label, i) => (
+          <View
+            key={i}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 10,
+              paddingHorizontal: 20,
+              gap: 20,
+              borderBottomWidth: i === pieData.length - 1 ? 0 : 1,
+              borderBottomColor: theme[5],
+            }}
+          >
+            <Emoji emoji={label.emoji} size={20} />
+            <Text style={{ fontSize: 20 }} weight={300}>
+              {label.name}
+            </Text>
+            <Text style={{ marginLeft: "auto", opacity: 0.5 }} weight={700}>
+              {label.count}
+            </Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 };
 
 const HourChart = ({ data }) => {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const [width, setWidth] = useState(400);
   const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: "transparent",
@@ -368,7 +390,7 @@ const HourChart = ({ data }) => {
     >
       <Text
         style={{
-          fontSize: 30,
+          fontSize: breakpoints.md ? 30 : 25,
           marginVertical: 10,
           marginBottom: 5,
           marginLeft: 22,
@@ -405,7 +427,10 @@ export default function Page() {
           onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
         >
           <Header scrollRef={ref} />
-          <ScrollView contentContainerStyle={{ padding: 30 }} ref={ref}>
+          <ScrollView
+            contentContainerStyle={{ padding: breakpoints.md ? 30 : 20 }}
+            ref={ref}
+          >
             <View style={{ marginVertical: 50 }}>
               <Text
                 style={{
