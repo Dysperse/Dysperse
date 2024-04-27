@@ -130,13 +130,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     !isAll && {
       divider: true,
     },
-   {
+    {
       icon: "sync",
       text: "Refresh",
       callback: async () => {
-       await ctx.mutate();
-       Toast.show({ type: "success", text1: "Collection up to date!" }),
-      }
+        await ctx.mutate();
+        Toast.show({ type: "success", text1: "Collection up to date!" });
+      },
     },
     {
       icon: "fluorescent",
