@@ -271,9 +271,8 @@ export default function Page() {
       content = <Workload />;
       break;
     case "matrix":
-      content = comingSoon;
-      break;
     case "calendar":
+    case "list":
       content = comingSoon;
       break;
     default:

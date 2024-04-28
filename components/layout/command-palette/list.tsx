@@ -9,6 +9,7 @@ export const collectionViews = {
   workload: "exercise",
   matrix: "target",
   calendar: "calendar_today",
+  list: "view_agenda",
 };
 
 const collectionViewDescriptions = {
