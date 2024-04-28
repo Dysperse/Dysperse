@@ -6,10 +6,10 @@ export const collectionViews = {
   kanban: "view_kanban",
   stream: "whatshot",
   grid: "view_cozy",
+  list: "view_agenda",
   workload: "exercise",
   matrix: "target",
   calendar: "calendar_today",
-  list: "view_agenda",
 };
 
 const collectionViewDescriptions = {
