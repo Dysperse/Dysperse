@@ -478,7 +478,7 @@ const DayChart = ({ data }) => {
         }}
         weight={700}
       >
-        Productivity by hour
+        Productivity by day
       </Text>
       <BarChart
         {...barDefaultProps}
