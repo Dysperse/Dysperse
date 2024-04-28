@@ -6,8 +6,8 @@ export const collectionViews = {
   kanban: "view_kanban",
   stream: "whatshot",
   grid: "view_cozy",
-  list: "view_agenda",
   workload: "exercise",
+  list: "view_agenda",
   matrix: "target",
   calendar: "calendar_today",
 };
