@@ -4,9 +4,12 @@ import {
   useCollectionContext,
 } from "@/components/collections/context";
 import { CollectionNavbar } from "@/components/collections/navbar";
+import { List } from "@/components/collections/views/list";
 import { Grid } from "@/components/collections/views/grid";
 import { Kanban } from "@/components/collections/views/kanban";
 import { Perspectives } from "@/components/collections/views/planner";
+import { Stream } from "@/components/collections/views/stream";
+import { Workload } from "@/components/collections/views/workload";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
@@ -30,8 +33,6 @@ import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { Stream } from "../../../../../components/collections/views/stream";
-import { Workload } from "../../../../../components/collections/views/workload";
 
 export const styles = StyleSheet.create({
   header: {
@@ -270,9 +271,11 @@ export default function Page() {
     case "workload":
       content = <Workload />;
       break;
+    case "list":
+      content = <List />;
+      break;
     case "matrix":
     case "calendar":
-    case "list":
       content = comingSoon;
       break;
     default:

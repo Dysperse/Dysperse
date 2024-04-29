@@ -16,8 +16,10 @@ import { useKanbanContext } from "./context";
 export const KanbanHeader = memo(function KanbanHeader({
   label,
   grid,
+  hideNavigation,
 }: {
   grid?: boolean;
+  hideNavigation?: boolean;
   label: {
     id: string;
     emoji: string;
@@ -101,7 +103,7 @@ export const KanbanHeader = memo(function KanbanHeader({
             <IconButton size={40} icon={grid ? "edit" : "more_horiz"} />
           </ColumnMenuTrigger>
         )}
-        {grid && !breakpoints.md ? (
+        {grid && !breakpoints.md && !hideNavigation ? (
           <IconButton
             size={40}
             icon="expand_all"
@@ -110,7 +112,7 @@ export const KanbanHeader = memo(function KanbanHeader({
           />
         ) : (
           <>
-            {!breakpoints.md && (
+            {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
                 onPress={() =>
@@ -123,7 +125,7 @@ export const KanbanHeader = memo(function KanbanHeader({
                 style={[currentColumn === 0 && { opacity: 0.5 }]}
               />
             )}
-            {!breakpoints.md && (
+            {!breakpoints.md && !hideNavigation && (
               <IconButton
                 size={40}
                 onPress={() =>
