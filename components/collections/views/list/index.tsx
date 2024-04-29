@@ -102,6 +102,7 @@ export function List() {
                 marginHorizontal: "auto",
                 width: 800,
                 maxWidth: width - 40,
+                marginBottom: -10,
               }}
             >
               <Task onTaskUpdate={onTaskUpdate} task={item} />;
