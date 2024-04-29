@@ -17,7 +17,11 @@ export function List() {
 
   const d = data.labels.reduce((acc, curr) => {
     acc.push({ header: true, ...omit(["entities"], curr) });
-    acc.push(...curr.entities);
+    acc.push(
+      ...curr.entities.sort(
+        (a, b) => a.completionInstances?.length - b.completionInstances?.length
+      )
+    );
     return acc;
   }, []);
 
