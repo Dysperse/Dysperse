@@ -5,6 +5,7 @@ import { ProfileModal } from "@/components/ProfileModal";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
+import { Button, ButtonText } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
@@ -18,7 +19,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { BarChart, ContributionGraph, PieChart } from "react-native-chart-kit";
 import { AbstractChartConfig } from "react-native-chart-kit/dist/AbstractChart";
 import { ScrollView } from "react-native-gesture-handler";
@@ -236,9 +237,23 @@ function Header({ scrollRef }) {
   );
 }
 
+const cardStyles = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    borderRadius: 25,
+    flex: 1,
+    padding: 30,
+    gap: 10,
+  },
+  title: { fontSize: 30 },
+});
+
 const LabelChart = ({ data }) => {
   const [width, setWidth] = useState(0);
   const theme = useColorTheme();
+  const [showMore, setShowMore] = useState(false);
+  const handleShowMore = () => setShowMore(!showMore);
+
   const chartConfig: AbstractChartConfig = {
     backgroundGradientFrom: "transparent",
     backgroundGradientTo: "transparent",
@@ -260,7 +275,32 @@ const LabelChart = ({ data }) => {
     legendFontSize: 15,
   }));
 
-  return (
+  return pieData.length === 0 ? (
+    <View
+      style={{
+        backgroundColor: theme[3],
+        borderWidth: 1,
+        borderColor: theme[5],
+        borderRadius: 25,
+        marginTop: 20,
+        padding: 30,
+        gap: 5,
+      }}
+    >
+      <Text style={[cardStyles.title, { marginTop: 0 }]} weight={700}>
+        Completed tasks by label
+      </Text>
+      <Text
+        style={{
+          fontSize: 20,
+          opacity: 0.5,
+        }}
+        weight={300}
+      >
+        No labels have been used yet
+      </Text>
+    </View>
+  ) : (
     <View
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       style={{
@@ -272,14 +312,9 @@ const LabelChart = ({ data }) => {
         flexDirection: breakpoints.md ? "row" : "column",
       }}
     >
-      <View style={{ flex: breakpoints.md ? 1 : undefined }}>
+      <View>
         <Text
-          style={{
-            fontSize: 30,
-            marginTop: 20,
-            marginBottom: 5,
-            marginLeft: 22,
-          }}
+          style={[cardStyles.title, { margin: 30, marginBottom: 0 }]}
           weight={700}
         >
           Completed tasks by label
@@ -287,12 +322,16 @@ const LabelChart = ({ data }) => {
         <PieChart
           paddingLeft="0"
           data={pieData}
-          width={breakpoints.md ? width / 2 - 20 : width}
-          height={breakpoints.md ? width / 2 - 20 : width}
+          width={breakpoints.md ? Math.min(1000, width) / 2 - 20 : width}
+          height={breakpoints.md ? Math.min(1000, width) / 2 - 20 : width}
           hasLegend={false}
           chartConfig={chartConfig}
           accessor={"count"}
-          center={breakpoints.md ? [width / 8.5, 0] : [width / 4, 0]}
+          center={
+            breakpoints.md
+              ? [Math.min(1000, width) / 8.5, 0]
+              : [Math.min(1000, width) / 4, 0]
+          }
           backgroundColor="transparent"
           absolute
         />
@@ -300,10 +339,11 @@ const LabelChart = ({ data }) => {
       <View
         style={{
           flex: breakpoints.md ? 1 : undefined,
-          marginTop: breakpoints.md ? 70 : 0,
+          marginTop: breakpoints.md ? 100 : 0,
+          justifyContent: "center",
         }}
       >
-        {pieData.map((label, i) => (
+        {pieData.slice(0, showMore ? pieData.length : 7).map((label, i) => (
           <View
             key={i}
             style={{
@@ -312,11 +352,12 @@ const LabelChart = ({ data }) => {
               padding: 10,
               paddingHorizontal: 20,
               gap: 20,
-              borderBottomWidth: i === pieData.length - 1 ? 0 : 1,
+              borderBottomWidth:
+                i === pieData.length - 1 || (!showMore && i === 6) ? 0 : 1,
               borderBottomColor: theme[5],
             }}
           >
-            <Emoji emoji={label.emoji} size={20} />
+            <Emoji emoji={label.emoji} size={30} />
             <Text style={{ fontSize: 20 }} weight={300}>
               {label.name}
             </Text>
@@ -325,6 +366,14 @@ const LabelChart = ({ data }) => {
             </Text>
           </View>
         ))}
+        {pieData.length > 5 && (
+          <View style={{ padding: 10 }}>
+            <Button onPress={handleShowMore} variant="outlined">
+              <ButtonText>{showMore ? "Show less" : "Show more"}</ButtonText>
+              <Icon>{showMore ? "expand_less" : "expand_more"}</Icon>
+            </Button>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -394,21 +443,17 @@ const HourChart = ({ data }) => {
 
   return (
     <View
-      style={{
-        backgroundColor: theme[3],
-        borderWidth: 1,
-        borderColor: theme[5],
-        borderRadius: 25,
-        flex: 1,
-        padding: 20,
-        gap: 10,
-      }}
+      style={[
+        cardStyles.container,
+        {
+          borderColor: theme[5],
+          backgroundColor: theme[3],
+        },
+      ]}
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <Text
-        style={{
-          fontSize: breakpoints.md ? 30 : 25,
-        }}
+        style={[{ fontSize: breakpoints.md ? 30 : 25 }, cardStyles.title]}
         weight={700}
       >
         Productivity by hour
@@ -416,8 +461,8 @@ const HourChart = ({ data }) => {
       <BarChart
         {...barDefaultProps}
         data={barData}
-        width={width - 40}
-        height={350}
+        width={width - 60}
+        height={370}
         withHorizontalLabels={false}
         chartConfig={chartConfig}
         hidePointsAtIndex={
@@ -461,21 +506,17 @@ const DayChart = ({ data }) => {
 
   return (
     <View
-      style={{
-        backgroundColor: theme[3],
-        borderWidth: 1,
-        borderColor: theme[5],
-        borderRadius: 25,
-        padding: 20,
-        flex: 1,
-        gap: 10,
-      }}
+      style={[
+        cardStyles.container,
+        {
+          backgroundColor: theme[3],
+          borderColor: theme[5],
+        },
+      ]}
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <Text
-        style={{
-          fontSize: breakpoints.md ? 30 : 25,
-        }}
+        style={[{ fontSize: breakpoints.md ? 30 : 25 }, cardStyles.title]}
         weight={700}
       >
         Productivity by day
@@ -483,8 +524,8 @@ const DayChart = ({ data }) => {
       <BarChart
         {...barDefaultProps}
         data={barData}
-        width={width - 40}
-        height={350}
+        width={width - 60}
+        height={370}
         withHorizontalLabels={false}
         chartConfig={chartConfig}
       />
@@ -494,19 +535,15 @@ const DayChart = ({ data }) => {
 
 export default function Page() {
   const { data, error } = useSWR(["user/insights"]);
-  const [width, setWidth] = useState(0);
   const { session } = useUser();
   const breakpoints = useResponsiveBreakpoints();
   const ref = useRef<ScrollView>(null);
 
   return (
     <ContentWrapper noPaddingTop>
+      <Header scrollRef={ref} />
       {data ? (
-        <View
-          style={{ flex: 1 }}
-          onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
-        >
-          <Header scrollRef={ref} />
+        <View style={{ flex: 1 }}>
           <ScrollView
             contentContainerStyle={{ padding: breakpoints.md ? 30 : 20 }}
             ref={ref}
@@ -550,8 +587,8 @@ export default function Page() {
               <Co2 data={data} />
               <TasksCreated data={data} />
             </View>
-            <Activity width={width} data={data} />
-            <LabelChart width={width} data={data} />
+            <Activity data={data} />
+            <LabelChart data={data} />
             <View
               style={{
                 flexDirection: breakpoints.md ? "row" : "column",
@@ -559,13 +596,15 @@ export default function Page() {
                 gap: 20,
               }}
             >
-              <HourChart width={width} data={data} />
-              <DayChart width={width} data={data} />
+              <HourChart data={data} />
+              <DayChart data={data} />
             </View>
           </ScrollView>
         </View>
       ) : (
-        <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <View
+          style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+        >
           {error ? <ErrorAlert /> : <Spinner />}
         </View>
       )}
