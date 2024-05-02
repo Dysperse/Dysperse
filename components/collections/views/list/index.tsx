@@ -85,7 +85,7 @@ export function List() {
             >
               <BlurView
                 intensity={50}
-                tint={isDark ? "prominent" : "systemMaterialDark"}
+                tint={!isDark ? "prominent" : "systemMaterialDark"}
                 style={{
                   height: 80,
                   width: "100%",
