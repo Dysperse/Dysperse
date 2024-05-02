@@ -276,6 +276,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           style={{
             width: breakpoints.md ? 220 : undefined,
             flexDirection: "row",
+            alignItems: "center",
             justifyContent: "flex-end",
           }}
         >
