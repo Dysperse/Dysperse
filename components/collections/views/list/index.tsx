@@ -1,5 +1,4 @@
 import { useCollectionContext } from "@/components/collections/context";
-import Task from "@/components/task";
 import { omit } from "@/helpers/omit";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -7,6 +6,7 @@ import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { useRef } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
+import { Entity } from "../../entity";
 import { KanbanHeader } from "../kanban/Header";
 
 export function List() {
@@ -105,10 +105,14 @@ export function List() {
                 marginHorizontal: "auto",
                 width: 800,
                 maxWidth: width - 40,
-                marginBottom: 10,
               }}
             >
-              <Task onTaskUpdate={onTaskUpdate} task={item} />
+              <Entity
+                onTaskUpdate={onTaskUpdate}
+                item={item}
+                isReadOnly={false}
+                showRelativeTime
+              />
             </View>
           );
         }

@@ -190,10 +190,18 @@ function RenderWidget({ widget, index }) {
           revalidate: false,
         }
       );
-      await sendApiRequest(sessionToken, "PUT", "user/focus-panel", {
-        id: widget.id,
-        [key]: value,
-      });
+      await sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/focus-panel",
+        {},
+        {
+          body: JSON.stringify({
+            id: widget.id,
+            [key]: value,
+          }),
+        }
+      );
     } catch (e) {
       Toast.show({ type: "error" });
     }
