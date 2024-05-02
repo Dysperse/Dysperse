@@ -4,6 +4,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
+import Chip from "@/ui/Chip";
 import Divider from "@/ui/Divider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -438,6 +439,64 @@ const CollectionShareLink = ({ isReadOnly, collection }) => {
   );
 };
 
+const PublishCollection = ({ collection }) => {
+  const theme = useColorTheme();
+
+  return (
+    <View
+      style={{
+        padding: 20,
+        paddingHorizontal: 30,
+        backgroundColor: theme[3],
+        borderWidth: 1,
+        borderColor: theme[6],
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 25,
+        gap: 10,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          weight={900}
+          style={{
+            fontSize: 20,
+          }}
+        >
+          Publish to the{" "}
+        </Text>
+        <Chip
+          style={{ backgroundColor: theme[6], gap: 5 }}
+          label={
+            <Text
+              style={{
+                fontFamily: "mono",
+                color: theme[11],
+                fontStyle: "italic",
+              }}
+            >
+              DYSVERSE
+            </Text>
+          }
+          icon={<Emoji emoji="1f680" size={20} />}
+        />
+      </View>
+      <Text style={{ opacity: 0.6, textAlign: "center" }}>
+        Create a template which anyone can use to create their own collection.
+        Your tasks won't be shared.
+      </Text>
+      <Button variant="outlined">
+        <ButtonText>Coming soon</ButtonText>
+      </Button>
+    </View>
+  );
+};
+
 const CollectionMembers = ({
   collection: { access, data: collection },
   mutateList,
@@ -513,6 +572,10 @@ const CollectionMembers = ({
           </ListItemButton>
         </FriendModal>
       )}
+      <Text variant="eyebrow" style={modalStyles.eyebrow}>
+        Publish
+      </Text>
+      <PublishCollection collection={collection} />
     </View>
   );
 };
@@ -557,7 +620,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           />
         ))}
 
-      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["60%"]}>
+      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["80%"]}>
         <View
           style={{
             paddingHorizontal: 25,
