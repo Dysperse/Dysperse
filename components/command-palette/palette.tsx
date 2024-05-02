@@ -527,7 +527,11 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
   );
 
   return (
-    <BlurView style={{ flex: 1 }} tint="prominent" intensity={20}>
+    <BlurView
+      style={{ flex: 1 }}
+      tint="prominent"
+      intensity={breakpoints.md ? 20 : 0}
+    >
       <Pressable
         onPress={(e) => e.stopPropagation()}
         style={[
