@@ -1,8 +1,7 @@
 import { useCollectionContext } from "@/components/collections/context";
 import Task from "@/components/task";
 import { omit } from "@/helpers/omit";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
@@ -11,7 +10,7 @@ import { Pressable, View, useWindowDimensions } from "react-native";
 import { KanbanHeader } from "../kanban/Header";
 
 export function List() {
-  const breakpoints = useResponsiveBreakpoints();
+  const isDark = useDarkMode();
   const { data, mutate } = useCollectionContext();
   const theme = useColorTheme();
 
@@ -86,7 +85,7 @@ export function List() {
             >
               <BlurView
                 intensity={50}
-                tint="systemMaterialDark"
+                tint={isDark ? "prominent" : "systemMaterialDark"}
                 style={{
                   height: 80,
                   width: "100%",
