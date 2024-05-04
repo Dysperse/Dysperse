@@ -163,7 +163,7 @@ export const UpNext = ({ widget, menuActions }) => {
                 </>
               ) : (
                 <View>
-                  {nextUncompletedTask.length > 0 ? (
+                  {nextUncompletedTask?.length > 0 ? (
                     <View style={{ marginTop: 10, marginHorizontal: -10 }}>
                       <Text
                         style={{
@@ -199,7 +199,7 @@ export const UpNext = ({ widget, menuActions }) => {
                       </Text>
                       <View
                         style={{
-                          marginTop: -30,
+                          marginVertical: 30,
                           marginBottom: 10,
                         }}
                       >
