@@ -558,7 +558,11 @@ function MemberSince() {
         colors={[theme[2], theme[1]]}
         style={{
           borderWidth: 2,
-          borderColor: theme[11],
+          borderColor: theme[9],
+          shadowColor: theme[11],
+          shadowOffset: { width: 5, height: 5 },
+          shadowOpacity: 0.3,
+          shadowRadius: 10,
           width: 70,
           height: 70,
           borderRadius: 99,
