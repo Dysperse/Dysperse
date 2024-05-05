@@ -538,6 +538,7 @@ const DayChart = ({ data }) => {
 function MemberSince() {
   const theme = useColorTheme();
   const { session } = useUser();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
@@ -547,7 +548,7 @@ function MemberSince() {
           backgroundColor: theme[3],
           borderColor: theme[5],
           marginBottom: 20,
-          flexDirection: "row",
+          flexDirection: breakpoints.md ? "row" : "column",
           alignItems: "center",
           gap: 20,
           padding: 20,
@@ -563,8 +564,8 @@ function MemberSince() {
           shadowOffset: { width: 5, height: 5 },
           shadowOpacity: 0.3,
           shadowRadius: 10,
-          width: 70,
-          height: 70,
+          width: 100,
+          height: 100,
           borderRadius: 99,
           alignItems: "center",
           justifyContent: "center",
@@ -572,8 +573,13 @@ function MemberSince() {
           overflow: "hidden",
         }}
       >
-        <View style={{ marginTop: -7, marginLeft: -10 }}>
-          <Logo size={50} />
+        <View
+          style={{
+            marginTop: -10,
+            marginLeft: -13,
+          }}
+        >
+          <Logo size={70} />
         </View>
         <LinearGradient
           colors={[theme[8], theme[9]]}
@@ -581,9 +587,9 @@ function MemberSince() {
             position: "absolute",
             bottom: 0,
             right: 0,
-            width: 40,
-            height: 70,
-            marginBottom: -15,
+            width: 60,
+            height: 155,
+            marginBottom: -50,
             transform: [{ rotate: "45deg" }],
             alignItems: "center",
             justifyContent: "center",
@@ -593,8 +599,9 @@ function MemberSince() {
             style={{
               fontFamily: "serifText800",
               color: theme[2],
-              marginLeft: -6,
-              fontSize: 20,
+              marginLeft: -9,
+              marginTop: -3,
+              fontSize: 27,
               transform: [{ rotate: "-45deg" }],
             }}
           >
@@ -606,6 +613,7 @@ function MemberSince() {
         style={{
           fontSize: 30,
           color: theme[11],
+          textAlign: breakpoints.md ? "right" : "center",
         }}
         weight={200}
       >
