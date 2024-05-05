@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start",
-    "start-tunnel": "expo start --tunnel",
+    "start": "APP_VARIANT=development expo start",
+    "start-tunnel": "APP_VARIANT=development expo start --tunnel",
     "lint": "eslint ./",
-    "build": "eas build --profile development --platform android",
+    "build": "eas build --profile production --platform android",
     "build:web": "expo export -p web && npm install workbox-cli --global && workbox generateSW workbox-config.js",
     "build:electron": "expo export -p web --output-dir ./electron/src/dist",
     "android": "expo run:android",

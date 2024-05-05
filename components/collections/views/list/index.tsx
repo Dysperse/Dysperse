@@ -73,7 +73,7 @@ export function List() {
               }}
               style={{
                 margin: 10,
-                width: 800,
+                width: 750,
                 maxWidth: width - 40,
                 marginHorizontal: "auto",
                 borderRadius: 99,
@@ -103,7 +103,7 @@ export function List() {
             <View
               style={{
                 marginHorizontal: "auto",
-                width: 800,
+                width: 750,
                 maxWidth: width - 40,
               }}
             >

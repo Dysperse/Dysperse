@@ -9,6 +9,9 @@
       "android": {
         "image": "latest",
         "buildType": "apk"
+      },
+      "env": {
+        "APP_VARIANT": "development"
       }
     },
     "preview": {
