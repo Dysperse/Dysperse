@@ -619,7 +619,7 @@ function MemberSince() {
       >
         {capitalizeFirstLetter(session?.user?.profile?.name?.split(" ")?.[0])},
         you've been a member since{" "}
-        {dayjs(session.createdAt).format("MMMM YYYY")} &mdash; thank you{" "}
+        {dayjs(session.user.createdAt).format("MMMM YYYY")} &mdash; thank you{" "}
         <Text
           style={{
             verticalAlign: "top",
