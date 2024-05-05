@@ -12,6 +12,7 @@ import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Logo from "@/ui/logo";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
@@ -90,7 +91,7 @@ const Activity = ({ data }) => {
       <ContributionGraph
         values={commitsData}
         tooltipDataAttrs={() => ({} as any)}
-        style={{ padding: 0, marginTop: -30 }}
+        style={{ padding: 0, marginTop: -20 }}
         endDate={new Date()}
         getMonthLabel={
           breakpoints.md ? undefined : (m) => dayjs().month(m).format("MMM")[0]
@@ -533,6 +534,97 @@ const DayChart = ({ data }) => {
   );
 };
 
+function MemberSince() {
+  const theme = useColorTheme();
+  const { session } = useUser();
+
+  return (
+    <View
+      style={[
+        cardStyles.container,
+        {
+          backgroundColor: theme[3],
+          borderColor: theme[5],
+          marginBottom: 20,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 20,
+          padding: 20,
+        },
+      ]}
+    >
+      <LinearGradient
+        colors={[theme[2], theme[1]]}
+        style={{
+          borderWidth: 2,
+          borderColor: theme[11],
+          width: 70,
+          height: 70,
+          borderRadius: 99,
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <View style={{ marginTop: -7, marginLeft: -10 }}>
+          <Logo size={50} />
+        </View>
+        <LinearGradient
+          colors={[theme[8], theme[9]]}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            width: 40,
+            height: 70,
+            marginBottom: -15,
+            transform: [{ rotate: "45deg" }],
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              color: theme[2],
+              marginLeft: -6,
+              fontSize: 20,
+              transform: [{ rotate: "-45deg" }],
+            }}
+          >
+            &rsquo;{dayjs(session.createdAt).format("YY")}
+          </Text>
+        </LinearGradient>
+      </LinearGradient>
+      <Text
+        style={{
+          fontSize: 30,
+          color: theme[11],
+          // align image children with text
+        }}
+        weight={200}
+      >
+        You've been a member since{" "}
+        {dayjs(session.createdAt).format("MMMM YYYY")} &mdash; thank you{" "}
+        <Text
+          style={{
+            verticalAlign: "top",
+          }}
+        >
+          <Emoji
+            emoji="1F499"
+            size={25}
+            style={{
+              transform: [{ translateY: -5 }],
+            }}
+          />
+        </Text>
+      </Text>
+    </View>
+  );
+}
+
 export default function Page() {
   const { data, error } = useSWR(["user/insights"]);
   const { session } = useUser();
@@ -587,6 +679,7 @@ export default function Page() {
               <Co2 data={data} />
               <TasksCreated data={data} />
             </View>
+            <MemberSince />
             <Activity data={data} />
             <LabelChart data={data} />
             <View
