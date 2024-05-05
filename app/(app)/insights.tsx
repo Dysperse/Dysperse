@@ -605,7 +605,7 @@ function MemberSince() {
               transform: [{ rotate: "-45deg" }],
             }}
           >
-            &rsquo;{dayjs(session.createdAt).format("YY")}
+            &rsquo;{dayjs(session.user.createdAt).format("YY")}
           </Text>
         </LinearGradient>
       </LinearGradient>
