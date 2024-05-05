@@ -602,13 +602,12 @@ function MemberSince() {
         style={{
           fontSize: 30,
           color: theme[11],
-          // align image children with text
         }}
         weight={200}
       >
-        {capitalizeFirstLetter(session.user.profile.name.split(" ")[0])}, you've
-        been a member since {dayjs(session.createdAt).format("MMMM YYYY")}{" "}
-        &mdash; thank you{" "}
+        {capitalizeFirstLetter(session?.user?.profile?.name?.split(" ")?.[0])},
+        you've been a member since{" "}
+        {dayjs(session.createdAt).format("MMMM YYYY")} &mdash; thank you{" "}
         <Text
           style={{
             verticalAlign: "top",
