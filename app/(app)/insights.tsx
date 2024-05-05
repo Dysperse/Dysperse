@@ -15,6 +15,7 @@ import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -605,8 +606,9 @@ function MemberSince() {
         }}
         weight={200}
       >
-        You've been a member since{" "}
-        {dayjs(session.createdAt).format("MMMM YYYY")} &mdash; thank you{" "}
+        {capitalizeFirstLetter(session.user.profile.name.split(" ")[0])}, you've
+        been a member since {dayjs(session.createdAt).format("MMMM YYYY")}{" "}
+        &mdash; thank you{" "}
         <Text
           style={{
             verticalAlign: "top",
