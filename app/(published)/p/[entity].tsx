@@ -327,12 +327,12 @@ export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const { height } = useWindowDimensions();
   const params = useLocalSearchParams();
-  const { data, isLoading, error } = useSWR(
-    ["published", { id: params.entity }],
-    { refreshInterval: 4000 }
-  );
+  const { data, isLoading, error } = useSWR([
+    "published",
+    { id: params.entity },
+  ]);
 
-  if (!params.entity) return <ErrorPage />;
+  if (!params.entity || error) return <ErrorPage />;
 
   return (
     <PublishedEntityContext.Provider value={{ data }}>

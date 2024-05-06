@@ -16,20 +16,17 @@ function Agenda() {
   const params = useLocalSearchParams();
   const { type, start, end } = usePlannerContext();
 
-  const { data, mutate, error } = useSWR(
-    [
-      "space/collections/collection/planner",
-      {
-        start: start.toISOString(),
-        end: end.toISOString(),
-        type,
-        timezone: dayjs.tz.guess(),
-        id: params.id,
-        ...(params.id === "all" && { all: true }),
-      },
-    ],
-    { refreshInterval: 1000 * 60 }
-  );
+  const { data, mutate, error } = useSWR([
+    "space/collections/collection/planner",
+    {
+      start: start.toISOString(),
+      end: end.toISOString(),
+      type,
+      timezone: dayjs.tz.guess(),
+      id: params.id,
+      ...(params.id === "all" && { all: true }),
+    },
+  ]);
 
   const column =
     typeof data?.find === "function"
