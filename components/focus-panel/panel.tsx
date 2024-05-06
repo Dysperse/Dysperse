@@ -177,9 +177,7 @@ function Quotes({ widget, menuActions }) {
 
 function RenderWidget({ widget, index }) {
   const { sessionToken } = useUser();
-  const { data, mutate, error } = useSWR(["user/focus-panel"], null, {
-    refreshInterval: 1000 * 60,
-  });
+  const { data, mutate, error } = useSWR(["user/focus-panel"], null);
 
   const handleWidgetEdit = async (key, value) => {
     try {
@@ -288,9 +286,7 @@ function PanelContent() {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
 
-  const { data } = useSWR(["user/focus-panel"], null, {
-    refreshInterval: 1000 * 60,
-  });
+  const { data } = useSWR(["user/focus-panel"], null);
 
   const Wrapper = breakpoints.md
     ? Fragment

@@ -60,10 +60,7 @@ export const UpNext = ({ widget, menuActions }) => {
         id: "-",
       },
     ],
-    {
-      refreshInterval: 1000 * 60 * 1,
-      refreshWhenHidden: true,
-    }
+    { refreshInterval: 1000 * 60 * 1 }
   );
 
   const today = data?.find((col) =>
