@@ -6,6 +6,7 @@ import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { CameraType } from "expo-camera/build/Camera.types";
 import { CameraView, useCameraPermissions } from "expo-camera/next";
 import * as Device from "expo-device";
 import { router } from "expo-router";
@@ -30,8 +31,6 @@ export default function Page() {
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
   const [isLoading, setIsLoading] = useState(false);
-
-  const [facing, setFacing] = useState("back");
 
   if (!permission) {
     // Camera permissions are still loading
@@ -95,9 +94,6 @@ export default function Page() {
       setIsLoading(false);
     }
   };
-  function toggleCameraFacing() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  }
 
   return (
     <SettingsLayout noScroll hideBack>
@@ -124,18 +120,12 @@ export default function Page() {
           <Text weight={700}>Scan QR Code</Text>
           <View style={{ marginLeft: "auto", marginRight: 20 }}>
             {isLoading && <Spinner />}
-            <IconButton
-              onPress={toggleCameraFacing}
-              variant="outlined"
-              size={55}
-              icon="camera_rear"
-            />
           </View>
         </View>
         <View style={{ flex: 1, position: "relative" }}>
           <CameraView
             style={styles.camera}
-            facing={facing}
+            facing={CameraType.back}
             barcodeScannerSettings={{
               barcodeTypes: ["qr"],
             }}
