@@ -262,10 +262,10 @@ export default function SignIn() {
                 },
               ]}
             >
-              <Text weight={600} style={[styles.title, { color: theme[11] }]}>
+              <Text weight={700} style={[styles.title, { color: theme[11] }]}>
                 Sign in
               </Text>
-              <Text weight={300} style={authStyles.subtitleContainer}>
+              <Text style={authStyles.subtitleContainer}>
                 Use your Dysperse ID to continue
               </Text>
               <View style={{ gap: 10 }}>
@@ -361,10 +361,10 @@ export default function SignIn() {
         ) : step === 1 ? (
           <View style={authStyles.container}>
             <View style={{ marginVertical: "auto", gap: 10 }}>
-              <Text weight={600} style={[styles.title, { color: theme[11] }]}>
+              <Text style={[styles.title, { color: theme[11] }]}>
                 Verifying...
               </Text>
-              <Text weight={300} style={authStyles.subtitleContainer}>
+              <Text style={authStyles.subtitleContainer}>
                 Are you a human!? Let's find out...
               </Text>
               <Turnstile setToken={setToken} />
@@ -376,7 +376,6 @@ export default function SignIn() {
               <Text weight={600} style={[styles.title, { color: theme[11] }]}>
                 Are you{" "}
                 <Text
-                  weight={600}
                   style={[
                     styles.title,
                     { color: theme[11], fontStyle: "italic" },
@@ -386,7 +385,7 @@ export default function SignIn() {
                 </Text>
                 ?
               </Text>
-              <Text weight={300} style={authStyles.subtitleContainer}>
+              <Text style={authStyles.subtitleContainer}>
                 Enter the code from your authenticator app
               </Text>
 
