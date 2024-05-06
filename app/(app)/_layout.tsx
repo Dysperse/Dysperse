@@ -1,34 +1,20 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
 import { FocusPanelProvider } from "@/components/focus-panel/context";
 import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
-import LabelPicker from "@/components/labels/picker";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
+import { SessionLoadingScreen } from "@/components/layout/loading";
 import Sidebar from "@/components/layout/sidebar";
 import { useSession } from "@/context/AuthProvider";
-import {
-  SelectionContextProvider,
-  useSelectionContext,
-} from "@/context/SelectionContext";
-import {
-  StorageContextProvider,
-  useStorageContext,
-} from "@/context/storageContext";
+import { SelectionContextProvider } from "@/context/SelectionContext";
+import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
-import { sendApiRequest } from "@/helpers/api";
-import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
-import ConfirmationModal from "@/ui/ConfirmationModal";
-import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
-import Text from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import Logo from "@/ui/logo";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { Portal, PortalProvider } from "@gorhom/portal";
+import { PortalProvider } from "@gorhom/portal";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
 import dayjs from "dayjs";
@@ -41,17 +27,14 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
-import { BlurView } from "expo-blur";
 import * as NavigationBar from "expo-navigation-bar";
 import { Redirect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Platform,
   Pressable,
   StatusBar,
-  TextStyle,
   View,
-  ViewStyle,
   useWindowDimensions,
 } from "react-native";
 import { Drawer, useDrawerProgress } from "react-native-drawer-layout";
@@ -59,9 +42,7 @@ import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
-  ScrollView,
 } from "react-native-gesture-handler";
-import Markdown from "react-native-markdown-display";
 import { MenuProvider } from "react-native-popup-menu";
 import Animated, {
   interpolate,
@@ -71,7 +52,9 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
-import useSWR, { useSWRConfig } from "swr";
+import { LoadingErrors } from "../../components/layout/LoadingErrors";
+import { ReleaseModal } from "../../components/layout/ReleaseModal";
+import { SelectionNavbar } from "../../components/layout/SelectionNavbar";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
 
 dayjs.extend(customParseFormat);
@@ -83,24 +66,6 @@ dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
 dayjs.extend(weekday);
 dayjs.extend(isToday);
-
-export function SessionLoadingScreen() {
-  const theme = useColorTheme();
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: theme[2],
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 20,
-      }}
-    >
-      <Logo size={150} />
-    </View>
-  );
-}
 
 const AppContainer = ({ children }) => {
   const theme = useColorTheme();
@@ -148,382 +113,6 @@ const AppContainer = ({ children }) => {
       {children}
     </Animated.View>
   );
-};
-
-const ReleaseModal = () => {
-  const { session, mutate, sessionToken } = useUser();
-  const theme = useColorTheme();
-  const isDark = useDarkMode();
-  const { data } = useSWR("releases", {
-    fetcher: () =>
-      fetch(
-        `https://api.github.com/repos/dysperse/API/releases?per_page=1`
-      ).then((res) => res.json()),
-  });
-
-  const handleDone = () => {
-    mutate(
-      (d) => {
-        return {
-          ...d,
-          user: { ...d.user, lastReleaseVersionViewed: data?.[0]?.id },
-        };
-      },
-      {
-        revalidate: false,
-      }
-    );
-    sendApiRequest(
-      sessionToken,
-      "PUT",
-      "user/account",
-      {},
-      { body: JSON.stringify({ lastReleaseVersionViewed: data?.[0]?.id }) }
-    );
-  };
-
-  return (
-    data &&
-    data?.[0]?.id &&
-    session?.user?.lastReleaseVersionViewed !== data?.[0]?.id && (
-      <Portal>
-        <BlurView
-          tint={
-            isDark
-              ? "systemUltraThinMaterialDark"
-              : "systemUltraThinMaterialLight"
-          }
-          intensity={50}
-          style={[
-            {
-              zIndex: 99,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0,0,0,0.5)",
-              alignItems: "center",
-              justifyContent: "center",
-            },
-            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-          ]}
-        >
-          <Button
-            icon="done"
-            text="Got it!"
-            variant="filled"
-            large
-            style={({ pressed, hovered }) => ({
-              position: "absolute",
-              top: 20,
-              right: 20,
-              zIndex: 99,
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
-            onPress={handleDone}
-          />
-          <ScrollView
-            style={{
-              width: "100%",
-              padding: 20,
-              maxWidth: 700,
-              paddingVertical: 100,
-            }}
-            showsVerticalScrollIndicator={false}
-          >
-            <Text style={{ fontSize: 50, color: theme[11] }} weight={900}>
-              What's new!?
-            </Text>
-            <Text
-              style={{ fontSize: 33, color: theme[11], opacity: 0.6 }}
-              weight={500}
-            >
-              {data?.[0]?.name} &bull;{" "}
-              {dayjs(data?.[0]?.published_at).fromNow()}
-            </Text>
-            <Markdown
-              style={{
-                body: {
-                  color: theme[11],
-                  fontFamily: "body_400",
-                  fontSize: 15,
-                },
-                heading1: { fontFamily: "body_800", fontSize: 30 },
-                heading2: { fontFamily: "body_800", fontSize: 27 },
-                heading3: {
-                  fontFamily: "body_800",
-                  marginTop: 20,
-                  fontSize: 24,
-                },
-              }}
-            >
-              {data?.[0]?.body?.split("<!--dysperse-changelog-end-->")?.[0] ||
-                ""}
-            </Markdown>
-          </ScrollView>
-        </BlurView>
-      </Portal>
-    )
-  );
-};
-
-const LoadingErrors = () => {
-  const red = useColor("red");
-  const theme = useColorTheme();
-  const { error } = useUser();
-  const { error: storageError } = useStorageContext();
-  const insets = useSafeAreaInsets();
-
-  return (
-    (error || storageError) && (
-      <View
-        style={[
-          {
-            backgroundColor: theme[11],
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            height: 30 + insets.top,
-            gap: 10,
-          },
-        ]}
-      >
-        <Icon style={{ color: red[2] }} bold size={18}>
-          cloud_off
-        </Icon>
-        <Text
-          style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
-          weight={700}
-        >
-          {error
-            ? error.message === "Failed to fetch"
-              ? "You're offline"
-              : "Can't connect to Dysperse"
-            : "Can't load storage data"}
-        </Text>
-      </View>
-    )
-  );
-};
-
-const SelectionNavbar = () => {
-  const { mutate } = useSWRConfig();
-  const { session } = useSession();
-  const { width } = useWindowDimensions();
-  const { selection, setSelection } = useSelectionContext();
-  const blue = useColor("blue");
-  const breakpoints = useResponsiveBreakpoints();
-
-  const barWidth = breakpoints.md ? 440 : width;
-  const clearSelection = useCallback(() => setSelection([]), [setSelection]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSelect = useCallback(
-    async (t, shouldClear = false) => {
-      try {
-        setIsLoading(true);
-        await sendApiRequest(
-          session,
-          "PUT",
-          "space/entity",
-          {},
-          {
-            body: JSON.stringify({ id: selection, ...t }),
-          }
-        );
-        await mutate(() => true);
-        if (shouldClear) clearSelection();
-      } catch (e) {
-        Toast.show({ type: "error" });
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [selection, clearSelection, mutate, session]
-  );
-
-  useHotkeys("Escape", clearSelection, {
-    enabled: selection.length > 0,
-  });
-  const isDark = useDarkMode();
-
-  const [pinned, setPinned] = useState(true);
-
-  const itemStyle: ViewStyle = breakpoints.md
-    ? undefined
-    : {
-        alignItems: "center",
-        width: 90,
-        gap: 5,
-      };
-
-  const textStyle: TextStyle = {
-    color: blue[11],
-    fontSize: 12,
-    textAlign: "center",
-    fontFamily: "body_800",
-  };
-
-  const marginStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        translateY: withSpring(
-          selection.length > 0 ? 0 : breakpoints.md ? -84 : 140,
-          {
-            damping: 100,
-            stiffness: 400,
-          }
-        ),
-      },
-    ],
-  }));
-
-  return selection.length > 0 ? (
-    <Portal>
-      <ColorThemeProvider theme={blue}>
-        <Animated.View
-          style={[
-            marginStyle,
-            {
-              zIndex: 999999,
-              height: breakpoints.md ? 64 : 140,
-              overflow: "hidden",
-              borderRadius: 25,
-              width: barWidth,
-              position: "absolute",
-              top: 0,
-              left: (width - barWidth) / 2,
-              marginTop: breakpoints.md ? 20 : 0,
-            },
-            !breakpoints.md && {
-              bottom: 0,
-              left: 0,
-              top: "auto",
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-            },
-          ]}
-        >
-          <BlurView
-            intensity={40}
-            tint={isDark ? "dark" : "prominent"}
-            style={{ height: breakpoints.md ? 64 : 140 }}
-          >
-            <View
-              style={[
-                {
-                  backgroundColor: addHslAlpha(blue[4], 0.5),
-                  flexDirection: "row",
-                  gap: 10,
-                  paddingHorizontal: 10,
-                  paddingRight: 15,
-                  height: "100%",
-                  alignItems: "center",
-                },
-                !breakpoints.md && {
-                  height: 140,
-                  paddingTop: 10,
-                  gap: 0,
-                  flexDirection: "column",
-                  paddingHorizontal: 0,
-                  paddingRight: 0,
-                  alignItems: "flex-start",
-                  justifyContent: "center",
-                },
-              ]}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingLeft: 10,
-                }}
-              >
-                <IconButton icon="close" size={50} onPress={clearSelection} />
-                <View style={{ flexGrow: 1 }}>
-                  <Text weight={900} style={{ fontSize: 20 }}>
-                    {selection.length} selected
-                  </Text>
-                  {isLoading && (
-                    <Text style={{ opacity: 0.6, fontSize: 12 }}>
-                      Processing...
-                    </Text>
-                  )}
-                </View>
-              </View>
-              <ScrollView
-                style={{
-                  flexDirection: "row",
-                  width: "100%",
-                }}
-                showsHorizontalScrollIndicator={false}
-                horizontal
-              >
-                <View style={itemStyle}>
-                  <IconButton
-                    variant={breakpoints.md ? "text" : "outlined"}
-                    disabled={isLoading}
-                    onPress={() => {
-                      setPinned((t) => !t);
-                      handleSelect({ pinned });
-                    }}
-                    icon={<Icon filled={pinned}>push_pin</Icon>}
-                    size={45}
-                  />
-                  {!breakpoints.md && (
-                    <Text style={textStyle}>{pinned ? "Unpin" : "Pin"}</Text>
-                  )}
-                </View>
-                <View style={itemStyle}>
-                  <LabelPicker
-                    setLabel={(e: any) => handleSelect({ labelId: e.id })}
-                    autoFocus
-                  >
-                    <IconButton
-                      variant={breakpoints.md ? "text" : "outlined"}
-                      disabled={isLoading}
-                      icon="new_label"
-                      size={45}
-                    />
-                  </LabelPicker>
-                  {!breakpoints.md && <Text style={textStyle}>Label</Text>}
-                </View>
-                <View style={itemStyle}>
-                  <IconButton
-                    variant={breakpoints.md ? "text" : "outlined"}
-                    disabled={isLoading}
-                    icon="today"
-                    size={45}
-                  />
-                  {!breakpoints.md && <Text style={textStyle}>Schedule</Text>}
-                </View>
-                <View style={itemStyle}>
-                  <ConfirmationModal
-                    onSuccess={() => handleSelect({ trash: true }, true)}
-                    title={`Move ${selection.length} item${
-                      selection.length === 1 ? "" : "s"
-                    } to trash?`}
-                    height={400}
-                    skipLoading
-                    secondary="You can undo this later"
-                  >
-                    <IconButton
-                      variant={breakpoints.md ? "text" : "outlined"}
-                      disabled={isLoading}
-                      icon="delete"
-                      size={45}
-                    />
-                  </ConfirmationModal>
-                  {!breakpoints.md && <Text style={textStyle}>Delete</Text>}
-                </View>
-              </ScrollView>
-            </View>
-          </BlurView>
-        </Animated.View>
-      </ColorThemeProvider>
-    </Portal>
-  ) : null;
 };
 
 export default function AppLayout() {
@@ -771,7 +360,6 @@ export default function AppLayout() {
                                         ...TransitionPresets.SlideFromRightIOS,
                                         gestureResponseDistance: width,
                                         cardStyleInterpolator: forHorizontalIOS,
-                                        // cardStyle: { marginBottom: 0 },
                                       }}
                                     />
                                   ))}
