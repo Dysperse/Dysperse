@@ -157,21 +157,9 @@ function SettingsSidebar() {
           href: "/settings/other/apps",
         },
         {
-          name: "Terms of Service",
-          icon: "info",
-          callback: () =>
-            Linking.openURL("https://blog.dysperse.com/terms-of-service"),
-        },
-        {
-          name: "Privacy Policy",
-          icon: "info",
-          callback: () =>
-            Linking.openURL("https://blog.dysperse.com/privacy-policy"),
-        },
-        {
-          name: "Open Source",
-          icon: "open_in_new",
-          callback: () => Linking.openURL("https://github.com/Dysperse"),
+          name: "Keybinds",
+          icon: "keyboard_command_key",
+          href: "/settings/shortcuts",
         },
         {
           name: "Restart app",
@@ -187,6 +175,33 @@ function SettingsSidebar() {
               Updates.reloadAsync();
             }
           },
+        },
+      ],
+    },
+    {
+      name: "About us",
+      settings: [
+        {
+          name: "Website",
+          icon: "captive_portal",
+          callback: () => Linking.openURL("https://dysperse.com"),
+        },
+        {
+          name: "Terms of Service",
+          icon: "info",
+          callback: () =>
+            Linking.openURL("https://blog.dysperse.com/terms-of-service"),
+        },
+        {
+          name: "Privacy Policy",
+          icon: "info",
+          callback: () =>
+            Linking.openURL("https://blog.dysperse.com/privacy-policy"),
+        },
+        {
+          name: "Open Source",
+          icon: "open_in_new",
+          callback: () => Linking.openURL("https://github.com/Dysperse"),
         },
       ],
     },

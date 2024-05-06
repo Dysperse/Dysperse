@@ -731,6 +731,7 @@ export default function AppLayout() {
                                     "settings/login/devices",
                                     "settings/customization/profile",
                                     "settings/index",
+                                    "settings/shortcuts",
                                     "settings/personal-information",
                                     "settings/space/index",
                                     "settings/other/apps",
