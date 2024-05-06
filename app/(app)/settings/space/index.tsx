@@ -57,6 +57,7 @@ function SpaceStorage({ data }) {
           borderRadius: 20,
           borderWidth: 1,
           padding: 5,
+          marginTop: 5,
           borderColor: theme[5],
         }}
       >
@@ -145,6 +146,7 @@ function GeneralSettings({ mutate, data }) {
       </Text>
       <View
         style={{
+          marginTop: 5,
           padding: 5,
           borderWidth: 1,
           borderColor: theme[5],
