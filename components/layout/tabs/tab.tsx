@@ -13,7 +13,6 @@ import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
-import useSWR from "swr";
 import { useTabMetadata } from "./useTabMetadata";
 
 const styles = StyleSheet.create({
@@ -39,6 +38,8 @@ function Tab({
   selected = false,
   handleClose = () => {},
   onLongPress = () => {},
+  tabs,
+  mutate,
 }: {
   tab: any;
   disabled?: boolean;
@@ -46,17 +47,18 @@ function Tab({
   selected?: boolean;
   handleClose?: () => void;
   onLongPress?: () => void;
+  tabs: any;
+  mutate: any;
 }) {
   const theme = useColorTheme();
   const tabData = useTabMetadata(tab.slug, tab);
   const { sessionToken } = useUser();
-  const { data, error, mutate } = useSWR(["user/tabs"]);
   const { closeSidebarOnMobile } = useSidebarContext();
 
   const handleDelete = useCallback(
     async (id: string) => {
       try {
-        if (error || !data) {
+        if (!tabs) {
           return Toast.show({
             type: "error",
             text1: "Couldn't load tabs. Please try again later.",
@@ -64,8 +66,8 @@ function Tab({
         }
         setIsClosedAnimation(true);
         // get last tab
-        const tab = data.findIndex((tab: any) => tab.id === id);
-        const lastTab = data[tab - 1] || data[tab + 1];
+        const tab = tabs.findIndex((tab: any) => tab.id === id);
+        const lastTab = tabs[tab - 1] || tabs[tab + 1];
         if (lastTab) {
           router.replace({
             params: {
@@ -92,7 +94,7 @@ function Tab({
         console.log(err);
       }
     },
-    [mutate, sessionToken, data, error]
+    [mutate, sessionToken, tabs, mutate]
   );
 
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);

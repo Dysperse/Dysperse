@@ -226,7 +226,7 @@ const WebPWAInstallButton = () => {
 
 const OpenTabsList = memo(function OpenTabsList() {
   const { tab }: { tab: string } = useTabParams() as any;
-  const { data, error } = useSWR(["user/tabs"], { refreshInterval: 60000 });
+  const { data, error ,mutate} = useSWR(["user/tabs"], { refreshInterval: 60000 });
 
   const handleSnapToIndex = (index: number) => {
     if (error)
@@ -308,7 +308,7 @@ const OpenTabsList = memo(function OpenTabsList() {
                   padding: 1,
                 }}
               >
-                <Tab tab={item} selected={tab === item.id} />
+                <Tab tab={item} tabs={data} mutate={mutate} selected={tab === item.id} />
               </View>
             )}
             style={{ backgroundColor: theme[2] }}
