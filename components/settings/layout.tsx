@@ -58,7 +58,7 @@ function SettingsSidebar() {
 
   const settingsOptions = [
     {
-      name: "Space settings",
+      name: "Account",
       settings: [
         {
           name: "Space",
