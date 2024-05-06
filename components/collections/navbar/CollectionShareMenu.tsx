@@ -455,9 +455,7 @@ const CollectionShareLink = ({ isReadOnly, collection }) => {
             </View>
           </Menu>
         )}
-        <IconButton variant="outlined" size={40}>
-          <Icon>content_copy</Icon>
-        </IconButton>
+        <IconButton variant="outlined" size={40} icon="content_copy" />
       </ListItemButton>
     </>
   );

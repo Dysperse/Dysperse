@@ -2,106 +2,22 @@ import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar, ProfilePicture } from "@/ui/Avatar";
+import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View } from "react-native";
-import Collapsible from "react-native-collapsible";
 import { useSharedValue } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-
-function SpaceHeader({ data }) {
-  const spaceTheme = useColor(data?.color);
-  const breakpoints = useResponsiveBreakpoints();
-
-  return (
-    <LinearGradient
-      colors={[spaceTheme[9], spaceTheme[11], spaceTheme[10]]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{
-        borderRadius: 25,
-        height: 200,
-        marginTop: 10,
-        justifyContent: "flex-end",
-        padding: 20,
-      }}
-    >
-      <Text
-        weight={700}
-        numberOfLines={2}
-        style={{ fontSize: breakpoints.md ? 40 : 30, color: spaceTheme[1] }}
-      >
-        {data.name}
-      </Text>
-      <Text style={{ color: spaceTheme[1], opacity: 0.7 }} weight={700}>
-        {data.members?.length} member{data.members?.length === 1 ? "" : "s"}
-      </Text>
-    </LinearGradient>
-  );
-}
-
-function SpaceMembers({ data }) {
-  return (
-    <>
-      {data.members.map((member) => (
-        <ListItemButton
-          key={member.id}
-          disabled
-          style={{ paddingHorizontal: 0 }}
-        >
-          <ProfilePicture
-            image={member.user.profile.picture}
-            name={member.user.profile.name}
-            size={40}
-          />
-          <ListItemText
-            primary={member.user.profile.name}
-            secondary={capitalizeFirstLetter(member.access.toLowerCase())}
-          />
-          <MenuPopover
-            trigger={<IconButton icon="more_horiz" variant="outlined" />}
-            options={[
-              ...["View only", "Member", "Owner"].map((access) => ({
-                text: access,
-                callback: () => {},
-                selected: member.access === access.toUpperCase(),
-              })),
-              { divider: true, key: "divider" },
-              {
-                icon: "remove_circle",
-                text: "Remove",
-                callback: () => {},
-                disabled: member.access === "OWNER",
-              },
-            ]}
-          />
-        </ListItemButton>
-      ))}
-      <ListItemButton disabled style={{ paddingHorizontal: 0, opacity: 0.6 }}>
-        <Avatar icon="add" size={40} />
-        <ListItemText primary="Invite member" secondary="Coming soon!" />
-      </ListItemButton>
-      <ListItemButton disabled style={{ paddingHorizontal: 0, opacity: 0.6 }}>
-        <Avatar icon="link" size={40} />
-        <ListItemText primary="Copy invite link" secondary="Coming soon!" />
-      </ListItemButton>
-    </>
-  );
-}
 
 function SpaceStorage({ data }) {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -111,11 +27,9 @@ function SpaceStorage({ data }) {
     isOpen.value = isCollapsed ? 1 : 1;
   };
   const theme = useColorTheme();
-  // const orange = useColor("orange");
 
   return (
     <>
-      {/* bruh */}
       {/* <View
         style={{
           alignItems: "center",
@@ -148,20 +62,25 @@ function SpaceStorage({ data }) {
       </View> */}
       <View
         style={{
-          backgroundColor: theme[isCollapsed ? 2 : 3],
           borderRadius: 20,
-          paddingHorizontal: 10,
-          marginHorizontal: -10,
           borderWidth: 1,
-          borderColor: theme[isCollapsed ? 4 : 3],
+          padding: 5,
+          borderColor: theme[5],
         }}
       >
         <ListItemButton
           onPress={handleToggle}
-          style={{ paddingHorizontal: 0, backgroundColor: "transparent" }}
+          style={{ backgroundColor: "transparent" }}
         >
-          <Avatar icon="storage" size={40} />
           <ListItemText
+            style={{ paddingVertical: 20 }}
+            primaryProps={{
+              style: { textAlign: "center", fontSize: 25 },
+              weight: 900,
+            }}
+            secondaryProps={{
+              style: { textAlign: "center", fontSize: 20, opacity: 0.5 },
+            }}
             primary={`${-~(
               (data.storage?.used / data.storage?.limit) *
               100
@@ -170,15 +89,12 @@ function SpaceStorage({ data }) {
               data.storage?.limit
             } credits left`}
           />
-          <IconButton
-            icon="expand_more"
-            variant="outlined"
-            onPress={handleToggle}
-          />
         </ListItemButton>
-        <Collapsible
-          collapsed={isCollapsed}
+        <Divider style={{ height: 1 }} />
+        <View
           style={{
+            marginVertical: 10,
+            display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
           }}
@@ -190,11 +106,7 @@ function SpaceStorage({ data }) {
             { name: "labels", icon: "label" },
             { name: "collections", icon: "shapes" },
           ].map(({ name, icon }) => (
-            <ListItemButton
-              key={name}
-              disabled
-              style={{ paddingHorizontal: 0, width: "50%" }}
-            >
+            <ListItemButton key={name} disabled style={{ width: "50%" }}>
               <Avatar icon={icon} size={40} />
               <ListItemText
                 primary={`${~~parseInt(
@@ -205,7 +117,7 @@ function SpaceStorage({ data }) {
               />
             </ListItemButton>
           ))}
-        </Collapsible>
+        </View>
       </View>
     </>
   );
@@ -235,12 +147,21 @@ function GeneralSettings({ mutate, data }) {
     }
   };
 
+  const theme = useColorTheme();
+
   return (
     <>
       <Text style={settingStyles.heading} weight={700}>
         General
       </Text>
-      <View style={{ marginHorizontal: -15 }}>
+      <View
+        style={{
+          padding: 5,
+          borderWidth: 1,
+          borderColor: theme[5],
+          borderRadius: 25,
+        }}
+      >
         <ListItemButton disabled onPress={() => {}}>
           <ListItemText
             primary="Week start"
@@ -282,32 +203,21 @@ function GeneralSettings({ mutate, data }) {
 }
 
 export default function Page() {
-  const { session, sessionToken } = useUser();
+  const { session } = useUser();
   const { data, mutate, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
-
-  const spaceTheme = useColor(data?.color);
 
   return (
     <SettingsLayout>
       <Text style={settingStyles.title}>Space</Text>
       {data ? (
         <>
-          <ColorThemeProvider theme={spaceTheme}>
-            <SpaceHeader data={data} />
-          </ColorThemeProvider>
-          <View style={{ paddingHorizontal: 15 }}>
-            <Text style={settingStyles.heading} weight={700}>
-              Storage
-            </Text>
-            <SpaceStorage data={data} />
-            <GeneralSettings data={data} mutate={mutate} />
-            <Text style={settingStyles.heading} weight={700}>
-              Members
-            </Text>
-            <SpaceMembers data={data} />
-          </View>
+          <Text style={settingStyles.heading} weight={700}>
+            Storage
+          </Text>
+          <SpaceStorage data={data} />
+          <GeneralSettings data={data} mutate={mutate} />
         </>
       ) : error ? (
         <ErrorAlert />
