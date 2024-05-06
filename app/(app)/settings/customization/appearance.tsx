@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
   },
   button: { height: 80 },
   themeCardIcon: { textAlign: "center" },
-  cardTitle: { fontSize: 25 },
-  cardDescription: { opacity: 0.7, maxWidth: 300 },
+  cardTitle: { fontSize: 30 },
+  cardDescription: { opacity: 0.5, fontSize: 20, fontFamily: "body_300" },
 });
 
 const themePickerStyles = StyleSheet.create({
@@ -288,60 +288,6 @@ export default function Page() {
       <Text style={settingStyles.title}>Appearance</Text>
 
       <Text style={settingStyles.heading}>Color</Text>
-      <LinearGradient
-        colors={[
-          orange[9],
-          tomato[9],
-          red[9],
-          pink[9],
-          purple[9],
-          indigo[9],
-          blue[9],
-          cyan[9],
-          jade[9],
-        ]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{
-          borderRadius: 20,
-          padding: 25,
-          marginBottom: 20,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 20,
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <Text
-            variant="eyebrow"
-            style={{ textAlign: "center", color: "rgba(255,255,255,.9)" }}
-          >
-            LAUNCH DAY SPECIAL
-          </Text>
-          <Text
-            style={{
-              fontSize: 25,
-              textAlign: "center",
-              color: "rgba(255,255,255,.9)",
-            }}
-            weight={900}
-          >
-            Preview all themes until April 30th, 2024.
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              textAlign: "center",
-              color: "rgba(255,255,255,.9)",
-            }}
-            weight={200}
-          >
-            After 30 days, the theme you select will be reset. You can earn more
-            by achieving in-app milestones.
-          </Text>
-        </View>
-      </LinearGradient>
       <ThemePicker>
         <Pressable
           style={({ pressed, hovered }) => [
