@@ -103,7 +103,7 @@ const JumpToButton = memo(function JumpToButton() {
 
   useHotkeys(["ctrl+/"], (e) => {
     e.preventDefault();
-    router.push("/shortcuts");
+    router.push("/settings/shortcuts");
   });
 
   return (
