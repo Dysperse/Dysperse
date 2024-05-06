@@ -733,11 +733,11 @@ export default function AppLayout() {
                                     "settings/index",
                                     "settings/shortcuts",
                                     "settings/personal-information",
-                                    "settings/space/index",
+                                    "settings/account/index",
                                     "settings/other/apps",
-                                    "settings/space/integrations/index",
-                                    "settings/space/integrations/[name]/index",
-                                    "settings/space/integrations/[name]/[id]",
+                                    "settings/account/integrations/index",
+                                    "settings/account/integrations/[name]/index",
+                                    "settings/account/integrations/[name]/[id]",
                                   ].map((d) => (
                                     <JsStack.Screen
                                       name={d}

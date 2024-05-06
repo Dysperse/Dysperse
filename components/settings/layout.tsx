@@ -63,13 +63,13 @@ function SettingsSidebar() {
         {
           name: "Space",
           icon: "communities",
-          href: "/settings/space",
+          href: "/settings/account",
           keywords: ["space", "community", "communities"],
         },
         {
           name: "Integrations",
           icon: "interests",
-          href: "/settings/space/integrations",
+          href: "/settings/account/integrations",
           keywords: [
             "integrations",
             "services",

@@ -46,7 +46,7 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
       <Pressable
         onHoverIn={() => setIsHovered(true)}
         onHoverOut={() => setIsHovered(false)}
-        onPress={() => router.push("/settings/space")}
+        onPress={() => router.push("/settings/account")}
         style={({ pressed, hovered }) => ({
           backgroundColor: alertTheme[pressed ? 7 : hovered ? 6 : 5],
           padding: 15,

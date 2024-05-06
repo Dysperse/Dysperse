@@ -4,7 +4,7 @@ import { Redirect } from "expo-router";
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
-  if (breakpoints.md) return <Redirect href="/settings/space" />;
+  if (breakpoints.md) return <Redirect href="/settings/account" />;
 
   return <SettingsLayout />;
 }

@@ -292,7 +292,7 @@ const Outro = ({
               variant="filled"
               icon="done"
               text="Finish setup"
-              onPress={() => router.replace("/settings/space/integrations")}
+              onPress={() => router.replace("/settings/account/integrations")}
             />
           </View>
         </>
@@ -421,10 +421,10 @@ function OauthRedirect({ integration }) {
   const { session } = useSession();
   const handleOpen = () =>
     WebBrowser.openAuthSessionAsync(
-      `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${integration.slug}`,
+      `${process.env.EXPO_PUBLIC_API_URL}/account/integrations/redirect?session=${session}&id=${integration.slug}`,
       // `${process.env.EXPO_PUBLIC_API_URL}/settings/space/integrations/${integration.slug}/redirect`
       Linking.createURL(
-        `/settings/space/integrations/${integration.slug}/redirect`
+        `/settings/account/integrations/${integration.slug}/redirect`
       )
     );
 
@@ -475,7 +475,7 @@ export default function Page() {
   const { data: integrations } = useSWR(["space/integrations"]);
 
   const handleBack = () => {
-    if (slide === 0) router.replace("/settings/space/integrations");
+    if (slide === 0) router.replace("/settings/account/integrations");
     else setSlide(slide - 1);
   };
 

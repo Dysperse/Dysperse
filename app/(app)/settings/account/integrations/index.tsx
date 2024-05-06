@@ -47,7 +47,7 @@ function AllIntegrations({ connected }) {
               })}
               onPress={() => {
                 router.replace(
-                  `/settings/space/integrations/${integration.slug}`
+                  `/settings/account/integrations/${integration.slug}`
                 );
               }}
               disabled={

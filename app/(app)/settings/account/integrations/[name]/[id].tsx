@@ -224,7 +224,7 @@ const CollectionsPicker = () => {
 export default function Page() {
   const { session, sessionToken } = useUser();
   const { id } = useLocalSearchParams();
-  const handleBack = () => router.replace("/settings/space/integrations");
+  const handleBack = () => router.replace("/settings/account/integrations");
   const { data, error } = useSWR(["space/integrations/about", { id }]);
   const integration = data?.[0];
 
