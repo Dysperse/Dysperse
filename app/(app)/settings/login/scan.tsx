@@ -135,7 +135,7 @@ export default function Page() {
         <View style={{ flex: 1, position: "relative" }}>
           <CameraView
             style={styles.camera}
-            facing="back"
+            facing={facing}
             barcodeScannerSettings={{
               barcodeTypes: ["qr"],
             }}
