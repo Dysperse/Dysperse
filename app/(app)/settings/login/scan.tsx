@@ -31,6 +31,8 @@ export default function Page() {
   const [permission, requestPermission] = useCameraPermissions();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [facing, setFacing] = useState("back");
+
   if (!permission) {
     // Camera permissions are still loading
     return <View />;
@@ -60,7 +62,7 @@ export default function Page() {
   const handleBarCodeScanned = async (data) => {
     try {
       const { raw } = data;
-      if (isJson(raw) && JSON.parse(raw)?.token && !isLoading) {
+      if (raw.includes("?token=") && !isLoading) {
         setIsLoading(true);
         const res = await sendApiRequest(
           session,
@@ -69,7 +71,7 @@ export default function Page() {
           {},
           {
             body: JSON.stringify({
-              token: JSON.parse(raw)?.token,
+              token: raw.split("?token=")[1],
               deviceType: Device.deviceType,
               deviceName:
                 Device.deviceName ||
@@ -93,6 +95,9 @@ export default function Page() {
       setIsLoading(false);
     }
   };
+  function toggleCameraFacing() {
+    setFacing((current) => (current === "back" ? "front" : "back"));
+  }
 
   return (
     <SettingsLayout noScroll hideBack>
@@ -119,6 +124,12 @@ export default function Page() {
           <Text weight={700}>Scan QR Code</Text>
           <View style={{ marginLeft: "auto", marginRight: 20 }}>
             {isLoading && <Spinner />}
+            <IconButton
+              onPress={toggleCameraFacing}
+              variant="outlined"
+              size={55}
+              icon="camera_rear"
+            />
           </View>
         </View>
         <View style={{ flex: 1, position: "relative" }}>

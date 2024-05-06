@@ -1,3 +1,4 @@
+import { ProfileModal } from "@/components/ProfileModal";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -345,12 +346,16 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
         size={40}
         disabled
       />
-      <ListItemText
-        primary={user.user.profile.name}
-        secondary={capitalizeFirstLetter(
-          user.access.toLowerCase().replaceAll("_", " ")
-        )}
-      />
+      <ProfileModal email={user.user.email}>
+        <Pressable style={{ flex: 1 }}>
+          <ListItemText
+            primary={user.user.profile.name}
+            secondary={capitalizeFirstLetter(
+              user.access.toLowerCase().replaceAll("_", " ")
+            )}
+          />
+        </Pressable>
+      </ProfileModal>
       {!isReadOnly && (
         <Menu
           height={[320]}
@@ -639,7 +644,12 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           />
         ))}
 
-      <BottomSheet onClose={handleClose} sheetRef={ref} snapPoints={["80%"]}>
+      <BottomSheet
+        onClose={handleClose}
+        sheetRef={ref}
+        snapPoints={["80%"]}
+        maxWidth={600}
+      >
         <View
           style={{
             paddingHorizontal: 25,

@@ -67,17 +67,18 @@ function QrLogin() {
     <View style={{ alignItems: "center", padding: 20, gap: 5 }}>
       <View
         style={{
-          backgroundColor: "white",
-          padding: 15,
+          backgroundColor: theme[5],
+          padding: 20,
           borderRadius: 20,
           marginBottom: 10,
         }}
       >
         <QRCode
-          size={200}
-          value={JSON.stringify({
-            token: data?.token,
-          })}
+          size={220}
+          logoSize={50}
+          color={theme[11]}
+          backgroundColor={theme[5]}
+          value={`https://api.dysperse.com/auth/qr?token=${data?.token}`}
         />
       </View>
       <View
