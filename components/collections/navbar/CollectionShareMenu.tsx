@@ -365,12 +365,31 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
             ].map((button) => (
               <Button
                 variant="outlined"
+                disabled={user.access === button.value}
                 key={button.value}
                 style={
-                  user.access === button.value && { backgroundColor: theme[3] }
+                  user.access === button.value && { backgroundColor: theme[5] }
                 }
-                onPress={() => {
-                  console.log(button.value);
+                onPress={async () => {
+                  await sendApiRequest(
+                    session,
+                    "PUT",
+                    "space/collections/collection/access",
+                    {
+                      id: user.id,
+                      access: "EDITOR",
+                    }
+                  );
+                  mutateList((oldData) => {
+                    const newUser = { ...user, access: button.value };
+                    return {
+                      ...oldData,
+                      invitedUsers: oldData.invitedUsers.map((i) =>
+                        i.id === user.id ? newUser : i
+                      ),
+                    };
+                  });
+                  Toast.show({ type: "success", text1: "Access updated!" });
                 }}
               >
                 <ButtonText>{button.label}</ButtonText>
