@@ -352,17 +352,14 @@ export default function AppLayout() {
                                       cardStyleInterpolator: forHorizontalIOS,
                                     }}
                                   />
-                                  {["clock", "collections/create"].map((d) => (
-                                    <JsStack.Screen
-                                      name={d}
-                                      key={d}
-                                      options={{
-                                        ...TransitionPresets.SlideFromRightIOS,
-                                        gestureResponseDistance: width,
-                                        cardStyleInterpolator: forHorizontalIOS,
-                                      }}
-                                    />
-                                  ))}
+                                  <JsStack.Screen
+                                    name="collections/create"
+                                    options={{
+                                      ...TransitionPresets.SlideFromRightIOS,
+                                      gestureResponseDistance: width,
+                                      cardStyleInterpolator: forHorizontalIOS,
+                                    }}
+                                  />
                                 </JsStack>
                               </AppContainer>
                             </Drawer>

@@ -203,7 +203,6 @@ function SWRWrapper({ children }) {
 }
 
 function Root() {
-  // CHANGE THIS LATER!!!
   const theme = useColor("mint");
   const ref = useNavigationContainerRef();
 
