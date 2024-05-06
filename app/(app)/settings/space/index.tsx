@@ -13,19 +13,11 @@ import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { useState } from "react";
 import { View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 function SpaceStorage({ data }) {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const isOpen = useSharedValue(0);
-  const handleToggle = () => {
-    setIsCollapsed(!isCollapsed);
-    isOpen.value = isCollapsed ? 1 : 1;
-  };
   const theme = useColorTheme();
 
   return (
@@ -68,10 +60,7 @@ function SpaceStorage({ data }) {
           borderColor: theme[5],
         }}
       >
-        <ListItemButton
-          onPress={handleToggle}
-          style={{ backgroundColor: "transparent" }}
-        >
+        <ListItemButton disabled style={{ backgroundColor: "transparent" }}>
           <ListItemText
             style={{ paddingVertical: 20 }}
             primaryProps={{
