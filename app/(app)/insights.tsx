@@ -1,7 +1,12 @@
 import { ProfileModal } from "@/components/ProfileModal";
-import { Activity } from "@/components/insights/Activity";
 import { Co2 } from "@/components/insights/Co2";
+import { DayChart } from "@/components/insights/DayChart";
+import { Header } from "@/components/insights/Header";
+import { HourChart } from "@/components/insights/HourChart";
+import { LabelChart } from "@/components/insights/LabelChart";
+import { MemberSince } from "@/components/insights/MemberSince";
 import { TasksCreated } from "@/components/insights/TasksCreated";
+import { Activity } from "@/components/insights/activity";
 import ContentWrapper from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -14,11 +19,6 @@ import { useRef } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
-import { DayChart } from "../../components/insights/DayChart";
-import { Header } from "../../components/insights/Header";
-import { HourChart } from "../../components/insights/HourChart";
-import { LabelChart } from "../../components/insights/LabelChart";
-import { MemberSince } from "../../components/insights/MemberSince";
 
 export default function Page() {
   const { data, error } = useSWR(["user/insights"]);
