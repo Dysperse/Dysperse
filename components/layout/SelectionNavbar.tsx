@@ -152,11 +152,10 @@ export function SelectionNavbar() {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  paddingLeft: 10,
                 }}
               >
-                <IconButton icon="close" size={50} onPress={clearSelection} />
-                <View style={{ flexGrow: 1 }}>
+                <IconButton icon="close" size={45} onPress={clearSelection} />
+                <View style={{ flexGrow: 1, marginLeft: 5 }}>
                   <Text weight={900} style={{ fontSize: 20 }}>
                     {selection.length} selected
                   </Text>
