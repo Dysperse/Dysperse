@@ -445,8 +445,12 @@ function TimeZoneModal({ timeZoneModalRef }) {
   const [query, setQuery] = useState("");
   const filtered = timezones.filter(
     (tz) =>
-      tz.tzCode.toLowerCase().includes(query.toLowerCase()) ||
-      tz.utc.toLowerCase().includes(query.toLowerCase())
+      tz.tzCode
+        .replaceAll("_", " ")
+        .toLowerCase()
+        .includes(query.toLowerCase()) ||
+      tz.utc.toLowerCase().includes(query.toLowerCase()) ||
+      tz.name.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
@@ -485,7 +489,10 @@ function TimeZoneModal({ timeZoneModalRef }) {
             <ListItemText
               primary={item.tzCode.split("/").slice(-1)[0].replaceAll("_", " ")}
               secondary={
-                item.tzCode.split("/").slice(0, -1).join("/") + " | " + item.utc
+                item.tzCode.split("/").slice(0, -1).join("/") +
+                " | " +
+                item.utc +
+                " UTC"
               }
             />
           </ListItemButton>
