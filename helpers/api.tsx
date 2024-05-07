@@ -17,13 +17,9 @@ export function sendApiRequest(
     headers: {
       ...(session && { Authorization: `Bearer ${session}` }),
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      Host: process.env.EXPO_PUBLIC_API_URL.replace("https://", "").replace(
-        "http://",
-        ""
-      ),
+      Host: process.env.EXPO_PUBLIC_API_URL,
     },
-    mode: "cors",
+    redirect: "follow",
     keepalive: true,
   }).then((res) => res.json());
 }
