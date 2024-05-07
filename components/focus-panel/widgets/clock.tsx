@@ -491,6 +491,23 @@ function TimeZoneModal({ timeZoneModalRef }) {
           </ListItemButton>
         )}
       />
+      <View
+        style={{
+          paddingHorizontal: 20,
+          paddingBottom: 20,
+        }}
+      >
+        <Button
+          variant="filled"
+          onPress={() => timeZoneModalRef.current?.dismiss?.()}
+          style={{ height: 60 }}
+        >
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Done
+          </ButtonText>
+          <Icon>check</Icon>
+        </Button>
+      </View>
     </BottomSheet>
   );
 }
