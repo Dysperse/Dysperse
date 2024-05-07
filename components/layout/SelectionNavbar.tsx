@@ -172,6 +172,10 @@ export function SelectionNavbar() {
                   flexDirection: "row",
                   width: "100%",
                 }}
+                contentContainerStyle={{
+                  justifyContent: "flex-end",
+                  flex: 1,
+                }}
                 showsHorizontalScrollIndicator={false}
                 horizontal
               >
