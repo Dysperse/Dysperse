@@ -111,7 +111,7 @@ const SyncButton = memo(function SyncButton() {
       mass: 200,
     });
     try {
-      await sendApiRequest(session, "GET", "space/integrations/sync", {});
+      await sendApiRequest(session, "POST", "space/integrations/sync", {});
       await mutate(() => true);
       Toast.show({ type: "success", text1: "Integrations are up to date!" });
       if (Platform.OS === "web") {
@@ -193,7 +193,7 @@ export const LogoButton = memo(function LogoButton({
   const { closeSidebarOnMobile, desktopCollapsed } = useSidebarContext();
 
   useEffect(() => {
-    sendApiRequest(sessionToken, "GET", "space/integrations/sync", {});
+    sendApiRequest(sessionToken, "POST", "space/integrations/sync", {});
   }, [sessionToken]);
   const toggleFocus = () => setFocus(!isFocused);
 
