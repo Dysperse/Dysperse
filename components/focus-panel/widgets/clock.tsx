@@ -1,12 +1,18 @@
 import { hslToHex } from "@/app/(app)";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
@@ -433,10 +439,68 @@ const Timer = () => {
 
 type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
 
+type timezone = (typeof timezones)[0];
+
+function TimeZoneModal({ timeZoneModalRef }) {
+  const [query, setQuery] = useState("");
+  const filtered = timezones.filter(
+    (tz) =>
+      tz.tzCode.toLowerCase().includes(query.toLowerCase()) ||
+      tz.utc.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <BottomSheet
+      onClose={() => timeZoneModalRef.current?.dismiss?.()}
+      sheetRef={timeZoneModalRef}
+      index={0}
+      snapPoints={["90%"]}
+      enableContentPanningGesture={false}
+    >
+      <View style={{ padding: 20, paddingBottom: 0 }}>
+        <TextField
+          onChangeText={setQuery}
+          placeholder="Search name or type UTC offset..."
+          variant="filled+outlined"
+        />
+      </View>
+      <FlashList
+        contentContainerStyle={{ padding: 20 }}
+        data={filtered}
+        centerContent={filtered.length === 0}
+        ListEmptyComponent={() => (
+          <View style={{ alignItems: "center", gap: 10 }}>
+            <Emoji emoji="1F614" size={55} />
+            <Text style={{ fontSize: 20 }} weight={900}>
+              No timezones found
+            </Text>
+          </View>
+        )}
+        renderItem={({ item }: { item: timezone }) => (
+          <ListItemButton
+            onPress={() => {
+              Toast.show({ type: "info", text1: "Coming soon!" });
+            }}
+          >
+            <ListItemText
+              primary={item.tzCode.split("/").slice(-1)[0].replaceAll("_", " ")}
+              secondary={
+                item.tzCode.split("/").slice(0, -1).join("/") + " | " + item.utc
+              }
+            />
+          </ListItemButton>
+        )}
+      />
+    </BottomSheet>
+  );
+}
+
 export function Clock({ widget, menuActions }) {
   const theme = useColor("orange");
   const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");
+
+  const timeZoneModalRef = useRef<BottomSheetModal>(null);
 
   return (
     <View>
@@ -453,8 +517,7 @@ export function Clock({ widget, menuActions }) {
                 {
                   text: "Timezones",
                   icon: "explore",
-                  callback: () =>
-                    Toast.show({ type: "info", text1: "Coming soon!" }),
+                  callback: () => timeZoneModalRef.current?.present?.(),
                 },
                 { divider: true },
               ]
@@ -491,6 +554,9 @@ export function Clock({ widget, menuActions }) {
           {view === "Stopwatch" && <Stopwatch />}
           {view === "Timer" && <Timer />}
         </ColorThemeProvider>
+        {view === "Clock" && (
+          <TimeZoneModal timeZoneModalRef={timeZoneModalRef} />
+        )}
       </View>
     </View>
   );
