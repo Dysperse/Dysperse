@@ -245,6 +245,7 @@ export function Column(props: ColumnProps) {
                     mutate={(n) => onEntityCreate(n, props.label)}
                     defaultValues={{
                       label: omit(["entities"], props.label),
+                      date: null,
                     }}
                   >
                     <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
