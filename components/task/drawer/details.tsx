@@ -14,7 +14,6 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import Slider from "@react-native-community/slider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { useCallback, useRef, useState } from "react";
@@ -522,7 +521,9 @@ export function TaskDetails() {
                   <IconButton
                     style={{ borderWidth: 1, borderColor: theme[6] }}
                     size={50}
-                    disabled
+                    onPress={() => {
+                      updateTask("due", null);
+                    }}
                   >
                     <Icon>close</Icon>
                   </IconButton>
@@ -672,7 +673,41 @@ export function TaskDetails() {
                 {task.storyPoints &&
                   complexityScale.findIndex((i) => i === task.storyPoints) !==
                     -1 && (
-                    <Slider
+                    <View style={{ flexDirection: "row", gap: 3 }}>
+                      {complexityScale.map((n) => (
+                        <IconButton
+                          key={n}
+                          onPress={() => updateTask("storyPoints", n)}
+                          size={35}
+                          style={({ pressed, hovered }) => ({
+                            borderRadius: 10,
+                            backgroundColor:
+                              theme[
+                                n === task.storyPoints
+                                  ? pressed
+                                    ? 12
+                                    : hovered
+                                    ? 11
+                                    : 10
+                                  : pressed
+                                  ? 5
+                                  : hovered
+                                  ? 4
+                                  : 3
+                              ],
+                          })}
+                        >
+                          <Text
+                            style={{
+                              fontFamily: "mono",
+                              color: theme[n === task.storyPoints ? 3 : 11],
+                            }}
+                          >
+                            {String(n).padStart(2, "0")}
+                          </Text>
+                        </IconButton>
+                      ))}
+                      {/* <Slider
                       style={{ flex: 1, height: 40 }}
                       thumbTintColor={theme[11]}
                       value={complexityScale.findIndex(
@@ -682,11 +717,11 @@ export function TaskDetails() {
                       minimumValue={0}
                       maximumValue={4}
                       onValueChange={(value) =>
-                        updateTask("storyPoints", complexityScale[value])
                       }
                       minimumTrackTintColor={theme[9]}
                       maximumTrackTintColor={theme[6]}
-                    />
+                    /> */}
+                    </View>
                   )}
               </ListItemButton>
             ),
