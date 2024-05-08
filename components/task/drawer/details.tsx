@@ -671,7 +671,7 @@ export function TaskDetails() {
                 {task.storyPoints &&
                   complexityScale.findIndex((i) => i === task.storyPoints) !==
                     -1 && (
-                    <View style={{ flexDirection: "row", gap: 5 }}>
+                    <View style={{ flexDirection: "row", gap: 3 }}>
                       {complexityScale.map((n) => (
                         <IconButton
                           key={n}
