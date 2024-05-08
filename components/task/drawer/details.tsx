@@ -521,7 +521,9 @@ export function TaskDetails() {
                   <IconButton
                     style={{ borderWidth: 1, borderColor: theme[6] }}
                     size={50}
-                    disabled
+                    onPress={() => {
+                      updateTask("due", null);
+                    }}
                   >
                     <Icon>close</Icon>
                   </IconButton>
