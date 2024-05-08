@@ -671,12 +671,14 @@ export function TaskDetails() {
                 {task.storyPoints &&
                   complexityScale.findIndex((i) => i === task.storyPoints) !==
                     -1 && (
-                    <View style={{ flexDirection: "row" }}>
+                    <View style={{ flexDirection: "row", gap: 5 }}>
                       {complexityScale.map((n) => (
                         <IconButton
+                          key={n}
                           onPress={() => updateTask("storyPoints", n)}
-                          size={40}
+                          size={35}
                           style={({ pressed, hovered }) => ({
+                            borderRadius: 10,
                             backgroundColor:
                               theme[
                                 n === task.storyPoints
