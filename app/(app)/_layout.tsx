@@ -174,18 +174,18 @@ export default function AppLayout() {
           }}
         >
           <BottomSheetModalProvider>
-            <PortalProvider>
-              <MenuProvider
-                skipInstanceCheck
-                customStyles={{
-                  backdrop: {
-                    flex: 1,
-                    opacity: 1,
-                    ...(Platform.OS === "web" &&
-                      ({ WebkitAppRegion: "no-drag" } as any)),
-                  },
-                }}
-              >
+            <MenuProvider
+              skipInstanceCheck
+              customStyles={{
+                backdrop: {
+                  flex: 1,
+                  opacity: 1,
+                  ...(Platform.OS === "web" &&
+                    ({ WebkitAppRegion: "no-drag" } as any)),
+                },
+              }}
+            >
+              <PortalProvider>
                 <StatusBar
                   barStyle={!isDark ? "dark-content" : "light-content"}
                 />
@@ -364,8 +364,8 @@ export default function AppLayout() {
                     </FocusPanelProvider>
                   </CommandPaletteProvider>
                 </View>
-              </MenuProvider>
-            </PortalProvider>
+              </PortalProvider>
+            </MenuProvider>
           </BottomSheetModalProvider>
           <Toast config={toastConfig(theme)} />
         </GestureHandlerRootView>
