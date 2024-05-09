@@ -301,7 +301,10 @@ function Page() {
         maxHeight: breakpoints.md ? Math.min(600, height / 1.3) : undefined,
       }}
     >
-      <View style={{ flex: 1, backgroundColor: addHslAlpha(theme[2], 0.5) }}>
+      <Pressable
+        onPress={(e) => e.stopPropagation()}
+        style={{ flex: 1, backgroundColor: addHslAlpha(theme[2], 0.5) }}
+      >
         <Pressable style={styles.header} onPress={scrollToTop}>
           <IconButton
             variant="outlined"
@@ -320,7 +323,7 @@ function Page() {
             />
           )}
         </CollectionContext.Provider>
-      </View>
+      </Pressable>
     </BlurView>
   );
 }
@@ -335,6 +338,7 @@ export default function Container() {
   });
 
   if (!session || session?.error) return <Redirect href="/auth" />;
+  const handleClose = () => router.back();
 
   return (
     <ColorThemeProvider theme={theme}>
@@ -351,11 +355,12 @@ export default function Container() {
       >
         <BottomSheetModalProvider>
           <StatusBar barStyle="light-content" />
-          <View
+          <Pressable
+            onPress={handleClose}
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
           >
             <Page />
-          </View>
+          </Pressable>
         </BottomSheetModalProvider>
       </MenuProvider>
     </ColorThemeProvider>
