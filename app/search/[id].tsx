@@ -10,13 +10,14 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { BlurView } from "expo-blur";
 import { Redirect, router, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Pressable,
   StatusBar,
@@ -112,6 +113,10 @@ function SearchList({ collection, inputRef, listRef }) {
       return 0;
     });
 
+  useEffect(() => {
+    setTimeout(() => inputRef.current.focus(), 500);
+  }, []);
+
   return (
     <>
       <View style={{ paddingTop: 20, gap: 10 }}>
@@ -125,7 +130,7 @@ function SearchList({ collection, inputRef, listRef }) {
         >
           <TextField
             inputRef={inputRef}
-            placeholder="Search"
+            placeholder="Find tasks..."
             variant="filled+outlined"
             onChangeText={handleSearch}
             style={{ flex: 1, height: 40 }}
@@ -277,40 +282,45 @@ function Page() {
     access: data?.access,
   };
 
+  const isDark = useDarkMode();
+
   return (
-    <View
+    <BlurView
+      tint={isDark ? "dark" : "prominent"}
       style={{
         margin: "auto",
         width: "100%",
         flex: 1,
-        backgroundColor: theme[2],
         borderColor: theme[5],
         borderWidth: 1,
         borderRadius: 25,
+        overflow: "hidden",
         maxWidth: breakpoints.md ? 900 : width,
         maxHeight: breakpoints.md ? Math.min(600, height / 1.3) : undefined,
       }}
     >
-      <Pressable style={styles.header} onPress={scrollToTop}>
-        <IconButton
-          variant="outlined"
-          size={45}
-          icon="arrow_back_ios_new"
-          onPress={handleClose}
-        />
-        <Text style={styles.title}>Search</Text>
-      </Pressable>
-      <CollectionContext.Provider value={contextValue as any}>
-        {data && (
-          <SearchList
-            inputRef={inputRef}
-            listRef={listRef}
-            collection={contextValue}
+      <View style={{ flex: 1, backgroundColor: addHslAlpha(theme[2], 0.5) }}>
+        <Pressable style={styles.header} onPress={scrollToTop}>
+          <IconButton
+            variant="outlined"
+            size={45}
+            icon="arrow_back_ios_new"
+            onPress={handleClose}
           />
-        )}
-        {JSON.stringify(id)}
-      </CollectionContext.Provider>
-    </View>
+          <Text style={styles.title}>Search</Text>
+        </Pressable>
+        <CollectionContext.Provider value={contextValue as any}>
+          {data && (
+            <SearchList
+              inputRef={inputRef}
+              listRef={listRef}
+              collection={contextValue}
+            />
+          )}
+          {JSON.stringify(id)}
+        </CollectionContext.Provider>
+      </View>
+    </BlurView>
   );
 }
 

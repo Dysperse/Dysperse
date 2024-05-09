@@ -4,9 +4,9 @@ import {
   useCollectionContext,
 } from "@/components/collections/context";
 import { CollectionNavbar } from "@/components/collections/navbar";
-import { List } from "@/components/collections/views/list";
 import { Grid } from "@/components/collections/views/grid";
 import { Kanban } from "@/components/collections/views/kanban";
+import { List } from "@/components/collections/views/list";
 import { Perspectives } from "@/components/collections/views/planner";
 import { Stream } from "@/components/collections/views/stream";
 import { Workload } from "@/components/collections/views/workload";

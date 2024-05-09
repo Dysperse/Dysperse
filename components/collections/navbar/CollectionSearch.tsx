@@ -1,4 +1,3 @@
-import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
@@ -259,13 +258,6 @@ export const CollectionSearch = () => {
   };
 
   const buttonRef = useRef(null);
-
-  useHotkeys("ctrl+f", (e) => {
-    if (buttonRef?.current) {
-      e.preventDefault();
-      handleOpen();
-    }
-  });
 
   return (
     <>
