@@ -317,7 +317,6 @@ function Page() {
               collection={contextValue}
             />
           )}
-          {JSON.stringify(id)}
         </CollectionContext.Provider>
       </View>
     </BlurView>
