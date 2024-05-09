@@ -269,7 +269,13 @@ function Page() {
       : null
   );
 
-  const contextValue = { data, mutate, error, access: data?.access };
+  const contextValue = {
+    data,
+    type: "kanban",
+    mutate,
+    error,
+    access: data?.access,
+  };
 
   return (
     <View
@@ -294,7 +300,7 @@ function Page() {
         />
         <Text style={styles.title}>Search</Text>
       </Pressable>
-      <CollectionContext.Provider value={contextValue}>
+      <CollectionContext.Provider value={contextValue as any}>
         {data && (
           <SearchList
             inputRef={inputRef}

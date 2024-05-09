@@ -290,7 +290,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                   rendererProps: { placement: "bottom" },
                 }}
                 trigger={<IconButton icon="pending" size={40} />}
-                options={isReadOnly ? [] : collectionMenuOptions}
+                options={(isReadOnly ? [] : collectionMenuOptions) as any}
               />
             )}
             <CollectionShareMenu />
