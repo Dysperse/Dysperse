@@ -33,7 +33,6 @@ import * as Updates from "expo-updates";
 import React, { useCallback, useEffect, useState } from "react";
 import { AppState, Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
-import { MenuProvider } from "react-native-popup-menu";
 import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "../context/AuthProvider";
 
@@ -279,84 +278,72 @@ function Root() {
       <SessionProvider>
         <SelectionContextProvider>
           <ColorThemeProvider theme={theme}>
-            <MenuProvider
-              skipInstanceCheck
-              customStyles={{
-                backdrop: {
-                  flex: 1,
-                  opacity: 1,
-                  ...(Platform.OS === "web" &&
-                    ({ WebkitAppRegion: "no-drag" } as any)),
+            <SidebarContext.Provider
+              value={{
+                isOpen: open,
+                desktopCollapsed,
+                setDesktopCollapsed,
+                closeSidebar: () => {
+                  if (open) setOpen(false);
                 },
+                openSidebar: () => {
+                  if (!open) setOpen(true);
+                },
+
+                SIDEBAR_WIDTH,
+                closeSidebarOnMobile,
               }}
             >
-              <SidebarContext.Provider
-                value={{
-                  isOpen: open,
-                  desktopCollapsed,
-                  setDesktopCollapsed,
-                  closeSidebar: () => {
-                    if (open) setOpen(false);
-                  },
-                  openSidebar: () => {
-                    if (!open) setOpen(true);
-                  },
+              <SWRWrapper>
+                {Platform.OS === "web" && <WorkboxInitializer />}
+                <JsStack screenOptions={{ header: () => null }}>
+                  <Slot screenOptions={{ onLayoutRootView }} />
+                  <JsStack.Screen
+                    name="open"
+                    options={{
+                      presentation: "modal",
+                      animationEnabled: true,
+                      ...TransitionPresets.ModalPresentationIOS,
+                    }}
+                  />
+                  <JsStack.Screen
+                    name="search/[id]"
+                    options={{
+                      presentation: "modal",
+                      animationEnabled: !breakpoints.md,
+                      detachPreviousScreen: false,
+                      cardStyle: { backgroundColor: "transparent" },
+                      ...TransitionPresets.ModalPresentationIOS,
+                    }}
+                  />
 
-                  SIDEBAR_WIDTH,
-                  closeSidebarOnMobile,
-                }}
-              >
-                <SWRWrapper>
-                  {Platform.OS === "web" && <WorkboxInitializer />}
-                  <JsStack screenOptions={{ header: () => null }}>
-                    <Slot screenOptions={{ onLayoutRootView }} />
-                    <JsStack.Screen
-                      name="open"
-                      options={{
-                        presentation: "modal",
-                        animationEnabled: true,
-                        ...TransitionPresets.ModalPresentationIOS,
-                      }}
-                    />
-                    <JsStack.Screen
-                      name="search/[id]"
-                      options={{
-                        presentation: "modal",
-                        animationEnabled: !breakpoints.md,
-                        detachPreviousScreen: false,
-                        cardStyle: { backgroundColor: "transparent" },
-                        ...TransitionPresets.ModalPresentationIOS,
-                      }}
-                    />
-
-                    <JsStack.Screen
-                      name="plan"
-                      options={{
-                        presentation: "modal",
-                        detachPreviousScreen: false,
-                        animationEnabled: true,
-                        ...TransitionPresets.ModalPresentationIOS,
-                        cardStyle: breakpoints.md
-                          ? {
-                              maxWidth: 800,
-                              width: "100%",
-                              marginHorizontal: "auto",
-                              marginVertical: 30,
-                              borderRadius: 25,
-                              shadowRadius: 20,
-                              shadowColor: "rgba(0,0,0,0.1)",
-                              shadowOffset: {
-                                width: 0,
-                                height: 10,
-                              },
-                            }
-                          : undefined,
-                      }}
-                    />
-                  </JsStack>
-                </SWRWrapper>
-              </SidebarContext.Provider>
-            </MenuProvider>
+                  <JsStack.Screen
+                    name="plan"
+                    options={{
+                      presentation: "modal",
+                      detachPreviousScreen: false,
+                      animationEnabled: true,
+                      ...TransitionPresets.ModalPresentationIOS,
+                      cardStyle: breakpoints.md
+                        ? {
+                            maxWidth: 800,
+                            width: "100%",
+                            marginHorizontal: "auto",
+                            marginVertical: 30,
+                            borderRadius: 25,
+                            shadowRadius: 20,
+                            shadowColor: "rgba(0,0,0,0.1)",
+                            shadowOffset: {
+                              width: 0,
+                              height: 10,
+                            },
+                          }
+                        : undefined,
+                    }}
+                  />
+                </JsStack>
+              </SWRWrapper>
+            </SidebarContext.Provider>
           </ColorThemeProvider>
         </SelectionContextProvider>
       </SessionProvider>

@@ -19,6 +19,7 @@ import { BlurView } from "expo-blur";
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  Platform,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -26,6 +27,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { MenuProvider } from "react-native-popup-menu";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -336,14 +338,26 @@ export default function Container() {
 
   return (
     <ColorThemeProvider theme={theme}>
-      <BottomSheetModalProvider>
-        <StatusBar barStyle="light-content" />
-        <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          <Page />
-        </View>
-      </BottomSheetModalProvider>
+      <MenuProvider
+        skipInstanceCheck
+        customStyles={{
+          backdrop: {
+            flex: 1,
+            opacity: 1,
+            ...(Platform.OS === "web" &&
+              ({ WebkitAppRegion: "no-drag" } as any)),
+          },
+        }}
+      >
+        <BottomSheetModalProvider>
+          <StatusBar barStyle="light-content" />
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Page />
+          </View>
+        </BottomSheetModalProvider>
+      </MenuProvider>
     </ColorThemeProvider>
   );
 }
