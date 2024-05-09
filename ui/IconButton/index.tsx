@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { forwardRef, ReactNode } from "react";
 import {
   Pressable,
   PressableProps,
@@ -6,10 +6,10 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
-import Icon from "../Icon";
 import { useColorTheme } from "../color/theme-provider";
+import Icon from "../Icon";
 
-interface DIconButtonProps extends PressableProps {
+export interface IconButtonProps extends PressableProps {
   variant?: "filled" | "outlined" | "text";
   size?: number;
   style?:
@@ -26,33 +26,40 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
 });
-export default function IconButton(props: DIconButtonProps) {
-  const theme = useColorTheme();
 
-  return (
-    <Pressable
-      {...props}
-      style={({ pressed, hovered }) => [
-        styles.base,
-        { opacity: props.disabled ? 0.5 : 1 },
-        {
-          borderColor: props.variant === "outlined" ? theme[5] : "transparent",
-          width: props.size ?? 35,
-          height: props.size ?? 35,
-          backgroundColor: pressed
-            ? theme[5]
-            : hovered
-            ? theme[4]
-            : props.variant === "filled"
-            ? theme[3]
-            : undefined,
-        },
-        typeof props.style === "function"
-          ? props.style({ pressed, hovered })
-          : props.style,
-      ]}
-    >
-      {props.children || <Icon>{props.icon}</Icon>}
-    </Pressable>
-  );
-}
+const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
+  (props, ref) => {
+    const theme = useColorTheme();
+
+    return (
+      <Pressable
+        {...props}
+        ref={ref as any}
+        style={({ pressed, hovered }) => [
+          styles.base,
+          { opacity: props.disabled ? 0.5 : 1 },
+          {
+            borderColor:
+              props.variant === "outlined" ? theme[5] : "transparent",
+            width: props.size ?? 35,
+            height: props.size ?? 35,
+            backgroundColor: pressed
+              ? theme[5]
+              : hovered
+              ? theme[4]
+              : props.variant === "filled"
+              ? theme[3]
+              : undefined,
+          },
+          typeof props.style === "function"
+            ? props.style({ pressed, hovered })
+            : props.style,
+        ]}
+      >
+        {props.children || <Icon>{props.icon}</Icon>}
+      </Pressable>
+    );
+  }
+);
+
+export default IconButton;

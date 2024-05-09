@@ -1,6 +1,8 @@
-import { useHotkeys } from "@/helpers/useHotKeys";
+import { CollectionContext } from "@/components/collections/context";
+import { Entity } from "@/components/collections/entity";
+import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import BottomSheet from "@/ui/BottomSheet";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -8,15 +10,22 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import { useCollectionContext } from "../context";
-import { Entity } from "../entity";
+import {
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import useSWR from "swr";
 
 const styles = StyleSheet.create({
   header: {
@@ -42,7 +51,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function SearchList({ collection, sheetRef, inputRef, listRef }) {
+function SearchList({ collection, inputRef, listRef }) {
   const theme = useColorTheme();
   const { data, mutate } = collection;
   const [query, setQuery] = useState("");
@@ -120,11 +129,6 @@ function SearchList({ collection, sheetRef, inputRef, listRef }) {
             variant="filled+outlined"
             onChangeText={handleSearch}
             style={{ flex: 1, height: 40 }}
-            onKeyPress={(e) => {
-              if (e.nativeEvent.key === "Escape") {
-                sheetRef.current?.dismiss();
-              }
-            }}
           />
           {(query || activeFilters.length > 0) && (
             <Button
@@ -139,7 +143,7 @@ function SearchList({ collection, sheetRef, inputRef, listRef }) {
             </Button>
           )}
         </View>
-        <BottomSheetScrollView
+        <ScrollView
           horizontal
           contentContainerStyle={{ gap: 10, paddingHorizontal: 20 }}
           showsHorizontalScrollIndicator={false}
@@ -164,7 +168,7 @@ function SearchList({ collection, sheetRef, inputRef, listRef }) {
               }}
             />
           ))}
-        </BottomSheetScrollView>
+        </ScrollView>
       </View>
       <FlashList
         ref={listRef}
@@ -241,65 +245,90 @@ function SearchList({ collection, sheetRef, inputRef, listRef }) {
   );
 }
 
-export const CollectionSearch = () => {
+function Page() {
+  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const sheetRef = useRef<BottomSheetModal>(null);
-  const inputRef = useRef(null);
+  const { width, height } = useWindowDimensions();
 
-  const handleOpen = () => {
-    router.push(`/search/${collection.data.id || "all"}`);
-  };
+  const handleClose = () => router.back();
 
-  const handleClose = () => sheetRef.current?.dismiss();
-  const collection = useCollectionContext();
   const listRef = useRef(null);
+  const inputRef = useRef(null);
 
   const scrollToTop = () => {
     listRef.current?.scrollToOffset({ animated: true, offset: 0 });
   };
 
-  const buttonRef = useRef(null);
+  const { id }: any = useLocalSearchParams();
+  const { data, mutate, error } = useSWR(
+    id
+      ? [
+          "space/collections/collection",
+          id === "all" ? { all: "true", id: "??" } : { id },
+        ]
+      : null
+  );
 
-  useHotkeys("ctrl+f", (e) => {
-    if (buttonRef?.current) {
-      e.preventDefault();
-      handleOpen();
-    }
-  });
+  const contextValue = { data, mutate, error, access: data?.access };
 
   return (
-    <>
-      <IconButton
-        ref={buttonRef}
-        size={40}
-        style={[breakpoints.md && { borderRadius: 20 }]}
-        icon="search"
-        onPress={handleOpen}
-        variant="text"
-      />
-      <BottomSheet
-        sheetRef={sheetRef}
-        snapPoints={["90%"]}
-        index={0}
-        enableContentPanningGesture={false}
-        onClose={handleClose}
-      >
-        <Pressable style={styles.header} onPress={scrollToTop}>
-          <IconButton
-            variant="outlined"
-            size={45}
-            icon="arrow_back_ios_new"
-            onPress={handleClose}
-          />
-          <Text style={styles.title}>Search</Text>
-        </Pressable>
-        <SearchList
-          sheetRef={sheetRef}
-          inputRef={inputRef}
-          listRef={listRef}
-          collection={collection}
+    <View
+      style={{
+        margin: "auto",
+        width: "100%",
+        flex: 1,
+        backgroundColor: theme[2],
+        borderColor: theme[5],
+        borderWidth: 1,
+        borderRadius: 25,
+        maxWidth: breakpoints.md ? 900 : width,
+        maxHeight: breakpoints.md ? Math.min(600, height / 1.3) : undefined,
+      }}
+    >
+      <Pressable style={styles.header} onPress={scrollToTop}>
+        <IconButton
+          variant="outlined"
+          size={45}
+          icon="arrow_back_ios_new"
+          onPress={handleClose}
         />
-      </BottomSheet>
-    </>
+        <Text style={styles.title}>Search</Text>
+      </Pressable>
+      <CollectionContext.Provider value={contextValue}>
+        {data && (
+          <SearchList
+            inputRef={inputRef}
+            listRef={listRef}
+            collection={contextValue}
+          />
+        )}
+        {JSON.stringify(id)}
+      </CollectionContext.Provider>
+    </View>
   );
-};
+}
+
+export default function Container() {
+  const { session } = useUser();
+  const theme = useColor(session?.user?.profile?.theme || "mint");
+
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
+
+  if (!session || session?.error) return <Redirect href="/auth" />;
+
+  return (
+    <ColorThemeProvider theme={theme}>
+      <BottomSheetModalProvider>
+        <StatusBar barStyle="light-content" />
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Page />
+        </View>
+      </BottomSheetModalProvider>
+    </ColorThemeProvider>
+  );
+}
