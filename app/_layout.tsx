@@ -24,7 +24,6 @@ import {
 import { TransitionPresets } from "@react-navigation/stack";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
-import { BlurView } from "expo-blur";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import { Slot, useNavigationContainerRef } from "expo-router";
@@ -32,13 +31,7 @@ import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Animated,
-  AppState,
-  Platform,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { AppState, Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { SWRConfig } from "swr";
@@ -281,7 +274,6 @@ function Root() {
   }, [breakpoints]);
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
-  const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
       <SessionProvider>
