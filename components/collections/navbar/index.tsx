@@ -54,6 +54,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const insets = useSafeAreaInsets();
 
   const isAll = id === "all";
+  const contextValue = { data, type, ...ctx, access: null };
 
   const options = Object.keys(collectionViews).map((i) => ({
     icon: collectionViews[i],
@@ -82,9 +83,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       icon: "edit",
       text: "Edit",
       renderer: (props) => (
-        <CollectionContext.Provider
-          value={{ data, type, ...ctx, access: null }}
-        >
+        <CollectionContext.Provider value={contextValue}>
           <CollectionRenameMenu {...props} />
         </CollectionContext.Provider>
       ),
@@ -93,9 +92,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       icon: "label",
       text: "Edit labels",
       renderer: (props) => (
-        <CollectionContext.Provider
-          value={{ data, type, ...ctx, access: null }}
-        >
+        <CollectionContext.Provider value={contextValue}>
           <CollectionLabelMenu {...props} />
         </CollectionContext.Provider>
       ),
@@ -284,7 +281,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             justifyContent: "flex-end",
           }}
         >
-          <CollectionContext.Provider value={{ data, type, access, ...ctx }}>
+          <CollectionContext.Provider value={contextValue}>
             <CollectionSearch />
             {!isReadOnly && (
               <MenuPopover
