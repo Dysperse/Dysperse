@@ -47,10 +47,10 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   setEditOrderMode,
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
-  const { data, access, ...ctx } = useCollectionContext();
+  const { data, access, type, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
-  const { type, id } = useGlobalSearchParams();
+  const { id } = useGlobalSearchParams();
   const insets = useSafeAreaInsets();
 
   const isAll = id === "all";
@@ -280,7 +280,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             justifyContent: "flex-end",
           }}
         >
-          <CollectionContext.Provider value={{ data, access, ...ctx }}>
+          <CollectionContext.Provider value={{ data, type, access, ...ctx }}>
             <CollectionSearch />
             {!isReadOnly && (
               <MenuPopover
