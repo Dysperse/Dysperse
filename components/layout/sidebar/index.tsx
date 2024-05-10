@@ -401,6 +401,8 @@ const Header = memo(function Header() {
 });
 
 const Sidebar = () => {
+  const breakpoints = useResponsiveBreakpoints();
+  const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const { SIDEBAR_WIDTH, desktopCollapsed, setDesktopCollapsed } =
     useSidebarContext();
@@ -432,10 +434,6 @@ const Sidebar = () => {
     if (pathname.includes("settings")) return;
     router.push("/settings");
   });
-
-  const breakpoints = useResponsiveBreakpoints();
-
-  const pathname = usePathname();
 
   useEffect(() => {
     if (Platform.OS === "web") {
