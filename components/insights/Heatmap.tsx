@@ -8,7 +8,7 @@ import { View } from "react-native";
 import { ContributionGraph } from "react-native-chart-kit";
 import { AbstractChartConfig } from "react-native-chart-kit/dist/AbstractChart";
 
-export const Activity = ({ data }) => {
+export const Heatmap = ({ data }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const [width, setWidth] = useState(0);

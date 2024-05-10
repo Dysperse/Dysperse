@@ -1,8 +1,8 @@
 import { ProfileModal } from "@/components/ProfileModal";
-import { Activity } from "@/components/insights/Activity";
 import { Co2 } from "@/components/insights/Co2";
 import { DayChart } from "@/components/insights/DayChart";
 import { Header } from "@/components/insights/Header";
+import { Heatmap } from "@/components/insights/Heatmap";
 import { HourChart } from "@/components/insights/HourChart";
 import { LabelChart } from "@/components/insights/LabelChart";
 import { MemberSince } from "@/components/insights/MemberSince";
@@ -75,7 +75,7 @@ export default function Page() {
               <TasksCreated data={data} />
             </View>
             <MemberSince />
-            <Activity data={data} />
+            <Heatmap data={data} />
             <LabelChart data={data} />
             <View
               style={{
