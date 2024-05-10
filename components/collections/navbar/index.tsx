@@ -82,7 +82,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       icon: "edit",
       text: "Edit",
       renderer: (props) => (
-        <CollectionContext.Provider value={{ data, ...ctx, access: null }}>
+        <CollectionContext.Provider
+          value={{ data, type, ...ctx, access: null }}
+        >
           <CollectionRenameMenu {...props} />
         </CollectionContext.Provider>
       ),
@@ -91,7 +93,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       icon: "label",
       text: "Edit labels",
       renderer: (props) => (
-        <CollectionContext.Provider value={{ data, ...ctx, access: null }}>
+        <CollectionContext.Provider
+          value={{ data, type, ...ctx, access: null }}
+        >
           <CollectionLabelMenu {...props} />
         </CollectionContext.Provider>
       ),
