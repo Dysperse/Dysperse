@@ -347,7 +347,7 @@ const Task = memo(function Task({
                 style={{
                   marginTop:
                     task.note ||
-                    showRelativeTime ||
+                    (showRelativeTime && task.due) ||
                     (showDate && task.due) ||
                     task.recurrenceRule ||
                     (showLabel && task.label) ||
