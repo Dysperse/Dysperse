@@ -110,6 +110,12 @@ function TaskCheckbox({
         renderTrailingIcon: () => (
           <IconButton
             icon="undo"
+            size={40}
+            style={({ pressed, hovered }) => ({
+              marginRight: 5,
+              marginLeft: -10,
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
             onPress={() => {
               handlePress(isCompleted);
               Toast.hide();
