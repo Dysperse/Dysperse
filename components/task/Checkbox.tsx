@@ -88,7 +88,10 @@ function TaskCheckbox({
       e.preventDefault();
       if (e.ctrlKey && e.key === "z") {
         handlePress(isCompleted);
-        Toast.hide();
+        Toast.show({
+          type: "info",
+          text1: isCompleted ? "Marked incomplete" : "Marked complete",
+        });
       }
     };
 
