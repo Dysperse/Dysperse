@@ -48,7 +48,7 @@ const Header = memo(() => {
   return (
     <View style={styles.headerContainer}>
       <IconButton size={55} variant="outlined" onPress={handleBack}>
-        <Icon>close</Icon>
+        <Icon>arrow_back_ios_new</Icon>
       </IconButton>
     </View>
   );

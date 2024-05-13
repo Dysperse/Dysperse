@@ -65,31 +65,18 @@ export const paletteItems = (
         },
       ],
     },
-    // {
-    //   title: "Labels",
-    //   icon: "label",
-    //   items: [
-    //     ...(labels && Array.isArray(labels)
-    //       ? labels.map((label) => ({
-    //           label: label.name,
-    //           icon: "label",
-    //           key: label.id,
-    //           emoji: label.emoji,
-    //           slug: `/[tab]/labels/[id]`,
-    //           params: { id: label.id },
-    //         }))
-    //       : [{}]),
-    //     {
-    //       key: "create-label",
-    //       label: "Create",
-    //       icon: "add",
-    //       slug: "l",
-    //       onPress: () => {
-    //         router.push("/collections/create");
-    //       },
-    //     },
-    //   ],
-    // },
+    {
+      title: "Other",
+      icon: "pending",
+      items: [
+        {
+          key: "onboarding",
+          label: "Reset onboarding",
+          icon: "kid_star",
+          slug: "/[tab]/welcome",
+        },
+      ],
+    },
     {
       title: "Shared with me",
       icon: "group",

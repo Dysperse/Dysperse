@@ -21,6 +21,10 @@ export const useTabMetadata = (slug: string, tab: any) => {
       icon: "label",
       name: () => [],
     },
+    "/[tab]/welcome": {
+      icon: "kid_star",
+      name: () => ["Start here!", "Welcome to #dysperse!"],
+    },
   };
 
   const match = Object.keys(startWithMatchers).find((key) =>
