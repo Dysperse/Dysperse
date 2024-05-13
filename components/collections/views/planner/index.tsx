@@ -46,7 +46,7 @@ function Agenda() {
         flex: 1,
       }}
     >
-      {error ? <ErrorAlert /> : <Spinner />}
+      {error || !Array.isArray(data) ? <ErrorAlert /> : <Spinner />}
     </View>
   );
   if (breakpoints.md) {
@@ -62,22 +62,11 @@ function Agenda() {
             width: Array.isArray(data) ? undefined : "100%",
           }}
         >
-          {Array.isArray(data) ? (
-            data.map((col) => (
-              <Column mutate={mutate} key={col.start} column={col} />
-            ))
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <Spinner />
-            </View>
-          )}
+          {Array.isArray(data)
+            ? data.map((col) => (
+                <Column mutate={mutate} key={col.start} column={col} />
+              ))
+            : agendaFallback}
         </ScrollView>
       </>
     );
