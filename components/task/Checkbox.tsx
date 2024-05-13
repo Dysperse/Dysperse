@@ -90,7 +90,7 @@ function TaskCheckbox({
         handlePress(isCompleted);
         Toast.show({
           type: "info",
-          text1: isCompleted ? "Marked incomplete" : "Marked complete",
+          text1: "Changes undone",
         });
       }
     };
@@ -165,7 +165,7 @@ function TaskCheckbox({
           onMouseDown: () => (isActive.value = 1),
           onMouseUp: () => (isActive.value = 0),
         })}
-        onPress={handlePress}
+        onPress={() => handlePress()}
       >
         <Animated.View
           style={[
