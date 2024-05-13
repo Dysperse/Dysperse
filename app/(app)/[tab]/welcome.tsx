@@ -1,27 +1,34 @@
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
+import { createTab } from "@/components/layout/openTab";
 import CreateTask from "@/components/task/create";
+import { useUser } from "@/context/useUser";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import * as shapes from "@/ui/shapes";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { mutate } from "swr";
+import Toast from "react-native-toast-message";
+import useSWR, { mutate } from "swr";
 
 function Header() {
   const theme = useColorTheme();
 
   return (
-    <View
+    <LinearGradient
+      colors={[theme[1], theme[3]]}
       style={{
         alignItems: "center",
-        height: 500,
-        paddingTop: 40,
         justifyContent: "center",
+        paddingVertical: 70,
+        marginBottom: 20,
       }}
     >
       <Logo size={100} />
@@ -34,7 +41,7 @@ function Header() {
       >
         welcome to #dysperse
       </Text>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -56,23 +63,27 @@ const styles = StyleSheet.create({
   featureDescription: {
     fontSize: 17,
     opacity: 0.7,
+    marginBottom: 10,
     fontFamily: "body_300",
   },
   featureRow: {
     flexDirection: "row",
     paddingHorizontal: 25,
-    maxWidth: 1200,
     marginHorizontal: "auto",
     flexWrap: "wrap",
     marginBottom: 25,
     width: "100%",
     gap: 25,
   },
+  container: {
+    marginHorizontal: "auto",
+    width: "100%",
+    maxWidth: 1200,
+  },
 });
 
 function ShapeContainer({ text, index = 1 }) {
   const theme = useColorTheme();
-
   const Shape = shapes[`shape${index}`];
 
   return (
@@ -102,11 +113,106 @@ function ShapeContainer({ text, index = 1 }) {
   );
 }
 
+function CreateTab() {
+  const { sessionToken } = useUser();
+  const [loading, setLoading] = useState(false);
+  const handleNext = async () => {
+    try {
+      setLoading(true);
+      await createTab(sessionToken, {
+        slug: "/[tab]/collections/[id]/[type]",
+        icon: "transition_slide",
+        params: { type: "planner", id: "all" },
+      });
+      await mutate(() => true);
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button
+      isLoading={loading}
+      variant="filled"
+      style={{ marginTop: "auto" }}
+      onPress={handleNext}
+    >
+      <Icon>add</Icon>
+      <ButtonText>Open my planner</ButtonText>
+    </Button>
+  );
+}
+
+function CreateLabel() {
+  const { data } = useSWR(["space/labels"]);
+  const green = useColor("green");
+
+  return (
+    <CreateLabelModal mutate={() => {}}>
+      <Button
+        variant="filled"
+        style={{
+          marginTop: "auto",
+          ...(data?.length > 0 && { backgroundColor: green[5] }),
+        }}
+      >
+        <Icon
+          style={{
+            ...(data?.length > 0 && { color: green[11] }),
+          }}
+        >
+          {data?.length > 0 ? "check" : "new_label"}
+        </Icon>
+        <ButtonText
+          style={{
+            ...(data?.length > 0 && { color: green[11] }),
+          }}
+        >
+          Create a label
+        </ButtonText>
+      </Button>
+    </CreateLabelModal>
+  );
+}
+
+function CreateCollection() {
+  const { data } = useSWR(["space/collections"]);
+  const green = useColor("green");
+
+  return (
+    <Button
+      onPress={() => router.push("/collections/create")}
+      variant="filled"
+      style={{
+        marginTop: "auto",
+        ...(data?.length > 0 && { backgroundColor: green[5] }),
+      }}
+    >
+      <Icon
+        style={{
+          ...(data?.length > 0 && { color: green[11] }),
+        }}
+      >
+        {data?.length > 0 ? "check" : "playlist_add_circle"}
+      </Icon>
+      <ButtonText
+        style={{
+          ...(data?.length > 0 && { color: green[11] }),
+        }}
+      >
+        Create a collection
+      </ButtonText>
+    </Button>
+  );
+}
+
 function FeatureList() {
   const theme = useColorTheme();
 
   return (
-    <View>
+    <View style={[styles.container, { marginVertical: 20 }]}>
       <Text variant="eyebrow" style={{ textAlign: "center", marginBottom: 20 }}>
         Here's the gist of how it works
       </Text>
@@ -118,10 +224,10 @@ function FeatureList() {
             <Text style={styles.featureTitle}>Create a task</Text>
             <Text style={styles.featureDescription}>
               It's easy. Just click on the button below and write down what's on
-              your mind
+              your mind.
             </Text>
             <CreateTask mutate={() => mutate(() => true)}>
-              <Button variant="filled" style={{ marginTop: 10 }}>
+              <Button variant="filled" style={{ marginTop: "auto" }}>
                 <Icon>note_stack_add</Icon>
                 <ButtonText>Create a task</ButtonText>
               </Button>
@@ -136,12 +242,7 @@ function FeatureList() {
               Labels help you categorize and separate tasks which matter to you.
               Assign them to tasks later.
             </Text>
-            <CreateLabelModal mutate={() => {}}>
-              <Button variant="filled" style={{ marginTop: 10 }}>
-                <Icon>new_label</Icon>
-                <ButtonText>Create a label</ButtonText>
-              </Button>
-            </CreateLabelModal>
+            <CreateLabel />
           </View>
         </View>
       </View>
@@ -153,36 +254,56 @@ function FeatureList() {
               Labels are a part of collections
             </Text>
             <Text style={styles.featureDescription}>
-              Create tabs of collections and view your tasks differently
+              You can have multiple collections per label
             </Text>
-            <Button
-              variant="filled"
-              style={{ marginTop: 10 }}
-              onPress={() => router.push("/collections/create")}
-            >
-              <Icon>playlist_add_circle</Icon>
-              <ButtonText>Create a collection</ButtonText>
-            </Button>
+            <CreateCollection />
           </View>
         </View>
         <View style={[styles.featureColumn, { borderColor: theme[5] }]}>
           <ShapeContainer text="four" index={5} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.featureTitle}>Everything's synced</Text>
+            <Text style={styles.featureTitle}>Open a tab</Text>
             <Text style={styles.featureDescription}>
-              Relax, tasks can be seen from any device
+              View your tasks in different ways by opening new tabs. We suggest
+              starting off with the planner view.
             </Text>
-            <Button
-              variant="filled"
-              style={{ marginTop: 10 }}
-              onPress={() => router.push("/settings/other/apps")}
-            >
-              <Icon>download</Icon>
-              <ButtonText>Get the apps</ButtonText>
-            </Button>
+            <CreateTab />
           </View>
         </View>
       </View>
+    </View>
+  );
+}
+
+function Explore() {
+  return (
+    <View style={styles.container}>
+      <Text variant="eyebrow" style={{ textAlign: "center" }}>
+        Not sure where to start?
+      </Text>
+      <Text>Check out our blog</Text>
+      <View style={{ flexDirection: "row", width: "100%" }}>
+        <Pressable>
+          <Text></Text>
+        </Pressable>
+        <Pressable>
+          <Text>Explore the Dysverse</Text>
+          <Text>Discover collection templates created by others</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+function Social() {
+  return (
+    <View style={styles.container}>
+      <Text variant="eyebrow" style={{ textAlign: "center" }}>
+        Follow us!
+      </Text>
+      <Button>
+        <ButtonText>Instagram</ButtonText>
+      </Button>
     </View>
   );
 }
@@ -193,6 +314,8 @@ export default function Page() {
       <ScrollView>
         <Header />
         <FeatureList />
+        <Explore />
+        <Social />
       </ScrollView>
     </ContentWrapper>
   );
