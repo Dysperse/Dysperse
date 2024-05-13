@@ -1,3 +1,4 @@
+import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
@@ -13,7 +14,7 @@ import * as shapes from "@/ui/shapes";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR, { mutate } from "swr";
@@ -79,6 +80,22 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
     width: "100%",
     maxWidth: 1200,
+  },
+  exploreCard: {
+    gap: 25,
+    padding: 20,
+    flex: 1,
+    borderRadius: 25,
+    flexBasis: 0,
+    borderWidth: 1,
+    flexDirection: "row",
+  },
+  exploreTitle: {
+    fontSize: 20,
+    fontFamily: "body_900",
+  },
+  exploreDescription: {
+    opacity: 0.7,
   },
 });
 
@@ -218,7 +235,7 @@ function FeatureList() {
   return (
     <View style={[styles.container, { marginVertical: 20 }]}>
       <Text variant="eyebrow" style={{ textAlign: "center", marginBottom: 20 }}>
-        Here's the gist of how it works
+        Here's the gist of how it works...
       </Text>
 
       <View style={styles.featureRow}>
@@ -280,34 +297,121 @@ function FeatureList() {
 }
 
 function Explore() {
+  const theme = useColorTheme();
+
   return (
     <View style={styles.container}>
       <Text variant="eyebrow" style={{ textAlign: "center" }}>
-        Not sure where to start?
+        Find us online!
       </Text>
-      <Text>Check out our blog</Text>
-      <View style={{ flexDirection: "row", width: "100%" }}>
-        <Pressable>
-          <Text></Text>
-        </Pressable>
-        <Pressable>
-          <Text>Explore the Dysverse</Text>
-          <Text>Discover collection templates created by others</Text>
-        </Pressable>
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          gap: 25,
+          marginVertical: 25,
+          marginTop: 10,
+          paddingHorizontal: 25,
+        }}
+      >
+        {[
+          {
+            title: "Follow us on Instagram",
+            description:
+              "Recieve useful (and aesthetic) productivity updates in your feed",
+            href: "https://instagram.com/dysperse",
+          },
+          {
+            title: "Explore the Dysverse",
+            description:
+              "Coming soon. Discover collection templates created by others",
+          },
+          {
+            title: "Check out our blog",
+            description:
+              "Read articles about productivity tips and how to use our platform",
+            href: "https://blog.dysperse.com",
+          },
+        ].map((card) => (
+          <Pressable
+            style={({ pressed, hovered }) => [
+              styles.exploreCard,
+              {
+                borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
+                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              },
+            ]}
+            onPress={() => {
+              if (card.href) {
+                Linking.openURL(card.href);
+              }
+            }}
+            key={card.title}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={styles.exploreTitle}>{card.title}</Text>
+              <Text style={styles.exploreDescription}>{card.description}</Text>
+            </View>
+            <Icon>north_east</Icon>
+          </Pressable>
+        ))}
       </View>
     </View>
   );
 }
 
-function Social() {
+function NotSureWhereToStart() {
+  const theme = useColorTheme();
+  const { isFocused, setFocus } = useFocusPanelContext();
+  const toggleFocus = () => setFocus(!isFocused);
+
   return (
-    <View style={styles.container}>
-      <Text variant="eyebrow" style={{ textAlign: "center" }}>
-        Follow us!
+    <View style={(styles.container, { marginBottom: 20 })}>
+      <Text variant="eyebrow" style={{ textAlign: "center", marginBottom: 10 }}>
+        Not sure where to start?
       </Text>
-      <Button>
-        <ButtonText>Instagram</ButtonText>
-      </Button>
+      <View style={{ flexDirection: "row", paddingHorizontal: 25, gap: 25 }}>
+        {[
+          {
+            title: "Change the theme color",
+            icon: "palette",
+            onPress: () => router.push("/settings/customization/appearance"),
+          },
+          {
+            title: "Customize my Dysperse profile",
+            icon: "account_circle",
+            onPress: () => router.push("/settings/customization/profile"),
+          },
+          {
+            title: "Connect my apps to Dysperse",
+            icon: "interests",
+            onPress: () => router.push("/settings/account/integrations"),
+          },
+          {
+            title: "Toggle the focus panel",
+            icon: "dock_to_left",
+            onPress: toggleFocus,
+          },
+        ].map((card) => (
+          <Pressable
+            key={card.title}
+            onPress={card.onPress}
+            style={({ pressed, hovered }) => [
+              styles.exploreCard,
+              {
+                alignItems: "center",
+                borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
+                backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              },
+            ]}
+          >
+            <Icon>{card.icon}</Icon>
+            <Text style={{ color: theme[11], fontSize: 17 }} weight={900}>
+              {card.title}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
     </View>
   );
 }
@@ -318,8 +422,8 @@ export default function Page() {
       <ScrollView>
         <Header />
         <FeatureList />
+        <NotSureWhereToStart />
         <Explore />
-        <Social />
       </ScrollView>
     </ContentWrapper>
   );
