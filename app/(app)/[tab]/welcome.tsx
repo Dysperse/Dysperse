@@ -146,11 +146,15 @@ function CreateTab() {
 }
 
 function CreateLabel() {
-  const { data } = useSWR(["space/labels"]);
+  const { data, mutate } = useSWR(["space/labels"]);
   const green = useColor("green");
 
   return (
-    <CreateLabelModal mutate={() => {}}>
+    <CreateLabelModal
+      mutate={() => {
+        mutate();
+      }}
+    >
       <Button
         variant="filled"
         style={{
