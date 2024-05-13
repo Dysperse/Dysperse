@@ -133,6 +133,14 @@ function SearchList({ collection, inputRef, listRef }) {
           <TextField
             inputRef={inputRef}
             placeholder="Find tasks..."
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === "Enter") {
+                listRef.current.scrollToOffset({ animated: true, offset: 0 });
+              }
+              if (nativeEvent.key === "Escape") {
+                router.back();
+              }
+            }}
             variant="filled+outlined"
             onChangeText={handleSearch}
             style={{ flex: 1, height: 40 }}
