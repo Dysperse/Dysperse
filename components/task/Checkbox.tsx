@@ -52,11 +52,8 @@ function TaskCheckbox({
       )
     : task.completionInstances.length > 0;
 
-  const handlePress = async (forceCompletion?: boolean) => {
-    let newArr =
-      isCompleted || !forceCompletion
-        ? []
-        : [...task.completionInstances, true];
+  const handlePress = async () => {
+    let newArr = isCompleted ? [] : [...task.completionInstances, true];
     let iteration = null;
 
     if (task.recurrenceRule) {
@@ -66,49 +63,27 @@ function TaskCheckbox({
       });
       const instances = rule.between(dateRange[0], dateRange[1]);
       iteration = instances[0].toISOString();
-      newArr =
-        isCompleted || !forceCompletion
-          ? task.completionInstances.filter(
-              (instance: string) =>
-                !dayjs(instance).isBetween(
-                  dateRange[0],
-                  dateRange[1],
-                  "day",
-                  "[]"
-                )
-            )
-          : [...task.completionInstances, { iteration }];
+      newArr = isCompleted
+        ? task.completionInstances.filter(
+            (instance: string) =>
+              !dayjs(instance).isBetween(
+                dateRange[0],
+                dateRange[1],
+                "day",
+                "[]"
+              )
+          )
+        : [...task.completionInstances, { iteration }];
     }
 
     mutateList({
       ...task,
       completionInstances: newArr,
     });
-    const d = (e) => {
-      e.preventDefault();
-      if (e.ctrlKey && e.key === "z") {
-        handlePress(isCompleted);
-        Toast.show({
-          type: "info",
-          text1: "Changes undone",
-        });
-      }
-    };
 
     Toast.show({
       type: "success",
       text1: isCompleted ? "Marked incomplete" : "Marked complete",
-      onShow: () => {
-        if (Platform.OS === "web") {
-          // add ctrl+z to undo
-          window.addEventListener("keydown", d);
-        }
-      },
-      onHide: () => {
-        if (Platform.OS === "web") {
-          window.removeEventListener("keydown", d);
-        }
-      },
       props: {
         renderTrailingIcon: () => (
           <IconButton
@@ -120,7 +95,36 @@ function TaskCheckbox({
               backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
             })}
             onPress={() => {
-              handlePress(isCompleted);
+              let newArr = !isCompleted
+                ? []
+                : [...task.completionInstances, true];
+              let iteration = null;
+
+              if (task.recurrenceRule) {
+                const rule = new RRule({
+                  ...task.recurrenceRule,
+                  dtstart: new Date(task.recurrenceRule.dtstart),
+                });
+                const instances = rule.between(dateRange[0], dateRange[1]);
+                iteration = instances[0].toISOString();
+                newArr = !isCompleted
+                  ? task.completionInstances.filter(
+                      (instance: string) =>
+                        !dayjs(instance).isBetween(
+                          dateRange[0],
+                          dateRange[1],
+                          "day",
+                          "[]"
+                        )
+                    )
+                  : [...task.completionInstances, { iteration }];
+              }
+
+              mutateList({
+                ...task,
+                completionInstances: newArr,
+              });
+
               Toast.hide();
             }}
           />
