@@ -162,7 +162,7 @@ function TaskCheckbox({
           onMouseDown: () => (isActive.value = 1),
           onMouseUp: () => (isActive.value = 0),
         })}
-        onPress={handlePress}
+        onPress={() => handlePress()}
       >
         <Animated.View
           style={[
