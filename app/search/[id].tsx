@@ -1,6 +1,7 @@
 import { CollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { useUser } from "@/context/useUser";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button } from "@/ui/Button";
@@ -118,6 +119,10 @@ function SearchList({ collection, inputRef, listRef }) {
   useEffect(() => {
     setTimeout(() => inputRef.current.focus(), 500);
   }, []);
+
+  useHotkeys("esc", () => {
+    router.back();
+  });
 
   return (
     <>
