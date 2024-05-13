@@ -263,7 +263,7 @@ function Root() {
 
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(!breakpoints.md);
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
   const closeSidebarOnMobile = useCallback(() => {
