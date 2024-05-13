@@ -521,9 +521,6 @@ export function TaskDetails() {
                   <IconButton
                     style={{ borderWidth: 1, borderColor: theme[6] }}
                     size={50}
-                    onPress={() => {
-                      updateTask("due", null);
-                    }}
                   >
                     <Icon>close</Icon>
                   </IconButton>
@@ -604,10 +601,21 @@ export function TaskDetails() {
                     <Text>Edit</Text>
                   </Pressable>
                 </TaskDatePicker>
-                <Pressable style={drawerStyles.collapsibleMenuItem}>
+                <Pressable
+                  style={drawerStyles.collapsibleMenuItem}
+                  onPress={() => {
+                    updateTask("recurrenceRule", null);
+                    updateTask("due", null);
+                  }}
+                >
                   <IconButton
-                    style={{ borderWidth: 1, borderColor: theme[6] }}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: theme[6],
+                      opacity: 1,
+                    }}
                     size={50}
+                    disabled
                   >
                     <Icon>close</Icon>
                   </IconButton>

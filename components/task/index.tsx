@@ -376,7 +376,7 @@ const Task = memo(function Task({
               ) : null}
             </View>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
-              {showRelativeTime && (
+              {showRelativeTime && task.due && (
                 <Chip
                   disabled
                   dense
