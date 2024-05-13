@@ -46,6 +46,7 @@ export const toastConfig = (theme) => ({
           </Icon>
         )}
         text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
+        renderTrailingIcon={props.props?.renderTrailingIcon}
       />
     </View>
   ),

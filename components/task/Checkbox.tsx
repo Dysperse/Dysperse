@@ -1,6 +1,7 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { cloneElement, memo } from "react";
@@ -10,6 +11,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 
 function TaskCheckbox({
@@ -50,8 +52,11 @@ function TaskCheckbox({
       )
     : task.completionInstances.length > 0;
 
-  const handlePress = async () => {
-    let newArr = isCompleted ? [] : [...task.completionInstances, true];
+  const handlePress = async (forceCompletion?: boolean) => {
+    let newArr =
+      isCompleted || !forceCompletion
+        ? []
+        : [...task.completionInstances, true];
     let iteration = null;
 
     if (task.recurrenceRule) {
@@ -61,22 +66,57 @@ function TaskCheckbox({
       });
       const instances = rule.between(dateRange[0], dateRange[1]);
       iteration = instances[0].toISOString();
-      newArr = isCompleted
-        ? task.completionInstances.filter(
-            (instance: string) =>
-              !dayjs(instance).isBetween(
-                dateRange[0],
-                dateRange[1],
-                "day",
-                "[]"
-              )
-          )
-        : [...task.completionInstances, { iteration }];
+      newArr =
+        isCompleted || !forceCompletion
+          ? task.completionInstances.filter(
+              (instance: string) =>
+                !dayjs(instance).isBetween(
+                  dateRange[0],
+                  dateRange[1],
+                  "day",
+                  "[]"
+                )
+            )
+          : [...task.completionInstances, { iteration }];
     }
 
     mutateList({
       ...task,
       completionInstances: newArr,
+    });
+    const d = (e) => {
+      e.preventDefault();
+      if (e.ctrlKey && e.key === "z") {
+        handlePress(isCompleted);
+        Toast.hide();
+      }
+    };
+
+    Toast.show({
+      type: "success",
+      text1: isCompleted ? "Marked incomplete" : "Marked complete",
+      onShow: () => {
+        if (Platform.OS === "web") {
+          // add ctrl+z to undo
+          window.addEventListener("keydown", d);
+        }
+      },
+      onHide: () => {
+        if (Platform.OS === "web") {
+          window.removeEventListener("keydown", d);
+        }
+      },
+      props: {
+        renderTrailingIcon: () => (
+          <IconButton
+            icon="undo"
+            onPress={() => {
+              handlePress(isCompleted);
+              Toast.hide();
+            }}
+          />
+        ),
+      },
     });
 
     await sendApiRequest(
