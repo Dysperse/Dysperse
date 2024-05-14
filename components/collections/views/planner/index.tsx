@@ -46,7 +46,7 @@ function Agenda() {
         flex: 1,
       }}
     >
-      {error || !Array.isArray(data) ? <ErrorAlert /> : <Spinner />}
+      {error ? <ErrorAlert /> : <Spinner />}
     </View>
   );
   if (breakpoints.md) {
