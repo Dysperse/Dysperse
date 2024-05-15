@@ -2,10 +2,13 @@ import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -21,6 +24,7 @@ import useSWR, { mutate } from "swr";
 
 function Header() {
   const theme = useColorTheme();
+  const { openSidebar } = useSidebarContext();
 
   return (
     <LinearGradient
@@ -30,12 +34,28 @@ function Header() {
         justifyContent: "center",
         paddingVertical: 70,
         marginBottom: 20,
+        gap: 10,
+        position: "relative",
       }}
     >
+      <IconButton
+        size={55}
+        onPress={openSidebar}
+        icon="menu"
+        variant="outlined"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          margin: 15,
+        }}
+      />
       <Logo size={100} />
       <Text
         style={{
           fontSize: 50,
+          lineHeight: 60,
+          textAlign: "center",
           color: theme[11],
         }}
         weight={900}
@@ -48,13 +68,15 @@ function Header() {
 
 const styles = StyleSheet.create({
   featureColumn: {
-    flex: 1,
-    flexBasis: 0,
     borderWidth: 1,
     borderRadius: 25,
     padding: 20,
     gap: 20,
     flexDirection: "row",
+  },
+  featureColumnDesktop: {
+    flex: 1,
+    flexBasis: 0,
   },
   featureTitle: {
     fontSize: 23,
@@ -80,13 +102,12 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
     width: "100%",
     maxWidth: 1200,
+    marginTop: 20,
   },
   exploreCard: {
     gap: 25,
     padding: 20,
-    flex: 1,
     borderRadius: 25,
-    flexBasis: 0,
     borderWidth: 1,
     flexDirection: "row",
   },
@@ -231,6 +252,7 @@ function CreateCollection() {
 
 function FeatureList() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View style={[styles.container, { marginVertical: 20 }]}>
@@ -238,8 +260,19 @@ function FeatureList() {
         Here's the gist of how it works...
       </Text>
 
-      <View style={styles.featureRow}>
-        <View style={[styles.featureColumn, { borderColor: theme[5] }]}>
+      <View
+        style={[
+          styles.featureRow,
+          !breakpoints.md && { flexDirection: "column" },
+        ]}
+      >
+        <View
+          style={[
+            styles.featureColumn,
+            breakpoints.md && styles.featureColumnDesktop,
+            { borderColor: theme[5] },
+          ]}
+        >
           <ShapeContainer text="one" index={1} />
           <View style={{ flex: 1 }}>
             <Text style={styles.featureTitle}>Create a task</Text>
@@ -255,7 +288,13 @@ function FeatureList() {
             </CreateTask>
           </View>
         </View>
-        <View style={[styles.featureColumn, { borderColor: theme[5] }]}>
+        <View
+          style={[
+            styles.featureColumn,
+            breakpoints.md && styles.featureColumnDesktop,
+            { borderColor: theme[5] },
+          ]}
+        >
           <ShapeContainer text="two" index={2} />
           <View style={{ flex: 1 }}>
             <Text style={styles.featureTitle}>Tasks can be labeled</Text>
@@ -267,8 +306,19 @@ function FeatureList() {
           </View>
         </View>
       </View>
-      <View style={styles.featureRow}>
-        <View style={[styles.featureColumn, { borderColor: theme[5] }]}>
+      <View
+        style={[
+          styles.featureRow,
+          !breakpoints.md && { flexDirection: "column" },
+        ]}
+      >
+        <View
+          style={[
+            styles.featureColumn,
+            breakpoints.md && styles.featureColumnDesktop,
+            { borderColor: theme[5] },
+          ]}
+        >
           <ShapeContainer text="three" index={6} />
           <View style={{ flex: 1 }}>
             <Text style={styles.featureTitle}>
@@ -280,7 +330,13 @@ function FeatureList() {
             <CreateCollection />
           </View>
         </View>
-        <View style={[styles.featureColumn, { borderColor: theme[5] }]}>
+        <View
+          style={[
+            styles.featureColumn,
+            breakpoints.md && styles.featureColumnDesktop,
+            { borderColor: theme[5] },
+          ]}
+        >
           <ShapeContainer text="four" index={5} />
           <View style={{ flex: 1 }}>
             <Text style={styles.featureTitle}>Open a tab</Text>
@@ -298,6 +354,7 @@ function FeatureList() {
 
 function Explore() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View style={styles.container}>
@@ -306,7 +363,7 @@ function Explore() {
       </Text>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: breakpoints.md ? "row" : "column",
           width: "100%",
           gap: 25,
           marginVertical: 25,
@@ -316,7 +373,7 @@ function Explore() {
       >
         {[
           {
-            title: "Follow us on Instagram",
+            title: "Follow our Instagram",
             description:
               "Recieve useful (and aesthetic) productivity updates in your feed",
             href: "https://instagram.com/dysperse",
@@ -337,6 +394,8 @@ function Explore() {
             style={({ pressed, hovered }) => [
               styles.exploreCard,
               {
+                flex: breakpoints.md ? 1 : undefined,
+                flexBasis: breakpoints.md ? 0 : undefined,
                 borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
                 backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
               },
@@ -362,6 +421,7 @@ function Explore() {
 
 function NotSureWhereToStart() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { isFocused, setFocus } = useFocusPanelContext();
   const toggleFocus = () => setFocus(!isFocused);
 
@@ -370,7 +430,18 @@ function NotSureWhereToStart() {
       <Text variant="eyebrow" style={{ textAlign: "center", marginBottom: 10 }}>
         Not sure where to start?
       </Text>
-      <View style={{ flexDirection: "row", paddingHorizontal: 25, gap: 25 }}>
+      <View
+        style={[
+          {
+            flexDirection: breakpoints.md ? "row" : "column",
+            paddingHorizontal: 25,
+            gap: 25,
+          },
+          !breakpoints.md && {
+            flexWrap: "wrap",
+          },
+        ]}
+      >
         {[
           {
             title: "Change the theme color",
@@ -399,10 +470,12 @@ function NotSureWhereToStart() {
             style={({ pressed, hovered }) => [
               styles.exploreCard,
               {
+                flex: 1,
                 alignItems: "center",
                 borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
                 backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
               },
+              !breakpoints.md && { minHeight: 70 },
             ]}
           >
             <Icon>{card.icon}</Icon>
@@ -418,7 +491,7 @@ function NotSureWhereToStart() {
 
 export default function Page() {
   return (
-    <ContentWrapper>
+    <ContentWrapper noPaddingTop>
       <ScrollView>
         <Header />
         <FeatureList />

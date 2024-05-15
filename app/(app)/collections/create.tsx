@@ -35,7 +35,9 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   helper: {
-    marginTop: -20,
+    fontSize: 20,
+    fontFamily: "body_300",
+    marginTop: -17,
     opacity: 0.6,
   },
 });
@@ -102,7 +104,7 @@ export default function Page() {
       <Header />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.containerContent}>
-          <Text weight={200} style={{ fontSize: 50 }}>
+          <Text weight={900} style={{ fontSize: 40 }}>
             New collection
           </Text>
           <Text style={styles.helper}>
