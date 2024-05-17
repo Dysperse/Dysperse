@@ -78,7 +78,8 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
         styles.button,
         {
           borderWidth: 1,
-          borderColor: theme[isHome ? 5 : pressed ? 6 : hovered ? 5 : 4],
+          backgroundColor: theme[isHome ? 2 : pressed ? 4 : hovered ? 3 : 2],
+          borderColor: theme[isHome ? 5 : pressed ? 7 : hovered ? 6 : 4],
         },
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
@@ -359,7 +360,8 @@ const QuickCreateButton = memo(function QuickCreateButton() {
               styles.button,
               {
                 borderWidth: 1,
-                borderColor: theme[pressed ? 6 : hovered ? 5 : 4],
+                borderColor: theme[pressed ? 7 : hovered ? 6 : 4],
+                backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
                 flex: 1,
                 minHeight: 45,
               },

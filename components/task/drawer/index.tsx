@@ -98,13 +98,7 @@ export function TaskDrawer({
         sheetRef={ref}
         animateOnMount={!breakpoints.md}
         snapPoints={
-          error
-            ? ["50%"]
-            : breakpoints.md
-            ? ["100%"]
-            : data
-            ? ["65%", "90%"]
-            : ["65%"]
+          error ? ["50%"] : breakpoints.md ? ["100%"] : data ? ["80%"] : ["65%"]
         }
         onClose={handleClose}
         style={{
