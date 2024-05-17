@@ -1,16 +1,5 @@
 [
   {
-    "name": "Notion",
-    "about": {
-      "text": "Notion is a freemium productivity and note-taking web application developed by Notion Labs Inc. It offers organizational tools including task management, project tracking, to-do lists, and bookmarking.",
-      "source": "https://en.wikipedia.org/wiki/Notion_(productivity_software)"
-    },
-    "description": "Connect databases to your collections.",
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png",
-    "slug": "notion",
-    "availableOptions": {}
-  },
-  {
     "name": "Google Calendar",
     "about": {
       "text": "Google Calendar is a time-management and scheduling calendar service developed by Google. It was created by Mike Samuel as part of his 20% project at Google. It became available in beta release April 13, 2006, and in general release in July 2009, on the web and as mobile apps for the Android and iOS platforms",
@@ -22,17 +11,6 @@
     "availableOptions": {}
   },
   {
-    "name": "Gmail",
-    "about": {
-      "text": "Gmail is an email service provided by Google. As of 2019, it had 1.5 billion active users worldwide, making it the largest email service in the world. It also provides a webmail interface, accessible through a web browser, and is also accessible through the official mobile application",
-      "source": "https://en.wikipedia.org/wiki/Gmail"
-    },
-    "description": "Starred emails will be added to your collections",
-    "icon": "https://cdn-icons-png.flaticon.com/512/5968/5968534.png",
-    "slug": "gmail",
-    "availableOptions": {}
-  },
-  {
     "name": "Canvas LMS",
     "about": {
       "text": "Canvas LMS is an open and reliable web-based software that allows institutions to manage digital learning, educators to create and present online learning materials and assess student learning, and students to engage in courses and receive feedback about skill development and learning achievement",
@@ -41,6 +19,28 @@
     "description": "Automatically sync assignments and quizzes to collections",
     "icon": "https://s6.imgcdn.dev/fZLql.jpg",
     "slug": "canvas-lms",
+    "availableOptions": {}
+  },
+  {
+    "name": "Notion",
+    "about": {
+      "text": "Notion is a freemium productivity and note-taking web application developed by Notion Labs Inc. It offers organizational tools including task management, project tracking, to-do lists, and bookmarking.",
+      "source": "https://en.wikipedia.org/wiki/Notion_(productivity_software)"
+    },
+    "description": "Connect databases to your collections.",
+    "icon": "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png",
+    "slug": "notion",
+    "availableOptions": {}
+  },
+  {
+    "name": "Gmail",
+    "about": {
+      "text": "Gmail is an email service provided by Google. As of 2019, it had 1.5 billion active users worldwide, making it the largest email service in the world. It also provides a webmail interface, accessible through a web browser, and is also accessible through the official mobile application",
+      "source": "https://en.wikipedia.org/wiki/Gmail"
+    },
+    "description": "Starred emails will be added to your collections",
+    "icon": "https://cdn-icons-png.flaticon.com/512/5968/5968534.png",
+    "slug": "gmail",
     "availableOptions": {}
   }
 ]

@@ -92,7 +92,6 @@ function SpaceStorage({ data }) {
           {[
             { name: "tasks", icon: "task_alt" },
             { name: "notes", icon: "sticky_note_2" },
-            { name: "items", icon: "package_2" },
             { name: "labels", icon: "label" },
             { name: "collections", icon: "shapes" },
           ].map(({ name, icon }) => (
