@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const settingStyles = StyleSheet.create({
   title: {
-    fontFamily: "body_700",
+    fontFamily: "body_900",
     fontSize: 40,
   },
   heading: {

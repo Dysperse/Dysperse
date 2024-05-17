@@ -334,9 +334,9 @@ export default function AppLayout() {
                                         d !== "settings/index" && "Settings",
                                       ...TransitionPresets.SlideFromRightIOS,
                                       cardStyleInterpolator: forHorizontalIOS,
-                                      ...(breakpoints.md && {
-                                        animationEnabled: false,
-                                      }),
+                                      animationEnabled:
+                                        !breakpoints.md &&
+                                        d !== "settings/index",
                                     }}
                                   />
                                 ))}

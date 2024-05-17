@@ -92,6 +92,7 @@ function SpaceStorage({ data }) {
           {[
             { name: "tasks", icon: "task_alt" },
             { name: "notes", icon: "sticky_note_2" },
+            { name: "items", icon: "package_2" },
             { name: "labels", icon: "label" },
             { name: "collections", icon: "shapes" },
           ].map(({ name, icon }) => (
@@ -187,32 +188,6 @@ function GeneralSettings({ mutate, data }) {
             toggle_off
           </Icon>
         </ListItemButton>
-        <ListItemButton
-          onPress={() => {
-            Toast.show({ type: "info", text1: "Coming soon!" });
-          }}
-        >
-          <ListItemText
-            primary="Time format"
-            secondary="Choose the way times are displayed"
-          />
-          <MenuPopover
-            trigger={
-              <Button variant="filled">
-                <ButtonText>12 hour format</ButtonText>
-                <Icon>expand_more</Icon>
-              </Button>
-            }
-            options={[
-              { text: "12 hour format" },
-              { text: "24 hour format" },
-            ].map((e) => ({
-              ...e,
-              selected: e.text === "12 hour format",
-              callback: () => {},
-            }))}
-          />
-        </ListItemButton>
       </View>
     </>
   );
@@ -226,7 +201,7 @@ export default function Page() {
 
   return (
     <SettingsLayout>
-      <Text style={settingStyles.title}>Space</Text>
+      <Text style={settingStyles.title}>Account</Text>
       {data ? (
         <>
           <Text style={settingStyles.heading} weight={700}>

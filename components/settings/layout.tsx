@@ -233,32 +233,54 @@ function SettingsSidebar() {
       style={{ maxHeight: "100%" }}
       contentContainerStyle={{
         paddingVertical: breakpoints.md ? 50 : 0,
-        paddingBottom: 50,
+        paddingBottom: 20,
       }}
       showsVerticalScrollIndicator={false}
     >
-      <TextField
-        variant="filled+outlined"
+      <View
         style={{
-          paddingVertical: breakpoints.md ? undefined : 15,
-          paddingHorizontal: breakpoints.md ? undefined : 25,
-          margin: 10,
-          marginTop: 0,
+          paddingHorizontal: breakpoints.md ? 10 : 20,
+          marginBottom: 20,
         }}
-        onChangeText={setSearch}
-        value={search}
-        placeholder="Search..."
-      />
+      >
+        {!breakpoints.md && (
+          <Text
+            style={{
+              marginTop: 20,
+              fontSize: 40,
+              marginBottom: 10,
+            }}
+            weight={900}
+          >
+            Settings
+          </Text>
+        )}
+        <TextField
+          variant="filled+outlined"
+          style={{
+            paddingVertical: breakpoints.md ? undefined : 15,
+            paddingHorizontal: breakpoints.md ? undefined : 25,
+            marginTop: 0,
+          }}
+          onChangeText={setSearch}
+          value={search}
+          placeholder="Search..."
+        />
+      </View>
       {settingsOptions.length === 0 && (
         <Text style={{ textAlign: "center", marginTop: 20, opacity: 0.6 }}>
           No results found
         </Text>
       )}
       {settingsOptions.map((section, index) => (
-        <View key={index} style={[styles.sectionContainer]}>
+        <View key={index} style={styles.sectionContainer}>
           <Text
             variant="eyebrow"
-            style={{ fontSize: 12, marginLeft: 15, marginBottom: 5 }}
+            style={{
+              fontSize: 12,
+              marginLeft: breakpoints.md ? 15 : 25,
+              marginBottom: 5,
+            }}
             weight={700}
           >
             {section.name}
@@ -269,7 +291,7 @@ function SettingsSidebar() {
                 backgroundColor: theme[3],
                 marginBottom: 5,
                 borderRadius: 20,
-                marginHorizontal: 12,
+                marginHorizontal: 20,
                 overflow: "hidden",
               }
             }
@@ -377,6 +399,7 @@ export function SettingsLayout({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingVertical: hideBack ? 0 : 50,
+          paddingTop: 20,
           paddingHorizontal: hideBack ? 0 : 20,
         }}
         {...props}
@@ -402,8 +425,8 @@ export function SettingsLayout({
           style={{
             flexDirection: "row",
             alignItems: "center",
-            margin: 12,
-            marginTop: insets.top + 12,
+            margin: 20,
+            marginTop: insets.top + 20,
             zIndex: 99,
             justifyContent: "space-between",
           }}
@@ -414,10 +437,6 @@ export function SettingsLayout({
             size={55}
             icon="arrow_back_ios_new"
           />
-          <Text style={{ fontSize: 20 }} weight={200}>
-            Settings
-          </Text>
-          <View style={{ width: 55 }} />
         </View>
       )}
       <View
@@ -431,7 +450,7 @@ export function SettingsLayout({
           flex: 1,
         }}
       >
-        {(isHome || breakpoints.md) && (
+        {(isHome || breakpoints.md || !children) && (
           <View style={{ width: breakpoints.md ? 200 : "100%" }}>
             <SettingsSidebar />
           </View>
