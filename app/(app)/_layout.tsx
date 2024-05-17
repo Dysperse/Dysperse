@@ -211,7 +211,7 @@ export default function AppLayout() {
                           },
                         }}
                       >
-                        <Animated.View
+                        <View
                           style={[
                             breakpoints.md ? { flex: 1 } : { width: "100%" },
                           ]}
@@ -360,7 +360,7 @@ export default function AppLayout() {
                               </JsStack>
                             </AppContainer>
                           </Drawer>
-                        </Animated.View>
+                        </View>
                       </ThemeProvider>
                     </FocusPanelProvider>
                   </CommandPaletteProvider>
