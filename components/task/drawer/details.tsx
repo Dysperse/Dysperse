@@ -636,30 +636,6 @@ export function TaskDetails() {
             ),
             content: <></>,
           },
-          task.due && {
-            trigger: () => (
-              <ListItemButton
-                disabled
-                variant="filled"
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>notifications</Icon>
-                <ListItemText
-                  primary={`${task.notifications.length} notification${
-                    task.notifications.length == 1 ? "" : "s"
-                  }`}
-                />
-                {!isReadOnly && (
-                  <Chip
-                    label="Coming soon"
-                    style={{ backgroundColor: theme[5] }}
-                  />
-                )}
-              </ListItemButton>
-            ),
-            content: <></>,
-          },
-
           {
             trigger: () => (
               <ListItemButton
@@ -731,6 +707,29 @@ export function TaskDetails() {
                     /> */}
                     </View>
                   )}
+              </ListItemButton>
+            ),
+            content: <></>,
+          },
+          task.due && {
+            trigger: () => (
+              <ListItemButton
+                disabled
+                variant="filled"
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+              >
+                <Icon>notifications</Icon>
+                <ListItemText
+                  primary={`${task.notifications.length} notification${
+                    task.notifications.length == 1 ? "" : "s"
+                  }`}
+                />
+                {!isReadOnly && (
+                  <Chip
+                    label="Coming soon"
+                    style={{ backgroundColor: theme[5] }}
+                  />
+                )}
               </ListItemButton>
             ),
             content: <></>,

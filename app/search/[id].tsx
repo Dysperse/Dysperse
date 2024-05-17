@@ -316,7 +316,7 @@ function Page() {
     >
       <Pressable
         onPress={(e) => e.stopPropagation()}
-        style={{ flex: 1, backgroundColor: addHslAlpha(theme[2], 0.5) }}
+        style={{ flex: 1, backgroundColor: addHslAlpha(theme[2], 0.9) }}
       >
         <Pressable style={styles.header} onPress={scrollToTop}>
           <IconButton
