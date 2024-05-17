@@ -314,7 +314,7 @@ export default function AppLayout() {
                                   "settings/login/account/index",
                                   "settings/login/account/two-factor-authentication",
                                   "settings/login/devices",
-                                  "settings/customization/profile",
+                                  "settings/account/profile",
                                   "settings/index",
                                   "settings/shortcuts",
                                   "settings/personal-information",

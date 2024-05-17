@@ -1,4 +1,4 @@
-import { pickImageAsync } from "@/app/(app)/settings/customization/profile";
+import { pickImageAsync } from "@/app/(app)/settings/account/profile";
 import {
   useDebouncedValue,
   useSignupContext,

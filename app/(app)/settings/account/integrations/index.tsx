@@ -100,9 +100,9 @@ export default function Page() {
   return (
     <SettingsLayout>
       <Text style={settingStyles.title}>Integrations</Text>
-      <Text>
-        Introducing more chaos. Connect everything to your workspace, so you can
-        see everything in one place.
+      <Text style={{ fontSize: 17, opacity: 0.7 }}>
+        Introducing more chaos. Continue using all your favorite tools,
+        alongside #dysperse.
       </Text>
       <Alert
         style={{ marginTop: 20 }}

@@ -58,13 +58,30 @@ function SettingsSidebar() {
 
   const settingsOptions = [
     {
-      name: "Account",
+      name: "Preferences",
       settings: [
         {
-          name: "Space",
-          icon: "communities",
+          name: "Account",
+          icon: "person",
           href: "/settings/account",
-          keywords: ["space", "community", "communities"],
+          keywords: [
+            "account",
+            "email",
+            "password",
+            "account",
+            "login",
+            "security",
+            "password",
+            "2fa",
+            "two",
+            "factor",
+          ],
+        },
+        {
+          name: "Profile",
+          icon: "alternate_email",
+          href: "/settings/account/profile",
+          keywords: ["profile", "account", "user", "personal"],
         },
         {
           name: "Integrations",
@@ -85,12 +102,6 @@ function SettingsSidebar() {
       name: "Customization",
       settings: [
         {
-          name: "Profile",
-          icon: "alternate_email",
-          href: "/settings/customization/profile",
-          keywords: ["profile", "account", "user", "personal"],
-        },
-        {
           name: "Appearance",
           icon: "palette",
           href: "/settings/customization/appearance",
@@ -105,24 +116,8 @@ function SettingsSidebar() {
       ],
     },
     {
-      name: "Login settings",
+      name: "Security",
       settings: [
-        {
-          name: "Account",
-          icon: "person",
-          href: "/settings/login/account",
-          keywords: [
-            "email",
-            "password",
-            "account",
-            "login",
-            "security",
-            "password",
-            "2fa",
-            "two",
-            "factor",
-          ],
-        },
         {
           name: "Scan QR code",
           icon: "qr_code_2",

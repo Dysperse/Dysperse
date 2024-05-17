@@ -4,6 +4,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -150,11 +151,15 @@ export default function Page() {
   return (
     <SettingsLayout>
       <Text style={settingStyles.title}>Profile</Text>
+      <View style={{ flexDirection: "row" }}>
+        <Chip label="Visible to others" icon="visibility" />
+      </View>
       <View
         style={{
           borderRadius: 20,
           backgroundColor: theme[3],
           overflow: "hidden",
+          marginTop: 20,
         }}
       >
         <ProfileBanner data={session.user} />
