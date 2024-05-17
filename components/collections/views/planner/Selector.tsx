@@ -86,7 +86,8 @@ const SelectionButton = memo(function SelectionButton({
     });
   };
 
-  const isToday = dayjs(itemStart).isSame(dayjs(), "day");
+  const isToday =
+    dayjs(itemStart).isSame(dayjs(), "day") || !dayjs(start as any).isValid();
 
   return (
     <TouchableOpacity style={styles.item} onPress={handlePress}>
