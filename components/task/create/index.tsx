@@ -7,7 +7,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Calendar from "@/ui/Calendar";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -23,7 +22,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import {
   BottomSheetModal,
-  BottomSheetScrollView,
   BottomSheetTextInput,
   TouchableOpacity,
   useBottomSheet,
@@ -51,8 +49,9 @@ import Toast from "react-native-toast-message";
 import { Options, RRule } from "rrule";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { normalizeRecurrenceRuleObject } from "../drawer/details";
+import { TaskDatePicker } from "./TaskDatePicker";
 
-const DueDatePicker = ({ watch, value, setValue }) => {
+export const DueDatePicker = ({ watch, value, setValue }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const dateOnly = watch("dateOnly");
@@ -173,7 +172,7 @@ const DueDatePicker = ({ watch, value, setValue }) => {
   );
 };
 
-function RecurrencePicker({ value, setValue }) {
+export function RecurrencePicker({ value, setValue }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useUser();
@@ -540,110 +539,8 @@ function RecurrencePicker({ value, setValue }) {
   );
 }
 
-export function TaskDatePicker({
-  defaultView,
-  setValue,
-  watch,
-  children,
-  dueDateOnly,
-}: {
-  defaultView?: "date" | "recurrence";
-  setValue: any;
-  watch: any;
-  children?: any;
-  dueDateOnly?: boolean;
-}) {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const sheetRef = useRef<BottomSheetModal>(null);
-  const handleClose = useCallback(() => sheetRef.current?.close(), []);
-  const handleOpen = useCallback(() => sheetRef.current?.present(), []);
-
-  const dueDate = watch("date");
-  const recurrence = watch("recurrenceRule");
-
-  const [view, setView] = useState<"date" | "recurrence">(
-    dueDateOnly ? "date" : defaultView || "date"
-  );
-
-  const trigger = cloneElement(
-    children || (
-      <Chip
-        icon={<Icon>{recurrence ? "loop" : "calendar_today"}</Icon>}
-        onDismiss={
-          (recurrence || dueDate) &&
-          (() => {
-            setValue("date", null);
-            setValue("recurrenceRule", null);
-          })
-        }
-        label={
-          recurrence
-            ? capitalizeFirstLetter(new RRule(recurrence).toText())
-            : dueDate
-            ? dueDate.format("MMM Do")
-            : undefined
-        }
-      />
-    ),
-    {
-      onPress: handleOpen,
-    }
-  );
-
-  return (
-    <>
-      {trigger}
-      <BottomSheet
-        snapPoints={["100%"]}
-        sheetRef={sheetRef}
-        onClose={handleClose}
-        maxWidth={750}
-        backgroundStyle={{ backgroundColor: "transparent" }}
-        handleComponent={() => null}
-      >
-        <Pressable onPress={handleClose} style={{ flex: 1 }}>
-          <Pressable
-            onPress={(e) => e.stopPropagation()}
-            style={{
-              marginTop: "auto",
-              backgroundColor: theme[2],
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              paddingVertical: 15,
-            }}
-          >
-            <BottomSheetScrollView>
-              {dueDateOnly !== true && (
-                <ButtonGroup
-                  options={[
-                    { value: "date", label: "Date" },
-                    { value: "recurrence", label: "Repeat" },
-                  ]}
-                  state={[view, setView]}
-                  containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
-                />
-              )}
-              {view === "date" ? (
-                <DueDatePicker
-                  watch={watch}
-                  setValue={setValue}
-                  value={dueDate}
-                />
-              ) : (
-                <RecurrencePicker setValue={setValue} value={recurrence} />
-              )}
-            </BottomSheetScrollView>
-          </Pressable>
-        </Pressable>
-      </BottomSheet>
-    </>
-  );
-}
-
 function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
   const orange = useColor("orange");
-  const theme = useColorTheme();
   const pinned = watch("pinned");
 
   const rotate = useSharedValue(0);

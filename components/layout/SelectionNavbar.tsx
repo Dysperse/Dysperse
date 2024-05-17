@@ -20,7 +20,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { useSWRConfig } from "swr";
-import { TaskDatePicker } from "../task/create";
+import { TaskDatePicker } from "../task/create/TaskDatePicker";
 
 export function SelectionNavbar() {
   const { mutate } = useSWRConfig();
@@ -208,7 +208,10 @@ export function SelectionNavbar() {
               </View>
               <View style={itemStyle}>
                 <TaskDatePicker
-                  setValue={(newValue) => {}}
+                  title="Select a date"
+                  setValue={(name, value) => {
+                    handleSelect({ due: value });
+                  }}
                   dueDateOnly
                   watch={(inputName) => {
                     return {
