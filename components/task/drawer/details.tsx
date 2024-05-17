@@ -538,42 +538,55 @@ export function TaskDetails() {
           },
           {
             trigger: () => (
-              <ListItemButton
-                variant="filled"
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-                disabled={task.due || task.recurrenceRule}
+              <TaskDatePicker
+                defaultView={task.recurrenceRule ? "recurrence" : "date"}
+                setValue={(name, value) =>
+                  updateTask(name === "date" ? "due" : name, value)
+                }
+                watch={(inputName) => {
+                  return {
+                    date: null,
+                    dateOnly: task.dateOnly,
+                    recurrenceRule: recurrenceRule?.options,
+                  }[inputName];
+                }}
               >
-                <Icon>
-                  {task.due
-                    ? "calendar_today"
-                    : task.recurrenceRule
-                    ? "loop"
-                    : "calendar_add_on"}
-                </Icon>
-                <ListItemText
-                  primary={
-                    !task.due && !task.recurrenceRule
-                      ? "Add date"
+                <ListItemButton
+                  variant="filled"
+                  style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+                  disabled={task.due || task.recurrenceRule}
+                >
+                  <Icon>
+                    {task.due
+                      ? "calendar_today"
                       : task.recurrenceRule
-                      ? capitalizeFirstLetter(recurrenceRule.toText())
-                      : dayjs(task.due).format("MMM Do, YYYY")
-                  }
-                  secondary={
-                    task.due &&
-                    (task.recurrenceRule
-                      ? capitalizeFirstLetter(recurrenceRule.toText())
-                      : "Does not repeat")
-                  }
-                />
-                {!isReadOnly && !task.recurrenceRule && (
-                  <TaskRescheduleButton />
-                )}
-              </ListItemButton>
+                      ? "loop"
+                      : "calendar_add_on"}
+                  </Icon>
+                  <ListItemText
+                    primary={
+                      !task.due && !task.recurrenceRule
+                        ? "Add date"
+                        : task.recurrenceRule
+                        ? capitalizeFirstLetter(recurrenceRule.toText())
+                        : dayjs(task.due).format("MMM Do, YYYY")
+                    }
+                    secondary={
+                      task.due &&
+                      (task.recurrenceRule
+                        ? capitalizeFirstLetter(recurrenceRule.toText())
+                        : "Does not repeat")
+                    }
+                  />
+                  {!isReadOnly && !task.recurrenceRule && task.due && (
+                    <TaskRescheduleButton />
+                  )}
+                </ListItemButton>
+              </TaskDatePicker>
             ),
             content: isReadOnly ? null : (
               <View style={collapsibleMenuStyles as any}>
                 <TaskDatePicker
-                  key="test"
                   defaultView={task.recurrenceRule ? "recurrence" : "date"}
                   setValue={(name, value) =>
                     updateTask(name === "date" ? "due" : name, value)

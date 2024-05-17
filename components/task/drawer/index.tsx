@@ -128,7 +128,7 @@ export function TaskDrawer({
         >
           <Pressable
             onPress={(e) => e.stopPropagation()}
-            style={
+            style={[
               breakpoints.md && {
                 margin: "auto",
                 width: 500,
@@ -144,8 +144,11 @@ export function TaskDrawer({
                 backgroundColor: theme[2],
                 borderRadius: 25,
                 overflow: "hidden",
-              }
-            }
+              },
+              {
+                flex: 1,
+              },
+            ]}
           >
             {data?.id ? (
               <TaskDrawerContext.Provider

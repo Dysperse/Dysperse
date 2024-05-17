@@ -204,14 +204,13 @@ export function TaskDrawerContent({ handleClose }) {
   });
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <View
         style={{
           flexDirection: "row",
           backgroundColor: theme[2],
           paddingHorizontal: 20,
           left: 0,
-          paddingBottom: 10,
         }}
       >
         <View
@@ -248,9 +247,7 @@ export function TaskDrawerContent({ handleClose }) {
           )}
         </View>
       </View>
-      <BottomSheetScrollView
-        style={{ maxHeight: breakpoints.md ? undefined : 500 }}
-      >
+      <BottomSheetScrollView>
         <View style={{ paddingBottom: 100, paddingHorizontal: 20 }}>
           <View
             style={{
@@ -321,6 +318,6 @@ export function TaskDrawerContent({ handleClose }) {
           <TaskDetails />
         </View>
       </BottomSheetScrollView>
-    </>
+    </View>
   );
 }
