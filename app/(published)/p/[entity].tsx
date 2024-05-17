@@ -1,6 +1,9 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
-import { isValidHttpUrl } from "@/components/task/drawer/details";
+import {
+  isValidHttpUrl,
+  normalizeRecurrenceRuleObject,
+} from "@/components/task/drawer/details";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
@@ -23,7 +26,6 @@ import { createContext, useCallback, useContext } from "react";
 import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
-import { RRule } from "rrule";
 import useSWR from "swr";
 
 const PublishedEntityContext = createContext(null);
@@ -269,7 +271,7 @@ const Info = () => {
               <Avatar icon="loop" theme="mint" size={40} />
               <ListItemText
                 primary={capitalizeFirstLetter(
-                  new RRule(data.recurrenceRule).toText()
+                  normalizeRecurrenceRuleObject(data.recurrenceRule).toText()
                 )}
               />
             </ListItemButton>

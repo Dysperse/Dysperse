@@ -50,6 +50,7 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { Options, RRule } from "rrule";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
+import { normalizeRecurrenceRuleObject } from "../drawer/details";
 
 const DueDatePicker = ({ watch, value, setValue }) => {
   const breakpoints = useResponsiveBreakpoints();
@@ -186,7 +187,9 @@ function RecurrencePicker({ value, setValue }) {
     [session]
   );
 
-  const recurrenceRule = new RRule(value || new RRule(defaultOptions).options);
+  const recurrenceRule = normalizeRecurrenceRuleObject(
+    value || normalizeRecurrenceRuleObject(defaultOptions).options
+  );
 
   const [previewRange, setPreviewRange] = useState<Date>(new Date());
   const endsInputCountRef = useRef<TextInput>(null);
@@ -396,6 +399,9 @@ function RecurrencePicker({ value, setValue }) {
                 variant="outlined"
                 placeholder="Date"
                 style={{ padding: 4, borderRadius: 5 }}
+                defaultValue={
+                  value?.until ? dayjs(value?.until).format("MM/DD/YYYY") : ""
+                }
                 onBlur={(e) => {
                   let n = dayjs(e.nativeEvent.text);
                   if (

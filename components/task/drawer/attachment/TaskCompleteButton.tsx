@@ -8,8 +8,8 @@ import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import React from "react";
 import Toast from "react-native-toast-message";
-import { RRule } from "rrule";
 import { useTaskDrawerContext } from "../context";
+import { normalizeRecurrenceRuleObject } from "../details";
 
 export function TaskCompleteButton() {
   const theme = useColorTheme();
@@ -39,10 +39,7 @@ export function TaskCompleteButton() {
       let iteration = null;
 
       if (task.recurrenceRule) {
-        const rule = new RRule({
-          ...task.recurrenceRule,
-          dtstart: new Date(task.recurrenceRule.dtstart),
-        });
+        const rule = normalizeRecurrenceRuleObject(task.recurrenceRule);
         const instances = rule.between(dateRange[0], dateRange[1]);
         iteration = instances[0].toISOString();
         newArr = isCompleted

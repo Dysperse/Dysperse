@@ -5,6 +5,7 @@ import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import Checkbox from "@/components/task/Checkbox";
 import CreateTask, { TaskDatePicker } from "@/components/task/create";
 import { TaskDrawer } from "@/components/task/drawer";
+import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -32,7 +33,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { RRule } from "rrule";
 import useSWR from "swr";
 import { styles } from ".";
 import { getTaskCompletionStatus } from "../../helpers/getTaskCompletionStatus";
@@ -472,7 +472,9 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
                   icon="calendar_today"
                   label={capitalizeFirstLetter(
                     currentTask.recurrenceRule
-                      ? new RRule(currentTask.recurrenceRule).toText()
+                      ? normalizeRecurrenceRuleObject(
+                          currentTask.recurrenceRule
+                        ).toText()
                       : dayjs(currentTask.due).fromNow()
                   )}
                 />

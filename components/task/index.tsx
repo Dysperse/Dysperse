@@ -21,9 +21,9 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { RRule } from "rrule";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
+import { normalizeRecurrenceRuleObject } from "./drawer/details";
 
 const ImageViewer = ({ children, image }) => {
   const ref = useRef<BottomSheetModal>();
@@ -401,7 +401,9 @@ const Task = memo(function Task({
                     Toast.show({
                       type: "info",
                       text1: capitalizeFirstLetter(
-                        new RRule(task.recurrenceRule).toText()
+                        normalizeRecurrenceRuleObject(
+                          task.recurrenceRule
+                        ).toText()
                       ),
                     });
                   }}

@@ -452,6 +452,15 @@ function TaskNote() {
   );
 }
 
+export const normalizeRecurrenceRuleObject = (rule) => {
+  if (!rule) return null;
+  return new RRule({
+    ...rule,
+    ...(rule.until && { until: dayjs(rule.until).toDate() }),
+    ...(rule.dtstart && { dtstart: dayjs(rule.dtstart).toDate() }),
+  });
+};
+
 export function TaskDetails() {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
@@ -468,6 +477,8 @@ export function TaskDetails() {
   const noteMenuRef = useRef<BottomSheetModal>(null);
 
   const complexityScale = [2, 4, 8, 16, 32];
+  const recurrenceRule =
+    task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
 
   return (
     <>
@@ -548,17 +559,13 @@ export function TaskDetails() {
                     !task.due && !task.recurrenceRule
                       ? "Add date"
                       : task.recurrenceRule
-                      ? capitalizeFirstLetter(
-                          new RRule(task.recurrenceRule).toText()
-                        )
+                      ? capitalizeFirstLetter(recurrenceRule.toText())
                       : dayjs(task.due).format("MMM Do, YYYY")
                   }
                   secondary={
                     task.due &&
                     (task.recurrenceRule
-                      ? capitalizeFirstLetter(
-                          new RRule(task.recurrenceRule).toText()
-                        )
+                      ? capitalizeFirstLetter(recurrenceRule.toText())
                       : "Does not repeat")
                   }
                 />
@@ -579,10 +586,7 @@ export function TaskDetails() {
                     return {
                       date: dayjs(task.due),
                       dateOnly: task.dateOnly,
-                      recurrenceRule: {
-                        ...task.recurrenceRule,
-                        dtstart: new Date(task.due),
-                      },
+                      recurrenceRule: recurrenceRule.options,
                     }[inputName];
                   }}
                 >
