@@ -113,7 +113,16 @@ function SpaceStorage({ data }) {
   );
 }
 
-function GeneralSettings({ mutate, data }) {
+function AccountMenuTrigger({ text }) {
+  return (
+    <Button variant="filled">
+      <ButtonText>{text}</ButtonText>
+      <Icon>expand_more</Icon>
+    </Button>
+  );
+}
+
+function TasksSettings({ mutate, data }) {
   const { mutate: mutateUser, sessionToken } = useUser();
 
   const handleSpaceEdit = async (key, value) => {
@@ -138,16 +147,19 @@ function GeneralSettings({ mutate, data }) {
   };
 
   const theme = useColorTheme();
+  const showComingSoon = () =>
+    Toast.show({ type: "info", text1: "Coming soon!" });
 
   return (
     <>
       <Text style={settingStyles.heading} weight={700}>
-        General
+        Tasks
       </Text>
       <View
         style={{
+          gap: 10,
           marginTop: 5,
-          padding: 5,
+          padding: 10,
           borderWidth: 1,
           borderColor: theme[5],
           borderRadius: 25,
@@ -159,14 +171,9 @@ function GeneralSettings({ mutate, data }) {
             secondary="This setting affects recurring tasks"
           />
           <MenuPopover
-            trigger={
-              <Button variant="filled">
-                <ButtonText>
-                  {data?.weekStart === "SUNDAY" ? "Sunday" : "Monday"}
-                </ButtonText>
-                <Icon>expand_more</Icon>
-              </Button>
-            }
+            trigger={AccountMenuTrigger({
+              text: capitalizeFirstLetter(data?.weekStart?.toLowerCase()),
+            })}
             options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
               ...e,
               selected: e.text.toUpperCase() === data?.weekStart,
@@ -175,11 +182,21 @@ function GeneralSettings({ mutate, data }) {
             }))}
           />
         </ListItemButton>
-        <ListItemButton
-          onPress={() => {
-            Toast.show({ type: "info", text1: "Coming soon!" });
-          }}
-        >
+        <ListItemButton disabled onPress={() => {}}>
+          <ListItemText
+            primary="Time display"
+            secondary="Choose how times are displayed in the app"
+          />
+          <MenuPopover
+            trigger={AccountMenuTrigger({ text: "12 hour" })}
+            options={[{ text: "12 hour" }, { text: "24 hour" }].map((e) => ({
+              ...e,
+              selected: e.text === "12 hour",
+              callback: showComingSoon,
+            }))}
+          />
+        </ListItemButton>
+        <ListItemButton onPress={showComingSoon}>
           <ListItemText
             primary="Vanish mode"
             secondary="Delete completed tasks after 14 days"
@@ -187,6 +204,22 @@ function GeneralSettings({ mutate, data }) {
           <Icon style={{ opacity: 0.6 }} size={40}>
             toggle_off
           </Icon>
+        </ListItemButton>
+        <ListItemButton onPress={showComingSoon}>
+          <ListItemText
+            primary="Enable working hours"
+            secondary="Set the hours you're available during the day."
+          />
+          <Icon style={{ opacity: 0.6 }} size={40}>
+            toggle_off
+          </Icon>
+        </ListItemButton>
+        <ListItemButton onPress={showComingSoon}>
+          <ListItemText
+            primary="Private tasks by default"
+            secondary="New tasks are private by default"
+          />
+          <Icon size={40}>toggle_on</Icon>
         </ListItemButton>
       </View>
     </>
@@ -208,7 +241,7 @@ export default function Page() {
             Storage
           </Text>
           <SpaceStorage data={data} />
-          <GeneralSettings data={data} mutate={mutate} />
+          <TasksSettings data={data} mutate={mutate} />
         </>
       ) : error ? (
         <ErrorAlert />
