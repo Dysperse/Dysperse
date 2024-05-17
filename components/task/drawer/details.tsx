@@ -586,7 +586,7 @@ export function TaskDetails() {
                     return {
                       date: dayjs(task.due),
                       dateOnly: task.dateOnly,
-                      recurrenceRule: recurrenceRule.options,
+                      recurrenceRule: recurrenceRule?.options,
                     }[inputName];
                   }}
                 >
