@@ -3,13 +3,39 @@ import BottomSheet from "@/ui/BottomSheet";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import { RRule } from "rrule";
 import { DueDatePicker, RecurrencePicker } from ".";
+
+function Header({ title }: { title: string }) {
+  const theme = useColorTheme();
+  return (
+    <View
+      style={{
+        borderBottomWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 30,
+        paddingVertical: 10,
+        borderBottomColor: theme[5],
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 20,
+          marginBottom: 10,
+        }}
+        weight={800}
+      >
+        {title}
+      </Text>
+    </View>
+  );
+}
 
 export function TaskDatePicker({
   defaultView,
@@ -17,12 +43,14 @@ export function TaskDatePicker({
   watch,
   children,
   dueDateOnly,
+  title,
 }: {
   defaultView?: "date" | "recurrence";
   setValue: any;
   watch: any;
   children?: any;
   dueDateOnly?: boolean;
+  title?: string;
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -84,6 +112,7 @@ export function TaskDatePicker({
               paddingVertical: 15,
             }}
           >
+            {title && <Header title={title} />}
             <BottomSheetScrollView>
               {dueDateOnly !== true && (
                 <ButtonGroup
