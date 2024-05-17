@@ -399,7 +399,7 @@ export function SettingsLayout({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingVertical: hideBack ? 0 : 50,
-          paddingTop: 20,
+          paddingTop: breakpoints.md ? 50 : 20,
           paddingHorizontal: hideBack ? 0 : 20,
         }}
         {...props}
