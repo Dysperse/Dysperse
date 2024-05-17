@@ -142,21 +142,23 @@ export function TaskDrawer({
                 borderColor: theme[6],
                 backgroundColor: theme[2],
                 marginTop: "auto",
-                paddingTop: 15,
+                paddingTop: breakpoints.md ? 0 : 15,
                 borderRadius: 25,
               },
             ]}
           >
-            <View
-              style={{
-                width: 25,
-                height: 5,
-                backgroundColor: theme[5],
-                borderRadius: 999,
-                marginHorizontal: "auto",
-                marginBottom: 10,
-              }}
-            />
+            {!breakpoints.md && (
+              <View
+                style={{
+                  width: 25,
+                  height: 5,
+                  backgroundColor: theme[5],
+                  borderRadius: 999,
+                  marginHorizontal: "auto",
+                  marginBottom: 10,
+                }}
+              />
+            )}
             {data?.id ? (
               <TaskDrawerContext.Provider
                 value={{
