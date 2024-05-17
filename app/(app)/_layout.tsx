@@ -218,6 +218,7 @@ export default function AppLayout() {
                         >
                           <ReleaseModal />
                           <LoadingErrors />
+                          <SelectionNavbar />
                           <Drawer
                             open={isOpen}
                             onOpen={openSidebar}
@@ -267,7 +268,6 @@ export default function AppLayout() {
                             )}
                           >
                             <AppContainer>
-                              <SelectionNavbar />
                               <JsStack
                                 screenOptions={{
                                   header: () => null,
