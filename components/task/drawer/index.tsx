@@ -103,6 +103,7 @@ export function TaskDrawer({
         maxWidth={width}
         backgroundStyle={{ backgroundColor: "transparent" }}
         handleComponent={() => null}
+        maxBackdropOpacity={0.1}
         {...(breakpoints.md && {
           maxBackdropOpacity: 0.05,
           animationConfigs: {
@@ -128,18 +129,17 @@ export function TaskDrawer({
                 margin: "auto",
                 width: 500,
                 height: Math.min(700, height - 100),
-                borderWidth: 1,
                 shadowRadius: 50,
                 shadowOffset: {
                   width: 20,
                   height: 20,
                 },
                 shadowColor: "rgba(0,0,0,0.12)",
-                borderColor: theme[6],
                 overflow: "hidden",
               },
               {
-                // flex: 1,
+                borderWidth: 1,
+                borderColor: theme[6],
                 backgroundColor: theme[2],
                 marginTop: "auto",
                 paddingTop: 15,
