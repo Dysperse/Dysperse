@@ -25,6 +25,7 @@ import useSWR, { mutate } from "swr";
 function Header() {
   const theme = useColorTheme();
   const { openSidebar } = useSidebarContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <LinearGradient
@@ -38,18 +39,20 @@ function Header() {
         position: "relative",
       }}
     >
-      <IconButton
-        size={55}
-        onPress={openSidebar}
-        icon="menu"
-        variant="outlined"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          margin: 15,
-        }}
-      />
+      {!breakpoints.md && (
+        <IconButton
+          size={55}
+          onPress={openSidebar}
+          icon="menu"
+          variant="outlined"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            margin: 15,
+          }}
+        />
+      )}
       <Logo size={100} />
       <Text
         style={{
