@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: 5,
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
   },
   name: { fontSize: 16 },
   description: { opacity: 0.6 },
@@ -70,7 +70,12 @@ function AllIntegrations({ connected }) {
                 integration.name === "Notion" || integration.name === "Gmail"
               }
             >
-              <Image source={{ uri: integration.icon }} style={styles.image} />
+              <Avatar size={40}>
+                <Image
+                  source={{ uri: integration.icon }}
+                  style={styles.image}
+                />
+              </Avatar>
               <View style={{ flex: 1 }}>
                 <Text numberOfLines={1} weight={700} style={styles.name}>
                   {integration.name}
