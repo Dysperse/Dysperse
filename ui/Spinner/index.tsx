@@ -54,7 +54,7 @@ const Spinner = (props: SpinnerProps) => {
         <Svg
           viewBox="0 0 100 100"
           {...props}
-          fill={props.color || theme[9]}
+          fill={props.color || theme[11]}
           width={props.size || 20}
           height={props.size || 20}
         >

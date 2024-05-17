@@ -72,6 +72,7 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
         padding: 10,
         paddingTop: 20,
         paddingHorizontal: 20,
+        paddingBottom: 20,
       }}
     >
       <View
@@ -568,9 +569,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
   return (
     <ScrollView
       horizontal
-      style={{
-        maxHeight: 60,
-      }}
+      style={{ maxHeight: 60 }}
       contentContainerStyle={{
         alignItems: "center",
         flexDirection: "row",
@@ -625,7 +624,6 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
 }
 
 function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
-  const theme = useColorTheme();
   const colors = useLabelColors();
 
   return (

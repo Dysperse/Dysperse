@@ -83,7 +83,7 @@ export function ButtonGroup({
                     textAlign: "center",
                     justifyContent: "center",
                     fontSize: 15,
-                    color: theme[9],
+                    opacity: 0.7,
                     fontFamily: "body_400",
                     paddingHorizontal: 0,
                   },
@@ -91,6 +91,7 @@ export function ButtonGroup({
                   state[0] === option.value && {
                     color: theme[11],
                     fontFamily: "body_800",
+                    opacity: 1,
                   },
                   state[0] === option.value && selectedButtonTextStyle,
                 ]}
