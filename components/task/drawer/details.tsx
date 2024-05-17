@@ -45,11 +45,7 @@ function TaskRescheduleButton() {
 
   return (
     <MenuPopover
-      trigger={
-        <IconButton size={55}>
-          <Icon>dark_mode</Icon>
-        </IconButton>
-      }
+      trigger={<IconButton size={50} variant="outlined" icon="dark_mode" />}
       menuProps={{
         rendererProps: {
           placement: "top",
