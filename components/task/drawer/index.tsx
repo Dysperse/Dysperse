@@ -97,19 +97,13 @@ export function TaskDrawer({
       <BottomSheet
         sheetRef={ref}
         animateOnMount={!breakpoints.md}
-        snapPoints={
-          error ? ["50%"] : breakpoints.md ? ["100%"] : data ? ["80%"] : ["65%"]
-        }
+        snapPoints={["100%"]}
         onClose={handleClose}
-        style={{
-          width: "100%",
-        }}
+        style={{ width: "100%" }}
         maxWidth={width}
-        backgroundStyle={{
-          backgroundColor: breakpoints.md ? "transparent" : theme[2],
-        }}
+        backgroundStyle={{ backgroundColor: "transparent" }}
+        handleComponent={() => null}
         {...(breakpoints.md && {
-          handleComponent: () => null,
           maxBackdropOpacity: 0.05,
           animationConfigs: {
             overshootClamping: true,
@@ -124,6 +118,7 @@ export function TaskDrawer({
           style={{
             flex: 1,
             height: "100%",
+            padding: 10,
           }}
         >
           <Pressable
@@ -141,15 +136,27 @@ export function TaskDrawer({
                 },
                 shadowColor: "rgba(0,0,0,0.12)",
                 borderColor: theme[6],
-                backgroundColor: theme[2],
-                borderRadius: 25,
                 overflow: "hidden",
               },
               {
-                flex: 1,
+                // flex: 1,
+                backgroundColor: theme[2],
+                marginTop: "auto",
+                paddingTop: 15,
+                borderRadius: 25,
               },
             ]}
           >
+            <View
+              style={{
+                width: 25,
+                height: 5,
+                backgroundColor: theme[5],
+                borderRadius: 999,
+                marginHorizontal: "auto",
+                marginBottom: 10,
+              }}
+            />
             {data?.id ? (
               <TaskDrawerContext.Provider
                 value={{

@@ -248,12 +248,12 @@ export function TaskDrawerContent({ handleClose }) {
         </View>
       </View>
       <BottomSheetScrollView>
-        <View style={{ paddingBottom: 100, paddingHorizontal: 20 }}>
+        <View style={{ paddingBottom: 50, paddingHorizontal: 20 }}>
           <View
             style={{
               paddingHorizontal: 10,
               gap: 10,
-              marginTop: 30,
+              marginTop: 50,
               flexDirection: "row",
               justifyContent: "center",
             }}

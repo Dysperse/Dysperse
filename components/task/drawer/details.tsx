@@ -1,5 +1,6 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { STORY_POINT_SCALE } from "@/constants/workload";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
 import Chip from "@/ui/Chip";
@@ -459,6 +460,7 @@ export const normalizeRecurrenceRuleObject = (rule) => {
 
 export function TaskDetails() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   const [activeSections, setActiveSections] = useState([]);
@@ -656,17 +658,31 @@ export function TaskDetails() {
                 onTouchMove={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
                 disabled
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                  flexDirection: breakpoints.md ? "row" : "column",
+                  alignItems: breakpoints.md ? undefined : "flex-start",
+                }}
               >
-                <Icon>exercise</Icon>
-                <ListItemText
-                  primary="Complexity"
-                  secondary={
-                    STORY_POINT_SCALE[
-                      complexityScale.findIndex((i) => i === task.storyPoints)
-                    ]
-                  }
-                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flex: 1,
+                    gap: 20,
+                  }}
+                >
+                  <Icon>exercise</Icon>
+                  <ListItemText
+                    primary="Complexity"
+                    secondary={
+                      STORY_POINT_SCALE[
+                        complexityScale.findIndex((i) => i === task.storyPoints)
+                      ]
+                    }
+                  />
+                </View>
                 {task.storyPoints &&
                   complexityScale.findIndex((i) => i === task.storyPoints) !==
                     -1 && (
