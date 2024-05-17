@@ -187,6 +187,32 @@ function GeneralSettings({ mutate, data }) {
             toggle_off
           </Icon>
         </ListItemButton>
+        <ListItemButton
+          onPress={() => {
+            Toast.show({ type: "info", text1: "Coming soon!" });
+          }}
+        >
+          <ListItemText
+            primary="Time format"
+            secondary="Choose the way times are displayed"
+          />
+          <MenuPopover
+            trigger={
+              <Button variant="filled">
+                <ButtonText>12 hour format</ButtonText>
+                <Icon>expand_more</Icon>
+              </Button>
+            }
+            options={[
+              { text: "12 hour format" },
+              { text: "24 hour format" },
+            ].map((e) => ({
+              ...e,
+              selected: e.text === "12 hour format",
+              callback: () => {},
+            }))}
+          />
+        </ListItemButton>
       </View>
     </>
   );

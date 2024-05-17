@@ -267,10 +267,9 @@ function Root() {
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
   const closeSidebarOnMobile = useCallback(() => {
-    if (!breakpoints.md) {
-      setOpen(false);
-    }
+    if (!breakpoints.md) setOpen(false);
   }, [breakpoints]);
+
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
   return (
