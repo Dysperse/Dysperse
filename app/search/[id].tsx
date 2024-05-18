@@ -118,7 +118,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   const breakpoints = useResponsiveBreakpoints();
 
   useEffect(() => {
-    setTimeout(() => inputRef.current?.focus?.(), breakpoints.md ? 0 : 500);
+    setTimeout(() => inputRef.current?.focus?.(), breakpoints.md ? 0 : 700);
   }, [inputRef, breakpoints]);
 
   useHotkeys("esc", () => router.back());
