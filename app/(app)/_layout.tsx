@@ -301,6 +301,7 @@ export default function AppLayout() {
                                     key={d}
                                     name={d}
                                     options={{
+                                      detachPreviousScreen: true,
                                       presentation: "modal",
                                       animationEnabled: true,
                                       ...TransitionPresets.ModalPresentationIOS,

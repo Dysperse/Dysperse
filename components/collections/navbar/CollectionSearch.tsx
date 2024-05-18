@@ -1,3 +1,4 @@
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { router } from "expo-router";
@@ -6,9 +7,12 @@ import { useCollectionContext } from "../context";
 export const CollectionSearch = () => {
   const breakpoints = useResponsiveBreakpoints();
 
-  const handleOpen = () => {
+  const handleOpen = (e) => {
+    e.preventDefault();
     router.push(`/search/${collection.data.id || "all"}`);
   };
+
+  useHotkeys(["s", "ctrl+f", "/"], handleOpen);
 
   const collection = useCollectionContext();
 

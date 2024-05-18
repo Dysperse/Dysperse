@@ -63,12 +63,12 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const { closeSidebarOnMobile } = useSidebarContext();
 
   const handleHome = useCallback(() => {
-    router.push("/");
+    router.replace("/");
     setTimeout(closeSidebarOnMobile, 100);
   }, [closeSidebarOnMobile]);
 
   const theme = useColorTheme();
-  useHotkeys("ctrl+0", () => router.push("/"));
+  useHotkeys("ctrl+0", () => router.replace("/"));
 
   return (
     <Pressable

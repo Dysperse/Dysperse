@@ -295,7 +295,11 @@ function Root() {
             >
               <SWRWrapper>
                 {Platform.OS === "web" && <WorkboxInitializer />}
-                <JsStack screenOptions={{ header: () => null }}>
+                <JsStack
+                  screenOptions={{
+                    header: () => null,
+                  }}
+                >
                   <Slot screenOptions={{ onLayoutRootView }} />
                   <JsStack.Screen
                     name="open"

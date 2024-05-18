@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function SearchList({ collection, inputRef, listRef }) {
+function SearchList({ collection, inputRef, listRef, handleClose }) {
   const theme = useColorTheme();
   const { data, mutate } = collection;
   const [query, setQuery] = useState("");
@@ -115,14 +115,13 @@ function SearchList({ collection, inputRef, listRef }) {
       if (!a.recurrenceRule && b.recurrenceRule) return 1;
       return 0;
     });
+  const breakpoints = useResponsiveBreakpoints();
 
   useEffect(() => {
-    setTimeout(() => inputRef.current.focus(), 500);
-  }, []);
+    setTimeout(() => inputRef.current?.focus?.(), breakpoints.md ? 0 : 500);
+  }, [inputRef, breakpoints]);
 
-  useHotkeys("esc", () => {
-    router.back();
-  });
+  useHotkeys("esc", () => router.back());
 
   return (
     <>
@@ -142,9 +141,7 @@ function SearchList({ collection, inputRef, listRef }) {
               if (nativeEvent.key === "Enter") {
                 listRef.current.scrollToOffset({ animated: true, offset: 0 });
               }
-              if (nativeEvent.key === "Escape") {
-                router.back();
-              }
+              if (nativeEvent.key === "Escape") handleClose();
             }}
             variant="filled+outlined"
             onChangeText={handleSearch}
@@ -177,7 +174,6 @@ function SearchList({ collection, inputRef, listRef }) {
                   {filter.icon}
                 </Icon>
               }
-              outlined={!activeFilters.includes(filter.label)}
               onPress={() => {
                 setActiveFilters((prev) =>
                   prev.includes(filter.label)
@@ -185,6 +181,12 @@ function SearchList({ collection, inputRef, listRef }) {
                     : [...prev, filter.label]
                 );
                 inputRef.current.focus();
+              }}
+              style={{
+                borderColor:
+                  theme[activeFilters.includes(filter.label) ? 8 : 6],
+                backgroundColor:
+                  theme[activeFilters.includes(filter.label) ? 6 : 1],
               }}
             />
           ))}
@@ -198,6 +200,7 @@ function SearchList({ collection, inputRef, listRef }) {
           paddingTop: 15,
           paddingHorizontal: 15,
         }}
+        estimatedItemSize={95}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Entity
@@ -265,12 +268,10 @@ function SearchList({ collection, inputRef, listRef }) {
   );
 }
 
-function Page() {
+function Page({ handleClose }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { width, height } = useWindowDimensions();
-
-  const handleClose = () => router.back();
 
   const listRef = useRef(null);
   const inputRef = useRef(null);
@@ -301,7 +302,7 @@ function Page() {
 
   return (
     <BlurView
-      tint={isDark ? "dark" : "prominent"}
+      tint={isDark ? "dark" : "light"}
       style={{
         margin: "auto",
         width: "100%",
@@ -316,7 +317,7 @@ function Page() {
     >
       <Pressable
         onPress={(e) => e.stopPropagation()}
-        style={{ flex: 1, backgroundColor: addHslAlpha(theme[2], 0.9) }}
+        style={{ flex: 1, backgroundColor: addHslAlpha(theme[1], 0.9) }}
       >
         <Pressable style={styles.header} onPress={scrollToTop}>
           <IconButton
@@ -330,6 +331,7 @@ function Page() {
         <CollectionContext.Provider value={contextValue as any}>
           {data && (
             <SearchList
+              handleClose={handleClose}
               inputRef={inputRef}
               listRef={listRef}
               collection={contextValue}
@@ -351,7 +353,8 @@ export default function Container() {
   });
 
   if (!session || session?.error) return <Redirect href="/auth" />;
-  const handleClose = () => router.back();
+  const handleClose = () =>
+    router.canGoBack() ? router.back() : router.replace("/");
 
   return (
     <ColorThemeProvider theme={theme}>
@@ -372,7 +375,7 @@ export default function Container() {
             onPress={handleClose}
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
           >
-            <Page />
+            <Page handleClose={handleClose} />
           </Pressable>
         </BottomSheetModalProvider>
       </MenuProvider>

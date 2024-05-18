@@ -99,10 +99,8 @@ export default function Trash() {
           </Text>
           <Text
             style={{
-              fontStyle: "italic",
               opacity: 0.6,
             }}
-            weight={200}
           >
             Items are permanently deleted on the 1st of every month
           </Text>
@@ -119,10 +117,10 @@ export default function Trash() {
           contentContainerStyle={{
             paddingHorizontal: 35,
           }}
+          centerContent={data.filter((t) => t.trash).length === 0}
           ListEmptyComponent={() => (
             <View
               style={{
-                paddingTop: 100,
                 alignItems: "center",
               }}
             >
@@ -135,7 +133,7 @@ export default function Trash() {
                   opacity: 0.6,
                 }}
               >
-                No items in trash!
+                Nothing to see here!
               </Text>
             </View>
           )}

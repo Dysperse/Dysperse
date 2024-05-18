@@ -181,7 +181,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const menu = useMemo(
     () =>
       !breakpoints.md && (
-        <IconButton icon="menu" size={40} onPress={openSidebar} />
+        <IconButton size={40} onPress={openSidebar} icon="menu" />
       ),
     [openSidebar, breakpoints.md]
   );
