@@ -11,7 +11,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
+import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
@@ -298,47 +298,57 @@ function Page({ handleClose }) {
     access: data?.access,
   };
 
-  const isDark = useDarkMode();
-
   return (
     <BlurView
-      tint={isDark ? "dark" : "light"}
-      style={{
-        margin: "auto",
-        width: "100%",
-        flex: 1,
-        borderColor: theme[5],
-        borderWidth: 1,
-        borderRadius: 25,
-        overflow: "hidden",
-        maxWidth: breakpoints.md ? 900 : width,
-        maxHeight: breakpoints.md ? Math.min(600, height / 1.3) : undefined,
-      }}
+      style={{ flex: 1, width: "100%" }}
+      tint="prominent"
+      intensity={breakpoints.md ? 20 : 0}
     >
-      <Pressable
-        onPress={(e) => e.stopPropagation()}
-        style={{ flex: 1, backgroundColor: addHslAlpha(theme[1], 0.9) }}
+      <View
+        style={{
+          margin: "auto",
+          width: "100%",
+          flex: 1,
+          borderColor: theme[5],
+          borderWidth: 1,
+          borderRadius: 25,
+          overflow: "hidden",
+          maxWidth: breakpoints.md ? 900 : width,
+          maxHeight: breakpoints.md ? Math.min(600, height / 1.3) : undefined,
+
+          shadowColor: "rgba(0, 0, 0, 0.12)",
+          shadowOffset: {
+            width: 10,
+            height: 10,
+          },
+          shadowOpacity: 1,
+          shadowRadius: 30,
+        }}
       >
-        <Pressable style={styles.header} onPress={scrollToTop}>
-          <IconButton
-            variant="outlined"
-            size={45}
-            icon="arrow_back_ios_new"
-            onPress={handleClose}
-          />
-          <Text style={styles.title}>Search</Text>
-        </Pressable>
-        <CollectionContext.Provider value={contextValue as any}>
-          {data && (
-            <SearchList
-              handleClose={handleClose}
-              inputRef={inputRef}
-              listRef={listRef}
-              collection={contextValue}
+        <Pressable
+          onPress={(e) => e.stopPropagation()}
+          style={{ flex: 1, backgroundColor: theme[1] }}
+        >
+          <Pressable style={styles.header} onPress={scrollToTop}>
+            <IconButton
+              size={45}
+              icon="arrow_back_ios_new"
+              onPress={handleClose}
             />
-          )}
-        </CollectionContext.Provider>
-      </Pressable>
+            <Text style={styles.title}>Search</Text>
+          </Pressable>
+          <CollectionContext.Provider value={contextValue as any}>
+            {data && (
+              <SearchList
+                handleClose={handleClose}
+                inputRef={inputRef}
+                listRef={listRef}
+                collection={contextValue}
+              />
+            )}
+          </CollectionContext.Provider>
+        </Pressable>
+      </View>
     </BlurView>
   );
 }

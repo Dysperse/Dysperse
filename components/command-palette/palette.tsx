@@ -612,7 +612,7 @@ const CommandPalette = memo(function CommandPalette() {
         justifyContent: "center",
       }}
       {...(breakpoints.md && {
-        maxBackdropOpacity: 0.05,
+        maxBackdropOpacity: 0,
         animationConfigs: {
           overshootClamping: true,
           duration: 0.0001,

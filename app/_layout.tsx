@@ -316,6 +316,9 @@ function Root() {
                       animationEnabled: !breakpoints.md,
                       detachPreviousScreen: false,
                       cardStyle: { backgroundColor: "transparent" },
+                      cardOverlay: (props) => (
+                        <View {...props} style={{ flex: 1 }} />
+                      ),
                       ...TransitionPresets.ModalPresentationIOS,
                     }}
                   />
