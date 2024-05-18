@@ -6,26 +6,35 @@ import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { cloneElement, useCallback, useEffect, useRef } from "react";
+import React, {
+  cloneElement,
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
 
-function TaskDrawerWrapper({
-  id,
-  handleClose,
-  dateRange,
-  mutateList,
-  isReadOnly,
-}: {
-  id: any;
-  handleClose: any;
-  dateRange?: [Date, Date];
-  mutateList: any;
-  isReadOnly?: boolean;
-}) {
+const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
+  {
+    id,
+    handleClose,
+    dateRange,
+    mutateList,
+    isReadOnly,
+  }: {
+    id: any;
+    handleClose: any;
+    dateRange?: [Date, Date];
+    mutateList: any;
+    isReadOnly?: boolean;
+  },
+  ref
+) {
   const { height } = useWindowDimensions();
   const { sessionToken } = useUser();
 
@@ -34,11 +43,9 @@ function TaskDrawerWrapper({
 
   const breakpoints = useResponsiveBreakpoints();
 
-  useEffect(() => {
-    return () => {
-      mutateList(data);
-    };
-  });
+  useImperativeHandle(ref, () => ({
+    triggerMutate: () => mutateList(data),
+  }));
 
   const theme = useColorTheme();
   const updateTask = useCallback(
@@ -153,7 +160,7 @@ function TaskDrawerWrapper({
       </Pressable>
     </Pressable>
   );
-}
+});
 
 export function TaskDrawer({
   mutateList,
@@ -172,18 +179,18 @@ export function TaskDrawer({
 }) {
   const ref = useRef<BottomSheetModal>(null);
   const { width } = useWindowDimensions();
+  const contentRef = useRef(null);
 
   // callbacks
   const handleOpen = useCallback(() => ref.current.present(), []);
   const breakpoints = useResponsiveBreakpoints();
 
-  const handleClose = useCallback(
-    () =>
-      ref.current?.forceClose(
-        breakpoints.md ? undefined : { overshootClamping: true, stiffness: 400 }
-      ),
-    [breakpoints]
-  );
+  const handleClose = useCallback(() => {
+    contentRef.current?.triggerMutate();
+    ref.current?.forceClose(
+      breakpoints.md ? undefined : { overshootClamping: true, stiffness: 400 }
+    );
+  }, [breakpoints]);
 
   const trigger = cloneElement(children, { onPress: handleOpen });
 
@@ -211,6 +218,7 @@ export function TaskDrawer({
         })}
       >
         <TaskDrawerWrapper
+          ref={contentRef}
           handleClose={handleClose}
           id={id}
           dateRange={dateRange}
