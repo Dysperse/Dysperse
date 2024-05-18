@@ -16,7 +16,6 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { BlurView } from "expo-blur";
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -299,10 +298,8 @@ function Page({ handleClose }) {
   };
 
   return (
-    <BlurView
-      style={{ flex: 1, width: "100%" }}
-      tint="prominent"
-      intensity={breakpoints.md ? 20 : 0}
+    <View
+      style={{ backgroundColor: "rgba(0,0,0,0.05)", flex: 1, width: "100%" }}
     >
       <View
         style={{
@@ -349,7 +346,7 @@ function Page({ handleClose }) {
           </CollectionContext.Provider>
         </Pressable>
       </View>
-    </BlurView>
+    </View>
   );
 }
 
