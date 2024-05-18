@@ -8,7 +8,6 @@ import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
-import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -25,6 +24,7 @@ import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
+import Animated, { BounceInLeft } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -61,7 +61,44 @@ function SpaceStorage({ data }) {
             } credits left`}
           />
         </ListItemButton>
-        <Divider style={{ height: 1 }} />
+        <View
+          style={{
+            width: "100%",
+            height: 5,
+            borderRadius: 99,
+            backgroundColor: theme[4],
+            overflow: "hidden",
+          }}
+        >
+          <Animated.View
+            entering={BounceInLeft.duration(700).overshootClamping(0)}
+            style={{
+              width: `${-~((data.storage?.used / data.storage?.limit) * 100)}%`,
+              height: "100%",
+              marginLeft: -15,
+              backgroundColor: theme[9],
+              borderRadius: 99,
+              overflow: "hidden",
+            }}
+          >
+            {data.storage?.inTrash > 0 && (
+              <View
+                style={{
+                  width: `${-~(
+                    (data.storage?.inTrash / data.storage?.limit) *
+                    100
+                  )}%`,
+                  height: "100%",
+                  backgroundColor: theme[8],
+                  marginLeft: "auto",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 99,
+                }}
+              />
+            )}
+          </Animated.View>
+        </View>
         <View
           style={{
             marginVertical: 10,
