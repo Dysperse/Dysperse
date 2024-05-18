@@ -175,14 +175,17 @@ export function TaskDrawer({
 
   // callbacks
   const handleOpen = useCallback(() => ref.current.present(), []);
+  const breakpoints = useResponsiveBreakpoints();
 
   const handleClose = useCallback(
-    () => ref.current?.forceClose({ overshootClamping: true, stiffness: 400 }),
-    []
+    () =>
+      ref.current?.forceClose(
+        breakpoints.md ? undefined : { overshootClamping: true, stiffness: 400 }
+      ),
+    [breakpoints]
   );
 
   const trigger = cloneElement(children, { onPress: handleOpen });
-  const breakpoints = useResponsiveBreakpoints();
 
   if (disabled) return children;
 
