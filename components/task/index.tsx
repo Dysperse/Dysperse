@@ -238,7 +238,6 @@ const Task = memo(function Task({
   planMode?: boolean;
 }) {
   const theme = useColorTheme();
-  const orange = useColor("orange");
   const blue = useColor("blue");
 
   const breakpoints = useResponsiveBreakpoints();

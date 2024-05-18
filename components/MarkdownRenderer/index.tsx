@@ -13,8 +13,9 @@ export default function MarkdownRenderer(
           fontFamily: "body_400",
           fontSize: 15,
           color: theme[12],
+          pointerEvents: "none",
         },
-        link: { color: blue.blue9 },
+        link: { color: blue.blue9, pointerEvents: "auto" },
         image: {
           borderRadius: 20,
           overflow: "hidden",

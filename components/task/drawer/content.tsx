@@ -13,6 +13,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { setStringAsync } from "expo-clipboard";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -247,6 +248,10 @@ export function TaskDrawerContent({ handleClose }) {
           )}
         </View>
       </View>
+      <LinearGradient
+        colors={[theme[2], "transparent"]}
+        style={{ height: 40, width: "100%", marginBottom: -40, zIndex: 1 }}
+      />
       <BottomSheetScrollView>
         <View style={{ paddingBottom: 50, paddingHorizontal: 20 }}>
           <View

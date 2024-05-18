@@ -6,54 +6,40 @@ import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
+import React, { cloneElement, useCallback, useEffect, useRef } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
 
-export function TaskDrawer({
-  mutateList,
-  children,
+function TaskDrawerWrapper({
   id,
-  disabled,
-  isReadOnly,
+  handleClose,
   dateRange,
+  mutateList,
+  isReadOnly,
 }: {
-  mutateList: any;
-  children: any;
   id: any;
-  disabled?: boolean;
-  isReadOnly?: boolean;
+  handleClose: any;
   dateRange?: [Date, Date];
+  mutateList: any;
+  isReadOnly?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<BottomSheetModal>(null);
-  const { width, height } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const { sessionToken } = useUser();
 
   // Fetch data
-  const { data, mutate, error } = useSWR(
-    open ? ["space/entity", { id }] : null
-  );
+  const { data, mutate, error } = useSWR(["space/entity", { id }]);
 
-  // callbacks
-  const handleOpen = useCallback((e) => {
-    ref.current.present();
-    setOpen(true);
-  }, []);
-
-  const handleClose = useCallback(
-    (shouldMutate = true) => {
-      ref.current?.forceClose();
-      if (shouldMutate) mutateList(data);
-    },
-    [mutateList, data]
-  );
-
-  const trigger = cloneElement(children, { onPress: handleOpen });
   const breakpoints = useResponsiveBreakpoints();
+
+  useEffect(() => {
+    return () => {
+      mutateList(data);
+    };
+  });
+
   const theme = useColorTheme();
   const updateTask = useCallback(
     async (key, value, sendRequest = true) => {
@@ -89,6 +75,112 @@ export function TaskDrawer({
     [data, mutate, id, sessionToken]
   );
 
+  return (
+    <Pressable
+      onPress={() => handleClose()}
+      style={{
+        flex: 1,
+        padding: 10,
+        paddingTop: breakpoints.md ? 10 : 100,
+      }}
+    >
+      <Pressable
+        onPress={(e) => e.stopPropagation()}
+        style={[
+          breakpoints.md && {
+            margin: "auto",
+            width: 500,
+            height: Math.min(700, height - 100),
+            shadowRadius: 50,
+            shadowOffset: {
+              width: 20,
+              height: 20,
+            },
+            shadowColor: "rgba(0,0,0,0.12)",
+            overflow: "hidden",
+          },
+          {
+            borderWidth: 1,
+            borderColor: theme[6],
+            backgroundColor: theme[2],
+            marginTop: "auto",
+            maxHeight: "100%",
+            paddingTop: breakpoints.md ? 0 : 15,
+            borderRadius: 25,
+          },
+        ]}
+      >
+        {!breakpoints.md && (
+          <View
+            style={{
+              width: 25,
+              height: 5,
+              backgroundColor: theme[5],
+              borderRadius: 999,
+              marginHorizontal: "auto",
+              marginBottom: 10,
+            }}
+          />
+        )}
+        {data?.id ? (
+          <TaskDrawerContext.Provider
+            value={{
+              dateRange,
+              task: data,
+              updateTask,
+              mutateList,
+              isReadOnly,
+            }}
+          >
+            <TaskDrawerContent handleClose={handleClose} />
+          </TaskDrawerContext.Provider>
+        ) : error ? (
+          <View style={{ padding: 20 }}>
+            <ErrorAlert />
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: height * 0.65,
+            }}
+          >
+            <Spinner />
+          </View>
+        )}
+      </Pressable>
+    </Pressable>
+  );
+}
+
+export function TaskDrawer({
+  mutateList,
+  children,
+  id,
+  disabled,
+  isReadOnly,
+  dateRange,
+}: {
+  mutateList: any;
+  children: any;
+  id: any;
+  disabled?: boolean;
+  isReadOnly?: boolean;
+  dateRange?: [Date, Date];
+}) {
+  const ref = useRef<BottomSheetModal>(null);
+  const { width } = useWindowDimensions();
+
+  // callbacks
+  const handleOpen = useCallback(() => ref.current.present(), []);
+
+  const handleClose = useCallback(() => ref.current?.forceClose(), []);
+
+  const trigger = cloneElement(children, { onPress: handleOpen });
+  const breakpoints = useResponsiveBreakpoints();
+
   if (disabled) return children;
 
   return (
@@ -112,83 +204,13 @@ export function TaskDrawer({
           },
         })}
       >
-        <Pressable
-          onPress={() => {
-            handleClose();
-          }}
-          style={{
-            flex: 1,
-            height: "100%",
-            padding: 10,
-          }}
-        >
-          <Pressable
-            onPress={(e) => e.stopPropagation()}
-            style={[
-              breakpoints.md && {
-                margin: "auto",
-                width: 500,
-                height: Math.min(700, height - 100),
-                shadowRadius: 50,
-                shadowOffset: {
-                  width: 20,
-                  height: 20,
-                },
-                shadowColor: "rgba(0,0,0,0.12)",
-                overflow: "hidden",
-              },
-              {
-                borderWidth: 1,
-                borderColor: theme[6],
-                backgroundColor: theme[2],
-                marginTop: "auto",
-                paddingTop: breakpoints.md ? 0 : 15,
-                borderRadius: 25,
-              },
-            ]}
-          >
-            {!breakpoints.md && (
-              <View
-                style={{
-                  width: 25,
-                  height: 5,
-                  backgroundColor: theme[5],
-                  borderRadius: 999,
-                  marginHorizontal: "auto",
-                  marginBottom: 10,
-                }}
-              />
-            )}
-            {data?.id ? (
-              <TaskDrawerContext.Provider
-                value={{
-                  dateRange,
-                  task: data,
-                  updateTask,
-                  mutateList,
-                  isReadOnly,
-                }}
-              >
-                <TaskDrawerContent handleClose={handleClose} />
-              </TaskDrawerContext.Provider>
-            ) : error ? (
-              <View style={{ padding: 20 }}>
-                <ErrorAlert />
-              </View>
-            ) : (
-              <View
-                style={{
-                  height: "100%",
-                  minHeight: height * 0.65 - 20,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Spinner />
-              </View>
-            )}
-          </Pressable>
-        </Pressable>
+        <TaskDrawerWrapper
+          handleClose={handleClose}
+          id={id}
+          dateRange={dateRange}
+          mutateList={mutateList}
+          isReadOnly={isReadOnly}
+        />
       </BottomSheet>
     </>
   );

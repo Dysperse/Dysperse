@@ -640,7 +640,7 @@ export function TaskDetails() {
             ),
           },
           !task.dateOnly && {
-            trigger: (isActive) => (
+            trigger: () => (
               <ListItemButton
                 variant="filled"
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
@@ -655,8 +655,6 @@ export function TaskDetails() {
             trigger: () => (
               <ListItemButton
                 variant="filled"
-                onTouchMove={(e) => e.stopPropagation()}
-                onTouchStart={(e) => e.stopPropagation()}
                 disabled
                 style={{
                   paddingVertical: 15,
