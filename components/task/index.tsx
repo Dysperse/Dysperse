@@ -325,12 +325,9 @@ const Task = memo(function Task({
               }),
               alignItems: "stretch",
             },
-            isCompleted && {
-              opacity: 0.4,
-            },
             selection.includes(task.id) && {
-              backgroundColor: blue[3],
-              borderColor: blue[6],
+              backgroundColor: blue[4],
+              borderColor: blue[8],
             },
           ]}
         >
@@ -340,7 +337,14 @@ const Task = memo(function Task({
             task={task}
             mutateList={onTaskUpdate}
           />
-          <View style={{ gap: 5, flex: 1 }}>
+          <View
+            style={[
+              { gap: 5, flex: 1 },
+              isCompleted && {
+                opacity: 0.4,
+              },
+            ]}
+          >
             <View style={{ flex: 1 }}>
               <Text
                 style={{
