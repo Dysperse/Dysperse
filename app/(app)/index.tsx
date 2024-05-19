@@ -147,7 +147,7 @@ export default function Index() {
 
   const Wrapper =
     Platform.OS === "web"
-      ? View
+      ? (props) => <View {...props} style={styles.imageBackground} />
       : (props) => (
           <ImageBackground
             {...props}
