@@ -130,7 +130,7 @@ export default function Index() {
   const { width } = useWindowDimensions();
   const uri = `${process.env.EXPO_PUBLIC_API_URL}/pattern?color=%23${hslToHex(
     ...hslValues
-  )}&pattern=${pattern}${Platform.OS !== "web" ? "&png" : ""}`;
+  )}&pattern=${pattern}${Platform.OS !== "web" ? "&png=true" : ""}`;
 
   const widthStyle = useAnimatedStyle(() => {
     return {
