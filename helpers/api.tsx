@@ -19,11 +19,16 @@ export function sendApiRequest(
     headers: {
       ...(session && { Authorization: `Bearer ${session}` }),
       "Content-Type": "application/json",
-      Host: Platform.OS === "web" ? undefined : process.env.EXPO_PUBLIC_API_URL,
+      ...(Platform.OS === "web" && {
+        Host: process.env.EXPO_PUBLIC_API_URL,
+      }),
     },
-    redirect: "follow",
+    // redirect: "follow",
     keepalive: true,
   })
-    .then((r) => r.json())
+    .then((r) => {
+      console.log(r);
+      return r.json();
+    })
     .catch((e) => console.log(e));
 }

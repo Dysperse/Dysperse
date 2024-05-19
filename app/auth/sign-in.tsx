@@ -165,9 +165,6 @@ export default function SignIn() {
                     ? navigator.userAgent.split("(")[1].split(";")[0]
                     : "Unknown device"),
               }),
-              headers: {
-                "Content-Type": "application/json",
-              },
             }
           );
           if (sessionRequest.twoFactorRequired) {
