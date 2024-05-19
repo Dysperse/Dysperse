@@ -556,7 +556,7 @@ export function TaskDetails() {
                 <ListItemButton
                   variant="filled"
                   style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-                  disabled={task.due || task.recurrenceRule}
+                  disabled={Boolean(task.due || task.recurrenceRule)}
                 >
                   <Icon>
                     {task.due

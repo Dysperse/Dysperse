@@ -43,7 +43,6 @@ const Header = () => {
     <>
       <Pressable
         onPress={() => Linking.openURL("https://dysperse.com")}
-        accessibilityRole="button"
         style={{
           alignItems: "center",
           gap: 10,
