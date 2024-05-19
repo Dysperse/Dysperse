@@ -42,6 +42,7 @@ function QrLogin() {
         .then(setData)
         .catch(() => setError(true));
     } catch (e) {
+      console.error(e);
       Toast.show({ type: "error" });
     }
   }, []);
@@ -193,6 +194,7 @@ export default function SignIn() {
           signIn(sessionRequest.session);
         }
       } catch (e) {
+        console.error(e);
         Toast.show({ type: "error" });
         setToken("");
         setStep(0);
@@ -251,7 +253,7 @@ export default function SignIn() {
         />
         {step === 0 || step === 2 ? (
           <KeyboardAvoidingView
-            behavior="height"
+            behavior="padding"
             style={{ flex: 1, flexDirection: "row" }}
           >
             <ScrollView
@@ -266,10 +268,13 @@ export default function SignIn() {
                 },
               ]}
             >
-              <Text weight={700} style={[styles.title, { color: theme[11] }]}>
+              <Text
+                weight={700}
+                style={[styles.title, { paddingTop: 10, color: theme[11] }]}
+              >
                 Sign in
               </Text>
-              <Text style={authStyles.subtitleContainer}>
+              <Text style={authStyles.subtitleContainer} weight={900}>
                 Use your Dysperse ID to continue
               </Text>
               <View style={{ gap: 10 }}>

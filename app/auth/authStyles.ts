@@ -18,7 +18,6 @@ export const authStyles = StyleSheet.create({
   },
   title: {
     fontSize: 60,
-    lineHeight: 60,
   },
   subtitleContainer: {
     flexDirection: "row",
@@ -26,7 +25,7 @@ export const authStyles = StyleSheet.create({
     alignItems: "center",
     rowGap: 10,
     fontSize: 20,
-    fontFamily: "body_300",
+    fontFamily: "body_800",
     opacity: 0.8,
     marginBottom: 10,
   },

@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 export function sendApiRequest(
   session,
   method: "GET" | "POST" | "PUT" | "DELETE",
@@ -17,7 +19,7 @@ export function sendApiRequest(
     headers: {
       ...(session && { Authorization: `Bearer ${session}` }),
       "Content-Type": "application/json",
-      Host: process.env.EXPO_PUBLIC_API_URL,
+      Host: Platform.OS === "web" ? undefined : process.env.EXPO_PUBLIC_API_URL,
     },
     redirect: "follow",
     keepalive: true,
