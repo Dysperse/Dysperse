@@ -125,7 +125,12 @@ export function TaskDatePicker({
           },
         })}
       >
-        <BlurView tint="extraLight" intensity={15} style={{ flex: 1 }}>
+        <BlurView
+          experimentalBlurMethod="dimezisBlurView"
+          tint="extraLight"
+          intensity={15}
+          style={{ flex: 1 }}
+        >
           <Pressable onPress={handleClose} style={{ flex: 1 }}>
             <Pressable
               onPress={(e) => e.stopPropagation()}

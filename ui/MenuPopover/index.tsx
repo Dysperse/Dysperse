@@ -185,6 +185,7 @@ export default function MenuPopover({
             }}
           >
             <BlurView
+              experimentalBlurMethod="dimezisBlurView"
               tint={isDark ? "dark" : "prominent"}
               style={[styles.container]}
             >

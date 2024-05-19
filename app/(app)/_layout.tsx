@@ -10,7 +10,7 @@ import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
@@ -27,7 +27,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
 import * as NavigationBar from "expo-navigation-bar";
-import { Redirect } from "expo-router";
+import { Redirect, usePathname } from "expo-router";
 import { useEffect } from "react";
 import {
   Platform,
@@ -36,24 +36,19 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { Drawer, useDrawerProgress } from "react-native-drawer-layout";
+import { Drawer } from "react-native-drawer-layout";
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  withSpring,
-} from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
-import { LoadingErrors } from "../../components/layout/LoadingErrors";
-import { ReleaseModal } from "../../components/layout/ReleaseModal";
-import { SelectionNavbar } from "../../components/layout/SelectionNavbar";
+import AppContainer from "../../components/layout/AppContainer";
+import LoadingErrors from "../../components/layout/LoadingErrors";
+import ReleaseModal from "../../components/layout/ReleaseModal";
+import SelectionNavbar from "../../components/layout/SelectionNavbar";
 import { useSidebarContext } from "../../components/layout/sidebar/context";
 
 dayjs.extend(customParseFormat);
@@ -65,54 +60,6 @@ dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
 dayjs.extend(weekday);
 dayjs.extend(isToday);
-
-const AppContainer = ({ children }) => {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const progress = useDrawerProgress();
-  const insets = useSafeAreaInsets();
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return breakpoints.md
-      ? { flex: 1 }
-      : {
-          flex: 1,
-          width: "100%",
-          height: "100%",
-          borderWidth: withSpring(
-            interpolate(Math.round(progress.value), [0, 1], [0, 2]),
-            { overshootClamping: true }
-          ),
-          borderRadius: interpolate(
-            progress.value,
-            [0, 1],
-            [!breakpoints.md ? 0 : 20, 30]
-          ),
-          borderColor: theme[5],
-          overflow: "hidden",
-          marginTop: interpolate(progress.value, [0, 1], [0, insets.top]),
-          marginBottom: interpolate(progress.value, [0, 1], [0, insets.bottom]),
-          transform: [
-            {
-              scale: interpolate(progress.value, [0, 1], [1, 0.95]),
-            },
-          ],
-        };
-  });
-
-  const marginTopStyle = useAnimatedStyle(() => {
-    return {
-      marginTop: interpolate(progress.value, [0, 1], [0, -insets.top]),
-    };
-  });
-
-  return (
-    <Animated.View style={animatedStyle}>
-      <Animated.View style={marginTopStyle} />
-      {children}
-    </Animated.View>
-  );
-};
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
@@ -128,12 +75,12 @@ export default function AppLayout() {
     setDesktopCollapsed,
   } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
+  const pathname = usePathname();
 
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
 
-  if (Platform.OS === "android") {
+  if (Platform.OS === "android")
     NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
-  }
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -151,18 +98,11 @@ export default function AppLayout() {
     );
   }
 
-  // Only require authentication within the (app) group's layout as users
-  // need to be able to access the (auth) group and sign in again.
-  if (!session) {
-    // On web, static rendering will stop here as the user is not authenticated
-    // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/auth" />;
-  }
-
-  // This layout can be deferred because it's not the root layout.
+  if (!session) return <Redirect href="/auth" />;
 
   return (
     <StorageContextProvider>
+      <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
       <ColorThemeProvider theme={theme} setHTMLAttributes>
         <GestureHandlerRootView
           style={{
@@ -186,9 +126,6 @@ export default function AppLayout() {
               }}
             >
               <PortalProvider>
-                <StatusBar
-                  barStyle={!isDark ? "dark-content" : "light-content"}
-                />
                 <View
                   style={[
                     {
@@ -231,9 +168,9 @@ export default function AppLayout() {
                                   : "permanent"
                                 : "back"
                             }
+                            swipeEnabled={!pathname.includes("settings")}
                             swipeEdgeWidth={1000}
                             drawerStyle={{
-                              // height,
                               width: breakpoints.md
                                 ? desktopCollapsed
                                   ? SIDEBAR_WIDTH

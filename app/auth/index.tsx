@@ -69,7 +69,7 @@ export default function Page() {
               label="#dysperse"
               style={({ pressed, hovered }) => ({
                 backgroundColor: `rgba(255,255,255,${
-                  pressed ? 0.15 : hovered ? 0.1 : 0.05
+                  pressed ? 0.3 : hovered ? 0.25 : 0.2
                 })`,
               })}
               textStyle={{ color: "#fff", fontFamily: "mono", fontSize: 20 }}
@@ -119,7 +119,7 @@ export default function Page() {
             onPress={handleSignUpPress}
           >
             <ButtonText style={[authStyles.buttonText, { color: "#fff" }]}>
-              Join now
+              Create an account
             </ButtonText>
           </Button>
         </View>

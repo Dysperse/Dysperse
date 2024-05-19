@@ -84,6 +84,7 @@ export function List() {
               }}
             >
               <BlurView
+                experimentalBlurMethod="dimezisBlurView"
                 intensity={50}
                 tint={!isDark ? "prominent" : "systemMaterialDark"}
                 style={{

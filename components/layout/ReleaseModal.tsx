@@ -7,23 +7,25 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
 import dayjs from "dayjs";
 import { BlurView } from "expo-blur";
+import { memo, useCallback } from "react";
 import { Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Markdown from "react-native-markdown-display";
 import useSWR from "swr";
 
-export const ReleaseModal = () => {
+const ReleaseModal = memo(() => {
   const { session, mutate, sessionToken } = useUser();
   const theme = useColorTheme();
   const isDark = useDarkMode();
-  const { data } = useSWR("releases", {
+
+  const { data, error } = useSWR("releases", {
     fetcher: () =>
       fetch(
         `https://api.github.com/repos/dysperse/API/releases?per_page=1`
       ).then((res) => res.json()),
   });
 
-  const handleDone = () => {
+  const handleDone = useCallback(() => {
     mutate(
       (d) => {
         return {
@@ -42,9 +44,10 @@ export const ReleaseModal = () => {
       {},
       { body: JSON.stringify({ lastReleaseVersionViewed: data?.[0]?.id }) }
     );
-  };
+  }, [data, mutate, sessionToken]);
 
   return (
+    !error &&
     data &&
     data?.[0]?.id &&
     session?.user?.lastReleaseVersionViewed !== data?.[0]?.id && (
@@ -128,4 +131,6 @@ export const ReleaseModal = () => {
       </Portal>
     )
   );
-};
+});
+
+export default ReleaseModal;

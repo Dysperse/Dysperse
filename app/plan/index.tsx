@@ -1,12 +1,12 @@
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { StatusBar, StyleSheet, View } from "react-native";
 import { getGreeting } from "../(app)";
 
 export const styles = StyleSheet.create({
@@ -47,6 +47,7 @@ export default function Page() {
       colors={[theme[2], theme[3], theme[4], theme[5], theme[6]]}
       style={styles.container}
     >
+      <StatusBar barStyle="light-content" />
       <Text
         style={[
           styles.title,

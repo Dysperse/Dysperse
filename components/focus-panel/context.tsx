@@ -28,7 +28,7 @@ export const FocusPanelProvider = ({ children }) => {
   return (
     <FocusPanelContext.Provider value={{ isFocused, setFocus }}>
       {(breakpoints.md || !isFocused) && children}
-      <FocusPanel />
+      {(breakpoints.md || isFocused) && <FocusPanel />}
     </FocusPanelContext.Provider>
   );
 };

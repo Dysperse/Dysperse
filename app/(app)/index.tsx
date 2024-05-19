@@ -25,15 +25,10 @@ import { useSidebarContext } from "../../components/layout/sidebar/context";
 export const getGreeting = () => {
   const now = new Date();
   const hour = now.getHours();
-  if (hour < 10) {
-    return "Good morning";
-  } else if (hour < 16) {
-    return "Good afternoon";
-  } else if (hour < 20) {
-    return "Good evening";
-  } else {
-    return "Good night";
-  }
+  if (hour < 10) return "Good morning";
+  else if (hour < 16) return "Good afternoon";
+  else if (hour < 20) return "Good evening";
+  else return "Good night";
 };
 
 export const getProfileLastActiveRelativeTime = (time) => {

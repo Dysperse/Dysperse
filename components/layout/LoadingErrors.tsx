@@ -4,10 +4,11 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { memo } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export const LoadingErrors = () => {
+const LoadingErrors = memo(() => {
   const red = useColor("red");
   const theme = useColorTheme();
   const { error } = useUser();
@@ -44,4 +45,6 @@ export const LoadingErrors = () => {
       </View>
     )
   );
-};
+});
+
+export default LoadingErrors;

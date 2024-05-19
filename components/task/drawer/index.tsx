@@ -14,6 +14,7 @@ import React, {
   useRef,
 } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
@@ -40,6 +41,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
 
   // Fetch data
   const { data, mutate, error } = useSWR(["space/entity", { id }]);
+  const insets = useSafeAreaInsets();
 
   const breakpoints = useResponsiveBreakpoints();
 
@@ -89,6 +91,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
         flex: 1,
         padding: 10,
         paddingTop: breakpoints.md ? 10 : 100,
+        paddingBottom: insets.bottom + 10,
       }}
     >
       <Pressable
@@ -111,6 +114,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
             borderColor: theme[6],
             backgroundColor: theme[2],
             marginTop: "auto",
+            overflow: "hidden",
             maxHeight: "100%",
             paddingTop: breakpoints.md ? 0 : 15,
             borderRadius: 25,
@@ -148,7 +152,6 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
         ) : (
           <View
             style={{
-              flex: 1,
               alignItems: "center",
               justifyContent: "center",
               minHeight: height * 0.65,

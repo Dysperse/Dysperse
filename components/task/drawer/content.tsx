@@ -125,7 +125,7 @@ export function TaskDrawerContent({ handleClose }) {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <>
       <View
         style={{
           flexDirection: "row",
@@ -243,6 +243,6 @@ export function TaskDrawerContent({ handleClose }) {
           <TaskDetails />
         </View>
       </BottomSheetScrollView>
-    </View>
+    </>
   );
 }

@@ -23,5 +23,7 @@ export function sendApiRequest(
     },
     redirect: "follow",
     keepalive: true,
-  }).then((res) => res.json());
+  })
+    .then((r) => r.json())
+    .catch((e) => console.log(e));
 }

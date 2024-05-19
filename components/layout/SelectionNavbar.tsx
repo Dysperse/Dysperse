@@ -2,7 +2,6 @@ import LabelPicker from "@/components/labels/picker";
 import { useSession } from "@/context/AuthProvider";
 import { useSelectionContext } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
-import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
@@ -11,7 +10,7 @@ import Text from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { BlurView } from "expo-blur";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { TextStyle, View, ViewStyle, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -19,20 +18,86 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { useSWRConfig } from "swr";
+import { mutate } from "swr";
 import { TaskDatePicker } from "../task/create/TaskDatePicker";
 
-export function SelectionNavbar() {
-  const { mutate } = useSWRConfig();
-  const { session } = useSession();
-  const { width } = useWindowDimensions();
+function NavbarHeader({ isLoading }) {
   const { selection, setSelection } = useSelectionContext();
-  const blue = useColor("blue");
+  const clearSelection = useCallback(() => setSelection([]), [setSelection]);
+
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <IconButton icon="close" size={45} onPress={clearSelection} />
+      <View style={{ flexGrow: 1, marginLeft: 5 }}>
+        <Text weight={900} style={{ fontSize: 20 }}>
+          {selection.length} selected
+        </Text>
+        {isLoading && (
+          <Text style={{ opacity: 0.6, fontSize: 12 }}>Processing...</Text>
+        )}
+      </View>
+    </View>
+  );
+}
+
+const PinButton = ({ textStyle, itemStyle, handleSelect }) => {
+  const [pinned, setPinned] = useState(true);
+  const { isLoading } = useSelectionContext();
   const breakpoints = useResponsiveBreakpoints();
 
-  const barWidth = breakpoints.md ? 440 : width;
-  const clearSelection = useCallback(() => setSelection([]), [setSelection]);
-  const [isLoading, setIsLoading] = useState(false);
+  return (
+    <View style={itemStyle}>
+      <IconButton
+        variant={breakpoints.md ? "text" : "outlined"}
+        disabled={isLoading}
+        onPress={() => {
+          setPinned((t) => !t);
+          handleSelect({ pinned });
+        }}
+        icon={<Icon filled={pinned}>push_pin</Icon>}
+        size={45}
+      />
+      {!breakpoints.md && (
+        <Text style={textStyle}>{pinned ? "Unpin" : "Pin"}</Text>
+      )}
+    </View>
+  );
+};
+
+function Actions({ setIsLoading }) {
+  const { session } = useSession();
+  const { selection } = useSelectionContext();
+  const breakpoints = useResponsiveBreakpoints();
+  const { clearSelection } = useSelectionContext();
+  const { isLoading } = useSelectionContext();
+  const blue = useColor("blue");
+
+  const itemStyle: ViewStyle = useMemo(
+    () =>
+      breakpoints.md
+        ? undefined
+        : {
+            alignItems: "center",
+            width: 90,
+            gap: 5,
+          },
+    [breakpoints]
+  );
+
+  const textStyle: TextStyle = useMemo(
+    () => ({
+      color: blue[11],
+      fontSize: 12,
+      textAlign: "center",
+      fontFamily: "body_800",
+    }),
+    [blue]
+  );
 
   const handleSelect = useCallback(
     async (t, shouldClear = false) => {
@@ -55,30 +120,99 @@ export function SelectionNavbar() {
         setIsLoading(false);
       }
     },
-    [selection, clearSelection, mutate, session]
+    [selection, clearSelection, session, setIsLoading]
   );
 
-  useHotkeys("Escape", clearSelection, {
-    enabled: selection.length > 0,
-  });
+  return (
+    <ScrollView
+      style={{
+        flexDirection: "row",
+        width: "100%",
+      }}
+      contentContainerStyle={{
+        justifyContent: "flex-end",
+        flex: 1,
+      }}
+      showsHorizontalScrollIndicator={false}
+      horizontal
+    >
+      <PinButton
+        handleSelect={handleSelect}
+        itemStyle={itemStyle}
+        textStyle={textStyle}
+      />
+      <View style={itemStyle}>
+        <LabelPicker
+          setLabel={(e: any) => handleSelect({ labelId: e.id })}
+          autoFocus
+        >
+          <IconButton
+            variant={breakpoints.md ? "text" : "outlined"}
+            disabled={isLoading}
+            icon="new_label"
+            size={45}
+          />
+        </LabelPicker>
+        {!breakpoints.md && <Text style={textStyle}>Label</Text>}
+      </View>
+      <View style={itemStyle}>
+        <TaskDatePicker
+          title="Select a date"
+          setValue={(_, value) => handleSelect({ due: value })}
+          dueDateOnly
+          watch={(inputName) => {
+            return {
+              date: null,
+              dateOnly: true,
+              recurrenceRule: null,
+            }[inputName];
+          }}
+        >
+          <IconButton
+            variant={breakpoints.md ? "text" : "outlined"}
+            disabled={isLoading}
+            icon="today"
+            size={45}
+          />
+        </TaskDatePicker>
+        {!breakpoints.md && <Text style={textStyle}>Schedule</Text>}
+      </View>
+      <View style={itemStyle}>
+        <ConfirmationModal
+          onSuccess={() => handleSelect({ trash: true }, true)}
+          title={`Move ${selection.length} item${
+            selection.length === 1 ? "" : "s"
+          } to trash?`}
+          height={400}
+          skipLoading
+          secondary="You can undo this later"
+        >
+          <IconButton
+            variant={breakpoints.md ? "text" : "outlined"}
+            disabled={isLoading}
+            icon="delete"
+            size={45}
+          />
+        </ConfirmationModal>
+        {!breakpoints.md && <Text style={textStyle}>Delete</Text>}
+      </View>
+    </ScrollView>
+  );
+}
+
+const SelectionNavbar = memo(function SelectionNavbar() {
   const isDark = useDarkMode();
+  const blue = useColor("blue");
+  const { width } = useWindowDimensions();
+  const { selection } = useSelectionContext();
+  const breakpoints = useResponsiveBreakpoints();
 
-  const [pinned, setPinned] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const itemStyle: ViewStyle = breakpoints.md
-    ? undefined
-    : {
-        alignItems: "center",
-        width: 90,
-        gap: 5,
-      };
-
-  const textStyle: TextStyle = {
-    color: blue[11],
-    fontSize: 12,
-    textAlign: "center",
-    fontFamily: "body_800",
-  };
+  const barWidth = useMemo(
+    () => (breakpoints.md ? 440 : width),
+    [breakpoints, width]
+  );
 
   const marginStyle = useAnimatedStyle(() => ({
     transform: [
@@ -120,6 +254,7 @@ export function SelectionNavbar() {
         ]}
       >
         <BlurView
+          experimentalBlurMethod="dimezisBlurView"
           intensity={40}
           tint={isDark ? "dark" : "prominent"}
           style={{ height: breakpoints.md ? 64 : 140 }}
@@ -147,112 +282,13 @@ export function SelectionNavbar() {
               },
             ]}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <IconButton icon="close" size={45} onPress={clearSelection} />
-              <View style={{ flexGrow: 1, marginLeft: 5 }}>
-                <Text weight={900} style={{ fontSize: 20 }}>
-                  {selection.length} selected
-                </Text>
-                {isLoading && (
-                  <Text style={{ opacity: 0.6, fontSize: 12 }}>
-                    Processing...
-                  </Text>
-                )}
-              </View>
-            </View>
-            <ScrollView
-              style={{
-                flexDirection: "row",
-                width: "100%",
-              }}
-              contentContainerStyle={{
-                justifyContent: "flex-end",
-                flex: 1,
-              }}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-            >
-              <View style={itemStyle}>
-                <IconButton
-                  variant={breakpoints.md ? "text" : "outlined"}
-                  disabled={isLoading}
-                  onPress={() => {
-                    setPinned((t) => !t);
-                    handleSelect({ pinned });
-                  }}
-                  icon={<Icon filled={pinned}>push_pin</Icon>}
-                  size={45}
-                />
-                {!breakpoints.md && (
-                  <Text style={textStyle}>{pinned ? "Unpin" : "Pin"}</Text>
-                )}
-              </View>
-              <View style={itemStyle}>
-                <LabelPicker
-                  setLabel={(e: any) => handleSelect({ labelId: e.id })}
-                  autoFocus
-                >
-                  <IconButton
-                    variant={breakpoints.md ? "text" : "outlined"}
-                    disabled={isLoading}
-                    icon="new_label"
-                    size={45}
-                  />
-                </LabelPicker>
-                {!breakpoints.md && <Text style={textStyle}>Label</Text>}
-              </View>
-              <View style={itemStyle}>
-                <TaskDatePicker
-                  title="Select a date"
-                  setValue={(name, value) => {
-                    handleSelect({ due: value });
-                  }}
-                  dueDateOnly
-                  watch={(inputName) => {
-                    return {
-                      date: null,
-                      dateOnly: true,
-                      recurrenceRule: null,
-                    }[inputName];
-                  }}
-                >
-                  <IconButton
-                    variant={breakpoints.md ? "text" : "outlined"}
-                    disabled={isLoading}
-                    icon="today"
-                    size={45}
-                  />
-                </TaskDatePicker>
-                {!breakpoints.md && <Text style={textStyle}>Schedule</Text>}
-              </View>
-              <View style={itemStyle}>
-                <ConfirmationModal
-                  onSuccess={() => handleSelect({ trash: true }, true)}
-                  title={`Move ${selection.length} item${
-                    selection.length === 1 ? "" : "s"
-                  } to trash?`}
-                  height={400}
-                  skipLoading
-                  secondary="You can undo this later"
-                >
-                  <IconButton
-                    variant={breakpoints.md ? "text" : "outlined"}
-                    disabled={isLoading}
-                    icon="delete"
-                    size={45}
-                  />
-                </ConfirmationModal>
-                {!breakpoints.md && <Text style={textStyle}>Delete</Text>}
-              </View>
-            </ScrollView>
+            <NavbarHeader isLoading={isLoading} />
+            <Actions setIsLoading={setIsLoading} />
           </View>
         </BlurView>
       </Animated.View>
     </ColorThemeProvider>
   ) : null;
-}
+});
+
+export default SelectionNavbar;

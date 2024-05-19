@@ -196,6 +196,7 @@ export const LogoButton = memo(function LogoButton({
   useEffect(() => {
     sendApiRequest(sessionToken, "POST", "space/integrations/sync", {});
   }, [sessionToken]);
+
   const toggleFocus = () => setFocus(!isFocused);
 
   return (

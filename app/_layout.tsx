@@ -26,11 +26,11 @@ import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
-import { Slot, useNavigationContainerRef } from "expo-router";
+import { useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AppState, Platform, View, useWindowDimensions } from "react-native";
 import "react-native-gesture-handler";
 import { SWRConfig } from "swr";
@@ -203,40 +203,50 @@ function SWRWrapper({ children }) {
   );
 }
 
-function Root() {
-  const theme = useColor("mint");
-  const ref = useNavigationContainerRef();
-
-  React.useEffect(() => {
-    if (ref) {
-      routingInstrumentation.registerNavigationContainer(ref);
-    }
-  }, [ref]);
-
+const useWebDevtoolsWarning = () => {
   useEffect(() => {
     if (Platform.OS === "web") {
-      (function () {
-        const e =
-          "This is a browser feature intended for developers. Do not enter or paste code which you don't understand. It may allow attackers to steal your information or impersonate you.\nSee https://en.wikipedia.org/wiki/Self-XSS for more details";
-        if (navigator && navigator.userAgent) {
-          const o = navigator.userAgent.match(
-            /opera|chrome|safari|firefox|msie|trident(?=\/)/i
-          );
-          if (o && o[0].search(/trident|msie/i) < 0)
-            return (
-              window.console.log(
-                "%c🚫 STOP!",
-                "color:red;font-size:100px;font-weight:bold;"
-              ),
-              void window.console.log("%c" + e, "font-size:x-large;")
-            );
-        }
-        window.console.log("🚫STOP!\n" + e);
-      })();
+      setInterval(
+        () =>
+          (function () {
+            const e =
+              "This is a browser feature intended for developers. Do not enter or paste code which you don't understand. It may allow attackers to steal your information or impersonate you.\nSee https://en.wikipedia.org/wiki/Self-XSS for more details";
+            if (navigator && navigator.userAgent) {
+              const o = navigator.userAgent.match(
+                /opera|chrome|safari|firefox|msie|trident(?=\/)/i
+              );
+              if (o && o[0].search(/trident|msie/i) < 0)
+                return (
+                  window.console.log(
+                    "%c🚫 STOP!",
+                    "color:red;font-size:100px;font-weight:bold;"
+                  ),
+                  void window.console.log("%c" + e, "font-size:x-large;")
+                );
+            }
+            window.console.log("🚫STOP!\n" + e);
+          })(),
+        1000 * 60 * 5
+      );
     }
   }, []);
+  return null;
+};
 
-  // Set up the auth context and render our layout inside of it.
+function Root() {
+  const theme = useColor("mint");
+  const { width } = useWindowDimensions();
+  const breakpoints = useResponsiveBreakpoints();
+  const [open, setOpen] = useState(!breakpoints.md);
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
+
+  const ref = useNavigationContainerRef();
+
+  useEffect(() => {
+    if (ref) routingInstrumentation.registerNavigationContainer(ref);
+  }, [ref]);
+
+  useWebDevtoolsWarning();
 
   const [fontsLoaded, fontsError] = useFonts({
     body_100: Jost_100Thin,
@@ -255,27 +265,25 @@ function Root() {
     symbols_bold_outlined: require("../assets/fonts/symbols/bold.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (!fontsLoaded || fontsError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontsError]);
-
-  const { width } = useWindowDimensions();
-  const breakpoints = useResponsiveBreakpoints();
-  const [open, setOpen] = useState(!breakpoints.md);
-  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
-
   const closeSidebarOnMobile = useCallback(() => {
     if (!breakpoints.md) setOpen(false);
   }, [breakpoints]);
 
-  const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
+  const SIDEBAR_WIDTH = useMemo(
+    () => (breakpoints.md ? 220 : Math.min(280, width - 40)),
+    [breakpoints, width]
+  );
+
+  const openSidebar = useCallback(() => {
+    if (!open) setOpen(true);
+  }, [open]);
+
+  const closeSidebar = useCallback(() => {
+    if (open) setOpen(false);
+  }, [open]);
 
   // idk why it crashes the app on web
-  if (Platform.OS !== "web" && !fontsLoaded && !fontsError) {
-    return null;
-  }
+  if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
 
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
@@ -287,12 +295,8 @@ function Root() {
                 isOpen: open,
                 desktopCollapsed,
                 setDesktopCollapsed,
-                closeSidebar: () => {
-                  if (open) setOpen(false);
-                },
-                openSidebar: () => {
-                  if (!open) setOpen(true);
-                },
+                closeSidebar,
+                openSidebar,
                 SIDEBAR_WIDTH,
                 closeSidebarOnMobile,
               }}
@@ -300,7 +304,7 @@ function Root() {
               <SWRWrapper>
                 {Platform.OS === "web" && <WorkboxInitializer />}
                 <JsStack screenOptions={{ header: () => null }}>
-                  <Slot screenOptions={{ onLayoutRootView }} />
+                  {/* <Slot screenOptions={{ onLayoutRootView }} /> */}
                   <JsStack.Screen
                     name="open"
                     options={{

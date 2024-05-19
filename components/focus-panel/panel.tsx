@@ -543,7 +543,6 @@ const FocusPanel = memo(function FocusPanel() {
           </GestureDetector>
         </GestureDetector>
       )}
-
       <Animated.View
         style={[
           animatedStyle,

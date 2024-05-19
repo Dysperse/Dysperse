@@ -528,6 +528,7 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
 
   return (
     <BlurView
+      experimentalBlurMethod="dimezisBlurView"
       style={{ flex: 1 }}
       tint="prominent"
       intensity={breakpoints.md ? 20 : 0}
