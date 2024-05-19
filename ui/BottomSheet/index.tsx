@@ -87,7 +87,10 @@ function BottomSheet(props: DBottomSheetProps) {
       {...props}
     >
       <ColorThemeProvider theme={theme}>
-        <View aria-modal style={{ flex: 1 }}>
+        <View
+          {...(Platform.OS === "web" && { ["aria-modal"]: true })}
+          style={{ flex: 1 }}
+        >
           {props.disableBackToClose !== true && Platform.OS !== "web" && (
             <BottomSheetBackHandler />
           )}
