@@ -26,6 +26,9 @@
       "android": {
         "image": "latest",
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.dysperse.com"
       }
     }
   },
