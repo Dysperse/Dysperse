@@ -243,7 +243,11 @@ export default function SignIn() {
           size={55}
           icon="close"
           onPress={handleBack}
-          style={{ margin: 10 }}
+          style={{
+            margin: 10,
+            opacity: breakpoints.md ? 0 : 1,
+            pointerEvents: breakpoints.md ? "none" : "auto",
+          }}
         />
         {step === 0 || step === 2 ? (
           <KeyboardAvoidingView
