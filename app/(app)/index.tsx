@@ -7,7 +7,12 @@ import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { ImageBackground, View, useWindowDimensions } from "react-native";
+import {
+  ImageBackground,
+  Platform,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -76,6 +81,34 @@ export function hslToHex(h, s, l) {
   return `${f(0)}${f(8)}${f(4)}`;
 }
 
+const CustomizeButton = ({ view, setView }) => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <IconButton
+      style={[styles.settingsButton, { marginTop: insets.top + 15 }]}
+      icon={view === "edit" ? "check" : "palette"}
+      size={55}
+      variant={view === "edit" ? "filled" : "text"}
+      onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
+    />
+  );
+};
+
+const MenuButton = () => {
+  const { openSidebar } = useSidebarContext();
+
+  return (
+    <IconButton
+      style={styles.menuButton}
+      icon="menu"
+      size={55}
+      variant="outlined"
+      onPress={openSidebar}
+    />
+  );
+};
+
 export default function Index() {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
@@ -85,7 +118,6 @@ export default function Index() {
   const { height } = useWindowDimensions();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
-  const { openSidebar } = useSidebarContext();
 
   const hslValues = theme[5]
     .replace("hsl", "")
@@ -98,7 +130,7 @@ export default function Index() {
   const { width } = useWindowDimensions();
   const uri = `${process.env.EXPO_PUBLIC_API_URL}/pattern?color=%23${hslToHex(
     ...hslValues
-  )}&pattern=${pattern}`;
+  )}&pattern=${pattern}${Platform.OS !== "web" ? "&png" : ""}`;
 
   const widthStyle = useAnimatedStyle(() => {
     return {
@@ -116,31 +148,17 @@ export default function Index() {
   return (
     <ContentWrapper noPaddingTop>
       <ImageBackground
-        source={{ uri: pattern === "none" ? null : uri }}
+        source={{ uri: pattern === "none" ? undefined : uri }}
         style={styles.imageBackground}
         resizeMode="repeat"
       >
-        <IconButton
-          style={[styles.settingsButton, { marginTop: insets.top + 15 }]}
-          icon={view === "edit" ? "check" : "palette"}
-          size={55}
-          variant={view === "edit" ? "filled" : "text"}
-          onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
-        />
+        <CustomizeButton view={view} setView={setView} />
         <ScrollView
           scrollEnabled={!breakpoints.md}
           contentContainerStyle={breakpoints.md && { height, flex: 1 }}
           style={{ marginTop: insets.top }}
         >
-          {!breakpoints.md && (
-            <IconButton
-              style={styles.menuButton}
-              icon="menu"
-              size={55}
-              variant="outlined"
-              onPress={openSidebar}
-            />
-          )}
+          {!breakpoints.md && <MenuButton />}
           {view === "edit" ? (
             <EditWallpaper />
           ) : (
