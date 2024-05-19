@@ -13,7 +13,7 @@ import React, {
   useImperativeHandle,
   useRef,
 } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -155,6 +155,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
               alignItems: "center",
               justifyContent: "center",
               minHeight: height * 0.65,
+              ...(Platform.OS === "web" && { flex: 1 }),
             }}
           >
             <Spinner />
