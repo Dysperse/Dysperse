@@ -272,6 +272,7 @@ function Root() {
 
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
 
+  // idk why it crashes the app on web
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) {
     return null;
   }
