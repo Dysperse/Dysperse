@@ -43,5 +43,16 @@ export const authStyles = StyleSheet.create({
     height: 70,
     justifyContent: "center",
   },
-  buttonText: { fontSize: 20, fontFamily: "body_900" },
+  buttonText: {
+    fontSize: 20,
+    fontFamily: "body_900",
+    flex: 1,
+    textAlign: "center",
+    margin: "auto",
+  },
+  subtitleText: {
+    fontSize: 20,
+    fontFamily: "mono",
+    color: "#fff",
+  },
 });

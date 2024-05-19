@@ -94,7 +94,7 @@ function Tab({
         console.log(err);
       }
     },
-    [mutate, sessionToken, tabs, mutate]
+    [mutate, sessionToken, tabs]
   );
 
   const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
@@ -192,6 +192,7 @@ function Tab({
   );
 
   const handlePress = () => {
+    // startTransition(() => {
     router.replace({
       pathname: tab.slug,
       params: {
@@ -201,6 +202,7 @@ function Tab({
     });
     handleClose();
     setTimeout(closeSidebarOnMobile, 300);
+    // });
   };
 
   return isClosedAnimation ? null : (

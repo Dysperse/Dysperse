@@ -12,7 +12,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { styles } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
@@ -20,9 +20,17 @@ import { styles } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
 type streamType = "backlog" | "upcoming" | "completed" | "unscheduled";
 export function Stream() {
   const params = useLocalSearchParams();
+
+  const [isPending, startTransition] = useTransition();
   const [view, setView] = useState<streamType>(
     (params?.view as streamType) || "backlog"
   );
+
+  function selectTab(nextTab) {
+    startTransition(() => {
+      setView(nextTab);
+    });
+  }
 
   const { data, mutate, access } = useCollectionContext();
   const theme = useColorTheme();
@@ -126,7 +134,7 @@ export function Stream() {
         state={[
           view,
           (e: any) => {
-            setView(e);
+            selectTab(e);
             router.setParams({ view: e });
           },
         ]}

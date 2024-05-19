@@ -4,105 +4,126 @@ import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { Linking, StyleSheet, View } from "react-native";
+import { Redirect, router } from "expo-router";
+import { ImageBackground, Linking, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authStyles } from "./authStyles";
 
 export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
 
   const handleLoginPress = () => router.push("/auth/sign-in");
   const handleSignUpPress = () => router.push("/auth/sign-up");
   const openHomePage = () =>
     Linking.openURL("https://dysperse.com?utm_source=app");
 
+  if (breakpoints.md) return <Redirect href="/auth/sign-in" />;
+
   return (
-    <View
-      style={[
-        authStyles.container,
-        { backgroundColor: theme[1] },
-        breakpoints.md && authStyles.containerDesktop,
-        breakpoints.md && {
-          borderColor: theme[6],
-        },
-        { padding: 20 },
-      ]}
-    >
-      <LinearGradient
-        colors={[theme[breakpoints.md ? 1 : 2], theme[1]]}
-        style={StyleSheet.absoluteFill}
-      />
-      <Text style={[authStyles.title, !breakpoints.md && { fontSize: 40 }]}>
-        We're here to{" "}
-        <Text
+    <View style={{ flex: 1, backgroundColor: theme[1] }}>
+      <ImageBackground
+        source={require("@/assets/login.png")}
+        style={{
+          flex: 1,
+        }}
+      >
+        <View
           style={[
-            authStyles.title,
-            { color: theme[11] },
-            !breakpoints.md && { fontSize: 40 },
+            authStyles.container,
+            breakpoints.md && authStyles.containerDesktop,
+            breakpoints.md && {
+              borderColor: theme[6],
+            },
+            { backgroundColor: `rgba(0, 0, 0, 0.5)`, padding: 20 },
           ]}
         >
-          redefine productivity
-        </Text>
-        .
-      </Text>
-      <View style={authStyles.subtitleContainer}>
-        {`Meet the`.split(" ").map((word, i) => (
-          <Text key={i} style={authStyles.word}>
-            {word}{" "}
+          <Text
+            style={{
+              fontSize: 50,
+              fontFamily: "serifText800",
+              color: "#fff",
+              marginBottom: -5,
+            }}
+          >
+            Productivity&nbsp;is your&nbsp;domain.
           </Text>
-        ))}
-        <Chip
-          dense
-          label="Aesthetic"
-          icon={<Icon>magic_button</Icon>}
-          textStyle={authStyles.chipWord}
-        />
-        <Text style={authStyles.word}> </Text>
-        <Chip
-          dense
-          icon={<Icon>airwave</Icon>}
-          label="Minimalist"
-          textStyle={authStyles.chipWord}
-        />
-        <Text style={authStyles.word}> and </Text>
-        <Chip
-          dense
-          icon={<Icon>keyboard_double_arrow_up</Icon>}
-          label="Sophisticated"
-          textStyle={authStyles.chipWord}
-        />
-        <Text style={authStyles.word}> app you've been waiting for. </Text>
-      </View>
-      <Button
-        variant="filled"
-        style={authStyles.button}
-        onPress={handleLoginPress}
-      >
-        <ButtonText style={authStyles.buttonText}>Sign in</ButtonText>
-      </Button>
-      <Button
-        variant="filled"
-        style={authStyles.button}
-        onPress={handleSignUpPress}
-      >
-        <ButtonText style={authStyles.buttonText}>Create an account</ButtonText>
-      </Button>
-      <Button
-        onPress={openHomePage}
-        variant="outlined"
-        style={[authStyles.button, { height: 60 }]}
-      >
-        <ButtonText
-          style={[
-            authStyles.buttonText,
-            { fontFamily: "body_300", fontSize: 20, opacity: 0.6 },
-          ]}
-        >
-          Visit home page
-        </ButtonText>
-      </Button>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              flexWrap: "wrap",
+              marginBottom: 5,
+            }}
+          >
+            <Text
+              weight={900}
+              style={[authStyles.subtitleText, { color: "#fff" }]}
+            >
+              Let
+            </Text>
+            <Chip
+              onPress={openHomePage}
+              label="#dysperse"
+              style={({ pressed, hovered }) => ({
+                backgroundColor: `rgba(255,255,255,${
+                  pressed ? 0.15 : hovered ? 0.1 : 0.05
+                })`,
+              })}
+              textStyle={{ color: "#fff", fontFamily: "mono", fontSize: 20 }}
+              icon={<Icon style={{ color: "#fff" }}>north_east</Icon>}
+              iconPosition="after"
+            />
+            <Text
+              weight={900}
+              style={[authStyles.subtitleText, { color: "#fff" }]}
+            >
+              be the
+            </Text>
+            <Text
+              weight={900}
+              style={[authStyles.subtitleText, { color: "#fff" }]}
+            >
+              catalyst
+            </Text>
+          </View>
+          <Button
+            variant="filled"
+            style={({ pressed, hovered }) => [
+              authStyles.button,
+              {
+                backgroundColor: `rgba(255, 255, 255, ${
+                  pressed ? 0.2 : hovered ? 0.15 : 0.1
+                })`,
+              },
+            ]}
+            onPress={handleLoginPress}
+          >
+            <ButtonText style={[authStyles.buttonText, { color: "#fff" }]}>
+              Sign in
+            </ButtonText>
+          </Button>
+          <Button
+            variant="filled"
+            style={({ pressed, hovered }) => [
+              authStyles.button,
+              {
+                marginBottom: insets.bottom,
+                backgroundColor: `rgba(255, 255, 255, ${
+                  pressed ? 0.2 : hovered ? 0.15 : 0.1
+                })`,
+              },
+            ]}
+            onPress={handleSignUpPress}
+          >
+            <ButtonText style={[authStyles.buttonText, { color: "#fff" }]}>
+              Join now
+            </ButtonText>
+          </Button>
+        </View>
+      </ImageBackground>
     </View>
   );
 }

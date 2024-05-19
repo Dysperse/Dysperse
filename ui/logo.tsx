@@ -3,10 +3,19 @@ import * as React from "react";
 import Svg, { Path } from "react-native-svg";
 import { useColor } from "./color";
 
-const Logo = ({ size, color }: { size: number; color?: string }) => {
+const Logo = ({
+  size,
+  color,
+  light = true,
+}: {
+  size: number;
+  color?: string;
+  light?: boolean;
+}) => {
   const session = useUser();
   const theme = useColor(
-    color || session?.session?.user?.profile?.theme || "mint"
+    color || session?.session?.user?.profile?.theme || "mint",
+    typeof light === "boolean" ? !light : undefined
   );
 
   const memoizedSvg = React.useMemo(() => {

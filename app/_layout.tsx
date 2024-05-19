@@ -256,7 +256,7 @@ function Root() {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontsError) {
+    if (!fontsLoaded || fontsError) {
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontsError]);
@@ -271,6 +271,10 @@ function Root() {
   }, [breakpoints]);
 
   const SIDEBAR_WIDTH = breakpoints.md ? 220 : Math.min(280, width - 40);
+
+  if (Platform.OS !== "web" && !fontsLoaded && !fontsError) {
+    return null;
+  }
 
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
@@ -288,7 +292,6 @@ function Root() {
                 openSidebar: () => {
                   if (!open) setOpen(true);
                 },
-
                 SIDEBAR_WIDTH,
                 closeSidebarOnMobile,
               }}
