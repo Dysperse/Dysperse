@@ -44,7 +44,7 @@ export default {
         },
       },
       softwareKeyboardLayoutMode: "pan",
-      package: "com.manucodes.Dysperse",
+      package: IS_DEV ? "com.dev.app.dysperse.com" : "com.app.dysperse.com",
     },
     web: {
       name: "Dysperse",
