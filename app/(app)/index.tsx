@@ -130,7 +130,7 @@ export default function Index() {
   const { width } = useWindowDimensions();
   const uri = `${process.env.EXPO_PUBLIC_API_URL}/pattern?color=%23${hslToHex(
     ...hslValues
-  )}&pattern=${pattern}${Platform.OS !== "web" ? "&png=true" : ""}`;
+  )}&pattern=${pattern}`;
 
   const widthStyle = useAnimatedStyle(() => {
     return {
@@ -145,14 +145,24 @@ export default function Index() {
     };
   });
 
+  const Wrapper =
+    Platform.OS === "web"
+      ? View
+      : (props) => (
+          <ImageBackground
+            {...props}
+            source={{ uri: pattern === "none" ? undefined : uri }}
+            style={styles.imageBackground}
+            resizeMode="repeat"
+          />
+        );
+
   return (
     <ContentWrapper noPaddingTop>
-      <ImageBackground
-        source={{ uri: pattern === "none" ? undefined : uri }}
-        style={styles.imageBackground}
-        resizeMode="repeat"
-      >
-        <CustomizeButton view={view} setView={setView} />
+      <Wrapper>
+        {Platform.OS === "web" && (
+          <CustomizeButton view={view} setView={setView} />
+        )}
         <ScrollView
           scrollEnabled={!breakpoints.md}
           contentContainerStyle={breakpoints.md && { height, flex: 1 }}
@@ -195,7 +205,7 @@ export default function Index() {
             </Animated.View>
           )}
         </ScrollView>
-      </ImageBackground>
+      </Wrapper>
     </ContentWrapper>
   );
 }
