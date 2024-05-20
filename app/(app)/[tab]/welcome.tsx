@@ -24,7 +24,7 @@ import useSWR, { mutate } from "swr";
 
 function Header() {
   const theme = useColorTheme();
-  const { openSidebar } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -42,7 +42,7 @@ function Header() {
       {!breakpoints.md && (
         <IconButton
           size={55}
-          onPress={openSidebar}
+          onPress={() => sidebarRef.current.openDrawer()}
           icon="menu"
           variant="outlined"
           style={{

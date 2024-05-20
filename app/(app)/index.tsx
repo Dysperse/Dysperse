@@ -96,7 +96,7 @@ const CustomizeButton = ({ view, setView }) => {
 };
 
 const MenuButton = () => {
-  const { openSidebar } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
 
   return (
     <IconButton
@@ -104,12 +104,12 @@ const MenuButton = () => {
       icon="menu"
       size={55}
       variant="outlined"
-      onPress={openSidebar}
+      onPress={() => sidebarRef.current.openDrawer()}
     />
   );
 };
 
-export default function Index() {
+export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();

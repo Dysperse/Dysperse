@@ -933,10 +933,11 @@ const TaskAttachments = ({ watch, setValue }) => {
   // return null;
 };
 
-function BottomSheetContent({ nameRef, defaultValues, mutateList }) {
+function BottomSheetContent({ defaultValues, mutateList }) {
   const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
   const { forceClose } = useBottomSheet();
+  const nameRef = useRef(null);
   const menuRef = useRef<BottomSheetModal>(null);
   const labelMenuRef = useRef<BottomSheetModal>(null);
   const dateMenuRef = useRef<Menu>(null);
@@ -1167,7 +1168,6 @@ export default function CreateTask({
   mutate: (newTask) => void;
 }) {
   const ref = useRef<BottomSheetModal>(null);
-  const nameRef = useRef(null);
 
   // callbacks
   const handleOpen = useCallback(() => {
@@ -1183,7 +1183,7 @@ export default function CreateTask({
 
   const trigger = useMemo(
     () =>
-      cloneElement(children || <Pressable />, {
+      cloneElement(children, {
         onPress: handleOpen,
         disabled: isReached,
       }),
@@ -1222,7 +1222,6 @@ export default function CreateTask({
         >
           <BottomSheetContent
             defaultValues={defaultValues}
-            nameRef={nameRef}
             mutateList={mutate}
           />
         </Pressable>

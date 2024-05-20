@@ -13,12 +13,12 @@ export function Header({ scrollRef }) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
-  const { openSidebar } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
 
   const handleBack = (e) => {
     e.stopPropagation();
     if (breakpoints.md) router.replace("/");
-    else openSidebar();
+    else sidebarRef.current.openDrawer();
   };
 
   return (

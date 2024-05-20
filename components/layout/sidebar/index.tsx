@@ -20,15 +20,14 @@ import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Linking,
+  Animated as NativeAnimated,
   Platform,
   Pressable,
   StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
-import { useDrawerProgress } from "react-native-drawer-layout";
 import Animated, {
-  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -60,12 +59,13 @@ const styles = StyleSheet.create({
 });
 
 const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
-  const { closeSidebarOnMobile } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const handleHome = useCallback(() => {
     router.replace("/");
-    setTimeout(closeSidebarOnMobile, 100);
-  }, [closeSidebarOnMobile]);
+    if (!breakpoints.md) sidebarRef.current.closeDrawer();
+  }, [sidebarRef, breakpoints]);
 
   const theme = useColorTheme();
   useHotkeys("ctrl+0", () => router.replace("/"));
@@ -191,7 +191,7 @@ export const LogoButton = memo(function LogoButton({
   }, [session.user.email]);
 
   const { isFocused, setFocus } = useFocusPanelContext();
-  const { closeSidebarOnMobile, desktopCollapsed } = useSidebarContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
   useEffect(() => {
     sendApiRequest(sessionToken, "POST", "space/integrations/sync", {});
@@ -243,7 +243,9 @@ export const LogoButton = memo(function LogoButton({
             text: "Trash",
             callback: () => {
               router.push("/trash");
-              setTimeout(closeSidebarOnMobile, 300);
+              setTimeout(() => {
+                if (!breakpoints.md) sidebarRef.current.closeDrawer();
+              }, 300);
             },
           },
           {
@@ -251,7 +253,9 @@ export const LogoButton = memo(function LogoButton({
             text: "Settings",
             callback: () => {
               router.push("/settings");
-              setTimeout(closeSidebarOnMobile, 300);
+              setTimeout(() => {
+                if (!breakpoints.md) sidebarRef.current.closeDrawer();
+              }, 300);
             },
           },
           // { divider: true, key: "1" },
@@ -331,9 +335,14 @@ const QuickCreateButton = memo(function QuickCreateButton() {
       <MenuPopover
         options={[
           {
-            icon: "add_circle",
-            text: "Item",
-            callback: () => itemRef.current?.present(),
+            renderer: () => (
+              <CreateTask mutate={() => mutate(() => true)} sheetRef={itemRef}>
+                <MenuItem>
+                  <Icon>add_circle</Icon>
+                  <Text variant="menuItem">Item</Text>
+                </MenuItem>
+              </CreateTask>
+            ),
           },
           {
             renderer: () => (
@@ -374,7 +383,6 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           </Pressable>
         }
       />
-      <CreateTask mutate={() => mutate(() => true)} sheetRef={itemRef} />
     </>
   );
 });
@@ -403,7 +411,11 @@ const Header = memo(function Header() {
   );
 });
 
-const Sidebar = () => {
+const Sidebar = ({
+  progressValue,
+}: {
+  progressValue?: NativeAnimated.Value;
+}) => {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
@@ -411,26 +423,28 @@ const Sidebar = () => {
     useSidebarContext();
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
-  const progress = useDrawerProgress();
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: breakpoints?.md
-      ? []
-      : [
-          {
-            translateX: interpolate(progress.value, [0, 1], [-(width / 10), 0]),
-          },
-        ],
-  }));
-
+  const transform = progressValue?.interpolate?.({
+    inputRange: [0, 1],
+    outputRange: [-(width / 10), 0],
+  });
+  const animatedStyles = [
+    {
+      transform: [
+        {
+          translateX: transform,
+        },
+      ],
+    },
+  ];
+  const { sidebarRef } = useSidebarContext();
   const toggleHidden = useCallback(() => {
-    if (Platform.OS === "web") {
-      setDesktopCollapsed((prev) => {
-        localStorage.setItem("desktopCollapsed", (!prev).toString());
-        return !prev;
-      });
+    if (sidebarRef.current.state.drawerOpened) {
+      sidebarRef.current.closeDrawer();
+    } else {
+      sidebarRef.current.openDrawer();
     }
-  }, [setDesktopCollapsed]);
+  }, [sidebarRef]);
 
   useHotkeys("`", toggleHidden, {});
   useHotkeys("ctrl+comma", () => {
@@ -463,9 +477,9 @@ const Sidebar = () => {
           },
       ]}
     >
-      <Animated.View
+      <NativeAnimated.View
         style={[
-          animatedStyle,
+          animatedStyles,
           {
             height:
               height +
@@ -497,7 +511,7 @@ const Sidebar = () => {
           <Header />
         </View>
         <OpenTabsList />
-      </Animated.View>
+      </NativeAnimated.View>
     </View>
   );
 };

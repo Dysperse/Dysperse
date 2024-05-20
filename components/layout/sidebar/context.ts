@@ -1,10 +1,14 @@
-import { Dispatch, SetStateAction, createContext, useContext } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  createContext,
+  useContext,
+} from "react";
+import { DrawerLayout } from "react-native-gesture-handler";
 
 export const SidebarContext = createContext<{
-  isOpen: boolean;
-  closeSidebar: () => void;
-  openSidebar: () => void;
-  closeSidebarOnMobile: () => void;
+  sidebarRef: RefObject<DrawerLayout>;
 
   desktopCollapsed: boolean;
   setDesktopCollapsed: Dispatch<SetStateAction<boolean>>;

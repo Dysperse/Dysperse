@@ -639,12 +639,12 @@ export default function Page() {
   const insets = useSafeAreaInsets();
   const [view, setView] = useState<"labels" | "collections">("labels");
 
-  const { openSidebar } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
 
   const handleBack = () => {
     if (breakpoints.md) router.replace("/");
-    else openSidebar();
+    else sidebarRef.current.openDrawer();
   };
 
   return (

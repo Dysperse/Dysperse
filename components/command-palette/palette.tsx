@@ -489,7 +489,7 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
   const [loading, setLoading] = useState(false);
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
-  const { closeSidebar } = useSidebarContext() || {};
+  const { sidebarRef } = useSidebarContext() || {};
 
   const onCreate = useCallback(
     async (tab) => {
@@ -515,15 +515,14 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
             ...tab.params,
           },
         });
-
-        closeSidebar();
+        sidebarRef.current.closeDrawer();
       } catch (e) {
         alert("Something went wrong. Please try again later");
       } finally {
         setLoading(false);
       }
     },
-    [handleClose, mutate, sessionToken, breakpoints.md, preview, closeSidebar]
+    [handleClose, mutate, sessionToken, breakpoints.md, preview, sidebarRef]
   );
 
   return (

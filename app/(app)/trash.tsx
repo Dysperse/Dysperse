@@ -45,7 +45,7 @@ export default function Trash() {
   const { session } = useSession();
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
-  const { openSidebar } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
   const { data, mutate, error } = useSWR(["space/trash"]);
 
   const handleDelete = useCallback(async () => {
@@ -80,7 +80,7 @@ export default function Trash() {
           icon="menu"
           size={55}
           variant="outlined"
-          onPress={openSidebar}
+          onPress={() => sidebarRef.current.openDrawer()}
         />
       )}
       <View

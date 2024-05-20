@@ -53,7 +53,7 @@ function Tab({
   const theme = useColorTheme();
   const tabData = useTabMetadata(tab.slug, tab);
   const { sessionToken } = useUser();
-  const { closeSidebarOnMobile } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -201,8 +201,9 @@ function Tab({
       },
     });
     handleClose();
-    setTimeout(closeSidebarOnMobile, 300);
-    // });
+    setTimeout(() => {
+      if (!breakpoints.md) sidebarRef.current.closeDrawer();
+    }, 300);
   };
 
   return isClosedAnimation ? null : (

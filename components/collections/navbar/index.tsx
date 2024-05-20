@@ -176,14 +176,18 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     },
   ].filter((e) => e);
 
-  const { openSidebar } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
 
   const menu = useMemo(
     () =>
       !breakpoints.md && (
-        <IconButton size={40} onPress={openSidebar} icon="menu" />
+        <IconButton
+          size={40}
+          onPress={() => sidebarRef.current.openDrawer()}
+          icon="menu"
+        />
       ),
-    [openSidebar, breakpoints.md]
+    [sidebarRef, breakpoints.md]
   );
 
   return editOrderMode ? (

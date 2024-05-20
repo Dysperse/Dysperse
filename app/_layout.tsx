@@ -3,6 +3,7 @@ import { JsStack } from "@/components/layout/_stack";
 import { SidebarContext } from "@/components/layout/sidebar/context";
 import { SelectionContextProvider } from "@/context/SelectionContext";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { mint, mintDark } from "@/themes";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
@@ -30,24 +31,27 @@ import { useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import * as Updates from "expo-updates";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { AppState, Platform, View, useWindowDimensions } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  AppState,
+  Appearance,
+  Platform,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import "react-native-gesture-handler";
+import { DrawerLayout } from "react-native-gesture-handler";
 import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "../context/AuthProvider";
 
-SystemUI.setBackgroundColorAsync("black");
+SystemUI.setBackgroundColorAsync(
+  Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2
+);
 
 if (Platform.OS === "android") {
   NavigationBar.setPositionAsync("absolute");
   NavigationBar.setBackgroundColorAsync("rgba(255,255,255,0.005)");
   NavigationBar.setBorderColorAsync("transparent");
-}
-
-declare global {
-  interface Window {
-    Mousetrap?: any;
-  }
 }
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -265,22 +269,12 @@ function Root() {
     symbols_bold_outlined: require("../assets/fonts/symbols/bold.ttf"),
   });
 
-  const closeSidebarOnMobile = useCallback(() => {
-    if (!breakpoints.md) setOpen(false);
-  }, [breakpoints]);
+  const sidebarRef = useRef<DrawerLayout>(null);
 
   const SIDEBAR_WIDTH = useMemo(
     () => (breakpoints.md ? 220 : Math.min(280, width - 40)),
     [breakpoints, width]
   );
-
-  const openSidebar = useCallback(() => {
-    if (!open) setOpen(true);
-  }, [open]);
-
-  const closeSidebar = useCallback(() => {
-    if (open) setOpen(false);
-  }, [open]);
 
   // idk why it crashes the app on web
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
@@ -292,13 +286,10 @@ function Root() {
           <ColorThemeProvider theme={theme}>
             <SidebarContext.Provider
               value={{
-                isOpen: open,
+                sidebarRef: sidebarRef,
                 desktopCollapsed,
                 setDesktopCollapsed,
-                closeSidebar,
-                openSidebar,
                 SIDEBAR_WIDTH,
-                closeSidebarOnMobile,
               }}
             >
               <SWRWrapper>

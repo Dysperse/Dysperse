@@ -12,6 +12,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "automatic",
+  androidNavigationBar: {
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
+    barStyle: "dark-content",
+  },
   splash: {
     image: "./assets/splash-screens/light.png",
     resizeMode: "cover",
@@ -26,11 +30,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     splash: {
       resizeMode: "cover",
       image: "./assets/splash-screens/light.png",
-      backgroundColor: "#DDF9F2",
+      backgroundColor: "#effefa",
       dark: {
         resizeMode: "cover",
         image: "./assets/splash-screens/dark.png",
-        backgroundColor: "#092C2B",
+        backgroundColor: "#0a1f1d",
       },
     },
   },
@@ -38,11 +42,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     splash: {
       resizeMode: "cover",
       image: "./assets/splash-screens/light.png",
-      backgroundColor: "#DDF9F2",
+      backgroundColor: "#effefa",
       dark: {
         resizeMode: "cover",
         image: "./assets/splash-screens/dark.png",
-        backgroundColor: "#092C2B",
+        backgroundColor: "#0a1f1d",
       },
     },
     softwareKeyboardLayoutMode: "pan",
