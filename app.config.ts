@@ -12,10 +12,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "automatic",
-  androidNavigationBar: {
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
-    barStyle: "dark-content",
-  },
+  // androidNavigationBar: { 
+  //   backgroundColor: "rgba(0, 0, 0, 0.05)",
+  //   barStyle: "dark-content",
+  // },
   splash: {
     image: "./assets/splash-screens/light.png",
     resizeMode: "cover",
