@@ -100,13 +100,9 @@ export default function AppLayout() {
 
   InteractionManager.runAfterInteractions(() => {
     SplashScreen.hideAsync();
-    if (Platform.OS === "android") {
-      NavigationBar.setBackgroundColorAsync("rgba(255,255,255,0.005)");
-    }
+    if (Platform.OS === "android")
+      NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[2], 0.05));
   });
-
-  if (Platform.OS === "android")
-    NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
 
   if (!session) return <Redirect href="/auth" />;
 
@@ -275,7 +271,7 @@ export default function AppLayout() {
                               overlayColor="transparent"
                               drawerWidth={SIDEBAR_WIDTH}
                               edgeWidth={
-                                !pathname.includes("settings") &&
+                                !pathname.includes("settings/") &&
                                 !pathname.includes("create")
                                   ? width
                                   : 0
