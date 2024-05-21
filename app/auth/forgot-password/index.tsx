@@ -21,7 +21,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { authStyles } from "../authStyles";
+import { authStyles } from "../../../components/authStyles";
 
 const PasswordContext = createContext(null);
 export const usePasswordContext = () => useContext(PasswordContext);

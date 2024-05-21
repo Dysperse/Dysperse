@@ -11,7 +11,7 @@ import { router } from "expo-router";
 import { useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
-import { authStyles } from "../authStyles";
+import { authStyles } from "../../../components/authStyles";
 
 const styles = StyleSheet.create({
   title: {

@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native";
 export const authStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     gap: 15,
+    padding: 10,
     justifyContent: "flex-end",
   },
   containerDesktop: {
@@ -25,17 +25,8 @@ export const authStyles = StyleSheet.create({
     alignItems: "center",
     rowGap: 10,
     fontSize: 20,
-    fontFamily: "body_800",
     opacity: 0.8,
     marginBottom: 10,
-  },
-  word: {
-    fontSize: 20,
-    fontFamily: "body_300",
-  },
-  chipWord: {
-    fontSize: 18,
-    fontFamily: "body_300",
   },
   button: {
     width: "100%",

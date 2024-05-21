@@ -5,9 +5,9 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Redirect, router } from "expo-router";
-import { ImageBackground, Linking, View } from "react-native";
+import { ImageBackground, Linking, StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { authStyles } from "./authStyles";
+import { authStyles } from "../../components/authStyles";
 
 export default function Page() {
   const theme = useColorTheme();
@@ -23,6 +23,7 @@ export default function Page() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme[1] }}>
+      <StatusBar barStyle="light-content" />
       <ImageBackground
         source={require("@/assets/login.png")}
         style={{

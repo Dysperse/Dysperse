@@ -8,6 +8,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as Device from "expo-device";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Network from "expo-network";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -17,10 +18,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import { authStyles } from "../../components/authStyles";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
 import Turnstile from "../../ui/turnstile";
-import { authStyles } from "./authStyles";
 
 const styles = StyleSheet.create({
   title: { fontSize: 55, width: "100%", lineHeight: 55 },
@@ -115,10 +116,163 @@ function QrLogin() {
   );
 }
 
+function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
+  const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleForgot = useCallback(
+    () => router.push("/auth/forgot-password"),
+    []
+  );
+
+  return (
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1, flexDirection: "row" }}
+    >
+      <ScrollView
+        style={{ maxHeight: "100%" }}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={[
+          authStyles.container,
+          {
+            justifyContent: "flex-start",
+            flex: undefined,
+            paddingBottom: insets.top + 40,
+            paddingTop: 40,
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.title,
+            {
+              paddingTop: 10,
+              fontFamily: "serifText800",
+            },
+            !breakpoints.md && { textAlign: "center" },
+          ]}
+        >
+          Sign in
+        </Text>
+        <Text
+          style={[
+            authStyles.subtitleContainer,
+            !breakpoints.md && { textAlign: "center", opacity: 0.6 },
+          ]}
+          weight={800}
+        >
+          Continue with your Dysperse ID
+        </Text>
+        <View style={{ gap: 10 }}>
+          <Controller
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextField
+                variant="filled+outlined"
+                style={{
+                  paddingHorizontal: 30,
+                  paddingVertical: 20,
+                  fontSize: 20,
+                  borderColor: errors.email ? "red" : theme[6],
+                  ...(Platform.OS === "web" && { outline: "none" }),
+                }}
+                placeholder="Email or username"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="email"
+          />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Controller
+              control={control}
+              rules={{
+                maxLength: 100,
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
+                  variant="filled+outlined"
+                  style={{
+                    paddingHorizontal: 30,
+                    paddingVertical: 20,
+                    fontSize: 20,
+                    flex: 1,
+                    borderColor: errors.password ? "red" : theme[6],
+                    ...(Platform.OS === "web" && { outline: "none" }),
+                  }}
+                  onSubmitEditing={handleSubmit(onSubmit)}
+                  placeholder="Password"
+                  secureTextEntry={!showPassword}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="password"
+            />
+            <IconButton
+              style={{ marginLeft: -40, transform: [{ translateX: -20 }] }}
+              size={40}
+              variant="filled"
+              icon={showPassword ? "visibility" : "visibility_off"}
+              onPress={() => setShowPassword((s) => !s)}
+            />
+          </View>
+          <Button
+            variant="filled"
+            style={[authStyles.button, { marginTop: 20 }]}
+            onPress={handleSubmit(onSubmit)}
+            isLoading={step === 2}
+          >
+            <ButtonText style={authStyles.buttonText}>Continue</ButtonText>
+          </Button>
+          <Button
+            dense
+            onPress={handleForgot}
+            variant="outlined"
+            style={[authStyles.button]}
+          >
+            <ButtonText
+              style={[
+                authStyles.buttonText,
+                { opacity: 0.6, fontFamily: "body_500" },
+              ]}
+            >
+              Need help?
+            </ButtonText>
+          </Button>
+        </View>
+      </ScrollView>
+      {breakpoints.md && step === 0 && (
+        <View
+          style={[
+            authStyles.container,
+            {
+              borderWidth: 0,
+              alignItems: "center",
+              maxWidth: 310,
+              marginLeft: 30,
+              justifyContent: "flex-start",
+              paddingTop: 80,
+            },
+          ]}
+        >
+          <QrLogin />
+        </View>
+      )}
+    </KeyboardAvoidingView>
+  );
+}
+
 export default function SignIn() {
   const { signIn, session } = useSession();
   const [step, setStep] = useState(0);
-  const insets = useSafeAreaInsets();
   const [token, setToken] = useState("");
 
   const theme = useColorTheme();
@@ -219,17 +373,13 @@ export default function SignIn() {
   }, []);
 
   const breakpoints = useResponsiveBreakpoints();
-  const handleForgot = useCallback(
-    () => router.push("/auth/forgot-password"),
-    []
-  );
 
   return (
     <>
-      <View
+      <LinearGradient
+        colors={[theme[2], theme[1]]}
         style={[
           authStyles.container,
-          { backgroundColor: theme[1] },
           breakpoints.md && authStyles.containerDesktop,
           breakpoints.md && step === 0 && { maxWidth: 1000 },
           breakpoints.md && {
@@ -249,128 +399,35 @@ export default function SignIn() {
           }}
         />
         {step === 0 || step === 2 ? (
-          <KeyboardAvoidingView
-            behavior="padding"
-            style={{ flex: 1, flexDirection: "row" }}
-          >
-            <ScrollView
-              style={{ maxHeight: "100%" }}
-              contentContainerStyle={[
-                authStyles.container,
-                {
-                  justifyContent: "flex-start",
-                  flex: undefined,
-                  paddingBottom: insets.top + 40,
-                  paddingTop: 40,
-                },
-              ]}
-            >
-              <Text
-                weight={700}
-                style={[styles.title, { paddingTop: 10, color: theme[11] }]}
-              >
-                Sign in
-              </Text>
-              <Text style={authStyles.subtitleContainer} weight={900}>
-                Use your Dysperse ID to continue
-              </Text>
-              <View style={{ gap: 10 }}>
-                <Controller
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextField
-                      variant="filled+outlined"
-                      style={{
-                        paddingHorizontal: 30,
-                        paddingVertical: 20,
-                        fontSize: 20,
-                        borderColor: errors.email ? "red" : theme[6],
-                        ...(Platform.OS === "web" && { outline: "none" }),
-                      }}
-                      placeholder="Email or username"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  )}
-                  name="email"
-                />
-                <Controller
-                  control={control}
-                  rules={{
-                    maxLength: 100,
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextField
-                      variant="filled+outlined"
-                      style={{
-                        paddingHorizontal: 30,
-                        paddingVertical: 20,
-                        fontSize: 20,
-                        borderColor: errors.password ? "red" : theme[6],
-                        ...(Platform.OS === "web" && { outline: "none" }),
-                      }}
-                      onSubmitEditing={handleSubmit(onSubmit)}
-                      placeholder="Password"
-                      secureTextEntry
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  )}
-                  name="password"
-                />
-                <Button
-                  variant="filled"
-                  style={[authStyles.button, { marginTop: 20 }]}
-                  onPress={handleSubmit(onSubmit)}
-                  isLoading={step === 2}
-                >
-                  <ButtonText style={authStyles.buttonText}>
-                    Continue
-                  </ButtonText>
-                </Button>
-                <Button
-                  dense
-                  onPress={handleForgot}
-                  variant="outlined"
-                  style={[authStyles.button]}
-                >
-                  <ButtonText
-                    style={[authStyles.buttonText, { fontFamily: "body_200" }]}
-                  >
-                    Need help?
-                  </ButtonText>
-                </Button>
-              </View>
-            </ScrollView>
-            {breakpoints.md && step === 0 && (
-              <View
-                style={[
-                  authStyles.container,
-                  {
-                    borderWidth: 0,
-                    alignItems: "center",
-                    maxWidth: 310,
-                    marginLeft: 30,
-                    justifyContent: "flex-start",
-                    paddingTop: 80,
-                  },
-                ]}
-              >
-                <QrLogin />
-              </View>
-            )}
-          </KeyboardAvoidingView>
+          <Credentials
+            control={control}
+            errors={errors}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+            step={step}
+          />
         ) : step === 1 ? (
           <View style={authStyles.container}>
             <View style={{ marginVertical: "auto", gap: 10 }}>
-              <Text style={[styles.title, { color: theme[11] }]}>
-                Verifying...
+              <Text
+                style={[
+                  styles.title,
+                  {
+                    paddingTop: 10,
+                    fontFamily: "serifText800",
+                  },
+                  !breakpoints.md && { textAlign: "center" },
+                ]}
+              >
+                Verifying
               </Text>
-              <Text style={authStyles.subtitleContainer}>
+              <Text
+                style={[
+                  authStyles.subtitleContainer,
+                  !breakpoints.md && { textAlign: "center", opacity: 0.6 },
+                ]}
+                weight={800}
+              >
                 Are you a human!? Let's find out...
               </Text>
               <Turnstile setToken={setToken} />
@@ -430,7 +487,7 @@ export default function SignIn() {
             </View>
           </View>
         )}
-      </View>
+      </LinearGradient>
     </>
   );
 }

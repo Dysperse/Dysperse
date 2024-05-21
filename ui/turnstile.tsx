@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { Platform, View } from "react-native";
+import { Appearance, Platform, View } from "react-native";
 import { WebView } from "react-native-webview";
 
 const Turnstile = ({ setToken }) => {
@@ -28,12 +28,14 @@ const Turnstile = ({ setToken }) => {
       <head>
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=_turnstileCb" async defer></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="dark">
       </head>
       <body style="margin:0;display:flex;justify-content:start;overflow:hidden">
         <div id="myWidget"></div>
         <script>
           function _turnstileCb() {
             turnstile.render('#myWidget', {
+              theme: "${Appearance.getColorScheme()}",
               sitekey: '0x4AAAAAAABo1BKboDBdlv8r',
               callback: (token) => {
                 if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(token);
@@ -73,10 +75,21 @@ const Turnstile = ({ setToken }) => {
   } else {
     // For mobile, use WebView
     return (
-      <View style={{ height: 65, width: "100%" }}>
+      <View
+        style={{
+          borderRadius: 99,
+          width: 300,
+          height: 65,
+          overflow: "hidden",
+          borderWidth: 2,
+          borderColor: "#e0e0e0",
+          marginHorizontal: "auto",
+        }}
+      >
         <WebView
           originWhitelist={["*"]}
           scrollEnabled={false}
+          forceDarkOn
           onMessage={handleMessage}
           source={{
             baseUrl: "https://captcha.dysperse.com/",
