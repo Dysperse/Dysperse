@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 
 const Email = ({ form }) => {
   const { handleNext } = usePasswordContext();
-  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <>
@@ -60,10 +60,25 @@ const Email = ({ form }) => {
           marginBottom: 10,
         }}
       />
-      <Text weight={800} style={[styles.title, { color: theme[11] }]}>
+      <Text
+        style={[
+          styles.title,
+          {
+            paddingTop: 10,
+            fontFamily: "serifText800",
+          },
+          !breakpoints.md && { textAlign: "center" },
+        ]}
+      >
         Forgot password?
       </Text>
-      <Text style={[styles.subtitle, { color: theme[11] }]}>
+      <Text
+        style={[
+          authStyles.subtitleContainer,
+          !breakpoints.md && { textAlign: "center", opacity: 0.6 },
+        ]}
+        weight={800}
+      >
         Enter your email and we'll send you a link to reset your password.
       </Text>
       <Controller
@@ -73,7 +88,11 @@ const Email = ({ form }) => {
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <TextField
             variant="filled+outlined"
-            style={[styles.input, error && { borderColor: "red" }]}
+            style={[
+              styles.input,
+              error && { borderColor: "red" },
+              { marginTop: 10 },
+            ]}
             placeholder="Email or username"
             onChangeText={onChange}
             value={value || ""}

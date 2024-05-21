@@ -30,7 +30,9 @@ const Turnstile = ({ setToken }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="color-scheme" content="dark">
       </head>
-      <body style="margin:0;display:flex;justify-content:start;overflow:hidden">
+      <body style="margin:0;display:flex;justify-content:start;overflow:hidden;background-color: ${
+        Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0"
+      }">
         <div id="myWidget"></div>
         <script>
           function _turnstileCb() {
@@ -58,7 +60,8 @@ const Turnstile = ({ setToken }) => {
           height: 65,
           overflow: "hidden",
           borderWidth: 2,
-          borderColor: "#e0e0e0",
+          borderColor:
+            Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0",
         }}
       >
         <iframe
@@ -82,7 +85,8 @@ const Turnstile = ({ setToken }) => {
           height: 65,
           overflow: "hidden",
           borderWidth: 2,
-          borderColor: "#e0e0e0",
+          borderColor:
+            Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0",
           marginHorizontal: "auto",
         }}
       >
@@ -91,6 +95,10 @@ const Turnstile = ({ setToken }) => {
           scrollEnabled={false}
           forceDarkOn
           onMessage={handleMessage}
+          style={{
+            backgroundColor:
+              Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0",
+          }}
           source={{
             baseUrl: "https://captcha.dysperse.com/",
             html: htmlContent,

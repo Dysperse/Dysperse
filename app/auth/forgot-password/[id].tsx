@@ -83,7 +83,16 @@ export default function Page() {
         }}
       >
         <Emoji emoji="1f631" style={{ marginTop: "auto" }} size={64} />
-        <Text weight={700} style={[styles.title, { color: theme[11] }]}>
+        <Text
+          style={[
+            styles.title,
+            {
+              paddingTop: 10,
+              fontFamily: "serifText800",
+            },
+            !breakpoints.md && { textAlign: "center" },
+          ]}
+        >
           Forgot your password?
         </Text>
         <Text
