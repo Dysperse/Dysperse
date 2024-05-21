@@ -73,7 +73,7 @@ function Actions({ setIsLoading }) {
   const { session } = useSession();
   const { selection } = useSelectionContext();
   const breakpoints = useResponsiveBreakpoints();
-  const { clearSelection } = useSelectionContext();
+  const { setSelection } = useSelectionContext();
   const { isLoading } = useSelectionContext();
   const blue = useColor("blue");
 
@@ -113,14 +113,15 @@ function Actions({ setIsLoading }) {
           }
         );
         await mutate(() => true);
-        if (shouldClear) clearSelection();
+        if (shouldClear) setSelection([]);
       } catch (e) {
+        console.log(e);
         Toast.show({ type: "error" });
       } finally {
         setIsLoading(false);
       }
     },
-    [selection, clearSelection, session, setIsLoading]
+    [selection, setSelection, session, setIsLoading]
   );
 
   return (

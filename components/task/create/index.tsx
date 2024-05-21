@@ -30,8 +30,10 @@ import dayjs, { Dayjs } from "dayjs";
 import React, {
   RefObject,
   cloneElement,
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -1145,87 +1147,92 @@ function BottomSheetContent({ defaultValues, mutateList }) {
   );
 }
 
-export default function CreateTask({
-  children,
-  sheetRef,
-  defaultValues = {
-    date: dayjs().utc(),
-    agendaOrder: null,
-    collectionId: null,
-    storyPoints: 2,
-  },
-  mutate,
-}: {
-  children?: any;
-  sheetRef?: RefObject<BottomSheetModal>;
-  defaultValues?: {
-    date?: Dayjs;
-    agendaOrder?: string;
-    collectionId?: string;
-    label?: any;
-    storyPoints?: number;
-  };
-  mutate: (newTask) => void;
-}) {
-  const ref = useRef<BottomSheetModal>(null);
+const CreateTask = forwardRef(
+  (
+    {
+      children,
+      sheetRef,
+      defaultValues = {
+        date: dayjs().utc(),
+        agendaOrder: null,
+        collectionId: null,
+        storyPoints: 2,
+      },
+      mutate,
+    }: {
+      children?: any;
+      sheetRef?: RefObject<BottomSheetModal>;
+      defaultValues?: {
+        date?: Dayjs;
+        agendaOrder?: string;
+        collectionId?: string;
+        label?: any;
+        storyPoints?: number;
+      };
+      mutate: (newTask) => void;
+    },
+    forwardedRef
+  ) => {
+    const ref = useRef<BottomSheetModal>(null);
 
-  // callbacks
-  const handleOpen = useCallback(() => {
-    ref.current?.present();
-  }, []);
+    useImperativeHandle(forwardedRef, () => ref.current);
 
-  const handleClose = useCallback(() => {
-    ref.current?.close();
-    mutate?.(null);
-  }, [mutate]);
+    // callbacks
+    const handleOpen = useCallback(() => {
+      ref.current?.present();
+    }, [ref]);
 
-  const { isReached } = useStorageContext();
+    const handleClose = useCallback(() => {
+      ref.current?.close();
+      mutate?.(null);
+    }, [mutate]);
 
-  const trigger = useMemo(
-    () =>
-      cloneElement(children, {
-        onPress: handleOpen,
-        disabled: isReached,
-      }),
-    [handleOpen, children, isReached]
-  );
+    const { isReached } = useStorageContext();
 
-  const breakpoints = useResponsiveBreakpoints();
+    const trigger = cloneElement(children, {
+      onPress: handleOpen,
+      disabled: isReached,
+    });
 
-  return (
-    <>
-      {trigger}
-      <BottomSheet
-        onClose={handleClose}
-        sheetRef={sheetRef || ref}
-        snapPoints={["100%"]}
-        maxWidth="100%"
-        keyboardBehavior="interactive"
-        backgroundStyle={{ backgroundColor: "transparent" }}
-        handleComponent={null}
-        maxBackdropOpacity={0.1}
-        {...(breakpoints.md && {
-          animationConfigs: {
-            overshootClamping: true,
-            duration: 0.0001,
-          },
-        })}
-      >
-        <Pressable
-          onPress={() => (sheetRef || ref).current.forceClose()}
-          style={{
-            alignItems: "center",
-            flex: 1,
-            padding: breakpoints.md ? 10 : 20,
-            justifyContent: "center",
-          }}
+    const breakpoints = useResponsiveBreakpoints();
+
+    return (
+      <>
+        {trigger}
+        <BottomSheet
+          onClose={handleClose}
+          snapPoints={["100%"]}
+          maxWidth="100%"
+          maxBackdropOpacity={0.1}
+          backgroundStyle={{ backgroundColor: "transparent" }}
+          sheetRef={ref}
+          handleComponent={() => null}
+          keyboardBehavior="interactive"
+          {...(breakpoints.md && {
+            animationConfigs: {
+              overshootClamping: true,
+              duration: 0.0001,
+            },
+          })}
         >
-          <BottomSheetContent
-            defaultValues={defaultValues}
-            mutateList={mutate}
-          />
-        </Pressable>
-      </BottomSheet>
-    </>
-  );
-}
+          <Pressable
+            onPress={() => ref.current.forceClose()}
+            style={{
+              alignItems: "center",
+              flex: 1,
+              padding: breakpoints.md ? 10 : 20,
+              justifyContent: "center",
+            }}
+          >
+            <BottomSheetContent
+              defaultValues={defaultValues}
+              mutateList={mutate}
+            />
+          </Pressable>
+        </BottomSheet>
+      </>
+    );
+  }
+);
+
+export default CreateTask;

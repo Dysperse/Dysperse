@@ -26,5 +26,5 @@ export function sendApiRequest(
     keepalive: true,
   })
     .then((r) => r.json())
-    .catch((e) => console.log(e));
+    .catch((e) => console.error(e));
 }
