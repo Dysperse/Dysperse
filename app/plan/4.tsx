@@ -3,9 +3,9 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useEffect } from "react";
@@ -92,12 +92,12 @@ export default function Page() {
     >
       <Text
         style={{
-          fontSize: breakpoints.md ? 70 : 50,
+          fontSize: breakpoints.md ? 70 : 40,
           color: theme[11],
           marginTop: "auto",
           textAlign: "center",
         }}
-        weight={300}
+        weight={900}
       >
         You're all set!
       </Text>
@@ -105,7 +105,7 @@ export default function Page() {
         weight={500}
         style={{
           textAlign: "center",
-          fontSize: 20,
+          fontSize: breakpoints.md ? 20 : 17,
           opacity: 0.6,
           color: theme[11],
           marginBottom: 10,
