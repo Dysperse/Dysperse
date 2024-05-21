@@ -499,7 +499,7 @@ const Sidebar = ({
               shadowColor: theme[1],
               shadowRadius: 50,
               borderRadius: 0,
-              borderRightColor: theme[5],
+              // borderRightColor: theme[5],
               overflow: "hidden",
               borderColor: theme[5],
               width: SIDEBAR_WIDTH,

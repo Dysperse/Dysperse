@@ -36,6 +36,7 @@ import {
   AppState,
   Appearance,
   Platform,
+  StatusBar,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -49,8 +50,13 @@ SystemUI.setBackgroundColorAsync(
 );
 
 if (Platform.OS === "android") {
+  StatusBar.setBackgroundColor(
+    Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2
+  );
   NavigationBar.setPositionAsync("absolute");
-  NavigationBar.setBackgroundColorAsync("rgba(255,255,255,0.005)");
+  NavigationBar.setBackgroundColorAsync(
+    Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2
+  );
   NavigationBar.setBorderColorAsync("transparent");
 }
 
@@ -69,8 +75,7 @@ Sentry.init({
   ],
 });
 
-// SplashScreen.preventAutoHideAsync();
-SplashScreen.hideAsync();
+SplashScreen.preventAutoHideAsync();
 
 function ErrorBoundaryComponent() {
   const theme = useColor("mint");

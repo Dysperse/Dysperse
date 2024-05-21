@@ -12,14 +12,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "automatic",
-  // androidNavigationBar: { 
-  //   backgroundColor: "rgba(0, 0, 0, 0.05)",
-  //   barStyle: "dark-content",
-  // },
   splash: {
     image: "./assets/splash-screens/light.png",
     resizeMode: "cover",
-    backgroundColor: "#DDF9F2",
+    backgroundColor: "#effefa",
   },
   experiments: {
     tsconfigPaths: true,
@@ -59,9 +55,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     splash: {
       image: "./assets/splash-screens/light.png",
       resizeMode: "cover",
-      backgroundColor: "#DDF9F2",
+      backgroundColor: "#effefa",
     },
-    themeColor: "#DDF9F2",
+    themeColor: "#effefa",
     favicon: "./assets/favicon.png",
     bundler: "metro",
     backgroundColor: "#ffffff",

@@ -29,10 +29,11 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
 import * as NavigationBar from "expo-navigation-bar";
-import { Redirect, usePathname } from "expo-router";
+import { Redirect, SplashScreen, usePathname } from "expo-router";
 import { useEffect, useRef } from "react";
 import {
   Animated,
+  InteractionManager,
   Platform,
   Pressable,
   StatusBar,
@@ -81,9 +82,6 @@ export default function AppLayout() {
 
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
 
-  if (Platform.OS === "android")
-    NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
-
   useEffect(() => {
     if (Platform.OS === "web") {
       document
@@ -99,6 +97,16 @@ export default function AppLayout() {
       </ColorThemeProvider>
     );
   }
+
+  InteractionManager.runAfterInteractions(() => {
+    SplashScreen.hideAsync();
+    if (Platform.OS === "android") {
+      NavigationBar.setBackgroundColorAsync("rgba(255,255,255,0.005)");
+    }
+  });
+
+  if (Platform.OS === "android")
+    NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.05));
 
   if (!session) return <Redirect href="/auth" />;
 

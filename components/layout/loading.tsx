@@ -1,3 +1,4 @@
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { View } from "react-native";
@@ -16,6 +17,7 @@ export function SessionLoadingScreen() {
       }}
     >
       <Logo size={150} />
+      <Text>ni</Text>
     </View>
   );
 }
