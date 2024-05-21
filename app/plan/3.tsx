@@ -182,7 +182,7 @@ function CurrentTaskFooter({
               opacity: task.recurrenceRule ? 0.5 : 1,
             },
           ]}
-          disabled={task.recurrenceRule}
+          disabled={!!task.recurrenceRule}
         >
           <Avatar disabled icon="pan_tool" size={40} />
           <Text style={{ color: theme[11] }} weight={500} numberOfLines={1}>
@@ -279,49 +279,23 @@ function CurrentTaskFooter({
   );
 }
 
-function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
+const CurrentSlideIndicator = ({ slide, slidesLength }) => (
+  <Text
+    variant="eyebrow"
+    style={{ marginBottom: 10, marginTop: "auto", fontFamily: "mono" }}
+  >
+    {(slide + 1).toString().padStart(2, "0")}/
+    {slidesLength.toString().padStart(2, "0")}
+  </Text>
+);
+
+const CurrentTaskCard = ({
+  onTaskUpdate,
+  currentTask,
+  taskAnimationState,
+  dateRange,
+}) => {
   const theme = useColorTheme();
-  const t = useMemo(
-    () =>
-      Array.isArray(data)
-        ? data
-            .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
-            ?.tasks?.filter(
-              (i) =>
-                (i.due && dayjs(i.due).isSame(dayjs(), "day")) ||
-                i.recurrenceRule
-            )
-        : [],
-    [data]
-  );
-
-  const onTaskUpdate = (newTask) =>
-    mutate(
-      (oldData) => {
-        const day = oldData.find((d) =>
-          dayjs().isBetween(dayjs(d.start), dayjs(d.end))
-        );
-        return oldData.map((d) =>
-          d.id === day.id
-            ? {
-                ...d,
-                tasks: d.tasks
-                  .map((t) => (t.id === newTask.id ? newTask : t))
-                  .filter((t) => !t.trash),
-              }
-            : d
-        );
-      },
-      { revalidate: false }
-    );
-
-  const [slide, setSlide] = useState(0);
-  const slidesLength = t?.length || 0;
-
-  const currentTask = t?.[slide];
-  const taskAnimationState = useSharedValue<
-    "INTRO" | "IDLE" | "PINNED" | "NEXT" | "PREVIOUS"
-  >("IDLE");
 
   const taskAnimationStyle = useAnimatedStyle(() => {
     return {
@@ -384,132 +358,182 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
     };
   });
 
+  return (
+    <Animated.View style={taskAnimationStyle}>
+      <TaskDrawer
+        mutateList={onTaskUpdate}
+        id={currentTask.id}
+        dateRange={dateRange}
+      >
+        <Pressable
+          style={({ pressed, hovered }) => ({
+            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            shadowColor: theme[pressed ? 9 : hovered ? 8 : 7],
+            shadowOpacity: pressed ? 0.2 : 0.3,
+            borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
+            shadowOffset: { width: 5, height: 5 },
+            padding: 20,
+            shadowRadius: 20,
+            borderWidth: 1,
+            borderRadius: 20,
+            marginBottom: 20,
+            width: "100%",
+            overflow: "hidden",
+            position: "relative",
+          })}
+        >
+          {getTaskCompletionStatus(currentTask, dateRange) && (
+            <Icon
+              filled
+              style={{
+                position: "absolute",
+                top: 25,
+                right: 25,
+                zIndex: 999,
+              }}
+              size={40}
+            >
+              done_outline
+            </Icon>
+          )}
+          {currentTask.pinned && (
+            <Animated.View style={taskPinnedAnimation}>
+              <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                colors={[
+                  "transparent",
+                  addHslAlpha(theme[8], 0.4),
+                  "transparent",
+                ]}
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  transform: [{ skewX: "-15deg" }],
+                }}
+              />
+            </Animated.View>
+          )}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 10,
+              marginBottom: currentTask.pinned || currentTask.label ? 10 : 0,
+            }}
+          >
+            {currentTask.pinned && <TaskImportantChip published large />}
+            {currentTask.label && (
+              <TaskLabelChip large published task={currentTask} />
+            )}
+          </View>
+          <Text style={{ fontSize: 40 }} weight={700}>
+            {currentTask.name}
+          </Text>
+          <Chip
+            disabled
+            style={taskStyles.chip}
+            icon="calendar_today"
+            label={capitalizeFirstLetter(
+              currentTask.recurrenceRule
+                ? normalizeRecurrenceRuleObject(
+                    currentTask.recurrenceRule
+                  ).toText()
+                : dayjs(currentTask.due).fromNow()
+            )}
+          />
+          <Chip
+            disabled
+            style={taskStyles.chip}
+            icon="exercise"
+            label={`${
+              STORY_POINT_SCALE[
+                [2, 4, 8, 16, 32].indexOf(currentTask.storyPoints)
+              ]
+            }`}
+          />
+          {currentTask.attachments?.length > 0 && (
+            <Chip
+              disabled
+              style={taskStyles.chip}
+              icon="attachment"
+              label={`${currentTask.attachments?.length} attachment${
+                currentTask.attachments?.length > 1 ? "s" : ""
+              }`}
+            />
+          )}
+          {currentTask.note && (
+            <View style={{ marginTop: 10, gap: 5, pointerEvents: "none" }}>
+              <Text variant="eyebrow">Note</Text>
+              <MarkdownRenderer>{currentTask.note}</MarkdownRenderer>
+            </View>
+          )}
+        </Pressable>
+      </TaskDrawer>
+    </Animated.View>
+  );
+};
+
+function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
+  const theme = useColorTheme();
+  const t = useMemo(
+    () =>
+      Array.isArray(data)
+        ? data
+            .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
+            ?.tasks?.filter(
+              (i) =>
+                (i.due && dayjs(i.due).isSame(dayjs(), "day")) ||
+                i.recurrenceRule
+            )
+        : [],
+    [data]
+  );
+
+  const onTaskUpdate = (newTask) =>
+    mutate(
+      (oldData) => {
+        const day = oldData.find((d) =>
+          dayjs().isBetween(dayjs(d.start), dayjs(d.end))
+        );
+        return oldData.map((d) =>
+          d.id === day.id
+            ? {
+                ...d,
+                tasks: d.tasks
+                  .map((t) => (t.id === newTask.id ? newTask : t))
+                  .filter((t) => !t.trash),
+              }
+            : d
+        );
+      },
+      { revalidate: false }
+    );
+
+  const [slide, setSlide] = useState(0);
+  const slidesLength = t?.length || 0;
+
+  const currentTask = t?.[slide];
+  const taskAnimationState = useSharedValue<
+    "INTRO" | "IDLE" | "PINNED" | "NEXT" | "PREVIOUS"
+  >("IDLE");
+
   useEffect(() => {
-    if (t?.length === 0 || slide + 1 > slidesLength) {
-      setStage(2);
-    }
+    if (t?.length === 0 || slide + 1 > slidesLength) setStage(2);
   }, [t, setStage, slide, slidesLength]);
 
   return data ? (
     <View style={{ alignItems: "center", flex: 1 }}>
-      <Text variant="eyebrow" style={{ marginBottom: 10, marginTop: "auto" }}>
-        {slide + 1}/{slidesLength}
-      </Text>
+      <CurrentSlideIndicator slide={slide} slidesLength={slidesLength} />
       {currentTask && (
         <>
-          <Animated.View style={taskAnimationStyle}>
-            <TaskDrawer
-              mutateList={onTaskUpdate}
-              id={currentTask.id}
-              dateRange={dateRange}
-            >
-              <Pressable
-                style={({ pressed, hovered }) => ({
-                  padding: 20,
-                  backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                  shadowColor: theme[pressed ? 9 : hovered ? 8 : 7],
-                  shadowRadius: 20,
-                  shadowOpacity: pressed ? 0.2 : 0.3,
-                  shadowOffset: { width: 5, height: 5 },
-                  borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
-                  borderWidth: 1,
-                  borderRadius: 20,
-                  marginBottom: 20,
-                  width: "100%",
-                  overflow: "hidden",
-                  position: "relative",
-                })}
-              >
-                {getTaskCompletionStatus(currentTask, dateRange) && (
-                  <Icon
-                    filled
-                    style={{
-                      position: "absolute",
-                      top: 25,
-                      right: 25,
-                      zIndex: 999,
-                    }}
-                    size={40}
-                  >
-                    done_outline
-                  </Icon>
-                )}
-                {currentTask.pinned && (
-                  <Animated.View style={taskPinnedAnimation}>
-                    <LinearGradient
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      colors={[
-                        "transparent",
-                        addHslAlpha(theme[8], 0.4),
-                        "transparent",
-                      ]}
-                      style={{
-                        flex: 1,
-                        width: "100%",
-                        transform: [{ skewX: "-15deg" }],
-                      }}
-                    />
-                  </Animated.View>
-                )}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  {currentTask.pinned && <TaskImportantChip published large />}
-                  {currentTask.label && (
-                    <TaskLabelChip large published task={currentTask} />
-                  )}
-                </View>
-                <Text style={{ fontSize: 40 }} weight={700}>
-                  {currentTask.name}
-                </Text>
-                <Chip
-                  disabled
-                  style={taskStyles.chip}
-                  icon="calendar_today"
-                  label={capitalizeFirstLetter(
-                    currentTask.recurrenceRule
-                      ? normalizeRecurrenceRuleObject(
-                          currentTask.recurrenceRule
-                        ).toText()
-                      : dayjs(currentTask.due).fromNow()
-                  )}
-                />
-                <Chip
-                  disabled
-                  style={taskStyles.chip}
-                  icon="exercise"
-                  label={`${
-                    STORY_POINT_SCALE[
-                      [2, 4, 8, 16, 32].indexOf(currentTask.storyPoints)
-                    ]
-                  }`}
-                />
-                {currentTask.attachments?.length > 0 && (
-                  <Chip
-                    disabled
-                    style={taskStyles.chip}
-                    icon="attachment"
-                    label={`${currentTask.attachments?.length} attachment${
-                      currentTask.attachments?.length > 1 ? "s" : ""
-                    }`}
-                  />
-                )}
-                {currentTask.note && (
-                  <View
-                    style={{ marginTop: 10, gap: 5, pointerEvents: "none" }}
-                  >
-                    <Text variant="eyebrow">Note</Text>
-                    <MarkdownRenderer>{currentTask.note}</MarkdownRenderer>
-                  </View>
-                )}
-              </Pressable>
-            </TaskDrawer>
-          </Animated.View>
+          <CurrentTaskCard
+            dateRange={dateRange}
+            currentTask={currentTask}
+            onTaskUpdate={onTaskUpdate}
+            taskAnimationState={taskAnimationState}
+          />
           <CurrentTaskFooter
             taskAnimationState={taskAnimationState}
             dateRange={dateRange}
@@ -561,6 +585,7 @@ export default function Page() {
           maxWidth: 700,
           width: "100%",
           marginHorizontal: "auto",
+          height: "100%",
         }}
       >
         {error && <ErrorAlert />}
@@ -661,12 +686,7 @@ export default function Page() {
                     },
                   ]}
                 >
-                  <Icon
-                    size={30}
-                    style={{
-                      color: theme[10],
-                    }}
-                  >
+                  <Icon size={30} style={{ color: theme[10] }}>
                     add
                   </Icon>
                 </View>

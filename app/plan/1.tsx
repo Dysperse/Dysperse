@@ -3,10 +3,10 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
@@ -127,9 +127,7 @@ export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
 
   const { control, watch, handleSubmit } = useForm({
-    defaultValues: {
-      name: "",
-    },
+    defaultValues: { name: "" },
   });
 
   return (
