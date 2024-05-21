@@ -23,12 +23,8 @@ export function sendApiRequest(
         Host: process.env.EXPO_PUBLIC_API_URL,
       }),
     },
-    // redirect: "follow",
     keepalive: true,
   })
-    .then((r) => {
-      console.log(r);
-      return r.json();
-    })
+    .then((r) => r.json())
     .catch((e) => console.log(e));
 }
