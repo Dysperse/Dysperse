@@ -287,7 +287,7 @@ export default function Page() {
     <CollectionContext.Provider
       value={{ data, mutate, error, type, access: data?.access }}
     >
-      {!data ? (
+      {data ? (
         <ContentWrapper noPaddingTop>
           <CollectionNavbar
             editOrderMode={editOrderMode}
