@@ -307,7 +307,7 @@ function Page({ handleClose }) {
           width: "100%",
           flex: 1,
           borderColor: theme[5],
-          borderWidth: 1,
+          borderWidth: breakpoints.md ? 1 : 0,
           borderRadius: 25,
           overflow: "hidden",
           maxWidth: breakpoints.md ? 900 : width,
