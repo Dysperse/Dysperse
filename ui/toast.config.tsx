@@ -12,6 +12,9 @@ const toastStyles = (theme): StyleProp<ViewStyle> => ({
   maxWidth: 300,
   height: "auto",
   padding: 2,
+  shadowOffset: { height: 20, width: 0 },
+  shadowRadius: 50,
+  shadowOpacity: 0.2,
   backgroundColor: theme[4],
 });
 
