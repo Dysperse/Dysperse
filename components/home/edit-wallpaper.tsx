@@ -50,7 +50,7 @@ export function EditWallpaper() {
 
   return (
     <ScrollView
-      style={{ height: "100%" }}
+      style={{ height: "100%", marginHorizontal: "auto" }}
       contentContainerStyle={{
         justifyContent: "center",
         paddingBottom: 100,
