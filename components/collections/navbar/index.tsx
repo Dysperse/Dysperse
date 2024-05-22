@@ -38,11 +38,13 @@ export const styles = StyleSheet.create({
 });
 
 interface CollectionNavbarProps {
+  isLoading?: boolean;
   editOrderMode: boolean;
   setEditOrderMode: (value: boolean) => void;
 }
 
 export const CollectionNavbar = memo(function CollectionNavbar({
+  isLoading,
   editOrderMode,
   setEditOrderMode,
 }: CollectionNavbarProps) {
@@ -252,7 +254,18 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 minWidth: 0,
               }}
             >
-              {!isAll && <Emoji emoji={data.emoji} size={30} />}
+              {isLoading ? (
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 999,
+                    backgroundColor: theme[4],
+                  }}
+                />
+              ) : (
+                !isAll && <Emoji emoji={data.emoji} size={30} />
+              )}
               <View style={{ minWidth: 0, flexShrink: 1 }}>
                 <Text
                   numberOfLines={1}
@@ -261,13 +274,24 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 >
                   {type}
                 </Text>
-                <Text
-                  numberOfLines={1}
-                  style={{ color: theme[11] }}
-                  weight={900}
-                >
-                  {data.name || "All tasks"}
-                </Text>
+                {isLoading ? (
+                  <View
+                    style={{
+                      width: 60,
+                      height: 17,
+                      borderRadius: 999,
+                      backgroundColor: theme[4],
+                    }}
+                  />
+                ) : (
+                  <Text
+                    numberOfLines={1}
+                    style={{ color: theme[11] }}
+                    weight={900}
+                  >
+                    {data.name || "All tasks"}
+                  </Text>
+                )}
               </View>
               <Icon size={30} style={{ marginLeft: -5 }}>
                 expand_more
@@ -276,7 +300,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={options}
         />
-        {type === "planner" && breakpoints.md && <AgendaButtons />}
+        {!isLoading && type === "planner" && breakpoints.md && (
+          <AgendaButtons />
+        )}
         <View
           style={{
             width: breakpoints.md ? 220 : undefined,
@@ -287,16 +313,27 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         >
           <CollectionContext.Provider value={contextValue}>
             <CollectionSearch />
-            {!isReadOnly && (
-              <MenuPopover
-                {...(isReadOnly && { menuProps: { opened: false } })}
-                containerStyle={{ width: 230 }}
-                menuProps={{
-                  rendererProps: { placement: "bottom" },
+            {isLoading ? (
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 999,
+                  backgroundColor: theme[4],
                 }}
-                trigger={<IconButton icon="pending" size={40} />}
-                options={(isReadOnly ? [] : collectionMenuOptions) as any}
               />
+            ) : (
+              !isReadOnly && (
+                <MenuPopover
+                  {...(isReadOnly && { menuProps: { opened: false } })}
+                  containerStyle={{ width: 230 }}
+                  menuProps={{
+                    rendererProps: { placement: "bottom" },
+                  }}
+                  trigger={<IconButton icon="pending" size={40} />}
+                  options={(isReadOnly ? [] : collectionMenuOptions) as any}
+                />
+              )
             )}
             <CollectionShareMenu />
           </CollectionContext.Provider>

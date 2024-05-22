@@ -287,7 +287,7 @@ export default function Page() {
     <CollectionContext.Provider
       value={{ data, mutate, error, type, access: data?.access }}
     >
-      {data ? (
+      {!data ? (
         <ContentWrapper noPaddingTop>
           <CollectionNavbar
             editOrderMode={editOrderMode}
@@ -296,10 +296,17 @@ export default function Page() {
           {content}
         </ContentWrapper>
       ) : (
-        <ContentWrapper
-          style={{ alignItems: "center", justifyContent: "center" }}
-        >
-          {error ? <ErrorAlert /> : <Spinner />}
+        <ContentWrapper noPaddingTop>
+          <CollectionNavbar
+            isLoading
+            editOrderMode={editOrderMode}
+            setEditOrderMode={setEditOrderMode}
+          />
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            {error ? <ErrorAlert /> : <Spinner />}
+          </View>
         </ContentWrapper>
       )}
     </CollectionContext.Provider>
