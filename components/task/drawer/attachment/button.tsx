@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { Menu } from "@/ui/Menu";
@@ -34,14 +35,14 @@ export function TaskAttachmentButton({
   const _menuRef = useRef<BottomSheetModal>(null);
   const ref = menuRef || _menuRef;
   const theme = useColorTheme();
-
+  const breakpoints = useResponsiveBreakpoints();
   const [view, setView] = useState<TaskAttachmentType>(defaultView);
 
   return (
     <Menu
       menuRef={ref}
       drawerProps={{
-        enableContentPanningGesture: false,
+        enableContentPanningGesture: !breakpoints.md,
       }}
       height={[view === "Image" ? "60%" : view === "Link" ? 440 : 390]}
       onClose={() => {
