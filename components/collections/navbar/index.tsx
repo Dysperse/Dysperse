@@ -301,11 +301,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 minWidth: 0,
               }}
             >
-              <NavbarIcon
-                isAll={isAll}
-                emoji={data.emoji}
-                isLoading={isLoading}
-              />
+              {data?.emoji && (
+                <NavbarIcon
+                  isAll={isAll}
+                  emoji={data.emoji}
+                  isLoading={isLoading}
+                />
+              )}
               <View style={{ minWidth: 0, flexShrink: 1 }}>
                 <NavbarEyebrow name={type} />
                 {isLoading ? (
