@@ -100,8 +100,10 @@ export default function AppLayout() {
 
   InteractionManager.runAfterInteractions(() => {
     SplashScreen.hideAsync();
-    if (Platform.OS === "android")
+    if (Platform.OS === "android") {
+      NavigationBar.setPositionAsync("absolute");
       NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[2], 0.05));
+    }
   });
 
   if (!session) return <Redirect href="/auth" />;

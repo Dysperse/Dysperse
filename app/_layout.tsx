@@ -53,7 +53,6 @@ if (Platform.OS === "android") {
   StatusBar.setBackgroundColor(
     Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2
   );
-  NavigationBar.setPositionAsync("absolute");
   NavigationBar.setBackgroundColorAsync(
     Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2
   );
