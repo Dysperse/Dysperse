@@ -43,6 +43,64 @@ interface CollectionNavbarProps {
   setEditOrderMode: (value: boolean) => void;
 }
 
+const NavbarTitle = ({ name }) => {
+  const theme = useColorTheme();
+  return (
+    <Text numberOfLines={1} style={{ color: theme[11] }} weight={900}>
+      {name}
+    </Text>
+  );
+};
+
+const NavbarEyebrow = ({ name }) => {
+  return (
+    <Text numberOfLines={1} variant="eyebrow" style={{ fontSize: 11 }}>
+      {name}
+    </Text>
+  );
+};
+
+const NavbarIcon = ({ emoji, isLoading, isAll }) => {
+  const theme = useColorTheme();
+  return isLoading ? (
+    <View
+      style={{
+        width: 30,
+        height: 30,
+        borderRadius: 999,
+        backgroundColor: theme[4],
+      }}
+    />
+  ) : (
+    !isAll && <Emoji emoji={emoji} size={30} />
+  );
+};
+
+const NavbarGradient = ({ children }) => {
+  const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
+
+  return (
+    <LinearGradient
+      colors={[theme[breakpoints.md ? 1 : 2], theme[breakpoints.md ? 2 : 3]]}
+      style={{
+        backgroundColor: theme[3],
+        height: 60 + insets.top,
+        paddingTop: insets.top,
+        paddingHorizontal: 10,
+        flexDirection: "row",
+        borderBottomWidth: breakpoints.md ? 1 : 0,
+        borderBottomColor: theme[5],
+        alignItems: "center",
+        gap: 5,
+      }}
+    >
+      {children}
+    </LinearGradient>
+  );
+};
+
 export const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
   editOrderMode,
@@ -53,7 +111,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
   const { id } = useGlobalSearchParams();
-  const insets = useSafeAreaInsets();
 
   const isAll = id === "all";
   const contextValue = { data, type, ...ctx, access: null };
@@ -193,47 +250,35 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   );
 
   return editOrderMode ? (
-    <View
-      style={{
-        height: 60,
-        paddingHorizontal: 15,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: theme[6],
-      }}
-    >
-      <View>
-        <Text weight={900} variant="eyebrow">
-          Reorder labels
-        </Text>
-        <Text style={{ opacity: 0.6 }}>{data.name}</Text>
+    <NavbarGradient>
+      {menu}
+      <View
+        style={{
+          maxWidth: breakpoints.md ? 220 : "100%",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 13,
+          paddingLeft: 10,
+          minWidth: 0,
+        }}
+      >
+        <NavbarIcon isAll={isAll} emoji={data.emoji} isLoading={isLoading} />
+        <View>
+          <NavbarEyebrow name="Reorder labels" />
+          <NavbarTitle name={data.name} />
+        </View>
       </View>
       <IconButton
         icon="check"
         variant="filled"
-        size={55}
+        size={40}
         style={{ marginLeft: "auto" }}
         onPress={() => setEditOrderMode(false)}
       />
-    </View>
+    </NavbarGradient>
   ) : (
     <>
-      <LinearGradient
-        colors={[theme[breakpoints.md ? 1 : 2], theme[breakpoints.md ? 2 : 3]]}
-        style={{
-          backgroundColor: theme[3],
-          height: 60 + insets.top,
-          paddingTop: insets.top,
-          paddingHorizontal: 10,
-          flexDirection: "row",
-          borderBottomWidth: breakpoints.md ? 1 : 0,
-          borderBottomColor: theme[5],
-          alignItems: "center",
-          gap: 5,
-        }}
-      >
+      <NavbarGradient>
         {menu}
         <MenuPopover
           menuProps={{
@@ -256,26 +301,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 minWidth: 0,
               }}
             >
-              {isLoading ? (
-                <View
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 999,
-                    backgroundColor: theme[4],
-                  }}
-                />
-              ) : (
-                !isAll && <Emoji emoji={data.emoji} size={30} />
-              )}
+              <NavbarIcon
+                isAll={isAll}
+                emoji={data.emoji}
+                isLoading={isLoading}
+              />
               <View style={{ minWidth: 0, flexShrink: 1 }}>
-                <Text
-                  numberOfLines={1}
-                  variant="eyebrow"
-                  style={{ fontSize: 11 }}
-                >
-                  {type}
-                </Text>
+                <NavbarEyebrow name={type} />
                 {isLoading ? (
                   <View
                     style={{
@@ -286,13 +318,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                     }}
                   />
                 ) : (
-                  <Text
-                    numberOfLines={1}
-                    style={{ color: theme[11] }}
-                    weight={900}
-                  >
-                    {data.name || "All tasks"}
-                  </Text>
+                  <NavbarTitle name={data.name || "All tasks"} />
                 )}
               </View>
               <Icon size={30} style={{ marginLeft: -5 }}>
@@ -340,7 +366,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             <CollectionShareMenu />
           </CollectionContext.Provider>
         </View>
-      </LinearGradient>
+      </NavbarGradient>
       {type === "planner" && !breakpoints.md && <AgendaButtons />}
     </>
   );
