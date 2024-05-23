@@ -260,7 +260,7 @@ export default function Page() {
       content = <Perspectives />;
       break;
     case "kanban":
-      content = <Kanban />;
+      content = <Kanban editOrderMode={editOrderMode} />;
       break;
     case "stream":
       content = <Stream />;

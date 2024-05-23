@@ -100,8 +100,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       ),
     },
     !isAll &&
-      type === "grid" && {
-        icon: "grid_on",
+      (type === "grid" || type === "kanban") && {
+        icon: "swipe",
         text: "Reorder labels",
         callback: () => setEditOrderMode(true),
       },
@@ -195,7 +195,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   return editOrderMode ? (
     <View
       style={{
-        height: 80,
+        height: 60,
         paddingHorizontal: 15,
         flexDirection: "row",
         alignItems: "center",
@@ -205,7 +205,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       }}
     >
       <View>
-        <Text weight={900}>Reorder labels</Text>
+        <Text weight={900} variant="eyebrow">
+          Reorder labels
+        </Text>
         <Text style={{ opacity: 0.6 }}>{data.name}</Text>
       </View>
       <IconButton
