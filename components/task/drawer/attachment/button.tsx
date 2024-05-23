@@ -40,6 +40,9 @@ export function TaskAttachmentButton({
   return (
     <Menu
       menuRef={ref}
+      drawerProps={{
+        enableContentPanningGesture: false,
+      }}
       height={[view === "Image" ? "60%" : view === "Link" ? 440 : 390]}
       onClose={() => {
         onClose?.();

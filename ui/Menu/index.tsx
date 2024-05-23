@@ -1,6 +1,6 @@
 import BottomSheet from "@/ui/BottomSheet";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetModalProps } from "@gorhom/bottom-sheet";
 import React, {
   ReactElement,
   Ref,
@@ -37,6 +37,7 @@ export function Menu({
   width = 400,
   stackBehavior = "push",
   triggerProp = "onPress",
+  drawerProps = {},
 }: {
   trigger: ReactElement;
   children: React.ReactNode;
@@ -48,6 +49,7 @@ export function Menu({
   width?: number;
   stackBehavior?: "push" | "replace";
   triggerProp?: string;
+  drawerProps?: Partial<BottomSheetModalProps>;
 }) {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
@@ -73,6 +75,7 @@ export function Menu({
     <>
       {_trigger}
       <BottomSheet
+        {...drawerProps}
         sheetRef={ref}
         onClose={handleClose}
         maxWidth={width}
