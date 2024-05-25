@@ -19,12 +19,14 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR, { mutate } from "swr";
 
 function Header() {
   const theme = useColorTheme();
   const { sidebarRef } = useSidebarContext();
+  const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -50,6 +52,7 @@ function Header() {
             top: 0,
             left: 0,
             margin: 15,
+            marginTop: insets.top + 15,
           }}
         />
       )}
