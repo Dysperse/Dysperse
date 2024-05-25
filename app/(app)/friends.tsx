@@ -163,7 +163,7 @@ const Suggestions = ({ watch, setValue }) => {
               style={{ textAlign: "center", opacity: 0.4, color: theme[11] }}
               weight={900}
             >
-              {debouncedQuery.length < 2
+              {debouncedQuery.length > 2
                 ? "No users found"
                 : "Start typing to search for users"}
             </Text>
