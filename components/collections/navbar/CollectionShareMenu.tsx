@@ -364,9 +364,9 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
         >
           <View style={{ padding: 20, gap: 20, paddingTop: 10 }}>
             {[
-              { label: "Can view", value: "READ_ONLY" },
+              { label: "View only", value: "READ_ONLY" },
               { label: "Can edit", value: "EDITOR" },
-              { label: "Full access", value: "MODERATOR" },
+              // { label: "Full access", value: "MODERATOR" },
             ].map((button) => (
               <Button
                 variant="outlined"
