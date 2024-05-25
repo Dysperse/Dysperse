@@ -343,6 +343,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         >
           <CollectionContext.Provider value={contextValue}>
             <CollectionSearch />
+            {!breakpoints.md && <CollectionShareMenu />}
             {isLoading ? (
               <View
                 style={{
@@ -365,7 +366,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
                 />
               )
             )}
-            <CollectionShareMenu />
+            {breakpoints.md && <CollectionShareMenu />}
           </CollectionContext.Provider>
         </View>
       </NavbarGradient>
