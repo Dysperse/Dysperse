@@ -179,6 +179,7 @@ export default function AppLayout() {
           name="friends"
           options={{
             gestureEnabled: true,
+            cardOverlayEnabled: !breakpoints.md,
             ...TransitionPresets.SlideFromRightIOS,
             cardStyleInterpolator: forHorizontalIOS,
           }}

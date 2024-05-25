@@ -159,7 +159,11 @@ const Suggestions = ({ watch, setValue }) => {
               justifyContent: "center",
             }}
           >
-            <Emoji emoji="1F614" size={50} />
+            <Emoji
+              emoji={debouncedQuery.length > 2 ? "1F614" : "1f50d"}
+              size={50}
+              style={{ marginBottom: 10 }}
+            />
             <Text
               style={{ textAlign: "center", opacity: 0.4, color: theme[11] }}
               weight={900}
@@ -249,9 +253,12 @@ function AddFriend({ friends, mutate }) {
         <ButtonText>Add</ButtonText>
       </Button>
       <BottomSheet
+        maxBackdropOpacity={0.1}
+        animateOnMount={!breakpoints.md}
         enableContentPanningGesture={false}
         sheetRef={ref}
         snapPoints={["100%"]}
+        maxWidth="100%"
         handleComponent={() => null}
         backgroundComponent={() => null}
         onClose={handleClose}
@@ -264,6 +271,17 @@ function AddFriend({ friends, mutate }) {
             marginTop: "auto",
             marginBottom: breakpoints.md ? "auto" : 20,
             borderRadius: 25,
+            maxWidth: 500,
+            marginHorizontal: "auto",
+            width: "100%",
+
+            shadowColor: "rgba(0, 0, 0, 0.12)",
+            shadowOffset: {
+              width: 10,
+              height: 10,
+            },
+            shadowRadius: 20,
+            shadowOpacity: 1,
           }}
         >
           <IconButton
@@ -304,7 +322,7 @@ function AddFriend({ friends, mutate }) {
                   onBlur={onBlur}
                   value={value}
                   inputRef={(ref) => {
-                    setTimeout(() => ref?.focus(), 500);
+                    setTimeout(() => ref?.focus(), breakpoints.md ? 100 : 500);
                   }}
                   placeholder="Search by email or username..."
                   style={{
