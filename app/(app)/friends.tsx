@@ -206,6 +206,7 @@ function AddFriend({ friends, mutate }) {
   });
 
   const { session } = useSession();
+  const breakpoints = useResponsiveBreakpoints();
 
   const onSubmit = async (values) => {
     try {
@@ -260,7 +261,7 @@ function AddFriend({ friends, mutate }) {
             gap: 10,
             backgroundColor: theme[2],
             marginTop: "auto",
-            marginBottom: 20,
+            marginBottom: breakpoints.md ? "auto" : 20,
             borderRadius: 25,
           }}
         >
