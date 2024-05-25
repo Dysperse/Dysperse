@@ -25,6 +25,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { paletteItems } from "../layout/command-palette/list";
 import { createTab } from "../layout/openTab";
@@ -517,7 +518,7 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
         });
         sidebarRef.current.closeDrawer();
       } catch (e) {
-        alert("Something went wrong. Please try again later");
+        Toast.show({ type: "error" });
       } finally {
         setLoading(false);
       }

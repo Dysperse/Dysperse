@@ -216,6 +216,13 @@ function Tab({
       ]}
     >
       <Pressable
+        {...(Platform.OS === "web" && {
+          onAuxClick: (e) => {
+            if (e.button === 1) {
+              handleDelete(tab.id);
+            }
+          },
+        })}
         onLongPress={onLongPress}
         disabled={disabled}
         onMouseDown={handlePress}
