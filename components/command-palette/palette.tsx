@@ -516,7 +516,7 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
             ...tab.params,
           },
         });
-        sidebarRef.current.closeDrawer();
+        sidebarRef?.current?.closeDrawer?.();
       } catch (e) {
         Toast.show({ type: "error" });
       } finally {
