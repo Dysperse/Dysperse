@@ -254,7 +254,10 @@ function AddFriend({ friends, mutate }) {
       </Button>
       <BottomSheet
         maxBackdropOpacity={0.1}
-        animateOnMount={!breakpoints.md}
+        {...(breakpoints.md && {
+          animateOnMount: false,
+          animationConfigs: { duration: 0.0000001, overshootClamping: true },
+        })}
         enableContentPanningGesture={false}
         sheetRef={ref}
         snapPoints={["100%"]}
