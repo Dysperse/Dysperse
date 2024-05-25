@@ -159,6 +159,7 @@ const Suggestions = ({ watch, setValue }) => {
               justifyContent: "center",
             }}
           >
+            <Emoji emoji="1F614" size={50} />
             <Text
               style={{ textAlign: "center", opacity: 0.4, color: theme[11] }}
               weight={900}
