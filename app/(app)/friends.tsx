@@ -291,6 +291,14 @@ function AddFriend({ friends, mutate }) {
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
+                  onKeyPress={(e) => {
+                    if (e.nativeEvent.key === "Enter") {
+                      handleSubmit(onSubmit)();
+                    }
+                    if (e.nativeEvent.key === "Escape") {
+                      handleClose();
+                    }
+                  }}
                   bottomSheet
                   onChangeText={onChange}
                   onBlur={onBlur}
