@@ -30,7 +30,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
 import { ReactElement, memo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
+import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -65,8 +65,10 @@ export const LabelEditModal = memo(function LabelEditModal({
 
   const onSubmit = async (updatedLabel) => {
     try {
-      menuRef.current?.close();
-      onLabelUpdate(updatedLabel);
+      onLabelUpdate({ ...updatedLabel, id: label.id });
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => menuRef.current?.close(), 0);
+      });
       await sendApiRequest(
         session,
         "PUT",

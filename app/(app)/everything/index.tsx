@@ -140,8 +140,14 @@ export const LabelDetails = ({
               <LabelEditModal
                 label={data}
                 onLabelUpdate={(updatedLabel) =>
-                  mutateList((d) =>
-                    d.map((l) => (l.id === updatedLabel.id ? updatedLabel : l))
+                  mutateList(
+                    (d) =>
+                      d.map((l) =>
+                        l.id === updatedLabel.id ? { ...l, ...updatedLabel } : l
+                      ),
+                    {
+                      revalidate: false,
+                    }
                   )
                 }
                 trigger={
