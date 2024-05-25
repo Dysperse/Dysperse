@@ -24,14 +24,173 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, View } from "react-native";
+import { Keyboard, StyleSheet, View, useWindowDimensions } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { useDebounce } from "use-debounce";
 
 type FriendsPageView = "all" | "requests" | "pending" | "blocked";
+
+const IndeterminateProgressBar = () => {
+  const theme = useColorTheme();
+  const translateX = useSharedValue(0);
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    // Start the animation when the component mounts
+    translateX.value = withRepeat(
+      withTiming(1, { duration: 1000, easing: Easing.linear }),
+      -1,
+      false
+    );
+  }, [translateX]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: translateX.value * width - 300, // Adjust this value according to your requirements
+        },
+      ],
+    };
+  });
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.progressBar}>
+        <Animated.View style={[styles.indicator, animatedStyle]}>
+          <LinearGradient
+            colors={["transparent", theme[7], "transparent"]}
+            style={{ flex: 1 }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+          />
+        </Animated.View>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  progressBar: {
+    width: "100%",
+    height: 5,
+    overflow: "hidden",
+    borderRadius: 5,
+  },
+  indicator: {
+    width: "70%",
+    height: "100%",
+  },
+});
+
+const Suggestions = ({ watch, setValue }) => {
+  const theme = useColorTheme();
+  const { sessionToken } = useUser();
+  const query = watch("email");
+  const [debouncedQuery] = useDebounce(query, 500);
+
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setLoading] = useState(false);
+
+  const handleSearch = useCallback(() => {
+    if (!debouncedQuery || debouncedQuery.length < 2) return setData([]);
+    setLoading(true);
+    sendApiRequest(sessionToken, "GET", "user/profile", {
+      many: "true",
+      query: debouncedQuery,
+    }).then((d) => {
+      setData(d);
+      setLoading(false);
+    });
+  }, [debouncedQuery, setData, sessionToken]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
+
+  return (
+    <View
+      style={{
+        height: 400,
+        backgroundColor: theme[3],
+        borderRadius: 25,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {isLoading && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+          }}
+        >
+          <IndeterminateProgressBar />
+        </View>
+      )}
+      <FlashList
+        data={data}
+        estimatedItemSize={100}
+        centerContent={!data}
+        ListEmptyComponent={() => (
+          <View
+            style={{
+              height: 400,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{ textAlign: "center", opacity: 0.4, color: theme[11] }}
+              weight={900}
+            >
+              {debouncedQuery.length < 2
+                ? "No users found"
+                : "Start typing to search for users"}
+            </Text>
+          </View>
+        )}
+        renderItem={({ item }) => (
+          <ListItemButton
+            onPress={() => setValue("email", item.username || item.email)}
+          >
+            <ProfilePicture
+              style={{ pointerEvents: "none" }}
+              name={item.profile?.name || "--"}
+              image={item.profile?.picture}
+              size={40}
+            />
+            <ListItemText
+              primary={item?.profile?.name}
+              secondary={`${item?.username ? "@" : ""}${
+                item?.username || item?.email
+              }`}
+            />
+          </ListItemButton>
+        )}
+      />
+    </View>
+  );
+};
 
 function AddFriend({ friends, mutate }) {
   const theme = useColorTheme();
@@ -40,7 +199,7 @@ function AddFriend({ friends, mutate }) {
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.close(), []);
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
       email: "",
     },
@@ -87,8 +246,24 @@ function AddFriend({ friends, mutate }) {
         <Icon>person_add</Icon>
         <ButtonText>Add</ButtonText>
       </Button>
-      <BottomSheet sheetRef={ref} snapPoints={[280]} onClose={handleClose}>
-        <View style={{ padding: 20, paddingTop: 0, gap: 10 }}>
+      <BottomSheet
+        enableContentPanningGesture={false}
+        sheetRef={ref}
+        snapPoints={["100%"]}
+        handleComponent={() => null}
+        backgroundComponent={() => null}
+        onClose={handleClose}
+      >
+        <View
+          style={{
+            padding: 20,
+            gap: 10,
+            backgroundColor: theme[2],
+            marginTop: "auto",
+            marginBottom: 20,
+            borderRadius: 25,
+          }}
+        >
           <IconButton
             size={55}
             variant="outlined"
@@ -118,7 +293,10 @@ function AddFriend({ friends, mutate }) {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  placeholder="Email or username"
+                  inputRef={(ref) => {
+                    setTimeout(() => ref?.focus(), 500);
+                  }}
+                  placeholder="Search by email or username..."
                   style={{
                     flex: 1,
                     padding: 20,
@@ -129,6 +307,7 @@ function AddFriend({ friends, mutate }) {
               )}
             />
           </View>
+          <Suggestions setValue={setValue} watch={watch} />
           <Button
             isLoading={loading}
             style={{ height: 70 }}

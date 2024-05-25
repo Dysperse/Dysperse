@@ -91,6 +91,7 @@
     "swr": "^2.2.5",
     "timezones-list": "^3.0.3",
     "typescript": "~5.3.3",
+    "use-debounce": "^10.0.0",
     "workbox-window": "^7.1.0"
   },
   "devDependencies": {
