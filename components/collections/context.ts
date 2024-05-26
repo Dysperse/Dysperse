@@ -7,6 +7,7 @@ interface CollectionContext {
   mutate: KeyedMutator<any>;
   error: any;
   type: CollectionType;
+  isValidating: boolean;
   access: null | {
     id: string;
     hasSeen: boolean;

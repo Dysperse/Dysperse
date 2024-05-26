@@ -1,3 +1,4 @@
+import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import { ProfileModal } from "@/components/ProfileModal";
 import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
@@ -5,8 +6,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { ProfilePicture } from "@/ui/Avatar";
-import BottomSheet from "@/ui/BottomSheet";
+import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -21,84 +21,17 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, StyleSheet, View, useWindowDimensions } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
+import { Keyboard, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
 
-type FriendsPageView = "all" | "requests" | "pending" | "blocked";
-
-const IndeterminateProgressBar = () => {
-  const theme = useColorTheme();
-  const translateX = useSharedValue(0);
-  const { width } = useWindowDimensions();
-
-  useEffect(() => {
-    // Start the animation when the component mounts
-    translateX.value = withRepeat(
-      withTiming(1, { duration: 1000, easing: Easing.linear }),
-      -1,
-      false
-    );
-  }, [translateX]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: translateX.value * width - 300, // Adjust this value according to your requirements
-        },
-      ],
-    };
-  });
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.progressBar}>
-        <Animated.View style={[styles.indicator, animatedStyle]}>
-          <LinearGradient
-            colors={["transparent", theme[7], "transparent"]}
-            style={{ flex: 1 }}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          />
-        </Animated.View>
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  progressBar: {
-    width: "100%",
-    height: 5,
-    overflow: "hidden",
-    borderRadius: 5,
-  },
-  indicator: {
-    width: "70%",
-    height: "100%",
-  },
-});
+type FriendsPageView = "all" | "requests" | "pending" | "blocked" | "search";
 
 const Suggestions = ({ watch, setValue }) => {
   const theme = useColorTheme();
@@ -128,11 +61,13 @@ const Suggestions = ({ watch, setValue }) => {
   return (
     <View
       style={{
-        height: 400,
+        flex: 1,
         backgroundColor: theme[3],
         borderRadius: 25,
         position: "relative",
         overflow: "hidden",
+        borderWidth: 1,
+        borderColor: theme[5],
       }}
     >
       {isLoading && (
@@ -147,16 +82,19 @@ const Suggestions = ({ watch, setValue }) => {
           <IndeterminateProgressBar />
         </View>
       )}
+
       <FlashList
         data={data}
         estimatedItemSize={100}
-        centerContent={!data}
+        centerContent={!data || data?.length === 0}
+        contentContainerStyle={{ padding: 10 }}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <View
             style={{
-              height: 400,
               alignItems: "center",
               justifyContent: "center",
+              flex: 1,
             }}
           >
             <Emoji
@@ -190,6 +128,16 @@ const Suggestions = ({ watch, setValue }) => {
                 item?.username || item?.email
               }`}
             />
+            {query === item?.email && (
+              <Avatar
+                icon="check"
+                style={{
+                  backgroundColor: theme[11],
+                  borderRadius: 99,
+                }}
+                iconProps={{ style: { color: theme[2] } }}
+              />
+            )}
           </ListItemButton>
         )}
       />
@@ -197,12 +145,9 @@ const Suggestions = ({ watch, setValue }) => {
   );
 };
 
-function AddFriend({ friends, mutate }) {
+function AddFriend({ friends, mutate, setView }) {
   const theme = useColorTheme();
   const [loading, setLoading] = useState(false);
-  const ref = useRef<BottomSheetModal>(null);
-  const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
 
   const { control, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
@@ -243,116 +188,67 @@ function AddFriend({ friends, mutate }) {
   };
 
   return (
-    <>
-      <Button
-        variant="filled"
-        style={{ paddingHorizontal: 25 }}
-        onPress={handleOpen}
-      >
-        <Icon>person_add</Icon>
-        <ButtonText>Add</ButtonText>
-      </Button>
-      <BottomSheet
-        maxBackdropOpacity={0.1}
-        {...(breakpoints.md && {
-          animateOnMount: false,
-          animationConfigs: { duration: 0.0000001, overshootClamping: true },
-        })}
-        enableContentPanningGesture={false}
-        sheetRef={ref}
-        snapPoints={["100%"]}
-        maxWidth="100%"
-        handleComponent={() => null}
-        backgroundComponent={() => null}
-        onClose={handleClose}
-      >
-        <View
-          style={{
-            padding: 20,
-            gap: 10,
-            backgroundColor: theme[2],
-            marginTop: "auto",
-            marginBottom: breakpoints.md ? "auto" : 20,
-            borderRadius: 25,
-            maxWidth: 500,
-            marginHorizontal: "auto",
-            width: "100%",
+    <View style={{ gap: 20, flex: 1, padding: 20 }}>
+      {breakpoints.md && (
+        <Text style={{ fontSize: 30, marginTop: 20 }} weight={900}>
+          Add friends
+        </Text>
+      )}
+      <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+        <IconButton
+          onPress={() => setView("all")}
+          icon="arrow_back_ios_new"
+          style={{}}
+          variant="outlined"
+          size={55}
+        />
 
-            shadowColor: "rgba(0, 0, 0, 0.12)",
-            shadowOffset: {
-              width: 10,
-              height: 10,
-            },
-            shadowRadius: 20,
-            shadowOpacity: 1,
-          }}
-        >
-          <IconButton
-            size={55}
-            variant="outlined"
-            style={{ marginBottom: 10 }}
-            onPress={handleClose}
-          >
-            <Icon>close</Icon>
-          </IconButton>
-          <View
-            style={{
-              borderWidth: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              borderRadius: 20,
-              paddingLeft: 20,
-              borderColor: theme[5],
-            }}
-          >
-            <Icon>alternate_email</Icon>
-            <Controller
-              control={control}
-              name="email"
-              rules={{ required: true }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextField
-                  onKeyPress={(e) => {
-                    if (e.nativeEvent.key === "Enter") {
-                      handleSubmit(onSubmit)();
-                    }
-                    if (e.nativeEvent.key === "Escape") {
-                      handleClose();
-                    }
-                  }}
-                  bottomSheet
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  value={value}
-                  inputRef={(ref) => {
-                    setTimeout(() => ref?.focus(), breakpoints.md ? 100 : 500);
-                  }}
-                  placeholder="Search by email or username..."
-                  style={{
-                    flex: 1,
-                    padding: 20,
-                    fontSize: 20,
-                    shadowRadius: 0,
-                  }}
-                />
-              )}
+        <Controller
+          control={control}
+          name="email"
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              onKeyPress={(e) => {
+                if (e.nativeEvent.key === "Enter") {
+                  handleSubmit(onSubmit)();
+                }
+                if (e.nativeEvent.key === "Escape") {
+                  // handleClose();
+                }
+              }}
+              variant="filled+outlined"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              inputRef={(ref) => ref?.focus()}
+              placeholder="Find by email or username..."
+              style={{
+                flex: 1,
+                padding: 20,
+                height: 55,
+                borderRadius: 99,
+                paddingHorizontal: 30,
+                fontSize: 17,
+                shadowRadius: 0,
+              }}
             />
-          </View>
-          <Suggestions setValue={setValue} watch={watch} />
-          <Button
-            isLoading={loading}
-            style={{ height: 70 }}
-            variant="filled"
-            onPress={handleSubmit(onSubmit)}
-          >
-            <ButtonText weight={900} style={{ fontSize: 20 }}>
-              Send request
-            </ButtonText>
-            <Icon bold>send</Icon>
-          </Button>
-        </View>
-      </BottomSheet>
-    </>
+          )}
+        />
+      </View>
+      <Suggestions setValue={setValue} watch={watch} />
+      <Button
+        isLoading={loading}
+        style={{ height: 70 }}
+        variant="filled"
+        onPress={handleSubmit(onSubmit)}
+      >
+        <ButtonText weight={900} style={{ fontSize: 20 }}>
+          Send request
+        </ButtonText>
+        <Icon bold>send</Icon>
+      </Button>
+    </View>
   );
 }
 
@@ -511,7 +407,14 @@ export default function Page() {
         <Text weight={900} style={{ fontSize: 40 }}>
           Friends
         </Text>
-        <AddFriend friends={data} mutate={mutate} />
+        <Button
+          variant="filled"
+          style={{ paddingHorizontal: 25 }}
+          onPress={() => setView("search")}
+        >
+          <Icon>person_add</Icon>
+          <ButtonText>Add</ButtonText>
+        </Button>
       </View>
       <ButtonGroup
         containerStyle={{ backgroundColor: "transparent", borderRadius: 0 }}
@@ -548,13 +451,15 @@ export default function Page() {
 
   return (
     <ContentWrapper noPaddingTop>
-      <IconButton
-        onPress={handleBack}
-        icon="arrow_back_ios_new"
-        style={{ marginBottom: 20, margin: 20 }}
-        variant="outlined"
-        size={55}
-      />
+      {view !== "search" && (
+        <IconButton
+          onPress={handleBack}
+          icon="arrow_back_ios_new"
+          style={{ marginBottom: 20, margin: 20 }}
+          variant="outlined"
+          size={55}
+        />
+      )}
       <View
         style={{
           flex: 1,
@@ -565,111 +470,115 @@ export default function Page() {
           marginHorizontal: "auto",
         }}
       >
-        <FlashList
-          ListHeaderComponent={Header}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-          data={
-            data
-              ? data.filter((user) => {
-                  if (view === "all") return user.accepted === true;
-                  if (view === "requests")
-                    return (
-                      user.accepted === false &&
-                      user.followingId === session.user.id
-                    );
-                  if (view === "pending")
-                    return (
-                      user.accepted === false &&
-                      user.followerId === session.user.id
-                    );
-                  if (view === "blocked") return user.blocked;
-                })
-              : []
-          }
-          ListEmptyComponent={
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 200,
-              }}
-            >
-              {isLoading ? (
-                <Spinner />
-              ) : error ? (
-                <ErrorAlert />
-              ) : (
-                <View style={{ gap: 10, alignItems: "center" }}>
-                  <Emoji
-                    emoji={
-                      view === "all"
-                        ? "1f97a"
-                        : view === "blocked"
-                        ? "1f910"
-                        : view == "requests"
-                        ? "1f614"
-                        : "1fae3"
-                    }
-                    size={50}
-                  />
-                  <Text
-                    style={{ fontSize: 20, textAlign: "center" }}
-                    weight={700}
-                  >
-                    {view === "blocked"
-                      ? "You haven't blocked anybody"
-                      : view === "pending"
-                      ? "You haven't sent any friend requests"
-                      : view === "requests"
-                      ? "You don't have any requests"
-                      : "You don't have any friends"}
-                  </Text>
-                </View>
-              )}
-            </View>
-          }
-          renderItem={({ item }: any) => (
-            <ProfileModal email={item.user.email}>
-              <ListItemButton
+        {view === "search" ? (
+          <AddFriend setView={setView} friends={data} mutate={mutate} />
+        ) : (
+          <FlashList
+            ListHeaderComponent={Header}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            data={
+              data
+                ? data.filter((user) => {
+                    if (view === "all") return user.accepted === true;
+                    if (view === "requests")
+                      return (
+                        user.accepted === false &&
+                        user.followingId === session.user.id
+                      );
+                    if (view === "pending")
+                      return (
+                        user.accepted === false &&
+                        user.followerId === session.user.id
+                      );
+                    if (view === "blocked") return user.blocked;
+                  })
+                : []
+            }
+            ListEmptyComponent={
+              <View
                 style={{
-                  marginTop: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 200,
                 }}
               >
-                <ProfilePicture
-                  style={{ pointerEvents: "none" }}
-                  name={item.user.profile?.name || "--"}
-                  image={item.user.profile?.picture}
-                  size={40}
-                />
-                <ListItemText
-                  truncate
-                  primary={item.user.profile?.name}
-                  secondary={`Active ${dayjs(
-                    item.user.profile?.lastActive
-                  ).fromNow()}`}
-                />
-                {view === "pending" ? (
-                  <DeleteRequestButton mutate={mutate} id={item.user.id} />
-                ) : view === "requests" ? (
-                  <>
-                    {/* <BlockRequestButton mutate={mutate} id={item.user.id} /> */}
-                    <DeleteRequestButton
-                      reject
-                      mutate={mutate}
-                      id={item.user.id}
-                    />
-                    <AcceptRequestButton mutate={mutate} id={item.user.id} />
-                  </>
+                {isLoading ? (
+                  <Spinner />
+                ) : error ? (
+                  <ErrorAlert />
                 ) : (
-                  <>
-                    <FriendOptionsButton />
-                  </>
+                  <View style={{ gap: 10, alignItems: "center" }}>
+                    <Emoji
+                      emoji={
+                        view === "all"
+                          ? "1f97a"
+                          : view === "blocked"
+                          ? "1f910"
+                          : view == "requests"
+                          ? "1f614"
+                          : "1fae3"
+                      }
+                      size={50}
+                    />
+                    <Text
+                      style={{ fontSize: 20, textAlign: "center" }}
+                      weight={700}
+                    >
+                      {view === "blocked"
+                        ? "You haven't blocked anybody"
+                        : view === "pending"
+                        ? "You haven't sent any friend requests"
+                        : view === "requests"
+                        ? "You don't have any requests"
+                        : "You don't have any friends"}
+                    </Text>
+                  </View>
                 )}
-              </ListItemButton>
-            </ProfileModal>
-          )}
-          estimatedItemSize={100}
-        />
+              </View>
+            }
+            renderItem={({ item }: any) => (
+              <ProfileModal email={item.user.email}>
+                <ListItemButton
+                  style={{
+                    marginTop: 10,
+                  }}
+                >
+                  <ProfilePicture
+                    style={{ pointerEvents: "none" }}
+                    name={item.user.profile?.name || "--"}
+                    image={item.user.profile?.picture}
+                    size={40}
+                  />
+                  <ListItemText
+                    truncate
+                    primary={item.user.profile?.name}
+                    secondary={`Active ${dayjs(
+                      item.user.profile?.lastActive
+                    ).fromNow()}`}
+                  />
+                  {view === "pending" ? (
+                    <DeleteRequestButton mutate={mutate} id={item.user.id} />
+                  ) : view === "requests" ? (
+                    <>
+                      {/* <BlockRequestButton mutate={mutate} id={item.user.id} /> */}
+                      <DeleteRequestButton
+                        reject
+                        mutate={mutate}
+                        id={item.user.id}
+                      />
+                      <AcceptRequestButton mutate={mutate} id={item.user.id} />
+                    </>
+                  ) : (
+                    <>
+                      <FriendOptionsButton />
+                    </>
+                  )}
+                </ListItemButton>
+              </ProfileModal>
+            )}
+            estimatedItemSize={100}
+          />
+        )}
       </View>
     </ContentWrapper>
   );

@@ -280,7 +280,7 @@ function Page({ handleClose }) {
   };
 
   const { id }: any = useLocalSearchParams();
-  const { data, mutate, error } = useSWR(
+  const { data, mutate, error, isValidating } = useSWR(
     id
       ? [
           "space/collections/collection",
@@ -295,6 +295,7 @@ function Page({ handleClose }) {
     mutate,
     error,
     access: data?.access,
+    isValidating,
   };
 
   return (

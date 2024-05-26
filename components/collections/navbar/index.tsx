@@ -1,3 +1,4 @@
+import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import { collectionViews } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
@@ -107,13 +108,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   setEditOrderMode,
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
-  const { data, access, type, ...ctx } = useCollectionContext();
+  const { data, access, type, isValidating, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
   const { id } = useGlobalSearchParams();
 
   const isAll = id === "all";
-  const contextValue = { data, type, ...ctx, access: null };
+  const contextValue = { data, type, ...ctx, access: null, isValidating };
 
   const options = Object.keys(collectionViews).map((i) => ({
     icon: collectionViews[i],
@@ -121,6 +122,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     selected: i.toLowerCase() === type,
     callback: () => router.setParams({ type: i.toLowerCase() }),
   }));
+
   const { session } = useSession();
 
   const toggleShowCompleted = async () => {
@@ -370,6 +372,11 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           </CollectionContext.Provider>
         </View>
       </NavbarGradient>
+      {isValidating && (
+        <View style={{ marginBottom: -3, zIndex: 999 }}>
+          <IndeterminateProgressBar height={3} />
+        </View>
+      )}
       {type === "planner" && !breakpoints.md && <AgendaButtons />}
     </>
   );

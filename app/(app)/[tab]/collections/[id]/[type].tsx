@@ -225,7 +225,7 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
 
 export default function Page() {
   const { id, type }: any = useLocalSearchParams();
-  const { data, mutate, error } = useSWR(
+  const { data, mutate, error, isValidating } = useSWR(
     id && type
       ? [
           "space/collections/collection",
@@ -287,7 +287,7 @@ export default function Page() {
 
   return (
     <CollectionContext.Provider
-      value={{ data, mutate, error, type, access: data?.access }}
+      value={{ data, mutate, error, type, access: data?.access, isValidating }}
     >
       {data ? (
         <ContentWrapper noPaddingTop>
