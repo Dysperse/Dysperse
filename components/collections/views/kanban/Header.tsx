@@ -88,7 +88,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         <Text style={{ fontSize: 20 }} weight={800} numberOfLines={1}>
           {label.name || "Other"}
         </Text>
-        <Text weight={200} numberOfLines={1}>
+        <Text weight={300} numberOfLines={1}>
           {grid
             ? label.entitiesLength === 0
               ? ""
