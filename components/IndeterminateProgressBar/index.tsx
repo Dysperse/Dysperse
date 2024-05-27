@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    height: 10,
+    height: 5,
   },
   progressBar: {
     width: "100%",
