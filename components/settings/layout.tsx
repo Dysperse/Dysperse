@@ -325,9 +325,9 @@ function SettingsSidebar() {
                 >
                   <Icon
                     filled={
-                      pathname === button.href ||
-                      (pathname.includes("integrations") &&
-                        button.href?.includes("integrations"))
+                      breakpoints.md && (pathname === button.href ||
+                    (pathname.includes("integrations") &&
+                      button.href?.includes("integrations")))
                     }
                     style={{ color: theme[11] }}
                     size={!breakpoints.md ? 30 : 24}
