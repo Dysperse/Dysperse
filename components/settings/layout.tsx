@@ -299,9 +299,9 @@ function SettingsSidebar() {
               >
                 <ListItemButton
                   variant={
-                    pathname === button.href ||
+                    breakpoints.md && (pathname === button.href ||
                     (pathname.includes("integrations") &&
-                      button.href?.includes("integrations"))
+                      button.href?.includes("integrations")))
                       ? "filled"
                       : "default"
                   }
