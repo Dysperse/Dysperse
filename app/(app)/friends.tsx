@@ -126,7 +126,7 @@ const Suggestions = ({ watch, setValue }) => {
               primary={item?.profile?.name}
               secondary={`${item?.username ? "@" : ""}${
                 item?.username || item?.email
-              } • Active ${dayjs(item.profile.lastActive).fromNow()}`}
+              } • Active ${dayjs(item?.profile?.lastActive).fromNow()}`}
             />
             {query === item?.email && (
               <Avatar
