@@ -143,7 +143,6 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const handleRefresh = async (e) => {
     e.preventDefault();
     await ctx.mutate();
-    Toast.show({ type: "success", text1: "Collection up to date!" });
   };
   useHotkeys(["ctrl+r"], handleRefresh);
 
@@ -203,7 +202,10 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     {
       icon: "sync",
       text: "Refresh",
-      callback: handleRefresh,
+      callback: async (e) => {
+        await handleRefresh(e);
+        Toast.show({ type: "success", text1: "Collection up to date!" });
+      },
     },
     {
       icon: "fluorescent",
