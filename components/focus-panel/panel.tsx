@@ -321,6 +321,41 @@ function RenderWidget({ widget, index }) {
   const { sessionToken } = useUser();
   const { data, mutate, error } = useSWR(["user/focus-panel"], null);
 
+  const setParam = async (key, value) => {
+    mutate(
+      (oldData) =>
+        oldData.map((oldWidget) =>
+          oldWidget.id === widget.id
+            ? {
+                ...widget,
+                params: {
+                  ...widget.params,
+                  [key]: value,
+                },
+              }
+            : oldWidget
+        ),
+      {
+        revalidate: false,
+      }
+    );
+    await sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/focus-panel",
+      {},
+      {
+        body: JSON.stringify({
+          id: widget.id,
+          params: {
+            ...widget.params,
+            [key]: value,
+          },
+        }),
+      }
+    );
+  };
+
   const handleWidgetEdit = async (key, value) => {
     try {
       mutate(
@@ -404,7 +439,14 @@ function RenderWidget({ widget, index }) {
     case "quotes":
       return <Quotes menuActions={menuActions} widget={widget} key={index} />;
     case "clock":
-      return <Clock menuActions={menuActions} widget={widget} key={index} />;
+      return (
+        <Clock
+          setParam={setParam}
+          menuActions={menuActions}
+          widget={widget}
+          key={index}
+        />
+      );
     case "weather":
       return (
         <WeatherWidget menuActions={menuActions} widget={widget} key={index} />

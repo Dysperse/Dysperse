@@ -1,6 +1,8 @@
 import { hslToHex } from "@/app/(app)";
+import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -25,78 +27,179 @@ import timezones from "timezones-list";
 import { widgetMenuStyles } from "../widgetMenuStyles";
 import { widgetStyles } from "../widgetStyles";
 
-const TimeZone = () => {
+const TimeZone = ({
+  timeZone,
+  setParam,
+  params,
+}: {
+  timeZone?: string;
+  setParam?: any;
+  params?: any;
+}) => {
   const theme = useColor("orange");
-  const [time, setTime] = useState(dayjs());
+  const [time, setTime] = useState(dayjs().tz(timeZone));
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(dayjs());
+      setTime(dayjs().tz(timeZone));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <>
-      <View
-        style={{
-          position: "relative",
-          height: 32,
-          width: 195,
-          marginTop: -10,
+    <View
+      style={{
+        padding: timeZone ? 10 : 0,
+        width: timeZone ? "33.3333%" : undefined,
+      }}
+    >
+      <ConfirmationModal
+        height={400}
+        disabled={!timeZone}
+        title="Remove timezone?"
+        secondary="You can always add it back later"
+        onSuccess={() => {
+          if (!timeZone) return;
+          setParam(
+            "timeZones",
+            params.timeZones
+              ? params.timeZones.filter((t) => t !== timeZone)
+              : []
+          );
         }}
       >
-        <Text
-          weight={800}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            fontSize: 30,
-            fontFamily: "mono",
-            color: theme[11],
-          }}
-          numberOfLines={1}
+        <Pressable
+          style={({ pressed, hovered }) => ({
+            width: "100%",
+            aspectRatio: timeZone ? "1/1" : undefined,
+            flexDirection: "row",
+            alignItems: "center",
+            ...(timeZone && {
+              backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+              borderRadius: 20,
+            }),
+          })}
+          {...(timeZone && {})}
         >
-          {time.format("hh:mm A")}
-        </Text>
-        <Text
-          weight={800}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            fontSize: 30,
-            fontFamily: "mono",
-            color: theme[10],
-            opacity: 0.2,
-          }}
-          numberOfLines={1}
-        >
-          00:00 AM
-        </Text>
-      </View>
+          <View style={{ flex: 1 }}>
+            <View
+              style={
+                timeZone
+                  ? undefined
+                  : {
+                      position: "relative",
+                      height: 40,
+                      width: 170,
+                      marginHorizontal: "auto",
+                    }
+              }
+            >
+              <Text
+                weight={timeZone ? 900 : 800}
+                style={
+                  timeZone
+                    ? {
+                        color: theme[11],
+                        fontSize: 17,
+                        width: "100%",
+                        textAlign: "center",
+                      }
+                    : {
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        fontSize: 35,
+                        fontFamily: "mono",
+                        color: theme[11],
+                      }
+                }
+                numberOfLines={timeZone ? undefined : 1}
+              >
+                {time.format(timeZone ? "hh:mm" : "hh:mm A")}
+              </Text>
+              {timeZone && (
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: theme[11],
+                    opacity: 0.7,
+                  }}
+                  weight={600}
+                >
+                  {time.format("A")}
+                </Text>
+              )}
+              {!timeZone && (
+                <Text
+                  weight={800}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    fontSize: 35,
+                    fontFamily: "mono",
+                    textAlign: "center",
+                    color: theme[10],
+                    opacity: 0.2,
+                  }}
+                  numberOfLines={1}
+                >
+                  00:00 AM
+                </Text>
+              )}
+            </View>
+          </View>
+        </Pressable>
+      </ConfirmationModal>
       <Text
-        style={{
-          marginTop: 5,
-          opacity: 0.7,
-          color: theme[11],
-        }}
+        style={
+          timeZone
+            ? {
+                color: theme[11],
+                textAlign: "center",
+                fontSize: 12,
+                marginTop: 3,
+              }
+            : {
+                fontSize: 20,
+                color: theme[11],
+                opacity: 0.6,
+                textAlign: "center",
+                marginTop: 5,
+              }
+        }
+        weight={timeZone ? 500 : 500}
         numberOfLines={1}
       >
-        {time.format("dddd, MMMM D")}
+        {timeZone ? `${timeZone.split("/")[1]}` : "Local time"}
       </Text>
-    </>
+    </View>
   );
 };
 
-function Time() {
+function Time({ setParam, params }) {
   const theme = useColor("orange");
-  console.log(timezones);
 
   return (
-    <>
+    <View style={{ gap: 10 }}>
       <TimeZone />
-    </>
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          marginHorizontal: -10,
+        }}
+      >
+        {params.timeZones?.map?.((timeZone) => (
+          <TimeZone
+            setParam={setParam}
+            params={params}
+            timeZone={timeZone}
+            key={timeZone}
+          />
+        ))}
+      </View>
+    </View>
   );
 }
 
@@ -485,7 +588,8 @@ type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
 
 type timezone = (typeof timezones)[0];
 
-function TimeZoneModal({ timeZoneModalRef }) {
+function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
+  const theme = useColorTheme();
   const [query, setQuery] = useState("");
   const filtered = timezones.filter(
     (tz) =>
@@ -527,7 +631,14 @@ function TimeZoneModal({ timeZoneModalRef }) {
         renderItem={({ item }: { item: timezone }) => (
           <ListItemButton
             onPress={() => {
-              Toast.show({ type: "info", text1: "Coming soon!" });
+              setParam(
+                "timeZones",
+                params.timeZones
+                  ? params.timeZones.find((d) => d === item.tzCode)
+                    ? params.timeZones.filter((t) => t !== item.tzCode)
+                    : [...params.timeZones, item.tzCode]
+                  : [item.tzCode]
+              );
             }}
           >
             <ListItemText
@@ -539,6 +650,13 @@ function TimeZoneModal({ timeZoneModalRef }) {
                 " UTC"
               }
             />
+            {params.timeZones?.find((t) => t === item.tzCode) && (
+              <Avatar
+                iconProps={{ style: { color: theme[1] } }}
+                icon="check"
+                style={{ backgroundColor: theme[10] }}
+              />
+            )}
           </ListItemButton>
         )}
       />
@@ -546,12 +664,28 @@ function TimeZoneModal({ timeZoneModalRef }) {
         style={{
           paddingHorizontal: 20,
           paddingBottom: 20,
+          gap: 10,
+          flexDirection: "row",
         }}
       >
+        {params.timeZones?.length > 0 && (
+          <Button
+            variant="outlined"
+            onPress={() => {
+              setParam("timeZones", []);
+            }}
+            style={{ height: 60, flex: 1 }}
+          >
+            <ButtonText weight={900} style={{ fontSize: 20 }}>
+              Reset
+            </ButtonText>
+            <Icon>refresh</Icon>
+          </Button>
+        )}
         <Button
           variant="filled"
           onPress={() => timeZoneModalRef.current?.dismiss?.()}
-          style={{ height: 60 }}
+          style={{ height: 60, flex: 1 }}
         >
           <ButtonText weight={900} style={{ fontSize: 20 }}>
             Done
@@ -563,7 +697,7 @@ function TimeZoneModal({ timeZoneModalRef }) {
   );
 }
 
-export function Clock({ widget, menuActions }) {
+export function Clock({ widget, menuActions, setParam }) {
   const theme = useColor("orange");
   const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");
@@ -618,13 +752,19 @@ export function Clock({ widget, menuActions }) {
         ]}
       >
         <ColorThemeProvider theme={theme}>
-          {view === "Clock" && <Time />}
+          {view === "Clock" && (
+            <Time setParam={setParam} params={widget.params} />
+          )}
           {view === "Stopwatch" && <Stopwatch />}
           {view === "Timer" && <Timer />}
           {view === "Pomodoro" && <Timer pomodoro />}
         </ColorThemeProvider>
         {view === "Clock" && (
-          <TimeZoneModal timeZoneModalRef={timeZoneModalRef} />
+          <TimeZoneModal
+            params={widget.params}
+            setParam={setParam}
+            timeZoneModalRef={timeZoneModalRef}
+          />
         )}
       </View>
     </View>
