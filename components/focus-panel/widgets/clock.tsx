@@ -437,6 +437,237 @@ const Timer = () => {
   );
 };
 
+function Pomodoro() {
+  const theme = useColor("orange");
+  const [duration, setDuration] = useState(25);
+  const [paused, setPaused] = useState(true);
+  const [time, setTime] = useState(0);
+  const [restartKey, setRestartKey] = useState(0);
+  const [restartInputKey, setRestartInputKey] = useState(0);
+  const editRef = useRef<TextInput>(null);
+
+  const toHex = (hsl: string): any =>
+    ("#" +
+      hslToHex(
+        ...(hsl
+          .replace("hsl", "")
+          .replace("(", "")
+          .replace(")", "")
+          .replaceAll("%", "")
+          .split(",")
+          .map(Number) as [number, number, number])
+      )) as `#${string}`;
+
+  const [sound, setSound] = useState<any>(null);
+
+  const playSound = async () => {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync(
+      require("@/assets/alarm.mp3")
+    );
+    setSound(sound);
+
+    console.log("Playing Sound");
+    await sound.playAsync();
+  };
+
+  const stopSound = async () => {
+    await sound?.stopAsync();
+  };
+
+  const isCompleted = time === 0;
+  const hasNotStarted = (paused && time !== duration * 60) || time === 0;
+
+  return (
+    <>
+      <View
+        style={[
+          {
+            alignItems: "center",
+            aspectRatio: "1/1",
+            borderRadius: 99,
+            width: 200,
+            height: 200,
+            marginHorizontal: "auto",
+            marginTop: -10,
+            justifyContent: "center",
+          },
+          isCompleted && {
+            backgroundColor: theme[9],
+          },
+        ]}
+      >
+        <CountdownCircleTimer
+          isPlaying={!paused}
+          duration={60 * duration}
+          strokeWidth={3}
+          onUpdate={(t) => {
+            setTime(t);
+          }}
+          key={`${duration}-${restartKey}`}
+          rotation="counterclockwise"
+          colors={[toHex(theme[isCompleted ? 10 : 11])] as any}
+          trailColor={toHex(theme[isCompleted ? 12 : 5])}
+          onComplete={() => {
+            playSound();
+          }}
+        >
+          {({ remainingTime }) => (
+            <View style={{ position: "relative" }}>
+              <Pressable
+                disabled={!paused}
+                style={({ hovered }) => ({
+                  backgroundColor: theme[isCompleted ? 9 : hovered ? 6 : 3],
+                  borderRadius: 10,
+                })}
+              >
+                <TextField
+                  inputRef={editRef}
+                  onBlur={(e) => {
+                    const input = e.nativeEvent.text;
+                    // Match it with hh:mm format. Make sure the minutes are less than 60
+                    const match = input.match(/^([0-5]?[0-9]):([0-5]?[0-9])$/);
+                    if (!match || input === "00:00") {
+                      setTime(remainingTime);
+                      setRestartInputKey((key) => key + 1);
+                      return;
+                    }
+                    if (
+                      match &&
+                      // if it isn't the same as the current time
+                      Number(match[1]) * 60 + Number(match[2]) !== remainingTime
+                    ) {
+                      setTime(
+                        Number(match[1]) * 60 + Number(match[2]) > 0
+                          ? Number(match[1]) * 60 + Number(match[2])
+                          : 1
+                      );
+                      setDuration(Number(match[1]) + Number(match[2]) / 60);
+                      setPaused(false);
+
+                      Toast.show({
+                        type: "success",
+                        text1: "Timer set successfully!",
+                      });
+                    }
+                  }}
+                  key={remainingTime + restartInputKey + restartKey}
+                  defaultValue={
+                    Math.floor(remainingTime / 60)
+                      .toString()
+                      .padStart(2, "0") +
+                    ":" +
+                    (remainingTime % 60).toString().padStart(2, "0")
+                  }
+                  editable={paused}
+                  style={[
+                    {
+                      color: theme[isCompleted ? 12 : 11],
+                      fontSize: 40,
+                      fontFamily: "mono",
+                      textAlign: "center",
+                      width: 130,
+                      borderRadius: 10,
+                    },
+                    !paused && {
+                      pointerEvents: "none",
+                    },
+                  ]}
+                />
+              </Pressable>
+            </View>
+          )}
+        </CountdownCircleTimer>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: 10,
+          marginTop: 10,
+          marginBottom: 10,
+        }}
+      >
+        {hasNotStarted && (
+          <Button
+            dense
+            onPress={() => {
+              stopSound();
+              setPaused(true);
+              setDuration(duration);
+              setRestartKey((key) => key + 1);
+              setTime(duration);
+            }}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
+          >
+            <Icon size={18}>replay</Icon>
+          </Button>
+        )}
+        {time !== 0 && (
+          <Button
+            dense
+            onPress={() => setPaused(!paused)}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
+          >
+            <Icon size={29}>{paused ? "play_arrow" : "pause"}</Icon>
+          </Button>
+        )}
+        {(time === duration * 60 || paused) && time !== 0 && (
+          <Button
+            dense
+            onPress={() => editRef?.current?.focus()}
+            style={({ pressed, hovered }) => ({
+              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+            })}
+          >
+            <Icon size={22}>edit</Icon>
+          </Button>
+        )}
+      </View>
+      <Collapsible collapsed={time !== duration * 60}>
+        {[
+          { m: 25, text: "Pomodoro" },
+          { m: 5, text: "Short Break" },
+          { m: 15, text: "Long Break" },
+        ].map((time) => (
+          <Button
+            key={time.m}
+            onPress={() => {
+              setDuration(time.m);
+              setPaused(false);
+              setRestartKey((key) => key + 1);
+            }}
+            style={({ pressed, hovered }) => ({
+              borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: 5,
+              paddingHorizontal: 20,
+            })}
+          >
+            <Text
+              style={{ textAlign: "center", color: theme[11] }}
+              weight={700}
+            >
+              {time.text}
+            </Text>
+            <Text
+              style={{ textAlign: "center", color: theme[11], opacity: 0.6 }}
+            >
+              {time.m} min
+            </Text>
+          </Button>
+        ))}
+      </Collapsible>
+    </>
+  );
+}
+
 type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
 
 type timezone = (typeof timezones)[0];
@@ -577,6 +808,7 @@ export function Clock({ widget, menuActions }) {
           {view === "Clock" && <Time />}
           {view === "Stopwatch" && <Stopwatch />}
           {view === "Timer" && <Timer />}
+          {view === "Pomodoro" && <Pomodoro />}
         </ColorThemeProvider>
         {view === "Clock" && (
           <TimeZoneModal timeZoneModalRef={timeZoneModalRef} />
