@@ -29,7 +29,7 @@ export function List() {
     mutate(
       (oldData) => {
         const newLabels = oldData.labels.map((label: any) => {
-          if (label.id === newTask.labelId) {
+          if (label.id === newTask?.labelId) {
             return {
               ...label,
               entities: label.entities.map((task: any) => {
