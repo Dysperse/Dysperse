@@ -193,35 +193,44 @@ function ColumnMenu({ column, children, onTaskUpdate, columnMenuRef }) {
 export const onTaskUpdate = (newTask, mutate, column) => {
   mutate(
     (oldData) => {
-      if (
-        oldData
-          ?.find((oldColumn) => oldColumn.start === column.start)
-          ?.tasks.find((oldTask) => oldTask === newTask)
-      ) {
+      const oldTask = oldData
+        ?.find((oldColumn) => oldColumn.start === column.start)
+        ?.tasks.find((oldTask) => oldTask.id === newTask.id);
+
+      if (!oldTask) {
         return oldData;
       }
-      return oldData.map((oldColumn) =>
-        oldColumn.start === column.start
-          ? {
-              ...oldColumn,
-              tasks: oldColumn.tasks
-                .map((oldTask) =>
-                  oldTask?.id === newTask?.id
-                    ? newTask.trash === true ||
-                      !dayjs(newTask.due).isBetween(
-                        column.start,
-                        column.end,
-                        null,
-                        "[]"
-                      )
-                      ? undefined
-                      : newTask
-                    : oldTask
-                )
-                .filter((e) => e),
-            }
-          : oldColumn
-      );
+      return oldData.map((oldColumn) => {
+        const isTargetColumn = dayjs(newTask.due).isBetween(
+          oldColumn.start,
+          oldColumn.end,
+          null,
+          "[]"
+        );
+
+        if (!isTargetColumn) {
+          return {
+            ...oldColumn,
+            tasks: oldColumn.tasks.filter((task) => task.id !== newTask.id),
+          };
+        }
+
+        return {
+          ...oldColumn,
+          tasks: (oldColumn.tasks.find((task) => task.id === newTask.id)
+            ? oldColumn.tasks
+            : [newTask, ...oldColumn.tasks]
+          )
+            .map((oldTask) =>
+              oldTask?.id === newTask?.id
+                ? newTask.trash === true
+                  ? undefined
+                  : newTask
+                : oldTask
+            )
+            .filter((e) => e),
+        };
+      });
     },
     {
       revalidate: false,

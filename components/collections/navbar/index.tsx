@@ -15,6 +15,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -139,6 +140,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
 
   const { mutate } = useSWR(["user/tabs"]);
 
+  const handleRefresh = async (e) => {
+    e.preventDefault();
+    await ctx.mutate();
+    Toast.show({ type: "success", text1: "Collection up to date!" });
+  };
+  useHotkeys(["ctrl+r"], handleRefresh);
+
   const collectionMenuOptions = [
     !isAll && {
       icon: "edit",
@@ -195,10 +203,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     {
       icon: "sync",
       text: "Refresh",
-      callback: async () => {
-        await ctx.mutate();
-        Toast.show({ type: "success", text1: "Collection up to date!" });
-      },
+      callback: handleRefresh,
     },
     {
       icon: "fluorescent",
