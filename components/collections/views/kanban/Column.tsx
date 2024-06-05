@@ -73,7 +73,6 @@ export function Column(props: ColumnProps) {
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
       (oldData) => {
-        console.log(updatedTask);
         const labelIndex = oldData.labels.findIndex(
           (l) => l.id === updatedTask.label?.id
         );
@@ -101,7 +100,9 @@ export function Column(props: ColumnProps) {
                 : l.id === oldTask.label?.id
                 ? {
                     ...l,
-                    entities: l.entities.filter((t) => t.id !== oldTask.id),
+                    entities: l.entities.find((t) => t.id === oldTask.id)
+                      ? l.entities.filter((t) => t.id !== oldTask.id)
+                      : [updatedTask, ...l.entities],
                   }
                 : l
             ),
