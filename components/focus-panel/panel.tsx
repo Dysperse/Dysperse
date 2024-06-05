@@ -3,19 +3,26 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
+import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
-import { Fragment, memo, useEffect, useState } from "react";
+import { Fragment, memo, useEffect, useRef, useState } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import {
   Gesture,
@@ -40,7 +47,7 @@ import { UpNext } from "./widgets/UpNext";
 import { Clock } from "./widgets/clock";
 import { WeatherWidget } from "./widgets/weather/widget";
 
-export type Widget = "upcoming" | "weather" | "clock" | "assistant" | "music";
+export type Widget = "upcoming" | "weather" | "clock" | "assistant" | "sports";
 
 export const WakeLock = () => {
   useKeepAwake();
@@ -64,24 +71,159 @@ export const ImportantChip = () => {
     />
   );
 };
+function SelectCategory({ setCategory }) {
+  const [query, setQuery] = useState("");
 
-const Music = ({ params, menuActions }) => {
+  const categories = [
+    { name: "Soccer", icon: "sports_soccer" },
+    { name: "Motorsport", icon: "sports_motorsports" },
+    { name: "Fighting", icon: "sports_mma" },
+    { name: "Baseball", icon: "sports_baseball" },
+    { name: "Basketball", icon: "sports_basketball" },
+    { name: "Football", icon: "sports_football" },
+    { name: "Hockey", icon: "sports_hockey" },
+    { name: "Golf", icon: "sports_golf" },
+    { name: "Rugby", icon: "sports_rugby" },
+    { name: "Tennis", icon: "sports_tennis" },
+    { name: "Cricket", icon: "sports_cricket" },
+    { name: "Cycling", icon: "directions_bike" },
+    { name: "Australian Football", icon: "sports_football" },
+    { name: "eSports", icon: "sports_esports" },
+    { name: "Volleyball", icon: "sports_volleyball" },
+    { name: "Netball", icon: "sports_basketball" },
+    { name: "Handball", icon: "sports_handball" },
+    { name: "Snooker", icon: "circle" },
+    { name: "Field Hockey", icon: "sports_hockey" },
+    { name: "Darts", icon: "target" },
+    { name: "Athletics", icon: "directions_run" },
+    { name: "Badminton", icon: "sports_tennis" },
+    { name: "Climbing", icon: "mountain_flag" },
+    { name: "Equestrian", icon: "bedroom_baby" },
+    { name: "Gymnastics", icon: "sports_gymnastics" },
+    { name: "Shooting", icon: "target" },
+    { name: "Extreme Sports", icon: "crisis_alert" },
+    { name: "Table Tennis", icon: "sports_tennis" },
+    { name: "Multi Sports", icon: "category" },
+    { name: "Water Sports", icon: "kayaking" },
+    { name: "Weightlifting", icon: "exercise" },
+    { name: "Skiiing", icon: "downhill_skiing" },
+    { name: "Skating", icon: "roller_skating" },
+    { name: "Winter Sports", icon: "ice_skating" },
+    { name: "Lacrosse", icon: "sports_kabaddi" },
+  ].filter((d) => d.name.toLowerCase().includes(query.toLowerCase()));
+  return (
+    <>
+      <View style={{ padding: 20, paddingBottom: 10 }}>
+        <Text
+          style={{
+            fontSize: 20,
+            marginBottom: 10,
+          }}
+          weight={900}
+        >
+          Browse categories
+        </Text>
+        <TextField
+          placeholder="Find a sport..."
+          variant="filled+outlined"
+          value={query}
+          onChangeText={setQuery}
+        />
+      </View>
+      <FlashList
+        contentContainerStyle={{ padding: 20, paddingTop: 10 }}
+        data={categories}
+        centerContent={categories.length === 0}
+        ListEmptyComponent={() => (
+          <View
+            style={{
+              padding: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+            }}
+          >
+            <Emoji emoji="1F494" size={40} />
+            <Text style={{ textAlign: "center", fontSize: 20 }} weight={600}>
+              No sports found
+            </Text>
+          </View>
+        )}
+        renderItem={({ item, index }) => (
+          <ListItemButton key={index} onPress={() => setCategory(item.name)}>
+            <Icon>{item.icon}</Icon>
+            <ListItemText primary={item.name} />
+          </ListItemButton>
+        )}
+      />
+    </>
+  );
+}
+
+function SelectSport({ category, setCategory, setSport }) {
+  const { data, error } = useSWR([
+    `www.thesportsdb.com/api/v1/json/3/search_all_leagues.php`,
+    { s: category },
+    "https://www.thesportsdb.com/",
+  ]);
+  return (
+    <View>
+      {error && <ErrorAlert />}
+      {JSON.stringify(data)}
+    </View>
+  );
+}
+
+function CreateSport({ createSheetRef }) {
+  const [category, setCategory] = useState<null | string>();
+  const [sport, setSport] = useState<null | string>();
+
+  return (
+    <BottomSheet
+      enableContentPanningGesture={false}
+      onClose={() => createSheetRef.current?.close()}
+      sheetRef={createSheetRef}
+      snapPoints={["90%"]}
+      index={0}
+    >
+      {!category && <SelectCategory setCategory={setCategory} />}
+      {category && (
+        <SelectSport
+          category={category}
+          setCategory={setCategory}
+          setSport={setSport}
+        />
+      )}
+    </BottomSheet>
+  );
+}
+
+const Sports = ({ params, menuActions }) => {
   const theme = useColorTheme();
+  const createSheetRef = useRef<BottomSheetModal>(null);
 
   return (
     <View>
       <MenuPopover
-        options={menuActions}
+        options={[
+          ...menuActions,
+          {
+            text: "Add a team",
+            icon: "add",
+            callback: () => createSheetRef.current?.present(),
+          },
+        ]}
         containerStyle={{ marginTop: -15 }}
         trigger={
           <Button style={widgetMenuStyles.button} dense>
             <ButtonText weight={800} style={widgetMenuStyles.text}>
-              Assistant
+              Sports
             </ButtonText>
             <Icon style={{ color: theme[11] }}>expand_more</Icon>
           </Button>
         }
       />
+      <CreateSport createSheetRef={createSheetRef} />
       <Alert
         style={{ marginTop: 10 }}
         title="Coming soon"
@@ -271,8 +413,8 @@ function RenderWidget({ widget, index }) {
       return (
         <Assistant menuActions={menuActions} widget={widget} key={index} />
       );
-    case "music":
-      return <Music menuActions={menuActions} params={widget} key={index} />;
+    case "sports":
+      return <Sports menuActions={menuActions} params={widget} key={index} />;
     default:
       return null;
   }

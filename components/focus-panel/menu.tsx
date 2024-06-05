@@ -154,7 +154,7 @@ export function WidgetMenu() {
           { text: "Clock", icon: "timer" },
           { text: "Weather", icon: "wb_sunny" },
           { text: "Assistant", icon: "auto_awesome" },
-          { text: "Music", icon: "music_note" },
+          { text: "Sports", icon: "sports_football" },
         ].map((i) => ({
           ...i,
           callback: () => handleWidgetToggle(i.text.toLowerCase() as Widget),
