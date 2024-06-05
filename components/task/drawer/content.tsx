@@ -206,38 +206,42 @@ export function TaskDrawerContent({ handleClose }) {
                 borderColor: task.pinned ? labelColors.orange[3] : theme[6],
               }}
             />
-            <LabelPicker
-              label={task.labelId}
-              setLabel={(e) => {
-                updateTask("labelId", (e as any).id);
-                updateTask("label", e, false);
-              }}
-              onClose={() => {}}
-              autoFocus
-              disabled={Boolean(task.label?.integrationParams)}
-            >
-              <Chip
-                disabled={isReadOnly}
-                icon={<Icon>new_label</Icon>}
-                label="Add label"
-                style={({ pressed }) => ({
-                  backgroundColor: theme[pressed ? 4 : 2],
-                  borderWidth: 1,
-                  borderColor: theme[6],
-                })}
-                {...(task.label && {
-                  icon: <Emoji emoji={task.label.emoji} />,
-                  label: (
-                    <Text style={{ color: labelColors[task.label.color][11] }}>
-                      {task.label.name}
-                    </Text>
-                  ),
-                  style: {
-                    backgroundColor: labelColors[task.label.color][5],
-                  },
-                })}
-              />
-            </LabelPicker>
+            {task && (
+              <LabelPicker
+                label={task.labelId}
+                setLabel={(e) => {
+                  updateTask("labelId", (e as any).id);
+                  updateTask("label", e, false);
+                }}
+                onClose={() => {}}
+                autoFocus
+                disabled={Boolean(task.label?.integrationParams)}
+              >
+                <Chip
+                  disabled={isReadOnly}
+                  icon={<Icon>new_label</Icon>}
+                  label="Add label"
+                  style={({ pressed }) => ({
+                    backgroundColor: theme[pressed ? 4 : 2],
+                    borderWidth: 1,
+                    borderColor: theme[6],
+                  })}
+                  {...(task.label && {
+                    icon: <Emoji emoji={task.label.emoji} />,
+                    label: (
+                      <Text
+                        style={{ color: labelColors[task.label.color][11] }}
+                      >
+                        {task.label.name}
+                      </Text>
+                    ),
+                    style: {
+                      backgroundColor: labelColors[task.label.color][5],
+                    },
+                  })}
+                />
+              </LabelPicker>
+            )}
           </View>
           <TaskNameInput />
           <TaskDetails />
