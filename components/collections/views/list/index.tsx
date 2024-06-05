@@ -4,6 +4,7 @@ import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRef } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import { Entity } from "../../entity";
@@ -64,39 +65,41 @@ export function List() {
         if (item.header) {
           // Rendering header
           return (
-            <Pressable
-              onPress={() => {
-                ref.current?.scrollToIndex({
-                  index: d.indexOf(item),
-                  animated: true,
-                });
-              }}
-              style={{
-                margin: 10,
-                width: 750,
-                maxWidth: width - 40,
-                marginHorizontal: "auto",
-                borderRadius: 99,
-                overflow: "hidden",
-                backgroundColor: addHslAlpha(theme[3], 0.5),
-                borderWidth: 1,
-                borderColor: addHslAlpha(theme[7], 0.3),
-              }}
-            >
-              <BlurView
-                experimentalBlurMethod="dimezisBlurView"
-                intensity={50}
-                tint={!isDark ? "prominent" : "systemMaterialDark"}
+            <LinearGradient colors={[theme[1], "transparent"]}>
+              <Pressable
+                onPress={() => {
+                  ref.current?.scrollToIndex({
+                    index: d.indexOf(item),
+                    animated: true,
+                  });
+                }}
                 style={{
-                  height: 80,
-                  width: "100%",
+                  margin: 10,
+                  width: 750,
+                  maxWidth: width - 40,
+                  marginHorizontal: "auto",
+                  borderRadius: 99,
                   overflow: "hidden",
-                  borderRadius: 999,
+                  backgroundColor: addHslAlpha(theme[3], 0.5),
+                  borderWidth: 1,
+                  borderColor: addHslAlpha(theme[7], 0.3),
                 }}
               >
-                <KanbanHeader hideNavigation label={item} grid />
-              </BlurView>
-            </Pressable>
+                <BlurView
+                  experimentalBlurMethod="dimezisBlurView"
+                  intensity={50}
+                  tint={!isDark ? "prominent" : "systemMaterialDark"}
+                  style={{
+                    height: 80,
+                    width: "100%",
+                    overflow: "hidden",
+                    borderRadius: 999,
+                  }}
+                >
+                  <KanbanHeader hideNavigation label={item} grid />
+                </BlurView>
+              </Pressable>
+            </LinearGradient>
           );
         } else {
           // Render item
