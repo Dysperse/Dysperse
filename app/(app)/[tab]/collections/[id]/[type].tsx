@@ -7,6 +7,7 @@ import { CollectionNavbar } from "@/components/collections/navbar";
 import { Grid } from "@/components/collections/views/grid";
 import { Kanban } from "@/components/collections/views/kanban";
 import { List } from "@/components/collections/views/list";
+import { Matrix } from "@/components/collections/views/matrix";
 import { Perspectives } from "@/components/collections/views/planner";
 import { Stream } from "@/components/collections/views/stream";
 import { Workload } from "@/components/collections/views/workload";
@@ -277,6 +278,8 @@ export default function Page() {
       content = <List />;
       break;
     case "matrix":
+      content = <Matrix />;
+      break;
     case "calendar":
       content = comingSoon;
       break;
