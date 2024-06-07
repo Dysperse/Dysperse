@@ -1,4 +1,5 @@
 import CreateTask from "@/components/task/create";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -6,8 +7,9 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import { useMemo, useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useCollectionContext } from "../../context";
 import { Entity } from "../../entity";
 import { ColumnEmptyComponent } from "../planner/Column";
@@ -15,7 +17,13 @@ import { ColumnEmptyComponent } from "../planner/Column";
 const styles = StyleSheet.create({
   container: { flexDirection: "column", flex: 1, padding: 25, gap: 20 },
   row: { flex: 1, flexDirection: "row", gap: 20, alignItems: "center" },
-  cell: { flex: 1, borderWidth: 1, borderRadius: 25, height: "100%" },
+  cell: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 25,
+    height: "100%",
+    overflow: "hidden",
+  },
   add: {
     alignItems: "center",
     marginVertical: -25,
@@ -24,7 +32,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const Cell = ({ onEntityCreate, handleMutate, tasks, defaultOptions }) => {
+const Cell = ({
+  onEntityCreate,
+  handleMutate,
+  tasks,
+  defaultOptions,
+  handleHome,
+}: {
+  onEntityCreate: any;
+  handleMutate: any;
+  tasks: any;
+  defaultOptions: any;
+  handleHome?: any;
+}) => {
+  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const ref = useRef(null);
 
@@ -40,41 +61,56 @@ const Cell = ({ onEntityCreate, handleMutate, tasks, defaultOptions }) => {
         (a, b) => a.completionInstances.length - b.completionInstances.length
       )
     : tasks.filter((e) => e.completionInstances.length === 0);
-
   return (
     <View
       style={[
         styles.cell,
-        { backgroundColor: theme[2], borderColor: theme[5] },
+        breakpoints.md
+          ? { backgroundColor: theme[2], borderColor: theme[5] }
+          : { borderWidth: 0, borderRadius: 0 },
       ]}
     >
       <Pressable
         onPress={() =>
           ref.current.scrollToOffset({ animated: true, offset: 0 })
         }
-        style={{
-          padding: 5,
-          paddingHorizontal: 20,
-          paddingRight: 10,
-          borderBottomWidth: 1,
-          borderBottomColor: theme[4],
-          flexDirection: "row",
-          alignItems: "center",
-        }}
       >
-        <Text weight={500} style={{ opacity: 0.5 }}>
-          {remainingTasks.length} task{remainingTasks.length !== 1 && "s"}
-        </Text>
-        <CreateTask
-          mutate={(n) => onEntityCreate(n)}
-          defaultValues={defaultOptions}
+        <LinearGradient
+          colors={breakpoints.md ? [theme[2]] : [theme[3], theme[2]]}
+          style={[
+            {
+              padding: breakpoints.md ? 5 : 10,
+              paddingHorizontal: 20,
+              paddingRight: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: theme[4],
+              flexDirection: "row",
+              alignItems: "center",
+            },
+            !breakpoints.md && { borderTopWidth: 1, borderTopColor: theme[5] },
+          ]}
         >
-          <IconButton icon="add" style={{ marginLeft: "auto" }} />
-        </CreateTask>
+          {handleHome && (
+            <IconButton
+              icon="arrow_back_ios_new"
+              onPress={handleHome}
+              style={{ marginRight: 10 }}
+            />
+          )}
+          <Text weight={500} style={{ opacity: 0.5 }}>
+            {remainingTasks.length} task{remainingTasks.length !== 1 && "s"}
+          </Text>
+          <CreateTask
+            mutate={(n) => onEntityCreate(n)}
+            defaultValues={defaultOptions}
+          >
+            <IconButton icon="add" style={{ marginLeft: "auto" }} />
+          </CreateTask>
+        </LinearGradient>
       </Pressable>
       <FlashList
         ref={ref}
-        contentContainerStyle={{ padding: 10 }}
+        contentContainerStyle={{ padding: breakpoints.md ? 10 : 20 }}
         keyExtractor={(i: any) => i.id}
         ListEmptyComponent={() => <ColumnEmptyComponent row />}
         renderItem={({ item }) => (
@@ -148,8 +184,86 @@ const Label = ({ x, y, size }: { x?: string; y?: string; size: number }) => {
   );
 };
 
+function Preview({ tasks, onPress }) {
+  const theme = useColorTheme();
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed, hovered }) => [
+        styles.cell,
+        {
+          backgroundColor: theme[2],
+          borderColor: theme[5],
+          transform: [{ scale: pressed ? 0.95 : 1 }],
+        },
+      ]}
+    >
+      <ScrollView
+        centerContent={tasks.length === 0}
+        scrollEnabled={false}
+        style={{ padding: 20 }}
+      >
+        {tasks.lengh === 0 && (
+          <Text style={{ textAlign: "center", opacity: 0.6 }} weight={900}>
+            No tasks
+          </Text>
+        )}
+        {tasks
+          .filter((e) => e.completionInstances.length === 0)
+          .slice(0, 10)
+          .map((i) => (
+            <View
+              key={i.id}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 5,
+              }}
+            >
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderWidth: 1,
+                  borderColor: theme[5],
+                  borderRadius: 99,
+                }}
+              />
+              <Text numberOfLines={1} style={{ fontSize: 13, opacity: 0.6 }}>
+                {i.name}
+              </Text>
+            </View>
+          ))}
+      </ScrollView>
+      {tasks.length !== 0 && (
+        <LinearGradient
+          colors={["transparent", theme[2]]}
+          style={{
+            height: 40,
+            marginTop: -40,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 20,
+          }}
+        >
+          <Text weight={900} style={{ color: theme[11] }}>
+            View all
+          </Text>
+          <Icon>expand_all</Icon>
+        </LinearGradient>
+      )}
+    </Pressable>
+  );
+}
+
 export function Matrix() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
+  const [currentColumn, setCurrentColumn] = useState(null);
   const { data, mutate } = useCollectionContext();
 
   const filteredTasks = [
@@ -238,74 +352,110 @@ export function Matrix() {
     );
   };
 
-  const pinnedImportant = useMemo(
-    () =>
-      filteredTasks.filter(
+  const grid = useMemo(
+    () => ({
+      pinnedImportant: filteredTasks.filter(
         (e) => e.pinned && dayjs(e.due).isBefore(dayjs().endOf("day"))
       ),
-    [filteredTasks]
-  );
-
-  const important = useMemo(
-    () =>
-      filteredTasks.filter(
+      important: filteredTasks.filter(
         (e) => !e.pinned && dayjs(e.due).isBefore(dayjs().endOf("day"))
       ),
-    [filteredTasks]
-  );
-
-  const pinned = useMemo(
-    () =>
-      filteredTasks.filter(
+      pinned: filteredTasks.filter(
         (e) => e.pinned && !dayjs(e.due).isBefore(dayjs().endOf("day"))
       ),
-    [filteredTasks]
-  );
-
-  const other = useMemo(
-    () =>
-      filteredTasks.filter(
+      other: filteredTasks.filter(
         (e) => !e.pinned && !dayjs(e.due).isBefore(dayjs().endOf("day"))
       ),
+    }),
     [filteredTasks]
   );
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.row, { flex: 0, justifyContent: "space-around" }]}>
-        <Label size={900} x="Urgent" />
-        <Label size={900} x="Less urgent" />
-      </View>
-      <View style={styles.row}>
-        <Label size={100} y="Important" />
+    <View
+      style={[
+        styles.container,
+        !breakpoints.md && currentColumn && { padding: 0 },
+      ]}
+    >
+      {breakpoints.md || !currentColumn ? (
+        <>
+          <View
+            style={[
+              styles.row,
+              { flex: 0, justifyContent: "space-around", paddingLeft: 30 },
+            ]}
+          >
+            <Label size={900} x="Urgent" />
+            <Label size={900} x="Less urgent" />
+          </View>
+          <View style={styles.row}>
+            <Label size={100} y="Important" />
+            {breakpoints.md ? (
+              <Cell
+                onEntityCreate={onEntityCreate}
+                handleMutate={onTaskUpdate}
+                tasks={grid.pinnedImportant}
+                defaultOptions={{ pinned: true, due: dayjs().startOf("day") }}
+              />
+            ) : (
+              <Preview
+                onPress={() => setCurrentColumn("pinnedImportant")}
+                tasks={grid.pinnedImportant}
+              />
+            )}
+            {breakpoints.md ? (
+              <Cell
+                onEntityCreate={onEntityCreate}
+                handleMutate={onTaskUpdate}
+                tasks={grid.important}
+                defaultOptions={{ due: dayjs().startOf("day") }}
+              />
+            ) : (
+              <Preview
+                onPress={() => setCurrentColumn("important")}
+                tasks={grid.important}
+              />
+            )}
+          </View>
+          <View style={styles.row}>
+            <Label size={133} y="Less important" />
+            {breakpoints.md ? (
+              <Cell
+                onEntityCreate={onEntityCreate}
+                handleMutate={onTaskUpdate}
+                tasks={grid.pinned}
+                defaultOptions={{ pinned: true }}
+              />
+            ) : (
+              <Preview
+                onPress={() => setCurrentColumn("pinned")}
+                tasks={grid.pinned}
+              />
+            )}
+            {breakpoints.md ? (
+              <Cell
+                onEntityCreate={onEntityCreate}
+                handleMutate={onTaskUpdate}
+                tasks={grid.other}
+                defaultOptions={{}}
+              />
+            ) : (
+              <Preview
+                onPress={() => setCurrentColumn("other")}
+                tasks={grid.other}
+              />
+            )}
+          </View>
+        </>
+      ) : (
         <Cell
           onEntityCreate={onEntityCreate}
           handleMutate={onTaskUpdate}
-          tasks={pinnedImportant}
-          defaultOptions={{ pinned: true, due: dayjs().startOf("day") }}
-        />
-        <Cell
-          onEntityCreate={onEntityCreate}
-          handleMutate={onTaskUpdate}
-          tasks={important}
-          defaultOptions={{ due: dayjs().startOf("day") }}
-        />
-      </View>
-      <View style={styles.row}>
-        <Label size={133} y="Less important" />
-        <Cell
-          onEntityCreate={onEntityCreate}
-          handleMutate={onTaskUpdate}
-          tasks={pinned}
+          tasks={grid[currentColumn]}
           defaultOptions={{ pinned: true }}
+          handleHome={() => setCurrentColumn(null)}
         />
-        <Cell
-          onEntityCreate={onEntityCreate}
-          handleMutate={onTaskUpdate}
-          tasks={other}
-          defaultOptions={{}}
-        />
-      </View>
+      )}
     </View>
   );
 }
