@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
 import { useCollectionContext } from "../../context";
 import { Entity } from "../../entity";
 import { ColumnEmptyComponent } from "../planner/Column";
@@ -186,6 +187,7 @@ const Label = ({ x, y, size }: { x?: string; y?: string; size: number }) => {
 
 function Preview({ tasks, onPress }) {
   const theme = useColorTheme();
+  const scale = useSharedValue(0);
 
   return (
     <Pressable
