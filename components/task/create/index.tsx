@@ -949,7 +949,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
       dateOnly: true,
       name: defaultValues.name || "",
       date: defaultValues.date || dayjs().utc(),
-      pinned: false,
+      pinned: defaultValues.pinned || false,
       label: defaultValues.label,
       storyPoints: defaultValues.storyPoints,
       collectionId: defaultValues.collectionId,
