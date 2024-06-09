@@ -236,7 +236,9 @@ function Preview({ tasks, onPress }) {
             </Text>
           )}
           {tasks
-            .filter((e) => e.completionInstances.length === 0)
+            .filter(
+              (e) => e.completionInstances.length === 0 && !e.recurrenceRule
+            )
             .slice(0, 10)
             .map((i) => (
               <View
