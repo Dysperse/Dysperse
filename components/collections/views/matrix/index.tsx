@@ -10,14 +10,19 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCollectionContext } from "../../context";
 import { Entity } from "../../entity";
 import { ColumnEmptyComponent } from "../planner/Column";
 
 const styles = StyleSheet.create({
-  container: { flexDirection: "column", flex: 1, padding: 25, gap: 20 },
-  row: { flex: 1, flexDirection: "row", gap: 20, alignItems: "center" },
+  container: { flexDirection: "column", flex: 1 },
+  row: { flex: 1, flexDirection: "row", alignItems: "center" },
   cell: {
     flex: 1,
     borderWidth: 1,
@@ -110,6 +115,7 @@ const Cell = ({
         </LinearGradient>
       </Pressable>
       <FlashList
+        estimatedItemSize={118}
         ref={ref}
         contentContainerStyle={{ padding: breakpoints.md ? 10 : 20 }}
         keyExtractor={(i: any) => i.id}
@@ -163,7 +169,7 @@ const CreateTaskTrigger = () => {
 };
 
 const Label = ({ x, y, size }: { x?: string; y?: string; size: number }) => {
-  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <Text
@@ -173,8 +179,9 @@ const Label = ({ x, y, size }: { x?: string; y?: string; size: number }) => {
         y
           ? {
               transform: [{ rotate: "-90deg" }],
-              width: size,
+              width: size + 10,
               marginHorizontal: -(size / 2),
+              marginRight: breakpoints.md ? undefined : -(size / 2) + 10,
               height: 20,
             }
           : {}
@@ -187,83 +194,105 @@ const Label = ({ x, y, size }: { x?: string; y?: string; size: number }) => {
 
 function Preview({ tasks, onPress }) {
   const theme = useColorTheme();
-  const scale = useSharedValue(0);
+  const breakpoints = useResponsiveBreakpoints();
+  const scale = useSharedValue(1);
+
+  const style = useAnimatedStyle(() => ({
+    flex: 1,
+    height: "100%",
+    transform: [
+      {
+        scale: withSpring(scale.value, {
+          damping: 9000,
+          stiffness: 1000,
+        }),
+      },
+    ],
+  }));
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed, hovered }) => [
-        styles.cell,
-        {
-          backgroundColor: theme[2],
-          borderColor: theme[5],
-          transform: [{ scale: pressed ? 0.95 : 1 }],
-        },
-      ]}
-    >
-      <ScrollView
-        centerContent={tasks.length === 0}
-        scrollEnabled={false}
-        style={{ padding: 20 }}
+    <Animated.View style={style}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={() => (scale.value = 0.95)}
+        onPressOut={() => (scale.value = 1)}
+        style={[
+          styles.cell,
+          {
+            backgroundColor: theme[2],
+            borderColor: theme[5],
+          },
+        ]}
       >
-        {tasks.lengh === 0 && (
-          <Text style={{ textAlign: "center", opacity: 0.6 }} weight={900}>
-            No tasks
-          </Text>
-        )}
-        {tasks
-          .filter((e) => e.completionInstances.length === 0)
-          .slice(0, 10)
-          .map((i) => (
-            <View
-              key={i.id}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-                marginBottom: 5,
-              }}
-            >
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderWidth: 1,
-                  borderColor: theme[5],
-                  borderRadius: 99,
-                }}
-              />
-              <Text numberOfLines={1} style={{ fontSize: 13, opacity: 0.6 }}>
-                {i.name}
-              </Text>
-            </View>
-          ))}
-      </ScrollView>
-      {tasks.length !== 0 && (
-        <LinearGradient
-          colors={["transparent", theme[2]]}
-          style={{
-            height: 40,
-            marginTop: -40,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            gap: 20,
-          }}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          centerContent={tasks.length === 0}
+          scrollEnabled={false}
+          style={{ padding: breakpoints.md ? 20 : 10 }}
         >
-          <Text weight={900} style={{ color: theme[11] }}>
-            View all
-          </Text>
-          <Icon>expand_all</Icon>
-        </LinearGradient>
-      )}
-    </Pressable>
+          {tasks.lengh === 0 && (
+            <Text style={{ textAlign: "center", opacity: 0.6 }} weight={900}>
+              No tasks
+            </Text>
+          )}
+          {tasks
+            .filter((e) => e.completionInstances.length === 0)
+            .slice(0, 10)
+            .map((i) => (
+              <View
+                key={i.id}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                  marginBottom: 10,
+                }}
+              >
+                <View
+                  style={{
+                    width: breakpoints.md ? 20 : 15,
+                    height: breakpoints.md ? 20 : 15,
+                    borderWidth: 1,
+                    borderColor: theme[7],
+                    borderRadius: 99,
+                  }}
+                />
+                <Text
+                  numberOfLines={1}
+                  style={{ fontSize: breakpoints.md ? 13 : 12, opacity: 0.6 }}
+                >
+                  {i.name}
+                </Text>
+              </View>
+            ))}
+        </ScrollView>
+        {tasks.length !== 0 && (
+          <LinearGradient
+            colors={["transparent", theme[2]]}
+            style={{
+              height: 40,
+              marginTop: -40,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Text weight={800} style={{ color: theme[11] }}>
+              View all
+            </Text>
+            <Icon>expand_all</Icon>
+          </LinearGradient>
+        )}
+      </Pressable>
+    </Animated.View>
   );
 }
 
 export function Matrix() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
 
   const [currentColumn, setCurrentColumn] = useState(null);
   const { data, mutate } = useCollectionContext();
@@ -371,12 +400,20 @@ export function Matrix() {
     }),
     [filteredTasks]
   );
-
+  const padding = breakpoints.md ? 20 : currentColumn ? 0 : 20;
   return (
     <View
       style={[
         styles.container,
-        !breakpoints.md && currentColumn && { padding: 0 },
+        { padding },
+        { paddingBottom: (currentColumn ? 0 : insets.bottom) + padding },
+        { gap: breakpoints.md ? 20 : 10 },
+        !currentColumn &&
+          !breakpoints.md && {
+            backgroundColor: theme[3],
+            borderTopWidth: 1,
+            borderTopColor: theme[5],
+          },
       ]}
     >
       {breakpoints.md || !currentColumn ? (
@@ -384,13 +421,18 @@ export function Matrix() {
           <View
             style={[
               styles.row,
-              { flex: 0, justifyContent: "space-around", paddingLeft: 30 },
+              {
+                flex: 0,
+                justifyContent: "space-around",
+                paddingLeft: breakpoints.md ? 30 : 50,
+                marginTop: breakpoints.md ? 0 : -5,
+              },
             ]}
           >
             <Label size={900} x="Urgent" />
             <Label size={900} x="Less urgent" />
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
             <Label size={100} y="Important" />
             {breakpoints.md ? (
               <Cell
@@ -419,7 +461,7 @@ export function Matrix() {
               />
             )}
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
             <Label size={133} y="Less important" />
             {breakpoints.md ? (
               <Cell
