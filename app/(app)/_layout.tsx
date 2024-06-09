@@ -256,7 +256,16 @@ export default function AppLayout() {
                           <SelectionNavbar />
                           {breakpoints.md ? (
                             <View style={{ flex: 1, flexDirection: "row" }}>
-                              <Sidebar />
+                              <Sidebar desktop />
+                              {breakpoints.md && !desktopCollapsed && (
+                                <GestureDetector
+                                  gesture={Gesture.Tap().onEnd(() => {
+                                    setDesktopCollapsed((t) => !t);
+                                  })}
+                                >
+                                  <PanelSwipeTrigger side="left" />
+                                </GestureDetector>
+                              )}
                               {content()}
                             </View>
                           ) : (
@@ -285,15 +294,6 @@ export default function AppLayout() {
                                 return (
                                   <Pressable style={{ flexDirection: "row" }}>
                                     <Sidebar progressValue={v} />
-                                    {breakpoints.md && (
-                                      <GestureDetector
-                                        gesture={Gesture.Tap().onEnd(() => {
-                                          setDesktopCollapsed((t) => !t);
-                                        })}
-                                      >
-                                        <PanelSwipeTrigger side="left" />
-                                      </GestureDetector>
-                                    )}
                                   </Pressable>
                                 );
                               }}

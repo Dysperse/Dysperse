@@ -245,7 +245,6 @@ function Root() {
   const theme = useColor("mint");
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
-  const [open, setOpen] = useState(!breakpoints.md);
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
   const ref = useNavigationContainerRef();

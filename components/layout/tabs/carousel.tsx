@@ -112,7 +112,7 @@ const JumpToButton = memo(function JumpToButton() {
       onPress={() => handleOpen()}
       style={({ pressed, hovered }) => [
         {
-          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+          backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined,
           opacity: pressed ? 0.5 : 1,
           flexDirection: "row",
           alignItems: "center",
@@ -305,12 +305,7 @@ const OpenTabsList = memo(function OpenTabsList() {
             aria-label="Sidebar"
             data={data}
             renderItem={({ item }) => (
-              <View
-                style={{
-                  backgroundColor: theme[2],
-                  padding: 1,
-                }}
-              >
+              <View style={{ padding: 1 }}>
                 <Tab
                   tab={item}
                   tabs={data}
@@ -319,8 +314,6 @@ const OpenTabsList = memo(function OpenTabsList() {
                 />
               </View>
             )}
-            style={{ backgroundColor: theme[2] }}
-            contentContainerStyle={{ backgroundColor: theme[2] }}
             keyExtractor={(item) => item.id}
           />
           {Platform.OS === "web" && <WebPWAInstallButton />}

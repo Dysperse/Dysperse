@@ -234,7 +234,8 @@ function Tab({
             paddingRight: selected ? 30 : undefined,
             borderRadius: 15,
             height: breakpoints.md ? 50 : 50,
-            backgroundColor: theme[selected || pressed ? 4 : hovered ? 3 : 2],
+            backgroundColor:
+              selected || pressed ? theme[4] : hovered ? theme[3] : undefined,
             ...(Platform.OS === "web" &&
               selected && {
                 shadowColor: theme[1],

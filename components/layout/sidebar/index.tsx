@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingBottom: 0,
     paddingTop: 25,
+    paddingRight: 25,
   },
   contentContainer: {
     flex: 1,
@@ -412,8 +413,10 @@ const Header = memo(function Header() {
 });
 
 const Sidebar = ({
+  desktop = false,
   progressValue,
 }: {
+  desktop?: boolean;
   progressValue?: NativeAnimated.Value;
 }) => {
   const breakpoints = useResponsiveBreakpoints();
@@ -424,27 +427,34 @@ const Sidebar = ({
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
 
+  const desktopSlide = useSharedValue(0);
+
   const transform = progressValue?.interpolate?.({
     inputRange: [0, 1],
     outputRange: [-(width / 10), 0],
   });
-  const animatedStyles = [
-    {
-      transform: [
-        {
-          translateX: transform,
-        },
-      ],
-    },
-  ];
-  const { sidebarRef } = useSidebarContext();
+
+  const animatedStyles = [{ transform: [{ translateX: transform }] }];
+  const desktopStyles = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: withSpring(desktopSlide.value, {
+          stiffness: 200,
+          damping: 20,
+        }),
+      },
+    ],
+    opacity: withSpring(desktopSlide.value ? 0 : 1, {
+      duration: desktopSlide.value ? 1500 : 0,
+    }),
+  }));
+
   const toggleHidden = useCallback(() => {
-    if (sidebarRef.current.state.drawerOpened) {
-      sidebarRef.current.closeDrawer();
-    } else {
-      sidebarRef.current.openDrawer();
+    setDesktopCollapsed(!desktopCollapsed);
+    if (Platform.OS === "web") {
+      localStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
     }
-  }, [sidebarRef]);
+  }, [desktopCollapsed, setDesktopCollapsed]);
 
   useHotkeys("`", toggleHidden, {});
   useHotkeys("ctrl+comma", () => {
@@ -462,9 +472,18 @@ const Sidebar = ({
   const { error } = useUser();
   const { error: storageError } = useStorageContext();
 
+  useEffect(() => {
+    desktopSlide.value = desktopCollapsed ? 1 : 0;
+  }, [desktopCollapsed, desktopSlide]);
+
   return (
-    <View
+    <Animated.View
+      {...(Platform.OS === "web" && {
+        onMouseEnter: () => (desktopSlide.value = 0),
+        onMouseLeave: () => (desktopSlide.value = desktopCollapsed ? -200 : 0),
+      })}
       style={[
+        desktopCollapsed && desktopStyles,
         {
           zIndex: breakpoints.md ? 1 : 0,
           flexDirection: "row",
@@ -494,16 +513,23 @@ const Sidebar = ({
                 paddingTop: "env(titlebar-area-height,0)",
               } as any)),
           },
-          desktopCollapsed &&
-            breakpoints.md && {
-              shadowColor: theme[1],
-              shadowRadius: 50,
-              borderRadius: 0,
-              // borderRightColor: theme[5],
-              overflow: "hidden",
-              borderColor: theme[5],
-              width: SIDEBAR_WIDTH,
-            },
+          desktopCollapsed && {
+            position: "absolute",
+            shadowColor: theme[9],
+            shadowRadius: 50,
+            shadowOffset: { width: 0, height: 0 },
+            borderRadius: 25,
+            left: -100,
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
+            width: SIDEBAR_WIDTH + 100,
+            paddingLeft: 100,
+            backgroundColor: theme[1],
+            zIndex: 99,
+            shadowOpacity: 0.4,
+            height: height - 50,
+            marginTop: 25,
+          },
         ]}
       >
         <View style={[styles.header, { marginTop: insets.top }]}>
@@ -512,7 +538,7 @@ const Sidebar = ({
         </View>
         <OpenTabsList />
       </NativeAnimated.View>
-    </View>
+    </Animated.View>
   );
 };
 
