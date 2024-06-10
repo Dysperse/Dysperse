@@ -61,8 +61,6 @@ function ContentWrapper(props: ContentWrapperProps) {
     <View
       {...props}
       style={[
-        props.style,
-        styles.container,
         {
           borderRadius: breakpoints.md ? 20 : 0,
           marginTop: props.noPaddingTop
@@ -74,6 +72,8 @@ function ContentWrapper(props: ContentWrapperProps) {
           borderWidth: breakpoints.md ? 2 : 0,
           borderColor: theme[5],
         },
+        props.style,
+        styles.container,
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >

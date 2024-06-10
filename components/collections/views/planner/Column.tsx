@@ -197,40 +197,57 @@ export const onTaskUpdate = (newTask, mutate, column) => {
         ?.find((oldColumn) => oldColumn.start === column.start)
         ?.tasks.find((oldTask) => oldTask.id === newTask.id);
 
+      if (Boolean(oldTask.recurrenceRule) !== Boolean(newTask.recurrenceRule)) {
+        return true;
+      }
+
       if (!oldTask) {
         return oldData;
       }
-      return oldData.map((oldColumn) => {
-        const isTargetColumn = dayjs(newTask.due).isBetween(
-          oldColumn.start,
-          oldColumn.end,
-          null,
-          "[]"
-        );
+      return oldData.map(
+        newTask.recurrenceRule
+          ? (oldColumn) => {
+              return {
+                ...oldColumn,
+                tasks: oldColumn.tasks
+                  .map((task) => (task.id === newTask.id ? newTask : task))
+                  .filter((t) => !t.trash),
+              };
+            }
+          : (oldColumn) => {
+              const isTargetColumn = dayjs(newTask.due).isBetween(
+                oldColumn.start,
+                oldColumn.end,
+                null,
+                "[]"
+              );
 
-        if (!isTargetColumn) {
-          return {
-            ...oldColumn,
-            tasks: oldColumn.tasks.filter((task) => task.id !== newTask.id),
-          };
-        }
+              if (!isTargetColumn) {
+                return {
+                  ...oldColumn,
+                  tasks: oldColumn.tasks
+                    .filter((task) => task.id !== newTask.id)
+                    .filter((t) => !t.trash),
+                };
+              }
 
-        return {
-          ...oldColumn,
-          tasks: (oldColumn.tasks.find((task) => task.id === newTask.id)
-            ? oldColumn.tasks
-            : [newTask, ...oldColumn.tasks]
-          )
-            .map((oldTask) =>
-              oldTask?.id === newTask?.id
-                ? newTask.trash === true
-                  ? undefined
-                  : newTask
-                : oldTask
-            )
-            .filter((e) => e),
-        };
-      });
+              return {
+                ...oldColumn,
+                tasks: (oldColumn.tasks.find((task) => task.id === newTask.id)
+                  ? oldColumn.tasks
+                  : [newTask, ...oldColumn.tasks]
+                )
+                  .map((oldTask) =>
+                    oldTask?.id === newTask?.id
+                      ? newTask.trash === true
+                        ? undefined
+                        : newTask
+                      : oldTask
+                  )
+                  .filter((e) => e),
+              };
+            }
+      );
     },
     {
       revalidate: false,

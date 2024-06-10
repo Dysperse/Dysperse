@@ -66,7 +66,7 @@ export function Column(props: ColumnProps) {
   const columnRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access } = useCollectionContext();
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing] = useState(false);
 
   const isReadOnly = access?.access === "READ_ONLY";
 
@@ -123,7 +123,7 @@ export function Column(props: ColumnProps) {
         };
       },
       {
-        revalidate: false,
+        revalidate: Boolean(oldTask.recurrenceRule),
       }
     );
   };

@@ -444,9 +444,6 @@ const Sidebar = ({
         }),
       },
     ],
-    opacity: withSpring(desktopSlide.value ? 0 : 1, {
-      duration: desktopSlide.value ? 1500 : 0,
-    }),
   }));
 
   const toggleHidden = useCallback(() => {
@@ -477,68 +474,86 @@ const Sidebar = ({
   }, [desktopCollapsed, desktopSlide]);
 
   return (
-    <Animated.View
-      {...(Platform.OS === "web" && {
-        onMouseEnter: () => (desktopSlide.value = 0),
-        onMouseLeave: () => (desktopSlide.value = desktopCollapsed ? -200 : 0),
-      })}
-      style={[
-        desktopCollapsed && desktopStyles,
-        {
-          zIndex: breakpoints.md ? 1 : 0,
-          flexDirection: "row",
-          backgroundColor: theme[2],
-        },
-        pathname.includes("settings") &&
-          breakpoints.md && {
-            maxWidth: 0,
-            overflow: "hidden",
-          },
-      ]}
-    >
-      <NativeAnimated.View
-        style={[
-          animatedStyles,
-          {
-            height:
-              height +
-              (error || storageError ? -30 : insets.top + insets.bottom),
-            width: SIDEBAR_WIDTH,
-            flexDirection: "column",
-            borderRightWidth: 2,
-            borderRightColor: "transparent",
-            backgroundColor: theme[2],
-            ...(Platform.OS === "web" &&
-              ({
-                paddingTop: "env(titlebar-area-height,0)",
-              } as any)),
-          },
-          desktopCollapsed && {
+    <>
+      {desktopCollapsed && (
+        <View
+          style={{
             position: "absolute",
-            shadowColor: theme[9],
-            shadowRadius: 50,
-            shadowOffset: { width: 0, height: 0 },
-            borderRadius: 25,
-            left: -100,
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-            width: SIDEBAR_WIDTH + 100,
-            paddingLeft: 100,
-            backgroundColor: theme[1],
-            zIndex: 99,
-            shadowOpacity: 0.4,
-            height: height - 50,
-            marginTop: 25,
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: 10,
+            zIndex: 1,
+          }}
+          {...(Platform.OS === "web" && {
+            onMouseEnter: () => (desktopSlide.value = 0),
+          })}
+        />
+      )}
+      <Animated.View
+        {...(Platform.OS === "web" && {
+          onMouseEnter: () => (desktopSlide.value = 1),
+          onMouseLeave: () =>
+            (desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0),
+        })}
+        style={[
+          desktopCollapsed && desktopStyles,
+          {
+            zIndex: breakpoints.md ? 1 : 0,
+            flexDirection: "row",
+            backgroundColor: theme[2],
           },
+          pathname.includes("settings") &&
+            breakpoints.md && {
+              maxWidth: 0,
+              overflow: "hidden",
+            },
         ]}
       >
-        <View style={[styles.header, { marginTop: insets.top }]}>
-          <LogoButton toggleHidden={toggleHidden} />
-          <Header />
-        </View>
-        <OpenTabsList />
-      </NativeAnimated.View>
-    </Animated.View>
+        <NativeAnimated.View
+          style={[
+            animatedStyles,
+            {
+              height:
+                height +
+                (error || storageError ? -30 : insets.top + insets.bottom),
+              width: SIDEBAR_WIDTH,
+              flexDirection: "column",
+              borderRightWidth: 2,
+              borderRightColor: "transparent",
+              backgroundColor: theme[2],
+              ...(Platform.OS === "web" &&
+                ({
+                  paddingTop: "env(titlebar-area-height,0)",
+                } as any)),
+            },
+            desktopCollapsed && {
+              position: "absolute",
+              shadowColor: theme[9],
+              shadowRadius: 50,
+              shadowOffset: { width: 0, height: 0 },
+              borderRadius: 25,
+              left: -100,
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+              width: SIDEBAR_WIDTH + 100,
+              paddingLeft: 100,
+              backgroundColor: theme[1],
+              zIndex: 99,
+              shadowOpacity: 0.4,
+              height: height - 50,
+              marginTop: 25,
+            },
+          ]}
+        >
+          <View style={[styles.header, { marginTop: insets.top }]}>
+            <LogoButton toggleHidden={toggleHidden} />
+            <Header />
+          </View>
+          <OpenTabsList />
+        </NativeAnimated.View>
+      </Animated.View>
+    </>
   );
 };
 
