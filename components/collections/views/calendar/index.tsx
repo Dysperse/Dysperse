@@ -5,6 +5,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import { useMemo } from "react";
+import { useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
   ICalendarEventBase,
@@ -51,10 +52,11 @@ export function Content() {
       }))
     );
   }, []);
-
+  const { height } = useWindowDimensions();
   return data ? (
     <>
       <BigCalendar
+        height={height - 20 - 65}
         showAdjacentMonths={false}
         mode="month"
         hourStyle={{ fontFamily: "body_700", color: theme[7] }}
@@ -75,8 +77,6 @@ export function Content() {
         headerContainerStyle={{ paddingTop: 20 }}
         ampm
         enableEnrichedEvents
-        allDayEventCellTextColor="rgba(0,0,0,0.7)"
-        eventCellTextColor={"rgba(0,0,0,0.7)"}
         calendarCellTextStyle={{
           color: theme[11],
         }}
@@ -134,7 +134,6 @@ export function Content() {
                   .toDate(),
               } as ICalendarEventBase)
           )}
-        height={600}
         date={start.toDate()}
       />
     </>
