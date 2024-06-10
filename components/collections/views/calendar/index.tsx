@@ -6,13 +6,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
-import { Pressable, useWindowDimensions } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
   ICalendarEventBase,
 } from "react-native-big-calendar";
 import useSWR from "swr";
-import { AgendaContext, usePlannerContext } from "../planner/context";
+import { CalendarContext, useCalendarContext } from "./context";
 
 const events = [
   {
@@ -31,7 +31,7 @@ export function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams();
   const colors = useLabelColors();
-  const { type, start, end } = usePlannerContext();
+  const { type, start, end, mode } = useCalendarContext();
 
   const { data, mutate, error } = useSWR([
     "space/collections/collection/planner",
@@ -69,9 +69,10 @@ export function Content() {
         </Pressable>
       )}
       <BigCalendar
+        key={`${start.toISOString()}-${end.toISOString()}`}
         height={height - 20 - 65}
         showAdjacentMonths={false}
-        mode="month"
+        mode={mode}
         hourStyle={{ fontFamily: "body_700", color: theme[7] }}
         // onPressCell={(date) => {
         //   alert(date);
@@ -89,7 +90,7 @@ export function Content() {
         })}
         headerContainerStyle={{ paddingTop: 20 }}
         ampm
-        enableEnrichedEvents
+        // enableEnrichedEvents
         calendarCellTextStyle={{
           color: theme[11],
         }}
@@ -151,29 +152,40 @@ export function Content() {
       />
     </>
   ) : (
-    <Spinner />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Spinner />
+    </View>
   );
 }
 
 export function Calendar() {
-  let { agendaView, start, id } = useLocalSearchParams();
+  let { agendaView, start, id, mode } = useLocalSearchParams();
   if (!agendaView) agendaView = "week";
-  if (!start) start = dayjs().startOf("day").toISOString();
+  if (!mode) mode = "week";
+  if (!start) start = dayjs().startOf(mode).toISOString();
+  // mode = week | month
 
   const agendaContextValue = useMemo(() => {
     return {
+      mode,
       type: agendaView as any,
-      start: dayjs(start as string).startOf("month" as OpUnitType),
+      start: dayjs(start as string).startOf(mode as OpUnitType),
       end: dayjs(start as string)
-        .startOf("month" as OpUnitType)
-        .add(1, "month" as ManipulateType),
+        .startOf(mode as OpUnitType)
+        .add(1, mode as ManipulateType),
       id: id as any,
     };
-  }, [agendaView, start, id]);
+  }, [agendaView, start, id, mode]);
 
   return (
-    <AgendaContext.Provider value={agendaContextValue}>
+    <CalendarContext.Provider value={agendaContextValue}>
       <Content />
-    </AgendaContext.Provider>
+    </CalendarContext.Provider>
   );
 }

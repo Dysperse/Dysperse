@@ -112,7 +112,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const { data, access, type, isValidating, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
-  const { id } = useGlobalSearchParams();
+  const { id, mode } = useGlobalSearchParams();
 
   const isAll = id === "all";
   const contextValue = { data, type, ...ctx, access: null, isValidating };
@@ -156,6 +156,37 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   });
 
   const collectionMenuOptions = [
+    ...(type === "calendar" &&
+      [
+        {
+          icon: "calendar_view_day",
+          text: "Schedule view",
+          disabled: true,
+          callback: () => router.setParams({ mode: "schedule" }),
+        },
+        {
+          icon: "view_week",
+          text: "3-day view",
+          disabled: true,
+          callback: () => router.setParams({ mode: "3day" }),
+        },
+        {
+          icon: "calendar_view_week",
+          text: "Week view",
+          callback: () => router.setParams({ mode: "week" }),
+        },
+        {
+          icon: "calendar_month",
+          text: "Month view",
+          callback: () => router.setParams({ mode: "month" }),
+        },
+        {
+          divider: true,
+        },
+      ].map((e) => ({
+        ...e,
+        selected: e.text && e.text.split(" ")[0].toLowerCase() === mode,
+      }))),
     !isAll && {
       icon: "edit",
       text: "Edit",
@@ -348,9 +379,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }
           options={options}
         />
-        {!isLoading && type === "planner" && breakpoints.md && (
-          <AgendaButtons />
-        )}
+        {!isLoading &&
+          (type === "planner" || type === "calendar") &&
+          breakpoints.md && <AgendaButtons />}
         <View
           style={{
             width: breakpoints.md ? 220 : undefined,
@@ -393,7 +424,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           <IndeterminateProgressBar height={3} />
         </View>
       )}
-      {type === "planner" && !breakpoints.md && <AgendaButtons />}
+      {(type === "planner" || type === "calendar") && !breakpoints.md && (
+        <AgendaButtons />
+      )}
     </>
   );
 });
