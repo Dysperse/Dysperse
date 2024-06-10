@@ -1,3 +1,4 @@
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -37,6 +38,17 @@ export function AgendaButtons() {
       start: dayjs().startOf("day").utc().toISOString(),
     });
   }, []);
+
+  useHotkeys(["ctrl+left", "ctrl+right"], (e) => {
+    e.preventDefault();
+    if (e.key === "ArrowLeft") handlePrev();
+    else if (e.key === "ArrowRight") handleNext();
+  });
+
+  useHotkeys(["ctrl+up"], (e) => {
+    e.preventDefault();
+    handleToday();
+  });
 
   const isTodaysView = dayjs().isBetween(
     dayjs(start).startOf(agendaView as ManipulateType),

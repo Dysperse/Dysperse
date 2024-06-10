@@ -34,12 +34,35 @@ export default function Page() {
       ],
     },
     {
-      name: "Collection views",
-      subheading: "Open a collection to toggle between views",
-      shorcuts: Object.keys(collectionViews).map((key) => ({
-        keys: key[0],
-        action: `${capitalizeFirstLetter(key)} view`,
-      })),
+      name: "Collections",
+      subheading:
+        "Open a collection to use these shortcuts & toggle between views",
+      shorcuts: [
+        {
+          keys: "/",
+          action: "Search",
+        },
+        {
+          keys: "ctrl+f",
+          action: "Search",
+        },
+        {
+          keys: "ctrl+⬅",
+          action: "Previous planner view",
+        },
+        {
+          keys: "ctrl+⬆",
+          action: "Go to today",
+        },
+        {
+          keys: "ctrl+➡",
+          action: "Next planner view",
+        },
+        ...Object.keys(collectionViews).map((key) => ({
+          keys: key[0],
+          action: `${capitalizeFirstLetter(key)} view`,
+        })),
+      ],
     },
     {
       name: "Tasks & items",
@@ -76,9 +99,9 @@ export default function Page() {
               </Text>
             )}
             <View style={{ marginTop: 10 }}>
-              {group.shorcuts.map((shortcut) => (
+              {group.shorcuts.map((shortcut, index) => (
                 <View
-                  key={shortcut.action}
+                  key={index}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
