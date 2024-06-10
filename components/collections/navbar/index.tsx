@@ -310,14 +310,14 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }}
           trigger={
             <Pressable
-              style={{
+              style={({ hovered, pressed }) => ({
                 maxWidth: breakpoints.md ? 220 : "100%",
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 13,
                 paddingLeft: 10,
                 minWidth: 0,
-              }}
+              })}
             >
               {data?.emoji && (
                 <NavbarIcon
