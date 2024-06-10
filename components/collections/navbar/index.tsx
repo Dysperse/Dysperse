@@ -156,37 +156,38 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   });
 
   const collectionMenuOptions = [
-    ...(type === "calendar" &&
-      [
-        {
-          icon: "calendar_view_day",
-          text: "Schedule view",
-          disabled: true,
-          callback: () => router.setParams({ mode: "schedule" }),
-        },
-        {
-          icon: "view_week",
-          text: "3-day view",
-          disabled: true,
-          callback: () => router.setParams({ mode: "3day" }),
-        },
-        {
-          icon: "calendar_view_week",
-          text: "Week view",
-          callback: () => router.setParams({ mode: "week" }),
-        },
-        {
-          icon: "calendar_month",
-          text: "Month view",
-          callback: () => router.setParams({ mode: "month" }),
-        },
-        {
-          divider: true,
-        },
-      ].map((e) => ({
-        ...e,
-        selected: e.text && e.text.split(" ")[0].toLowerCase() === mode,
-      }))),
+    ...(type === "calendar"
+      ? [
+          {
+            icon: "calendar_view_day",
+            text: "Schedule view",
+            disabled: true,
+            callback: () => router.setParams({ mode: "schedule" }),
+          },
+          {
+            icon: "view_week",
+            text: "3-day view",
+            disabled: true,
+            callback: () => router.setParams({ mode: "3day" }),
+          },
+          {
+            icon: "calendar_view_week",
+            text: "Week view",
+            callback: () => router.setParams({ mode: "week" }),
+          },
+          {
+            icon: "calendar_month",
+            text: "Month view",
+            callback: () => router.setParams({ mode: "month" }),
+          },
+          {
+            divider: true,
+          },
+        ].map((e) => ({
+          ...e,
+          selected: e.text && e.text.split(" ")[0].toLowerCase() === mode,
+        }))
+      : []),
     !isAll && {
       icon: "edit",
       text: "Edit",
