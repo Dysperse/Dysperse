@@ -1,11 +1,12 @@
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
+import Alert from "@/ui/Alert";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
+import { useMemo, useState } from "react";
+import { Pressable, useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
   ICalendarEventBase,
@@ -52,9 +53,21 @@ export function Content() {
       }))
     );
   }, []);
+
+  const [show, setShow] = useState(true);
   const { height } = useWindowDimensions();
+
   return data ? (
     <>
+      {show && (
+        <Pressable onPress={() => setShow(false)} style={{ padding: 20 }}>
+          <Alert
+            title="Calendar view is experimental"
+            subtitle="We're still working on this view, so you might encounter some bugs. Tap on this banner to dismiss."
+            emoji="26A0"
+          />
+        </Pressable>
+      )}
       <BigCalendar
         height={height - 20 - 65}
         showAdjacentMonths={false}
