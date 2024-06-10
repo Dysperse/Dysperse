@@ -4,6 +4,7 @@ import {
   useCollectionContext,
 } from "@/components/collections/context";
 import { CollectionNavbar } from "@/components/collections/navbar";
+import { Calendar } from "@/components/collections/views/calendar";
 import { Grid } from "@/components/collections/views/grid";
 import { Kanban } from "@/components/collections/views/kanban";
 import { List } from "@/components/collections/views/list";
@@ -281,7 +282,7 @@ export default function Page() {
       content = <Matrix />;
       break;
     case "calendar":
-      content = comingSoon;
+      content = <Calendar />;
       break;
     default:
       content = <Text>404: {type}</Text>;
