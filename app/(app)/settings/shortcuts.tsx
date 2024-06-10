@@ -1,8 +1,10 @@
+import { collectionViews } from "@/components/layout/command-palette/list";
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import Divider from "@/ui/Divider";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -30,6 +32,14 @@ export default function Page() {
           action: "Switch to the specified tab",
         },
       ],
+    },
+    {
+      name: "Collection views",
+      subheading: "Open a collection to toggle between views",
+      shorcuts: Object.keys(collectionViews).map((key) => ({
+        keys: key[0],
+        action: `${capitalizeFirstLetter(key)} view`,
+      })),
     },
     {
       name: "Tasks & items",
@@ -60,6 +70,11 @@ export default function Page() {
         {shortcuts.map((group, index) => (
           <View key={group.name}>
             <Text style={settingStyles.heading}>{group.name}</Text>
+            {group.subheading && (
+              <Text style={{ fontSize: 20, opacity: 0.6, marginBottom: 10 }}>
+                {group.subheading}
+              </Text>
+            )}
             <View style={{ marginTop: 10 }}>
               {group.shorcuts.map((shortcut) => (
                 <View

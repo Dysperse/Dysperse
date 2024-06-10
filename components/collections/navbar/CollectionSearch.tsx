@@ -12,7 +12,7 @@ export const CollectionSearch = () => {
     router.push(`/search/${collection.data.id || "all"}`);
   };
 
-  useHotkeys(["s", "ctrl+f", "/"], handleOpen);
+  useHotkeys(["ctrl+f", "/"], handleOpen);
 
   const collection = useCollectionContext();
 

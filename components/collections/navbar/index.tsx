@@ -144,7 +144,15 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     e.preventDefault();
     await ctx.mutate();
   };
+
   useHotkeys(["ctrl+r"], handleRefresh);
+  useHotkeys(["p", "k", "s", "g", "w", "l", "m", "c"], (e) => {
+    router.setParams({
+      type: Object.keys(collectionViews).find(
+        (v) => v[0].toLowerCase() === e.key
+      ),
+    });
+  });
 
   const collectionMenuOptions = [
     !isAll && {
