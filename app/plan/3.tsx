@@ -165,8 +165,8 @@ function CurrentTaskFooter({
         </Text>
       </Pressable>
       <TaskDatePicker
-        setValue={(date) => handleEdit("due", date)}
-        watch={(n) => task.due}
+        setValue={(date) => handleEdit("start", date)}
+        watch={(n) => task.start}
         defaultView="date"
         dueDateOnly
       >
@@ -440,7 +440,7 @@ const CurrentTaskCard = ({
                 ? normalizeRecurrenceRuleObject(
                     currentTask.recurrenceRule
                   ).toText()
-                : dayjs(currentTask.due).fromNow()
+                : dayjs(currentTask.start).fromNow()
             )}
           />
           <Chip
@@ -484,7 +484,7 @@ function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
             .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
             ?.tasks?.filter(
               (i) =>
-                (i.due && dayjs(i.due).isSame(dayjs(), "day")) ||
+                (i.start && dayjs(i.start).isSame(dayjs(), "day")) ||
                 i.recurrenceRule
             )
         : [],

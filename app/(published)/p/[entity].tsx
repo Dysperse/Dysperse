@@ -249,16 +249,16 @@ const Info = () => {
       <View
         style={{ flexDirection: breakpoints.md ? "row" : "column", gap: 20 }}
       >
-        {data.due && (
+        {data.start && (
           <View style={{ gap: 5, flex: 1 }}>
             <Text variant="eyebrow">Due</Text>
             <ListItemButton disabled variant="filled">
               <Avatar icon="calendar_today" theme="mint" size={40} />
               <ListItemText
-                primary={dayjs(data.due).format(
+                primary={dayjs(data.start).format(
                   data.dateOnly ? "MMMM Do, YYYY" : "MMMM Do, YYYY [@] h:mm A"
                 )}
-                secondary={dayjs(data.due).fromNow()}
+                secondary={dayjs(data.start).fromNow()}
               />
             </ListItemButton>
           </View>

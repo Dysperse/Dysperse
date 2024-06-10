@@ -69,12 +69,12 @@ export const UpNext = ({ widget, menuActions }) => {
 
   // find task which is closest in future to current time
   const nextTask = today?.tasks
-    .filter((task) => dayjs().isBefore(dayjs(task.due)))
+    .filter((task) => dayjs().isBefore(dayjs(task.start)))
     .filter((t) => t.completionInstances?.length === 0)
-    .sort((a, b) => dayjs(a.due).diff(dayjs(b.due)))[0];
+    .sort((a, b) => dayjs(a.start).diff(dayjs(b.start)))[0];
 
   const nextUncompletedTask = today?.tasks
-    .sort((a, b) => dayjs(a.due).diff(dayjs(b.due)))
+    .sort((a, b) => dayjs(a.start).diff(dayjs(b.start)))
     .filter((t) => t.completionInstances?.length === 0);
 
   return (
@@ -134,7 +134,7 @@ export const UpNext = ({ widget, menuActions }) => {
                       marginTop: 5,
                     }}
                   >
-                    {dayjs(nextTask.due).fromNow()}
+                    {dayjs(nextTask.start).fromNow()}
                   </Text>
                   <ColorThemeProvider theme={userTheme}>
                     <TaskDrawer

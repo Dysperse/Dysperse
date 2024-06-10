@@ -117,7 +117,7 @@ export function Content() {
         }}
         swipeEnabled={false}
         events={tasks
-          .filter((e) => e.due || e.recurrenceRule)
+          .filter((e) => e.start || e.recurrenceRule)
           .map(
             (task) =>
               ({
@@ -131,7 +131,7 @@ export function Content() {
                           new Date(task.dateRange[1])
                         )[0]
                         .toISOString()
-                    : task.due
+                    : task.start
                 ).toDate(),
                 end: dayjs(
                   task.recurrenceRule
@@ -141,7 +141,7 @@ export function Content() {
                           new Date(task.dateRange[1])
                         )[0]
                         .toISOString()
-                    : task.due
+                    : task.start
                 )
                   .add(1, "hour")
                   .toDate(),

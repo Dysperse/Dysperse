@@ -106,18 +106,18 @@ export function Stream() {
       if (view === "backlog")
         return (
           !t.completionInstances.length &&
-          dayjs(t.due).isBefore(dayjs()) &&
-          (!t.dateOnly || !dayjs(t.due).isToday())
+          dayjs(t.start).isBefore(dayjs()) &&
+          (!t.dateOnly || !dayjs(t.start).isToday())
         );
       else if (view === "upcoming")
         return (
-          dayjs(t.due).isAfter(dayjs().startOf("day")) &&
+          dayjs(t.start).isAfter(dayjs().startOf("day")) &&
           !t.completionInstances.length
         );
       else if (view === "completed") return t.completionInstances.length;
       else if (view === "unscheduled")
         return (
-          !t.due && !t.recurrenceRule && t.completionInstances.length === 0
+          !t.start && !t.recurrenceRule && t.completionInstances.length === 0
         );
     })
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));

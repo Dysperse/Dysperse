@@ -388,16 +388,16 @@ export function Matrix() {
   const grid = useMemo(
     () => ({
       pinnedImportant: filteredTasks.filter(
-        (e) => e.pinned && dayjs(e.due).isBefore(dayjs().endOf("day"))
+        (e) => e.pinned && dayjs(e.start).isBefore(dayjs().endOf("day"))
       ),
       important: filteredTasks.filter(
-        (e) => !e.pinned && dayjs(e.due).isBefore(dayjs().endOf("day"))
+        (e) => !e.pinned && dayjs(e.start).isBefore(dayjs().endOf("day"))
       ),
       pinned: filteredTasks.filter(
-        (e) => e.pinned && !dayjs(e.due).isBefore(dayjs().endOf("day"))
+        (e) => e.pinned && !dayjs(e.start).isBefore(dayjs().endOf("day"))
       ),
       other: filteredTasks.filter(
-        (e) => !e.pinned && !dayjs(e.due).isBefore(dayjs().endOf("day"))
+        (e) => !e.pinned && !dayjs(e.start).isBefore(dayjs().endOf("day"))
       ),
     }),
     [filteredTasks]

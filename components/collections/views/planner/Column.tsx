@@ -215,7 +215,7 @@ export const onTaskUpdate = (newTask, mutate, column) => {
               };
             }
           : (oldColumn) => {
-              const isTargetColumn = dayjs(newTask.due).isBetween(
+              const isTargetColumn = dayjs(newTask.start).isBetween(
                 oldColumn.start,
                 oldColumn.end,
                 null,
@@ -358,7 +358,7 @@ export function Column({
                     console.log(newTask);
                     if (!newTask) return;
                     if (
-                      !dayjs(newTask.due)
+                      !dayjs(newTask.start)
                         .utc()
                         .isBetween(
                           dayjs(column.start),
@@ -366,7 +366,7 @@ export function Column({
                           null,
                           "[]"
                         ) ||
-                      !newTask.due
+                      !newTask.start
                     )
                       return;
 

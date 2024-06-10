@@ -350,8 +350,8 @@ const Task = memo(function Task({
                 style={{
                   marginTop:
                     task.note ||
-                    (showRelativeTime && task.due) ||
-                    (showDate && task.due) ||
+                    (showRelativeTime && task.start) ||
+                    (showDate && task.start) ||
                     task.recurrenceRule ||
                     (showLabel && task.label) ||
                     task.pinned ||
@@ -379,19 +379,19 @@ const Task = memo(function Task({
               ) : null}
             </View>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
-              {showRelativeTime && task.due && (
+              {showRelativeTime && task.start && (
                 <Chip
                   disabled
                   dense
-                  label={dayjs(task.due).fromNow()}
+                  label={dayjs(task.start).fromNow()}
                   icon={<Icon>access_time</Icon>}
                 />
               )}
-              {showDate && task.due && (
+              {showDate && task.start && (
                 <Chip
                   disabled
                   dense
-                  label={dayjs(task.due).format("MMM Do")}
+                  label={dayjs(task.start).format("MMM Do")}
                   icon={<Icon>calendar_today</Icon>}
                 />
               )}
@@ -420,7 +420,7 @@ const Task = memo(function Task({
               {!task.dateOnly && (
                 <Chip
                   dense
-                  label={dayjs(task.due).format("h:mm A")}
+                  label={dayjs(task.start).format("h:mm A")}
                   icon={<Icon size={22}>calendar_today</Icon>}
                 />
               )}

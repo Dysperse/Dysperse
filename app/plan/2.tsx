@@ -100,11 +100,11 @@ export default function Page() {
         ].filter((t) => {
           return (
             !t.completionInstances.length &&
-            dayjs(t.due).isBefore(dayjs().startOf("day"))
+            dayjs(t.start).isBefore(dayjs().startOf("day"))
           );
         })
       : []
-  ).sort((a, b) => dayjs(a.due).diff(dayjs(b.due)));
+  ).sort((a, b) => dayjs(a.start).diff(dayjs(b.start)));
 
   useEffect(() => {
     if (filteredTasks.length === 0) router.push("/plan/3");

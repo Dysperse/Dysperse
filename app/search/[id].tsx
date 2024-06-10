@@ -65,14 +65,14 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
     {
       label: "Today",
       icon: "calendar_today",
-      filter: (item) => item.due && dayjs(item.due).isToday(),
+      filter: (item) => item.start && dayjs(item.start).isToday(),
     },
     {
       label: "Overdue",
       icon: "schedule",
       filter: (item) =>
-        item.due &&
-        dayjs(item.due).isBefore(dayjs(), "day") &&
+        item.start &&
+        dayjs(item.start).isBefore(dayjs(), "day") &&
         !item.completionInstances.length,
     },
     {

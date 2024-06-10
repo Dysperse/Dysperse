@@ -40,9 +40,9 @@ const drawerStyles = StyleSheet.create({
 function TaskRescheduleButton() {
   const { task, updateTask } = useTaskDrawerContext();
   const handleSelect = (t, n) => {
-    updateTask("due", dayjs(task.due).add(n, t).toISOString());
+    updateTask("start", dayjs(task.start).add(n, t).toISOString());
   };
-  const isSameDay = dayjs().isSame(dayjs(task.due), "day");
+  const isSameDay = dayjs().isSame(dayjs(task.start), "day");
 
   return (
     <MenuPopover
@@ -83,13 +83,13 @@ function TaskRescheduleButton() {
           callback: () => handleSelect("day", 5),
         },
         {
-          text: dayjs().isSame(dayjs(task.due), "week")
+          text: dayjs().isSame(dayjs(task.start), "week")
             ? "Next week"
             : "1 week",
           callback: () => handleSelect("week", 1),
         },
         {
-          text: dayjs().isSame(dayjs(task.due), "month")
+          text: dayjs().isSame(dayjs(task.start), "month")
             ? "Next month"
             : "1 month",
           callback: () => handleSelect("month", 1),
@@ -543,7 +543,7 @@ export function TaskDetails() {
               <TaskDatePicker
                 defaultView={task.recurrenceRule ? "recurrence" : "date"}
                 setValue={(name, value) =>
-                  updateTask(name === "date" ? "due" : name, value)
+                  updateTask(name === "date" ? "start" : name, value)
                 }
                 watch={(inputName) => {
                   return {
@@ -556,10 +556,10 @@ export function TaskDetails() {
                 <ListItemButton
                   variant="filled"
                   style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-                  disabled={Boolean(task.due || task.recurrenceRule)}
+                  disabled={Boolean(task.start || task.recurrenceRule)}
                 >
                   <Icon>
-                    {task.due
+                    {task.start
                       ? "calendar_today"
                       : task.recurrenceRule
                       ? "loop"
@@ -567,20 +567,20 @@ export function TaskDetails() {
                   </Icon>
                   <ListItemText
                     primary={
-                      !task.due && !task.recurrenceRule
+                      !task.start && !task.recurrenceRule
                         ? "Add date"
                         : task.recurrenceRule
                         ? capitalizeFirstLetter(recurrenceRule.toText())
-                        : dayjs(task.due).format("MMM Do, YYYY")
+                        : dayjs(task.start).format("MMM Do, YYYY")
                     }
                     secondary={
-                      task.due &&
+                      task.start &&
                       (task.recurrenceRule
                         ? capitalizeFirstLetter(recurrenceRule.toText())
                         : "Does not repeat")
                     }
                   />
-                  {!isReadOnly && !task.recurrenceRule && task.due && (
+                  {!isReadOnly && !task.recurrenceRule && task.start && (
                     <TaskRescheduleButton />
                   )}
                 </ListItemButton>
@@ -591,11 +591,11 @@ export function TaskDetails() {
                 <TaskDatePicker
                   defaultView={task.recurrenceRule ? "recurrence" : "date"}
                   setValue={(name, value) =>
-                    updateTask(name === "date" ? "due" : name, value)
+                    updateTask(name === "date" ? "start" : name, value)
                   }
                   watch={(inputName) => {
                     return {
-                      date: dayjs(task.due),
+                      date: dayjs(task.start),
                       dateOnly: task.dateOnly,
                       recurrenceRule: recurrenceRule?.options,
                     }[inputName];
@@ -620,7 +620,7 @@ export function TaskDetails() {
                   style={drawerStyles.collapsibleMenuItem}
                   onPress={() => {
                     updateTask("recurrenceRule", null);
-                    updateTask("due", null);
+                    updateTask("start", null);
                   }}
                 >
                   <IconButton
@@ -646,7 +646,7 @@ export function TaskDetails() {
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
                 <Icon>access_time</Icon>
-                <ListItemText primary={dayjs(task.due).format("h:mm A")} />
+                <ListItemText primary={dayjs(task.start).format("h:mm A")} />
               </ListItemButton>
             ),
             content: <></>,
@@ -738,7 +738,7 @@ export function TaskDetails() {
             ),
             content: <></>,
           },
-          task.due && {
+          task.start && {
             trigger: () => (
               <ListItemButton
                 disabled

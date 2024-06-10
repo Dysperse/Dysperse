@@ -86,7 +86,7 @@ const SubmitButton = ({ watch, handleSubmit }) => {
       {
         body: JSON.stringify({
           ...values,
-          due: new Date().toISOString(),
+          start: new Date().toISOString(),
           pinned: false,
           labelId: null,
           type: "TASK",

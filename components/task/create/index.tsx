@@ -979,7 +979,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
         {
           body: JSON.stringify({
             ...data,
-            due: data?.date?.toISOString(),
+            start: data?.date?.toISOString(),
             agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,
             labelId: data.label?.id,
