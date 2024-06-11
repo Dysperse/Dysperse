@@ -127,6 +127,11 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
     []
   );
 
+  const handleCreateAccount = useCallback(
+    () => router.push("/auth/sign-up"),
+    []
+  );
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -247,6 +252,23 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
               Need help?
             </ButtonText>
           </Button>
+          {!breakpoints.md && (
+            <Button
+              dense
+              onPress={handleCreateAccount}
+              variant="outlined"
+              style={[authStyles.button]}
+            >
+              <ButtonText
+                style={[
+                  authStyles.buttonText,
+                  { opacity: 0.6, fontFamily: "body_500" },
+                ]}
+              >
+                Create an account
+              </ButtonText>
+            </Button>
+          )}
         </View>
       </ScrollView>
       {breakpoints.md && step === 0 && (
