@@ -65,12 +65,11 @@ dayjs.extend(isToday);
 
 function DesktopLayout({ children }) {
   const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
-
   const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
-      <Sidebar progressValue={0 as any} />
+      <Sidebar desktop />
       {breakpoints.md && !desktopCollapsed && (
         <GestureDetector
           gesture={Gesture.Tap().onEnd(() => {
@@ -94,8 +93,7 @@ export default function AppLayout() {
   const pathname = usePathname();
   const progressValue = useRef(null);
 
-  const { desktopCollapsed, setDesktopCollapsed, sidebarRef, SIDEBAR_WIDTH } =
-    useSidebarContext();
+  const { sidebarRef, SIDEBAR_WIDTH } = useSidebarContext();
   useEffect(() => {
     setTimeout(() => {
       sidebarRef.current?.openDrawer?.();

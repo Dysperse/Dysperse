@@ -8,8 +8,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { useTabParams } from "@/utils/useTabParams";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -224,8 +223,8 @@ const WebPWAInstallButton = () => {
   );
 };
 
-const OpenTabsList = memo(function OpenTabsList() {
-  const { tab }: { tab: string } = useTabParams() as any;
+function OpenTabsList() {
+  const { tab } = useGlobalSearchParams();
   const { data, error, mutate } = useSWR(["user/tabs"], {
     refreshInterval: 60000,
   });
@@ -356,6 +355,6 @@ const OpenTabsList = memo(function OpenTabsList() {
       )}
     </View>
   );
-});
+}
 
 export default memo(OpenTabsList);

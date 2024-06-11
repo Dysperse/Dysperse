@@ -413,8 +413,10 @@ const Header = memo(function Header() {
 });
 
 const Sidebar = ({
+  desktop = false,
   progressValue,
 }: {
+  desktop?: boolean;
   progressValue?: NativeAnimated.Value;
 }) => {
   const breakpoints = useResponsiveBreakpoints();
