@@ -63,6 +63,28 @@ dayjs.extend(isoWeek);
 dayjs.extend(weekday);
 dayjs.extend(isToday);
 
+function DesktopLayout({ children }) {
+  const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
+
+  const breakpoints = useResponsiveBreakpoints();
+
+  return (
+    <View style={{ flex: 1, flexDirection: "row" }}>
+      <Sidebar progressValue={0 as any} />
+      {breakpoints.md && !desktopCollapsed && (
+        <GestureDetector
+          gesture={Gesture.Tap().onEnd(() => {
+            setDesktopCollapsed((t) => !t);
+          })}
+        >
+          <PanelSwipeTrigger side="left" />
+        </GestureDetector>
+      )}
+      {children}
+    </View>
+  );
+}
+
 export default function AppLayout() {
   const { session, isLoading } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
@@ -108,7 +130,7 @@ export default function AppLayout() {
 
   if (!session) return <Redirect href="/auth" />;
 
-  const content = () => (
+  const content = (
     <AppContainer progressValue={progressValue}>
       <JsStack
         screenOptions={{
@@ -255,31 +277,13 @@ export default function AppLayout() {
                           <LoadingErrors />
                           <SelectionNavbar />
                           {breakpoints.md ? (
-                            <View style={{ flex: 1, flexDirection: "row" }}>
-                              <Sidebar desktop />
-                              {breakpoints.md && !desktopCollapsed && (
-                                <GestureDetector
-                                  gesture={Gesture.Tap().onEnd(() => {
-                                    setDesktopCollapsed((t) => !t);
-                                  })}
-                                >
-                                  <PanelSwipeTrigger side="left" />
-                                </GestureDetector>
-                              )}
-                              {content()}
-                            </View>
+                            <DesktopLayout>{content}</DesktopLayout>
                           ) : (
                             <DrawerLayout
                               ref={sidebarRef}
                               useNativeAnimations={false}
                               drawerPosition="left"
-                              drawerType={
-                                breakpoints.md
-                                  ? desktopCollapsed
-                                    ? "front"
-                                    : "slide"
-                                  : "back"
-                              }
+                              drawerType="back"
                               overlayColor="transparent"
                               drawerWidth={SIDEBAR_WIDTH}
                               edgeWidth={
