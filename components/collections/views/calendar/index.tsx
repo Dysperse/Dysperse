@@ -200,9 +200,9 @@ export function Content() {
                           new Date(task.dateRange[1])
                         )[0]
                         .toISOString()
-                    : task.start
+                    : task.end || task.start
                 )
-                  .add(1, "hour")
+                  .add(task.end ? 0 : 1, "hour")
                   .toDate(),
               } as ICalendarEventBase)
           )}
