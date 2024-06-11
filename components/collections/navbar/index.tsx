@@ -161,7 +161,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           {
             icon: "calendar_view_day",
             text: "Schedule view",
-            disabled: true,
+            id: "schedule",
             callback: () => router.setParams({ mode: "schedule" }),
           },
           {

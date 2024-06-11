@@ -240,6 +240,7 @@ export function Calendar() {
   let { start, id, mode } = useLocalSearchParams();
   const { mode: originalMode } = useLocalSearchParams();
   if (!mode || mode === "3days") mode = "week";
+  if (mode === "schedule") mode = "month";
   if (!start) start = dayjs().startOf(mode).toISOString();
   // mode = week | month
 

@@ -20,7 +20,11 @@ export function AgendaButtons() {
       start: dayjs(start)
         .subtract(
           agendaView === "3days" ? 3 : 1,
-          agendaView === "3days" ? "day" : (agendaView as ManipulateType)
+          agendaView === "3days"
+            ? "day"
+            : agendaView === "schedule"
+            ? "month"
+            : (agendaView as ManipulateType)
         )
         .toISOString(),
     };
@@ -33,7 +37,11 @@ export function AgendaButtons() {
         .startOf(agendaView as ManipulateType)
         .add(
           agendaView === "3days" ? 3 : 1,
-          agendaView === "3days" ? "day" : (agendaView as ManipulateType)
+          agendaView === "3days"
+            ? "day"
+            : agendaView === "schedule"
+            ? "month"
+            : (agendaView as ManipulateType)
         )
         .toISOString(),
     });

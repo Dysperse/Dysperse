@@ -3,16 +3,23 @@ import Calendar from "@/ui/Calendar";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
-import { router, useGlobalSearchParams } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 
 export function AgendaCalendarMenu() {
   const { start }: any = useGlobalSearchParams();
+  const { agendaView, mode } = useLocalSearchParams();
 
   const titleFormat = {
     week: "[Week #]W • MMM YYYY",
-    month: "YYYY",
+    month: "MMMM YYYY",
     year: "YYYY",
-  }["week"];
+    schedule: "MMMM YYYY",
+    "3days": "[Week #]W • MMM YYYY",
+  }[(agendaView || mode) as any];
 
   return (
     <MenuPopover
