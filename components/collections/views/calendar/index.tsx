@@ -6,7 +6,7 @@ import Alert from "@/ui/Alert";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useRef, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import {
@@ -114,6 +114,12 @@ export function Content() {
         }}
       />
       <BigCalendar
+        onPressMoreLabel={(event) => {
+          router.setParams({
+            mode: "week",
+            start: event[0].start || event[0].dateRange[0],
+          });
+        }}
         onPressCell={(date) => {
           setCreateDate(date);
           setTimeout(() => {
