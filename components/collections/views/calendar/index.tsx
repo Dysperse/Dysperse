@@ -225,6 +225,7 @@ export function Content() {
 
 export function Calendar() {
   let { start, id, mode } = useLocalSearchParams();
+  const { mode: originalMode } = useLocalSearchParams();
   if (!mode || mode === "3days") mode = "week";
   if (!start) start = dayjs().startOf(mode).toISOString();
   // mode = week | month
@@ -236,10 +237,10 @@ export function Calendar() {
       start: dayjs(start as string).startOf(mode as OpUnitType),
       end: dayjs(start as string)
         .startOf(mode as OpUnitType)
-        .add(mode === "3days" ? 2 : 1, mode as ManipulateType),
+        .add(originalMode === "3days" ? 2 : 1, mode as ManipulateType),
       id,
     };
-  }, [start, id, mode]);
+  }, [start, id, mode, originalMode]);
 
   return (
     <CalendarContext.Provider value={agendaContextValue}>
