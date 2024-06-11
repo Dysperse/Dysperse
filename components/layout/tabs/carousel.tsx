@@ -9,7 +9,6 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useTabParams } from "@/utils/useTabParams";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
@@ -248,16 +247,6 @@ const OpenTabsList = memo(function OpenTabsList() {
       },
     });
   };
-
-  useEffect(() => {
-    if (tab && Array.isArray(data)) {
-      const index = data?.findIndex((i) => i.id === tab);
-      if (index !== -1) {
-        const recentlyAccessed = JSON.stringify(data[index]);
-        AsyncStorage.setItem("recentlyAccessed", recentlyAccessed);
-      }
-    }
-  }, [tab, data]);
 
   useHotkeys("ctrl+tab", (e) => {
     e.preventDefault();
