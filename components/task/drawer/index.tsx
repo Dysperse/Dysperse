@@ -5,7 +5,6 @@ import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, {
   cloneElement,
   forwardRef,
@@ -166,37 +165,47 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   );
 });
 
-export function TaskDrawer({
-  mutateList,
-  children,
-  id,
-  disabled,
-  isReadOnly,
-  dateRange,
-}: {
-  mutateList: any;
-  children: any;
-  id: any;
-  disabled?: boolean;
-  isReadOnly?: boolean;
-  dateRange?: [Date, Date];
-}) {
-  const ref = useRef<BottomSheetModal>(null);
+export const TaskDrawer = forwardRef(function TaskDrawer(
+  {
+    mutateList,
+    children,
+    id,
+    disabled,
+    isReadOnly,
+    dateRange,
+  }: {
+    mutateList: any;
+    children?: React.ReactNode;
+    id: any;
+    disabled?: boolean;
+    isReadOnly?: boolean;
+    dateRange?: [Date, Date];
+  },
+  ref
+) {
   const { width } = useWindowDimensions();
   const contentRef = useRef(null);
 
+  const sheetRef = useRef(null);
+
   // callbacks
-  const handleOpen = useCallback(() => ref.current.present(), []);
+  const handleOpen = useCallback(() => sheetRef.current.present(), []);
   const breakpoints = useResponsiveBreakpoints();
+
+  useImperativeHandle(ref, () => ({
+    show: handleOpen,
+  }));
 
   const handleClose = useCallback(() => {
     contentRef.current?.triggerMutate();
-    ref.current?.forceClose(
+    sheetRef.current?.forceClose(
       breakpoints.md ? undefined : { overshootClamping: true, stiffness: 400 }
     );
-  }, [breakpoints]);
+  }, [sheetRef, breakpoints]);
 
-  const trigger = cloneElement(children, { onPress: handleOpen });
+  const trigger = cloneElement(children || <Pressable />, {
+    onPress: handleOpen,
+  });
 
   if (disabled) return children;
 
@@ -204,7 +213,7 @@ export function TaskDrawer({
     <>
       {trigger}
       <BottomSheet
-        sheetRef={ref}
+        sheetRef={sheetRef}
         animateOnMount={!breakpoints.md}
         snapPoints={["100%"]}
         onClose={handleClose}
@@ -232,4 +241,4 @@ export function TaskDrawer({
       </BottomSheet>
     </>
   );
-}
+});

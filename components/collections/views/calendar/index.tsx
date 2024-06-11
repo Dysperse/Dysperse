@@ -1,31 +1,24 @@
 import { useLabelColors } from "@/components/labels/useLabelColors";
+import { TaskDrawer } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import Alert from "@/ui/Alert";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
   ICalendarEventBase,
 } from "react-native-big-calendar";
 import useSWR from "swr";
+import { onTaskUpdate } from "../planner/Column";
 import { CalendarContext, useCalendarContext } from "./context";
 
-const events = [
-  {
-    title: "Meeting",
-    start: new Date(2024, 6, 10, 10, 0),
-    end: new Date(2024, 6, 10, 10, 30),
-  },
-  {
-    title: "Coffee break",
-    start: new Date(2024, 6, 10, 15, 45),
-    end: new Date(2024, 6, 10, 16, 30),
-  },
-];
+export interface MyCustomEventType {
+  color: string;
+}
 
 export function Content() {
   const theme = useColorTheme();
@@ -44,6 +37,9 @@ export function Content() {
       ...(params.id === "all" && { all: true }),
     },
   ]);
+
+  const taskDrawerRef = useRef(null);
+  const [taskId, setTaskId] = useState<string | null>(null);
 
   const tasks = data?.reduce((acc, col) => {
     return acc.concat(
@@ -68,6 +64,20 @@ export function Content() {
           />
         </Pressable>
       )}
+      {taskId && (
+        <TaskDrawer
+          dateRange={tasks.find((e) => e.id === taskId)?.dateRange}
+          mutateList={(newItem) =>
+            onTaskUpdate(
+              newItem,
+              mutate,
+              data.find((d) => d.tasks.find((t) => t.id === newItem.id))
+            )
+          }
+          ref={taskDrawerRef}
+          id={taskId}
+        />
+      )}
       <BigCalendar
         key={`${start.toISOString()}-${end.toISOString()}`}
         height={height - 20 - 65}
@@ -78,7 +88,8 @@ export function Content() {
         //   alert(date);
         // }}
         onPressEvent={(event: any) => {
-          alert(event.id);
+          setTaskId(event.id);
+          taskDrawerRef.current?.show();
         }}
         eventCellStyle={(event) => ({
           backgroundColor: theme[11],

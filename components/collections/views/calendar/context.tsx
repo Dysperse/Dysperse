@@ -11,6 +11,7 @@ interface CalendarContextProps {
 }
 
 export const CalendarContext = createContext<CalendarContextProps>({
+  mode: "month",
   type: "week",
   start: dayjs().startOf("week"),
   end: dayjs().endOf("week"),
