@@ -19,7 +19,7 @@ export function AgendaCalendarMenu() {
     year: "YYYY",
     schedule: "MMMM YYYY",
     "3days": "[Week #]W • MMM YYYY",
-  }[(agendaView || mode) as any];
+  }[((agendaView || mode) as any) || "week"];
 
   return (
     <MenuPopover
