@@ -1,4 +1,5 @@
 import { useLabelColors } from "@/components/labels/useLabelColors";
+import CreateTask from "@/components/task/create";
 import { TaskDrawer } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import Alert from "@/ui/Alert";
@@ -39,6 +40,7 @@ export function Content() {
   ]);
 
   const taskDrawerRef = useRef(null);
+  const createTaskSheetRef = useRef(null);
   const [taskId, setTaskId] = useState<string | null>(null);
 
   const tasks = data?.reduce((acc, col) => {
@@ -51,6 +53,7 @@ export function Content() {
   }, []);
 
   const [show, setShow] = useState(true);
+  const [createDate, setCreateDate] = useState(new Date());
   const { height } = useWindowDimensions();
 
   return data ? (
@@ -64,7 +67,7 @@ export function Content() {
           />
         </Pressable>
       )}
-      {taskId && (
+      {taskId && tasks.find((e) => e.id === taskId) && (
         <TaskDrawer
           dateRange={tasks.find((e) => e.id === taskId)?.dateRange}
           mutateList={(newItem) =>
@@ -78,7 +81,45 @@ export function Content() {
           id={taskId}
         />
       )}
+      <CreateTask
+        defaultValues={{
+          dateOnly: false,
+          date: dayjs(createDate),
+        }}
+        ref={createTaskSheetRef}
+        mutate={(newItem) => {
+          if (newItem)
+            mutate(
+              (oldData) =>
+                oldData.map((d) => {
+                  if (
+                    dayjs(newItem.date).isBetween(
+                      dayjs(d.start),
+                      dayjs(d.end),
+                      "day",
+                      "[]"
+                    )
+                  ) {
+                    return {
+                      ...d,
+                      tasks: [...d.tasks, newItem],
+                    };
+                  }
+                  return d;
+                }),
+              {
+                revalidate: false,
+              }
+            );
+        }}
+      />
       <BigCalendar
+        onPressCell={(date) => {
+          setCreateDate(date);
+          setTimeout(() => {
+            createTaskSheetRef.current?.present();
+          }, 0);
+        }}
         key={`${start.toISOString()}-${end.toISOString()}`}
         height={height - 20 - 65}
         showAdjacentMonths={false}

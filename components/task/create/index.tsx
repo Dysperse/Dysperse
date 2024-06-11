@@ -946,7 +946,10 @@ function BottomSheetContent({ defaultValues, mutateList }) {
   const theme = useColorTheme();
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
-      dateOnly: true,
+      dateOnly:
+        typeof defaultValues.dateOnly === "boolean"
+          ? defaultValues.dateOnly
+          : false,
       name: defaultValues.name || "",
       date: defaultValues.date || dayjs().utc(),
       pinned: defaultValues.pinned || false,
@@ -1157,10 +1160,11 @@ const CreateTask = forwardRef(
         agendaOrder: null,
         collectionId: null,
         storyPoints: 2,
+        dateOnly: true,
       },
       mutate,
     }: {
-      children?: any;
+      children?: React.ReactNode;
       sheetRef?: RefObject<BottomSheetModal>;
       defaultValues?: {
         date?: Dayjs;
@@ -1168,6 +1172,7 @@ const CreateTask = forwardRef(
         collectionId?: string;
         label?: any;
         storyPoints?: number;
+        dateOnly?: boolean;
       };
       mutate: (newTask) => void;
     },
@@ -1189,7 +1194,7 @@ const CreateTask = forwardRef(
 
     const { isReached } = useStorageContext();
 
-    const trigger = cloneElement(children, {
+    const trigger = cloneElement(children || <Pressable />, {
       onPress: handleOpen,
       disabled: isReached,
     });

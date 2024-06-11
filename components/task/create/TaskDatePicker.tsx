@@ -95,7 +95,7 @@ export function TaskDatePicker({
           recurrence
             ? capitalizeFirstLetter(new RRule(recurrence).toText())
             : dueDate
-            ? dueDate.format("MMM Do")
+            ? dueDate.format(dueDateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
             : undefined
         }
       />
