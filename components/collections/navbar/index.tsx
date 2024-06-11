@@ -167,17 +167,19 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           {
             icon: "view_week",
             text: "3-day view",
-            disabled: true,
-            callback: () => router.setParams({ mode: "3day" }),
+            id: "3days",
+            callback: () => router.setParams({ mode: "3days" }),
           },
           {
             icon: "calendar_view_week",
             text: "Week view",
+            id: "week",
             callback: () => router.setParams({ mode: "week" }),
           },
           {
             icon: "calendar_month",
             text: "Month view",
+            id: "month",
             callback: () => router.setParams({ mode: "month" }),
           },
           {
@@ -185,7 +187,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           },
         ].map((e) => ({
           ...e,
-          selected: e.text && e.text.split(" ")[0].toLowerCase() === mode,
+          selected: e.text && e.id === mode,
         }))
       : []),
     !isAll && {

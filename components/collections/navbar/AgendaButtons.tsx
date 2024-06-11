@@ -12,13 +12,16 @@ import { AgendaCalendarMenu } from "./AgendaCalendarMenu";
 export function AgendaButtons() {
   const theme = useColorTheme();
   // eslint-disable-next-line prefer-const
-  let { agendaView, start }: any = useGlobalSearchParams();
-  if (!agendaView) agendaView = "week";
+  let { agendaView, mode, start }: any = useGlobalSearchParams();
+  if (!agendaView) agendaView = mode || "week";
 
   const handlePrev = useCallback(async () => {
     const newParams = {
       start: dayjs(start)
-        .subtract(1, agendaView as ManipulateType)
+        .subtract(
+          agendaView === "3days" ? 3 : 1,
+          agendaView === "3days" ? "day" : (agendaView as ManipulateType)
+        )
         .toISOString(),
     };
     router.setParams(newParams);
@@ -28,7 +31,10 @@ export function AgendaButtons() {
     router.setParams({
       start: dayjs(start)
         .startOf(agendaView as ManipulateType)
-        .add(1, agendaView as ManipulateType)
+        .add(
+          agendaView === "3days" ? 3 : 1,
+          agendaView === "3days" ? "day" : (agendaView as ManipulateType)
+        )
         .toISOString(),
     });
   }, [agendaView, start]);

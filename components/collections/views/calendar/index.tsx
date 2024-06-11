@@ -25,7 +25,8 @@ export function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams();
   const colors = useLabelColors();
-  const { type, start, end, mode } = useCalendarContext();
+  const { type, start, end } = useCalendarContext();
+  const { mode: originalMode, start: originalStart } = useLocalSearchParams();
 
   const { data, mutate, error } = useSWR([
     "space/collections/collection/planner",
@@ -129,7 +130,7 @@ export function Content() {
         key={`${start.toISOString()}-${end.toISOString()}`}
         height={height - 20 - 65}
         showAdjacentMonths={false}
-        mode={mode}
+        mode={originalMode as any}
         hourStyle={{ fontFamily: "body_700", color: theme[7] }}
         // onPressCell={(date) => {
         //   alert(date);
@@ -206,7 +207,7 @@ export function Content() {
                   .toDate(),
               } as ICalendarEventBase)
           )}
-        date={start.toDate()}
+        date={dayjs(originalStart).toDate()}
       />
     </>
   ) : (
@@ -223,23 +224,22 @@ export function Content() {
 }
 
 export function Calendar() {
-  let { agendaView, start, id, mode } = useLocalSearchParams();
-  if (!agendaView) agendaView = "week";
-  if (!mode) mode = "week";
+  let { start, id, mode } = useLocalSearchParams();
+  if (!mode || mode === "3days") mode = "week";
   if (!start) start = dayjs().startOf(mode).toISOString();
   // mode = week | month
 
   const agendaContextValue = useMemo(() => {
     return {
       mode,
-      type: agendaView as any,
+      type: "week",
       start: dayjs(start as string).startOf(mode as OpUnitType),
       end: dayjs(start as string)
         .startOf(mode as OpUnitType)
-        .add(1, mode as ManipulateType),
-      id: id as any,
+        .add(mode === "3days" ? 2 : 1, mode as ManipulateType),
+      id,
     };
-  }, [agendaView, start, id, mode]);
+  }, [start, id, mode]);
 
   return (
     <CalendarContext.Provider value={agendaContextValue}>
