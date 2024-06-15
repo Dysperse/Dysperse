@@ -130,7 +130,7 @@ const Cell = ({
           />
         )}
         data={filteredTasks}
-        centerContent={filteredTasks.lengh === 0}
+        centerContent={filteredTasks.length === 0}
         ListFooterComponent={() =>
           tasks.find((i) => i.completionInstances.lengh !== 0) &&
           filteredTasks.lengh !== 0 && (
