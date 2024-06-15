@@ -4,7 +4,7 @@ import { Pressable, StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { ButtonText } from "../Button";
 import Icon from "../Icon";
-import Text from "../Text";
+import Text, { getFontName } from "../Text";
 
 export function ButtonGroup({
   options,
@@ -84,13 +84,13 @@ export function ButtonGroup({
                     justifyContent: "center",
                     fontSize: 15,
                     opacity: 0.7,
-                    fontFamily: "body_400",
+                    fontFamily: getFontName("jost", 400),
                     paddingHorizontal: 0,
                   },
                   buttonTextStyle,
                   state[0] === option.value && {
                     color: theme[11],
-                    fontFamily: "body_800",
+                    fontFamily: getFontName("jost", 800),
                     opacity: 1,
                   },
                   state[0] === option.value && selectedButtonTextStyle,

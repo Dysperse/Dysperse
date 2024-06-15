@@ -10,7 +10,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import MenuPopover from "@/ui/MenuPopover";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
@@ -710,7 +710,7 @@ export function TaskDetails() {
                         >
                           <Text
                             style={{
-                              fontFamily: "mono",
+                              fontFamily: getFontName("jetBrainsMono", 500),
                               color: theme[n === task.storyPoints ? 3 : 11],
                             }}
                           >

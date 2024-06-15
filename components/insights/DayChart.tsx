@@ -1,6 +1,6 @@
 import { cardStyles } from "@/components/insights/cardStyles";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useState } from "react";
@@ -17,7 +17,7 @@ export const DayChart = ({ data }) => {
     color: (n = 1) => addHslAlpha(theme[11], n),
     barPercentage: breakpoints.md ? 0.5 : 0.2,
     propsForVerticalLabels: {
-      fontFamily: "body_500",
+      fontFamily: getFontName("jost", 500),
       fontSize: 11,
     },
     barRadius: 5,

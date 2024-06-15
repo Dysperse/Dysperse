@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   button: { height: 80 },
   themeCardIcon: { textAlign: "center" },
   cardTitle: { fontSize: 30 },
-  cardDescription: { opacity: 0.5, fontSize: 20, fontFamily: "body_300" },
+  cardDescription: { opacity: 0.5, fontSize: 20 },
 });
 
 const themePickerStyles = StyleSheet.create({
@@ -308,7 +308,9 @@ export default function Page() {
             <Text style={styles.cardTitle} weight={900}>
               {themeText.name}
             </Text>
-            <Text style={styles.cardDescription}>{themeText.description}</Text>
+            <Text style={styles.cardDescription} weight={300}>
+              {themeText.description}
+            </Text>
           </View>
         </Pressable>
       </ThemePicker>

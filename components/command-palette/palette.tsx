@@ -272,9 +272,9 @@ const PaletteHeader = memo(function PaletteHeader({
             flex: 1,
             paddingRight: 0,
             fontSize: breakpoints.md ? 25 : 20,
-            fontFamily: `body_${breakpoints.md ? "8" : "4"}00`,
             shadowRadius: 0,
           }}
+          weight={breakpoints.md ? 800 : 400}
           placeholder="What are you looking for?"
           value={query}
           onChangeText={(e) => {

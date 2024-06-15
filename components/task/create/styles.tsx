@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 5,
     paddingLeft: 5,
-    fontFamily: "body_700",
   },
   gridRow: {
     flexDirection: "row",

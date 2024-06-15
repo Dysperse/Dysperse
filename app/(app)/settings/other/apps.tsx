@@ -5,7 +5,7 @@ import { Avatar } from "@/ui/Avatar";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Linking,
@@ -35,12 +35,12 @@ export default function Page() {
 
   const cardHeading: TextStyle = {
     fontSize: 25,
-    fontFamily: "body_700",
+    fontFamily: getFontName("jost", 700),
     color: theme[11],
   };
   const cardDescription: TextStyle = {
     fontSize: 15,
-    fontFamily: "body_400",
+    fontFamily: getFontName("jost", 400),
     opacity: 0.7,
     color: theme[11],
   };

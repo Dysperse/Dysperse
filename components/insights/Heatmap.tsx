@@ -1,7 +1,7 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { View } from "react-native";
@@ -21,7 +21,7 @@ export const Heatmap = ({ data }) => {
     paddingRight: 0,
     useShadowColorFromDataset: false, // optional
     propsForLabels: {
-      fontFamily: "body_700",
+      fontFamily: getFontName("jost", 700),
       opacity: 0.5,
       fontSize: breakpoints.md ? 16 : 12,
       translateY: breakpoints.md ? 10 : 25,

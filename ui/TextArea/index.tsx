@@ -2,7 +2,7 @@ import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Ref } from "react";
 import { StyleProp, TextInputProps, TextStyle } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import { DTextProps } from "../Text";
+import { DTextProps, getFontName } from "../Text";
 import { useColorTheme } from "../color/theme-provider";
 
 interface DTextInputProps extends TextInputProps {
@@ -27,7 +27,7 @@ export default function TextField(props: DTextInputProps) {
       style={[
         {
           color: theme[11],
-          fontFamily: `body_${props.weight || 400}`,
+          fontFamily: getFontName("jost", props.weight || 400),
           fontSize: 16,
           ...(props.variant?.includes("filled") && {
             backgroundColor: theme[3],

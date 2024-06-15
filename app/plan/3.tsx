@@ -18,7 +18,7 @@ import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
@@ -282,7 +282,11 @@ function CurrentTaskFooter({
 const CurrentSlideIndicator = ({ slide, slidesLength }) => (
   <Text
     variant="eyebrow"
-    style={{ marginBottom: 10, marginTop: "auto", fontFamily: "mono" }}
+    style={{
+      marginBottom: 10,
+      marginTop: "auto",
+      fontFamily: getFontName("jetBrainsMono", 500),
+    }}
   >
     {(slide + 1).toString().padStart(2, "0")}/
     {slidesLength.toString().padStart(2, "0")}

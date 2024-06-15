@@ -15,7 +15,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import { Menu } from "@/ui/Menu";
 import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
@@ -497,7 +497,7 @@ const PublishCollection = ({ collection }) => {
           label={
             <Text
               style={{
-                fontFamily: "mono",
+                fontFamily: getFontName("jetBrainsMono", 500),
                 color: theme[11],
                 fontStyle: "italic",
               }}

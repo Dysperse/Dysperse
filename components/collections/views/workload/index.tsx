@@ -7,7 +7,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import * as shapes from "@/ui/shapes";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
@@ -98,7 +98,13 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
           >
             <Shape size={60} color={theme[5]} />
           </View>
-          <Text style={{ color: theme[11], fontSize: 20, fontFamily: "mono" }}>
+          <Text
+            style={{
+              color: theme[11],
+              fontSize: 20,
+              fontFamily: getFontName("jetBrainsMono", 500),
+            }}
+          >
             {scale}
           </Text>
         </View>

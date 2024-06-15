@@ -38,11 +38,10 @@ const styles = StyleSheet.create({
     paddingRight: 60,
     paddingTop: 10,
   },
-  title: { marginHorizontal: "auto", fontSize: 20, fontFamily: "body_800" },
+  title: { marginHorizontal: "auto", fontSize: 20 },
   empty: { alignItems: "center", justifyContent: "center", padding: 20 },
   emptyHeading: {
     fontSize: 40,
-    fontFamily: "body_800",
     textAlign: "center",
     marginTop: 5,
   },
@@ -50,7 +49,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     opacity: 0.6,
     fontSize: 20,
-    fontFamily: "body_300",
   },
 });
 
@@ -333,7 +331,9 @@ function Page({ handleClose }) {
               icon="arrow_back_ios_new"
               onPress={handleClose}
             />
-            <Text style={styles.title}>Search</Text>
+            <Text style={styles.title} weight={800}>
+              Search
+            </Text>
           </Pressable>
           <CollectionContext.Provider value={contextValue as any}>
             {data && (

@@ -15,7 +15,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -742,7 +742,7 @@ function TaskNameInput({
           multiline
           style={{
             color: theme[11],
-            fontFamily: "body_700",
+            fontFamily: getFontName("jost", 700),
             shadowRadius: 0,
             fontSize: 25,
             paddingHorizontal: 20,

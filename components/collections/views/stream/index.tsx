@@ -7,7 +7,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -153,8 +153,14 @@ export function Stream() {
           marginTop: breakpoints.md ? 20 : 0,
           marginHorizontal: "auto",
         }}
-        buttonTextStyle={{ color: theme[10], fontFamily: "body_400" }}
-        selectedButtonTextStyle={{ color: theme[11], fontFamily: "body_600" }}
+        buttonTextStyle={{
+          color: theme[10],
+          fontFamily: getFontName("jost", 400),
+        }}
+        selectedButtonTextStyle={{
+          color: theme[11],
+          fontFamily: getFontName("jost", 600),
+        }}
         activeComponent={
           <View
             style={{

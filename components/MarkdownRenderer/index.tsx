@@ -1,5 +1,6 @@
 import { blue } from "@/themes";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { getFontName } from "@/ui/Text";
 import Markdown, { MarkdownProps } from "react-native-markdown-display";
 
 export default function MarkdownRenderer(
@@ -10,7 +11,7 @@ export default function MarkdownRenderer(
     <Markdown
       style={{
         body: {
-          fontFamily: "body_400",
+          fontFamily: getFontName("jost", 400),
           fontSize: 15,
           color: theme[12],
           pointerEvents: "none",

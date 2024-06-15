@@ -13,7 +13,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -298,7 +298,7 @@ function Quotes({ widget, menuActions }) {
             <Text
               style={{
                 fontSize: data.content.length > 100 ? 23 : 30,
-                fontFamily: "serifText800",
+                fontFamily: getFontName("crimsonPro", 800),
               }}
             >
               &ldquo;{data?.content}&rdquo;

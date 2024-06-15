@@ -39,7 +39,6 @@
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.15",
     "expo-device": "~6.0.2",
-    "expo-font": "~12.0.4",
     "expo-image": "~1.12.9",
     "expo-image-picker": "~15.0.5",
     "expo-keep-awake": "~13.0.1",
@@ -92,7 +91,8 @@
     "timezones-list": "^3.0.3",
     "typescript": "^5.4.5",
     "use-debounce": "^10.0.1",
-    "workbox-window": "^7.1.0"
+    "workbox-window": "^7.1.0",
+    "expo-font": "~12.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",

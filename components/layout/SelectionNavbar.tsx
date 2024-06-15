@@ -6,7 +6,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { BlurView } from "expo-blur";
@@ -94,7 +94,7 @@ function Actions({ setIsLoading }) {
       color: blue[11],
       fontSize: 12,
       textAlign: "center",
-      fontFamily: "body_800",
+      fontFamily: getFontName("jost", 800),
     }),
     [blue]
   );

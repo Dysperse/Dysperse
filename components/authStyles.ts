@@ -35,14 +35,12 @@ export const authStyles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 20,
-    fontFamily: "body_900",
     flex: 1,
     textAlign: "center",
     margin: "auto",
   },
   subtitleText: {
     fontSize: 20,
-    fontFamily: "mono",
     color: "#fff",
   },
 });

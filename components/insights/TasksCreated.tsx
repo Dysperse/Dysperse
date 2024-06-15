@@ -1,5 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { View } from "react-native";
 
@@ -18,7 +18,13 @@ export const TasksCreated = ({ data }) => {
         padding: 20,
       }}
     >
-      <Text style={{ fontSize: 70, fontFamily: "mono", textAlign: "center" }}>
+      <Text
+        style={{
+          fontSize: 70,
+          fontFamily: getFontName("jetBrainsMono", 500),
+          textAlign: "center",
+        }}
+      >
         {data.tasksCreated + data._count.entities}
       </Text>
       <Text

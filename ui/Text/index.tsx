@@ -16,30 +16,42 @@ export interface DTextProps extends TextProps {
   variant?: "default" | "eyebrow" | "menuItem";
 }
 
-const fonts =
-  Platform.OS === "web"
-    ? {
-        body_100: "body_100",
-        body_200: "body_200",
-        body_300: "body_300",
-        body_400: "body_400",
-        body_500: "body_500",
-        body_600: "body_600",
-        body_700: "body_700",
-        body_800: "body_800",
-        body_900: "body_900",
-      }
-    : {
-        body_100: "Jost_100Thin",
-        body_200: "Jost_200ExtraLight",
-        body_300: "Jost_300Light",
-        body_400: "Jost_400Regular",
-        body_500: "Jost_500Medium",
-        body_600: "Jost_600SemiBold",
-        body_700: "Jost_700Bold",
-        body_800: "Jost_800ExtraBold",
-        body_900: "Jost_900Black",
-      };
+export const getFontName = (family: string, weight: number) => {
+  const fonts = {
+    crimsonPro: {
+      800: Platform.OS === "web" ? "serifText800" : "CrimsonPro_800ExtraBold",
+    },
+    jetBrainsMono: {
+      500: Platform.OS === "web" ? "mono" : "JetBrainsMono_500Medium",
+    },
+    jost:
+      Platform.OS === "web"
+        ? {
+            100: "Jost Thin",
+            200: "Jost ExtraLight",
+            300: "Jost Light",
+            400: "Jost Regular",
+            500: "Jost Medium",
+            600: "Jost SemiBold",
+            700: "Jost ExtraBold",
+            800: "Jost ExtraBold",
+            900: "Jost Black",
+          }
+        : {
+            100: "Jost_100Thin",
+            200: "Jost_200ExtraLight",
+            300: "Jost_300Light",
+            400: "Jost_400Regular",
+            500: "Jost_500Medium",
+            600: "Jost_600SemiBold",
+            700: "Jost_700Bold",
+            800: "Jost_800ExtraBold",
+            900: "Jost_900Black",
+          },
+  };
+
+  return fonts[family][weight];
+};
 
 const textStyles = StyleSheet.create({
   default: {
@@ -50,7 +62,6 @@ const textStyles = StyleSheet.create({
     textTransform: "uppercase",
   },
   menuItem: {
-    fontFamily: fonts.body_300,
     fontSize: 17,
   },
 });
@@ -67,15 +78,18 @@ const Text: ForwardRefRenderFunction<NText, DTextProps> = (props, ref) => {
         {
           fontSize: Platform.OS === "web" ? 15 : 16,
           color: theme[12],
-          fontFamily: fonts[`body_${props.weight || 400}`],
+          fontFamily: getFontName("jost", props.weight || 400),
           ...(props.variant === "eyebrow" && {
             textTransform: "uppercase",
-            fontFamily: `body_${props.weight || 800}`,
+            fontFamily: getFontName("jost", props.weight || 900),
             color: theme[11],
           }),
         },
         props.variant === "eyebrow" && textStyles.eyebrow,
         props.variant === "menuItem" && textStyles.menuItem,
+        props.variant === "menuItem" && {
+          fontFamily: getFontName("jost", 300),
+        },
         props.variant === "menuItem" && { color: theme[11] },
         props.textStyle,
         Array.isArray(props.style) ? [...props.style] : props.style,

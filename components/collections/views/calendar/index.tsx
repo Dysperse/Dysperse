@@ -4,6 +4,7 @@ import { TaskDrawer } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import Alert from "@/ui/Alert";
 import Spinner from "@/ui/Spinner";
+import { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
@@ -144,7 +145,7 @@ export function Content() {
         height={height - 20 - 65}
         showAdjacentMonths={false}
         mode={originalMode as any}
-        hourStyle={{ fontFamily: "body_700", color: theme[7] }}
+        hourStyle={{ fontFamily: getFontName("jost", 700), color: theme[7] }}
         // onPressCell={(date) => {
         //   alert(date);
         // }}
@@ -168,10 +169,10 @@ export function Content() {
         }}
         theme={{
           typography: {
-            fontFamily: "body_700",
-            sm: { fontFamily: "body_700" },
-            xl: { fontFamily: "body_700" },
-            xs: { fontFamily: "body_700" },
+            fontFamily: getFontName("jost", 700),
+            sm: { fontFamily: getFontName("jost", 700) },
+            xl: { fontFamily: getFontName("jost", 700) },
+            xs: { fontFamily: getFontName("jost", 700) },
           },
           palette: {
             nowIndicator: theme[11],

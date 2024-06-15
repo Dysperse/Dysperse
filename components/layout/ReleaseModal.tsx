@@ -1,7 +1,7 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
@@ -111,13 +111,19 @@ const ReleaseModal = memo(() => {
               style={{
                 body: {
                   color: theme[11],
-                  fontFamily: "body_400",
+                  fontFamily: getFontName("jost", 400),
                   fontSize: 15,
                 },
-                heading1: { fontFamily: "body_800", fontSize: 30 },
-                heading2: { fontFamily: "body_800", fontSize: 27 },
+                heading1: {
+                  fontFamily: getFontName("jost", 800),
+                  fontSize: 30,
+                },
+                heading2: {
+                  fontFamily: getFontName("jost", 800),
+                  fontSize: 27,
+                },
                 heading3: {
-                  fontFamily: "body_800",
+                  fontFamily: getFontName("jost", 800),
                   marginTop: 20,
                   fontSize: 24,
                 },

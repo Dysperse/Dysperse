@@ -244,10 +244,8 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
             style={[authStyles.button]}
           >
             <ButtonText
-              style={[
-                authStyles.buttonText,
-                { opacity: 0.6, fontFamily: "body_500" },
-              ]}
+              style={[authStyles.buttonText, { opacity: 0.6 }]}
+              weight={500}
             >
               Need help?
             </ButtonText>
@@ -260,10 +258,8 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
               style={[authStyles.button]}
             >
               <ButtonText
-                style={[
-                  authStyles.buttonText,
-                  { opacity: 0.6, fontFamily: "body_500" },
-                ]}
+                style={[authStyles.buttonText, { opacity: 0.6 }]}
+                weight={500}
               >
                 Create an account
               </ButtonText>

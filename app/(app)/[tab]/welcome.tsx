@@ -86,14 +86,12 @@ const styles = StyleSheet.create({
   },
   featureTitle: {
     fontSize: 23,
-    fontFamily: "body_900",
     marginBottom: 3,
   },
   featureDescription: {
     fontSize: 17,
     opacity: 0.7,
     marginBottom: 10,
-    fontFamily: "body_300",
   },
   featureRow: {
     flexDirection: "row",
@@ -119,7 +117,6 @@ const styles = StyleSheet.create({
   },
   exploreTitle: {
     fontSize: 20,
-    fontFamily: "body_900",
   },
   exploreDescription: {
     opacity: 0.7,
@@ -281,8 +278,10 @@ function FeatureList() {
         >
           <ShapeContainer text="one" index={1} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.featureTitle}>Create a task</Text>
-            <Text style={styles.featureDescription}>
+            <Text weight={900} style={styles.featureTitle}>
+              Create a task
+            </Text>
+            <Text style={styles.featureDescription} weight={300}>
               It's easy. Just click on the button below and write down what's on
               your mind.
             </Text>
@@ -303,8 +302,10 @@ function FeatureList() {
         >
           <ShapeContainer text="two" index={2} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.featureTitle}>Tasks can be labeled</Text>
-            <Text style={styles.featureDescription}>
+            <Text weight={900} style={styles.featureTitle}>
+              Tasks can be labeled
+            </Text>
+            <Text style={styles.featureDescription} weight={300}>
               Labels help you categorize and separate tasks which matter to you.
               Assign them to tasks later.
             </Text>
@@ -327,10 +328,10 @@ function FeatureList() {
         >
           <ShapeContainer text="three" index={6} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.featureTitle}>
+            <Text weight={900} style={styles.featureTitle}>
               Labels are a part of collections
             </Text>
-            <Text style={styles.featureDescription}>
+            <Text style={styles.featureDescription} weight={300}>
               You can have multiple collections per label
             </Text>
             <CreateCollection />
@@ -345,8 +346,10 @@ function FeatureList() {
         >
           <ShapeContainer text="four" index={5} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.featureTitle}>Open a tab</Text>
-            <Text style={styles.featureDescription}>
+            <Text weight={900} style={styles.featureTitle}>
+              Open a tab
+            </Text>
+            <Text style={styles.featureDescription} weight={300}>
               View your tasks in different ways by opening new tabs. We suggest
               starting off with the planner view.
             </Text>
@@ -414,7 +417,9 @@ function Explore() {
             key={card.title}
           >
             <View style={{ flex: 1 }}>
-              <Text style={styles.exploreTitle}>{card.title}</Text>
+              <Text style={styles.exploreTitle} weight={900}>
+                {card.title}
+              </Text>
               <Text style={styles.exploreDescription}>{card.description}</Text>
             </View>
             <Icon>north_east</Icon>

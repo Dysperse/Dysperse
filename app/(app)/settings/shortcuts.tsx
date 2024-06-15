@@ -2,7 +2,7 @@ import { collectionViews } from "@/components/layout/command-palette/list";
 import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import Divider from "@/ui/Divider";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { View } from "react-native";
@@ -112,7 +112,7 @@ export default function Page() {
                     style={{
                       fontSize: 20,
                       color: theme[11],
-                      fontFamily: "mono",
+                      fontFamily: getFontName("jetBrainsMono", 500),
                     }}
                   >
                     {shortcut.keys}

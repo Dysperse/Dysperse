@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
   },
   helper: {
     fontSize: 20,
-    fontFamily: "body_300",
     marginTop: -17,
     opacity: 0.6,
   },
@@ -107,7 +106,7 @@ export default function Page() {
           <Text weight={900} style={{ fontSize: 40 }}>
             New collection
           </Text>
-          <Text style={styles.helper}>
+          <Text style={styles.helper} weight={300}>
             Collections provide a seamless and structured way to view items by
             selected labels.
           </Text>

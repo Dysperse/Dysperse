@@ -9,7 +9,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
@@ -43,7 +43,7 @@ const TimeZone = ({
       setTime(dayjs().tz(timeZone));
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [timeZone]);
 
   return (
     <View
@@ -108,7 +108,7 @@ const TimeZone = ({
                         top: 0,
                         left: 0,
                         fontSize: 35,
-                        fontFamily: "mono",
+                        fontFamily: getFontName("jetBrainsMono", 500),
                         color: theme[11],
                       }
                 }
@@ -136,7 +136,7 @@ const TimeZone = ({
                     top: 0,
                     left: 0,
                     fontSize: 35,
-                    fontFamily: "mono",
+                    fontFamily: getFontName("jetBrainsMono", 500),
                     textAlign: "center",
                     color: theme[10],
                     opacity: 0.2,
@@ -235,7 +235,7 @@ const Stopwatch = () => {
             left: 0,
             fontSize: 40,
             textAlign: "center",
-            fontFamily: "mono",
+            fontFamily: getFontName("jetBrainsMono", 500),
             color: theme[11],
           }}
           numberOfLines={1}
@@ -250,7 +250,7 @@ const Stopwatch = () => {
             left: 0,
             fontSize: 40,
             textAlign: "center",
-            fontFamily: "mono",
+            fontFamily: getFontName("jetBrainsMono", 500),
             color: theme[10],
             opacity: 0.2,
           }}
@@ -420,7 +420,7 @@ const Timer = ({ pomodoro = false }) => {
                     {
                       color: theme[isCompleted ? 12 : 11],
                       fontSize: 40,
-                      fontFamily: "mono",
+                      fontFamily: getFontName("jetBrainsMono", 500),
                       textAlign: "center",
                       width: 130,
                       borderRadius: 10,

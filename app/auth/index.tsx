@@ -2,7 +2,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Redirect, router } from "expo-router";
 import { ImageBackground, Linking, StatusBar, View } from "react-native";
@@ -73,7 +73,11 @@ export default function Page() {
                   pressed ? 0.3 : hovered ? 0.25 : 0.2
                 })`,
               })}
-              textStyle={{ color: "#fff", fontFamily: "mono", fontSize: 20 }}
+              textStyle={{
+                color: "#fff",
+                fontFamily: getFontName("jetBrainsMono", 500),
+                fontSize: 20,
+              }}
               icon={<Icon style={{ color: "#fff" }}>north_east</Icon>}
               iconPosition="after"
             />

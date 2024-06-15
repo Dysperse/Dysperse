@@ -5,7 +5,7 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -130,7 +130,7 @@ export const UpNext = ({ widget, menuActions }) => {
                   <Text style={{ fontSize: 35 }}>{nextTask.name}</Text>
                   <Text
                     style={{
-                      fontFamily: "mono",
+                      fontFamily: getFontName("jetBrainsMono", 500),
                       marginTop: 5,
                     }}
                   >

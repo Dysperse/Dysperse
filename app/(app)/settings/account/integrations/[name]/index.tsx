@@ -166,8 +166,8 @@ const LabelCustomizer = ({
                         flex: 1,
                         fontSize: 20,
                         minWidth: 10,
-                        fontFamily: "body_600",
                       }}
+                      weight={600}
                     />
                     {label.id && (
                       <Icon style={{ marginRight: 10 }}>check_circle</Icon>

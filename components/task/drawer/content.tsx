@@ -5,7 +5,7 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
@@ -54,7 +54,7 @@ function TaskNameInput() {
         onFocus={() => setIsFocused(true)}
         style={[
           {
-            fontFamily: "body_800",
+            fontFamily: getFontName("jost", 800),
             color: theme[12],
             padding: 20,
             paddingVertical: 10,

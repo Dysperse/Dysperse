@@ -1,6 +1,7 @@
 import { Platform, StyleProp, View, ViewStyle } from "react-native";
 import { BaseToast } from "react-native-toast-message";
 import Icon from "./Icon";
+import { getFontName } from "./Text";
 
 const toastStyles = (theme): StyleProp<ViewStyle> => ({
   borderRadius: 25,
@@ -25,7 +26,7 @@ const toastContainerStyles: StyleProp<ViewStyle> = {
 const text1Props = (theme) => ({
   style: {
     color: theme[11],
-    fontFamily: "body_400",
+    fontFamily: getFontName("jost", 400),
     fontSize: 15,
   },
 });

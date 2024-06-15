@@ -169,9 +169,9 @@ export default function Page() {
                     style={{
                       fontSize: 20,
                       textAlign: "center",
-                      fontFamily: "body_900",
                       height: 60,
                     }}
+                    weight={900}
                   />
                 )}
                 name="code"

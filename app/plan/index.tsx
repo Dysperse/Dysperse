@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     height: 70,
     maxWidth: 700,
   },
-  buttonText: { fontSize: 20, fontFamily: "body_800" },
+  buttonText: { fontSize: 20 },
 });
 
 export default function Page() {
@@ -74,6 +74,7 @@ export default function Page() {
           <ButtonText
             style={[styles.buttonText, { color: theme[1] }]}
             onPress={handleNext}
+            weight={800}
           >
             Start
           </ButtonText>

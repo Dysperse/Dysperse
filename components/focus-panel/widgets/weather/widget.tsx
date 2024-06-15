@@ -5,7 +5,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
@@ -318,7 +318,7 @@ export function WeatherWidget({ widget, menuActions }) {
                       style={{
                         fontSize: 40,
                         color: weatherColor[11],
-                        fontFamily: "mono",
+                        fontFamily: getFontName("jetBrainsMono", 500),
                       }}
                       weight={600}
                     >

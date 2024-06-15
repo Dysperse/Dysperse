@@ -9,7 +9,7 @@ import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
+import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -155,7 +155,7 @@ export const Assistant = ({ widget, menuActions }) => {
                 <Markdown
                   style={{
                     body: {
-                      fontFamily: "body_400",
+                      fontFamily: getFontName("jost", 400),
                       fontSize: 15,
                       color: theme[12],
                     },

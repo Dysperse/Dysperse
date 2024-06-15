@@ -1,5 +1,6 @@
 import { Calendar as Calendar_, CalendarProps } from "react-native-calendars";
 import { useColorTheme } from "../color/theme-provider";
+import { getFontName } from "../Text";
 
 export default function Calendar(props: CalendarProps) {
   const theme = useColorTheme();
@@ -13,8 +14,8 @@ export default function Calendar(props: CalendarProps) {
         monthTextColor: theme[11],
         selectedDayBackgroundColor: theme[11],
         arrowColor: theme[11],
-        textDayFontFamily: "body_300",
-        textMonthFontFamily: "body_900",
+        textDayFontFamily: getFontName("jost", 300),
+        textMonthFontFamily: getFontName("jost", 900),
         textMonthFontSize: 20,
         textDayFontSize: 15,
         arrowHeight: 20,

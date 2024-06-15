@@ -11,7 +11,6 @@ body,
   overscroll-behavior-y: none;
   background: #0f1b1b;
   user-select: none;
-  font-family: body_200;
 }
 
 * {
