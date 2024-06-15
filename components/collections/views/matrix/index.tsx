@@ -428,7 +428,7 @@ export function Matrix() {
                 justifyContent: "space-around",
                 paddingLeft: breakpoints.md ? 30 : 50,
                 marginVertical: breakpoints.md ? 0 : 3,
-                marginBottom: 10,
+                marginBottom: breakpoints.md ? 0 : 10,
               },
             ]}
           >
