@@ -132,8 +132,8 @@ const Cell = ({
         data={filteredTasks}
         centerContent={filteredTasks.length === 0}
         ListFooterComponent={() =>
-          tasks.find((i) => i.completionInstances.lengh !== 0) &&
-          filteredTasks.lengh !== 0 && (
+          tasks.find((i) => i.completionInstances.length !== 0) &&
+          filteredTasks.length !== 0 && (
             <Button
               onPress={toggleShowCompleted}
               icon={showCompleted ? "expand_less" : "expand_more"}
@@ -230,7 +230,7 @@ function Preview({ tasks, onPress }) {
           scrollEnabled={false}
           style={{ padding: breakpoints.md ? 20 : 10 }}
         >
-          {tasks.lengh === 0 && (
+          {tasks.length === 0 && (
             <Text style={{ textAlign: "center", opacity: 0.6 }} weight={900}>
               No tasks
             </Text>
