@@ -11,6 +11,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import TextField from "@/ui/TextArea";
 import { router, useLocalSearchParams } from "expo-router";
@@ -149,8 +150,9 @@ function Content({ handleClose }) {
           style={{ height: 60, marginTop: 20 }}
         >
           <ButtonText style={{ fontSize: 20 }} weight={800}>
-            Save
+            Done
           </ButtonText>
+          <Icon>check</Icon>
         </Button>
       </View>
     </View>
