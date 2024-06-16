@@ -1,6 +1,6 @@
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import CreateTask from "@/components/task/create";
-import { TaskDrawer } from "@/components/task/drawer";
+import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import Alert from "@/ui/Alert";
 import Spinner from "@/ui/Spinner";
@@ -9,7 +9,14 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
@@ -23,6 +30,35 @@ export interface MyCustomEventType {
   color: string;
 }
 
+const CalendarTaskDrawer = forwardRef(
+  (
+    props: Omit<TaskDrawerProps, "children" | "id" | "dateRange"> & {
+      tasks: any[];
+    },
+    ref
+  ) => {
+    const drawerRef = useRef(null);
+    const [taskId, setTaskId] = useState<string | null>(null);
+
+    useImperativeHandle(ref, () => ({
+      setId: (id: string) => {
+        setTaskId(id);
+        drawerRef.current?.show();
+      },
+    }));
+
+    return (
+      props.tasks.find((e) => e.id === taskId) && (
+        <TaskDrawer
+          {...props}
+          ref={drawerRef}
+          id={taskId}
+          dateRange={props.tasks.find((e) => e.id === taskId)?.dateRange}
+        />
+      )
+    );
+  }
+);
 export function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams();
@@ -44,7 +80,6 @@ export function Content() {
 
   const taskDrawerRef = useRef(null);
   const createTaskSheetRef = useRef(null);
-  const [taskId, setTaskId] = useState<string | null>(null);
 
   const tasks = data?.reduce((acc, col) => {
     return acc.concat(
@@ -82,7 +117,7 @@ export function Content() {
           />
         </Pressable>
       )}
-      {taskId && tasks.find((e) => e.id === taskId) && (
+      {/* {taskId && tasks.find((e) => e.id === taskId) && (
         <TaskDrawer
           dateRange={tasks.find((e) => e.id === taskId)?.dateRange}
           mutateList={(newItem) =>
@@ -95,7 +130,18 @@ export function Content() {
           ref={taskDrawerRef}
           id={taskId}
         />
-      )}
+      )} */}
+      <CalendarTaskDrawer
+        mutateList={(newItem) =>
+          onTaskUpdate(
+            newItem,
+            mutate,
+            data.find((d) => d.tasks.find((t) => t.id === newItem.id))
+          )
+        }
+        tasks={tasks}
+        ref={taskDrawerRef}
+      />
       <CreateTask
         defaultValues={{
           dateOnly: false,
@@ -150,8 +196,7 @@ export function Content() {
         //   alert(date);
         // }}
         onPressEvent={(event: any) => {
-          setTaskId(event.id);
-          taskDrawerRef.current?.show();
+          taskDrawerRef.current?.setId(event.id);
         }}
         eventCellStyle={(event) => ({
           backgroundColor: theme[11],
@@ -163,7 +208,6 @@ export function Content() {
         })}
         headerContainerStyle={{ paddingTop: 20 }}
         ampm
-        // enableEnrichedEvents
         calendarCellTextStyle={{
           color: theme[11],
         }}

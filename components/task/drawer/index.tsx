@@ -165,6 +165,15 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   );
 });
 
+export interface TaskDrawerProps {
+  mutateList: any;
+  children?: React.ReactNode;
+  id: any;
+  disabled?: boolean;
+  isReadOnly?: boolean;
+  dateRange?: [Date, Date];
+}
+
 export const TaskDrawer = forwardRef(function TaskDrawer(
   {
     mutateList,
@@ -173,14 +182,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     disabled,
     isReadOnly,
     dateRange,
-  }: {
-    mutateList: any;
-    children?: React.ReactNode;
-    id: any;
-    disabled?: boolean;
-    isReadOnly?: boolean;
-    dateRange?: [Date, Date];
-  },
+  }: TaskDrawerProps,
   ref
 ) {
   const { width } = useWindowDimensions();
