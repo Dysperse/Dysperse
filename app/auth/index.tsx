@@ -85,7 +85,7 @@ export default function Page() {
               weight={500}
               style={[authStyles.subtitleText, { color: "#fff" }]}
             >
-              be the
+              be your
             </Text>
             <Text
               weight={500}
