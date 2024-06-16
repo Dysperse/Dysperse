@@ -75,6 +75,7 @@ export function TaskDatePicker({
 
   const dueDate = watch("date");
   const recurrence = watch("recurrenceRule");
+  const dateOnly = watch("dateOnly");
 
   const [view, setView] = useState<"date" | "recurrence">(
     dueDateOnly ? "date" : defaultView || "date"
@@ -95,7 +96,7 @@ export function TaskDatePicker({
           recurrence
             ? capitalizeFirstLetter(new RRule(recurrence).toText())
             : dueDate
-            ? dueDate.format(dueDateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
+            ? dueDate.format(dateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
             : undefined
         }
       />

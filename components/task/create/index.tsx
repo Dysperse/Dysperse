@@ -87,6 +87,7 @@ const TimeInput = React.forwardRef(
                 .format("h:mm A")
             );
           } else {
+            setValue(defaultValue.format("h:mm A"));
             Toast.show({
               type: "error",
               text1: "Please type a valid time",
