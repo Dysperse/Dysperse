@@ -215,7 +215,7 @@ export function TaskDrawerContent({ handleClose }) {
                   updateTask("label", e, false);
                 }}
                 onClose={() => {}}
-                defaultCollection={collectionId}
+                defaultCollection={collectionId as any}
                 autoFocus
                 disabled={Boolean(task.label?.integrationParams)}
               >
