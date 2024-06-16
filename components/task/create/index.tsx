@@ -26,6 +26,7 @@ import {
   TouchableOpacity,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
+import convertTime from "convert-time";
 import dayjs, { Dayjs } from "dayjs";
 import React, {
   RefObject,
@@ -53,10 +54,61 @@ import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { normalizeRecurrenceRuleObject } from "../drawer/details";
 import { TaskDatePicker } from "./TaskDatePicker";
 
+const TimeInput = React.forwardRef(
+  (
+    {
+      value: defaultValue,
+      setValue: setDefaultValue,
+    }: {
+      value: Dayjs;
+      setValue: (key: string, value: Dayjs) => void;
+    },
+    ref: RefObject<TextInput>
+  ) => {
+    const [value, setValue] = useState(defaultValue?.format?.("h:mm A") || "");
+
+    return (
+      <TextField
+        onBlur={(e) => {
+          const n = e.nativeEvent.text.toLowerCase();
+          if (convertTime(n)) {
+            const [hours, minutes] = convertTime(n).split(":");
+            setDefaultValue(
+              "date",
+              dayjs(defaultValue)
+                .hour(parseInt(hours))
+                .minute(parseInt(minutes))
+            );
+            setValue(
+              dayjs(defaultValue)
+                .hour(parseInt(hours))
+                .minute(parseInt(minutes))
+                .format("h:mm A")
+            );
+          } else {
+            Toast.show({
+              type: "error",
+              text1: "Please type a valid time",
+            });
+          }
+        }}
+        inputRef={ref}
+        variant="filled+outlined"
+        style={{ width: 100, textAlign: "center" }}
+        placeholder="12:00"
+        value={value}
+        onChangeText={(e) => setValue(e)}
+      />
+    );
+  }
+);
+
 export const DueDatePicker = ({ watch, value, setValue }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const dateOnly = watch("dateOnly");
+  const timeInputRef = useRef<TextInput>(null);
+
   const quickDates = useMemo(
     () => [
       { label: "Today", value: dayjs().startOf("day").utc() },
@@ -134,13 +186,22 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
             {dayjs(value).isToday() ? "Today" : dayjs(value).fromNow()}
           </Text>
           <ListItemButton
-            onPress={() => setValue("dateOnly", !dateOnly)}
+            onPress={() => {
+              setValue("dateOnly", !dateOnly);
+              if (dateOnly) setTimeout(() => timeInputRef.current?.focus(), 0);
+            }}
             style={{ height: 40 }}
           >
-            <ListItemText
-              primaryProps={{ style: { color: theme[11] } }}
-              primary={dateOnly ? "All day" : dayjs(value).format("h:mm A")}
-            />
+            {dateOnly ? (
+              <ListItemText
+                primaryProps={{ style: { color: theme[11] } }}
+                primary={dateOnly ? "All day" : dayjs(value).format("h:mm A")}
+              />
+            ) : (
+              <Pressable onPress={(e) => e.stopPropagation()}>
+                <TimeInput value={value} setValue={setValue} />
+              </Pressable>
+            )}
             <Icon size={30} style={!dateOnly && { opacity: 0.6 }}>
               toggle_{dateOnly ? "on" : "off"}
             </Icon>
@@ -545,6 +606,7 @@ export function RecurrencePicker({ value, setValue }) {
 function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
   const orange = useColor("orange");
   const pinned = watch("pinned");
+  const dateOnly = watch("dateOnly");
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -880,35 +942,46 @@ const TaskAttachments = ({ watch, setValue }) => {
         showsHorizontalScrollIndicator={false}
       >
         {note && (
-          <View style={[{ backgroundColor: theme[3] }]}>
-            <IconButton
-              icon="close"
-              size={30}
-              variant="filled"
-              onPress={() => setValue("note", "")}
-              style={[{ borderColor: theme[2] }]}
-            />
+          <View
+            style={[
+              {
+                backgroundColor: theme[3],
+                borderRadius: 20,
+                flexDirection: "row",
+                gap: 10,
+                padding: 10,
+                position: "relative",
+              },
+            ]}
+          >
             <Avatar icon="sticky_note_2" />
             <View style={{ flex: 1, flexDirection: "column" }}>
               <Text variant="eyebrow">Note</Text>
               <Text numberOfLines={1}>{note}</Text>
             </View>
-          </View>
-        )}
-        {attachments.map((attachment, i) => (
-          <View key={i} style={[{ backgroundColor: theme[3] }]}>
             <IconButton
               icon="close"
               size={30}
               variant="filled"
-              onPress={() => {
-                setValue(
-                  "attachments",
-                  attachments.filter((_, index) => index !== i)
-                );
-              }}
-              style={[{ borderColor: theme[2] }]}
+              onPress={() => setValue("note", "")}
+              style={{ borderColor: theme[2], alignSelf: "center" }}
             />
+          </View>
+        )}
+        {attachments.map((attachment, i) => (
+          <View
+            key={i}
+            style={[
+              {
+                backgroundColor: theme[3],
+                borderRadius: 20,
+                flexDirection: "row",
+                gap: 10,
+                padding: 10,
+                position: "relative",
+              },
+            ]}
+          >
             <Avatar
               image={attachment.type === "IMAGE" ? attachment.data : null}
               icon={
@@ -927,6 +1000,18 @@ const TaskAttachments = ({ watch, setValue }) => {
                   : attachment.data}
               </Text>
             </View>
+            <IconButton
+              icon="close"
+              size={30}
+              variant="filled"
+              onPress={() => {
+                setValue(
+                  "attachments",
+                  attachments.filter((_, index) => index !== i)
+                );
+              }}
+              style={{ borderColor: theme[2], alignSelf: "center" }}
+            />
           </View>
         ))}
       </ScrollView>
@@ -949,7 +1034,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
       dateOnly:
         typeof defaultValues.dateOnly === "boolean"
           ? defaultValues.dateOnly
-          : false,
+          : true,
       name: defaultValues.name || "",
       date: defaultValues.date || dayjs().utc(),
       pinned: defaultValues.pinned || false,

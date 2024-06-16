@@ -24,30 +24,17 @@ export const getFontName = (family: string, weight: number) => {
     jetBrainsMono: {
       500: Platform.OS === "web" ? "mono" : "JetBrainsMono_500Medium",
     },
-    jost:
-      Platform.OS === "web"
-        ? {
-            100: "Jost Thin",
-            200: "Jost ExtraLight",
-            300: "Jost Light",
-            400: "Jost Regular",
-            500: "Jost Medium",
-            600: "Jost SemiBold",
-            700: "Jost ExtraBold",
-            800: "Jost ExtraBold",
-            900: "Jost Black",
-          }
-        : {
-            100: "Jost_100Thin",
-            200: "Jost_200ExtraLight",
-            300: "Jost_300Light",
-            400: "Jost_400Regular",
-            500: "Jost_500Medium",
-            600: "Jost_600SemiBold",
-            700: "Jost_700Bold",
-            800: "Jost_800ExtraBold",
-            900: "Jost_900Black",
-          },
+    jost: {
+      100: "body_100",
+      200: "body_200",
+      300: "body_300",
+      400: "body_400",
+      500: "body_500",
+      600: "body_600",
+      700: "body_700",
+      800: "body_800",
+      900: "body_900",
+    },
   };
 
   return fonts[family][weight];

@@ -29,6 +29,7 @@
     "@react-navigation/stack": "^6.3.20",
     "@sentry/react-native": "~5.22.0",
     "@shopify/flash-list": "1.6.4",
+    "convert-time": "^0.3.0",
     "dayjs": "^1.11.11",
     "eas": "^0.1.0",
     "esbuild": "^0.20.0",

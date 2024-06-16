@@ -297,13 +297,13 @@ function Quotes({ widget, menuActions }) {
           <>
             <Text
               style={{
-                fontSize: data.content.length > 100 ? 23 : 30,
+                fontSize: data.content.length > 100 ? 23 : 28,
                 fontFamily: getFontName("crimsonPro", 800),
               }}
             >
               &ldquo;{data?.content}&rdquo;
             </Text>
-            <Text style={{ marginTop: 10, opacity: 0.6 }} weight={600}>
+            <Text style={{ marginTop: 10, opacity: 0.6 }} weight={400}>
               &mdash; {data?.author}
             </Text>
           </>
