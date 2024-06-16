@@ -306,19 +306,24 @@ function Root() {
                       ...TransitionPresets.ModalPresentationIOS,
                     }}
                   />
-                  <JsStack.Screen
-                    name="search/[id]"
-                    options={{
-                      presentation: "modal",
-                      animationEnabled: !breakpoints.md,
-                      detachPreviousScreen: false,
-                      cardStyle: { backgroundColor: "transparent" },
-                      cardOverlay: (props) => (
-                        <View {...props} style={{ flex: 1 }} />
-                      ),
-                      ...TransitionPresets.ModalPresentationIOS,
-                    }}
-                  />
+                  {["search/[id]", "collection/[id]"].map((p) => (
+                    <JsStack.Screen
+                      key={p}
+                      name={p}
+                      options={{
+                        presentation: "modal",
+                        animationEnabled: !breakpoints.md,
+                        detachPreviousScreen: false,
+                        gestureEnabled: p === "collection/[id]",
+                        gestureResponseDistance: 9999,
+                        cardStyle: { backgroundColor: "transparent" },
+                        cardOverlay: (props) => (
+                          <View {...props} style={{ flex: 1 }} />
+                        ),
+                        ...TransitionPresets.ModalPresentationIOS,
+                      }}
+                    />
+                  ))}
                   <JsStack.Screen
                     name="plan"
                     options={{

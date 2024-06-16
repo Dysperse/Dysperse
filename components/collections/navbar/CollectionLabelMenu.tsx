@@ -52,7 +52,7 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu() {
       <MenuItem>
         <Icon>label</Icon>
         <Text variant="menuItem" weight={300}>
-          Edit labels
+          Select labels
         </Text>
       </MenuItem>
     </LabelPicker>

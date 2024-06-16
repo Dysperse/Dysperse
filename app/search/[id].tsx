@@ -1,33 +1,22 @@
 import { CollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
-import { useUser } from "@/context/useUser";
+import { RouteDialogWrapper } from "@/components/layout/route-dialog";
+import { RouteDialogContent } from "@/components/layout/route-dialog/content";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { Redirect, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  Platform,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { MenuProvider } from "react-native-popup-menu";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -266,10 +255,6 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
 }
 
 function Page({ handleClose }) {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { width, height } = useWindowDimensions();
-
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -300,93 +285,33 @@ function Page({ handleClose }) {
     <View
       style={{ backgroundColor: "rgba(0,0,0,0.05)", flex: 1, width: "100%" }}
     >
-      <View
-        style={{
-          margin: "auto",
-          width: "100%",
-          flex: 1,
-          borderColor: theme[5],
-          borderWidth: breakpoints.md ? 1 : 0,
-          borderRadius: 25,
-          overflow: "hidden",
-          maxWidth: breakpoints.md ? 900 : width,
-          maxHeight: breakpoints.md ? Math.min(600, height / 1.3) : undefined,
-
-          shadowColor: "rgba(0, 0, 0, 0.12)",
-          shadowOffset: {
-            width: 10,
-            height: 10,
-          },
-          shadowOpacity: 1,
-          shadowRadius: 30,
-        }}
+      <RouteDialogContent
+        title="Search"
+        handleClose={handleClose}
+        onHeaderPress={scrollToTop}
       >
-        <Pressable
-          onPress={(e) => e.stopPropagation()}
-          style={{ flex: 1, backgroundColor: theme[1] }}
-        >
-          <Pressable style={styles.header} onPress={scrollToTop}>
-            <IconButton
-              size={45}
-              icon="arrow_back_ios_new"
-              onPress={handleClose}
+        <CollectionContext.Provider value={contextValue as any}>
+          {data && (
+            <SearchList
+              handleClose={handleClose}
+              inputRef={inputRef}
+              listRef={listRef}
+              collection={contextValue}
             />
-            <Text style={styles.title} weight={800}>
-              Search
-            </Text>
-          </Pressable>
-          <CollectionContext.Provider value={contextValue as any}>
-            {data && (
-              <SearchList
-                handleClose={handleClose}
-                inputRef={inputRef}
-                listRef={listRef}
-                collection={contextValue}
-              />
-            )}
-          </CollectionContext.Provider>
-        </Pressable>
-      </View>
+          )}
+        </CollectionContext.Provider>
+      </RouteDialogContent>
     </View>
   );
 }
 
 export default function Container() {
-  const { session } = useUser();
-  const theme = useColor(session?.user?.profile?.theme || "mint");
-
-  useWebStatusBar({
-    active: "#000",
-    cleanup: theme[2],
-  });
-
-  if (!session || session?.error) return <Redirect href="/auth" />;
   const handleClose = () =>
     router.canGoBack() ? router.back() : router.replace("/");
 
   return (
-    <ColorThemeProvider theme={theme}>
-      <MenuProvider
-        skipInstanceCheck
-        customStyles={{
-          backdrop: {
-            flex: 1,
-            opacity: 1,
-            ...(Platform.OS === "web" &&
-              ({ WebkitAppRegion: "no-drag" } as any)),
-          },
-        }}
-      >
-        <BottomSheetModalProvider>
-          <StatusBar barStyle="light-content" />
-          <Pressable
-            onPress={handleClose}
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          >
-            <Page handleClose={handleClose} />
-          </Pressable>
-        </BottomSheetModalProvider>
-      </MenuProvider>
-    </ColorThemeProvider>
+    <RouteDialogWrapper>
+      <Page handleClose={handleClose} />
+    </RouteDialogWrapper>
   );
 }

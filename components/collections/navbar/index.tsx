@@ -201,7 +201,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     },
     !isAll && {
       icon: "label",
-      text: "Edit labels",
+      text: "Select labels",
       renderer: (props) => (
         <CollectionContext.Provider value={contextValue}>
           <CollectionLabelMenu {...props} />
