@@ -50,7 +50,7 @@ function ProfileModalContent({ email }) {
             }}
           >
             <ProfilePicture
-              style={{ top: 80, position: "absolute" }}
+              style={{ top: 80, left: 20, position: "absolute" }}
               name={data.profile?.name || "--"}
               image={data.profile?.picture}
               size={90}
@@ -153,6 +153,7 @@ export function ProfileModal({ children, email }) {
         snapPoints={["80%"]}
         handleComponent={() => null}
         maxWidth={500}
+        maxBackdropOpacity={0.2}
         style={{ borderRadius: 20, overflow: "hidden" }}
       >
         <ProfileModalContent email={email} />

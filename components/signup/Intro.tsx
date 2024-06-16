@@ -1,4 +1,3 @@
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -34,25 +33,31 @@ export const Intro = ({ form }) => {
         padding: 20,
       }}
     >
-      <Icon size={60} style={{ marginBottom: 10, marginTop: "auto" }}>
-        waving_hand
-      </Icon>
       <Text
-        style={{ fontSize: 30, color: theme[11], textAlign: "center" }}
-        weight={900}
+        style={[
+          {
+            marginTop: "auto",
+            fontSize: 55,
+            width: "100%",
+            lineHeight: 55,
+            paddingTop: 10,
+            marginBottom: 15,
+            fontFamily: "serifText800",
+            textAlign: "center",
+          },
+        ]}
       >
-        Welcome&nbsp;to #dysperse.
+        Welcome to #dysperse!
       </Text>
       <Text
         style={{
-          color: theme[11],
-          marginTop: 5,
-          opacity: 0.7,
+          opacity: 0.5,
           fontSize: 20,
+          marginBottom: 10,
           textAlign: "center",
         }}
       >
-        Let's make productivity work for you.
+        Let's make you feel at home.
       </Text>
       <View style={[introStyles.inputContainer, { backgroundColor: theme[3] }]}>
         <Controller

@@ -60,7 +60,7 @@ export default function Page() {
             }}
           >
             <Text
-              weight={900}
+              weight={500}
               style={[authStyles.subtitleText, { color: "#fff" }]}
             >
               Let
@@ -82,16 +82,16 @@ export default function Page() {
               iconPosition="after"
             />
             <Text
-              weight={900}
+              weight={500}
               style={[authStyles.subtitleText, { color: "#fff" }]}
             >
               be the
             </Text>
             <Text
-              weight={900}
+              weight={500}
               style={[authStyles.subtitleText, { color: "#fff" }]}
             >
-              catalyst
+              catalyst.
             </Text>
           </View>
           <Button

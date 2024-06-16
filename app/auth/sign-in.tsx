@@ -2,6 +2,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -167,9 +168,9 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
             authStyles.subtitleContainer,
             !breakpoints.md && { textAlign: "center", opacity: 0.6 },
           ]}
-          weight={800}
+          weight={600}
         >
-          Continue with your Dysperse ID
+          Use your Dysperse login
         </Text>
         <View style={{ gap: 10 }}>
           <Controller
@@ -177,6 +178,7 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
             rules={{ required: true }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextField
+                weight={500}
                 variant="filled+outlined"
                 style={{
                   paddingHorizontal: 30,
@@ -202,6 +204,7 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
+                  weight={500}
                   variant="filled+outlined"
                   style={{
                     paddingHorizontal: 30,
@@ -235,7 +238,16 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
             onPress={handleSubmit(onSubmit)}
             isLoading={step === 2}
           >
-            <ButtonText style={authStyles.buttonText}>Continue</ButtonText>
+            <ButtonText
+              style={[
+                authStyles.buttonText,
+                { flex: undefined, margin: undefined },
+              ]}
+              weight={900}
+            >
+              Continue
+            </ButtonText>
+            <Icon>east</Icon>
           </Button>
           <Button
             dense

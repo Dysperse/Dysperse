@@ -77,25 +77,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         project: "new-dashboard",
       },
     ],
-    [
-      "expo-font",
-      {
-        fonts: [
-          "assets/fonts/crimson-pro/CrimsonPro_800ExtraBold.ttf",
-          "assets/fonts/mono/JetBrainsMono_500Medium.ttf",
-          // Sans Serif font
-          "assets/fonts/body/Jost_100Thin.ttf",
-          "assets/fonts/body/Jost_200ExtraLight.ttf",
-          "assets/fonts/body/Jost_300Light.ttf",
-          "assets/fonts/body/Jost_400Regular.ttf",
-          "assets/fonts/body/Jost_500Medium.ttf",
-          "assets/fonts/body/Jost_600SemiBold.ttf",
-          "assets/fonts/body/Jost_700Bold.ttf",
-          "assets/fonts/body/Jost_800ExtraBold.ttf",
-          "assets/fonts/body/Jost_900Black.ttf",
-        ],
-      },
-    ],
     "expo-router",
     [
       "expo-location",

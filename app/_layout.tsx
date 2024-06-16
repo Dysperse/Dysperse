@@ -9,8 +9,19 @@ import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
-import { CrimsonPro_800ExtraBold } from "@expo-google-fonts/crimson-pro";
+import { Fraunces_300Light } from "@expo-google-fonts/fraunces";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
+import {
+  Jost_100Thin,
+  Jost_200ExtraLight,
+  Jost_300Light,
+  Jost_400Regular,
+  Jost_500Medium,
+  Jost_600SemiBold,
+  Jost_700Bold,
+  Jost_800ExtraBold,
+  Jost_900Black,
+} from "@expo-google-fonts/jost";
 import { TransitionPresets } from "@react-navigation/stack";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
@@ -235,7 +246,6 @@ function Root() {
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
-
   const ref = useNavigationContainerRef();
 
   useEffect(() => {
@@ -245,7 +255,16 @@ function Root() {
   useWebDevtoolsWarning();
 
   const [fontsLoaded, fontsError] = useFonts({
-    serifText800: CrimsonPro_800ExtraBold,
+    body_100: Jost_100Thin,
+    body_200: Jost_200ExtraLight,
+    body_300: Jost_300Light,
+    body_400: Jost_400Regular,
+    body_500: Jost_500Medium,
+    body_600: Jost_600SemiBold,
+    body_700: Jost_700Bold,
+    body_800: Jost_800ExtraBold,
+    body_900: Jost_900Black,
+    serifText800: Fraunces_300Light,
     mono: JetBrainsMono_500Medium,
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
     symbols_filled: require("../assets/fonts/symbols/filled.ttf"),
