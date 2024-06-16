@@ -1053,7 +1053,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
           ? defaultValues.dateOnly
           : true,
       name: defaultValues.name || "",
-      date: defaultValues.date || dayjs().utc(),
+      date: defaultValues.date,
       pinned: defaultValues.pinned || false,
       label: defaultValues.label,
       storyPoints: defaultValues.storyPoints,
@@ -1272,7 +1272,7 @@ const CreateTask = forwardRef(
       children,
       sheetRef,
       defaultValues = {
-        date: dayjs().utc(),
+        date: null,
         agendaOrder: null,
         collectionId: null,
         storyPoints: 2,
