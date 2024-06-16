@@ -12,14 +12,16 @@
       },
       "env": {
         "APP_VARIANT": "development"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "image": "latest",
         "buildType": "apk"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "distribution": "internal",
@@ -29,7 +31,8 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.dysperse.com"
-      }
+      },
+      "channel": "production"
     }
   },
   "submit": {
