@@ -205,7 +205,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     );
   }, [sheetRef, breakpoints]);
 
-  const trigger = cloneElement(children || <Pressable />, {
+  const trigger = cloneElement((children || <Pressable />) as any, {
     onPress: handleOpen,
   });
 
