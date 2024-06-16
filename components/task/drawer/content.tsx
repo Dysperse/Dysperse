@@ -9,6 +9,7 @@ import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
+import { useLocalSearchParams } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -82,7 +83,7 @@ export function TaskDrawerContent({ handleClose }) {
   const labelColors = useLabelColors();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const menuRef = useRef<BottomSheetModal>(null);
-
+  const { id: collectionId } = useLocalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
 
   const handlePriorityChange = useCallback(() => {
@@ -214,6 +215,7 @@ export function TaskDrawerContent({ handleClose }) {
                   updateTask("label", e, false);
                 }}
                 onClose={() => {}}
+                defaultCollection={collectionId}
                 autoFocus
                 disabled={Boolean(task.label?.integrationParams)}
               >

@@ -615,7 +615,7 @@ export function RecurrencePicker({ value, setValue }) {
 function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
   const orange = useColor("orange");
   const pinned = watch("pinned");
-  const dateOnly = watch("dateOnly");
+  const collectionId = watch("collectionId");
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -684,6 +684,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
         )}
       />
       <CreateTaskLabelInput
+        collectionId={collectionId}
         control={control}
         labelMenuRef={labelMenuRef}
         onLabelPickerClose={() => {
@@ -696,7 +697,12 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
   );
 }
 
-function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
+function CreateTaskLabelInput({
+  control,
+  collectionId,
+  labelMenuRef,
+  onLabelPickerClose,
+}) {
   const colors = useLabelColors();
 
   return (
@@ -708,6 +714,7 @@ function CreateTaskLabelInput({ control, labelMenuRef, onLabelPickerClose }) {
         <LabelPicker
           label={value}
           setLabel={onChange}
+          defaultCollection={collectionId}
           sheetProps={{
             sheetRef: labelMenuRef,
           }}

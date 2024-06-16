@@ -139,6 +139,7 @@ const LabelPicker = memo(function LabelPicker({
   triggerProp = "onPress",
   sheetProps = {},
   disabled = false,
+  defaultCollection,
 }: {
   children: React.ReactElement;
   label?: string | any[];
@@ -150,6 +151,7 @@ const LabelPicker = memo(function LabelPicker({
   triggerProp?: string;
   sheetProps?: Partial<DBottomSheetProps>;
   disabled?: boolean;
+  defaultCollection?: string;
 }) {
   const _ref = useRef<BottomSheetModal>(null);
   const ref = sheetProps.sheetRef || _ref;
@@ -175,7 +177,9 @@ const LabelPicker = memo(function LabelPicker({
 
   const { data, mutate, error } = useSWR(["space/labels"]);
 
-  const [selectedCollection, setSelectedCollection] = useState(null);
+  const [selectedCollection, setSelectedCollection] =
+    useState(defaultCollection);
+
   const collections = Array.isArray(data)
     ? data
         ?.map((l) => l.collections.map((c) => c))
