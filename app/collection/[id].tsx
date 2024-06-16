@@ -131,6 +131,7 @@ function Content({ handleClose }) {
                   fontSize: 20,
                   flex: 1,
                   width: "100%",
+                  verticalAlign: "top",
                   borderColor: errors.name ? "red" : theme[6],
                 }}
               />
