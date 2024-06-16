@@ -152,6 +152,7 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
           }}
         />
         <ScrollView
+          keyboardShouldPersistTaps="handled"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 10, padding: 10 }}
