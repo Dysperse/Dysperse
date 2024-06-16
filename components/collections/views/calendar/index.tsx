@@ -1,5 +1,5 @@
 import { useLabelColors } from "@/components/labels/useLabelColors";
-import CreateTask from "@/components/task/create";
+import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import Alert from "@/ui/Alert";
@@ -59,6 +59,25 @@ const CalendarTaskDrawer = forwardRef(
     );
   }
 );
+
+const CalendarCreateTaskDrawer = forwardRef(
+  (props: CreateTaskDrawerProps, ref) => {
+    const drawerRef = useRef(null);
+    const [defaultValues, setDefaultValues] = useState({});
+
+    useImperativeHandle(ref, () => ({
+      present: (defaultValues) => {
+        setDefaultValues(defaultValues);
+        drawerRef.current?.present();
+      },
+    }));
+
+    return (
+      <CreateTask defaultValues={defaultValues} ref={drawerRef} {...props} />
+    );
+  }
+);
+
 export function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams();
@@ -142,11 +161,7 @@ export function Content() {
         tasks={tasks}
         ref={taskDrawerRef}
       />
-      <CreateTask
-        defaultValues={{
-          dateOnly: false,
-          date: dayjs(createDate),
-        }}
+      <CalendarCreateTaskDrawer
         ref={createTaskSheetRef}
         mutate={(newItem) => {
           if (newItem)
@@ -182,10 +197,19 @@ export function Content() {
           });
         }}
         onPressCell={(date) => {
-          setCreateDate(date);
-          setTimeout(() => {
-            createTaskSheetRef.current?.present();
-          }, 0);
+          createTaskSheetRef.current?.present({
+            dateOnly: originalMode === "month",
+            date:
+              originalMode === "month"
+                ? dayjs(date).startOf("day")
+                : dayjs(date),
+          });
+        }}
+        onPressDateHeader={(date) => {
+          createTaskSheetRef.current?.present({
+            dateOnly: true,
+            date: dayjs(date).startOf("day"),
+          });
         }}
         key={`${start.toISOString()}-${end.toISOString()}`}
         height={height - 20 - 65}
@@ -265,7 +289,7 @@ export function Content() {
                   .toDate(),
               } as ICalendarEventBase)
           )}
-        date={dayjs(originalStart).toDate()}
+        date={dayjs(originalStart as any).toDate()}
       />
     </>
   ) : (
@@ -282,11 +306,15 @@ export function Content() {
 }
 
 export function Calendar() {
+  // eslint-disable-next-line prefer-const
   let { start, id, mode } = useLocalSearchParams();
   const { mode: originalMode } = useLocalSearchParams();
   if (!mode || mode === "3days") mode = "week";
   if (mode === "schedule") mode = "month";
-  if (!start) start = dayjs().startOf(mode).toISOString();
+  if (!start)
+    start = dayjs()
+      .startOf(mode as any)
+      .toISOString();
   // mode = week | month
 
   const agendaContextValue = useMemo(() => {
@@ -302,7 +330,7 @@ export function Calendar() {
   }, [start, id, mode, originalMode]);
 
   return (
-    <CalendarContext.Provider value={agendaContextValue}>
+    <CalendarContext.Provider value={agendaContextValue as any}>
       <Content />
     </CalendarContext.Provider>
   );

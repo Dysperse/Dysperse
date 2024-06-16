@@ -1244,6 +1244,20 @@ function BottomSheetContent({ defaultValues, mutateList }) {
   );
 }
 
+export interface CreateTaskDrawerProps {
+  children?: React.ReactNode;
+  sheetRef?: RefObject<BottomSheetModal>;
+  defaultValues?: {
+    date?: Dayjs;
+    agendaOrder?: string;
+    collectionId?: string;
+    label?: any;
+    storyPoints?: number;
+    dateOnly?: boolean;
+  };
+  mutate: (newTask) => void;
+}
+
 const CreateTask = forwardRef(
   (
     {
@@ -1257,19 +1271,7 @@ const CreateTask = forwardRef(
         dateOnly: true,
       },
       mutate,
-    }: {
-      children?: React.ReactNode;
-      sheetRef?: RefObject<BottomSheetModal>;
-      defaultValues?: {
-        date?: Dayjs;
-        agendaOrder?: string;
-        collectionId?: string;
-        label?: any;
-        storyPoints?: number;
-        dateOnly?: boolean;
-      };
-      mutate: (newTask) => void;
-    },
+    }: CreateTaskDrawerProps,
     forwardedRef
   ) => {
     const ref = useRef<BottomSheetModal>(null);
