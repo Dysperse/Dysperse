@@ -69,6 +69,7 @@ const TimeInput = React.forwardRef(
 
     return (
       <TextField
+        selectTextOnFocus
         onBlur={(e) => {
           const n = e.nativeEvent.text.toLowerCase();
           if (convertTime(n)) {
@@ -188,7 +189,10 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
           <ListItemButton
             onPress={() => {
               setValue("dateOnly", !dateOnly);
-              if (dateOnly) setTimeout(() => timeInputRef.current?.focus(), 0);
+              if (dateOnly)
+                setTimeout(() => {
+                  timeInputRef.current?.focus();
+                }, 10);
             }}
             style={{ height: 40 }}
           >
@@ -199,7 +203,11 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
               />
             ) : (
               <Pressable onPress={(e) => e.stopPropagation()}>
-                <TimeInput value={value} setValue={setValue} />
+                <TimeInput
+                  ref={timeInputRef}
+                  value={value}
+                  setValue={setValue}
+                />
               </Pressable>
             )}
             <Icon size={30} style={!dateOnly && { opacity: 0.6 }}>
