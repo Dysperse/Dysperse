@@ -1290,7 +1290,7 @@ const CreateTask = forwardRef(
 
     const { isReached } = useStorageContext();
 
-    const trigger = cloneElement(children || <Pressable />, {
+    const trigger = cloneElement((children || <Pressable />) as any, {
       onPress: handleOpen,
       disabled: isReached,
     });
