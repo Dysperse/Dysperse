@@ -106,7 +106,10 @@ export default function Page() {
             ]}
             onPress={handleLoginPress}
           >
-            <ButtonText style={[authStyles.buttonText, { color: "#fff" }]}>
+            <ButtonText
+              style={[authStyles.buttonText, { color: "#fff" }]}
+              weight={900}
+            >
               Sign in
             </ButtonText>
           </Button>
@@ -123,7 +126,10 @@ export default function Page() {
             ]}
             onPress={handleSignUpPress}
           >
-            <ButtonText style={[authStyles.buttonText, { color: "#fff" }]}>
+            <ButtonText
+              style={[authStyles.buttonText, { color: "#fff" }]}
+              weight={900}
+            >
               Create an account
             </ButtonText>
           </Button>
