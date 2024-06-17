@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 export const settingStyles = StyleSheet.create({
   title: {
     fontSize: 40,
+    fontFamily: "body_800",
   },
   heading: {
     fontSize: 26,

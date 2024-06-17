@@ -1,4 +1,6 @@
 electron/out
+google-services.json
+google-services-dev.json
 
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
