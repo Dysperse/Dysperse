@@ -141,7 +141,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const { mutate } = useSWR(["user/tabs"]);
 
   const handleRefresh = async (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();
     await ctx.mutate();
   };
 
