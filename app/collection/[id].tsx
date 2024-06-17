@@ -138,22 +138,20 @@ function Content({ handleClose }) {
               />
             )}
           />
+          <Button
+            onPress={handleSubmit(handleSave, () =>
+              Toast.show({ type: "error", text1: "Please type in a name" })
+            )}
+            variant="filled"
+            isLoading={loading}
+            style={{ height: 60 }}
+          >
+            <ButtonText style={{ fontSize: 20 }} weight={800}>
+              Done
+            </ButtonText>
+            <Icon>check</Icon>
+          </Button>
         </View>
-      </View>
-      <View style={{ padding: 20, paddingTop: 0 }}>
-        <Button
-          onPress={handleSubmit(handleSave, () =>
-            Toast.show({ type: "error", text1: "Please type in a name" })
-          )}
-          variant="filled"
-          isLoading={loading}
-          style={{ height: 60, marginTop: 20 }}
-        >
-          <ButtonText style={{ fontSize: 20 }} weight={800}>
-            Done
-          </ButtonText>
-          <Icon>check</Icon>
-        </Button>
       </View>
     </View>
   );
