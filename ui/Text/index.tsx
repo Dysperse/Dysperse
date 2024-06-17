@@ -19,10 +19,10 @@ export interface DTextProps extends TextProps {
 export const getFontName = (family: string, weight: number) => {
   const fonts = {
     crimsonPro: {
-      800: Platform.OS === "web" ? "serifText800" : "CrimsonPro_800ExtraBold",
+      800: "serifText800",
     },
     jetBrainsMono: {
-      500: Platform.OS === "web" ? "mono" : "JetBrainsMono_500Medium",
+      500: "mono",
     },
     jost: {
       100: "body_100",
