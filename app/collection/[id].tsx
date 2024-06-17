@@ -13,6 +13,7 @@ import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import TextField from "@/ui/TextArea";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
@@ -20,6 +21,50 @@ import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+
+const collectionCategories: MenuOption[] = [
+  { text: "School", icon: "school" },
+  { text: "Sports", icon: "sports_soccer" },
+  { text: "Movies", icon: "theaters" },
+  { text: "Music", icon: "piano" },
+  { text: "Outdoors", icon: "camping" },
+  { text: "Food & Drink", icon: "lunch_dining" },
+  { text: "Travel", icon: "flight" },
+  { text: "Books", icon: "menu_book" },
+  { text: "Art", icon: "palette" },
+  { text: "Tech", icon: "devices" },
+  { text: "Fashion", icon: "style" },
+  { text: "Health", icon: "health_and_safety" },
+  { text: "Fitness", icon: "fitness_center" },
+  { text: "Home", icon: "home" },
+  { text: "Pets", icon: "pets" },
+  { text: "Gaming", icon: "videogame_asset" },
+  { text: "Business", icon: "business" },
+  { text: "Finance", icon: "money" },
+  { text: "Science", icon: "science" },
+  { text: "Nature", icon: "nature_people" },
+  { text: "Cars", icon: "directions_car" },
+  { text: "Photography", icon: "photo_camera" },
+  { text: "DIY", icon: "build" },
+  { text: "Crafts", icon: "emoji_objects" },
+  { text: "Beauty", icon: "spa" },
+  { text: "Relationships", icon: "favorite" },
+  { text: "Parenting", icon: "family_restroom" },
+  { text: "Weddings", icon: "cake" },
+  { text: "Parties", icon: "celebration" },
+  { text: "Holidays", icon: "celebration" },
+  { text: "Games", icon: "sports_esports" },
+  { text: "Entertainment", icon: "theaters" },
+  { text: "Humor", icon: "sentiment_very_satisfied" },
+  { text: "News", icon: "article" },
+  { text: "Politics", icon: "psychology" },
+  { text: "Religion", icon: "psychology" },
+  { text: "History", icon: "history" },
+  { text: "Culture", icon: "emoji_objects" },
+  { text: "Languages", icon: "language" },
+  { text: "Learning", icon: "school" },
+  { text: "Fitness", icon: "fitness_center" },
+];
 
 function Content({ handleClose }) {
   const theme = useColorTheme();
@@ -36,6 +81,7 @@ function Content({ handleClose }) {
       name: data.name,
       emoji: data.emoji,
       description: data.description,
+      category: data.category,
     },
   });
   const [loading, setLoading] = useState(false);
@@ -93,6 +139,28 @@ function Content({ handleClose }) {
           )}
         />
         <View style={{ flex: 1, gap: 10 }}>
+          {process.env.NODE_ENV === "development" && (
+            <Controller
+              name="category"
+              rules={{ required: true }}
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <MenuPopover
+                  scrollViewStyle={{
+                    maxHeight: 285,
+                  }}
+                  trigger={
+                    <Button variant="filled">
+                      <ButtonText>
+                        {value ? "Category 1" : "Select category"}
+                      </ButtonText>
+                    </Button>
+                  }
+                  options={collectionCategories}
+                />
+              )}
+            />
+          )}
           <Controller
             name="name"
             rules={{ required: true }}

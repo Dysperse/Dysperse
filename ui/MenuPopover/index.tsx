@@ -9,6 +9,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import {
   Menu,
   MenuOptionProps,
@@ -48,6 +49,7 @@ export type MenuProps =
       children?: never;
       menuRef?: React.MutableRefObject<Menu>;
       closeOnSelect?: boolean;
+      scrollViewStyle?: StyleProp<ViewStyle>;
     }
   | {
       trigger: ReactElement;
@@ -57,6 +59,7 @@ export type MenuProps =
       children: any;
       menuRef?: React.MutableRefObject<Menu>;
       closeOnSelect?: boolean;
+      scrollViewStyle?: StyleProp<ViewStyle>;
     };
 
 const styles = StyleSheet.create({
@@ -104,6 +107,7 @@ export default function MenuPopover({
   containerStyle,
   menuRef,
   closeOnSelect = true,
+  scrollViewStyle,
 }: MenuProps) {
   const _menuRef = useRef<Menu>(null);
   const isDark = useDarkMode();
@@ -189,55 +193,61 @@ export default function MenuPopover({
               tint={isDark ? "dark" : "prominent"}
               style={[styles.container]}
             >
-              {children ||
-                options
-                  .filter((e) => e)
-                  .map(
-                    ({
-                      icon,
-                      text,
-                      key,
-                      callback,
-                      renderer: Renderer = React.Fragment,
-                      ...props
-                    }: any) => (
-                      // TODO: Fix key
-                      <React.Fragment key={Math.random()}>
-                        {props.divider ? (
-                          <Divider
-                            style={{
-                              width: "90%",
-                              marginVertical: 5,
-                              backgroundColor: addHslAlpha(theme[9], 0.2),
-                            }}
-                          />
-                        ) : (
-                          <Renderer>
-                            <MenuItem
-                              onPress={() => {
-                                callback();
-                                if (closeOnSelect) menuPopupRef.current.close();
+              <ScrollView
+                style={scrollViewStyle}
+                showsVerticalScrollIndicator={false}
+              >
+                {children ||
+                  options
+                    .filter((e) => e)
+                    .map(
+                      ({
+                        icon,
+                        text,
+                        key,
+                        callback,
+                        renderer: Renderer = React.Fragment,
+                        ...props
+                      }: any) => (
+                        // TODO: Fix key
+                        <React.Fragment key={Math.random()}>
+                          {props.divider ? (
+                            <Divider
+                              style={{
+                                width: "90%",
+                                marginVertical: 5,
+                                backgroundColor: addHslAlpha(theme[9], 0.2),
                               }}
-                              {...props}
-                            >
-                              {icon && <Icon>{icon}</Icon>}
-                              <Text
-                                weight={300}
-                                style={{ color: theme[11], fontSize: 16 }}
+                            />
+                          ) : (
+                            <Renderer>
+                              <MenuItem
+                                onPress={() => {
+                                  callback();
+                                  if (closeOnSelect)
+                                    menuPopupRef.current.close();
+                                }}
+                                {...props}
                               >
-                                {text}
-                              </Text>
-                              {props.selected && (
-                                <Icon style={{ marginLeft: "auto" }}>
-                                  check
-                                </Icon>
-                              )}
-                            </MenuItem>
-                          </Renderer>
-                        )}
-                      </React.Fragment>
-                    )
-                  )}
+                                {icon && <Icon>{icon}</Icon>}
+                                <Text
+                                  weight={300}
+                                  style={{ color: theme[11], fontSize: 16 }}
+                                >
+                                  {text}
+                                </Text>
+                                {props.selected && (
+                                  <Icon style={{ marginLeft: "auto" }}>
+                                    check
+                                  </Icon>
+                                )}
+                              </MenuItem>
+                            </Renderer>
+                          )}
+                        </React.Fragment>
+                      )
+                    )}
+              </ScrollView>
             </BlurView>
           </View>
         </Animated.View>
