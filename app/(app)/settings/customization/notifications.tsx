@@ -94,7 +94,7 @@ async function registerForPushNotificationsAsync(session) {
       console.error(data);
       return pushTokenString;
     } catch (e: unknown) {
-      console.error(e);
+      console.log(e);
       Toast.show({ type: "error" });
     }
   } else {
@@ -315,7 +315,12 @@ export default function Page() {
       )}
       {data ? (
         data.map((device) => (
-          <ListItemButton variant="filled" disabled key={device.id}>
+          <ListItemButton
+            variant="filled"
+            disabled
+            key={device.id}
+            style={{ marginBottom: 10 }}
+          >
             <Icon>{icons[device.deviceType]}</Icon>
             <ListItemText
               primary={device.deviceName}
