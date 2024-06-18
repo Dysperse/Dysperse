@@ -78,6 +78,10 @@ async function registerForPushNotificationsAsync() {
           })
         ).data;
 
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+        });
+
         return pushTokenString;
       } catch (e: unknown) {
         console.log(e);
@@ -217,7 +221,12 @@ const TestNotifications = () => {
   const { session } = useSession();
   const handleTest = async () => {
     setIsLoading(true);
-    await sendApiRequest(session, "POST", "user/notifications/test");
+    const data = await sendApiRequest(
+      session,
+      "POST",
+      "user/notifications/test"
+    );
+    console.log(data);
     setIsLoading(false);
   };
 
@@ -252,7 +261,7 @@ function SubscribeButton({ data, mutate }) {
       data?.find?.(({ tokens }) =>
         typeof tokens === "string"
           ? tokens === expoTokens
-          : tokens.endpoint === webTokens.endpoint
+          : tokens?.endpoint === webTokens?.endpoint
       )
     );
   }, [data]);
@@ -310,7 +319,7 @@ function SubscribeButton({ data, mutate }) {
   return (
     <Button
       isLoading={isLoading || !data}
-      disabled={tokenExists}
+      disabled={Boolean(tokenExists)}
       onPress={handlePress}
       variant="filled"
       style={{ marginBottom: 20 }}
