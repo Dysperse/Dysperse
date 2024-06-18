@@ -4,5 +4,5 @@ module.exports = {
   swDest: "dist/sw.js",
   // 2 gigabytes
   maximumFileSizeToCacheInBytes: 2 * 1024 * 1024 * 1024,
-  ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
+  swSrc: "public/service-worker.js",
 };
