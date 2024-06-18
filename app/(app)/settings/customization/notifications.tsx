@@ -245,6 +245,8 @@ function SubscribeButton({ data, mutate }) {
       const webTokens = await registerForWebPushNotificationsAsync();
       const expoTokens = await registerForPushNotificationsAsync();
 
+      console.log(data, webTokens, expoTokens);
+
       setTokenExists(
         data?.find?.(
           ({ tokens }) =>
