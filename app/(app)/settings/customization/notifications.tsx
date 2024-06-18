@@ -247,10 +247,10 @@ function SubscribeButton({ data, mutate }) {
     console.log(data, webTokens, expoTokens);
 
     setTokenExists(
-      data?.find?.(
-        ({ tokens }) =>
-          JSON.stringify(tokens) === JSON.stringify(webTokens.toJSON()) ||
-          tokens === expoTokens
+      data?.find?.(({ tokens }) =>
+        typeof tokens === "string"
+          ? tokens === expoTokens
+          : tokens.endpoint === webTokens.endpoint
       )
     );
   }, [data]);
