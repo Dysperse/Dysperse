@@ -344,6 +344,7 @@ export function Column({
               >
                 <CreateTask
                   defaultValues={{
+                    dateOnly: true,
                     collectionId:
                       collectionId === "all" ? undefined : collectionId,
                     date: dayjs(column.start),

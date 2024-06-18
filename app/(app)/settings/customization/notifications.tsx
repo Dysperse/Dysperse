@@ -284,7 +284,6 @@ export default function Page() {
             const sub: any = await registerForWebPushNotificationsAsync(
               session
             );
-            ``;
             console.log(sub);
 
             sendApiRequest(
