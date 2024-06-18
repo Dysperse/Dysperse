@@ -300,7 +300,7 @@ function SubscribeButton({ data, mutate }) {
     await mutate();
     Toast.show({
       type: "success",
-      text1: "You'll recieve notifications on this device!",
+      text1: "You'll receive notifications on this device!",
     });
     setIsLoading(false);
   };
@@ -313,7 +313,11 @@ function SubscribeButton({ data, mutate }) {
       variant="filled"
       style={{ marginBottom: 20 }}
     >
-      <ButtonText>Receive notifications on this device</ButtonText>
+      <ButtonText>
+        {tokenExists
+          ? "Notifications enabled"
+          : "Enable notifications on this device"}
+      </ButtonText>
     </Button>
   );
 }
