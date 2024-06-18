@@ -259,7 +259,7 @@ function SubscribeButton({ data, mutate }) {
 
   useEffect(() => {
     checkIfTokensExist();
-  });
+  }, [checkIfTokensExist]);
 
   const handlePress = async () => {
     setIsLoading(true);
