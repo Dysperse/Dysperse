@@ -16,7 +16,7 @@ if (workbox) {
       cacheName: "images",
       plugins: [
         new workbox.expiration.ExpirationPlugin({
-          maxEntries: 10,
+          maxEntries: 1000,
           maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
         }),
       ],
