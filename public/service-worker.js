@@ -32,8 +32,8 @@ self.addEventListener("push", (event) => {
   const title = data.title || "Default Title";
   const options = {
     body: data.body,
-    icon: data.icon,
-    badge: data.badge,
+    badge: "https://app.dysperse.com/assets/notification.png",
+    icon: "https://app.dysperse.com/assets/notification-icon.png",
   };
 
   event.waitUntil(self.registration.showNotification(title, options));

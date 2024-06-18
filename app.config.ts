@@ -20,6 +20,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     tsconfigPaths: true,
   },
+  notification: {
+    iosDisplayInForeground: true,
+    icon: "./assets/notification.png",
+  },
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,

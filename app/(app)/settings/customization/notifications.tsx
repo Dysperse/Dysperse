@@ -16,7 +16,7 @@ import Text from "@/ui/Text";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -77,21 +77,6 @@ async function registerForPushNotificationsAsync(session) {
         })
       ).data;
 
-      const data = await sendApiRequest(
-        session,
-        "POST",
-        "user/notifications",
-        {},
-        {
-          body: JSON.stringify({
-            type: "EXPO",
-            tokens: pushTokenString,
-            deviceType: Device.deviceType,
-            deviceName: Device.deviceName || "Unknown device",
-          }),
-        }
-      );
-      console.error(data);
       return pushTokenString;
     } catch (e: unknown) {
       console.log(e);
@@ -121,7 +106,6 @@ async function registerForWebPushNotificationsAsync(session) {
     "serviceWorker" in navigator &&
     window.workbox !== undefined
   ) {
-    // run only in browser
     navigator.serviceWorker.ready.then(async (reg) => {
       await reg.pushManager.subscribe({
         userVisibleOnly: true,
@@ -137,25 +121,6 @@ async function registerForWebPushNotificationsAsync(session) {
             Date.now() > sub.expirationTime - 5 * 60 * 1000
           )
         ) {
-          console.log(sub);
-          console.log("web push subscribed!");
-
-          sendApiRequest(
-            session,
-            "POST",
-            "user/notifications",
-            {},
-            {
-              body: JSON.stringify({
-                type: "WEB",
-                tokens: sub.toJSON(),
-                deviceType: Device.deviceType || 0,
-                deviceName:
-                  navigator.userAgent.split("(")[1].split(";")[0] ||
-                  "Unknown device",
-              }),
-            }
-          );
           return sub;
         }
       });
@@ -275,11 +240,6 @@ export default function Page() {
 
   const [settings, setSettings] = useState({ "task-reminders": true });
 
-  useEffect(() => {
-    if (Platform.OS === "web") registerForWebPushNotificationsAsync(session);
-    else registerForPushNotificationsAsync(session);
-  }, [session]);
-
   const handleDelete = async (id: string) => {
     sendApiRequest(session, "DELETE", "user/notifications", {
       id,
@@ -314,9 +274,67 @@ export default function Page() {
       />
 
       <TestNotifications />
-      {data && data.length > 0 && (
-        <Text style={settingStyles.heading}>Manage devices</Text>
-      )}
+      <Text style={settingStyles.heading}>Manage devices</Text>
+      <Button
+        disabled={data?.find(
+          (device) => device.tokens === Constants?.expoPushToken?.data
+        )}
+        onPress={async () => {
+          if (Platform.OS === "web") {
+            const sub: any = await registerForWebPushNotificationsAsync(
+              session
+            );
+            ``;
+            console.log(sub);
+
+            sendApiRequest(
+              session,
+              "POST",
+              "user/notifications",
+              {},
+              {
+                body: JSON.stringify({
+                  type: "WEB",
+                  tokens: sub.toJSON(),
+                  deviceType: Device.deviceType || 0,
+                  deviceName:
+                    navigator.userAgent.split("(")[1].split(";")[0] ||
+                    "Unknown device",
+                }),
+              }
+            );
+          } else {
+            const pushTokenString = await registerForPushNotificationsAsync(
+              session
+            );
+
+            await sendApiRequest(
+              session,
+              "POST",
+              "user/notifications",
+              {},
+              {
+                body: JSON.stringify({
+                  type: "EXPO",
+                  tokens: pushTokenString,
+                  deviceType: Device.deviceType,
+                  deviceName: Device.deviceName || "Unknown device",
+                }),
+              }
+            );
+
+            await mutate();
+            Toast.show({
+              type: "success",
+              text1: "You'll recieve notifications on this device!",
+            });
+          }
+        }}
+        variant="filled"
+        style={{ marginBottom: 20 }}
+      >
+        <ButtonText>Receive notifications on this device</ButtonText>
+      </Button>
       {data ? (
         data.map((device) => (
           <ListItemButton
