@@ -1,4 +1,8 @@
 # Logs
+google-services-dev.json
+google-services.json
+.expo
+
 logs
 *.log
 npm-debug.log*
