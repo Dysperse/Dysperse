@@ -265,7 +265,7 @@ function SubscribeButton({ data, mutate }) {
     setIsLoading(true);
     if (Platform.OS === "web") {
       const sub: any = await registerForWebPushNotificationsAsync();
-      sendApiRequest(
+      await sendApiRequest(
         session,
         "POST",
         "user/notifications",
