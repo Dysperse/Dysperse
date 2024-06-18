@@ -38,7 +38,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-async function registerForPushNotificationsAsync(session) {
+async function registerForPushNotificationsAsync() {
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {
       name: "All notifications",
@@ -88,7 +88,7 @@ async function registerForPushNotificationsAsync(session) {
   }
 }
 
-async function registerForWebPushNotificationsAsync(session) {
+async function registerForWebPushNotificationsAsync() {
   const base64ToUint8Array = (base64) => {
     const padding = "=".repeat((4 - (base64.length % 4)) % 4);
     const b64 = (base64 + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -101,31 +101,34 @@ async function registerForWebPushNotificationsAsync(session) {
     }
     return outputArray;
   };
+
   if (
     typeof window !== "undefined" &&
     "serviceWorker" in navigator &&
     window.workbox !== undefined
   ) {
-    navigator.serviceWorker.ready.then(async (reg) => {
-      await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: base64ToUint8Array(
-          process.env.EXPO_PUBLIC_WEB_PUSH_API_KEY
-        ),
-      });
-      reg.pushManager.getSubscription().then((sub) => {
-        if (
-          sub &&
-          !(
-            sub.expirationTime &&
-            Date.now() > sub.expirationTime - 5 * 60 * 1000
-          )
-        ) {
-          return sub;
-        }
-      });
+    const reg = await navigator.serviceWorker.ready;
+
+    await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: base64ToUint8Array(
+        process.env.EXPO_PUBLIC_WEB_PUSH_API_KEY
+      ),
     });
+
+    const sub = await reg.pushManager.getSubscription();
+
+    if (
+      sub &&
+      !(sub.expirationTime && Date.now() > sub.expirationTime - 5 * 60 * 1000)
+    ) {
+      return sub;
+    }
+
+    return null; // Return null if no valid subscription found
   }
+
+  return null; // Return null if service worker or workbox is not supported
 }
 
 const notificationSettings = [
@@ -281,9 +284,7 @@ export default function Page() {
         )}
         onPress={async () => {
           if (Platform.OS === "web") {
-            const sub: any = await registerForWebPushNotificationsAsync(
-              session
-            );
+            const sub: any = await registerForWebPushNotificationsAsync();
             console.log(sub);
 
             sendApiRequest(
@@ -303,9 +304,7 @@ export default function Page() {
               }
             );
           } else {
-            const pushTokenString = await registerForPushNotificationsAsync(
-              session
-            );
+            const pushTokenString = await registerForPushNotificationsAsync();
 
             await sendApiRequest(
               session,
