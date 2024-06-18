@@ -313,6 +313,7 @@ function SubscribeButton({ data, mutate }) {
       variant="filled"
       style={{ marginBottom: 20 }}
     >
+      <Icon>{tokenExists ? "check" : "add"}</Icon>
       <ButtonText>
         {tokenExists
           ? "Notifications enabled"
