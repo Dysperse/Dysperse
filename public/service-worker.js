@@ -1,9 +1,34 @@
-self.__WB_MANIFEST;
+// Import Workbox scripts
+importScripts(
+  "https://storage.googleapis.com/workbox-cdn/releases/6.5.3/workbox-sw.js"
+);
+
+if (workbox) {
+  console.log("Workbox is loaded");
+
+  // Precache files
+  workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+
+  // Runtime caching
+  workbox.routing.registerRoute(
+    new RegExp(".*\\.(?:png|jpg|jpeg|svg|gif)"),
+    new workbox.strategies.CacheFirst({
+      cacheName: "images",
+      plugins: [
+        new workbox.expiration.ExpirationPlugin({
+          maxEntries: 10,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+        }),
+      ],
+    })
+  );
+} else {
+  console.log("Workbox failed to load");
+}
 
 // Handle push events
 self.addEventListener("push", (event) => {
-  console.log("Push received", event);
-  const data = event.data.json();
+  const data = event.data ? event.data.json() : {};
   const title = data.title || "Default Title";
   const options = {
     body: data.body,
@@ -17,5 +42,5 @@ self.addEventListener("push", (event) => {
 // Handle notification click
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  event.waitUntil(self.clients.openWindow("https://app.dysperse.com"));
+  event.waitUntil(self.clients.openWindow("/"));
 });

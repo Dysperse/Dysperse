@@ -9,7 +9,7 @@
     "postinstall": "patch-package",
     "build:dev": "eas build --profile development --platform android",
     "build:prod": "eas build --profile production --platform android",
-    "build:web": "expo export -p web && npm install workbox-cli --global && workbox injectManifest workbox-config.js",
+    "build:web": "expo export -p web && ./build-sw.mjs",
     "build:electron": "expo export -p web --output-dir ./electron/src/dist",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -52,6 +52,7 @@
     "expo-media-library": "~16.0.3",
     "expo-navigation-bar": "~3.0.6",
     "expo-network": "~6.0.1",
+    "expo-notifications": "~0.28.9",
     "expo-router": "~3.5.16",
     "expo-secure-store": "~13.0.1",
     "expo-sharing": "~12.0.1",
@@ -95,8 +96,8 @@
     "timezones-list": "^3.0.3",
     "typescript": "~5.3.3",
     "use-debounce": "^10.0.1",
-    "workbox-window": "^7.1.0",
-    "expo-notifications": "~0.28.9"
+    "workbox-build": "^7.1.1",
+    "workbox-window": "^7.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
