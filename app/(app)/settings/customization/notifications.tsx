@@ -39,52 +39,54 @@ Notifications.setNotificationHandler({
 });
 
 async function registerForPushNotificationsAsync() {
-  if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("default", {
-      name: "All notifications",
-      description:
-        "Open Dysperse to change your notification settings at any time 🚀",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
-    });
-  }
+  if (Platform.OS !== "web") {
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "All notifications",
+        description:
+          "Open Dysperse to change your notification settings at any time 🚀",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
 
-  if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== "granted") {
-      console.error("Permission not granted to get push token!");
-      Toast.show({ type: "error" });
-      return;
-    }
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ??
-      Constants?.easConfig?.projectId;
-    if (!projectId) {
-      console.log("Project ID not found");
-      Toast.show({ type: "error" });
-    }
-    try {
-      const pushTokenString = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId,
-        })
-      ).data;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        console.error("Permission not granted to get push token!");
+        Toast.show({ type: "error" });
+        return;
+      }
+      const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ??
+        Constants?.easConfig?.projectId;
+      if (!projectId) {
+        console.log("Project ID not found");
+        Toast.show({ type: "error" });
+      }
+      try {
+        const pushTokenString = (
+          await Notifications.getExpoPushTokenAsync({
+            projectId,
+          })
+        ).data;
 
-      return pushTokenString;
-    } catch (e: unknown) {
-      console.log(e);
+        return pushTokenString;
+      } catch (e: unknown) {
+        console.log(e);
+        Toast.show({ type: "error" });
+      }
+    } else {
+      console.error("Must use physical device for push notifications");
       Toast.show({ type: "error" });
     }
-  } else {
-    console.error("Must use physical device for push notifications");
-    Toast.show({ type: "error" });
   }
 }
 
