@@ -246,7 +246,7 @@ function SubscribeButton({ data, mutate }) {
       const expoTokens = await registerForPushNotificationsAsync();
 
       setTokenExists(
-        data.find(
+        data?.find?.(
           ({ tokens }) =>
             JSON.stringify(tokens) === JSON.stringify(webTokens.toJSON()) ||
             tokens === expoTokens
@@ -263,8 +263,6 @@ function SubscribeButton({ data, mutate }) {
     setIsLoading(true);
     if (Platform.OS === "web") {
       const sub: any = await registerForWebPushNotificationsAsync();
-      console.log(sub);
-
       sendApiRequest(
         session,
         "POST",
@@ -283,7 +281,6 @@ function SubscribeButton({ data, mutate }) {
       );
     } else {
       const pushTokenString = await registerForPushNotificationsAsync();
-
       await sendApiRequest(
         session,
         "POST",
@@ -298,19 +295,19 @@ function SubscribeButton({ data, mutate }) {
           }),
         }
       );
-
-      await mutate();
-      Toast.show({
-        type: "success",
-        text1: "You'll recieve notifications on this device!",
-      });
     }
+
+    await mutate();
+    Toast.show({
+      type: "success",
+      text1: "You'll recieve notifications on this device!",
+    });
     setIsLoading(false);
   };
 
   return (
     <Button
-      isLoading={isLoading}
+      isLoading={isLoading || !data}
       disabled={tokenExists}
       onPress={handlePress}
       variant="filled"
