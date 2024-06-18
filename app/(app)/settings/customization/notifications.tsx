@@ -149,7 +149,7 @@ async function registerForWebPushNotificationsAsync(session) {
               body: JSON.stringify({
                 type: "WEB",
                 tokens: sub.toJSON(),
-                deviceType: "WEB",
+                deviceType: Device.deviceType || 0,
                 deviceName:
                   navigator.userAgent.split("(")[1].split(";")[0] ||
                   "Unknown device",
