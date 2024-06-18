@@ -241,20 +241,18 @@ function SubscribeButton({ data, mutate }) {
   const [tokenExists, setTokenExists] = useState(true);
 
   const checkIfTokensExist = useCallback(async () => {
-    async () => {
-      const webTokens = await registerForWebPushNotificationsAsync();
-      const expoTokens = await registerForPushNotificationsAsync();
+    const webTokens = await registerForWebPushNotificationsAsync();
+    const expoTokens = await registerForPushNotificationsAsync();
 
-      console.log(data, webTokens, expoTokens);
+    console.log(data, webTokens, expoTokens);
 
-      setTokenExists(
-        data?.find?.(
-          ({ tokens }) =>
-            JSON.stringify(tokens) === JSON.stringify(webTokens.toJSON()) ||
-            tokens === expoTokens
-        )
-      );
-    };
+    setTokenExists(
+      data?.find?.(
+        ({ tokens }) =>
+          JSON.stringify(tokens) === JSON.stringify(webTokens.toJSON()) ||
+          tokens === expoTokens
+      )
+    );
   }, [data]);
 
   useEffect(() => {
