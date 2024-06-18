@@ -78,6 +78,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     [
+      "expo-notifications",
+      {
+        icon: "./assets/notification.png",
+        color: "#ffffff",
+        defaultChannel: "default",
+      },
+    ],
+    [
       "@sentry/react-native/expo",
       {
         organization: "dysperse",
