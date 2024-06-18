@@ -87,11 +87,7 @@ async function registerForPushNotificationsAsync(session) {
             type: "EXPO",
             tokens: pushTokenString,
             deviceType: Device.deviceType,
-            deviceName:
-              Device.deviceName ||
-              (Platform.OS === "web"
-                ? navigator.userAgent.split("(")[1].split(";")[0]
-                : "Unknown device"),
+            deviceName: Device.deviceName || "Unknown device",
           }),
         }
       );
@@ -127,6 +123,12 @@ async function registerForWebPushNotificationsAsync(session) {
   ) {
     // run only in browser
     navigator.serviceWorker.ready.then(async (reg) => {
+      await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: base64ToUint8Array(
+          process.env.EXPO_PUBLIC_WEB_PUSH_API_KEY
+        ),
+      });
       reg.pushManager.getSubscription().then((sub) => {
         if (
           sub &&
@@ -136,16 +138,27 @@ async function registerForWebPushNotificationsAsync(session) {
           )
         ) {
           console.log(sub);
+          console.log("web push subscribed!");
+
+          sendApiRequest(
+            session,
+            "POST",
+            "user/notifications",
+            {},
+            {
+              body: JSON.stringify({
+                type: "WEB",
+                tokens: sub.toJSON(),
+                deviceType: "WEB",
+                deviceName:
+                  navigator.userAgent.split("(")[1].split(";")[0] ||
+                  "Unknown device",
+              }),
+            }
+          );
           return sub;
         }
       });
-      await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: base64ToUint8Array(
-          process.env.EXPO_PUBLIC_WEB_PUSH_API_KEY
-        ),
-      });
-      console.log("web push subscribed!");
     });
   }
 }
