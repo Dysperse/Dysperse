@@ -1,6 +1,4 @@
-import { precacheAndRoute } from "workbox-precaching";
-
-precacheAndRoute(self.__WB_MANIFEST);
+self.__WB_MANIFEST;
 
 // Handle push events
 self.addEventListener("push", (event) => {
