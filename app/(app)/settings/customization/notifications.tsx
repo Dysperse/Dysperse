@@ -243,9 +243,12 @@ const notificationSettings = [
 ];
 
 const TestNotifications = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { session } = useSession();
   const handleTest = async () => {
+    setIsLoading(true);
     await sendApiRequest(session, "POST", "user/notifications/test");
+    setIsLoading(false);
   };
 
   return (
@@ -254,6 +257,7 @@ const TestNotifications = () => {
       variant="filled"
       large
       style={{ marginTop: 20 }}
+      isLoading={isLoading}
     >
       <ButtonText style={{ fontSize: 20 }} weight={700}>
         Show an example
