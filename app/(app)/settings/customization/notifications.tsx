@@ -16,7 +16,7 @@ import Text from "@/ui/Text";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -235,6 +235,92 @@ const TestNotifications = () => {
   );
 };
 
+function SubscribeButton({ data, mutate }) {
+  const { session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+  const [tokenExists, setTokenExists] = useState(true);
+
+  const checkIfTokensExist = useCallback(async () => {
+    async () => {
+      const webTokens = await registerForWebPushNotificationsAsync();
+      const expoTokens = await registerForPushNotificationsAsync();
+
+      setTokenExists(
+        data.find(
+          ({ tokens }) =>
+            JSON.stringify(tokens) === JSON.stringify(webTokens.toJSON()) ||
+            tokens === expoTokens
+        )
+      );
+    };
+  }, [data]);
+
+  useEffect(() => {
+    checkIfTokensExist();
+  });
+
+  const handlePress = async () => {
+    setIsLoading(true);
+    if (Platform.OS === "web") {
+      const sub: any = await registerForWebPushNotificationsAsync();
+      console.log(sub);
+
+      sendApiRequest(
+        session,
+        "POST",
+        "user/notifications",
+        {},
+        {
+          body: JSON.stringify({
+            type: "WEB",
+            tokens: sub.toJSON(),
+            deviceType: Device.deviceType || 0,
+            deviceName:
+              navigator.userAgent.split("(")[1].split(";")[0] ||
+              "Unknown device",
+          }),
+        }
+      );
+    } else {
+      const pushTokenString = await registerForPushNotificationsAsync();
+
+      await sendApiRequest(
+        session,
+        "POST",
+        "user/notifications",
+        {},
+        {
+          body: JSON.stringify({
+            type: "EXPO",
+            tokens: pushTokenString,
+            deviceType: Device.deviceType,
+            deviceName: Device.deviceName || "Unknown device",
+          }),
+        }
+      );
+
+      await mutate();
+      Toast.show({
+        type: "success",
+        text1: "You'll recieve notifications on this device!",
+      });
+    }
+    setIsLoading(false);
+  };
+
+  return (
+    <Button
+      isLoading={isLoading}
+      disabled={tokenExists}
+      onPress={handlePress}
+      variant="filled"
+      style={{ marginBottom: 20 }}
+    >
+      <ButtonText>Receive notifications on this device</ButtonText>
+    </Button>
+  );
+}
+
 export default function Page() {
   const { session } = useSession();
   const theme = useColorTheme();
@@ -278,61 +364,7 @@ export default function Page() {
 
       <TestNotifications />
       <Text style={settingStyles.heading}>Manage devices</Text>
-      <Button
-        disabled={data?.find(
-          (device) => device.tokens === Constants?.expoPushToken?.data
-        )}
-        onPress={async () => {
-          if (Platform.OS === "web") {
-            const sub: any = await registerForWebPushNotificationsAsync();
-            console.log(sub);
-
-            sendApiRequest(
-              session,
-              "POST",
-              "user/notifications",
-              {},
-              {
-                body: JSON.stringify({
-                  type: "WEB",
-                  tokens: sub.toJSON(),
-                  deviceType: Device.deviceType || 0,
-                  deviceName:
-                    navigator.userAgent.split("(")[1].split(";")[0] ||
-                    "Unknown device",
-                }),
-              }
-            );
-          } else {
-            const pushTokenString = await registerForPushNotificationsAsync();
-
-            await sendApiRequest(
-              session,
-              "POST",
-              "user/notifications",
-              {},
-              {
-                body: JSON.stringify({
-                  type: "EXPO",
-                  tokens: pushTokenString,
-                  deviceType: Device.deviceType,
-                  deviceName: Device.deviceName || "Unknown device",
-                }),
-              }
-            );
-
-            await mutate();
-            Toast.show({
-              type: "success",
-              text1: "You'll recieve notifications on this device!",
-            });
-          }
-        }}
-        variant="filled"
-        style={{ marginBottom: 20 }}
-      >
-        <ButtonText>Receive notifications on this device</ButtonText>
-      </Button>
+      <SubscribeButton data={data} mutate={mutate} />
       {data ? (
         data.map((device) => (
           <ListItemButton
