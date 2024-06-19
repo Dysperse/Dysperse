@@ -114,23 +114,15 @@ input::-webkit-scrollbar {
 }
 
 .animate-chip {
-  display: inline-flex;
-  margin-top: -2px;
-  animation: chip 0.4s;
+  animation: chip 0.2s;
 }
 
 @keyframes chip {
   0% {
     opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
   }
 }
 
