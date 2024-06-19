@@ -205,6 +205,7 @@ export default function ChipInput({
       />
     </MentionsInput>
   ) : (
+    // cursed code LMAO 💀💀💀
     <MentionInput
       value={value.replaceAll("@", "‎")}
       onChange={(d) => setValue(d.replaceAll("‎", "@"))}
