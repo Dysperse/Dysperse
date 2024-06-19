@@ -848,6 +848,7 @@ function TaskNameInput({
       { id: "2", name: "today" },
       { id: "3", name: "!!" },
       { id: "4", name: "tomorrow" },
+      { id: "5", name: "important" },
     ],
     []
   );
