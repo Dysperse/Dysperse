@@ -1,3 +1,4 @@
+import ChipInput from "@/components/ChipInput";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useStorageContext } from "@/context/storageContext";
@@ -15,14 +16,13 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import {
   BottomSheetModal,
-  BottomSheetTextInput,
   TouchableOpacity,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
@@ -743,118 +743,35 @@ function CreateTaskLabelInput({
     />
   );
 }
-function TaskNameInput({
-  control,
-  dateMenuRef,
-  handleSubmitButtonClick,
-  menuRef,
-  nameRef,
-  labelMenuRef,
-  setValue,
-}: {
-  control: any;
-  dateMenuRef: React.MutableRefObject<Menu>;
-  handleSubmitButtonClick: any;
-  menuRef: React.MutableRefObject<BottomSheetModal>;
-  nameRef: any;
-  labelMenuRef: React.MutableRefObject<BottomSheetModal>;
-  setValue: any;
-}) {
-  const theme = useColorTheme();
-  const { forceClose } = useBottomSheet();
-
+function NlpProcessor({ value, onChange, suggestions }) {
   useEffect(() => {
-    Keyboard.addListener("keyboardWillHide", () => {
-      setTimeout(() => nameRef.current.focusInputWithKeyboard(), 0);
+    suggestions.forEach((suggestion) => {
+      if (
+        value.includes(suggestion.name) &&
+        !value.includes(`@[${suggestion.name}](${suggestion.id})`)
+      ) {
+        onChange(
+          value.replace(
+            suggestion.name,
+            `@[${suggestion.name}](${suggestion.id})`
+          )
+        );
+      }
     });
-  }, [nameRef]);
 
-  return (
-    <Controller
-      control={control}
-      rules={{
-        required: true,
-      }}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <BottomSheetTextInput
-          enterKeyHint="done"
-          selectionColor={theme[8]}
-          cursorColor={theme[9]}
-          autoFocus={Platform.OS !== "web"}
-          ref={nameRef}
-          placeholder="Type / for commands"
-          onBlur={onBlur}
-          onKeyPress={(e: any) => {
-            if (e.key === "/") {
-              e.preventDefault();
-              menuRef.current.present();
-            }
-            if (e.key === "@") {
-              e.preventDefault();
-              dateMenuRef.current.open();
-            }
-            if (e.key === "#") {
-              e.preventDefault();
-              labelMenuRef.current.present();
-            }
-            if (e.key === "Enter") {
-              handleSubmitButtonClick();
-            }
-            if (e.key === "Escape") {
-              if (value) return onChange("");
-              forceClose();
-            }
-          }}
-          onChangeText={(e) => {
-            onChange(e.replaceAll("\n", ""));
-            if (
-              e.includes("!!") ||
-              (e === e.toUpperCase() && e.trim().length > 4)
-            ) {
-              setValue("pinned", true);
-            } else if (e === "") {
-              setValue("pinned", false);
-            }
-          }}
-          value={value}
-          placeholderTextColor={theme[5]}
-          multiline
-          style={{
-            color: theme[11],
-            fontFamily: getFontName("jost", 700),
-            shadowRadius: 0,
-            fontSize: 25,
-            paddingHorizontal: 20,
-            paddingBottom: 55,
-            flex: 1,
-            textAlignVertical: "top",
-            ...(Platform.OS === "web" && ({ outlineStyle: "none" } as any)),
-          }}
-        />
-      )}
-      name="name"
-    />
-  );
-}
-
-const TaskSuggestions = ({ watch, setValue }) => {
-  const theme = useColorTheme();
-  const name = watch("name");
-  const currentDate = watch("date");
-  const currentRecurrenceRule = watch("recurrenceRule");
-
-  const generateChipLabel = useCallback(() => {
-    if (!name) return null;
-    const regex = /(?:at|from|during|after|before)\s(\d+)/i;
-    const match = name.match(regex);
-
-    if (match) {
+    if (
+      value.match(/(?:at|from|during|after|before)\s(\d+)(am|pm|) /i) &&
+      !value.includes("](time-prediction)")
+    ) {
+      const match = value.match(
+        /(?:at|from|during|after|before)\s(\d+)(am|pm|)/i
+      );
       const time = match[1];
-      let amPm = name.toLowerCase().includes("p") ? "pm" : "am";
+      let amPm = value.toLowerCase().includes("p") ? "pm" : "am";
 
       if (
-        !name.toLowerCase().includes("am") &&
-        !name.toLowerCase().includes("pm")
+        !value.toLowerCase().includes("am") &&
+        !value.toLowerCase().includes("pm")
       ) {
         // make these values sensitive to a human's life
         amPm = {
@@ -873,28 +790,177 @@ const TaskSuggestions = ({ watch, setValue }) => {
         }[time];
       }
 
-      if (Number(time) > 12) return null;
+      if (Number(time) > 12) return;
       if (
-        dayjs(currentDate).hour() ===
+        dayjs().hour() ===
           Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0) ||
-        name.includes("every")
+        value.includes("every")
       )
-        return null;
-      return {
-        label: `At ${time} ${amPm}`,
-        onPress: () => {
-          setValue(
-            "date",
-            dayjs(currentDate)
-              .hour(Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0))
-              .minute(0)
-          );
-          setValue("dateOnly", false);
-        },
-        icon: "magic_button",
-      };
+        return;
+
+      onChange(value.replace(match[0], `@[${match[0]}](time-prediction)`));
     }
-  }, [name, setValue, currentDate]);
+
+    if (/\]\(time-prediction\) (pm|PM|am|AM) /.test(value)) {
+      onChange(
+        value.replace(
+          /\]\(time-prediction\) (pm|PM|am|AM) /g,
+          (match, p1) => `${p1}](time-prediction) `
+        )
+      );
+    }
+
+    if (
+      /for [0-9]\s*(h|d|w|hour|hours|day|week)\s/.test(value) &&
+      !value.includes("](end)")
+    ) {
+      const match = value.match(/for [0-9]\s*(h|d|w|hour|hours|day|week)/);
+      onChange(value.replace(match[0], `@[${match[0]}](end)`));
+    }
+    if (value.includes("h](end)our")) {
+      onChange(value.replace(/([0-9])\s*h\]\(end\)our/, "$1 hour](end)"));
+    }
+  }, [value, suggestions, onChange]);
+  return null;
+}
+
+function TaskNameInput({
+  control,
+  dateMenuRef,
+  handleSubmitButtonClick,
+  menuRef,
+  nameRef,
+  labelMenuRef,
+  setValue,
+}: {
+  control: any;
+  dateMenuRef: React.MutableRefObject<Menu>;
+  handleSubmitButtonClick: any;
+  menuRef: React.MutableRefObject<BottomSheetModal>;
+  nameRef: any;
+  labelMenuRef: React.MutableRefObject<BottomSheetModal>;
+  setValue: any;
+}) {
+  const { forceClose } = useBottomSheet();
+  const suggestions = useMemo(
+    () => [
+      { id: "1", name: "tmw" },
+      { id: "2", name: "today" },
+      { id: "3", name: "!!" },
+      { id: "4", name: "tomorrow" },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    Keyboard.addListener("keyboardWillHide", () => {
+      setTimeout(() => nameRef.current.focusInputWithKeyboard(), 0);
+    });
+  }, [nameRef]);
+
+  return (
+    <Controller
+      control={control}
+      rules={{ required: true }}
+      name="name"
+      render={({ field: { onChange, onBlur, value } }) => (
+        <>
+          <NlpProcessor
+            value={value}
+            onChange={onChange}
+            suggestions={suggestions}
+          />
+          <View style={{ margin: -5 }}>
+            <ChipInput
+              placeholder="/ for commands, @ for shortcuts"
+              inputProps={{
+                onBlur,
+                onKeyDown: (e) => {
+                  if (e.key === "Escape") {
+                    if (value) return onChange("");
+                    forceClose();
+                  }
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    if (value.replaceAll("\n", "").trim())
+                      handleSubmitButtonClick();
+                  }
+                },
+              }}
+              padding={{
+                left: 20,
+              }}
+              height={150}
+              inputRef={nameRef}
+              suggestions={suggestions}
+              value={value}
+              setValue={onChange}
+            />
+          </View>
+        </>
+      )}
+    />
+  );
+}
+
+const TaskSuggestions = ({ watch, setValue }) => {
+  const theme = useColorTheme();
+  const name = watch("name");
+  const currentDate = watch("date");
+  const currentRecurrenceRule = watch("recurrenceRule");
+
+  // const generateChipLabel = useCallback(() => {
+  //   if (!name) return null;
+  //   const regex = /(?:at|from|during|after|before)\s(\d+)/i;
+  //   const match = name.match(regex);
+
+  //   if (match) {
+  //     const time = match[1];
+  //     let amPm = name.toLowerCase().includes("p") ? "pm" : "am";
+
+  //     if (
+  //       !name.toLowerCase().includes("am") &&
+  //       !name.toLowerCase().includes("pm")
+  //     ) {
+  //       // make these values sensitive to a human's life
+  //       amPm = {
+  //         "1": "pm",
+  //         "2": "pm",
+  //         "3": "pm",
+  //         "4": "pm",
+  //         "5": "pm",
+  //         "6": "pm",
+  //         "7": "pm",
+  //         "8": "pm",
+  //         "9": "pm",
+  //         "10": "pm",
+  //         "11": "am",
+  //         "12": "pm",
+  //       }[time];
+  //     }
+
+  //     if (Number(time) > 12) return null;
+  //     if (
+  //       dayjs(currentDate).hour() ===
+  //         Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0) ||
+  //       name.includes("every")
+  //     )
+  //       return null;
+  //     return {
+  //       label: `At ${time} ${amPm}`,
+  //       onPress: () => {
+  //         setValue(
+  //           "date",
+  //           dayjs(currentDate)
+  //             .hour(Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0))
+  //             .minute(0)
+  //         );
+  //         setValue("dateOnly", false);
+  //       },
+  //       icon: "magic_button",
+  //     };
+  //   }
+  // }, [name, setValue, currentDate]);
 
   const generateRecurrenceLabel = useCallback(() => {
     try {
@@ -919,7 +985,9 @@ const TaskSuggestions = ({ watch, setValue }) => {
     }
   }, [name, setValue, currentRecurrenceRule]);
 
-  const suggestions = [generateChipLabel(), generateRecurrenceLabel()];
+  const suggestions = [
+    // generateChipLabel(), generateRecurrenceLabel()
+  ];
 
   return (
     suggestions.length > 0 && (
@@ -1064,14 +1132,12 @@ function BottomSheetContent({ defaultValues, mutateList }) {
   });
 
   useEffect(() => {
-    if (Platform.OS === "web") {
-      setTimeout(
-        () => {
-          nameRef.current.focus();
-        },
-        breakpoints.md ? 100 : 500
-      );
-    }
+    setTimeout(
+      () => {
+        nameRef.current.focus();
+      },
+      Platform.OS === "web" ? (breakpoints.md ? 100 : 500) : 0
+    );
   }, [nameRef, breakpoints]);
 
   const onSubmit = async (data) => {
@@ -1084,6 +1150,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
         {
           body: JSON.stringify({
             ...data,
+            name: data.name.replaceAll(/@\[(.*?)\]\((.*?)\)/g, "$1"),
             start: data?.date?.toISOString(),
             agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,

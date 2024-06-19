@@ -105,7 +105,7 @@ function ErrorBoundaryComponent() {
           }}
         >
           <Emoji size={50} style={{ marginTop: 10 }} emoji="1F62C" />
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: breakpoints.md ? 1 : undefined }}>
             <Text style={{ fontSize: 30 }} weight={900}>
               Well, that's embarrassing...
             </Text>
