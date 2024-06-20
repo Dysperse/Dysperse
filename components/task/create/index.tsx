@@ -40,8 +40,8 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Platform, Pressable, ScrollView, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Keyboard, Platform, Pressable, View } from "react-native";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Menu } from "react-native-popup-menu";
 import Animated, {
   useAnimatedStyle,
@@ -50,6 +50,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { Options, RRule } from "rrule";
+import useSWR from "swr";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { normalizeRecurrenceRuleObject } from "../drawer/details";
 import { TaskDatePicker } from "./TaskDatePicker";
@@ -585,6 +586,7 @@ export function RecurrencePicker({ value, setValue }) {
                   }, {})}
               />
               <ScrollView
+                keyboardShouldPersistTaps="handled"
                 showsHorizontalScrollIndicator={false}
                 horizontal
                 contentContainerStyle={{ gap: 10, padding: 10 }}
@@ -613,10 +615,12 @@ export function RecurrencePicker({ value, setValue }) {
   );
 }
 
-function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
+function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
   const orange = useColor("orange");
   const pinned = watch("pinned");
   const collectionId = watch("collectionId");
+
+  const breakpoints = useResponsiveBreakpoints();
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -647,12 +651,21 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control }) {
       contentContainerStyle={{
         alignItems: "center",
         flexDirection: "row",
-        paddingHorizontal: 15,
+        paddingHorizontal: 25,
         paddingVertical: 10,
         gap: 5,
       }}
       showsHorizontalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
     >
+      {!breakpoints.md && (
+        <Attachment
+          menuRef={menuRef}
+          control={control}
+          nameRef={nameRef}
+          setValue={setValue}
+        />
+      )}
       <TaskDatePicker setValue={setValue} watch={watch} />
       <Controller
         control={control}
@@ -824,24 +837,46 @@ function NlpProcessor({ value, onChange, suggestions }) {
   return null;
 }
 
+function LabelNlpProcessor({ value, onChange, label, setValue }) {
+  useEffect(() => {
+    const regex =
+      /__LABEL__{([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})}__/g;
+
+    value.match(regex)?.forEach((match) => {
+      console.log("MATCH FOUND: ", match);
+      const id = match.replace(/__LABEL__{([0-9a-f-]+)}__/, "$1");
+      const str = `${Platform.OS === "web" ? "@" : "#"}[${
+        label.find((e) => e.id === id)?.name
+      }](${match})${Platform.OS === "web" ? "" : " "}`;
+      console.log("REPLACING: ", str, value);
+      onChange(value.replace(str, ""));
+      setValue(
+        "label",
+        label.find((e) => e.id === id)
+      );
+    });
+  }, [value, label, onChange, setValue]);
+
+  return null;
+}
+
 function TaskNameInput({
   control,
-  dateMenuRef,
   handleSubmitButtonClick,
   menuRef,
   nameRef,
-  labelMenuRef,
   setValue,
 }: {
   control: any;
-  dateMenuRef: React.MutableRefObject<Menu>;
   handleSubmitButtonClick: any;
   menuRef: React.MutableRefObject<BottomSheetModal>;
   nameRef: any;
-  labelMenuRef: React.MutableRefObject<BottomSheetModal>;
   setValue: any;
 }) {
   const { forceClose } = useBottomSheet();
+  const { data: labelData } = useSWR(["space/labels"]);
+  const breakpoints = useResponsiveBreakpoints();
+
   const suggestions = useMemo(
     () => [
       { id: "1", name: "tmw" },
@@ -871,9 +906,20 @@ function TaskNameInput({
             onChange={onChange}
             suggestions={suggestions}
           />
-          <View style={{ margin: -5 }}>
+          <LabelNlpProcessor
+            value={value}
+            onChange={onChange}
+            label={labelData}
+            setValue={setValue}
+          />
+          <View
+            style={{
+              margin: breakpoints.md ? -5 : 5,
+              marginTop: -5,
+            }}
+          >
             <ChipInput
-              placeholder="/ for commands, @ for shortcuts"
+              placeholder="/ for commands, @ for shortcuts, # for labels"
               inputProps={{
                 onBlur,
                 onKeyDown: (e) => {
@@ -889,11 +935,28 @@ function TaskNameInput({
                 },
               }}
               padding={{
-                left: 20,
+                left: 15,
+                right: 15,
               }}
               height={150}
               inputRef={nameRef}
-              suggestions={suggestions}
+              suggestions={[
+                {
+                  key: Platform.OS === "web" ? "@" : "‎",
+                  suggestions,
+                },
+                {
+                  key: "#",
+                  suggestions:
+                    (Array.isArray(labelData) &&
+                      labelData.map((label) => ({
+                        id: `__LABEL__{${label.id}}__`,
+                        name: label.name,
+                        icon: <Emoji size={20} emoji={label.emoji} />,
+                      }))) ||
+                    [],
+                },
+              ]}
               value={value}
               setValue={onChange}
             />
@@ -1019,6 +1082,7 @@ const TaskAttachments = ({ watch, setValue }) => {
     attachments?.length > 0 && (
       <ScrollView
         horizontal
+        keyboardShouldPersistTaps="handled"
         style={{
           marginLeft: 20,
           marginTop: "auto",
@@ -1105,6 +1169,52 @@ const TaskAttachments = ({ watch, setValue }) => {
   );
   // return null;
 };
+
+function Attachment({ control, nameRef, setValue, menuRef }) {
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
+
+  return (
+    <Controller
+      name="attachments"
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <>
+          <TaskAttachmentButton
+            menuRef={menuRef}
+            onClose={() => nameRef.current.focus()}
+            onOpen={() => nameRef.current.focus()}
+            task={{ attachments: value }}
+            updateTask={(key, value) => {
+              if (key !== "note") {
+                onChange(value);
+              } else {
+                setValue("note", value);
+              }
+            }}
+          >
+            <IconButton
+              style={{
+                marginTop: breakpoints.md ? 63 : 0,
+                marginLeft: breakpoints.md ? 20 : -10,
+                width: breakpoints.md ? undefined : 90,
+                gap: 5,
+                flexDirection: "row",
+              }}
+              variant="filled"
+              size={35}
+            >
+              <Icon>note_stack_add</Icon>
+              {!breakpoints.md && (
+                <Text style={{ color: theme[11] }}>Attach</Text>
+              )}
+            </IconButton>
+          </TaskAttachmentButton>
+        </>
+      )}
+    />
+  );
+}
 
 function BottomSheetContent({ defaultValues, mutateList }) {
   const breakpoints = useResponsiveBreakpoints();
@@ -1203,7 +1313,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
         shadowOffset: { width: 20, height: 20 },
         shadowRadius: 40,
         padding: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 0,
       }}
     >
       <View style={{ flex: 1 }}>
@@ -1217,8 +1327,8 @@ function BottomSheetContent({ defaultValues, mutateList }) {
         >
           <TouchableOpacity
             style={{
-              paddingVertical: 10,
-              paddingHorizontal: 5,
+              padding: 10,
+              marginLeft: 10,
             }}
             onPress={() => forceClose()}
           >
@@ -1226,31 +1336,11 @@ function BottomSheetContent({ defaultValues, mutateList }) {
               Cancel
             </ButtonText>
           </TouchableOpacity>
-          {/*           <MenuPopover
-            menuProps={{
-              style: {
-                marginLeft: "auto",
-                marginRight: "auto",
-              },
-            }}
-            options={[
-              { text: "Task", icon: "check_circle" },
-              { text: "Note", icon: "sticky_note_2" },
-            ]}
-            trigger={
-              <Pressable
-                style={{ alignItems: "center", flexDirection: "row", gap: 3 }}
-              >
-                <Text variant="eyebrow">Task</Text>
-                <Icon style={{ color: theme[11] }}>expand_more</Icon>
-              </Pressable>
-            }
-          /> */}
           <IconButton
             size={breakpoints.md ? 50 : 45}
             style={({ pressed, hovered }) => ({
               backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
-              marginRight: -5,
+              marginRight: 10,
               height: 35,
             })}
             variant="filled"
@@ -1263,40 +1353,17 @@ function BottomSheetContent({ defaultValues, mutateList }) {
           />
         </View>
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <Controller
-            name="attachments"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <>
-                <TaskAttachmentButton
-                  menuRef={menuRef}
-                  onClose={() => nameRef.current.focus()}
-                  onOpen={() => nameRef.current.focus()}
-                  task={{
-                    attachments: value,
-                  }}
-                  updateTask={(key, value) => {
-                    if (key !== "note") {
-                      onChange(value);
-                    } else {
-                      setValue("note", value);
-                    }
-                  }}
-                >
-                  <IconButton
-                    style={({ pressed, hovered }) => ({
-                      marginTop: 63,
-                    })}
-                    icon="add"
-                    variant="filled"
-                    size={35}
-                  />
-                </TaskAttachmentButton>
-              </>
-            )}
-          />
+          {breakpoints.md && (
+            <Attachment
+              menuRef={menuRef}
+              control={control}
+              nameRef={nameRef}
+              setValue={setValue}
+            />
+          )}
           <View style={{ flex: 1 }}>
             <Footer
+              menuRef={menuRef}
               setValue={setValue}
               watch={watch}
               nameRef={nameRef}
@@ -1304,12 +1371,10 @@ function BottomSheetContent({ defaultValues, mutateList }) {
               control={control}
             />
             <TaskNameInput
-              labelMenuRef={labelMenuRef}
               control={control}
               menuRef={menuRef}
               handleSubmitButtonClick={handleSubmitButtonClick}
               nameRef={nameRef}
-              dateMenuRef={dateMenuRef}
               setValue={setValue}
             />
             <TaskAttachments watch={watch} setValue={setValue} />
@@ -1397,7 +1462,7 @@ const CreateTask = forwardRef(
             style={{
               alignItems: "center",
               flex: 1,
-              padding: breakpoints.md ? 10 : 20,
+              padding: 10,
               justifyContent: "center",
             }}
           >
