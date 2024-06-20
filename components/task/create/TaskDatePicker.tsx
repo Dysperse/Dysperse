@@ -84,6 +84,7 @@ export function TaskDatePicker({
   const trigger = cloneElement(
     children || (
       <Chip
+        outlined={!recurrence && !dueDate}
         icon={<Icon>{recurrence ? "loop" : "calendar_today"}</Icon>}
         onDismiss={
           (recurrence || dueDate) &&

@@ -252,8 +252,8 @@ export default function ChipInput({
   ) : (
     // cursed code LMAO 💀💀💀
     <MentionInput
-      value={value.replaceAll("@", "‎").replace("‎‎", "")}
-      onChange={(d) => setValue(d.replaceAll("‎", "@").replace("‎‎", ""))}
+      value={value.replaceAll("/", "‎").replace("‎‎", "")}
+      onChange={(d) => setValue(d.replaceAll("‎", "/").replace("‎‎", ""))}
       style={{
         fontSize: 25,
         fontFamily: "body_900",

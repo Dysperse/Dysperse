@@ -46,7 +46,9 @@ import { Menu } from "react-native-popup-menu";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { Options, RRule } from "rrule";
@@ -651,7 +653,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
       contentContainerStyle={{
         alignItems: "center",
         flexDirection: "row",
-        paddingHorizontal: 25,
+        paddingHorizontal: breakpoints.md ? 10 : 25,
         paddingVertical: 10,
         gap: 5,
       }}
@@ -666,7 +668,6 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
           setValue={setValue}
         />
       )}
-      <TaskDatePicker setValue={setValue} watch={watch} />
       <Controller
         control={control}
         name="pinned"
@@ -674,6 +675,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
         render={({ field: { onChange, value } }) => (
           <Chip
             onPress={() => onChange(!value)}
+            outlined={!value}
             icon={
               <Animated.View style={rotateStyle}>
                 <Icon
@@ -697,7 +699,9 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
           />
         )}
       />
+      <TaskDatePicker setValue={setValue} watch={watch} />
       <CreateTaskLabelInput
+        watch={watch}
         collectionId={collectionId}
         control={control}
         labelMenuRef={labelMenuRef}
@@ -716,57 +720,81 @@ function CreateTaskLabelInput({
   collectionId,
   labelMenuRef,
   onLabelPickerClose,
+  watch,
 }) {
   const colors = useLabelColors();
+  const label = watch("label");
+
+  const animation = useSharedValue(1);
+
+  const animationStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: animation.value }],
+  }));
+
+  useEffect(() => {
+    if (label) {
+      animation.value = withSequence(
+        withTiming(1.06, { duration: 140 }),
+        withTiming(1)
+      );
+    }
+  }, [label, animation]);
 
   return (
-    <Controller
-      control={control}
-      name="label"
-      defaultValue={false}
-      render={({ field: { onChange, value } }) => (
-        <LabelPicker
-          label={value}
-          setLabel={onChange}
-          defaultCollection={collectionId}
-          sheetProps={{
-            sheetRef: labelMenuRef,
-          }}
-          autoFocus
-          onClose={onLabelPickerClose}
-        >
-          <Chip
-            label={value?.name || "Add label"}
-            icon={
-              value?.emoji ? (
-                <Emoji emoji={value?.emoji} />
-              ) : (
-                <Icon>new_label</Icon>
-              )
-            }
-            {...(value && {
-              style: {
-                backgroundColor: colors[value?.color]?.[4],
-              },
-            })}
-            colorTheme={value ? value?.color : undefined}
-          />
-        </LabelPicker>
-      )}
-    />
+    <Animated.View style={animationStyle}>
+      <Controller
+        control={control}
+        name="label"
+        defaultValue={false}
+        render={({ field: { onChange, value } }) => (
+          <LabelPicker
+            label={value}
+            setLabel={onChange}
+            defaultCollection={collectionId}
+            sheetProps={{
+              sheetRef: labelMenuRef,
+            }}
+            autoFocus
+            onClose={onLabelPickerClose}
+          >
+            <Chip
+              outlined={!value}
+              label={value?.name || "Label"}
+              icon={
+                value?.emoji ? (
+                  <Emoji emoji={value?.emoji} />
+                ) : (
+                  <Icon>new_label</Icon>
+                )
+              }
+              {...(value && {
+                style: {
+                  backgroundColor: colors[value?.color]?.[4],
+                },
+              })}
+              colorTheme={value ? value?.color : undefined}
+            />
+          </LabelPicker>
+        )}
+      />
+    </Animated.View>
   );
 }
-function NlpProcessor({ value, onChange, suggestions }) {
+
+function NlpProcessor({ value, setValue, onChange, suggestions }) {
   useEffect(() => {
+    const replacementString = Platform.OS === "web" ? "@" : "/";
     suggestions.forEach((suggestion) => {
       if (
         value.includes(suggestion.name) &&
-        !value.includes(`@[${suggestion.name}](${suggestion.id})`)
+        !value.includes(
+          `${replacementString}[${suggestion.name}](${suggestion.id})`
+        )
       ) {
         onChange(
           value.replace(
             suggestion.name,
-            `@[${suggestion.name}](${suggestion.id})`
+            `${replacementString}[${suggestion.name}](${suggestion.id})`
           )
         );
       }
@@ -811,7 +839,12 @@ function NlpProcessor({ value, onChange, suggestions }) {
       )
         return;
 
-      onChange(value.replace(match[0], `@[${match[0]}](time-prediction)`));
+      onChange(
+        value.replace(
+          match[0],
+          `${replacementString}[${match[0]}](time-prediction)`
+        )
+      );
     }
 
     if (/\]\(time-prediction\) (pm|PM|am|AM) /.test(value)) {
@@ -828,12 +861,15 @@ function NlpProcessor({ value, onChange, suggestions }) {
       !value.includes("](end)")
     ) {
       const match = value.match(/for [0-9]\s*(h|d|w|hour|hours|day|week)/);
-      onChange(value.replace(match[0], `@[${match[0]}](end)`));
+      onChange(
+        value.replace(match[0], `${replacementString}[${match[0]}](end)`)
+      );
     }
     if (value.includes("h](end)our")) {
       onChange(value.replace(/([0-9])\s*h\]\(end\)our/, "$1 hour](end)"));
     }
   }, [value, suggestions, onChange]);
+
   return null;
 }
 
@@ -904,6 +940,7 @@ function TaskNameInput({
           <NlpProcessor
             value={value}
             onChange={onChange}
+            setValue={setValue}
             suggestions={suggestions}
           />
           <LabelNlpProcessor
@@ -914,12 +951,12 @@ function TaskNameInput({
           />
           <View
             style={{
-              margin: breakpoints.md ? -5 : 5,
+              margin: breakpoints.md ? 0 : 5,
               marginTop: -5,
             }}
           >
             <ChipInput
-              placeholder="/ for commands, @ for shortcuts, # for labels"
+              placeholder="/ for commands, @ for attachments, # for labels"
               inputProps={{
                 onBlur,
                 onKeyDown: (e) => {
@@ -942,7 +979,7 @@ function TaskNameInput({
               inputRef={nameRef}
               suggestions={[
                 {
-                  key: Platform.OS === "web" ? "@" : "‎",
+                  key: Platform.OS === "web" ? "/" : "‎",
                   suggestions,
                 },
                 {
@@ -958,7 +995,15 @@ function TaskNameInput({
                 },
               ]}
               value={value}
-              setValue={onChange}
+              setValue={(d) => {
+                onChange(d);
+                if (d.includes("!!") || d.includes("important")) {
+                  setValue("pinned", true);
+                }
+                if (d === "") {
+                  setValue("pinned", false);
+                }
+              }}
             />
           </View>
         </>
@@ -1332,7 +1377,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
             }}
             onPress={() => forceClose()}
           >
-            <ButtonText style={{ color: theme[10] }} weight={400}>
+            <ButtonText style={{ color: theme[10] }} weight={900}>
               Cancel
             </ButtonText>
           </TouchableOpacity>
