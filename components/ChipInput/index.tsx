@@ -266,7 +266,7 @@ export default function ChipInput({
       multiline
       onFocus={handleOnFocus}
       inputRef={inputRef}
-      placeholderTextColor={theme[6]}
+      placeholderTextColor={theme[5]}
       cursorColor={theme[8]}
       selectionColor={theme[8]}
       partTypes={[

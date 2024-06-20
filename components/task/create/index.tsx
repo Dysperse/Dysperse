@@ -956,10 +956,19 @@ function TaskNameInput({
             }}
           >
             <ChipInput
-              placeholder="/ for commands, @ for attachments, # for labels"
+              placeholder={
+                Platform.OS === "web"
+                  ? "/ for commands  @ for attachments  # for labels"
+                  : "/ for commands\n# for labels"
+              }
               inputProps={{
                 onBlur,
                 onKeyDown: (e) => {
+                  if (e.key === "@") {
+                    e.preventDefault();
+                    nameRef.current?.blur();
+                    menuRef.current?.present();
+                  }
                   if (e.key === "Escape") {
                     if (value) return onChange("");
                     forceClose();
