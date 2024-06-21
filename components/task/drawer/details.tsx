@@ -29,7 +29,7 @@ import {
 import Accordion from "react-native-collapsible/Accordion";
 import { FlatList } from "react-native-gesture-handler";
 import { RRule } from "rrule";
-import { TaskDatePicker } from "../create/TaskDatePicker";
+import TaskDatePicker from "../create/TaskDatePicker";
 import { TaskAttachmentButton } from "./attachment/button";
 import { useTaskDrawerContext } from "./context";
 
