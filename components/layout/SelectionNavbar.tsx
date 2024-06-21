@@ -19,7 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { mutate } from "swr";
-import { TaskDatePicker } from "../task/create/TaskDatePicker";
+import TaskDatePicker from "../task/create/TaskDatePicker";
 
 function NavbarHeader({ isLoading }) {
   const { selection, setSelection } = useSelectionContext();

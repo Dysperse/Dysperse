@@ -4,7 +4,7 @@ import { taskInputStyles } from "@/components/signup/TaskCreator";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import Checkbox from "@/components/task/Checkbox";
 import CreateTask from "@/components/task/create";
-import { TaskDatePicker } from "@/components/task/create/TaskDatePicker";
+import TaskDatePicker from "@/components/task/create/TaskDatePicker";
 import { TaskDrawer } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import { STORY_POINT_SCALE } from "@/constants/workload";
