@@ -9,7 +9,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  memo,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { Pressable, View } from "react-native";
 import { RRule } from "rrule";
 import { DueDatePicker, RecurrencePicker } from ".";
@@ -52,7 +58,7 @@ function Header({ title, handleClose }: { title: string; handleClose: any }) {
   );
 }
 
-export function TaskDatePicker({
+const TaskDatePicker = memo(function TaskDatePicker({
   defaultView,
   setValue,
   watch,
@@ -181,4 +187,6 @@ export function TaskDatePicker({
       </BottomSheet>
     </>
   );
-}
+});
+
+export default TaskDatePicker;

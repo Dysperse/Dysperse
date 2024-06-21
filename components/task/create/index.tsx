@@ -32,6 +32,7 @@ import React, {
   RefObject,
   cloneElement,
   forwardRef,
+  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -42,7 +43,6 @@ import React, {
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Platform, Pressable, View } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
-import { Menu } from "react-native-popup-menu";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -55,7 +55,7 @@ import { Options, RRule } from "rrule";
 import useSWR from "swr";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { normalizeRecurrenceRuleObject } from "../drawer/details";
-import { TaskDatePicker } from "./TaskDatePicker";
+import TaskDatePicker from "./TaskDatePicker";
 
 const TimeInput = React.forwardRef(
   (
@@ -617,12 +617,9 @@ export function RecurrencePicker({ value, setValue }) {
   );
 }
 
-function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
+const PinTask = memo(function PinTask({ watch, control }) {
   const orange = useColor("orange");
   const pinned = watch("pinned");
-  const collectionId = watch("collectionId");
-
-  const breakpoints = useResponsiveBreakpoints();
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -647,6 +644,46 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
   });
 
   return (
+    <Controller
+      control={control}
+      name="pinned"
+      defaultValue={false}
+      render={({ field: { onChange, value } }) => (
+        <Chip
+          onPress={() => onChange(!value)}
+          outlined={!value}
+          icon={
+            <Animated.View style={rotateStyle}>
+              <Icon
+                style={{
+                  ...(value && {
+                    color: orange[11],
+                  }),
+                }}
+                filled={value}
+              >
+                push_pin
+              </Icon>
+            </Animated.View>
+          }
+          style={{
+            ...(value && {
+              backgroundColor: orange[4],
+              borderColor: orange[4],
+            }),
+          }}
+        />
+      )}
+    />
+  );
+});
+
+function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
+  const collectionId = watch("collectionId");
+
+  const breakpoints = useResponsiveBreakpoints();
+
+  return (
     <ScrollView
       horizontal
       style={{ maxHeight: 60 }}
@@ -668,37 +705,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
           setValue={setValue}
         />
       )}
-      <Controller
-        control={control}
-        name="pinned"
-        defaultValue={false}
-        render={({ field: { onChange, value } }) => (
-          <Chip
-            onPress={() => onChange(!value)}
-            outlined={!value}
-            icon={
-              <Animated.View style={rotateStyle}>
-                <Icon
-                  style={{
-                    ...(value && {
-                      color: orange[11],
-                    }),
-                  }}
-                  filled={value}
-                >
-                  push_pin
-                </Icon>
-              </Animated.View>
-            }
-            style={{
-              ...(value && {
-                backgroundColor: orange[4],
-                borderColor: orange[4],
-              }),
-            }}
-          />
-        )}
-      />
+      <PinTask watch={watch} control={control} />
       <TaskDatePicker setValue={setValue} watch={watch} />
       <CreateTaskLabelInput
         watch={watch}
@@ -715,13 +722,13 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
   );
 }
 
-function CreateTaskLabelInput({
+const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   control,
   collectionId,
   labelMenuRef,
   onLabelPickerClose,
   watch,
-}) {
+}: any) {
   const colors = useLabelColors();
   const label = watch("label");
 
@@ -751,9 +758,7 @@ function CreateTaskLabelInput({
             label={value}
             setLabel={onChange}
             defaultCollection={collectionId}
-            sheetProps={{
-              sheetRef: labelMenuRef,
-            }}
+            sheetProps={{ sheetRef: labelMenuRef }}
             autoFocus
             onClose={onLabelPickerClose}
           >
@@ -779,7 +784,7 @@ function CreateTaskLabelInput({
       />
     </Animated.View>
   );
-}
+});
 
 function NlpProcessor({ value, setValue, onChange, suggestions }) {
   useEffect(() => {
@@ -1270,14 +1275,53 @@ function Attachment({ control, nameRef, setValue, menuRef }) {
   );
 }
 
+const SubmitButton = memo(({ onSubmit }: any) => {
+  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
+  return (
+    <IconButton
+      size={breakpoints.md ? 50 : 45}
+      style={({ pressed, hovered }) => ({
+        backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
+        marginRight: 10,
+        height: 35,
+      })}
+      variant="filled"
+      icon={
+        <Icon bold style={{ color: theme[1] }}>
+          arrow_upward
+        </Icon>
+      }
+      onPress={onSubmit}
+    />
+  );
+});
+
+const CancelButton = memo(() => {
+  const { forceClose } = useBottomSheet();
+  const theme = useColorTheme();
+  return (
+    <TouchableOpacity
+      style={{
+        padding: 10,
+        marginLeft: 10,
+      }}
+      onPress={() => forceClose()}
+    >
+      <ButtonText style={{ color: theme[10] }} weight={900}>
+        Cancel
+      </ButtonText>
+    </TouchableOpacity>
+  );
+});
+
 function BottomSheetContent({ defaultValues, mutateList }) {
   const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
-  const { forceClose } = useBottomSheet();
   const nameRef = useRef(null);
   const menuRef = useRef<BottomSheetModal>(null);
   const labelMenuRef = useRef<BottomSheetModal>(null);
-  const dateMenuRef = useRef<Menu>(null);
   const theme = useColorTheme();
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
@@ -1379,32 +1423,8 @@ function BottomSheetContent({ defaultValues, mutateList }) {
             justifyContent: "space-between",
           }}
         >
-          <TouchableOpacity
-            style={{
-              padding: 10,
-              marginLeft: 10,
-            }}
-            onPress={() => forceClose()}
-          >
-            <ButtonText style={{ color: theme[10] }} weight={900}>
-              Cancel
-            </ButtonText>
-          </TouchableOpacity>
-          <IconButton
-            size={breakpoints.md ? 50 : 45}
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
-              marginRight: 10,
-              height: 35,
-            })}
-            variant="filled"
-            icon={
-              <Icon bold style={{ color: theme[1] }}>
-                arrow_upward
-              </Icon>
-            }
-            onPress={handleSubmitButtonClick}
-          />
+          <CancelButton />
+          <SubmitButton onSubmit={handleSubmitButtonClick} />
         </View>
         <View style={{ flex: 1, flexDirection: "row" }}>
           {breakpoints.md && (

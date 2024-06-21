@@ -362,7 +362,10 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             )}
           </Avatar>
           <View
-            style={[{ flex: 1 }, !breakpoints.md && { alignItems: "center" }]}
+            style={[
+              { flex: breakpoints.md ? 1 : 0 },
+              !breakpoints.md && { alignItems: "center" },
+            ]}
           >
             <Text
               style={[
