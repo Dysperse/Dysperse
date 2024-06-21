@@ -41,7 +41,7 @@ export function TaskImagePicker({ task, updateTask }) {
   useEffect(() => {
     if (selectedAlbum) {
       MediaLibrary.getAssetsAsync({
-        first: 50,
+        first: 20,
         mediaType: "photo",
         sortBy: "modificationTime",
         album: selectedAlbum.id,
@@ -54,7 +54,7 @@ export function TaskImagePicker({ task, updateTask }) {
       return;
     }
     MediaLibrary.getAssetsAsync({
-      first: 50,
+      first: 20,
       mediaType: "photo",
       sortBy: "modificationTime",
       album: selectedAlbum.id,

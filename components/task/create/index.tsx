@@ -1471,6 +1471,7 @@ export interface CreateTaskDrawerProps {
     storyPoints?: number;
     dateOnly?: boolean;
   };
+  onPress?: () => void;
   mutate: (newTask) => void;
 }
 
@@ -1486,6 +1487,7 @@ const CreateTask = forwardRef(
         storyPoints: 2,
         dateOnly: true,
       },
+      onPress = () => {},
       mutate,
     }: CreateTaskDrawerProps,
     forwardedRef
@@ -1496,8 +1498,9 @@ const CreateTask = forwardRef(
 
     // callbacks
     const handleOpen = useCallback(() => {
+      onPress();
       ref.current?.present();
-    }, [ref]);
+    }, [ref, onPress]);
 
     const handleClose = useCallback(() => {
       ref.current?.close();

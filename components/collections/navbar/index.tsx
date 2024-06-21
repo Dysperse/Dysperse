@@ -15,8 +15,9 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useRef } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { Menu } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -113,6 +114,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
   const { id, mode } = useGlobalSearchParams();
+  const menuRef = useRef<Menu>(null);
 
   const isAll = id === "all";
   const contextValue = { data, type, ...ctx, access: null, isValidating };
@@ -195,7 +197,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       text: "Edit",
       renderer: (props) => (
         <CollectionContext.Provider value={contextValue}>
-          <CollectionRenameMenu {...props} />
+          <CollectionRenameMenu menuRef={menuRef} {...props} />
         </CollectionContext.Provider>
       ),
     },
@@ -409,6 +411,8 @@ export const CollectionNavbar = memo(function CollectionNavbar({
             ) : (
               !isReadOnly && (
                 <MenuPopover
+                  menuRef={menuRef}
+                  closeOnSelect
                   {...(isReadOnly && { menuProps: { opened: false } })}
                   containerStyle={{ width: 230 }}
                   menuProps={{

@@ -7,14 +7,17 @@ import { useCollectionContext } from "../context";
 
 export const CollectionRenameMenu = memo(function CollectionRenameMenu({
   children,
+  menuRef,
 }: {
   children: ReactElement;
+  menuRef: React.MutableRefObject<any>;
 }) {
   const { tab } = useLocalSearchParams();
   const collection = useCollectionContext();
 
   const handleOpen = (e) => {
     e.preventDefault();
+    menuRef.current.close();
     router.push(`/collection/${collection.data.id}`);
   };
 

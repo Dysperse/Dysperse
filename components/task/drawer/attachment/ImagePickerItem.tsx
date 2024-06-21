@@ -1,5 +1,5 @@
-import { useSession } from "@/context/AuthProvider";
-import { sendApiRequest } from "@/helpers/api";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
@@ -19,7 +19,7 @@ export function ImagePickerItem({
   item: MediaLibrary.Asset;
 }) {
   const [loading, setLoading] = useState(false);
-  const { session } = useSession();
+  const theme = useColorTheme();
   const handlePress = useCallback(async () => {
     try {
       setLoading(true);
@@ -43,21 +43,10 @@ export function ImagePickerItem({
         }
       ).then((res) => res.json());
 
-      const d = await sendApiRequest(
-        session,
-        "POST",
-        "space/entity/attachments",
-        {},
-        {
-          body: JSON.stringify({
-            id: task.id,
-            type: "IMAGE",
-            data: res.data.display_url,
-          }),
-        }
-      );
-
-      updateTask("attachments", [...task.attachments, d]);
+      updateTask("attachments", [
+        ...task.attachments,
+        { type: "IMAGE", data: res.data.display_url },
+      ]);
     } catch (e) {
       Toast.show({
         type: "error",
@@ -67,7 +56,7 @@ export function ImagePickerItem({
     } finally {
       setLoading(false);
     }
-  }, [item, updateTask, task, session]);
+  }, [item, updateTask, task]);
 
   return (
     <View
@@ -94,7 +83,7 @@ export function ImagePickerItem({
               position: "absolute",
               width: "100%",
               height: "100%",
-              backgroundColor: "rgba(0,0,0,0.9)",
+              backgroundColor: addHslAlpha(theme[3], 0.9),
               zIndex: 1,
               justifyContent: "center",
               alignItems: "center",

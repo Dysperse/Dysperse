@@ -331,13 +331,22 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     itemRef.current?.present();
   });
 
+  const menuRef = useRef(null);
   return (
     <>
       <MenuPopover
+        menuRef={menuRef}
+        closeOnSelect
         options={[
           {
             renderer: () => (
-              <CreateTask mutate={() => mutate(() => true)} sheetRef={itemRef}>
+              <CreateTask
+                mutate={() => mutate(() => true)}
+                sheetRef={itemRef}
+                onPress={() => {
+                  menuRef.current.close();
+                }}
+              >
                 <MenuItem>
                   <Icon>add_circle</Icon>
                   <Text variant="menuItem">Item</Text>

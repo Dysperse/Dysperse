@@ -27,6 +27,7 @@ import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
@@ -373,6 +374,7 @@ function FriendOptionsButton() {
 export default function Page() {
   const { session } = useUser();
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
   const [view, setView] = useState<FriendsPageView>("all");
 
   const { data, isLoading, mutate, error } = useSWR([
@@ -455,7 +457,7 @@ export default function Page() {
         <IconButton
           onPress={handleBack}
           icon="arrow_back_ios_new"
-          style={{ marginBottom: 20, margin: 20 }}
+          style={{ marginBottom: 20, margin: 20, marginTop: insets.top + 20 }}
           variant="outlined"
           size={55}
         />
