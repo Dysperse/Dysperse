@@ -3,7 +3,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
 import { Keyboard, Platform, Pressable, View } from "react-native";
 import {
@@ -89,6 +89,7 @@ const renderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
 };
 
 export default function ChipInput({
+  onSubmitEditing,
   inputRef,
   suggestions,
   value,
@@ -99,6 +100,7 @@ export default function ChipInput({
   placeholder = "",
   inputProps,
 }: {
+  onSubmitEditing;
   inputRef: any;
   suggestions: any;
   value: string;
@@ -121,26 +123,11 @@ export default function ChipInput({
   };
 
   useEffect(() => {
+    shouldHandleKeyboardEvents.value = true;
     return () => {
-      // Reset the flag on unmount
       shouldHandleKeyboardEvents.value = false;
     };
   }, [shouldHandleKeyboardEvents]);
-  //#endregion
-
-  //#region callbacks
-  const handleOnFocus = useCallback(
-    (args) => {
-      shouldHandleKeyboardEvents.value = true;
-    },
-    [shouldHandleKeyboardEvents]
-  );
-  const handleOnBlur = useCallback(
-    (args) => {
-      shouldHandleKeyboardEvents.value = false;
-    },
-    [shouldHandleKeyboardEvents]
-  );
   //#endregion
 
   return Platform.OS === "web" ? (
@@ -258,13 +245,14 @@ export default function ChipInput({
         fontSize: 25,
         fontFamily: "body_900",
         height,
+        color: theme[11],
         verticalAlign: "top",
         ...paddingStyles,
       }}
       placeholder={placeholder}
       {...inputProps}
       multiline
-      onFocus={handleOnFocus}
+      {...(onSubmitEditing && { onSubmitEditing })}
       inputRef={inputRef}
       placeholderTextColor={theme[5]}
       cursorColor={theme[8]}

@@ -106,28 +106,34 @@ const JumpToButton = memo(function JumpToButton() {
   });
 
   return (
-    <Pressable
-      onPress={() => handleOpen()}
-      style={({ pressed, hovered }) => [
-        {
-          backgroundColor: pressed ? theme[5] : hovered ? theme[4] : undefined,
-          opacity: pressed ? 0.5 : 1,
-          flexDirection: "row",
-          alignItems: "center",
-          columnGap: 15,
-          paddingHorizontal: 15,
-          borderRadius: 15,
-          height: 50,
-          marginBottom: 10,
-        },
-        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-      ]}
-    >
-      <Icon bold>add</Icon>
-      <Text weight={700} style={{ color: theme[11] }}>
-        New tab
-      </Text>
-    </Pressable>
+    <View style={{ borderRadius: 15, overflow: "hidden", marginBottom: 10 }}>
+      <Pressable
+        onPress={() => handleOpen()}
+        style={({ pressed, hovered }) => [
+          {
+            backgroundColor: pressed
+              ? theme[5]
+              : hovered
+              ? theme[4]
+              : undefined,
+            // opacity: pressed ? 0.5 : 1,
+            flexDirection: "row",
+            alignItems: "center",
+            columnGap: 15,
+            paddingHorizontal: 15,
+            borderRadius: 15,
+            height: 50,
+          },
+          Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+        ]}
+        android_ripple={{ color: theme[7] }}
+      >
+        <Icon bold>add</Icon>
+        <Text weight={700} style={{ color: theme[11] }}>
+          New tab
+        </Text>
+      </Pressable>
+    </View>
   );
 });
 

@@ -25,6 +25,9 @@ export default function TextField(props: DTextInputProps) {
       {...props}
       ref={props.inputRef}
       style={[
+        props.multiline && {
+          verticalAlign: "top",
+        },
         {
           color: theme[11],
           fontFamily: getFontName("jost", props.weight || 400),

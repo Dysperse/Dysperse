@@ -339,6 +339,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
               maxWidth: "100%",
               width: breakpoints.md ? 220 : undefined,
               minWidth: 0,
+              flex: 1,
             },
             rendererProps: { placement: "bottom" },
           }}

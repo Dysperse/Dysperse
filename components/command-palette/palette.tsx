@@ -79,8 +79,10 @@ const PaletteItem = memo(
 );
 
 const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
+  const theme = useColorTheme();
   return (
     <ScrollView
+      keyboardShouldPersistTaps="handled"
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{
@@ -104,9 +106,15 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
               setFilter(name);
             }
           }}
+          outlined={filter !== name}
           style={{
             backgroundColor:
-              filter !== null && filter !== name ? "transparent" : undefined,
+              filter !== null && filter !== name
+                ? "transparent"
+                : filter === name
+                ? theme[4]
+                : "transparent",
+            borderColor: theme[4],
           }}
         />
       ))}
@@ -137,6 +145,7 @@ function CommandPaletteList({
   return (
     <View style={{ flex: 1 }}>
       <FlashList
+        keyboardShouldPersistTaps="handled"
         ListEmptyComponent={() => (
           <View
             style={{

@@ -63,10 +63,7 @@ export function WeatherModal({
 
   const gradient = [theme[1], theme[2]];
 
-  const color = useMemo(
-    () => weatherDescription.textColor,
-    [weatherDescription]
-  );
+  const color = useMemo(() => theme[11], [theme]);
 
   const hour = useMemo(() => dayjs().hour(), []);
 

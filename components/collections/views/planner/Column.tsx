@@ -457,6 +457,9 @@ export function Column({
           paddingTop: 15,
           paddingHorizontal: 15,
           gap: 0,
+          ...(column.tasks.length === 0 && {
+            height: "100%",
+          }),
         }}
         style={{
           flex: 1,

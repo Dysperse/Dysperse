@@ -209,7 +209,7 @@ export default function AppLayout() {
           options={{
             ...TransitionPresets.SlideFromRightIOS,
             gestureResponseDistance: width,
-            gestureEnabled: true,
+            gestureEnabled: false,
             animationEnabled: !breakpoints.md,
             cardStyleInterpolator: forHorizontalIOS,
           }}

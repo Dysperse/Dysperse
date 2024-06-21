@@ -196,6 +196,7 @@ export default function Page() {
                 <TextField
                   variant="filled+outlined"
                   multiline
+                  style={{ minHeight: 100 }}
                   placeholder="What's this collection about? (Optional)"
                   value={value}
                   onChangeText={onChange}

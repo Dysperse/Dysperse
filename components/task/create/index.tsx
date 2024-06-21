@@ -966,6 +966,7 @@ function TaskNameInput({
                   ? "/ for commands  @ for attachments  # for labels"
                   : "/ for commands\n# for labels"
               }
+              onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
                 onBlur,
                 onKeyDown: (e) => {
