@@ -20,7 +20,10 @@ function Emoji({
         },
         style,
       ]}
-      source={`https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emoji?.toLowerCase()}.png`}
+      source={{
+        uri: `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emoji?.toLowerCase()}.png`,
+        isAnimated: true,
+      }}
     />
   );
 }

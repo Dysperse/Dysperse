@@ -117,6 +117,7 @@ export function EmojiPicker({
       <BottomSheet
         sheetRef={ref}
         snapPoints={["80%"]}
+        enableContentPanningGesture={false}
         onClose={handleClose}
         stackBehavior="push"
       >
@@ -144,25 +145,28 @@ export function EmojiPicker({
                 onChangeText={(e) => setQuery(e.toLowerCase())}
               />
             </View>
-            <FlashList
-              keyboardShouldPersistTaps="handled"
-              data={filteredData}
-              style={{ flex: 1 }}
-              estimatedItemSize={117.5}
-              contentContainerStyle={{ paddingTop: 10 }}
-              ListEmptyComponent={
-                <View style={emojiPickerStyles.emptyContainer}>
-                  <Emoji emoji="1f62d" size={50} />
-                  <Text style={emojiPickerStyles.emptyHeading}>No emojis</Text>
-                  <Text style={emojiPickerStyles.emptySubHeading}>
-                    Couldn't find any emojis matching your search!
-                  </Text>
-                </View>
-              }
-              renderItem={({ item }) => <EmojiItem item={item} />}
-              keyExtractor={(item) => item}
-              numColumns={4}
-            />
+            <View style={{ flex: 1 }}>
+              <FlashList
+                keyboardShouldPersistTaps="handled"
+                data={filteredData}
+                estimatedItemSize={117.5}
+                contentContainerStyle={{ paddingTop: 10 }}
+                ListEmptyComponent={
+                  <View style={emojiPickerStyles.emptyContainer}>
+                    <Emoji emoji="1f62d" size={50} />
+                    <Text style={emojiPickerStyles.emptyHeading}>
+                      No emojis
+                    </Text>
+                    <Text style={emojiPickerStyles.emptySubHeading}>
+                      Couldn't find any emojis matching your search!
+                    </Text>
+                  </View>
+                }
+                renderItem={({ item }) => <EmojiItem item={item} />}
+                keyExtractor={(item) => item}
+                numColumns={4}
+              />
+            </View>
           </View>
         ) : error ? (
           <ErrorAlert />
