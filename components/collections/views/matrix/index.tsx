@@ -110,7 +110,11 @@ const Cell = ({
             mutate={(n) => onEntityCreate(n)}
             defaultValues={defaultOptions}
           >
-            <IconButton icon="add" style={{ marginLeft: "auto" }} />
+            <IconButton
+              icon="add"
+              variant={breakpoints.md ? "text" : "outlined"}
+              style={{ marginLeft: "auto" }}
+            />
           </CreateTask>
         </LinearGradient>
       </Pressable>
@@ -231,42 +235,51 @@ function Preview({ tasks, onPress }) {
           style={{ padding: breakpoints.md ? 20 : 10 }}
         >
           {tasks.length === 0 && (
-            <Text style={{ textAlign: "center", opacity: 0.6 }} weight={900}>
-              No tasks
-            </Text>
-          )}
-          {tasks
-            .filter(
-              (e) => e.completionInstances.length === 0 && !e.recurrenceRule
-            )
-            .slice(0, 10)
-            .map((i) => (
-              <View
-                key={i.id}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 10,
-                  marginBottom: 10,
-                }}
-              >
-                <View
-                  style={{
-                    width: breakpoints.md ? 20 : 15,
-                    height: breakpoints.md ? 20 : 15,
-                    borderWidth: 1,
-                    borderColor: theme[7],
-                    borderRadius: 99,
-                  }}
-                />
+            <View style={{ alignItems: "center" }}>
+              <View style={{ flexDirection: "row", gap: 10 }}>
                 <Text
-                  numberOfLines={1}
-                  style={{ fontSize: breakpoints.md ? 13 : 12, opacity: 0.6 }}
+                  style={{
+                    textAlign: "center",
+                    color: theme[11],
+                    opacity: 0.6,
+                  }}
+                  weight={900}
                 >
-                  {i.name}
+                  No tasks
                 </Text>
+                <Icon size={20} style={{ opacity: 0.6 }}>
+                  arrow_forward_ios
+                </Icon>
               </View>
-            ))}
+            </View>
+          )}
+          {tasks.slice(0, 10).map((i) => (
+            <View
+              key={i.id}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: breakpoints.md ? 20 : 15,
+                  height: breakpoints.md ? 20 : 15,
+                  borderWidth: 1,
+                  borderColor: theme[7],
+                  borderRadius: 99,
+                }}
+              />
+              <Text
+                numberOfLines={1}
+                style={{ fontSize: breakpoints.md ? 13 : 12, opacity: 0.6 }}
+              >
+                {i.name}
+              </Text>
+            </View>
+          ))}
         </ScrollView>
         {tasks.length !== 0 && (
           <LinearGradient
@@ -387,18 +400,26 @@ export function Matrix() {
 
   const grid = useMemo(
     () => ({
-      pinnedImportant: filteredTasks.filter(
-        (e) => e.pinned && dayjs(e.start).isBefore(dayjs().endOf("day"))
-      ),
-      important: filteredTasks.filter(
-        (e) => !e.pinned && dayjs(e.start).isBefore(dayjs().endOf("day"))
-      ),
-      pinned: filteredTasks.filter(
-        (e) => e.pinned && !dayjs(e.start).isBefore(dayjs().endOf("day"))
-      ),
-      other: filteredTasks.filter(
-        (e) => !e.pinned && !dayjs(e.start).isBefore(dayjs().endOf("day"))
-      ),
+      pinnedImportant: filteredTasks
+        .filter(
+          (e) => e.pinned && dayjs(e.start).isBefore(dayjs().endOf("day"))
+        )
+        .filter((e) => e.completionInstances.length === 0 && !e.recurrenceRule),
+      important: filteredTasks
+        .filter(
+          (e) => !e.pinned && dayjs(e.start).isBefore(dayjs().endOf("day"))
+        )
+        .filter((e) => e.completionInstances.length === 0 && !e.recurrenceRule),
+      pinned: filteredTasks
+        .filter(
+          (e) => e.pinned && !dayjs(e.start).isBefore(dayjs().endOf("day"))
+        )
+        .filter((e) => e.completionInstances.length === 0 && !e.recurrenceRule),
+      other: filteredTasks
+        .filter(
+          (e) => !e.pinned && !dayjs(e.start).isBefore(dayjs().endOf("day"))
+        )
+        .filter((e) => e.completionInstances.length === 0 && !e.recurrenceRule),
     }),
     [filteredTasks]
   );
