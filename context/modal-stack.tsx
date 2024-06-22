@@ -7,17 +7,19 @@ export const useModalStack = () => useContext(ModalStackContext);
 export const ModalStackProvider = ({ children }) => {
   const ref = useRef([]);
 
-  useHotkeys("Escape", () => {
+  const closeTopModal = () => {
     const stack = ref.current;
     if (stack.length > 0) {
       const fn = stack[stack.length - 1];
       fn();
       ref.current = stack.slice(0, -1);
     }
-  });
+  };
+
+  useHotkeys("Escape", closeTopModal);
 
   return (
-    <ModalStackContext.Provider value={{ stack: ref }}>
+    <ModalStackContext.Provider value={{ stack: ref, closeTopModal }}>
       {children}
     </ModalStackContext.Provider>
   );
