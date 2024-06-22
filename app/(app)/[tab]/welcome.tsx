@@ -485,6 +485,8 @@ function NotSureWhereToStart() {
               {
                 flex: 1,
                 alignItems: "center",
+                gap: 7,
+                flexDirection: "column",
                 borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
                 backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
               },
@@ -492,7 +494,10 @@ function NotSureWhereToStart() {
             ]}
           >
             <Icon>{card.icon}</Icon>
-            <Text style={{ color: theme[11], fontSize: 17 }} weight={900}>
+            <Text
+              style={{ textAlign: "center", color: theme[11], fontSize: 15 }}
+              weight={900}
+            >
               {card.title}
             </Text>
           </Pressable>
