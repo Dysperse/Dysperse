@@ -31,13 +31,15 @@ function Header() {
 
   return (
     <LinearGradient
-      colors={[theme[1], theme[3]]}
+      start={[0, 0]}
+      end={[1, 1]}
+      colors={[theme[5], theme[2], theme[4]]}
       style={{
         alignItems: "center",
         justifyContent: "center",
         paddingVertical: 70,
-        marginBottom: 20,
         gap: 10,
+        flex: 1,
         position: "relative",
       }}
     >
@@ -258,7 +260,7 @@ function FeatureList() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <View style={[styles.container, { marginVertical: 20 }]}>
+    <View style={[styles.container, { marginVertical: 20, marginTop: 40 }]}>
       <Text variant="eyebrow" style={{ textAlign: "center", marginBottom: 20 }}>
         Here's the gist of how it works...
       </Text>
@@ -501,10 +503,15 @@ function NotSureWhereToStart() {
 }
 
 export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
   return (
-    <ContentWrapper noPaddingTop>
-      <ScrollView>
-        <Header />
+    <ContentWrapper
+      noPaddingTop
+      style={{ flexDirection: breakpoints.md ? "row" : "column" }}
+    >
+      {breakpoints.md && <Header />}
+      <ScrollView style={{ flex: 2 }}>
+        {!breakpoints.md && <Header />}
         <FeatureList />
         <NotSureWhereToStart />
         <Explore />
