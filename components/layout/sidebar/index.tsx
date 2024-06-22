@@ -334,25 +334,24 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const menuRef = useRef(null);
   return (
     <>
+      <View style={{ display: "none" }}>
+        <CreateTask
+          mutate={() => mutate(() => true)}
+          ref={itemRef}
+          onPress={() => {
+            menuRef.current.close();
+          }}
+        />
+      </View>
+
       <MenuPopover
         menuRef={menuRef}
         closeOnSelect
         options={[
           {
-            renderer: () => (
-              <CreateTask
-                mutate={() => mutate(() => true)}
-                ref={itemRef}
-                onPress={() => {
-                  menuRef.current.close();
-                }}
-              >
-                <MenuItem>
-                  <Icon>add_circle</Icon>
-                  <Text variant="menuItem">Item</Text>
-                </MenuItem>
-              </CreateTask>
-            ),
+            icon: "add_circle",
+            text: "Task",
+            callback: () => itemRef.current?.present(),
           },
           {
             renderer: () => (
