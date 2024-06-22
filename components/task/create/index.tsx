@@ -1243,7 +1243,6 @@ function Attachment({ control, nameRef, setValue, menuRef }) {
           <TaskAttachmentButton
             menuRef={menuRef}
             onClose={() => nameRef.current.focus()}
-            onOpen={() => nameRef.current.focus()}
             task={{ attachments: value }}
             updateTask={(key, value) => {
               if (key !== "note") {

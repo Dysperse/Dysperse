@@ -342,7 +342,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             renderer: () => (
               <CreateTask
                 mutate={() => mutate(() => true)}
-                sheetRef={itemRef}
+                ref={itemRef}
                 onPress={() => {
                   menuRef.current.close();
                 }}

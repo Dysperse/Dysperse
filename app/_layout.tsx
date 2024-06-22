@@ -2,6 +2,7 @@ import { WorkboxInitializer } from "@/components/layout/WorkboxInitializer";
 import { JsStack } from "@/components/layout/_stack";
 import { SidebarContext } from "@/components/layout/sidebar/context";
 import { SelectionContextProvider } from "@/context/SelectionContext";
+import { ModalStackProvider } from "@/context/modal-stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { mint, mintDark } from "@/themes";
 import { Button, ButtonText } from "@/ui/Button";
@@ -285,73 +286,75 @@ function Root() {
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
       <SessionProvider>
         <SelectionContextProvider>
-          <ColorThemeProvider theme={theme}>
-            <SidebarContext.Provider
-              value={{
-                sidebarRef: sidebarRef,
-                desktopCollapsed,
-                setDesktopCollapsed,
-                SIDEBAR_WIDTH,
-              }}
-            >
-              <SWRWrapper>
-                {Platform.OS === "web" && <WorkboxInitializer />}
-                <JsStack screenOptions={{ header: () => null }}>
-                  {/* <Slot screenOptions={{ onLayoutRootView }} /> */}
-                  <JsStack.Screen
-                    name="open"
-                    options={{
-                      presentation: "modal",
-                      animationEnabled: true,
-                      ...TransitionPresets.ModalPresentationIOS,
-                    }}
-                  />
-                  {["search/[id]", "collection/[id]"].map((p) => (
+          <ModalStackProvider>
+            <ColorThemeProvider theme={theme}>
+              <SidebarContext.Provider
+                value={{
+                  sidebarRef: sidebarRef,
+                  desktopCollapsed,
+                  setDesktopCollapsed,
+                  SIDEBAR_WIDTH,
+                }}
+              >
+                <SWRWrapper>
+                  {Platform.OS === "web" && <WorkboxInitializer />}
+                  <JsStack screenOptions={{ header: () => null }}>
+                    {/* <Slot screenOptions={{ onLayoutRootView }} /> */}
                     <JsStack.Screen
-                      key={p}
-                      name={p}
+                      name="open"
                       options={{
                         presentation: "modal",
-                        animationEnabled: !breakpoints.md,
-                        detachPreviousScreen: false,
-                        gestureEnabled: p === "collection/[id]",
-                        gestureResponseDistance: 9999,
-                        cardStyle: { backgroundColor: "transparent" },
-                        cardOverlay: (props) => (
-                          <View {...props} style={{ flex: 1 }} />
-                        ),
+                        animationEnabled: true,
                         ...TransitionPresets.ModalPresentationIOS,
                       }}
                     />
-                  ))}
-                  <JsStack.Screen
-                    name="plan"
-                    options={{
-                      presentation: "modal",
-                      detachPreviousScreen: false,
-                      animationEnabled: true,
-                      ...TransitionPresets.ModalPresentationIOS,
-                      cardStyle: breakpoints.md
-                        ? {
-                            maxWidth: 800,
-                            width: "100%",
-                            marginHorizontal: "auto",
-                            marginVertical: 30,
-                            borderRadius: 25,
-                            shadowRadius: 20,
-                            shadowColor: "rgba(0,0,0,0.1)",
-                            shadowOffset: {
-                              width: 0,
-                              height: 10,
-                            },
-                          }
-                        : undefined,
-                    }}
-                  />
-                </JsStack>
-              </SWRWrapper>
-            </SidebarContext.Provider>
-          </ColorThemeProvider>
+                    {["search/[id]", "collection/[id]"].map((p) => (
+                      <JsStack.Screen
+                        key={p}
+                        name={p}
+                        options={{
+                          presentation: "modal",
+                          animationEnabled: !breakpoints.md,
+                          detachPreviousScreen: false,
+                          gestureEnabled: p === "collection/[id]",
+                          gestureResponseDistance: 9999,
+                          cardStyle: { backgroundColor: "transparent" },
+                          cardOverlay: (props) => (
+                            <View {...props} style={{ flex: 1 }} />
+                          ),
+                          ...TransitionPresets.ModalPresentationIOS,
+                        }}
+                      />
+                    ))}
+                    <JsStack.Screen
+                      name="plan"
+                      options={{
+                        presentation: "modal",
+                        detachPreviousScreen: false,
+                        animationEnabled: true,
+                        ...TransitionPresets.ModalPresentationIOS,
+                        cardStyle: breakpoints.md
+                          ? {
+                              maxWidth: 800,
+                              width: "100%",
+                              marginHorizontal: "auto",
+                              marginVertical: 30,
+                              borderRadius: 25,
+                              shadowRadius: 20,
+                              shadowColor: "rgba(0,0,0,0.1)",
+                              shadowOffset: {
+                                width: 0,
+                                height: 10,
+                              },
+                            }
+                          : undefined,
+                      }}
+                    />
+                  </JsStack>
+                </SWRWrapper>
+              </SidebarContext.Provider>
+            </ColorThemeProvider>
+          </ModalStackProvider>
         </SelectionContextProvider>
       </SessionProvider>
     </ErrorBoundary>

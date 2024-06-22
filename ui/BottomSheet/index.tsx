@@ -1,11 +1,11 @@
-import { useHotkeys } from "@/helpers/useHotKeys";
+import { useModalStack } from "@/context/modal-stack";
 import {
   BottomSheetModal,
   BottomSheetProps,
   useBottomSheet,
   useBottomSheetSpringConfigs,
 } from "@gorhom/bottom-sheet";
-import { RefObject, memo } from "react";
+import { RefObject, memo, useEffect } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { ColorThemeProvider, useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
@@ -34,19 +34,28 @@ const styles = StyleSheet.create({
   },
 });
 
-function BottomSheetEscapeHandler({ animationConfigs }) {
-  const { forceClose, animatedIndex } = useBottomSheet();
+const BottomSheetEscapeHandler = memo(() => {
+  const { forceClose } = useBottomSheet();
+  const { stack } = useModalStack();
 
-  useHotkeys(
-    "esc",
-    () => {
-      if (animatedIndex.value === -1) return;
-      forceClose(animationConfigs || { overshootClamping: true, damping: 1 });
-    },
-    { enableOnFormTags: true, enableOnContentEditable: true }
-  );
-  return null;
-}
+  useEffect(() => {
+    stack.current = [
+      ...stack.current,
+      () =>
+        forceClose({
+          overshootClamping: true,
+          damping: 30,
+          stiffness: 400,
+        }),
+    ];
+
+    console.log(stack.current);
+
+    return () => {
+      stack.current = stack.current.slice(0, -1);
+    };
+  }, [forceClose, stack]);
+});
 
 function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
@@ -95,9 +104,7 @@ function BottomSheet(props: DBottomSheetProps) {
             <BottomSheetBackHandler />
           )}
           {Platform.OS === "web" && props.disableEscapeToClose !== true && (
-            <BottomSheetEscapeHandler
-              animationConfigs={props.animationConfigs}
-            />
+            <BottomSheetEscapeHandler />
           )}
           {props.children}
         </View>

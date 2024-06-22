@@ -241,7 +241,9 @@ const PaletteHeader = memo(function PaletteHeader({
         }}
       >
         {breakpoints.md ? (
-          <Text style={{ color: theme[11] }}>Cancel</Text>
+          <Text style={{ color: theme[11] }} weight={900}>
+            Cancel
+          </Text>
         ) : (
           <Icon>close</Icon>
         )}
