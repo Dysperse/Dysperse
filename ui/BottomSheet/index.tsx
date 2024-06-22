@@ -34,29 +34,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const BottomSheetEscapeHandler = memo(({ animationConfigs }) => {
+function BottomSheetEscapeHandler({ animationConfigs }) {
   const { forceClose } = useBottomSheet();
   const { stack } = useModalStack();
 
   useEffect(() => {
     stack.current = [
       ...stack.current,
-      () =>
-        forceClose({
-          damping: 30,
-          stiffness: 400,
-          ...animationConfigs,
-          overshootClamping: true,
-        }),
+      () => {
+        forceClose({ ...animationConfigs, overshootClamping: true });
+      },
     ];
-
-    console.log(stack.current);
+    console.log("adding", stack.current.length);
 
     return () => {
       stack.current = stack.current.slice(0, -1);
+      console.log("removing", stack.current.length);
     };
   }, [forceClose, stack, animationConfigs]);
-});
+}
 
 function BottomSheet(props: DBottomSheetProps) {
   const theme = useColorTheme();
@@ -105,7 +101,9 @@ function BottomSheet(props: DBottomSheetProps) {
             <BottomSheetBackHandler />
           )}
           {Platform.OS === "web" && props.disableEscapeToClose !== true && (
-            <BottomSheetEscapeHandler animationConfigs={animationConfigs} />
+            <BottomSheetEscapeHandler
+              animationConfigs={props.animationConfigs}
+            />
           )}
           {props.children}
         </View>
