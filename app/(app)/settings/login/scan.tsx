@@ -7,7 +7,6 @@ import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { CameraType } from "expo-camera/build/Camera.types";
 import * as Device from "expo-device";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -125,7 +124,7 @@ export default function Page() {
         <View style={{ flex: 1, position: "relative" }}>
           <CameraView
             style={styles.camera}
-            facing={CameraType.back}
+            facing="back"
             barcodeScannerSettings={{
               barcodeTypes: ["qr"],
             }}
