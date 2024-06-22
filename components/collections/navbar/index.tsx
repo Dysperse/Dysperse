@@ -192,6 +192,13 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           selected: e.text && e.id === mode,
         }))
       : []),
+    {
+      renderer: () => (
+        <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
+          Collection
+        </Text>
+      ),
+    },
     !isAll && {
       icon: "edit",
       text: "Edit",
@@ -202,20 +209,9 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       ),
     },
     !isAll && {
-      icon: "label",
-      text: "Select labels",
-      renderer: (props) => (
-        <CollectionContext.Provider value={contextValue}>
-          <CollectionLabelMenu {...props} />
-        </CollectionContext.Provider>
-      ),
+      icon: "lock_open",
+      text: "Lock collection",
     },
-    !isAll &&
-      (type === "grid" || type === "kanban") && {
-        icon: "swipe",
-        text: "Reorder labels",
-        callback: () => setEditOrderMode(true),
-      },
     !isAll && {
       icon: "remove_selection",
       text: "Delete",
@@ -241,6 +237,29 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
+    { divider: true },
+    {
+      renderer: () => (
+        <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
+          Labels
+        </Text>
+      ),
+    },
+    !isAll && {
+      icon: "label",
+      text: "Select labels",
+      renderer: (props) => (
+        <CollectionContext.Provider value={contextValue}>
+          <CollectionLabelMenu {...props} />
+        </CollectionContext.Provider>
+      ),
+    },
+    !isAll &&
+      (type === "grid" || type === "kanban") && {
+        icon: "swipe",
+        text: "Reorder",
+        callback: () => setEditOrderMode(true),
+      },
     !isAll && {
       divider: true,
     },

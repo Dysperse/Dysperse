@@ -240,8 +240,11 @@ function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
           >
             <ButtonText
               style={[
-                authStyles.buttonText,
-                { flex: undefined, margin: undefined },
+                {
+                  ...authStyles.buttonText,
+                  flex: undefined,
+                  margin: undefined,
+                },
               ]}
               weight={900}
             >
@@ -327,7 +330,7 @@ export default function SignIn() {
   const onSubmit = useCallback(
     async (data) => {
       try {
-        if (step === 0) {
+        if (step === 0 || step === 3) {
           setStep(1);
         } else {
           setStep(step === 3 ? 4 : 2);
@@ -352,6 +355,7 @@ export default function SignIn() {
             }
           );
           if (sessionRequest.twoFactorRequired) {
+            setToken(null);
             if (step === 3) {
               Toast.show({
                 type: "error",
@@ -466,12 +470,22 @@ export default function SignIn() {
         ) : (
           <View style={authStyles.container}>
             <View style={{ marginVertical: "auto", gap: 10 }}>
-              <Text weight={600} style={[styles.title, { color: theme[11] }]}>
+              <Text
+                weight={600}
+                style={[
+                  styles.title,
+                  { color: theme[11], fontFamily: "serifText800" },
+                ]}
+              >
                 Are you{" "}
                 <Text
                   style={[
                     styles.title,
-                    { color: theme[11], fontStyle: "italic" },
+                    {
+                      color: theme[11],
+                      fontStyle: "italic",
+                      fontFamily: "serifText800",
+                    },
                   ]}
                 >
                   you
@@ -498,6 +512,7 @@ export default function SignIn() {
                       borderColor: errors.email ? "red" : theme[6],
                       ...(Platform.OS === "web" && { outline: "none" }),
                     }}
+                    autoFocus
                     placeholder="2fa code"
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -512,7 +527,17 @@ export default function SignIn() {
                 onPress={handleSubmit(onSubmit)}
                 isLoading={step === 4}
               >
-                <ButtonText style={authStyles.buttonText}>Continue</ButtonText>
+                <ButtonText
+                  weight={900}
+                  style={{
+                    ...authStyles.buttonText,
+                    flex: undefined,
+                    margin: undefined,
+                  }}
+                >
+                  Continue
+                </ButtonText>
+                <Icon>east</Icon>
               </Button>
             </View>
           </View>

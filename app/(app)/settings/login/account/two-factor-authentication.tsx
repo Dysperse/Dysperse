@@ -4,21 +4,23 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import * as Clipboard from "expo-clipboard";
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
+import QRCode from "react-native-qrcode-svg";
 import Toast from "react-native-toast-message";
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
   const { session, sessionToken } = useUser();
 
   const [data, setData] = useState(null);
@@ -71,7 +73,7 @@ export default function Page() {
       );
       setLoading(false);
       Toast.show({ type: "success", text1: "2FA enabled!" });
-      router.push("/settings/login/login-security");
+      router.push("/settings/account");
     } catch (err) {
       Toast.show({ type: "error", text2: "Check your code?" });
       setError(err);
@@ -131,10 +133,27 @@ export default function Page() {
             }}
           >
             <View>
-              <Image
-                source={{ uri: data.qr }}
-                style={{ width: 200, height: 200, borderRadius: 5 }}
-              />
+              <View
+                style={{
+                  backgroundColor: theme[5],
+                  padding: 10,
+                  borderRadius: 20,
+                }}
+              >
+                <QRCode
+                  size={220}
+                  logoSize={50}
+                  color={theme[11]}
+                  backgroundColor={theme[5]}
+                  value={
+                    `otpauth://totp/Dysperse:${session.user.profile.name}?` +
+                    new URLSearchParams({
+                      secret: data.secret,
+                      issuer: "Dysperse",
+                    })
+                  }
+                />
+              </View>
               <Button
                 style={{ marginVertical: 5 }}
                 onPress={async () => {
@@ -152,7 +171,7 @@ export default function Page() {
             </View>
             <View
               style={{
-                flexDirection: breakpoints.md ? "row" : "column",
+                flexDirection: "column",
                 gap: 10,
               }}
             >
@@ -180,13 +199,17 @@ export default function Page() {
               <Button
                 isLoading={loading}
                 onPress={handleSubmit(onSubmit)}
-                variant={breakpoints.md ? undefined : "filled"}
+                variant="filled"
                 style={{
                   height: 60,
-                  borderRadius: 10,
+                  flexDirection: "row",
+                  gap: 20,
+                  borderRadius: 20,
+                  borderWidth: 1,
+                  borderColor: theme[5],
                 }}
               >
-                {!breakpoints.md && <ButtonText>Continue</ButtonText>}
+                <ButtonText weight={900}>Continue</ButtonText>
                 <Icon>{breakpoints.md ? "arrow_forward_ios" : "check"}</Icon>
               </Button>
             </View>

@@ -25,7 +25,7 @@ export const CollectionRenameMenu = memo(function CollectionRenameMenu({
     <MenuItem onPress={handleOpen}>
       <Icon>info</Icon>
       <Text variant="menuItem" weight={300}>
-        Edit collection
+        Edit
       </Text>
     </MenuItem>
   );
