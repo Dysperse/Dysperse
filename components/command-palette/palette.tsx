@@ -261,7 +261,7 @@ const PaletteHeader = memo(function PaletteHeader({
   };
 
   useEffect(() => {
-    setTimeout(() => ref.current?.focus(), breakpoints.md ? 150 : 500);
+    ref.current?.focus({ preventScroll: true });
   }, [breakpoints]);
 
   return (

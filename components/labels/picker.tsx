@@ -34,9 +34,7 @@ const Search = ({ query, setQuery, autoFocus }) => {
 
   useEffect(() => {
     if (autoFocus) {
-      setTimeout(() => {
-        searchRef.current.focus();
-      }, 500);
+      searchRef.current.focus({ preventScroll: true });
     }
   }, [autoFocus]);
 

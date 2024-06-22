@@ -1341,12 +1341,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
   });
 
   useEffect(() => {
-    setTimeout(
-      () => {
-        nameRef.current.focus();
-      },
-      Platform.OS === "web" ? (breakpoints.md ? 100 : 500) : 0
-    );
+    nameRef.current.focus({ preventScroll: true });
   }, [nameRef, breakpoints]);
 
   const onSubmit = async (data) => {

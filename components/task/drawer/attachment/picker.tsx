@@ -4,7 +4,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export function TaskAttachmentPicker({
@@ -59,10 +59,7 @@ export function TaskAttachmentPicker({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    setTimeout(
-      () => inputRef.current?.focus(),
-      Platform.OS === "web" ? 200 : 0
-    );
+    inputRef.current?.focus({ preventScroll: true });
   }, []);
 
   const submit = handleSubmit(onSubmit, () => {
