@@ -45,11 +45,11 @@ function BottomSheetEscapeHandler({ animationConfigs }) {
         forceClose({ ...animationConfigs, overshootClamping: true });
       },
     ];
-    console.log("adding", stack.current.length);
+    // console.log("adding", stack.current.length);
 
     return () => {
       stack.current = stack.current.slice(0, -1);
-      console.log("removing", stack.current.length);
+      // console.log("removing", stack.current.length);
     };
   }, [forceClose, stack, animationConfigs]);
 }
