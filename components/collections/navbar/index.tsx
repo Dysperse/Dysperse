@@ -192,7 +192,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           selected: e.text && e.id === mode,
         }))
       : []),
-    {
+    !isAll && {
       renderer: () => (
         <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
           Collection
@@ -237,7 +237,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
-    { divider: true },
+    !isAll && { divider: true },
     {
       renderer: () => (
         <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
