@@ -238,7 +238,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
       ),
     },
     !isAll && { divider: true },
-    {
+    !isAll && {
       renderer: () => (
         <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
           Labels
