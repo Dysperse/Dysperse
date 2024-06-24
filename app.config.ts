@@ -51,8 +51,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     softwareKeyboardLayoutMode: "pan",
     googleServicesFile: IS_DEV
-      ? "./google-services-dev.json"
-      : "./google-services.json",
+      ? process.env.GOOGLE_SERVICES_DEV
+      : process.env.GOOGLE_SERVICES,
     package: IS_DEV ? "com.dev.app.dysperse.com" : "com.app.dysperse.com",
   },
   web: {
