@@ -20,8 +20,10 @@ import { Controller, useForm } from "react-hook-form";
 import {
   Linking,
   Pressable,
+  StyleProp,
   StyleSheet,
   View,
+  ViewStyle,
   useWindowDimensions,
 } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
@@ -109,7 +111,17 @@ export function isValidHttpUrl(string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function EditAttachment({ task, updateTask, item, handleCancel }) {
+function EditAttachment({
+  task,
+  updateTask,
+  item,
+  handleCancel,
+}: {
+  task: any;
+  updateTask: any;
+  item: any;
+  handleCancel: any;
+}) {
   const { control, handleSubmit } = useForm({
     defaultValues: { data: item.data, name: item.name },
   });
@@ -208,7 +220,7 @@ function EditAttachment({ task, updateTask, item, handleCancel }) {
   );
 }
 
-function TaskAttachmentCard({ item, index }) {
+function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
   const theme = useColorTheme();
   const menuRef = useRef<BottomSheetModal>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -531,7 +543,7 @@ export function TaskDetails() {
           task.note && {
             trigger: () => <TaskNote />,
             content: (
-              <View style={collapsibleMenuStyles as any}>
+              <View style={collapsibleMenuStyles as StyleProp<ViewStyle>}>
                 <TaskAttachmentButton
                   defaultView="Note"
                   menuRef={noteMenuRef}
@@ -616,7 +628,7 @@ export function TaskDetails() {
               </TaskDatePicker>
             ),
             content: isReadOnly ? null : (
-              <View style={collapsibleMenuStyles as any}>
+              <View style={collapsibleMenuStyles as StyleProp<ViewStyle>}>
                 <TaskDatePicker
                   defaultView={task.recurrenceRule ? "recurrence" : "date"}
                   setValue={(name, value) =>

@@ -200,7 +200,7 @@ function SWRWrapper({ children }) {
 
   const saveCache = useDebouncedCallback(
     // function
-    (value) => {
+    () => {
       if (Platform.OS !== "web") fileSystemProvider(cacheData.current);
     },
     // delay in ms

@@ -11,7 +11,13 @@ import React from "react";
 import { Platform, Pressable, View } from "react-native";
 import { styles } from "../../create/styles";
 
-const HotKeyTrigger = ({ index, callback }) => {
+const HotKeyTrigger = ({
+  index,
+  callback,
+}: {
+  index: number;
+  callback: () => void;
+}) => {
   useHotkeys(index.toString(), callback, {}, [index]);
   return null;
 };

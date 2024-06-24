@@ -248,7 +248,13 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
   );
 };
 
-export function RecurrencePicker({ value, setValue }) {
+export function RecurrencePicker({
+  value,
+  setValue,
+}: {
+  value: any;
+  setValue: any;
+}) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useUser();
@@ -677,7 +683,21 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
   );
 });
 
-function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
+function Footer({
+  nameRef,
+  labelMenuRef,
+  setValue,
+  watch,
+  control,
+  menuRef,
+}: {
+  nameRef: any;
+  labelMenuRef: React.MutableRefObject<BottomSheetModal>;
+  setValue: any;
+  watch: any;
+  control: any;
+  menuRef: React.MutableRefObject<BottomSheetModal>;
+}) {
   const collectionId = watch("collectionId");
 
   const breakpoints = useResponsiveBreakpoints();
@@ -785,7 +805,17 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   );
 });
 
-function NlpProcessor({ value, setValue, onChange, suggestions }) {
+function NlpProcessor({
+  value,
+  setValue,
+  onChange,
+  suggestions,
+}: {
+  value: string;
+  setValue: any;
+  onChange: any;
+  suggestions: any;
+}) {
   useEffect(() => {
     const replacementString = Platform.OS === "web" ? "@" : "/";
     suggestions.forEach((suggestion) => {
@@ -877,7 +907,17 @@ function NlpProcessor({ value, setValue, onChange, suggestions }) {
   return null;
 }
 
-function LabelNlpProcessor({ value, onChange, label, setValue }) {
+function LabelNlpProcessor({
+  value,
+  onChange,
+  label,
+  setValue,
+}: {
+  value: string;
+  onChange: any;
+  label: any;
+  setValue;
+}) {
   useEffect(() => {
     const regex =
       /__LABEL__{([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})}__/g;
@@ -1129,7 +1169,7 @@ const TaskSuggestions = () => {
   );
 };
 
-const TaskAttachments = ({ watch, setValue }) => {
+const TaskAttachments = ({ watch, setValue }: any) => {
   const theme = useColorTheme();
   const attachments = watch("attachments");
   const note = watch("note");
@@ -1312,7 +1352,13 @@ const CancelButton = memo(() => {
   );
 });
 
-function BottomSheetContent({ defaultValues, mutateList }) {
+function BottomSheetContent({
+  defaultValues,
+  mutateList,
+}: {
+  defaultValues: CreateTaskDrawerProps["defaultValues"];
+  mutateList: any;
+}) {
   const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
   const nameRef = useRef(null);
@@ -1460,6 +1506,8 @@ export interface CreateTaskDrawerProps {
     label?: any;
     storyPoints?: number;
     dateOnly?: boolean;
+    name?: string;
+    pinned?: boolean;
   };
   onPress?: () => void;
   mutate: (newTask) => void;

@@ -11,4 +11,5 @@ export const useHotkeys: (
   options?: OptionsOrDependencyArray,
   dependencies?: OptionsOrDependencyArray
 ) => any =
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   Platform.OS === "web" ? require("react-hotkeys-hook").useHotkeys : () => {};

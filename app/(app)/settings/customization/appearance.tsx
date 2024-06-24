@@ -10,7 +10,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
-import { useColor, useDarkMode } from "@/ui/color";
+import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
@@ -47,8 +47,17 @@ const themePickerStyles = StyleSheet.create({
   },
 });
 
-function ThemedSlide({ theme, themeData, onSelect }) {
-  const colors = useColor(theme as any);
+function ThemedSlide({
+  theme,
+  themeData,
+  onSelect,
+}: {
+  theme: ColorTheme;
+  themeData: { name: string; description: string };
+  onSelect: () => void;
+}) {
+  const colors = useColor(theme);
+
   return (
     <ColorThemeProvider theme={colors}>
       <Pressable onPress={onSelect}>
@@ -63,13 +72,14 @@ function ThemedSlide({ theme, themeData, onSelect }) {
     </ColorThemeProvider>
   );
 }
-function ThemePicker({ children }) {
+function ThemePicker({ children }: { children: React.ReactElement<any> }) {
   const ref = useRef<BottomSheetModal>(null);
   const { session, sessionToken, mutate } = useUser();
   const [selectedTheme, setSelectedTheme] = useState(
     session.user.profile.theme
   );
-  const colors = useColor(selectedTheme as any);
+
+  const colors = useColor(selectedTheme);
 
   const theme = {
     ...themes[selectedTheme],
@@ -173,7 +183,7 @@ function ThemePicker({ children }) {
             }}
             from={Object.keys(themes).findIndex((e) => e === selectedTheme)}
             onIndexChanged={(e) => setSelectedTheme(Object.keys(themes)[e])}
-            onAnimationEnd={(e) => {
+            onAnimationEnd={() => {
               const i = carouselRef.current?.getActiveIndex();
               setSelectedTheme(Object.keys(themes)[i]);
             }}
@@ -184,7 +194,7 @@ function ThemePicker({ children }) {
                 nextPos: "right",
                 prevTitle: "<",
                 nextTitle: ">",
-                dotProps: { Component: (() => null) as any },
+                dotProps: { Component: () => null },
                 NextComponent: (props) => (
                   <IconButton {...props} key={selectedTheme}>
                     <Icon
@@ -215,7 +225,7 @@ function ThemePicker({ children }) {
             }
             springConfig={{ damping: 30, stiffness: 400 }}
           >
-            {Object.keys(themes).map((theme) => (
+            {Object.keys(themes).map((theme: ColorTheme) => (
               <View
                 key={theme}
                 style={{
@@ -273,15 +283,6 @@ export default function Page() {
   const theme = useColorTheme();
   const { session, mutate, sessionToken } = useUser();
   const themeText = themes[session?.user?.profile?.theme || "mint"];
-  const orange = useColor("orange");
-  const red = useColor("red");
-  const tomato = useColor("tomato");
-  const pink = useColor("pink");
-  const purple = useColor("purple");
-  const blue = useColor("blue");
-  const cyan = useColor("cyan");
-  const indigo = useColor("indigo");
-  const jade = useColor("jade");
 
   return (
     <SettingsLayout>

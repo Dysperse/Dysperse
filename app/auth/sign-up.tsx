@@ -23,8 +23,8 @@ import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import TextField from "@/ui/TextArea";
 import Turnstile from "@/ui/turnstile";
 import dayjs from "dayjs";
-import { Controller, useForm } from "react-hook-form";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import { Controller, useForm, UseFormReturn } from "react-hook-form";
+import { Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -40,7 +40,13 @@ import { TaskCreator } from "../../components/signup/TaskCreator";
 const SignupContext = createContext(null);
 export const useSignupContext = () => useContext(SignupContext);
 
-const ColorPressable = ({ color, handleSelect }) => {
+const ColorPressable = ({
+  color,
+  handleSelect,
+}: {
+  color: { p: Record<string, string>; n: string };
+  handleSelect: (name: string) => void;
+}) => {
   const { selectedTheme } = useSignupContext();
   const interactionState = useSharedValue<"active" | "hovered" | null>(null);
 
@@ -103,7 +109,7 @@ const ColorPressable = ({ color, handleSelect }) => {
   );
 };
 
-const ColorPicker = ({ form }) => {
+const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
   const theme = useColorTheme();
   const orange = useColor("orange");
   const grass = useColor("grass");
@@ -227,7 +233,7 @@ export const useDebouncedValue = (inputValue, delay) => {
   return debouncedValue;
 };
 
-const LoadingPage = ({ form }) => {
+const LoadingPage = ({ form }: { form: UseFormReturn<any> }) => {
   const theme = useColorTheme();
   const { getValues } = form;
   const [error, setError] = useState(false);
@@ -315,7 +321,7 @@ const LoadingPage = ({ form }) => {
   );
 };
 
-const VerificationPage = ({ form }) => {
+const VerificationPage = ({ form }: { form: UseFormReturn<any> }) => {
   const theme = useColorTheme();
   const { setValue } = form;
   const { handleNext } = useSignupContext();
@@ -359,7 +365,7 @@ const VerificationPage = ({ form }) => {
   );
 };
 
-const Password = ({ form }) => {
+const Password = ({ form }: { form: UseFormReturn<any> }) => {
   const theme = useColorTheme();
   const { getValues } = form;
   const { handleNext } = useSignupContext();

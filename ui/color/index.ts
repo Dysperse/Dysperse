@@ -25,6 +25,7 @@ export function useDarkMode(): boolean {
 export const addHslAlpha = (hsl: string, alpha: number) =>
   hsl.replace(")", `, ${alpha})`).replace("hsl", "hsla");
 
+export type ColorTheme = keyof typeof colors;
 /**
  * Returns a color palette.
  * @param base Base color from radix-ui/colors
@@ -32,7 +33,7 @@ export const addHslAlpha = (hsl: string, alpha: number) =>
  * @returns Color palette
  */
 
-export function useColor(base: keyof typeof colors, forceMode?: boolean) {
+export function useColor(base: ColorTheme, forceMode?: boolean) {
   const isDark = useDarkMode();
 
   const getColorPalette = useMemo(() => {

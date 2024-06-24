@@ -3,7 +3,11 @@ import { createContext, useContext, useMemo, useState } from "react";
 export const SelectionContext = createContext<any>(null);
 export const useSelectionContext = () => useContext(SelectionContext);
 
-export const SelectionContextProvider = ({ children }) => {
+export const SelectionContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [selection, setSelection] = useState<string[]>([]);
 
   const value = useMemo(
