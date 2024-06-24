@@ -107,6 +107,42 @@ export function Content() {
     );
   }, []);
 
+  const filteredEvents = useMemo(
+    () =>
+      tasks
+        .filter((e) => e.start || e.recurrenceRule)
+        .map(
+          (task) =>
+            ({
+              ...task,
+              title: task.name,
+              start: dayjs(
+                task.recurrenceRule
+                  ? normalizeRecurrenceRuleObject(task.recurrenceRule)
+                      .between(
+                        new Date(task.dateRange[0]),
+                        new Date(task.dateRange[1])
+                      )[0]
+                      .toISOString()
+                  : task.start
+              ).toDate(),
+              end: dayjs(
+                task.recurrenceRule
+                  ? normalizeRecurrenceRuleObject(task.recurrenceRule)
+                      .between(
+                        new Date(task.dateRange[0]),
+                        new Date(task.dateRange[1])
+                      )[0]
+                      .toISOString()
+                  : task.end || task.start
+              )
+                .add(task.end ? 0 : 1, "hour")
+                .toDate(),
+            } as ICalendarEventBase)
+        ),
+    [tasks]
+  );
+
   const { height } = useWindowDimensions();
 
   return data ? (
@@ -177,12 +213,7 @@ export function Content() {
         showAdjacentMonths={false}
         mode={originalMode as any}
         hourStyle={{ fontFamily: getFontName("jost", 700), color: theme[7] }}
-        // onPressCell={(date) => {
-        //   alert(date);
-        // }}
-        onPressEvent={(event: any) => {
-          taskDrawerRef.current?.setId(event.id);
-        }}
+        onPressEvent={(event: any) => taskDrawerRef.current?.setId(event.id)}
         eventCellStyle={(event) => ({
           backgroundColor: theme[11],
           paddingHorizontal: 15,
@@ -221,37 +252,7 @@ export function Content() {
           },
         }}
         swipeEnabled={false}
-        events={tasks
-          .filter((e) => e.start || e.recurrenceRule)
-          .map(
-            (task) =>
-              ({
-                ...task,
-                title: task.name,
-                start: dayjs(
-                  task.recurrenceRule
-                    ? normalizeRecurrenceRuleObject(task.recurrenceRule)
-                        .between(
-                          new Date(task.dateRange[0]),
-                          new Date(task.dateRange[1])
-                        )[0]
-                        .toISOString()
-                    : task.start
-                ).toDate(),
-                end: dayjs(
-                  task.recurrenceRule
-                    ? normalizeRecurrenceRuleObject(task.recurrenceRule)
-                        .between(
-                          new Date(task.dateRange[0]),
-                          new Date(task.dateRange[1])
-                        )[0]
-                        .toISOString()
-                    : task.end || task.start
-                )
-                  .add(task.end ? 0 : 1, "hour")
-                  .toDate(),
-              } as ICalendarEventBase)
-          )}
+        events={filteredEvents}
         date={dayjs(originalStart as any).toDate()}
       />
     </>
@@ -278,7 +279,6 @@ export default function Calendar() {
     start = dayjs()
       .startOf(mode as any)
       .toISOString();
-  // mode = week | month
 
   const agendaContextValue = useMemo(() => {
     return {

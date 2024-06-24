@@ -122,10 +122,7 @@ export function FriendActivity() {
           >
             <Spinner />
           </View>
-        ) : error ? (
-          <ErrorAlert />
-        ) : (
-          Array.isArray(friends) &&
+        ) : Array.isArray(friends) ? (
           friends.map((friend, i) =>
             friend === "ALL_FRIENDS" ? (
               <TouchableOpacity
@@ -213,6 +210,8 @@ export function FriendActivity() {
               </ProfileModal>
             )
           )
+        ) : (
+          error && <ErrorAlert />
         )}
       </ScrollView>
     </>
