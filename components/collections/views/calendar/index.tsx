@@ -2,22 +2,19 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
-import Alert from "@/ui/Alert";
 import Spinner from "@/ui/Spinner";
 import { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import {
   Calendar as BigCalendar,
   ICalendarEventBase,
@@ -109,47 +106,10 @@ export function Content() {
     );
   }, []);
 
-  const [show, setShow] = useState(true);
-  const [createDate, setCreateDate] = useState(new Date());
   const { height } = useWindowDimensions();
-
-  useEffect(() => {
-    AsyncStorage.getItem("calendarAlertHidden").then((value) => {
-      if (value === "true") setShow(false);
-    });
-  }, []);
 
   return data ? (
     <>
-      {show && (
-        <Pressable
-          onPress={() => {
-            setShow(false);
-            AsyncStorage.setItem("calendarAlertHidden", "true");
-          }}
-          style={{ padding: 20 }}
-        >
-          <Alert
-            title="Calendar view is experimental"
-            subtitle="We're still working on this view, so you might encounter some bugs. Tap on this banner to dismiss."
-            emoji="26A0"
-          />
-        </Pressable>
-      )}
-      {/* {taskId && tasks.find((e) => e.id === taskId) && (
-        <TaskDrawer
-          dateRange={tasks.find((e) => e.id === taskId)?.dateRange}
-          mutateList={(newItem) =>
-            onTaskUpdate(
-              newItem,
-              mutate,
-              data.find((d) => d.tasks.find((t) => t.id === newItem.id))
-            )
-          }
-          ref={taskDrawerRef}
-          id={taskId}
-        />
-      )} */}
       <CalendarTaskDrawer
         mutateList={(newItem) =>
           onTaskUpdate(

@@ -37,6 +37,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   AppState,
   Appearance,
+  InteractionManager,
   Platform,
   StatusBar,
   View,
@@ -188,18 +189,21 @@ async function fileSystemProvider(cacheData) {
     if (state === "background") save();
   });
 
+  setInterval(save, 1000 * 60 * 1);
+
   return map;
 }
 
 function SWRWrapper({ children }) {
   const { session } = useSession();
-  const cacheData = useRef(new Map());
+  const cacheData = useRef(null);
+  const [cacheLoaded, setCacheLoaded] = useState(Platform.OS === "web");
 
   fileSystemProvider(cacheData.current);
 
   useEffect(() => {
     if (Platform.OS === "web") return;
-    (async () => {
+    InteractionManager.runAfterInteractions(async () => {
       const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
       const file = `${cacheDir}cache.json`;
       const fileInfo = await FileSystem.getInfoAsync(file);
@@ -208,12 +212,13 @@ function SWRWrapper({ children }) {
         const data = await FileSystem.readAsStringAsync(file);
         const entries = JSON.parse(data);
         cacheData.current = new Map(entries);
+        setCacheLoaded(true);
         console.log(`📂 Restored ${cacheData.current.size} API routes!`);
       }
-    })();
-  }, []);
+    });
+  }, [cacheData]);
 
-  return (
+  return cacheLoaded ? (
     <SWRConfig
       value={{
         fetcher: async ([
@@ -239,6 +244,7 @@ function SWRWrapper({ children }) {
             ? localStorageProvider
             : () => cacheData.current,
         isVisible: () => true,
+        // onSuccess: ()
         initFocus(callback) {
           let appState = AppState.currentState;
 
@@ -267,7 +273,7 @@ function SWRWrapper({ children }) {
     >
       {children}
     </SWRConfig>
-  );
+  ) : null;
 }
 
 const useWebDevtoolsWarning = () => {
