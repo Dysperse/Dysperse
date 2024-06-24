@@ -2,7 +2,7 @@ import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
-import React, { memo } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "45deg" }],
   },
 });
-export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
+
+export const ColumnEmptyComponent = function ColumnEmptyComponent({
   row,
   dense,
 }: {
@@ -94,4 +95,4 @@ export const ColumnEmptyComponent = memo(function ColumnEmptyComponent({
       </View>
     </View>
   );
-});
+};

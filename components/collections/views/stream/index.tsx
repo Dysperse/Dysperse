@@ -1,7 +1,6 @@
 import { styles } from "@/app/(app)/[tab]/collections/[id]/[type]";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
-import { ColumnEmptyComponent } from "@/components/collections/views/planner/Column";
 import CreateTask from "@/components/task/create";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
@@ -17,6 +16,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useState, useTransition } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ColumnEmptyComponent } from "../../emptyComponent";
 
 type streamType = "backlog" | "upcoming" | "completed" | "unscheduled";
 

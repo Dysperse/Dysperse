@@ -2,7 +2,6 @@ import { styles } from "@/app/(app)/[tab]/collections/[id]/[type]";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { KanbanHeader } from "@/components/collections/views/kanban/Header";
-import { ColumnEmptyComponent } from "@/components/collections/views/planner/Column";
 import CreateTask from "@/components/task/create";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -17,6 +16,7 @@ import { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ColumnEmptyComponent } from "../../emptyComponent";
 
 export type ColumnProps =
   | {
