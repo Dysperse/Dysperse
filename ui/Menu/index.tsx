@@ -10,6 +10,7 @@ import React, {
   useState,
 } from "react";
 import { Keyboard, Platform, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +71,7 @@ export function Menu({
   }, [ref, onClose]);
 
   const _trigger = cloneElement(trigger, { [triggerProp]: handleOpen });
+  const insets = useSafeAreaInsets();
 
   return (
     <>
@@ -85,7 +87,10 @@ export function Menu({
         footerComponent={footer}
         stackBehavior={stackBehavior}
         handleComponent={() => null}
-        bottomInset={isKeyboardVisible ? Keyboard.metrics()?.height ?? 0 : 0}
+        bottomInset={
+          (isKeyboardVisible ? Keyboard.metrics()?.height ?? 0 : 0) +
+          insets.bottom
+        }
       >
         <View style={styles.container}>
           <View

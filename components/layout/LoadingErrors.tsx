@@ -11,8 +11,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const LoadingErrors = memo(() => {
   const red = useColor("red");
   const theme = useColorTheme();
-  const { error } = useUser();
-  const { error: storageError } = useStorageContext();
+  const orange = useColor("orange");
+  const { error, isValidating } = useUser();
+  const { error: storageError, isStorageValidating } = useStorageContext();
   const insets = useSafeAreaInsets();
 
   return (
@@ -25,7 +26,13 @@ const LoadingErrors = memo(() => {
             alignItems: "center",
             justifyContent: "center",
             height: 30 + insets.top,
+            marginBottom: -insets.top,
+            paddingTop: insets.top,
+            zIndex: 999,
             gap: 10,
+          },
+          (isValidating || isStorageValidating) && {
+            backgroundColor: orange[11],
           },
         ]}
       >
@@ -36,7 +43,9 @@ const LoadingErrors = memo(() => {
           style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
           weight={700}
         >
-          {error
+          {isValidating || isStorageValidating
+            ? "Reconnecting..."
+            : error
             ? error.message === "Failed to fetch"
               ? "You're offline"
               : "Can't connect to Dysperse"

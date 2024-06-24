@@ -1,7 +1,9 @@
 import { Button, ButtonText } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import Text from "@/ui/Text";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import * as MediaLibrary from "expo-media-library";
 import React, { useEffect, useState } from "react";
@@ -67,9 +69,23 @@ export function TaskImagePicker({ task, updateTask }) {
       .catch((e) => alert("Error"));
   };
 
+  const header = (
+    <View style={{ padding: 5 }}>
+      <Button
+        variant="filled"
+        style={{ marginTop: 10 }}
+        onPress={() => setSelectAlbums(true)}
+      >
+        <ButtonText>{selectedAlbum?.title}</ButtonText>
+        <Icon>{selectAlbums ? "expand_less" : "expand_more"}</Icon>
+      </Button>
+    </View>
+  );
+
   return selectAlbums ? (
     <FlatList
       data={albums}
+      ListHeaderComponent={header}
       renderItem={({ item }) => (
         <ListItemButton
           onPress={() => {
@@ -79,7 +95,7 @@ export function TaskImagePicker({ task, updateTask }) {
         >
           <ListItemText
             primary={item.title}
-            secondary={item.assetCount + " photos"}
+            secondary={item.assetCount + " items"}
           />
           {selectedAlbum?.id === item.id && <Icon>check</Icon>}
         </ListItemButton>
@@ -94,23 +110,21 @@ export function TaskImagePicker({ task, updateTask }) {
         numColumns={3}
         style={{ flex: 1 }}
         keyExtractor={(item) => item.uri}
+        centerContent={assets.length === 0}
+        ListEmptyComponent={() => (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Emoji emoji="1F614" size={50} />
+            <Text>No images found here</Text>
+          </View>
+        )}
         onEndReached={loadMoreAlbums}
         onEndReachedThreshold={0.5}
         onMomentumScrollBegin={() => {
           this.onEndReachedCalledDuringMomentum = false;
         }}
-        ListHeaderComponent={
-          <View style={{ padding: 5 }}>
-            <Button
-              variant="filled"
-              style={{ marginTop: 10 }}
-              onPress={() => setSelectAlbums(true)}
-            >
-              <ButtonText>{selectedAlbum?.title}</ButtonText>
-              <Icon>expand_more</Icon>
-            </Button>
-          </View>
-        }
+        ListHeaderComponent={header}
         contentContainerStyle={{ paddingHorizontal: 20 }}
         renderItem={({ item }) => (
           <ImagePickerItem task={task} item={item} updateTask={updateTask} />

@@ -6,7 +6,7 @@ export const StorageContext = createContext<any>(null);
 export const useStorageContext = () => useContext(StorageContext);
 export const StorageContextProvider = ({ children }) => {
   const { session } = useUser();
-  const { data, error } = useSWR([
+  const { data, error, isValidating } = useSWR([
     "space",
     { spaceId: session?.space?.space?.id },
   ]);
@@ -15,6 +15,7 @@ export const StorageContextProvider = ({ children }) => {
     error,
     storage: data?.storage,
     isLoading: !data,
+    isValidating,
     isReached: !data || data?.storage?.used >= data?.storage?.limit,
     isWarning: !data || data?.storage?.used >= data?.storage?.limit * 0.8,
   };

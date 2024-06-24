@@ -1394,7 +1394,7 @@ function BottomSheetContent({ defaultValues, mutateList }) {
     <Pressable
       onPress={(e) => e.stopPropagation()}
       style={{
-        height: 280,
+        minHeight: 280,
         maxWidth: "100%",
         width: 700,
         borderRadius: 20,

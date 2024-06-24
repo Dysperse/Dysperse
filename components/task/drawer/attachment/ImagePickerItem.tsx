@@ -75,7 +75,12 @@ export function ImagePickerItem({
             height: 200,
             width: 200,
           }}
-          style={{ width: "100%", aspectRatio: 1, borderRadius: 10 }}
+          style={{
+            width: "100%",
+            aspectRatio: 1,
+            borderRadius: 10,
+            backgroundColor: theme[3],
+          }}
         />
         {loading && (
           <View
