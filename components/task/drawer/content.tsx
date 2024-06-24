@@ -216,7 +216,6 @@ export function TaskDrawerContent({ handleClose }) {
                 }}
                 onClose={() => {}}
                 defaultCollection={collectionId as any}
-                autoFocus
                 disabled={Boolean(task.label?.integrationParams)}
               >
                 <Chip

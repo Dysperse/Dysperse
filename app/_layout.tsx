@@ -45,6 +45,7 @@ import {
 import "react-native-gesture-handler";
 import { DrawerLayout } from "react-native-gesture-handler";
 import { SWRConfig } from "swr";
+import { useDebouncedCallback } from "use-debounce";
 import { SessionProvider, useSession } from "../context/AuthProvider";
 
 SystemUI.setBackgroundColorAsync(
@@ -197,6 +198,15 @@ function SWRWrapper({ children }) {
   const cacheData = useRef(null);
   const [cacheLoaded, setCacheLoaded] = useState(Platform.OS === "web");
 
+  const saveCache = useDebouncedCallback(
+    // function
+    (value) => {
+      if (Platform.OS !== "web") fileSystemProvider(cacheData.current);
+    },
+    // delay in ms
+    1000
+  );
+
   useEffect(() => {
     const save = () => fileSystemProvider(cacheData.current);
     save();
@@ -254,7 +264,7 @@ function SWRWrapper({ children }) {
             ? localStorageProvider
             : () => cacheData.current,
         isVisible: () => true,
-        // onSuccess: ()
+        onSuccess: saveCache,
         initFocus(callback) {
           let appState = AppState.currentState;
 
@@ -372,13 +382,18 @@ function Root() {
               >
                 <SWRWrapper>
                   {Platform.OS === "web" && <WorkboxInitializer />}
-                  <JsStack screenOptions={{ header: () => null }}>
-                    {/* <Slot screenOptions={{ onLayoutRootView }} /> */}
+                  <JsStack
+                    screenOptions={{
+                      header: () => null,
+                      cardShadowEnabled: false,
+                    }}
+                  >
                     <JsStack.Screen
                       name="open"
                       options={{
                         presentation: "modal",
                         animationEnabled: true,
+                        gestureEnabled: false,
                         ...TransitionPresets.ModalPresentationIOS,
                       }}
                     />
@@ -391,7 +406,7 @@ function Root() {
                           animationEnabled: !breakpoints.md,
                           detachPreviousScreen: false,
                           gestureEnabled: p === "collection/[id]",
-                          gestureResponseDistance: 9999,
+                          gestureResponseDistance: width,
                           cardStyle: { backgroundColor: "transparent" },
                           cardOverlay: (props) => (
                             <View {...props} style={{ flex: 1 }} />
@@ -406,6 +421,7 @@ function Root() {
                         presentation: "modal",
                         detachPreviousScreen: false,
                         animationEnabled: true,
+                        gestureEnabled: false,
                         ...TransitionPresets.ModalPresentationIOS,
                         cardStyle: breakpoints.md
                           ? {

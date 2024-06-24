@@ -22,7 +22,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { labelPickerStyles } from "./labelPickerStyles";
@@ -59,7 +59,7 @@ const Search = ({ query, setQuery, autoFocus }) => {
         }
       }}
       inputRef={searchRef}
-      autoFocus={Platform.OS !== "web" && autoFocus}
+      // autoFocus={Platform.OS !== "web" && autoFocus}
       placeholder="Search..."
     />
   );
@@ -192,6 +192,7 @@ const LabelPicker = memo(function LabelPicker({
         sheetRef={ref}
         onClose={handleClose}
         snapPoints={["80%"]}
+        keyboardBehavior="interactive"
         enableContentPanningGesture={false}
         {...sheetProps}
       >
