@@ -301,6 +301,7 @@ const CurrentTaskCard = ({
 }) => {
   const theme = useColorTheme();
 
+  // @ts-expect-error idk
   const taskAnimationStyle = useAnimatedStyle(() => {
     return {
       marginTop: "auto",

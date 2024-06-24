@@ -1,8 +1,12 @@
-import React, { useCallback, useEffect } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Appearance, Platform, View } from "react-native";
 import { WebView } from "react-native-webview";
 
-const Turnstile = ({ setToken }) => {
+const Turnstile = ({
+  setToken,
+}: {
+  setToken: Dispatch<SetStateAction<string>>;
+}) => {
   const handleMessage = useCallback(
     (event) => {
       const newToken =

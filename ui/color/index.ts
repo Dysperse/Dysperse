@@ -56,7 +56,7 @@ export function useColor(base: keyof typeof colors, forceMode?: boolean) {
     }
 
     return _colorPalette;
-  }, [base, isDark]);
+  }, [base, isDark, forceMode]);
 
   return getColorPalette;
 }

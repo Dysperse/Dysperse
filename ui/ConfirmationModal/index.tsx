@@ -41,7 +41,13 @@ const styles = StyleSheet.create({
   },
 });
 
-function ConfirmationModalButton({ skipLoading, onSuccess }) {
+function ConfirmationModalButton({
+  skipLoading,
+  onSuccess,
+}: {
+  skipLoading?: boolean;
+  onSuccess: () => void;
+}) {
   const [loading, setLoading] = useState(false);
   const { forceClose } = useBottomSheet();
 

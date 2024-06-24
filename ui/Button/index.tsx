@@ -1,9 +1,10 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, LegacyRef } from "react";
 import {
   Pressable,
   PressableProps,
   StyleProp,
   StyleSheet,
+  View,
   ViewStyle,
 } from "react-native";
 import Icon from "../Icon";
@@ -62,7 +63,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
   return (
     <Pressable
       {...props}
-      ref={ref as any}
+      ref={ref as LegacyRef<View>}
       style={({ hovered, pressed }: any) => [
         styles.base,
         props.isLoading && styles.loading,

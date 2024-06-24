@@ -6,6 +6,9 @@ import { useColor } from "../color";
 export default function ErrorAlert({
   message = "Something went wrong. Please try again later.",
   icon = "error",
+}: {
+  message?: string;
+  icon?: string;
 }) {
   const red = useColor("red");
   return (

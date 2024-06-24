@@ -8,7 +8,7 @@ import {
 import { useColorTheme } from "../color/theme-provider";
 
 export interface DListitemButtonProps extends PressableProps {
-  style?: StyleProp<ViewStyle> | ((props: any) => StyleProp<ViewStyle>);
+  style?: StyleProp<ViewStyle> | ((props) => StyleProp<ViewStyle>);
   buttonClassName?: string;
   variant?: "default" | "filled" | "outlined";
 }

@@ -217,7 +217,7 @@ export default function ChipInput({
             marginLeft: -2,
           }}
           {...(item.onAdd && { onAdd: item.onAdd })}
-          renderSuggestion={({ display, icon }, { query }) => (
+          renderSuggestion={({ display, icon }: any) => (
             <View
               style={{
                 flexDirection: "row",
