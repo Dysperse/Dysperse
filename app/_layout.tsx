@@ -194,6 +194,7 @@ function SWRWrapper({ children }) {
   fileSystemProvider(cacheData.current);
 
   useEffect(() => {
+    if (Platform.OS === "web") return;
     (async () => {
       const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
       const file = `${cacheDir}cache.json`;
