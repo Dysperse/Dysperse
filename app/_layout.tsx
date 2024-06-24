@@ -26,6 +26,7 @@ import {
 import { TransitionPresets } from "@react-navigation/stack";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
+import * as FileSystem from "expo-file-system";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import { useNavigationContainerRef } from "expo-router";
@@ -155,8 +156,57 @@ function localStorageProvider() {
   return map;
 }
 
+async function fileSystemProvider(cacheData) {
+  const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
+  const file = `${cacheDir}cache.json`;
+
+  async function ensureDirExists() {
+    const dirInfo = await FileSystem.getInfoAsync(cacheDir);
+    if (!dirInfo.exists) {
+      console.log("Cache directory doesn't exist, creating…");
+      await FileSystem.makeDirectoryAsync(cacheDir, { intermediates: true });
+    }
+  }
+
+  const map = cacheData || new Map();
+
+  const save = async () => {
+    console.log("💾 Saving cache to disk…");
+    await ensureDirExists();
+    await FileSystem.writeAsStringAsync(
+      file,
+      JSON.stringify(Array.from(map.entries()))
+    );
+    console.log("💾 Saved cache to disk!");
+  };
+  save();
+  AppState.addEventListener("change", (state) => {
+    if (state === "background") save();
+  });
+
+  return map;
+}
+
 function SWRWrapper({ children }) {
   const { session } = useSession();
+  const cacheData = useRef(new Map());
+
+  fileSystemProvider(cacheData.current);
+
+  useEffect(() => {
+    (async () => {
+      const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
+      const file = `${cacheDir}cache.json`;
+      const fileInfo = await FileSystem.getInfoAsync(file);
+      if (fileInfo.exists) {
+        console.log("📂 Cache file exists, restoring cache…");
+        const data = await FileSystem.readAsStringAsync(file);
+        const entries = JSON.parse(data);
+        cacheData.current = new Map(entries);
+      }
+    })();
+  }, []);
+
   return (
     <SWRConfig
       value={{
@@ -179,7 +229,9 @@ function SWRWrapper({ children }) {
         },
 
         provider:
-          Platform.OS === "web" ? localStorageProvider : () => new Map(),
+          Platform.OS === "web"
+            ? localStorageProvider
+            : () => cacheData.current,
         isVisible: () => true,
         initFocus(callback) {
           let appState = AppState.currentState;

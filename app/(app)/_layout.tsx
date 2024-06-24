@@ -122,6 +122,7 @@ export default function AppLayout() {
     SplashScreen.hideAsync();
     if (Platform.OS === "android") {
       NavigationBar.setPositionAsync("absolute");
+      NavigationBar.setButtonStyleAsync(isDark ? "light" : "dark");
       NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[2], 0.05));
     }
   });
