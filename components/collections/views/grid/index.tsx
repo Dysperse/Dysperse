@@ -6,12 +6,14 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Column } from "../kanban/Column";
 import { ReorderingGrid } from "./ReorderingGrid";
 import { GridContext, GridContextSelectedColumn } from "./context";
 
 export function Grid({ editOrderMode }) {
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
   const { data } = useCollectionContext();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
@@ -133,10 +135,11 @@ export function Grid({ editOrderMode }) {
                     flex: 1,
                     backgroundColor: theme[2],
                     borderRadius: 25,
-                    width:
-                      displayLabels.length > 4
+                    width: breakpoints.md
+                      ? displayLabels.length > 4
                         ? width / 2 - 230
-                        : width / 2 - 145,
+                        : width / 2 - 145
+                      : "100%",
                   }}
                 >
                   {label.empty ? (
@@ -163,6 +166,7 @@ export function Grid({ editOrderMode }) {
             padding: 15,
             gap: 15,
             paddingRight: 30,
+            paddingBottom: insets.bottom + 15,
             flexDirection: "column",
           },
           !breakpoints.md &&

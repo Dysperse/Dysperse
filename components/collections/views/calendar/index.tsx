@@ -2,6 +2,7 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import Spinner from "@/ui/Spinner";
 import { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -35,7 +36,7 @@ const CalendarTaskDrawer = forwardRef(
     ref
   ) => {
     const drawerRef = useRef(null);
-    const [taskId, setTaskId] = useState<string | null>(null);
+    const [taskId, setTaskId] = useState<string>("");
 
     useImperativeHandle(ref, () => ({
       setId: (id: string) => {
@@ -187,7 +188,9 @@ export function Content() {
           paddingHorizontal: 15,
           borderRadius: 15,
           ...(event.label && {
-            backgroundColor: colors[event.label.color][11],
+            backgroundColor: getTaskCompletionStatus(event, event.dateRange)
+              ? theme[7]
+              : colors[event.label.color][11],
           }),
         })}
         headerContainerStyle={{ paddingTop: 20 }}

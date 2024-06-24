@@ -1,3 +1,4 @@
+import { styles } from "@/app/(app)/[tab]/collections/[id]/[type]";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { ColumnEmptyComponent } from "@/components/collections/views/planner/Column";
@@ -15,11 +16,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useState, useTransition } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { styles } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type streamType = "backlog" | "upcoming" | "completed" | "unscheduled";
 export function Stream() {
   const params = useLocalSearchParams();
+  const insets = useSafeAreaInsets();
 
   const [isPending, startTransition] = useTransition();
   const [view, setView] = useState<streamType>(
@@ -261,6 +263,7 @@ export function Stream() {
           width: "100%",
           marginHorizontal: "auto",
           maxWidth: 500,
+          paddingBottom: insets.bottom + 15,
         }}
         renderItem={({ item }) => (
           <Entity

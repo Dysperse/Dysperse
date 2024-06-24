@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
 
 function SettingsSidebar() {
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const theme = useColorTheme();
   const { signOut } = useSession();
@@ -228,7 +229,7 @@ function SettingsSidebar() {
       style={{ maxHeight: "100%" }}
       contentContainerStyle={{
         paddingVertical: breakpoints.md ? 50 : 0,
-        paddingBottom: 20,
+        paddingBottom: 20 + insets.bottom,
       }}
       showsVerticalScrollIndicator={false}
     >
@@ -299,9 +300,10 @@ function SettingsSidebar() {
               >
                 <ListItemButton
                   variant={
-                    breakpoints.md && (pathname === button.href ||
-                    (pathname.includes("integrations") &&
-                      button.href?.includes("integrations")))
+                    breakpoints.md &&
+                    (pathname === button.href ||
+                      (pathname.includes("integrations") &&
+                        button.href?.includes("integrations")))
                       ? "filled"
                       : "default"
                   }
@@ -325,9 +327,10 @@ function SettingsSidebar() {
                 >
                   <Icon
                     filled={
-                      breakpoints.md && (pathname === button.href ||
-                    (pathname.includes("integrations") &&
-                      button.href?.includes("integrations")))
+                      breakpoints.md &&
+                      (pathname === button.href ||
+                        (pathname.includes("integrations") &&
+                          button.href?.includes("integrations")))
                     }
                     style={{ color: theme[11] }}
                     size={!breakpoints.md ? 30 : 24}

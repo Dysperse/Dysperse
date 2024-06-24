@@ -16,6 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type ColumnProps =
   | {
@@ -64,6 +65,7 @@ export const ColumnFinishedComponent = () => {
 export function Column(props: ColumnProps) {
   const theme = useColorTheme();
   const columnRef = useRef(null);
+  const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access, data: collectionData } = useCollectionContext();
   const [refreshing] = useState(false);
@@ -274,6 +276,7 @@ export function Column(props: ColumnProps) {
           paddingTop: 15,
           gap: 5,
           minHeight: "100%",
+          paddingBottom: insets.bottom + 15,
         }}
         renderItem={({ item }) => (
           <Entity

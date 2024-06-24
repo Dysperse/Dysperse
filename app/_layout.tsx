@@ -8,7 +8,7 @@ import { mint, mintDark } from "@/themes";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { Fraunces_300Light } from "@expo-google-fonts/fraunces";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
@@ -53,11 +53,19 @@ SystemUI.setBackgroundColorAsync(
 );
 
 if (Platform.OS === "android") {
-  StatusBar.setBackgroundColor(
-    Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2
+  StatusBar.setBackgroundColor("transparent");
+  StatusBar.setBarStyle(
+    Appearance.getColorScheme() === "dark" ? "light-content" : "dark-content"
   );
+  NavigationBar.setBorderColorAsync("transparent");
   NavigationBar.setBackgroundColorAsync(
-    Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2
+    addHslAlpha(
+      Appearance.getColorScheme() === "dark" ? mintDark.mint2 : mint.mint2,
+      0.01
+    )
+  );
+  NavigationBar.setButtonStyleAsync(
+    Appearance.getColorScheme() === "dark" ? "light" : "dark"
   );
   NavigationBar.setBorderColorAsync("transparent");
 }
@@ -214,6 +222,10 @@ function SWRWrapper({ children }) {
         cacheData.current = new Map(entries);
         setCacheLoaded(true);
         console.log(`📂 Restored ${cacheData.current.size} API routes!`);
+      } else {
+        console.log("📂 Cache file doesn't exist, creating new cache…");
+        cacheData.current = new Map();
+        setCacheLoaded(true);
       }
     });
   }, [cacheData]);
