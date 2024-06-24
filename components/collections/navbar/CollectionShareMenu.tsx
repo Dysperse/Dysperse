@@ -26,8 +26,8 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { styles } from ".";
 import { useCollectionContext } from "../context";
+import { styles } from "./styles";
 
 const modalStyles = StyleSheet.create({
   eyebrow: { marginTop: 10, marginBottom: 5, marginLeft: 5 },

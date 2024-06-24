@@ -6,19 +6,16 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo, useRef } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -27,18 +24,10 @@ import { CollectionLabelMenu } from "./CollectionLabelMenu";
 import { CollectionRenameMenu } from "./CollectionRenameMenu";
 import { CollectionSearch } from "./CollectionSearch";
 import { CollectionShareMenu } from "./CollectionShareMenu";
-
-export const styles = StyleSheet.create({
-  navbarIconButton: {
-    flexDirection: "row",
-    height: 40,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 50,
-    borderRadius: 20,
-  },
-});
+import { NavbarEyebrow } from "./NavbarEyebrow";
+import { NavbarGradient } from "./NavbarGradient";
+import { NavbarIcon } from "./NavbarIcon";
+import { NavbarTitle } from "./NavbarTitle";
 
 interface CollectionNavbarProps {
   isLoading?: boolean;
@@ -46,65 +35,7 @@ interface CollectionNavbarProps {
   setEditOrderMode: (value: boolean) => void;
 }
 
-const NavbarTitle = ({ name }) => {
-  const theme = useColorTheme();
-  return (
-    <Text numberOfLines={1} style={{ color: theme[11] }} weight={900}>
-      {name}
-    </Text>
-  );
-};
-
-const NavbarEyebrow = ({ name }) => {
-  return (
-    <Text numberOfLines={1} variant="eyebrow" style={{ fontSize: 11 }}>
-      {name}
-    </Text>
-  );
-};
-
-const NavbarIcon = ({ emoji, isLoading, isAll }) => {
-  const theme = useColorTheme();
-  return isLoading ? (
-    <View
-      style={{
-        width: 30,
-        height: 30,
-        borderRadius: 999,
-        backgroundColor: theme[4],
-      }}
-    />
-  ) : (
-    !isAll && <Emoji emoji={emoji} size={30} />
-  );
-};
-
-const NavbarGradient = ({ children }) => {
-  const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
-  const breakpoints = useResponsiveBreakpoints();
-
-  return (
-    <LinearGradient
-      colors={[theme[breakpoints.md ? 1 : 2], theme[breakpoints.md ? 2 : 3]]}
-      style={{
-        backgroundColor: theme[3],
-        height: 60 + insets.top,
-        paddingTop: insets.top,
-        paddingHorizontal: 10,
-        flexDirection: "row",
-        borderBottomWidth: breakpoints.md ? 1 : 0,
-        borderBottomColor: theme[5],
-        alignItems: "center",
-        gap: 5,
-      }}
-    >
-      {children}
-    </LinearGradient>
-  );
-};
-
-export const CollectionNavbar = memo(function CollectionNavbar({
+const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
   editOrderMode,
   setEditOrderMode,
@@ -367,7 +298,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           trigger={
             <Pressable
               android_ripple={{ color: theme[5] }}
-              style={({ hovered, pressed }) => ({
+              style={() => ({
                 maxWidth: breakpoints.md ? 220 : "100%",
                 flexDirection: "row",
                 alignItems: "center",
@@ -458,3 +389,5 @@ export const CollectionNavbar = memo(function CollectionNavbar({
     </>
   );
 });
+
+export default CollectionNavbar;

@@ -3,7 +3,6 @@ import {
   CollectionType,
   useCollectionContext,
 } from "@/components/collections/context";
-import { CollectionNavbar } from "@/components/collections/navbar";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
@@ -28,6 +27,7 @@ import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
+const CollectionNavbar = lazy(() => import("@/components/collections/navbar"));
 const Kanban = lazy(() => import("@/components/collections/views/kanban"));
 const List = lazy(() => import("@/components/collections/views/list"));
 const Matrix = lazy(() => import("@/components/collections/views/matrix"));
