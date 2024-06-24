@@ -257,7 +257,9 @@ function SettingsSidebar() {
             paddingVertical: breakpoints.md ? undefined : 15,
             paddingHorizontal: breakpoints.md ? undefined : 25,
             marginTop: 0,
+            fontSize: breakpoints.md ? 15 : 20,
           }}
+          weight={700}
           onChangeText={setSearch}
           value={search}
           placeholder="Search..."

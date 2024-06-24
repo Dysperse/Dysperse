@@ -149,7 +149,7 @@ export default function AppLayout() {
           // change opacity of the previous screen when swipe
           cardOverlayEnabled: true,
           animationEnabled: false,
-          gestureVelocityImpact: 0.7,
+          gestureVelocityImpact: 0.5,
         }}
       >
         <JsStack.Screen name="index" />
@@ -192,12 +192,14 @@ export default function AppLayout() {
               ...TransitionPresets.SlideFromRightIOS,
               cardStyleInterpolator: forHorizontalIOS,
               animationEnabled: !breakpoints.md && d !== "settings/index",
+              detachPreviousScreen: d === "settings/index",
             }}
           />
         ))}
         <JsStack.Screen
           name="friends"
           options={{
+            detachPreviousScreen: true,
             cardOverlayEnabled: !breakpoints.md,
             ...TransitionPresets.SlideFromRightIOS,
             cardStyleInterpolator: forHorizontalIOS,
