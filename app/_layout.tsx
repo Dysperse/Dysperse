@@ -386,6 +386,7 @@ function Root() {
                     screenOptions={{
                       header: () => null,
                       cardShadowEnabled: false,
+                      freezeOnBlur: true,
                     }}
                     initialRouteName="(app)/index"
                   >

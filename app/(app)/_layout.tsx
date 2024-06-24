@@ -198,7 +198,6 @@ export default function AppLayout() {
         <JsStack.Screen
           name="friends"
           options={{
-            gestureEnabled: false,
             cardOverlayEnabled: !breakpoints.md,
             ...TransitionPresets.SlideFromRightIOS,
             cardStyleInterpolator: forHorizontalIOS,
