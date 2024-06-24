@@ -500,9 +500,10 @@ function TaskNotifications() {
           onPress={() =>
             updateTask(
               "notifications",
-              task.notifications.includes(n)
+              (task.notifications.includes(n)
                 ? task.notifications.filter((i) => i !== n)
                 : [...task.notifications, n]
+              ).sort()
             )
           }
         >

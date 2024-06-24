@@ -697,7 +697,7 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
   );
 }
 
-export function Clock({ widget, menuActions, setParam }) {
+export default function Clock({ widget, menuActions, setParam }) {
   const theme = useColor("orange");
   const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");

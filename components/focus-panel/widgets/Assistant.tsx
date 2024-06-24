@@ -19,7 +19,7 @@ import Markdown from "react-native-markdown-display";
 import Toast from "react-native-toast-message";
 import { widgetMenuStyles } from "../widgetMenuStyles";
 
-export const Assistant = ({ widget, menuActions }) => {
+const Assistant = ({ widget, menuActions }) => {
   const { session, sessionToken } = useUser();
   const theme = useColorTheme();
   const [messages, setMessages] = useState([]);
@@ -284,3 +284,5 @@ export const Assistant = ({ widget, menuActions }) => {
     </View>
   );
 };
+
+export default Assistant;

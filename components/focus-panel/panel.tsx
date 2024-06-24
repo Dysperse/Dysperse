@@ -13,7 +13,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -22,8 +22,16 @@ import { FlashList } from "@shopify/flash-list";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
-import { Fragment, memo, useEffect, useRef, useState } from "react";
-import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import {
+  Fragment,
+  lazy,
+  memo,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { Platform, Pressable, useWindowDimensions, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -41,11 +49,12 @@ import ContentWrapper from "../layout/content";
 import { useFocusPanelContext } from "./context";
 import { WidgetMenu } from "./menu";
 import { widgetMenuStyles } from "./widgetMenuStyles";
-import { widgetStyles } from "./widgetStyles";
-import { Assistant } from "./widgets/Assistant";
-import { UpNext } from "./widgets/UpNext";
-import { Clock } from "./widgets/clock";
-import { WeatherWidget } from "./widgets/weather/widget";
+
+const Assistant = lazy(() => import("./widgets/Assistant"));
+const Clock = lazy(() => import("./widgets/clock"));
+const Quotes = lazy(() => import("./widgets/quotes"));
+const UpNext = lazy(() => import("./widgets/up-next"));
+const WeatherWidget = lazy(() => import("./widgets/weather/widget"));
 
 export type Widget = "upcoming" | "weather" | "clock" | "assistant" | "sports";
 
@@ -71,6 +80,7 @@ export const ImportantChip = () => {
     />
   );
 };
+
 function SelectCategory({ setCategory }) {
   const [query, setQuery] = useState("");
 
@@ -233,89 +243,6 @@ const Sports = ({ params, menuActions }) => {
     </View>
   );
 };
-
-function Quotes({ widget, menuActions }) {
-  const { data, mutate, error } = useSWR(
-    [
-      ``,
-      {
-        tags: "famous-quotes|success|failure|ethics|health|honor|leadership|power-quotes|work",
-      },
-      "https://api.quotable.io/random",
-    ],
-    null,
-    {
-      refreshInterval: 1000 * 60 * 60,
-    }
-  );
-
-  const [refreshed, setRefreshed] = useState(false);
-
-  const handleRefresh = () => {
-    if (!refreshed) {
-      setRefreshed(true);
-      Toast.show({ type: "info", text1: "Quotes refresh every hour" });
-    }
-    mutate();
-  };
-  const theme = useColorTheme();
-
-  return (
-    <View>
-      <MenuPopover
-        options={[
-          {
-            text: "Refresh",
-            icon: "refresh",
-            callback: handleRefresh,
-          },
-          { divider: true },
-          ...menuActions,
-        ]}
-        containerStyle={{ marginTop: -15 }}
-        trigger={
-          <Button style={widgetMenuStyles.button} dense>
-            <ButtonText weight={800} style={widgetMenuStyles.text}>
-              Quotes
-            </ButtonText>
-            <Icon style={{ color: theme[11] }}>expand_more</Icon>
-          </Button>
-        }
-      />
-      {error && <ErrorAlert />}
-      <View
-        style={[
-          widgetStyles.card,
-          {
-            backgroundColor: theme[3],
-            borderWidth: 1,
-            borderColor: theme[6],
-          },
-        ]}
-      >
-        {data ? (
-          <>
-            <Text
-              style={{
-                fontSize: data.content.length > 100 ? 23 : 28,
-                fontFamily: getFontName("crimsonPro", 800),
-              }}
-            >
-              &ldquo;{data?.content}&rdquo;
-            </Text>
-            <Text style={{ marginTop: 10, opacity: 0.6 }} weight={400}>
-              &mdash; {data?.author}
-            </Text>
-          </>
-        ) : (
-          <View style={{ alignItems: "center", paddingVertical: 70 }}>
-            <Spinner />
-          </View>
-        )}
-      </View>
-    </View>
-  );
-}
 
 function RenderWidget({ widget, index }) {
   const { sessionToken } = useUser();
@@ -493,78 +420,99 @@ function PanelContent() {
       );
 
   return (
-    <Wrapper>
-      <ContentWrapper
-        noPaddingTop={!breakpoints.md}
-        style={{
-          position: "relative",
-          maxHeight: height - 20,
-        }}
-      >
-        <ScrollView
-          contentContainerStyle={{
-            padding: 20,
-            paddingTop: insets.top + 20,
+    <Suspense
+      fallback={
+        <Wrapper>
+          <View
+            style={{
+              marginHorizontal: "auto",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Spinner />
+          </View>
+        </Wrapper>
+      }
+    >
+      <Wrapper>
+        <ContentWrapper
+          noPaddingTop={!breakpoints.md}
+          style={{
+            position: "relative",
+            maxHeight: height - 20,
           }}
-          centerContent
         >
-          {isFocused && (
-            <>
-              {!data ? (
-                <View style={{ marginHorizontal: "auto" }}>
-                  <Spinner />
-                </View>
-              ) : data.length === 0 ? (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    maxWidth: 250,
-                    marginHorizontal: "auto",
-                    gap: 5,
-                  }}
-                >
-                  <Text style={{ textAlign: "center" }} variant="eyebrow">
-                    This is the focus panel
-                  </Text>
-                  <Text
+          <ScrollView
+            contentContainerStyle={{
+              padding: 20,
+              paddingTop: insets.top + 20,
+            }}
+            centerContent
+          >
+            {isFocused && (
+              <>
+                {!data ? (
+                  <View style={{ marginHorizontal: "auto" }}>
+                    <Spinner />
+                  </View>
+                ) : data.length === 0 ? (
+                  <View
                     style={{
-                      textAlign: "center",
-                      color: theme[11],
-                      opacity: 0.45,
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      maxWidth: 250,
+                      marginHorizontal: "auto",
+                      gap: 5,
                     }}
                   >
-                    Here, you can add widgets to enhance & supercharge your
-                    productivity
-                  </Text>
-                </View>
-              ) : (
-                <ScrollView
-                  style={{ flex: 1 }}
-                  contentContainerStyle={{
-                    gap: 5,
-                    paddingTop: 80,
-                    minHeight: "100%",
-                  }}
-                >
-                  {data
-                    .sort(function (a, b) {
-                      if (a.order < b.order) return -1;
-                      if (a.order > b.order) return 1;
-                      return 0;
-                    })
-                    .map((widget, index) => (
-                      <RenderWidget key={index} index={index} widget={widget} />
-                    ))}
-                </ScrollView>
-              )}
-              <WidgetMenu />
-            </>
-          )}
-        </ScrollView>
-      </ContentWrapper>
-    </Wrapper>
+                    <Text style={{ textAlign: "center" }} variant="eyebrow">
+                      This is the focus panel
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        color: theme[11],
+                        opacity: 0.45,
+                      }}
+                    >
+                      Here, you can add widgets to enhance & supercharge your
+                      productivity
+                    </Text>
+                  </View>
+                ) : (
+                  <ScrollView
+                    style={{ flex: 1 }}
+                    contentContainerStyle={{
+                      gap: 5,
+                      paddingTop: 80,
+                      minHeight: "100%",
+                    }}
+                  >
+                    {data
+                      .sort(function (a, b) {
+                        if (a.order < b.order) return -1;
+                        if (a.order > b.order) return 1;
+                        return 0;
+                      })
+                      .map((widget, index) => (
+                        <RenderWidget
+                          key={index}
+                          index={index}
+                          widget={widget}
+                        />
+                      ))}
+                  </ScrollView>
+                )}
+                <WidgetMenu />
+              </>
+            )}
+          </ScrollView>
+        </ContentWrapper>
+      </Wrapper>
+    </Suspense>
   );
 }
 export function PanelSwipeTrigger({

@@ -13,14 +13,14 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import useSWR from "swr";
-import { Entity } from "../../collections/entity";
-import { onTaskUpdate } from "../../collections/views/planner/Column";
-import { TaskDrawer } from "../../task/drawer";
-import { ImportantChip } from "../panel";
-import { widgetMenuStyles } from "../widgetMenuStyles";
-import { widgetStyles } from "../widgetStyles";
+import { Entity } from "../../../collections/entity";
+import { onTaskUpdate } from "../../../collections/views/planner/Column";
+import { TaskDrawer } from "../../../task/drawer";
+import { ImportantChip } from "../../panel";
+import { widgetMenuStyles } from "../../widgetMenuStyles";
+import { widgetStyles } from "../../widgetStyles";
 
-export const UpNext = ({ widget, menuActions }) => {
+const UpNext = ({ widget, menuActions }) => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
   const [todayDateString, setTodayDateString] = useState(dayjs().toISOString());
@@ -213,3 +213,5 @@ export const UpNext = ({ widget, menuActions }) => {
     </View>
   );
 };
+
+export default UpNext;

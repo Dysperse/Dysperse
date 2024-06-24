@@ -118,7 +118,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }) => {
   );
 };
 
-export function WeatherWidget({ widget, menuActions }) {
+export default function WeatherWidget({ widget, menuActions }) {
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
