@@ -171,13 +171,17 @@ async function fileSystemProvider(cacheData) {
   const map = cacheData || new Map();
 
   const save = async () => {
+    if (map.size === 0) {
+      console.log("⛔ Cache is empty, not saving to disk.");
+      return;
+    }
     console.log("💾 Saving cache to disk…");
     await ensureDirExists();
     await FileSystem.writeAsStringAsync(
       file,
       JSON.stringify(Array.from(map.entries()))
     );
-    console.log("💾 Saved cache to disk!");
+    console.log(`💾 Saved ${map.size} API routes to cache! `);
   };
   save();
   AppState.addEventListener("change", (state) => {
@@ -204,6 +208,7 @@ function SWRWrapper({ children }) {
         const data = await FileSystem.readAsStringAsync(file);
         const entries = JSON.parse(data);
         cacheData.current = new Map(entries);
+        console.log(`📂 Restored ${cacheData.current.size} API routes!`);
       }
     })();
   }, []);
