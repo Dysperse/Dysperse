@@ -366,6 +366,7 @@ export const CollectionNavbar = memo(function CollectionNavbar({
           }}
           trigger={
             <Pressable
+              android_ripple={{ color: theme[5] }}
               style={({ hovered, pressed }) => ({
                 maxWidth: breakpoints.md ? 220 : "100%",
                 flexDirection: "row",

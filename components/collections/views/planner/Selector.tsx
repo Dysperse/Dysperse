@@ -4,7 +4,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { usePlannerContext } from "./context";
 
 const buttonTextFormats = (type: string) => ({
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 99,
     aspectRatio: "1 / 1",
-    maxWidth: 40,
+    maxWidth: 50,
     width: "100%",
     borderWidth: 1,
     borderColor: "transparent",
@@ -90,52 +90,63 @@ const SelectionButton = memo(function SelectionButton({
     dayjs(itemStart).isSame(dayjs(), "day") || !dayjs(start as any).isValid();
 
   return (
-    <TouchableOpacity style={styles.item} onPress={handlePress}>
-      {buttonTextFormats(type).small !== "-" && (
-        <Text weight={400} style={[styles.label, { color: theme[12] }]}>
-          {dayjs(itemStart)
-            .format(buttonTextFormats(type).small)
-            .substring(0, type === "week" ? 1 : 999)}
-        </Text>
-      )}
-      <View
-        style={[
-          styles.inner,
-          isSelected && { backgroundColor: theme[10] },
-          isToday && { borderColor: theme[isSelected ? 10 : 6] },
-        ]}
+    <View
+      style={[
+        styles.item,
+        { padding: 0, borderRadius: 99, overflow: "hidden" },
+      ]}
+    >
+      <Pressable
+        android_ripple={{ color: theme[6] }}
+        style={styles.item}
+        onPress={handlePress}
       >
-        <Text
-          weight={500}
-          style={[styles.innerText, { color: theme[isSelected ? 1 : 12] }]}
+        {buttonTextFormats(type).small !== "-" && (
+          <Text weight={400} style={[styles.label, { color: theme[12] }]}>
+            {dayjs(itemStart)
+              .format(buttonTextFormats(type).small)
+              .substring(0, type === "week" ? 1 : 999)}
+          </Text>
+        )}
+        <View
+          style={[
+            styles.inner,
+            isSelected && { backgroundColor: theme[10] },
+            isToday && { borderColor: theme[isSelected ? 10 : 6] },
+          ]}
         >
-          {dayjs(itemStart).format(buttonTextFormats(type).big)}
-        </Text>
-      </View>
-      <View
-        style={{
-          height: 4,
-          flexDirection: "row",
-          width: "100%",
-          justifyContent: "center",
-          gap: 3,
-          marginBottom: -6,
-          marginTop: 1,
-        }}
-      >
-        {[...new Array(Math.min(3, items?.length))].map((_, index) => (
-          <View
-            key={index}
-            style={{
-              width: 4,
-              height: 4,
-              backgroundColor: theme[11],
-              borderRadius: 99,
-            }}
-          />
-        ))}
-      </View>
-    </TouchableOpacity>
+          <Text
+            weight={500}
+            style={[styles.innerText, { color: theme[isSelected ? 1 : 12] }]}
+          >
+            {dayjs(itemStart).format(buttonTextFormats(type).big)}
+          </Text>
+        </View>
+        <View
+          style={{
+            height: 4,
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "center",
+            gap: 3,
+            marginBottom: -6,
+            marginTop: 1,
+          }}
+        >
+          {[...new Array(Math.min(3, items?.length))].map((_, index) => (
+            <View
+              key={index}
+              style={{
+                width: 4,
+                height: 4,
+                backgroundColor: theme[11],
+                borderRadius: 99,
+              }}
+            />
+          ))}
+        </View>
+      </Pressable>
+    </View>
   );
 });
 
