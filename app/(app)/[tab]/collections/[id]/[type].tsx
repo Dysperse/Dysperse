@@ -308,15 +308,15 @@ export default function Page() {
       value={{ data, mutate, error, type, access: data?.access, isValidating }}
     >
       {data ? (
-        <ContentWrapper noPaddingTop>
-          <Suspense fallback={loading}>
+        <Suspense fallback={loading}>
+          <ContentWrapper noPaddingTop>
             <CollectionNavbar
               editOrderMode={editOrderMode}
               setEditOrderMode={setEditOrderMode}
             />
             {content}
-          </Suspense>
-        </ContentWrapper>
+          </ContentWrapper>
+        </Suspense>
       ) : (
         loading
       )}

@@ -288,6 +288,7 @@ const Task = memo(function Task({
         disabled={selection.length > 0}
       >
         <ListItemButton
+          android_ripple={{ color: theme[7] }}
           onLongPress={handleSelect}
           {...(Platform.OS === "web" &&
             breakpoints.md && {

@@ -1,9 +1,11 @@
-import { CommandPaletteContent } from "@/components/command-palette/palette";
+import CommandPaletteContent from "@/components/command-palette/content";
 import { useUser } from "@/context/useUser";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import Spinner from "@/ui/Spinner";
 import { Redirect, router } from "expo-router";
+import { Suspense } from "react";
 import { StatusBar, View } from "react-native";
 
 export default function Page() {
@@ -24,7 +26,12 @@ export default function Page() {
     <ColorThemeProvider theme={theme}>
       <StatusBar barStyle="light-content" />
       <View style={{ backgroundColor: theme[2], flex: 1 }}>
-        <CommandPaletteContent defaultFilter={null} handleClose={handleClose} />
+        <Suspense fallback={<Spinner />}>
+          <CommandPaletteContent
+            defaultFilter={null}
+            handleClose={handleClose}
+          />
+        </Suspense>
       </View>
     </ColorThemeProvider>
   );

@@ -99,7 +99,7 @@ function ProfileBanner({ data }) {
       }}
     >
       <ProfilePicture
-        style={{ top: 80, position: "absolute" }}
+        style={{ top: 80, position: "absolute", left: 100 }}
         name={data.profile?.name || "--"}
         image={data.profile?.picture}
         size={90}

@@ -387,6 +387,7 @@ function Root() {
                       header: () => null,
                       cardShadowEnabled: false,
                     }}
+                    initialRouteName="(app)/index"
                   >
                     <JsStack.Screen
                       name="open"
