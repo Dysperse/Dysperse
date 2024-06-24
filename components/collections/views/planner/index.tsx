@@ -92,6 +92,7 @@ function Agenda() {
 }
 
 export default function Planner() {
+  // eslint-disable-next-line prefer-const
   let { agendaView, start, id } = useLocalSearchParams();
   if (!agendaView) agendaView = "week";
   if (!start) start = dayjs().startOf("day").toISOString();

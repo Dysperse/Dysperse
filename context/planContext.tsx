@@ -14,7 +14,11 @@ interface PlanContextType {
 const PlanContext = createContext<PlanContextType>(null);
 export const usePlanContext = () => useContext(PlanContext);
 
-export const PlanContextProvider = ({ children }) => {
+export const PlanContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [slide, setSlide] = useState(0);
 
   return (

@@ -140,7 +140,7 @@ const LabelPicker = memo(function LabelPicker({
   defaultCollection,
 }: {
   children: React.ReactElement;
-  label?: string | any[];
+  label?: string | any[] | { id: string; name: string; emoji: string };
   setLabel: (label: string | string[]) => void;
   onClose?: any;
   autoFocus?: boolean;
@@ -216,7 +216,10 @@ const LabelPicker = memo(function LabelPicker({
                 Select labels
               </Text>
 
-              <CloseButton disabled={label.length === 0} onClose={onClose} />
+              <CloseButton
+                disabled={Array.isArray(label) && label.length === 0}
+                onClose={onClose}
+              />
             </View>
           )}
           <View
@@ -238,7 +241,7 @@ const LabelPicker = memo(function LabelPicker({
               mutate={mutate}
               onClose={() => searchRef.current?.focus()}
               onCreate={(item) => {
-                if (multiple) {
+                if (multiple && Array.isArray(label)) {
                   if (label.includes(item.id) && typeof label === "object") {
                     setLabel(label.filter((id) => id !== item.id));
                   } else {
@@ -325,7 +328,7 @@ const LabelPicker = memo(function LabelPicker({
               renderItem={({ item }: any) => (
                 <Pressable
                   onPress={() => {
-                    if (multiple) {
+                    if (multiple && Array.isArray(label)) {
                       if (
                         label.includes(item.id) &&
                         typeof label === "object"
@@ -375,11 +378,17 @@ const LabelPicker = memo(function LabelPicker({
                   />
                   {((label as any)?.id == item.id || multiple) && (
                     <Icon
-                      filled={multiple && label.includes(item.id)}
+                      filled={
+                        multiple &&
+                        Array.isArray(label) &&
+                        label.includes(item.id)
+                      }
                       size={30}
                     >
                       {(label as any)?.id == item.id ||
-                      (multiple && label.includes(item.id))
+                      (multiple &&
+                        Array.isArray(label) &&
+                        label.includes(item.id))
                         ? "check_circle"
                         : "circle"}
                     </Icon>

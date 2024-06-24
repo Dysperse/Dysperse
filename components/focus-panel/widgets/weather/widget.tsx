@@ -44,7 +44,7 @@ const gridStyles = StyleSheet.create({
   },
 });
 
-const WeatherGridDetails = ({ data, weatherDescription, theme }) => {
+const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
   return (
     <>
       <View style={gridStyles.container}>
@@ -118,7 +118,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }) => {
   );
 };
 
-export default function WeatherWidget({ widget, menuActions }) {
+export default function WeatherWidget({ widget, menuActions }: any) {
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
@@ -147,7 +147,7 @@ export default function WeatherWidget({ widget, menuActions }) {
 
   useEffect(() => {
     checkLocationPermission();
-  }, []);
+  }, [checkLocationPermission]);
 
   const {
     data,

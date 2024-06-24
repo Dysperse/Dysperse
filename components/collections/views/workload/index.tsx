@@ -10,7 +10,7 @@ import * as shapes from "@/ui/shapes";
 import Text, { getFontName } from "@/ui/Text";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
@@ -39,7 +39,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
+const StoryPointHeader = ({
+  scale,
+  index,
+  columnRef,
+  setSelectedScale,
+}: {
+  scale: number;
+  index: number;
+  columnRef: any;
+  setSelectedScale: Dispatch<SetStateAction<number>>;
+}) => {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const Shape = shapes[`shape${index + 1}`] || React.Fragment;
@@ -122,7 +132,15 @@ const StoryPointHeader = ({ scale, index, columnRef, setSelectedScale }) => {
   );
 };
 
-const StoryPoint = ({ scale, index, setSelectedScale }) => {
+const StoryPoint = ({
+  scale,
+  index,
+  setSelectedScale,
+}: {
+  scale: number;
+  index: number;
+  setSelectedScale: (value: number) => void;
+}) => {
   const breakpoints = useResponsiveBreakpoints();
   const { data, access, mutate } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
@@ -316,7 +334,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
             onTaskUpdate={onTaskUpdate}
           />
         )}
-        keyExtractor={(i: any, d) => `${i.id}-${d}`}
+        keyExtractor={(i, d) => `${i.id}-${d}`}
       />
     </View>
   );

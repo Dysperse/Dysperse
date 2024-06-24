@@ -40,7 +40,15 @@ const CalendarPicker = () => {
 
   const { control } = useFormContext();
 
-  const CalendarButton = ({ value, onChange, item }) => (
+  const CalendarButton = ({
+    value,
+    onChange,
+    item,
+  }: {
+    value: any;
+    onChange: any;
+    item: any;
+  }) => (
     <Pressable
       style={({ pressed, hovered }) => ({
         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
@@ -139,7 +147,7 @@ const CalendarPicker = () => {
               renderItem={({ item }) => (
                 <CalendarButton value={value} onChange={onChange} item={item} />
               )}
-              keyExtractor={(item: any) => item.id}
+              keyExtractor={({ id }) => id}
               estimatedItemSize={70}
             />
           )}

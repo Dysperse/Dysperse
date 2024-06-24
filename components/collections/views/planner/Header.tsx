@@ -6,7 +6,7 @@ import React from "react";
 import { View } from "react-native";
 import { usePlannerContext } from "./context";
 
-export function Header({ start, end }) {
+export function Header({ start, end }: any) {
   const { type } = usePlannerContext();
   const isToday = dayjs().isBetween(start, end);
 

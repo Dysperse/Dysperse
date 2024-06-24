@@ -13,7 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as Network from "expo-network";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Control, Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
@@ -117,7 +117,19 @@ function QrLogin() {
   );
 }
 
-function Credentials({ control, errors, onSubmit, handleSubmit, step }) {
+function Credentials({
+  control,
+  errors,
+  onSubmit,
+  handleSubmit,
+  step,
+}: {
+  control: Control<any>;
+  errors: any;
+  onSubmit: any;
+  handleSubmit: any;
+  step: number;
+}) {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();

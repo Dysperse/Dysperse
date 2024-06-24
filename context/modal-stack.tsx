@@ -1,10 +1,14 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
-import { createContext, useContext, useRef } from "react";
+import React, { createContext, useContext, useRef } from "react";
 
 export const ModalStackContext = createContext<any>(null);
 export const useModalStack = () => useContext(ModalStackContext);
 
-export const ModalStackProvider = ({ children }) => {
+export const ModalStackProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const ref = useRef([]);
 
   useHotkeys("Escape", () => {

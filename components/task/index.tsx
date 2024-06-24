@@ -97,67 +97,69 @@ export const videoChatPlatforms = [
   "viber.com",
 ];
 
-export const TaskAttachmentChips = memo(function TaskAttachmentChips({
-  attachments,
-  large,
-  published,
-}: {
-  attachments: any[];
-  large?: boolean;
-  published?: boolean;
-}) {
-  const theme = useColorTheme();
+export const TaskAttachmentChips = memo(
+  ({
+    attachments,
+    large,
+    published,
+  }: {
+    attachments: any[];
+    large?: boolean;
+    published?: boolean;
+  }) => {
+    const theme = useColorTheme();
 
-  const getAttachmentIcon = (t) =>
-    ({
-      LINK: "link",
-      FILE: "attachment",
-      LOCATION: "location_on",
-    }[t]);
+    const getAttachmentIcon = (t) =>
+      ({
+        LINK: "link",
+        FILE: "attachment",
+        LOCATION: "location_on",
+      }[t]);
 
-  const isVideoChatPlatform = (t) =>
-    videoChatPlatforms.some((platform) => t?.includes(platform));
+    const isVideoChatPlatform = (t) =>
+      videoChatPlatforms.some((platform) => t?.includes(platform));
 
-  return attachments.map((attachment) => (
-    <ImageViewer
-      key={attachment.data + attachment.type}
-      image={attachment.type === "IMAGE" && attachment.data}
-    >
-      <Chip
-        dense={!large}
-        label={
-          attachment.name ||
-          (attachment.type === "LINK"
-            ? isVideoChatPlatform(attachment.data)
-              ? "Join meeting"
-              : new URL(attachment.data).hostname
-            : attachment.type === "LOCATION"
-            ? "Maps"
-            : "File")
-        }
-        onPress={() => {
-          if (attachment.type === "LINK") {
-            Linking.openURL(attachment.data);
-          } else if (attachment.type === "LOCATION") {
-            Linking.openURL(
-              `https://www.google.com/maps/search/?api=1&query=${attachment.data}`
-            );
+    return attachments.map((attachment) => (
+      <ImageViewer
+        key={attachment.data + attachment.type}
+        image={attachment.type === "IMAGE" && attachment.data}
+      >
+        <Chip
+          dense={!large}
+          label={
+            attachment.name ||
+            (attachment.type === "LINK"
+              ? isVideoChatPlatform(attachment.data)
+                ? "Join meeting"
+                : new URL(attachment.data).hostname
+              : attachment.type === "LOCATION"
+              ? "Maps"
+              : "File")
           }
-        }}
-        icon={
-          attachment.type === "IMAGE" ? (
-            <Avatar size={22} image={attachment.data} disabled />
-          ) : isVideoChatPlatform(attachment.data) ? (
-            "call"
-          ) : (
-            getAttachmentIcon(attachment.type)
-          )
-        }
-        style={[{ padding: 5 }, published && { backgroundColor: theme[5] }]}
-      />
-    </ImageViewer>
-  ));
-});
+          onPress={() => {
+            if (attachment.type === "LINK") {
+              Linking.openURL(attachment.data);
+            } else if (attachment.type === "LOCATION") {
+              Linking.openURL(
+                `https://www.google.com/maps/search/?api=1&query=${attachment.data}`
+              );
+            }
+          }}
+          icon={
+            attachment.type === "IMAGE" ? (
+              <Avatar size={22} image={attachment.data} disabled />
+            ) : isVideoChatPlatform(attachment.data) ? (
+              "call"
+            ) : (
+              getAttachmentIcon(attachment.type)
+            )
+          }
+          style={[{ padding: 5 }, published && { backgroundColor: theme[5] }]}
+        />
+      </ImageViewer>
+    ));
+  }
+);
 
 export const TaskImportantChip = ({
   large,

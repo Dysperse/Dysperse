@@ -1266,7 +1266,7 @@ const TaskAttachments = ({ watch, setValue }: any) => {
   // return null;
 };
 
-function Attachment({ control, nameRef, setValue, menuRef }) {
+function Attachment({ control, nameRef, setValue, menuRef }: any) {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 

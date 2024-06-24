@@ -28,7 +28,7 @@ import Animated, { BounceInLeft } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-function SpaceStorage({ data }) {
+function SpaceStorage({ data }: { data: any }) {
   const theme = useColorTheme();
 
   return (
@@ -117,8 +117,10 @@ function SpaceStorage({ data }) {
               <Avatar icon={icon} size={40} />
               <ListItemText
                 primary={`${~~parseInt(
-                  ((data.storage?.breakdown?.[name] / data.storage?.limit) *
-                    100) as any
+                  (
+                    (data.storage?.breakdown?.[name] / data.storage?.limit) *
+                    100
+                  ).toFixed(2)
                 )}%`}
                 secondary={`${capitalizeFirstLetter(name)}`}
               />
@@ -283,7 +285,7 @@ function EmailSection() {
   );
 }
 
-function AccountMenuTrigger({ text }) {
+function AccountMenuTrigger({ text }: any) {
   return (
     <Button variant="filled">
       <ButtonText>{text}</ButtonText>
@@ -292,7 +294,7 @@ function AccountMenuTrigger({ text }) {
   );
 }
 
-function TasksSettings({ mutate, data }) {
+function TasksSettings({ mutate, data }: any) {
   const { mutate: mutateUser, sessionToken } = useUser();
 
   const handleSpaceEdit = async (key, value) => {

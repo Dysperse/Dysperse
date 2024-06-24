@@ -319,6 +319,7 @@ const Timer = ({ pomodoro = false }) => {
   const playSound = async () => {
     console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       require("@/assets/alarm.mp3")
     );
     setSound(sound);

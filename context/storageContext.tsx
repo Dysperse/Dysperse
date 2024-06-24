@@ -4,7 +4,11 @@ import { useUser } from "./useUser";
 
 export const StorageContext = createContext<any>(null);
 export const useStorageContext = () => useContext(StorageContext);
-export const StorageContextProvider = ({ children }) => {
+export const StorageContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { session } = useUser();
   const { data, error, isValidating } = useSWR([
     "space",

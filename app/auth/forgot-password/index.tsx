@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Email = ({ form }) => {
+const Email = ({ form }: any) => {
   const { handleNext } = usePasswordContext();
   const breakpoints = useResponsiveBreakpoints();
 
@@ -112,7 +112,7 @@ const Email = ({ form }) => {
     </>
   );
 };
-const Captcha = ({ form }) => {
+const Captcha = ({ form }: any) => {
   const theme = useColorTheme();
   const { handleNext } = usePasswordContext();
 
@@ -133,7 +133,7 @@ const Captcha = ({ form }) => {
     </>
   );
 };
-const Token = ({ form }) => {
+const Token = ({ form }: any) => {
   const theme = useColorTheme();
   const [loading, setLoading] = useState(true);
   const { setStep, handleNext } = usePasswordContext();
@@ -215,7 +215,7 @@ const Token = ({ form }) => {
     </>
   );
 };
-const Password = ({ form }) => {
+const Password = ({ form }: any) => {
   const theme = useColorTheme();
   const { handleNext } = usePasswordContext();
   const [loading, setLoading] = useState(false);
