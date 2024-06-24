@@ -14,9 +14,9 @@ import React, { useRef, useState } from "react";
 import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
+import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 import { ColumnFinishedComponent } from "../kanban/Column";
-import { ColumnEmptyComponent } from "../planner/Column";
 
 const styles = StyleSheet.create({
   header: {
@@ -323,7 +323,7 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
   );
 };
 
-export function Workload() {
+export default function Workload() {
   const breakpoints = useResponsiveBreakpoints();
   const scale = [2, 4, 8, 16, 32];
   const [selectedScale, setSelectedScale] = useState(0);

@@ -211,11 +211,14 @@ function Tab({
       style={[
         {
           width: "100%",
+          borderRadius: 15,
+          overflow: "hidden",
         },
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
       <Pressable
+        android_ripple={{ color: theme[6] }}
         {...(Platform.OS === "web" && {
           onAuxClick: (e) => {
             if (e.button === 1) {

@@ -37,7 +37,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   AppState,
   Appearance,
-  InteractionManager,
   Platform,
   StatusBar,
   View,
@@ -179,26 +178,17 @@ async function fileSystemProvider(cacheData) {
 
   const map = cacheData || new Map();
 
-  const save = async () => {
-    if (map.size === 0) {
-      console.log("⛔ Cache is empty, not saving to disk.");
-      return;
-    }
-    console.log("💾 Saving cache to disk…");
-    await ensureDirExists();
-    await FileSystem.writeAsStringAsync(
-      file,
-      JSON.stringify(Array.from(map.entries()))
-    );
-    console.log(`💾 Saved ${map.size} API routes to cache! `);
-  };
-  save();
-  AppState.addEventListener("change", (state) => {
-    if (state === "background") save();
-  });
-
-  setInterval(save, 1000 * 60 * 1);
-
+  if (map.size === 0) {
+    console.log("⛔ Cache is empty, not saving to disk.");
+    return;
+  }
+  console.log("💾 Saving cache to disk…");
+  await ensureDirExists();
+  await FileSystem.writeAsStringAsync(
+    file,
+    JSON.stringify(Array.from(map.entries()))
+  );
+  console.log(`💾 Saved ${map.size} API routes to cache! `);
   return map;
 }
 
@@ -207,11 +197,20 @@ function SWRWrapper({ children }) {
   const cacheData = useRef(null);
   const [cacheLoaded, setCacheLoaded] = useState(Platform.OS === "web");
 
-  fileSystemProvider(cacheData.current);
+  useEffect(() => {
+    const save = () => fileSystemProvider(cacheData.current);
+    save();
+    const subscription = AppState.addEventListener("change", save);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (Platform.OS === "web") return;
-    InteractionManager.runAfterInteractions(async () => {
+    (async () => {
+      if (cacheLoaded) return;
       const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
       const file = `${cacheDir}cache.json`;
       const fileInfo = await FileSystem.getInfoAsync(file);
@@ -220,15 +219,14 @@ function SWRWrapper({ children }) {
         const data = await FileSystem.readAsStringAsync(file);
         const entries = JSON.parse(data);
         cacheData.current = new Map(entries);
-        setCacheLoaded(true);
         console.log(`📂 Restored ${cacheData.current.size} API routes!`);
       } else {
         console.log("📂 Cache file doesn't exist, creating new cache…");
         cacheData.current = new Map();
-        setCacheLoaded(true);
       }
-    });
-  }, [cacheData]);
+      if (!cacheLoaded) setCacheLoaded(true);
+    })();
+  }, [cacheData, cacheLoaded]);
 
   return cacheLoaded ? (
     <SWRConfig

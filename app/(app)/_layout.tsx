@@ -54,8 +54,8 @@ import ReleaseModal from "../../components/layout/ReleaseModal";
 import SelectionNavbar from "../../components/layout/SelectionNavbar";
 
 dayjs.extend(customParseFormat);
-dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(utc);
 dayjs.extend(isBetween);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
@@ -137,15 +137,14 @@ export default function AppLayout() {
           headerTransparent: true,
           gestureResponseDistance: width,
           gestureEnabled: false,
+          freezeOnBlur: true,
           cardStyle: {
             height,
             width: breakpoints.md ? "100%" : width,
             backgroundColor: theme[breakpoints.sm ? 2 : 1],
             padding: breakpoints.md ? 10 : 0,
             ...(Platform.OS === "web" &&
-              ({
-                marginTop: "env(titlebar-area-height,0)",
-              } as any)),
+              ({ marginTop: "env(titlebar-area-height,0)" } as any)),
           },
           // change opacity of the previous screen when swipe
           cardOverlayEnabled: true,

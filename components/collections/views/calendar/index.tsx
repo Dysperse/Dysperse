@@ -268,7 +268,7 @@ export function Content() {
   );
 }
 
-export function Calendar() {
+export default function Calendar() {
   // eslint-disable-next-line prefer-const
   let { start, id, mode } = useLocalSearchParams();
   const { mode: originalMode } = useLocalSearchParams();

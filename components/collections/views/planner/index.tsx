@@ -91,7 +91,7 @@ function Agenda() {
   );
 }
 
-export function Perspectives() {
+export default function Planner() {
   let { agendaView, start, id } = useLocalSearchParams();
   if (!agendaView) agendaView = "week";
   if (!start) start = dayjs().startOf("day").toISOString();

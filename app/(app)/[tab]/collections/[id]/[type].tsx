@@ -4,14 +4,6 @@ import {
   useCollectionContext,
 } from "@/components/collections/context";
 import { CollectionNavbar } from "@/components/collections/navbar";
-import { Calendar } from "@/components/collections/views/calendar";
-import { Grid } from "@/components/collections/views/grid";
-import { Kanban } from "@/components/collections/views/kanban";
-import { List } from "@/components/collections/views/list";
-import { Matrix } from "@/components/collections/views/matrix";
-import { Perspectives } from "@/components/collections/views/planner";
-import { Stream } from "@/components/collections/views/stream";
-import { Workload } from "@/components/collections/views/workload";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
@@ -30,11 +22,20 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
-import { ReactElement, memo, useRef, useState } from "react";
+import { ReactElement, Suspense, lazy, memo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+
+const Kanban = lazy(() => import("@/components/collections/views/kanban"));
+const List = lazy(() => import("@/components/collections/views/list"));
+const Matrix = lazy(() => import("@/components/collections/views/matrix"));
+const Stream = lazy(() => import("@/components/collections/views/stream"));
+const Workload = lazy(() => import("@/components/collections/views/workload"));
+const Planner = lazy(() => import("@/components/collections/views/planner"));
+const Calendar = lazy(() => import("@/components/collections/views/calendar"));
+const Grid = lazy(() => import("@/components/collections/views/grid"));
 
 export const styles = StyleSheet.create({
   header: {
@@ -261,7 +262,7 @@ export default function Page() {
 
   switch (type as CollectionType) {
     case "planner":
-      content = <Perspectives />;
+      content = <Planner />;
       break;
     case "kanban":
       content = <Kanban editOrderMode={editOrderMode} />;
@@ -289,31 +290,35 @@ export default function Page() {
       break;
   }
 
+  const loading = (
+    <ContentWrapper noPaddingTop>
+      <CollectionNavbar
+        isLoading
+        editOrderMode={editOrderMode}
+        setEditOrderMode={setEditOrderMode}
+      />
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        {error ? <ErrorAlert /> : <Spinner />}
+      </View>
+    </ContentWrapper>
+  );
+
   return (
     <CollectionContext.Provider
       value={{ data, mutate, error, type, access: data?.access, isValidating }}
     >
       {data ? (
         <ContentWrapper noPaddingTop>
-          <CollectionNavbar
-            editOrderMode={editOrderMode}
-            setEditOrderMode={setEditOrderMode}
-          />
-          {content}
+          <Suspense fallback={loading}>
+            <CollectionNavbar
+              editOrderMode={editOrderMode}
+              setEditOrderMode={setEditOrderMode}
+            />
+            {content}
+          </Suspense>
         </ContentWrapper>
       ) : (
-        <ContentWrapper noPaddingTop>
-          <CollectionNavbar
-            isLoading
-            editOrderMode={editOrderMode}
-            setEditOrderMode={setEditOrderMode}
-          />
-          <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          >
-            {error ? <ErrorAlert /> : <Spinner />}
-          </View>
-        </ContentWrapper>
+        loading
       )}
     </CollectionContext.Provider>
   );

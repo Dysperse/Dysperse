@@ -18,6 +18,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  KeyboardAvoidingView,
   Platform,
   Pressable,
   TouchableOpacity,
@@ -129,7 +130,6 @@ function CommandPaletteList({
   setFilter,
   filter,
   filters,
-  handleClose,
   onCreate,
 }: {
   preview: any;
@@ -138,7 +138,6 @@ function CommandPaletteList({
   setFilter: (e) => void;
   filter: string;
   filters: any[];
-  handleClose: () => void;
   onCreate: any;
 }) {
   const { height } = useWindowDimensions();
@@ -240,16 +239,12 @@ const PaletteHeader = memo(function PaletteHeader({
           paddingHorizontal: 10,
         }}
       >
-        {breakpoints.md ? (
-          <Text style={{ color: theme[11] }} weight={900}>
-            Cancel
-          </Text>
-        ) : (
-          <Icon>close</Icon>
-        )}
+        <Text style={{ color: theme[11] }} weight={900}>
+          Cancel
+        </Text>
       </TouchableOpacity>
     ),
-    [handleClose, theme, breakpoints]
+    [handleClose, theme]
   );
   const handleKeyPress = (e) => {
     if (Platform.OS === "web") {
@@ -582,7 +577,10 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
         />
         <View style={{ flexDirection: "row", flex: 1 }}>
           {(!preview || breakpoints.md) && (
-            <View style={{ flex: breakpoints.md ? 1.5 : 1 }}>
+            <KeyboardAvoidingView
+              style={{ flex: breakpoints.md ? 1.5 : 1 }}
+              behavior="height"
+            >
               <CommandPaletteList
                 preview={preview}
                 setPreview={handlePreviewChange}
@@ -590,10 +588,9 @@ export function CommandPaletteContent({ handleClose, defaultFilter }) {
                 filter={filter}
                 setFilter={setFilter}
                 filters={filters}
-                handleClose={handleClose}
                 onCreate={onCreate}
               />
-            </View>
+            </KeyboardAvoidingView>
           )}
           {(breakpoints.md || preview) && (
             <CommandPalettePreview

@@ -6,11 +6,11 @@ import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import { Entity } from "../../entity";
 import { KanbanHeader } from "../kanban/Header";
 
-export function List() {
+export default function List() {
   const isDark = useDarkMode();
   const { data, mutate } = useCollectionContext();
   const theme = useColorTheme();
@@ -80,14 +80,17 @@ export function List() {
                   marginHorizontal: "auto",
                   borderRadius: 99,
                   overflow: "hidden",
-                  backgroundColor: addHslAlpha(theme[3], 0.5),
+                  backgroundColor: addHslAlpha(
+                    theme[3],
+                    Platform.OS === "android" ? 1 : 0.5
+                  ),
                   borderWidth: 1,
                   borderColor: addHslAlpha(theme[7], 0.3),
                 }}
               >
                 <BlurView
                   experimentalBlurMethod="dimezisBlurView"
-                  intensity={50}
+                  intensity={Platform.OS === "android" ? 0 : 50}
                   tint={!isDark ? "prominent" : "systemMaterialDark"}
                   style={{
                     height: 80,

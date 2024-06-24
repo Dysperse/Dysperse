@@ -108,7 +108,11 @@ const JumpToButton = memo(function JumpToButton() {
   return (
     <View style={{ borderRadius: 15, overflow: "hidden", marginBottom: 10 }}>
       <Pressable
-        onPress={() => handleOpen()}
+        onPress={() =>
+          requestAnimationFrame(() => {
+            handleOpen();
+          })
+        }
         style={({ pressed, hovered }) => [
           {
             backgroundColor: pressed

@@ -163,7 +163,7 @@ function EditKanbanOrder() {
   );
 }
 
-export function Kanban({ editOrderMode }) {
+export default function Kanban({ editOrderMode }) {
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useCollectionContext();
   const theme = useColorTheme();

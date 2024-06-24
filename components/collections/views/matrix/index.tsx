@@ -9,7 +9,13 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -17,8 +23,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCollectionContext } from "../../context";
+import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
-import { ColumnEmptyComponent } from "../planner/Column";
 
 const styles = StyleSheet.create({
   container: { flexDirection: "column", flex: 1 },
@@ -232,10 +238,20 @@ function Preview({ tasks, onPress }) {
           showsVerticalScrollIndicator={false}
           centerContent={tasks.length === 0}
           scrollEnabled={false}
-          style={{ padding: breakpoints.md ? 20 : 10 }}
+          style={{
+            padding: breakpoints.md ? 20 : 10,
+            flex: 1,
+          }}
+          contentContainerStyle={{ flex: 1 }}
         >
           {tasks.length === 0 && (
-            <View style={{ alignItems: "center" }}>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+              }}
+            >
               <View style={{ flexDirection: "row", gap: 10 }}>
                 <Text
                   style={{
@@ -304,7 +320,7 @@ function Preview({ tasks, onPress }) {
   );
 }
 
-export function Matrix() {
+export default function Matrix() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
@@ -448,8 +464,10 @@ export function Matrix() {
                 flex: 0,
                 justifyContent: "space-around",
                 paddingLeft: breakpoints.md ? 30 : 50,
-                marginVertical: breakpoints.md ? 0 : 3,
-                marginBottom: breakpoints.md ? 0 : 10,
+                marginVertical:
+                  Platform.OS === "web" ? (breakpoints.md ? 0 : 3) : -10,
+                marginBottom:
+                  Platform.OS === "web" ? (breakpoints.md ? 0 : 10) : 0,
               },
             ]}
           >
@@ -486,7 +504,7 @@ export function Matrix() {
             )}
           </View>
           <View style={[styles.row, { gap: breakpoints.md ? 20 : 10 }]}>
-            <Label size={133} y="Less important" />
+            <Label size={150} y="Less important" />
             {breakpoints.md ? (
               <Cell
                 onEntityCreate={onEntityCreate}

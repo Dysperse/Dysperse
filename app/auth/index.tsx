@@ -48,7 +48,7 @@ export default function Page() {
               marginBottom: -5,
             }}
           >
-            Productivity&nbsp;is your&nbsp;domain.
+            Productivity is your domain.
           </Text>
           <View
             style={{

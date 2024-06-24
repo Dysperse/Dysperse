@@ -22,10 +22,6 @@ const AppContainer = memo(
           flex: 1,
           width: "100%",
           height: "100%",
-          // borderWidth: withSpring(
-          //   interpolate(progress.value >= 0.1 ? 1 : 0, [0, 1], [0, 2]),
-          //   { overshootClamping: true }
-          // ),
 
           borderWidth: progressValue?.current?.interpolate?.({
             inputRange: [0, 1],
@@ -47,10 +43,8 @@ const AppContainer = memo(
             outputRange: [0, insets.bottom],
           }),
 
-          // marginBottom: interpolate(progress.value, [0, 1], [0, insets.bottom]),
           transform: [
             {
-              // scale: interpolate(progress.value, [0, 1], [1, 0.95]),
               scale: progressValue?.current?.interpolate?.({
                 inputRange: [0, 1],
                 outputRange: [1, 0.95],

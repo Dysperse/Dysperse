@@ -3,7 +3,6 @@ import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
-import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -27,7 +26,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { RRule } from "rrule";
 import TaskDatePicker from "../create/TaskDatePicker";
 import { TaskAttachmentButton } from "./attachment/button";
@@ -458,6 +457,69 @@ export const normalizeRecurrenceRuleObject = (rule) => {
   });
 };
 
+function TaskNotifications() {
+  const theme = useColorTheme();
+  const { task, updateTask } = useTaskDrawerContext();
+
+  const notificationScale = [5, 10, 15, 30, 60, 120, 240, 480, 1440];
+  const notificationScaleText = [
+    "5m",
+    "10m",
+    "15m",
+    "30m",
+    "1h",
+    "2h",
+    "4h",
+    "8h",
+    "1d",
+  ];
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        gap: 10,
+        paddingHorizontal: 10,
+        paddingBottom: 10,
+      }}
+    >
+      {notificationScale.map((n, i) => (
+        <Pressable
+          key={n}
+          style={({ pressed, hovered }) => ({
+            width: 40,
+            height: 40,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: task.notifications.includes(n)
+              ? theme[pressed ? 12 : hovered ? 11 : 10]
+              : theme[pressed ? 5 : hovered ? 4 : 3],
+            borderRadius: 10,
+          })}
+          onPress={() =>
+            updateTask(
+              "notifications",
+              task.notifications.includes(n)
+                ? task.notifications.filter((i) => i !== n)
+                : [...task.notifications, n]
+            )
+          }
+        >
+          <Text
+            style={{
+              fontFamily: getFontName("jetBrainsMono", 500),
+              color: task.notifications.includes(n) ? theme[3] : theme[11],
+            }}
+          >
+            {notificationScaleText[i]}
+          </Text>
+        </Pressable>
+      ))}
+    </ScrollView>
+  );
+}
+
 export function TaskDetails() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -718,20 +780,6 @@ export function TaskDetails() {
                           </Text>
                         </IconButton>
                       ))}
-                      {/* <Slider
-                      style={{ flex: 1, height: 40 }}
-                      thumbTintColor={theme[11]}
-                      value={complexityScale.findIndex(
-                        (i) => i === task.storyPoints
-                      )}
-                      step={1}
-                      minimumValue={0}
-                      maximumValue={4}
-                      onValueChange={(value) =>
-                      }
-                      minimumTrackTintColor={theme[9]}
-                      maximumTrackTintColor={theme[6]}
-                    /> */}
                     </View>
                   )}
               </ListItemButton>
@@ -741,8 +789,8 @@ export function TaskDetails() {
           task.start && {
             trigger: () => (
               <ListItemButton
-                disabled
                 variant="filled"
+                disabled
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
                 <Icon>notifications</Icon>
@@ -751,15 +799,10 @@ export function TaskDetails() {
                     task.notifications.length == 1 ? "" : "s"
                   }`}
                 />
-                {!isReadOnly && (
-                  <Chip
-                    label="Coming soon"
-                    style={{ backgroundColor: theme[5] }}
-                  />
-                )}
+                <Icon>arrow_forward_ios</Icon>
               </ListItemButton>
             ),
-            content: <></>,
+            content: <TaskNotifications />,
           },
           task.collection && {
             trigger: () => (

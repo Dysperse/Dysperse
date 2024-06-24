@@ -1,6 +1,7 @@
 import { styles } from "@/components/home/styles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { hslToHex } from "@/helpers/hslToHex";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -9,7 +10,7 @@ import { router } from "expo-router";
 import { useCallback } from "react";
 import { ImageBackground, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { HOME_PATTERNS, hslToHex } from "../../app/(app)";
+import { HOME_PATTERNS } from "../../app/(app)";
 
 export function EditWallpaper() {
   const theme = useColorTheme();

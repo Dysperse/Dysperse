@@ -26,7 +26,6 @@ function ContentWrapper(props: ContentWrapperProps) {
   const breakpoints = useResponsiveBreakpoints();
 
   const params = useGlobalSearchParams();
-
   const { mutate } = useSWR(["user/tabs"]);
 
   useEffect(() => {

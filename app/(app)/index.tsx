@@ -1,12 +1,19 @@
-import { useFocusPanelContext } from "@/components/focus-panel/context";
+import { Actions } from "@/components/home/actions";
+import { EditWallpaper } from "@/components/home/edit-wallpaper";
+import { FriendActivity } from "@/components/home/friend-activity";
+import { Greeting } from "@/components/home/greeting";
+import { PlanDayPrompt } from "@/components/home/plan-day-trigger";
 import { styles } from "@/components/home/styles";
+import { TodayText } from "@/components/home/today";
 import ContentWrapper from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
+import { hslToHex } from "@/helpers/hslToHex";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   ImageBackground,
   Platform,
@@ -14,27 +21,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  withSpring,
-} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Actions } from "../../components/home/actions";
-import { EditWallpaper } from "../../components/home/edit-wallpaper";
-import { FriendActivity } from "../../components/home/friend-activity";
-import { Greeting } from "../../components/home/greeting";
-import { PlanDayPrompt } from "../../components/home/plan-day-trigger";
-import { TodayText } from "../../components/home/today";
-import { useSidebarContext } from "../../components/layout/sidebar/context";
-
-export const getGreeting = () => {
-  const now = new Date();
-  const hour = now.getHours();
-  if (hour < 10) return "Good morning";
-  else if (hour < 16) return "Good afternoon";
-  else if (hour < 20) return "Good evening";
-  else return "Good night";
-};
 
 export const getProfileLastActiveRelativeTime = (time) => {
   const t = dayjs(time).fromNow(true);
@@ -68,19 +55,6 @@ export const HOME_PATTERNS = [
   "plus",
 ];
 
-export function hslToHex(h, s, l) {
-  l /= 100;
-  const a = (s * Math.min(l, 1 - l)) / 100;
-  const f = (n) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color)
-      .toString(16)
-      .padStart(2, "0"); // convert to Hex and prefix "0" if needed
-  };
-  return `${f(0)}${f(8)}${f(4)}`;
-}
-
 const CustomizeButton = ({ view, setView }) => {
   const insets = useSafeAreaInsets();
 
@@ -109,14 +83,9 @@ const MenuButton = () => {
   );
 };
 
-export default function Page() {
-  const breakpoints = useResponsiveBreakpoints();
+const Wrapper = (props) => {
   const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
   const { session } = useUser();
-  const { isFocused } = useFocusPanelContext();
-  const { height } = useWindowDimensions();
-  const [view, setView] = useState<"home" | "activity" | "edit">("home");
   const pattern = session?.user?.profile?.pattern || "none";
 
   const hslValues = theme[5]
@@ -127,35 +96,30 @@ export default function Page() {
     .split(",")
     .map(Number) as [number, number, number];
 
-  const { width } = useWindowDimensions();
-  const uri = `${process.env.EXPO_PUBLIC_API_URL}/pattern?color=%23${hslToHex(
-    ...hslValues
-  )}&pattern=${pattern}`;
+  const uri =
+    Platform.OS === "web" && pattern !== ""
+      ? `${process.env.EXPO_PUBLIC_API_URL}/pattern?color=%23${hslToHex(
+          ...hslValues
+        )}&pattern=${pattern}`
+      : "";
 
-  const widthStyle = useAnimatedStyle(() => {
-    return {
-      width: withSpring(
-        breakpoints.md ? width - (isFocused ? 550 : 300) : width - 20,
-        {
-          damping: 30,
-          overshootClamping: true,
-          stiffness: 400,
-        }
-      ),
-    };
-  });
+  return Platform.OS === "web" ? (
+    <ImageBackground
+      {...props}
+      source={{ uri: pattern === "none" ? undefined : uri }}
+      style={styles.imageBackground}
+      resizeMode="repeat"
+    />
+  ) : (
+    <View {...props} style={styles.imageBackground} />
+  );
+};
 
-  const Wrapper =
-    Platform.OS === "web"
-      ? (props) => <View {...props} style={styles.imageBackground} />
-      : (props) => (
-          <ImageBackground
-            {...props}
-            source={{ uri: pattern === "none" ? undefined : uri }}
-            style={styles.imageBackground}
-            resizeMode="repeat"
-          />
-        );
+function Page() {
+  const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const [view, setView] = useState<"home" | "activity" | "edit">("home");
 
   return (
     <ContentWrapper noPaddingTop>
@@ -172,9 +136,8 @@ export default function Page() {
           {view === "edit" ? (
             <EditWallpaper />
           ) : (
-            <Animated.View
+            <View
               style={[
-                widthStyle,
                 styles.content,
                 !breakpoints.md && {
                   width,
@@ -202,10 +165,12 @@ export default function Page() {
                   <FriendActivity />
                 </View>
               </View>
-            </Animated.View>
+            </View>
           )}
         </ScrollView>
       </Wrapper>
     </ContentWrapper>
   );
 }
+
+export default memo(Page);

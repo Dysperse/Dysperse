@@ -11,15 +11,16 @@ import Icon from "@/ui/Icon";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState, useTransition } from "react";
 import { View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type streamType = "backlog" | "upcoming" | "completed" | "unscheduled";
-export function Stream() {
+
+export default function Stream() {
   const params = useLocalSearchParams();
   const insets = useSafeAreaInsets();
 
@@ -175,7 +176,7 @@ export function Stream() {
           />
         }
       />
-      <FlatList
+      <FlashList
         ListEmptyComponent={() =>
           query === "" ? (
             <ColumnEmptyComponent />
@@ -204,7 +205,13 @@ export function Stream() {
                 variant="filled+outlined"
                 placeholder="Search items..."
                 onChangeText={setQuery}
-                style={{ height: 50, fontSize: 18 }}
+                style={{
+                  height: 50,
+                  fontSize: 18,
+                  width: "100%",
+                  maxWidth: 400,
+                  marginHorizontal: "auto",
+                }}
               />
               {!isReadOnly && (
                 <CreateTask
@@ -243,7 +250,14 @@ export function Stream() {
                 >
                   <Button
                     variant="filled"
-                    style={{ flex: 1, minHeight: 50, paddingHorizontal: 20 }}
+                    style={{
+                      flex: 1,
+                      minHeight: 50,
+                      paddingHorizontal: 20,
+                      width: "100%",
+                      maxWidth: 400,
+                      marginHorizontal: "auto",
+                    }}
                   >
                     <ButtonText>New</ButtonText>
                     <Icon>add</Icon>
@@ -254,25 +268,24 @@ export function Stream() {
           </>
         }
         data={filteredTasks}
-        initialNumToRender={10}
+        estimatedItemSize={113}
         contentContainerStyle={{
           padding: 15,
           paddingTop: 40,
-          gap: 5,
-          minHeight: "100%",
-          width: "100%",
-          marginHorizontal: "auto",
-          maxWidth: 500,
           paddingBottom: insets.bottom + 15,
         }}
         renderItem={({ item }) => (
-          <Entity
-            isReadOnly={isReadOnly}
-            showRelativeTime={view !== "unscheduled"}
-            showLabel
-            item={item}
-            onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
-          />
+          <View
+            style={{ maxWidth: 400, width: "100%", marginHorizontal: "auto" }}
+          >
+            <Entity
+              isReadOnly={isReadOnly}
+              showRelativeTime={view !== "unscheduled"}
+              showLabel
+              item={item}
+              onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
+            />
+          </View>
         )}
         keyExtractor={(i, d) => `${i.id}-${d}`}
       />

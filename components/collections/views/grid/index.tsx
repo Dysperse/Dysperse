@@ -11,7 +11,7 @@ import { Column } from "../kanban/Column";
 import { ReorderingGrid } from "./ReorderingGrid";
 import { GridContext, GridContextSelectedColumn } from "./context";
 
-export function Grid({ editOrderMode }) {
+export default function Grid({ editOrderMode }) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const { data } = useCollectionContext();

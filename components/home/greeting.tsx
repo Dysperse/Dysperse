@@ -1,8 +1,8 @@
+import { getGreeting } from "@/components/home/getGreeting";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useEffect, useState } from "react";
-import { getGreeting } from "../../app/(app)";
 
 export function Greeting() {
   const theme = useColorTheme();
