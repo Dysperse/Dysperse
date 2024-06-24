@@ -195,7 +195,7 @@ const CollectionsPicker = () => {
           name="collection.emoji"
           rules={{ required: true }}
           render={({ field: { onChange, value } }) => (
-            <EmojiPicker emoji={value} setEmoji={onChange}>
+            <EmojiPicker setEmoji={onChange}>
               <IconButton style={{ borderStyle: "dashed" }} size={50}>
                 <Emoji emoji={value} size={40} />
               </IconButton>

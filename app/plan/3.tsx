@@ -166,7 +166,7 @@ function CurrentTaskFooter({
       </Pressable>
       <TaskDatePicker
         setValue={(date) => handleEdit("start", date)}
-        watch={(n) => task.start}
+        watch={() => task.start}
         defaultView="date"
         dueDateOnly
       >
@@ -480,8 +480,7 @@ const CurrentTaskCard = ({
   );
 };
 
-function TodaysTasks({ data, mutate, error, setStage, dateRange }) {
-  const theme = useColorTheme();
+function TodaysTasks({ data, mutate, setStage, dateRange }) {
   const t = useMemo(
     () =>
       Array.isArray(data)
@@ -640,7 +639,6 @@ export default function Page() {
             setStage={setStage}
             data={data}
             mutate={mutate}
-            error={error}
           />
         )}
         {stage === 2 && (

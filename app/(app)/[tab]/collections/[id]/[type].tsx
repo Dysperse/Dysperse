@@ -97,7 +97,7 @@ export const LabelEditModal = memo(function LabelEditModal({
         <View style={{ flexDirection: "row", gap: 20 }}>
           <Controller
             render={({ field: { onChange, value } }) => (
-              <EmojiPicker emoji={value} setEmoji={onChange}>
+              <EmojiPicker setEmoji={onChange}>
                 <IconButton
                   variant="outlined"
                   size={90}

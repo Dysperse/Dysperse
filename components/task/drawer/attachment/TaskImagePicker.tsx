@@ -66,7 +66,7 @@ export function TaskImagePicker({ task, updateTask }) {
           : assets[assets.length - 1].id,
     })
       .then((e) => setAssets([...assets, ...e.assets]))
-      .catch((e) => alert("Error"));
+      .catch(() => alert("Error"));
   };
 
   const header = (

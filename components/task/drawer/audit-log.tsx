@@ -2,19 +2,14 @@ import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import React, { cloneElement, useCallback, useRef } from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { useTaskDrawerContext } from "./context";
-import Spinner from "@/ui/Spinner";
 
 const timelineStyles = StyleSheet.create({
   container: {
@@ -34,7 +29,7 @@ const timelineStyles = StyleSheet.create({
   itemContainer: { flexDirection: "row", gap: 18 },
 });
 
-export function TaskStream({ children }) {
+export function TaskStream({ children }: { children: React.ReactElement }) {
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const ref = useRef<BottomSheetModal>(null);

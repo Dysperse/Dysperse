@@ -246,7 +246,7 @@ const Sports = ({ params, menuActions }) => {
 
 function RenderWidget({ widget, index }) {
   const { sessionToken } = useUser();
-  const { data, mutate, error } = useSWR(["user/focus-panel"], null);
+  const { data, mutate } = useSWR(["user/focus-panel"], null);
 
   const setParam = async (key, value) => {
     mutate(

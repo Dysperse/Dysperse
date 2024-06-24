@@ -36,7 +36,7 @@ const months = [
   "December",
 ];
 
-const MonthPicker = ({ value, onChange, trigger }) => {
+const MonthPicker = ({ onChange, trigger }) => {
   const ref = useRef(null);
   const theme = useColorTheme();
   return (
@@ -247,7 +247,6 @@ export const Profile = ({ form }) => {
                   }}
                 >
                   <MonthPicker
-                    value={value}
                     onChange={(t) => {
                       const v = value;
                       v[1] = t;

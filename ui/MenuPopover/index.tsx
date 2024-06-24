@@ -73,28 +73,26 @@ export function MenuItem(
   return (
     <Pressable
       {...props}
-      style={({ pressed, hovered }) =>
-        [
-          {
-            backgroundColor: pressed
-              ? addHslAlpha(theme[8], 0.4)
-              : hovered
-              ? addHslAlpha(theme[7], 0.4)
-              : undefined,
-            borderRadius: 20,
-            zIndex: 2,
-          },
-          !props.removeExtraStyles && {
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 15,
-            paddingVertical: 10,
-            gap: 13,
-          },
-          props.disabled && { opacity: 0.5 },
-          props.style,
-        ] as any
-      }
+      style={({ pressed, hovered }) => [
+        {
+          backgroundColor: pressed
+            ? addHslAlpha(theme[8], 0.4)
+            : hovered
+            ? addHslAlpha(theme[7], 0.4)
+            : undefined,
+          borderRadius: 20,
+          zIndex: 2,
+        },
+        !props.removeExtraStyles && {
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          gap: 13,
+        },
+        props.disabled && { opacity: 0.5 },
+        props.style as StyleProp<ViewStyle>,
+      ]}
     />
   );
 }
@@ -204,7 +202,6 @@ export default function MenuPopover({
                       ({
                         icon,
                         text,
-                        key,
                         callback,
                         renderer: Renderer = React.Fragment,
                         ...props

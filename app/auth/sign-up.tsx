@@ -409,7 +409,7 @@ const Password = ({ form }) => {
       <Controller
         rules={{
           required: true,
-          validate: (v) =>
+          validate: () =>
             getValues("confirmPassword") === getValues("password"),
         }}
         name="confirmPassword"
@@ -478,7 +478,7 @@ export default function Page() {
   }, [step]);
 
   const { handleSubmit } = form;
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     setStep(step + 1);
   };
 

@@ -117,7 +117,7 @@ export default function Page() {
                 control={control}
                 rules={{ required: true }}
                 render={({ field: { onChange, value } }) => (
-                  <EmojiPicker emoji={value} setEmoji={onChange}>
+                  <EmojiPicker setEmoji={onChange}>
                     <IconButton
                       style={{
                         borderStyle: "dashed",

@@ -20,7 +20,6 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import {
   BottomSheetModal,
   TouchableOpacity,
@@ -717,7 +716,7 @@ function Footer({ nameRef, labelMenuRef, setValue, watch, control, menuRef }) {
         }}
       />
 
-      <TaskSuggestions watch={watch} setValue={setValue} />
+      <TaskSuggestions />
     </ScrollView>
   );
 }
@@ -1027,11 +1026,8 @@ function TaskNameInput({
   );
 }
 
-const TaskSuggestions = ({ watch, setValue }) => {
+const TaskSuggestions = () => {
   const theme = useColorTheme();
-  const name = watch("name");
-  const currentDate = watch("date");
-  const currentRecurrenceRule = watch("recurrenceRule");
 
   // const generateChipLabel = useCallback(() => {
   //   if (!name) return null;
@@ -1086,28 +1082,28 @@ const TaskSuggestions = ({ watch, setValue }) => {
   //   }
   // }, [name, setValue, currentDate]);
 
-  const generateRecurrenceLabel = useCallback(() => {
-    try {
-      if (!name.includes("every")) return null;
-      const split = name.toLowerCase().toString().split("every ");
-      const text = "Every " + split[split[1] ? 1 : 0];
+  // const generateRecurrenceLabel = useCallback(() => {
+  //   try {
+  //     if (!name.includes("every")) return null;
+  //     const split = name.toLowerCase().toString().split("every ");
+  //     const text = "Every " + split[split[1] ? 1 : 0];
 
-      const rule = RRule.fromText(text);
+  //     const rule = RRule.fromText(text);
 
-      if (currentRecurrenceRule?.toText() === rule.toText()) return null;
+  //     if (currentRecurrenceRule?.toText() === rule.toText()) return null;
 
-      return {
-        label: capitalizeFirstLetter(rule.toText()),
-        onPress: () => {
-          setValue("date", null);
-          setValue("recurrenceRule", rule.options);
-        },
-        icon: "magic_button",
-      };
-    } catch (e) {
-      return null;
-    }
-  }, [name, setValue, currentRecurrenceRule]);
+  //     return {
+  //       label: capitalizeFirstLetter(rule.toText()),
+  //       onPress: () => {
+  //         setValue("date", null);
+  //         setValue("recurrenceRule", rule.options);
+  //       },
+  //       icon: "magic_button",
+  //     };
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }, [name, setValue, currentRecurrenceRule]);
 
   const suggestions = [
     // generateChipLabel(), generateRecurrenceLabel()
@@ -1473,7 +1469,6 @@ const CreateTask = forwardRef(
   (
     {
       children,
-      sheetRef,
       defaultValues = {
         date: null,
         agendaOrder: null,

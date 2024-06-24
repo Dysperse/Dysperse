@@ -15,7 +15,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
     },
     "/[tab]/spaces/": {
       icon: "tag",
-      name: (params) => ["Space"],
+      name: () => ["Space"],
     },
     "/[tab]/labels/[id]": {
       icon: "label",
@@ -31,8 +31,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
     slug.startsWith(key)
   );
 
-  if (!startWithMatchers[match])
-    return { icon: "square", name: (params, slug) => [match] };
+  if (!startWithMatchers[match]) return { icon: "square", name: () => [match] };
 
   return startWithMatchers[match];
 };

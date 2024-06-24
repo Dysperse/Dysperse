@@ -12,7 +12,7 @@ import {
 } from "react-native-controlled-mentions";
 import { ScrollView } from "react-native-gesture-handler";
 
-const renderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
+const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
   keyword,
   suggestions,
   onSuggestionPress,
@@ -260,8 +260,9 @@ export default function ChipInput({
       partTypes={[
         ...suggestions.map((item) => ({
           trigger: item.key,
-          renderSuggestions: (props) =>
-            renderSuggestions({ ...props, suggestions: item.suggestions }),
+          renderSuggestions: (props) => (
+            <RenderSuggestions {...props} suggestions={item.suggestions} />
+          ),
           isInsertSpaceAfterMention: true,
           textStyle: {
             fontFamily: "body_900",

@@ -27,7 +27,7 @@ export function CreateLabelModal({
   children,
   mutate,
   onClose = () => null,
-  onCreate = (newLabel) => null,
+  onCreate = () => null,
 }: {
   children: ReactElement;
   mutate: any;
@@ -137,7 +137,7 @@ export function CreateLabelModal({
                   required: true,
                 }}
                 render={({ field: { onChange, value } }) => (
-                  <EmojiPicker emoji={value} setEmoji={onChange}>
+                  <EmojiPicker setEmoji={onChange}>
                     <IconButton
                       style={{
                         borderStyle: "dashed",

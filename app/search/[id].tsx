@@ -254,7 +254,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   );
 }
 
-function Page({ handleClose }) {
+function Page({ handleClose }: { handleClose: () => void }) {
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -272,7 +272,7 @@ function Page({ handleClose }) {
       : null
   );
 
-  const contextValue = {
+  const contextValue: CollectionContext = {
     data,
     type: "kanban",
     mutate,
@@ -290,7 +290,7 @@ function Page({ handleClose }) {
         handleClose={handleClose}
         onHeaderPress={scrollToTop}
       >
-        <CollectionContext.Provider value={contextValue as any}>
+        <CollectionContext.Provider value={contextValue}>
           {data && (
             <SearchList
               handleClose={handleClose}

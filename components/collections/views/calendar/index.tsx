@@ -83,7 +83,7 @@ export function Content() {
   const { type, start, end } = useCalendarContext();
   const { mode: originalMode, start: originalStart } = useLocalSearchParams();
 
-  const { data, mutate, error } = useSWR([
+  const { data, mutate } = useSWR([
     "space/collections/collection/planner",
     {
       start: start.toISOString(),

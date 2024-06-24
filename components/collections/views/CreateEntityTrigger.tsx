@@ -1,10 +1,8 @@
 import CreateTask from "@/components/task/create";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import { MenuProps as DysperseMenuProps, MenuOption } from "@/ui/MenuPopover";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Dayjs } from "dayjs";
 import { ReactElement, useCallback, useRef } from "react";
-import { MenuProps } from "react-native-popup-menu";
 interface DefaultEntityProps {
   label: object;
   name: string;
@@ -15,17 +13,11 @@ interface DefaultEntityProps {
 
 export const CreateEntityTrigger = ({
   children,
-  menuProps,
-  additional,
-  popoverProps,
   defaultValues,
   mutateList,
   shortcutEnabled = false,
 }: {
   children: ReactElement;
-  menuProps?: MenuProps;
-  additional?: MenuOption[];
-  popoverProps?: Partial<DysperseMenuProps>;
   defaultValues: Partial<DefaultEntityProps>;
   mutateList?: (e) => void;
   shortcutEnabled?: boolean;

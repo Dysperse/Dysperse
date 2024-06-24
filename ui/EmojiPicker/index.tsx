@@ -55,11 +55,9 @@ const emojiPickerStyles = StyleSheet.create({
 
 export function EmojiPicker({
   children,
-  emoji,
   setEmoji,
 }: {
   children: ReactElement;
-  emoji: string;
   setEmoji: (emoji: string) => void;
 }) {
   const ref = useRef<BottomSheetModal>(null);

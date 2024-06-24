@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import { KeyedMutator } from "swr";
 import { collectionViews } from "../layout/command-palette/list";
 
-interface CollectionContext {
+export interface CollectionContext {
   data: any;
   mutate: KeyedMutator<any>;
   error: any;

@@ -33,7 +33,7 @@ const modalStyles = StyleSheet.create({
   eyebrow: { marginTop: 10, marginBottom: 5, marginLeft: 5 },
 });
 
-function FriendEmailSelection({ selected, setSelected, setQuery }) {
+function FriendEmailSelection({ setQuery }) {
   return (
     <View>
       <TextField
@@ -258,11 +258,7 @@ const FriendModal = ({ children, onComplete }) => {
               onPress={handleSubmit}
             />
           </View>
-          <FriendEmailSelection
-            setQuery={setQuery}
-            selected={selected}
-            setSelected={setSelected}
-          />
+          <FriendEmailSelection setQuery={setQuery} />
         </View>
         <ScrollView contentContainerStyle={friendModalStyles.listContainer}>
           {data ? (
@@ -412,7 +408,7 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
   );
 };
 
-const CollectionShareLink = ({ isReadOnly, collection }) => {
+const CollectionShareLink = ({ isReadOnly }) => {
   return (
     <>
       <ListItemButton disabled>
@@ -461,7 +457,7 @@ const CollectionShareLink = ({ isReadOnly, collection }) => {
   );
 };
 
-const PublishCollection = ({ collection }) => {
+const PublishCollection = () => {
   const theme = useColorTheme();
 
   return (
@@ -553,7 +549,7 @@ const CollectionMembers = ({
       <Text variant="eyebrow" style={modalStyles.eyebrow}>
         General
       </Text>
-      <CollectionShareLink isReadOnly={isReadOnly} collection={collection} />
+      <CollectionShareLink isReadOnly={isReadOnly} />
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
         People
       </Text>
@@ -597,7 +593,7 @@ const CollectionMembers = ({
       <Text variant="eyebrow" style={modalStyles.eyebrow}>
         Publish
       </Text>
-      <PublishCollection collection={collection} />
+      <PublishCollection />
     </View>
   );
 };

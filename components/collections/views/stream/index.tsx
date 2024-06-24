@@ -24,7 +24,7 @@ export default function Stream() {
   const params = useLocalSearchParams();
   const insets = useSafeAreaInsets();
 
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [view, setView] = useState<streamType>(
     (params?.view as streamType) || "backlog"
   );

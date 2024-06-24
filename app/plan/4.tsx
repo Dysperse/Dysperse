@@ -52,7 +52,7 @@ const PlannerButton = () => {
   return (
     <Button
       onPress={handleNext}
-      style={({ pressed, hovered }) => [
+      style={[
         styles.button,
         {
           marginTop: "auto",

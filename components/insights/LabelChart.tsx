@@ -30,7 +30,7 @@ export const LabelChart = ({ data }) => {
   const colors = useLabelColors();
   const breakpoints = useResponsiveBreakpoints();
 
-  const pieData = Object.entries(data.byLabel).map(([label, count]) => ({
+  const pieData = Object.entries(data.byLabel).map(([label]) => ({
     name: data.byLabel[label].label.name,
     count: data.byLabel[label].count,
     emoji: data.byLabel[label].label.emoji,

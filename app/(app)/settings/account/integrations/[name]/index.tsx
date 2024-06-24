@@ -140,7 +140,6 @@ const LabelCustomizer = ({
                     style={{ marginBottom: 15 }}
                   >
                     <EmojiPicker
-                      emoji={value[index]?.emoji || label.emoji}
                       setEmoji={(emoji) => {
                         const newLabels = [...value];
                         newLabels[index].emoji = emoji;

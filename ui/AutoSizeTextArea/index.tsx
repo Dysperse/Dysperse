@@ -12,7 +12,6 @@ interface DTextAreaProps extends TextInputProps {
 
 export default function AutoSizeTextArea(props: DTextAreaProps) {
   const ref: any = useRef();
-  const [size, setSize] = useState(props.fontSize || 15);
 
   const [layoutHeight, setLayoutHeight] = useState(0);
 

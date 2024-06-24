@@ -69,7 +69,7 @@ function DesktopLayout({ children }) {
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
-      <Sidebar desktop />
+      <Sidebar />
       {breakpoints.md && !desktopCollapsed && (
         <GestureDetector
           gesture={Gesture.Tap().onEnd(() => {

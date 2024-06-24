@@ -158,26 +158,6 @@ const Cell = ({
   );
 };
 
-const CreateTaskTrigger = () => {
-  const theme = useColorTheme();
-  return (
-    <View style={styles.add}>
-      <IconButton
-        icon={
-          <Icon style={{ color: theme[2] }} bold>
-            add
-          </Icon>
-        }
-        style={({ pressed, hovered }) => ({
-          backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-        })}
-        size={35}
-        variant="filled"
-      />
-    </View>
-  );
-};
-
 const Label = ({ x, y, size }: { x?: string; y?: string; size: number }) => {
   const breakpoints = useResponsiveBreakpoints();
 

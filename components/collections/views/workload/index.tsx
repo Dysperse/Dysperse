@@ -11,7 +11,7 @@ import Text, { getFontName } from "@/ui/Text";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
-import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -128,7 +128,6 @@ const StoryPoint = ({ scale, index, setSelectedScale }) => {
   const isReadOnly = access?.access === "READ_ONLY";
   const theme = useColorTheme();
   const columnRef = useRef(null);
-  const { width } = useWindowDimensions();
 
   const filteredTasks = [
     ...data.entities,

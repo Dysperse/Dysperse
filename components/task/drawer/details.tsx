@@ -2,7 +2,6 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import Calendar from "@/ui/Calendar";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -95,39 +94,6 @@ function TaskRescheduleButton() {
         },
       ]}
     />
-  );
-}
-
-function DatePickerModal({
-  date,
-  onDateSelect,
-  children,
-  menuRef,
-  enabled = true,
-  closeOnSelect = false,
-}) {
-  return !enabled ? (
-    children
-  ) : (
-    <Menu menuRef={menuRef} height={[400]} trigger={children}>
-      <View style={{ marginVertical: "auto" }}>
-        <View style={{ paddingHorizontal: 20, marginTop: -15 }}>
-          <Calendar
-            date={date}
-            onDayPress={(date) => {
-              onDateSelect(dayjs(date.dateString, "YYYY-MM-DD"));
-              if (closeOnSelect) setTimeout(() => menuRef.current.close(), 100);
-            }}
-            markedDates={{
-              [dayjs(date).format("YYYY-MM-DD")]: {
-                selected: true,
-                disableTouchEvent: true,
-              },
-            }}
-          />
-        </View>
-      </View>
-    </Menu>
   );
 }
 

@@ -35,7 +35,7 @@ export function WidgetMenu() {
   const { setFocus } = useFocusPanelContext();
   const { sessionToken } = useUser();
 
-  const { data, error, mutate } = useSWR(["user/focus-panel"]);
+  const { data, mutate } = useSWR(["user/focus-panel"]);
   const [loading, setLoading] = useState(true);
 
   const handleWidgetToggle = async (type: Widget) => {

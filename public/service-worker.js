@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 // Import Workbox scripts
 importScripts(
   "https://storage.googleapis.com/workbox-cdn/releases/6.5.3/workbox-sw.js"
@@ -45,6 +47,6 @@ self.addEventListener("notificationclick", (event) => {
   event.waitUntil(self.clients.openWindow("/"));
 });
 
-self.addEventListener("install", (e) => {
+self.addEventListener("install", () => {
   self.skipWaiting();
 });

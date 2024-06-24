@@ -41,16 +41,13 @@ export default function Page() {
 
   const onSubmit = useCallback(async (values) => {
     try {
-      const data = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/auth/forgot-password`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      ).then((res) => res.json());
+      await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((res) => res.json());
     } catch (error) {
       console.error("Error:", error);
     }
@@ -133,7 +130,9 @@ export default function Page() {
           )}
           name="email"
         />
-        <Turnstile setToken={(token) => setValue("captchaToken", token)} />
+        <Turnstile
+          setToken={(token: string) => setValue("captchaToken", token)}
+        />
         <Button
           style={{ marginTop: "auto", height: 64, width: "100%" }}
           variant="filled"

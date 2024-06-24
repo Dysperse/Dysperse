@@ -66,7 +66,7 @@ const collectionCategories: MenuOption[] = [
   { text: "Fitness", icon: "fitness_center" },
 ];
 
-function Content({ handleClose }) {
+function Content() {
   const theme = useColorTheme();
   const { data, mutate } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
@@ -122,8 +122,8 @@ function Content({ handleClose }) {
           name="emoji"
           rules={{ required: true }}
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <EmojiPicker emoji={value} setEmoji={onChange}>
+          render={({ field: { onChange, value } }) => (
+            <EmojiPicker setEmoji={onChange}>
               <IconButton
                 variant="outlined"
                 style={{
@@ -144,7 +144,7 @@ function Content({ handleClose }) {
               name="category"
               rules={{ required: true }}
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { value } }) => (
                 <MenuPopover
                   scrollViewStyle={{
                     maxHeight: 285,
@@ -261,7 +261,7 @@ function Page({ handleClose }) {
         onHeaderPress={scrollToTop}
       >
         <CollectionContext.Provider value={contextValue as any}>
-          {data && <Content handleClose={handleClose} />}
+          {data && <Content />}
         </CollectionContext.Provider>
       </RouteDialogContent>
     </View>
