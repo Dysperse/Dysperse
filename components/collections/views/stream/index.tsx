@@ -203,7 +203,7 @@ export default function Stream() {
             <View style={[styles.header, { flexDirection: "column" }]}>
               <TextField
                 variant="filled+outlined"
-                placeholder="Search items..."
+                placeholder="Search items…"
                 onChangeText={setQuery}
                 style={{
                   height: 50,

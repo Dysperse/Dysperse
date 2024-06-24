@@ -613,7 +613,7 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
       <View style={{ padding: 20, paddingBottom: 0 }}>
         <TextField
           onChangeText={setQuery}
-          placeholder="Search name or type UTC offset..."
+          placeholder="Search name or type UTC offset…"
           variant="filled+outlined"
         />
       </View>

@@ -134,7 +134,7 @@ export function TaskAttachmentButton({
         <TaskAttachmentPicker
           type="NOTE"
           multiline
-          placeholder="Type in a note..."
+          placeholder="Type in a note…"
           handleParentClose={() => menuRef.current?.close()}
           task={task}
           updateTask={updateTask}

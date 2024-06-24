@@ -55,7 +55,7 @@ const TaskInput = ({ control }) => {
             <TextField
               onChangeText={onChange}
               style={{ paddingVertical: 13, shadowRadius: 0 }}
-              placeholder="Type here..."
+              placeholder="Type here…"
               onFocus={() => (focus.value = 1)}
               onBlur={() => (focus.value = 0)}
             />

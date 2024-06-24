@@ -262,7 +262,7 @@ function SettingsSidebar() {
           weight={700}
           onChangeText={setSearch}
           value={search}
-          placeholder="Search..."
+          placeholder="Search…"
         />
       </View>
       {settingsOptions.length === 0 && (

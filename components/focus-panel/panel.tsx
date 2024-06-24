@@ -134,7 +134,7 @@ function SelectCategory({ setCategory }) {
           Browse categories
         </Text>
         <TextField
-          placeholder="Find a sport..."
+          placeholder="Find a sport…"
           variant="filled+outlined"
           value={query}
           onChangeText={setQuery}

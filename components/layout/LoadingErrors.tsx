@@ -44,7 +44,7 @@ const LoadingErrors = memo(() => {
           weight={700}
         >
           {isValidating || isStorageValidating
-            ? "Reconnecting..."
+            ? "Reconnecting…"
             : error
             ? error.message === "Failed to fetch"
               ? "You're offline"

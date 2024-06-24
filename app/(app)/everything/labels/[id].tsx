@@ -29,8 +29,7 @@ export default function Page() {
     <LabelDetails
       mutateList={
         ((...d) => {
-          mutate(...d);
-          handleBack();
+          setTimeout(() => mutate(...d), 0);
         }) as any
       }
       setSelectedLabel={handleBack}

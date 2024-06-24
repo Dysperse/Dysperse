@@ -173,7 +173,7 @@ function EditAttachment({
               onChangeText={onChange}
               value={value}
               variant="filled+outlined"
-              placeholder="Edit attachment..."
+              placeholder="Edit attachment…"
               style={{
                 fontSize: 20,
                 marginTop: 5,

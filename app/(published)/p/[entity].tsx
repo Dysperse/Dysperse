@@ -96,7 +96,7 @@ const ErrorPage = () => {
         <Alert
           direction={breakpoints.md ? "row" : "column"}
           emoji="1f494"
-          title="This link might be broken, or you may not have access..."
+          title="This link might be broken, or you may not have access…"
           subtitle="We searched the whole galaxy but couldn't find the item you're looking for."
         />
       </View>

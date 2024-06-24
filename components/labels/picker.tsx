@@ -60,7 +60,7 @@ const Search = ({ query, setQuery, autoFocus }) => {
       }}
       inputRef={searchRef}
       // autoFocus={Platform.OS !== "web" && autoFocus}
-      placeholder="Search..."
+      placeholder="Search…"
     />
   );
 };

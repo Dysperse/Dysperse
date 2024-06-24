@@ -122,7 +122,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
         >
           <TextField
             inputRef={inputRef}
-            placeholder="Find tasks..."
+            placeholder="Find tasks…"
             onKeyPress={({ nativeEvent }) => {
               if (nativeEvent.key === "Enter") {
                 listRef.current.scrollToOffset({ animated: true, offset: 0 });

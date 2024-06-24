@@ -218,7 +218,7 @@ export const Profile = ({ form }) => {
                   {
                     {
                       empty: "",
-                      loading: "Checking if this email is available...",
+                      loading: "Checking if this email is available…",
                       error: "An error occurred while checking this email.",
                       available: "This email is available.",
                       taken: "This email is already taken.",

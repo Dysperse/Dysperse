@@ -53,6 +53,7 @@ export function CreateLabelModal({
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
       name: "",
@@ -80,8 +81,9 @@ export function CreateLabelModal({
         type: "success",
         text1: "Created label!",
       });
-      await mutate();
+      await mutate(data);
       setIsLoading(false);
+      reset();
       setTimeout(() => {
         handleClose();
       }, 500);
