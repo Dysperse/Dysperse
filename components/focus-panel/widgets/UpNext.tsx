@@ -1,3 +1,4 @@
+import { ColumnEmptyComponent } from "@/components/collections/emptyComponent";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -13,10 +14,7 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import useSWR from "swr";
 import { Entity } from "../../collections/entity";
-import {
-  ColumnEmptyComponent,
-  onTaskUpdate,
-} from "../../collections/views/planner/Column";
+import { onTaskUpdate } from "../../collections/views/planner/Column";
 import { TaskDrawer } from "../../task/drawer";
 import { ImportantChip } from "../panel";
 import { widgetMenuStyles } from "../widgetMenuStyles";

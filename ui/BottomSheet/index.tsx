@@ -52,6 +52,8 @@ function BottomSheetEscapeHandler({ animationConfigs }) {
       // console.log("removing", stack.current.length);
     };
   }, [forceClose, stack, animationConfigs]);
+
+  return null;
 }
 
 function BottomSheet(props: DBottomSheetProps) {

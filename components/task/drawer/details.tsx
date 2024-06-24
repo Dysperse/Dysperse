@@ -822,7 +822,7 @@ export function TaskDetails() {
             content: <></>,
           },
         ].filter((e) => e)}
-        renderHeader={(section, _, isActive) => section.trigger(isActive)}
+        renderHeader={(section) => section.trigger()}
         renderContent={(section) => section.content}
         onChange={setActiveSections}
       />

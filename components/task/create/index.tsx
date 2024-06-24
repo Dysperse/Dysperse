@@ -617,7 +617,7 @@ export function RecurrencePicker({ value, setValue }) {
   );
 }
 
-const PinTask = memo(function PinTask({ watch, control }) {
+const PinTask = memo(function PinTask({ watch, control }: any) {
   const orange = useColor("orange");
   const pinned = watch("pinned");
 
