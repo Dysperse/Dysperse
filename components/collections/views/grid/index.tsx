@@ -64,47 +64,52 @@ export default function Grid({ editOrderMode }) {
             .map(
               (label, i) =>
                 !label.empty && (
-                  <Pressable
+                  <View
+                    style={{ borderRadius: 25, overflow: "hidden" }}
                     key={i}
-                    onPress={() =>
-                      setCurrentColumn(
-                        label.other
-                          ? "OTHER"
-                          : data.labels.findIndex((l) => l.id == label.id)
-                      )
-                    }
-                    style={({ pressed }: any) => ({
-                      flex: 1,
-                      width: width - 150,
-                      minWidth: width - 150,
-                      maxWidth: 200,
-                      minHeight: 5,
-                      borderWidth: 2,
-                      borderColor: theme[pressed ? 7 : 6],
-                      borderRadius: 25,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: 20,
-                    })}
                   >
-                    <Emoji
-                      emoji={label.emoji || "1f4ad"}
-                      size={50}
-                      style={{ marginBottom: 5 }}
-                    />
-                    <Text
-                      numberOfLines={1}
-                      style={{ fontSize: 20, marginTop: 5 }}
-                      weight={900}
+                    <Pressable
+                      android_ripple={{ color: theme[7] }}
+                      onPress={() =>
+                        setCurrentColumn(
+                          label.other
+                            ? "OTHER"
+                            : data.labels.findIndex((l) => l.id == label.id)
+                        )
+                      }
+                      style={({ pressed }: any) => ({
+                        flex: 1,
+                        width: width - 150,
+                        minWidth: width - 150,
+                        maxWidth: 200,
+                        minHeight: 5,
+                        borderWidth: 2,
+                        borderColor: theme[pressed ? 7 : 6],
+                        borderRadius: 25,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 20,
+                      })}
                     >
-                      {label.name || "Other"}
-                    </Text>
-                    <Text weight={300} style={{ marginTop: 2, opacity: 0.7 }}>
-                      {label._count?.entities}
-                      {" item"}
-                      {label._count?.entities !== 1 ? "s" : ""}
-                    </Text>
-                  </Pressable>
+                      <Emoji
+                        emoji={label.emoji || "1f4ad"}
+                        size={50}
+                        style={{ marginBottom: 5 }}
+                      />
+                      <Text
+                        numberOfLines={1}
+                        style={{ fontSize: 20, marginTop: 5 }}
+                        weight={900}
+                      >
+                        {label.name || "Other"}
+                      </Text>
+                      <Text weight={300} style={{ marginTop: 2, opacity: 0.7 }}>
+                        {label._count?.entities}
+                        {" item"}
+                        {label._count?.entities !== 1 ? "s" : ""}
+                      </Text>
+                    </Pressable>
+                  </View>
                 )
             )}
         </View>
@@ -165,7 +170,7 @@ export default function Grid({ editOrderMode }) {
           {
             padding: 15,
             gap: 15,
-            paddingRight: 30,
+            paddingRight: isMobileHome || breakpoints.md ? 30 : 0,
             paddingBottom: insets.bottom + 15,
             flexDirection: "column",
           },
@@ -178,7 +183,7 @@ export default function Grid({ editOrderMode }) {
         scrollEnabled={breakpoints.md || currentColumn === "HOME"}
         style={[
           {
-            minWidth: "100%",
+            width: "100%",
           },
           isMobileHome && {
             backgroundColor: theme[3],
