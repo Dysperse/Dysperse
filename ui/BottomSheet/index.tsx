@@ -34,7 +34,11 @@ const styles = StyleSheet.create({
   },
 });
 
-function BottomSheetEscapeHandler({ animationConfigs }) {
+function BottomSheetEscapeHandler({
+  animationConfigs,
+}: {
+  animationConfigs: any;
+}) {
   const { forceClose } = useBottomSheet();
   const { stack } = useModalStack();
 

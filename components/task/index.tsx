@@ -97,16 +97,14 @@ export const videoChatPlatforms = [
   "viber.com",
 ];
 
+interface AttachmentChipProps {
+  attachments: any[];
+  large?: boolean;
+  published?: boolean;
+}
+
 export const TaskAttachmentChips = memo(
-  ({
-    attachments,
-    large,
-    published,
-  }: {
-    attachments: any[];
-    large?: boolean;
-    published?: boolean;
-  }) => {
+  ({ attachments, large, published }: AttachmentChipProps) => {
     const theme = useColorTheme();
 
     const getAttachmentIcon = (t) =>
