@@ -98,7 +98,7 @@
     "rrule": "^2.8.1",
     "swr": "^2.2.5",
     "timezones-list": "^3.0.3",
-    "typescript": "^5.5.2",
+    "typescript": "~5.3.3",
     "use-debounce": "^10.0.1",
     "workbox-build": "^7.1.1",
     "workbox-window": "^7.1.0"
@@ -110,8 +110,8 @@
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "babel-plugin-transform-remove-console": "^6.9.4",
-    "eslint": "^9.5.0",
-    "eslint-plugin-react": "^7.34.3",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-native": "^4.1.0"
   },
