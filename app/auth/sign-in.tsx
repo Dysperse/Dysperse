@@ -246,7 +246,7 @@ function Credentials({
           </View>
           <Button
             variant="filled"
-            style={[authStyles.button, { marginTop: 20 }]}
+            height={70}
             onPress={handleSubmit(onSubmit)}
             isLoading={step === 2}
           >
@@ -264,12 +264,7 @@ function Credentials({
             </ButtonText>
             <Icon>east</Icon>
           </Button>
-          <Button
-            dense
-            onPress={handleForgot}
-            variant="outlined"
-            style={[authStyles.button]}
-          >
+          <Button dense onPress={handleForgot} variant="outlined" height={70}>
             <ButtonText
               style={[authStyles.buttonText, { opacity: 0.6 }]}
               weight={500}
@@ -282,7 +277,7 @@ function Credentials({
               dense
               onPress={handleCreateAccount}
               variant="outlined"
-              style={[authStyles.button]}
+              height={50}
             >
               <ButtonText
                 style={[authStyles.buttonText, { opacity: 0.6 }]}
@@ -454,7 +449,14 @@ export default function SignIn() {
           />
         ) : step === 1 ? (
           <View style={authStyles.container}>
-            <View style={{ marginVertical: "auto", gap: 10 }}>
+            <View
+              style={{
+                marginVertical: "auto",
+                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Text
                 style={[
                   styles.title,
@@ -535,7 +537,7 @@ export default function SignIn() {
               />
               <Button
                 variant="filled"
-                style={[authStyles.button, { marginTop: 20 }]}
+                height={70}
                 onPress={handleSubmit(onSubmit)}
                 isLoading={step === 4}
               >

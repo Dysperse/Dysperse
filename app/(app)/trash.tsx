@@ -32,7 +32,7 @@ const DeleteAllButton = ({ handleDelete }) => {
       <Button
         variant="filled"
         large
-        style={[!breakpoints.md && { width: "100%", marginTop: 20 }]}
+        containerStyle={[!breakpoints.md && { width: "100%", marginTop: 20 }]}
       >
         <Icon>delete_forever</Icon>
         <ButtonText>Clear</ButtonText>

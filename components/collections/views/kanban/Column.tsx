@@ -252,9 +252,13 @@ export function Column(props: ColumnProps) {
                       date: null,
                     }}
                   >
-                    <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
-                      <ButtonText>New</ButtonText>
+                    <Button
+                      variant="filled"
+                      height={50}
+                      containerStyle={{ flex: 1 }}
+                    >
                       <Icon>add</Icon>
+                      <ButtonText>Create</ButtonText>
                     </Button>
                   </CreateTask>
                 </View>

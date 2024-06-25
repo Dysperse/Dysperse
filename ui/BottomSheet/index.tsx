@@ -46,7 +46,12 @@ function BottomSheetEscapeHandler({
     stack.current = [
       ...stack.current,
       () => {
-        forceClose({ ...animationConfigs, overshootClamping: true });
+        forceClose({
+          ...animationConfigs,
+          overshootClamping: true,
+          stiffness: 400,
+          damping: 20,
+        });
       },
     ];
     // console.log("adding", stack.current.length);

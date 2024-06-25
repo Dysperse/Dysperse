@@ -675,7 +675,8 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
             onPress={() => {
               setParam("timeZones", []);
             }}
-            style={{ height: 60, flex: 1 }}
+            height={60}
+            containerStyle={{ width: "100%" }}
           >
             <ButtonText weight={900} style={{ fontSize: 20 }}>
               Reset
@@ -686,7 +687,8 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
         <Button
           variant="filled"
           onPress={() => timeZoneModalRef.current?.dismiss?.()}
-          style={{ height: 60, flex: 1 }}
+          height={60}
+          containerStyle={{ width: "100%" }}
         >
           <ButtonText weight={900} style={{ fontSize: 20 }}>
             Done

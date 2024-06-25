@@ -56,9 +56,10 @@ const SubmitButton = ({ text = "Done", icon = "check", onPress, disabled }) => {
           backgroundColor: !disabled
             ? theme[pressed ? 11 : hovered ? 10 : 9]
             : theme[7],
-          marginTop: "auto",
         },
       ]}
+      containerStyle={{ width: "100%", marginTop: "auto" }}
+      height={70}
     >
       <ButtonText
         style={[styles.buttonText, { color: theme[!disabled ? 1 : 10] }]}

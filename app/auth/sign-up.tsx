@@ -189,13 +189,13 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
       </View>
       <Button
         onPress={handleNext}
-        style={{
+        containerStyle={{
           marginTop: "auto",
           flexDirection: "row",
           alignItems: "center",
           width: "100%",
-          height: 70,
         }}
+        height={70}
         variant="filled"
       >
         <ButtonText weight={900} style={{ fontSize: 20 }}>
@@ -432,7 +432,8 @@ const Password = ({ form }: { form: UseFormReturn<any> }) => {
         )}
       />
       <Button
-        style={{ height: 60, marginTop: "auto" }}
+        height={60}
+        containerStyle={{ marginTop: "auto" }}
         variant="filled"
         onPress={handleNext}
       >

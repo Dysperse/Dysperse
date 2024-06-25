@@ -96,14 +96,12 @@ export default function Page() {
           </View>
           <Button
             variant="filled"
-            style={({ pressed, hovered }) => [
-              authStyles.button,
-              {
-                backgroundColor: `rgba(255, 255, 255, ${
-                  pressed ? 0.2 : hovered ? 0.15 : 0.1
-                })`,
-              },
-            ]}
+            height={70}
+            backgroundColors={{
+              default: "rgba(255, 255, 255, 0.1)",
+              hovered: "rgba(255, 255, 255, 0.15)",
+              pressed: "rgba(255, 255, 255, 0.2)",
+            }}
             onPress={handleLoginPress}
           >
             <ButtonText
@@ -115,15 +113,12 @@ export default function Page() {
           </Button>
           <Button
             variant="filled"
-            style={({ pressed, hovered }) => [
-              authStyles.button,
-              {
-                marginBottom: insets.bottom,
-                backgroundColor: `rgba(255, 255, 255, ${
-                  pressed ? 0.2 : hovered ? 0.15 : 0.1
-                })`,
-              },
-            ]}
+            backgroundColors={{
+              default: "rgba(255, 255, 255, 0.1)",
+              hovered: "rgba(255, 255, 255, 0.15)",
+              pressed: "rgba(255, 255, 255, 0.2)",
+            }}
+            height={70}
             onPress={handleSignUpPress}
           >
             <ButtonText

@@ -119,7 +119,7 @@ const CloseButton = memo(function CloseButton({
     <Button
       onPress={handleClose}
       disabled={disabled}
-      style={{ marginLeft: "auto" }}
+      containerStyle={{ marginLeft: "auto" }}
     >
       {loading ? <Spinner /> : <ButtonText>Done</ButtonText>}
     </Button>

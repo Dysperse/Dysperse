@@ -130,13 +130,13 @@ export const Customization = ({ form }) => {
       />
       <Button
         onPress={handleNext}
-        style={{
+        containerStyle={{
           marginTop: "auto",
           flexDirection: "row",
           alignItems: "center",
           width: "100%",
-          height: 70,
         }}
+        height={70}
         variant="filled"
       >
         <ButtonText weight={900} style={{ fontSize: 20 }}>

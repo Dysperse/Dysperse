@@ -20,13 +20,16 @@ const SubmitButton = () => {
     <Button
       onPress={handleNext}
       style={({ pressed, hovered }) => [
-        styles.button,
         {
           backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-          marginHorizontal: "auto",
-          marginBottom: 20,
         },
       ]}
+      containerStyle={{
+        marginTop: 10,
+        marginBottom: 20,
+        width: "100%",
+      }}
+      height={70}
     >
       <ButtonText style={[styles.buttonText, { color: theme[1] }]}>
         Done
@@ -52,13 +55,13 @@ const PlannerButton = () => {
   return (
     <Button
       onPress={handleNext}
-      style={[
-        styles.button,
-        {
-          marginTop: "auto",
-          marginHorizontal: "auto",
-        },
-      ]}
+      height={60}
+      style={[styles.button]}
+      containerStyle={{
+        marginTop: "auto",
+        marginHorizontal: "auto",
+        width: "100%",
+      }}
     >
       <ButtonText>Open planner</ButtonText>
       <Icon bold>north_east</Icon>

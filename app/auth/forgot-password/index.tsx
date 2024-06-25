@@ -102,7 +102,8 @@ const Email = ({ form }: any) => {
       <Button
         variant="filled"
         onPress={handleNext}
-        style={{ marginTop: "auto", width: "100%", height: 70 }}
+        height={70}
+        containerStyle={{ marginTop: "auto", width: "100%" }}
       >
         <ButtonText style={{ fontSize: 20 }} weight={700}>
           Continue
@@ -205,7 +206,8 @@ const Token = ({ form }: any) => {
       <Button
         variant="filled"
         onPress={handleNext}
-        style={{ marginTop: 10, width: "100%", height: 70 }}
+        height={70}
+        containerStyle={{ marginTop: 10, width: "100%" }}
       >
         <ButtonText style={{ fontSize: 20 }} weight={700}>
           Next
@@ -250,7 +252,8 @@ const Password = ({ form }: any) => {
           setLoading(true);
           handleNext();
         }}
-        style={{ marginTop: 10, width: "100%", height: 70 }}
+        height={70}
+        containerStyle={{ marginTop: 10, width: "100%" }}
       >
         <ButtonText style={{ fontSize: 20 }} weight={700}>
           Reset password

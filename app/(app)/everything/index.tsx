@@ -485,7 +485,11 @@ const Labels = () => {
                   );
                 }}
               >
-                <Button variant="filled" large style={{ marginTop: 10 }}>
+                <Button
+                  variant="filled"
+                  large
+                  containerStyle={{ marginTop: 10 }}
+                >
                   <Icon bold>add</Icon>
                   <ButtonText weight={900}>New</ButtonText>
                 </Button>

@@ -1,5 +1,6 @@
 import { Button } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
@@ -10,6 +11,7 @@ import {
 } from "expo-router";
 
 export function AgendaCalendarMenu() {
+  const theme = useColorTheme();
   const { start }: any = useGlobalSearchParams();
   const { agendaView, mode } = useLocalSearchParams();
 
@@ -25,7 +27,18 @@ export function AgendaCalendarMenu() {
     <MenuPopover
       containerStyle={{ width: 300, marginTop: 10 }}
       trigger={
-        <Button>
+        <Button
+          backgroundColors={{
+            default: theme[3],
+            hovered: theme[4],
+            pressed: theme[5],
+          }}
+          borderColors={{
+            default: theme[3],
+            hovered: theme[4],
+            pressed: theme[5],
+          }}
+        >
           <Text numberOfLines={1} weight={600}>
             {dayjs(start).format(titleFormat).split("•")?.[0]}
           </Text>

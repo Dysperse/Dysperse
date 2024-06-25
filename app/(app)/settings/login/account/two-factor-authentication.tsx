@@ -90,7 +90,7 @@ export default function Page() {
           text="Login security"
           icon="arrow_back_ios"
           onPress={() => router.back()}
-          style={{ margin: breakpoints.md ? 0 : 20 }}
+          containerStyle={{ margin: breakpoints.md ? 0 : 20 }}
         />
       </View>
       {!data ? (
@@ -155,7 +155,7 @@ export default function Page() {
                 />
               </View>
               <Button
-                style={{ marginVertical: 5 }}
+                containerStyle={{ marginVertical: 5 }}
                 onPress={async () => {
                   await Clipboard.setStringAsync(data.secret);
 
@@ -200,8 +200,8 @@ export default function Page() {
                 isLoading={loading}
                 onPress={handleSubmit(onSubmit)}
                 variant="filled"
+                height={60}
                 style={{
-                  height: 60,
                   flexDirection: "row",
                   gap: 20,
                   borderRadius: 20,

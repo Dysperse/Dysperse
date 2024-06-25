@@ -235,7 +235,7 @@ const TestNotifications = () => {
       onPress={handleTest}
       variant="filled"
       large
-      style={{ marginTop: 20 }}
+      containerStyle={{ marginTop: 20 }}
       isLoading={isLoading}
     >
       <ButtonText style={{ fontSize: 20 }} weight={700}>
@@ -322,7 +322,7 @@ function SubscribeButton({ data, mutate }) {
       disabled={Boolean(tokenExists)}
       onPress={handlePress}
       variant="filled"
-      style={{ marginBottom: 20 }}
+      containerStyle={{ marginBottom: 20 }}
     >
       <Icon>{tokenExists ? "check" : "add"}</Icon>
       <ButtonText>

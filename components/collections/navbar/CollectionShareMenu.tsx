@@ -434,9 +434,7 @@ const CollectionShareLink = ({ isReadOnly }) => {
                   <Button
                     variant="outlined"
                     key={button}
-                    onPress={() => {
-                      console.log(button);
-                    }}
+                    onPress={() => console.log(button)}
                   >
                     <ButtonText>{button}</ButtonText>
                   </Button>

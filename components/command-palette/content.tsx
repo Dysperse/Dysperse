@@ -439,6 +439,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             isLoading={loading}
             onPress={() => onCreate(preview)}
             variant="filled"
+            height={60}
             style={({ pressed, hovered }) => ({
               height: 60,
               backgroundColor:

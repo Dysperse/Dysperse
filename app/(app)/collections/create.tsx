@@ -149,8 +149,8 @@ export default function Page() {
                     onClose={() => {}}
                   >
                     <Button
+                      height={80}
                       style={{
-                        height: 80,
                         borderWidth: 2,
                         borderColor: theme[7],
                         borderStyle: "dashed",
@@ -206,7 +206,7 @@ export default function Page() {
             />
           </View>
           <Button
-            style={{ height: 80 }}
+            height={80}
             variant="filled"
             onPress={handleSubmit(onSubmit)}
             isLoading={loading}

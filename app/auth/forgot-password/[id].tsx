@@ -134,7 +134,8 @@ export default function Page() {
           setToken={(token: string) => setValue("captchaToken", token)}
         />
         <Button
-          style={{ marginTop: "auto", height: 64, width: "100%" }}
+          height={65}
+          containerStyle={{ marginTop: "auto", width: "100%" }}
           variant="filled"
           onPress={handleSubmit(onSubmit)}
         >

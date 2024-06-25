@@ -75,7 +75,7 @@ export const ProfilePictureUploadButton = ({
             onPress={() => pickImageAsync(setLoading, onChange)}
             variant="filled"
             isLoading={loading}
-            style={{ minWidth: 120 }}
+            containerStyle={{ minWidth: 120 }}
           >
             <Icon>upload</Icon>
             <ButtonText weight={700}>Upload</ButtonText>
@@ -223,10 +223,8 @@ export default function Page() {
         <Button
           onPress={handleSubmit(onSubmit)}
           variant="filled"
-          style={{
-            height: 80,
-            marginTop: 30,
-          }}
+          height={80}
+          containerStyle={{ marginTop: 30 }}
         >
           <ButtonText style={{ fontSize: 20 }} weight={700}>
             Save

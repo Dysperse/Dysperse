@@ -143,8 +143,8 @@ const UpNext = ({ widget, menuActions }) => {
                         style={({ pressed, hovered }) => ({
                           backgroundColor:
                             theme[pressed ? 11 : hovered ? 10 : 9],
-                          marginTop: 15,
                         })}
+                        containerStyle={{ marginTop: 15 }}
                       >
                         <ButtonText style={{ color: theme[1] }} weight={900}>
                           View task

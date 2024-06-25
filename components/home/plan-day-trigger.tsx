@@ -29,8 +29,9 @@ export function PlanDayPrompt() {
       style={({ pressed, hovered }) => [
         homeStyles.card,
         styles.base,
+        hasCompleted && { borderWidth: 1 },
         {
-          borderColor: hasCompleted ? "transparent" : theme[8],
+          borderColor: hasCompleted ? theme[5] : theme[8],
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
         },
       ]}

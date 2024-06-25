@@ -240,7 +240,7 @@ function AddFriend({ friends, mutate, setView }) {
       <Suggestions setValue={setValue} watch={watch} />
       <Button
         isLoading={loading}
-        style={{ height: 70 }}
+        height={70}
         variant="filled"
         onPress={handleSubmit(onSubmit)}
       >

@@ -179,7 +179,7 @@ function CreateTab() {
     <Button
       isLoading={loading}
       variant="filled"
-      style={{ marginTop: "auto" }}
+      containerStyle={{ marginTop: "auto" }}
       onPress={handleNext}
     >
       <Icon>add</Icon>
@@ -200,10 +200,8 @@ function CreateLabel() {
     >
       <Button
         variant="filled"
-        style={{
-          marginTop: "auto",
-          ...(data?.length > 0 && { backgroundColor: green[5] }),
-        }}
+        containerStyle={{ marginTop: "auto" }}
+        style={data?.length > 0 && { backgroundColor: green[5] }}
       >
         <Icon
           style={{
@@ -232,10 +230,8 @@ function CreateCollection() {
     <Button
       onPress={() => router.push("/collections/create")}
       variant="filled"
-      style={{
-        marginTop: "auto",
-        ...(data?.length > 0 && { backgroundColor: green[5] }),
-      }}
+      containerStyle={{ marginTop: "auto" }}
+      style={data?.length > 0 && { backgroundColor: green[5] }}
     >
       <Icon
         style={{
@@ -288,7 +284,7 @@ function FeatureList() {
               your mind.
             </Text>
             <CreateTask mutate={() => mutate(() => true)}>
-              <Button variant="filled" style={{ marginTop: "auto" }}>
+              <Button variant="filled" containerStyle={{ marginTop: "auto" }}>
                 <Icon>note_stack_add</Icon>
                 <ButtonText>Create a task</ButtonText>
               </Button>

@@ -176,7 +176,7 @@ const LabelCustomizer = ({
                 <View style={[styles.footer, { marginTop: "auto" }]}>
                   <Button
                     large
-                    style={{ marginTop: 20 }}
+                    containerStyle={{ marginTop: 20 }}
                     isLoading={status === "loading"}
                     iconPosition="end"
                     variant="filled"
@@ -450,7 +450,8 @@ function OauthRedirect({ integration }) {
       <Button
         variant="filled"
         onPress={handleOpen}
-        style={{ marginTop: "auto", width: "100%", height: 60 }}
+        height={60}
+        containerStyle={{ marginTop: "auto", width: "100%" }}
       >
         <ButtonText style={{ fontSize: 20 }}>
           Open {integration.name}

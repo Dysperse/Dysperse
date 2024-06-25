@@ -33,12 +33,10 @@ const SubmitButton = () => {
       <Button
         onPress={handleNext}
         style={({ pressed, hovered }) => [
-          styles.button,
-          {
-            backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9],
-            marginBottom: 20,
-          },
+          { backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9] },
         ]}
+        containerStyle={{ width: "100%", marginTop: "auto", marginBottom: 20 }}
+        height={70}
       >
         <ButtonText style={[styles.buttonText, { color: theme[1] }]}>
           Next

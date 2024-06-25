@@ -29,7 +29,6 @@ export const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    height: 70,
     maxWidth: 700,
   },
   buttonText: { fontSize: 20 },
@@ -67,9 +66,10 @@ export default function Page() {
         <Button
           onPress={handleNext}
           style={({ pressed, hovered }) => [
-            styles.button,
             { backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9] },
           ]}
+          containerStyle={{ width: "100%" }}
+          height={70}
         >
           <ButtonText
             style={[styles.buttonText, { color: theme[1] }]}

@@ -68,10 +68,12 @@ export function EditWallpaper() {
       <Button
         onPress={() => router.push("/settings/customization/appearance")}
         variant="outlined"
-        style={{
+        height={60}
+        containerStyle={{
           marginVertical: 10,
           marginBottom: 40,
-          height: 60,
+        }}
+        style={{
           paddingHorizontal: 40,
         }}
       >

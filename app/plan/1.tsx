@@ -102,15 +102,15 @@ const SubmitButton = ({ watch, handleSubmit }) => {
     <Button
       onPress={handleSubmit(onSubmit)}
       disabled={!name}
+      height={70}
       style={({ pressed, hovered }) => [
-        styles.button,
         {
           backgroundColor: name
             ? theme[pressed ? 11 : hovered ? 10 : 9]
             : theme[7],
-          marginTop: "auto",
         },
       ]}
+      containerStyle={{ marginTop: "auto" }}
     >
       <ButtonText style={[styles.buttonText, { color: theme[name ? 1 : 10] }]}>
         Next

@@ -208,7 +208,8 @@ export default function Page() {
               >
                 <Button
                   variant="outlined"
-                  style={{ height: 60, marginTop: 20 }}
+                  height={60}
+                  containerStyle={{ marginTop: 20 }}
                 >
                   <ButtonText>Sign out all devices</ButtonText>
                 </Button>

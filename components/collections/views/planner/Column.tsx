@@ -264,7 +264,11 @@ export function Column({
                     );
                   }}
                 >
-                  <Button variant="filled" style={{ flex: 1, minHeight: 50 }}>
+                  <Button
+                    variant="filled"
+                    containerStyle={{ flex: 1 }}
+                    height={50}
+                  >
                     <ButtonText>New</ButtonText>
                     <Icon>add</Icon>
                   </Button>

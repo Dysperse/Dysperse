@@ -212,7 +212,7 @@ function Content() {
             )}
             variant="filled"
             isLoading={loading}
-            style={{ height: 60 }}
+            height={60}
           >
             <ButtonText style={{ fontSize: 20 }} weight={800}>
               Done

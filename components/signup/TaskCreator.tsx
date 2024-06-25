@@ -104,7 +104,8 @@ export const TaskCreator = ({ form }) => {
       <Button
         onPress={handleNext}
         variant="filled"
-        style={{ height: 60, marginTop: "auto" }}
+        height={60}
+        containerStyle={{ marginTop: "auto" }}
       >
         <ButtonText weight={700} style={{ fontSize: 20 }}>
           Next

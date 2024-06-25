@@ -79,13 +79,12 @@ const ReleaseModal = memo(() => {
             text="Got it!"
             variant="filled"
             large
-            style={({ pressed, hovered }) => ({
+            containerStyle={{
               position: "absolute",
               top: 20,
               right: 20,
               zIndex: 99,
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
+            }}
             onPress={handleDone}
           />
           <ScrollView

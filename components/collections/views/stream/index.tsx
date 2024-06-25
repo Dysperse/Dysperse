@@ -250,9 +250,9 @@ export default function Stream() {
                 >
                   <Button
                     variant="filled"
-                    style={{
+                    height={50}
+                    containerStyle={{
                       flex: 1,
-                      minHeight: 50,
                       paddingHorizontal: 20,
                       width: "100%",
                       maxWidth: 400,

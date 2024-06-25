@@ -160,9 +160,7 @@ export const Profile = ({ form }) => {
                   />
                   <Button
                     variant="filled"
-                    onPress={() => {
-                      pickImageAsync(setLoading, onChange);
-                    }}
+                    onPress={() => pickImageAsync(setLoading, onChange)}
                     isLoading={loading}
                   >
                     <Icon>upload</Icon>
@@ -328,10 +326,9 @@ export const Profile = ({ form }) => {
         <Button
           onPress={handleNext}
           variant="filled"
-          style={[
-            { marginTop: 15, height: 60 },
-            profileExists !== "available" && { opacity: 0.6 },
-          ]}
+          height={60}
+          containerStyle={{ marginTop: 15 }}
+          style={[profileExists !== "available" && { opacity: 0.6 }]}
           disabled={profileExists !== "available"}
         >
           <ButtonText weight={900} style={{ fontSize: 20 }}>

@@ -157,13 +157,15 @@ export function TaskAttachmentPicker({
           });
         })}
         isLoading={isLoading}
+        height={60}
         style={({ pressed, hovered }) => ({
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+        })}
+        containerStyle={{
           width: "100%",
-          height: 60,
           marginBottom: -20,
           marginTop: "auto",
-        })}
+        }}
       >
         <ButtonText style={{ fontSize: 20 }}>Done</ButtonText>
         <Icon>check</Icon>

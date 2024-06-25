@@ -64,13 +64,7 @@ function TwoFactorAuthSection() {
         }}
         disabled={!isEnabled}
       >
-        <Button
-          style={[
-            { padding: 30, gap: 20 },
-            breakpoints.md ? { marginTop: 30 } : { width: "100%" },
-          ]}
-          variant="filled"
-        >
+        <Button height={100} variant="filled">
           <ButtonText>Enable{isEnabled && "d"}</ButtonText>
           <Icon>{isEnabled ? "check" : "arrow_forward_ios"}</Icon>
         </Button>
@@ -214,7 +208,8 @@ function EmailSection() {
             )}
           />
           <Button
-            style={{ height: 60, marginTop: 10 }}
+            height={60}
+            containerStyle={{ marginTop: 10 }}
             variant="filled"
             isLoading={isLoading}
             onPress={handleSubmit(onSubmit, () =>

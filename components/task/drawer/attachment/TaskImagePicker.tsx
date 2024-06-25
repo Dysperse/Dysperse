@@ -73,7 +73,7 @@ export function TaskImagePicker({ task, updateTask }) {
     <View style={{ padding: 5 }}>
       <Button
         variant="filled"
-        style={{ marginTop: 10 }}
+        containerStyle={{ marginTop: 10 }}
         onPress={() => setSelectAlbums(true)}
       >
         <ButtonText>{selectedAlbum?.title}</ButtonText>

@@ -163,7 +163,7 @@ export const LabelEditModal = memo(function LabelEditModal({
           control={control}
         />
         <Button
-          style={{ height: 60 }}
+          height={60}
           onPress={handleSubmit(onSubmit, (err) =>
             Toast.show({ type: "error", text1: "Please type a name" })
           )}

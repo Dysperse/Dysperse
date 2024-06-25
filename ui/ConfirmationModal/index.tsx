@@ -1,10 +1,11 @@
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import { cloneElement, useCallback, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
+import BottomSheet from "../BottomSheet";
 import { Button, ButtonText } from "../Button";
-import { Menu } from "../Menu";
 import Text from "../Text";
+import { useColorTheme } from "../color/theme-provider";
 
 export interface ConfirmationModalProps {
   children: JSX.Element;
@@ -18,10 +19,16 @@ export interface ConfirmationModalProps {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    paddingBottom: 0,
-    flex: 1,
+    padding: 30,
+    borderRadius: 25,
     gap: 10,
+    shadowColor: "#000",
+    shadowRadius: 20,
+    shadowOpacity: 0.1,
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
   },
   title: {
     fontSize: 40,
@@ -29,12 +36,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   secondary: {
+    opacity: 0.6,
     fontSize: 20,
-    paddingHorizontal: 20,
+    marginBottom: 20,
     textAlign: "center",
-  },
-  button: {
-    height: 70,
   },
   buttonText: {
     fontSize: 20,
@@ -74,7 +79,8 @@ function ConfirmationModalButton({
   return (
     <Button
       isLoading={loading}
-      style={[styles.button, { marginTop: "auto" }]}
+      height={70}
+      style={[{ marginTop: "auto" }]}
       variant="filled"
       onPress={handleSuccess}
     >
@@ -87,8 +93,14 @@ function ConfirmationModalButton({
 
 export default function ConfirmationModal(props: ConfirmationModalProps) {
   const ref = useRef<BottomSheetModal>(null);
+  const theme = useColorTheme();
   const handleClose = useCallback(
-    () => ref.current?.forceClose({ overshootClamping: false }),
+    () =>
+      ref.current?.forceClose({
+        overshootClamping: true,
+        stiffness: 400,
+        damping: 20,
+      }),
     []
   );
 
@@ -102,25 +114,67 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
     return d;
   }
 
+  const handleOpen = () => ref.current?.present();
+  const trigger = cloneElement(props.children, { onPress: handleOpen });
+
   return (
-    <Menu height={[props.height]} trigger={props.children} menuRef={ref}>
-      <View style={styles.container}>
-        <Text style={styles.title} weight={500}>
-          {props.title}
-        </Text>
-        <Text weight={300} style={styles.secondary}>
-          {props.secondary}
-        </Text>
-        <ConfirmationModalButton
-          skipLoading={props.skipLoading}
-          onSuccess={props.onSuccess}
-        />
-        <Button style={styles.button} variant="outlined" onPress={handleClose}>
-          <ButtonText weight={900} style={styles.buttonText}>
-            Cancel
-          </ButtonText>
-        </Button>
-      </View>
-    </Menu>
+    <>
+      {trigger}
+      <BottomSheet
+        onClose={handleClose}
+        snapPoints={["100%"]}
+        maxWidth="100%"
+        maxBackdropOpacity={0.2}
+        animationConfigs={{
+          overshootClamping: true,
+          stiffness: 200,
+          damping: 40,
+        }}
+        backgroundStyle={{
+          backgroundColor: "transparent",
+        }}
+        handleComponent={() => null}
+        sheetRef={ref}
+      >
+        <Pressable
+          onPress={handleClose}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 20,
+          }}
+        >
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={[
+              styles.container,
+              {
+                backgroundColor: theme[2],
+                maxWidth: 350,
+                width: "100%",
+                marginHorizontal: "auto",
+              },
+            ]}
+          >
+            <Text style={[styles.title, { color: theme[11] }]} weight={600}>
+              {props.title}
+            </Text>
+            <Text weight={500} style={[styles.secondary, { color: theme[11] }]}>
+              {props.secondary}
+            </Text>
+            <ConfirmationModalButton
+              skipLoading={props.skipLoading}
+              onSuccess={props.onSuccess}
+            />
+            <Button height={70} variant="outlined" onPress={handleClose}>
+              <ButtonText weight={900} style={styles.buttonText}>
+                Cancel
+              </ButtonText>
+            </Button>
+          </Pressable>
+        </Pressable>
+      </BottomSheet>
+    </>
   );
 }

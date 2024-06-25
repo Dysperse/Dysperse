@@ -352,7 +352,8 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
         <View style={{ paddingHorizontal: 20, gap: 20 }}>
           <Button
             variant="filled"
-            style={{ height: 90, paddingHorizontal: 30 }}
+            height={90}
+            style={{ paddingHorizontal: 30 }}
             onPress={handleOpenPress}
           >
             <View style={{ flex: 1, overflow: "hidden" }}>
@@ -377,7 +378,8 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
             {!isReadOnly && (
               <Button
                 variant="outlined"
-                style={{ height: 70, flex: 1 }}
+                height={70}
+                containerStyle={{ flex: 1 }}
                 onPress={handleDeletePress}
               >
                 <Icon>remove_circle</Icon>
@@ -387,7 +389,8 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
             {item.type !== "IMAGE" && !isReadOnly && (
               <Button
                 variant="outlined"
-                style={{ height: 70, flex: 1 }}
+                height={70}
+                containerStyle={{ flex: 1 }}
                 onPress={handleEditPress}
               >
                 <Icon>edit_square</Icon>
