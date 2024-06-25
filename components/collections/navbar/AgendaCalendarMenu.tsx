@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -12,6 +13,7 @@ import {
 
 export function AgendaCalendarMenu() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { start }: any = useGlobalSearchParams();
   const { agendaView, mode } = useLocalSearchParams();
 
@@ -29,14 +31,14 @@ export function AgendaCalendarMenu() {
       trigger={
         <Button
           backgroundColors={{
-            default: theme[3],
-            hovered: theme[4],
-            pressed: theme[5],
+            default: breakpoints.md ? "transparent" : theme[3],
+            hovered: breakpoints.md ? "transparent" : theme[4],
+            pressed: breakpoints.md ? "transparent" : theme[5],
           }}
           borderColors={{
-            default: theme[3],
-            hovered: theme[4],
-            pressed: theme[5],
+            default: breakpoints.md ? "transparent" : theme[3],
+            hovered: breakpoints.md ? "transparent" : theme[4],
+            pressed: breakpoints.md ? "transparent" : theme[5],
           }}
         >
           <Text numberOfLines={1} weight={600}>
