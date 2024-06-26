@@ -28,16 +28,20 @@ export function CreateLabelModal({
   mutate,
   onClose = () => null,
   onCreate = () => null,
+  sheetRef = null,
 }: {
   children: ReactElement;
   mutate: any;
   onClose?: () => void;
   onCreate?: (newLabel: any) => void;
+  sheetRef?: React.RefObject<BottomSheetModal>;
 }) {
   const theme = useColorTheme();
-  const ref = useRef<BottomSheetModal>(null);
+  const _ref = useRef<BottomSheetModal>(null);
   const { sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+
+  const ref = sheetRef || _ref;
 
   const handleOpen = useCallback(() => {
     Keyboard.dismiss();

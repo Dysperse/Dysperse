@@ -325,10 +325,21 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const theme = useColorTheme();
   const { mutate } = useSWRConfig();
   const itemRef = useRef<BottomSheetModal>(null);
+  const labelRef = useRef<BottomSheetModal>(null);
 
   useHotkeys(["ctrl+n", "shift+n"], (e) => {
     e.preventDefault();
     itemRef.current?.present();
+  });
+
+  useHotkeys(["ctrl+shift+n"], (e) => {
+    e.preventDefault();
+    router.push("/collections/create");
+  });
+
+  useHotkeys(["ctrl+shift+l"], (e) => {
+    e.preventDefault();
+    labelRef.current?.present();
   });
 
   const menuRef = useRef(null);
@@ -355,7 +366,10 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           },
           {
             renderer: () => (
-              <CreateLabelModal mutate={() => mutate(() => true)}>
+              <CreateLabelModal
+                sheetRef={labelRef}
+                mutate={() => mutate(() => true)}
+              >
                 <MenuItem>
                   <Icon>label</Icon>
                   <Text variant="menuItem">Label</Text>
