@@ -100,7 +100,7 @@ export function Content() {
 
   const tasks = data?.reduce((acc, col) => {
     return acc.concat(
-      col.tasks.map((task) => ({
+      (col?.tasks || []).map((task) => ({
         ...task,
         dateRange: [col.start, col.end],
       }))
@@ -109,7 +109,7 @@ export function Content() {
 
   const filteredEvents = useMemo(
     () =>
-      tasks
+      (tasks || [])
         .filter((e) => e.start || e.recurrenceRule)
         .map(
           (task) =>
