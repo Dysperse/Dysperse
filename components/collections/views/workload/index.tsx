@@ -253,78 +253,68 @@ const StoryPoint = ({
         scale={scale}
         index={index}
       />
+      {isReadOnly ? null : (
+        <>
+          <View
+            style={[styles.header, { paddingHorizontal: 10, paddingTop: 10 }]}
+          >
+            <CreateTask
+              defaultValues={{
+                collectionId: data?.id === "all" ? undefined : data?.id,
+                date: dayjs(),
+                storyPoints: scale,
+              }}
+              mutate={(newTask) => {
+                mutate((oldData) => {
+                  const labelIndex = oldData.labels.findIndex(
+                    (l) => l.id === newTask.label?.id
+                  );
+                  if (labelIndex === -1) {
+                    return {
+                      ...oldData,
+                      entities: [...oldData.entities, newTask],
+                    };
+                  }
+
+                  return {
+                    ...oldData,
+                    labels: [
+                      ...oldData.labels.slice(0, labelIndex),
+                      {
+                        ...oldData.labels[labelIndex],
+                        entities: [
+                          ...oldData.labels[labelIndex].entities,
+                          newTask,
+                        ],
+                      },
+                      ...oldData.labels.slice(labelIndex + 1),
+                    ],
+                  };
+                });
+              }}
+            >
+              <Button
+                variant="filled"
+                height={60}
+                containerStyle={{ flex: 1, marginTop: 15 }}
+                disabled={isReadOnly}
+              >
+                <ButtonText>New</ButtonText>
+                <Icon>add</Icon>
+              </Button>
+            </CreateTask>
+          </View>
+
+          {filteredTasks.length > 0 &&
+            !filteredTasks.find(
+              (task) =>
+                task.recurrenceRule ||
+                (!task.recurrenceRule && task.completionInstances.length === 0)
+            ) && <ColumnFinishedComponent />}
+        </>
+      )}
       <FlashList
         ref={columnRef}
-        ListHeaderComponent={
-          isReadOnly ? null : (
-            <>
-              <View style={styles.header}>
-                <CreateTask
-                  defaultValues={{
-                    collectionId: data?.id === "all" ? undefined : data?.id,
-                    date: dayjs(),
-                    storyPoints: scale,
-                  }}
-                  mutate={(newTask) => {
-                    mutate((oldData) => {
-                      const labelIndex = oldData.labels.findIndex(
-                        (l) => l.id === newTask.label?.id
-                      );
-                      if (labelIndex === -1) {
-                        return {
-                          ...oldData,
-                          entities: [...oldData.entities, newTask],
-                        };
-                      }
-
-                      return {
-                        ...oldData,
-                        labels: [
-                          ...oldData.labels.slice(0, labelIndex),
-                          {
-                            ...oldData.labels[labelIndex],
-                            entities: [
-                              ...oldData.labels[labelIndex].entities,
-                              newTask,
-                            ],
-                          },
-                          ...oldData.labels.slice(labelIndex + 1),
-                        ],
-                      };
-                    });
-                  }}
-                >
-                  <Button
-                    variant="filled"
-                    height={60}
-                    containerStyle={{ flex: 1, marginTop: 15 }}
-                    disabled={isReadOnly}
-                  >
-                    <ButtonText>New</ButtonText>
-                    <Icon>add</Icon>
-                  </Button>
-                </CreateTask>
-                {/* <ColumnMenu
-                  column={column}
-                  onTaskUpdate={onTaskUpdate}
-                  columnMenuRef={columnMenuRef}
-                >
-                  <Button variant="outlined" style={{ height: 50 }}>
-                    <Icon>more_horiz</Icon>
-                  </Button>
-                </ColumnMenu> */}
-              </View>
-
-              {filteredTasks.length > 0 &&
-                !filteredTasks.find(
-                  (task) =>
-                    task.recurrenceRule ||
-                    (!task.recurrenceRule &&
-                      task.completionInstances.length === 0)
-                ) && <ColumnFinishedComponent />}
-            </>
-          )
-        }
         data={filteredTasks
           .sort((a, b) =>
             a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
@@ -341,10 +331,6 @@ const StoryPoint = ({
         contentContainerStyle={{
           padding: 15,
           paddingBottom: 50,
-        }}
-        style={{
-          flex: 1,
-          maxHeight: "100%",
         }}
         centerContent={filteredTasks.length === 0}
         ListEmptyComponent={() => <ColumnEmptyComponent />}

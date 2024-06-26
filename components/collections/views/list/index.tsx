@@ -95,9 +95,16 @@ export default function List() {
               alignItems: "center",
               height: "100%",
               width: "100%",
+              padding: 20,
             }}
           >
-            <Text>
+            <Text
+              style={{
+                fontSize: 20,
+                opacity: 0.6,
+              }}
+              weight={900}
+            >
               No labels found. Create a label to start adding tasks to it.
             </Text>
           </View>
