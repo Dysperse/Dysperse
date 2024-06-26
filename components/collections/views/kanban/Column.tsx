@@ -11,10 +11,16 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRef, useState } from "react";
-import { Pressable, View } from "react-native";
-import { FlatList, RefreshControl } from "react-native-gesture-handler";
+import { useEffect, useRef, useState } from "react";
+import { InteractionManager, Pressable, View } from "react-native";
+import { RefreshControl } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
@@ -71,6 +77,15 @@ export function Column(props: ColumnProps) {
   const [refreshing] = useState(false);
 
   const isReadOnly = access?.access === "READ_ONLY";
+
+  const opacity = useSharedValue(0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+  }));
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
+  }, []);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
@@ -160,8 +175,9 @@ export function Column(props: ColumnProps) {
         : 0
     );
   return (
-    <View
-      style={
+    <Animated.View
+      style={[
+        opacityStyle,
         props.grid
           ? {
               position: "relative",
@@ -185,8 +201,8 @@ export function Column(props: ColumnProps) {
               flex: 1,
               minWidth: 5,
               minHeight: 5,
-            }
-      }
+            },
+      ]}
     >
       <Pressable
         style={({ hovered, pressed }) => ({
@@ -218,7 +234,7 @@ export function Column(props: ColumnProps) {
         }}
         colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
       />
-      <FlatList
+      <FlashList
         ref={columnRef}
         refreshControl={
           <RefreshControl
@@ -273,13 +289,10 @@ export function Column(props: ColumnProps) {
           )
         }
         data={data}
-        // estimatedItemSize={200}
-        initialNumToRender={10}
+        estimatedItemSize={300}
         contentContainerStyle={{
           padding: 15,
           paddingTop: 15,
-          gap: 5,
-          minHeight: "100%",
           paddingBottom: insets.bottom + 15,
         }}
         renderItem={({ item }) => (
@@ -292,6 +305,6 @@ export function Column(props: ColumnProps) {
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}
       />
-    </View>
+    </Animated.View>
   );
 }

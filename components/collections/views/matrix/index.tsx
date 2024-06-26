@@ -8,8 +8,9 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  InteractionManager,
   Platform,
   Pressable,
   ScrollView,
@@ -313,6 +314,15 @@ export default function Matrix() {
     ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
   ];
 
+  const opacity = useSharedValue(0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+  }));
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
+  }, []);
+
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
       (oldData) => {
@@ -421,8 +431,9 @@ export default function Matrix() {
   );
   const padding = breakpoints.md ? 20 : currentColumn ? 0 : 20;
   return (
-    <View
+    <Animated.View
       style={[
+        opacityStyle,
         styles.container,
         { padding },
         { paddingBottom: (currentColumn ? 0 : insets.bottom) + padding },
@@ -522,6 +533,6 @@ export default function Matrix() {
           handleHome={() => setCurrentColumn(null)}
         />
       )}
-    </View>
+    </Animated.View>
   );
 }

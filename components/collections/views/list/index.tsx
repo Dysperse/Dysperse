@@ -6,8 +6,19 @@ import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRef } from "react";
-import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import { useEffect, useRef } from "react";
+import {
+  InteractionManager,
+  Platform,
+  Pressable,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 import { KanbanHeader } from "../kanban/Header";
@@ -58,103 +69,114 @@ export default function List() {
   const { width } = useWindowDimensions();
   const ref = useRef(null);
 
+  const opacity = useSharedValue(0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+  }));
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
+  }, []);
+
   return (
-    <FlashList
-      data={d}
-      ref={ref}
-      stickyHeaderIndices={d
-        .map((item, index) => (item.header ? index : -1))
-        .filter((index) => index !== -1)}
-      centerContent={d.length === 0}
-      ListEmptyComponent={() => (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          <Text>
-            No labels found. Create a label to start adding tasks to it.
-          </Text>
-        </View>
-      )}
-      renderItem={({ item }: any) => {
-        if (item.empty) {
-          return (
-            <View>
-              <ColumnEmptyComponent />
-            </View>
-          );
-        } else if (item.header) {
-          // Rendering header
-          return (
-            <LinearGradient colors={[theme[1], "transparent"]}>
-              <Pressable
-                onPress={() => {
-                  ref.current?.scrollToIndex({
-                    index: d.indexOf(item),
-                    animated: true,
-                  });
-                }}
-                style={{
-                  margin: 10,
-                  width: 750,
-                  maxWidth: width - 40,
-                  marginHorizontal: "auto",
-                  borderRadius: 99,
-                  overflow: "hidden",
-                  backgroundColor: addHslAlpha(
-                    theme[3],
-                    Platform.OS === "android" ? 1 : 0.5
-                  ),
-                  borderWidth: 1,
-                  borderColor: addHslAlpha(theme[7], 0.3),
-                }}
-              >
-                <BlurView
-                  experimentalBlurMethod="dimezisBlurView"
-                  intensity={Platform.OS === "android" ? 0 : 50}
-                  tint={!isDark ? "prominent" : "systemMaterialDark"}
+    <Animated.View style={[opacityStyle, { flex: 1 }]}>
+      <FlashList
+        data={d}
+        ref={ref}
+        stickyHeaderIndices={d
+          .map((item, index) => (item.header ? index : -1))
+          .filter((index) => index !== -1)}
+        centerContent={d.length === 0}
+        ListEmptyComponent={() => (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <Text>
+              No labels found. Create a label to start adding tasks to it.
+            </Text>
+          </View>
+        )}
+        renderItem={({ item }: any) => {
+          if (item.empty) {
+            return (
+              <View>
+                <ColumnEmptyComponent />
+              </View>
+            );
+          } else if (item.header) {
+            // Rendering header
+            return (
+              <LinearGradient colors={[theme[1], "transparent"]}>
+                <Pressable
+                  onPress={() => {
+                    ref.current?.scrollToIndex({
+                      index: d.indexOf(item),
+                      animated: true,
+                    });
+                  }}
                   style={{
-                    height: 80,
-                    width: "100%",
+                    margin: 10,
+                    width: 750,
+                    maxWidth: width - 40,
+                    marginHorizontal: "auto",
+                    borderRadius: 99,
                     overflow: "hidden",
-                    borderRadius: 999,
+                    backgroundColor: addHslAlpha(
+                      theme[3],
+                      Platform.OS === "android" ? 1 : 0.5
+                    ),
+                    borderWidth: 1,
+                    borderColor: addHslAlpha(theme[7], 0.3),
                   }}
                 >
-                  <KanbanHeader hideNavigation label={item} grid />
-                </BlurView>
-              </Pressable>
-            </LinearGradient>
-          );
-        } else {
-          // Render item
-          return (
-            <View
-              style={{
-                marginHorizontal: "auto",
-                width: 750,
-                maxWidth: width - 40,
-              }}
-            >
-              <Entity
-                onTaskUpdate={onTaskUpdate}
-                item={item}
-                isReadOnly={false}
-                showRelativeTime
-              />
-            </View>
-          );
-        }
-      }}
-      getItemType={(item) => {
-        // To achieve better performance, specify the type based on the item
-        return typeof item === "string" ? "sectionHeader" : "row";
-      }}
-      estimatedItemSize={100}
-    />
+                  <BlurView
+                    experimentalBlurMethod="dimezisBlurView"
+                    intensity={Platform.OS === "android" ? 0 : 50}
+                    tint={!isDark ? "prominent" : "systemMaterialDark"}
+                    style={{
+                      height: 80,
+                      width: "100%",
+                      overflow: "hidden",
+                      borderRadius: 999,
+                    }}
+                  >
+                    <KanbanHeader hideNavigation label={item} grid />
+                  </BlurView>
+                </Pressable>
+              </LinearGradient>
+            );
+          } else {
+            // Render item
+            return (
+              <View
+                style={{
+                  marginHorizontal: "auto",
+                  width: 750,
+                  maxWidth: width - 40,
+                }}
+              >
+                <Entity
+                  onTaskUpdate={onTaskUpdate}
+                  item={item}
+                  isReadOnly={false}
+                  showRelativeTime
+                />
+              </View>
+            );
+          }
+        }}
+        getItemType={(item) => {
+          // To achieve better performance, specify the type based on the item
+          return typeof item === "string" ? "sectionHeader" : "row";
+        }}
+        estimatedItemSize={100}
+      />
+    </Animated.View>
   );
 }

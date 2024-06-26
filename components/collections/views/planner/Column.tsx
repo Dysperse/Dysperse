@@ -11,14 +11,20 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { LexoRank } from "lexorank";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
+  InteractionManager,
   Pressable,
   RefreshControl,
   StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { KeyedMutator } from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -112,6 +118,15 @@ export function Column({
   const { id: collectionId } = usePlannerContext();
   const { access } = useCollectionContext();
 
+  const opacity = useSharedValue(0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+  }));
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
+  }, []);
+
   const isReadOnly = access?.access === "READ_ONLY";
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -157,19 +172,22 @@ export function Column({
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <View
-      style={{
-        ...(breakpoints.md && {
-          backgroundColor: theme[2],
-          borderWidth: 1,
-          borderColor: addHslAlpha(theme[5], 0.7),
-          borderRadius: 20,
-        }),
-        width: breakpoints.md ? 320 : width,
-        flex: 1,
-        minWidth: 5,
-        minHeight: 5,
-      }}
+    <Animated.View
+      style={[
+        opacityStyle,
+        {
+          ...(breakpoints.md && {
+            backgroundColor: theme[2],
+            borderWidth: 1,
+            borderColor: addHslAlpha(theme[5], 0.7),
+            borderRadius: 20,
+          }),
+          width: breakpoints.md ? 320 : width,
+          flex: 1,
+          minWidth: 5,
+          minHeight: 5,
+        },
+      ]}
     >
       <Pressable
         style={({ hovered, pressed }) => ({
@@ -182,6 +200,85 @@ export function Column({
         {breakpoints.md && <Header start={column.start} end={column.end} />}
       </Pressable>
 
+      {isReadOnly ? null : (
+        <>
+          <View
+            style={[
+              styles.header,
+              {
+                marginTop: 50,
+                marginBottom: -40,
+                paddingHorizontal: 10,
+              },
+            ]}
+          >
+            <CreateTask
+              defaultValues={{
+                dateOnly: true,
+                collectionId: collectionId === "all" ? undefined : collectionId,
+                date: dayjs(column.start),
+                agendaOrder: LexoRank.parse(
+                  column.tasks[column.tasks.length - 1]?.agendaOrder ||
+                    LexoRank.max().toString()
+                )
+                  .genNext()
+                  .toString(),
+              }}
+              mutate={(newTask) => {
+                console.log(newTask);
+                if (!newTask) return;
+                if (
+                  !dayjs(newTask.start)
+                    .utc()
+                    .isBetween(
+                      dayjs(column.start),
+                      dayjs(column.end),
+                      null,
+                      "[]"
+                    ) ||
+                  !newTask.start
+                )
+                  return;
+
+                mutate(
+                  (oldData) =>
+                    oldData.map((oldColumn) =>
+                      oldColumn.start === column.start &&
+                      oldColumn.end === column.end
+                        ? {
+                            ...oldColumn,
+                            tasks: [...oldColumn.tasks, newTask],
+                          }
+                        : oldColumn
+                    ),
+                  {
+                    revalidate: false,
+                  }
+                );
+              }}
+            >
+              <Button variant="filled" containerStyle={{ flex: 1 }} height={50}>
+                <ButtonText>New</ButtonText>
+                <Icon>add</Icon>
+              </Button>
+            </CreateTask>
+          </View>
+
+          {column.tasks.length > 0 &&
+            !column.tasks.find((task) =>
+              task.recurrenceRule
+                ? !task.completionInstances.find((instance) =>
+                    dayjs(instance.iteration).isBetween(
+                      dayjs(column.start),
+                      dayjs(column.end),
+                      "day",
+                      "[]"
+                    )
+                  )
+                : task.completionInstances.length === 0
+            ) && <ColumnFinishedComponent />}
+        </>
+      )}
       {breakpoints.md && (
         <LinearGradient
           style={{
@@ -206,105 +303,20 @@ export function Column({
             tintColor={theme[11]}
           />
         }
-        ListHeaderComponent={
-          isReadOnly ? null : (
-            <>
-              <View
-                style={[
-                  styles.header,
-                  {
-                    marginTop: 5,
-                    paddingHorizontal: breakpoints.md ? 0 : 5,
-                  },
-                ]}
-              >
-                <CreateTask
-                  defaultValues={{
-                    dateOnly: true,
-                    collectionId:
-                      collectionId === "all" ? undefined : collectionId,
-                    date: dayjs(column.start),
-                    agendaOrder: LexoRank.parse(
-                      column.tasks[column.tasks.length - 1]?.agendaOrder ||
-                        LexoRank.max().toString()
-                    )
-                      .genNext()
-                      .toString(),
-                  }}
-                  mutate={(newTask) => {
-                    console.log(newTask);
-                    if (!newTask) return;
-                    if (
-                      !dayjs(newTask.start)
-                        .utc()
-                        .isBetween(
-                          dayjs(column.start),
-                          dayjs(column.end),
-                          null,
-                          "[]"
-                        ) ||
-                      !newTask.start
-                    )
-                      return;
-
-                    mutate(
-                      (oldData) =>
-                        oldData.map((oldColumn) =>
-                          oldColumn.start === column.start &&
-                          oldColumn.end === column.end
-                            ? {
-                                ...oldColumn,
-                                tasks: [...oldColumn.tasks, newTask],
-                              }
-                            : oldColumn
-                        ),
-                      {
-                        revalidate: false,
-                      }
-                    );
-                  }}
-                >
-                  <Button
-                    variant="filled"
-                    containerStyle={{ flex: 1 }}
-                    height={50}
-                  >
-                    <ButtonText>New</ButtonText>
-                    <Icon>add</Icon>
-                  </Button>
-                </CreateTask>
-              </View>
-
-              {column.tasks.length > 0 &&
-                !column.tasks.find((task) =>
-                  task.recurrenceRule
-                    ? !task.completionInstances.find((instance) =>
-                        dayjs(instance.iteration).isBetween(
-                          dayjs(column.start),
-                          dayjs(column.end),
-                          "day",
-                          "[]"
-                        )
-                      )
-                    : task.completionInstances.length === 0
-                ) && <ColumnFinishedComponent />}
-            </>
-          )
-        }
         data={sortedTasks}
-        // initialNumToRender={10}
         estimatedItemSize={100}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingBottom: 50,
           paddingTop: 15,
           paddingHorizontal: 15,
-          // gap: 0,
-          ...(column.tasks.length === 0 && { height: "100%" }),
         }}
-        style={{ flex: 1, maxHeight: "100%" }}
         centerContent={column.tasks.length === 0}
-        ListEmptyComponent={ColumnEmptyComponent}
+        ListEmptyComponent={() => (
+          <View style={{ marginVertical: "auto" }}>
+            <ColumnEmptyComponent />
+          </View>
+        )}
         renderItem={({ item }) => (
           <Entity
             showLabel
@@ -316,6 +328,6 @@ export function Column({
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}
       />
-    </View>
+    </Animated.View>
   );
 }

@@ -13,8 +13,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState, useTransition } from "react";
-import { View } from "react-native";
+import { useEffect, useState, useTransition } from "react";
+import { InteractionManager, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
@@ -40,6 +45,15 @@ export default function Stream() {
   const breakpoints = useResponsiveBreakpoints();
 
   const isReadOnly = access?.access === "READ_ONLY";
+
+  const opacity = useSharedValue(0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+  }));
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
+  }, []);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
@@ -126,7 +140,7 @@ export default function Stream() {
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <>
+    <Animated.View style={[opacityStyle, { flex: 1 }]}>
       <ButtonGroup
         options={[
           { label: "Backlog", value: "backlog" },
@@ -289,6 +303,6 @@ export default function Stream() {
         )}
         keyExtractor={(i, d) => `${i.id}-${d}`}
       />
-    </>
+    </Animated.View>
   );
 }

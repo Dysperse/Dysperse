@@ -8,11 +8,23 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import * as shapes from "@/ui/shapes";
 import Text, { getFontName } from "@/ui/Text";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
@@ -209,9 +221,19 @@ const StoryPoint = ({
     );
   };
 
+  const opacity = useSharedValue(0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+  }));
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
+  }, []);
+
   return (
-    <View
+    <Animated.View
       style={[
+        opacityStyle,
         {
           marginBottom: breakpoints.md ? 10 : 0,
           backgroundColor: theme[breakpoints.md ? 2 : 1],
@@ -231,7 +253,7 @@ const StoryPoint = ({
         scale={scale}
         index={index}
       />
-      <FlatList
+      <FlashList
         ref={columnRef}
         ListHeaderComponent={
           isReadOnly ? null : (
@@ -315,11 +337,10 @@ const StoryPoint = ({
               ? -1
               : 0
           )}
-        initialNumToRender={10}
+        estimatedItemSize={100}
         contentContainerStyle={{
           padding: 15,
           paddingBottom: 50,
-          gap: 0,
         }}
         style={{
           flex: 1,
@@ -337,7 +358,7 @@ const StoryPoint = ({
         )}
         keyExtractor={(i, d) => `${i.id}-${d}`}
       />
-    </View>
+    </Animated.View>
   );
 };
 
