@@ -2,11 +2,13 @@ import { useCollectionContext } from "@/components/collections/context";
 import { omit } from "@/helpers/omit";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 import { KanbanHeader } from "../kanban/Header";
 
@@ -17,11 +19,13 @@ export default function List() {
 
   const d = data.labels.reduce((acc, curr) => {
     acc.push({ header: true, ...omit(["entities"], curr) });
-    acc.push(
-      ...curr.entities.sort(
-        (a, b) => a.completionInstances?.length - b.completionInstances?.length
-      )
+    const t = curr.entities.sort(
+      (a, b) => a.completionInstances?.length - b.completionInstances?.length
     );
+    acc.push(...t);
+    if (t.length === 0) {
+      acc.push({ empty: true });
+    }
     return acc;
   }, []);
 
@@ -61,8 +65,30 @@ export default function List() {
       stickyHeaderIndices={d
         .map((item, index) => (item.header ? index : -1))
         .filter((index) => index !== -1)}
+      centerContent={d.length === 0}
+      ListEmptyComponent={() => (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <Text>
+            No labels found. Create a label to start adding tasks to it.
+          </Text>
+        </View>
+      )}
       renderItem={({ item }: any) => {
-        if (item.header) {
+        if (item.empty) {
+          return (
+            <View>
+              <ColumnEmptyComponent />
+            </View>
+          );
+        } else if (item.header) {
           // Rendering header
           return (
             <LinearGradient colors={[theme[1], "transparent"]}>

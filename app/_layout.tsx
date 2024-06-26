@@ -37,6 +37,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   AppState,
   Appearance,
+  InteractionManager,
   Platform,
   StatusBar,
   View,
@@ -166,31 +167,32 @@ function localStorageProvider() {
 }
 
 async function fileSystemProvider(cacheData) {
-  const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
-  const file = `${cacheDir}cache.json`;
+  InteractionManager.runAfterInteractions(async () => {
+    const cacheDir = FileSystem.cacheDirectory + "dysperse-cache/";
+    const file = `${cacheDir}cache.json`;
 
-  async function ensureDirExists() {
-    const dirInfo = await FileSystem.getInfoAsync(cacheDir);
-    if (!dirInfo.exists) {
-      console.log("Cache directory doesn't exist, creating…");
-      await FileSystem.makeDirectoryAsync(cacheDir, { intermediates: true });
+    async function ensureDirExists() {
+      const dirInfo = await FileSystem.getInfoAsync(cacheDir);
+      if (!dirInfo.exists) {
+        console.log("Cache directory doesn't exist, creating…");
+        await FileSystem.makeDirectoryAsync(cacheDir, { intermediates: true });
+      }
     }
-  }
 
-  const map = cacheData || new Map();
+    const map = cacheData || new Map();
 
-  if (map.size === 0) {
-    console.log("⛔ Cache is empty, not saving to disk.");
-    return;
-  }
-  console.log("💾 Saving cache to disk…");
-  await ensureDirExists();
-  await FileSystem.writeAsStringAsync(
-    file,
-    JSON.stringify(Array.from(map.entries()))
-  );
-  console.log(`💾 Saved ${map.size} API routes to cache! `);
-  return map;
+    if (map.size === 0) {
+      console.log("⛔ Cache is empty, not saving to disk.");
+      return;
+    }
+    console.log("💾 Saving cache to disk…");
+    await ensureDirExists();
+    await FileSystem.writeAsStringAsync(
+      file,
+      JSON.stringify(Array.from(map.entries()))
+    );
+    console.log(`💾 Saved ${map.size} API routes to cache! `);
+  });
 }
 
 function SWRWrapper({ children }) {

@@ -274,7 +274,8 @@ const StoryPoint = ({
                 >
                   <Button
                     variant="filled"
-                    style={{ flex: 1, minHeight: 50, marginTop: 15 }}
+                    height={60}
+                    containerStyle={{ flex: 1, marginTop: 15 }}
                     disabled={isReadOnly}
                   >
                     <ButtonText>New</ButtonText>

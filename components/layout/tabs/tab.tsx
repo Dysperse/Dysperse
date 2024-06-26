@@ -11,7 +11,13 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import {
+  InteractionManager,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import { useTabMetadata } from "./useTabMetadata";
 
@@ -36,7 +42,6 @@ function Tab({
   disabled = false,
   isList = false,
   selected = false,
-  handleClose = () => {},
   onLongPress = () => {},
   tabs,
   mutate,
@@ -45,7 +50,6 @@ function Tab({
   disabled?: boolean;
   isList?: boolean;
   selected?: boolean;
-  handleClose?: () => void;
   onLongPress?: () => void;
   tabs: any;
   mutate: any;
@@ -192,7 +196,6 @@ function Tab({
   );
 
   const handlePress = () => {
-    // startTransition(() => {
     router.replace({
       pathname: tab.slug,
       params: {
@@ -200,10 +203,9 @@ function Tab({
         tab: tab.id,
       },
     });
-    handleClose();
-    setTimeout(() => {
+    InteractionManager.runAfterInteractions(() => {
       if (!breakpoints.md) sidebarRef.current.closeDrawer();
-    }, 300);
+    });
   };
 
   return isClosedAnimation ? null : (

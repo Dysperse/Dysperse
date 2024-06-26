@@ -7,6 +7,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { LexoRank } from "lexorank";
@@ -18,7 +19,6 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { KeyedMutator } from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -106,7 +106,7 @@ export function Column({
   mutate: KeyedMutator<any>;
   column: any;
 }) {
-  const columnRef = useRef<FlatList>(null);
+  const columnRef = useRef(null);
   const theme = useColorTheme();
   const { width } = useWindowDimensions();
   const { id: collectionId } = usePlannerContext();
@@ -195,7 +195,7 @@ export function Column({
           colors={[theme[2], "transparent"]}
         />
       )}
-      <FlatList
+      <FlashList
         ref={columnRef}
         refreshControl={
           <RefreshControl
@@ -292,13 +292,14 @@ export function Column({
           )
         }
         data={sortedTasks}
-        initialNumToRender={10}
+        // initialNumToRender={10}
+        estimatedItemSize={100}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
           paddingBottom: 50,
           paddingTop: 15,
           paddingHorizontal: 15,
-          gap: 0,
+          // gap: 0,
           ...(column.tasks.length === 0 && { height: "100%" }),
         }}
         style={{ flex: 1, maxHeight: "100%" }}
