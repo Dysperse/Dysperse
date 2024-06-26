@@ -206,9 +206,11 @@ export function Column({
             style={[
               styles.header,
               {
-                marginTop: 50,
-                marginBottom: -40,
-                paddingHorizontal: 10,
+                marginTop: breakpoints.md ? 50 : 15,
+                marginBottom: breakpoints.md ? -40 : 15,
+                paddingHorizontal: 15,
+                gap: 0,
+                flexDirection: "column",
               },
             ]}
           >
@@ -262,21 +264,20 @@ export function Column({
                 <Icon>add</Icon>
               </Button>
             </CreateTask>
-          </View>
-
-          {column.tasks.length > 0 &&
-            !column.tasks.find((task) =>
-              task.recurrenceRule
-                ? !task.completionInstances.find((instance) =>
-                    dayjs(instance.iteration).isBetween(
-                      dayjs(column.start),
-                      dayjs(column.end),
-                      "day",
-                      "[]"
+            {column.tasks.length > 0 &&
+              !column.tasks.find((task) =>
+                task.recurrenceRule
+                  ? !task.completionInstances.find((instance) =>
+                      dayjs(instance.iteration).isBetween(
+                        dayjs(column.start),
+                        dayjs(column.end),
+                        "day",
+                        "[]"
+                      )
                     )
-                  )
-                : task.completionInstances.length === 0
-            ) && <ColumnFinishedComponent />}
+                  : task.completionInstances.length === 0
+              ) && <ColumnFinishedComponent />}
+          </View>
         </>
       )}
       {breakpoints.md && (

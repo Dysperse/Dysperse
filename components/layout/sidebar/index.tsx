@@ -19,6 +19,7 @@ import { Portal } from "@gorhom/portal";
 import { router, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
+  InteractionManager,
   Linking,
   Animated as NativeAnimated,
   Platform,
@@ -65,7 +66,9 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
 
   const handleHome = useCallback(() => {
     router.replace("/");
-    if (!breakpoints.md) sidebarRef.current.closeDrawer();
+    InteractionManager.runAfterInteractions(() => {
+      if (!breakpoints.md) sidebarRef.current.closeDrawer();
+    });
   }, [sidebarRef, breakpoints]);
 
   const theme = useColorTheme();
