@@ -2,7 +2,7 @@ import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
@@ -20,6 +20,22 @@ const styles = StyleSheet.create({
   },
 });
 
+const shapesLength = Array.from({ length: 7 }, (_, i) => `shape${i + 1}`);
+
+const messages = [
+  ["1f92b", "Shhh!", "It's quiet here!"],
+  ["1f60a", "Enjoy the calm!", "Take a breather"],
+  ["1f92b", "Silence is golden!", "Embrace the quiet"],
+  ["1f60c", "Pause and relax!", "No plans, no worries"],
+  ["1fab4", "Positive vibes", "Idea: Free time?"],
+  ["1f4ab", "Energize yourself", "Maybe get some sleep?"],
+  ["1fae0", "Peaceful moment!", "Savor the tranquility"],
+  ["26c5", "Own your day!", "Effort = Results"],
+  ["1f44a", "You're unstoppable!", "Quick stretch or snack"],
+  ["1f5ff", "Crushing it!", "No task is too big"],
+  ["1f985", "Look at yourself", "You're beautiful."],
+];
+
 export const ColumnEmptyComponent = function ColumnEmptyComponent({
   row,
   dense,
@@ -29,25 +45,15 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
 }) {
   const theme = useColorTheme();
 
-  const shapesLength = Array.from({ length: 7 }, (_, i) => `shape${i + 1}`);
-  const Shape =
-    shapes[shapesLength[Math.floor(Math.random() * shapesLength.length)]];
+  const message = useMemo(
+    () => messages[Math.floor(Math.random() * messages.length)],
+    []
+  );
 
-  const messages = [
-    ["1f92b", "Shhh!", "It's quiet here!"],
-    ["1f60a", "Enjoy the calm!", "Take a breather"],
-    ["1f92b", "Silence is golden!", "Embrace the quiet"],
-    ["1f60c", "Pause and relax!", "No plans, no worries"],
-    ["1fab4", "Positive vibes", "Idea: Free time?"],
-    ["1f4ab", "Energize yourself", "Maybe get some sleep?"],
-    ["1fae0", "Peaceful moment!", "Savor the tranquility"],
-    ["26c5", "Own your day!", "Effort = Results"],
-    ["1f44a", "You're unstoppable!", "Quick stretch or snack"],
-    ["1f5ff", "Crushing it!", "No task is too big"],
-    ["1f985", "Look at yourself", "You're beautiful."],
-  ];
-
-  const message = messages[Math.floor(Math.random() * messages.length)];
+  const Shape = useMemo(
+    () => shapes[shapesLength[Math.floor(Math.random() * shapesLength.length)]],
+    []
+  );
 
   return (
     <View

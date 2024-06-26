@@ -9,6 +9,5 @@ export const columnStyles = StyleSheet.create({
     padding: 20,
     paddingBottom: 0,
     paddingHorizontal: 25,
-    marginBottom: -30,
   },
 });

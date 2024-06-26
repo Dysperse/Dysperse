@@ -1,4 +1,3 @@
-import { styles } from "@/app/(app)/[tab]/collections/[id]/[type]";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { KanbanHeader } from "@/components/collections/views/kanban/Header";
@@ -223,12 +222,42 @@ export function Column(props: ColumnProps) {
           }}
         />
       </Pressable>
+      {props.grid ? undefined : (
+        <>
+          {!isReadOnly && (
+            <View style={{ padding: 15 }}>
+              <CreateTask
+                mutate={(n) => onEntityCreate(n, props.label)}
+                defaultValues={{
+                  label: omit(["entities"], props.label),
+                  collectionId: collectionData.id,
+                  date: null,
+                }}
+              >
+                <Button
+                  variant="filled"
+                  height={50}
+                  containerStyle={{ flex: 1 }}
+                >
+                  <Icon>add</Icon>
+                  <ButtonText>Create</ButtonText>
+                </Button>
+              </CreateTask>
+            </View>
+          )}
+
+          {(props.label ? props.label.entities : props.entities).length > 0 &&
+            (props.label ? props.label.entities : props.entities).filter(
+              (e) => e.completionInstances.length === 0
+            ).length === 0 && <ColumnFinishedComponent />}
+        </>
+      )}
       <LinearGradient
         style={{
           width: "100%",
           height: 30,
           zIndex: 1,
-          marginTop: 30,
+          marginTop: breakpoints.md ? -15 : 34,
           marginBottom: -30,
           pointerEvents: "none",
         }}
@@ -247,47 +276,6 @@ export function Column(props: ColumnProps) {
         }
         centerContent={data.length === 0}
         ListEmptyComponent={() => <ColumnEmptyComponent row={props.grid} />}
-        ListHeaderComponent={
-          props.grid ? undefined : (
-            <>
-              {!isReadOnly && (
-                <View
-                  style={[
-                    styles.header,
-                    {
-                      paddingHorizontal: 0,
-                      paddingTop: 20,
-                    },
-                  ]}
-                >
-                  <CreateTask
-                    mutate={(n) => onEntityCreate(n, props.label)}
-                    defaultValues={{
-                      label: omit(["entities"], props.label),
-                      collectionId: collectionData.id,
-                      date: null,
-                    }}
-                  >
-                    <Button
-                      variant="filled"
-                      height={50}
-                      containerStyle={{ flex: 1 }}
-                    >
-                      <Icon>add</Icon>
-                      <ButtonText>Create</ButtonText>
-                    </Button>
-                  </CreateTask>
-                </View>
-              )}
-
-              {(props.label ? props.label.entities : props.entities).length >
-                0 &&
-                (props.label ? props.label.entities : props.entities).filter(
-                  (e) => e.completionInstances.length === 0
-                ).length === 0 && <ColumnFinishedComponent />}
-            </>
-          )
-        }
         data={data}
         estimatedItemSize={300}
         contentContainerStyle={{
@@ -303,7 +291,7 @@ export function Column(props: ColumnProps) {
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
           />
         )}
-        keyExtractor={(i: any, d) => `${i.id}-${d}`}
+        keyExtractor={(i: any, d) => i.id}
       />
     </Animated.View>
   );

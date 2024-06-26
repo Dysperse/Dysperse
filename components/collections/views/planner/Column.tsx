@@ -16,7 +16,6 @@ import {
   InteractionManager,
   Pressable,
   RefreshControl,
-  StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -30,15 +29,6 @@ import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { ColumnFinishedComponent } from "../kanban/Column";
 import { usePlannerContext } from "./context";
-
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    paddingBottom: 10,
-    gap: 10,
-    marginTop: -15,
-  },
-});
 
 export const onTaskUpdate = (newTask, mutate, column) => {
   mutate(
@@ -204,10 +194,9 @@ export function Column({
         <>
           <View
             style={[
-              styles.header,
               {
-                marginTop: breakpoints.md ? 50 : 15,
-                marginBottom: breakpoints.md ? -40 : 15,
+                marginTop: 15,
+                marginBottom: breakpoints.md ? -30 : 18,
                 paddingHorizontal: 15,
                 gap: 0,
                 flexDirection: "column",
@@ -280,19 +269,17 @@ export function Column({
           </View>
         </>
       )}
-      {breakpoints.md && (
-        <LinearGradient
-          style={{
-            width: "100%",
-            height: 30,
-            zIndex: 1,
-            marginTop: 30,
-            marginBottom: -30,
-            pointerEvents: "none",
-          }}
-          colors={[theme[2], "transparent"]}
-        />
-      )}
+      <LinearGradient
+        style={{
+          width: "100%",
+          height: 30,
+          zIndex: 1,
+          marginTop: 30,
+          marginBottom: -30,
+          pointerEvents: "none",
+        }}
+        colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
+      />
       <FlashList
         ref={columnRef}
         refreshControl={
