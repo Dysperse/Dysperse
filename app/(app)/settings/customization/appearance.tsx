@@ -3,6 +3,7 @@ import { settingStyles } from "@/components/settings/settingsStyles";
 import themes from "@/components/themes.json";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -136,6 +137,7 @@ function ThemePicker({ children }: { children: React.ReactElement<any> }) {
     <>
       {trigger}
       <BottomSheet
+        enableContentPanningGesture={false}
         sheetRef={ref}
         snapPoints={[height - 20]}
         onClose={handleClose}
@@ -281,6 +283,7 @@ function ThemePicker({ children }: { children: React.ReactElement<any> }) {
 
 export default function Page() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { session, mutate, sessionToken } = useUser();
   const themeText = themes[session?.user?.profile?.theme || "mint"];
 
@@ -297,19 +300,41 @@ export default function Page() {
               backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
               borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
               alignItems: "center",
-              flexDirection: "row",
-              gap: 20,
+              justifyContent: breakpoints.md ? undefined : "center",
+              flexDirection: breakpoints.md ? "row" : "column",
+              gap: breakpoints.md ? 20 : 5,
+            },
+            !breakpoints.md && {
+              padding: 20,
             },
           ]}
         >
-          <Icon style={styles.themeCardIcon} size={100}>
+          <Icon
+            style={[
+              styles.themeCardIcon,
+              !breakpoints.md && { marginBottom: -20 },
+            ]}
+            size={breakpoints.md ? 100 : 140}
+          >
             hexagon
           </Icon>
           <View style={{ flex: 1 }}>
-            <Text style={styles.cardTitle} weight={900}>
+            <Text
+              style={[
+                styles.cardTitle,
+                !breakpoints.md && { textAlign: "center" },
+              ]}
+              weight={900}
+            >
               {themeText.name}
             </Text>
-            <Text style={styles.cardDescription} weight={300}>
+            <Text
+              style={[
+                styles.cardDescription,
+                !breakpoints.md && { textAlign: "center" },
+              ]}
+              weight={300}
+            >
               {themeText.description}
             </Text>
           </View>
