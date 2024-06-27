@@ -8,7 +8,6 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { BlurView } from "expo-blur";
 import React, { cloneElement, useCallback, useState } from "react";
 import { Pressable, View } from "react-native";
 import { RRule } from "rrule";
@@ -41,10 +40,10 @@ function Header({ title, handleClose }: { title: string; handleClose: any }) {
       </Text>
       <Button
         variant="filled"
-        large
         style={({ pressed, hovered }) => ({
           backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
         })}
+        containerStyle={{ width: 120 }}
         onPress={handleClose}
       >
         <ButtonText>Done</ButtonText>
@@ -136,57 +135,53 @@ function TaskDatePicker({
           },
         })}
       >
-        <BlurView
-          experimentalBlurMethod="dimezisBlurView"
-          tint="extraLight"
-          intensity={15}
-          style={{ flex: 1 }}
+        <Pressable
+          onPress={handleClose}
+          style={{ flex: 1, paddingHorizontal: 20 }}
         >
-          <Pressable onPress={handleClose} style={{ flex: 1 }}>
-            <Pressable
-              onPress={(e) => e.stopPropagation()}
-              style={{
-                marginVertical: "auto",
-                backgroundColor: theme[2],
-                borderRadius: 20,
-                paddingBottom: 15,
-                maxWidth: 750,
-                width: "100%",
-                overflow: "hidden",
-                marginHorizontal: "auto",
-                shadowRadius: 50,
-                shadowOffset: {
-                  width: 20,
-                  height: 20,
-                },
-                shadowColor: "rgba(0,0,0,0.12)",
-              }}
-            >
-              <Header title={title} handleClose={handleClose} />
-              <BottomSheetScrollView>
-                {dueDateOnly !== true && (
-                  <ButtonGroup
-                    options={[
-                      { value: "date", label: "Date" },
-                      { value: "recurrence", label: "Repeat" },
-                    ]}
-                    state={[view, setView]}
-                    containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
-                  />
-                )}
-                {view === "date" ? (
-                  <DueDatePicker
-                    watch={watch}
-                    setValue={setValue}
-                    value={dueDate}
-                  />
-                ) : (
-                  <RecurrencePicker setValue={setValue} value={recurrence} />
-                )}
-              </BottomSheetScrollView>
-            </Pressable>
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={{
+              marginVertical: "auto",
+              backgroundColor: theme[2],
+              borderRadius: 20,
+              paddingBottom: 15,
+              maxWidth: 750,
+              width: "100%",
+              overflow: "hidden",
+              marginHorizontal: "auto",
+              shadowRadius: 50,
+              shadowOffset: {
+                width: 20,
+                height: 20,
+              },
+              shadowColor: "rgba(0,0,0,0.12)",
+            }}
+          >
+            <Header title={title} handleClose={handleClose} />
+            <BottomSheetScrollView>
+              {dueDateOnly !== true && (
+                <ButtonGroup
+                  options={[
+                    { value: "date", label: "Date" },
+                    { value: "recurrence", label: "Repeat" },
+                  ]}
+                  state={[view, setView]}
+                  containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
+                />
+              )}
+              {view === "date" ? (
+                <DueDatePicker
+                  watch={watch}
+                  setValue={setValue}
+                  value={dueDate}
+                />
+              ) : (
+                <RecurrencePicker setValue={setValue} value={recurrence} />
+              )}
+            </BottomSheetScrollView>
           </Pressable>
-        </BlurView>
+        </Pressable>
       </BottomSheet>
     </>
   );

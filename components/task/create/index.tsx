@@ -1541,7 +1541,6 @@ const CreateTask = forwardRef(
 
     const handleClose = useCallback(() => {
       ref.current?.close();
-      mutate?.(null);
     }, [mutate]);
 
     const { isReached } = useStorageContext();
