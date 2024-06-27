@@ -138,7 +138,8 @@ function ErrorBoundaryComponent() {
                 Updates.reloadAsync();
               }}
               variant="outlined"
-              style={{ marginTop: 10 }}
+              height={60}
+              containerStyle={{ marginTop: 10 }}
             >
               <ButtonText>Reload</ButtonText>
             </Button>
