@@ -5,15 +5,19 @@ import Icon from "@/ui/Icon";
 import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Redirect, router } from "expo-router";
-import { ImageBackground, Linking, StatusBar, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  ImageBackground,
+  Linking,
+  StatusBar,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { authStyles } from "../../components/authStyles";
 
 export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const insets = useSafeAreaInsets();
-
+  const { width, height } = useWindowDimensions();
   const handleLoginPress = () => router.push("/auth/sign-in");
   const handleSignUpPress = () => router.push("/auth/sign-up");
   const openHomePage = () =>
@@ -28,6 +32,11 @@ export default function Page() {
         source={require("@/assets/login.png")}
         style={{
           flex: 1,
+        }}
+        imageStyle={{
+          resizeMode: "cover",
+          width,
+          height,
         }}
       >
         <View
