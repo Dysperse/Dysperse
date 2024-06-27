@@ -26,7 +26,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, View } from "react-native";
+import { Keyboard, KeyboardAvoidingView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -78,70 +78,73 @@ const Suggestions = ({ watch, setValue }) => {
             top: 0,
             left: 0,
             width: "100%",
+            zIndex: 99,
+            height: 5,
           }}
         >
-          <IndeterminateProgressBar />
+          <IndeterminateProgressBar height={5} />
         </View>
       )}
 
-      <FlashList
-        data={data}
-        estimatedItemSize={100}
-        centerContent={!data || data?.length === 0}
-        contentContainerStyle={{ padding: 10 }}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              flex: 1,
-            }}
+      {!data || data?.length === 0 ? (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+          }}
+        >
+          <Emoji
+            emoji={debouncedQuery.length > 2 ? "1F614" : "1f50d"}
+            size={50}
+            style={{ marginBottom: 10 }}
+          />
+          <Text
+            style={{ textAlign: "center", opacity: 0.4, color: theme[11] }}
+            weight={900}
           >
-            <Emoji
-              emoji={debouncedQuery.length > 2 ? "1F614" : "1f50d"}
-              size={50}
-              style={{ marginBottom: 10 }}
-            />
-            <Text
-              style={{ textAlign: "center", opacity: 0.4, color: theme[11] }}
-              weight={900}
+            {debouncedQuery.length > 2
+              ? "No users found"
+              : "Start typing to search for users"}
+          </Text>
+        </View>
+      ) : (
+        <FlashList
+          data={data}
+          estimatedItemSize={100}
+          centerContent={!data || data?.length === 0}
+          contentContainerStyle={{ padding: 10 }}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <ListItemButton
+              onPress={() => setValue("email", item.username || item.email)}
             >
-              {debouncedQuery.length > 2
-                ? "No users found"
-                : "Start typing to search for users"}
-            </Text>
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <ListItemButton
-            onPress={() => setValue("email", item.username || item.email)}
-          >
-            <ProfilePicture
-              style={{ pointerEvents: "none" }}
-              name={item.profile?.name || "--"}
-              image={item.profile?.picture}
-              size={40}
-            />
-            <ListItemText
-              primary={item?.profile?.name}
-              secondary={`${item?.username ? "@" : ""}${
-                item?.username || item?.email
-              } • Active ${dayjs(item?.profile?.lastActive).fromNow()}`}
-            />
-            {query === item?.email && (
-              <Avatar
-                icon="check"
-                style={{
-                  backgroundColor: theme[11],
-                  borderRadius: 99,
-                }}
-                iconProps={{ style: { color: theme[2] } }}
+              <ProfilePicture
+                style={{ pointerEvents: "none" }}
+                name={item.profile?.name || "--"}
+                image={item.profile?.picture}
+                size={40}
               />
-            )}
-          </ListItemButton>
-        )}
-      />
+              <ListItemText
+                primary={item?.profile?.name}
+                secondary={`${item?.username ? "@" : ""}${
+                  item?.username || item?.email
+                } • Active ${dayjs(item?.profile?.lastActive).fromNow()}`}
+              />
+              {query === item?.email && (
+                <Avatar
+                  icon="check"
+                  style={{
+                    backgroundColor: theme[11],
+                    borderRadius: 99,
+                  }}
+                  iconProps={{ style: { color: theme[2] } }}
+                />
+              )}
+            </ListItemButton>
+          )}
+        />
+      )}
     </View>
   );
 };
@@ -157,6 +160,7 @@ function AddFriend({ friends, mutate, setView }) {
   });
 
   const { session } = useSession();
+  const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
 
   const onSubmit = async (values) => {
@@ -189,7 +193,16 @@ function AddFriend({ friends, mutate, setView }) {
   };
 
   return (
-    <View style={{ gap: 20, flex: 1, padding: 20 }}>
+    <KeyboardAvoidingView
+      behavior="height"
+      style={{
+        gap: 20,
+        flex: 1,
+        padding: 20,
+        paddingTop: insets.top + 20,
+        paddingBottom: insets.bottom + 20,
+      }}
+    >
       {breakpoints.md && (
         <Text style={{ fontSize: 30, marginTop: 20 }} weight={900}>
           Add friends
@@ -249,7 +262,7 @@ function AddFriend({ friends, mutate, setView }) {
         </ButtonText>
         <Icon bold>send</Icon>
       </Button>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -410,8 +423,8 @@ export default function Page() {
           Friends
         </Text>
         <Button
+          containerStyle={{ width: 100 }}
           variant="filled"
-          style={{ paddingHorizontal: 25 }}
           onPress={() => setView("search")}
         >
           <Icon>person_add</Icon>
