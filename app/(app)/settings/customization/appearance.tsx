@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   button: { height: 80 },
   themeCardIcon: { textAlign: "center" },
   cardTitle: { fontSize: 30 },
-  cardDescription: { opacity: 0.5, fontSize: 20 },
+  cardDescription: { opacity: 0.5, fontSize: 17 },
 });
 
 const themePickerStyles = StyleSheet.create({
@@ -302,7 +302,7 @@ export default function Page() {
               alignItems: "center",
               justifyContent: breakpoints.md ? undefined : "center",
               flexDirection: breakpoints.md ? "row" : "column",
-              gap: breakpoints.md ? 20 : 5,
+              gap: breakpoints.md ? 20 : 10,
             },
             !breakpoints.md && {
               padding: 20,
@@ -333,7 +333,7 @@ export default function Page() {
                 styles.cardDescription,
                 !breakpoints.md && { textAlign: "center" },
               ]}
-              weight={300}
+              weight={500}
             >
               {themeText.description}
             </Text>
