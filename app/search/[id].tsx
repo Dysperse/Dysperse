@@ -140,7 +140,8 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 setQuery("");
                 setActiveFilters([]);
               }}
-              style={{ height: 40 }}
+              height={40}
+              containerStyle={{ maxWidth: 120 }}
             >
               <Text style={{ color: theme[11] }}>Clear</Text>
             </Button>
@@ -180,6 +181,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
       </View>
       <FlashList
         ref={listRef}
+        keyboardShouldPersistTaps="handled"
         data={filtered}
         contentContainerStyle={{
           padding: 25,
