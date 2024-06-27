@@ -343,26 +343,24 @@ const CurrentTaskCard = ({
     };
   });
 
-  const taskPinnedAnimation = useAnimatedStyle(() => {
-    return {
-      width: 300,
-      position: "absolute",
-      zIndex: 99,
-      top: 0,
-      left: 0,
-      height: "100%",
-      transform: [
-        {
-          translateX:
-            taskAnimationState.value === "PINNED"
-              ? withSpring(700, {
-                  overshootClamping: true,
-                })
-              : -300,
-        },
-      ],
-    };
-  });
+  const taskPinnedAnimation = useAnimatedStyle(() => ({
+    width: 300,
+    position: "absolute",
+    zIndex: 99,
+    top: 0,
+    left: 0,
+    height: "100%",
+    transform: [
+      {
+        translateX:
+          taskAnimationState.value === "PINNED"
+            ? withSpring(700, {
+                overshootClamping: true,
+              })
+            : "-300%",
+      },
+    ],
+  }));
 
   return (
     <Animated.View style={taskAnimationStyle}>
@@ -414,6 +412,7 @@ const CurrentTaskCard = ({
                 ]}
                 style={{
                   flex: 1,
+                  height: "100%",
                   width: "100%",
                   transform: [{ skewX: "-15deg" }],
                 }}
@@ -590,7 +589,7 @@ export default function Page() {
           maxWidth: 700,
           width: "100%",
           marginHorizontal: "auto",
-          height: "100%",
+          minHeight: "100%",
         }}
       >
         {error && <ErrorAlert />}

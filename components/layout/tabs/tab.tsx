@@ -204,7 +204,7 @@ function Tab({
       },
     });
     InteractionManager.runAfterInteractions(() => {
-      if (!breakpoints.md) sidebarRef.current.closeDrawer();
+      if (!breakpoints.md) sidebarRef?.current?.closeDrawer?.();
     });
   };
 

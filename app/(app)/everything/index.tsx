@@ -474,6 +474,7 @@ const Labels = () => {
                 style={{ height: 50, fontSize: 20 }}
                 weight={900}
                 placeholder="Search labels…"
+                autoFocus
               />
               <CreateLabelModal
                 mutate={(newLabel) => {
@@ -605,6 +606,7 @@ const Collections = () => {
                 style={{ height: 50, fontSize: 20 }}
                 weight={900}
                 placeholder="Search collections…"
+                autoFocus
               />
               <FlashList
                 estimatedItemSize={60}

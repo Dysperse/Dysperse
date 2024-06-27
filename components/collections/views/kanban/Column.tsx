@@ -225,7 +225,7 @@ export function Column(props: ColumnProps) {
       {props.grid ? undefined : (
         <>
           {!isReadOnly && (
-            <View style={{ padding: 15 }}>
+            <View style={{ padding: 15, paddingBottom: 0, height: 65 }}>
               <CreateTask
                 mutate={(n) => onEntityCreate(n, props.label)}
                 defaultValues={{
@@ -245,19 +245,14 @@ export function Column(props: ColumnProps) {
               </CreateTask>
             </View>
           )}
-
-          {(props.label ? props.label.entities : props.entities).length > 0 &&
-            (props.label ? props.label.entities : props.entities).filter(
-              (e) => e.completionInstances.length === 0
-            ).length === 0 && <ColumnFinishedComponent />}
         </>
       )}
+
       <LinearGradient
         style={{
           width: "100%",
           height: 30,
           zIndex: 1,
-          marginTop: breakpoints.md ? -15 : 34,
           marginBottom: -30,
           pointerEvents: "none",
         }}
@@ -277,6 +272,14 @@ export function Column(props: ColumnProps) {
         centerContent={data.length === 0}
         ListEmptyComponent={() => <ColumnEmptyComponent row={props.grid} />}
         data={data}
+        ListHeaderComponent={() => (
+          <>
+            {(props.label ? props.label.entities : props.entities).length > 0 &&
+              (props.label ? props.label.entities : props.entities).filter(
+                (e) => e.completionInstances.length === 0
+              ).length === 0 && <ColumnFinishedComponent />}
+          </>
+        )}
         estimatedItemSize={300}
         contentContainerStyle={{
           padding: 15,

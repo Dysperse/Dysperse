@@ -193,15 +193,11 @@ export function Column({
       {isReadOnly ? null : (
         <>
           <View
-            style={[
-              {
-                marginTop: 15,
-                marginBottom: breakpoints.md ? -30 : 18,
-                paddingHorizontal: 15,
-                gap: 0,
-                flexDirection: "column",
-              },
-            ]}
+            style={{
+              padding: 15,
+              paddingBottom: 0,
+              height: 65,
+            }}
           >
             <CreateTask
               defaultValues={{
@@ -274,7 +270,6 @@ export function Column({
           width: "100%",
           height: 30,
           zIndex: 1,
-          marginTop: 30,
           marginBottom: -30,
           pointerEvents: "none",
         }}

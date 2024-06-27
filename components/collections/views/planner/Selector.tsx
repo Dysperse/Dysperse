@@ -4,7 +4,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { memo } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { usePlannerContext } from "./context";
 
 const buttonTextFormats = (type: string) => ({
@@ -111,6 +111,7 @@ const SelectionButton = memo(function SelectionButton({
         <View
           style={[
             styles.inner,
+            Platform.OS === "web" && { minWidth: 32 },
             isSelected && { backgroundColor: theme[10] },
             isToday && { borderColor: theme[isSelected ? 10 : 6] },
           ]}

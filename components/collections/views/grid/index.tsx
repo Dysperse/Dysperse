@@ -3,7 +3,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -17,6 +17,7 @@ export default function Grid({ editOrderMode }) {
   const { data } = useCollectionContext();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
+  const scrollRef = useRef<ScrollView>(null);
 
   const [currentColumn, setCurrentColumn] =
     useState<GridContextSelectedColumn>("HOME");
@@ -70,13 +71,14 @@ export default function Grid({ editOrderMode }) {
                   >
                     <Pressable
                       android_ripple={{ color: theme[7] }}
-                      onPress={() =>
+                      onPress={() => {
+                        scrollRef.current?.scrollTo({ x: 0 });
                         setCurrentColumn(
                           label.other
                             ? "OTHER"
                             : data.labels.findIndex((l) => l.id == label.id)
-                        )
-                      }
+                        );
+                      }}
                       style={({ pressed }: any) => ({
                         flex: 1,
                         width: width - 150,
@@ -166,12 +168,13 @@ export default function Grid({ editOrderMode }) {
     <GridContext.Provider value={{ currentColumn, setCurrentColumn }}>
       <ScrollView
         horizontal
+        ref={scrollRef}
         contentContainerStyle={[
           {
             padding: 15,
             gap: 15,
             paddingRight: isMobileHome || breakpoints.md ? 30 : 0,
-            paddingBottom: insets.bottom + 15,
+            paddingBottom: currentColumn === "HOME" ? insets.bottom + 15 : 0,
             flexDirection: "column",
           },
           !breakpoints.md &&

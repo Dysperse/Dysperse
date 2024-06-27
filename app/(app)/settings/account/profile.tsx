@@ -99,7 +99,7 @@ function ProfileBanner({ data }) {
       }}
     >
       <ProfilePicture
-        style={{ top: 80, position: "absolute", left: 100 }}
+        style={{ top: 80, position: "absolute", left: 30 }}
         name={data.profile?.name || "--"}
         image={data.profile?.picture}
         size={90}
@@ -132,16 +132,21 @@ export default function Page() {
           body: JSON.stringify(data),
         }
       );
-      mutate((oldData) => ({
-        ...oldData,
-        user: {
-          ...oldData.user,
-          profile: {
-            ...oldData.user.profile,
-            ...data,
+      mutate(
+        (oldData) => ({
+          ...oldData,
+          user: {
+            ...oldData.user,
+            profile: {
+              ...oldData.user.profile,
+              ...data,
+            },
           },
-        },
-      }));
+        }),
+        {
+          revalidate: false,
+        }
+      );
       Toast.show({ type: "success", text1: "Saved!" });
     } catch (e) {
       Toast.show({ type: "error" });

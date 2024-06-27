@@ -79,79 +79,69 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
 
   const state = useSharedValue(0);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: withSpring(state.value === 2 ? 0.95 : 1, {
-            damping: 10,
-            stiffness: 400,
-            overshootClamping: true,
-          }),
-        },
-      ],
-      borderWidth: 1,
-      borderColor: withSpring(
-        interpolateColor(
-          state.value,
-          [0, 2],
-          [
-            props.borderColors?.default ||
-              (variant === "filled"
-                ? props.backgroundColors?.default || theme[3]
-                : variant === "text"
-                ? "transparent"
-                : theme[4]),
-            props.borderColors?.hovered ||
-              (variant === "filled"
-                ? props.backgroundColors?.hovered || theme[4]
-                : variant === "text"
-                ? "transparent"
-                : theme[5]),
-            props.borderColors?.pressed ||
-              (variant === "filled"
-                ? props.backgroundColors?.pressed || theme[5]
-                : variant === "text"
-                ? "transparent"
-                : theme[6]),
-          ]
-        )
-      ),
-      backgroundColor: withSpring(
-        interpolateColor(
-          state.value,
-          [0, 2],
-          [
-            props.backgroundColors?.default ||
-              (variant === "filled"
-                ? theme[3]
-                : variant === "text"
-                ? "transparent"
-                : theme[2]),
-            props.backgroundColors?.hovered ||
-              (variant === "filled"
-                ? theme[4]
-                : variant === "text"
-                ? "transparent"
-                : theme[3]),
-            props.backgroundColors?.pressed ||
-              (variant === "filled"
-                ? theme[5]
-                : variant === "text"
-                ? "transparent"
-                : theme[4]),
-          ]
-        ),
-        {
+  const borderColors = [
+    props.borderColors?.default ||
+      (variant === "filled"
+        ? props.backgroundColors?.default || theme[3]
+        : variant === "text"
+        ? "transparent"
+        : theme[4]),
+    props.borderColors?.hovered ||
+      (variant === "filled"
+        ? props.backgroundColors?.hovered || theme[4]
+        : variant === "text"
+        ? "transparent"
+        : theme[5]),
+    props.borderColors?.pressed ||
+      (variant === "filled"
+        ? props.backgroundColors?.pressed || theme[5]
+        : variant === "text"
+        ? "transparent"
+        : theme[6]),
+  ];
+  const backgroundColors = [
+    props.backgroundColors?.default ||
+      (variant === "filled"
+        ? theme[3]
+        : variant === "text"
+        ? "transparent"
+        : theme[2]),
+    props.backgroundColors?.hovered ||
+      (variant === "filled"
+        ? theme[4]
+        : variant === "text"
+        ? "transparent"
+        : theme[3]),
+    props.backgroundColors?.pressed ||
+      (variant === "filled"
+        ? theme[5]
+        : variant === "text"
+        ? "transparent"
+        : theme[4]),
+  ];
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withSpring(state.value === 2 ? 0.95 : 1, {
           damping: 10,
           stiffness: 400,
           overshootClamping: true,
-        }
-      ),
-      borderRadius: 40,
-      overflow: "hidden",
-    };
-  });
+        }),
+      },
+    ],
+    borderColor: withSpring(
+      interpolateColor(state.value, [0, 2], borderColors)
+    ),
+    backgroundColor: withSpring(
+      interpolateColor(state.value, [0, 2], backgroundColors),
+      {
+        damping: 10,
+        stiffness: 400,
+        overshootClamping: true,
+      }
+    ),
+  }));
 
   const height = props.height || (props.large ? 50 : props.dense ? 30 : 40);
   const minWidth = props.large ? 50 : props.dense ? 50 : 70;
@@ -165,6 +155,10 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
           maxHeight: height,
           minHeight: height,
           minWidth: minWidth,
+
+          borderWidth: 1,
+          borderRadius: 40,
+          overflow: "hidden",
         },
         props.containerStyle,
       ]}
@@ -175,7 +169,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
         onHoverOut={() => (state.value = 0)}
         onPressIn={() => (state.value = 2)}
         onPressOut={() => (state.value = 0)}
-        android_ripple={{ color: theme[7] }}
+        // android_ripple={{ color: theme[7] }}
         ref={ref as LegacyRef<View>}
         style={({ hovered, pressed }: any) => [
           styles.base,

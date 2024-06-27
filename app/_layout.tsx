@@ -76,6 +76,7 @@ Sentry.init({
   dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
   enableAutoSessionTracking: true,
   // debug: true,
+  enabled: process.env.NODE_ENV === "production",
   tracesSampleRate: 1.0,
   integrations: [
     new Sentry.ReactNativeTracing({

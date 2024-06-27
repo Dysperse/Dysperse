@@ -19,7 +19,7 @@ import React, {
   useState,
 } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -349,12 +349,27 @@ const StoryPoint = ({
 };
 
 export default function Workload() {
+  const theme = useColorTheme();
+  const { mutate } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
-  const scale = [2, 4, 8, 16, 32];
   const [selectedScale, setSelectedScale] = useState(0);
 
+  const scale = [2, 4, 8, 16, 32];
+
   return breakpoints.md ? (
-    <ScrollView horizontal contentContainerStyle={{ padding: 15, gap: 15 }}>
+    <ScrollView
+      horizontal
+      contentContainerStyle={{ padding: 15, gap: 15 }}
+      refreshControl={
+        <RefreshControl
+          progressBackgroundColor={theme[5]}
+          colors={[theme[11]]}
+          tintColor={theme[11]}
+          refreshing={false}
+          onRefresh={() => mutate()}
+        />
+      }
+    >
       {scale.map((s, i) => (
         <StoryPoint
           key={s}
