@@ -518,6 +518,7 @@ export default function SignIn() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
                     onSubmitEditing={handleSubmit(onSubmit)}
+                    keyboardType="number-pad"
                     variant="filled+outlined"
                     style={{
                       paddingHorizontal: 30,
