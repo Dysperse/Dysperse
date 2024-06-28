@@ -12,9 +12,9 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { InteractionManager, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -58,6 +58,7 @@ const Header = memo(() => {
 export default function Page() {
   const { session, sessionToken } = useUser();
   const [loading, setLoading] = useState(false);
+  const nameRef = useRef(null);
   const {
     control,
     handleSubmit,
@@ -70,6 +71,12 @@ export default function Page() {
       labels: [],
     },
   });
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      nameRef.current?.focus({ preventScroll: true });
+    });
+  }, []);
 
   const onSubmit = async (data) => {
     try {
@@ -176,6 +183,7 @@ export default function Page() {
               render={({ field: { onChange, value } }) => (
                 <TextField
                   variant="filled+outlined"
+                  inputRef={nameRef}
                   placeholder={`${session?.user?.profile?.name}'s collection`}
                   value={value}
                   onChangeText={onChange}
