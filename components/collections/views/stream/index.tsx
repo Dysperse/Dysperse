@@ -271,7 +271,6 @@ export default function Stream() {
                     height={50}
                     containerStyle={{
                       flex: 1,
-                      paddingHorizontal: 20,
                       width: "100%",
                       maxWidth: 400,
                       marginHorizontal: "auto",

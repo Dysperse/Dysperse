@@ -21,7 +21,14 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
-import { cloneElement, memo, useCallback, useRef, useState } from "react";
+import {
+  cloneElement,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -34,9 +41,15 @@ const modalStyles = StyleSheet.create({
 });
 
 function FriendEmailSelection({ setQuery }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    ref.current?.focus({ preventScroll: true });
+  });
   return (
     <View>
       <TextField
+        inputRef={ref}
         placeholder="Invite by email or username"
         variant="filled+outlined"
         onChangeText={setQuery}
