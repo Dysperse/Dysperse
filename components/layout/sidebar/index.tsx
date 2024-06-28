@@ -336,6 +336,8 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const { mutate } = useSWRConfig();
   const itemRef = useRef<BottomSheetModal>(null);
   const labelRef = useRef<BottomSheetModal>(null);
+  const breakpoints = useResponsiveBreakpoints();
+  const { sidebarRef } = useSidebarContext();
 
   useHotkeys(["ctrl+n", "shift+n"], (e) => {
     e.preventDefault();
@@ -390,7 +392,10 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           {
             icon: "layers",
             text: "Collection",
-            callback: () => router.push("/collections/create"),
+            callback: () => {
+              router.push("/collections/create");
+              if (!breakpoints.md) sidebarRef.current.closeDrawer();
+            },
           },
         ]}
         menuProps={{
