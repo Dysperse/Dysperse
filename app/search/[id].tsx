@@ -131,7 +131,14 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
             }}
             variant="filled+outlined"
             onChangeText={handleSearch}
-            style={{ flex: 1, height: 40 }}
+            weight={900}
+            style={{
+              flex: 1,
+              height: 60,
+              paddingHorizontal: 20,
+              fontSize: 20,
+              borderRadius: 999,
+            }}
           />
           {(query || activeFilters.length > 0) && (
             <Button
@@ -140,10 +147,12 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 setQuery("");
                 setActiveFilters([]);
               }}
-              height={40}
+              height={60}
               containerStyle={{ maxWidth: 120 }}
             >
-              <Text style={{ color: theme[11] }}>Clear</Text>
+              <Text weight={900} style={{ color: theme[11] }}>
+                Clear
+              </Text>
             </Button>
           )}
         </View>
@@ -171,7 +180,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               }}
               style={{
                 borderColor:
-                  theme[activeFilters.includes(filter.label) ? 8 : 6],
+                  theme[activeFilters.includes(filter.label) ? 8 : 3],
                 backgroundColor:
                   theme[activeFilters.includes(filter.label) ? 6 : 1],
               }}
