@@ -113,9 +113,10 @@ export default function List() {
         <FlashList
           data={d}
           ref={ref}
-          stickyHeaderIndices={d
-            .filter((item) => item.header)
-            .map((_, index) => index)}
+          stickyHeaderIndices={d.reduce(
+            (acc, e, i) => (e.header ? [...acc, i] : acc),
+            []
+          )}
           renderItem={({ item }: any) => {
             if (item.empty) {
               return (

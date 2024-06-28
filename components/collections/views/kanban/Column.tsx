@@ -273,12 +273,12 @@ export function Column(props: ColumnProps) {
         ListEmptyComponent={() => <ColumnEmptyComponent row={props.grid} />}
         data={data}
         ListHeaderComponent={() => (
-          <>
+          <View>
             {(props.label ? props.label.entities : props.entities).length > 0 &&
               (props.label ? props.label.entities : props.entities).filter(
                 (e) => e.completionInstances.length === 0
               ).length === 0 && <ColumnFinishedComponent />}
-          </>
+          </View>
         )}
         estimatedItemSize={300}
         contentContainerStyle={{

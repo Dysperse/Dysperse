@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 99,
     aspectRatio: "1 / 1",
-    maxWidth: 50,
+    maxWidth: 40,
+    maxHeight: 40,
     width: "100%",
     borderWidth: 1,
     borderColor: "transparent",
@@ -90,12 +91,7 @@ const SelectionButton = memo(function SelectionButton({
     dayjs(itemStart).isSame(dayjs(), "day") || !dayjs(start as any).isValid();
 
   return (
-    <View
-      style={[
-        styles.item,
-        { padding: 0, borderRadius: 99, overflow: "hidden" },
-      ]}
-    >
+    <View style={[styles.item]}>
       <Pressable
         android_ripple={{ color: theme[6] }}
         style={styles.item}
@@ -128,7 +124,6 @@ const SelectionButton = memo(function SelectionButton({
             height: 4,
             flexDirection: "row",
             width: "100%",
-            justifyContent: "center",
             gap: 3,
             marginBottom: -6,
             marginTop: 1,

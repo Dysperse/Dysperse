@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   header: {
     padding: 15,
     paddingBottom: 0,
-    paddingTop: 25,
+    paddingTop: 15,
     paddingRight: 25,
   },
   contentContainer: {
@@ -202,6 +202,7 @@ export const LogoButton = memo(function LogoButton({
   }, [sessionToken]);
 
   const toggleFocus = () => setFocus(!isFocused);
+  const menuRef = useRef(null);
 
   return (
     <View
@@ -221,22 +222,28 @@ export const LogoButton = memo(function LogoButton({
             anchorStyle: { opacity: 0 },
           },
         }}
+        menuRef={menuRef}
         containerStyle={{ width: 190, marginLeft: 10, marginTop: 5 }}
         trigger={
-          <Pressable
-            style={({ pressed }) => [
-              {
-                opacity: pressed ? 0.5 : 1,
-                flexDirection: "row",
-                alignItems: "center",
-                paddingLeft: 3,
-              },
-              Platform.OS === "web" && { WebkitAppRegion: "no-drag" },
-            ]}
-          >
-            <Logo size={40} />
-            <Icon style={{ color: theme[11] }}>expand_more</Icon>
-          </Pressable>
+          <View style={{ borderRadius: 20, overflow: "hidden" }}>
+            <Pressable
+              onPress={() => menuRef.current.open()}
+              android_ripple={{ color: theme[4] }}
+              style={({ pressed, hovered }) => [
+                {
+                  backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingLeft: 3,
+                  paddingVertical: 10,
+                },
+                Platform.OS === "web" && { WebkitAppRegion: "no-drag" },
+              ]}
+            >
+              <Logo size={40} />
+              <Icon style={{ color: theme[11] }}>expand_more</Icon>
+            </Pressable>
+          </View>
         }
         options={[
           session?.space?.space?._count?.integrations > 0 && {
@@ -419,7 +426,7 @@ const Header = memo(function Header() {
   return (
     <View
       style={{
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 10,
         gap: 10,
       }}

@@ -249,19 +249,6 @@ export function Column({
                 <Icon>add</Icon>
               </Button>
             </CreateTask>
-            {column.tasks.length > 0 &&
-              !column.tasks.find((task) =>
-                task.recurrenceRule
-                  ? !task.completionInstances.find((instance) =>
-                      dayjs(instance.iteration).isBetween(
-                        dayjs(column.start),
-                        dayjs(column.end),
-                        "day",
-                        "[]"
-                      )
-                    )
-                  : task.completionInstances.length === 0
-              ) && <ColumnFinishedComponent />}
           </View>
         </>
       )}
@@ -298,6 +285,23 @@ export function Column({
         ListEmptyComponent={() => (
           <View style={{ marginVertical: "auto" }}>
             <ColumnEmptyComponent />
+          </View>
+        )}
+        ListHeaderComponent={() => (
+          <View>
+            {column.tasks.length > 0 &&
+              !column.tasks.find((task) =>
+                task.recurrenceRule
+                  ? !task.completionInstances.find((instance) =>
+                      dayjs(instance.iteration).isBetween(
+                        dayjs(column.start),
+                        dayjs(column.end),
+                        "day",
+                        "[]"
+                      )
+                    )
+                  : task.completionInstances.length === 0
+              ) && <ColumnFinishedComponent />}
           </View>
         )}
         renderItem={({ item }) => (
