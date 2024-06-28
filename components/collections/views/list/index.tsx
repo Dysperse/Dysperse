@@ -5,6 +5,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
@@ -28,7 +29,7 @@ import { KanbanHeader } from "../kanban/Header";
 
 export default function List() {
   const isDark = useDarkMode();
-  const { data, mutate } = useCollectionContext();
+  const { data, mutate, isValidating } = useCollectionContext();
   const theme = useColorTheme();
 
   const d = data.labels.reduce((acc, curr) => {
@@ -117,6 +118,12 @@ export default function List() {
             (acc, e, i) => (e.header ? [...acc, i] : acc),
             []
           )}
+          refreshControl={
+            <RefreshControl
+              refreshing={isValidating}
+              onRefresh={() => mutate()}
+            />
+          }
           renderItem={({ item }: any) => {
             if (item.empty) {
               return (

@@ -7,6 +7,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import RefreshControl from "@/ui/RefreshControl";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -191,6 +192,9 @@ export default function Stream() {
         }
       />
       <FlashList
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+        }
         ListEmptyComponent={() =>
           query === "" ? (
             <ColumnEmptyComponent />

@@ -3,6 +3,7 @@ import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
+import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -20,6 +21,7 @@ import {
   Calendar as BigCalendar,
   ICalendarEventBase,
 } from "react-native-big-calendar";
+import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { onTaskUpdate } from "../planner/Column";
 import { CalendarContext, useCalendarContext } from "./context";
@@ -146,7 +148,15 @@ export function Content() {
   const { height } = useWindowDimensions();
 
   return data ? (
-    <>
+    <ScrollView
+      style={{
+        height: "100%",
+      }}
+      scrollEnabled={false}
+      refreshControl={
+        <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+      }
+    >
       <CalendarTaskDrawer
         mutateList={(newItem) =>
           onTaskUpdate(
@@ -255,7 +265,7 @@ export function Content() {
         events={filteredEvents}
         date={dayjs(originalStart as any).toDate()}
       />
-    </>
+    </ScrollView>
   ) : (
     <View
       style={{

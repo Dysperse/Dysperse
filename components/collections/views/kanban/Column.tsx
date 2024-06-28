@@ -7,6 +7,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -14,7 +15,6 @@ import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef, useState } from "react";
 import { InteractionManager, Pressable, View } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -261,13 +261,7 @@ export function Column(props: ColumnProps) {
       <FlashList
         ref={columnRef}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => mutate()}
-            progressBackgroundColor={theme[5]}
-            colors={[theme[11]]}
-            tintColor={theme[11]}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
         }
         centerContent={data.length === 0}
         ListEmptyComponent={() => <ColumnEmptyComponent row={props.grid} />}

@@ -6,6 +6,7 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import RefreshControl from "@/ui/RefreshControl";
 import * as shapes from "@/ui/shapes";
 import Text, { getFontName } from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
@@ -19,7 +20,7 @@ import React, {
   useState,
 } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -315,6 +316,9 @@ const StoryPoint = ({
       )}
       <FlashList
         ref={columnRef}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+        }
         data={filteredTasks
           .sort((a, b) =>
             a.agendaOrder?.toString()?.localeCompare(b.agendaOrder)
@@ -361,13 +365,7 @@ export default function Workload() {
       horizontal
       contentContainerStyle={{ padding: 15, gap: 15 }}
       refreshControl={
-        <RefreshControl
-          progressBackgroundColor={theme[5]}
-          colors={[theme[11]]}
-          tintColor={theme[11]}
-          refreshing={false}
-          onRefresh={() => mutate()}
-        />
+        <RefreshControl refreshing={false} onRefresh={() => mutate()} />
       }
     >
       {scale.map((s, i) => (

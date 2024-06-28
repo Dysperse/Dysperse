@@ -1,6 +1,7 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
+import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useRef, useState } from "react";
@@ -14,7 +15,7 @@ import { GridContext, GridContextSelectedColumn } from "./context";
 export default function Grid({ editOrderMode }) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const { data } = useCollectionContext();
+  const { data, mutate } = useCollectionContext();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const scrollRef = useRef<ScrollView>(null);
@@ -167,6 +168,9 @@ export default function Grid({ editOrderMode }) {
   return (
     <GridContext.Provider value={{ currentColumn, setCurrentColumn }}>
       <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+        }
         horizontal
         ref={scrollRef}
         contentContainerStyle={[

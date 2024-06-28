@@ -5,6 +5,7 @@ import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import RefreshControl from "@/ui/RefreshControl";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
@@ -15,7 +16,6 @@ import React, { useEffect, useMemo, useRef } from "react";
 import {
   InteractionManager,
   Pressable,
-  RefreshControl,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -265,13 +265,7 @@ export function Column({
       <FlashList
         ref={columnRef}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            progressBackgroundColor={theme[5]}
-            colors={[theme[11]]}
-            tintColor={theme[11]}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
         }
         data={sortedTasks}
         estimatedItemSize={100}

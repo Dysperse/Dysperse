@@ -3,6 +3,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
@@ -61,6 +62,7 @@ const Cell = ({
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const ref = useRef(null);
+  const { mutate } = useCollectionContext();
 
   const [showCompleted, setShowCompleted] = useState(false);
   const toggleShowCompleted = () => setShowCompleted((t) => !t);
@@ -126,6 +128,9 @@ const Cell = ({
         </LinearGradient>
       </Pressable>
       <FlashList
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+        }
         estimatedItemSize={118}
         ref={ref}
         contentContainerStyle={{ padding: breakpoints.md ? 10 : 20 }}
