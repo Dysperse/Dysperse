@@ -121,6 +121,7 @@ export function CreateLabelModal({
           </Text>
           <IconButton
             onPress={() => {
+              Keyboard.dismiss();
               if (Object.keys(errors).length > 0) {
                 return Toast.show({
                   type: "error",

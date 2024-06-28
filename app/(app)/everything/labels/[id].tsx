@@ -3,7 +3,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import { router, useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
+import { StatusBar, View } from "react-native";
 import useSWR from "swr";
 import { LabelDetails } from "..";
 
@@ -25,25 +25,30 @@ export default function Page() {
     }
   };
 
-  return data ? (
-    <LabelDetails
-      mutateList={
-        ((...d) => {
-          setTimeout(() => mutate(...d), 0);
-        }) as any
-      }
-      setSelectedLabel={handleBack}
-      label={data.find((i) => i.id === params.id)}
-    />
-  ) : (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {error ? <ErrorAlert /> : <Spinner />}
-    </View>
+  return (
+    <>
+      <StatusBar barStyle="light-content" />
+      {data ? (
+        <LabelDetails
+          mutateList={
+            ((...d) => {
+              setTimeout(() => mutate(...d), 0);
+            }) as any
+          }
+          setSelectedLabel={handleBack}
+          label={data.find((i) => i.id === params.id)}
+        />
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {error ? <ErrorAlert /> : <Spinner />}
+        </View>
+      )}
+    </>
   );
 }

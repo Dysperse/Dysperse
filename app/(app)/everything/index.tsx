@@ -97,14 +97,63 @@ export const LabelDetails = ({
       <ScrollView
         style={{ flex: 2 }}
         showsVerticalScrollIndicator={Boolean(data?.entities)}
+        contentContainerStyle={{ backgroundColor: labelTheme[1] }}
       >
         <ColorThemeProvider theme={labelTheme}>
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              backgroundColor: labelTheme[3],
+              padding: 15,
+              gap: 10,
+              justifyContent: "flex-end",
+            }}
+          >
+            {!breakpoints.md && (
+              <IconButton
+                size={50}
+                icon="arrow_back_ios_new"
+                variant="outlined"
+                style={{ marginRight: "auto" }}
+                onPress={() => setSelectedLabel(null)}
+              />
+            )}
+            {data && (
+              <LabelEditModal
+                label={data}
+                onLabelUpdate={(updatedLabel) =>
+                  mutateList(
+                    (d) =>
+                      d.map((l) =>
+                        l.id === updatedLabel.id ? { ...l, ...updatedLabel } : l
+                      ),
+                    {
+                      revalidate: false,
+                    }
+                  )
+                }
+                trigger={
+                  <IconButton size={50} variant="outlined" icon="edit" />
+                }
+              />
+            )}
+            <ConfirmationModal
+              title="Delete label?"
+              secondary="Items won't be deleted"
+              onSuccess={handleLabelDelete}
+              height={350}
+            >
+              <IconButton variant="outlined" size={50} icon="delete" />
+            </ConfirmationModal>
+          </View>
           <LinearGradient
             style={[
               {
-                height: 300,
+                height: 250,
                 paddingHorizontal: breakpoints.md ? 100 : 30,
                 padding: 20,
+                paddingTop: 0,
                 alignItems: "center",
                 justifyContent: "center",
                 flexDirection: breakpoints.md ? "row" : "column",
@@ -116,59 +165,8 @@ export const LabelDetails = ({
                 height: 350,
               },
             ]}
-            colors={[labelTheme[3], labelTheme[2], userTheme[1]]}
+            colors={[labelTheme[3], labelTheme[2], labelTheme[1]]}
           >
-            <View
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                padding: 20,
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                gap: 10,
-                flex: 1,
-              }}
-            >
-              {!breakpoints.md && (
-                <IconButton
-                  size={50}
-                  icon="arrow_back_ios_new"
-                  style={{ marginRight: "auto" }}
-                  onPress={() => setSelectedLabel(null)}
-                />
-              )}
-              {data && (
-                <LabelEditModal
-                  label={data}
-                  onLabelUpdate={(updatedLabel) =>
-                    mutateList(
-                      (d) =>
-                        d.map((l) =>
-                          l.id === updatedLabel.id
-                            ? { ...l, ...updatedLabel }
-                            : l
-                        ),
-                      {
-                        revalidate: false,
-                      }
-                    )
-                  }
-                  trigger={
-                    <IconButton size={50} variant="outlined" icon="edit" />
-                  }
-                />
-              )}
-              <ConfirmationModal
-                title="Delete label?"
-                secondary="Items won't be deleted"
-                onSuccess={handleLabelDelete}
-                height={350}
-              >
-                <IconButton variant="outlined" size={50} icon="delete" />
-              </ConfirmationModal>
-            </View>
             <Emoji emoji={label.emoji} size={60} />
             <View
               style={[
@@ -201,117 +199,117 @@ export const LabelDetails = ({
               </Text>
             </View>
           </LinearGradient>
-        </ColorThemeProvider>
-        <View
-          style={{
-            padding: 20,
-            paddingHorizontal: breakpoints.md ? 50 : undefined,
-            marginTop: 20,
-          }}
-        >
           <View
             style={{
               padding: 20,
-              gap: 10,
-              flexDirection: "row",
-              backgroundColor: userTheme[2],
-              borderWidth: 1,
-              borderColor: userTheme[5],
-              borderRadius: 20,
-            }}
-          >
-            <View style={{ flex: 1, gap: 5 }}>
-              <Text variant="eyebrow">Collections</Text>
-              {label.collections.length === 0 ? (
-                <Text style={{ color: userTheme[7] }} weight={600}>
-                  No collections found
-                </Text>
-              ) : (
-                <View
-                  style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
-                >
-                  {label.collections.map((c) => (
-                    <Chip key={c.id} label={c.name} icon="folder" />
-                  ))}
-                </View>
-              )}
-            </View>
-            {label.integration && (
-              <View style={{ flex: 1, gap: 5 }}>
-                <Text variant="eyebrow" style={{ marginBottom: 5 }}>
-                  Connected to
-                </Text>
-                <View
-                  style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
-                >
-                  <Chip
-                    label={`${capitalizeFirstLetter(
-                      label.integration.name.replaceAll("-", " ")
-                    )}`}
-                    icon="sync_alt"
-                  />
-                </View>
-              </View>
-            )}
-          </View>
-
-          <View
-            style={{
-              padding: 20,
-              gap: 3,
-              backgroundColor: userTheme[2],
-              borderWidth: 1,
-              borderColor: userTheme[5],
-              borderRadius: 20,
+              paddingHorizontal: breakpoints.md ? 50 : undefined,
               marginTop: 20,
             }}
           >
-            <Text variant="eyebrow">Items</Text>
-            <View style={{ marginHorizontal: -10 }}>
-              {data?.entities ? (
-                data?.entities?.length === 0 ? (
-                  <Text
-                    style={{ marginLeft: 10, color: userTheme[7] }}
-                    weight={600}
-                  >
-                    No items found
+            <View
+              style={{
+                padding: 20,
+                gap: 10,
+                flexDirection: "row",
+                backgroundColor: labelTheme[2],
+                borderWidth: 1,
+                borderColor: labelTheme[5],
+                borderRadius: 20,
+              }}
+            >
+              <View style={{ flex: 1, gap: 5 }}>
+                <Text variant="eyebrow">Collections</Text>
+                {label.collections.length === 0 ? (
+                  <Text style={{ color: labelTheme[7] }} weight={600}>
+                    No collections found
                   </Text>
                 ) : (
-                  data.entities.map((entity) => (
-                    <Entity
-                      isReadOnly={false}
-                      item={entity}
-                      key={entity.id}
-                      onTaskUpdate={(newEntity) => {
-                        mutate(
-                          (oldData) => {
-                            const newData = oldData?.entities
-                              .map((e) =>
-                                e.id === newEntity.id ? newEntity : e
-                              )
-                              .sort(
-                                (a, b) =>
-                                  a.completionInstances.length -
-                                  b.completionInstances.length
-                              );
-                            return { ...oldData, entities: newData };
-                          },
-                          { revalidate: false }
-                        );
-                      }}
+                  <View
+                    style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
+                  >
+                    {label.collections.map((c) => (
+                      <Chip key={c.id} label={c.name} icon="folder" />
+                    ))}
+                  </View>
+                )}
+              </View>
+              {label.integration && (
+                <View style={{ flex: 1, gap: 5 }}>
+                  <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+                    Connected to
+                  </Text>
+                  <View
+                    style={{ flexWrap: "wrap", flexDirection: "row", gap: 15 }}
+                  >
+                    <Chip
+                      label={`${capitalizeFirstLetter(
+                        label.integration.name.replaceAll("-", " ")
+                      )}`}
+                      icon="sync_alt"
                     />
-                  ))
-                )
-              ) : error ? (
-                <ErrorAlert />
-              ) : (
-                <View style={{ alignItems: "center", paddingVertical: 100 }}>
-                  <Spinner />
+                  </View>
                 </View>
               )}
             </View>
+
+            <View
+              style={{
+                padding: 20,
+                gap: 3,
+                backgroundColor: labelTheme[2],
+                borderWidth: 1,
+                borderColor: labelTheme[5],
+                borderRadius: 20,
+                marginTop: 20,
+              }}
+            >
+              <Text variant="eyebrow">Items</Text>
+              <View style={{ marginHorizontal: -10 }}>
+                {data?.entities ? (
+                  data?.entities?.length === 0 ? (
+                    <Text
+                      style={{ marginLeft: 10, color: labelTheme[7] }}
+                      weight={600}
+                    >
+                      No items found
+                    </Text>
+                  ) : (
+                    data.entities.map((entity) => (
+                      <Entity
+                        isReadOnly={false}
+                        item={entity}
+                        key={entity.id}
+                        onTaskUpdate={(newEntity) => {
+                          mutate(
+                            (oldData) => {
+                              const newData = oldData?.entities
+                                .map((e) =>
+                                  e.id === newEntity.id ? newEntity : e
+                                )
+                                .sort(
+                                  (a, b) =>
+                                    a.completionInstances.length -
+                                    b.completionInstances.length
+                                );
+                              return { ...oldData, entities: newData };
+                            },
+                            { revalidate: false }
+                          );
+                        }}
+                      />
+                    ))
+                  )
+                ) : error ? (
+                  <ErrorAlert />
+                ) : (
+                  <View style={{ alignItems: "center", paddingVertical: 100 }}>
+                    <Spinner />
+                  </View>
+                )}
+              </View>
+            </View>
           </View>
-        </View>
+        </ColorThemeProvider>
       </ScrollView>
     )
   );
@@ -479,7 +477,15 @@ const Labels = () => {
               <CreateLabelModal
                 mutate={(newLabel) => {
                   mutate(
-                    () => [{ ...newLabel, _count: { entities: 0 } }, ...d],
+                    () => [
+                      {
+                        ...newLabel,
+                        _count: { entities: 0 },
+                        entities: [],
+                        collections: [],
+                      },
+                      ...d,
+                    ],
                     {
                       revalidate: false,
                     }
