@@ -302,7 +302,13 @@ export const LabelDetails = ({
                 ) : error ? (
                   <ErrorAlert />
                 ) : (
-                  <View style={{ alignItems: "center", paddingVertical: 100 }}>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      flex: 1,
+                      justifyContent: "center",
+                    }}
+                  >
                     <Spinner />
                   </View>
                 )}
@@ -566,7 +572,15 @@ const Labels = () => {
           )}
         </>
       ) : (
-        <Spinner />
+        <View
+          style={{
+            alignItems: "center",
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
+          <Spinner />
+        </View>
       )}
     </View>
   );
@@ -680,7 +694,15 @@ const Collections = () => {
       ) : error ? (
         <ErrorAlert />
       ) : (
-        <Spinner />
+        <View
+          style={{
+            alignItems: "center",
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
+          <Spinner />
+        </View>
       )}
     </View>
   );
