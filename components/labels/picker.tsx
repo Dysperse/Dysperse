@@ -69,11 +69,29 @@ function CollectionChips({
   selectedCollection,
   setSelectedCollection,
 }: any) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (selectedCollection) {
+      ref.current?.scrollToIndex({
+        index: collections.findIndex((c) => c.id === selectedCollection),
+      });
+    }
+  }, [selectedCollection, collections]);
   return (
     <View style={{ padding: 10, gap: 10 }}>
       {collections.length !== 0 && <Text variant="eyebrow">Collections</Text>}
       <FlatList
         horizontal
+        ref={ref}
+        onScrollToIndexFailed={(info) => {
+          const wait = new Promise((resolve) => setTimeout(resolve, 500));
+          wait.then(() => {
+            ref.current?.scrollToIndex({
+              index: info.index,
+              animated: true,
+            });
+          });
+        }}
         renderItem={({ item }) => (
           <Chip
             key={item.id}

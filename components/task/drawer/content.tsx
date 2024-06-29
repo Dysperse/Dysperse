@@ -9,7 +9,7 @@ import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams } from "expo-router";
+import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -83,7 +83,7 @@ export function TaskDrawerContent({ handleClose }) {
   const labelColors = useLabelColors();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const menuRef = useRef<BottomSheetModal>(null);
-  const { id: collectionId } = useLocalSearchParams();
+  const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
 
   const handlePriorityChange = useCallback(() => {
@@ -209,7 +209,7 @@ export function TaskDrawerContent({ handleClose }) {
             />
             {task && (
               <LabelPicker
-                label={task.labelId}
+                label={task.label}
                 setLabel={(e) => {
                   updateTask("labelId", (e as any).id);
                   updateTask("label", e, false);
