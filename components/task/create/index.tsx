@@ -40,7 +40,13 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Platform, Pressable, View } from "react-native";
+import {
+  InteractionManager,
+  Keyboard,
+  Platform,
+  Pressable,
+  View,
+} from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -116,6 +122,16 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
   const endDate = watch("end");
   const timeInputRef = useRef<TextInput>(null);
   const endTimeInputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    if (dayjs(endDate).isBefore(dayjs(value))) {
+      setValue("end", dayjs(value).add(1, "hour").minute(0));
+      Toast.show({ type: "error", text1: "End time must be after start time" });
+      InteractionManager.runAfterInteractions(() => {
+        endTimeInputRef.current?.focus();
+      });
+    }
+  }, [dateOnly, setValue, endDate, value]);
 
   const quickDates = useMemo(
     () => [
@@ -242,6 +258,7 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
                   value={endDate}
                   setValue={setValue}
                   valueKey="end"
+                  key={dayjs(endDate).format("h:mm A")}
                 />
               </Pressable>
             ) : (
