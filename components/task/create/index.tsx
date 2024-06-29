@@ -1008,7 +1008,13 @@ function TaskNameInput({
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
                 onBlur,
-                onKeyDown: (e) => {
+                [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
+                  if (e.key === "Enter" || e.nativeEvent.key === "Enter") {
+                    e?.preventDefault?.();
+                    if (value.replaceAll("\n", "").trim())
+                      handleSubmitButtonClick();
+                    else setValue("name", value.replaceAll("\n", ""));
+                  }
                   if (e.key === "@") {
                     e.preventDefault();
                     nameRef.current?.blur();
@@ -1017,11 +1023,6 @@ function TaskNameInput({
                   if (e.key === "Escape") {
                     if (value) return onChange("");
                     forceClose();
-                  }
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    if (value.replaceAll("\n", "").trim())
-                      handleSubmitButtonClick();
                   }
                 },
               }}
