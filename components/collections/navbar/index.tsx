@@ -142,6 +142,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     !isAll && {
       icon: "lock_open",
       text: "Lock collection",
+      callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
     },
     !isAll && {
       icon: "remove_selection",

@@ -163,7 +163,31 @@ const StoryPoint = ({
   const filteredTasks = [
     ...data.entities,
     ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
-  ].filter((t) => t.storyPoints === scale && !t.trash);
+  ]
+    .filter((t) => t.storyPoints === scale && !t.trash)
+    .slice()
+    .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
+    .sort((x, y) => {
+      const xCompleted = x.completionInstances.length > 0;
+      const yCompleted = y.completionInstances.length > 0;
+
+      // If completion status is the same, sort by pinned status
+      if (xCompleted === yCompleted) {
+        // If both are pinned or both are not pinned, return 0
+        if (x.pinned === y.pinned) {
+          return 0;
+        } else {
+          // If x is pinned and y is not pinned, x should come before y
+          // If x is not pinned and y is pinned, y should come before x
+          return x.pinned ? -1 : 1;
+        }
+      } else {
+        // Sort by completion status
+        // If x is completed and y is not completed, x should come after y
+        // If y is completed and x is not completed, y should come after x
+        return xCompleted ? 1 : -1;
+      }
+    });
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(

@@ -16,7 +16,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -367,25 +366,18 @@ function BlockRequestButton({ mutate, id }) {
 
 function FriendOptionsButton() {
   return (
-    <MenuPopover
-      trigger={
-        <IconButton variant="outlined" size={40} style={{ marginRight: -10 }}>
-          <Icon>more_vert</Icon>
-        </IconButton>
-      }
-      menuProps={{
-        rendererProps: { placement: "left" },
+    <ConfirmationModal
+      height={410}
+      title="Remove friend?"
+      secondary="You can add this user back any time. We won't let this person know you've removed them."
+      onSuccess={async () => {
+        Toast.show({ type: "success", text1: "Coming soon!" });
       }}
-      options={[
-        {
-          icon: "person_remove",
-          text: "Remove friend",
-          callback: () => {
-            Toast.show({ type: "success", text1: "Coming soon!" });
-          },
-        },
-      ]}
-    />
+    >
+      <IconButton size={40} style={{ marginRight: -10 }}>
+        <Icon>person_remove</Icon>
+      </IconButton>
+    </ConfirmationModal>
   );
 }
 
