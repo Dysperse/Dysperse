@@ -110,7 +110,7 @@ const TimeInput = React.forwardRef(
         style={{
           width: breakpoints.md ? 100 : "100%",
           textAlign: "center",
-          height: 40,
+          height: 35,
         }}
         placeholder="12:00"
         value={value}
@@ -255,6 +255,7 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
                   endTimeInputRef.current?.focus();
                   if (!endDate)
                     setValue("end", dayjs(value).add(1, "hour").minute(0));
+                  else setValue("end", null);
                 }, 10);
             }}
             style={{ height: 40 }}
