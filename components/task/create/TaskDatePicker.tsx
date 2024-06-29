@@ -10,6 +10,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useState } from "react";
 import { Pressable, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RRule } from "rrule";
 import { DueDatePicker, RecurrencePicker } from ".";
 
@@ -72,6 +73,7 @@ function TaskDatePicker({
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
   const _ref = React.useRef<BottomSheetModal>(null);
   const sheetRef = _sheetRef || _ref;
 
@@ -135,7 +137,15 @@ function TaskDatePicker({
           },
         })}
       >
-        <Pressable onPress={handleClose} style={{ flex: 1, padding: 20 }}>
+        <Pressable
+          onPress={handleClose}
+          style={{
+            flex: 1,
+            padding: 20,
+            paddingTop: insets.top + 20,
+            paddingBottom: insets.bottom + 20,
+          }}
+        >
           <Pressable
             onPress={(e) => e.stopPropagation()}
             style={{

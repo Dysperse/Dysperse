@@ -75,6 +75,7 @@ const TimeInput = React.forwardRef(
     },
     ref: RefObject<TextInput>
   ) => {
+    const breakpoints = useResponsiveBreakpoints();
     const [value, setValue] = useState(defaultValue?.format?.("h:mm A") || "");
 
     return (
@@ -106,7 +107,11 @@ const TimeInput = React.forwardRef(
         }}
         inputRef={ref}
         variant="filled+outlined"
-        style={{ width: 100, textAlign: "center" }}
+        style={{
+          width: breakpoints.md ? 100 : "100%",
+          textAlign: "center",
+          height: 40,
+        }}
         placeholder="12:00"
         value={value}
         onChangeText={(e) => setValue(e)}
@@ -226,7 +231,10 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
                 primary={dateOnly ? "All day" : dayjs(value).format("h:mm A")}
               />
             ) : (
-              <Pressable onPress={(e) => e.stopPropagation()}>
+              <Pressable
+                style={{ flex: 1 }}
+                onPress={(e) => e.stopPropagation()}
+              >
                 <TimeInput
                   ref={timeInputRef}
                   value={value}
@@ -252,7 +260,10 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
             style={{ height: 40 }}
           >
             {!dateOnly && endDate ? (
-              <Pressable onPress={(e) => e.stopPropagation()}>
+              <Pressable
+                style={{ flex: 1 }}
+                onPress={(e) => e.stopPropagation()}
+              >
                 <TimeInput
                   ref={endTimeInputRef}
                   value={endDate}
