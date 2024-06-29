@@ -946,13 +946,16 @@ function TaskNameInput({
   menuRef,
   nameRef,
   setValue,
+  watch,
 }: {
   control: any;
   handleSubmitButtonClick: any;
   menuRef: React.MutableRefObject<BottomSheetModal>;
   nameRef: any;
   setValue: any;
+  watch;
 }) {
+  const attachments = watch("attachments");
   const { forceClose } = useBottomSheet();
   const { data: labelData } = useSWR(["space/labels"]);
   const breakpoints = useResponsiveBreakpoints();
@@ -1008,6 +1011,35 @@ function TaskNameInput({
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
                 onBlur,
+                ...(Platform.OS === "web" && {
+                  onPaste: async (e) => {
+                    const items = (
+                      e.clipboardData || e.originalEvent.clipboardData
+                    ).items;
+                    for (const index in items) {
+                      const item = items[index];
+                      if (item.kind === "file") {
+                        const form: any = new FormData();
+                        form.append("image", item);
+
+                        const res = await fetch(
+                          "https://api.dysperse.com/upload",
+                          { method: "POST", body: form }
+                        ).then((res) => res.json());
+
+                        setValue("attachments", [
+                          ...attachments,
+                          { type: "IMAGE", data: res.data.display_url },
+                        ]);
+
+                        Toast.show({
+                          type: "success",
+                          text1: "Image uploaded!",
+                        });
+                      }
+                    }
+                  },
+                }),
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
                   if (e.key === "Enter" || e.nativeEvent.key === "Enter") {
                     e?.preventDefault?.();
@@ -1489,6 +1521,7 @@ function BottomSheetContent({
               control={control}
             />
             <TaskNameInput
+              watch={watch}
               control={control}
               menuRef={menuRef}
               handleSubmitButtonClick={handleSubmitButtonClick}
