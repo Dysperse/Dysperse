@@ -43,7 +43,6 @@ export const KanbanHeader = memo(function KanbanHeader({
       (data) => {
         const labelIndex = data.labels.findIndex((l) => l.id === label.id);
         if (labelIndex === -1) return data;
-        data.labels[labelIndex].entities.push(newTask);
         return {
           ...data,
           labels: data.labels.map((l) =>
