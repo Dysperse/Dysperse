@@ -1290,9 +1290,11 @@ function Attachment({ control, nameRef, setValue, menuRef }: any) {
           >
             <IconButton
               style={{
+                width: breakpoints.md ? undefined : 100,
                 marginTop: breakpoints.md ? 63 : 0,
                 marginLeft: breakpoints.md ? 20 : -10,
-                width: breakpoints.md ? undefined : 90,
+              }}
+              pressableStyle={{
                 gap: 5,
                 flexDirection: "row",
               }}

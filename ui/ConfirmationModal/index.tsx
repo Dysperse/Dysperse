@@ -127,7 +127,7 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
         maxBackdropOpacity={0.2}
         animationConfigs={{
           overshootClamping: true,
-          stiffness: 200,
+          stiffness: 400,
           damping: 40,
         }}
         backgroundStyle={{

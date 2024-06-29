@@ -734,23 +734,13 @@ export function TaskDetails() {
                           key={n}
                           onPress={() => updateTask("storyPoints", n)}
                           size={35}
-                          style={({ pressed, hovered }) => ({
-                            borderRadius: 10,
-                            backgroundColor:
-                              theme[
-                                n === task.storyPoints
-                                  ? pressed
-                                    ? 12
-                                    : hovered
-                                    ? 11
-                                    : 10
-                                  : pressed
-                                  ? 5
-                                  : hovered
-                                  ? 4
-                                  : 3
-                              ],
-                          })}
+                          backgroundColors={{
+                            default: theme[n !== task.storyPoints ? 3 : 10],
+                            pressed: theme[n !== task.storyPoints ? 4 : 11],
+                            hovered: theme[n !== task.storyPoints ? 5 : 12],
+                          }}
+                          animationConfigs={{ duration: 0.0001 }}
+                          style={{ borderRadius: 10 }}
                         >
                           <Text
                             style={{

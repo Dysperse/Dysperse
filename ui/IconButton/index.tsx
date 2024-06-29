@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { SpringConfig } from "react-native-reanimated/lib/typescript/reanimated2/animation/springUtils";
 import { addHslAlpha } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 import Icon from "../Icon";
@@ -34,6 +35,7 @@ export interface IconButtonProps extends PressableProps {
     pressed?: string;
     hovered?: string;
   };
+  animationConfigs?: SpringConfig;
 }
 
 const styles = StyleSheet.create({
@@ -44,16 +46,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const animationConfig = {
-  damping: 10,
-  stiffness: 400,
-  overshootClamping: true,
-};
-
 const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
   (props, ref) => {
     const theme = useColorTheme();
     const state = useSharedValue(0);
+
+    const animationConfig = props.animationConfigs || {
+      damping: 10,
+      stiffness: 400,
+      overshootClamping: true,
+    };
 
     const backgroundColors = [
       props.backgroundColors?.default ||
@@ -61,13 +63,14 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
       props.backgroundColors?.hovered || theme[4],
       props.backgroundColors?.pressed || theme[5],
     ];
+    const transparent = addHslAlpha(theme[3], 0);
     const borderColors = [
       props.borderColors?.default ||
-        (props.variant === "outlined" ? theme[5] : "transparent"),
+        (props.variant === "outlined" ? theme[5] : transparent),
       props.borderColors?.hovered ||
-        (props.variant === "outlined" ? theme[6] : "transparent"),
+        (props.variant === "outlined" ? theme[6] : transparent),
       props.borderColors?.pressed ||
-        (props.variant === "outlined" ? theme[7] : "transparent"),
+        (props.variant === "outlined" ? theme[7] : transparent),
     ];
 
     const animatedStyle = useAnimatedStyle(() => ({
@@ -104,14 +107,16 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
           onHoverOut={() => (state.value = 0)}
           onPressIn={() => (state.value = 2)}
           onPressOut={() => (state.value = 0)}
-          android_ripple={{ color: theme[5] }}
           ref={ref as any}
-          style={[
+          style={({ pressed, hovered }) => [
             styles.base,
             {
-              width: props.size ?? 35,
               height: props.size ?? 35,
+              flex: 1,
             },
+            typeof props.pressableStyle === "function"
+              ? props.pressableStyle({ pressed, hovered })
+              : props.pressableStyle,
           ]}
         >
           {props.children || <Icon>{props.icon}</Icon>}
