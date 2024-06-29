@@ -8,7 +8,7 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import Text from "@/ui/Text";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -296,13 +296,15 @@ const Task = memo(function Task({
           {...(selection.length > 0 && {
             onPress: handleSelect,
           })}
-          style={({ pressed, hovered }) => [
+          pressableStyle={{
+            paddingTop: breakpoints.md ? 13 : 18,
+            paddingLeft: breakpoints.md ? 13 : 18,
+            paddingRight: breakpoints.md ? 13 : 18,
+            paddingBottom: breakpoints.md ? 8 : 18,
+          }}
+          style={[
             {
               flexShrink: 0,
-              paddingTop: breakpoints.md ? 13 : 18,
-              paddingLeft: breakpoints.md ? 13 : 18,
-              paddingRight: breakpoints.md ? 13 : 18,
-              paddingBottom: breakpoints.md ? 8 : 18,
               borderRadius: 25,
               borderColor: "transparent",
               ...(!breakpoints.md && {
@@ -311,11 +313,11 @@ const Task = memo(function Task({
                 marginTop: breakpoints.md ? 0 : 5,
                 marginBottom: 8,
               }),
-              backgroundColor: pressed
-                ? addHslAlpha(theme[4], 0.7)
-                : hovered
-                ? addHslAlpha(theme[3], 0.7)
-                : undefined,
+              // backgroundColor: pressed
+              //   ? addHslAlpha(theme[4], 0.7)
+              //   : hovered
+              //   ? addHslAlpha(theme[3], 0.7)
+              //   : undefined,
               ...(planMode && {
                 borderWidth: 1,
                 borderColor: theme[5],

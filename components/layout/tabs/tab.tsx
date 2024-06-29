@@ -177,12 +177,7 @@ function Tab({
         </View>
         <IconButton
           disabled={!selected}
-          style={({ hovered }) => [
-            styles.closeButton,
-            {
-              opacity: selected ? (hovered ? 1 : 0.5) : 0,
-            },
-          ]}
+          style={[styles.closeButton, { opacity: selected ? 0.5 : 0 }]}
           size={50}
           onPress={handleCloseTab}
         >

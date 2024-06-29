@@ -389,8 +389,8 @@ export default function Page() {
           <ListItemButton
             key={e.text}
             onPress={e.callback}
-            variant="filled"
-            style={{ borderWidth: 1, borderColor: theme[5], marginBottom: 10 }}
+            variant="outlined"
+            style={{ marginBottom: 7 }}
           >
             <Icon>{e.icon}</Icon>
             <ListItemText primary={e.text} />

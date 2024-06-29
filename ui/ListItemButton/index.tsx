@@ -5,12 +5,20 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { addHslAlpha } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 
 export interface DListitemButtonProps extends PressableProps {
-  style?: StyleProp<ViewStyle> | ((props) => StyleProp<ViewStyle>);
+  style?: StyleProp<ViewStyle>;
   buttonClassName?: string;
   variant?: "default" | "filled" | "outlined";
+  pressableStyle?: StyleProp<ViewStyle>;
 }
 
 const styles = StyleSheet.create({
@@ -24,31 +32,58 @@ const styles = StyleSheet.create({
   },
 });
 
+const animationConfig = {
+  damping: 10,
+  stiffness: 400,
+  overshootClamping: true,
+};
+
 export function ListItemButton(props: DListitemButtonProps) {
   const theme = useColorTheme();
+  const state = useSharedValue(0);
+
+  const backgroundColors = [addHslAlpha(theme[3], 0), theme[3], theme[4]];
+  const borderColors = [theme[5], theme[6], theme[7]];
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: withSpring(
+      interpolateColor(state.value, [0, 2], backgroundColors),
+      animationConfig
+    ),
+    borderColor: withSpring(
+      interpolateColor(state.value, [0, 2], borderColors),
+      animationConfig
+    ),
+    transform: [
+      { scale: withSpring(state.value === 2 ? 0.95 : 1, animationConfig) },
+    ],
+  }));
 
   return (
-    <Pressable
-      {...props}
-      style={({ pressed, hovered }) => [
+    <Animated.View
+      style={[
+        animatedStyle,
         styles.base,
+        props.style,
         {
-          backgroundColor: pressed
-            ? theme[5]
-            : hovered
-            ? theme[4]
-            : props.variant === "filled"
-            ? theme[pressed ? 5 : hovered ? 4 : 3]
-            : "transparent",
+          paddingHorizontal: 0,
+          paddingVertical: 0,
+          overflow: "hidden",
         },
         props.variant === "outlined" && {
           borderWidth: 1,
-          borderColor: theme[5],
         },
-        typeof props.style === "function"
-          ? props.style({ pressed, hovered })
-          : props.style,
       ]}
-    />
+    >
+      <Pressable
+        {...props}
+        onHoverIn={() => (state.value = 1)}
+        onHoverOut={() => (state.value = 0)}
+        onPressIn={() => (state.value = 2)}
+        onPressOut={() => (state.value = 0)}
+        android_ripple={{ color: theme[5] }}
+        style={[styles.base, props.pressableStyle, { flex: 1 }]}
+      />
+    </Animated.View>
   );
 }

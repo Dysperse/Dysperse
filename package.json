@@ -16,6 +16,7 @@
     "build-local": "eas build --platform android --local"
   },
   "dependencies": {
+    "@eslint/compat": "^1.1.0",
     "@expo-google-fonts/crimson-pro": "^0.2.3",
     "@expo-google-fonts/fraunces": "^0.2.3",
     "@expo-google-fonts/jetbrains-mono": "^0.2.3",

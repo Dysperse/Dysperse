@@ -1318,11 +1318,15 @@ const SubmitButton = memo(({ onSubmit }: any) => {
   return (
     <IconButton
       size={breakpoints.md ? 50 : 45}
-      style={({ pressed, hovered }) => ({
-        backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
+      backgroundColors={{
+        default: theme[10],
+        hovered: theme[11],
+        pressed: theme[12],
+      }}
+      style={{
         marginRight: 10,
         height: 35,
-      })}
+      }}
       variant="filled"
       icon={
         <Icon bold style={{ color: theme[1] }}>

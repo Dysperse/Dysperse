@@ -86,32 +86,39 @@ export function TaskCompleteButton() {
   const disabled = isReadOnly || (task.recurrenceRule && !dateRange);
 
   return (
-    <>
-      <IconButton
-        disabled={disabled}
-        style={({ pressed, hovered }) => ({
-          borderWidth: 1,
-          opacity: disabled ? undefined : 1,
-          borderColor: isCompleted
-            ? green[pressed ? 11 : hovered ? 10 : 9]
-            : theme[pressed ? 8 : hovered ? 7 : 6],
-          backgroundColor: isCompleted
-            ? green[pressed ? 11 : hovered ? 10 : 9]
-            : theme[pressed ? 4 : hovered ? 3 : 2],
-        })}
-        size={50}
-        onPress={handlePress}
-      >
-        <Icon
-          filled={isCompleted}
-          size={27}
+    !isReadOnly && (
+      <>
+        <IconButton
+          disabled={disabled}
           style={{
-            color: isCompleted ? green[1] : theme[11],
+            borderWidth: 1,
+            opacity: disabled ? undefined : 1,
           }}
+          variant="outlined"
+          borderColors={{
+            default: isCompleted ? green[9] : theme[6],
+            hovered: isCompleted ? green[10] : theme[7],
+            pressed: isCompleted ? green[11] : theme[8],
+          }}
+          backgroundColors={{
+            default: isCompleted ? green[9] : theme[2],
+            hovered: isCompleted ? green[10] : theme[3],
+            pressed: isCompleted ? green[11] : theme[4],
+          }}
+          size={50}
+          onPress={handlePress}
         >
-          done_outline
-        </Icon>
-      </IconButton>
-    </>
+          <Icon
+            filled={isCompleted}
+            size={27}
+            style={{
+              color: isCompleted ? green[1] : theme[11],
+            }}
+          >
+            done_outline
+          </Icon>
+        </IconButton>
+      </>
+    )
   );
 }

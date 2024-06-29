@@ -145,7 +145,7 @@ export function TaskDrawerContent({ handleClose }) {
         >
           <IconButton
             onPress={handleClose}
-            style={{ borderWidth: 1, borderColor: theme[6] }}
+            variant="outlined"
             size={50}
             icon="close"
           />
@@ -154,7 +154,7 @@ export function TaskDrawerContent({ handleClose }) {
           <TaskCompleteButton />
           {!isReadOnly && (
             <IconButton
-              style={{ borderWidth: 1, borderColor: theme[6] }}
+              variant="outlined"
               size={50}
               onPress={handleDelete}
               icon={task.trash ? "restore_from_trash" : "delete"}
