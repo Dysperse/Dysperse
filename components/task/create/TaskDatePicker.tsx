@@ -135,10 +135,7 @@ function TaskDatePicker({
           },
         })}
       >
-        <Pressable
-          onPress={handleClose}
-          style={{ flex: 1, paddingHorizontal: 20 }}
-        >
+        <Pressable onPress={handleClose} style={{ flex: 1, padding: 20 }}>
           <Pressable
             onPress={(e) => e.stopPropagation()}
             style={{
@@ -150,6 +147,7 @@ function TaskDatePicker({
               width: "100%",
               overflow: "hidden",
               marginHorizontal: "auto",
+              maxHeight: "100%",
               shadowRadius: 50,
               shadowOffset: {
                 width: 20,
