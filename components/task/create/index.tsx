@@ -1020,22 +1020,42 @@ function TaskNameInput({
                       const item = items[index];
                       if (item.kind === "file") {
                         const form: any = new FormData();
-                        form.append("image", item);
+                        const blob = item.getAsFile();
 
+                        form.append(
+                          "source",
+                          new File([blob], "filename", {
+                            type: "image/png",
+                            lastModified: new Date().getTime(),
+                          })
+                        );
+
+                        // https://imgcdn.dev/api/1/upload/?name=image&key=5386e05a3562c7a8f984e73401540836
                         const res = await fetch(
-                          "https://api.dysperse.com/upload",
-                          { method: "POST", body: form }
+                          "http://localhost:3000/upload",
+                          {
+                            method: "POST",
+                            body: form,
+                          }
                         ).then((res) => res.json());
+                        if (res.error) {
+                          Toast.show({
+                            type: "error",
+                            text1: "Failed to upload",
+                            text2: res.error.message,
+                          });
+                        } else {
+                          console.log(res);
+                          setValue("attachments", [
+                            ...attachments,
+                            { type: "IMAGE", data: res.image.display_url },
+                          ]);
 
-                        setValue("attachments", [
-                          ...attachments,
-                          { type: "IMAGE", data: res.data.display_url },
-                        ]);
-
-                        Toast.show({
-                          type: "success",
-                          text1: "Image uploaded!",
-                        });
+                          Toast.show({
+                            type: "success",
+                            text1: "Image uploaded!",
+                          });
+                        }
                       }
                     }
                   },
@@ -1273,9 +1293,9 @@ const TaskAttachments = ({ watch, setValue }: any) => {
             />
             <View style={{ flex: 1, flexDirection: "column" }}>
               <Text variant="eyebrow">{attachment.type}</Text>
-              <Text numberOfLines={1}>
+              <Text numberOfLines={1} style={{ color: theme[11] }}>
                 {attachment.type === "IMAGE"
-                  ? attachment.data.split("/")[4]
+                  ? new URL(attachment.data).pathname.split("/").pop()
                   : attachment.data}
               </Text>
             </View>
