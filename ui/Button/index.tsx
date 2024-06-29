@@ -179,7 +179,6 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
             ? props["style" as any]({ hovered, pressed })
             : props.style,
           {
-            width: "100%",
             flex: 1,
             gap: props.dense ? 3 : 10,
           },
