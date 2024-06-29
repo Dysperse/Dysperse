@@ -42,7 +42,11 @@ export function ListItemButton(props: DListitemButtonProps) {
   const theme = useColorTheme();
   const state = useSharedValue(0);
 
-  const backgroundColors = [addHslAlpha(theme[3], 0), theme[3], theme[4]];
+  const backgroundColors = [
+    props.variant === "filled" ? theme[3] : addHslAlpha(theme[3], 0),
+    theme[props.variant === "filled" ? 4 : 3],
+    theme[props.variant === "filled" ? 5 : 4],
+  ];
   const borderColors = [theme[5], theme[6], theme[7]];
 
   const animatedStyle = useAnimatedStyle(() => ({
