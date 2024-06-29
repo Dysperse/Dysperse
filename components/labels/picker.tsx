@@ -70,13 +70,12 @@ function CollectionChips({
   setSelectedCollection,
 }: any) {
   const ref = useRef(null);
+
   useEffect(() => {
-    if (selectedCollection) {
-      ref.current?.scrollToIndex({
-        index: collections.findIndex((c) => c.id === selectedCollection),
-      });
-    }
+    const t = collections.findIndex((c) => c.id === selectedCollection);
+    if (t !== -1) ref.current?.scrollToIndex({ index: t });
   }, [selectedCollection, collections]);
+
   return (
     <View style={{ padding: 10, gap: 10 }}>
       {collections.length !== 0 && <Text variant="eyebrow">Collections</Text>}
@@ -193,8 +192,9 @@ const LabelPicker = memo(function LabelPicker({
 
   const { data, mutate, error } = useSWR(["space/labels"]);
 
-  const [selectedCollection, setSelectedCollection] =
-    useState(defaultCollection);
+  const [selectedCollection, setSelectedCollection] = useState(
+    defaultCollection === "all" ? null : defaultCollection
+  );
 
   const collections = Array.isArray(data)
     ? data
