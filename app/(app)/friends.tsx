@@ -377,8 +377,13 @@ function FriendOptionsButton() {
         rendererProps: { placement: "left" },
       }}
       options={[
-        { icon: "person_remove", text: "Remove friend" },
-        // { icon: "block", text: "Block user" },
+        {
+          icon: "person_remove",
+          text: "Remove friend",
+          callback: () => {
+            Toast.show({ type: "success", text1: "Coming soon!" });
+          },
+        },
       ]}
     />
   );
