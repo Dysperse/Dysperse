@@ -309,7 +309,7 @@ function SettingsSidebar() {
                       ? "filled"
                       : "default"
                   }
-                  style={[
+                  pressableStyle={[
                     styles.sectionItem,
                     !breakpoints.md && {
                       paddingVertical: 15,
