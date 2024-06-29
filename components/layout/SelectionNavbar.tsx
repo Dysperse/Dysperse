@@ -166,6 +166,7 @@ function Actions({ setIsLoading }) {
               date: null,
               dateOnly: true,
               recurrenceRule: null,
+              end: null,
             }[inputName];
           }}
         >

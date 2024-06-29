@@ -61,9 +61,11 @@ const TimeInput = React.forwardRef(
     {
       value: defaultValue,
       setValue: setDefaultValue,
+      valueKey = "date",
     }: {
       value: Dayjs;
       setValue: (key: string, value: Dayjs) => void;
+      valueKey?: "date" | "end";
     },
     ref: RefObject<TextInput>
   ) => {
@@ -77,7 +79,7 @@ const TimeInput = React.forwardRef(
           if (convertTime(n)) {
             const [hours, minutes] = convertTime(n).split(":");
             setDefaultValue(
-              "date",
+              valueKey,
               dayjs(defaultValue)
                 .hour(parseInt(hours))
                 .minute(parseInt(minutes))
@@ -111,7 +113,9 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const dateOnly = watch("dateOnly");
+  const endDate = watch("end");
   const timeInputRef = useRef<TextInput>(null);
+  const endTimeInputRef = useRef<TextInput>(null);
 
   const quickDates = useMemo(
     () => [
@@ -216,6 +220,42 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
             )}
             <Icon size={30} style={!dateOnly && { opacity: 0.6 }}>
               toggle_{dateOnly ? "on" : "off"}
+            </Icon>
+          </ListItemButton>
+          <ListItemButton
+            onPress={() => {
+              if (dateOnly)
+                Toast.show({ type: "error", text1: "Add a time first" });
+              else
+                setTimeout(() => {
+                  endTimeInputRef.current?.focus();
+                  if (!endDate)
+                    setValue("end", dayjs(value).add(1, "hour").minute(0));
+                }, 10);
+            }}
+            style={{ height: 40 }}
+          >
+            {!dateOnly && endDate ? (
+              <Pressable onPress={(e) => e.stopPropagation()}>
+                <TimeInput
+                  ref={endTimeInputRef}
+                  value={endDate}
+                  setValue={setValue}
+                  valueKey="end"
+                />
+              </Pressable>
+            ) : (
+              <ListItemText
+                primaryProps={{ style: { color: theme[11] } }}
+                primary={
+                  !dateOnly && endDate
+                    ? dayjs(value).format("h:mm A")
+                    : "Add end time"
+                }
+              />
+            )}
+            <Icon size={30} style={!dateOnly && { opacity: 0.6 }}>
+              {endDate ? "delete" : "add"}
             </Icon>
           </ListItemButton>
           <ListItemButton
