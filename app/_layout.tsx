@@ -403,7 +403,7 @@ function Root() {
                         ...TransitionPresets.ModalPresentationIOS,
                       }}
                     />
-                    {["search/[id]", "collection/[id]"].map((p) => (
+                    {["search/[id]"].map((p) => (
                       <JsStack.Screen
                         key={p}
                         name={p}
@@ -411,7 +411,6 @@ function Root() {
                           presentation: "modal",
                           animationEnabled: !breakpoints.md,
                           detachPreviousScreen: false,
-                          gestureEnabled: p === "collection/[id]",
                           gestureResponseDistance: width,
                           cardStyle: { backgroundColor: "transparent" },
                           cardOverlay: (props) => (

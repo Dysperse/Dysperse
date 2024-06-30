@@ -21,7 +21,6 @@ import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
 import { CollectionLabelMenu } from "./CollectionLabelMenu";
-import { CollectionRenameMenu } from "./CollectionRenameMenu";
 import { CollectionSearch } from "./CollectionSearch";
 import { CollectionShareMenu } from "./CollectionShareMenu";
 import { NavbarEyebrow } from "./NavbarEyebrow";
@@ -138,17 +137,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
       ),
     },
     !isAll && {
-      icon: "edit",
-      text: "Edit",
-      renderer: (props) => (
-        <CollectionContext.Provider value={contextValue}>
-          <CollectionRenameMenu menuRef={menuRef} {...props} />
-        </CollectionContext.Provider>
-      ),
-    },
-    !isAll && {
       icon: "lock_open",
-      text: "Lock collection",
+      text: "Lock",
       callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
     },
     !isAll && {

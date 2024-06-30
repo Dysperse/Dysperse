@@ -69,7 +69,7 @@ const Labels = ({ labels }) => {
     <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
       {labels.map((label) => (
         <Chip
-          key={label}
+          key={label.id}
           style={{ backgroundColor: theme[5] }}
           label={label.name}
           icon={<Emoji emoji={label.emoji} size={24} />}
