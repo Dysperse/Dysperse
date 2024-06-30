@@ -8,7 +8,7 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -19,48 +19,16 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 
-const collectionCategories: MenuOption[] = [
-  { text: "School", icon: "school" },
-  { text: "Sports", icon: "sports_soccer" },
-  { text: "Movies", icon: "theaters" },
-  { text: "Music", icon: "piano" },
-  { text: "Outdoors", icon: "camping" },
-  { text: "Food & Drink", icon: "lunch_dining" },
-  { text: "Travel", icon: "flight" },
-  { text: "Books", icon: "menu_book" },
-  { text: "Art", icon: "palette" },
-  { text: "Tech", icon: "devices" },
-  { text: "Fashion", icon: "style" },
-  { text: "Health", icon: "health_and_safety" },
-  { text: "Fitness", icon: "fitness_center" },
+const collectionCategories = [
   { text: "Home", icon: "home" },
-  { text: "Pets", icon: "pets" },
-  { text: "Gaming", icon: "videogame_asset" },
   { text: "Business", icon: "business" },
-  { text: "Finance", icon: "money" },
-  { text: "Science", icon: "science" },
-  { text: "Nature", icon: "nature_people" },
-  { text: "Cars", icon: "directions_car" },
-  { text: "Photography", icon: "photo_camera" },
-  { text: "DIY", icon: "build" },
-  { text: "Crafts", icon: "emoji_objects" },
-  { text: "Beauty", icon: "spa" },
-  { text: "Relationships", icon: "favorite" },
-  { text: "Parenting", icon: "family_restroom" },
-  { text: "Weddings", icon: "cake" },
-  { text: "Parties", icon: "celebration" },
+  { text: "Education", icon: "school" },
+  { text: "Movies & TV", icon: "theaters" },
+  { text: "Food & Drink", icon: "lunch_dining" },
+  { text: "Sports & Fitness", icon: "exercise" },
+  { text: "Meet-ups", icon: "celebration" },
+  { text: "Travel", icon: "flight" },
   { text: "Holidays", icon: "celebration" },
-  { text: "Games", icon: "sports_esports" },
-  { text: "Entertainment", icon: "theaters" },
-  { text: "Humor", icon: "sentiment_very_satisfied" },
-  { text: "News", icon: "article" },
-  { text: "Politics", icon: "psychology" },
-  { text: "Religion", icon: "psychology" },
-  { text: "History", icon: "history" },
-  { text: "Culture", icon: "emoji_objects" },
-  { text: "Languages", icon: "language" },
-  { text: "Learning", icon: "school" },
-  { text: "Fitness", icon: "fitness_center" },
 ];
 
 const Labels = ({ labels }) => {
