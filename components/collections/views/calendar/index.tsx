@@ -1,7 +1,6 @@
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
-import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
@@ -104,10 +103,12 @@ export function Content() {
     return acc.concat(
       (col?.tasks || []).map((task) => ({
         ...task,
-        dateRange: [col.start, col.end],
+        dateRange: [dayjs(col.start).toDate(), dayjs(col.end).toDate()],
       }))
     );
   }, []);
+
+  console.log(tasks);
 
   const filteredEvents = useMemo(
     () =>
@@ -119,23 +120,11 @@ export function Content() {
               ...task,
               title: task.name,
               start: dayjs(
-                task.recurrenceRule
-                  ? normalizeRecurrenceRuleObject(task.recurrenceRule)
-                      .between(
-                        new Date(task.dateRange[0]),
-                        new Date(task.dateRange[1])
-                      )[0]
-                      .toISOString()
-                  : task.start
+                task.recurrenceRule ? task.recurrenceDay : task.start
               ).toDate(),
               end: dayjs(
                 task.recurrenceRule
-                  ? normalizeRecurrenceRuleObject(task.recurrenceRule)
-                      .between(
-                        new Date(task.dateRange[0]),
-                        new Date(task.dateRange[1])
-                      )[0]
-                      .toISOString()
+                  ? task.recurrenceDay
                   : task.end || task.start
               )
                 .add(task.end ? 0 : 1, "hour")

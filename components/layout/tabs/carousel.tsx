@@ -235,9 +235,7 @@ const WebPWAInstallButton = () => {
 
 function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
-  const { data, error, mutate } = useSWR(["user/tabs"], {
-    refreshInterval: 60000,
-  });
+  const { data, error, mutate } = useSWR(["user/tabs"]);
 
   const handleSnapToIndex = (index: number) => {
     if (error)

@@ -21,7 +21,7 @@ export function PlanDayPrompt() {
     router.push("/plan");
   }, []);
 
-  const hasCompleted = dayjs(session.user?.profile?.lastPlanned).isToday();
+  const hasCompleted = dayjs(session?.user?.profile?.lastPlanned).isToday();
 
   return (
     <Pressable

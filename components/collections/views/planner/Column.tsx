@@ -50,7 +50,9 @@ export const onTaskUpdate = (newTask, mutate, column) => {
               return {
                 ...oldColumn,
                 tasks: oldColumn.tasks
-                  .map((task) => (task.id === newTask.id ? newTask : task))
+                  .map((task) =>
+                    task.id === newTask.id ? { ...task, newTask } : task
+                  )
                   .filter((t) => !t.trash),
               };
             }
