@@ -1,11 +1,11 @@
 import { ProfileModal } from "@/components/ProfileModal";
+import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -14,17 +14,23 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  createStackNavigator,
+  StackNavigationOptions,
+} from "@react-navigation/stack";
 import { useLocalSearchParams } from "expo-router";
 import {
   cloneElement,
   memo,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -33,6 +39,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useCollectionContext } from "../context";
+import { CollectionInfo } from "./CollectionInfo";
+import { PublishCollection } from "./PublishCollection";
 import { styles } from "./styles";
 
 const modalStyles = StyleSheet.create({
@@ -58,8 +66,6 @@ function FriendEmailSelection({ setQuery }) {
 }
 
 function UserSearchResults({ selected, setSelected, query }) {
-  const theme = useColorTheme();
-
   const { data, error, isLoading, isValidating } = useSWR([
     "user/profile",
     { email: query },
@@ -319,7 +325,7 @@ const FriendModal = ({ children, onComplete }) => {
   );
 };
 
-const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
+const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
   const { session } = useSession();
   const ref = useRef(null);
   const handleDelete = async () => {
@@ -365,7 +371,7 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
         {!isReadOnly && (
           <MenuPopover
             trigger={<IconButton icon="more_horiz" />}
-            ref={ref}
+            menuRef={ref}
             options={[
               ...[
                 { text: "View only", value: "READ_ONLY" },
@@ -451,69 +457,9 @@ const CollectionShareLink = ({ isReadOnly }) => {
   );
 };
 
-const PublishCollection = () => {
-  const theme = useColorTheme();
-
-  return (
-    <View
-      style={{
-        padding: 20,
-        paddingHorizontal: 30,
-        backgroundColor: theme[3],
-        borderWidth: 1,
-        borderColor: theme[6],
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 25,
-        gap: 10,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Text
-          weight={900}
-          style={{
-            fontSize: 20,
-          }}
-        >
-          Publish to the{" "}
-        </Text>
-        <Chip
-          style={{ backgroundColor: theme[6], gap: 5 }}
-          label={
-            <Text
-              style={{
-                fontFamily: getFontName("jetBrainsMono", 500),
-                color: theme[11],
-                fontStyle: "italic",
-              }}
-            >
-              DYSVERSE
-            </Text>
-          }
-          icon={<Emoji emoji="1f680" size={20} />}
-        />
-      </View>
-      <Text style={{ opacity: 0.6, textAlign: "center" }}>
-        Create a template which anyone can use to create their own collection.
-        Your tasks won't be shared.
-      </Text>
-      <Button variant="outlined">
-        <ButtonText>Coming soon</ButtonText>
-      </Button>
-    </View>
-  );
-};
-
-const CollectionMembers = ({
-  collection: { access, data: collection },
-  mutateList,
-}) => {
+const CollectionMembers = ({ collection, mutateList, navigation }) => {
   const { session } = useSession();
+  const { data, access } = collection || {};
   const isReadOnly = access?.access === "READ_ONLY";
 
   const handleSelectFriends = async (friends) => {
@@ -527,7 +473,7 @@ const CollectionMembers = ({
         {
           body: JSON.stringify({
             userList,
-            id: collection.id,
+            id: data?.id,
           }),
         }
       );
@@ -557,22 +503,144 @@ const CollectionMembers = ({
             </ListItemButton>
           </FriendModal>
         )}
-        {collection.invitedUsers.map((user) => (
-          <CollectionInvitedUser
-            mutateList={mutateList}
-            key={user.user.email}
-            user={user}
-            isReadOnly={isReadOnly}
-          />
-        ))}
+        {data &&
+          data.invitedUsers.map((user) => (
+            <CollectionInvitedUser
+              mutateList={mutateList}
+              key={user.user.email}
+              user={user}
+              isReadOnly={isReadOnly}
+            />
+          ))}
       </View>
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
-        Publish
+        Template
       </Text>
-      <PublishCollection />
+      <PublishCollection collection={collection} navigation={navigation} />
     </View>
   );
 };
+
+const Stack = createStackNavigator();
+
+const Navbar = ({ navigation, title, icon = "close", handleClose }) => {
+  const theme = useColorTheme();
+
+  return (
+    <View
+      style={{
+        gap: 20,
+        padding: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: theme[2],
+      }}
+    >
+      <IconButton
+        icon={icon}
+        size={55}
+        variant="outlined"
+        onPress={() => {
+          if (navigation.canGoBack()) navigation.goBack();
+          else handleClose();
+        }}
+      />
+      <Text
+        style={{
+          fontSize: 30,
+          marginHorizontal: "auto",
+          paddingRight: 55,
+        }}
+        weight={800}
+      >
+        {title}
+      </Text>
+    </View>
+  );
+};
+
+const Navigator = memo(({ handleClose, collection }: any) => {
+  const theme = useColorTheme();
+  const screenOptions = useMemo<StackNavigationOptions>(
+    () => ({
+      cardStyleInterpolator: forHorizontalIOS,
+      detachPreviousScreen: false,
+      headerShown: true,
+      headerMode: "float",
+      cardStyle: {
+        height: "100%",
+        width: "100%",
+        backgroundColor: theme[2],
+      },
+      header: ({ navigation }) => (
+        <Navbar
+          title="Share"
+          navigation={navigation}
+          handleClose={handleClose}
+        />
+      ),
+    }),
+    [theme, handleClose]
+  );
+
+  return (
+    <View
+      style={{
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <NavigationContainer
+        documentTitle={{ enabled: false }}
+        independent={true}
+        theme={{
+          colors: {
+            background: theme[3],
+            card: theme[2],
+            primary: theme[2],
+            border: theme[6],
+            text: theme[11],
+            notification: theme[9],
+          },
+          dark: true,
+        }}
+      >
+        <Stack.Navigator screenOptions={screenOptions}>
+          <Stack.Screen
+            name="share"
+            component={({ navigation }) => (
+              <BottomSheetScrollView>
+                <BottomSheetScrollView contentContainerStyle={{ padding: 20 }}>
+                  <CollectionMembers
+                    mutateList={collection.mutate}
+                    navigation={navigation}
+                    collection={collection}
+                  />
+                </BottomSheetScrollView>
+              </BottomSheetScrollView>
+            )}
+          />
+          <Stack.Screen
+            name="publish"
+            component={(props) => (
+              <CollectionInfo {...props} collection={collection} />
+            )}
+            options={{
+              header: ({ navigation }) => (
+                <Navbar
+                  title="Publish"
+                  navigation={navigation}
+                  icon="arrow_back_ios_new"
+                  handleClose={handleClose}
+                />
+              ),
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
+  );
+});
 
 export const CollectionShareMenu = memo(function CollectionShareMenu() {
   const ref = useRef<BottomSheetModal>(null);
@@ -653,45 +721,17 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
               backgroundColor: theme[2],
               borderRadius: 25,
               maxWidth: 600,
-              maxHeight: 600,
+              maxHeight: 500,
               width: "100%",
+              overflow: "hidden",
               shadowColor: "#000",
+              height: "100%",
               shadowOffset: { width: 25, height: 25 },
               shadowOpacity: 0.25,
               shadowRadius: 100,
             }}
           >
-            <View
-              style={{
-                gap: 20,
-                padding: 20,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <IconButton
-                icon="close"
-                size={55}
-                variant="outlined"
-                onPress={handleClose}
-              />
-              <Text
-                style={{
-                  fontSize: 30,
-                  marginHorizontal: "auto",
-                  paddingRight: 55,
-                }}
-                weight={800}
-              >
-                Share
-              </Text>
-            </View>
-            <BottomSheetScrollView contentContainerStyle={{ padding: 20 }}>
-              <CollectionMembers
-                mutateList={collection.mutate}
-                collection={collection}
-              />
-            </BottomSheetScrollView>
+            <Navigator handleClose={handleClose} collection={collection} />
           </Pressable>
         </Pressable>
       </BottomSheet>
