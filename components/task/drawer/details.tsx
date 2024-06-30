@@ -555,11 +555,7 @@ export function TaskDetails() {
                   updateTask={updateTask}
                 >
                   <Pressable style={drawerStyles.collapsibleMenuItem}>
-                    <IconButton
-                      disabled
-                      style={{ borderWidth: 1, borderColor: theme[6] }}
-                      size={50}
-                    >
+                    <IconButton disabled size={50} variant="outlined">
                       <Icon>edit</Icon>
                     </IconButton>
                     <Text>Edit</Text>
@@ -571,10 +567,7 @@ export function TaskDetails() {
                     updateTask("note", null);
                   }}
                 >
-                  <IconButton
-                    style={{ borderWidth: 1, borderColor: theme[6] }}
-                    size={50}
-                  >
+                  <IconButton size={50} variant="outlined">
                     <Icon>close</Icon>
                   </IconButton>
                   <Text>Remove</Text>
@@ -645,14 +638,16 @@ export function TaskDetails() {
                     }[inputName];
                   }}
                 >
-                  <Pressable style={drawerStyles.collapsibleMenuItem}>
+                  <Pressable
+                    style={drawerStyles.collapsibleMenuItem}
+                    android_ripple={{ color: theme[5] }}
+                  >
                     <IconButton
                       disabled
                       style={{
                         opacity: 1,
-                        borderWidth: 1,
-                        borderColor: theme[6],
                       }}
+                      variant="outlined"
                       size={50}
                     >
                       <Icon>edit</Icon>
@@ -662,6 +657,7 @@ export function TaskDetails() {
                 </TaskDatePicker>
                 <Pressable
                   style={drawerStyles.collapsibleMenuItem}
+                  android_ripple={{ color: theme[5] }}
                   onPress={() => {
                     updateTask("recurrenceRule", null);
                     updateTask("start", null);
@@ -669,10 +665,9 @@ export function TaskDetails() {
                 >
                   <IconButton
                     style={{
-                      borderWidth: 1,
-                      borderColor: theme[6],
                       opacity: 1,
                     }}
+                    variant="outlined"
                     size={50}
                     disabled
                   >
