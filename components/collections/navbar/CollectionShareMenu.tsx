@@ -6,14 +6,13 @@ import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
-import Divider from "@/ui/Divider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { Menu } from "@/ui/Menu";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -88,11 +87,6 @@ function UserSearchResults({ selected, setSelected, query }) {
           </View>
         ) : (
           <ListItemButton
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-              marginTop: 10,
-              width: "100%",
-            })}
             onPress={() => {
               setSelected((oldData) => {
                 if (oldData.find((u) => u.email === data.email))
@@ -260,13 +254,17 @@ const FriendModal = ({ children, onComplete }) => {
                   <Icon style={{ color: theme[1] }}>north</Icon>
                 )
               }
-              style={({ pressed, hovered }) => [
+              style={[
                 {
                   width: 50,
-                  backgroundColor: theme[pressed ? 8 : hovered ? 9 : 10],
                 },
-                selected.length === 0 && { opacity: 0.3 },
+                selected.length === 0 && { opacity: 0.5 },
               ]}
+              backgroundColors={{
+                default: theme[10],
+                hovered: theme[9],
+                pressed: theme[8],
+              }}
               disabled={selected.length === 0 || isLoading}
               onPress={handleSubmit}
             />
@@ -323,7 +321,7 @@ const FriendModal = ({ children, onComplete }) => {
 
 const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
   const { session } = useSession();
-  const ref = useRef<BottomSheetModal>(null);
+  const ref = useRef(null);
   const handleDelete = async () => {
     const res = await sendApiRequest(
       session,
@@ -346,45 +344,36 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
       ref.current?.close();
     }, 100);
   };
-  const theme = useColorTheme();
+
   return (
-    <ListItemButton disabled>
-      <ProfilePicture
-        name={user.user.profile.name}
-        image={user.user.profile.picture}
-        size={40}
-        disabled
-      />
-      <ProfileModal email={user.user.email}>
-        <Pressable style={{ flex: 1 }}>
+    <ProfileModal email={user.user.email}>
+      <ListItemButton>
+        <ProfilePicture
+          name={user.user.profile.name}
+          image={user.user.profile.picture}
+          size={40}
+          disabled
+        />
+        <ProfileModal email={user.user.email}>
           <ListItemText
             primary={user.user.profile.name}
             secondary={capitalizeFirstLetter(
               user.access.toLowerCase().replaceAll("_", " ")
             )}
           />
-        </Pressable>
-      </ProfileModal>
-      {!isReadOnly && (
-        <Menu
-          height={[320]}
-          menuRef={ref}
-          trigger={<IconButton icon="more_horiz" />}
-        >
-          <View style={{ padding: 20, gap: 20, paddingTop: 10 }}>
-            {[
-              { label: "View only", value: "READ_ONLY" },
-              { label: "Can edit", value: "EDITOR" },
-              // { label: "Full access", value: "MODERATOR" },
-            ].map((button) => (
-              <Button
-                variant="outlined"
-                disabled={user.access === button.value}
-                key={button.value}
-                style={
-                  user.access === button.value && { backgroundColor: theme[5] }
-                }
-                onPress={async () => {
+        </ProfileModal>
+        {!isReadOnly && (
+          <MenuPopover
+            trigger={<IconButton icon="more_horiz" />}
+            ref={ref}
+            options={[
+              ...[
+                { text: "View only", value: "READ_ONLY" },
+                { text: "Can edit", value: "EDITOR" },
+              ].map((button) => ({
+                ...button,
+                selected: user.access === button.value,
+                callback: async () => {
                   await sendApiRequest(
                     session,
                     "PUT",
@@ -404,24 +393,25 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }) => {
                     };
                   });
                   Toast.show({ type: "success", text1: "Access updated!" });
-                }}
-              >
-                <ButtonText>{button.label}</ButtonText>
-                {user.access === button.value && <Icon>check</Icon>}
-              </Button>
-            ))}
-            <Divider />
-            <Button variant="outlined" onPress={handleDelete}>
-              <ButtonText>Remove access</ButtonText>
-            </Button>
-          </View>
-        </Menu>
-      )}
-    </ListItemButton>
+                },
+              })),
+              { divider: true, key: "1" },
+              {
+                text: "Remove access",
+                value: "REMOVE",
+                callback: handleDelete,
+              },
+            ]}
+          />
+        )}
+      </ListItemButton>
+    </ProfileModal>
   );
 };
 
 const CollectionShareLink = ({ isReadOnly }) => {
+  const handleCopy = () => Toast.show({ type: "info", text1: "Coming soon!" });
+
   return (
     <>
       <ListItemButton disabled>
@@ -432,37 +422,30 @@ const CollectionShareLink = ({ isReadOnly }) => {
           secondary="Anyone with the link can join this collection"
         />
         {!isReadOnly && (
-          <Menu
+          <MenuPopover
             trigger={
               <IconButton style={{ marginRight: -10 }} size={40}>
                 <Icon>more_horiz</Icon>
               </IconButton>
             }
-            height={[390]}
-          >
-            <View style={{ padding: 20, gap: 10, paddingTop: 10 }}>
-              <Text variant="eyebrow">Access</Text>
-              {["No access", "Full access", "Can edit", "Can view"].map(
-                (button) => (
-                  <Button
-                    variant="outlined"
-                    key={button}
-                    onPress={() => console.log(button)}
-                  >
-                    <ButtonText>{button}</ButtonText>
-                  </Button>
-                )
-              )}
-              <Text variant="eyebrow" style={{ marginTop: 10 }}>
-                Link
-              </Text>
-              <Button variant="outlined">
-                <ButtonText>Revoke link</ButtonText>
-              </Button>
-            </View>
-          </Menu>
+            options={[
+              ...["No access", "Full access", "Can edit", "Can view"].map(
+                (t) => ({
+                  text: t,
+                  selected: false,
+                  callback: () =>
+                    Toast.show({ type: "info", text1: "Coming soon!" }),
+                })
+              ),
+            ]}
+          />
         )}
-        <IconButton variant="outlined" size={40} icon="content_copy" />
+        <IconButton
+          variant="outlined"
+          size={40}
+          icon="content_copy"
+          onPress={handleCopy}
+        />
       </ListItemButton>
     </>
   );
@@ -556,52 +539,34 @@ const CollectionMembers = ({
     }
   };
   return (
-    <View style={{ padding: 20, paddingTop: 0 }}>
-      <Text variant="eyebrow" style={modalStyles.eyebrow}>
-        General
-      </Text>
-      <CollectionShareLink isReadOnly={isReadOnly} />
-      <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
+    <View style={{ padding: 10, paddingTop: 0 }}>
+      <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 0 }]}>
         People
       </Text>
-      {collection.public && (
-        <ListItemButton disabled={isReadOnly}>
-          <Avatar
-            icon={collection.public ? "people" : "lock"}
-            size={40}
-            disabled
+      <View
+        style={{
+          marginHorizontal: -10,
+        }}
+      >
+        <CollectionShareLink isReadOnly={isReadOnly} />
+        {!isReadOnly && (
+          <FriendModal onComplete={handleSelectFriends}>
+            <ListItemButton>
+              <Avatar icon="add" disabled size={40} />
+              <ListItemText primary="Invite people" />
+            </ListItemButton>
+          </FriendModal>
+        )}
+        {collection.invitedUsers.map((user) => (
+          <CollectionInvitedUser
+            mutateList={mutateList}
+            key={user.user.email}
+            user={user}
+            isReadOnly={isReadOnly}
           />
-          <ListItemText
-            truncate
-            primary={collection.public ? collection.space?.name : "Private"}
-            secondary={
-              collection.public
-                ? `Visible to all members`
-                : "Only you & selected members have access"
-            }
-          />
-          <Icon size={45} style={{ opacity: collection.public ? 1 : 0.5 }}>
-            toggle_{collection.public ? "on" : "off"}
-          </Icon>
-        </ListItemButton>
-      )}
-      {collection.invitedUsers.map((user) => (
-        <CollectionInvitedUser
-          mutateList={mutateList}
-          key={user.user.email}
-          user={user}
-          isReadOnly={isReadOnly}
-        />
-      ))}
-      {!isReadOnly && (
-        <FriendModal onComplete={handleSelectFriends}>
-          <ListItemButton>
-            <Avatar icon="add" disabled size={40} />
-            <ListItemText primary="Invite people" />
-          </ListItemButton>
-        </FriendModal>
-      )}
-      <Text variant="eyebrow" style={modalStyles.eyebrow}>
+        ))}
+      </View>
+      <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
         Publish
       </Text>
       <PublishCollection />
@@ -616,7 +581,15 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
   const theme = useColorTheme();
 
   const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
+  const handleClose = useCallback(
+    () =>
+      ref.current?.close({
+        overshootClamping: true,
+        damping: 20,
+        stiffness: 400,
+      }),
+    []
+  );
 
   const collection = useCollectionContext();
 
@@ -624,22 +597,30 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
     <>
       {id !== "all" &&
         (breakpoints.md ? (
-          <Pressable
+          <Button
             onPress={handleOpen}
-            style={({ pressed, hovered }) => [
+            backgroundColors={{
+              default: theme[5],
+              hovered: theme[6],
+              pressed: theme[7],
+            }}
+            height={43}
+            containerStyle={{
+              borderRadius: 20,
+            }}
+            style={[
               styles.navbarIconButton,
               {
-                height: 43,
-                backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
                 gap: 10,
                 marginLeft: breakpoints.md ? 5 : 0,
                 width: breakpoints.md ? 103 : 50,
+                paddingLeft: 0,
               },
             ]}
           >
             <Icon>ios_share</Icon>
             {breakpoints.md && <ButtonText weight={400}>Share</ButtonText>}
-          </Pressable>
+          </Button>
         ) : (
           <IconButton
             onPress={handleOpen}
@@ -652,25 +633,67 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
       <BottomSheet
         onClose={handleClose}
         sheetRef={ref}
-        snapPoints={["80%"]}
-        maxWidth={600}
+        snapPoints={["100%"]}
+        maxWidth="100%"
+        handleComponent={() => null}
+        backgroundStyle={{ backgroundColor: "transparent" }}
       >
-        <View
+        <Pressable
+          onPress={handleClose}
           style={{
-            paddingHorizontal: 25,
-            paddingVertical: 10,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 20,
           }}
         >
-          <Text style={{ fontSize: 30 }} weight={800}>
-            Share
-          </Text>
-        </View>
-        <BottomSheetScrollView>
-          <CollectionMembers
-            mutateList={collection.mutate}
-            collection={collection}
-          />
-        </BottomSheetScrollView>
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: theme[2],
+              borderRadius: 25,
+              maxWidth: 600,
+              maxHeight: 600,
+              width: "100%",
+              shadowColor: "#000",
+              shadowOffset: { width: 25, height: 25 },
+              shadowOpacity: 0.25,
+              shadowRadius: 100,
+            }}
+          >
+            <View
+              style={{
+                gap: 20,
+                padding: 20,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <IconButton
+                icon="close"
+                size={55}
+                variant="outlined"
+                onPress={handleClose}
+              />
+              <Text
+                style={{
+                  fontSize: 30,
+                  marginHorizontal: "auto",
+                  paddingRight: 55,
+                }}
+                weight={800}
+              >
+                Share
+              </Text>
+            </View>
+            <BottomSheetScrollView contentContainerStyle={{ padding: 20 }}>
+              <CollectionMembers
+                mutateList={collection.mutate}
+                collection={collection}
+              />
+            </BottomSheetScrollView>
+          </Pressable>
+        </Pressable>
       </BottomSheet>
     </>
   );

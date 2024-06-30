@@ -86,7 +86,7 @@ function BottomSheet(props: DBottomSheetProps) {
       backdropComponent={(d) => (
         <BottomSheetBackdropComponent
           {...d}
-          maxBackdropOpacity={props.maxBackdropOpacity ?? 0.5}
+          maxBackdropOpacity={props.maxBackdropOpacity ?? 0.1}
           dismissible={
             props.disableBackdropPressToClose !== true && props.dismissible
           }

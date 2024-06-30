@@ -112,6 +112,7 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
             styles.base,
             {
               height: props.size ?? 35,
+              width: "100%",
               flex: 1,
             },
             typeof props.pressableStyle === "function"
