@@ -51,7 +51,7 @@ export const onTaskUpdate = (newTask, mutate, column) => {
                 ...oldColumn,
                 tasks: oldColumn.tasks
                   .map((task) =>
-                    task.id === newTask.id ? { ...task, newTask } : task
+                    task.id === newTask.id ? { ...task, ...newTask } : task
                   )
                   .filter((t) => !t.trash),
               };
