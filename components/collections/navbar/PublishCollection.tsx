@@ -2,14 +2,11 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import Text, { getFontName } from "@/ui/Text";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -37,7 +34,7 @@ export const PublishCollection = ({ collection, navigation }: any) => {
     }
   };
 
-  return process.env.NODE_ENV === "development" ? (
+  return (
     <View style={{ marginHorizontal: -10 }}>
       {data?.public ? (
         <>
@@ -85,58 +82,6 @@ export const PublishCollection = ({ collection, navigation }: any) => {
           </Button>
         </ListItemButton>
       )}
-    </View>
-  ) : (
-    <View
-      style={{
-        padding: 20,
-        paddingHorizontal: 30,
-        backgroundColor: theme[3],
-        borderWidth: 1,
-        borderColor: theme[6],
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 25,
-        gap: 10,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Text
-          weight={900}
-          style={{
-            fontSize: 20,
-          }}
-        >
-          Publish to the{" "}
-        </Text>
-        <Chip
-          style={{ backgroundColor: theme[6], gap: 5 }}
-          label={
-            <Text
-              style={{
-                fontFamily: getFontName("jetBrainsMono", 500),
-                color: theme[11],
-                fontStyle: "italic",
-              }}
-            >
-              DYSVERSE
-            </Text>
-          }
-          icon={<Emoji emoji="1f680" size={20} />}
-        />
-      </View>
-      <Text style={{ opacity: 0.6, textAlign: "center" }}>
-        Create a template which anyone can use to create their own collection.
-        Your tasks won't be shared.
-      </Text>
-      <Button variant="outlined">
-        <ButtonText>Coming soon</ButtonText>
-      </Button>
     </View>
   );
 };
