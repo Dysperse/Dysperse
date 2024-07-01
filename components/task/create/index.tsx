@@ -1101,7 +1101,7 @@ function TaskNameInput({
 
                         // https://imgcdn.dev/api/1/upload/?name=image&key=5386e05a3562c7a8f984e73401540836
                         const res = await fetch(
-                          "http://localhost:3000/upload",
+                          "http://api.dysperse.com/upload",
                           {
                             method: "POST",
                             body: form,
