@@ -1101,7 +1101,7 @@ function TaskNameInput({
 
                         // https://imgcdn.dev/api/1/upload/?name=image&key=5386e05a3562c7a8f984e73401540836
                         const res = await fetch(
-                          "http://api.dysperse.com/upload",
+                          "https://api.dysperse.com/upload",
                           {
                             method: "POST",
                             body: form,
@@ -1412,7 +1412,7 @@ function Attachment({ control, nameRef, setValue, menuRef }: any) {
           >
             <IconButton
               style={{
-                width: breakpoints.md ? undefined : 100,
+                width: breakpoints.md ? 35 : 100,
                 marginTop: breakpoints.md ? 63 : 0,
                 marginLeft: breakpoints.md ? 20 : -10,
               }}
