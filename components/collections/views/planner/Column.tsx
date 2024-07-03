@@ -35,9 +35,11 @@ export const onTaskUpdate = (newTask, mutate, column) => {
     (oldData) => {
       const oldTask = oldData
         ?.find((oldColumn) => oldColumn.start === column.start)
-        ?.tasks.find((oldTask) => oldTask.id === newTask.id);
+        ?.tasks.find((oldTask) => oldTask?.id === newTask?.id);
 
-      if (Boolean(oldTask.recurrenceRule) !== Boolean(newTask.recurrenceRule)) {
+      if (
+        Boolean(oldTask?.recurrenceRule) !== Boolean(newTask?.recurrenceRule)
+      ) {
         return true;
       }
 
@@ -75,7 +77,7 @@ export const onTaskUpdate = (newTask, mutate, column) => {
 
               return {
                 ...oldColumn,
-                tasks: (oldColumn.tasks.find((task) => task.id === newTask.id)
+                tasks: (oldColumn.tasks.find((task) => task?.id === newTask?.id)
                   ? oldColumn.tasks
                   : [newTask, ...oldColumn.tasks]
                 )

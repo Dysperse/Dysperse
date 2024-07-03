@@ -301,6 +301,10 @@ const Task = memo(function Task({
             paddingLeft: breakpoints.md ? 13 : 18,
             paddingRight: breakpoints.md ? 13 : 18,
             paddingBottom: breakpoints.md ? 8 : 18,
+            ...(selection.includes(task.id) && {
+              backgroundColor: blue[4],
+              borderColor: blue[8],
+            }),
           }}
           style={[
             {
@@ -326,10 +330,6 @@ const Task = memo(function Task({
                 borderRadius: 20,
               }),
               alignItems: "stretch",
-            },
-            selection.includes(task.id) && {
-              backgroundColor: blue[4],
-              borderColor: blue[8],
             },
           ]}
         >

@@ -129,7 +129,7 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
   const endTimeInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    if (dayjs(endDate).isBefore(dayjs(value))) {
+    if (endDate && dayjs(endDate).isBefore(dayjs(value))) {
       setValue("end", dayjs(value).add(1, "hour").minute(0));
       Toast.show({ type: "error", text1: "End time must be after start time" });
       InteractionManager.runAfterInteractions(() => {

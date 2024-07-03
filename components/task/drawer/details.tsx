@@ -543,6 +543,22 @@ export function TaskDetails() {
         }}
         underlayColor="transparent"
         sections={[
+          task.integrationParams && {
+            trigger: () => (
+              <ListItemButton
+                variant="filled"
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+              >
+                <Icon>{task.integrationParams?.icon || "sync_alt"}</Icon>
+                <ListItemText
+                  primary={`From ${
+                    task?.integrationParams?.from || "integration"
+                  }`}
+                />
+              </ListItemButton>
+            ),
+            content: <></>,
+          },
           task.note && {
             trigger: () => <TaskNote />,
             content: (
