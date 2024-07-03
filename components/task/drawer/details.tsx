@@ -549,7 +549,7 @@ export function TaskDetails() {
                 variant="filled"
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
-                <Icon>{task.integrationParams?.icon || "sync_alt"}</Icon>
+                <Icon>{task?.integrationParams?.icon || "sync_alt"}</Icon>
                 <ListItemText
                   primary={`From ${
                     task?.integrationParams?.from || "integration"
