@@ -12,7 +12,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { normalizeRecurrenceRuleObject } from "./drawer/details";
 
 function TaskCheckbox({
   task,
@@ -55,20 +54,13 @@ function TaskCheckbox({
   const handlePress = async () => {
     let newArr = isCompleted ? [] : [...task.completionInstances, true];
     let iteration = null;
-
     if (task.recurrenceRule) {
-      const rule = normalizeRecurrenceRuleObject(task.recurrenceRule);
-      const instances = rule.between(dateRange[0], dateRange[1]);
-      iteration = instances[0].toISOString();
+      iteration = task.recurrenceDay;
       newArr = isCompleted
         ? task.completionInstances.filter(
-            (instance: string) =>
-              !dayjs(instance).isBetween(
-                dateRange[0],
-                dateRange[1],
-                "day",
-                "[]"
-              )
+            (instance) =>
+              dayjs(instance.iteration).toISOString() !==
+              dayjs(task.recurrenceDay).toISOString()
           )
         : [...task.completionInstances, { iteration }];
     }
@@ -86,11 +78,15 @@ function TaskCheckbox({
           <IconButton
             icon="undo"
             size={40}
-            style={({ pressed, hovered }) => ({
+            style={{
               marginRight: 5,
               marginLeft: -10,
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
+            }}
+            backgroundColors={{
+              default: theme[5],
+              hovered: theme[6],
+              pressed: theme[7],
+            }}
             onPress={() => {
               let newArr = !isCompleted
                 ? []
@@ -98,18 +94,12 @@ function TaskCheckbox({
               let iteration = null;
 
               if (task.recurrenceRule) {
-                const rule = normalizeRecurrenceRuleObject(task.recurrenceRule);
-                const instances = rule.between(dateRange[0], dateRange[1]);
-                iteration = instances[0].toISOString();
-                newArr = !isCompleted
+                iteration = task.recurrenceDay;
+                newArr = isCompleted
                   ? task.completionInstances.filter(
-                      (instance: string) =>
-                        !dayjs(instance).isBetween(
-                          dateRange[0],
-                          dateRange[1],
-                          "day",
-                          "[]"
-                        )
+                      (instance) =>
+                        dayjs(instance.iteration).toISOString() !==
+                        dayjs(task.recurrenceDay).toISOString()
                     )
                   : [...task.completionInstances, { iteration }];
               }

@@ -123,13 +123,7 @@ export function Column({
 
   const isReadOnly = access?.access === "READ_ONLY";
 
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true);
-    await mutate();
-    setRefreshing(false);
-  }, [mutate]);
+  const [refreshing] = React.useState(false);
 
   const sortedTasks = useMemo(
     () =>
