@@ -52,7 +52,7 @@ const CalendarTaskDrawer = forwardRef(
           {...props}
           ref={drawerRef}
           id={taskId}
-          dateRange={props.tasks.find((e) => e.id === taskId)?.dateRange}
+          dateRange={props.tasks.find((e) => e.id === taskId)?.recurrenceDay}
         />
       )
     );
