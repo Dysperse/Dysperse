@@ -218,7 +218,7 @@ export function Content() {
           paddingHorizontal: 15,
           borderRadius: 15,
           ...(event.label && {
-            backgroundColor: getTaskCompletionStatus(event, event.dateRange)
+            backgroundColor: getTaskCompletionStatus(event, event.recurrenceDay)
               ? theme[7]
               : colors[event.label.color][11],
           }),
