@@ -29,7 +29,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   }: {
     id: any;
     handleClose: any;
-    dateRange?: [Date, Date];
+    dateRange?: string;
     mutateList: any;
     isReadOnly?: boolean;
   },
@@ -171,7 +171,7 @@ export interface TaskDrawerProps {
   id: any;
   disabled?: boolean;
   isReadOnly?: boolean;
-  dateRange?: [Date, Date];
+  dateRange?: string;
 }
 
 export const TaskDrawer = forwardRef(function TaskDrawer(

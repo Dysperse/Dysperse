@@ -167,8 +167,7 @@ export function AgendaSelector({ data }) {
             items={
               item?.tasks &&
               item.tasks.filter(
-                (task) =>
-                  !getTaskCompletionStatus(task, [item?.start, item?.end])
+                (task) => !getTaskCompletionStatus(task, item?.start)
               )
             }
             itemEnd={item?.end}

@@ -1,5 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { useColor } from "@/ui/color";
@@ -9,7 +10,6 @@ import dayjs from "dayjs";
 import React from "react";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
-import { normalizeRecurrenceRuleObject } from "../details";
 
 export function TaskCompleteButton() {
   const theme = useColorTheme();
@@ -18,39 +18,25 @@ export function TaskCompleteButton() {
     useTaskDrawerContext();
   const green = useColor("green");
 
-  const isCompleted = task.recurrenceRule
-    ? dateRange &&
-      task.completionInstances.find((instance) =>
-        dayjs(instance.iteration).isBetween(
-          dateRange[0],
-          dateRange[1],
-          "day",
-          "[]"
-        )
-      )
-    : task.completionInstances.length > 0;
+  console.log(dateRange);
+  const isCompleted = getTaskCompletionStatus(task, dateRange);
 
   const { animatedIndex } = useBottomSheet();
 
   const handlePress = async () => {
     try {
+      if (task.recurrenceRule && !dateRange) return;
       let newArr = isCompleted ? [] : [...task.completionInstances, true];
       updateTask("completionInstances", newArr, false);
       let iteration = null;
 
       if (task.recurrenceRule) {
-        const rule = normalizeRecurrenceRuleObject(task.recurrenceRule);
-        const instances = rule.between(dateRange[0], dateRange[1]);
-        iteration = instances[0].toISOString();
+        iteration = dateRange;
         newArr = isCompleted
           ? task.completionInstances.filter(
               (instance: string) =>
-                !dayjs(instance).isBetween(
-                  dateRange[0],
-                  dateRange[1],
-                  "day",
-                  "[]"
-                )
+                dayjs(instance).toISOString() !==
+                dayjs(dateRange[0]).toISOString()
             )
           : [...task.completionInstances, { iteration }];
       }

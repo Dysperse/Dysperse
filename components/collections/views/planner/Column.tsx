@@ -131,11 +131,9 @@ export function Column({
         .slice()
         .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
         .sort((x, y) => {
-          const dateRange = [new Date(column.start), new Date(column.end)];
-
           // Get task completion status for both x and y
-          const xCompleted = getTaskCompletionStatus(x, dateRange);
-          const yCompleted = getTaskCompletionStatus(y, dateRange);
+          const xCompleted = getTaskCompletionStatus(x, x.recurrenceDay);
+          const yCompleted = getTaskCompletionStatus(y, y.recurrenceDay);
 
           // If completion status is the same, sort by pinned status
           if (xCompleted === yCompleted) {
@@ -296,10 +294,10 @@ export function Column({
               ) && <ColumnFinishedComponent />}
           </View>
         )}
-        renderItem={({ item }) => (
+        renderItem={({ item }: any) => (
           <Entity
             showLabel
-            dateRange={[new Date(column.start), new Date(column.end)]}
+            dateRange={item.recurrenceDay}
             isReadOnly={isReadOnly}
             item={item}
             onTaskUpdate={(newItem) => onTaskUpdate(newItem, mutate, column)}

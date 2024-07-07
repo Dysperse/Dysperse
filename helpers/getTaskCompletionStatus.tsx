@@ -1,16 +1,13 @@
 import dayjs from "dayjs";
 
-export const getTaskCompletionStatus = (task, dateRange): boolean => {
+export const getTaskCompletionStatus = (task, iteration): boolean => {
   if (task.recurrenceRule) {
     return (
-      dateRange &&
-      task.completionInstances.find((instance) =>
-        dayjs(instance.iteration).isBetween(
-          dateRange[0],
-          dateRange[1],
-          "day",
-          "[]"
-        )
+      iteration &&
+      task.completionInstances.find(
+        (instance) =>
+          dayjs(instance.iteration).toISOString() !==
+          dayjs(iteration.toString()).toISOString()
       )
     );
   } else {

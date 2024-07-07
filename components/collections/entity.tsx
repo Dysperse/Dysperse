@@ -9,7 +9,7 @@ interface EntityProps {
   showRelativeTime?: boolean;
   showDate?: boolean;
   isReadOnly: boolean;
-  dateRange?: [Date, Date];
+  dateRange?: string;
   planMode?: boolean;
 }
 

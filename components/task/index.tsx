@@ -1,4 +1,5 @@
 import { useSelectionContext } from "@/context/SelectionContext";
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
@@ -234,7 +235,7 @@ const Task = memo(function Task({
   showRelativeTime?: boolean;
   showDate?: boolean;
   isReadOnly?: boolean;
-  dateRange?: [Date, Date];
+  dateRange?: string;
   planMode?: boolean;
 }) {
   const theme = useColorTheme();
@@ -242,17 +243,7 @@ const Task = memo(function Task({
 
   const breakpoints = useResponsiveBreakpoints();
 
-  const isCompleted = task.recurrenceRule
-    ? dateRange &&
-      task.completionInstances.find((instance) =>
-        dayjs(instance.iteration).isBetween(
-          dateRange[0],
-          dateRange[1],
-          "day",
-          "[]"
-        )
-      )
-    : task.completionInstances.length > 0;
+  const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
 
   const { selection, setSelection } = useSelectionContext();
 
@@ -334,7 +325,6 @@ const Task = memo(function Task({
           ]}
         >
           <TaskCheckbox
-            dateRange={dateRange}
             isReadOnly={isReadOnly}
             task={task}
             mutateList={onTaskUpdate}

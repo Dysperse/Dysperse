@@ -1,5 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -17,13 +18,11 @@ function TaskCheckbox({
   task,
   mutateList,
   isReadOnly,
-  dateRange,
   children,
 }: {
   task: any;
   mutateList: any;
   isReadOnly: boolean;
-  dateRange: [Date, Date];
   children?: any;
 }) {
   const theme = useColorTheme();
@@ -39,17 +38,7 @@ function TaskCheckbox({
     ],
   }));
 
-  const isCompleted = task.recurrenceRule
-    ? dateRange &&
-      task.completionInstances.find((instance) =>
-        dayjs(instance.iteration).isBetween(
-          dateRange[0],
-          dateRange[1],
-          "day",
-          "[]"
-        )
-      )
-    : task.completionInstances.length > 0;
+  const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
 
   const handlePress = async () => {
     let newArr = isCompleted ? [] : [...task.completionInstances, true];
@@ -64,7 +53,6 @@ function TaskCheckbox({
           )
         : [...task.completionInstances, { iteration }];
     }
-
     mutateList({
       ...task,
       completionInstances: newArr,
@@ -131,7 +119,8 @@ function TaskCheckbox({
     );
   };
 
-  const disabled = isReadOnly || (task.recurrenceRule && !dateRange);
+  const disabled = isReadOnly || (task.recurrenceRule && !task.recurrenceDay);
+
   const trigger = cloneElement(children || <Pressable />, {
     onPress: handlePress,
   });
