@@ -214,7 +214,8 @@ export function Content() {
         hourStyle={{ fontFamily: getFontName("jost", 700), color: theme[7] }}
         onPressEvent={(event: any) => taskDrawerRef.current?.setId(event.id)}
         eventCellStyle={(event) => ({
-          backgroundColor: theme[11],
+          backgroundColor:
+            theme[getTaskCompletionStatus(event, event.recurrenceDay) ? 7 : 11],
           paddingHorizontal: 15,
           borderRadius: 15,
           ...(event.label && {
