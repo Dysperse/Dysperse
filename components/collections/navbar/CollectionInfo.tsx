@@ -199,7 +199,9 @@ export const CollectionInfo = ({ navigation, collection }) => {
           />
         </ListItemButton>
 
-        <ListItemButton>
+        <ListItemButton
+          onPress={() => updateCollection("public", !data.public)}
+        >
           <ListItemText
             primary="Share items from this collection"
             secondary="Others can copy labels, but items aren't shared."
@@ -208,7 +210,11 @@ export const CollectionInfo = ({ navigation, collection }) => {
             toggle_off
           </Icon>
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton
+          onPress={() =>
+            updateCollection("keepProfileAnonymous", !data.keepProfileAnonymous)
+          }
+        >
           <ListItemText primary="Keep my profile anonymous" />
           <Icon size={40} style={{ opacity: 0.4 }}>
             toggle_off
