@@ -440,6 +440,7 @@ function TaskNote() {
         disabled
         style={{ paddingVertical: 15, paddingHorizontal: 20 }}
       >
+        <Icon>sticky_note_2</Icon>
         <View style={{ flex: 1 }}>
           <MarkdownRenderer>
             {task.note?.replaceAll("] (http", "](http")?.trim()}
@@ -556,16 +557,22 @@ export function TaskDetails() {
                     </View>
                   }
                 />
-                <IconButton
-                  style={{ opacity: 1 }}
-                  variant="outlined"
-                  icon="expand_more"
-                  disabled
-                />
+                {task.attachments?.length > 0 && (
+                  <IconButton
+                    style={{ opacity: 1 }}
+                    variant="outlined"
+                    icon="expand_more"
+                    disabled
+                  />
+                )}
               </ListItemButton>
             ),
             content: (
-              <View>
+              <View
+                style={{
+                  display: task.attachments?.length > 0 ? "flex" : "none",
+                }}
+              >
                 <Divider />
                 {task.attachments?.map((i, index) => (
                   <React.Fragment key={index}>
@@ -605,22 +612,32 @@ export function TaskDetails() {
                   task={task}
                   updateTask={updateTask}
                 >
-                  <Pressable style={drawerStyles.collapsibleMenuItem}>
-                    <IconButton disabled size={50} variant="outlined">
-                      <Icon>edit</Icon>
-                    </IconButton>
+                  <Pressable
+                    style={drawerStyles.collapsibleMenuItem}
+                    android_ripple={{ color: theme[5] }}
+                  >
+                    <IconButton
+                      disabled
+                      size={50}
+                      variant="outlined"
+                      style={{ opacity: 1 }}
+                      icon="edit"
+                    />
                     <Text>Edit</Text>
                   </Pressable>
                 </TaskAttachmentButton>
                 <Pressable
                   style={drawerStyles.collapsibleMenuItem}
-                  onPress={() => {
-                    updateTask("note", null);
-                  }}
+                  onPress={() => updateTask("note", null)}
+                  android_ripple={{ color: theme[5] }}
                 >
-                  <IconButton size={50} variant="outlined">
-                    <Icon>close</Icon>
-                  </IconButton>
+                  <IconButton
+                    size={50}
+                    variant="outlined"
+                    disabled
+                    style={{ opacity: 1 }}
+                    icon="close"
+                  />
                   <Text>Remove</Text>
                 </Pressable>
               </View>
