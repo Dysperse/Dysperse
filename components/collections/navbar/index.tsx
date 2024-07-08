@@ -276,7 +276,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
           >
             <Icon>edit_attributes</Icon>
             <Text variant="menuItem" weight={300}>
-              {data.showCompleted ? "Hide" : "Show"} completed
+              {data.showCompleted ? "Show" : "Hide"} completed
             </Text>
             {data.showCompleted && (
               <Icon style={{ marginLeft: "auto" }}>check</Icon>
@@ -427,7 +427,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                         menuRef={menuRef}
                         closeOnSelect
                         {...(isReadOnly && { menuProps: { opened: false } })}
-                        containerStyle={{ width: 230 }}
+                        containerStyle={{ width: 240 }}
                         menuProps={{
                           rendererProps: { placement: "bottom" },
                         }}

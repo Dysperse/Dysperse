@@ -203,7 +203,6 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
         <View
           style={{
             flex: breakpoints.md ? 1 : undefined,
-            paddingVertical: breakpoints.md ? undefined : 50,
             alignItems: "center",
             padding: 10,
             justifyContent: "center",
@@ -308,7 +307,7 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
             padding: 10,
           }}
         >
-          <Text weight={200} style={{ fontSize: 25 }}>
+          <Text weight={900} style={{ fontSize: 20 }}>
             No date set
           </Text>
         </View>

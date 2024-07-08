@@ -34,6 +34,17 @@ export type ColumnProps =
       entities?: any[];
       grid?: boolean;
     };
+function useDidUpdate(callback, deps) {
+  const hasMount = useRef(false);
+
+  useEffect(() => {
+    if (hasMount.current) {
+      callback();
+    } else {
+      hasMount.current = true;
+    }
+  }, deps);
+}
 
 export const ColumnFinishedComponent = () => {
   const theme = useColorTheme();
@@ -74,6 +85,10 @@ export function Column(props: ColumnProps) {
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access, data: collectionData } = useCollectionContext();
   const [refreshing] = useState(false);
+
+  const [showCompleted, setShowCompleted] = useState(
+    collectionData.showCompleted
+  );
 
   const isReadOnly = access?.access === "READ_ONLY";
 
@@ -172,7 +187,17 @@ export function Column(props: ColumnProps) {
         : x.completionInstances.length === 0
         ? -1
         : 0
+    )
+    .filter((e) =>
+      showCompleted
+        ? true
+        : e.completionInstances.length === 0 || e.recurrenceRule
     );
+
+  useDidUpdate(() => {
+    setShowCompleted(collectionData.showCompleted);
+  }, [collectionData.showCompleted]);
+
   return (
     <Animated.View
       style={[
@@ -263,8 +288,13 @@ export function Column(props: ColumnProps) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
         }
-        centerContent={data.length === 0}
-        ListEmptyComponent={() => <ColumnEmptyComponent row={props.grid} />}
+        centerContent={
+          (props.label ? props.label.entities : props.entities).length === 0
+        }
+        ListEmptyComponent={() =>
+          (props.label ? props.label.entities : props.entities).length ===
+            0 && <ColumnEmptyComponent row={props.grid} />
+        }
         data={data}
         ListHeaderComponent={() => (
           <View>
@@ -280,6 +310,23 @@ export function Column(props: ColumnProps) {
           paddingTop: 15,
           paddingBottom: insets.bottom + 15,
         }}
+        ListFooterComponent={() =>
+          collectionData.showCompleted ||
+          (props.label ? props.label.entities : props.entities).length ===
+            0 ? null : (
+            <Button
+              onPress={() => setShowCompleted(!showCompleted)}
+              variant="outlined"
+              containerStyle={{ marginTop: 10 }}
+              height={50}
+            >
+              <ButtonText style={{ opacity: 0.7 }} weight={600}>
+                {showCompleted ? "Hide completed" : "Completed"} tasks
+              </ButtonText>
+              <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
+            </Button>
+          )
+        }
         renderItem={({ item }) => (
           <Entity
             isReadOnly={isReadOnly}
