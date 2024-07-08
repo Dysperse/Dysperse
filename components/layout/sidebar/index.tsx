@@ -184,8 +184,8 @@ const steps: TourStep[] = [
       <TourPopover
         step={t}
         tips={[
-          "Collections allow you to view tasks in different ways by selecting labels.",
-          "Switch views by clicking the collection name.",
+          "Create tabs to separate things important to you.",
+          "Tabs are synced across all your devices!",
         ]}
       />
     ),
