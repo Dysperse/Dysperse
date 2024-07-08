@@ -98,6 +98,7 @@ export default function List() {
               textAlign: "center",
               fontSize: 20,
               marginBottom: 10,
+              maxWidth: 350,
               color: theme[11],
             }}
             weight={900}
