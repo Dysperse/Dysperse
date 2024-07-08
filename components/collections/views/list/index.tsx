@@ -97,7 +97,8 @@ export default function List() {
             style={{
               textAlign: "center",
               fontSize: 20,
-              opacity: 0.6,
+              marginBottom: 10,
+              color: theme[11],
             }}
             weight={900}
           >
