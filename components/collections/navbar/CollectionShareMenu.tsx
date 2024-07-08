@@ -36,6 +36,11 @@ import {
 } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -560,7 +565,7 @@ const Navbar = ({ navigation, title, icon = "close", handleClose }) => {
   );
 };
 
-const Navigator = memo(({ handleClose, collection }: any) => {
+const Navigator = memo(({ maxHeight, handleClose, collection }: any) => {
   const theme = useColorTheme();
   const screenOptions = useMemo<StackNavigationOptions>(
     () => ({
@@ -592,6 +597,10 @@ const Navigator = memo(({ handleClose, collection }: any) => {
       }}
     >
       <NavigationContainer
+        onStateChange={(state) => {
+          const height = state.routes[state.index].name === "share" ? 500 : 800;
+          maxHeight.value = height;
+        }}
         documentTitle={{ enabled: false }}
         independent={true}
         theme={{
@@ -648,17 +657,25 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
   const { id } = useLocalSearchParams();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+  const maxHeight = useSharedValue(500);
 
   const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(
-    () =>
-      ref.current?.close({
-        overshootClamping: true,
-        damping: 20,
-        stiffness: 400,
-      }),
-    []
-  );
+  const handleClose = useCallback(() => {
+    ref.current?.close({
+      overshootClamping: true,
+      damping: 20,
+      stiffness: 400,
+    });
+    maxHeight.value = 500;
+  }, []);
+
+  const maxHeightStyle = useAnimatedStyle(() => ({
+    maxHeight: withSpring(maxHeight.value, {
+      damping: 40,
+      stiffness: 400,
+      overshootClamping: true,
+    }),
+  }));
 
   const collection = useCollectionContext();
 
@@ -719,24 +736,31 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
             padding: 20,
           }}
         >
-          <Pressable
-            onPress={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: theme[2],
-              borderRadius: 25,
-              maxWidth: 600,
-              maxHeight: 500,
-              width: "100%",
-              overflow: "hidden",
-              shadowColor: "#000",
-              height: "100%",
-              shadowOffset: { width: 25, height: 25 },
-              shadowOpacity: 0.25,
-              shadowRadius: 100,
-            }}
+          <Animated.View
+            style={[
+              maxHeightStyle,
+              {
+                backgroundColor: theme[2],
+                borderRadius: 25,
+                maxWidth: 600,
+                width: "100%",
+                overflow: "hidden",
+                shadowColor: "#000",
+                height: "100%",
+                shadowOffset: { width: 25, height: 25 },
+                shadowOpacity: 0.25,
+                shadowRadius: 100,
+              },
+            ]}
           >
-            <Navigator handleClose={handleClose} collection={collection} />
-          </Pressable>
+            <Pressable style={{ flex: 1 }}>
+              <Navigator
+                maxHeight={maxHeight}
+                handleClose={handleClose}
+                collection={collection}
+              />
+            </Pressable>
+          </Animated.View>
         </Pressable>
       </BottomSheet>
     </>
