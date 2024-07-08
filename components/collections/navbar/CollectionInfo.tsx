@@ -206,8 +206,8 @@ export const CollectionInfo = ({ navigation, collection }) => {
             primary="Share items from this collection"
             secondary="Others can copy labels, but items aren't shared."
           />
-          <Icon size={40} style={{ opacity: 0.4 }}>
-            toggle_off
+          <Icon size={40} style={{ opacity: data.public ? 1 : 0.4 }}>
+            toggle_{data.public ? "on" : "off"}
           </Icon>
         </ListItemButton>
         <ListItemButton
@@ -216,8 +216,11 @@ export const CollectionInfo = ({ navigation, collection }) => {
           }
         >
           <ListItemText primary="Keep my profile anonymous" />
-          <Icon size={40} style={{ opacity: 0.4 }}>
-            toggle_off
+          <Icon
+            size={40}
+            style={{ opacity: data.keepProfileAnonymous ? 1 : 0.4 }}
+          >
+            toggle_{data.keepProfileAnonymous ? "on" : "off"}
           </Icon>
         </ListItemButton>
       </View>
