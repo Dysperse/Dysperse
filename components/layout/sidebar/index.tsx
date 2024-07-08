@@ -563,7 +563,7 @@ const Sidebar = ({
   }, [desktopCollapsed, desktopSlide]);
 
   return (
-    <TourProvider steps={steps} tourKey="sidebarNavigation" forceShow>
+    <TourProvider steps={steps} tourKey="sidebarNavigation" >
       {desktopCollapsed && (
         <View
           style={{
