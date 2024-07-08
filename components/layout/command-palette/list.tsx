@@ -51,7 +51,10 @@ export const paletteItems = (
               emoji: collection.emoji,
               data: collection,
               slug: `/[tab]/collections/[id]/[type]`,
-              params: { id: collection.id, type: "planner" },
+              params: {
+                id: collection.id,
+                type: collection.defaultView || "planner",
+              },
             }))
           : [{}]),
         {
