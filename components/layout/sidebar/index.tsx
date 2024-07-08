@@ -12,6 +12,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import { TourPopover, TourProvider } from "@/ui/Tour";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -34,6 +35,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TourStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { useSWRConfig } from "swr";
 import OpenTabsList from "../tabs/carousel";
@@ -175,6 +177,20 @@ const SyncButton = memo(function SyncButton() {
     </>
   );
 });
+
+const steps: TourStep[] = [
+  {
+    render: (t) => (
+      <TourPopover
+        step={t}
+        tips={[
+          "Collections allow you to view tasks in different ways by selecting labels.",
+          "Switch views by clicking the collection name.",
+        ]}
+      />
+    ),
+  },
+];
 
 export const LogoButton = memo(function LogoButton({
   toggleHidden,
@@ -509,7 +525,7 @@ const Sidebar = ({
   }, [desktopCollapsed, desktopSlide]);
 
   return (
-    <>
+    <TourProvider steps={steps} tourKey="sidebarNavigation">
       {desktopCollapsed && (
         <View
           style={{
@@ -588,7 +604,7 @@ const Sidebar = ({
           <OpenTabsList />
         </NativeAnimated.View>
       </Animated.View>
-    </>
+    </TourProvider>
   );
 };
 

@@ -13,6 +13,7 @@ import React, { memo, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
@@ -107,36 +108,38 @@ const JumpToButton = memo(function JumpToButton() {
 
   return (
     <View style={{ borderRadius: 15, overflow: "hidden", marginBottom: 10 }}>
-      <Pressable
-        onPress={() =>
-          requestAnimationFrame(() => {
-            handleOpen();
-          })
-        }
-        style={({ pressed, hovered }) => [
-          {
-            backgroundColor: pressed
-              ? theme[5]
-              : hovered
-              ? theme[4]
-              : undefined,
-            // opacity: pressed ? 0.5 : 1,
-            flexDirection: "row",
-            alignItems: "center",
-            columnGap: 15,
-            paddingHorizontal: 15,
-            borderRadius: 15,
-            height: 50,
-          },
-          Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-        ]}
-        android_ripple={{ color: theme[7] }}
-      >
-        <Icon bold>add</Icon>
-        <Text weight={700} style={{ color: theme[11] }}>
-          New tab
-        </Text>
-      </Pressable>
+      <AttachStep index={0}>
+        <Pressable
+          onPress={() =>
+            requestAnimationFrame(() => {
+              handleOpen();
+            })
+          }
+          style={({ pressed, hovered }) => [
+            {
+              backgroundColor: pressed
+                ? theme[5]
+                : hovered
+                ? theme[4]
+                : undefined,
+              // opacity: pressed ? 0.5 : 1,
+              flexDirection: "row",
+              alignItems: "center",
+              columnGap: 15,
+              paddingHorizontal: 15,
+              borderRadius: 15,
+              height: 50,
+            },
+            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+          ]}
+          android_ripple={{ color: theme[7] }}
+        >
+          <Icon bold>add</Icon>
+          <Text weight={700} style={{ color: theme[11] }}>
+            New tab
+          </Text>
+        </Pressable>
+      </AttachStep>
     </View>
   );
 });

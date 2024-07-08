@@ -18,7 +18,8 @@ import Icon from "../Icon";
 import IconButton from "../IconButton";
 import Text from "../Text";
 
-type TourKey = "collectionNavbar";
+const tourKeys = ["collectionNavbar", "sidebarNavigation"];
+type TourKey = (typeof tourKeys)[number];
 
 export function TourProvider(
   props: SpotlightTourProviderProps & {
