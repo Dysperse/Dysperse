@@ -153,7 +153,6 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
         flexDirection: breakpoints.md ? "row" : "column-reverse",
         gap: 10,
         padding: 10,
-        paddingTop: 20,
         paddingHorizontal: 20,
         paddingBottom: 20,
       }}
