@@ -1,17 +1,17 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { Menu } from "@/ui/Menu";
 import MenuPopover from "@/ui/MenuPopover";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
@@ -24,10 +24,8 @@ import {
   StyleSheet,
   View,
   ViewStyle,
-  useWindowDimensions,
 } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { RRule } from "rrule";
 import TaskDatePicker from "../create/TaskDatePicker";
 import { TaskAttachmentButton } from "./attachment/button";
@@ -38,6 +36,7 @@ const drawerStyles = StyleSheet.create({
 });
 
 function TaskRescheduleButton() {
+  const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask } = useTaskDrawerContext();
   const handleSelect = (t, n) => {
     updateTask("start", dayjs(task.start).add(n, t).toISOString());
@@ -46,11 +45,9 @@ function TaskRescheduleButton() {
 
   return (
     <MenuPopover
-      trigger={<IconButton size={50} variant="outlined" icon="dark_mode" />}
+      trigger={<IconButton size={40} variant="filled" icon="dark_mode" />}
       menuProps={{
-        rendererProps: {
-          placement: "top",
-        },
+        rendererProps: { placement: breakpoints.md ? "right" : "left" },
       }}
       options={[
         {
@@ -94,6 +91,78 @@ function TaskRescheduleButton() {
             : "1 month",
           callback: () => handleSelect("month", 1),
         },
+      ]}
+    />
+  );
+}
+
+function TaskNotificationsButton() {
+  const breakpoints = useResponsiveBreakpoints();
+  const { task, updateTask } = useTaskDrawerContext();
+
+  const notificationScale = [5, 10, 15, 30, 60, 120, 240, 480, 1440];
+  const notificationScaleText = [
+    "5m",
+    "10m",
+    "15m",
+    "30m",
+    "1h",
+    "2h",
+    "4h",
+    "8h",
+    "1d",
+  ];
+
+  const isSameDay = dayjs().isSame(dayjs(task.start), "day");
+
+  return (
+    <MenuPopover
+      trigger={
+        <IconButton
+          size={40}
+          variant="filled"
+          icon={
+            <Icon filled={task.notifications.length > 0}>
+              {task.notifications.length > 0
+                ? "notifications_active"
+                : "notifications_off"}
+            </Icon>
+          }
+        />
+      }
+      closeOnSelect={false}
+      menuProps={{
+        rendererProps: { placement: breakpoints.md ? "right" : "left" },
+      }}
+      options={[
+        {
+          renderer: () => (
+            <Text
+              variant="eyebrow"
+              style={{
+                textAlign: "center",
+                margin: 10,
+              }}
+            >
+              Remind me in
+            </Text>
+          ),
+        },
+        ...notificationScale.map((n, i) => ({
+          text: notificationScaleText[i]
+            .replace("m", " minutes")
+            .replace("h", " hours")
+            .replace("d", " day"),
+          selected: task.notifications.includes(n),
+          callback: () =>
+            updateTask(
+              "notifications",
+              (task.notifications.includes(n)
+                ? task.notifications.filter((i) => i !== n)
+                : [...task.notifications, n]
+              ).sort()
+            ),
+        })),
       ]}
     />
   );
@@ -220,13 +289,7 @@ function EditAttachment({
   );
 }
 
-function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
-  const theme = useColorTheme();
-  const menuRef = useRef<BottomSheetModal>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const { height } = useWindowDimensions();
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-
+const getAttachmentPreview = (item) => {
   let icon = "";
   let name = item.data;
   switch (item.type) {
@@ -240,9 +303,24 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
       break;
     case "IMAGE":
       icon = "image";
+      if (isValidHttpUrl(name))
+        name =
+          new URL(item.data).pathname.split("/")?.[2] ||
+          new URL(item.data).pathname;
       break;
   }
+  return { icon, name };
+};
 
+const attachmentButtonStyles = (theme) => ({
+  default: theme[5],
+  pressed: theme[6],
+  hovered: theme[7],
+});
+
+function TaskAttachmentPreview({ item, index }: { item: any; index: number }) {
+  const theme = useColorTheme();
+  const { icon, name } = getAttachmentPreview(item);
   const handleOpenPress = useCallback(() => {
     if (isValidHttpUrl(item.data)) {
       Linking.openURL(item.data);
@@ -251,156 +329,98 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
     }
   }, [item.data]);
 
+  return (
+    <Button
+      onPress={handleOpenPress}
+      backgroundColors={attachmentButtonStyles(theme)}
+      borderColors={attachmentButtonStyles(theme)}
+      dense
+    >
+      {item.type === "IMAGE" ? (
+        <Image
+          source={{ uri: item.data }}
+          contentFit="contain"
+          contentPosition="center"
+          style={{ borderRadius: 20, width: 24, height: 24 }}
+        />
+      ) : (
+        <Icon>{icon || "attachment"}</Icon>
+      )}
+      <ButtonText>{item.name || name}</ButtonText>
+    </Button>
+  );
+}
+
+function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+  const { icon } = getAttachmentPreview(item);
+
   const handleDeletePress = useCallback(() => {
     updateTask(
       "attachments",
       task.attachments.filter((_, i) => i !== index)
     );
-    setTimeout(() => {
-      setTimeout(() => menuRef.current?.close(), 100);
-    }, 0);
   }, [updateTask, task, index]);
 
-  const handleEditPress = useCallback(() => setIsEditing(true), []);
-  const handleCancelEditing = useCallback(() => setIsEditing(false), []);
-
   return (
-    <Menu
-      menuRef={menuRef}
-      trigger={
-        <Pressable
-          style={({ pressed }) => ({
-            width: 190,
-            backgroundColor: theme[pressed ? 4 : 3],
-            padding: 20,
-            borderRadius: 20,
-            height: 100,
-            justifyContent: "flex-end",
-            position: "relative",
-          })}
-        >
-          <View
+    <ListItemButton style={{ paddingLeft: 40 }} disabled>
+      <Avatar icon={icon} style={{ borderRadius: 7 }} />
+      <View style={{ flex: 1, gap: 5 }}>
+        {item.type !== "LOCATION" && (
+          <TextField
+            variant="filled+outlined"
+            editable={!isReadOnly}
+            defaultValue={item.name}
+            placeholder="(Optional) Friendly name…"
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              margin: 20,
-              marginTop: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              zIndex: 999,
-              gap: 5,
+              paddingVertical: 3,
+              paddingHorizontal: 10,
               borderRadius: 5,
             }}
-          >
-            <Icon size={30}>{icon}</Icon>
-          </View>
-          {item.type !== "IMAGE" && (
-            <Text numberOfLines={1} style={{ fontSize: 17 }}>
-              {item.name || name}
-            </Text>
-          )}
-          {item.type === "IMAGE" && (
-            <Image
-              source={{ uri: item.data }}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                borderRadius: 20,
-              }}
-              transition={100}
-            />
-          )}
-        </Pressable>
-      }
-      height={[
-        item.type === "IMAGE"
-          ? height - 50
-          : isReadOnly
-          ? 155
-          : isEditing
-          ? item.type === "LINK"
-            ? 370
-            : 350
-          : 250,
-      ]}
-    >
-      {item.type === "IMAGE" && (
-        <View style={{ flex: 1, padding: 25 }}>
-          <Image
-            source={{ uri: item.data }}
-            style={{
-              flex: 1,
-              borderRadius: 20,
-              marginTop: -20,
+            onBlur={(e) => {
+              if (!e.nativeEvent.text.trim()) return;
+              updateTask(
+                "attachments",
+                task.attachments.map((attachment, i) =>
+                  i === index
+                    ? { ...attachment, name: e.nativeEvent.text }
+                    : attachment
+                )
+              );
             }}
-            transition={100}
           />
-        </View>
-      )}
-      {isEditing ? (
-        <EditAttachment
-          task={task}
-          updateTask={updateTask}
-          handleCancel={handleCancelEditing}
-          item={item}
+        )}
+        <TextField
+          variant="filled+outlined"
+          editable={!isReadOnly}
+          defaultValue={item.data}
+          placeholder={item.type === "LINK" ? "Link…" : "Location…"}
+          style={{
+            paddingVertical: 3,
+            paddingHorizontal: 10,
+            borderRadius: 5,
+          }}
+          onBlur={(e) => {
+            updateTask(
+              "attachments",
+              task.attachments.map((attachment, i) =>
+                i === index
+                  ? { ...attachment, data: e.nativeEvent.text }
+                  : attachment
+              )
+            );
+          }}
         />
-      ) : (
-        <View style={{ paddingHorizontal: 20, gap: 20 }}>
-          <Button
-            variant="filled"
-            height={90}
-            style={{ paddingHorizontal: 30 }}
-            onPress={handleOpenPress}
-          >
-            <View style={{ flex: 1, overflow: "hidden" }}>
-              <ButtonText weight={900}>
-                Open{" "}
-                {item.type === "IMAGE"
-                  ? "image"
-                  : isValidHttpUrl(item.data)
-                  ? "link"
-                  : "in Maps"}
-              </ButtonText>
-              <ButtonText
-                style={{ opacity: 0.5, paddingRight: 25 }}
-                numberOfLines={1}
-              >
-                {!isValidHttpUrl(item.data) ? `"${name}"` : name}
-              </ButtonText>
-            </View>
-            <Icon style={{ marginLeft: "auto" }}>north_east</Icon>
-          </Button>
-          <View style={{ flexDirection: "row", gap: 20 }}>
-            {!isReadOnly && (
-              <Button
-                variant="outlined"
-                height={70}
-                containerStyle={{ flex: 1 }}
-                onPress={handleDeletePress}
-              >
-                <Icon>remove_circle</Icon>
-                <ButtonText style={{ fontSize: 17 }}>Delete</ButtonText>
-              </Button>
-            )}
-            {item.type !== "IMAGE" && !isReadOnly && (
-              <Button
-                variant="outlined"
-                height={70}
-                containerStyle={{ flex: 1 }}
-                onPress={handleEditPress}
-              >
-                <Icon>edit_square</Icon>
-                <ButtonText style={{ fontSize: 17 }}>Edit</ButtonText>
-              </Button>
-            )}
-          </View>
-        </View>
+      </View>
+      {item.type === "IMAGE" && (
+        <Image
+          source={{ uri: item.data }}
+          style={{ borderRadius: 20 }}
+          transition={100}
+        />
       )}
-    </Menu>
+      <IconButton icon="remove_circle" onPress={handleDeletePress} />
+    </ListItemButton>
   );
 }
 
@@ -438,70 +458,6 @@ export const normalizeRecurrenceRuleObject = (rule) => {
   });
 };
 
-function TaskNotifications() {
-  const theme = useColorTheme();
-  const { task, updateTask } = useTaskDrawerContext();
-
-  const notificationScale = [5, 10, 15, 30, 60, 120, 240, 480, 1440];
-  const notificationScaleText = [
-    "5m",
-    "10m",
-    "15m",
-    "30m",
-    "1h",
-    "2h",
-    "4h",
-    "8h",
-    "1d",
-  ];
-
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{
-        gap: 10,
-        paddingHorizontal: 10,
-        paddingBottom: 10,
-      }}
-    >
-      {notificationScale.map((n, i) => (
-        <Pressable
-          key={n}
-          style={({ pressed, hovered }) => ({
-            width: 40,
-            height: 40,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: task.notifications.includes(n)
-              ? theme[pressed ? 12 : hovered ? 11 : 10]
-              : theme[pressed ? 5 : hovered ? 4 : 3],
-            borderRadius: 10,
-          })}
-          onPress={() =>
-            updateTask(
-              "notifications",
-              (task.notifications.includes(n)
-                ? task.notifications.filter((i) => i !== n)
-                : [...task.notifications, n]
-              ).sort()
-            )
-          }
-        >
-          <Text
-            style={{
-              fontFamily: getFontName("jetBrainsMono", 500),
-              color: task.notifications.includes(n) ? theme[3] : theme[11],
-            }}
-          >
-            {notificationScaleText[i]}
-          </Text>
-        </Pressable>
-      ))}
-    </ScrollView>
-  );
-}
-
 export function TaskDetails() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -522,27 +478,99 @@ export function TaskDetails() {
   const recurrenceRule =
     task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
 
+  const dateName = recurrenceRule
+    ? [`Repeats ${recurrenceRule.toText()}`]
+    : [
+        task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "No date set",
+        task.end &&
+        !(task.dateOnly && dayjs(task.start).isSame(dayjs(task.end), "day"))
+          ? `to ${dayjs(task.end).format("MMM Do, YYYY")}`
+          : task.dateOnly
+          ? "All day"
+          : dayjs(task.start).format("[@] h:mm A"),
+      ];
+
   return (
     <>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        data={task.attachments}
-        horizontal
-        keyExtractor={(_, index) => index.toString()}
-        contentContainerStyle={{ gap: 20, paddingHorizontal: 20 }}
-        style={{ marginBottom: 20, marginHorizontal: -20 }}
-        renderItem={(i) => <TaskAttachmentCard {...i} />}
-      />
       <Accordion
         activeSections={activeSections}
         sectionContainerStyle={{
           backgroundColor: theme[3],
           borderRadius: 20,
           overflow: "hidden",
-          marginBottom: 15,
+          marginTop: 15,
         }}
         underlayColor="transparent"
         sections={[
+          {
+            trigger: () => (
+              <ListItemButton
+                disabled
+                variant="filled"
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+              >
+                <Icon
+                  style={{
+                    transform: [{ rotate: "-45deg" }],
+                  }}
+                >
+                  attachment
+                </Icon>
+                <ListItemText
+                  primary={
+                    task.attachments?.length > 0
+                      ? `${task.attachments?.length} attachment${
+                          task.attachments?.length > 1 ? "s" : ""
+                        }`
+                      : `Attachments`
+                  }
+                  secondaryProps={{ style: { opacity: 1 } }}
+                  secondary={
+                    <View
+                      style={{ flexWrap: "wrap", gap: 5, flexDirection: "row" }}
+                    >
+                      <TaskAttachmentButton task={task} updateTask={updateTask}>
+                        <Button
+                          icon="add"
+                          text="New"
+                          variant="filled"
+                          backgroundColors={attachmentButtonStyles(theme)}
+                          borderColors={attachmentButtonStyles(theme)}
+                          dense
+                        />
+                      </TaskAttachmentButton>
+                      {task.attachments?.map((i, index) => (
+                        <TaskAttachmentPreview
+                          item={i}
+                          index={index}
+                          key={index}
+                        />
+                      ))}
+                    </View>
+                  }
+                />
+                <IconButton
+                  style={{ opacity: 1 }}
+                  variant="outlined"
+                  icon="expand_more"
+                  disabled
+                />
+              </ListItemButton>
+            ),
+            content: (
+              <View>
+                <Divider />
+                {task.attachments?.map((i, index) => (
+                  <React.Fragment key={index}>
+                    <TaskAttachmentCard item={i} index={index} key={index} />
+                    {index !== task.attachments.length - 1 && (
+                      <Divider style={{ height: 1 }} />
+                    )}
+                  </React.Fragment>
+                ))}
+              </View>
+            ),
+          },
           task.integrationParams && {
             trigger: () => (
               <ListItemButton
@@ -618,24 +646,13 @@ export function TaskDetails() {
                       ? "loop"
                       : "calendar_add_on"}
                   </Icon>
-                  <ListItemText
-                    primary={
-                      !task.start && !task.recurrenceRule
-                        ? "Add date"
-                        : task.recurrenceRule
-                        ? capitalizeFirstLetter(recurrenceRule.toText())
-                        : dayjs(task.start).format("MMM Do, YYYY")
-                    }
-                    secondary={
-                      task.start &&
-                      (task.recurrenceRule
-                        ? capitalizeFirstLetter(recurrenceRule.toText())
-                        : "Does not repeat")
-                    }
-                  />
-                  {!isReadOnly && !task.recurrenceRule && task.start && (
-                    <TaskRescheduleButton />
-                  )}
+                  <ListItemText primary={dateName[0]} secondary={dateName[1]} />
+                  <View style={{ flexDirection: "row" }}>
+                    <TaskNotificationsButton />
+                    {!isReadOnly && !task.recurrenceRule && task.start && (
+                      <TaskRescheduleButton />
+                    )}
+                  </View>
                 </ListItemButton>
               </TaskDatePicker>
             ),
@@ -694,113 +711,99 @@ export function TaskDetails() {
               </View>
             ),
           },
-          !task.dateOnly && {
-            trigger: () => (
-              <ListItemButton
-                variant="filled"
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>access_time</Icon>
-                <ListItemText primary={dayjs(task.start).format("h:mm A")} />
-              </ListItemButton>
-            ),
-            content: <></>,
-          },
           {
             trigger: () => (
-              <ListItemButton
-                variant="filled"
-                disabled
-                style={{
-                  paddingVertical: 15,
-                  paddingHorizontal: 20,
-                  flexDirection: breakpoints.md ? "row" : "column",
-                  alignItems: breakpoints.md ? undefined : "flex-start",
-                }}
-              >
-                <View
+              <Pressable>
+                <ListItemButton
+                  variant="filled"
+                  disabled
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    flex: 1,
-                    gap: 20,
+                    paddingVertical: 15,
+                    paddingHorizontal: 20,
+                  }}
+                  pressableStyle={{
+                    flexDirection: breakpoints.md ? "row" : "column",
+                    alignItems: breakpoints.md ? undefined : "flex-start",
                   }}
                 >
-                  <Icon>exercise</Icon>
-                  <ListItemText
-                    primary="Complexity"
-                    secondary={
-                      STORY_POINT_SCALE[
-                        complexityScale.findIndex((i) => i === task.storyPoints)
-                      ]
-                    }
-                  />
-                </View>
-                {task.storyPoints &&
-                  complexityScale.findIndex((i) => i === task.storyPoints) !==
-                    -1 && (
-                    <View style={{ flexDirection: "row", gap: 3 }}>
-                      {complexityScale.map((n) => (
-                        <IconButton
-                          key={n}
-                          onPress={() => updateTask("storyPoints", n)}
-                          size={35}
-                          backgroundColors={{
-                            default: theme[n !== task.storyPoints ? 3 : 10],
-                            pressed: theme[n !== task.storyPoints ? 4 : 11],
-                            hovered: theme[n !== task.storyPoints ? 5 : 12],
-                          }}
-                          animationConfigs={{ duration: 0.0001 }}
-                          style={{ borderRadius: 10 }}
-                        >
-                          <Text
-                            style={{
-                              fontFamily: getFontName("jetBrainsMono", 500),
-                              color: theme[n === task.storyPoints ? 3 : 11],
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flex: 1,
+                      gap: 20,
+                    }}
+                  >
+                    <Icon>exercise</Icon>
+                    <ListItemText
+                      primary="Complexity"
+                      secondary={
+                        STORY_POINT_SCALE[
+                          complexityScale.findIndex(
+                            (i) => i === task.storyPoints
+                          )
+                        ]
+                      }
+                    />
+                  </View>
+                  {task.storyPoints &&
+                    complexityScale.findIndex((i) => i === task.storyPoints) !==
+                      -1 && (
+                      <View
+                        style={[
+                          {
+                            flexDirection: "row",
+                            gap: 3,
+                          },
+                          !breakpoints.md && { width: "100%", flex: 1 },
+                        ]}
+                      >
+                        {complexityScale.map((n) => (
+                          <IconButton
+                            key={n}
+                            onPress={() => updateTask("storyPoints", n)}
+                            size={35}
+                            backgroundColors={{
+                              default: theme[n !== task.storyPoints ? 3 : 10],
+                              pressed: theme[n !== task.storyPoints ? 4 : 11],
+                              hovered: theme[n !== task.storyPoints ? 5 : 12],
                             }}
+                            borderColors={
+                              n === task.storyPoints && {
+                                default: theme[10],
+                                pressed: theme[11],
+                                hovered: theme[12],
+                              }
+                            }
+                            variant={breakpoints.md ? undefined : "outlined"}
+                            animationConfigs={
+                              breakpoints.md && { duration: 0.0001 }
+                            }
+                            style={[
+                              breakpoints.md
+                                ? {
+                                    borderRadius: 10,
+                                  }
+                                : {
+                                    width: undefined,
+                                    flex: 1,
+                                  },
+                            ]}
                           >
-                            {String(n).padStart(2, "0")}
-                          </Text>
-                        </IconButton>
-                      ))}
-                    </View>
-                  )}
-              </ListItemButton>
-            ),
-            content: <></>,
-          },
-          task.start && {
-            trigger: () => (
-              <ListItemButton
-                variant="filled"
-                disabled
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>notifications</Icon>
-                <ListItemText
-                  primary={`${task.notifications.length} notification${
-                    task.notifications.length == 1 ? "" : "s"
-                  }`}
-                />
-                <Icon>arrow_forward_ios</Icon>
-              </ListItemButton>
-            ),
-            content: <TaskNotifications />,
-          },
-          task.collection && {
-            trigger: () => (
-              <ListItemButton
-                variant="filled"
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>interests</Icon>
-                <ListItemText
-                  primary={`Found in ${task.collection.name}`}
-                  secondary={
-                    task.label ? `Label: ${task.label?.name}` : "No label set"
-                  }
-                />
-              </ListItemButton>
+                            <Text
+                              style={{
+                                fontFamily: getFontName("jetBrainsMono", 500),
+                                color: theme[n === task.storyPoints ? 3 : 11],
+                              }}
+                            >
+                              {String(n).padStart(2, "0")}
+                            </Text>
+                          </IconButton>
+                        ))}
+                      </View>
+                    )}
+                </ListItemButton>
+              </Pressable>
             ),
             content: <></>,
           },

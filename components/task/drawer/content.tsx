@@ -7,10 +7,10 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -21,7 +21,6 @@ import Toast from "react-native-toast-message";
 import { useLabelColors } from "../../labels/useLabelColors";
 import { TaskShareButton } from "./TaskShareButton";
 import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
-import { TaskAttachmentButton } from "./attachment/button";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
 
@@ -82,7 +81,6 @@ export function TaskDrawerContent({ handleClose }) {
   const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-  const menuRef = useRef<BottomSheetModal>(null);
   const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
 
@@ -150,8 +148,6 @@ export function TaskDrawerContent({ handleClose }) {
             icon="close"
           />
           <View style={{ flex: 1 }} />
-          <TaskShareButton />
-          <TaskCompleteButton />
           {!isReadOnly && (
             <IconButton
               variant="outlined"
@@ -160,20 +156,15 @@ export function TaskDrawerContent({ handleClose }) {
               icon={task.trash ? "restore_from_trash" : "delete"}
             />
           )}
-          {!isReadOnly && (
-            <TaskAttachmentButton
-              menuRef={menuRef}
-              task={task}
-              updateTask={updateTask}
-            />
-          )}
+          <TaskShareButton />
+          {!isReadOnly && <TaskCompleteButton />}
         </View>
       </View>
       <LinearGradient
         colors={[theme[2], "transparent"]}
         style={{ height: 40, width: "100%", marginBottom: -40, zIndex: 1 }}
       />
-      <BottomSheetScrollView>
+      <BottomSheetScrollView showsHorizontalScrollIndicator={false}>
         <View style={{ paddingBottom: 50, paddingHorizontal: 20 }}>
           <View
             style={{
@@ -220,8 +211,14 @@ export function TaskDrawerContent({ handleClose }) {
               >
                 <Chip
                   disabled={isReadOnly}
-                  icon={<Icon>new_label</Icon>}
-                  label="Add label"
+                  icon={
+                    task?.collection?.emoji ? (
+                      <Emoji emoji={task?.collection?.emoji} />
+                    ) : (
+                      <Icon>new_label</Icon>
+                    )
+                  }
+                  label={task?.collection?.name || "Add label"}
                   style={({ pressed }) => ({
                     backgroundColor: theme[pressed ? 4 : 2],
                     borderWidth: 1,

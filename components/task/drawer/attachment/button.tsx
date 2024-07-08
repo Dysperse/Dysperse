@@ -53,7 +53,9 @@ export function TaskAttachmentButton({
       width={400}
       onOpen={onOpen}
       trigger={
-        children || <IconButton variant="outlined" size={50} icon="edit" />
+        children || (
+          <IconButton variant="outlined" size={50} icon="note_stack_add" />
+        )
       }
     >
       <View
