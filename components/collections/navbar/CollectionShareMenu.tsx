@@ -598,7 +598,7 @@ const Navigator = memo(({ maxHeight, handleClose, collection }: any) => {
     >
       <NavigationContainer
         onStateChange={(state) => {
-          const height = state.routes[state.index].name === "share" ? 500 : 800;
+          const height = state.routes[state.index].name === "share" ? 500 : 650;
           maxHeight.value = height;
         }}
         documentTitle={{ enabled: false }}
