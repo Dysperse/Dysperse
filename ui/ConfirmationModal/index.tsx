@@ -9,7 +9,7 @@ import { useColorTheme } from "../color/theme-provider";
 
 export interface ConfirmationModalProps {
   children: JSX.Element;
-  height: number;
+  height?: number;
   title: string;
   secondary: string;
   onSuccess: () => void;
