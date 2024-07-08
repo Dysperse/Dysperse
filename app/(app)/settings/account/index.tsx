@@ -28,20 +28,28 @@ import Animated, { BounceInLeft } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
+function Section({ children }: any) {
+  const theme = useColorTheme();
+  return (
+    <View
+      style={{
+        borderRadius: 20,
+        borderWidth: 1,
+        padding: 5,
+        marginTop: 5,
+        borderColor: theme[5],
+      }}
+    >
+      {children}
+    </View>
+  );
+}
 function SpaceStorage({ data }: { data: any }) {
   const theme = useColorTheme();
 
   return (
     <>
-      <View
-        style={{
-          borderRadius: 20,
-          borderWidth: 1,
-          padding: 5,
-          marginTop: 5,
-          borderColor: theme[5],
-        }}
-      >
+      <Section>
         <ListItemButton disabled style={{ backgroundColor: "transparent" }}>
           <ListItemText
             style={{ paddingVertical: 20 }}
@@ -127,7 +135,7 @@ function SpaceStorage({ data }: { data: any }) {
             </ListItemButton>
           ))}
         </View>
-      </View>
+      </Section>
     </>
   );
 }
@@ -465,39 +473,96 @@ function ResetTutorial() {
       <Text style={settingStyles.heading} weight={700}>
         Hints
       </Text>
-      <ConfirmationModal
-        title="Reset hints?"
-        secondary="This will reset all hints across the app. Are you sure?"
-        onSuccess={() => {
-          mutate(
-            (d) => ({
-              ...d,
-              user: { ...d.user, toursViewed: [] },
-            }),
-            {
-              revalidate: false,
-            }
-          );
-          sendApiRequest(
-            sessionToken,
-            "PUT",
-            "user/account",
-            {},
-            { body: JSON.stringify({ toursViewed: [] }) }
-          );
+      <Section>
+        <ConfirmationModal
+          title="Reset hints?"
+          secondary="This will reset all hints across the app. Are you sure?"
+          onSuccess={() => {
+            mutate(
+              (d) => ({
+                ...d,
+                user: { ...d.user, toursViewed: [] },
+              }),
+              {
+                revalidate: false,
+              }
+            );
+            sendApiRequest(
+              sessionToken,
+              "PUT",
+              "user/account",
+              {},
+              { body: JSON.stringify({ toursViewed: [] }) }
+            );
 
-          if (router.canGoBack()) router.back();
-          else router.push("/");
-        }}
-      >
-        <ListItemButton>
+            router.push("/");
+          }}
+        >
+          <ListItemButton>
+            <ListItemText
+              primary="Reset hints"
+              secondary="Show me how to use #dysperse again"
+            />
+            <Icon>arrow_forward_ios</Icon>
+          </ListItemButton>
+        </ConfirmationModal>
+      </Section>
+    </>
+  );
+}
+
+function StreakSettings() {
+  return (
+    <>
+      <Text style={settingStyles.heading} weight={700}>
+        Streaks
+      </Text>
+      <Section>
+        <ListItemButton disabled>
           <ListItemText
-            primary="Reset hints"
-            secondary="Show me how to use #dysperse again"
+            primary="Daily task goal"
+            secondary="How many tasks you want to complete daily?"
           />
-          <Icon>arrow_forward_ios</Icon>
+          <MenuPopover
+            trigger={AccountMenuTrigger({
+              text: `5 tasks`,
+            })}
+            options={[
+              { text: "5 tasks" },
+              { text: "3 tasks" },
+              { text: "10 tasks" },
+            ].map((e) => ({
+              ...e,
+              selected: e.text.toUpperCase() === `5 tasks`,
+              callback: () =>
+                Toast.show({ type: "info", text1: "Coming soon!" }),
+            }))}
+          />
         </ListItemButton>
-      </ConfirmationModal>
+        <ListItemButton disabled>
+          <ListItemText
+            primary="Weekly task goal"
+            secondary="How many tasks you want to complete weekly?"
+          />
+          <MenuPopover
+            trigger={AccountMenuTrigger({
+              text: `10 tasks`,
+            })}
+            options={[
+              { text: "10 tasks" },
+              { text: "15 tasks" },
+              { text: "20 tasks" },
+              { text: "30 tasks" },
+              { text: "50 tasks" },
+            ].map((e) => ({
+              ...e,
+              selected: e.text.toUpperCase() === `10 tasks`,
+              callback: () =>
+                Toast.show({ type: "info", text1: "Coming soon!" }),
+            }))}
+          />
+        </ListItemButton>
+      </Section>
     </>
   );
 }
@@ -519,6 +584,7 @@ export default function Page() {
           <SpaceStorage data={data} />
           <TasksSettings data={data} mutate={mutate} />
           <ResetTutorial />
+          <StreakSettings />
           <EmailSection />
           <TwoFactorAuthSection />
         </>
