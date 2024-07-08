@@ -94,11 +94,9 @@ export default function AppLayout() {
   const progressValue = useRef(null);
 
   const { sidebarRef, SIDEBAR_WIDTH } = useSidebarContext();
-  useEffect(() => {
-    setTimeout(() => {
-      sidebarRef.current?.openDrawer?.();
-    }, 100);
-  }, [sidebarRef]);
+  // useEffect(() => {
+  //     sidebarRef.current?.openDrawer?.();
+  // }, [sidebarRef]);
 
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
 
