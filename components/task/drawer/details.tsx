@@ -18,6 +18,7 @@ import { Image } from "expo-image";
 import React, { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Easing,
   Linking,
   Pressable,
   StyleProp,
@@ -501,6 +502,8 @@ export function TaskDetails() {
           marginTop: 15,
         }}
         underlayColor="transparent"
+        touchableComponent={Pressable as any}
+        easing={Easing.bezier(0.17, 0.67, 0.32, 1)}
         sections={[
           {
             trigger: () => (
@@ -527,7 +530,11 @@ export function TaskDetails() {
                   secondaryProps={{ style: { opacity: 1 } }}
                   secondary={
                     <View
-                      style={{ flexWrap: "wrap", gap: 5, flexDirection: "row" }}
+                      style={{
+                        flexWrap: "wrap",
+                        gap: 5,
+                        flexDirection: "row",
+                      }}
                     >
                       <TaskAttachmentButton task={task} updateTask={updateTask}>
                         <Button
@@ -713,97 +720,93 @@ export function TaskDetails() {
           },
           {
             trigger: () => (
-              <Pressable>
-                <ListItemButton
-                  variant="filled"
-                  disabled
+              <ListItemButton
+                variant="filled"
+                disabled
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                }}
+                pressableStyle={{
+                  flexDirection: breakpoints.md ? "row" : "column",
+                  alignItems: breakpoints.md ? undefined : "flex-start",
+                }}
+              >
+                <View
                   style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 20,
-                  }}
-                  pressableStyle={{
-                    flexDirection: breakpoints.md ? "row" : "column",
-                    alignItems: breakpoints.md ? undefined : "flex-start",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flex: 1,
+                    gap: 20,
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      flex: 1,
-                      gap: 20,
-                    }}
-                  >
-                    <Icon>exercise</Icon>
-                    <ListItemText
-                      primary="Complexity"
-                      secondary={
-                        STORY_POINT_SCALE[
-                          complexityScale.findIndex(
-                            (i) => i === task.storyPoints
-                          )
-                        ]
-                      }
-                    />
-                  </View>
-                  {task.storyPoints &&
-                    complexityScale.findIndex((i) => i === task.storyPoints) !==
-                      -1 && (
-                      <View
-                        style={[
-                          {
-                            flexDirection: "row",
-                            gap: 3,
-                          },
-                          !breakpoints.md && { width: "100%", flex: 1 },
-                        ]}
-                      >
-                        {complexityScale.map((n) => (
-                          <IconButton
-                            key={n}
-                            onPress={() => updateTask("storyPoints", n)}
-                            size={35}
-                            backgroundColors={{
-                              default: theme[n !== task.storyPoints ? 3 : 10],
-                              pressed: theme[n !== task.storyPoints ? 4 : 11],
-                              hovered: theme[n !== task.storyPoints ? 5 : 12],
+                  <Icon>exercise</Icon>
+                  <ListItemText
+                    primary="Complexity"
+                    secondary={
+                      STORY_POINT_SCALE[
+                        complexityScale.findIndex((i) => i === task.storyPoints)
+                      ]
+                    }
+                  />
+                </View>
+                {task.storyPoints &&
+                  complexityScale.findIndex((i) => i === task.storyPoints) !==
+                    -1 && (
+                    <View
+                      style={[
+                        {
+                          flexDirection: "row",
+                          gap: 3,
+                        },
+                        !breakpoints.md && { width: "100%", flex: 1 },
+                      ]}
+                    >
+                      {complexityScale.map((n) => (
+                        <IconButton
+                          key={n}
+                          onPress={() => updateTask("storyPoints", n)}
+                          size={35}
+                          backgroundColors={{
+                            default: theme[n !== task.storyPoints ? 3 : 10],
+                            pressed: theme[n !== task.storyPoints ? 4 : 11],
+                            hovered: theme[n !== task.storyPoints ? 5 : 12],
+                          }}
+                          borderColors={
+                            n === task.storyPoints && {
+                              default: theme[10],
+                              pressed: theme[11],
+                              hovered: theme[12],
+                            }
+                          }
+                          variant={breakpoints.md ? undefined : "outlined"}
+                          animationConfigs={
+                            breakpoints.md && { duration: 0.0001 }
+                          }
+                          style={[
+                            breakpoints.md
+                              ? {
+                                  borderRadius: 10,
+                                }
+                              : {
+                                  width: undefined,
+                                  flex: 1,
+                                },
+                          ]}
+                        >
+                          <Text
+                            style={{
+                              fontFamily: getFontName("jetBrainsMono", 500),
+                              color: theme[n === task.storyPoints ? 3 : 11],
                             }}
-                            borderColors={
-                              n === task.storyPoints && {
-                                default: theme[10],
-                                pressed: theme[11],
-                                hovered: theme[12],
-                              }
-                            }
-                            variant={breakpoints.md ? undefined : "outlined"}
-                            animationConfigs={
-                              breakpoints.md && { duration: 0.0001 }
-                            }
-                            style={[
-                              breakpoints.md
-                                ? {
-                                    borderRadius: 10,
-                                  }
-                                : {
-                                    width: undefined,
-                                    flex: 1,
-                                  },
-                            ]}
                           >
-                            <Text
-                              style={{
-                                fontFamily: getFontName("jetBrainsMono", 500),
-                                color: theme[n === task.storyPoints ? 3 : 11],
-                              }}
-                            >
-                              {String(n).padStart(2, "0")}
-                            </Text>
-                          </IconButton>
-                        ))}
-                      </View>
-                    )}
-                </ListItemButton>
-              </Pressable>
+                            {String(n).padStart(2, "0")}
+                          </Text>
+                        </IconButton>
+                      ))}
+                    </View>
+                  )}
+              </ListItemButton>
             ),
             content: <></>,
           },
