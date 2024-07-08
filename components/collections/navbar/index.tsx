@@ -10,12 +10,14 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import { TourPopover, TourProvider } from "@/ui/Tour";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo, useRef } from "react";
 import { Pressable, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
+import { AttachStep, TourStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -33,6 +35,54 @@ interface CollectionNavbarProps {
   editOrderMode: boolean;
   setEditOrderMode: (value: boolean) => void;
 }
+
+const steps: TourStep[] = [
+  {
+    render: (t) => (
+      <TourPopover
+        step={t}
+        tips={[
+          "Collections allow you to view tasks in different ways by selecting labels.",
+          "Switch views by clicking the collection name.",
+        ]}
+      />
+    ),
+  },
+  {
+    shape: "circle",
+    render: (t) => (
+      <TourPopover
+        step={t}
+        tips={[
+          "Here, you can search for all your tasks within this collection.",
+        ]}
+      />
+    ),
+  },
+  {
+    shape: "circle",
+    render: (t) => (
+      <TourPopover
+        step={t}
+        tips={[
+          "Here, you can customize your collection by reordering labels, hiding completed tasks, and more.",
+        ]}
+      />
+    ),
+  },
+  {
+    render: (t) => (
+      <TourPopover
+        step={t}
+        tips={[
+          "Share your collection with others here",
+          "Invite others by instantly creating an invite link",
+          "Or, publish your collection as a template to the #dysverse for others to discover",
+        ]}
+      />
+    ),
+  },
+];
 
 const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
@@ -251,140 +301,159 @@ const CollectionNavbar = memo(function CollectionNavbar({
     [sidebarRef, breakpoints.md]
   );
 
-  return editOrderMode ? (
-    <NavbarGradient>
-      {menu}
-      <View
-        style={{
-          maxWidth: breakpoints.md ? 220 : "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 13,
-          paddingLeft: 10,
-          minWidth: 0,
-        }}
-      >
-        <NavbarIcon isAll={isAll} emoji={data.emoji} isLoading={isLoading} />
-        <View>
-          <NavbarEyebrow name="Reorder labels" />
-          <NavbarTitle name={data.name} />
-        </View>
-      </View>
-      <IconButton
-        icon="check"
-        variant="filled"
-        size={40}
-        style={{ marginLeft: "auto" }}
-        onPress={() => setEditOrderMode(false)}
-      />
-    </NavbarGradient>
-  ) : (
-    <>
-      <NavbarGradient>
-        {menu}
-        <MenuPopover
-          menuProps={{
-            style: {
-              marginRight: "auto",
-              maxWidth: "100%",
-              width: breakpoints.md ? 220 : undefined,
+  return (
+    <TourProvider steps={steps} tourKey="collectionNavbar">
+      {editOrderMode ? (
+        <NavbarGradient>
+          {menu}
+          <View
+            style={{
+              maxWidth: breakpoints.md ? 220 : "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 13,
+              paddingLeft: 10,
               minWidth: 0,
-              flex: breakpoints.md ? undefined : 1,
-            },
-            rendererProps: { placement: "bottom" },
-          }}
-          trigger={
-            <Pressable
-              android_ripple={{ color: theme[5] }}
-              style={() => ({
-                maxWidth: breakpoints.md ? 220 : "100%",
+            }}
+          >
+            <NavbarIcon
+              isAll={isAll}
+              emoji={data.emoji}
+              isLoading={isLoading}
+            />
+            <View>
+              <NavbarEyebrow name="Reorder labels" />
+              <NavbarTitle name={data.name} />
+            </View>
+          </View>
+          <IconButton
+            icon="check"
+            variant="filled"
+            size={40}
+            style={{ marginLeft: "auto" }}
+            onPress={() => setEditOrderMode(false)}
+          />
+        </NavbarGradient>
+      ) : (
+        <>
+          <NavbarGradient>
+            {menu}
+            <View
+              style={{
+                marginRight: "auto",
+                maxWidth: "100%",
+                width: breakpoints.md ? 220 : undefined,
+                minWidth: 0,
+                flex: breakpoints.md ? undefined : 1,
+              }}
+            >
+              <AttachStep index={0}>
+                <MenuPopover
+                  menuProps={{
+                    rendererProps: { placement: "bottom" },
+                  }}
+                  trigger={
+                    <Pressable
+                      android_ripple={{ color: theme[5] }}
+                      style={() => ({
+                        maxWidth: breakpoints.md ? 220 : "100%",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 13,
+                        paddingLeft: 10,
+                        minWidth: 0,
+                      })}
+                    >
+                      {data?.emoji && (
+                        <NavbarIcon
+                          isAll={isAll}
+                          emoji={data.emoji}
+                          isLoading={isLoading}
+                        />
+                      )}
+                      <View style={{ minWidth: 0, flexShrink: 1 }}>
+                        <NavbarEyebrow name={type} />
+                        {isLoading ? (
+                          <View
+                            style={{
+                              width: 60,
+                              height: 17,
+                              borderRadius: 999,
+                              backgroundColor: theme[4],
+                            }}
+                          />
+                        ) : (
+                          <NavbarTitle name={data.name || "All tasks"} />
+                        )}
+                      </View>
+                      <Icon size={30} style={{ marginLeft: -5 }}>
+                        expand_more
+                      </Icon>
+                    </Pressable>
+                  }
+                  options={options}
+                />
+              </AttachStep>
+            </View>
+            {!isLoading &&
+              (type === "planner" || type === "calendar") &&
+              breakpoints.md && <AgendaButtons />}
+            <View
+              style={{
+                width: breakpoints.md ? 220 : undefined,
                 flexDirection: "row",
                 alignItems: "center",
-                gap: 13,
-                paddingLeft: 10,
-                minWidth: 0,
-              })}
+                justifyContent: "flex-end",
+              }}
             >
-              {data?.emoji && (
-                <NavbarIcon
-                  isAll={isAll}
-                  emoji={data.emoji}
-                  isLoading={isLoading}
-                />
-              )}
-              <View style={{ minWidth: 0, flexShrink: 1 }}>
-                <NavbarEyebrow name={type} />
+              <CollectionContext.Provider value={contextValue}>
+                <AttachStep index={1}>
+                  <CollectionSearch />
+                </AttachStep>
+                {!breakpoints.md && <CollectionShareMenu />}
                 {isLoading ? (
                   <View
                     style={{
-                      width: 60,
-                      height: 17,
+                      width: 40,
+                      height: 40,
                       borderRadius: 999,
                       backgroundColor: theme[4],
                     }}
                   />
                 ) : (
-                  <NavbarTitle name={data.name || "All tasks"} />
+                  !isReadOnly && (
+                    <AttachStep index={2}>
+                      <MenuPopover
+                        menuRef={menuRef}
+                        closeOnSelect
+                        {...(isReadOnly && { menuProps: { opened: false } })}
+                        containerStyle={{ width: 230 }}
+                        menuProps={{
+                          rendererProps: { placement: "bottom" },
+                        }}
+                        trigger={<IconButton icon="pending" size={40} />}
+                        options={
+                          (isReadOnly ? [] : collectionMenuOptions) as any
+                        }
+                      />
+                    </AttachStep>
+                  )
                 )}
-              </View>
-              <Icon size={30} style={{ marginLeft: -5 }}>
-                expand_more
-              </Icon>
-            </Pressable>
-          }
-          options={options}
-        />
-        {!isLoading &&
-          (type === "planner" || type === "calendar") &&
-          breakpoints.md && <AgendaButtons />}
-        <View
-          style={{
-            width: breakpoints.md ? 220 : undefined,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-end",
-          }}
-        >
-          <CollectionContext.Provider value={contextValue}>
-            <CollectionSearch />
-            {!breakpoints.md && <CollectionShareMenu />}
-            {isLoading ? (
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 999,
-                  backgroundColor: theme[4],
-                }}
-              />
-            ) : (
-              !isReadOnly && (
-                <MenuPopover
-                  menuRef={menuRef}
-                  closeOnSelect
-                  {...(isReadOnly && { menuProps: { opened: false } })}
-                  containerStyle={{ width: 230 }}
-                  menuProps={{
-                    rendererProps: { placement: "bottom" },
-                  }}
-                  trigger={<IconButton icon="pending" size={40} />}
-                  options={(isReadOnly ? [] : collectionMenuOptions) as any}
-                />
-              )
-            )}
-            {breakpoints.md && <CollectionShareMenu />}
-          </CollectionContext.Provider>
-        </View>
-      </NavbarGradient>
-      {isValidating && (
-        <View style={{ marginBottom: -3, zIndex: 999 }}>
-          <IndeterminateProgressBar height={3} />
-        </View>
+                {breakpoints.md && <CollectionShareMenu />}
+              </CollectionContext.Provider>
+            </View>
+          </NavbarGradient>
+          {isValidating && (
+            <View style={{ marginBottom: -3, zIndex: 999 }}>
+              <IndeterminateProgressBar height={3} />
+            </View>
+          )}
+          {(type === "planner" || type === "calendar") && !breakpoints.md && (
+            <AgendaButtons />
+          )}
+        </>
       )}
-      {(type === "planner" || type === "calendar") && !breakpoints.md && (
-        <AgendaButtons />
-      )}
-    </>
+    </TourProvider>
   );
 });
 

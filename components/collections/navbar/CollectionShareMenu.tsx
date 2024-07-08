@@ -36,6 +36,7 @@ import {
 } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useCollectionContext } from "../context";
@@ -663,40 +664,43 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
 
   return (
     <>
-      {id !== "all" &&
-        (breakpoints.md ? (
-          <Button
-            onPress={handleOpen}
-            backgroundColors={{
-              default: theme[5],
-              hovered: theme[6],
-              pressed: theme[7],
-            }}
-            height={43}
-            containerStyle={{
-              borderRadius: 20,
-            }}
-            style={[
-              styles.navbarIconButton,
-              {
-                gap: 10,
-                marginLeft: breakpoints.md ? 5 : 0,
-                width: breakpoints.md ? 103 : 50,
-                paddingLeft: 0,
-              },
-            ]}
-          >
-            <Icon>ios_share</Icon>
-            {breakpoints.md && <ButtonText weight={400}>Share</ButtonText>}
-          </Button>
-        ) : (
-          <IconButton
-            onPress={handleOpen}
-            variant="text"
-            size={40}
-            icon="ios_share"
-          />
-        ))}
+      {id !== "all" && (
+        <AttachStep index={3}>
+          {breakpoints.md ? (
+            <Button
+              onPress={handleOpen}
+              backgroundColors={{
+                default: theme[5],
+                hovered: theme[6],
+                pressed: theme[7],
+              }}
+              height={43}
+              containerStyle={{
+                borderRadius: 20,
+              }}
+              style={[
+                styles.navbarIconButton,
+                {
+                  gap: 10,
+                  marginLeft: breakpoints.md ? 5 : 0,
+                  width: breakpoints.md ? 103 : 50,
+                  paddingLeft: 0,
+                },
+              ]}
+            >
+              <Icon>ios_share</Icon>
+              {breakpoints.md && <ButtonText weight={400}>Share</ButtonText>}
+            </Button>
+          ) : (
+            <IconButton
+              onPress={handleOpen}
+              variant="text"
+              size={40}
+              icon="ios_share"
+            />
+          )}
+        </AttachStep>
+      )}
 
       <BottomSheet
         onClose={handleClose}
