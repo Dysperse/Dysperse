@@ -5,6 +5,7 @@ import Alert from "@/ui/Alert";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
+import { EmojiPicker } from "@/ui/EmojiPicker";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -54,7 +55,7 @@ export const CollectionInfo = ({ navigation, collection }) => {
 
   const updateCollection = async (key, value) => {
     try {
-      mutate({ ...data, [key]: value });
+      mutate({ ...data, [key]: value }, { revalidate: false });
       const res = await sendApiRequest(
         session,
         "PUT",
@@ -90,27 +91,35 @@ export const CollectionInfo = ({ navigation, collection }) => {
           style={{
             paddingTop: 100,
             justifyContent: "center",
+          }}
+        ></LinearGradient>
+        <View
+          style={{
+            marginBottom: -60,
             paddingLeft: 20,
+            marginTop: -50,
+            zIndex: 99,
           }}
         >
-          <Pressable
-            style={{
-              marginBottom: -60,
-              marginTop: -50,
-              borderWidth: 1,
-              borderRadius: 99,
-              borderColor: theme[6],
-              width: 100,
-              height: 100,
+          <EmojiPicker setEmoji={(emoji) => updateCollection("emoji", emoji)}>
+            <Pressable
+              style={({ pressed, hovered }) => ({
+                borderWidth: 1,
+                borderRadius: 99,
+                borderColor: theme[pressed ? 8 : hovered ? 7 : 6],
+                width: 100,
+                height: 100,
+                zIndex: 99,
+                backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                justifyContent: "center",
+                alignItems: "center",
+              })}
+            >
+              <Emoji emoji={data.emoji} size={64} />
+            </Pressable>
+          </EmojiPicker>
+        </View>
 
-              backgroundColor: theme[5],
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Emoji emoji={data.emoji} size={64} />
-          </Pressable>
-        </LinearGradient>
         <View
           style={{
             padding: 20,
