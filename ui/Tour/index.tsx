@@ -178,7 +178,9 @@ export function TourPopover({
           >
             <ButtonText>Skip</ButtonText>
           </Button>
-          <IconButton size={40} icon="west" onPress={step.previous} />
+          {!step.isFirst && (
+            <IconButton size={40} icon="west" onPress={step.previous} />
+          )}
           <IconButton
             variant="filled"
             size={40}
