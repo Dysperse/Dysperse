@@ -282,7 +282,7 @@ export default function Page() {
       break;
   }
 
-  const t = useMemo(() => content, []);
+  const t = useMemo(() => content, [type, data, content, editOrderMode]);
 
   return (
     <CollectionContext.Provider
