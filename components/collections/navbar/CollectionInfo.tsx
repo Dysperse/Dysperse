@@ -27,6 +27,7 @@ const collectionCategories = [
   { text: "Movies & TV", icon: "theaters" },
   { text: "Food & Drink", icon: "lunch_dining" },
   { text: "Sports & Fitness", icon: "exercise" },
+  { text: "Lifestyle", icon: "emoji_objects" },
   { text: "Meet-ups", icon: "celebration" },
   { text: "Travel", icon: "flight" },
   { text: "Holidays", icon: "celebration" },

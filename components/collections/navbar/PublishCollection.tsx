@@ -7,7 +7,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export const PublishCollection = ({ collection, navigation }: any) => {
@@ -51,7 +51,14 @@ export const PublishCollection = ({ collection, navigation }: any) => {
                 onPress={() => updateCollection("public", false)}
                 icon="delete"
               />
-              <IconButton icon="open_in_new" variant="filled" size={45} />
+              <IconButton
+                icon="open_in_new"
+                onPress={() =>
+                  Linking.openURL(`https://dysperse.com/templates/${data.id}`)
+                }
+                variant="filled"
+                size={45}
+              />
             </View>
           </ListItemButton>
           <ListItemButton onPress={() => navigation.navigate("publish")}>
