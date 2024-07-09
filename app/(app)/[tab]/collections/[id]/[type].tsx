@@ -7,7 +7,6 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
-import Alert from "@/ui/Alert";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
@@ -21,7 +20,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
-import { ReactElement, memo, useRef, useState } from "react";
+import { ReactElement, memo, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -226,40 +225,33 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   );
 });
 
+const Loading = ({ error }) => (
+  <ContentWrapper noPaddingTop>
+    <CollectionNavbar
+      isLoading
+      editOrderMode={false}
+      setEditOrderMode={() => {}}
+    />
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      {error ? <ErrorAlert /> : <Spinner />}
+    </View>
+  </ContentWrapper>
+);
+
 export default function Page() {
   const { id, type }: any = useLocalSearchParams();
-  const { data, mutate, error, isValidating } = useSWR(
+  const swrKey =
     id && type
       ? [
           "space/collections/collection",
           id === "all" ? { all: "true", id: "??" } : { id },
         ]
-      : null
-  );
+      : null;
+  const { data, mutate, error } = useSWR(swrKey);
 
   const [editOrderMode, setEditOrderMode] = useState(false);
-  const comingSoon = (
-    <View
-      style={{
-        padding: 20,
-        paddingTop: 0,
-        maxWidth: 800,
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        marginHorizontal: "auto",
-      }}
-    >
-      <Alert
-        style={{ marginTop: 20 }}
-        emoji="1f6a7"
-        title="Coming soon"
-        subtitle="We're working on this view. Choose another one for now."
-      />
-    </View>
-  );
-  let content = null;
 
+  let content = null;
   switch (type as CollectionType) {
     case "planner":
       content = <Planner />;
@@ -290,22 +282,11 @@ export default function Page() {
       break;
   }
 
-  const loading = (
-    <ContentWrapper noPaddingTop>
-      <CollectionNavbar
-        isLoading
-        editOrderMode={editOrderMode}
-        setEditOrderMode={setEditOrderMode}
-      />
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        {error ? <ErrorAlert /> : <Spinner />}
-      </View>
-    </ContentWrapper>
-  );
+  const t = useMemo(() => content, []);
 
   return (
     <CollectionContext.Provider
-      value={{ data, mutate, error, type, access: data?.access, isValidating }}
+      value={{ data, mutate, error, type, access: data?.access, swrKey }}
     >
       {data ? (
         <ContentWrapper noPaddingTop>
@@ -313,10 +294,10 @@ export default function Page() {
             editOrderMode={editOrderMode}
             setEditOrderMode={setEditOrderMode}
           />
-          {content}
+          {t}
         </ContentWrapper>
       ) : (
-        loading
+        <Loading error={error} />
       )}
     </CollectionContext.Provider>
   );

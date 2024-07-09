@@ -572,6 +572,8 @@ const Navigator = memo(({ maxHeight, handleClose, collection }: any) => {
       cardStyleInterpolator: forHorizontalIOS,
       detachPreviousScreen: false,
       headerShown: true,
+      freezeOnBlur: true,
+      gestureEnabled: true,
       headerMode: "float",
       cardStyle: {
         height: "100%",

@@ -7,7 +7,7 @@ export interface CollectionContext {
   mutate: KeyedMutator<any>;
   error: any;
   type: CollectionType;
-  isValidating: boolean;
+  swrKey: any[];
   access: null | {
     id: string;
     hasSeen: boolean;

@@ -163,7 +163,20 @@ export const CollectionInfo = ({ navigation, collection }) => {
             trigger={
               <Button variant="outlined">
                 <ButtonText>
-                  {data.category ? "Category 1" : "Select category"}
+                  {data.category ? (
+                    <View style={{ flexDirection: "row", gap: 5 }}>
+                      <Icon size={20}>
+                        {
+                          collectionCategories.find(
+                            (category) => category.text === data.category
+                          ).icon
+                        }
+                      </Icon>
+                      {data.category}
+                    </View>
+                  ) : (
+                    "Select category"
+                  )}
                 </ButtonText>
               </Button>
             }

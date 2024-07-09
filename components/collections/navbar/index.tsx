@@ -84,20 +84,33 @@ const steps: TourStep[] = [
   },
 ];
 
+const LoadingIndicator = () => {
+  const { swrKey } = useCollectionContext();
+  const { isValidating } = useSWR(swrKey);
+
+  return (
+    isValidating && (
+      <View style={{ marginBottom: -3, zIndex: 999 }}>
+        <IndeterminateProgressBar height={3} />
+      </View>
+    )
+  );
+};
+
 const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
   editOrderMode,
   setEditOrderMode,
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
-  const { data, access, type, isValidating, ...ctx } = useCollectionContext();
+  const { data, access, type, swrKey, ...ctx } = useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
   const { id, mode } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
 
   const isAll = id === "all";
-  const contextValue = { data, type, ...ctx, access: null, isValidating };
+  const contextValue = { data, swrKey, type, ...ctx, access: null };
 
   const options = Object.keys(collectionViews).map((i) => ({
     icon: collectionViews[i],
@@ -443,11 +456,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
               </CollectionContext.Provider>
             </View>
           </NavbarGradient>
-          {isValidating && (
-            <View style={{ marginBottom: -3, zIndex: 999 }}>
-              <IndeterminateProgressBar height={3} />
-            </View>
-          )}
+          <LoadingIndicator />
           {(type === "planner" || type === "calendar") && !breakpoints.md && (
             <AgendaButtons />
           )}
