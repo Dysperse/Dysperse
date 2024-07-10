@@ -1,6 +1,7 @@
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import Emoji from "@/ui/Emoji";
@@ -11,7 +12,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import {
   InteractionManager,
   Platform,
