@@ -177,7 +177,13 @@ function Tab({
         </View>
         <IconButton
           disabled={!selected}
-          style={[styles.closeButton, { opacity: selected ? 0.5 : 0 }]}
+          style={[
+            styles.closeButton,
+            {
+              opacity: selected ? 0.5 : 0,
+              pointerEvents: selected ? "auto" : "none",
+            },
+          ]}
           size={50}
           onPress={handleCloseTab}
         >
@@ -219,6 +225,7 @@ function Tab({
         {...(Platform.OS === "web" && {
           onAuxClick: (e) => {
             if (e.button === 1) {
+              e.preventDefault();
               handleDelete(tab.id);
             }
           },
