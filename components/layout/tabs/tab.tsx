@@ -11,6 +11,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import {
   InteractionManager,
   Platform,
@@ -208,6 +209,15 @@ function Tab({
       if (!breakpoints.md) sidebarRef?.current?.closeDrawer?.();
     });
   };
+
+  useHotkeys(
+    "ctrl+w",
+    (e) => {
+      e.preventDefault();
+      if (selected) handleCloseTab();
+    },
+    [selected]
+  );
 
   return isClosedAnimation ? null : (
     <View
