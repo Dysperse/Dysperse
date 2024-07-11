@@ -583,7 +583,7 @@ export default function Page() {
           </Text>
           <SpaceStorage data={data} />
           <TasksSettings data={data} mutate={mutate} />
-          <ResetTutorial />
+          {process.env.NODE_ENV === "development" && <ResetTutorial />}
           <StreakSettings />
           <EmailSection />
           <TwoFactorAuthSection />
