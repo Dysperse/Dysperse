@@ -8,18 +8,36 @@ import { Redirect, router } from "expo-router";
 import {
   ImageBackground,
   Linking,
+  Platform,
   StatusBar,
   useWindowDimensions,
   View,
 } from "react-native";
 import { authStyles } from "../../components/authStyles";
 
+function inIframe() {
+  if (Platform.OS !== "web") return false;
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+}
+
 export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { width, height } = useWindowDimensions();
-  const handleLoginPress = () => router.push("/auth/sign-in");
-  const handleSignUpPress = () => router.push("/auth/sign-up");
+  const handleLoginPress = () => {
+    if (Platform.OS === "web" && inIframe())
+      window.open("/auth/sign-in", "_blank");
+    else router.push("/auth/sign-in");
+  };
+  const handleSignUpPress = () => {
+    if (Platform.OS === "web" && inIframe())
+      window.open("/auth/sign-up", "_blank");
+    else router.push("/auth/sign-up");
+  };
   const openHomePage = () =>
     Linking.openURL("https://dysperse.com?utm_source=app");
 

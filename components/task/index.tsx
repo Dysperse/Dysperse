@@ -24,7 +24,10 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
-import { normalizeRecurrenceRuleObject } from "./drawer/details";
+import {
+  isValidHttpUrl,
+  normalizeRecurrenceRuleObject,
+} from "./drawer/details";
 
 const ImageViewer = ({ children, image }) => {
   const ref = useRef<BottomSheetModal>();
@@ -130,7 +133,9 @@ export const TaskAttachmentChips = memo(
             (attachment.type === "LINK"
               ? isVideoChatPlatform(attachment.data)
                 ? "Join meeting"
-                : new URL(attachment.data).hostname
+                : isValidHttpUrl(attachment.data)
+                ? new URL(attachment.data).hostname
+                : "Link"
               : attachment.type === "LOCATION"
               ? "Maps"
               : "File")

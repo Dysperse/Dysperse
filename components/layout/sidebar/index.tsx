@@ -563,7 +563,7 @@ const Sidebar = ({
   }, [desktopCollapsed, desktopSlide]);
 
   return (
-    <TourProvider steps={steps} tourKey="sidebarNavigation" >
+    <TourProvider steps={steps} tourKey="sidebarNavigation">
       {desktopCollapsed && (
         <View
           style={{
@@ -592,6 +592,7 @@ const Sidebar = ({
             flexDirection: "row",
             backgroundColor: theme[2],
           },
+          pathname.includes("chrome-extension") && { display: "none" },
           pathname.includes("settings") &&
             breakpoints.md && {
               maxWidth: 0,
