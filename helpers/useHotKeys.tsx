@@ -13,8 +13,11 @@ export const useHotkeys: (
 ) => any =
   Platform.OS === "web" &&
   !(
-    Dimensions.get("window").width === 400 &&
-    Dimensions.get("window").height === 400
+    // for chrome extension
+    (
+      Dimensions.get("window").width === 400 &&
+      Dimensions.get("window").height === 400
+    )
   )
     ? // eslint-disable-next-line @typescript-eslint/no-var-requires
       require("react-hotkeys-hook").useHotkeys
