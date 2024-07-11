@@ -64,6 +64,7 @@ export default function ChromeExtension() {
   const params = useGlobalSearchParams();
   const theme = useColorTheme();
   const { sessionToken } = useUser();
+  const [loading, setLoading] = useState(false)
 
   if (!params.pageData) {
     return <View style={{ flex: 1, backgroundColor: theme[1] }} />;
@@ -72,6 +73,7 @@ export default function ChromeExtension() {
   const pageData = JSON.parse(params.pageData as any);
 
   const handleSaveWebpage = async () => {
+    setLoading(true)
     try {
       await sendApiRequest(
         sessionToken,
@@ -88,8 +90,12 @@ export default function ChromeExtension() {
           }),
         }
       );
+      Toast.show({ type: "", text1: "Saved webpage!" })
     } catch (e) {
       Toast.show({ type: "error" });
+    }
+    finally {
+      setLoading(true)
     }
   };
 
