@@ -41,7 +41,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { AttachStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useCollectionContext } from "../context";
@@ -684,7 +683,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
   return (
     <>
       {id !== "all" && (
-        <AttachStep index={3}>
+        <>
           {breakpoints.md ? (
             <Button
               onPress={handleOpen}
@@ -718,7 +717,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
               icon="ios_share"
             />
           )}
-        </AttachStep>
+        </>
       )}
 
       <BottomSheet

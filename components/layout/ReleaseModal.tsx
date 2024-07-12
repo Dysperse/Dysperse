@@ -70,6 +70,7 @@ const ReleaseModal = memo(() => {
             alignItems: "center",
             padding: 25,
             marginTop: breakpoints.md ? 0 : 70,
+            zIndex: 99,
           }}
         >
           <Pressable

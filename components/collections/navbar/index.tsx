@@ -10,14 +10,12 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { TourPopover, TourProvider } from "@/ui/Tour";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useMemo, useRef } from "react";
 import { Pressable, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
-import { AttachStep, TourStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
@@ -35,54 +33,6 @@ interface CollectionNavbarProps {
   editOrderMode: boolean;
   setEditOrderMode: (value: boolean) => void;
 }
-
-const steps: TourStep[] = [
-  {
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={[
-          "Collections allow you to view tasks in different ways by selecting labels.",
-          "Switch views by clicking the collection name.",
-        ]}
-      />
-    ),
-  },
-  {
-    shape: "circle",
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={[
-          "Here, you can search for all your tasks within this collection.",
-        ]}
-      />
-    ),
-  },
-  {
-    shape: "circle",
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={[
-          "Here, you can customize your collection by reordering labels, hiding completed tasks, and more.",
-        ]}
-      />
-    ),
-  },
-  {
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={[
-          "Share your collection with others here",
-          "Invite others by instantly creating an invite link",
-          "Or, publish your collection as a template to the #dysverse for others to discover",
-        ]}
-      />
-    ),
-  },
-];
 
 const LoadingIndicator = () => {
   const { swrKey } = useCollectionContext();
@@ -240,6 +190,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     !isAll && {
       icon: "label",
       text: "Select labels",
+
       renderer: (props) => (
         <CollectionContext.Provider value={contextValue}>
           <CollectionLabelMenu {...props} />
@@ -315,7 +266,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   );
 
   return (
-    <TourProvider steps={steps} tourKey="collectionNavbar">
+    <>
       {editOrderMode ? (
         <NavbarGradient>
           {menu}
@@ -360,7 +311,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 flex: breakpoints.md ? undefined : 1,
               }}
             >
-              <AttachStep index={0}>
+              <>
                 <MenuPopover
                   menuProps={{
                     rendererProps: { placement: "bottom" },
@@ -406,7 +357,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                   }
                   options={options}
                 />
-              </AttachStep>
+              </>
             </View>
             {!isLoading &&
               (type === "planner" || type === "calendar") &&
@@ -420,9 +371,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
               }}
             >
               <CollectionContext.Provider value={contextValue}>
-                <AttachStep index={1}>
-                  <CollectionSearch />
-                </AttachStep>
+                <CollectionSearch />
                 {!breakpoints.md && <CollectionShareMenu />}
                 {isLoading ? (
                   <View
@@ -435,21 +384,17 @@ const CollectionNavbar = memo(function CollectionNavbar({
                   />
                 ) : (
                   !isReadOnly && (
-                    <AttachStep index={2}>
-                      <MenuPopover
-                        menuRef={menuRef}
-                        closeOnSelect
-                        {...(isReadOnly && { menuProps: { opened: false } })}
-                        containerStyle={{ width: 240 }}
-                        menuProps={{
-                          rendererProps: { placement: "bottom" },
-                        }}
-                        trigger={<IconButton icon="pending" size={40} />}
-                        options={
-                          (isReadOnly ? [] : collectionMenuOptions) as any
-                        }
-                      />
-                    </AttachStep>
+                    <MenuPopover
+                      menuRef={menuRef}
+                      closeOnSelect
+                      {...(isReadOnly && { menuProps: { opened: false } })}
+                      containerStyle={{ width: 240 }}
+                      menuProps={{
+                        rendererProps: { placement: "bottom" },
+                      }}
+                      trigger={<IconButton icon="pending" size={40} />}
+                      options={(isReadOnly ? [] : collectionMenuOptions) as any}
+                    />
                   )
                 )}
                 {breakpoints.md && <CollectionShareMenu />}
@@ -462,7 +407,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
           )}
         </>
       )}
-    </TourProvider>
+    </>
   );
 });
 

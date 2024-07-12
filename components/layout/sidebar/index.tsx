@@ -12,7 +12,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { TourPopover, TourProvider } from "@/ui/Tour";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -35,7 +34,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AttachStep, TourStep } from "react-native-spotlight-tour";
 import Toast from "react-native-toast-message";
 import { useSWRConfig } from "swr";
 import OpenTabsList from "../tabs/carousel";
@@ -178,50 +176,6 @@ const SyncButton = memo(function SyncButton() {
   );
 });
 
-const steps: TourStep[] = [
-  {
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={[
-          "Create tabs to separate things important to you.",
-          "Tabs are synced across all your devices!",
-        ]}
-      />
-    ),
-  },
-  {
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={[
-          "Tap here to open your account settings, trash, and more.",
-          "You can also send us feedback or report a bug here.",
-        ]}
-      />
-    ),
-  },
-  {
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={[
-          "Here, you can toggle the sidebar or focus panel.",
-          "Customize your focus panel with interactive widgets!",
-        ]}
-      />
-    ),
-  },
-  {
-    render: (t) => (
-      <TourPopover
-        step={t}
-        tips={["Here, you can create new tasks, labels, or collections."]}
-      />
-    ),
-  },
-];
-
 export const LogoButton = memo(function LogoButton({
   toggleHidden,
 }: {
@@ -272,25 +226,23 @@ export const LogoButton = memo(function LogoButton({
         containerStyle={{ width: 190, marginLeft: 10, marginTop: 5 }}
         trigger={
           <View style={{ borderRadius: 20, overflow: "hidden" }}>
-            <AttachStep index={1}>
-              <Pressable
-                onPress={() => menuRef.current.open()}
-                android_ripple={{ color: theme[4] }}
-                style={({ pressed, hovered }) => [
-                  {
-                    backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingLeft: 3,
-                    paddingVertical: 10,
-                  },
-                  Platform.OS === "web" && { WebkitAppRegion: "no-drag" },
-                ]}
-              >
-                <Logo size={40} />
-                <Icon style={{ color: theme[11] }}>expand_more</Icon>
-              </Pressable>
-            </AttachStep>
+            <Pressable
+              onPress={() => menuRef.current.open()}
+              android_ripple={{ color: theme[4] }}
+              style={({ pressed, hovered }) => [
+                {
+                  backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingLeft: 3,
+                  paddingVertical: 10,
+                },
+                Platform.OS === "web" && { WebkitAppRegion: "no-drag" },
+              ]}
+            >
+              <Logo size={40} />
+              <Icon style={{ color: theme[11] }}>expand_more</Icon>
+            </Pressable>
           </View>
         }
         options={[
@@ -336,48 +288,46 @@ export const LogoButton = memo(function LogoButton({
         ]}
       />
       <View>
-        <AttachStep index={2}>
-          {breakpoints.md ? (
-            <MenuPopover
-              menuProps={{
-                rendererProps: {
-                  placement: breakpoints.md ? "right" : "bottom",
-                  anchorStyle: { opacity: 0 },
-                },
-              }}
-              containerStyle={{ marginTop: 10, width: 200 }}
-              trigger={
-                <IconButton
-                  size={40}
-                  icon="dock_to_right"
-                  style={{ opacity: 0.9 }}
-                />
-              }
-              options={[
-                {
-                  icon: "dock_to_right",
-                  text: "Sidebar",
-                  callback: toggleHidden,
-                  selected: !desktopCollapsed,
-                },
-                {
-                  icon: "dock_to_left",
-                  text: "Focus panel",
-                  selected: isFocused,
-                  callback: toggleFocus,
-                },
-              ]}
-            />
-          ) : (
-            <IconButton
-              size={40}
-              icon="psychiatry"
-              variant="outlined"
-              style={{ opacity: 0.9 }}
-              onPress={toggleFocus}
-            />
-          )}
-        </AttachStep>
+        {breakpoints.md ? (
+          <MenuPopover
+            menuProps={{
+              rendererProps: {
+                placement: breakpoints.md ? "right" : "bottom",
+                anchorStyle: { opacity: 0 },
+              },
+            }}
+            containerStyle={{ marginTop: 10, width: 200 }}
+            trigger={
+              <IconButton
+                size={40}
+                icon="dock_to_right"
+                style={{ opacity: 0.9 }}
+              />
+            }
+            options={[
+              {
+                icon: "dock_to_right",
+                text: "Sidebar",
+                callback: toggleHidden,
+                selected: !desktopCollapsed,
+              },
+              {
+                icon: "dock_to_left",
+                text: "Focus panel",
+                selected: isFocused,
+                callback: toggleFocus,
+              },
+            ]}
+          />
+        ) : (
+          <IconButton
+            size={40}
+            icon="psychiatry"
+            variant="outlined"
+            style={{ opacity: 0.9 }}
+            onPress={toggleFocus}
+          />
+        )}
       </View>
     </View>
   );
@@ -495,9 +445,7 @@ const Header = memo(function Header() {
         }}
       >
         <HomeButton isHome={isHome} />
-        <AttachStep index={3}>
-          <QuickCreateButton />
-        </AttachStep>
+        <QuickCreateButton />
       </View>
     </View>
   );
@@ -563,7 +511,7 @@ const Sidebar = ({
   }, [desktopCollapsed, desktopSlide]);
 
   return (
-    <TourProvider steps={steps} tourKey="sidebarNavigation">
+    <>
       {desktopCollapsed && (
         <View
           style={{
@@ -643,7 +591,7 @@ const Sidebar = ({
           <OpenTabsList />
         </NativeAnimated.View>
       </Animated.View>
-    </TourProvider>
+    </>
   );
 };
 
