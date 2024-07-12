@@ -19,7 +19,10 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from "@react-navigation/native";
 import {
   createStackNavigator,
   StackNavigationOptions,
@@ -27,14 +30,15 @@ import {
 import { useLocalSearchParams } from "expo-router";
 import {
   cloneElement,
-  memo,
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -564,105 +568,119 @@ const Navbar = ({ navigation, title, icon = "close", handleClose }) => {
   );
 };
 
-const Navigator = memo(({ maxHeight, handleClose, collection }: any) => {
-  const theme = useColorTheme();
-  const screenOptions = useMemo<StackNavigationOptions>(
-    () => ({
-      cardStyleInterpolator: forHorizontalIOS,
-      detachPreviousScreen: false,
-      headerShown: true,
-      freezeOnBlur: true,
-      gestureEnabled: true,
-      headerMode: "float",
-      cardStyle: {
-        height: "100%",
-        width: "100%",
-        backgroundColor: theme[2],
-      },
-      header: ({ navigation }) => (
-        <Navbar
-          title="Share"
-          navigation={navigation}
-          handleClose={handleClose}
-        />
-      ),
-    }),
-    [theme, handleClose]
-  );
+const Navigator = forwardRef(
+  ({ maxHeight, handleClose, collection }: any, ref) => {
+    const theme = useColorTheme();
+    const screenOptions = useMemo<StackNavigationOptions>(
+      () => ({
+        cardStyleInterpolator: forHorizontalIOS,
+        detachPreviousScreen: false,
+        headerShown: true,
+        freezeOnBlur: true,
+        gestureEnabled: true,
+        headerMode: "float",
+        cardStyle: {
+          height: "100%",
+          width: "100%",
+          backgroundColor: theme[2],
+        },
+        header: ({ navigation }) => (
+          <Navbar
+            title="Share"
+            navigation={navigation}
+            handleClose={handleClose}
+          />
+        ),
+      }),
+      [theme, handleClose]
+    );
 
-  return (
-    <View
-      style={{
-        height: "100%",
-        width: "100%",
-      }}
-    >
-      <NavigationContainer
-        onStateChange={(state) => {
-          const height = state.routes[state.index].name === "share" ? 500 : 650;
-          maxHeight.value = height;
-        }}
-        documentTitle={{ enabled: false }}
-        independent={true}
-        theme={{
-          colors: {
-            background: theme[3],
-            card: theme[2],
-            primary: theme[2],
-            border: theme[6],
-            text: theme[11],
-            notification: theme[9],
-          },
-          dark: true,
+    const r = useRef<NavigationContainerRef<any>>(null);
+
+    useImperativeHandle(ref, () => ({
+      open: () => {
+        r.current.navigate("publish");
+      },
+    }));
+
+    return (
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
         }}
       >
-        <Stack.Navigator screenOptions={screenOptions}>
-          <Stack.Screen
-            name="share"
-            component={({ navigation }) => (
-              <BottomSheetScrollView>
-                <BottomSheetScrollView contentContainerStyle={{ padding: 20 }}>
-                  <CollectionMembers
-                    mutateList={collection.mutate}
-                    navigation={navigation}
-                    collection={collection}
-                  />
+        <NavigationContainer
+          onStateChange={(state) => {
+            const height =
+              state.routes[state.index].name === "share" ? 500 : 650;
+            maxHeight.value = height;
+          }}
+          ref={r}
+          documentTitle={{ enabled: false }}
+          independent={true}
+          theme={{
+            colors: {
+              background: theme[3],
+              card: theme[2],
+              primary: theme[2],
+              border: theme[6],
+              text: theme[11],
+              notification: theme[9],
+            },
+            dark: true,
+          }}
+        >
+          <Stack.Navigator screenOptions={screenOptions}>
+            <Stack.Screen
+              name="share"
+              component={({ navigation }) => (
+                <BottomSheetScrollView>
+                  <BottomSheetScrollView
+                    contentContainerStyle={{ padding: 20 }}
+                  >
+                    <CollectionMembers
+                      mutateList={collection.mutate}
+                      navigation={navigation}
+                      collection={collection}
+                    />
+                  </BottomSheetScrollView>
                 </BottomSheetScrollView>
-              </BottomSheetScrollView>
-            )}
-          />
-          <Stack.Screen
-            name="publish"
-            component={(props) => (
-              <CollectionInfo {...props} collection={collection} />
-            )}
-            options={{
-              header: ({ navigation }) => (
-                <Navbar
-                  title={collection.public ? "Publish" : "Edit collection"}
-                  navigation={navigation}
-                  icon="arrow_back_ios_new"
-                  handleClose={handleClose}
-                />
-              ),
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </View>
-  );
-});
+              )}
+            />
+            <Stack.Screen
+              name="publish"
+              component={(props) => (
+                <CollectionInfo {...props} collection={collection} />
+              )}
+              options={{
+                header: ({ navigation }) => (
+                  <Navbar
+                    title={collection.public ? "Publish" : "Edit collection"}
+                    navigation={navigation}
+                    icon="arrow_back_ios_new"
+                    handleClose={handleClose}
+                  />
+                ),
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    );
+  }
+);
 
-export const CollectionShareMenu = memo(function CollectionShareMenu() {
-  const ref = useRef<BottomSheetModal>(null);
+export const CollectionShareMenu = forwardRef((props, ref) => {
+  const sheetRef = useRef<BottomSheetModal>(null);
   const { id } = useLocalSearchParams();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const maxHeight = useSharedValue(500);
 
-  const handleOpen = useCallback(() => ref.current?.present(), []);
+  const handleOpen = useCallback(() => sheetRef.current?.present(), []);
   const handleClose = useCallback(() => {
-    ref.current?.close({
+    sheetRef.current?.close({
       overshootClamping: true,
       damping: 20,
       stiffness: 400,
@@ -679,6 +697,19 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
   }));
 
   const collection = useCollectionContext();
+
+  const navigatorRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    openEdit: () => {
+      handleOpen();
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => {
+          navigatorRef.current?.open();
+        }, 100);
+      });
+    },
+  }));
 
   return (
     <>
@@ -722,7 +753,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
 
       <BottomSheet
         onClose={handleClose}
-        sheetRef={ref}
+        sheetRef={sheetRef}
         snapPoints={["100%"]}
         maxWidth="100%"
         handleComponent={() => null}
@@ -756,6 +787,7 @@ export const CollectionShareMenu = memo(function CollectionShareMenu() {
           >
             <Pressable style={{ flex: 1 }}>
               <Navigator
+                ref={navigatorRef}
                 maxHeight={maxHeight}
                 handleClose={handleClose}
                 collection={collection}

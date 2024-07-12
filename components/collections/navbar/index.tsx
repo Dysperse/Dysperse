@@ -59,6 +59,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const { id, mode } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
 
+  const shareMenuRef = useRef(null);
+
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
 
@@ -153,6 +155,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
       icon: "lock_open",
       text: "Lock",
       callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
+    },
+    !isAll && {
+      icon: "edit",
+      text: "Edit",
+      callback: () => shareMenuRef.current?.openEdit(),
     },
     !isAll && {
       icon: "remove_selection",
@@ -372,7 +379,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
             >
               <CollectionContext.Provider value={contextValue}>
                 <CollectionSearch />
-                {!breakpoints.md && <CollectionShareMenu />}
+                {!breakpoints.md && <CollectionShareMenu ref={shareMenuRef} />}
                 {isLoading ? (
                   <View
                     style={{
@@ -397,7 +404,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     />
                   )
                 )}
-                {breakpoints.md && <CollectionShareMenu />}
+                {breakpoints.md && <CollectionShareMenu ref={shareMenuRef} />}
               </CollectionContext.Provider>
             </View>
           </NavbarGradient>
