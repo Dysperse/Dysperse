@@ -12,7 +12,7 @@ import React, { cloneElement, useCallback, useState } from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RRule } from "rrule";
-import { DueDatePicker, RecurrencePicker } from ".";
+import { defaultRecurrenceOptions, DueDatePicker, RecurrencePicker } from ".";
 
 function Header({ title, handleClose }: { title: string; handleClose: any }) {
   const theme = useColorTheme();
@@ -62,6 +62,7 @@ function TaskDatePicker({
   dueDateOnly,
   title,
   sheetRef: _sheetRef,
+  defaultRecurrenceOptions,
 }: {
   defaultView?: "date" | "recurrence";
   setValue: any;
@@ -70,6 +71,7 @@ function TaskDatePicker({
   dueDateOnly?: boolean;
   title?: string;
   sheetRef?: React.MutableRefObject<BottomSheetModal>;
+  defaultRecurrenceOptions?: defaultRecurrenceOptions;
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -185,7 +187,11 @@ function TaskDatePicker({
                   value={dueDate}
                 />
               ) : (
-                <RecurrencePicker setValue={setValue} value={recurrence} />
+                <RecurrencePicker
+                  defaultRecurrenceOptions={defaultRecurrenceOptions}
+                  setValue={setValue}
+                  value={recurrence}
+                />
               )}
             </BottomSheetScrollView>
           </Pressable>

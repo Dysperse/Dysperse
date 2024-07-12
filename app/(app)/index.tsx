@@ -5,6 +5,7 @@ import { Greeting } from "@/components/home/greeting";
 import { PlanDayPrompt } from "@/components/home/plan-day-trigger";
 import { styles } from "@/components/home/styles";
 import { TodayText } from "@/components/home/today";
+import ReleaseModal from "@/components/layout/ReleaseModal";
 import ContentWrapper from "@/components/layout/content";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
@@ -129,9 +130,14 @@ function Page() {
         )}
         <ScrollView
           scrollEnabled={!breakpoints.md}
-          contentContainerStyle={breakpoints.md && { height, flex: 1 }}
+          contentContainerStyle={[
+            breakpoints.md && { height, flex: 1 },
+            { position: "relative" },
+          ]}
           style={{ marginTop: insets.top }}
         >
+          <ReleaseModal />
+
           {!breakpoints.md && <MenuButton />}
           {view === "edit" ? (
             <EditWallpaper />

@@ -61,11 +61,6 @@ export const PublishCollection = ({ collection, navigation }: any) => {
               />
             </View>
           </ListItemButton>
-          <ListItemButton onPress={() => navigation.navigate("publish")}>
-            <Avatar icon="format_paint" size={40} disabled />
-            <ListItemText primary="Template customization" />
-            <Icon>arrow_forward_ios</Icon>
-          </ListItemButton>
         </>
       ) : (
         <ListItemButton disabled>
@@ -89,6 +84,15 @@ export const PublishCollection = ({ collection, navigation }: any) => {
           </Button>
         </ListItemButton>
       )}
+      <ListItemButton onPress={() => navigation.navigate("publish")}>
+        <Avatar icon="format_paint" size={40} disabled />
+        <ListItemText
+          primary={
+            data?.public ? "Template customization" : "Customize collection"
+          }
+        />
+        <Icon>arrow_forward_ios</Icon>
+      </ListItemButton>
     </View>
   );
 };

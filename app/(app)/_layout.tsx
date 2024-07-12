@@ -50,7 +50,6 @@ import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import LoadingErrors from "../../components/layout/LoadingErrors";
-import ReleaseModal from "../../components/layout/ReleaseModal";
 import SelectionNavbar from "../../components/layout/SelectionNavbar";
 
 dayjs.extend(customParseFormat);
@@ -270,7 +269,6 @@ export default function AppLayout() {
                             breakpoints.md ? { flex: 1 } : { width: "100%" },
                           ]}
                         >
-                          <ReleaseModal />
                           <LoadingErrors />
                           <SelectionNavbar />
                           {breakpoints.md ? (

@@ -75,11 +75,13 @@ export const CollectionInfo = ({ navigation, collection }) => {
 
   return data ? (
     <BottomSheetScrollView contentContainerStyle={{ padding: 30 }}>
-      <Alert
-        title="Heads up!"
-        subtitle="Templates are visible to the public, including non-users. Copied collections will preserve the same overall structure. Templates that violate our values will be removed."
-        emoji="26A0"
-      />
+      {collection.public && (
+        <Alert
+          title="Heads up!"
+          subtitle="Templates are visible to the public, including non-users. Copied collections will preserve the same overall structure. Templates that violate our values will be removed."
+          emoji="26A0"
+        />
+      )}
       <View
         style={{
           backgroundColor: theme[3],

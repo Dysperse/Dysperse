@@ -640,7 +640,7 @@ const Navigator = memo(({ maxHeight, handleClose, collection }: any) => {
             options={{
               header: ({ navigation }) => (
                 <Navbar
-                  title="Publish"
+                  title={collection.public ? "Publish" : "Edit collection"}
                   navigation={navigation}
                   icon="arrow_back_ios_new"
                   handleClose={handleClose}

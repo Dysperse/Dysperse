@@ -315,13 +315,18 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
     </View>
   );
 };
+export type defaultRecurrenceOptions = {
+  dtstart?: string;
+};
 
 export function RecurrencePicker({
   value,
   setValue,
+  defaultRecurrenceOptions,
 }: {
   value: any;
   setValue: any;
+  defaultRecurrenceOptions?: defaultRecurrenceOptions;
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -330,10 +335,13 @@ export function RecurrencePicker({
     (): Partial<Options> => ({
       freq: RRule.WEEKLY,
       byweekday: [dayjs().day() - 1],
-      dtstart: dayjs().utc().startOf("day").toDate(),
+      dtstart: dayjs(defaultRecurrenceOptions?.dtstart)
+        .utc()
+        .startOf("day")
+        .toDate(),
       wkst: session?.space?.space?.weekStart === "SUNDAY" ? RRule.SU : RRule.MO,
     }),
-    [session]
+    [session, defaultRecurrenceOptions]
   );
 
   const recurrenceRule = normalizeRecurrenceRuleObject(
@@ -751,6 +759,19 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
   );
 });
 
+const DatePicker = memo(function DatePicker({ setValue, watch }: any) {
+  const date = watch("date");
+  return (
+    <TaskDatePicker
+      setValue={setValue}
+      watch={watch}
+      defaultRecurrenceOptions={{
+        dtstart: date,
+      }}
+    />
+  );
+});
+
 function Footer({
   nameRef,
   labelMenuRef,
@@ -793,7 +814,7 @@ function Footer({
         />
       )}
       <PinTask watch={watch} control={control} />
-      <TaskDatePicker setValue={setValue} watch={watch} />
+      <DatePicker setValue={setValue} watch={watch} />
       <CreateTaskLabelInput
         watch={watch}
         collectionId={collectionId}
