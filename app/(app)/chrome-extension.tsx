@@ -91,7 +91,7 @@ export default function ChromeExtension() {
           }),
         }
       );
-      Toast.show({ type: "", text1: "Saved webpage!" });
+      Toast.show({ type: "success", text1: "Saved webpage!" });
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
