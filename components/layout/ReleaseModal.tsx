@@ -59,7 +59,7 @@ const ReleaseModal = memo(() => {
   const breakpoints = useResponsiveBreakpoints();
   return (
     <>
-      {(updateExists || true) && (
+      {updateExists && (
         <View
           style={{
             position: "absolute",
