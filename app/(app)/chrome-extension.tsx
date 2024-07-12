@@ -11,7 +11,7 @@ import { Portal } from "@gorhom/portal";
 import dayjs from "dayjs";
 import { useGlobalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Linking, View } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function Branding() {
@@ -102,6 +102,11 @@ export default function ChromeExtension() {
   return (
     <Portal>
       <View
+        {...(Platform.OS === "web" && {
+          onContextMenu: () => {
+            return false;
+          },
+        })}
         style={{
           position: "absolute",
           top: 0,
