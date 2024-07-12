@@ -10,6 +10,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import { Portal } from "@gorhom/portal";
 import dayjs from "dayjs";
 import { useGlobalSearchParams } from "expo-router";
+import { useState } from "react";
 import { Linking, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -64,7 +65,7 @@ export default function ChromeExtension() {
   const params = useGlobalSearchParams();
   const theme = useColorTheme();
   const { sessionToken } = useUser();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   if (!params.pageData) {
     return <View style={{ flex: 1, backgroundColor: theme[1] }} />;
@@ -73,7 +74,7 @@ export default function ChromeExtension() {
   const pageData = JSON.parse(params.pageData as any);
 
   const handleSaveWebpage = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       await sendApiRequest(
         sessionToken,
@@ -90,12 +91,11 @@ export default function ChromeExtension() {
           }),
         }
       );
-      Toast.show({ type: "", text1: "Saved webpage!" })
+      Toast.show({ type: "", text1: "Saved webpage!" });
     } catch (e) {
       Toast.show({ type: "error" });
-    }
-    finally {
-      setLoading(true)
+    } finally {
+      setLoading(true);
     }
   };
 
@@ -130,6 +130,7 @@ export default function ChromeExtension() {
             height={90}
             onPress={handleSaveWebpage}
             containerStyle={{ borderRadius: 99 }}
+            isLoading={loading}
           >
             <Icon size={40}>bookmark</Icon>
             <ButtonText weight={900} style={{ fontSize: 20 }}>
