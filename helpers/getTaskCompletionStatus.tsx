@@ -6,8 +6,9 @@ export const getTaskCompletionStatus = (task, iteration): boolean => {
       iteration &&
       task.completionInstances.find(
         (instance) =>
+          dayjs(instance.iteration).isValid() &&
           dayjs(instance.iteration).toISOString() ===
-          dayjs(iteration.toString()).toISOString()
+            dayjs(iteration.toString()).toISOString()
       )
     );
   } else {

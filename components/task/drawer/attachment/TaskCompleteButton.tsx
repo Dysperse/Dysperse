@@ -17,30 +17,34 @@ export function TaskCompleteButton() {
   const { task, updateTask, mutateList, isReadOnly, dateRange } =
     useTaskDrawerContext();
   const green = useColor("green");
+  const { animatedIndex } = useBottomSheet();
 
   const isCompleted = getTaskCompletionStatus(task, dateRange);
-
-  const { animatedIndex } = useBottomSheet();
 
   const handlePress = async () => {
     try {
       if (task.recurrenceRule && !dateRange) return;
       let newArr = isCompleted ? [] : [...task.completionInstances, true];
-      updateTask("completionInstances", newArr, false);
-      let iteration = null;
 
       if (task.recurrenceRule) {
-        iteration = dateRange;
         newArr = isCompleted
           ? task.completionInstances.filter(
               (instance) =>
                 dayjs(instance.iteration).toISOString() !==
-                dayjs(task.recurrenceDay).toISOString()
+                dayjs(dateRange).toISOString()
             )
-          : [...task.completionInstances, { iteration }];
+          : [
+              ...task.completionInstances,
+              {
+                completedAt: dayjs().toISOString(),
+                iteration: dateRange,
+                taskId: task.id,
+              },
+            ];
       }
+      updateTask("completionInstances", newArr, false);
 
-      await sendApiRequest(
+      sendApiRequest(
         sessionToken,
         isCompleted ? "DELETE" : "POST",
         "space/entity/complete-task",
@@ -48,8 +52,8 @@ export function TaskCompleteButton() {
         {
           body: JSON.stringify({
             id: task.id,
-            date: new Date().toISOString(),
-            ...(iteration && { iteration }),
+            date: dayjs().toISOString(),
+            ...(task.recurrenceRule && { iteration: dateRange }),
           }),
         }
       );
@@ -61,6 +65,7 @@ export function TaskCompleteButton() {
         });
       }
     } catch (e) {
+      console.error(e);
       Toast.show({
         type: "error",
         text1: "Something went wrong. Please try again later.",

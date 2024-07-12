@@ -20,7 +20,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
-import { ReactElement, memo, useMemo, useRef, useState } from "react";
+import { ReactElement, memo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -282,8 +282,6 @@ export default function Page() {
       break;
   }
 
-  const t = useMemo(() => content, [type, data, content, editOrderMode]);
-
   return (
     <CollectionContext.Provider
       value={{ data, mutate, error, type, access: data?.access, swrKey }}
@@ -294,7 +292,7 @@ export default function Page() {
             editOrderMode={editOrderMode}
             setEditOrderMode={setEditOrderMode}
           />
-          {t}
+          {content}
         </ContentWrapper>
       ) : (
         <Loading error={error} />
