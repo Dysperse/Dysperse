@@ -123,7 +123,6 @@ const SelectionButton = memo(function SelectionButton({
           style={{
             height: 4,
             flexDirection: "row",
-            width: "100%",
             gap: 3,
             marginBottom: -6,
             marginTop: 1,

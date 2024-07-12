@@ -6,7 +6,7 @@ export const getTaskCompletionStatus = (task, iteration): boolean => {
       iteration &&
       task.completionInstances.find(
         (instance) =>
-          dayjs(instance.iteration).toISOString() !==
+          dayjs(instance.iteration).toISOString() ===
           dayjs(iteration.toString()).toISOString()
       )
     );

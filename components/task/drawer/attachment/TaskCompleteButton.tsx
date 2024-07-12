@@ -18,7 +18,6 @@ export function TaskCompleteButton() {
     useTaskDrawerContext();
   const green = useColor("green");
 
-  console.log(dateRange);
   const isCompleted = getTaskCompletionStatus(task, dateRange);
 
   const { animatedIndex } = useBottomSheet();
@@ -34,9 +33,9 @@ export function TaskCompleteButton() {
         iteration = dateRange;
         newArr = isCompleted
           ? task.completionInstances.filter(
-              (instance: string) =>
-                dayjs(instance).toISOString() !==
-                dayjs(dateRange[0]).toISOString()
+              (instance) =>
+                dayjs(instance.iteration).toISOString() !==
+                dayjs(task.recurrenceDay).toISOString()
             )
           : [...task.completionInstances, { iteration }];
       }
