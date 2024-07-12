@@ -1,5 +1,6 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text, { getFontName } from "@/ui/Text";
@@ -55,7 +56,7 @@ const ReleaseModal = memo(() => {
     session?.user?.lastReleaseVersionViewed !== data?.[0]?.id;
 
   const [open, setOpen] = useState(false);
-
+  const breakpoints = useResponsiveBreakpoints();
   return (
     <>
       {(updateExists || true) && (
@@ -68,6 +69,7 @@ const ReleaseModal = memo(() => {
             justifyContent: "center",
             alignItems: "center",
             padding: 25,
+            marginTop: breakpoints.md ? 0 : 70,
           }}
         >
           <Pressable

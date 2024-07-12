@@ -43,10 +43,8 @@ export const styles = StyleSheet.create({
   settingsButton: {
     position: "absolute",
     top: 0,
-    right: 0,
-    margin: 20,
+    right: 10,
     zIndex: 1,
-    opacity: 0.7,
   },
   patternCard: {
     width: 100,

@@ -61,10 +61,10 @@ const CustomizeButton = ({ view, setView }) => {
 
   return (
     <IconButton
-      style={[styles.settingsButton, { marginTop: insets.top + 15 }]}
+      style={[styles.settingsButton, { marginTop: insets.top + 20 }]}
       icon={view === "edit" ? "check" : "palette"}
       size={55}
-      variant={view === "edit" ? "filled" : "text"}
+      variant={view === "edit" ? "filled" : "outlined"}
       onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
     />
   );
@@ -125,9 +125,6 @@ function Page() {
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
-        {Platform.OS === "web" && (
-          <CustomizeButton view={view} setView={setView} />
-        )}
         <ScrollView
           scrollEnabled={!breakpoints.md}
           contentContainerStyle={[
@@ -136,8 +133,10 @@ function Page() {
           ]}
           style={{ marginTop: insets.top }}
         >
+          {Platform.OS === "web" && (
+            <CustomizeButton view={view} setView={setView} />
+          )}
           <ReleaseModal />
-
           {!breakpoints.md && <MenuButton />}
           {view === "edit" ? (
             <EditWallpaper />
