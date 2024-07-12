@@ -95,7 +95,7 @@ export default function ChromeExtension() {
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
