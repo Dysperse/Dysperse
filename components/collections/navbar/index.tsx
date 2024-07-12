@@ -193,7 +193,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
       renderer: (props) => (
         <CollectionContext.Provider value={contextValue}>
-          <CollectionLabelMenu {...props} />
+          <CollectionLabelMenu menuRef={menuRef} {...props} />
         </CollectionContext.Provider>
       ),
     },

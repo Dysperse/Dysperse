@@ -148,6 +148,7 @@ const LabelPicker = memo(function LabelPicker({
   label,
   setLabel,
   onClose,
+  onOpen,
   autoFocus = true,
   multiple = false,
   hideBack = false,
@@ -160,6 +161,7 @@ const LabelPicker = memo(function LabelPicker({
   label?: string | any[] | { id: string; name: string; emoji: string };
   setLabel: (label: string | string[]) => void;
   onClose?: any;
+  onOpen?: any;
   autoFocus?: boolean;
   multiple?: boolean;
   hideBack?: boolean;
@@ -175,6 +177,7 @@ const LabelPicker = memo(function LabelPicker({
   const searchRef = useRef(null);
 
   const handleOpen = useCallback(() => {
+    onOpen?.();
     ref.current?.present();
   }, [ref]);
 

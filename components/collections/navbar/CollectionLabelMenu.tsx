@@ -8,7 +8,11 @@ import Toast from "react-native-toast-message";
 import LabelPicker from "../../labels/picker";
 import { useCollectionContext } from "../context";
 
-export const CollectionLabelMenu = memo(function CollectionLabelMenu() {
+export const CollectionLabelMenu = memo(function CollectionLabelMenu({
+  menuRef,
+}: {
+  menuRef: any;
+}) {
   const { data, mutate } = useCollectionContext();
   const { session } = useSession();
   const [labels, setLabels] = useState(data?.labels?.map((i) => i.id) || []);
@@ -36,6 +40,9 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu() {
     <LabelPicker
       multiple
       hideBack
+      onOpen={() => {
+        menuRef.current?.close();
+      }}
       sheetProps={
         {
           // enablePanDownToClose: false,
