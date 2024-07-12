@@ -5,6 +5,7 @@ import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import MenuPopover from "@/ui/MenuPopover";
 import { Portal } from "@gorhom/portal";
@@ -24,12 +25,15 @@ function Branding() {
 
       <MenuPopover
         trigger={
-          <ProfilePicture
-            name={session.user?.profile?.name || ""}
-            image={session.user?.profile?.picture}
-            size={35}
-            style={{}}
-          />
+          <IconButton size={35}>
+            <ProfilePicture
+              name={session.user?.profile?.name || ""}
+              image={session.user?.profile?.picture}
+              size={35}
+              disabled
+              style={{}}
+            />
+          </IconButton>
         }
         menuProps={{
           style: { marginLeft: "auto" },
