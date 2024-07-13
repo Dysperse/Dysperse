@@ -226,6 +226,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
         backgroundStyle={{ backgroundColor: "transparent" }}
         handleComponent={() => null}
         maxBackdropOpacity={0.1}
+        enableContentPanningGesture={!breakpoints.md}
         {...(breakpoints.md && {
           maxBackdropOpacity: 0.05,
           animationConfigs: {
