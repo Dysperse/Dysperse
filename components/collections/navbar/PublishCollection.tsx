@@ -17,7 +17,7 @@ export const PublishCollection = ({ collection, navigation }: any) => {
 
   const updateCollection = async (key, value) => {
     try {
-      mutate({ ...data, [key]: value });
+      mutate({ ...data, [key]: value }, { revalidate: false });
       const res = await sendApiRequest(
         session,
         "PUT",
