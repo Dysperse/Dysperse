@@ -1,4 +1,3 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -11,6 +10,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import Constants from "expo-constants";
@@ -352,7 +352,7 @@ export default function Page() {
   };
 
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <Text style={settingStyles.title}>Notifications</Text>
       <Text weight={600}>
         Here, you can control how much you want to be{" "}
@@ -444,6 +444,6 @@ export default function Page() {
           ))}
         </View>
       ))}
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

@@ -1,5 +1,4 @@
 import { createTab } from "@/components/layout/openTab";
-import { SettingsLayout } from "@/components/settings/layout";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -12,6 +11,7 @@ import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -278,7 +278,7 @@ export default function Page() {
   const theme = useColorTheme();
 
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <View
         style={[
           { flex: 1 },
@@ -365,6 +365,6 @@ export default function Page() {
           </View>
         )}
       </View>
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

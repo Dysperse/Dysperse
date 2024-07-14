@@ -1,8 +1,8 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
 import Icon from "@/ui/Icon";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -98,7 +98,7 @@ export default function Page() {
   const { data } = useSWR(["space/integrations"]);
 
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <Text style={settingStyles.title}>Integrations</Text>
       <Text style={{ fontSize: 17, opacity: 0.7 }}>
         Introducing more chaos. Continue using all your favorite tools,
@@ -132,6 +132,6 @@ export default function Page() {
         <Icon>check</Icon>
       </Pressable>
       <AllIntegrations connected={data} />
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

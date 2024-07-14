@@ -1,4 +1,3 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import themes from "@/components/themes.json";
 import { useUser } from "@/context/useUser";
@@ -10,6 +9,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
@@ -288,7 +288,7 @@ export default function Page() {
   const themeText = themes[session?.user?.profile?.theme || "mint"];
 
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <Text style={settingStyles.title}>Appearance</Text>
 
       <Text style={settingStyles.heading}>Color</Text>
@@ -399,6 +399,6 @@ export default function Page() {
             </Icon>
           </ListItemButton>
         ))}
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

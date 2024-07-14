@@ -1,4 +1,3 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -7,6 +6,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -83,7 +83,7 @@ export default function Page() {
   };
 
   return (
-    <SettingsLayout hideBack={!breakpoints.md}>
+    <SettingsScrollView>
       <View style={{ flexDirection: "row" }}>
         <Button
           variant="outlined"
@@ -216,6 +216,6 @@ export default function Page() {
           </View>
         </View>
       )}
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

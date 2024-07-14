@@ -1,4 +1,3 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -6,6 +5,7 @@ import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -154,7 +154,7 @@ export default function Page() {
   };
 
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <Text style={settingStyles.title}>Profile</Text>
       <View style={{ flexDirection: "row" }}>
         <Chip label="Visible to others" icon="visibility" />
@@ -237,6 +237,6 @@ export default function Page() {
           <Icon>check</Icon>
         </Button>
       </View>
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

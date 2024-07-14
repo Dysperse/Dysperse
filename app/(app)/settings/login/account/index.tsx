@@ -1,4 +1,3 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -10,6 +9,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -229,7 +229,7 @@ function EmailSection() {
 
 export default function Page() {
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <Text style={settingStyles.title}>Account</Text>
       <EmailSection />
       <TwoFactorAuthSection />
@@ -239,6 +239,6 @@ export default function Page() {
         title="More coming soon"
         subtitle="We're improving our defenses. Stay tuned!"
       />
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

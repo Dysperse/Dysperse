@@ -1,7 +1,7 @@
 import { collectionViews } from "@/components/layout/command-palette/list";
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import Divider from "@/ui/Divider";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
@@ -87,7 +87,7 @@ export default function Page() {
     },
   ];
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <ScrollView>
         <Text style={settingStyles.title}>Shortcuts</Text>
         {shortcuts.map((group, index) => (
@@ -132,6 +132,6 @@ export default function Page() {
           </View>
         ))}
       </ScrollView>
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

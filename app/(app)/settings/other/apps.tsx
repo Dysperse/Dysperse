@@ -1,10 +1,10 @@
 import PWAInstallerPrompt from "@/components/layout/PWAInstaller";
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { Avatar } from "@/ui/Avatar";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text, { getFontName } from "@/ui/Text";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -46,7 +46,7 @@ export default function Page() {
   };
 
   return (
-    <SettingsLayout>
+    <SettingsScrollView>
       <Text style={settingStyles.title}>Download</Text>
       <Text>
         Stay organized. Anywhere. Download #dysperse on all your favorite
@@ -168,6 +168,6 @@ export default function Page() {
             )
         )}
       </View>
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

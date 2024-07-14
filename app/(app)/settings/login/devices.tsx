@@ -1,4 +1,3 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -9,6 +8,7 @@ import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import ListItemText from "@/ui/ListItemText";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useDarkMode } from "@/ui/color";
@@ -187,7 +187,7 @@ export default function Page() {
   };
 
   return (
-    <SettingsLayout noScroll>
+    <SettingsScrollView noScroll>
       {Array.isArray(data) ? (
         <FlashList
           estimatedItemSize={330}
@@ -230,6 +230,6 @@ export default function Page() {
           {error ? <ErrorAlert /> : <Spinner />}
         </View>
       )}
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }

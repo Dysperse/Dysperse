@@ -1,9 +1,9 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { CameraView, useCameraPermissions } from "expo-camera";
@@ -39,7 +39,7 @@ export default function Page() {
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
-      <SettingsLayout noScroll>
+      <SettingsScrollView>
         <View style={[styles.container, { alignItems: "center", gap: 10 }]}>
           <Text style={{ textAlign: "center", fontSize: 20 }} weight={700}>
             We need your permission to show the camera
@@ -53,7 +53,7 @@ export default function Page() {
             large
           />
         </View>
-      </SettingsLayout>
+      </SettingsScrollView>
     );
   }
 
@@ -95,7 +95,7 @@ export default function Page() {
   };
 
   return (
-    <SettingsLayout noScroll hideBack>
+    <SettingsScrollView>
       <View style={{ height: height + insets.top + insets.bottom }}>
         <View
           style={{
@@ -157,7 +157,7 @@ export default function Page() {
           </View>
         </View>
       </View>
-    </SettingsLayout>
+    </SettingsScrollView>
   );
 }
 

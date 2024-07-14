@@ -1,15 +1,10 @@
 import { useSession } from "@/context/AuthProvider";
-import { useUser } from "@/context/useUser";
-import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Divider from "@/ui/Divider";
-import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -20,8 +15,8 @@ import {
   Linking,
   Platform,
   StyleSheet,
-  View,
   useWindowDimensions,
+  View,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -48,11 +43,12 @@ const styles = StyleSheet.create({
   sectionItem: { borderRadius: 99 },
 });
 
-function SettingsSidebar() {
+export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const theme = useColorTheme();
+  const { height } = useWindowDimensions();
   const { signOut } = useSession();
 
   const [search, setSearch] = useState("");
@@ -224,9 +220,12 @@ function SettingsSidebar() {
       ),
     }));
 
-  return (
+  return !breakpoints.md && !forceShow ? null : (
     <ScrollView
-      style={{ maxHeight: "100%" }}
+      style={{
+        maxHeight: height - 85,
+        maxWidth: breakpoints.md ? 200 : undefined,
+      }}
       contentContainerStyle={{
         paddingVertical: breakpoints.md ? 50 : 0,
         paddingBottom: 20 + insets.bottom,
@@ -353,137 +352,5 @@ function SettingsSidebar() {
         </View>
       ))}
     </ScrollView>
-  );
-}
-
-export function SettingsLayout({
-  children,
-  hideBack,
-  noScroll = false,
-}: {
-  children?: React.ReactNode;
-  hideBack?: boolean;
-  noScroll?: boolean;
-}) {
-  const { session, error } = useUser();
-  const { height } = useWindowDimensions();
-  const breakpoints = useResponsiveBreakpoints();
-  const insets = useSafeAreaInsets();
-  const pathname = usePathname();
-  const isHome = pathname === "/settings";
-  const theme = useColorTheme();
-
-  const handleBack = () => {
-    if (router.canGoBack()) return router.back();
-    router.replace(isHome || breakpoints.md ? "/" : "/settings");
-  };
-
-  useHotkeys("esc", handleBack, {
-    enabled: breakpoints.md,
-    ignoreEventWhen: () =>
-      document.querySelectorAll('[aria-modal="true"]').length > 0,
-  });
-
-  const ScrollComponent = (props) =>
-    noScroll ? (
-      <View
-        {...props}
-        style={{
-          flex: 1,
-          height,
-          paddingHorizontal: hideBack ? 0 : 20,
-        }}
-      />
-    ) : (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingVertical: hideBack ? 0 : 50,
-          paddingTop: breakpoints.md ? 50 : 20,
-          paddingHorizontal: hideBack ? 0 : 20,
-        }}
-        {...props}
-      />
-    );
-
-  return session ? (
-    <View
-      style={[
-        {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: theme[2],
-        },
-        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-      ]}
-    >
-      {!breakpoints.md && !hideBack && (
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            margin: 20,
-            marginTop: insets.top + 20,
-            zIndex: 99,
-            justifyContent: "space-between",
-          }}
-        >
-          <IconButton
-            variant="outlined"
-            onPress={handleBack}
-            size={55}
-            icon="arrow_back_ios_new"
-          />
-        </View>
-      )}
-      <View
-        style={{
-          maxHeight: height,
-          flexDirection: "row",
-          maxWidth: 900,
-          width: "100%",
-          marginHorizontal: "auto",
-          gap: 40,
-          flex: 1,
-        }}
-      >
-        {(isHome || breakpoints.md || !children) && (
-          <View style={{ width: breakpoints.md ? 200 : "100%" }}>
-            <SettingsSidebar />
-          </View>
-        )}
-        <ScrollComponent>{children}</ScrollComponent>
-      </View>
-      {breakpoints.md && (
-        <View
-          style={{
-            position: "absolute",
-            right: 0,
-            top: 0,
-            margin: 50,
-            marginRight: 100,
-            gap: 5,
-            alignItems: "center",
-          }}
-        >
-          <IconButton
-            icon="close"
-            variant="filled"
-            size={55}
-            onPress={handleBack}
-          />
-          <Text variant="eyebrow">ESC</Text>
-        </View>
-      )}
-    </View>
-  ) : error ? (
-    <View>
-      <ErrorAlert />
-    </View>
-  ) : (
-    <Spinner />
   );
 }

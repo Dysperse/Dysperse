@@ -1,4 +1,3 @@
-import { SettingsLayout } from "@/components/settings/layout";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -10,6 +9,7 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
+import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -549,7 +549,7 @@ export default function Page() {
 
   return (
     <FormProvider {...methods}>
-      <SettingsLayout hideBack>
+      <SettingsScrollView hideBack>
         <View
           style={[
             { height },
@@ -651,7 +651,7 @@ export default function Page() {
             </View>
           )}
         </View>
-      </SettingsLayout>
+      </SettingsScrollView>
     </FormProvider>
   );
 }

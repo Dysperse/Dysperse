@@ -162,37 +162,6 @@ export default function AppLayout() {
             }}
           />
         ))}
-        {[
-          "settings/customization/appearance",
-          "settings/customization/notifications",
-          "settings/login/scan",
-          "settings/login/account/index",
-          "settings/login/account/two-factor-authentication",
-          "settings/login/devices",
-          "settings/account/profile",
-          "settings/index",
-          "settings/shortcuts",
-          "settings/personal-information",
-          "settings/account/index",
-          "settings/other/apps",
-          "settings/account/integrations/index",
-          "settings/account/integrations/[name]/index",
-          "settings/account/integrations/[name]/[id]",
-        ].map((d) => (
-          <JsStack.Screen
-            name={d}
-            key={d}
-            options={{
-              cardStyle: { padding: 0 },
-              gestureEnabled: d !== "settings/index",
-              headerTitle: d !== "settings/index" && "Settings",
-              ...TransitionPresets.SlideFromRightIOS,
-              cardStyleInterpolator: forHorizontalIOS,
-              animationEnabled: !breakpoints.md && d !== "settings/index",
-              detachPreviousScreen: d === "settings/index",
-            }}
-          />
-        ))}
         <JsStack.Screen
           name="friends"
           options={{
@@ -210,6 +179,12 @@ export default function AppLayout() {
             gestureEnabled: false,
             animationEnabled: !breakpoints.md,
             cardStyleInterpolator: forHorizontalIOS,
+          }}
+        />
+        <JsStack.Screen
+          name="settings"
+          options={{
+            cardStyle: { padding: 0 },
           }}
         />
       </JsStack>
