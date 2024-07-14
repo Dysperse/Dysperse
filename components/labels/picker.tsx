@@ -137,8 +137,12 @@ const CloseButton = memo(function CloseButton({
       onPress={handleClose}
       disabled={disabled}
       containerStyle={{ marginLeft: "auto" }}
+      variant="filled"
+      style={{ paddingHorizontal: 20 }}
+      isLoading={loading}
     >
-      {loading ? <Spinner /> : <ButtonText>Done</ButtonText>}
+      <ButtonText>Done</ButtonText>
+      <Icon>check</Icon>
     </Button>
   );
 });

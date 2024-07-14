@@ -2,6 +2,7 @@ import { useHotkeys } from "@/helpers/useHotKeys";
 import { BlurView } from "expo-blur";
 import React, { ReactElement, cloneElement, useRef } from "react";
 import {
+  Platform,
   Pressable,
   PressableProps,
   StyleProp,
@@ -181,7 +182,10 @@ export default function MenuPopover({
         <Animated.View style={animatedStyle}>
           <View
             style={{
-              backgroundColor: addHslAlpha(theme[6], 0.4),
+              backgroundColor: addHslAlpha(
+                theme[6],
+                Platform.OS === "android" ? 1 : 0.4
+              ),
               borderRadius: 25,
               overflow: "hidden",
             }}
@@ -190,6 +194,7 @@ export default function MenuPopover({
               experimentalBlurMethod="dimezisBlurView"
               tint={isDark ? "dark" : "prominent"}
               style={[styles.container]}
+              intensity={Platform.OS === "android" ? 0 : undefined}
             >
               <ScrollView
                 style={scrollViewStyle}

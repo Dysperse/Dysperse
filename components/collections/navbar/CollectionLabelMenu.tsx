@@ -40,9 +40,7 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
     <LabelPicker
       multiple
       hideBack
-      onOpen={() => {
-        menuRef.current?.close();
-      }}
+      onOpen={() => {}}
       sheetProps={
         {
           // enablePanDownToClose: false,
