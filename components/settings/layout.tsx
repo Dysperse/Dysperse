@@ -223,7 +223,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
   return !breakpoints.md && !forceShow ? null : (
     <ScrollView
       style={{
-        maxHeight: height - 85,
+        maxHeight: breakpoints.md ? "100%" : height - 85,
         maxWidth: breakpoints.md ? 200 : undefined,
       }}
       contentContainerStyle={{
