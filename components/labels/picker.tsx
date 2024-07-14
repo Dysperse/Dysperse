@@ -214,6 +214,7 @@ const LabelPicker = memo(function LabelPicker({
     <>
       {trigger}
       <BottomSheet
+        handleComponent={() => null}
         sheetRef={ref}
         onClose={handleClose}
         snapPoints={["100%"]}
