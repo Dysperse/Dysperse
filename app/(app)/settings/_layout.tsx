@@ -106,6 +106,7 @@ export default function Layout() {
               animationEnabled: !breakpoints.md,
               headerMode: "screen",
               freezeOnBlur: true,
+              gestureResponseDistance: width,
             }}
           >
             {[
