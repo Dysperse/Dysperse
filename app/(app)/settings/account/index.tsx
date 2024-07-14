@@ -465,52 +465,6 @@ function TwoFactorAuthSection() {
   );
 }
 
-function ResetTutorial() {
-  const { mutate, sessionToken } = useUser();
-
-  return (
-    <>
-      <Text style={settingStyles.heading} weight={700}>
-        Hints
-      </Text>
-      <Section>
-        <ConfirmationModal
-          title="Reset hints?"
-          secondary="This will reset all hints across the app. Are you sure?"
-          onSuccess={() => {
-            mutate(
-              (d) => ({
-                ...d,
-                user: { ...d.user, toursViewed: [] },
-              }),
-              {
-                revalidate: false,
-              }
-            );
-            sendApiRequest(
-              sessionToken,
-              "PUT",
-              "user/account",
-              {},
-              { body: JSON.stringify({ toursViewed: [] }) }
-            );
-
-            router.push("/");
-          }}
-        >
-          <ListItemButton>
-            <ListItemText
-              primary="Reset hints"
-              secondary="Show me how to use #dysperse again"
-            />
-            <Icon>arrow_forward_ios</Icon>
-          </ListItemButton>
-        </ConfirmationModal>
-      </Section>
-    </>
-  );
-}
-
 function StreakSettings() {
   return (
     <>
@@ -583,7 +537,6 @@ export default function Page() {
           </Text>
           <SpaceStorage data={data} />
           <TasksSettings data={data} mutate={mutate} />
-          {process.env.NODE_ENV === "development" && <ResetTutorial />}
           <StreakSettings />
           <EmailSection />
           <TwoFactorAuthSection />
