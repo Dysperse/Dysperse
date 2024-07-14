@@ -261,7 +261,7 @@ const LabelPicker = memo(function LabelPicker({
                 >
                   <Text
                     weight={900}
-                    style={{ fontSize: 30, textAlign: "center" }}
+                    style={{ fontSize: 25, textAlign: "center" }}
                   >
                     Select labels
                   </Text>
