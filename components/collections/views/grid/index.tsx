@@ -106,9 +106,17 @@ export default function Grid({ editOrderMode }) {
                         {label.name || "Other"}
                       </Text>
                       <Text weight={300} style={{ marginTop: 2, opacity: 0.7 }}>
-                        {label._count?.entities}
+                        {
+                          (label.entities || []).filter(
+                            (e) => e.completionInstances.length === 0
+                          ).length
+                        }
                         {" item"}
-                        {label._count?.entities !== 1 ? "s" : ""}
+                        {(label.entities || []).filter(
+                          (e) => e.completionInstances.length === 0
+                        ).length !== 1
+                          ? "s"
+                          : ""}
                       </Text>
                     </Pressable>
                   </View>
