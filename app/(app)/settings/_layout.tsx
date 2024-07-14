@@ -1,6 +1,6 @@
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
-import { SettingsSidebar } from "@/components/settings/layout";
+import { SettingsSidebar } from "@/components/settings/sidebar";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";

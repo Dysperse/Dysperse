@@ -1,4 +1,4 @@
-import { SettingsSidebar } from "@/components/settings/layout";
+import { SettingsSidebar } from "@/components/settings/sidebar";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Redirect } from "expo-router";
 
