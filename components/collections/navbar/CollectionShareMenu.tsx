@@ -656,7 +656,9 @@ const Navigator = forwardRef(
               options={{
                 header: ({ navigation }) => (
                   <Navbar
-                    title={collection.public ? "Publish" : "Edit collection"}
+                    title={
+                      collection?.data?.public ? "Publish" : "Edit collection"
+                    }
                     navigation={navigation}
                     icon="arrow_back_ios_new"
                     handleClose={handleClose}
