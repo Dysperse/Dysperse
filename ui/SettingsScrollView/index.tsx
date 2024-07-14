@@ -15,6 +15,7 @@ export default function SettingsScrollView(
         paddingTop: breakpoints.md ? 50 : 20,
         paddingHorizontal: props.hideBack ? 0 : 20,
       }}
+      style={{ flex: 1 }}
     />
   );
 }
