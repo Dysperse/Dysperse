@@ -126,6 +126,7 @@ export default function List() {
               onRefresh={() => mutate()}
             />
           }
+          contentContainerStyle={{ paddingBottom: 50 }}
           renderItem={({ item }: any) => {
             if (item.empty) {
               return (
