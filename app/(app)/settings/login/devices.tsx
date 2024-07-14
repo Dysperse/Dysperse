@@ -187,7 +187,7 @@ export default function Page() {
   };
 
   return (
-    <SettingsScrollView noScroll>
+    <SettingsScrollView>
       {Array.isArray(data) ? (
         <FlashList
           estimatedItemSize={330}
