@@ -1,4 +1,5 @@
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
+import LabelPicker from "@/components/labels/picker";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { ProfilePicture } from "@/ui/Avatar";
@@ -80,7 +81,7 @@ export default function ChromeExtension() {
   const handleSaveWebpage = async () => {
     setLoading(true);
     try {
-      await sendApiRequest(
+      const task = await sendApiRequest(
         sessionToken,
         "POST",
         "space/entity",
@@ -95,7 +96,49 @@ export default function ChromeExtension() {
           }),
         }
       );
-      Toast.show({ type: "success", text1: "Saved webpage!" });
+      Toast.show({
+        type: "success",
+        text1: "Saved webpage!",
+        props: {
+          renderTrailingIcon: () => (
+            <LabelPicker
+              label={task.label}
+              onClose={() => {}}
+              onOpen={() => Toast.hide()}
+              defaultCollection={task.collectionId}
+              disabled={Boolean(task.label?.integrationParams)}
+              setLabel={(label) => {
+                sendApiRequest(
+                  sessionToken,
+                  "PUT",
+                  "space/entity",
+                  {},
+                  {
+                    body: JSON.stringify({
+                      id: task.id,
+                      labelId: (label as any).id,
+                    }),
+                  }
+                );
+              }}
+            >
+              <IconButton
+                icon="new_label"
+                size={40}
+                style={{
+                  marginRight: 5,
+                  marginLeft: -10,
+                }}
+                backgroundColors={{
+                  default: theme[5],
+                  hovered: theme[6],
+                  pressed: theme[7],
+                }}
+              />
+            </LabelPicker>
+          ),
+        },
+      });
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {

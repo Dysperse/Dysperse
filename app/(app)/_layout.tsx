@@ -282,8 +282,8 @@ export default function AppLayout() {
                 </View>
               </PortalProvider>
             </MenuProvider>
+            <Toast config={toastConfig(theme)} />
           </BottomSheetModalProvider>
-          <Toast config={toastConfig(theme)} />
         </GestureHandlerRootView>
       </ColorThemeProvider>
     </StorageContextProvider>
