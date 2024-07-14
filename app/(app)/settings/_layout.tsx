@@ -82,9 +82,7 @@ export default function Layout() {
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   return (
-    <View
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom, flex: 1 }}
-    >
+    <>
       <EscapeSettings />
       <View
         style={{
@@ -107,6 +105,10 @@ export default function Layout() {
               headerMode: "screen",
               freezeOnBlur: true,
               gestureResponseDistance: width,
+              cardStyle: {
+                paddingTop: insets.top,
+                paddingBottom: insets.bottom,
+              },
             }}
           >
             {[
@@ -130,7 +132,6 @@ export default function Layout() {
                 name={d}
                 key={d}
                 options={{
-                  cardStyle: { padding: 0 },
                   gestureEnabled: d !== "settings/index",
                   headerTitle: d !== "settings/index" && "Settings",
                   ...TransitionPresets.SlideFromRightIOS,
@@ -143,6 +144,6 @@ export default function Layout() {
           </JsStack>
         </View>
       </View>
-    </View>
+    </>
   );
 }
