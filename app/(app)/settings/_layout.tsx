@@ -9,6 +9,7 @@ import Text from "@/ui/Text";
 import { TransitionPresets } from "@react-navigation/stack";
 import { router } from "expo-router";
 import { Platform, useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function EscapeSettings() {
   const breakpoints = useResponsiveBreakpoints();
@@ -79,9 +80,11 @@ export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { height, width } = useWindowDimensions();
-
+  const insets = useSafeAreaInsets();
   return (
-    <>
+    <View
+      style={{ paddingTop: insets.top, paddingBottom: insets.bottom, flex: 1 }}
+    >
       <EscapeSettings />
       <View
         style={{
@@ -139,6 +142,6 @@ export default function Layout() {
           </JsStack>
         </View>
       </View>
-    </>
+    </View>
   );
 }
