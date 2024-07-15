@@ -468,6 +468,7 @@ function TwoFactorAuthSection() {
 }
 
 function StreakSettings({ updateUserSettings }: { updateUserSettings: any }) {
+  const { session } = useUser();
   return (
     <>
       <Text style={settingStyles.heading} weight={700}>
@@ -481,17 +482,21 @@ function StreakSettings({ updateUserSettings }: { updateUserSettings: any }) {
           />
           <MenuPopover
             trigger={AccountMenuTrigger({
-              text: `5 tasks`,
+              text: `${session.user.dailyStreakGoal} tasks`,
             })}
             options={[
-              { text: "5 tasks" },
               { text: "3 tasks" },
+              { text: "5 tasks" },
               { text: "10 tasks" },
             ].map((e) => ({
               ...e,
-              selected: e.text.toUpperCase() === `5 tasks`,
+              selected:
+                session.user.dailyStreakGoal === parseInt(e.text.split(" ")[0]),
               callback: () =>
-                Toast.show({ type: "info", text1: "Coming soon!" }),
+                updateUserSettings(
+                  "dailyStreakGoal",
+                  parseInt(e.text.replace(" tasks", ""))
+                ),
             }))}
           />
         </ListItemButton>
@@ -502,7 +507,7 @@ function StreakSettings({ updateUserSettings }: { updateUserSettings: any }) {
           />
           <MenuPopover
             trigger={AccountMenuTrigger({
-              text: `10 tasks`,
+              text: `${session.user.weeklyStreakGoal} tasks`,
             })}
             options={[
               { text: "10 tasks" },
@@ -512,9 +517,14 @@ function StreakSettings({ updateUserSettings }: { updateUserSettings: any }) {
               { text: "50 tasks" },
             ].map((e) => ({
               ...e,
-              selected: e.text.toUpperCase() === `10 tasks`,
+              selected:
+                session.user.weeklyStreakGoal ===
+                parseInt(e.text.split(" ")[0]),
               callback: () =>
-                Toast.show({ type: "info", text1: "Coming soon!" }),
+                updateUserSettings(
+                  "weeklyStreakGoal",
+                  parseInt(e.text.replace(" tasks", ""))
+                ),
             }))}
           />
         </ListItemButton>
