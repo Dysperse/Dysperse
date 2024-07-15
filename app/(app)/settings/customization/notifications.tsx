@@ -142,34 +142,34 @@ const notificationSettings = [
     name: "Collections",
     options: [
       {
-        key: "collection-invite",
+        key: "COLLECTION_INVITE",
         name: "Invite",
         description: "Notify me when I'm invited to a collection",
       },
       {
-        key: "collection-entity-create",
+        key: "COLLECTION_ITEM_CREATE",
         name: "Create",
         description: "Notify me when a new entity is created in a collection",
       },
       {
-        key: "collection-entity-edit",
+        key: "COLLECTION_ITEM_UPDATE",
         name: "Edit",
         description: "Notify me when labels are edited in a collection",
       },
     ],
   },
   {
-    name: "Spaces",
+    name: "Entities",
     options: [
       {
-        key: "space-members",
-        name: "Members",
-        description: "Notify me when a member joins or leaves my space",
+        key: "ENTITY_START",
+        name: "Task due dates",
+        description: "Notify me when a task is due",
       },
       {
-        key: "space-edits",
-        name: "Edits",
-        description: "Notify me when an edit is made to my space",
+        key: "PLAN_DAY",
+        name: "Plan my day",
+        description: "Remind me to plan my day every morning",
       },
     ],
   },
@@ -177,24 +177,14 @@ const notificationSettings = [
     name: "Friends",
     options: [
       {
-        key: "friends-request-me",
+        key: "FRIEND_REQUEST_ME",
         name: "Friend requests",
         description: "Notify me when someone sends me a friend request",
       },
       {
-        key: "friend-request-them",
+        key: "FRIEND_REQUEST_OTHER",
         name: "Friend requests",
         description: "Notify me when someone accepts my friend request",
-      },
-    ],
-  },
-  {
-    name: "Availability",
-    options: [
-      {
-        key: "availability",
-        name: "Availability",
-        description: "Notify me when someone wants my availability",
       },
     ],
   },
@@ -208,7 +198,7 @@ const notificationSettings = [
         forceChecked: true,
       },
       {
-        key: "login-2fa",
+        key: "MFA_CODES",
         name: "2FA codes",
         description: "Send 2FA codes to this device",
       },
@@ -258,7 +248,7 @@ function SubscribeButton({ data, mutate }) {
     console.log(data, webTokens, expoTokens);
 
     setTokenExists(
-      data?.find?.(({ tokens }) =>
+      data?.subscriptions?.find?.(({ tokens }) =>
         typeof tokens === "string"
           ? tokens === expoTokens
           : tokens?.endpoint === webTokens?.endpoint
@@ -340,16 +330,35 @@ export default function Page() {
 
   const { data, mutate, error } = useSWR(["user/notifications"]);
 
-  const [settings, setSettings] = useState({ "task-reminders": true });
-
   const handleDelete = async (id: string) => {
     sendApiRequest(session, "DELETE", "user/notifications", {
       id,
     });
-    mutate((oldData) => oldData.filter((device) => device.id !== id), {
-      revalidate: false,
-    });
+    mutate(
+      (oldData) =>
+        oldData?.subscriptions?.filter?.((device) => device.id !== id),
+      {
+        revalidate: false,
+      }
+    );
   };
+
+  function handleToggle(key: string) {
+    sendApiRequest(session, "PUT", "user/notifications", {
+      key,
+      value: data.settings[key] ? "false" : "true",
+    });
+    mutate(
+      (oldData) => ({
+        ...oldData,
+        settings: {
+          ...oldData.settings,
+          [key]: !oldData.settings[key],
+        },
+      }),
+      { revalidate: false }
+    );
+  }
 
   return (
     <SettingsScrollView>
@@ -379,7 +388,7 @@ export default function Page() {
       <Text style={settingStyles.heading}>Manage devices</Text>
       <SubscribeButton data={data} mutate={mutate} />
       {data ? (
-        data.map((device) => (
+        data?.subscriptions?.map?.((device) => (
           <ListItemButton
             variant="filled"
             disabled
@@ -403,7 +412,6 @@ export default function Page() {
       ) : (
         <Spinner />
       )}
-
       {notificationSettings.map((section) => (
         <View key={section.name} style={{ paddingHorizontal: 0 }}>
           <Text style={settingStyles.heading}>{section.name}</Text>
@@ -412,18 +420,12 @@ export default function Page() {
               key={option.key}
               disabled={option.forceChecked}
               style={{
-                borderRadius: 0,
                 marginHorizontal: -10,
                 ...(option.forceChecked && {
                   opacity: 0.2,
                 }),
               }}
-              onPress={() =>
-                setSettings({
-                  ...settings,
-                  [option.key]: !settings[option.key],
-                })
-              }
+              onPress={() => handleToggle(option.key)}
             >
               <ListItemText
                 primary={option.name}
@@ -433,10 +435,10 @@ export default function Page() {
                 size={50}
                 style={{
                   opacity:
-                    settings[option.key] || option.forceChecked ? 1 : 0.4,
+                    data.settings[option.key] || option.forceChecked ? 1 : 0.4,
                 }}
               >
-                {settings[option.key] || option.forceChecked
+                {data.settings[option.key] || option.forceChecked
                   ? "toggle_on"
                   : "toggle_off"}
               </Icon>
