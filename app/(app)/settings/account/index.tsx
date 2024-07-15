@@ -303,25 +303,21 @@ function AccountMenuTrigger({ text }: any) {
   );
 }
 
-function TasksSettings({ mutate, data }: any) {
-  const { mutate: mutateUser, sessionToken } = useUser();
+function TasksSettings({ updateUserSettings }: any) {
+  const { mutate, session } = useUser();
 
-  const handleSpaceEdit = async (key, value) => {
+  const handleEdit = async (key, value) => {
     try {
-      mutate({ ...data, [key]: value }, { revalidate: false });
-      mutateUser(
+      mutate(
         (prev) => ({
           ...prev,
-          space: { ...prev.space, [key]: value },
+          user: { ...prev.user, [key]: value },
         }),
         { revalidate: false }
       );
-      await sendApiRequest(sessionToken, "PUT", "space", {
-        [key]: value,
-      });
+      updateUserSettings(key, value);
       Toast.show({ type: "success", text1: "Saved!" });
     } catch (e) {
-      mutate(data, { revalidate: false });
       console.error(e);
       Toast.show({ type: "error" });
     }
@@ -331,7 +327,7 @@ function TasksSettings({ mutate, data }: any) {
   const showComingSoon = () =>
     Toast.show({ type: "info", text1: "Coming soon!" });
 
-  return (
+  return !session?.user ? null : (
     <>
       <Text style={settingStyles.heading} weight={700}>
         Tasks
@@ -353,13 +349,14 @@ function TasksSettings({ mutate, data }: any) {
           />
           <MenuPopover
             trigger={AccountMenuTrigger({
-              text: capitalizeFirstLetter(data?.weekStart?.toLowerCase()),
+              text: capitalizeFirstLetter(
+                session?.user?.weekStart?.toLowerCase()
+              ),
             })}
             options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
               ...e,
-              selected: e.text.toUpperCase() === data?.weekStart,
-              callback: () =>
-                handleSpaceEdit("weekStart", e.text.toUpperCase()),
+              selected: e.text.toUpperCase() === session.user.weekStart,
+              callback: () => handleEdit("weekStart", e.text.toUpperCase()),
             }))}
           />
         </ListItemButton>
@@ -377,13 +374,18 @@ function TasksSettings({ mutate, data }: any) {
             }))}
           />
         </ListItemButton>
-        <ListItemButton onPress={showComingSoon}>
+        <ListItemButton
+          onPress={() => handleEdit("vanishMode", !session.user.vanishMode)}
+        >
           <ListItemText
             primary="Vanish mode"
             secondary="Delete completed tasks after 14 days"
           />
-          <Icon style={{ opacity: 0.6 }} size={40}>
-            toggle_off
+          <Icon
+            style={{ opacity: session.user.vanishMode ? 1 : 0.6 }}
+            size={40}
+          >
+            toggle_{session.user.vanishMode ? "on" : "off"}
           </Icon>
         </ListItemButton>
         <ListItemButton onPress={showComingSoon}>
@@ -522,10 +524,24 @@ function StreakSettings() {
 }
 
 export default function Page() {
-  const { session } = useUser();
+  const { session, sessionToken } = useUser();
   const { data, mutate, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
+
+  const updateUserSettings = (key, value) => {
+    sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/account",
+      {},
+      {
+        body: JSON.stringify({
+          [key]: value,
+        }),
+      }
+    );
+  };
 
   return (
     <SettingsScrollView>
@@ -536,7 +552,11 @@ export default function Page() {
             Storage
           </Text>
           <SpaceStorage data={data} />
-          <TasksSettings data={data} mutate={mutate} />
+          <TasksSettings
+            data={data}
+            mutate={mutate}
+            updateUserSettings={updateUserSettings}
+          />
           <StreakSettings />
           <EmailSection />
           <TwoFactorAuthSection />
