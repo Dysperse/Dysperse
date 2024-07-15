@@ -58,6 +58,7 @@ function EscapeSettings() {
 
 function SettingsHeader() {
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
 
   return (
     <View
@@ -66,6 +67,7 @@ function SettingsHeader() {
         alignItems: "center",
         justifyContent: "space-between",
         padding: 15,
+        paddingTop: insets.top + 15,
         gap: 15,
       }}
     >
@@ -98,19 +100,30 @@ export default function Layout() {
             width: "100%",
             height: "100%",
           } as any)),
+        flex: 1,
+        height,
       }}
     >
-      <View style={{ flex: 1, backgroundColor: addHslAlpha(theme[1], 0.9) }}>
+      <View
+        style={{
+          height: "100%",
+          backgroundColor:
+            Platform.OS === "web"
+              ? addHslAlpha(theme[2], Platform.OS === "web" ? 0.9 : 1)
+              : theme[1],
+        }}
+      >
         <EscapeSettings />
         <View
           style={{
-            maxHeight: height,
+            maxHeight: breakpoints.md ? height : undefined,
             flexDirection: "row",
             maxWidth: 900,
             width: "100%",
             marginHorizontal: "auto",
             gap: 40,
             flex: 1,
+            height,
             ...(Platform.OS === "web" &&
               ({ WebkitAppRegion: "no-drag" } as any)),
           }}
@@ -121,7 +134,7 @@ export default function Layout() {
               value={{
                 colors: {
                   primary: theme[1],
-                  background: "transparent",
+                  background: Platform.OS == "web" ? "transparent" : theme[1],
                   card: theme[1],
                   text: theme[4],
                   border: theme[5],
@@ -137,10 +150,6 @@ export default function Layout() {
                   headerMode: "screen",
                   freezeOnBlur: true,
                   gestureResponseDistance: width,
-                  cardStyle: {
-                    paddingTop: insets.top,
-                    paddingBottom: insets.bottom,
-                  },
                 }}
               >
                 {[
