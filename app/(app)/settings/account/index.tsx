@@ -306,23 +306,6 @@ function AccountMenuTrigger({ text }: any) {
 function TasksSettings({ updateUserSettings }: any) {
   const { mutate, session } = useUser();
 
-  const handleEdit = async (key, value) => {
-    try {
-      mutate(
-        (prev) => ({
-          ...prev,
-          user: { ...prev.user, [key]: value },
-        }),
-        { revalidate: false }
-      );
-      updateUserSettings(key, value);
-      Toast.show({ type: "success", text1: "Saved!" });
-    } catch (e) {
-      console.error(e);
-      Toast.show({ type: "error" });
-    }
-  };
-
   const theme = useColorTheme();
   const showComingSoon = () =>
     Toast.show({ type: "info", text1: "Coming soon!" });
@@ -356,7 +339,8 @@ function TasksSettings({ updateUserSettings }: any) {
             options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
               ...e,
               selected: e.text.toUpperCase() === session.user.weekStart,
-              callback: () => handleEdit("weekStart", e.text.toUpperCase()),
+              callback: () =>
+                updateUserSettings("weekStart", e.text.toUpperCase()),
             }))}
           />
         </ListItemButton>
@@ -369,13 +353,18 @@ function TasksSettings({ updateUserSettings }: any) {
             trigger={AccountMenuTrigger({ text: "12 hour" })}
             options={[{ text: "12 hour" }, { text: "24 hour" }].map((e) => ({
               ...e,
-              selected: e.text === "12 hour",
-              callback: showComingSoon,
+              selected: session.user.militaryTime
+                ? e.text === "24 hour"
+                : e.text === "12 hour",
+              callback: () =>
+                updateUserSettings("militaryTime", !session.user.militaryTime),
             }))}
           />
         </ListItemButton>
         <ListItemButton
-          onPress={() => handleEdit("vanishMode", !session.user.vanishMode)}
+          onPress={() =>
+            updateUserSettings("vanishMode", !session.user.vanishMode)
+          }
         >
           <ListItemText
             primary="Vanish mode"
@@ -397,12 +386,23 @@ function TasksSettings({ updateUserSettings }: any) {
             toggle_off
           </Icon>
         </ListItemButton>
-        <ListItemButton onPress={showComingSoon}>
+        <ListItemButton
+          onPress={() =>
+            updateUserSettings("privateTasks", !session.user.privateTasks)
+          }
+        >
           <ListItemText
             primary="Private tasks by default"
             secondary="New tasks are private by default"
           />
-          <Icon size={40}>toggle_on</Icon>
+          <Icon
+            size={40}
+            style={{
+              opacity: session.user.privateTasks ? 1 : 0.6,
+            }}
+          >
+            toggle_{session.user.privateTasks ? "on" : "off"}
+          </Icon>
         </ListItemButton>
       </View>
     </>
@@ -467,7 +467,7 @@ function TwoFactorAuthSection() {
   );
 }
 
-function StreakSettings() {
+function StreakSettings({ updateUserSettings }: { updateUserSettings: any }) {
   return (
     <>
       <Text style={settingStyles.heading} weight={700}>
@@ -524,23 +524,38 @@ function StreakSettings() {
 }
 
 export default function Page() {
-  const { session, sessionToken } = useUser();
-  const { data, mutate, error } = useSWR(
+  const { session, sessionToken, mutate } = useUser();
+  const { data, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
 
   const updateUserSettings = (key, value) => {
-    sendApiRequest(
-      sessionToken,
-      "PUT",
-      "user/account",
-      {},
-      {
-        body: JSON.stringify({
-          [key]: value,
+    try {
+      mutate(
+        (prev) => ({
+          ...prev,
+          user: { ...prev.user, [key]: value },
         }),
-      }
-    );
+        { revalidate: false }
+      );
+
+      sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/account",
+        {},
+        {
+          body: JSON.stringify({
+            [key]: value,
+          }),
+        }
+      );
+
+      Toast.show({ type: "success", text1: "Saved!" });
+    } catch (e) {
+      console.error(e);
+      Toast.show({ type: "error" });
+    }
   };
 
   return (
@@ -552,12 +567,8 @@ export default function Page() {
             Storage
           </Text>
           <SpaceStorage data={data} />
-          <TasksSettings
-            data={data}
-            mutate={mutate}
-            updateUserSettings={updateUserSettings}
-          />
-          <StreakSettings />
+          <TasksSettings data={data} updateUserSettings={updateUserSettings} />
+          <StreakSettings updateUserSettings={updateUserSettings} />
           <EmailSection />
           <TwoFactorAuthSection />
         </>
