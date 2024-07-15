@@ -100,8 +100,6 @@ export default function Layout() {
             width: "100%",
             height: "100%",
           } as any)),
-        flex: 1,
-        height,
       }}
     >
       <View
@@ -116,7 +114,7 @@ export default function Layout() {
         <EscapeSettings />
         <View
           style={{
-            maxHeight: breakpoints.md ? height : undefined,
+            maxHeight: Platform.OS === "web" ? height : undefined,
             flexDirection: "row",
             maxWidth: 900,
             width: "100%",
@@ -134,7 +132,10 @@ export default function Layout() {
               value={{
                 colors: {
                   primary: theme[1],
-                  background: Platform.OS == "web" ? "transparent" : theme[1],
+                  background:
+                    Platform.OS == "web" && breakpoints.md
+                      ? "transparent"
+                      : theme[2],
                   card: theme[1],
                   text: theme[4],
                   border: theme[5],
