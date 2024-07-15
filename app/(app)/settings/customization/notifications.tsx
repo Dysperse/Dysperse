@@ -435,10 +435,12 @@ export default function Page() {
                 size={50}
                 style={{
                   opacity:
-                    data.settings[option.key] || option.forceChecked ? 1 : 0.4,
+                    data?.settings?.[option.key] || option.forceChecked
+                      ? 1
+                      : 0.4,
                 }}
               >
-                {data.settings[option.key] || option.forceChecked
+                {data?.settings?.[option.key] || option.forceChecked
                   ? "toggle_on"
                   : "toggle_off"}
               </Icon>

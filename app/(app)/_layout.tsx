@@ -127,68 +127,87 @@ export default function AppLayout() {
   if (!session) return <Redirect href="/auth" />;
 
   const content = (
-    <AppContainer progressValue={progressValue}>
-      <JsStack
-        screenOptions={{
-          header: () => null,
-          headerTransparent: true,
-          gestureResponseDistance: width,
-          gestureEnabled: false,
-          freezeOnBlur: true,
-          cardStyle: {
-            height,
-            width: breakpoints.md ? "100%" : width,
-            backgroundColor: theme[breakpoints.sm ? 2 : 1],
-            padding: breakpoints.md ? 10 : 0,
-            ...(Platform.OS === "web" &&
-              ({ marginTop: "env(titlebar-area-height,0)" } as any)),
-          },
-          // change opacity of the previous screen when swipe
-          cardOverlayEnabled: true,
-          animationEnabled: false,
-          gestureVelocityImpact: 0.5,
-        }}
-      >
-        <JsStack.Screen name="index" />
-        {["everything/labels/[id]", "everything/collections/[id]"].map((d) => (
-          <JsStack.Screen
-            key={d}
-            name={d}
-            options={{
-              detachPreviousScreen: breakpoints.md,
-              presentation: "modal",
-              animationEnabled: true,
-              ...TransitionPresets.ModalPresentationIOS,
-            }}
-          />
-        ))}
-        <JsStack.Screen
-          name="friends"
-          options={{
-            detachPreviousScreen: true,
-            cardOverlayEnabled: !breakpoints.md,
-            ...TransitionPresets.SlideFromRightIOS,
-            cardStyleInterpolator: forHorizontalIOS,
-          }}
-        />
-        <JsStack.Screen
-          name="collections/create"
-          options={{
-            ...TransitionPresets.SlideFromRightIOS,
+    <ThemeProvider
+      value={{
+        colors: {
+          background: theme[3],
+          card: theme[2],
+          primary: theme[2],
+          border: theme[6],
+          text: theme[11],
+          notification: theme[9],
+        },
+        dark: true,
+      }}
+    >
+      <AppContainer progressValue={progressValue}>
+        <JsStack
+          screenOptions={{
+            header: () => null,
+            headerTransparent: true,
             gestureResponseDistance: width,
             gestureEnabled: false,
-            animationEnabled: !breakpoints.md,
-            cardStyleInterpolator: forHorizontalIOS,
+            freezeOnBlur: true,
+            presentation: "transparentModal",
+            cardStyle: {
+              height,
+              width: breakpoints.md ? "100%" : width,
+              backgroundColor: globalThis.IN_DESKTOP_ENV
+                ? "transparent"
+                : theme[breakpoints.sm ? 2 : 1],
+              padding: breakpoints.md ? 10 : 0,
+              ...(Platform.OS === "web" &&
+                ({ marginTop: "env(titlebar-area-height,0)" } as any)),
+            },
+            // change opacity of the previous screen when swipe
+            cardOverlayEnabled: true,
+            animationEnabled: false,
+            gestureVelocityImpact: 0.5,
           }}
-        />
-        <JsStack.Screen
-          name="settings"
-          options={{
-            cardStyle: { padding: 0 },
-          }}
-        />
-      </JsStack>
-    </AppContainer>
+        >
+          <JsStack.Screen name="index" />
+          {["everything/labels/[id]", "everything/collections/[id]"].map(
+            (d) => (
+              <JsStack.Screen
+                key={d}
+                name={d}
+                options={{
+                  detachPreviousScreen: breakpoints.md,
+                  presentation: "modal",
+                  animationEnabled: true,
+                  ...TransitionPresets.ModalPresentationIOS,
+                }}
+              />
+            )
+          )}
+          <JsStack.Screen
+            name="friends"
+            options={{
+              detachPreviousScreen: true,
+              cardOverlayEnabled: !breakpoints.md,
+              ...TransitionPresets.SlideFromRightIOS,
+              cardStyleInterpolator: forHorizontalIOS,
+            }}
+          />
+          <JsStack.Screen
+            name="collections/create"
+            options={{
+              ...TransitionPresets.SlideFromRightIOS,
+              gestureResponseDistance: width,
+              gestureEnabled: false,
+              animationEnabled: !breakpoints.md,
+              cardStyleInterpolator: forHorizontalIOS,
+            }}
+          />
+          <JsStack.Screen
+            name="settings"
+            options={{
+              cardStyle: { padding: 0 },
+            }}
+          />
+        </JsStack>
+      </AppContainer>
+    </ThemeProvider>
   );
 
   return (
@@ -201,7 +220,9 @@ export default function AppLayout() {
             overflow: "hidden",
             width,
             height,
-            backgroundColor: theme[2],
+            backgroundColor: globalThis.IN_DESKTOP_ENV
+              ? "transparent"
+              : theme[2],
           }}
         >
           <BottomSheetModalProvider>
@@ -222,7 +243,9 @@ export default function AppLayout() {
                     {
                       flexDirection: "row",
                       flex: 1,
-                      backgroundColor: theme[2],
+                      backgroundColor: globalThis.IN_DESKTOP_ENV
+                        ? "transparent"
+                        : theme[2],
                     },
                     Platform.OS === "web" &&
                       ({ WebkitAppRegion: "drag" } as any),

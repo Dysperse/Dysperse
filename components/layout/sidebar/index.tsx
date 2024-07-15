@@ -543,8 +543,7 @@ const Sidebar = ({
           pathname.includes("chrome-extension") && { display: "none" },
           pathname.includes("settings") &&
             breakpoints.md && {
-              maxWidth: 0,
-              overflow: "hidden",
+              zIndex: -999,
             },
         ]}
       >

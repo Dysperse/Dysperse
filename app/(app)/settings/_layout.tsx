@@ -3,10 +3,13 @@ import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SettingsSidebar } from "@/components/settings/sidebar";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import { ThemeProvider } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
+import { BlurView } from "expo-blur";
 import { router } from "expo-router";
 import { Platform, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -82,68 +85,103 @@ export default function Layout() {
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   return (
-    <>
-      <EscapeSettings />
-      <View
-        style={{
-          maxHeight: height,
-          flexDirection: "row",
-          maxWidth: 900,
-          width: "100%",
-          marginHorizontal: "auto",
-          gap: 40,
-          flex: 1,
-          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        }}
-      >
-        <SettingsSidebar />
-        <View style={{ flex: 1 }}>
-          <JsStack
-            screenOptions={{
-              header: () => (breakpoints.md ? null : <SettingsHeader />),
-              animationEnabled: !breakpoints.md,
-              headerMode: "screen",
-              freezeOnBlur: true,
-              gestureResponseDistance: width,
-              cardStyle: {
-                paddingTop: insets.top,
-                paddingBottom: insets.bottom,
-              },
-            }}
-          >
-            {[
-              "customization/appearance",
-              "customization/notifications",
-              "login/scan",
-              "login/account/index",
-              "login/account/two-factor-authentication",
-              "login/devices",
-              "account/profile",
-              "index",
-              "shortcuts",
-              "personal-information",
-              "account/index",
-              "other/apps",
-              "account/integrations/index",
-              "account/integrations/[name]/index",
-              "account/integrations/[name]/[id]",
-            ].map((d) => (
-              <JsStack.Screen
-                name={d}
-                key={d}
-                options={{
-                  gestureEnabled: d !== "settings/index",
-                  headerTitle: d !== "settings/index" && "Settings",
-                  ...TransitionPresets.SlideFromRightIOS,
-                  cardStyleInterpolator: forHorizontalIOS,
-                  animationEnabled: !breakpoints.md && d !== "settings/index",
-                  detachPreviousScreen: d === "settings/index",
+    <BlurView
+      intensity={Platform.OS === "web" ? 20 : 0}
+      style={{
+        ...(Platform.OS === "web" &&
+          ({
+            WebkitAppRegion: "no-drag",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            zIndex: 999999,
+            width: "100%",
+            height: "100%",
+          } as any)),
+      }}
+    >
+      <View style={{ flex: 1, backgroundColor: addHslAlpha(theme[1], 0.9) }}>
+        <EscapeSettings />
+        <View
+          style={{
+            maxHeight: height,
+            flexDirection: "row",
+            maxWidth: 900,
+            width: "100%",
+            marginHorizontal: "auto",
+            gap: 40,
+            flex: 1,
+            ...(Platform.OS === "web" &&
+              ({ WebkitAppRegion: "no-drag" } as any)),
+          }}
+        >
+          <SettingsSidebar />
+          <View style={{ flex: 1 }}>
+            <ThemeProvider
+              value={{
+                colors: {
+                  primary: theme[1],
+                  background: "transparent",
+                  card: theme[1],
+                  text: theme[4],
+                  border: theme[5],
+                  notification: theme[2],
+                },
+                dark: true,
+              }}
+            >
+              <JsStack
+                screenOptions={{
+                  header: () => (breakpoints.md ? null : <SettingsHeader />),
+                  animationEnabled: !breakpoints.md,
+                  headerMode: "screen",
+                  freezeOnBlur: true,
+                  gestureResponseDistance: width,
+                  cardStyle: {
+                    paddingTop: insets.top,
+                    paddingBottom: insets.bottom,
+                  },
                 }}
-              />
-            ))}
-          </JsStack>
+              >
+                {[
+                  "customization/appearance",
+                  "customization/notifications",
+                  "login/scan",
+                  "login/account/index",
+                  "login/account/two-factor-authentication",
+                  "login/devices",
+                  "account/profile",
+                  "index",
+                  "shortcuts",
+                  "personal-information",
+                  "account/index",
+                  "other/apps",
+                  "account/integrations/index",
+                  "account/integrations/[name]/index",
+                  "account/integrations/[name]/[id]",
+                ].map((d) => (
+                  <JsStack.Screen
+                    name={d}
+                    key={d}
+                    options={{
+                      gestureEnabled: d !== "settings/index",
+                      headerTitle: d !== "settings/index" && "Settings",
+                      animationEnabled:
+                        !breakpoints.md && d !== "settings/index",
+                      detachPreviousScreen: d === "settings/index",
+
+                      ...(!breakpoints.md && {
+                        ...TransitionPresets.SlideFromRightIOS,
+                        cardStyleInterpolator: forHorizontalIOS,
+                      }),
+                    }}
+                  />
+                ))}
+              </JsStack>
+            </ThemeProvider>
+          </View>
         </View>
       </View>
-    </>
+    </BlurView>
   );
 }

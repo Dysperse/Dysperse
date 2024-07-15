@@ -1,4 +1,5 @@
 import { useSession } from "@/context/AuthProvider";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Divider from "@/ui/Divider";
@@ -10,7 +11,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Linking,
   Platform,
@@ -52,6 +53,21 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
   const { signOut } = useSession();
 
   const [search, setSearch] = useState("");
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current && breakpoints.md) {
+      inputRef.current.focus();
+    }
+  });
+
+  useHotkeys(["ctrl+f", "/"], (event) => {
+    event.preventDefault();
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  });
 
   const settingsOptions = [
     {
@@ -258,8 +274,15 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
             marginTop: 0,
             fontSize: breakpoints.md ? 15 : 20,
           }}
+          inputRef={inputRef}
           weight={700}
           onChangeText={setSearch}
+          onKeyPress={(e) => {
+            if (e.nativeEvent.key === "Escape") {
+              setSearch("");
+              e.target.blur();
+            }
+          }}
           value={search}
           placeholder="Search…"
         />
