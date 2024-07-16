@@ -4,13 +4,16 @@ import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useSWR from "swr";
+
 const GoalIndicator = ({ completed, goal, name }) => {
   const theme = useColorTheme();
+
   return (
     <View
       style={{ flexDirection: "row", alignItems: "center", gap: 20, flex: 1 }}
@@ -20,10 +23,10 @@ const GoalIndicator = ({ completed, goal, name }) => {
           width: 30,
           height: 30,
           transform:
-            completed === goal ? null : [{ rotate: "90deg" }, { scaleX: -1 }],
+            completed >= goal ? null : [{ rotate: "90deg" }, { scaleX: -1 }],
         }}
       >
-        {completed === goal ? (
+        {completed >= goal ? (
           <Avatar
             disabled
             icon="check"
@@ -62,7 +65,13 @@ const GoalIndicator = ({ completed, goal, name }) => {
 export function StreakGoal() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const { data, error } = useSWR(["user/streaks"]);
+  const { data, error } = useSWR([
+    "user/streaks",
+    {
+      dayStart: dayjs().startOf("day").utc().toISOString(),
+      weekStart: dayjs().startOf("week").utc().toISOString(),
+    },
+  ]);
 
   return (
     <>
