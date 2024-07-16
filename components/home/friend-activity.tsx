@@ -115,7 +115,7 @@ export function FriendActivity() {
             backgroundColor: theme[2],
           },
         ]}
-        horizontal
+        horizontal={breakpoints.md}
       >
         {isLoading ? (
           <View
@@ -134,7 +134,10 @@ export function FriendActivity() {
               <TouchableOpacity
                 key={"all"}
                 onPress={handleFriendsPress}
-                style={[styles.skeletonContainer]}
+                style={[
+                  styles.skeletonContainer,
+                  !breakpoints.md && { width: "33.333%", height: 115 },
+                ]}
               >
                 <Avatar size={60} disabled>
                   <Icon size={30}>groups_2</Icon>
@@ -149,7 +152,13 @@ export function FriendActivity() {
                 </View>
               </TouchableOpacity>
             ) : !friend.user ? (
-              <View key={Math.random()} style={[styles.skeletonContainer]}>
+              <View
+                key={Math.random()}
+                style={[
+                  styles.skeletonContainer,
+                  !breakpoints.md && { width: "33.333%", height: 115 },
+                ]}
+              >
                 <View
                   style={[
                     styles.skeletonCircle,
@@ -165,7 +174,15 @@ export function FriendActivity() {
               </View>
             ) : (
               <ProfileModal email={friend.user.email} key={friend.user.email}>
-                <TouchableOpacity style={[styles.skeletonContainer]}>
+                <TouchableOpacity
+                  style={[
+                    styles.skeletonContainer,
+                    !breakpoints.md && {
+                      width: "33.333%",
+                      height: 115,
+                    },
+                  ]}
+                >
                   <View style={styles.skeletonCircle}>
                     <ProfilePicture
                       style={{ pointerEvents: "none" }}
