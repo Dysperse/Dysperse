@@ -130,7 +130,7 @@ export default function AppLayout() {
     <ThemeProvider
       value={{
         colors: {
-          background: theme[3],
+          background: theme[2],
           card: theme[2],
           primary: theme[2],
           border: theme[6],

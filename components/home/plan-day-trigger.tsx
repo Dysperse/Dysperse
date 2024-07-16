@@ -11,7 +11,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
   subtitle: { fontSize: 14, opacity: 0.7, marginTop: 1.5 },
-  base: { minHeight: 80, borderWidth: 2 },
+  base: { minHeight: 90, borderWidth: 2 },
 });
 
 export function PlanDayPrompt() {
@@ -39,8 +39,8 @@ export function PlanDayPrompt() {
       <Icon size={35}>stylus_note</Icon>
       <View style={{ flex: 1 }}>
         <Text
-          weight={700}
-          style={{ fontSize: 17, color: theme[11] }}
+          weight={900}
+          style={{ fontSize: 18, color: theme[11] }}
           numberOfLines={1}
         >
           Plan your day

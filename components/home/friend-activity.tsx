@@ -11,6 +11,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import {
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -43,7 +44,8 @@ const styles = StyleSheet.create({
   badge: { width: 10, borderRadius: 99, height: 10 },
 
   skeletonContainer: {
-    height: 110,
+    height: 90,
+    width: 100,
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
@@ -52,6 +54,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 999,
+    marginBottom: -5,
     position: "relative",
   },
   skeletonText: { height: 15, width: 60, borderRadius: 99, marginTop: 2 },
@@ -101,15 +104,18 @@ export function FriendActivity() {
         )}
       </View>
       <ScrollView
-        contentContainerStyle={styles.scrollContentContainer}
+        contentContainerStyle={[
+          styles.scrollContentContainer,
+          Platform.OS === "web" && { paddingBottom: 0 },
+        ]}
         style={[
           styles.scrollContainer,
           {
             borderColor: theme[4],
             backgroundColor: theme[2],
           },
-          breakpoints.md && { height: height / 3 },
         ]}
+        horizontal
       >
         {isLoading ? (
           <View
@@ -128,10 +134,7 @@ export function FriendActivity() {
               <TouchableOpacity
                 key={"all"}
                 onPress={handleFriendsPress}
-                style={[
-                  styles.skeletonContainer,
-                  { width: breakpoints.md ? "24.99%" : "33.3333%" },
-                ]}
+                style={[styles.skeletonContainer]}
               >
                 <Avatar size={60} disabled>
                   <Icon size={30}>groups_2</Icon>
@@ -146,13 +149,7 @@ export function FriendActivity() {
                 </View>
               </TouchableOpacity>
             ) : !friend.user ? (
-              <View
-                key={Math.random()}
-                style={[
-                  styles.skeletonContainer,
-                  { width: breakpoints.md ? "24.99%" : "33.3333%" },
-                ]}
-              >
+              <View key={Math.random()} style={[styles.skeletonContainer]}>
                 <View
                   style={[
                     styles.skeletonCircle,
@@ -168,12 +165,7 @@ export function FriendActivity() {
               </View>
             ) : (
               <ProfileModal email={friend.user.email} key={friend.user.email}>
-                <TouchableOpacity
-                  style={[
-                    styles.skeletonContainer,
-                    { width: breakpoints.md ? "24.99%" : "33.3333%" },
-                  ]}
-                >
+                <TouchableOpacity style={[styles.skeletonContainer]}>
                   <View style={styles.skeletonCircle}>
                     <ProfilePicture
                       style={{ pointerEvents: "none" }}
