@@ -78,6 +78,7 @@
     "react-native-big-calendar": "^4.13.2",
     "react-native-calendars": "^1.1305.0",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-circular-progress": "^1.4.0",
     "react-native-collapsible": "^1.6.1",
     "react-native-controlled-mentions": "^2.2.5",
     "react-native-countdown-circle-timer": "^3.2.1",
