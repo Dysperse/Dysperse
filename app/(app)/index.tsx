@@ -11,6 +11,7 @@ import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { hslToHex } from "@/helpers/hslToHex";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Avatar } from "@/ui/Avatar";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -130,17 +131,33 @@ const GoalIndicator = ({ completed, goal, name }) => {
         style={{
           width: 30,
           height: 30,
-          transform: [{ rotate: "90deg" }, { scaleX: -1 }],
+          transform:
+            completed === goal ? null : [{ rotate: "90deg" }, { scaleX: -1 }],
         }}
       >
-        <AnimatedCircularProgress
-          size={30}
-          width={2}
-          fill={(completed / goal) * 100}
-          tintColor={theme[10]}
-          onAnimationComplete={() => console.log("onAnimationComplete")}
-          backgroundColor={theme[6]}
-        />
+        {completed === goal ? (
+          <Avatar
+            disabled
+            icon="check"
+            size={30}
+            style={{
+              backgroundColor: theme[10],
+            }}
+            iconProps={{
+              bold: true,
+              style: { color: theme[1] },
+            }}
+          />
+        ) : (
+          <AnimatedCircularProgress
+            size={30}
+            width={2}
+            fill={(completed / goal) * 100}
+            tintColor={theme[10]}
+            onAnimationComplete={() => console.log("onAnimationComplete")}
+            backgroundColor={theme[6]}
+          />
+        )}
       </View>
       <View>
         <Text weight={900} style={{ color: theme[11] }}>
