@@ -467,12 +467,12 @@ function TwoFactorAuthSection() {
   );
 }
 
-function StreakSettings({ updateUserSettings }: { updateUserSettings: any }) {
+function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
   const { session } = useUser();
   return (
     <>
       <Text style={settingStyles.heading} weight={700}>
-        Streaks
+        Goals
       </Text>
       <Section>
         <ListItemButton disabled>
@@ -578,7 +578,7 @@ export default function Page() {
           </Text>
           <SpaceStorage data={data} />
           <TasksSettings data={data} updateUserSettings={updateUserSettings} />
-          <StreakSettings updateUserSettings={updateUserSettings} />
+          <GoalsSettings updateUserSettings={updateUserSettings} />
           <EmailSection />
           <TwoFactorAuthSection />
         </>
