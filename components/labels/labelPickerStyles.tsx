@@ -6,12 +6,9 @@ export const labelPickerStyles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 999,
     marginBottom: 10,
-    marginRight: 10,
     borderWidth: 1,
   },
-  sectionError: {
-    
-  },
+  sectionError: {},
   labelOption: {
     flexDirection: "row",
     alignItems: "center",

@@ -242,6 +242,8 @@ const LabelPicker = memo(function LabelPicker({
               maxHeight: 500,
               borderRadius: 20,
               backgroundColor: theme[2],
+              borderWidth: 1,
+              borderColor: theme[5],
             }}
           >
             <View
@@ -311,7 +313,7 @@ const LabelPicker = memo(function LabelPicker({
                     }
                   }}
                 >
-                  <IconButton style={{ marginRight: 20 }} size={30}>
+                  <IconButton style={{ marginRight: 10 }} size={30}>
                     <Icon>add_circle</Icon>
                   </IconButton>
                 </CreateLabelModal>
