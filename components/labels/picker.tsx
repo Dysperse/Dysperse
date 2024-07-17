@@ -239,7 +239,7 @@ const LabelPicker = memo(function LabelPicker({
               height: "100%",
               width: "100%",
               maxWidth: 500,
-              maxHeight: 900,
+              maxHeight: 500,
               borderRadius: 20,
               backgroundColor: theme[2],
             }}

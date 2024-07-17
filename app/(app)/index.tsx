@@ -118,8 +118,8 @@ const Wrapper = (props) => {
 };
 
 function Page() {
-  const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
   const { width, height } = useWindowDimensions();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
 
