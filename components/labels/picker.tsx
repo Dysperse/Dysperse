@@ -285,8 +285,8 @@ const LabelPicker = memo(function LabelPicker({
                 ]}
               >
                 {!hideBack && (
-                  <IconButton onPress={handleClose}>
-                    <Icon>arrow_back_ios_new</Icon>
+                  <IconButton onPress={handleClose} style={{ marginLeft: 10 }}>
+                    <Icon>close</Icon>
                   </IconButton>
                 )}
                 <Search
