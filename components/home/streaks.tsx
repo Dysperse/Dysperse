@@ -73,7 +73,10 @@ export function StreakGoal() {
     <>
       <View
         style={[
-          { flexDirection: "row", justifyContent: "space-between" },
+          {
+            flexDirection: breakpoints.md ? "row" : "column",
+            justifyContent: "space-between",
+          },
           !breakpoints.md && { marginTop: 20 },
         ]}
       >
