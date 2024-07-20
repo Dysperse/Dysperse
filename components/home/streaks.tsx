@@ -13,10 +13,16 @@ import useSWR from "swr";
 
 const GoalIndicator = ({ completed, goal, name }) => {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
-      style={{ flexDirection: "row", alignItems: "center", gap: 20, flex: 1 }}
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 20,
+        flex: breakpoints.md ? 1 : undefined,
+      }}
     >
       <View
         style={{
@@ -74,7 +80,8 @@ export function StreakGoal() {
       <View
         style={[
           {
-            flexDirection: breakpoints.md ? "row" : "column",
+            flexDirection: "row",
+            alignItems: "center",
             justifyContent: "space-between",
           },
           !breakpoints.md && { marginTop: 20 },
@@ -97,9 +104,10 @@ export function StreakGoal() {
           borderColor: theme[5],
           marginBottom: 30,
           padding: 20,
-          flexDirection: "row",
-          alignItems: "center",
-          height: 80,
+          flexDirection: breakpoints.md ? "row" : "column",
+          alignItems: breakpoints.md ? "center" : "flex-start",
+          height: breakpoints.md ? 80 : undefined,
+          gap: breakpoints.md ? undefined : 20,
           justifyContent: "center",
         }}
       >
