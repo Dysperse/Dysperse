@@ -673,7 +673,6 @@ const FocusPanel = memo(function FocusPanel() {
           {
             padding: 10,
             paddingLeft: 0,
-            height,
             width: 350,
             ...(Platform.OS === "web" &&
               ({
