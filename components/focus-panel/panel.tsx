@@ -673,10 +673,12 @@ const FocusPanel = memo(function FocusPanel() {
           {
             padding: 10,
             paddingLeft: 0,
+            height,
             width: 350,
             ...(Platform.OS === "web" &&
               ({
                 marginTop: "env(titlebar-area-height,0)",
+                height: "calc(100vh - env(titlebar-area-height,0))",
               } as any)),
           },
         ]}
