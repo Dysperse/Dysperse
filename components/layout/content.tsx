@@ -71,9 +71,9 @@ function ContentWrapper(props: ContentWrapperProps) {
           borderWidth: breakpoints.md ? 2 : 0,
           borderColor: theme[5],
         },
-        props.style,
         styles.container,
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+        props.style,
       ]}
     >
       {props.children}

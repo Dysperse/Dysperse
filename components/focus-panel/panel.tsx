@@ -45,6 +45,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import ContentWrapper from "../layout/content";
 import { useFocusPanelContext } from "./context";
 import { WidgetMenu } from "./menu";
 import { widgetMenuStyles } from "./widgetMenuStyles";
@@ -419,88 +420,90 @@ function PanelContent() {
       );
 
   return (
-    <Suspense
-      fallback={
-        <Wrapper>
-          <View
-            style={{
-              marginHorizontal: "auto",
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Spinner />
-          </View>
-        </Wrapper>
-      }
+    <ContentWrapper
+      style={{
+        height: height - 60,
+      }}
     >
-      <Wrapper>
-        <ScrollView
-          contentContainerStyle={{
-            padding: 20,
-            paddingTop: insets.top + 20,
-          }}
-          centerContent
-          style={{ height: height - 60 }}
-        >
-          {isFocused && (
-            <>
-              {!data ? (
-                <View style={{ marginHorizontal: "auto" }}>
-                  <Spinner />
-                </View>
-              ) : data.length === 0 ? (
-                <View
+      <Suspense
+        fallback={
+          <Wrapper>
+            <View
+              style={{
+                marginHorizontal: "auto",
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner />
+            </View>
+          </Wrapper>
+        }
+      >
+        <Wrapper>
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              padding: 20,
+              paddingTop: insets.top + 20,
+            }}
+            centerContent
+          >
+            {!data ? (
+              <View style={{ marginHorizontal: "auto" }}>
+                <Spinner />
+              </View>
+            ) : data.length === 0 ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  maxWidth: 250,
+                  marginHorizontal: "auto",
+                  gap: 5,
+                }}
+              >
+                <Text style={{ textAlign: "center" }} variant="eyebrow">
+                  This is the focus panel
+                </Text>
+                <Text
                   style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    maxWidth: 250,
-                    marginHorizontal: "auto",
-                    gap: 5,
+                    textAlign: "center",
+                    color: theme[11],
+                    opacity: 0.45,
                   }}
                 >
-                  <Text style={{ textAlign: "center" }} variant="eyebrow">
-                    This is the focus panel
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: theme[11],
-                      opacity: 0.45,
-                    }}
-                  >
-                    Here, you can add widgets to enhance & supercharge your
-                    productivity
-                  </Text>
-                </View>
-              ) : (
-                <ScrollView
-                  style={{ flex: 1 }}
-                  contentContainerStyle={{
-                    gap: 5,
-                    paddingTop: 80,
-                    minHeight: "100%",
-                  }}
-                >
-                  {data
-                    .sort(function (a, b) {
-                      if (a.order < b.order) return -1;
-                      if (a.order > b.order) return 1;
-                      return 0;
-                    })
-                    .map((widget, index) => (
-                      <RenderWidget key={index} index={index} widget={widget} />
-                    ))}
-                </ScrollView>
-              )}
-              <WidgetMenu />
-            </>
-          )}
-        </ScrollView>
-      </Wrapper>
-    </Suspense>
+                  Here, you can add widgets to enhance & supercharge your
+                  productivity
+                </Text>
+              </View>
+            ) : (
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{
+                  gap: 5,
+                  paddingTop: 80,
+                  minHeight: "100%",
+                }}
+              >
+                {data
+                  .sort(function (a, b) {
+                    if (a.order < b.order) return -1;
+                    if (a.order > b.order) return 1;
+                    return 0;
+                  })
+                  .map((widget, index) => (
+                    <RenderWidget key={index} index={index} widget={widget} />
+                  ))}
+              </ScrollView>
+            )}
+            <WidgetMenu />
+          </ScrollView>
+        </Wrapper>
+      </Suspense>
+    </ContentWrapper>
   );
 }
 export function PanelSwipeTrigger({
@@ -653,6 +656,7 @@ const FocusPanel = memo(function FocusPanel() {
   const tap = Gesture.Tap().onEnd(() => setFocus(!isFocused));
   const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
+  const { height } = useWindowDimensions();
 
   return pathname.includes("settings") ? null : (
     <>
@@ -669,6 +673,7 @@ const FocusPanel = memo(function FocusPanel() {
           {
             padding: 10,
             paddingLeft: 0,
+            height,
             width: 350,
             ...(Platform.OS === "web" &&
               ({
