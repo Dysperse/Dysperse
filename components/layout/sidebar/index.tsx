@@ -430,6 +430,7 @@ const Header = memo(function Header() {
         marginTop: 10,
         marginBottom: 10,
         gap: 10,
+        ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
       }}
     >
       <View
