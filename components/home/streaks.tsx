@@ -78,18 +78,14 @@ export function StreakGoal() {
   ) : (
     <>
       <View
-        style={[
-          {
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          },
-          !breakpoints.md && { marginTop: 20 },
-        ]}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: breakpoints.md ? 10 : 20,
+        }}
       >
-        <Text variant="eyebrow" style={{ marginBottom: 10 }}>
-          Goals
-        </Text>
+        <Text variant="eyebrow">Goals</Text>
         <TouchableOpacity onPress={() => router.push("/settings/account")}>
           <Icon style={{ opacity: 0.6, marginRight: 10 }} size={20}>
             tune
