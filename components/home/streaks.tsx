@@ -5,6 +5,7 @@ import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -71,7 +72,13 @@ const GoalIndicator = ({ completed, goal, name }) => {
 export function StreakGoal() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const { data, error } = useSWR(["user/streaks"]);
+  const { data, error } = useSWR([
+    "user/streaks",
+    {
+      weekStart: dayjs().startOf("week").utc().toISOString(),
+      dayStart: dayjs().startOf("day").utc().toISOString(),
+    },
+  ]);
 
   return error ? (
     <ErrorAlert />
