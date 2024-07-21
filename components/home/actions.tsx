@@ -39,7 +39,7 @@ export function Actions() {
   const theme = useColorTheme();
   const { handleOpen } = useCommandPaletteContext();
   const { setFocus, isFocused }: any = useFocusPanelContext();
-  const togglePanel = () => setFocus((d) => !d);
+  const openTrash = () => router.push("/trash");
   const openEverything = () => router.push("/everything");
 
   const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
@@ -82,10 +82,10 @@ export function Actions() {
           </View>
         )}
       </TouchableOpacity>
-      <TouchableOpacity style={actionStyles.item} onPress={togglePanel}>
-        <Icon>psychiatry</Icon>
+      <TouchableOpacity style={actionStyles.item} onPress={openTrash}>
+        <Icon>delete</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          {isFocused ? "End" : "Start"} focus...
+          Recently deleted
         </Text>
       </TouchableOpacity>
     </View>

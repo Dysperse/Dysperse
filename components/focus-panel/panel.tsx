@@ -442,7 +442,7 @@ function PanelContent() {
             paddingTop: insets.top + 20,
           }}
           centerContent
-          style={{ height: height - 40 }}
+          style={{ height: height - 60 }}
         >
           {isFocused && (
             <>

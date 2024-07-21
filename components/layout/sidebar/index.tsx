@@ -250,16 +250,6 @@ export const LogoButton = memo(function LogoButton({
             renderer: () => <SyncButton />,
           },
           {
-            icon: "delete",
-            text: "Trash",
-            callback: () => {
-              router.push("/trash");
-              setTimeout(() => {
-                if (!breakpoints.md) sidebarRef.current.closeDrawer();
-              }, 300);
-            },
-          },
-          {
             icon: "settings",
             text: "Settings",
             callback: () => {
