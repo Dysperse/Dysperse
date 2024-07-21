@@ -165,7 +165,7 @@ export function Column({
           ...(breakpoints.md && {
             backgroundColor: theme[2],
             borderWidth: 1,
-            borderColor: addHslAlpha(theme[5], 0.7),
+            borderColor: addHslAlpha(theme[5], 0.5),
             borderRadius: 20,
           }),
           width: breakpoints.md ? 320 : width,

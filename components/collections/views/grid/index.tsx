@@ -3,6 +3,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useRef, useState } from "react";
 import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
@@ -146,16 +147,22 @@ export default function Grid({ editOrderMode }) {
                 }}
               >
                 <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: theme[2],
-                    borderRadius: 25,
-                    width: breakpoints.md
-                      ? displayLabels.length > 4
-                        ? width / 2 - 230
-                        : width / 2 - 145
-                      : "100%",
-                  }}
+                  style={[
+                    {
+                      flex: 1,
+                      backgroundColor: theme[2],
+                      borderRadius: 25,
+                      width: breakpoints.md
+                        ? displayLabels.length > 4
+                          ? width / 2 - 230
+                          : width / 2 - 145
+                        : "100%",
+                    },
+                    label.empty && {
+                      borderWidth: 1,
+                      borderColor: addHslAlpha(theme[5], 0.5),
+                    },
+                  ]}
                 >
                   {label.empty ? (
                     <></>
@@ -194,7 +201,13 @@ export default function Grid({ editOrderMode }) {
               width,
             },
         ]}
-        scrollEnabled={breakpoints.md || currentColumn === "HOME"}
+        scrollEnabled={
+          ((breakpoints.md || currentColumn === "HOME") &&
+            // if there are less than 4 labels, we want to disable scrolling
+            breakpoints.md &&
+            displayLabels.length > 4) ||
+          !breakpoints.md
+        }
         style={[
           {
             width: "100%",

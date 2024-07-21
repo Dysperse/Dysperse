@@ -12,7 +12,6 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
-import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -50,7 +49,7 @@ const PaletteItem = memo(
         variant={preview?.key === item.key ? "filled" : "default"}
         style={{ paddingHorizontal: 10, marginLeft: -5 }}
         onPress={() => onCreate(item)}
-        onHoverIn={() => {
+        onMouseEnter={() => {
           if (!breakpoints.md) return;
           if (preview?.key !== item.key) {
             setPreview(item);
@@ -262,6 +261,10 @@ const PaletteHeader = memo(function PaletteHeader({
   useEffect(() => {
     ref.current?.focus({ preventScroll: true });
   }, [breakpoints]);
+
+  useEffect(() => {
+    setPreview(filtered.length > 0 ? filtered[1] : null);
+  }, []);
 
   return (
     (breakpoints.md || !preview) && (
@@ -541,72 +544,65 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   );
 
   return (
-    <BlurView
-      experimentalBlurMethod="dimezisBlurView"
-      style={{ flex: 1 }}
-      tint="prominent"
-      intensity={breakpoints.md ? 20 : 0}
+    <Pressable
+      onPress={(e) => e.stopPropagation()}
+      style={[
+        {
+          margin: "auto",
+          width: "100%",
+          flex: 1,
+          maxWidth: breakpoints.md ? 900 : width,
+        },
+        breakpoints.md && {
+          maxHeight: Math.min(600, height / 1.3),
+          backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: theme[6],
+          borderRadius: 20,
+          shadowColor: "rgba(0, 0, 0, 0.12)",
+          shadowOffset: {
+            width: 10,
+            height: 10,
+          },
+          shadowOpacity: 1,
+          shadowRadius: 30,
+        },
+      ]}
     >
-      <Pressable
-        onPress={(e) => e.stopPropagation()}
-        style={[
-          {
-            margin: "auto",
-            width: "100%",
-            flex: 1,
-            maxWidth: breakpoints.md ? 900 : width,
-          },
-          breakpoints.md && {
-            maxHeight: Math.min(600, height / 1.3),
-            backgroundColor: theme[2],
-            borderWidth: 1,
-            borderColor: theme[6],
-            borderRadius: 20,
-            shadowColor: "rgba(0, 0, 0, 0.12)",
-            shadowOffset: {
-              width: 10,
-              height: 10,
-            },
-            shadowOpacity: 1,
-            shadowRadius: 30,
-          },
-        ]}
-      >
-        <PaletteHeader
-          preview={preview}
-          handleClose={handleClose}
-          query={query}
-          setQuery={setQuery}
-          setPreview={setPreview}
-          filtered={filtered}
-        />
-        <View style={{ flexDirection: "row", flex: 1 }}>
-          {(!preview || breakpoints.md) && (
-            <KeyboardAvoidingView
-              style={{ flex: breakpoints.md ? 1.5 : 1 }}
-              behavior="height"
-            >
-              <CommandPaletteList
-                preview={preview}
-                setPreview={handlePreviewChange}
-                filtered={filtered}
-                filter={filter}
-                setFilter={setFilter}
-                filters={filters}
-                onCreate={onCreate}
-              />
-            </KeyboardAvoidingView>
-          )}
-          {(breakpoints.md || preview) && (
-            <CommandPalettePreview
-              setPreview={setPreview}
-              onCreate={onCreate}
+      <PaletteHeader
+        preview={preview}
+        handleClose={handleClose}
+        query={query}
+        setQuery={setQuery}
+        setPreview={setPreview}
+        filtered={filtered}
+      />
+      <View style={{ flexDirection: "row", flex: 1 }}>
+        {(!preview || breakpoints.md) && (
+          <KeyboardAvoidingView
+            style={{ flex: breakpoints.md ? 1.5 : 1 }}
+            behavior="height"
+          >
+            <CommandPaletteList
               preview={preview}
-              loading={loading}
+              setPreview={handlePreviewChange}
+              filtered={filtered}
+              filter={filter}
+              setFilter={setFilter}
+              filters={filters}
+              onCreate={onCreate}
             />
-          )}
-        </View>
-      </Pressable>
-    </BlurView>
+          </KeyboardAvoidingView>
+        )}
+        {(breakpoints.md || preview) && (
+          <CommandPalettePreview
+            setPreview={setPreview}
+            onCreate={onCreate}
+            preview={preview}
+            loading={loading}
+          />
+        )}
+      </View>
+    </Pressable>
   );
 }

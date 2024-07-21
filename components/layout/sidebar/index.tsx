@@ -275,7 +275,16 @@ export const LogoButton = memo(function LogoButton({
           },
         ]}
       />
-      <View>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginRight: -10,
+          gap: 0.5,
+        }}
+      >
         {breakpoints.md ? (
           <MenuPopover
             menuProps={{

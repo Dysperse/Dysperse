@@ -211,7 +211,7 @@ export function Column(props: ColumnProps) {
               borderRadius: 20,
               ...(breakpoints.md && {
                 borderWidth: 1,
-                borderColor: addHslAlpha(theme[5], 0.7),
+                borderColor: addHslAlpha(theme[5], 0.5),
               }),
             }
           : {
