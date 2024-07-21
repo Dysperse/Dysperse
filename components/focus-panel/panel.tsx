@@ -45,7 +45,6 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import ContentWrapper from "../layout/content";
 import { useFocusPanelContext } from "./context";
 import { WidgetMenu } from "./menu";
 import { widgetMenuStyles } from "./widgetMenuStyles";
@@ -437,80 +436,69 @@ function PanelContent() {
       }
     >
       <Wrapper>
-        <ContentWrapper
-          noPaddingTop={!breakpoints.md}
-          style={{
-            position: "relative",
-            maxHeight: height - 20,
+        <ScrollView
+          contentContainerStyle={{
+            padding: 20,
+            paddingTop: insets.top + 20,
           }}
+          centerContent
+          style={{ height: height - 40 }}
         >
-          <ScrollView
-            contentContainerStyle={{
-              padding: 20,
-              paddingTop: insets.top + 20,
-            }}
-            centerContent
-          >
-            {isFocused && (
-              <>
-                {!data ? (
-                  <View style={{ marginHorizontal: "auto" }}>
-                    <Spinner />
-                  </View>
-                ) : data.length === 0 ? (
-                  <View
+          {isFocused && (
+            <>
+              {!data ? (
+                <View style={{ marginHorizontal: "auto" }}>
+                  <Spinner />
+                </View>
+              ) : data.length === 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    maxWidth: 250,
+                    marginHorizontal: "auto",
+                    gap: 5,
+                  }}
+                >
+                  <Text style={{ textAlign: "center" }} variant="eyebrow">
+                    This is the focus panel
+                  </Text>
+                  <Text
                     style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      maxWidth: 250,
-                      marginHorizontal: "auto",
-                      gap: 5,
+                      textAlign: "center",
+                      color: theme[11],
+                      opacity: 0.45,
                     }}
                   >
-                    <Text style={{ textAlign: "center" }} variant="eyebrow">
-                      This is the focus panel
-                    </Text>
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        color: theme[11],
-                        opacity: 0.45,
-                      }}
-                    >
-                      Here, you can add widgets to enhance & supercharge your
-                      productivity
-                    </Text>
-                  </View>
-                ) : (
-                  <ScrollView
-                    style={{ flex: 1 }}
-                    contentContainerStyle={{
-                      gap: 5,
-                      paddingTop: 80,
-                      minHeight: "100%",
-                    }}
-                  >
-                    {data
-                      .sort(function (a, b) {
-                        if (a.order < b.order) return -1;
-                        if (a.order > b.order) return 1;
-                        return 0;
-                      })
-                      .map((widget, index) => (
-                        <RenderWidget
-                          key={index}
-                          index={index}
-                          widget={widget}
-                        />
-                      ))}
-                  </ScrollView>
-                )}
-                <WidgetMenu />
-              </>
-            )}
-          </ScrollView>
-        </ContentWrapper>
+                    Here, you can add widgets to enhance & supercharge your
+                    productivity
+                  </Text>
+                </View>
+              ) : (
+                <ScrollView
+                  style={{ flex: 1 }}
+                  contentContainerStyle={{
+                    gap: 5,
+                    paddingTop: 80,
+                    minHeight: "100%",
+                  }}
+                >
+                  {data
+                    .sort(function (a, b) {
+                      if (a.order < b.order) return -1;
+                      if (a.order > b.order) return 1;
+                      return 0;
+                    })
+                    .map((widget, index) => (
+                      <RenderWidget key={index} index={index} widget={widget} />
+                    ))}
+                </ScrollView>
+              )}
+              <WidgetMenu />
+            </>
+          )}
+        </ScrollView>
       </Wrapper>
     </Suspense>
   );
