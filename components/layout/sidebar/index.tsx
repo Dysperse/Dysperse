@@ -75,21 +75,19 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   useHotkeys("ctrl+0", () => router.replace("/"));
 
   return (
-    <Pressable
+    <IconButton
       onPress={handleHome}
       onMouseDown={handleHome}
-      style={({ pressed, hovered }) => [
-        styles.button,
-        {
-          borderWidth: 1,
-          backgroundColor: theme[isHome ? 2 : pressed ? 4 : hovered ? 3 : 2],
-          borderColor: theme[isHome ? 5 : pressed ? 7 : hovered ? 6 : 4],
-        },
-        Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-      ]}
+      style={{ borderRadius: 10 }}
+      backgroundColors={{
+        default: theme[isHome ? 4 : 3],
+        pressed: theme[5],
+        hovered: theme[4],
+      }}
+      size={45}
     >
       <Icon filled={isHome}>home</Icon>
-    </Pressable>
+    </IconButton>
   );
 });
 
@@ -395,22 +393,19 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           rendererProps: { containerStyle: { marginLeft: 10, width: 200 } },
         }}
         trigger={
-          <Pressable
-            style={({ pressed, hovered }) => [
-              styles.button,
-              {
-                borderWidth: 1,
-                borderColor: theme[pressed ? 7 : hovered ? 6 : 4],
-                backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-                flex: 1,
-                minHeight: 45,
-              },
-              Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-            ]}
+          <IconButton
+            style={{ borderRadius: 10, width: "100%" }}
+            backgroundColors={{
+              default: theme[3],
+              pressed: theme[5],
+              hovered: theme[4],
+            }}
+            size={45}
+            pressableStyle={{ flexDirection: "row", gap: 10 }}
           >
             <Icon>note_stack_add</Icon>
             <Text style={{ color: theme[11] }}>New</Text>
-          </Pressable>
+          </IconButton>
         }
       />
     </>

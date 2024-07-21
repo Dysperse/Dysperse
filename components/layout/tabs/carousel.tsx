@@ -1,6 +1,7 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -106,37 +107,27 @@ const JumpToButton = memo(function JumpToButton() {
   });
 
   return (
-    <View style={{ borderRadius: 15, overflow: "hidden", marginBottom: 10 }}>
-      <Pressable
+    <View style={{ borderRadius: 15, overflow: "hidden", marginBottom: 5 }}>
+      <Button
         onPress={() =>
           requestAnimationFrame(() => {
             handleOpen();
           })
         }
-        style={({ pressed, hovered }) => [
-          {
-            backgroundColor: pressed
-              ? theme[5]
-              : hovered
-              ? theme[4]
-              : undefined,
-            // opacity: pressed ? 0.5 : 1,
-            flexDirection: "row",
-            alignItems: "center",
-            columnGap: 15,
-            paddingHorizontal: 15,
-            borderRadius: 15,
-            height: 50,
-          },
-          Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-        ]}
+        backgroundColors={{
+          default: theme[2],
+          hovered: theme[4],
+          pressed: theme[5],
+        }}
+        height={50}
+        style={{ justifyContent: "flex-start" }}
         android_ripple={{ color: theme[7] }}
       >
         <Icon bold>add</Icon>
         <Text weight={700} style={{ color: theme[11] }}>
           New tab
         </Text>
-      </Pressable>
+      </Button>
     </View>
   );
 });
