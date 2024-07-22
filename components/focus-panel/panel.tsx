@@ -35,7 +35,6 @@ import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
 import {
-  Fragment,
   lazy,
   memo,
   Suspense,
@@ -700,109 +699,85 @@ function FocusPanelHome({
 
   const { data } = useSWR(["user/focus-panel"], null);
 
-  const Wrapper = breakpoints.md
-    ? Fragment
-    : ({ children }) => (
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            backgroundColor: theme[1],
-            zIndex: 9999,
-            width: width,
-            height: "100%",
-          }}
-        >
-          {children}
-        </View>
-      );
-
   const { panelState } = useFocusPanelContext();
 
   return (
     <>
       <Suspense
         fallback={
-          <Wrapper>
-            <View
-              style={{
-                marginHorizontal: "auto",
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Spinner />
-            </View>
-          </Wrapper>
+          <View
+            style={{
+              marginHorizontal: "auto",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Spinner />
+          </View>
         }
       >
-        <Wrapper>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={[{ flex: 1, padding: panelState === "COLLAPSED" ? 0 : 20 }]}
-          >
-            {!data ? (
-              <View style={{ marginHorizontal: "auto" }}>
-                <Spinner />
-              </View>
-            ) : data.length === 0 ? (
-              <View
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={[{ flex: 1, padding: panelState === "COLLAPSED" ? 0 : 20 }]}
+        >
+          {!data ? (
+            <View style={{ marginHorizontal: "auto" }}>
+              <Spinner />
+            </View>
+          ) : data.length === 0 ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                maxWidth: 250,
+                marginHorizontal: "auto",
+                gap: 5,
+              }}
+            >
+              <Text style={{ textAlign: "center" }} variant="eyebrow">
+                This is the focus panel
+              </Text>
+              <Text
                 style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  maxWidth: 250,
-                  marginHorizontal: "auto",
-                  gap: 5,
+                  textAlign: "center",
+                  color: theme[11],
+                  opacity: 0.45,
                 }}
               >
-                <Text style={{ textAlign: "center" }} variant="eyebrow">
-                  This is the focus panel
-                </Text>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: theme[11],
-                    opacity: 0.45,
-                  }}
-                >
-                  Here, you can add widgets to enhance & supercharge your
-                  productivity
-                </Text>
-              </View>
-            ) : (
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{
-                  gap: panelState === "COLLAPSED" ? 10 : 20,
-                  minHeight: "100%",
-                  paddingBottom: panelState === "COLLAPSED" ? 0 : 20,
-                }}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-              >
-                {data
-                  .sort(function (a, b) {
-                    if (a.order < b.order) return -1;
-                    if (a.order > b.order) return 1;
-                    return 0;
-                  })
-                  .map((widget, index) => (
-                    <RenderWidget
-                      navigation={navigation}
-                      key={index}
-                      index={index}
-                      widget={widget}
-                    />
-                  ))}
-              </ScrollView>
-            )}
-          </ScrollView>
-        </Wrapper>
+                Here, you can add widgets to enhance & supercharge your
+                productivity
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              style={{ flex: 1 }}
+              contentContainerStyle={{
+                gap: panelState === "COLLAPSED" ? 10 : 20,
+                minHeight: "100%",
+                paddingBottom: panelState === "COLLAPSED" ? 0 : 20,
+              }}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+            >
+              {data
+                .sort(function (a, b) {
+                  if (a.order < b.order) return -1;
+                  if (a.order > b.order) return 1;
+                  return 0;
+                })
+                .map((widget, index) => (
+                  <RenderWidget
+                    navigation={navigation}
+                    key={index}
+                    index={index}
+                    widget={widget}
+                  />
+                ))}
+            </ScrollView>
+          )}
+        </ScrollView>
       </Suspense>
     </>
   );
