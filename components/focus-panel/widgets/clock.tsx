@@ -349,6 +349,7 @@ const Timer = ({ pomodoro = false }) => {
       )) as `#${string}`;
 
   const [sound, setSound] = useState<any>(null);
+  const { panelState } = useFocusPanelContext();
 
   const playSound = async () => {
     console.log("Loading Sound");
@@ -377,10 +378,10 @@ const Timer = ({ pomodoro = false }) => {
             alignItems: "center",
             aspectRatio: "1/1",
             borderRadius: 99,
-            width: 200,
-            height: 200,
+            width: panelState === "COLLAPSED" ? 70 : 200,
+            height: panelState === "COLLAPSED" ? 70 : 200,
             marginHorizontal: "auto",
-            marginTop: -10,
+            marginTop: panelState === "COLLAPSED" ? 10 : -10,
             justifyContent: "center",
           },
           isCompleted && {
@@ -402,6 +403,7 @@ const Timer = ({ pomodoro = false }) => {
           onComplete={() => {
             playSound();
           }}
+          size={panelState === "COLLAPSED" ? 70 : 200}
         >
           {({ remainingTime }) => (
             <View style={{ position: "relative" }}>
@@ -454,10 +456,10 @@ const Timer = ({ pomodoro = false }) => {
                   style={[
                     {
                       color: theme[isCompleted ? 12 : 11],
-                      fontSize: 40,
+                      fontSize: panelState === "COLLAPSED" ? 17 : 40,
                       fontFamily: getFontName("jetBrainsMono", 500),
                       textAlign: "center",
-                      width: 130,
+                      width: panelState === "COLLAPSED" ? 50 : 130,
                       borderRadius: 10,
                     },
                     !paused && {
@@ -472,7 +474,7 @@ const Timer = ({ pomodoro = false }) => {
       </View>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: panelState === "COLLAPSED" ? "column" : "row",
           justifyContent: "center",
           gap: 10,
           marginTop: 10,
@@ -519,102 +521,104 @@ const Timer = ({ pomodoro = false }) => {
           </Button>
         )}
       </View>
-      <Collapsible collapsed={time !== duration * 60}>
-        <ScrollView
-          horizontal={!pomodoro}
-          contentContainerStyle={{
-            gap: pomodoro ? 0 : 10,
-            paddingHorizontal: pomodoro ? 0 : 20,
-          }}
-          scrollEnabled={!pomodoro}
-          showsHorizontalScrollIndicator={false}
-        >
-          {pomodoro
-            ? [
-                { m: 25, text: "Pomodoro" },
-                { m: 5, text: "Short Break" },
-                { m: 15, text: "Long Break" },
-              ].map((time) => (
-                <Button
-                  key={time.m}
-                  onPress={() => {
-                    setDuration(time.m);
-                    setPaused(false);
-                    setRestartKey((key) => key + 1);
-                  }}
-                  style={({ pressed, hovered }) => ({
-                    borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-                    backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginTop: 5,
-                    paddingHorizontal: 20,
-                  })}
-                >
-                  <Text
-                    style={{ textAlign: "center", color: theme[11] }}
-                    weight={700}
-                  >
-                    {time.text}
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: theme[11],
-                      opacity: 0.6,
+      {panelState !== "COLLAPSED" && (
+        <Collapsible collapsed={time !== duration * 60}>
+          <ScrollView
+            horizontal={!pomodoro}
+            contentContainerStyle={{
+              gap: pomodoro ? 0 : 10,
+              paddingHorizontal: pomodoro ? 0 : 20,
+            }}
+            scrollEnabled={!pomodoro}
+            showsHorizontalScrollIndicator={false}
+          >
+            {pomodoro
+              ? [
+                  { m: 25, text: "Pomodoro" },
+                  { m: 5, text: "Short Break" },
+                  { m: 15, text: "Long Break" },
+                ].map((time) => (
+                  <Button
+                    key={time.m}
+                    onPress={() => {
+                      setDuration(time.m);
+                      setPaused(false);
+                      setRestartKey((key) => key + 1);
                     }}
+                    style={({ pressed, hovered }) => ({
+                      borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                      backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginTop: 5,
+                      paddingHorizontal: 20,
+                    })}
                   >
-                    {time.m} min
-                  </Text>
-                </Button>
-              ))
-            : [
-                { m: 1 },
-                { m: 3 },
-                { m: 5 },
-                { m: 10 },
-                { m: 15 },
-                { m: 20 },
-                { m: 25 },
-                { m: 30 },
-                { m: 45 },
-                { m: 60 },
-              ].map((time) => (
-                <IconButton
-                  key={time.m}
-                  size={50}
-                  onPress={() => {
-                    setDuration(time.m);
-                    setPaused(false);
-                    setRestartKey((key) => key + 1);
-                  }}
-                  pressableStyle={({ pressed, hovered }) => ({
-                    backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: 5,
-                  })}
-                >
-                  <Text
-                    style={{ textAlign: "center", color: theme[11] }}
-                    weight={900}
-                  >
-                    {time.m}
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: theme[11],
-                      fontSize: 12,
+                    <Text
+                      style={{ textAlign: "center", color: theme[11] }}
+                      weight={700}
+                    >
+                      {time.text}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        color: theme[11],
+                        opacity: 0.6,
+                      }}
+                    >
+                      {time.m} min
+                    </Text>
+                  </Button>
+                ))
+              : [
+                  { m: 1 },
+                  { m: 3 },
+                  { m: 5 },
+                  { m: 10 },
+                  { m: 15 },
+                  { m: 20 },
+                  { m: 25 },
+                  { m: 30 },
+                  { m: 45 },
+                  { m: 60 },
+                ].map((time) => (
+                  <IconButton
+                    key={time.m}
+                    size={50}
+                    onPress={() => {
+                      setDuration(time.m);
+                      setPaused(false);
+                      setRestartKey((key) => key + 1);
                     }}
+                    pressableStyle={({ pressed, hovered }) => ({
+                      backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: 5,
+                    })}
                   >
-                    min
-                  </Text>
-                </IconButton>
-              ))}
-        </ScrollView>
-      </Collapsible>
+                    <Text
+                      style={{ textAlign: "center", color: theme[11] }}
+                      weight={900}
+                    >
+                      {time.m}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        color: theme[11],
+                        fontSize: 12,
+                      }}
+                    >
+                      min
+                    </Text>
+                  </IconButton>
+                ))}
+          </ScrollView>
+        </Collapsible>
+      )}
     </>
   );
 };
