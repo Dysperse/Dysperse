@@ -1,34 +1,53 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Platform } from "react-native";
 import FocusPanel from "./panel";
 
+type PanelState = "OPEN" | "CLOSED" | "COLLAPSED";
 interface FocusPanelContext {
-  isFocused: boolean;
-  setFocus: (isFocused: boolean) => void;
+  panelState: PanelState;
+  setPanelState: Dispatch<SetStateAction<PanelState>>;
+  collapseOnBack: React.MutableRefObject<boolean>;
 }
 
 const FocusPanelContext = createContext<FocusPanelContext>(null);
 export const useFocusPanelContext = () => useContext(FocusPanelContext);
 
 export const FocusPanelProvider = ({ children }) => {
-  const [isFocused, setFocus] = useState(
+  const states = ["OPEN", "CLOSED", "COLLAPSED"];
+  const t = localStorage.getItem("panelState");
+
+  const [panelState, setPanelState] = useState(
     Platform.OS === "web"
-      ? localStorage.getItem("focusPanelVisible") === "true"
-      : false
+      ? t && states.includes(t)
+        ? (t as PanelState)
+        : "COLLAPSED"
+      : "COLLAPSED"
   );
+  const collapseOnBack = useRef(panelState === "COLLAPSED");
 
   useEffect(() => {
-    if (Platform.OS === "web")
-      localStorage.setItem("focusPanelVisible", isFocused ? "true" : "false");
-  }, [isFocused]);
+    if (Platform.OS === "web") {
+      localStorage.setItem("panelState", panelState);
+    }
+  }, [panelState]);
 
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <FocusPanelContext.Provider value={{ isFocused, setFocus }}>
-      {(breakpoints.md || !isFocused) && children}
-      {(breakpoints.md || isFocused) && <FocusPanel />}
+    <FocusPanelContext.Provider
+      value={{ panelState, setPanelState, collapseOnBack }}
+    >
+      {(breakpoints.md || panelState === "CLOSED") && children}
+      {(breakpoints.md || panelState !== "CLOSED") && <FocusPanel />}
     </FocusPanelContext.Provider>
   );
 };

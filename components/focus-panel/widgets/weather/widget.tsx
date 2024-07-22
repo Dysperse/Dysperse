@@ -8,6 +8,7 @@ import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { StackNavigationProp } from "@react-navigation/stack";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
@@ -15,8 +16,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { useFocusPanelContext } from "../../context";
 import { widgetMenuStyles } from "../../widgetMenuStyles";
-import { WeatherModal } from "./modal";
 import weatherCodes from "./weatherCodes.json";
 
 const gridStyles = StyleSheet.create({
@@ -50,6 +51,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
       <View style={gridStyles.container}>
         <View style={gridStyles.item}>
           <Avatar
+            disabled
             size={30}
             icon="wb_sunny"
             theme={weatherDescription.colorTheme}
@@ -66,6 +68,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
         </View>
         <View style={gridStyles.item}>
           <Avatar
+            disabled
             size={30}
             icon="wb_twilight"
             theme={weatherDescription.colorTheme}
@@ -85,6 +88,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
       <View style={gridStyles.container}>
         <View style={gridStyles.item}>
           <Avatar
+            disabled
             size={30}
             icon="north"
             theme={weatherDescription.colorTheme}
@@ -101,6 +105,7 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
         </View>
         <View style={gridStyles.item}>
           <Avatar
+            disabled
             size={30}
             icon="south"
             theme={weatherDescription.colorTheme}
@@ -118,7 +123,16 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
   );
 };
 
-export default function WeatherWidget({ widget, menuActions }: any) {
+export default function WeatherWidget({
+  widget,
+  navigation,
+  menuActions,
+}: {
+  widget: any;
+  navigation: StackNavigationProp<any>;
+  menuActions: any[];
+}) {
+  const { setPanelState, collapseOnBack } = useFocusPanelContext();
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
@@ -131,6 +145,8 @@ export default function WeatherWidget({ widget, menuActions }: any) {
       setLocation(location);
     }
   }, []);
+
+  const { panelState } = useFocusPanelContext();
 
   const requestLocationPermission = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -246,29 +262,31 @@ export default function WeatherWidget({ widget, menuActions }: any) {
 
   return (
     <View>
-      <MenuPopover
-        options={[
-          {
-            text: "Refresh",
-            icon: "refresh",
-            callback: () => {
-              mutateWeather();
-              mutateAirQuality();
+      {panelState !== "COLLAPSED" && (
+        <MenuPopover
+          options={[
+            {
+              text: "Refresh",
+              icon: "refresh",
+              callback: () => {
+                mutateWeather();
+                mutateAirQuality();
+              },
             },
-          },
-          { divider: true },
-          ...menuActions,
-        ]}
-        containerStyle={{ marginTop: -15 }}
-        trigger={
-          <Button style={widgetMenuStyles.button} dense>
-            <ButtonText weight={800} style={widgetMenuStyles.text}>
-              Weather
-            </ButtonText>
-            <Icon style={{ color: theme[11] }}>expand_more</Icon>
-          </Button>
-        }
-      />
+            { divider: true },
+            ...menuActions,
+          ]}
+          containerStyle={{ marginTop: -15 }}
+          trigger={
+            <Button style={widgetMenuStyles.button} dense>
+              <ButtonText weight={800} style={widgetMenuStyles.text}>
+                Weather
+              </ButtonText>
+              <Icon style={{ color: theme[11] }}>expand_more</Icon>
+            </Button>
+          }
+        />
+      )}
       {error || permissionStatus === "denied" ? (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>
           <Icon size={40} style={{ marginLeft: -2 }}>
@@ -287,89 +305,104 @@ export default function WeatherWidget({ widget, menuActions }: any) {
         </Pressable>
       ) : data && airQualityData ? (
         <ColorThemeProvider theme={weatherColor}>
-          <WeatherModal
-            weather={data}
-            location={null}
-            airQuality={airQualityData}
-            isNight={isNight()}
+          <Pressable
+            onPress={() => {
+              navigation.push("Weather");
+              setPanelState("OPEN");
+              if (panelState === "COLLAPSED") collapseOnBack.current = true;
+            }}
           >
-            <Pressable>
-              <LinearGradient
-                colors={gradient}
-                style={[
-                  widgetStyles.card,
-                  {
-                    borderWidth: 1,
-                    borderColor: weatherColor[6],
-                  },
-                ]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+            <LinearGradient
+              colors={gradient}
+              style={[
+                widgetStyles.card,
+                {
+                  borderWidth: 1,
+                  borderColor: weatherColor[6],
+                },
+                panelState === "COLLAPSED" && { padding: 15 },
+              ]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View
+                style={{
+                  flexDirection:
+                    panelState === "COLLAPSED" ? "column-reverse" : "row",
+                  alignItems:
+                    panelState === "COLLAPSED" ? "center" : "flex-start",
+                  justifyContent: "space-between",
+                }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View>
-                    <Text
-                      style={{
-                        fontSize: 40,
-                        color: weatherColor[11],
-                        fontFamily: getFontName("jetBrainsMono", 500),
-                      }}
-                      weight={600}
-                    >
-                      {Math.round(data.current_weather.temperature)}&deg;F
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 17,
-                        opacity: 0.8,
-                        marginBottom: 5,
-                        color: weatherColor[11],
-                      }}
-                      weight={300}
-                    >
-                      {
-                        weatherCodes[data.current_weather.weathercode][
-                          isNight() ? "night" : "day"
-                        ].description
-                      }{" "}
-                      &bull; Feels like{" "}
-                      {Math.round(
-                        data.hourly.apparent_temperature[dayjs().hour()]
-                      )}
-                      &deg;
-                    </Text>
-                  </View>
-                  <Avatar
-                    size={50}
+                <View>
+                  <Text
                     style={{
+                      fontSize: panelState === "COLLAPSED" ? 30 : 40,
+                      color: weatherColor[11],
+                      fontFamily: getFontName("jetBrainsMono", 500),
+                      textAlign: panelState === "COLLAPSED" ? "center" : "left",
+                      marginRight: panelState === "COLLAPSED" ? -10 : 0,
+                    }}
+                    weight={600}
+                  >
+                    {Math.round(data.current_weather.temperature)}&deg;
+                    {panelState === "COLLAPSED" ? "" : "F"}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 17,
+                      opacity: 0.8,
+                      marginBottom: 5,
+                      color: weatherColor[11],
+                      textAlign: panelState === "COLLAPSED" ? "center" : "left",
+                    }}
+                    weight={300}
+                  >
+                    {
+                      weatherCodes[data.current_weather.weathercode][
+                        isNight() ? "night" : "day"
+                      ].description
+                    }
+                    {panelState !== "COLLAPSED" &&
+                      ` • Feels like ${Math.round(
+                        data.hourly.apparent_temperature[dayjs().hour()]
+                      )}°`}
+                  </Text>
+                </View>
+                <Avatar
+                  size={50}
+                  style={[
+                    {
                       marginTop: 10,
                       marginRight: 10,
-                    }}
-                    theme={weatherDescription.colorTheme}
-                  >
-                    <Icon size={35} bold>
-                      {
-                        weatherCodes[data.current_weather.weathercode][
-                          isNight() ? "night" : "day"
-                        ].icon
-                      }
-                    </Icon>
-                  </Avatar>
-                </View>
+                    },
+                    panelState === "COLLAPSED" && {
+                      marginTop: -10,
+                      marginRight: 0,
+                      backgroundColor: "transparent",
+                    },
+                  ]}
+                  disabled
+                  theme={weatherDescription.colorTheme}
+                >
+                  <Icon size={35} bold={panelState !== "COLLAPSED"}>
+                    {
+                      weatherCodes[data.current_weather.weathercode][
+                        isNight() ? "night" : "day"
+                      ].icon
+                    }
+                  </Icon>
+                </Avatar>
+              </View>
+              {panelState !== "COLLAPSED" && (
                 <WeatherGridDetails
                   weatherDescription={weatherDescription}
                   data={data}
                   theme={weatherColor}
                 />
-              </LinearGradient>
-            </Pressable>
-          </WeatherModal>
+              )}
+            </LinearGradient>
+          </Pressable>
         </ColorThemeProvider>
       ) : (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>

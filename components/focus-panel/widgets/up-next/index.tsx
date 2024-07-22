@@ -4,6 +4,7 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
@@ -16,13 +17,15 @@ import useSWR from "swr";
 import { Entity } from "../../../collections/entity";
 import { onTaskUpdate } from "../../../collections/views/planner/Column";
 import { TaskDrawer } from "../../../task/drawer";
-import { ImportantChip } from "../../panel";
+import { useFocusPanelContext } from "../../context";
+import { ImportantChip, UpcomingSvg } from "../../panel";
 import { widgetMenuStyles } from "../../widgetMenuStyles";
 import { widgetStyles } from "../../widgetStyles";
 
 const UpNext = ({ widget, menuActions }) => {
   const userTheme = useColorTheme();
   const theme = useColor("green");
+  const { panelState, setPanelState } = useFocusPanelContext();
   const [todayDateString, setTodayDateString] = useState(dayjs().toISOString());
 
   useEffect(() => {
@@ -75,7 +78,21 @@ const UpNext = ({ widget, menuActions }) => {
     .sort((a, b) => dayjs(a.start).diff(dayjs(b.start)))
     .filter((t) => t.completionInstances?.length === 0);
 
-  return (
+  return panelState === "COLLAPSED" ? (
+    <IconButton
+      variant="outlined"
+      size={83}
+      style={{ borderRadius: 20 }}
+      backgroundColors={{
+        default: theme[3],
+        pressed: theme[4],
+        hovered: theme[5],
+      }}
+      onPress={() => setPanelState("OPEN")}
+    >
+      <UpcomingSvg />
+    </IconButton>
+  ) : (
     <View>
       <MenuPopover
         options={menuActions}

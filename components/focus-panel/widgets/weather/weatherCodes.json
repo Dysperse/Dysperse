@@ -9,7 +9,7 @@
     "night": {
       "description": "Clear",
       "image": "http://openweathermap.org/img/wn/01n@2x.png",
-      "icon": "light_mode",
+      "icon": "dark_mode",
       "colorTheme": "indigo"
     }
   },

@@ -29,7 +29,7 @@ import { KanbanHeader } from "../kanban/Header";
 
 export default function List() {
   const isDark = useDarkMode();
-  const { data, mutate, isValidating } = useCollectionContext();
+  const { data, mutate } = useCollectionContext();
   const theme = useColorTheme();
 
   const d = data.labels.reduce((acc, curr) => {
@@ -121,10 +121,7 @@ export default function List() {
             []
           )}
           refreshControl={
-            <RefreshControl
-              refreshing={isValidating}
-              onRefresh={() => mutate()}
-            />
+            <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
           contentContainerStyle={{ paddingBottom: 50 }}
           renderItem={({ item }: any) => {

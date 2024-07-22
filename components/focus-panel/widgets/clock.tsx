@@ -24,6 +24,7 @@ import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import timezones from "timezones-list";
+import { useFocusPanelContext } from "../context";
 import { widgetMenuStyles } from "../widgetMenuStyles";
 import { widgetStyles } from "../widgetStyles";
 
@@ -37,6 +38,8 @@ const TimeZone = ({
   params?: any;
 }) => {
   const theme = useColor("orange");
+  const { panelState } = useFocusPanelContext();
+
   const [time, setTime] = useState(dayjs().tz(timeZone));
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,8 +90,8 @@ const TimeZone = ({
                   ? undefined
                   : {
                       position: "relative",
-                      height: 40,
-                      width: 170,
+                      height: panelState === "COLLAPSED" ? undefined : 40,
+                      width: panelState === "COLLAPSED" ? undefined : 170,
                       marginHorizontal: "auto",
                     }
               }
@@ -96,7 +99,15 @@ const TimeZone = ({
               <Text
                 weight={timeZone ? 900 : 800}
                 style={
-                  timeZone
+                  panelState === "COLLAPSED"
+                    ? {
+                        marginTop: 10,
+                        fontSize: 35,
+                        lineHeight: 40,
+                        fontFamily: getFontName("jetBrainsMono", 500),
+                        color: theme[11],
+                      }
+                    : timeZone
                     ? {
                         color: theme[11],
                         fontSize: 17,
@@ -108,13 +119,22 @@ const TimeZone = ({
                         top: 0,
                         left: 0,
                         fontSize: 35,
+                        lineHeight: 40,
                         fontFamily: getFontName("jetBrainsMono", 500),
                         color: theme[11],
                       }
                 }
-                numberOfLines={timeZone ? undefined : 1}
+                numberOfLines={
+                  panelState === "COLLAPSED"
+                    ? undefined
+                    : timeZone
+                    ? undefined
+                    : 1
+                }
               >
-                {time.format(timeZone ? "hh:mm" : "hh:mm A")}
+                {panelState === "COLLAPSED"
+                  ? time.format("hh:mm").split(":").join("\n")
+                  : time.format(timeZone ? "hh:mm" : "hh:mm A")}
               </Text>
               {timeZone && (
                 <Text
@@ -128,7 +148,7 @@ const TimeZone = ({
                   {time.format("A")}
                 </Text>
               )}
-              {!timeZone && (
+              {!timeZone && panelState !== "COLLAPSED" && (
                 <Text
                   weight={800}
                   style={{
@@ -152,7 +172,9 @@ const TimeZone = ({
       </ConfirmationModal>
       <Text
         style={
-          timeZone
+          panelState === "COLLAPSED"
+            ? { display: "none" }
+            : timeZone
             ? {
                 color: theme[11],
                 textAlign: "center",
@@ -207,6 +229,8 @@ const Stopwatch = () => {
   const theme = useColor("orange");
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
+  const { panelState } = useFocusPanelContext();
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (running) {
@@ -222,15 +246,15 @@ const Stopwatch = () => {
       <View
         style={{
           position: "relative",
-          height: 50,
-          width: 195,
+          height: panelState === "COLLAPSED" ? undefined : 50,
+          width: panelState === "COLLAPSED" ? "100%" : 195,
           marginHorizontal: "auto",
         }}
       >
         <Text
           weight={800}
           style={{
-            position: "absolute",
+            position: panelState === "COLLAPSED" ? undefined : "absolute",
             top: 0,
             left: 0,
             fontSize: 40,
@@ -238,33 +262,43 @@ const Stopwatch = () => {
             fontFamily: getFontName("jetBrainsMono", 500),
             color: theme[11],
           }}
-          numberOfLines={1}
+          numberOfLines={panelState === "COLLAPSED" ? undefined : 1}
         >
-          {new Date(time * 1000).toISOString().substr(11, 8)}
+          {panelState === "COLLAPSED"
+            ? new Date(time * 1000)
+                .toISOString()
+                .substr(11, 8)
+                .replaceAll("00:", "")
+                .split(":")
+                .join("\n")
+                .replaceAll(" ", "")
+            : new Date(time * 1000).toISOString().substr(11, 8)}
         </Text>
-        <Text
-          weight={800}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            fontSize: 40,
-            textAlign: "center",
-            fontFamily: getFontName("jetBrainsMono", 500),
-            color: theme[10],
-            opacity: 0.2,
-          }}
-          numberOfLines={1}
-        >
-          00:00:00
-        </Text>
+        {panelState === "OPEN" && (
+          <Text
+            weight={800}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              fontSize: 40,
+              textAlign: "center",
+              fontFamily: getFontName("jetBrainsMono", 500),
+              color: theme[10],
+              opacity: 0.2,
+            }}
+            numberOfLines={1}
+          >
+            00:00:00
+          </Text>
+        )}
       </View>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: panelState === "COLLAPSED" ? "column" : "row",
           justifyContent: "center",
           gap: 10,
-          marginTop: 5,
+          marginVertical: 5,
         }}
       >
         <Button
@@ -554,7 +588,7 @@ const Timer = ({ pomodoro = false }) => {
                     setPaused(false);
                     setRestartKey((key) => key + 1);
                   }}
-                  style={({ pressed, hovered }) => ({
+                  pressableStyle={({ pressed, hovered }) => ({
                     backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
                     flexDirection: "column",
                     alignItems: "center",
@@ -704,55 +738,68 @@ export default function Clock({ widget, menuActions, setParam }) {
   const theme = useColor("orange");
   const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");
-
+  const { panelState } = useFocusPanelContext();
   const timeZoneModalRef = useRef<BottomSheetModal>(null);
 
   return (
     <View>
-      <MenuPopover
-        options={[
-          ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
-            text: d,
-            callback: () => setView(d as ClockViewType),
-            selected: d === view,
-          })),
-          { divider: true },
-          ...(view === "Clock"
-            ? [
-                {
-                  text: "Timezones",
-                  icon: "explore",
-                  callback: () => timeZoneModalRef.current?.present?.(),
-                },
-                { divider: true },
-              ]
-            : []),
-          ...menuActions,
-        ]}
-        containerStyle={{ marginTop: -15 }}
-        trigger={
-          <Button style={widgetMenuStyles.button} dense>
-            <ButtonText weight={800} style={widgetMenuStyles.text}>
-              {view}
-            </ButtonText>
-            <Icon style={{ color: userTheme[11] }}>expand_more</Icon>
-          </Button>
-        }
-      />
+      {panelState !== "COLLAPSED" && (
+        <MenuPopover
+          options={[
+            ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
+              text: d,
+              callback: () => setView(d as ClockViewType),
+              selected: d === view,
+            })),
+            { divider: true },
+            ...(view === "Clock"
+              ? [
+                  {
+                    text: "Timezones",
+                    icon: "explore",
+                    callback: () => timeZoneModalRef.current?.present?.(),
+                  },
+                  { divider: true },
+                ]
+              : []),
+            ...menuActions,
+          ]}
+          containerStyle={{ marginTop: -15 }}
+          trigger={
+            <Button style={widgetMenuStyles.button} dense>
+              <ButtonText weight={800} style={widgetMenuStyles.text}>
+                {view}
+              </ButtonText>
+              <Icon style={{ color: userTheme[11] }}>expand_more</Icon>
+            </Button>
+          }
+        />
+      )}
       <View
-        style={[
-          widgetStyles.card,
-          {
-            backgroundColor: theme[3],
-            borderWidth: 1,
-            paddingVertical: 30,
-            paddingBottom: 15,
-            borderColor: theme[6],
-          },
-          view === "Timer" && {
-            paddingHorizontal: 0,
-          },
-        ]}
+        style={
+          panelState === "COLLAPSED"
+            ? {
+                backgroundColor: theme[3],
+                borderColor: theme[6],
+                borderWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 20,
+              }
+            : [
+                widgetStyles.card,
+                {
+                  backgroundColor: theme[3],
+                  borderWidth: 1,
+                  paddingVertical: 30,
+                  paddingBottom: 15,
+                  borderColor: theme[6],
+                },
+                view === "Timer" && {
+                  paddingHorizontal: 0,
+                },
+              ]
+        }
       >
         <ColorThemeProvider theme={theme}>
           {view === "Clock" && (

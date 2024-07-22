@@ -192,14 +192,15 @@ export const LogoButton = memo(function LogoButton({
     Linking.openURL("https://tally.so/r/mVZjvE?email=" + session.user.email);
   }, [session.user.email]);
 
-  const { isFocused, setFocus } = useFocusPanelContext();
+  const { panelState, setPanelState } = useFocusPanelContext();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
   useEffect(() => {
     sendApiRequest(sessionToken, "POST", "space/integrations/sync", {});
   }, [sessionToken]);
 
-  const toggleFocus = () => setFocus(!isFocused);
+  const toggleFocus = () =>
+    setPanelState((t) => (t === "CLOSED" ? "OPEN" : "CLOSED"));
   const menuRef = useRef(null);
 
   return (
@@ -311,7 +312,7 @@ export const LogoButton = memo(function LogoButton({
               {
                 icon: "dock_to_left",
                 text: "Focus panel",
-                selected: isFocused,
+                selected: panelState !== "CLOSED",
                 callback: toggleFocus,
               },
             ]}

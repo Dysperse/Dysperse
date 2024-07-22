@@ -1,5 +1,4 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
-import { useFocusPanelContext } from "@/components/focus-panel/context";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
 export function Actions() {
   const theme = useColorTheme();
   const { handleOpen } = useCommandPaletteContext();
-  const { setFocus, isFocused }: any = useFocusPanelContext();
   const openTrash = () => router.push("/trash");
   const openEverything = () => router.push("/everything");
 

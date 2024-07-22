@@ -431,8 +431,9 @@ function Explore() {
 function NotSureWhereToStart() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const { isFocused, setFocus } = useFocusPanelContext();
-  const toggleFocus = () => setFocus(!isFocused);
+  const { setPanelState, panelState } = useFocusPanelContext();
+  const toggleFocus = () =>
+    setPanelState(panelState === "CLOSED" ? "OPEN" : "CLOSED");
 
   return (
     <View style={(styles.container, { marginBottom: 20 })}>

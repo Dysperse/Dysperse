@@ -6,7 +6,6 @@ export const widgetStyles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     width: "100%",
-    marginBottom: 25,
   },
   widget: {
     gap: 10,

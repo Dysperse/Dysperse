@@ -17,6 +17,7 @@ import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Markdown from "react-native-markdown-display";
 import Toast from "react-native-toast-message";
+import { useFocusPanelContext } from "../context";
 import { widgetMenuStyles } from "../widgetMenuStyles";
 
 const Assistant = ({ widget, menuActions }: any) => {
@@ -66,8 +67,22 @@ const Assistant = ({ widget, menuActions }: any) => {
       setLoading(false);
     }
   };
+  const { panelState, setPanelState } = useFocusPanelContext();
 
-  return (
+  return panelState === "COLLAPSED" ? (
+    <IconButton
+      variant="outlined"
+      size={83}
+      style={{ borderRadius: 20 }}
+      backgroundColors={{
+        default: theme[3],
+        pressed: theme[4],
+        hovered: theme[5],
+      }}
+      onPress={() => setPanelState("OPEN")}
+      icon="auto_awesome"
+    />
+  ) : (
     <View>
       <MenuPopover
         options={[

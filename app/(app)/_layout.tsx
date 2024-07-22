@@ -252,23 +252,26 @@ export default function AppLayout() {
                   ]}
                 >
                   <CommandPaletteProvider>
-                    <FocusPanelProvider>
-                      <ThemeProvider
-                        value={{
-                          ...DefaultTheme,
-                          colors: {
-                            ...DefaultTheme.colors,
-                            background: theme[breakpoints.sm ? 2 : 1],
-                          },
-                        }}
-                      >
+                    <ThemeProvider
+                      value={{
+                        ...DefaultTheme,
+                        colors: {
+                          ...DefaultTheme.colors,
+                          background: theme[breakpoints.sm ? 2 : 1],
+                        },
+                      }}
+                    >
+                      <FocusPanelProvider>
                         <View
                           style={[
-                            breakpoints.md ? { flex: 1 } : { width: "100%" },
+                            breakpoints.md
+                              ? { flex: 1, height }
+                              : { width: "100%" },
                           ]}
                         >
                           <LoadingErrors />
                           <SelectionNavbar />
+
                           {breakpoints.md ? (
                             <DesktopLayout>{content}</DesktopLayout>
                           ) : (
@@ -299,8 +302,8 @@ export default function AppLayout() {
                             </DrawerLayout>
                           )}
                         </View>
-                      </ThemeProvider>
-                    </FocusPanelProvider>
+                      </FocusPanelProvider>
+                    </ThemeProvider>
                   </CommandPaletteProvider>
                 </View>
               </PortalProvider>
