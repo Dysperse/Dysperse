@@ -970,6 +970,7 @@ const FocusPanel = memo(function FocusPanel() {
       style={{
         flexDirection: "row",
         height,
+        ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
       }}
     >
       {breakpoints.md && (
