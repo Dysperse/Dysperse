@@ -120,7 +120,10 @@ const JumpToButton = memo(function JumpToButton() {
           pressed: theme[5],
         }}
         height={50}
-        style={{ justifyContent: "flex-start" }}
+        style={{
+          justifyContent: "flex-start",
+          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
+        }}
         android_ripple={{ color: theme[7] }}
       >
         <Icon bold>add</Icon>
