@@ -323,7 +323,7 @@ export const LogoButton = memo(function LogoButton({
             icon="psychiatry"
             variant="outlined"
             style={{ opacity: 0.9 }}
-            onPress={toggleFocus}
+            onPress={() => router.push("/focus")}
           />
         )}
       </View>

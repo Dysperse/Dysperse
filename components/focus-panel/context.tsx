@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Platform, useWindowDimensions } from "react-native";
+import { Platform } from "react-native";
 import FocusPanel from "./panel";
 
 type PanelState = "OPEN" | "CLOSED" | "COLLAPSED";
@@ -32,7 +32,6 @@ export const FocusPanelProvider = ({ children }) => {
         : "COLLAPSED"
       : "COLLAPSED"
   );
-  const { width } = useWindowDimensions();
   const collapseOnBack = useRef(panelState === "COLLAPSED");
 
   useEffect(() => {
@@ -45,7 +44,11 @@ export const FocusPanelProvider = ({ children }) => {
 
   return (
     <FocusPanelContext.Provider
-      value={{ panelState, setPanelState, collapseOnBack }}
+      value={{
+        panelState: breakpoints.md ? panelState : "OPEN",
+        setPanelState,
+        collapseOnBack,
+      }}
     >
       {children}
       {breakpoints.md && <FocusPanel />}

@@ -17,7 +17,7 @@ import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColor, useDarkMode } from "@/ui/color";
+import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
@@ -54,10 +54,10 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { useSidebarContext } from "../layout/sidebar/context";
 import { useFocusPanelContext } from "./context";
 import { widgetMenuStyles } from "./widgetMenuStyles";
 import { FocusPanelWeather } from "./widgets/weather/modal";
@@ -431,6 +431,8 @@ export const Navbar = ({
   backgroundColor?: string;
 }) => {
   const { setPanelState, panelState, collapseOnBack } = useFocusPanelContext();
+  const { sidebarRef } = useSidebarContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const theme = useColorTheme();
   return (
@@ -455,8 +457,10 @@ export const Navbar = ({
               navigation.goBack();
             }
           }}
-          size={40}
-          variant={title === "Focus" ? "filled" : "text"}
+          size={!breakpoints.md ? 50 : 40}
+          variant={
+            title === "Focus" ? (breakpoints.md ? "filled" : "text") : "text"
+          }
           icon={title === "Focus" ? "add" : "arrow_back_ios_new"}
           style={{
             opacity: navigation.canGoBack() || title === "Focus" ? 1 : 0,
@@ -475,25 +479,36 @@ export const Navbar = ({
           {title}
         </Text>
       )}
-      <IconButton
-        onPress={() => {
-          setPanelState((t) => {
-            const d = t === "COLLAPSED" ? "OPEN" : "COLLAPSED";
-            collapseOnBack.current = d === "COLLAPSED";
-            return d;
-          });
-        }}
-        icon={
-          panelState === "COLLAPSED" ? "right_panel_open" : "right_panel_close"
-        }
-        size={40}
-        style={{
-          padding: 10,
-          marginBottom: panelState === "COLLAPSED" ? 10 : 0,
-          opacity: panelState === "COLLAPSED" ? 0.5 : title === "Focus" ? 1 : 0,
-          marginRight: panelState === "COLLAPSED" ? 10 : 0,
-        }}
-      />
+      {breakpoints.md ? (
+        <IconButton
+          onPress={() => {
+            setPanelState((t) => {
+              const d = t === "COLLAPSED" ? "OPEN" : "COLLAPSED";
+              collapseOnBack.current = d === "COLLAPSED";
+              return d;
+            });
+          }}
+          icon={
+            panelState === "COLLAPSED"
+              ? "right_panel_open"
+              : "right_panel_close"
+          }
+          size={!breakpoints.md ? 50 : 40}
+          style={{
+            padding: 10,
+            marginBottom: panelState === "COLLAPSED" ? 10 : 0,
+            opacity:
+              panelState === "COLLAPSED" ? 0.5 : title === "Focus" ? 1 : 0,
+            marginRight: panelState === "COLLAPSED" ? 10 : 0,
+          }}
+        />
+      ) : (
+        <IconButton
+          icon="menu"
+          variant="outlined"
+          onPress={() => sidebarRef.current.openDrawer()}
+        />
+      )}
     </View>
   );
 };
@@ -519,7 +534,6 @@ export const UpcomingSvg = () => {
 };
 
 export const SpotifySvg = () => {
-  const isDark = useDarkMode();
   return (
     <Svg
       height={24}
@@ -622,6 +636,7 @@ function PanelContent() {
   const r = useRef<NavigationContainerRef<any>>(null);
   const breakpoints = useResponsiveBreakpoints();
   const { panelState } = useFocusPanelContext();
+  const { width } = useWindowDimensions();
 
   const screenOptions = useMemo<StackNavigationOptions>(
     () => ({
@@ -633,27 +648,30 @@ function PanelContent() {
       headerMode: "screen",
       cardStyle: {
         height: "100%",
-        width: (panelState === "COLLAPSED" ? 100 : 350) - 15,
-        borderRadius: 18,
+        width: breakpoints.md
+          ? (panelState === "COLLAPSED" ? 100 : 350) - 15
+          : "100%",
+        borderRadius: breakpoints.md ? 18 : 0,
         display: panelState === "CLOSED" ? "none" : "flex",
       },
       header: ({ navigation, route }) => (
         <Navbar title={route.name} navigation={navigation} />
       ),
     }),
-    [panelState]
+    [panelState, breakpoints]
   );
 
   return (
-    <Animated.View
+    <View
       style={[
         {
-          borderRadius: 20,
+          borderRadius: breakpoints.md ? 20 : 0,
           borderColor: theme[panelState === "COLLAPSED" ? 2 : 5],
           flex: 1,
           borderWidth: breakpoints.md ? 2 : 0,
           overflow: "hidden",
         },
+        !breakpoints.md && { width: width },
       ]}
     >
       <WakeLock />
@@ -683,7 +701,7 @@ function PanelContent() {
           <Stack.Screen name="New" component={NewWidget} />
         </Stack.Navigator>
       </NavigationContainer>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -693,9 +711,6 @@ function FocusPanelHome({
   navigation: StackNavigationProp<any>;
 }) {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
 
   const { data } = useSWR(["user/focus-panel"], null);
 
@@ -968,9 +983,10 @@ const FocusPanel = memo(function FocusPanel() {
         style={[
           animatedStyle,
           {
-            padding: 10,
+            padding: breakpoints.md ? 10 : 0,
             paddingLeft: 0,
             height,
+            ...(!breakpoints.md && { width }),
             ...(Platform.OS === "web" &&
               ({
                 marginTop: "env(titlebar-area-height,0)",
