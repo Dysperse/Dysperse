@@ -74,6 +74,7 @@ const SpotifyLargePreview = ({ data, navigation, mutate }) => {
         <Image
           source={{ uri: data.item.album.images[0].url }}
           style={{
+            borderRadius: 5,
             width: "100%",
             aspectRatio: 1,
             shadowRadius: 20,
@@ -107,9 +108,10 @@ const SpotifyLargePreview = ({ data, navigation, mutate }) => {
         <View
           style={{
             overflow: "hidden",
-            borderRadius: 5,
+            borderRadius: 99,
             width: "100%",
-            height: 6,
+            height: 16,
+            padding: 3,
             marginTop: 10,
             backgroundColor: addHslAlpha(textColor, 0.2),
           }}
@@ -118,7 +120,7 @@ const SpotifyLargePreview = ({ data, navigation, mutate }) => {
             style={[
               {
                 height: "100%",
-                borderRadius: 5,
+                borderRadius: 99,
                 backgroundColor: textColor,
               },
               animatedStyle,
