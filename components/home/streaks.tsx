@@ -11,10 +11,13 @@ import { View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useSWR from "swr";
+import { useContentWrapperContext } from "../layout/content";
 
 const GoalIndicator = ({ completed, goal, name }) => {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { width } = useContentWrapperContext();
+  const desktop = breakpoints.md && width > 1000;
 
   return (
     <View
@@ -22,7 +25,7 @@ const GoalIndicator = ({ completed, goal, name }) => {
         flexDirection: "row",
         alignItems: "center",
         gap: 20,
-        flex: breakpoints.md ? 1 : undefined,
+        flex: desktop ? 1 : undefined,
       }}
     >
       <View
@@ -72,6 +75,8 @@ const GoalIndicator = ({ completed, goal, name }) => {
 export function StreakGoal() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { width, height } = useContentWrapperContext();
+
   const { data, error } = useSWR([
     "user/streaks",
     {
@@ -79,6 +84,8 @@ export function StreakGoal() {
       dayStart: dayjs().startOf("day").utc().toISOString(),
     },
   ]);
+
+  const desktop = breakpoints.md && width > 1000;
 
   return error ? (
     <ErrorAlert />
@@ -107,10 +114,10 @@ export function StreakGoal() {
           borderColor: theme[5],
           marginBottom: 30,
           padding: 20,
-          flexDirection: breakpoints.md ? "row" : "column",
-          alignItems: breakpoints.md ? "center" : "flex-start",
-          height: breakpoints.md ? 80 : undefined,
-          gap: breakpoints.md ? undefined : 20,
+          flexDirection: desktop ? "row" : "column",
+          alignItems: desktop ? "center" : "flex-start",
+          height: desktop ? 80 : undefined,
+          gap: desktop ? undefined : 20,
           justifyContent: "center",
         }}
       >
