@@ -6,30 +6,16 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Linking, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { getColors } from "react-native-image-colors";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
 import useSWR from "swr";
 import { Navbar } from "../../panel";
-
-const useImageColors = (url) => {
-  const [colors, setColors] = useState(null);
-
-  useEffect(() => {
-    getColors(url, {
-      fallback: "#228B22",
-      cache: true,
-      key: url,
-    }).then(setColors);
-  }, [url]);
-
-  return colors;
-};
+import { useImageColors } from "./useImageColors";
 
 const SpotifyLargePreview = ({ data, navigation, mutate }) => {
   const theme = useColorTheme();

@@ -1003,7 +1003,7 @@ const FocusPanel = memo(function FocusPanel() {
     })
     .onEnd(({ velocityX }) => {
       marginRight.value = velocityX > 0 ? -350 : 0;
-      setPanelState(velocityX <= 0 ? "CLOSED" : "OPEN");
+      setPanelState(velocityX > 0 ? "OPEN" : "CLOSED");
     });
 
   const tap = Gesture.Tap().onEnd(() =>
