@@ -591,19 +591,26 @@ function CurrentlyPlaying({ menuActions, params, navigation }) {
             borderWidth: 1,
             borderColor: theme[5],
             borderRadius: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            aspectRatio: panelState === "COLLAPSED" ? 1 : undefined,
           }}
         >
-          <Text
-            weight={900}
-            style={{
-              fontSize: 20,
-              textAlign: "center",
-              color: theme[11],
-              opacity: 0.6,
-            }}
-          >
-            Play something on Spotify to see it here!
-          </Text>
+          {panelState === "COLLAPSED" ? (
+            <SpotifySvg />
+          ) : (
+            <Text
+              weight={900}
+              style={{
+                fontSize: 20,
+                textAlign: "center",
+                color: theme[11],
+                opacity: 0.6,
+              }}
+            >
+              Play something on Spotify to see it here!
+            </Text>
+          )}
         </View>
       )}
     </Pressable>
