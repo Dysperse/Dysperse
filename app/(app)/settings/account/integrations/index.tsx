@@ -1,6 +1,9 @@
+import { SpotifySvg } from "@/components/focus-panel/panel";
 import { settingStyles } from "@/components/settings/settingsStyles";
+import { useUser } from "@/context/useUser";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
+import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
@@ -8,7 +11,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -93,6 +96,40 @@ function AllIntegrations({ connected }) {
   );
 }
 
+function SpotifyIntegration() {
+  const theme = useColorTheme();
+  const { session, sessionToken } = useUser();
+
+  const handleSpotifyAuthorization = () => {
+    const url = `${process.env.EXPO_PUBLIC_API_URL}/user/currently-playing/redirect?token=${sessionToken}`;
+
+    Linking.openURL(url);
+  };
+
+  return (
+    <Pressable
+      style={({ pressed, hovered }) => [
+        styles.button,
+        {
+          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+        },
+      ]}
+      onPress={handleSpotifyAuthorization}
+    >
+      <Avatar icon={(<SpotifySvg />) as any} size={40} />
+      <View style={{ flex: 1 }}>
+        <Text numberOfLines={1} weight={700} style={styles.name}>
+          Spotify
+        </Text>
+        <Text numberOfLines={1} weight={300} style={styles.description}>
+          See what you're currently listening to from the focus panel
+        </Text>
+      </View>
+      {session.user?.profile?.spotifyAuthTokens && <Icon>check</Icon>}
+    </Pressable>
+  );
+}
+
 export default function Page() {
   const theme = useColorTheme();
   const { data } = useSWR(["space/integrations"]);
@@ -111,6 +148,10 @@ export default function Page() {
         subtitle="Soon, you'll be able to connect your account to other services like
       Notion, Google Calendar, and more."
       />
+
+      <SpotifyIntegration />
+
+      <Divider style={{ marginVertical: 10 }} />
 
       <Pressable
         style={({ pressed, hovered }) => [

@@ -17,7 +17,7 @@ import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
@@ -31,7 +31,10 @@ import {
   TransitionPresets,
 } from "@react-navigation/stack";
 import { FlashList } from "@shopify/flash-list";
+import dayjs from "dayjs";
+import { Image } from "expo-image";
 import { useKeepAwake } from "expo-keep-awake";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
 import {
@@ -43,12 +46,19 @@ import {
   useRef,
   useState,
 } from "react";
-import { Platform, Pressable, useWindowDimensions, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  Pressable,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import {
   Gesture,
   GestureDetector,
   ScrollView,
 } from "react-native-gesture-handler";
+import { getColors } from "react-native-image-colors";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -269,6 +279,378 @@ const Sports = ({ params, menuActions }) => {
   );
 };
 
+const SpotifyPreview = ({ data, navigation, mutate }) => {
+  const theme = useColorTheme();
+  const { panelState, setPanelState, collapseOnBack } = useFocusPanelContext();
+  const progress = useSharedValue(data.progress_ms / data.item.duration_ms);
+
+  useEffect(() => {
+    progress.value = data.progress_ms / data.item.duration_ms;
+  }, [data.progress_ms, data.item.duration_ms]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (progress.value < 1) {
+        progress.value += 0.05 / (data.item.duration_ms / 1000); // Increase based on the duration
+      } else {
+        clearInterval(interval);
+        mutate(); // Refresh the data when the song ends
+      }
+    }, 50); // Update every 50ms
+
+    return () => clearInterval(interval);
+  }, [data, mutate]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: `${progress.value * 100}%`,
+    };
+  });
+
+  return (
+    <ListItemButton
+      style={{
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        flexDirection: "row",
+        gap: 20,
+        alignItems: "center",
+        borderWidth: 1,
+      }}
+      pressableStyle={{
+        flexDirection: panelState === "COLLAPSED" ? "column" : "row",
+        paddingVertical: 15,
+      }}
+      variant="filled"
+      onPress={() => {
+        navigation.push("Spotify");
+        setPanelState("OPEN");
+        if (panelState === "COLLAPSED") collapseOnBack.current = true;
+      }}
+    >
+      <Image
+        source={{ uri: data.item.album.images[0].url }}
+        style={{ width: 60, height: 60 }}
+      />
+      <View
+        style={{ flex: 1, width: panelState === "COLLAPSED" ? 60 : undefined }}
+      >
+        {panelState !== "COLLAPSED" && (
+          <ListItemText
+            primary={data.item.name}
+            secondary={data.item.artists[0].name}
+            primaryProps={{ weight: 900 }}
+            secondaryProps={{ style: { marginTop: -3, opacity: 0.6 } }}
+          />
+        )}
+        <View
+          style={{
+            overflow: "hidden",
+            borderRadius: 5,
+            width: "100%",
+            height: 4,
+            marginTop: panelState === "COLLAPSED" ? -5 : 5,
+            backgroundColor: theme[5],
+          }}
+        >
+          <Animated.View
+            style={[
+              {
+                height: "100%",
+                borderRadius: 5,
+                backgroundColor: theme[11],
+              },
+              animatedStyle,
+            ]}
+          />
+        </View>
+      </View>
+    </ListItemButton>
+  );
+};
+
+const useImageColors = (url) => {
+  const [colors, setColors] = useState(null);
+
+  useEffect(() => {
+    getColors(url, {
+      fallback: "#228B22",
+      cache: true,
+      key: url,
+    }).then(setColors);
+  }, [url]);
+
+  return colors;
+};
+
+const SpotifyLargePreview = ({ data, navigation, mutate }) => {
+  const theme = useColorTheme();
+  const progress = useSharedValue(data.progress_ms / data.item.duration_ms);
+  const colors = useImageColors(data.item.album.images[0].url);
+
+  useEffect(() => {
+    progress.value = data.progress_ms / data.item.duration_ms;
+  }, [data.progress_ms, data.item.duration_ms]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (progress.value < 1) {
+        progress.value += 0.05 / (data.item.duration_ms / 1000); // Increase based on the duration
+      } else {
+        clearInterval(interval);
+        mutate(); // Refresh the data when the song ends
+      }
+    }, 50); // Update every 50ms
+
+    return () => clearInterval(interval);
+  }, [data, mutate]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: `${progress.value * 100}%`,
+    };
+  });
+
+  const isDark = useDarkMode();
+
+  const backgroundColors = [
+    (isDark ? colors?.dominant : colors?.lightVibrant) || theme[2],
+    (isDark ? colors?.muted : colors?.lightMuted) || theme[5],
+  ];
+
+  const textColor = isDark ? "hsl(0, 0%, 100%)" : "hsl(0, 0%, 0%)";
+
+  return (
+    <LinearGradient
+      colors={backgroundColors}
+      style={{
+        flex: 1,
+        marginTop: -70,
+        paddingTop: 70,
+        zIndex: -1,
+      }}
+    >
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          padding: 20,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Image
+          source={{ uri: data.item.album.images[0].url }}
+          style={{ width: "100%", aspectRatio: 1 }}
+        />
+        <Text
+          style={{
+            fontSize: 30,
+            marginTop: 20,
+            color: textColor,
+          }}
+          weight={900}
+        >
+          {data.item.name}
+        </Text>
+        <Text
+          style={{
+            opacity: 0.6,
+            fontSize: 25,
+            color: addHslAlpha(textColor, 0.7),
+          }}
+        >
+          {data.item.artists.map((a) => a.name).join(", ")}
+        </Text>
+        <View
+          style={{
+            overflow: "hidden",
+            borderRadius: 5,
+            width: "100%",
+            height: 6,
+            marginTop: 10,
+            backgroundColor: addHslAlpha(textColor, 0.2),
+          }}
+        >
+          <Animated.View
+            style={[
+              {
+                height: "100%",
+                borderRadius: 5,
+                backgroundColor: textColor,
+              },
+              animatedStyle,
+            ]}
+          />
+        </View>
+
+        <Pressable
+          onPress={() => Linking.openURL(data.item.external_urls.spotify)}
+          style={({ pressed, hovered }) => ({
+            marginTop: 20,
+            borderRadius: 20,
+            padding: 20,
+            backgroundColor: addHslAlpha(
+              textColor,
+              pressed ? 0.2 : hovered ? 0.1 : 0.05
+            ),
+          })}
+        >
+          <Text
+            weight={900}
+            style={{
+              fontSize: 13,
+              color: textColor,
+              opacity: 0.6,
+            }}
+          >
+            ALBUM
+          </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              color: textColor,
+            }}
+            weight={900}
+          >
+            {data.item.album.name}
+          </Text>
+          <Text
+            style={{
+              opacity: 0.6,
+              fontSize: 15,
+              color: addHslAlpha(textColor, 0.7),
+            }}
+          >
+            Released {dayjs(data.item.album.release_date).fromNow()}
+          </Text>
+        </Pressable>
+
+        <Button
+          height={70}
+          containerStyle={{ marginTop: 10 }}
+          variant="filled"
+          backgroundColors={{
+            default: isDark
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(0, 0, 0, 0.05)",
+            pressed: isDark
+              ? "rgba(255, 255, 255, 0.2)"
+              : "rgba(0, 0, 0, 0.15)",
+            hovered: isDark
+              ? "rgba(255, 255, 255, 0.1)"
+              : "rgba(0, 0, 0, 0.15)",
+          }}
+          borderColors={{
+            default: "transparent",
+            pressed: "transparent",
+            hovered: "transparent",
+          }}
+          onPress={() => Linking.openURL(data.item.external_urls.spotify)}
+        >
+          <ButtonText weight={900} style={{ fontSize: 20, color: textColor }}>
+            Open in Spotify
+          </ButtonText>
+          <Icon style={{ color: textColor }} bold>
+            north_east
+          </Icon>
+        </Button>
+      </ScrollView>
+    </LinearGradient>
+  );
+};
+
+function CurrentlyPlaying({ menuActions, params, navigation }) {
+  const theme = useColorTheme();
+  const { panelState } = useFocusPanelContext();
+  const { data, error, mutate } = useSWR(["user/currently-playing"], {
+    refreshInterval: 5000,
+  });
+
+  return (
+    <Pressable onPress={() => mutate()} onMouseEnter={() => mutate()}>
+      {panelState !== "COLLAPSED" && (
+        <MenuPopover
+          options={[...menuActions]}
+          containerStyle={{ marginTop: -15 }}
+          trigger={
+            <Button style={widgetMenuStyles.button} dense>
+              <ButtonText weight={800} style={widgetMenuStyles.text}>
+                Spotify
+              </ButtonText>
+              <Icon style={{ color: theme[11] }}>expand_more</Icon>
+            </Button>
+          }
+        />
+      )}
+      {data?.is_playing ? (
+        <SpotifyPreview navigation={navigation} mutate={mutate} data={data} />
+      ) : (
+        <View
+          style={{
+            padding: 20,
+            backgroundColor: theme[3],
+            borderWidth: 1,
+            borderColor: theme[5],
+            borderRadius: 20,
+          }}
+        >
+          <Text
+            weight={900}
+            style={{
+              fontSize: 20,
+              textAlign: "center",
+              color: theme[11],
+              opacity: 0.6,
+            }}
+          >
+            Play something on Spotify to see it here!
+          </Text>
+        </View>
+      )}
+    </Pressable>
+  );
+}
+
+function FocusPanelSpotify({ navigation }) {
+  const isDark = useDarkMode();
+  const { data, error, mutate } = useSWR(["user/currently-playing"], {
+    refreshInterval: 5000,
+  });
+
+  return (
+    <>
+      <Navbar
+        title="Spotify"
+        navigation={navigation}
+        foregroundColor={isDark ? "white" : "black"}
+        backgroundColor={data?.is_playing ? "transparent" : undefined}
+      />
+      {data?.is_playing ? (
+        <SpotifyLargePreview
+          navigation={navigation}
+          data={data}
+          mutate={mutate}
+        />
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 20,
+          }}
+        >
+          <Text
+            weight={900}
+            style={{ fontSize: 20, textAlign: "center", opacity: 0.6 }}
+          >
+            Play something on Spotify to see it here!
+          </Text>
+        </View>
+      )}
+    </>
+  );
+}
+
 function RenderWidget({ navigation, widget, index }) {
   const { sessionToken } = useUser();
   const { data, mutate } = useSWR(["user/focus-panel"], null);
@@ -414,6 +796,15 @@ function RenderWidget({ navigation, widget, index }) {
       );
     case "sports":
       return <Sports menuActions={menuActions} params={widget} key={index} />;
+    case "music":
+      return (
+        <CurrentlyPlaying
+          navigation={navigation}
+          menuActions={menuActions}
+          params={widget}
+          key={index}
+        />
+      );
     default:
       return null;
   }
@@ -425,10 +816,12 @@ export const Navbar = ({
   title,
   navigation,
   backgroundColor,
+  foregroundColor,
 }: {
   title: string;
   navigation: StackNavigationProp<any>;
   backgroundColor?: string;
+  foregroundColor?: string;
 }) => {
   const { setPanelState, panelState, collapseOnBack } = useFocusPanelContext();
   const { sidebarRef } = useSidebarContext();
@@ -438,6 +831,7 @@ export const Navbar = ({
   return (
     <View
       style={{
+        height: 70,
         flexDirection: title === "Focus" ? "row-reverse" : "row",
         alignItems: "center",
         justifyContent: panelState === "COLLAPSED" ? "center" : "space-between",
@@ -461,7 +855,15 @@ export const Navbar = ({
           variant={
             title === "Focus" ? (breakpoints.md ? "filled" : "text") : "text"
           }
-          icon={title === "Focus" ? "add" : "arrow_back_ios_new"}
+          icon={
+            <Icon
+              style={{
+                color: foregroundColor || theme[11],
+              }}
+            >
+              {title === "Focus" ? "add" : "arrow_back_ios_new"}
+            </Icon>
+          }
           style={{
             opacity: navigation.canGoBack() || title === "Focus" ? 1 : 0,
           }}
@@ -472,7 +874,7 @@ export const Navbar = ({
           style={{
             fontSize: 20,
             opacity: title === "Focus" ? 0 : 1,
-            color: theme[11],
+            color: foregroundColor || theme[11],
           }}
           weight={800}
         >
@@ -598,7 +1000,7 @@ function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
       text: "Music",
       icon: <SpotifySvg />,
       secondary: "With Spotify",
-      comingSoon: true,
+      comingSoon: process.env.NODE_ENV === "production",
     },
   ];
   return (
@@ -696,6 +1098,11 @@ function PanelContent() {
           <Stack.Screen
             name="Weather"
             component={FocusPanelWeather}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Spotify"
+            component={FocusPanelSpotify}
             options={{ headerShown: false }}
           />
           <Stack.Screen name="New" component={NewWidget} />

@@ -23,7 +23,7 @@ export const useFocusPanelContext = () => useContext(FocusPanelContext);
 
 export const FocusPanelProvider = ({ children }) => {
   const states = ["OPEN", "CLOSED", "COLLAPSED"];
-  const t = localStorage.getItem("panelState");
+  const t = Platform.OS === "web" ? localStorage.getItem("panelState") : null;
 
   const [panelState, setPanelState] = useState(
     Platform.OS === "web"
