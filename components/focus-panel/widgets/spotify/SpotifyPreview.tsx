@@ -56,6 +56,8 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
       }}
     >
       <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: panelState === "COLLAPSED" ? 1 : 0, y: 1 }}
         colors={backgroundColors}
         style={{
           paddingHorizontal: 20,
