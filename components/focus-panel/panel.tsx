@@ -766,7 +766,16 @@ function PanelContent() {
         }}
       >
         <Stack.Navigator screenOptions={screenOptions}>
-          <Stack.Screen name="Focus" component={FocusPanelHome} />
+          <Stack.Screen
+            name="Focus"
+            options={{
+              cardStyle: {
+                paddingHorizontal: 2,
+                width: panelState === "COLLAPSED" ? 85 : 340,
+              },
+            }}
+            component={FocusPanelHome}
+          />
           <Stack.Screen
             name="Weather"
             component={FocusPanelWeather}

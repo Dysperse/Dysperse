@@ -55,72 +55,77 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
         if (panelState === "COLLAPSED") collapseOnBack.current = true;
       }}
     >
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: panelState === "COLLAPSED" ? 1 : 0, y: 1 }}
-        colors={backgroundColors}
-        style={{
-          paddingHorizontal: 20,
-          borderRadius: 20,
-          gap: 20,
-          alignItems: "center",
-          flexDirection: panelState === "COLLAPSED" ? "column" : "row",
-          paddingVertical: 15,
-          backgroundColor: theme[3],
-        }}
-      >
-        <Image
-          source={{ uri: data.item.album.images[0].url }}
-          style={{ width: 60, height: 60, borderRadius: 3 }}
-        />
-        <View
+      {({ pressed, hovered }) => (
+        <LinearGradient
+          start={{ x: hovered ? 1 : 0, y: hovered ? 1 : 0 }}
+          end={{
+            x: hovered ? 0 : panelState === "COLLAPSED" ? 1 : 0,
+            y: hovered ? 0 : 1,
+          }}
+          colors={backgroundColors}
           style={{
-            flex: 1,
-            width: panelState === "COLLAPSED" ? 60 : undefined,
+            paddingHorizontal: 20,
+            borderRadius: 20,
+            gap: 20,
+            alignItems: "center",
+            flexDirection: panelState === "COLLAPSED" ? "column" : "row",
+            paddingVertical: 15,
+            backgroundColor: theme[3],
           }}
         >
-          {panelState !== "COLLAPSED" && (
-            <ListItemText
-              primary={data.item.name}
-              secondary={data.item.artists[0].name}
-              primaryProps={{
-                weight: 900,
-                style: { color: isDark ? "#fff" : "#000" },
-              }}
-              secondaryProps={{
-                style: {
-                  marginTop: -3,
-                  color: isDark ? "#fff" : "#000",
-                  opacity: 0.6,
-                },
-              }}
-            />
-          )}
+          <Image
+            source={{ uri: data.item.album.images[0].url }}
+            style={{ width: 60, height: 60, borderRadius: 3 }}
+          />
           <View
             style={{
-              overflow: "hidden",
-              borderRadius: 5,
-              width: "100%",
-              height: 4,
-              marginTop: panelState === "COLLAPSED" ? -5 : 5,
-              backgroundColor: isDark
-                ? "rgba(255, 255, 255, 0.1)"
-                : "rgba(0, 0, 0, 0.1)",
+              flex: 1,
+              width: panelState === "COLLAPSED" ? 60 : undefined,
             }}
           >
-            <Animated.View
-              style={[
-                {
-                  height: "100%",
-                  borderRadius: 5,
-                  backgroundColor: isDark ? "#fff" : "#000",
-                },
-                animatedStyle,
-              ]}
-            />
+            {panelState !== "COLLAPSED" && (
+              <ListItemText
+                primary={data.item.name}
+                secondary={data.item.artists[0].name}
+                primaryProps={{
+                  weight: 900,
+                  style: { color: isDark ? "#fff" : "#000" },
+                }}
+                secondaryProps={{
+                  style: {
+                    marginTop: -3,
+                    color: isDark ? "#fff" : "#000",
+                    opacity: 0.6,
+                  },
+                }}
+              />
+            )}
+            <View
+              style={{
+                overflow: "hidden",
+                borderRadius: 5,
+                width: "100%",
+                height: 4,
+                marginTop: panelState === "COLLAPSED" ? -5 : 5,
+                backgroundColor: isDark
+                  ? "rgba(255, 255, 255, 0.1)"
+                  : "rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <Animated.View
+                style={[
+                  {
+                    height: "100%",
+                    borderRadius: 5,
+                    backgroundColor: isDark ? "#fff" : "#000",
+                  },
+                  animatedStyle,
+                ]}
+              />
+            </View>
           </View>
-        </View>
-      </LinearGradient>
+        </LinearGradient>
+      )}
     </Pressable>
   );
 };
