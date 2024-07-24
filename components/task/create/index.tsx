@@ -352,13 +352,6 @@ export function RecurrencePicker({
   const endsInputCountRef = useRef<TextInput>(null);
   const endsInputDateRef = useRef<TextInput>(null);
 
-  useEffect(() => {
-    setValue("date", null);
-    if (!value) {
-      setValue("recurrenceRule", new RRule(defaultOptions).options);
-    }
-  }, [value, setValue, defaultOptions]);
-
   const handleEdit = (key, newValue) => {
     setValue("recurrenceRule", {
       ...value,
@@ -759,18 +752,17 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
   );
 });
 
-const DatePicker = memo(function DatePicker({ setValue, watch }: any) {
+function DatePicker({ setValue, watch }: any) {
   const date = watch("date");
+
   return (
     <TaskDatePicker
       setValue={setValue}
       watch={watch}
-      defaultRecurrenceOptions={{
-        dtstart: date,
-      }}
+      defaultRecurrenceOptions={{ dtstart: date }}
     />
   );
-});
+}
 
 function Footer({
   nameRef,
@@ -1690,7 +1682,7 @@ const CreateTask = forwardRef(
 
     const handleClose = useCallback(() => {
       ref.current?.close();
-    }, [mutate]);
+    }, []);
 
     const { isReached } = useStorageContext();
 
