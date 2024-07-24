@@ -691,7 +691,7 @@ function PanelContent() {
         height: "100%",
         width: breakpoints.md
           ? panelState === "COLLAPSED"
-            ? 87
+            ? 85
             : 340
           : "100%",
         borderRadius: breakpoints.md ? 18 : 0,
