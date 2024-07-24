@@ -57,16 +57,17 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
     >
       {({ pressed, hovered }) => (
         <LinearGradient
-          start={{ x: hovered ? 1 : 0, y: hovered ? 1 : 0 }}
+          start={{ x: 0, y: 0 }}
           end={{
-            x: hovered ? 0 : panelState === "COLLAPSED" ? 1 : 0,
-            y: hovered ? 0 : 1,
+            x: panelState === "COLLAPSED" ? 1 : 0,
+            y: 1,
           }}
           colors={backgroundColors}
           style={{
             paddingHorizontal: 20,
             borderRadius: 20,
             gap: 20,
+            opacity: pressed ? 0.8 : hovered ? 0.9 : 1,
             alignItems: "center",
             flexDirection: panelState === "COLLAPSED" ? "column" : "row",
             paddingVertical: 15,
