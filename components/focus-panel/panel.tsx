@@ -640,12 +640,12 @@ function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
                 text1: "You can only add this widget once",
               });
             }
-            if (option.comingSoon) {
-              return Toast.show({
-                type: "info",
-                text1: "Coming soon!",
-              });
-            }
+            // if (option.comingSoon) {
+            //   return Toast.show({
+            //     type: "info",
+            //     text1: "Coming soon!",
+            //   });
+            // }
             handleWidgetToggle(option.text as Widget);
           }}
         >
