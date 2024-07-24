@@ -1,8 +1,10 @@
 import { SpotifySvg } from "@/components/focus-panel/panel";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import SettingsScrollView from "@/ui/SettingsScrollView";
@@ -98,35 +100,56 @@ function AllIntegrations({ connected }) {
 
 function SpotifyIntegration() {
   const theme = useColorTheme();
-  const { session, sessionToken } = useUser();
+  const { session, sessionToken, mutate } = useUser();
 
   const handleSpotifyAuthorization = () => {
     const url = `${process.env.EXPO_PUBLIC_API_URL}/user/currently-playing/redirect?token=${sessionToken}`;
-
     Linking.openURL(url);
   };
 
+  const disconnectSpotify = async () => {
+    await sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/profile",
+      {},
+      {
+        body: JSON.stringify({ spotifyAuthTokens: "null" }),
+      }
+    );
+    await mutate();
+  };
   return (
-    <Pressable
-      style={({ pressed, hovered }) => [
-        styles.button,
-        {
-          backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-        },
-      ]}
-      onPress={handleSpotifyAuthorization}
+    <ConfirmationModal
+      title="Unlink Spotify?"
+      secondary="You can always re-connect it later."
+      onSuccess={async () => {
+        if (session.user?.profile?.spotifyAuthTokens) await disconnectSpotify();
+        else handleSpotifyAuthorization();
+      }}
+      disabled={!session.user?.profile?.spotifyAuthTokens}
     >
-      <Avatar icon={(<SpotifySvg />) as any} size={40} />
-      <View style={{ flex: 1 }}>
-        <Text numberOfLines={1} weight={700} style={styles.name}>
-          Spotify
-        </Text>
-        <Text numberOfLines={1} weight={300} style={styles.description}>
-          See what you're currently listening to from the focus panel
-        </Text>
-      </View>
-      {session.user?.profile?.spotifyAuthTokens && <Icon>check</Icon>}
-    </Pressable>
+      <Pressable
+        style={({ pressed, hovered }) => [
+          styles.button,
+          {
+            backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
+          },
+        ]}
+        onPress={handleSpotifyAuthorization}
+      >
+        <Avatar icon={(<SpotifySvg />) as any} size={40} />
+        <View style={{ flex: 1 }}>
+          <Text numberOfLines={1} weight={700} style={styles.name}>
+            Spotify
+          </Text>
+          <Text numberOfLines={1} weight={300} style={styles.description}>
+            See what you're currently listening to from the focus panel
+          </Text>
+        </View>
+        {session.user?.profile?.spotifyAuthTokens && <Icon>toggle_on</Icon>}
+      </Pressable>
+    </ConfirmationModal>
   );
 }
 

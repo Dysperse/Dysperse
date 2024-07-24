@@ -186,11 +186,11 @@ export const LogoButton = memo(function LogoButton({
     Linking.openURL("https://blog.dysperse.com");
   }, []);
   const openFeedback = useCallback(() => {
-    Linking.openURL("https://tally.so/r/wLdz5O?email=" + session.user.email);
+    Linking.openURL("https://tally.so/r/wLdz5O?email=" + session?.user?.email);
   }, [session]);
   const openBug = useCallback(() => {
-    Linking.openURL("https://tally.so/r/mVZjvE?email=" + session.user.email);
-  }, [session.user.email]);
+    Linking.openURL("https://tally.so/r/mVZjvE?email=" + session?.user?.email);
+  }, [session]);
 
   const { panelState, setPanelState } = useFocusPanelContext();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
