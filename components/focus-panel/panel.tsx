@@ -1008,6 +1008,7 @@ function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
       icon: <SpotifySvg />,
       secondary: "With Spotify",
       comingSoon: process.env.NODE_ENV === "production",
+      onlyOnce: true,
     },
   ];
   return (
@@ -1017,6 +1018,15 @@ function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
           key={index}
           variant="filled"
           onPress={() => {
+            if (
+              option.onlyOnce &&
+              data.find((d) => d.type === option.text.toLowerCase())
+            ) {
+              return Toast.show({
+                type: "info",
+                text1: "You can only add this widget once",
+              });
+            }
             if (option.comingSoon) {
               return Toast.show({
                 type: "info",
