@@ -17,7 +17,7 @@ import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColor } from "@/ui/color";
+import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
@@ -447,8 +447,9 @@ export const Navbar = ({
   const { setPanelState, panelState, collapseOnBack } = useFocusPanelContext();
   const { sidebarRef } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
-
   const theme = useColorTheme();
+  const isDark = useDarkMode();
+
   return (
     <View
       style={{
@@ -472,6 +473,19 @@ export const Navbar = ({
               navigation.goBack();
             }
           }}
+          backgroundColors={
+            title === "Focus"
+              ? undefined
+              : {
+                  default: "transparent",
+                  pressed: isDark
+                    ? "rgba(255,255,255,.1)"
+                    : "rgba(0, 0, 0, 0.1)",
+                  hovered: isDark
+                    ? "rgba(255,255,255,.2)"
+                    : "rgba(0, 0, 0, 0.2)",
+                }
+          }
           size={!breakpoints.md ? 50 : 40}
           variant={
             title === "Focus" ? (breakpoints.md ? "filled" : "text") : "text"
@@ -670,12 +684,9 @@ function PanelContent() {
   const { panelState } = useFocusPanelContext();
   const { width } = useWindowDimensions();
 
-  const borderWidth = useSharedValue(breakpoints.md ? 2 : 0);
-  const borderStyle = useAnimatedStyle(() => ({
-    borderWidth:
-      borderWidth.value === 0
-        ? withSpring(0, { duration: 0.5, overshootClamping: true })
-        : borderWidth.value,
+  const opacity = useSharedValue(breakpoints.md ? 2 : 0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { overshootClamping: true }),
   }));
 
   const screenOptions = useMemo<StackNavigationOptions>(
@@ -706,16 +717,29 @@ function PanelContent() {
   return (
     <Animated.View
       style={[
-        borderStyle,
         {
           borderRadius: breakpoints.md ? 20 : 0,
-          borderColor: theme[panelState === "COLLAPSED" ? 2 : 5],
           flex: 1,
           overflow: panelState === "COLLAPSED" ? "visible" : "hidden",
         },
         !breakpoints.md && { width: width },
       ]}
     >
+      <Animated.View
+        style={[
+          opacityStyle,
+          {
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            borderWidth: 2,
+            borderColor: theme[panelState === "COLLAPSED" ? 2 : 5],
+            zIndex: 99,
+            borderRadius: 20,
+            pointerEvents: "none",
+          },
+        ]}
+      />
       <WakeLock />
       <NavigationContainer
         ref={r}
@@ -724,9 +748,9 @@ function PanelContent() {
         onStateChange={(state) => {
           const currentRouteName = state.routes[state.index].name;
           if (currentRouteName === "New" || currentRouteName === "Focus") {
-            borderWidth.value = breakpoints.md ? 2 : 0;
+            opacity.value = breakpoints.md ? 1 : 0;
           } else {
-            borderWidth.value = 0;
+            opacity.value = 0;
           }
         }}
         theme={{

@@ -6,7 +6,7 @@ import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { StackNavigationProp } from "@react-navigation/stack";
 import dayjs from "dayjs";
@@ -55,7 +55,10 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
             size={30}
             icon="wb_sunny"
             theme={weatherDescription.colorTheme}
-            style={gridStyles.avatar}
+            style={[
+              gridStyles.avatar,
+              { backgroundColor: addHslAlpha(theme[11], 0.1) },
+            ]}
           />
           <View style={gridStyles.textContainer}>
             <Text weight={700} style={{ color: theme[11] }}>
@@ -72,7 +75,10 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
             size={30}
             icon="wb_twilight"
             theme={weatherDescription.colorTheme}
-            style={gridStyles.avatar}
+            style={[
+              gridStyles.avatar,
+              { backgroundColor: addHslAlpha(theme[11], 0.1) },
+            ]}
           />
           <View style={gridStyles.textContainer}>
             <Text weight={700} style={{ color: theme[11] }}>
@@ -92,7 +98,10 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
             size={30}
             icon="north"
             theme={weatherDescription.colorTheme}
-            style={gridStyles.avatar}
+            style={[
+              gridStyles.avatar,
+              { backgroundColor: addHslAlpha(theme[11], 0.1) },
+            ]}
           />
           <View style={gridStyles.textContainer}>
             <Text weight={700} style={{ color: theme[11] }}>
@@ -109,7 +118,10 @@ const WeatherGridDetails = ({ data, weatherDescription, theme }: any) => {
             size={30}
             icon="south"
             theme={weatherDescription.colorTheme}
-            style={gridStyles.avatar}
+            style={[
+              gridStyles.avatar,
+              { backgroundColor: addHslAlpha(theme[11], 0.1) },
+            ]}
           />
           <View style={gridStyles.textContainer}>
             <Text weight={700} style={{ color: theme[11] }}>
@@ -258,8 +270,6 @@ export default function WeatherWidget({
     weatherDescription?.colorTheme || session.user.profile.theme
   );
 
-  const gradient = [weatherColor[3], weatherColor[4]];
-
   return (
     <View>
       {panelState !== "COLLAPSED" && (
@@ -312,96 +322,103 @@ export default function WeatherWidget({
               if (panelState === "COLLAPSED") collapseOnBack.current = true;
             }}
           >
-            <LinearGradient
-              colors={gradient}
-              style={[
-                widgetStyles.card,
-                {
-                  borderWidth: 1,
-                  borderColor: weatherColor[6],
-                },
-                panelState === "COLLAPSED" && { padding: 15 },
-              ]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <View
-                style={{
-                  flexDirection:
-                    panelState === "COLLAPSED" ? "column-reverse" : "row",
-                  alignItems:
-                    panelState === "COLLAPSED" ? "center" : "flex-start",
-                  justifyContent: "space-between",
-                }}
+            {({ pressed, hovered }) => (
+              <LinearGradient
+                colors={[
+                  weatherColor[pressed ? 5 : hovered ? 4 : 3],
+                  weatherColor[pressed ? 6 : hovered ? 5 : 4],
+                ]}
+                style={[
+                  widgetStyles.card,
+                  {
+                    borderWidth: 1,
+                    borderColor: weatherColor[6],
+                  },
+                  panelState === "COLLAPSED" && { padding: 15 },
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
               >
-                <View>
-                  <Text
-                    style={{
-                      fontSize: panelState === "COLLAPSED" ? 30 : 40,
-                      color: weatherColor[11],
-                      fontFamily: getFontName("jetBrainsMono", 500),
-                      textAlign: panelState === "COLLAPSED" ? "center" : "left",
-                      marginRight: panelState === "COLLAPSED" ? -10 : 0,
-                    }}
-                    weight={600}
-                  >
-                    {Math.round(data.current_weather.temperature)}&deg;
-                    {panelState === "COLLAPSED" ? "" : "F"}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 17,
-                      opacity: 0.8,
-                      marginBottom: 5,
-                      color: weatherColor[11],
-                      textAlign: panelState === "COLLAPSED" ? "center" : "left",
-                    }}
-                    weight={300}
-                  >
-                    {
-                      weatherCodes[data.current_weather.weathercode][
-                        isNight() ? "night" : "day"
-                      ].description
-                    }
-                    {panelState !== "COLLAPSED" &&
-                      ` • Feels like ${Math.round(
-                        data.hourly.apparent_temperature[dayjs().hour()]
-                      )}°`}
-                  </Text>
-                </View>
-                <Avatar
-                  size={50}
-                  style={[
-                    {
-                      marginTop: 10,
-                      marginRight: 10,
-                    },
-                    panelState === "COLLAPSED" && {
-                      marginTop: -10,
-                      marginRight: 0,
-                      backgroundColor: "transparent",
-                    },
-                  ]}
-                  disabled
-                  theme={weatherDescription.colorTheme}
+                <View
+                  style={{
+                    flexDirection:
+                      panelState === "COLLAPSED" ? "column-reverse" : "row",
+                    alignItems:
+                      panelState === "COLLAPSED" ? "center" : "flex-start",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <Icon size={35} bold={panelState !== "COLLAPSED"}>
-                    {
-                      weatherCodes[data.current_weather.weathercode][
-                        isNight() ? "night" : "day"
-                      ].icon
-                    }
-                  </Icon>
-                </Avatar>
-              </View>
-              {panelState !== "COLLAPSED" && (
-                <WeatherGridDetails
-                  weatherDescription={weatherDescription}
-                  data={data}
-                  theme={weatherColor}
-                />
-              )}
-            </LinearGradient>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: panelState === "COLLAPSED" ? 30 : 40,
+                        color: weatherColor[11],
+                        fontFamily: getFontName("jetBrainsMono", 500),
+                        textAlign:
+                          panelState === "COLLAPSED" ? "center" : "left",
+                        marginRight: panelState === "COLLAPSED" ? -10 : 0,
+                      }}
+                      weight={600}
+                    >
+                      {Math.round(data.current_weather.temperature)}&deg;
+                      {panelState === "COLLAPSED" ? "" : "F"}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        opacity: 0.8,
+                        marginBottom: 5,
+                        color: weatherColor[11],
+                        textAlign:
+                          panelState === "COLLAPSED" ? "center" : "left",
+                      }}
+                      weight={300}
+                    >
+                      {
+                        weatherCodes[data.current_weather.weathercode][
+                          isNight() ? "night" : "day"
+                        ].description
+                      }
+                      {panelState !== "COLLAPSED" &&
+                        ` • Feels like ${Math.round(
+                          data.hourly.apparent_temperature[dayjs().hour()]
+                        )}°`}
+                    </Text>
+                  </View>
+                  <Avatar
+                    size={50}
+                    style={[
+                      {
+                        marginTop: 10,
+                        marginRight: 10,
+                      },
+                      panelState === "COLLAPSED" && {
+                        marginTop: -10,
+                        marginRight: 0,
+                        backgroundColor: "transparent",
+                      },
+                    ]}
+                    disabled
+                    theme={weatherDescription.colorTheme}
+                  >
+                    <Icon size={35} bold={panelState !== "COLLAPSED"}>
+                      {
+                        weatherCodes[data.current_weather.weathercode][
+                          isNight() ? "night" : "day"
+                        ].icon
+                      }
+                    </Icon>
+                  </Avatar>
+                </View>
+                {panelState !== "COLLAPSED" && (
+                  <WeatherGridDetails
+                    weatherDescription={weatherDescription}
+                    data={data}
+                    theme={weatherColor}
+                  />
+                )}
+              </LinearGradient>
+            )}
           </Pressable>
         </ColorThemeProvider>
       ) : (

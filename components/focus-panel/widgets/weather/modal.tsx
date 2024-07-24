@@ -292,11 +292,7 @@ export function FocusPanelWeather({ navigation }) {
     }
   );
 
-  const {
-    data: airQualityData,
-    isLoading: isAirQualityLoading,
-    mutate: mutateAirQuality,
-  } = useSWR(
+  const { data: airQualityData } = useSWR(
     location
       ? [
           ``,
@@ -333,6 +329,7 @@ export function FocusPanelWeather({ navigation }) {
         title="Weather"
         navigation={navigation}
         backgroundColor={theme[3]}
+        foregroundColor={theme[11]}
       />
       <LinearGradient colors={[theme[3], theme[5]]} style={{ flex: 1 }}>
         {data && airQualityData ? (
