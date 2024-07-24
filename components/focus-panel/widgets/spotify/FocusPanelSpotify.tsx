@@ -87,7 +87,17 @@ const SpotifyLargePreview = ({ data, navigation, mutate }) => {
       >
         <Image
           source={{ uri: data.item.album.images[0].url }}
-          style={{ width: "100%", aspectRatio: 1 }}
+          style={{
+            width: "100%",
+            aspectRatio: 1,
+            shadowRadius: 20,
+            shadowColor: "#000",
+            shadowOpacity: 0.1,
+            shadowOffset: {
+              width: 10,
+              height: 10,
+            },
+          }}
         />
         <Text
           style={{

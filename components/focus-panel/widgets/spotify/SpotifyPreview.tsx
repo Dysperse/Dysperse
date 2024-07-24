@@ -17,7 +17,7 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
 
   useEffect(() => {
     progress.value = data.progress_ms / data.item.duration_ms;
-  }, [data.progress_ms, data.item.duration_ms]);
+  }, [data]);
 
   useEffect(() => {
     const interval = setInterval(() => {
