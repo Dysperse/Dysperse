@@ -621,7 +621,6 @@ function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
       text: "Music",
       icon: <SpotifySvg />,
       secondary: "With Spotify",
-      comingSoon: process.env.NODE_ENV === "production",
       onlyOnce: true,
     },
   ];
