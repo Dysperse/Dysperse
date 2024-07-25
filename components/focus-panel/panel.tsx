@@ -19,6 +19,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   NavigationContainer,
@@ -43,7 +44,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { Platform, Pressable, useWindowDimensions, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  Pressable,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -57,6 +64,7 @@ import Animated, {
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import MarkdownRenderer from "../MarkdownRenderer";
 import { useSidebarContext } from "../layout/sidebar/context";
 import { useFocusPanelContext } from "./context";
 import { widgetMenuStyles } from "./widgetMenuStyles";
@@ -230,7 +238,7 @@ const Sports = ({ params, menuActions }) => {
   return panelState === "COLLAPSED" ? (
     <IconButton
       variant="outlined"
-      size={83}
+      size={80}
       style={{ borderRadius: 20 }}
       backgroundColors={{
         default: theme[3],
@@ -426,9 +434,161 @@ function RenderWidget({ navigation, widget, index }) {
           key={index}
         />
       );
+    case "word of the day":
+      return (
+        <WordOfTheDay
+          navigation={navigation}
+          menuActions={menuActions}
+          params={widget}
+          key={index}
+        />
+      );
     default:
       return null;
   }
+}
+
+function WordOfTheDay({ navigation, menuActions, params }) {
+  const theme = useColorTheme();
+  const { panelState, setPanelState, collapseOnBack } = useFocusPanelContext();
+  const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
+
+  return panelState === "COLLAPSED" ? (
+    <IconButton
+      size={80}
+      icon="book"
+      backgroundColors={{
+        default: theme[3],
+        pressed: theme[4],
+        hovered: theme[5],
+      }}
+      onPress={() => {
+        navigation.navigate("Word of the day");
+        setPanelState("OPEN");
+        if (panelState === "COLLAPSED") collapseOnBack.current = true;
+      }}
+      variant="outlined"
+      style={{ borderRadius: 20 }}
+    />
+  ) : (
+    <View>
+      <MenuPopover
+        options={menuActions}
+        trigger={
+          <Button style={widgetMenuStyles.button} dense>
+            <ButtonText weight={800} style={widgetMenuStyles.text}>
+              Word of the day
+            </ButtonText>
+            <Icon style={{ color: theme[11] }}>expand_more</Icon>
+          </Button>
+        }
+      />
+      <Pressable
+        style={({ pressed, hovered }) => ({
+          padding: 20,
+          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+          borderWidth: 1,
+          borderColor: theme[5],
+          borderRadius: 20,
+          paddingBottom: data ? 10 : undefined,
+          alignItems: data ? undefined : "center",
+        })}
+        onPress={() => navigation.navigate("Word of the day")}
+      >
+        {data ? (
+          <>
+            <Text
+              style={{ fontFamily: "serifText800", fontSize: 30 }}
+              numberOfLines={1}
+            >
+              {capitalizeFirstLetter(data.word)}
+            </Text>
+            <Text
+              weight={700}
+              style={{ opacity: 0.7, marginTop: 5 }}
+              numberOfLines={1}
+            >
+              {data.partOfSpeech} &nbsp;&bull; &nbsp;
+              <Text>{data.pronunciation}</Text>
+            </Text>
+            <MarkdownRenderer>{data.definition}</MarkdownRenderer>
+          </>
+        ) : (
+          <Spinner />
+        )}
+      </Pressable>
+    </View>
+  );
+}
+
+function WordOfTheDayScreen() {
+  const theme = useColorTheme();
+  const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
+
+  const cardStyles = {
+    backgroundColor: theme[3],
+    padding: 20,
+    paddingBottom: 10,
+    borderRadius: 20,
+    marginTop: 10,
+  };
+
+  return data ? (
+    <ScrollView
+      contentContainerStyle={{ padding: 20 }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={{ padding: 5 }}>
+        <Text
+          style={{ fontFamily: "serifText800", fontSize: 30 }}
+          numberOfLines={1}
+        >
+          {capitalizeFirstLetter(data.word)}
+        </Text>
+        <Text
+          weight={700}
+          style={{ opacity: 0.7, marginTop: 5 }}
+          numberOfLines={1}
+        >
+          {data.partOfSpeech} &nbsp;&bull; &nbsp;
+          <Text>{data.pronunciation}</Text>
+        </Text>
+        <MarkdownRenderer>{data.definition}</MarkdownRenderer>
+      </View>
+      <Button
+        containerStyle={{ marginTop: 10 }}
+        height={50}
+        variant="filled"
+        onPress={() => Linking.openURL(data.link)}
+        icon="north_east"
+        iconPosition="end"
+        text="Open in Merriam-Webster"
+      />
+      <View style={cardStyles}>
+        <Text variant="eyebrow">In a sentence</Text>
+        <MarkdownRenderer>{data.exampleSentence}</MarkdownRenderer>
+      </View>
+      <View style={cardStyles}>
+        <Text variant="eyebrow">Examples</Text>
+        <MarkdownRenderer>{data.examples}</MarkdownRenderer>
+      </View>
+      <View style={cardStyles}>
+        <Text variant="eyebrow">Did you know!?</Text>
+        <MarkdownRenderer>{data.didYouKnow}</MarkdownRenderer>
+      </View>
+    </ScrollView>
+  ) : (
+    <View
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        flex: 1,
+        padding: 20,
+      }}
+    >
+      {error ? <ErrorAlert /> : <Spinner />}
+    </View>
+  );
 }
 
 const Stack = createStackNavigator();
@@ -632,6 +792,12 @@ function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
     { text: "Assistant", icon: "auto_awesome" },
     { text: "Sports", icon: "sports_football" },
     {
+      text: "Word of the day",
+      icon: "book",
+      secondary: "With Merriam-Webster",
+      onlyOnce: true,
+    },
+    {
       text: "Music",
       icon: <SpotifySvg />,
       secondary: "With Spotify",
@@ -667,6 +833,7 @@ function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
             disabled
             icon={option.icon as any}
             size={50}
+            image={option.image}
             style={{ borderRadius: 15 }}
           />
           <ListItemText primary={option.text} secondary={option.secondary} />
@@ -747,7 +914,11 @@ function PanelContent() {
         independent={true}
         onStateChange={(state) => {
           const currentRouteName = state.routes[state.index].name;
-          if (currentRouteName === "New" || currentRouteName === "Focus") {
+          if (
+            currentRouteName === "New" ||
+            currentRouteName === "Focus" ||
+            currentRouteName === "Word of the day"
+          ) {
             opacity.value = breakpoints.md ? 1 : 0;
           } else {
             opacity.value = 0;
@@ -786,6 +957,7 @@ function PanelContent() {
             component={FocusPanelSpotify}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="Word of the day" component={WordOfTheDayScreen} />
           <Stack.Screen name="New" component={NewWidget} />
         </Stack.Navigator>
       </NavigationContainer>

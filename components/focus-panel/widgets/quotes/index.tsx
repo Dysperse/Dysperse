@@ -45,7 +45,7 @@ export default function Quotes({ widget, menuActions }) {
   return panelState === "COLLAPSED" ? (
     <IconButton
       variant="outlined"
-      size={83}
+      size={80}
       style={{ borderRadius: 20 }}
       backgroundColors={{
         default: theme[3],
