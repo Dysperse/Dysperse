@@ -99,6 +99,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
         ? "transparent"
         : theme[6]),
   ];
+
   const backgroundColors = [
     props.backgroundColors?.default ||
       (variant === "filled"

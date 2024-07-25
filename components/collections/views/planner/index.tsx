@@ -5,9 +5,9 @@ import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import React, { useMemo } from "react";
-import { Platform, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { useEffect, useMemo, useRef } from "react";
+import { InteractionManager, Platform, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { AgendaContext, usePlannerContext } from "./context";
 
@@ -27,6 +27,20 @@ function Agenda() {
       ...(params.id === "all" && { all: true }),
     },
   ]);
+
+  const listRef = useRef<FlatList>(null);
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      if (listRef.current && Array.isArray(data)) {
+        const t = data.findIndex((l) => dayjs().isBetween(l.start, l.end));
+        listRef.current.scrollToIndex({
+          index: t === -1 ? 0 : t || 0,
+          animated: false,
+          viewPosition: 0.5,
+        });
+      }
+    });
+  }, [data]);
 
   const column =
     typeof data?.find === "function"
@@ -50,25 +64,24 @@ function Agenda() {
     </View>
   );
   if (breakpoints.md) {
-    return (
-      <>
-        <ScrollView
-          horizontal
-          contentContainerStyle={{
-            flexDirection: "row",
-            gap: 15,
-            padding: 15,
-            height: "100%",
-            width: Array.isArray(data) ? undefined : "100%",
-          }}
-        >
-          {Array.isArray(data)
-            ? data.map((col) => (
-                <Column mutate={mutate} key={col.start} column={col} />
-              ))
-            : agendaFallback}
-        </ScrollView>
-      </>
+    return !Array.isArray(data) ? (
+      agendaFallback
+    ) : (
+      <FlatList
+        onScrollToIndexFailed={() => {}}
+        data={data}
+        contentContainerStyle={{
+          flexDirection: "row",
+          gap: 15,
+          padding: 15,
+          height: "100%",
+          width: Array.isArray(data) ? undefined : "100%",
+        }}
+        ref={listRef}
+        horizontal
+        keyExtractor={(item) => item.start}
+        renderItem={({ item }) => <Column mutate={mutate} column={item} />}
+      />
     );
   }
   return (
