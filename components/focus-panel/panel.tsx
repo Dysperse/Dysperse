@@ -533,6 +533,18 @@ function WordOfTheDayScreen() {
     marginTop: 10,
   };
 
+  const handleAudio = async () => {
+    // const soundObject = new Audio.Sound();
+    // try {
+    //   await soundObject.loadAsync({ uri: data.audio.url });
+    //   await soundObject.playAsync();
+    // } catch (error) {
+    //   console.log("Error playing audio", error);
+    // }
+
+    Linking.openURL(data.audio.url);
+  };
+
   return data ? (
     <ScrollView
       contentContainerStyle={{ padding: 20 }}
@@ -563,6 +575,15 @@ function WordOfTheDayScreen() {
         icon="north_east"
         iconPosition="end"
         text="Open in Merriam-Webster"
+      />
+      <Button
+        containerStyle={{ marginTop: 10 }}
+        height={50}
+        variant="filled"
+        onPress={handleAudio}
+        icon="north_east"
+        iconPosition="end"
+        text="Open as podcast"
       />
       <View style={cardStyles}>
         <Text variant="eyebrow">In a sentence</Text>
