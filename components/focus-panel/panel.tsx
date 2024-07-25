@@ -2,25 +2,14 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Alert from "@/ui/Alert";
-import { Avatar } from "@/ui/Avatar";
-import BottomSheet from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
-import Emoji from "@/ui/Emoji";
-import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
-import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
+import { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import TextField from "@/ui/TextArea";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   NavigationContainer,
   NavigationContainerRef,
@@ -31,26 +20,11 @@ import {
   StackNavigationProp,
   TransitionPresets,
 } from "@react-navigation/stack";
-import { FlashList } from "@shopify/flash-list";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
-import {
-  lazy,
-  memo,
-  Suspense,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  Linking,
-  Platform,
-  Pressable,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { lazy, memo, Suspense, useEffect, useMemo, useRef } from "react";
+import { Platform, Pressable, useWindowDimensions, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -64,12 +38,12 @@ import Animated, {
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import MarkdownRenderer from "../MarkdownRenderer";
 import { useSidebarContext } from "../layout/sidebar/context";
 import { useFocusPanelContext } from "./context";
-import { widgetMenuStyles } from "./widgetMenuStyles";
+import { NewWidget } from "./widgets/new";
 import { FocusPanelSpotify } from "./widgets/spotify/FocusPanelSpotify";
 import { FocusPanelWeather } from "./widgets/weather/modal";
+import { WordOfTheDayScreen } from "./widgets/word-of-the-day/screen";
 
 const Assistant = lazy(() => import("./widgets/Assistant"));
 const Clock = lazy(() => import("./widgets/clock"));
@@ -77,8 +51,16 @@ const Quotes = lazy(() => import("./widgets/quotes"));
 const Spotify = lazy(() => import("./widgets/spotify"));
 const UpNext = lazy(() => import("./widgets/up-next"));
 const WeatherWidget = lazy(() => import("./widgets/weather/widget"));
+const WordOfTheDay = lazy(() => import("./widgets/word-of-the-day"));
 
-export type Widget = "upcoming" | "weather" | "clock" | "assistant" | "sports";
+export type Widget =
+  | "upcoming"
+  | "weather"
+  | "clock"
+  | "assistant"
+  | "music"
+  | "quotes"
+  | "word of the day";
 
 export const WakeLock = () => {
   useKeepAwake();
@@ -100,183 +82,6 @@ export const ImportantChip = () => {
       style={{ backgroundColor: orange[4] }}
       color={orange[11]}
     />
-  );
-};
-
-function SelectCategory({ setCategory }) {
-  const [query, setQuery] = useState("");
-
-  const categories = [
-    { name: "Soccer", icon: "sports_soccer" },
-    { name: "Motorsport", icon: "sports_motorsports" },
-    { name: "Fighting", icon: "sports_mma" },
-    { name: "Baseball", icon: "sports_baseball" },
-    { name: "Basketball", icon: "sports_basketball" },
-    { name: "Football", icon: "sports_football" },
-    { name: "Hockey", icon: "sports_hockey" },
-    { name: "Golf", icon: "sports_golf" },
-    { name: "Rugby", icon: "sports_rugby" },
-    { name: "Tennis", icon: "sports_tennis" },
-    { name: "Cricket", icon: "sports_cricket" },
-    { name: "Cycling", icon: "directions_bike" },
-    { name: "Australian Football", icon: "sports_football" },
-    { name: "eSports", icon: "sports_esports" },
-    { name: "Volleyball", icon: "sports_volleyball" },
-    { name: "Netball", icon: "sports_basketball" },
-    { name: "Handball", icon: "sports_handball" },
-    { name: "Snooker", icon: "circle" },
-    { name: "Field Hockey", icon: "sports_hockey" },
-    { name: "Darts", icon: "target" },
-    { name: "Athletics", icon: "directions_run" },
-    { name: "Badminton", icon: "sports_tennis" },
-    { name: "Climbing", icon: "mountain_flag" },
-    { name: "Equestrian", icon: "bedroom_baby" },
-    { name: "Gymnastics", icon: "sports_gymnastics" },
-    { name: "Shooting", icon: "target" },
-    { name: "Extreme Sports", icon: "crisis_alert" },
-    { name: "Table Tennis", icon: "sports_tennis" },
-    { name: "Multi Sports", icon: "category" },
-    { name: "Water Sports", icon: "kayaking" },
-    { name: "Weightlifting", icon: "exercise" },
-    { name: "Skiiing", icon: "downhill_skiing" },
-    { name: "Skating", icon: "roller_skating" },
-    { name: "Winter Sports", icon: "ice_skating" },
-    { name: "Lacrosse", icon: "sports_kabaddi" },
-  ].filter((d) => d.name.toLowerCase().includes(query.toLowerCase()));
-  return (
-    <>
-      <View style={{ padding: 20, paddingBottom: 10 }}>
-        <Text
-          style={{
-            fontSize: 20,
-            marginBottom: 10,
-          }}
-          weight={900}
-        >
-          Browse categories
-        </Text>
-        <TextField
-          placeholder="Find a sport…"
-          variant="filled+outlined"
-          value={query}
-          onChangeText={setQuery}
-        />
-      </View>
-      <FlashList
-        contentContainerStyle={{ padding: 20, paddingTop: 10 }}
-        data={categories}
-        centerContent={categories.length === 0}
-        ListEmptyComponent={() => (
-          <View
-            style={{
-              padding: 20,
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-            }}
-          >
-            <Emoji emoji="1F494" size={40} />
-            <Text style={{ textAlign: "center", fontSize: 20 }} weight={600}>
-              No sports found
-            </Text>
-          </View>
-        )}
-        renderItem={({ item, index }) => (
-          <ListItemButton key={index} onPress={() => setCategory(item.name)}>
-            <Icon>{item.icon}</Icon>
-            <ListItemText primary={item.name} />
-          </ListItemButton>
-        )}
-      />
-    </>
-  );
-}
-
-function SelectSport({ category, setCategory, setSport }) {
-  const { data, error } = useSWR([
-    `www.thesportsdb.com/api/v1/json/3/search_all_leagues.php`,
-    { s: category },
-    "https://www.thesportsdb.com/",
-  ]);
-  return (
-    <View>
-      {error && <ErrorAlert />}
-      {JSON.stringify(data)}
-    </View>
-  );
-}
-
-function CreateSport({ createSheetRef }) {
-  const [category, setCategory] = useState<null | string>();
-  const [sport, setSport] = useState<null | string>();
-
-  return (
-    <BottomSheet
-      enableContentPanningGesture={false}
-      onClose={() => createSheetRef.current?.close()}
-      sheetRef={createSheetRef}
-      snapPoints={["90%"]}
-      index={0}
-    >
-      {!category && <SelectCategory setCategory={setCategory} />}
-      {category && (
-        <SelectSport
-          category={category}
-          setCategory={setCategory}
-          setSport={setSport}
-        />
-      )}
-    </BottomSheet>
-  );
-}
-
-const Sports = ({ params, menuActions }) => {
-  const theme = useColorTheme();
-  const createSheetRef = useRef<BottomSheetModal>(null);
-  const { panelState, setPanelState } = useFocusPanelContext();
-
-  return panelState === "COLLAPSED" ? (
-    <IconButton
-      variant="outlined"
-      size={80}
-      style={{ borderRadius: 20 }}
-      backgroundColors={{
-        default: theme[3],
-        pressed: theme[4],
-        hovered: theme[5],
-      }}
-      onPress={() => setPanelState("OPEN")}
-      icon="sports_football"
-    />
-  ) : (
-    <View>
-      <MenuPopover
-        options={[
-          ...menuActions,
-          {
-            text: "Add a team",
-            icon: "add",
-            callback: () => createSheetRef.current?.present(),
-          },
-        ]}
-        containerStyle={{ marginTop: -15 }}
-        trigger={
-          <Button style={widgetMenuStyles.button} dense>
-            <ButtonText weight={800} style={widgetMenuStyles.text}>
-              Sports
-            </ButtonText>
-            <Icon style={{ color: theme[11] }}>expand_more</Icon>
-          </Button>
-        }
-      />
-      <CreateSport createSheetRef={createSheetRef} />
-      <Alert
-        style={{ marginTop: 10 }}
-        title="Coming soon"
-        emoji="1f6a7"
-        subtitle="We're working on this widget - stay tuned!"
-      />
-    </View>
   );
 };
 
@@ -423,8 +228,8 @@ function RenderWidget({ navigation, widget, index }) {
       return (
         <Assistant menuActions={menuActions} widget={widget} key={index} />
       );
-    case "sports":
-      return <Sports menuActions={menuActions} params={widget} key={index} />;
+    // case "sports":
+    //   return <Sports menuActions={menuActions} params={widget} key={index} />;
     case "music":
       return (
         <Spotify
@@ -446,170 +251,6 @@ function RenderWidget({ navigation, widget, index }) {
     default:
       return null;
   }
-}
-
-function WordOfTheDay({ navigation, menuActions, params }) {
-  const theme = useColorTheme();
-  const { panelState, setPanelState, collapseOnBack } = useFocusPanelContext();
-  const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
-
-  return panelState === "COLLAPSED" ? (
-    <IconButton
-      size={80}
-      icon="book"
-      backgroundColors={{
-        default: theme[3],
-        pressed: theme[4],
-        hovered: theme[5],
-      }}
-      onPress={() => {
-        navigation.navigate("Word of the day");
-        setPanelState("OPEN");
-        if (panelState === "COLLAPSED") collapseOnBack.current = true;
-      }}
-      variant="outlined"
-      style={{ borderRadius: 20 }}
-    />
-  ) : (
-    <View>
-      <MenuPopover
-        options={menuActions}
-        trigger={
-          <Button style={widgetMenuStyles.button} dense>
-            <ButtonText weight={800} style={widgetMenuStyles.text}>
-              Word of the day
-            </ButtonText>
-            <Icon style={{ color: theme[11] }}>expand_more</Icon>
-          </Button>
-        }
-      />
-      <Pressable
-        style={({ pressed, hovered }) => ({
-          padding: 20,
-          backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-          borderWidth: 1,
-          borderColor: theme[5],
-          borderRadius: 20,
-          paddingBottom: data ? 10 : undefined,
-          alignItems: data ? undefined : "center",
-        })}
-        onPress={() => navigation.navigate("Word of the day")}
-      >
-        {data ? (
-          <>
-            <Text
-              style={{ fontFamily: "serifText800", fontSize: 30 }}
-              numberOfLines={1}
-            >
-              {capitalizeFirstLetter(data.word)}
-            </Text>
-            <Text
-              weight={700}
-              style={{ opacity: 0.7, marginTop: 5 }}
-              numberOfLines={1}
-            >
-              {data.partOfSpeech} &nbsp;&bull; &nbsp;
-              <Text>{data.pronunciation}</Text>
-            </Text>
-            <MarkdownRenderer>{data.definition}</MarkdownRenderer>
-          </>
-        ) : (
-          <Spinner />
-        )}
-      </Pressable>
-    </View>
-  );
-}
-
-function WordOfTheDayScreen() {
-  const theme = useColorTheme();
-  const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
-
-  const cardStyles = {
-    backgroundColor: theme[3],
-    padding: 20,
-    paddingBottom: 10,
-    borderRadius: 20,
-    marginTop: 10,
-  };
-
-  const handleAudio = async () => {
-    // const soundObject = new Audio.Sound();
-    // try {
-    //   await soundObject.loadAsync({ uri: data.audio.url });
-    //   await soundObject.playAsync();
-    // } catch (error) {
-    //   console.log("Error playing audio", error);
-    // }
-
-    Linking.openURL(data.audio.url);
-  };
-
-  return data ? (
-    <ScrollView
-      contentContainerStyle={{ padding: 20 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={{ padding: 5 }}>
-        <Text
-          style={{ fontFamily: "serifText800", fontSize: 30 }}
-          numberOfLines={1}
-        >
-          {capitalizeFirstLetter(data.word)}
-        </Text>
-        <Text
-          weight={700}
-          style={{ opacity: 0.7, marginTop: 5 }}
-          numberOfLines={1}
-        >
-          {data.partOfSpeech} &nbsp;&bull; &nbsp;
-          <Text>{data.pronunciation}</Text>
-        </Text>
-        <MarkdownRenderer>{data.definition}</MarkdownRenderer>
-      </View>
-      <Button
-        containerStyle={{ marginTop: 10 }}
-        height={50}
-        variant="filled"
-        onPress={() => Linking.openURL(data.link)}
-        icon="north_east"
-        iconPosition="end"
-        text="Open in Merriam-Webster"
-      />
-      <Button
-        containerStyle={{ marginTop: 10 }}
-        height={50}
-        variant="filled"
-        onPress={handleAudio}
-        icon="north_east"
-        iconPosition="end"
-        text="Open as podcast"
-      />
-      <View style={cardStyles}>
-        <Text variant="eyebrow">In a sentence</Text>
-        <MarkdownRenderer>{data.exampleSentence}</MarkdownRenderer>
-      </View>
-      <View style={cardStyles}>
-        <Text variant="eyebrow">Examples</Text>
-        <MarkdownRenderer>{data.examples}</MarkdownRenderer>
-      </View>
-      <View style={cardStyles}>
-        <Text variant="eyebrow">Did you know!?</Text>
-        <MarkdownRenderer>{data.didYouKnow}</MarkdownRenderer>
-      </View>
-    </ScrollView>
-  ) : (
-    <View
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        flex: 1,
-        padding: 20,
-      }}
-    >
-      {error ? <ErrorAlert /> : <Spinner />}
-    </View>
-  );
 }
 
 const Stack = createStackNavigator();
@@ -766,104 +407,6 @@ export const SpotifySvg = () => {
     </Svg>
   );
 };
-
-function NewWidget({ navigation }: { navigation: StackNavigationProp<any> }) {
-  const { sessionToken } = useUser();
-  const { data, mutate } = useSWR(["user/focus-panel"]);
-  const [loading, setLoading] = useState<string | boolean>(false);
-
-  const handleWidgetToggle = async (type: Widget) => {
-    try {
-      setLoading(type);
-      await sendApiRequest(
-        sessionToken,
-        "POST",
-        "user/focus-panel",
-        {},
-        {
-          body: JSON.stringify({
-            type: type.toLowerCase(),
-            order: data[0]
-              ? LexoRank.parse(data[0].order).genPrev().toString()
-              : LexoRank.middle().toString(),
-            params: {},
-          }),
-        }
-      );
-      mutate();
-      navigation.goBack();
-    } catch (e) {
-      Toast.show({
-        text1: "Something went wrong. Please try again later",
-        type: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const options = [
-    {
-      text: "Upcoming",
-      icon: <UpcomingSvg />,
-    },
-    { text: "Quotes", icon: "format_quote" },
-    { text: "Clock", icon: "timer" },
-    { text: "Weather", icon: "wb_sunny" },
-    { text: "Assistant", icon: "auto_awesome" },
-    { text: "Sports", icon: "sports_football" },
-    {
-      text: "Word of the day",
-      icon: "book",
-      secondary: "With Merriam-Webster",
-      onlyOnce: true,
-    },
-    {
-      text: "Music",
-      icon: <SpotifySvg />,
-      secondary: "With Spotify",
-      onlyOnce: true,
-    },
-  ];
-  return (
-    <ScrollView contentContainerStyle={{ padding: 15, gap: 15 }}>
-      {options.map((option, index) => (
-        <ListItemButton
-          key={index}
-          variant="filled"
-          onPress={() => {
-            if (
-              option.onlyOnce &&
-              data.find((d) => d.type === option.text.toLowerCase())
-            ) {
-              return Toast.show({
-                type: "info",
-                text1: "You can only add this widget once",
-              });
-            }
-            // if (option.comingSoon) {
-            //   return Toast.show({
-            //     type: "info",
-            //     text1: "Coming soon!",
-            //   });
-            // }
-            handleWidgetToggle(option.text as Widget);
-          }}
-        >
-          <Avatar
-            disabled
-            icon={option.icon as any}
-            size={50}
-            image={option.image}
-            style={{ borderRadius: 15 }}
-          />
-          <ListItemText primary={option.text} secondary={option.secondary} />
-          {loading === option.text && <Spinner />}
-        </ListItemButton>
-      ))}
-    </ScrollView>
-  );
-}
 
 function PanelContent() {
   const theme = useColorTheme();
@@ -1045,31 +588,33 @@ function FocusPanelHome({
               </Text>
             </View>
           ) : (
-            <ScrollView
-              style={{ flex: 1 }}
-              contentContainerStyle={{
-                gap: panelState === "COLLAPSED" ? 10 : 20,
-                minHeight: "100%",
-                paddingBottom: panelState === "COLLAPSED" ? 0 : 20,
-              }}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-            >
-              {data
-                .sort(function (a, b) {
-                  if (a.order < b.order) return -1;
-                  if (a.order > b.order) return 1;
-                  return 0;
-                })
-                .map((widget, index) => (
-                  <RenderWidget
-                    navigation={navigation}
-                    key={index}
-                    index={index}
-                    widget={widget}
-                  />
-                ))}
-            </ScrollView>
+            Array.isArray(data) && (
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{
+                  gap: panelState === "COLLAPSED" ? 10 : 20,
+                  minHeight: "100%",
+                  paddingBottom: panelState === "COLLAPSED" ? 0 : 20,
+                }}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              >
+                {data
+                  .sort(function (a, b) {
+                    if (a.order < b.order) return -1;
+                    if (a.order > b.order) return 1;
+                    return 0;
+                  })
+                  .map((widget, index) => (
+                    <RenderWidget
+                      navigation={navigation}
+                      key={index}
+                      index={index}
+                      widget={widget}
+                    />
+                  ))}
+              </ScrollView>
+            )
           )}
         </ScrollView>
       </Suspense>
