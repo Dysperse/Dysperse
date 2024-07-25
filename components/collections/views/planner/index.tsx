@@ -29,9 +29,12 @@ function Agenda() {
   ]);
 
   const listRef = useRef<FlatList>(null);
+  const alreadyScrolled = useRef(false);
+
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
-      if (listRef.current && Array.isArray(data)) {
+      if (listRef.current && Array.isArray(data) && !alreadyScrolled.current) {
+        alreadyScrolled.current = true;
         const t = data.findIndex((l) => dayjs().isBetween(l.start, l.end));
         listRef.current.scrollToIndex({
           index: t === -1 ? 0 : t || 0,
