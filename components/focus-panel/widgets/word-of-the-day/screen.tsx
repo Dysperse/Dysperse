@@ -40,7 +40,7 @@ export function WordOfTheDayScreen() {
     >
       <View style={{ padding: 5 }}>
         <Text
-          style={{ fontFamily: "serifText800", fontSize: 30 }}
+          style={{ fontFamily: "serifText800", fontSize: 40 }}
           numberOfLines={1}
         >
           {capitalizeFirstLetter(data.word)}
