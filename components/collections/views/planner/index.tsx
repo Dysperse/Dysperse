@@ -47,7 +47,7 @@ function Agenda() {
         });
       }
     });
-  }, [data]);
+  }, [data, start]);
 
   const column =
     typeof data?.find === "function"
