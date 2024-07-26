@@ -159,7 +159,7 @@ function WeatherModal({
               subheading={dayjs(weather.daily.sunset[0]).format("h:mm A")}
             />
           </View>
-          <View style={{ marginTop: 10 }} />
+          <View style={{ marginTop: 15 }} />
           <WeatherCard
             icon="eco"
             heading="Air Quality"
