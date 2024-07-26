@@ -157,7 +157,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
           minHeight: height,
           minWidth: minWidth,
 
-          borderWidth: 1,
+          borderWidth: props.variant === "outlined" ? 1 : 0,
           borderRadius: 40,
           overflow: "hidden",
         },
