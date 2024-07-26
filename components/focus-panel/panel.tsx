@@ -52,6 +52,7 @@ const Spotify = lazy(() => import("./widgets/spotify"));
 const UpNext = lazy(() => import("./widgets/up-next"));
 const WeatherWidget = lazy(() => import("./widgets/weather/widget"));
 const WordOfTheDay = lazy(() => import("./widgets/word-of-the-day"));
+const Randomizer = lazy(() => import("./widgets/randomizer"));
 
 export type Widget =
   | "upcoming"
@@ -228,8 +229,6 @@ function RenderWidget({ navigation, widget, index }) {
       return (
         <Assistant menuActions={menuActions} widget={widget} key={index} />
       );
-    // case "sports":
-    //   return <Sports menuActions={menuActions} params={widget} key={index} />;
     case "music":
       return (
         <Spotify
@@ -245,6 +244,16 @@ function RenderWidget({ navigation, widget, index }) {
           navigation={navigation}
           menuActions={menuActions}
           params={widget}
+          key={index}
+        />
+      );
+    case "randomizer":
+      return (
+        <Randomizer
+          setParam={setParam}
+          navigation={navigation}
+          menuActions={menuActions}
+          widget={widget}
           key={index}
         />
       );

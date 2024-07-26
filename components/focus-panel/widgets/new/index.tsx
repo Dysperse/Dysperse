@@ -84,12 +84,7 @@ export function NewWidget({
           secondary: "Stopwatch, pomodoro & more",
           icon: "timer",
         },
-        {
-          text: "Randomizer",
-          secondary: "Coin flip & dice",
-          icon: "casino",
-          comingSoon: true,
-        },
+        { text: "Randomizer", secondary: "Coin flip & dice", icon: "casino" },
         { text: "Counter", icon: "tag", comingSoon: true },
         { text: "Assistant", icon: "auto_awesome" },
       ],
