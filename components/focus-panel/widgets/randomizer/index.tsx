@@ -188,7 +188,6 @@ export default function Randomizer({
       {!isCollapsed && (
         <MenuPopover
           options={[
-            ...menuActions,
             {
               text: "Switch to " + (mode === "coin" ? "Dice" : "Coin"),
               icon: "casino",
@@ -197,6 +196,8 @@ export default function Randomizer({
                 setMode(mode === "coin" ? "dice" : "coin");
               },
             },
+            { divider: true },
+            ...menuActions,
           ]}
           containerStyle={{ marginTop: -15 }}
           trigger={
