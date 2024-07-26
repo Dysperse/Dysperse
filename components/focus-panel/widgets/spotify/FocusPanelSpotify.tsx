@@ -110,8 +110,7 @@ const SpotifyLargePreview = ({ data, navigation, mutate }) => {
             overflow: "hidden",
             borderRadius: 99,
             width: "100%",
-            height: 16,
-            padding: 3,
+            height: 10,
             marginTop: 10,
             backgroundColor: addHslAlpha(textColor, 0.2),
           }}

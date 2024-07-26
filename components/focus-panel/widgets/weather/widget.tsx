@@ -250,7 +250,6 @@ export default function WeatherWidget({
     widgetStyles.card,
     {
       backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-      borderWidth: 1,
       borderColor: theme[5],
     },
   ];
@@ -325,13 +324,12 @@ export default function WeatherWidget({
             {({ pressed, hovered }) => (
               <LinearGradient
                 colors={[
-                  weatherColor[pressed ? 5 : hovered ? 4 : 3],
                   weatherColor[pressed ? 6 : hovered ? 5 : 4],
+                  weatherColor[pressed ? 5 : hovered ? 4 : 3],
                 ]}
                 style={[
                   widgetStyles.card,
                   {
-                    borderWidth: 1,
                     borderColor: weatherColor[6],
                   },
                   panelState === "COLLAPSED" && { padding: 15 },
@@ -391,6 +389,7 @@ export default function WeatherWidget({
                       {
                         marginTop: 10,
                         marginRight: 10,
+                        backgroundColor: addHslAlpha(weatherColor[11], 0.1),
                       },
                       panelState === "COLLAPSED" && {
                         marginTop: -10,

@@ -71,14 +71,8 @@ const Assistant = ({ widget, menuActions }: any) => {
 
   return panelState === "COLLAPSED" ? (
     <IconButton
-      variant="outlined"
-      size={80}
+      variant="filled"
       style={{ borderRadius: 20 }}
-      backgroundColors={{
-        default: theme[3],
-        pressed: theme[4],
-        hovered: theme[5],
-      }}
       onPress={() => setPanelState("OPEN")}
       icon="auto_awesome"
     />

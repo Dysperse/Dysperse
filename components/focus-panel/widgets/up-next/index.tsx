@@ -8,7 +8,7 @@ import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -111,11 +111,7 @@ const UpNext = ({ widget, menuActions }) => {
         <View
           style={[
             widgetStyles.card,
-            {
-              backgroundColor: theme[2],
-              borderWidth: 1,
-              borderColor: theme[4],
-            },
+            { backgroundColor: addHslAlpha(theme[4], 0.5) },
           ]}
         >
           {data ? (
@@ -142,7 +138,7 @@ const UpNext = ({ widget, menuActions }) => {
                     )}
                     {nextTask.pinned && <ImportantChip />}
                   </View>
-                  <Text style={{ fontSize: 35 }}>{nextTask.name}</Text>
+                  <Text style={{ fontSize: 20 }}>{nextTask.name}</Text>
                   <Text
                     style={{
                       fontFamily: getFontName("jetBrainsMono", 500),

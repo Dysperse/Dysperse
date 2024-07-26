@@ -22,17 +22,12 @@ export default function WordOfTheDay({ navigation, menuActions, params }) {
     <IconButton
       size={80}
       icon="book"
-      backgroundColors={{
-        default: theme[3],
-        pressed: theme[4],
-        hovered: theme[5],
-      }}
       onPress={() => {
         navigation.navigate("Word of the day");
         setPanelState("OPEN");
         if (panelState === "COLLAPSED") collapseOnBack.current = true;
       }}
-      variant="outlined"
+      variant="filled"
       style={{ borderRadius: 20 }}
     />
   ) : (
@@ -52,8 +47,6 @@ export default function WordOfTheDay({ navigation, menuActions, params }) {
         style={({ pressed, hovered }) => ({
           padding: 20,
           backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-          borderWidth: 1,
-          borderColor: theme[5],
           borderRadius: 20,
           paddingBottom: data ? 10 : undefined,
           alignItems: data ? undefined : "center",

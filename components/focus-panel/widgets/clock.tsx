@@ -465,6 +465,7 @@ const Timer = ({ pomodoro = false }) => {
                     !paused && {
                       pointerEvents: "none",
                     },
+                    { backgroundColor: theme[4] },
                   ]}
                 />
               </Pressable>
@@ -783,9 +784,7 @@ export default function Clock({ widget, menuActions, setParam }) {
         style={
           panelState === "COLLAPSED"
             ? {
-                backgroundColor: theme[3],
-                borderColor: theme[6],
-                borderWidth: 1,
+                backgroundColor: theme[4],
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 20,
@@ -793,11 +792,9 @@ export default function Clock({ widget, menuActions, setParam }) {
             : [
                 widgetStyles.card,
                 {
-                  backgroundColor: theme[3],
-                  borderWidth: 1,
+                  backgroundColor: theme[4],
                   paddingVertical: 30,
                   paddingBottom: 15,
-                  borderColor: theme[6],
                 },
                 view === "Timer" && {
                   paddingHorizontal: 0,

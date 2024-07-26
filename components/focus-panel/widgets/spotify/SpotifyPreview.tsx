@@ -64,13 +64,12 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
           }}
           colors={backgroundColors}
           style={{
-            paddingHorizontal: 20,
             borderRadius: 20,
             gap: 20,
             opacity: pressed ? 0.8 : hovered ? 0.9 : 1,
             alignItems: "center",
             flexDirection: panelState === "COLLAPSED" ? "column" : "row",
-            paddingVertical: 15,
+            padding: 17,
             backgroundColor: theme[3],
           }}
         >
@@ -107,7 +106,7 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
                 borderRadius: 5,
                 width: "100%",
                 height: 4,
-                marginTop: panelState === "COLLAPSED" ? -5 : 5,
+                marginTop: panelState === "COLLAPSED" ? -5 : 7,
                 backgroundColor: isDark
                   ? "rgba(255, 255, 255, 0.1)"
                   : "rgba(0, 0, 0, 0.1)",

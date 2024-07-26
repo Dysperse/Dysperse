@@ -278,66 +278,58 @@ export const Navbar = ({
         height: 70,
         flexDirection: title === "Focus" ? "row-reverse" : "row",
         alignItems: "center",
-        justifyContent: panelState === "COLLAPSED" ? "center" : "space-between",
-        padding: panelState === "COLLAPSED" ? 0 : 15,
+        justifyContent: "space-between",
+        padding: 15,
         backgroundColor:
           backgroundColor || theme[panelState === "COLLAPSED" ? 2 : 1],
       }}
     >
-      {panelState !== "COLLAPSED" && (
-        <IconButton
-          onPress={() => {
-            if (collapseOnBack.current && title !== "Focus")
-              setPanelState("COLLAPSED");
-            if (title === "Focus") {
-              navigation.push("New");
-            } else {
-              navigation.goBack();
-            }
-          }}
-          backgroundColors={
-            title === "Focus"
-              ? undefined
-              : {
-                  default: "transparent",
-                  pressed: isDark
-                    ? "rgba(255,255,255,.1)"
-                    : "rgba(0, 0, 0, 0.1)",
-                  hovered: isDark
-                    ? "rgba(255,255,255,.2)"
-                    : "rgba(0, 0, 0, 0.2)",
-                }
+      <IconButton
+        onPress={() => {
+          if (collapseOnBack.current && title !== "Focus")
+            setPanelState("COLLAPSED");
+          if (title === "Focus") {
+            navigation.push("New");
+          } else {
+            navigation.goBack();
           }
-          size={!breakpoints.md ? 50 : 40}
-          variant={
-            title === "Focus" ? (breakpoints.md ? "filled" : "text") : "text"
-          }
-          icon={
-            <Icon
-              style={{
-                color: foregroundColor || theme[11],
-              }}
-            >
-              {title === "Focus" ? "add" : "arrow_back_ios_new"}
-            </Icon>
-          }
-          style={{
-            opacity: navigation.canGoBack() || title === "Focus" ? 1 : 0,
-          }}
-        />
-      )}
-      {panelState !== "COLLAPSED" && (
-        <Text
-          style={{
-            fontSize: 20,
-            opacity: title === "Focus" ? 0 : 1,
-            color: foregroundColor || theme[11],
-          }}
-          weight={800}
-        >
-          {title}
-        </Text>
-      )}
+        }}
+        backgroundColors={
+          title === "Focus"
+            ? undefined
+            : {
+                default: "transparent",
+                pressed: isDark ? "rgba(255,255,255,.1)" : "rgba(0, 0, 0, 0.1)",
+                hovered: isDark ? "rgba(255,255,255,.2)" : "rgba(0, 0, 0, 0.2)",
+              }
+        }
+        size={!breakpoints.md ? 50 : 40}
+        variant={
+          title === "Focus" ? (breakpoints.md ? "filled" : "text") : "text"
+        }
+        icon={
+          <Icon
+            style={{
+              color: foregroundColor || theme[11],
+            }}
+          >
+            {title === "Focus" ? "add" : "arrow_back_ios_new"}
+          </Icon>
+        }
+        style={{
+          opacity: navigation.canGoBack() || title === "Focus" ? 1 : 0,
+        }}
+      />
+      <Text
+        style={{
+          fontSize: 20,
+          opacity: title === "Focus" ? 0 : 1,
+          color: foregroundColor || theme[11],
+        }}
+        weight={800}
+      >
+        {title}
+      </Text>
       {breakpoints.md ? (
         <IconButton
           onPress={() => {
@@ -347,18 +339,13 @@ export const Navbar = ({
               return d;
             });
           }}
-          icon={
-            panelState === "COLLAPSED"
-              ? "right_panel_open"
-              : "right_panel_close"
-          }
+          icon="right_panel_close"
           size={!breakpoints.md ? 50 : 40}
           style={{
             padding: 10,
-            marginBottom: panelState === "COLLAPSED" ? 10 : 0,
-            opacity:
-              panelState === "COLLAPSED" ? 0.5 : title === "Focus" ? 1 : 0,
-            marginRight: panelState === "COLLAPSED" ? 10 : 0,
+            marginBottom: 0,
+            opacity: title === "Focus" ? 1 : 0,
+            marginRight: 0,
           }}
         />
       ) : (
@@ -412,7 +399,7 @@ function PanelContent() {
   const theme = useColorTheme();
   const r = useRef<NavigationContainerRef<any>>(null);
   const breakpoints = useResponsiveBreakpoints();
-  const { panelState } = useFocusPanelContext();
+  const { panelState, collapseOnBack, setPanelState } = useFocusPanelContext();
   const { width } = useWindowDimensions();
 
   const opacity = useSharedValue(breakpoints.md ? 2 : 0);
@@ -438,9 +425,12 @@ function PanelContent() {
         borderRadius: breakpoints.md ? 18 : 0,
         display: panelState === "CLOSED" ? "none" : "flex",
       },
-      header: ({ navigation, route }) => (
-        <Navbar title={route.name} navigation={navigation} />
-      ),
+      header:
+        panelState === "COLLAPSED"
+          ? () => null
+          : ({ navigation, route }) => (
+              <Navbar title={route.name} navigation={navigation} />
+            ),
     }),
     [panelState, breakpoints]
   );
@@ -525,6 +515,17 @@ function PanelContent() {
           <Stack.Screen name="New" component={NewWidget} />
         </Stack.Navigator>
       </NavigationContainer>
+      {panelState === "COLLAPSED" && (
+        <IconButton
+          onPress={() => {
+            setPanelState("OPEN");
+            collapseOnBack.current = false;
+          }}
+          icon="right_panel_open"
+          size={85}
+          style={{ height: 40, opacity: 0.6, marginBottom: 5 }}
+        />
+      )}
     </Animated.View>
   );
 }
@@ -556,7 +557,13 @@ function FocusPanelHome({
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={[{ flex: 1, padding: panelState === "COLLAPSED" ? 0 : 20 }]}
+          style={[
+            {
+              flex: 1,
+              padding: panelState === "COLLAPSED" ? 0 : 20,
+              paddingTop: 2,
+            },
+          ]}
         >
           {!data ? (
             <View style={{ marginHorizontal: "auto" }}>

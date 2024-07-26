@@ -44,14 +44,9 @@ export default function Quotes({ widget, menuActions }) {
 
   return panelState === "COLLAPSED" ? (
     <IconButton
-      variant="outlined"
+      variant="filled"
       size={80}
       style={{ borderRadius: 20 }}
-      backgroundColors={{
-        default: theme[3],
-        pressed: theme[4],
-        hovered: theme[5],
-      }}
       onPress={() => setPanelState("OPEN")}
       icon="format_quote"
     />
@@ -78,16 +73,7 @@ export default function Quotes({ widget, menuActions }) {
         }
       />
       {error && <ErrorAlert />}
-      <View
-        style={[
-          widgetStyles.card,
-          {
-            backgroundColor: theme[3],
-            borderWidth: 1,
-            borderColor: theme[6],
-          },
-        ]}
-      >
+      <View style={[widgetStyles.card, { backgroundColor: theme[3] }]}>
         {data ? (
           <>
             <Text
