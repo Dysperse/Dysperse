@@ -450,7 +450,7 @@ function PanelContent() {
         {
           borderRadius: breakpoints.md ? 20 : 0,
           flex: 1,
-          overflow: panelState === "COLLAPSED" ? "visible" : "hidden",
+          overflow: "hidden",
         },
         !breakpoints.md && { width: width },
       ]}
