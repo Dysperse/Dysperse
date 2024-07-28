@@ -52,9 +52,15 @@ function QrLogin() {
   useEffect(() => {
     const t: any = () => {
       if (data) {
-        fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/qr?token=${data.token}`)
+        fetch(
+          `${process.env.EXPO_PUBLIC_API_URL}/auth/qr?token=${data.token}`,
+          {
+            method: "PATCH",
+          }
+        )
           .then((r) => r.json())
           .then((r) => {
+            console.log(r);
             if (r.sessionId) {
               signIn(r.sessionId);
             }
