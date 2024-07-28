@@ -2,9 +2,7 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import IconButton from "@/ui/IconButton";
 import SettingsScrollView from "@/ui/SettingsScrollView";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as Device from "expo-device";
@@ -96,64 +94,38 @@ export default function Page() {
 
   return (
     <SettingsScrollView>
-      <View style={{ height: height + insets.top + insets.bottom }}>
+      <View style={{ flex: 1, position: "relative" }}>
+        <CameraView
+          style={styles.camera}
+          facing="back"
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr"],
+          }}
+          onBarcodeScanned={handleBarCodeScanned}
+        />
         <View
           style={{
-            padding: 10,
-            paddingTop: 10 + insets.top,
-            height: insets.top + 80,
-            flexDirection: "row",
             alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
             gap: 10,
           }}
         >
-          <IconButton
-            variant="outlined"
-            size={55}
-            icon="close"
-            onPress={() => {
-              if (router.canGoBack()) router.back();
-              else router.replace("/settings");
-            }}
-          />
-          <Text weight={700}>Scan QR Code</Text>
-          <View style={{ marginLeft: "auto", marginRight: 20 }}>
-            {isLoading && <Spinner />}
-          </View>
-        </View>
-        <View style={{ flex: 1, position: "relative" }}>
-          <CameraView
-            style={styles.camera}
-            facing="back"
-            barcodeScannerSettings={{
-              barcodeTypes: ["qr"],
-            }}
-            onBarcodeScanned={handleBarCodeScanned}
-          />
           <View
             style={{
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              gap: 10,
+              width: breakpoints.md ? 300 : width - 100,
+              aspectRatio: "1/1",
+              borderWidth: 5,
+              borderRadius: 50,
+              borderColor: "rgba(255,255,255,.5)",
             }}
-          >
-            <View
-              style={{
-                width: breakpoints.md ? 300 : width - 100,
-                aspectRatio: "1/1",
-                borderWidth: 5,
-                borderRadius: 50,
-                borderColor: "rgba(255,255,255,.5)",
-              }}
-            />
-            <View style={{ maxWidth: 200 }}>
-              <Text
-                style={{ textAlign: "center", color: "rgba(255,255,255,.5)" }}
-              >
-                Center the QR code within the frame to instantly log in
-              </Text>
-            </View>
+          />
+          <View style={{ maxWidth: 200 }}>
+            <Text
+              style={{ textAlign: "center", color: "rgba(255,255,255,.5)" }}
+            >
+              Center the QR code within the frame to instantly log in
+            </Text>
           </View>
         </View>
       </View>

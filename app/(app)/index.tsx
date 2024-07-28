@@ -62,10 +62,9 @@ const CustomizeButton = ({ view, setView }) => {
 
   return (
     <IconButton
-      style={[styles.settingsButton, { marginTop: insets.top + 20 }]}
+      style={[styles.settingsButton, { marginTop: insets.top + 10 }]}
       icon={view === "edit" ? "check" : "palette"}
       size={55}
-      variant={view === "edit" ? "filled" : "outlined"}
       onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
     />
   );
