@@ -156,7 +156,6 @@ export default function List() {
                     }}
                   >
                     <BlurView
-                      experimentalBlurMethod="dimezisBlurView"
                       intensity={Platform.OS === "android" ? 0 : 50}
                       tint={!isDark ? "prominent" : "systemMaterialDark"}
                       style={{
