@@ -13,14 +13,13 @@ import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { Menu } from "@/ui/Menu";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLocalSearchParams } from "expo-router";
-import { ReactElement, memo, useRef, useState } from "react";
+import { ReactElement, cloneElement, memo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -35,6 +34,7 @@ import Matrix from "@/components/collections/views/matrix";
 import Planner from "@/components/collections/views/planner";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
+import { Modal } from "@/ui/Modal";
 
 export const styles = StyleSheet.create({
   header: {
@@ -84,16 +84,26 @@ export const LabelEditModal = memo(function LabelEditModal({
     }
   };
 
+  const _trigger = cloneElement(trigger, {
+    onPress: () => menuRef.current?.present(),
+  });
+
   return (
-    <Menu trigger={trigger} height={[360]} menuRef={menuRef}>
-      <View style={{ padding: 15, gap: 15 }}>
-        <Text
-          style={{ fontSize: 20, marginLeft: 5, marginTop: -5 }}
-          weight={900}
+    <>
+      {_trigger}
+      <Modal
+        onClose={() => menuRef.current.close()}
+        ref={menuRef}
+        maxWidth={400}
+      >
+        <View
+          style={{
+            padding: 10,
+            gap: 20,
+            width: "100%",
+            alignItems: "center",
+          }}
         >
-          Edit label
-        </Text>
-        <View style={{ flexDirection: "row", gap: 20 }}>
           <Controller
             render={({ field: { onChange, value } }) => (
               <EmojiPicker setEmoji={onChange}>
@@ -109,20 +119,45 @@ export const LabelEditModal = memo(function LabelEditModal({
             name="emoji"
             control={control}
           />
-          <View style={{ flex: 1 }}>
+          <View style={{ width: "100%" }}>
+            <Text variant="eyebrow">Label name</Text>
+            <Controller
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
+                  variant="filled+outlined"
+                  style={{
+                    height: 60,
+                    fontSize: 20,
+                    borderRadius: 99,
+                    textAlign: "center",
+                    width: "100%",
+                  }}
+                  placeholder="Label name"
+                  onBlur={onBlur}
+                  weight={900}
+                  onChangeText={onChange}
+                  value={value}
+                  bottomSheet
+                />
+              )}
+              name="name"
+              control={control}
+            />
+          </View>
+          <View style={{ width: "100%" }}>
+            <Text variant="eyebrow">Color</Text>
             <Controller
               control={control}
-              rules={{
-                required: true,
-              }}
+              rules={{ required: true }}
               render={({ field: { onChange, value } }) => (
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                     flexWrap: "wrap",
-                    marginTop: 10,
                     gap: 10,
+                    width: "100%",
                   }}
                 >
                   {Object.keys(colors).map((color) => (
@@ -130,12 +165,12 @@ export const LabelEditModal = memo(function LabelEditModal({
                       key={color}
                       onPress={() => onChange(color)}
                       style={() => ({
-                        width: 30,
-                        height: 30,
+                        flex: 1,
+                        aspectRatio: 1,
                         borderRadius: 999,
-                        backgroundColor: colors[color][9],
+                        backgroundColor: colors[color][6],
                         borderWidth: 3,
-                        borderColor: colors[color][color === value ? 7 : 9],
+                        borderColor: colors[color][color === value ? 11 : 6],
                       })}
                     />
                   ))}
@@ -144,35 +179,20 @@ export const LabelEditModal = memo(function LabelEditModal({
               name="color"
             />
           </View>
+          <Button
+            height={60}
+            onPress={handleSubmit(onSubmit, (err) =>
+              Toast.show({ type: "error", text1: "Please type a name" })
+            )}
+            text="Done"
+            icon="check"
+            iconPosition="end"
+            variant="filled"
+            containerStyle={{ width: "100%" }}
+          />
         </View>
-        <Controller
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextField
-              variant="filled+outlined"
-              style={{ height: 60, fontSize: 20, borderRadius: 99 }}
-              placeholder="Label name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              bottomSheet
-            />
-          )}
-          name="name"
-          control={control}
-        />
-        <Button
-          height={60}
-          onPress={handleSubmit(onSubmit, (err) =>
-            Toast.show({ type: "error", text1: "Please type a name" })
-          )}
-          text="Done"
-          icon="check"
-          iconPosition="end"
-          variant="filled"
-        />
-      </View>
-    </Menu>
+      </Modal>
+    </>
   );
 });
 
