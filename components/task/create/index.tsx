@@ -1694,6 +1694,7 @@ const CreateTask = forwardRef(
         {trigger}
         <Modal
           maxBackdropOpacity={0.1}
+          maxWidth="100%"
           ref={ref}
           keyboardBehavior="interactive"
           animation={breakpoints.md ? "NONE" : "SLIDE"}
