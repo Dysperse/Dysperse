@@ -55,6 +55,7 @@ export const Modal = forwardRef(
                 shadowOffset: { width: 25, height: 25 },
                 shadowOpacity: 0.25,
                 shadowRadius: 100,
+                height: props.containerHeight,
               }}
             >
               {props.children}

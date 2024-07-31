@@ -18,7 +18,6 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   TouchableOpacity,
   View,
   useWindowDimensions,
@@ -505,7 +504,6 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   });
 
   const [loading, setLoading] = useState(false);
-  const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const { sidebarRef } = useSidebarContext() || {};
 
@@ -544,28 +542,11 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   );
 
   return (
-    <Pressable
-      onPress={(e) => e.stopPropagation()}
+    <View
       style={[
         {
-          margin: "auto",
           width: "100%",
           flex: 1,
-          maxWidth: breakpoints.md ? 900 : width,
-        },
-        breakpoints.md && {
-          maxHeight: Math.min(600, height / 1.3),
-          backgroundColor: theme[2],
-          borderWidth: 1,
-          borderColor: theme[6],
-          borderRadius: 20,
-          shadowColor: "rgba(0, 0, 0, 0.12)",
-          shadowOffset: {
-            width: 10,
-            height: 10,
-          },
-          shadowOpacity: 1,
-          shadowRadius: 30,
         },
       ]}
     >
@@ -603,6 +584,6 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
           />
         )}
       </View>
-    </Pressable>
+    </View>
   );
 }
