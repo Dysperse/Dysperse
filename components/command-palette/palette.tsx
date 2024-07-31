@@ -13,7 +13,7 @@ const CommandPalette = memo(function CommandPalette() {
   return (
     <Modal
       ref={sheetRef}
-      animation="NONE"
+      animation="SCALE"
       containerHeight={Math.min(600, height / 1.3)}
       maxWidth={breakpoints.md ? 900 : width}
     >

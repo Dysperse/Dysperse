@@ -6,7 +6,6 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
-import BottomSheet from "@/ui/BottomSheet";
 import { ButtonText } from "@/ui/Button";
 import Calendar from "@/ui/Calendar";
 import Chip from "@/ui/Chip";
@@ -16,6 +15,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
+import { Modal } from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
@@ -1574,7 +1574,6 @@ function BottomSheetContent({
 
   return (
     <Pressable
-      onPress={(e) => e.stopPropagation()}
       style={{
         minHeight: 280,
         maxWidth: "100%",
@@ -1583,10 +1582,7 @@ function BottomSheetContent({
         backgroundColor: theme[1],
         borderWidth: 1,
         borderColor: theme[6],
-        shadowColor: "rgba(0, 0, 0, 0.12)",
         margin: "auto",
-        shadowOffset: { width: 20, height: 20 },
-        shadowRadius: 40,
         padding: 10,
         paddingHorizontal: 0,
       }}
@@ -1696,37 +1692,17 @@ const CreateTask = forwardRef(
     return (
       <>
         {trigger}
-        <BottomSheet
-          onClose={handleClose}
-          snapPoints={["100%"]}
-          maxWidth="100%"
+        <Modal
           maxBackdropOpacity={0.1}
-          backgroundStyle={{ backgroundColor: "transparent" }}
-          sheetRef={ref}
-          handleComponent={() => null}
+          ref={ref}
           keyboardBehavior="interactive"
-          {...(breakpoints.md && {
-            animationConfigs: {
-              overshootClamping: true,
-              duration: 0.0001,
-            },
-          })}
+          animation={breakpoints.md ? "NONE" : "SLIDE"}
         >
-          <Pressable
-            onPress={() => ref.current.forceClose()}
-            style={{
-              alignItems: "center",
-              flex: 1,
-              padding: 10,
-              justifyContent: "center",
-            }}
-          >
-            <BottomSheetContent
-              defaultValues={defaultValues}
-              mutateList={mutate}
-            />
-          </Pressable>
-        </BottomSheet>
+          <BottomSheetContent
+            defaultValues={defaultValues}
+            mutateList={mutate}
+          />
+        </Modal>
       </>
     );
   }

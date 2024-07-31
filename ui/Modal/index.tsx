@@ -21,7 +21,7 @@ const SetSharedValue = ({ value, from, to }) => {
 
 export const Modal = forwardRef(
   (
-    props: Omit<DBottomSheetProps, "sheetRef"> & {
+    props: Omit<Omit<DBottomSheetProps, "sheetRef">, "onClose"> & {
       maxWidth?: ViewStyle["maxWidth"];
       animation: "NONE" | "SCALE" | "SLIDE";
     },
@@ -79,7 +79,7 @@ export const Modal = forwardRef(
           <Pressable onPress={(e) => e.stopPropagation()}>
             <Animated.View
               style={[
-                innerStyles,
+                props.animation === "SCALE" && innerStyles,
                 {
                   backgroundColor: theme[2],
                   borderRadius: 25,
