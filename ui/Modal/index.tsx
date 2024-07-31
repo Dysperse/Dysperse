@@ -44,6 +44,10 @@ export const Modal = forwardRef(
               borderRadius: 25,
               width: props.maxWidth || 500,
               maxWidth: "100%",
+              shadowColor: "#000",
+              shadowOffset: { width: 25, height: 25 },
+              shadowOpacity: 0.25,
+              shadowRadius: 100,
             }}
           >
             {props.children}

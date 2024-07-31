@@ -5,7 +5,6 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { setStringAsync } from "expo-clipboard";
 import React, { useCallback, useRef } from "react";
@@ -14,7 +13,6 @@ import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "./context";
 
 export function TaskShareButton() {
-  const theme = useColorTheme();
   const { isReadOnly, task, updateTask } = useTaskDrawerContext();
   const menuRef = useRef<BottomSheetModal>(null);
 

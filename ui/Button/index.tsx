@@ -41,6 +41,7 @@ interface DButtonProps extends PressableProps {
     pressed: string;
     hovered?: string;
   };
+  bold?: boolean;
 }
 
 export function ButtonText(props: DTextProps) {
@@ -192,12 +193,19 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
           props.children ?? (
             <>
               {(props.iconPosition === "start" || !props.iconPosition) && (
-                <Icon size={props.iconSize}>{props.icon}</Icon>
+                <Icon size={props.iconSize} bold={props.bold}>
+                  {props.icon}
+                </Icon>
               )}
-              <ButtonText style={props.large && { fontSize: 17 }}>
+              <ButtonText
+                style={props.large && { fontSize: 17 }}
+                weight={props.bold ? 900 : undefined}
+              >
                 {props.text}
               </ButtonText>
-              {props.iconPosition === "end" && <Icon>{props.icon}</Icon>}
+              {props.iconPosition === "end" && (
+                <Icon bold={props.bold}>{props.icon}</Icon>
+              )}
             </>
           )
         )}

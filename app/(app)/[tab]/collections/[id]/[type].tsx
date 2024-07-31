@@ -98,7 +98,8 @@ export const LabelEditModal = memo(function LabelEditModal({
       >
         <View
           style={{
-            padding: 10,
+            padding: 15,
+            paddingVertical: 25,
             gap: 20,
             width: "100%",
             alignItems: "center",
@@ -119,8 +120,8 @@ export const LabelEditModal = memo(function LabelEditModal({
             name="emoji"
             control={control}
           />
-          <View style={{ width: "100%" }}>
-            <Text variant="eyebrow">Label name</Text>
+          <View style={{ width: "100%", gap: 5 }}>
+            <Text variant="eyebrow">Name</Text>
             <Controller
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -145,7 +146,7 @@ export const LabelEditModal = memo(function LabelEditModal({
               control={control}
             />
           </View>
-          <View style={{ width: "100%" }}>
+          <View style={{ width: "100%", gap: 10 }}>
             <Text variant="eyebrow">Color</Text>
             <Controller
               control={control}
@@ -188,6 +189,8 @@ export const LabelEditModal = memo(function LabelEditModal({
             icon="check"
             iconPosition="end"
             variant="filled"
+            bold
+            large
             containerStyle={{ width: "100%" }}
           />
         </View>
