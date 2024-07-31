@@ -321,15 +321,14 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
 
   return (
     preview && (
-      <View
+      <ScrollView
         style={{
           flex: 1,
           borderLeftWidth: breakpoints.md ? 1 : 0,
           borderColor: theme[6],
-          alignItems: "center",
-          justifyContent: "center",
           padding: !breakpoints.md ? 20 : 0,
         }}
+        centerContent
       >
         {!breakpoints.md && (
           <IconButton
@@ -456,7 +455,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             </Icon>
           </Button>
         </View>
-      </View>
+      </ScrollView>
     )
   );
 }
