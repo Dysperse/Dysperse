@@ -85,8 +85,15 @@ export const LabelEditModal = memo(function LabelEditModal({
   };
 
   const _trigger = cloneElement(trigger, {
-    onPress: () => menuRef.current?.present(),
+    onPress: () => {
+      menuRef.current?.present();
+      setTimeout(() => {
+        nameRef.current?.focus({ preventScroll: true });
+      }, 100);
+    },
   });
+
+  const nameRef = useRef(null);
 
   return (
     <>
@@ -135,6 +142,7 @@ export const LabelEditModal = memo(function LabelEditModal({
                     width: "100%",
                   }}
                   placeholder="Label name"
+                  inputRef={nameRef}
                   onBlur={onBlur}
                   weight={900}
                   onChangeText={onChange}
