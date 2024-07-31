@@ -25,6 +25,7 @@ body,
 textarea,
 input {
   cursor: text !important;
+  caret-color: var(--theme-11);
 }
 
 #root {
