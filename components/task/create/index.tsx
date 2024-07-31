@@ -1576,13 +1576,10 @@ function BottomSheetContent({
     <Pressable
       style={{
         minHeight: 280,
-        maxWidth: "100%",
-        width: 700,
         borderRadius: 20,
         backgroundColor: theme[1],
         borderWidth: 1,
         borderColor: theme[6],
-        margin: "auto",
         padding: 10,
         paddingHorizontal: 0,
       }}
@@ -1694,7 +1691,7 @@ const CreateTask = forwardRef(
         {trigger}
         <Modal
           maxBackdropOpacity={0.1}
-          maxWidth="100%"
+          maxWidth={breakpoints.md ? 700 : "100%"}
           ref={ref}
           keyboardBehavior="interactive"
           animation={breakpoints.md ? "NONE" : "SLIDE"}

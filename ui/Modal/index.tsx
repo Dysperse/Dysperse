@@ -71,20 +71,22 @@ export const Modal = forwardRef(
           style={{
             width: "100%",
             height: "100%",
+            padding: 15,
             alignItems: "center",
             justifyContent: "center",
           }}
           onPress={handleClose}
         >
-          <Pressable onPress={(e) => e.stopPropagation()}>
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            style={{ width: "100%", maxWidth: props.maxWidth || 500 }}
+          >
             <Animated.View
               style={[
                 props.animation === "SCALE" && innerStyles,
                 {
                   backgroundColor: theme[2],
                   borderRadius: 25,
-                  width: props.maxWidth || 500,
-                  maxWidth: "100%",
                   shadowColor: "#000",
                   shadowOffset: { width: 25, height: 25 },
                   shadowOpacity: 0.25,
