@@ -12,16 +12,8 @@ const CommandPalette = memo(function CommandPalette() {
 
   return (
     <Modal
-      enableContentPanningGesture={false}
       ref={sheetRef}
-      onClose={handleClose}
-      handleComponent={() => null}
-      {...(breakpoints.md && {
-        animationConfigs: {
-          overshootClamping: true,
-          duration: 0.0001,
-        },
-      })}
+      animation="NONE"
       containerHeight={Math.min(600, height / 1.3)}
       maxWidth={breakpoints.md ? 900 : width}
     >

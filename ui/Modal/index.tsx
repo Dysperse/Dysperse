@@ -1,24 +1,59 @@
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { forwardRef, RefObject } from "react";
+import { forwardRef, RefObject, useEffect } from "react";
 import { Pressable, ViewStyle } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import BottomSheet, { DBottomSheetProps } from "../BottomSheet";
 import { useColorTheme } from "../color/theme-provider";
+
+const SetSharedValue = ({ value, from, to }) => {
+  useEffect(() => {
+    value.value = to;
+    return () => {
+      value.value = from;
+    };
+  }, [to, value]);
+  return null;
+};
 
 export const Modal = forwardRef(
   (
     props: Omit<DBottomSheetProps, "sheetRef"> & {
       maxWidth?: ViewStyle["maxWidth"];
+      animation: "NONE" | "SCALE" | "SLIDE";
     },
     ref: RefObject<BottomSheetModal>
   ) => {
     const theme = useColorTheme();
-    const handleClose = () =>
-      ref.current?.close({
-        overshootClamping: true,
-        stiffness: 400,
-        damping: 20,
-      });
+    const state = useSharedValue(0);
+
+    const animationConfigs =
+      props.animation === "NONE" || props.animation === "SCALE"
+        ? { overshootClamping: true, duration: 0.0001 }
+        : {
+            overshootClamping: true,
+            stiffness: 400,
+            damping: 40,
+          };
+
+    const handleClose = () => ref.current?.close(animationConfigs);
+
+    const innerStyles = useAnimatedStyle(() => ({
+      transformOrigin: "top center",
+      transform: [
+        {
+          scale: withSpring(state.value === 0 ? 0.7 : 1, {
+            stiffness: 200,
+            damping: 30,
+            // overshootClamping: true,
+          }),
+        },
+      ],
+      // opacity: withSpring(state.value === 0 ? 0 : 1),
+    }));
 
     return (
       <BottomSheet
@@ -28,13 +63,10 @@ export const Modal = forwardRef(
         sheetRef={ref}
         onClose={handleClose}
         handleComponent={() => null}
-        animationConfigs={{
-          overshootClamping: true,
-          stiffness: 400,
-          damping: 40,
-        }}
+        animationConfigs={animationConfigs}
         backgroundStyle={{ backgroundColor: "transparent" }}
       >
+        <SetSharedValue value={state} from={0} to={1} />
         <Pressable
           style={{
             width: "100%",
@@ -46,17 +78,20 @@ export const Modal = forwardRef(
         >
           <Pressable onPress={(e) => e.stopPropagation()}>
             <Animated.View
-              style={{
-                backgroundColor: theme[2],
-                borderRadius: 25,
-                width: props.maxWidth || 500,
-                maxWidth: "100%",
-                shadowColor: "#000",
-                shadowOffset: { width: 25, height: 25 },
-                shadowOpacity: 0.25,
-                shadowRadius: 100,
-                height: props.containerHeight,
-              }}
+              style={[
+                innerStyles,
+                {
+                  backgroundColor: theme[2],
+                  borderRadius: 25,
+                  width: props.maxWidth || 500,
+                  maxWidth: "100%",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 25, height: 25 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 100,
+                  height: props.containerHeight,
+                },
+              ]}
             >
               {props.children}
             </Animated.View>
