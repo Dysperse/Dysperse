@@ -19,6 +19,11 @@ export interface DListitemButtonProps extends PressableProps {
   buttonClassName?: string;
   variant?: "default" | "filled" | "outlined";
   pressableStyle?: StyleProp<ViewStyle>;
+  backgroundColors?: {
+    default: string;
+    hover: string;
+    active: string;
+  };
 }
 
 const styles = StyleSheet.create({
@@ -43,9 +48,10 @@ export function ListItemButton(props: DListitemButtonProps) {
   const state = useSharedValue(0);
 
   const backgroundColors = [
-    props.variant === "filled" ? theme[3] : addHslAlpha(theme[3], 0),
-    theme[props.variant === "filled" ? 4 : 3],
-    theme[props.variant === "filled" ? 5 : 4],
+    props.backgroundColors?.default ||
+      (props.variant === "filled" ? theme[3] : addHslAlpha(theme[3], 0)),
+    props.backgroundColors?.hover || theme[props.variant === "filled" ? 4 : 3],
+    props.backgroundColors?.active || theme[props.variant === "filled" ? 5 : 4],
   ];
   const borderColors = [theme[5], theme[6], theme[7]];
 

@@ -10,6 +10,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
@@ -45,9 +46,13 @@ const PaletteItem = memo(
     const theme = useColorTheme();
     return (
       <ListItemButton
-        variant={preview?.key === item.key ? "filled" : "default"}
         style={{ paddingHorizontal: 10, marginLeft: -5 }}
         onPress={() => onCreate(item)}
+        backgroundColors={{
+          default: addHslAlpha(theme[9], preview?.key === item.key ? 0.12 : 0),
+          hover: addHslAlpha(theme[9], 0.1),
+          active: addHslAlpha(theme[9], 0.2),
+        }}
         onMouseEnter={() => {
           if (!breakpoints.md) return;
           if (preview?.key !== item.key) {
@@ -104,15 +109,19 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
             }
           }}
           outlined={filter !== name}
-          style={{
+          style={({ pressed, hovered }) => ({
             backgroundColor:
               filter !== null && filter !== name
                 ? "transparent"
                 : filter === name
-                ? theme[4]
+                ? addHslAlpha(theme[9], 0.1)
                 : "transparent",
-            borderColor: theme[4],
-          }}
+            zIndex: 99,
+            borderColor: addHslAlpha(
+              theme[9],
+              pressed ? 0.2 : hovered ? 0.15 : 0.1
+            ),
+          })}
         />
       ))}
     </ScrollView>
@@ -140,6 +149,7 @@ function CommandPaletteList({
   return (
     <View style={{ flex: 1 }}>
       <FlashList
+        showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={() => (
           <View
@@ -263,7 +273,7 @@ const PaletteHeader = memo(function PaletteHeader({
 
   useEffect(() => {
     if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[1] : null);
-  }, [breakpoints, filtered, setPreview]);
+  }, []);
 
   return (
     (breakpoints.md || !preview) && (
@@ -357,7 +367,12 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             !breakpoints.md && { alignItems: "center" },
           ]}
         >
-          <Avatar size={70}>
+          <Avatar
+            style={{
+              backgroundColor: addHslAlpha(theme[9], 0.2),
+            }}
+            size={70}
+          >
             {preview.emoji ? (
               <Emoji emoji={preview.emoji} size={50} />
             ) : (
@@ -461,10 +476,8 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
 }
 
 export default function CommandPaletteContent({ handleClose, defaultFilter }) {
-  const theme = useColorTheme();
   const { sessionToken } = useUser();
   const { mutate } = useSWR(["user/tabs"]);
-  const { height } = useWindowDimensions();
 
   const [query, setQuery] = useState("");
   const [preview, setPreview] = useState(null);

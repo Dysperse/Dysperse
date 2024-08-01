@@ -26,6 +26,7 @@ export const Modal = forwardRef(
       maxWidth?: ViewStyle["maxWidth"];
       animation: "NONE" | "SCALE" | "SLIDE";
       onClose?: () => void;
+      innerStyles?: ViewStyle;
     },
     ref: RefObject<BottomSheetModal>
   ) => {
@@ -107,6 +108,7 @@ export const Modal = forwardRef(
                   shadowRadius: 100,
                   height: props.containerHeight,
                 },
+                props.innerStyles,
               ]}
             >
               {props.children}
