@@ -505,7 +505,11 @@ function PanelContent() {
             options={{
               cardStyle: {
                 paddingHorizontal: 2,
-                width: panelState === "COLLAPSED" ? 85 : 340,
+                width: breakpoints.md
+                  ? panelState === "COLLAPSED"
+                    ? 85
+                    : 340
+                  : "100%",
               },
             }}
             component={FocusPanelHome}

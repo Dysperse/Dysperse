@@ -49,7 +49,7 @@ const PaletteItem = memo(
         style={{ paddingHorizontal: 10, marginLeft: -5 }}
         onPress={() => onCreate(item)}
         backgroundColors={{
-          default: addHslAlpha(theme[9], preview?.key === item.key ? 0.12 : 0),
+          default: addHslAlpha(theme[9], preview?.key === item.key ? 0.1 : 0),
           hover: addHslAlpha(theme[9], 0.1),
           active: addHslAlpha(theme[9], 0.2),
         }}
@@ -283,7 +283,7 @@ const PaletteHeader = memo(function PaletteHeader({
           alignItems: "center",
           paddingHorizontal: breakpoints.md ? 20 : 20,
           borderBottomWidth: 1,
-          borderColor: theme[6],
+          borderColor: addHslAlpha(theme[9], 0.2),
         }}
       >
         <Icon size={breakpoints.md ? 30 : 24}>search</Icon>
@@ -335,7 +335,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
         style={{
           flex: 1,
           borderLeftWidth: breakpoints.md ? 1 : 0,
-          borderColor: theme[6],
+          borderColor: addHslAlpha(theme[9], 0.2),
           padding: !breakpoints.md ? 20 : 0,
         }}
         centerContent
