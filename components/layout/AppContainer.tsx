@@ -69,7 +69,7 @@ const AppContainer = memo(
                 },
               ],
             },
-      [breakpoints, insets, progressValue, theme]
+      [breakpoints, insets, progressValue]
     );
 
     const marginTopStyle = useMemo(
