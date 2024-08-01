@@ -50,6 +50,7 @@ const Clock = lazy(() => import("./widgets/clock"));
 const Quotes = lazy(() => import("./widgets/quotes"));
 const Spotify = lazy(() => import("./widgets/spotify"));
 const UpNext = lazy(() => import("./widgets/up-next"));
+const BatteryWidget = lazy(() => import("./widgets/battery"));
 const WeatherWidget = lazy(() => import("./widgets/weather/widget"));
 const WordOfTheDay = lazy(() => import("./widgets/word-of-the-day"));
 const Randomizer = lazy(() => import("./widgets/randomizer"));
@@ -219,6 +220,15 @@ function RenderWidget({ navigation, widget, index }) {
     case "weather":
       return (
         <WeatherWidget
+          navigation={navigation}
+          menuActions={menuActions}
+          widget={widget}
+          key={index}
+        />
+      );
+    case "battery":
+      return (
+        <BatteryWidget
           navigation={navigation}
           menuActions={menuActions}
           widget={widget}

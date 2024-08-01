@@ -69,6 +69,7 @@ export function NewWidget({
       text: "Information",
       widgets: [
         { text: "Weather", icon: "wb_sunny" },
+        { text: "Battery", icon: "battery_0_bar" },
         {
           key: "upcoming",
           text: "Upcoming tasks",
