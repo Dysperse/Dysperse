@@ -53,10 +53,10 @@ export const Modal = forwardRef(
     const innerStyles = useAnimatedStyle(() => ({
       transform: [
         {
-          scale: withSpring(state.value === 0 ? 0.8 : 1, {
-            stiffness: 400,
-            damping: 40,
-            // overshootClamping: true,
+          scale: withSpring(state.value === 0 ? 1.07 : 1, {
+            stiffness: 200,
+            damping: 2,
+            overshootClamping: true,
           }),
         },
       ],
