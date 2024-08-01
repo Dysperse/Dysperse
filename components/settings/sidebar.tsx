@@ -9,6 +9,7 @@ import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { cacheDirectory, deleteAsync } from "expo-file-system";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
 import { useEffect, useRef, useState } from "react";
@@ -180,6 +181,13 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
             if (Platform.OS == "web") {
               window.location.reload();
             } else {
+              if (Platform.OS === "android") {
+                try {
+                  deleteAsync(cacheDirectory + "/dysperse-cache/cache.json");
+                } catch (e) {
+                  console.error(e);
+                }
+              }
               Updates.reloadAsync();
             }
           },
