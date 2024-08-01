@@ -55,7 +55,7 @@ export const Modal = forwardRef(
         {
           scale: withSpring(state.value === 0 ? 1.07 : 1, {
             stiffness: 200,
-            damping: 2,
+            damping: 1,
             overshootClamping: true,
           }),
         },
