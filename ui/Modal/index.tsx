@@ -39,11 +39,14 @@ export const Modal = forwardRef(
         : {
             overshootClamping: true,
             stiffness: 400,
-            damping: 10,
+            damping: 40,
           };
 
     const handleClose = () => {
-      ref.current?.close(animationConfigs);
+      ref.current?.close({
+        ...animationConfigs,
+        damping: 20,
+      });
       props.onClose?.();
     };
 
@@ -69,6 +72,7 @@ export const Modal = forwardRef(
         onClose={handleClose}
         handleComponent={() => null}
         animationConfigs={animationConfigs}
+        enableContentPanningGesture={props.animation !== "SCALE"}
         backgroundStyle={{ backgroundColor: "transparent" }}
       >
         <SetSharedValue value={state} from={0} to={1} />

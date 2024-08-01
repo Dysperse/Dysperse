@@ -1,9 +1,9 @@
 import { Avatar } from "@/ui/Avatar";
-import BottomSheet from "@/ui/BottomSheet";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import { Modal } from "@/ui/Modal";
 import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { setStringAsync } from "expo-clipboard";
@@ -33,17 +33,13 @@ export function TaskShareButton() {
       updateTask("published", !task.published);
       if (!task.published) handleCopy();
       else Toast.show({ type: "success", text1: "Task sharing disabled" });
-
-      setTimeout(() => {
-        setTimeout(handleClose, 200);
-      }, 0);
     } catch (e) {
       Toast.show({
         type: "error",
         text1: "Something went wrong. Please try again later.",
       });
     }
-  }, [task, updateTask, handleClose, handleCopy]);
+  }, [task, updateTask, handleCopy]);
 
   return isReadOnly ? null : (
     <>
@@ -53,18 +49,13 @@ export function TaskShareButton() {
         icon="ios_share"
         onPress={handleOpen}
       />
-      <BottomSheet
-        onClose={handleClose}
-        snapPoints={[250]}
-        sheetRef={menuRef}
-        maxWidth={400}
-      >
-        <View style={{ padding: 10 }}>
+      <Modal animation="SCALE" maxWidth={420} snapPoints={[250]} ref={menuRef}>
+        <View style={{ padding: 20 }}>
           <Text
             style={{ fontSize: 30, marginBottom: 10, marginLeft: 10 }}
             weight={900}
           >
-            Publish
+            Share
           </Text>
           <ListItemButton onPress={handleShare}>
             <Avatar size={40} icon="ios_share" disabled />
@@ -88,7 +79,7 @@ export function TaskShareButton() {
             <ListItemText primary="Copy link" />
           </ListItemButton>
         </View>
-      </BottomSheet>
+      </Modal>
     </>
   );
 }
