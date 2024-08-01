@@ -30,6 +30,5 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 15,
     marginTop: 15,
-    paddingHorizontal: 15,
   },
 });

@@ -70,7 +70,7 @@ export function TaskAttachmentPicker({
   });
 
   return (
-    <View style={{ padding: 20, gap: 20, flex: 1 }}>
+    <View style={{ flex: 1, gap: 20, paddingVertical: 20 }}>
       <Controller
         control={control}
         rules={{

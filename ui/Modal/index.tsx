@@ -6,6 +6,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomSheet, { DBottomSheetProps } from "../BottomSheet";
 import { useColorTheme } from "../color/theme-provider";
 
@@ -24,11 +25,13 @@ export const Modal = forwardRef(
     props: Omit<Omit<DBottomSheetProps, "sheetRef">, "onClose"> & {
       maxWidth?: ViewStyle["maxWidth"];
       animation: "NONE" | "SCALE" | "SLIDE";
+      onClose?: () => void;
     },
     ref: RefObject<BottomSheetModal>
   ) => {
     const theme = useColorTheme();
     const state = useSharedValue(0);
+    const insets = useSafeAreaInsets();
 
     const animationConfigs =
       props.animation === "NONE" || props.animation === "SCALE"
@@ -36,23 +39,25 @@ export const Modal = forwardRef(
         : {
             overshootClamping: true,
             stiffness: 400,
-            damping: 40,
+            damping: 10,
           };
 
-    const handleClose = () => ref.current?.close(animationConfigs);
+    const handleClose = () => {
+      ref.current?.close(animationConfigs);
+      props.onClose?.();
+    };
 
     const innerStyles = useAnimatedStyle(() => ({
       transformOrigin: "top center",
       transform: [
         {
-          scale: withSpring(state.value === 0 ? 0.7 : 1, {
-            stiffness: 200,
-            damping: 30,
+          scale: withSpring(state.value === 0 ? 0.8 : 1, {
+            stiffness: 400,
+            damping: 40,
             // overshootClamping: true,
           }),
         },
       ],
-      // opacity: withSpring(state.value === 0 ? 0 : 1),
     }));
 
     return (
@@ -72,6 +77,8 @@ export const Modal = forwardRef(
             width: "100%",
             height: "100%",
             padding: 15,
+            paddingTop: insets.top + 15,
+            paddingBottom: insets.bottom + 15,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -87,6 +94,7 @@ export const Modal = forwardRef(
                 {
                   backgroundColor: theme[2],
                   borderRadius: 25,
+                  overflow: "hidden",
                   shadowColor: "#000",
                   shadowOffset: { width: 25, height: 25 },
                   shadowOpacity: 0.25,
