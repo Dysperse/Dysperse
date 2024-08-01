@@ -360,7 +360,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
               marginTop: "auto",
               flexDirection: "column",
               width: "100%",
-              paddingHorizontal: 20,
+              paddingHorizontal: 30,
               gap: 20,
               paddingTop: 55,
             },
