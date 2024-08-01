@@ -1,11 +1,11 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import BottomSheet from "@/ui/BottomSheet";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import Spinner from "@/ui/Spinner";
+import { Modal } from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -103,37 +103,25 @@ export function CreateLabelModal({
   return (
     <>
       {trigger}
-      <BottomSheet sheetRef={ref} snapPoints={["60%"]} onClose={handleClose}>
+      <Modal ref={ref} maxWidth={460} containerHeight={500} animation="SCALE">
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            paddingHorizontal: 20,
-            paddingTop: 10,
+            padding: 15,
             gap: 20,
           }}
         >
-          <IconButton onPress={() => ref.current.close()}>
+          <IconButton
+            variant="outlined"
+            size={55}
+            onPress={() => ref.current.close()}
+          >
             <Icon>close</Icon>
           </IconButton>
           <Text weight={700} style={{ fontSize: 23, flex: 1 }}>
             Create label
           </Text>
-          <IconButton
-            onPress={() => {
-              Keyboard.dismiss();
-              if (Object.keys(errors).length > 0) {
-                return Toast.show({
-                  type: "error",
-                  text1: "Type in a label name",
-                });
-              }
-              handleSubmit(onSubmit)();
-            }}
-            variant="filled"
-          >
-            {isLoading ? <Spinner /> : <Icon>check</Icon>}
-          </IconButton>
         </View>
         <ScrollView>
           <View style={{ padding: 20, gap: 20 }}>
@@ -145,15 +133,7 @@ export function CreateLabelModal({
                 }}
                 render={({ field: { onChange, value } }) => (
                   <EmojiPicker setEmoji={onChange}>
-                    <IconButton
-                      style={{
-                        borderStyle: "dashed",
-                        borderWidth: 2,
-                        width: 100,
-                        height: 100,
-                        borderColor: theme[7],
-                      }}
-                    >
+                    <IconButton variant="filled">
                       <Emoji emoji={value} size={50} />
                     </IconButton>
                   </EmojiPicker>
@@ -219,9 +199,29 @@ export function CreateLabelModal({
                 name="color"
               />
             </View>
+            <Button
+              onPress={() => {
+                Keyboard.dismiss();
+                if (Object.keys(errors).length > 0) {
+                  return Toast.show({
+                    type: "error",
+                    text1: "Type in a label name",
+                  });
+                }
+                handleSubmit(onSubmit)();
+              }}
+              height={60}
+              variant="filled"
+              isLoading={isLoading}
+              bold
+              large
+              iconPosition="end"
+              text="Done"
+              icon="done"
+            />
           </View>
         </ScrollView>
-      </BottomSheet>
+      </Modal>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useLabelColors } from "@/components/labels/useLabelColors";
-import BottomSheet, { DBottomSheetProps } from "@/ui/BottomSheet";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { DBottomSheetProps } from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -8,6 +9,7 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import ListItemText from "@/ui/ListItemText";
+import { Modal } from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -210,94 +212,156 @@ const LabelPicker = memo(function LabelPicker({
         ?.filter((c, i, arr) => arr.findIndex((a) => a.id === c.id) === i) || []
     : [];
 
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <>
       {trigger}
-      <BottomSheet
+      <Modal
+        animation="SCALE"
         handleComponent={() => null}
-        sheetRef={ref}
+        ref={ref}
         onClose={handleClose}
-        snapPoints={["100%"]}
-        maxWidth="100%"
+        maxWidth={breakpoints.md ? 450 : "100%"}
+        containerHeight={500}
         keyboardBehavior="interactive"
         backgroundStyle={{ backgroundColor: "transparent" }}
         enableContentPanningGesture={false}
         {...sheetProps}
       >
-        <Pressable
+        <View
           style={{
-            padding: 20,
+            padding: 15,
             height: "100%",
-            alignItems: "center",
-            justifyContent: "center",
+            paddingBottom: 0,
           }}
-          onPress={handleClose}
         >
-          <Pressable
-            onPress={(e) => e.stopPropagation()}
-            style={{
-              height: "100%",
-              width: "100%",
-              maxWidth: 500,
-              maxHeight: 500,
-              borderRadius: 20,
-              backgroundColor: theme[2],
-              borderWidth: 1,
-              borderColor: theme[5],
-            }}
-          >
+          {multiple && (
             <View
               style={{
-                padding: 15,
-                height: "100%",
-                paddingBottom: 0,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                marginBottom: 10,
               }}
             >
-              {multiple && (
+              <Text weight={900} style={{ fontSize: 25, textAlign: "center" }}>
+                Select labels
+              </Text>
+
+              <CloseButton
+                disabled={Array.isArray(label) && label.length === 0}
+                onClose={onClose}
+              />
+            </View>
+          )}
+          <View
+            style={[
+              labelPickerStyles.searchBox,
+              {
+                backgroundColor: theme[3],
+                borderColor: theme[6],
+              },
+            ]}
+          >
+            {!hideBack && (
+              <IconButton onPress={handleClose} style={{ marginLeft: 10 }}>
+                <Icon>close</Icon>
+              </IconButton>
+            )}
+            <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
+            <CreateLabelModal
+              mutate={mutate}
+              onClose={() => searchRef.current?.focus()}
+              onCreate={(item) => {
+                if (multiple && Array.isArray(label)) {
+                  if (label.includes(item.id) && typeof label === "object") {
+                    setLabel(label.filter((id) => id !== item.id));
+                  } else {
+                    setLabel([...label, item.id]);
+                  }
+                } else {
+                  setLabel(item.id === (label as any)?.id ? null : item);
+                  setTimeout(handleClose, 0);
+                }
+              }}
+            >
+              <IconButton style={{ marginRight: 10 }} size={30}>
+                <Icon>add_circle</Icon>
+              </IconButton>
+            </CreateLabelModal>
+          </View>
+          {Array.isArray(data) ? (
+            <FlashList
+              showsVerticalScrollIndicator={false}
+              estimatedItemSize={55}
+              data={data
+                .filter((label) =>
+                  label.name.toLowerCase().includes(query.toLowerCase())
+                )
+                .filter((label) =>
+                  selectedCollection
+                    ? label.collections
+                        ?.map((c) => c?.id)
+                        .includes(selectedCollection)
+                    : true
+                )}
+              keyboardShouldPersistTaps="handled"
+              style={{ flex: 1 }}
+              ListHeaderComponent={
+                <>
+                  <CollectionChips
+                    collections={collections}
+                    selectedCollection={selectedCollection}
+                    setSelectedCollection={setSelectedCollection}
+                  />
+                  <View
+                    style={{
+                      padding: 10,
+                      paddingBottom: 0,
+                      paddingTop: collections.length === 0 ? 0 : 10,
+                    }}
+                  >
+                    {collections.length > 0 && (
+                      <Text variant="eyebrow">Labels</Text>
+                    )}
+                  </View>
+                </>
+              }
+              contentContainerStyle={{ paddingBottom: 100 }}
+              ListEmptyComponent={
                 <View
                   style={{
-                    flexDirection: "row",
+                    height: "100%",
+                    justifyContent: "center",
                     alignItems: "center",
-                    paddingHorizontal: 10,
-                    marginBottom: 10,
+                    paddingVertical: 70,
+                    paddingHorizontal: 20,
+                    gap: 5,
                   }}
                 >
-                  <Text
-                    weight={900}
-                    style={{ fontSize: 25, textAlign: "center" }}
-                  >
-                    Select labels
+                  <Emoji emoji={query ? "1f914" : "1f62d"} size={50} />
+                  <Text style={{ fontSize: 35, marginTop: 10 }}>
+                    {query ? "No labels found" : "No labels yet"}
                   </Text>
-
-                  <CloseButton
-                    disabled={Array.isArray(label) && label.length === 0}
-                    onClose={onClose}
-                  />
+                  <Text style={{ opacity: 0.6, textAlign: "center" }}>
+                    {query
+                      ? "Try searching for something else"
+                      : "Labels are a great way to \n group things together"}
+                  </Text>
+                  {query === "" && (
+                    <CreateLabelModal mutate={mutate}>
+                      <Button>
+                        <Icon>add</Icon>
+                        <ButtonText>Create one</ButtonText>
+                      </Button>
+                    </CreateLabelModal>
+                  )}
                 </View>
-              )}
-              <View
-                style={[
-                  labelPickerStyles.searchBox,
-                  {
-                    backgroundColor: theme[3],
-                    borderColor: theme[6],
-                  },
-                ]}
-              >
-                {!hideBack && (
-                  <IconButton onPress={handleClose} style={{ marginLeft: 10 }}>
-                    <Icon>close</Icon>
-                  </IconButton>
-                )}
-                <Search
-                  query={query}
-                  setQuery={setQuery}
-                  autoFocus={autoFocus}
-                />
-                <CreateLabelModal
-                  mutate={mutate}
-                  onClose={() => searchRef.current?.focus()}
-                  onCreate={(item) => {
+              }
+              renderItem={({ item }: any) => (
+                <Pressable
+                  onPress={() => {
                     if (multiple && Array.isArray(label)) {
                       if (
                         label.includes(item.id) &&
@@ -312,162 +376,67 @@ const LabelPicker = memo(function LabelPicker({
                       setTimeout(handleClose, 0);
                     }
                   }}
+                  style={({ pressed, hovered }) => [
+                    labelPickerStyles.labelOption,
+                    {
+                      backgroundColor:
+                        theme[
+                          (pressed ? 4 : hovered ? 3 : 2) +
+                            ((multiple &&
+                              ((label as any)?.id || label).includes(
+                                item.id
+                              )) ||
+                            (!multiple &&
+                              ((label as any)?.id || label) == item.id)
+                              ? 1
+                              : 0)
+                        ],
+                    },
+                  ]}
                 >
-                  <IconButton style={{ marginRight: 10 }} size={30}>
-                    <Icon>add_circle</Icon>
-                  </IconButton>
-                </CreateLabelModal>
-              </View>
-              {Array.isArray(data) ? (
-                <FlashList
-                  showsVerticalScrollIndicator={false}
-                  estimatedItemSize={55}
-                  data={data
-                    .filter((label) =>
-                      label.name.toLowerCase().includes(query.toLowerCase())
-                    )
-                    .filter((label) =>
-                      selectedCollection
-                        ? label.collections
-                            ?.map((c) => c?.id)
-                            .includes(selectedCollection)
-                        : true
-                    )}
-                  keyboardShouldPersistTaps="handled"
-                  style={{ flex: 1 }}
-                  ListHeaderComponent={
-                    <>
-                      <CollectionChips
-                        collections={collections}
-                        selectedCollection={selectedCollection}
-                        setSelectedCollection={setSelectedCollection}
-                      />
-                      <View
-                        style={{
-                          padding: 10,
-                          paddingBottom: 0,
-                          paddingTop: collections.length === 0 ? 0 : 10,
-                        }}
-                      >
-                        {collections.length > 0 && (
-                          <Text variant="eyebrow">Labels</Text>
-                        )}
-                      </View>
-                    </>
-                  }
-                  contentContainerStyle={{ paddingBottom: 100 }}
-                  ListEmptyComponent={
-                    <View
-                      style={{
-                        height: "100%",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingVertical: 70,
-                        paddingHorizontal: 20,
-                        gap: 5,
-                      }}
+                  <View
+                    style={[
+                      labelPickerStyles.labelDot,
+                      {
+                        backgroundColor: colors[item.color][5],
+                      },
+                    ]}
+                  >
+                    <Emoji emoji={item.emoji} size={20} />
+                  </View>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={`${item._count.entities} item${
+                      item._count.entities !== 1 ? "s" : ""
+                    }`}
+                  />
+                  {((label as any)?.id == item.id || multiple) && (
+                    <Icon
+                      filled={
+                        multiple &&
+                        Array.isArray(label) &&
+                        label.includes(item.id)
+                      }
+                      size={30}
                     >
-                      <Emoji emoji={query ? "1f914" : "1f62d"} size={50} />
-                      <Text style={{ fontSize: 35, marginTop: 10 }}>
-                        {query ? "No labels found" : "No labels yet"}
-                      </Text>
-                      <Text style={{ opacity: 0.6, textAlign: "center" }}>
-                        {query
-                          ? "Try searching for something else"
-                          : "Labels are a great way to \n group things together"}
-                      </Text>
-                      {query === "" && (
-                        <CreateLabelModal mutate={mutate}>
-                          <Button>
-                            <Icon>add</Icon>
-                            <ButtonText>Create one</ButtonText>
-                          </Button>
-                        </CreateLabelModal>
-                      )}
-                    </View>
-                  }
-                  renderItem={({ item }: any) => (
-                    <Pressable
-                      onPress={() => {
-                        if (multiple && Array.isArray(label)) {
-                          if (
-                            label.includes(item.id) &&
-                            typeof label === "object"
-                          ) {
-                            setLabel(label.filter((id) => id !== item.id));
-                          } else {
-                            setLabel([...label, item.id]);
-                          }
-                        } else {
-                          setLabel(
-                            item.id === (label as any)?.id ? null : item
-                          );
-                          setTimeout(handleClose, 0);
-                        }
-                      }}
-                      style={({ pressed, hovered }) => [
-                        labelPickerStyles.labelOption,
-                        {
-                          backgroundColor:
-                            theme[
-                              (pressed ? 4 : hovered ? 3 : 2) +
-                                ((multiple &&
-                                  ((label as any)?.id || label).includes(
-                                    item.id
-                                  )) ||
-                                (!multiple &&
-                                  ((label as any)?.id || label) == item.id)
-                                  ? 1
-                                  : 0)
-                            ],
-                        },
-                      ]}
-                    >
-                      <View
-                        style={[
-                          labelPickerStyles.labelDot,
-                          {
-                            backgroundColor: colors[item.color][5],
-                          },
-                        ]}
-                      >
-                        <Emoji emoji={item.emoji} size={20} />
-                      </View>
-                      <ListItemText
-                        primary={item.name}
-                        secondary={`${item._count.entities} item${
-                          item._count.entities !== 1 ? "s" : ""
-                        }`}
-                      />
-                      {((label as any)?.id == item.id || multiple) && (
-                        <Icon
-                          filled={
-                            multiple &&
-                            Array.isArray(label) &&
-                            label.includes(item.id)
-                          }
-                          size={30}
-                        >
-                          {(label as any)?.id == item.id ||
-                          (multiple &&
-                            Array.isArray(label) &&
-                            label.includes(item.id))
-                            ? "check_circle"
-                            : "circle"}
-                        </Icon>
-                      )}
-                    </Pressable>
+                      {(label as any)?.id == item.id ||
+                      (multiple &&
+                        Array.isArray(label) &&
+                        label.includes(item.id))
+                        ? "check_circle"
+                        : "circle"}
+                    </Icon>
                   )}
-                />
-              ) : error ? (
-                <ErrorAlert />
-              ) : (
-                <Spinner />
+                </Pressable>
               )}
-            </View>
-          </Pressable>
-        </Pressable>
-      </BottomSheet>
+            />
+          ) : error ? (
+            <ErrorAlert />
+          ) : (
+            <Spinner />
+          )}
+        </View>
+      </Modal>
     </>
   );
 });
