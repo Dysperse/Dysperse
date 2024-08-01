@@ -16,6 +16,27 @@ const AppContainer = memo(
     const breakpoints = useResponsiveBreakpoints();
     const insets = useSafeAreaInsets();
 
+    const borderStyle = useMemo(
+      () => ({
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 99,
+        opacity: progressValue?.current?.interpolate?.({
+          inputRange: [0, 1],
+          outputRange: [0, 1],
+        }),
+        borderWidth: 2,
+        borderRadius: progressValue?.current?.interpolate?.({
+          inputRange: [0, 1],
+          outputRange: [!breakpoints.md ? 0 : 20, 30],
+        }),
+        borderColor: theme[5],
+      }),
+      [theme, breakpoints, progressValue]
+    );
+
     const animatedStyle = useMemo(
       () =>
         breakpoints.md
@@ -25,16 +46,10 @@ const AppContainer = memo(
               width: "100%",
               height: "100%",
 
-              borderWidth: progressValue?.current?.interpolate?.({
-                inputRange: [0, 1],
-                outputRange: [0, 2],
-              }),
-
               borderRadius: progressValue?.current?.interpolate?.({
                 inputRange: [0, 1],
                 outputRange: [!breakpoints.md ? 0 : 20, 30],
               }),
-              borderColor: theme[5],
               overflow: "hidden",
               marginTop: progressValue?.current?.interpolate?.({
                 inputRange: [0, 1],
@@ -72,6 +87,14 @@ const AppContainer = memo(
     return (
       <Animated.View style={animatedStyle as any}>
         <Animated.View style={marginTopStyle} />
+        {!breakpoints.md && (
+          <Animated.View
+            style={[
+              borderStyle,
+              { position: "absolute", pointerEvents: "none" },
+            ]}
+          />
+        )}
         {_children}
       </Animated.View>
     );
