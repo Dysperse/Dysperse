@@ -433,13 +433,24 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             <View style={{ flexDirection: "row", gap: 5, marginTop: 10 }}>
               {preview.data?._count?.labels && (
                 <Chip
+                  style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
                   label={`${preview.data._count.labels} label${
                     preview.data._count.labels === 1 ? "" : "s"
                   }`}
                 />
               )}
-              {preview.data?.pinned && <Chip label={"Pinned"} />}
-              {preview.data?.archived && <Chip label={"Archived"} />}
+              {preview.data?.pinned && (
+                <Chip
+                  style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
+                  label={"Pinned"}
+                />
+              )}
+              {preview.data?.archived && (
+                <Chip
+                  style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
+                  label={"Archived"}
+                />
+              )}
             </View>
           </View>
         </View>
