@@ -192,10 +192,9 @@ export default function AppLayout() {
           <JsStack.Screen
             name="collections/create"
             options={{
+              detachPreviousScreen: true,
+              cardOverlayEnabled: !breakpoints.md,
               ...TransitionPresets.SlideFromRightIOS,
-              gestureResponseDistance: width,
-              gestureEnabled: false,
-              animationEnabled: !breakpoints.md,
               cardStyleInterpolator: forHorizontalIOS,
             }}
           />
