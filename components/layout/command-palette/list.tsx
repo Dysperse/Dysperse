@@ -13,10 +13,10 @@ export const collectionViews = {
 };
 
 const collectionViewDescriptions = {
-  planner: "View all your tasks day by day.",
+  planner: "View all your tasks day by day",
   kanban: "Organize all your tasks by category",
-  stream: "View all missed, upcoming, and completed tasks.",
-  list: "View all your tasks in a traditional list view",
+  stream: "View all missed, upcoming, and completed tasks",
+  list: "View all your tasks in a traditional to-do list format",
   grid: "Organize all your tasks by category, displayed in a neat grid view",
   workload: "Organize your tasks by an estimate of energy consumption",
   matrix: "View all your tasks by priority",
