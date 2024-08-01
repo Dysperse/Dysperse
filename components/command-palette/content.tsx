@@ -358,18 +358,19 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
           style={[
             {
               marginTop: "auto",
-              flexDirection: breakpoints.md ? "row" : "column",
+              flexDirection: "column",
               width: "100%",
               paddingHorizontal: 20,
               gap: 20,
               paddingTop: 55,
             },
-            !breakpoints.md && { alignItems: "center" },
+            { alignItems: "center" },
           ]}
         >
           <Avatar
             style={{
               backgroundColor: addHslAlpha(theme[9], 0.2),
+              borderRadius: 20,
             }}
             size={70}
           >
@@ -388,15 +389,12 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             )}
           </Avatar>
           <View
-            style={[
-              { flex: breakpoints.md ? 1 : 0 },
-              !breakpoints.md && { alignItems: "center" },
-            ]}
+            style={[{ flex: breakpoints.md ? 1 : 0 }, { alignItems: "center" }]}
           >
             <Text
               style={[
                 { fontSize: 40, lineHeight: 43 },
-                !breakpoints.md && { textAlign: "center" },
+                { textAlign: "center" },
               ]}
             >
               {preview.label}
@@ -405,7 +403,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
               <Text
                 style={[
                   { marginTop: 5, fontSize: 20, opacity: 0.6 },
-                  !breakpoints.md && { textAlign: "center" },
+                  { textAlign: "center" },
                 ]}
               >
                 {preview?.data?.description || preview?.about}
@@ -431,14 +429,14 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             )}
 
             <View style={{ flexDirection: "row", gap: 5, marginTop: 10 }}>
-              {preview.data?._count?.labels && (
+              {preview.data?._count?.labels ? (
                 <Chip
                   style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
                   label={`${preview.data._count.labels} label${
                     preview.data._count.labels === 1 ? "" : "s"
                   }`}
                 />
-              )}
+              ) : null}
               {preview.data?.pinned && (
                 <Chip
                   style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
