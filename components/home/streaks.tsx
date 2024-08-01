@@ -7,7 +7,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useSWR from "swr";
@@ -122,18 +122,22 @@ export function StreakGoal() {
         }}
       >
         {data ? (
-          <>
-            <GoalIndicator
-              name="Daily goal"
-              completed={data.dayTasks || 0}
-              goal={data.user?.dailyStreakGoal || 5}
-            />
-            <GoalIndicator
-              name="Weekly goal"
-              completed={data.weekTasks || 0}
-              goal={data.user?.weeklyStreakGoal || 5}
-            />
-          </>
+          !(
+            process.env.NODE_ENV === "development" && Platform.OS === "android"
+          ) && (
+            <>
+              <GoalIndicator
+                name="Daily goal"
+                completed={data.dayTasks || 0}
+                goal={data.user?.dailyStreakGoal || 5}
+              />
+              <GoalIndicator
+                name="Weekly goal"
+                completed={data.weekTasks || 0}
+                goal={data.user?.weeklyStreakGoal || 5}
+              />
+            </>
+          )
         ) : (
           <Spinner />
         )}

@@ -1,6 +1,6 @@
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { forwardRef, RefObject, useEffect } from "react";
-import { Pressable, ViewStyle } from "react-native";
+import { Platform, Pressable, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -52,7 +52,7 @@ export const Modal = forwardRef(
     };
 
     const innerStyles = useAnimatedStyle(() => ({
-      transformOrigin: "top",
+      transformOrigin: Platform.OS === "web" ? "top center" : ["50%", 0, 0],
       transform: [
         {
           scale:
