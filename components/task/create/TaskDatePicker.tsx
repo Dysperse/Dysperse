@@ -80,7 +80,7 @@ function TaskDatePicker({
   const sheetRef = _sheetRef || _ref;
 
   const handleClose = useCallback(
-    () => sheetRef.current?.forceClose(),
+    () => sheetRef.current?.forceClose({ duration: 0.0001 }),
     [sheetRef]
   );
   const handleOpen = useCallback(() => sheetRef.current.present(), [sheetRef]);
