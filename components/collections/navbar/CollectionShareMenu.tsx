@@ -13,7 +13,6 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import { Modal } from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -39,8 +38,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import {
+  InteractionManager,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -569,6 +573,18 @@ const Navbar = ({ navigation, title, icon = "close", handleClose }) => {
   );
 };
 
+const Home = ({ collection, navigation }) => {
+  return (
+    <BottomSheetScrollView contentContainerStyle={{ padding: 20 }}>
+      <CollectionMembers
+        mutateList={collection.mutate}
+        navigation={navigation}
+        collection={collection}
+      />
+    </BottomSheetScrollView>
+  );
+};
+
 const Navigator = forwardRef(
   ({ maxHeight, handleClose, collection }: any, ref) => {
     const theme = useColorTheme();
@@ -578,7 +594,7 @@ const Navigator = forwardRef(
         detachPreviousScreen: false,
         headerShown: true,
         freezeOnBlur: true,
-        gestureEnabled: true,
+        gestureEnabled: false,
         headerMode: "float",
         cardStyle: {
           height: "100%",
@@ -605,12 +621,7 @@ const Navigator = forwardRef(
     }));
 
     return (
-      <View
-        style={{
-          height: "100%",
-          width: "100%",
-        }}
-      >
+      <>
         <NavigationContainer
           onStateChange={(state) => {
             const height =
@@ -636,17 +647,7 @@ const Navigator = forwardRef(
             <Stack.Screen
               name="share"
               component={({ navigation }) => (
-                <BottomSheetScrollView>
-                  <BottomSheetScrollView
-                    contentContainerStyle={{ padding: 20 }}
-                  >
-                    <CollectionMembers
-                      mutateList={collection.mutate}
-                      navigation={navigation}
-                      collection={collection}
-                    />
-                  </BottomSheetScrollView>
-                </BottomSheetScrollView>
+                <Home collection={collection} navigation={navigation} />
               )}
             />
             <Stack.Screen
@@ -669,7 +670,7 @@ const Navigator = forwardRef(
             />
           </Stack.Navigator>
         </NavigationContainer>
-      </View>
+      </>
     );
   }
 );
@@ -754,34 +755,51 @@ export const CollectionShareMenu = forwardRef((props, ref) => {
         </>
       )}
 
-      <Modal onClose={handleClose} ref={sheetRef} maxWidth="100%">
-        <Animated.View
-          style={[
-            maxHeightStyle,
-            {
-              backgroundColor: theme[2],
-              borderRadius: 25,
-              maxWidth: 600,
-              width: "100%",
-              overflow: "hidden",
-              height: "100%",
-              shadowColor: "#000",
-              shadowOffset: { width: 25, height: 25 },
-              shadowOpacity: 0.25,
-              shadowRadius: 100,
-            },
-          ]}
+      <BottomSheet
+        onClose={handleClose}
+        sheetRef={sheetRef}
+        snapPoints={["100%"]}
+        maxWidth="100%"
+        handleComponent={() => null}
+        backgroundStyle={{ backgroundColor: "transparent" }}
+      >
+        <Pressable
+          onPress={handleClose}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 20,
+          }}
         >
-          <Pressable style={{ flex: 1 }}>
-            <Navigator
-              ref={navigatorRef}
-              maxHeight={maxHeight}
-              handleClose={handleClose}
-              collection={collection}
-            />
-          </Pressable>
-        </Animated.View>
-      </Modal>
+          <Animated.View
+            style={[
+              maxHeightStyle,
+              {
+                backgroundColor: theme[2],
+                borderRadius: 25,
+                maxWidth: 600,
+                width: "100%",
+                overflow: "hidden",
+                height: "100%",
+                shadowColor: "#000",
+                shadowOffset: { width: 25, height: 25 },
+                shadowOpacity: 0.25,
+                shadowRadius: 100,
+              },
+            ]}
+          >
+            <Pressable style={{ flex: 1 }}>
+              <Navigator
+                ref={navigatorRef}
+                maxHeight={maxHeight}
+                handleClose={handleClose}
+                collection={collection}
+              />
+            </Pressable>
+          </Animated.View>
+        </Pressable>
+      </BottomSheet>
     </>
   );
 });

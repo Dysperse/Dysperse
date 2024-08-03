@@ -151,7 +151,6 @@ export const CollectionInfo = ({ navigation, collection }) => {
             style={{ minHeight: 100 }}
             onBlur={(e) => updateCollection("description", e.nativeEvent.text)}
           />
-
           <Text variant="eyebrow" style={{ marginVertical: 5, marginTop: 20 }}>
             Labels
           </Text>
@@ -165,22 +164,20 @@ export const CollectionInfo = ({ navigation, collection }) => {
             }}
             trigger={
               <Button variant="outlined">
-                <ButtonText>
-                  {data.category ? (
-                    <View style={{ flexDirection: "row", gap: 5 }}>
-                      <Icon size={20}>
-                        {
-                          collectionCategories.find(
-                            (category) => category.text === data.category
-                          ).icon
-                        }
-                      </Icon>
-                      {data.category}
-                    </View>
-                  ) : (
-                    "Select category"
-                  )}
-                </ButtonText>
+                {data.category ? (
+                  <View style={{ flexDirection: "row", gap: 5 }}>
+                    <Icon size={20}>
+                      {
+                        collectionCategories.find(
+                          (category) => category.text === data.category
+                        ).icon
+                      }
+                    </Icon>
+                    <ButtonText>{data.category}</ButtonText>
+                  </View>
+                ) : (
+                  <ButtonText>Select category</ButtonText>
+                )}
               </Button>
             }
             options={collectionCategories.map((category: any) => ({
