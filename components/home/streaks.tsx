@@ -96,7 +96,8 @@ export function StreakGoal() {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: breakpoints.md ? 10 : 20,
+          marginBottom: 10,
+          marginTop: breakpoints.md ? 0 : 20,
         }}
       >
         <Text variant="eyebrow">Goals</Text>

@@ -24,6 +24,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { paletteItems } from "../layout/command-palette/list";
@@ -326,6 +327,7 @@ const PaletteHeader = memo(function PaletteHeader({
 function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
 
   const handleClose = useCallback(() => setPreview(null), [setPreview]);
 
@@ -336,7 +338,10 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
           flex: 1,
           borderLeftWidth: breakpoints.md ? 1 : 0,
           borderColor: addHslAlpha(theme[9], 0.2),
-          padding: !breakpoints.md ? 20 : 0,
+        }}
+        contentContainerStyle={{
+          minHeight: "100%",
+          paddingBottom: insets.bottom,
         }}
         centerContent
       >
