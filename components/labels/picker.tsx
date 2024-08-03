@@ -57,7 +57,7 @@ const Search = ({ query, setQuery, autoFocus }) => {
       }}
       onKeyPress={({ nativeEvent }) => {
         if (nativeEvent.key === "Escape") {
-          forceClose();
+          forceClose({ duration: 0.0001, overshootClamping: true });
         }
       }}
       inputRef={searchRef}
@@ -124,15 +124,15 @@ const CloseButton = memo(function CloseButton({
   onClose: any;
   disabled?: boolean;
 }) {
-  const { close } = useBottomSheet();
+  const { forceClose } = useBottomSheet();
   const [loading, setLoading] = useState(false);
 
   const handleClose = useCallback(async () => {
     setLoading(true);
+    forceClose({ duration: 0.0001, overshootClamping: true });
     await onClose?.();
-    close();
     setLoading(false);
-  }, [close, onClose]);
+  }, [forceClose, onClose]);
 
   return (
     <Button
@@ -189,7 +189,7 @@ const LabelPicker = memo(function LabelPicker({
 
   const handleClose = useCallback(async () => {
     await onClose?.();
-    ref.current?.close();
+    ref.current?.close({ duration: 0.0001, overshootClamping: true });
   }, [ref, onClose]);
 
   const trigger = cloneElement(children, {
