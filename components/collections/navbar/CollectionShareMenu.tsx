@@ -13,6 +13,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
+import { Modal } from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -753,51 +754,34 @@ export const CollectionShareMenu = forwardRef((props, ref) => {
         </>
       )}
 
-      <BottomSheet
-        onClose={handleClose}
-        sheetRef={sheetRef}
-        snapPoints={["100%"]}
-        maxWidth="100%"
-        handleComponent={() => null}
-        backgroundStyle={{ backgroundColor: "transparent" }}
-      >
-        <Pressable
-          onPress={handleClose}
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 20,
-          }}
+      <Modal onClose={handleClose} ref={sheetRef} maxWidth="100%">
+        <Animated.View
+          style={[
+            maxHeightStyle,
+            {
+              backgroundColor: theme[2],
+              borderRadius: 25,
+              maxWidth: 600,
+              width: "100%",
+              overflow: "hidden",
+              height: "100%",
+              shadowColor: "#000",
+              shadowOffset: { width: 25, height: 25 },
+              shadowOpacity: 0.25,
+              shadowRadius: 100,
+            },
+          ]}
         >
-          <Animated.View
-            style={[
-              maxHeightStyle,
-              {
-                backgroundColor: theme[2],
-                borderRadius: 25,
-                maxWidth: 600,
-                width: "100%",
-                overflow: "hidden",
-                height: "100%",
-                shadowColor: "#000",
-                shadowOffset: { width: 25, height: 25 },
-                shadowOpacity: 0.25,
-                shadowRadius: 100,
-              },
-            ]}
-          >
-            <Pressable style={{ flex: 1 }}>
-              <Navigator
-                ref={navigatorRef}
-                maxHeight={maxHeight}
-                handleClose={handleClose}
-                collection={collection}
-              />
-            </Pressable>
-          </Animated.View>
-        </Pressable>
-      </BottomSheet>
+          <Pressable style={{ flex: 1 }}>
+            <Navigator
+              ref={navigatorRef}
+              maxHeight={maxHeight}
+              handleClose={handleClose}
+              collection={collection}
+            />
+          </Pressable>
+        </Animated.View>
+      </Modal>
     </>
   );
 });

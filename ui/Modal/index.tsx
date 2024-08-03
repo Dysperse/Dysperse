@@ -89,7 +89,12 @@ export const Modal = forwardRef(
         sheetRef={ref}
         onClose={handleClose}
         handleComponent={() => null}
-        animateOnMount={props.animation === "SLIDE"}
+        animateOnMount={
+          props.animation === "SLIDE" ||
+          props.animation === "NONE" ||
+          !props.animation
+        }
+        {...(props.animation !== "SCALE" && { animationConfigs })}
         stackBehavior="push"
         enablePanDownToClose={props.animation !== "SCALE"}
         enableContentPanningGesture={props.animation !== "SCALE"}
