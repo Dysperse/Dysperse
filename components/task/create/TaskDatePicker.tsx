@@ -10,7 +10,6 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useState } from "react";
 import { View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RRule } from "rrule";
 import { defaultRecurrenceOptions, DueDatePicker, RecurrencePicker } from ".";
 
@@ -73,9 +72,7 @@ function TaskDatePicker({
   sheetRef?: React.MutableRefObject<BottomSheetModal>;
   defaultRecurrenceOptions?: defaultRecurrenceOptions;
 }) {
-  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const insets = useSafeAreaInsets();
   const _ref = React.useRef<BottomSheetModal>(null);
   const sheetRef = _sheetRef || _ref;
 

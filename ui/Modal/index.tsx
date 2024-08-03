@@ -40,6 +40,7 @@ export const Modal = forwardRef(
       animation: "NONE" | "SCALE" | "SLIDE";
       onClose?: () => void;
       innerStyles?: ViewStyle;
+      containerHeight?: ViewStyle["height"];
     },
     ref: RefObject<BottomSheetModal>
   ) => {
@@ -88,7 +89,6 @@ export const Modal = forwardRef(
         sheetRef={ref}
         onClose={handleClose}
         handleComponent={() => null}
-        // animationConfigs={animationConfigs}
         animateOnMount={props.animation === "SLIDE"}
         stackBehavior="push"
         enablePanDownToClose={props.animation !== "SCALE"}
