@@ -3,22 +3,12 @@ import IconButton from "@/ui/IconButton";
 import { Modal } from "@/ui/Modal";
 import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { cloneElement, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import React, { cloneElement, useRef, useState } from "react";
+import { InteractionManager, Keyboard, View } from "react-native";
 import { TaskImagePicker } from "./TaskImagePicker";
 import { AttachmentGrid } from "./grid";
 import { TaskAttachmentPicker } from "./picker";
 import { TaskAttachmentType } from "./type";
-
-const OpenHandlers = ({ onOpen, onClose }) => {
-  useEffect(() => {
-    onOpen?.();
-    return () => {
-      onClose?.();
-    };
-  });
-  return null;
-};
 
 export function TaskAttachmentButton({
   children,
@@ -49,7 +39,12 @@ export function TaskAttachmentButton({
       <IconButton variant="outlined" size={50} icon="note_stack_add" />
     ),
     {
-      onPress: () => ref.current.present(),
+      onPress: () => {
+        Keyboard.dismiss();
+        InteractionManager.runAfterInteractions(() => {
+          ref.current.present();
+        });
+      },
     }
   );
 

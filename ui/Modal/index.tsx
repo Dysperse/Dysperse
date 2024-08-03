@@ -17,11 +17,15 @@ import { useColorTheme } from "../color/theme-provider";
 
 const SetSharedValue = ({ value, from, to }) => {
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        value.value = to;
-      }, 0);
-    });
+    if (Platform.OS === "web") {
+      value.value = to;
+    } else {
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => {
+          value.value = to;
+        }, 0);
+      });
+    }
     return () => {
       value.value = from;
     };
@@ -84,7 +88,7 @@ export const Modal = forwardRef(
         sheetRef={ref}
         onClose={handleClose}
         handleComponent={() => null}
-        animationConfigs={animationConfigs}
+        // animationConfigs={animationConfigs}
         animateOnMount={props.animation === "SLIDE"}
         stackBehavior="push"
         enablePanDownToClose={props.animation !== "SCALE"}
