@@ -40,7 +40,7 @@ export const Modal = forwardRef(
       animation: "NONE" | "SCALE" | "SLIDE";
       onClose?: () => void;
       innerStyles?: ViewStyle;
-      containerHeight?: ViewStyle["height"];
+      height?: ViewStyle["height"];
     },
     ref: RefObject<BottomSheetModal>
   ) => {
@@ -123,7 +123,7 @@ export const Modal = forwardRef(
                   shadowOffset: { width: 25, height: 25 },
                   shadowOpacity: 0.25,
                   shadowRadius: 100,
-                  height: props.containerHeight,
+                  height: props.height,
                 },
                 props.innerStyles,
               ]}

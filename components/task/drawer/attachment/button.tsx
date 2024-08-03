@@ -55,7 +55,7 @@ export function TaskAttachmentButton({
         animation="SCALE"
         ref={ref}
         maxWidth={350}
-        containerHeight={view === "Add" ? 357 : 500}
+        height={view === "Add" ? 357 : 500}
       >
         <View style={{ padding: 20, flex: 1 }}>
           <View

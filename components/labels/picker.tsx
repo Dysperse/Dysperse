@@ -222,8 +222,8 @@ const LabelPicker = memo(function LabelPicker({
         handleComponent={() => null}
         ref={ref}
         onClose={handleClose}
-        maxWidth={breakpoints.md ? 450 : "100%"}
-        containerHeight={500}
+        maxWidth={(breakpoints.md ? 450 : "100%") as any}
+        height={500}
         keyboardBehavior="interactive"
         backgroundStyle={{ backgroundColor: "transparent" }}
         enableContentPanningGesture={false}

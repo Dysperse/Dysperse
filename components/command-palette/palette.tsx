@@ -17,7 +17,7 @@ const CommandPalette = memo(function CommandPalette() {
     <Modal
       ref={sheetRef}
       animation="SCALE"
-      containerHeight={Math.min(600, height / 1.3)}
+      height={Math.min(600, height / 1.3)}
       maxBackdropOpacity={isDark ? 0.3 : undefined}
       maxWidth={breakpoints.md ? 900 : width}
       innerStyles={{

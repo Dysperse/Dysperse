@@ -103,7 +103,7 @@ export function CreateLabelModal({
   return (
     <>
       {trigger}
-      <Modal ref={ref} maxWidth={460} containerHeight={500} animation="SCALE">
+      <Modal ref={ref} maxWidth={460} height={500} animation="SCALE">
         <View
           style={{
             flexDirection: "row",

@@ -124,7 +124,7 @@ function TaskDatePicker({
         ref={sheetRef}
         animation="SCALE"
         maxWidth={750}
-        containerHeight={breakpoints.md ? 485 : "100%"}
+        height={breakpoints.md ? 485 : "100%"}
       >
         <Header title={title} handleClose={handleClose} />
         <BottomSheetScrollView>
