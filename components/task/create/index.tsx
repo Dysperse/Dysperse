@@ -1576,10 +1576,7 @@ function BottomSheetContent({
     <Pressable
       style={{
         minHeight: 280,
-        borderRadius: 20,
         backgroundColor: theme[1],
-        borderWidth: 1,
-        borderColor: theme[6],
         padding: 10,
         paddingHorizontal: 0,
       }}
@@ -1673,10 +1670,6 @@ const CreateTask = forwardRef(
       ref.current?.present();
     }, [ref, onPress]);
 
-    const handleClose = useCallback(() => {
-      ref.current?.close();
-    }, []);
-
     const { isReached } = useStorageContext();
 
     const trigger = cloneElement((children || <Pressable />) as any, {
@@ -1685,6 +1678,7 @@ const CreateTask = forwardRef(
     });
 
     const breakpoints = useResponsiveBreakpoints();
+    const theme = useColorTheme();
 
     return (
       <>
@@ -1695,6 +1689,10 @@ const CreateTask = forwardRef(
           ref={ref}
           keyboardBehavior="interactive"
           animation={breakpoints.md ? "NONE" : "SLIDE"}
+          innerStyles={{
+            borderWidth: 1,
+            borderColor: theme[6],
+          }}
         >
           <BottomSheetContent
             defaultValues={defaultValues}
