@@ -16,7 +16,6 @@ export function TaskShareButton() {
   const { isReadOnly, task, updateTask } = useTaskDrawerContext();
   const menuRef = useRef<BottomSheetModal>(null);
 
-  const handleClose = useCallback(() => menuRef.current?.close(), []);
   const handleOpen = useCallback(() => menuRef.current?.present(), []);
   const link = `https://dys.us.to/${task.shortId || task.id}`;
 

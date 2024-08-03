@@ -1,6 +1,11 @@
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { forwardRef, RefObject, useEffect } from "react";
-import { Platform, Pressable, ViewStyle } from "react-native";
+import {
+  InteractionManager,
+  Platform,
+  Pressable,
+  ViewStyle,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,11 +17,15 @@ import { useColorTheme } from "../color/theme-provider";
 
 const SetSharedValue = ({ value, from, to }) => {
   useEffect(() => {
-    value.value = to;
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        value.value = to;
+      }, 0);
+    });
     return () => {
       value.value = from;
     };
-  }, [to, value]);
+  }, [to, value, from]);
   return null;
 };
 
@@ -76,6 +85,9 @@ export const Modal = forwardRef(
         onClose={handleClose}
         handleComponent={() => null}
         animationConfigs={animationConfigs}
+        animateOnMount={props.animation === "SLIDE"}
+        stackBehavior="push"
+        enablePanDownToClose={props.animation !== "SCALE"}
         enableContentPanningGesture={props.animation !== "SCALE"}
         backgroundStyle={{ backgroundColor: "transparent" }}
       >
