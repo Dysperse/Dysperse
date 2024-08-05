@@ -23,6 +23,13 @@ export function ImagePickerItem({
   const handlePress = useCallback(async () => {
     try {
       setLoading(true);
+      Toast.show({
+        type: "info",
+        props: { loading: true },
+        text1: "Uploading image...",
+        swipeable: false,
+        visibilityTime: 1e9,
+      });
       const form: any = new FormData();
       form.append("image", {
         uri: item.uri,
@@ -47,6 +54,7 @@ export function ImagePickerItem({
         ...task.attachments,
         { type: "IMAGE", data: res.data.display_url },
       ]);
+      Toast.hide();
     } catch (e) {
       Toast.show({
         type: "error",

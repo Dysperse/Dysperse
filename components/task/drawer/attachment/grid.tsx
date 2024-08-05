@@ -9,6 +9,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
 import { Platform, Pressable, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { styles } from "../../create/styles";
 
 const HotKeyTrigger = ({
@@ -61,6 +62,13 @@ export function AttachmentGrid({
     });
 
     if (!result.canceled) {
+      Toast.show({
+        type: "info",
+        props: { loading: true },
+        text1: "Uploading image...",
+        swipeable: false,
+        visibilityTime: 1e9,
+      });
       // convert to File
       const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
       const file = new File([blob], result.assets[0].fileName, {
@@ -83,6 +91,8 @@ export function AttachmentGrid({
       setTimeout(() => {
         menuRef.current.forceClose();
       }, 0);
+      Toast.hide();
+      Toast.show({ type: "success", text1: "Image attached!" });
     } else {
       alert("You did not select any image.");
     }

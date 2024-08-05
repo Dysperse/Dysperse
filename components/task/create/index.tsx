@@ -1100,6 +1100,13 @@ function TaskNameInput({
                     for (const index in items) {
                       const item = items[index];
                       if (item.kind === "file") {
+                        Toast.show({
+                          type: "info",
+                          props: { loading: true },
+                          text1: "Uploading image...",
+                          swipeable: false,
+                          visibilityTime: 1e9,
+                        });
                         const form: any = new FormData();
                         const blob = item.getAsFile();
 
@@ -1111,7 +1118,6 @@ function TaskNameInput({
                           })
                         );
 
-                        // https://imgcdn.dev/api/1/upload/?name=image&key=5386e05a3562c7a8f984e73401540836
                         const res = await fetch(
                           "https://api.dysperse.com/upload",
                           {
@@ -1120,6 +1126,7 @@ function TaskNameInput({
                           }
                         ).then((res) => res.json());
                         if (res.error) {
+                          Toast.hide();
                           Toast.show({
                             type: "error",
                             text1: "Failed to upload",
@@ -1132,6 +1139,7 @@ function TaskNameInput({
                             { type: "IMAGE", data: res.image.display_url },
                           ]);
 
+                          Toast.hide();
                           Toast.show({
                             type: "success",
                             text1: "Image uploaded!",
