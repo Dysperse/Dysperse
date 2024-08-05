@@ -187,7 +187,12 @@ export default function Page() {
             Start from scratch
           </Text>
           <View style={[styles.containerContent, { alignSelf: "center" }]}>
-            <View style={{ flexDirection: "row", gap: 20 }}>
+            <View
+              style={{
+                flexDirection: !breakpoints.md ? "column" : "row",
+                gap: 20,
+              }}
+            >
               <View style={styles.section}>
                 <Text variant="eyebrow">Icon</Text>
                 <Controller
@@ -205,7 +210,7 @@ export default function Page() {
               </View>
               <View
                 style={{
-                  flexDirection: breakpoints.md ? "column" : "row",
+                  flexDirection: "column",
                   gap: 20,
                   flex: 1,
                 }}
