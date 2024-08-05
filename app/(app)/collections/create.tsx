@@ -68,11 +68,14 @@ const Header = memo(() => {
 
 function Templates() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { data, error } = useSWR(["dysverse", { random: true }]);
 
   return (
     <View>
-      <View style={styles.containerContent}>
+      <View
+        style={[styles.containerContent, { padding: breakpoints.md ? 50 : 20 }]}
+      >
         <Text weight={900} style={{ fontSize: 25 }}>
           For you
         </Text>
@@ -82,7 +85,7 @@ function Templates() {
         data={data}
         contentContainerStyle={{
           padding: 20,
-          paddingHorizontal: 50,
+          paddingHorizontal: breakpoints.md ? 50 : 20,
           gap: 10,
           paddingTop: 0,
         }}
@@ -91,12 +94,12 @@ function Templates() {
         }}
         renderItem={({ item }) => (
           <Button
-            height={200}
+            height={breakpoints.md ? 200 : 150}
             onPress={() => {
               Linking.openURL(`https://dysperse.com/templates/${item.id}`);
             }}
             style={{
-              width: 300,
+              width: breakpoints.md ? 300 : 200,
               flexDirection: "column",
               padding: 0,
               justifyContent: "flex-start",
@@ -182,11 +185,18 @@ export default function Page() {
           <Header />
           <Templates />
         </LinearGradient>
-        <View style={{ width: "100%", padding: 50, gap: 20 }}>
+        <View
+          style={{ width: "100%", padding: breakpoints.md ? 50 : 20, gap: 20 }}
+        >
           <Text weight={900} style={{ fontSize: 25 }}>
             Start from scratch
           </Text>
-          <View style={[styles.containerContent, { alignSelf: "center" }]}>
+          <View
+            style={[
+              styles.containerContent,
+              { alignSelf: "center", padding: breakpoints.md ? 50 : 20 },
+            ]}
+          >
             <View
               style={{
                 flexDirection: !breakpoints.md ? "column" : "row",
