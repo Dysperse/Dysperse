@@ -167,7 +167,18 @@ export default function List() {
                         borderColor: addHslAlpha(theme[7], 0.3),
                       }}
                     >
-                      <KanbanHeader hideNavigation label={item} grid />
+                      <KanbanHeader
+                        hideNavigation
+                        label={{
+                          ...item,
+                          entitiesLength: data.labels
+                            .find((l) => l.id === item.id)
+                            ?.entities?.filter(
+                              (e) => e.completionInstances.length === 0
+                            )?.length,
+                        }}
+                        grid
+                      />
                     </BlurView>
                   </Pressable>
                 </LinearGradient>
