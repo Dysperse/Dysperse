@@ -4,6 +4,7 @@ import {
   InteractionManager,
   Platform,
   Pressable,
+  useWindowDimensions,
   ViewStyle,
 } from "react-native";
 import Animated, {
@@ -64,6 +65,8 @@ export const Modal = forwardRef(
       });
       props.onClose?.();
     };
+
+    const { height } = useWindowDimensions();
 
     const innerStyles = useAnimatedStyle(() => ({
       transformOrigin: Platform.OS === "web" ? "top center" : ["50%", 0, 0],
@@ -129,6 +132,7 @@ export const Modal = forwardRef(
                   shadowOpacity: 0.25,
                   shadowRadius: 100,
                   height: props.height,
+                  maxHeight: height - 40,
                 },
                 props.innerStyles,
               ]}
