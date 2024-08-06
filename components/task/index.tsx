@@ -119,7 +119,7 @@ export const TaskAttachmentChips = memo(
       }[t]);
 
     const isVideoChatPlatform = (t) =>
-      videoChatPlatforms.some((platform) => t?.includes(platform));
+      videoChatPlatforms.some((platform) => t?.includes?.(platform));
 
     return attachments.map((attachment) => (
       <ImageViewer

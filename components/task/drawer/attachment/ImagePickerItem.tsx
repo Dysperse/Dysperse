@@ -1,7 +1,7 @@
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
-import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import { TouchableOpacity, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import * as MediaLibrary from "expo-media-library";
 import mime from "mime-types";
@@ -20,8 +20,10 @@ export function ImagePickerItem({
 }) {
   const [loading, setLoading] = useState(false);
   const theme = useColorTheme();
+  const { forceClose } = useBottomSheet();
   const handlePress = useCallback(async () => {
     try {
+      forceClose();
       setLoading(true);
       Toast.show({
         type: "info",
@@ -54,6 +56,7 @@ export function ImagePickerItem({
         ...task.attachments,
         { type: "IMAGE", data: res.data.display_url },
       ]);
+
       Toast.hide();
     } catch (e) {
       Toast.show({
@@ -64,7 +67,7 @@ export function ImagePickerItem({
     } finally {
       setLoading(false);
     }
-  }, [item, updateTask, task]);
+  }, [item, updateTask, task, forceClose]);
 
   return (
     <View

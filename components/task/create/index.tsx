@@ -1382,11 +1382,33 @@ const TaskAttachments = ({ watch, setValue }: any) => {
             />
             <View style={{ flex: 1, flexDirection: "column" }}>
               <Text variant="eyebrow">{attachment.type}</Text>
-              <Text numberOfLines={1} style={{ color: theme[11] }}>
-                {attachment.type === "IMAGE"
-                  ? new URL(attachment.data).pathname.split("/").pop()
-                  : attachment.data}
-              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  style={{
+                    color: theme[11],
+                    maxWidth: 120,
+                  }}
+                  numberOfLines={1}
+                >
+                  {attachment.type === "IMAGE"
+                    ? new URL(attachment.data).pathname
+                        .split("/")
+                        .pop()
+                        .split(".")[0]
+                    : attachment.data?.name || attachment.data}
+                </Text>
+                {attachment.type === "IMAGE" && (
+                  <Text style={{ color: theme[11] }} weight={500}>
+                    .
+                    {
+                      new URL(attachment.data).pathname
+                        .split("/")
+                        .pop()
+                        .split(".")[1]
+                    }
+                  </Text>
+                )}
+              </View>
             </View>
             <IconButton
               icon="close"

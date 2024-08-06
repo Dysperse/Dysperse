@@ -1,14 +1,15 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { styles } from "../../create/styles";
 
@@ -36,6 +37,7 @@ export function AttachmentGrid({
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { forceClose } = useBottomSheet();
 
   const taskMenuCardStyle = ({ pressed, hovered }) => [
     styles.attachmentCard,
@@ -62,6 +64,7 @@ export function AttachmentGrid({
     });
 
     if (!result.canceled) {
+      forceClose();
       Toast.show({
         type: "info",
         props: { loading: true },
@@ -112,7 +115,7 @@ export function AttachmentGrid({
             }}
             index={item.index}
           />
-          <Pressable
+          <Button
             onPress={() => {
               if (Platform.OS === "web" && item.text === "Image") {
                 pickImageAsync();
@@ -120,12 +123,26 @@ export function AttachmentGrid({
               }
               setView(item.text);
             }}
-            style={taskMenuCardStyle}
+            variant="filled"
+            height={115}
+            style={{
+              alignItems: "flex-start",
+              justifyContent: "flex-end",
+              flexDirection: "column",
+              padding: 15,
+              paddingHorizontal: 15,
+            }}
+            containerStyle={{ flex: 1, borderRadius: 20 }}
           >
             <Avatar size={45} disabled>
               <Icon>{item.icon}</Icon>
             </Avatar>
-            <Text style={styles.attachmentCardText}>{item.text}</Text>
+            <Text
+              style={[styles.attachmentCardText, { color: theme[11] }]}
+              weight={900}
+            >
+              {item.text}
+            </Text>
             {breakpoints.md && (
               <View
                 style={{
@@ -149,7 +166,7 @@ export function AttachmentGrid({
                 </Text>
               </View>
             )}
-          </Pressable>
+          </Button>
         </React.Fragment>
       ))}
     </View>

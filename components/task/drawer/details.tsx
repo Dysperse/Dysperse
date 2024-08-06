@@ -1,5 +1,6 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { STORY_POINT_SCALE } from "@/constants/workload";
+import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -301,6 +302,10 @@ const getAttachmentPreview = (item) => {
     case "LOCATION":
       icon = isValidHttpUrl(item.data) ? "link" : "map";
       if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
+
+      if (item?.data?.rich) {
+        name = name.name;
+      }
       break;
     case "IMAGE":
       icon = "image";
@@ -321,12 +326,40 @@ const attachmentButtonStyles = (theme) => ({
 
 function TaskAttachmentPreview({ item, index }: { item: any; index: number }) {
   const theme = useColorTheme();
+  const { session } = useUser();
+
   const { icon, name } = getAttachmentPreview(item);
   const handleOpenPress = useCallback(() => {
     if (isValidHttpUrl(item.data)) {
       Linking.openURL(item.data);
     } else {
-      Linking.openURL(`https://maps.google.com/?q=${item.data}`);
+      if (item.type === "LOCATION" && item?.data?.rich) {
+        if (session.user?.mapsProvider === "APPLE") {
+          Linking.openURL(
+            `https://beta.maps.apple.com/?${new URLSearchParams({
+              q: item.data.full_name,
+              ll: `${item.data.lat},${item.data.lon}`,
+              spn: "0.008983152841206987,0.011316585492991749",
+            })}`
+          );
+        } else {
+          Linking.openURL(
+            `https://maps.google.com/?${new URLSearchParams({
+              q: `${item.data.lat},${item.data.lon}`,
+            })}`
+          );
+        }
+      } else {
+        if (session.user?.mapsProvider === "APPLE") {
+          Linking.openURL(
+            `https://beta.maps.apple.com/?${new URLSearchParams({
+              q: item.data,
+            })}`
+          );
+        } else {
+          Linking.openURL(`https://maps.google.com/?q=${item.data}`);
+        }
+      }
     }
   }, [item.data]);
 
@@ -356,6 +389,9 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { icon } = getAttachmentPreview(item);
 
+  const editable =
+    !isReadOnly && !(item.type === "LOCATION" && item?.data?.rich);
+
   const handleDeletePress = useCallback(() => {
     updateTask(
       "attachments",
@@ -367,11 +403,11 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
     <ListItemButton style={{ paddingLeft: 40 }} disabled>
       <Avatar icon={icon} style={{ borderRadius: 7 }} />
       <View style={{ flex: 1, gap: 5 }}>
-        {item.type !== "LOCATION" && (
+        {!(item.type === "LOCATION" && !item?.data?.rich) && (
           <TextField
             variant="filled+outlined"
-            editable={!isReadOnly}
-            defaultValue={item.name}
+            editable={editable}
+            defaultValue={item?.data?.name || item.name}
             placeholder="(Optional) Friendly name…"
             style={{
               paddingVertical: 3,
@@ -380,6 +416,7 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
             }}
             onBlur={(e) => {
               if (!e.nativeEvent.text.trim()) return;
+              if (!editable) return;
               updateTask(
                 "attachments",
                 task.attachments.map((attachment, i) =>
@@ -393,8 +430,8 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
         )}
         <TextField
           variant="filled+outlined"
-          editable={!isReadOnly}
-          defaultValue={item.data}
+          editable={editable}
+          defaultValue={item?.data?.full_name || item.data}
           placeholder={item.type === "LINK" ? "Link…" : "Location…"}
           style={{
             paddingVertical: 3,
@@ -402,6 +439,7 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
             borderRadius: 5,
           }}
           onBlur={(e) => {
+            if (!editable) return;
             updateTask(
               "attachments",
               task.attachments.map((attachment, i) =>

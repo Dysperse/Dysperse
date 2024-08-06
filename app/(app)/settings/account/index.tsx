@@ -361,6 +361,23 @@ function TasksSettings({ updateUserSettings }: any) {
             }))}
           />
         </ListItemButton>
+        <ListItemButton disabled onPress={() => {}}>
+          <ListItemText
+            primary="Maps provider"
+            secondary="Locations will open in this app"
+          />
+          <MenuPopover
+            trigger={AccountMenuTrigger({ text: "Apple Maps" })}
+            options={[
+              { text: "Google Maps", value: "GOOGLE" },
+              { text: "Apple Maps", value: "APPLE" },
+            ].map((e) => ({
+              ...e,
+              selected: e.value === session.user.mapsProvider,
+              callback: () => updateUserSettings("militaryTime", e.value),
+            }))}
+          />
+        </ListItemButton>
         <ListItemButton
           onPress={() =>
             updateUserSettings("vanishMode", !session.user.vanishMode)

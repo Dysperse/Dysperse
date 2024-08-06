@@ -103,6 +103,7 @@ export function TaskAttachmentPicker({
                 flex: 1,
               }),
             }}
+            weight={900}
             multiline={multiline}
             onChangeText={onChange}
             onBlur={onBlur}

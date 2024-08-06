@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   },
   attachmentCardText: {
     fontSize: 20,
-    marginTop: 5,
+    marginTop: -5,
     paddingLeft: 5,
   },
   gridRow: {

@@ -1,4 +1,5 @@
 import { Button, ButtonText } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -13,6 +14,7 @@ import Toast from "react-native-toast-message";
 import { ImagePickerItem } from "./ImagePickerItem";
 
 export function TaskImagePicker({ task, updateTask }) {
+  const theme = useColorTheme();
   const [albums, setAlbums] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [assets, setAssets] = useState([]);
@@ -70,16 +72,14 @@ export function TaskImagePicker({ task, updateTask }) {
   };
 
   const header = (
-    <View style={{ padding: 5 }}>
-      <Button
-        variant="filled"
-        containerStyle={{ marginTop: 10 }}
-        onPress={() => setSelectAlbums(true)}
-      >
-        <ButtonText>{selectedAlbum?.title}</ButtonText>
-        <Icon>{selectAlbums ? "expand_less" : "expand_more"}</Icon>
-      </Button>
-    </View>
+    <Button
+      variant="filled"
+      containerStyle={{ marginVertical: 10 }}
+      onPress={() => setSelectAlbums(true)}
+    >
+      <ButtonText>{selectedAlbum?.title}</ButtonText>
+      <Icon>{selectAlbums ? "expand_less" : "expand_more"}</Icon>
+    </Button>
   );
 
   return selectAlbums ? (
@@ -113,10 +113,18 @@ export function TaskImagePicker({ task, updateTask }) {
         centerContent={assets.length === 0}
         ListEmptyComponent={() => (
           <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 330,
+              gap: 10,
+              backgroundColor: theme[3],
+              borderRadius: 20,
+            }}
           >
             <Emoji emoji="1F614" size={50} />
-            <Text>No images found here</Text>
+            <Text weight={900}>No images found here</Text>
           </View>
         )}
         onEndReached={loadMoreAlbums}
