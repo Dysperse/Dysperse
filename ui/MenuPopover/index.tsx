@@ -183,7 +183,7 @@ export default function MenuPopover({
           <View
             style={{
               backgroundColor: addHslAlpha(
-                theme[6],
+                theme[Platform.OS === "android" ? 4 : 6],
                 Platform.OS === "android" ? 1 : 0.4
               ),
               borderRadius: 25,
