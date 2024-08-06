@@ -285,6 +285,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
             paddingHorizontal: breakpoints.md ? undefined : 25,
             marginTop: 0,
             fontSize: breakpoints.md ? 15 : 20,
+            borderRadius: breakpoints.md ? undefined : 9999,
           }}
           inputRef={inputRef}
           weight={700}
