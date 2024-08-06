@@ -367,14 +367,18 @@ function TasksSettings({ updateUserSettings }: any) {
             secondary="Locations will open in this app"
           />
           <MenuPopover
-            trigger={AccountMenuTrigger({ text: "Apple Maps" })}
+            trigger={AccountMenuTrigger({
+              text: `${capitalizeFirstLetter(
+                session.user.mapsProvider.toLowerCase()
+              )} maps`,
+            })}
             options={[
               { text: "Google Maps", value: "GOOGLE" },
               { text: "Apple Maps", value: "APPLE" },
             ].map((e) => ({
               ...e,
               selected: e.value === session.user.mapsProvider,
-              callback: () => updateUserSettings("militaryTime", e.value),
+              callback: () => updateUserSettings("mapsProvider", e.value),
             }))}
           />
         </ListItemButton>

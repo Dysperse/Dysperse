@@ -1,4 +1,5 @@
 import { useSelectionContext } from "@/context/SelectionContext";
+import { useUser } from "@/context/useUser";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
@@ -25,6 +26,7 @@ import Toast from "react-native-toast-message";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
 import {
+  handleLocationPress,
   isValidHttpUrl,
   normalizeRecurrenceRuleObject,
 } from "./drawer/details";
@@ -118,6 +120,7 @@ export const TaskAttachmentChips = memo(
         LOCATION: "location_on",
       }[t]);
 
+    const { session } = useUser();
     const isVideoChatPlatform = (t) =>
       videoChatPlatforms.some((platform) => t?.includes?.(platform));
 
@@ -144,9 +147,7 @@ export const TaskAttachmentChips = memo(
             if (attachment.type === "LINK") {
               Linking.openURL(attachment.data);
             } else if (attachment.type === "LOCATION") {
-              Linking.openURL(
-                `https://www.google.com/maps/search/?api=1&query=${attachment.data}`
-              );
+              handleLocationPress(session, attachment);
             }
           }}
           icon={

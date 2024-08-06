@@ -324,6 +324,36 @@ const attachmentButtonStyles = (theme) => ({
   hovered: theme[7],
 });
 
+export const handleLocationPress = (session, item) => {
+  if (item.type === "LOCATION" && item?.data?.rich) {
+    if (session.user?.mapsProvider === "APPLE") {
+      Linking.openURL(
+        `https://beta.maps.apple.com/?${new URLSearchParams({
+          q: item.data.full_name,
+          ll: `${item.data.lat},${item.data.lon}`,
+          spn: "0.008983152841206987,0.011316585492991749",
+        })}`
+      );
+    } else {
+      Linking.openURL(
+        `https://maps.google.com/?${new URLSearchParams({
+          q: `${item.data.lat},${item.data.lon}`,
+        })}`
+      );
+    }
+  } else {
+    if (session.user?.mapsProvider === "APPLE") {
+      Linking.openURL(
+        `https://beta.maps.apple.com/?${new URLSearchParams({
+          q: item.data,
+        })}`
+      );
+    } else {
+      Linking.openURL(`https://maps.google.com/?q=${item.data}`);
+    }
+  }
+};
+
 function TaskAttachmentPreview({ item, index }: { item: any; index: number }) {
   const theme = useColorTheme();
   const { session } = useUser();
@@ -333,33 +363,7 @@ function TaskAttachmentPreview({ item, index }: { item: any; index: number }) {
     if (isValidHttpUrl(item.data)) {
       Linking.openURL(item.data);
     } else {
-      if (item.type === "LOCATION" && item?.data?.rich) {
-        if (session.user?.mapsProvider === "APPLE") {
-          Linking.openURL(
-            `https://beta.maps.apple.com/?${new URLSearchParams({
-              q: item.data.full_name,
-              ll: `${item.data.lat},${item.data.lon}`,
-              spn: "0.008983152841206987,0.011316585492991749",
-            })}`
-          );
-        } else {
-          Linking.openURL(
-            `https://maps.google.com/?${new URLSearchParams({
-              q: `${item.data.lat},${item.data.lon}`,
-            })}`
-          );
-        }
-      } else {
-        if (session.user?.mapsProvider === "APPLE") {
-          Linking.openURL(
-            `https://beta.maps.apple.com/?${new URLSearchParams({
-              q: item.data,
-            })}`
-          );
-        } else {
-          Linking.openURL(`https://maps.google.com/?q=${item.data}`);
-        }
-      }
+      handleLocationPress(session, item);
     }
   }, [item.data]);
 
