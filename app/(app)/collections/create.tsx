@@ -10,7 +10,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -70,6 +70,7 @@ function Templates() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { data, error } = useSWR(["dysverse", { random: true }]);
+  const isDark = useDarkMode();
 
   return (
     <View>
@@ -113,7 +114,11 @@ function Templates() {
             }}
           >
             <Image
-              source={{ uri: item.preview }}
+              source={{
+                uri: `${item.preview}?hideHeader=true&isLight=${
+                  isDark ? "false" : "true"
+                }`,
+              }}
               style={{
                 width: "100%",
                 aspectRatio: "1200/630",
