@@ -15,6 +15,7 @@ import TextField from "@/ui/TextArea";
 import { useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -24,16 +25,14 @@ import {
   InteractionManager,
   Linking,
   Pressable,
-  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
-  headerContainer: { padding: 20 },
+  headerContainer: { padding: 0 },
   container: {
     marginVertical: "auto",
     alignItems: "center",
@@ -55,6 +54,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
 });
+
 const Header = memo(() => {
   const handleBack = () => {
     if (router.canGoBack()) router.back();
@@ -77,35 +77,39 @@ function Templates() {
   const isDark = useDarkMode();
 
   return (
-    <View>
-      <View
-        style={{
-          padding: 30,
-          paddingTop: 10,
-          paddingHorizontal: breakpoints.md ? 50 : 20,
-          width: "100%",
-          alignItems: "center",
-        }}
-      >
-        <Text variant="eyebrow">New collection</Text>
-        <Text
-          style={{
-            fontSize: 40,
-            textAlign: "center",
-            color: theme[11],
-          }}
-        >
-          Choose a template
-        </Text>
-      </View>
-      <FlatList
+    <View style={{ flex: 1 }}>
+      <FlashList
         data={["new", "dysverse", ...data]}
         contentContainerStyle={{
           padding: 20,
-          paddingHorizontal: breakpoints.md ? 50 : 20,
+          paddingHorizontal: 20,
           paddingTop: 0,
         }}
-        numColumns={3}
+        ListHeaderComponent={() => (
+          <View style={{}}>
+            <Header />
+            <View
+              style={{
+                padding: 30,
+                paddingHorizontal: breakpoints.md ? 50 : 20,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Text variant="eyebrow">New collection</Text>
+              <Text
+                style={{
+                  fontSize: 40,
+                  textAlign: "center",
+                  color: theme[11],
+                }}
+              >
+                Choose a template
+              </Text>
+            </View>
+          </View>
+        )}
+        numColumns={breakpoints.md ? 3 : 1}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View
@@ -378,16 +382,13 @@ export default function Page() {
 
   return (
     <ColorThemeProvider theme={theme}>
-      <ContentWrapper>
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <LinearGradient
-            colors={["transparent", "hsl(0, 0%, 95%)"]}
-            style={{ width: "100%" }}
-          >
-            <Header />
-            <Templates />
-          </LinearGradient>
-        </ScrollView>
+      <ContentWrapper noPaddingTop>
+        <LinearGradient
+          colors={["transparent", "hsl(0, 0%, 95%)"]}
+          style={{ width: "100%", flex: 1 }}
+        >
+          <Templates />
+        </LinearGradient>
       </ContentWrapper>
     </ColorThemeProvider>
   );
