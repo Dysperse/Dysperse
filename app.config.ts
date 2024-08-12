@@ -49,6 +49,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         backgroundColor: "#0a1f1d",
       },
     },
+    icon: "./assets/icon.png",
+    adaptiveIcon: {
+      backgroundColor: "#156359",
+      foregroundImage: "./assets/adaptive-icon.png",
+      monochromeImage: "./assets/monochrome.png",
+    },
     softwareKeyboardLayoutMode: "pan",
     googleServicesFile: IS_DEV
       ? process.env.GOOGLE_SERVICES_DEV
