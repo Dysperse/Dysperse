@@ -42,6 +42,7 @@ import { useSidebarContext } from "../layout/sidebar/context";
 import { useFocusPanelContext } from "./context";
 import { NewWidget } from "./widgets/new";
 import { FocusPanelSpotify } from "./widgets/spotify/FocusPanelSpotify";
+import TopStocksScreen from "./widgets/top-stocks/screen";
 import { FocusPanelWeather } from "./widgets/weather/modal";
 import { WordOfTheDayScreen } from "./widgets/word-of-the-day/screen";
 
@@ -51,6 +52,7 @@ const Quotes = lazy(() => import("./widgets/quotes"));
 const Spotify = lazy(() => import("./widgets/spotify"));
 const UpNext = lazy(() => import("./widgets/up-next"));
 const BatteryWidget = lazy(() => import("./widgets/battery"));
+const TopStocks = lazy(() => import("./widgets/top-stocks"));
 const WeatherWidget = lazy(() => import("./widgets/weather/widget"));
 const WordOfTheDay = lazy(() => import("./widgets/word-of-the-day"));
 const Randomizer = lazy(() => import("./widgets/randomizer"));
@@ -217,6 +219,16 @@ function RenderWidget({ navigation, widget, index }) {
           key={index}
         />
       );
+    case "top stocks":
+      return (
+        <TopStocks
+          navigation={navigation}
+          menuActions={menuActions}
+          widget={widget}
+          key={index}
+        />
+      );
+
     case "weather":
       return (
         <WeatherWidget
@@ -490,7 +502,8 @@ function PanelContent() {
           if (
             currentRouteName === "New" ||
             currentRouteName === "Focus" ||
-            currentRouteName === "Word of the day"
+            currentRouteName === "Word of the day" ||
+            currentRouteName === "Stocks"
           ) {
             opacity.value = breakpoints.md ? 1 : 0;
           } else {
@@ -535,6 +548,7 @@ function PanelContent() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Word of the day" component={WordOfTheDayScreen} />
+          <Stack.Screen name="Stocks" component={TopStocksScreen} />
           <Stack.Screen name="New" component={NewWidget} />
         </Stack.Navigator>
       </NavigationContainer>

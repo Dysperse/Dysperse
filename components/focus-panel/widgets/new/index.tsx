@@ -68,6 +68,7 @@ export function NewWidget({
     {
       text: "Information",
       widgets: [
+        { text: "Top Stocks", icon: "monitoring", onlyOnce: true },
         { text: "Weather", icon: "wb_sunny" },
         { text: "Battery", icon: "battery_0_bar" },
         {
