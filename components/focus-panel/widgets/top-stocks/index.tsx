@@ -133,9 +133,27 @@ export function StockItem({
           </ButtonText>
         )}
       </View>
-      {large && <Text>Market cap: ${formatNumber(stock.marketCap, 2)}</Text>}
-      {large && <Text>Volume (24H): {formatNumber(stock.volume24h, 2)}</Text>}
-      {large && <Text>Previous Close: {formatNumber(stock.prev, 2)}</Text>}
+      {large && (
+        <Text style={{ color: theme[11], opacity: 0.5 }} weight={600}>
+          Market cap: ${formatNumber(stock.marketCap, 2)}
+        </Text>
+      )}
+      {large && (
+        <Text
+          style={{ color: theme[11], opacity: 0.5, marginTop: -7 }}
+          weight={600}
+        >
+          Volume (24H): {formatNumber(stock.volume24h, 2)}
+        </Text>
+      )}
+      {large && (
+        <Text
+          style={{ color: theme[11], opacity: 0.5, marginTop: -7 }}
+          weight={600}
+        >
+          Previous Close: ${(stock.prev, 2)}
+        </Text>
+      )}
       <View
         style={{
           flexDirection: "row",
