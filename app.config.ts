@@ -52,8 +52,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     icon: "./assets/icon.png",
     adaptiveIcon: {
       backgroundColor: "#156359",
-      foregroundImage: "./assets/adaptive-icon.png",
-      monochromeImage: "./assets/monochrome.png",
+      foregroundImage: "./assets/android-icons/adaptive-icon.png",
+      monochromeImage: "./assets/android-icons/monochrome.png",
     },
     softwareKeyboardLayoutMode: "pan",
     googleServicesFile: IS_DEV
