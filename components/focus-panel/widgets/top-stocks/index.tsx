@@ -134,6 +134,8 @@ export function StockItem({
         )}
       </View>
       {large && <Text>Market cap: ${formatNumber(stock.marketCap, 2)}</Text>}
+      {large && <Text>Volume (24H): {formatNumber(stock.volume24h, 2)}</Text>}
+      {large && <Text>Previous Close: {formatNumber(stock.prev, 2)}</Text>}
       <View
         style={{
           flexDirection: "row",
