@@ -278,7 +278,7 @@ function Credentials({
               Need help?
             </ButtonText>
           </Button>
-          {!breakpoints.md && (
+          {breakpoints.md && (
             <Button
               dense
               onPress={handleCreateAccount}
