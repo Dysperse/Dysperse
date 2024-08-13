@@ -47,6 +47,7 @@ import { FocusPanelWeather } from "./widgets/weather/modal";
 import { WordOfTheDayScreen } from "./widgets/word-of-the-day/screen";
 
 const Assistant = lazy(() => import("./widgets/Assistant"));
+const Magic8Ball = lazy(() => import("./widgets/magic-8-ball"));
 const Clock = lazy(() => import("./widgets/clock"));
 const Quotes = lazy(() => import("./widgets/quotes"));
 const Spotify = lazy(() => import("./widgets/spotify"));
@@ -228,10 +229,18 @@ function RenderWidget({ navigation, widget, index }) {
           key={index}
         />
       );
-
     case "weather":
       return (
         <WeatherWidget
+          navigation={navigation}
+          menuActions={menuActions}
+          widget={widget}
+          key={index}
+        />
+      );
+    case "magic 8 ball":
+      return (
+        <Magic8Ball
           navigation={navigation}
           menuActions={menuActions}
           widget={widget}

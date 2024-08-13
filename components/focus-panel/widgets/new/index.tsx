@@ -87,6 +87,7 @@ export function NewWidget({
           icon: "timer",
         },
         { text: "Randomizer", secondary: "Coin flip & dice", icon: "casino" },
+        { text: "Magic 8 Ball", icon: "counter_8" },
         { text: "Counter", icon: "tag", comingSoon: true },
         { text: "Assistant", icon: "auto_awesome" },
       ],
