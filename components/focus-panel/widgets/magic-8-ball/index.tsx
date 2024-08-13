@@ -1,6 +1,7 @@
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import MenuPopover from "@/ui/MenuPopover";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import Animated, {
@@ -13,6 +14,7 @@ import Animated, {
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { useFocusPanelContext } from "../../context";
+import { widgetMenuStyles } from "../../widgetMenuStyles";
 
 const messages = [
   "It is certain",
@@ -56,6 +58,20 @@ export default function Magic8Ball({ navigation, menuActions, widget }) {
 
   return (
     <View>
+      {!isCollapsed && (
+        <MenuPopover
+          options={menuActions}
+          containerStyle={{ marginTop: -15 }}
+          trigger={
+            <Button style={widgetMenuStyles.button} dense>
+              <ButtonText weight={800} style={widgetMenuStyles.text}>
+                Magic 8 ball
+              </ButtonText>
+              <Icon style={{ color: theme[11] }}>expand_more</Icon>
+            </Button>
+          }
+        />
+      )}
       <Pressable
         style={{
           padding: 16,
@@ -107,7 +123,12 @@ export default function Magic8Ball({ navigation, menuActions, widget }) {
             >
               <Animated.Text
                 style={[
-                  { color: "#fff", textAlign: "center", fontSize: 16 },
+                  {
+                    color: "#fff",
+                    textAlign: "center",
+                    fontSize: 16,
+                    fontFamily: "body_500",
+                  },
                   textStyle,
                 ]}
               >
@@ -139,9 +160,10 @@ export default function Magic8Ball({ navigation, menuActions, widget }) {
                 offset.value = withSpring(0, { damping: 30, stiffness: 400 });
                 const t = messages[Math.floor(Math.random() * messages.length)];
                 setMessage(t);
-                setTimeout(() => {
-                  Toast.show({ type: "info", text1: t });
-                }, 1000);
+                if (panelState === "COLLAPSED")
+                  setTimeout(() => {
+                    Toast.show({ type: "info", text1: t });
+                  }, 1000);
               }
             );
           }}
