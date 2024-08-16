@@ -29,7 +29,7 @@
     "@react-native-community/slider": "4.5.2",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
-    "@sentry/react-native": "~5.22.0",
+    "@sentry/react-native": "^5.30.0",
     "@shopify/flash-list": "1.6.4",
     "@types/react-mentions": "^4.1.13",
     "convert-time": "^0.3.0",
