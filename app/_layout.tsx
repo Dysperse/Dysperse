@@ -78,7 +78,17 @@ Sentry.init({
   // debug: true,
   enabled: process.env.NODE_ENV === "production",
   tracesSampleRate: 1.0,
+
+  _experiments: {
+    replaysSessionSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1.0,
+  },
+
   integrations: [
+    Sentry.mobileReplayIntegration({
+      maskAllText: true,
+      maskAllImages: true,
+    }),
     new Sentry.ReactNativeTracing({
       // Pass instrumentation to be used as `routingInstrumentation`
       routingInstrumentation,
