@@ -9,7 +9,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { Image } from "expo-image";
 import { useEffect, useRef, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
 import { widgetMenuStyles } from "../../widgetMenuStyles";
@@ -250,8 +250,8 @@ export default function Widget({ navigation, menuActions, widget }) {
           {displayedStocks.map((stock) => (
             <Animated.View
               key={stock.ticker}
-              entering={FadeIn}
-              exiting={FadeOut}
+              entering={FadeInRight}
+              exiting={FadeOutLeft}
               style={{ flex: 1 }}
             >
               <StockItem

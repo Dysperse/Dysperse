@@ -23,8 +23,23 @@ import {
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
-import { lazy, memo, Suspense, useEffect, useMemo, useRef } from "react";
-import { Platform, Pressable, useWindowDimensions, View } from "react-native";
+import {
+  lazy,
+  memo,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Freeze } from "react-freeze";
+import {
+  AppState,
+  Platform,
+  Pressable,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -585,6 +600,26 @@ function FocusPanelHome({
   const { data } = useSWR(["user/focus-panel"], null);
   const { panelState } = useFocusPanelContext();
 
+  const [shouldSuspendRendering, setShouldSuspendRendering] = useState(false);
+
+  useEffect(() => {
+    const appState = AppState.currentState;
+
+    const t = (nextAppState) => {
+      setShouldSuspendRendering(
+        nextAppState === "background" || nextAppState === "inactive"
+      );
+    };
+
+    t(appState);
+
+    const s = AppState.addEventListener("change", t);
+
+    return () => {
+      s.remove();
+    };
+  }, []);
+
   return (
     <>
       <Suspense
@@ -652,20 +687,22 @@ function FocusPanelHome({
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
-                {data
-                  .sort(function (a, b) {
-                    if (a.order < b.order) return -1;
-                    if (a.order > b.order) return 1;
-                    return 0;
-                  })
-                  .map((widget, index) => (
-                    <RenderWidget
-                      navigation={navigation}
-                      key={index}
-                      index={index}
-                      widget={widget}
-                    />
-                  ))}
+                <Freeze freeze={shouldSuspendRendering}>
+                  {data
+                    .sort(function (a, b) {
+                      if (a.order < b.order) return -1;
+                      if (a.order > b.order) return 1;
+                      return 0;
+                    })
+                    .map((widget, index) => (
+                      <RenderWidget
+                        navigation={navigation}
+                        key={index}
+                        index={index}
+                        widget={widget}
+                      />
+                    ))}
+                </Freeze>
               </ScrollView>
             )
           )}
