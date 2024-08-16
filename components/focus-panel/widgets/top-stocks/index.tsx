@@ -6,10 +6,10 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import { useEffect, useRef } from "react";
-import { AppState, Linking, Platform, Pressable, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Linking, Pressable, View } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
 import { widgetMenuStyles } from "../../widgetMenuStyles";
@@ -191,47 +191,34 @@ export function StockItem({
 export default function Widget({ navigation, menuActions, widget }) {
   const theme = useColorTheme();
   const { panelState } = useFocusPanelContext();
-  const listRef = useRef(null);
-
   const { data, error } = useSWR(
     "https://bubble-screener-api.neil-dahiya.workers.dev/api",
     (url) => fetch(url).then((res) => res.json())
   );
 
-  const page = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (data) {
-      listRef.current.scrollToIndex({
-        index: 0,
-        viewPosition: 0.5,
-      });
+    if (data && data.length > 0) {
+      const sortedData = data.sort((a, b) => b.marketCap - a.marketCap);
+      setCurrentIndex(0); // Reset index on data fetch
+
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 2) % sortedData.length);
+      }, 7000);
     }
+
+    return () => {
+      clearInterval(intervalRef.current);
+    };
   }, [data]);
 
-  useEffect(() => {
-    //  Marquee effect for the list
-    const interval = setInterval(() => {
-      if (AppState.currentState !== "active") return;
-      if (Platform.OS === "web" && !document.hasFocus()) return;
-      if (listRef.current) {
-        listRef.current.scrollToIndex({
-          animated: true,
-          index: page.current,
-          viewPosition: 0.5,
-        });
-        page.current = (page.current + 1) % data.length;
-        if (page.current === 0) {
-          listRef.current.scrollToIndex({
-            animated: false,
-            index: page.current,
-            viewPosition: 0.5,
-          });
-        }
-      }
-    }, 7000);
-    return () => clearInterval(interval);
-  }, [data, listRef]);
+  if (error) {
+    return <ErrorAlert />;
+  }
+
+  const displayedStocks = data?.slice(currentIndex, currentIndex + 2) || [];
 
   return (
     <View>
@@ -248,7 +235,6 @@ export default function Widget({ navigation, menuActions, widget }) {
           }
         />
       )}
-      {error && <ErrorAlert />}
       <Pressable
         style={{
           backgroundColor: theme[3],
@@ -261,42 +247,19 @@ export default function Widget({ navigation, menuActions, widget }) {
             overflow: "hidden",
           }}
         >
-          {Array.isArray(data) && (
-            <FlashList
-              horizontal
-              ref={listRef}
-              data={data
-                .sort((a, b) => b.marketCap - a.marketCap)
-                .reduce((acc, stock, i) => {
-                  if (i % 2 === 0) {
-                    acc.push([stock, data[i + 1]]);
-                  }
-                  return acc;
-                }, [])}
-              keyExtractor={(stock) => stock[0].ticker + stock[1].ticker}
-              renderItem={({ item: stocks }: any) => (
-                <View
-                  style={{
-                    flexDirection: "column",
-                    padding: 10,
-                    height: panelState === "COLLAPSED" ? 120 : 100,
-                    gap: 10,
-                  }}
-                >
-                  {stocks.map(
-                    (stock) =>
-                      stock && (
-                        <StockItem
-                          navigation={navigation}
-                          key={stock.ticker}
-                          stock={stock}
-                        />
-                      )
-                  )}
-                </View>
-              )}
-            />
-          )}
+          {displayedStocks.map((stock) => (
+            <Animated.View
+              key={stock.ticker}
+              entering={FadeIn}
+              exiting={FadeOut}
+            >
+              <StockItem
+                stock={stock}
+                large={panelState !== "COLLAPSED"}
+                navigation={navigation}
+              />
+            </Animated.View>
+          ))}
         </View>
         {panelState !== "COLLAPSED" && (
           <View
