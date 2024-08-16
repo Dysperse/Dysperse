@@ -11,13 +11,7 @@ import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef } from "react";
-import {
-  InteractionManager,
-  Platform,
-  Pressable,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -79,8 +73,8 @@ export default function List() {
   }));
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
-  }, []);
+    setTimeout(() => (opacity.value = 1), 0);
+  }, [opacity]);
 
   return (
     <Animated.View style={[opacityStyle, { flex: 1 }]}>

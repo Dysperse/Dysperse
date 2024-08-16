@@ -19,7 +19,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -252,8 +252,8 @@ const StoryPoint = ({
   }));
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
-  }, []);
+    setTimeout(() => (opacity.value = 1), 0);
+  }, [opacity]);
 
   return (
     <Animated.View

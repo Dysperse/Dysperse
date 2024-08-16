@@ -15,7 +15,7 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState, useTransition } from "react";
-import { InteractionManager, View } from "react-native";
+import { View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -53,8 +53,8 @@ export default function Stream() {
   }));
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
-  }, []);
+    setTimeout(() => (opacity.value = 1), 0);
+  }, [opacity]);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(

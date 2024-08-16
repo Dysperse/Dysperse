@@ -13,12 +13,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { LexoRank } from "lexorank";
 import React, { useEffect, useMemo, useRef } from "react";
-import {
-  InteractionManager,
-  Pressable,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -118,8 +113,8 @@ export function Column({
   }));
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
-  }, []);
+    setTimeout(() => (opacity.value = 1), 0);
+  }, [opacity]);
 
   const isReadOnly = access?.access === "READ_ONLY";
 

@@ -11,7 +11,6 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  InteractionManager,
   Platform,
   Pressable,
   ScrollView,
@@ -325,8 +324,8 @@ export default function Matrix() {
   }));
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
-  }, []);
+    setTimeout(() => (opacity.value = 1), 0);
+  }, [opacity]);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(

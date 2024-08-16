@@ -14,7 +14,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef, useState } from "react";
-import { InteractionManager, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -94,12 +94,16 @@ export function Column(props: ColumnProps) {
 
   const opacity = useSharedValue(0);
   const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+    opacity: withSpring(opacity.value, {
+      damping: 20,
+      stiffness: 90,
+      overshootClamping: true,
+    }),
   }));
 
   useEffect(() => {
-    InteractionManager.runAfterInteractions(() => (opacity.value = 1));
-  }, []);
+    setTimeout(() => (opacity.value = 1), 0);
+  }, [opacity]);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
