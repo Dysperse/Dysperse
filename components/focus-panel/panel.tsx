@@ -609,6 +609,7 @@ function FocusPanelHome({
       setShouldSuspendRendering(
         nextAppState === "background" || nextAppState === "inactive"
       );
+      console.log(nextAppState === "background" || nextAppState === "inactive");
     };
 
     t(appState);
