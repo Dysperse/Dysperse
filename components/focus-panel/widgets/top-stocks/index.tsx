@@ -81,7 +81,7 @@ export function StockItem({
           gap: 10,
           alignItems: large ? undefined : "center",
           borderBottomColor: theme[5],
-          width: large ? "100%" : panelState === "COLLAPSED" ? 80 : 280,
+          paddingHorizontal: 20,
         },
         large && {
           borderRadius: 20,
@@ -252,10 +252,11 @@ export default function Widget({ navigation, menuActions, widget }) {
               key={stock.ticker}
               entering={FadeIn}
               exiting={FadeOut}
+              style={{ flex: 1 }}
             >
               <StockItem
+                key={stock.ticker}
                 stock={stock}
-                large={panelState !== "COLLAPSED"}
                 navigation={navigation}
               />
             </Animated.View>
