@@ -12,21 +12,29 @@
     <meta name="theme-color" content="#0f1b1b" />
     <link rel="stylesheet" href="/web.css" />
     <script>
-      if ("serviceWorker" in navigator) {
+      "serviceWorker" in navigator &&
         window.addEventListener("load", () => {
           navigator.serviceWorker
             .register("/sw.js")
-            .then((registration) => {
-              console.log(
-                "Service Worker registered with scope:",
-                registration.scope
-              );
+            .then((e) => {
+              console.log("Service Worker registered with scope:", e.scope);
             })
-            .catch((error) => {
-              console.error("Service Worker registration failed:", error);
+            .catch((e) => {
+              console.error("Service Worker registration failed:", e);
             });
         });
+    </script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-V4LB1LTE55"
+    ></script>
+    <script>
+      function gtag() {
+        dataLayer.push(arguments);
       }
+      (window.dataLayer = window.dataLayer || []),
+        gtag("js", new Date()),
+        gtag("config", "G-V4LB1LTE55");
     </script>
   </head>
 
