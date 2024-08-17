@@ -8,7 +8,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
 import { router, useGlobalSearchParams } from "expo-router";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { View } from "react-native";
 import { AgendaCalendarMenu } from "./AgendaCalendarMenu";
 
@@ -110,8 +110,9 @@ export function AgendaButtons({
     </Button>
   );
 
+  const SafeView = breakpoints.md ? React.Fragment : View;
   return (
-    <View>
+    <SafeView>
       <View
         style={[
           { flexDirection: "row", gap: 10 },
@@ -176,6 +177,6 @@ export function AgendaButtons({
           </IconButton>
         </View>
       </View>
-    </View>
+    </SafeView>
   );
 }

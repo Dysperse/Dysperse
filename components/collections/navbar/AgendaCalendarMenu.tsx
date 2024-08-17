@@ -15,25 +15,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
-export function AgendaCalendarMenu({
-  handleMenuClose,
-}: {
-  handleMenuClose?: () => void;
-}) {
-  const calendarRef = useRef<CalendarListRef>(null);
-  const theme = useColorTheme();
-  const { start }: any = useGlobalSearchParams();
-  const { height } = useWindowDimensions();
-
-  const today = toDateId(dayjs(start).toDate());
-
-  const [calendarMonthId, setCalendarMonthId] = useState(today);
-
-  useEffect(() => {
-    setCalendarMonthId(today);
-  }, [today]);
-
-  const linearTheme: CalendarTheme = {
+export const dysperseCalendarTheme = (theme) =>
+  ({
     rowMonth: {
       content: {
         textAlign: "left",
@@ -87,7 +70,25 @@ export function AgendaCalendarMenu({
         },
       }),
     },
-  };
+  } as CalendarTheme);
+
+export function AgendaCalendarMenu({
+  handleMenuClose,
+}: {
+  handleMenuClose?: () => void;
+}) {
+  const calendarRef = useRef<CalendarListRef>(null);
+  const theme = useColorTheme();
+  const { start }: any = useGlobalSearchParams();
+  const { height } = useWindowDimensions();
+
+  const today = toDateId(dayjs(start).toDate());
+
+  const [calendarMonthId, setCalendarMonthId] = useState(today);
+
+  useEffect(() => {
+    setCalendarMonthId(today);
+  }, [today]);
 
   const SafeCalendar =
     typeof handleMenuClose === "undefined" ? Calendar : Calendar.List;
@@ -109,7 +110,7 @@ export function AgendaCalendarMenu({
               endId: toDateId(dayjs(start).endOf("week").toDate()),
             },
           ]}
-          theme={linearTheme}
+          theme={dysperseCalendarTheme(theme)}
           {...(typeof handleMenuClose === "undefined" && {
             calendarInitialMonthId: today,
             endFillColor: theme[8],

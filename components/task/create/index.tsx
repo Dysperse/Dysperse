@@ -1,4 +1,5 @@
 import ChipInput from "@/components/ChipInput";
+import { dysperseCalendarTheme } from "@/components/collections/navbar/AgendaCalendarMenu";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useStorageContext } from "@/context/storageContext";
@@ -7,7 +8,6 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { ButtonText } from "@/ui/Button";
-import Calendar from "@/ui/Calendar";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -25,6 +25,11 @@ import {
   TouchableOpacity,
   useBottomSheet,
 } from "@gorhom/bottom-sheet";
+import {
+  Calendar,
+  fromDateId,
+  toDateId,
+} from "@marceloterreiro/flash-calendar";
 import convertTime from "convert-time";
 import dayjs, { Dayjs } from "dayjs";
 import React, {
@@ -164,12 +169,17 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
           borderColor: theme[6],
           borderWidth: 2,
           borderRadius: 25,
+          padding: 10,
         }}
       >
         <Calendar
-          date={value}
+          calendarMonthId={toDateId(dayjs(value).toDate())}
           onDayPress={(date) => {
             setValue("date", dayjs(date.dateString, "YYYY-MM-DD"));
+          }}
+          theme={dysperseCalendarTheme(theme)}
+          onCalendarDayPress={(date) => {
+            setValue("date", dayjs(fromDateId(date).toISOString()));
           }}
           markedDates={{
             [dayjs(value).format("YYYY-MM-DD")]: {
@@ -637,9 +647,7 @@ export function RecurrencePicker({
               }}
             >
               <Calendar
-                onMonthChange={(newMonth) => {
-                  setPreviewRange(new Date(newMonth.timestamp));
-                }}
+                theme={dysperseCalendarTheme(theme)}
                 markedDates={recurrenceRule
                   .between(
                     dayjs(previewRange)
