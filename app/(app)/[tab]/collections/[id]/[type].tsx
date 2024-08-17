@@ -99,7 +99,7 @@ export const LabelEditModal = memo(function LabelEditModal({
     <>
       {_trigger}
       <Modal
-        animation="slide"
+        animation="SLIDE"
         onClose={() => menuRef.current.close()}
         ref={menuRef}
         maxWidth={400}
