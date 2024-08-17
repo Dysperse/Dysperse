@@ -173,20 +173,27 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
         }}
       >
         <Calendar
-          calendarMonthId={toDateId(dayjs(value).toDate())}
-          onDayPress={(date) => {
-            setValue("date", dayjs(date.dateString, "YYYY-MM-DD"));
-          }}
+          calendarMonthId={toDateId(
+            dayjs(
+              dayjs(value).isValid()
+                ? value.toISOString()
+                : dayjs().toISOString()
+            ).toDate()
+          )}
           theme={dysperseCalendarTheme(theme)}
           onCalendarDayPress={(date) => {
             setValue("date", dayjs(fromDateId(date).toISOString()));
           }}
-          markedDates={{
-            [dayjs(value).format("YYYY-MM-DD")]: {
-              selected: true,
-              disableTouchEvent: true,
-            },
-          }}
+          calendarActiveDateRanges={
+            value
+              ? [
+                  {
+                    startId: toDateId(dayjs(value.toISOString()).toDate()),
+                    endId: toDateId(dayjs(value.toISOString()).toDate()),
+                  },
+                ]
+              : []
+          }
         />
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -642,13 +649,15 @@ export function RecurrencePicker({
                 borderWidth: 2,
                 borderColor: theme[6],
                 borderRadius: 25,
-                padding: 5,
+                padding: 10,
                 flex: 1,
               }}
             >
               <Calendar
+                onCalendarDayPress={() => {}}
+                calendarMonthId={toDateId(previewRange)}
                 theme={dysperseCalendarTheme(theme)}
-                markedDates={recurrenceRule
+                calendarActiveDateRanges={recurrenceRule
                   .between(
                     dayjs(previewRange)
                       .startOf("month")
@@ -661,13 +670,10 @@ export function RecurrencePicker({
                       .add(1, "month")
                       .toDate()
                   )
-                  .reduce((acc, date) => {
-                    acc[dayjs(date).utc().format("YYYY-MM-DD")] = {
-                      selected: true,
-                      disableTouchEvent: true,
-                    };
-                    return acc;
-                  }, {})}
+                  .map((date) => ({
+                    startId: toDateId(date),
+                    endId: toDateId(date),
+                  }))}
               />
               <ScrollView
                 keyboardShouldPersistTaps="handled"
@@ -767,7 +773,7 @@ function DatePicker({ setValue, watch }: any) {
     <TaskDatePicker
       setValue={setValue}
       watch={watch}
-      defaultRecurrenceOptions={{ dtstart: date }}
+      defaultRecurrenceOptions={{ dtstart: date || new Date() }}
     />
   );
 }
