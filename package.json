@@ -79,7 +79,6 @@
     "react-mentions": "^4.4.10",
     "react-native": "0.74.2",
     "react-native-big-calendar": "^4.13.2",
-    "react-native-calendars": "^1.1305.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-circular-progress": "^1.4.0",
     "react-native-collapsible": "^1.6.1",
@@ -124,3 +123,4 @@
   },
   "private": true
 }
+
