@@ -23,12 +23,21 @@ export default function Page() {
       ).then((res) => res.json()),
   });
 
+  const updateExists =
+    !error &&
+    data &&
+    data?.[0]?.id &&
+    session?.user?.lastReleaseVersionViewed !== data?.[0]?.id;
+
   const handleDone = useCallback(() => {
     mutate(
       (d) => {
         return {
           ...d,
-          user: { ...d.user, lastReleaseVersionViewed: data?.[0]?.id },
+          user: {
+            ...d.user,
+            lastReleaseVersionViewed: !updateExists ? 0 : data?.[0]?.id,
+          },
         };
       },
       {
@@ -40,9 +49,13 @@ export default function Page() {
       "PUT",
       "user/account",
       {},
-      { body: JSON.stringify({ lastReleaseVersionViewed: data?.[0]?.id }) }
+      {
+        body: JSON.stringify({
+          lastReleaseVersionViewed: updateExists ? -1 : data?.[0]?.id,
+        }),
+      }
     );
-  }, [data, mutate, sessionToken]);
+  }, [data, mutate, sessionToken, updateExists]);
 
   return (
     <Content>
@@ -79,8 +92,8 @@ export default function Page() {
             {data?.[0]?.name} &bull; {dayjs(data?.[0]?.published_at).fromNow()}
           </Text>
           <Button
-            icon="done"
-            text="Mark as read"
+            icon={!updateExists ? "mark_email_unread" : "email"}
+            text={`Mark as ${updateExists ? "read" : "unread"}`}
             variant="filled"
             large
             bold
