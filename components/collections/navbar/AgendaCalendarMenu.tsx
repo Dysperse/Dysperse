@@ -1,19 +1,21 @@
 import { Button } from "@/ui/Button";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import dayjs from "dayjs";
-import { router, useGlobalSearchParams } from "expo-router";
-
 import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
 import {
   Calendar,
+  CalendarListProps,
   CalendarListRef,
+  CalendarProps,
   CalendarTheme,
   fromDateId,
   toDateId,
 } from "@marceloterreiro/flash-calendar";
+import dayjs from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
+import { router, useGlobalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 export const dysperseCalendarTheme = (theme) =>
   ({
@@ -80,13 +82,12 @@ export function AgendaCalendarMenu({
   const calendarRef = useRef<CalendarListRef>(null);
   const theme = useColorTheme();
   const { start }: any = useGlobalSearchParams();
-  const { height } = useWindowDimensions();
 
   const today = toDateId(dayjs(start).toDate());
-
   const [calendarMonthId, setCalendarMonthId] = useState(today);
 
   useEffect(() => {
+    console.log("Set date back!");
     setCalendarMonthId(today);
   }, [today]);
 
@@ -98,25 +99,39 @@ export function AgendaCalendarMenu({
       <View
         style={{
           paddingTop: 0,
-          padding: 20,
-          height:
-            typeof handleMenuClose === "undefined" ? undefined : height - 100,
+          padding: typeof handleMenuClose === "undefined" ? 10 : 20,
+          gap: 20,
+          flexDirection:
+            typeof handleMenuClose === "undefined"
+              ? "column-reverse"
+              : "column",
+          height: typeof handleMenuClose === "undefined" ? undefined : 400,
         }}
       >
         <SafeCalendar
           calendarActiveDateRanges={[
-            {
-              startId: toDateId(dayjs(start).startOf("week").toDate()),
-              endId: toDateId(dayjs(start).endOf("week").toDate()),
-            },
+            typeof handleMenuClose === "undefined"
+              ? {
+                  startId: toDateId(dayjs(start).startOf("week").toDate()),
+                  endId: toDateId(dayjs(start).endOf("week").toDate()),
+                }
+              : {
+                  startId: toDateId(dayjs(start).toDate()),
+                  endId: toDateId(dayjs(start).toDate()),
+                },
           ]}
           theme={dysperseCalendarTheme(theme)}
-          {...(typeof handleMenuClose === "undefined" && {
-            calendarInitialMonthId: today,
-            endFillColor: theme[8],
-            ref: calendarRef,
-          })}
-          calendarMonthId={calendarMonthId}
+          {...((typeof handleMenuClose === "undefined"
+            ? ({
+                calendarInitialMonthId: calendarMonthId,
+                endFillColor: theme[8],
+                ref: calendarRef,
+                calendarFutureScrollRangeInMonths: 1,
+                calendarPastScrollRangeInMonths: 1,
+              } as Partial<CalendarListProps>)
+            : ({
+                calendarMonthId,
+              } as Partial<CalendarProps> & { calendarMonthId: any })) as any)}
           onCalendarDayPress={(day) => {
             handleMenuClose?.();
             router.setParams({
@@ -126,12 +141,21 @@ export function AgendaCalendarMenu({
             });
           }}
         />
+        {typeof handleMenuClose !== "undefined" && (
+          <LinearGradient
+            colors={["transparent", theme[3]]}
+            style={{
+              height: 50,
+              width: "100%",
+              marginTop: -70,
+              marginBottom: -20,
+            }}
+          />
+        )}
         <View
           style={{
             flexDirection: "row",
             gap: 10,
-            paddingTop: 10,
-            marginBottom: -10,
           }}
         >
           {typeof handleMenuClose !== "undefined" && (
@@ -155,39 +179,40 @@ export function AgendaCalendarMenu({
               text="Cancel"
             />
           )}
-          <IconButton
-            variant="outlined"
-            size={60}
-            icon="arrow_back_ios_new"
-            onPress={() =>
-              setCalendarMonthId(
-                toDateId(
-                  dayjs(fromDateId(calendarMonthId))
-                    .subtract(1, "month")
-                    .toDate()
+          {typeof handleMenuClose === "undefined" && (
+            <IconButton
+              variant="outlined"
+              size={typeof handleMenuClose === "undefined" ? 40 : 60}
+              icon="arrow_back_ios_new"
+              onPress={() =>
+                setCalendarMonthId(
+                  toDateId(
+                    dayjs(fromDateId(calendarMonthId))
+                      .subtract(1, "month")
+                      .toDate()
+                  )
                 )
-              )
-            }
-          />
+              }
+            />
+          )}
           <Button
             backgroundColors={{
-              default: theme[4],
-              hovered: theme[5],
-              pressed: theme[6],
+              default: addHslAlpha(theme[8], 0.1),
+              hovered: addHslAlpha(theme[8], 0.2),
+              pressed: addHslAlpha(theme[8], 0.3),
             }}
             borderColors={{
-              default: theme[4],
-              hovered: theme[5],
-              pressed: theme[6],
+              default: addHslAlpha(theme[8], 0),
+              hovered: addHslAlpha(theme[8], 0),
+              pressed: addHslAlpha(theme[8], 0),
             }}
             variant="filled"
-            height={60}
+            height={typeof handleMenuClose === "undefined" ? 40 : 60}
             bold
             containerStyle={{ flex: 1 }}
             onPress={() => {
               if (typeof handleMenuClose !== "undefined") {
-                const pastMonth = dayjs().startOf("month").toDate();
-                calendarRef.current?.scrollToMonth(pastMonth, true);
+                calendarRef.current?.scrollToMonth(new Date(), true);
               } else {
                 router.setParams({ start: dayjs().toISOString() });
                 setCalendarMonthId(toDateId(dayjs().startOf("month").toDate()));
@@ -196,18 +221,20 @@ export function AgendaCalendarMenu({
             icon="undo"
             text="Today"
           />
-          <IconButton
-            variant="outlined"
-            size={60}
-            icon="arrow_forward_ios"
-            onPress={() =>
-              setCalendarMonthId(
-                toDateId(
-                  dayjs(fromDateId(calendarMonthId)).add(1, "month").toDate()
+          {typeof handleMenuClose === "undefined" && (
+            <IconButton
+              variant="outlined"
+              size={typeof handleMenuClose === "undefined" ? 40 : 60}
+              icon="arrow_forward_ios"
+              onPress={() =>
+                setCalendarMonthId(
+                  toDateId(
+                    dayjs(fromDateId(calendarMonthId)).add(1, "month").toDate()
+                  )
                 )
-              )
-            }
-          />
+              }
+            />
+          )}
         </View>
       </View>
     </>

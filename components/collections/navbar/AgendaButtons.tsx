@@ -119,11 +119,9 @@ export function AgendaButtons({
           breakpoints.md
             ? { marginRight: "auto" }
             : {
-                borderTopColor: theme[5],
                 backgroundColor: theme[3],
                 paddingHorizontal: 15,
                 paddingVertical: 5,
-                borderTopWidth: 1,
                 flexDirection: "row-reverse",
               },
         ]}

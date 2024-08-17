@@ -8,8 +8,12 @@ import dayjs, { ManipulateType, OpUnitType } from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useRef } from "react";
 import { InteractionManager, View } from "react-native";
-import Collapsible from "react-native-collapsible";
 import { FlatList } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import useSWR from "swr";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
 import { AgendaCalendarMenu } from "../../navbar/AgendaCalendarMenu";
@@ -19,7 +23,22 @@ function Agenda() {
   const breakpoints = useResponsiveBreakpoints();
   const params = useLocalSearchParams();
   const { type, start, end } = usePlannerContext();
-  const [state, setState] = React.useState([1]);
+
+  const state = useSharedValue(1);
+
+  const animatedCalendarStyle = useAnimatedStyle(() => ({
+    marginTop: withSpring(state.value === 0 ? 0 : -400, {
+      damping: 40,
+      stiffness: 300,
+    }),
+  }));
+
+  const animatedSelectorStyle = useAnimatedStyle(() => ({
+    marginBottom: withSpring(state.value === 0 ? -130 : 0, {
+      damping: 40,
+      stiffness: 300,
+    }),
+  }));
 
   const { data, mutate, error } = useSWR([
     "space/collections/collection/planner",
@@ -111,30 +130,32 @@ function Agenda() {
               backgroundColor: theme[3],
               borderBottomLeftRadius: 20,
               borderBottomRightRadius: 20,
-              minHeight: 125,
               borderTopColor: theme[5],
               borderTopWidth: 1,
+              overflow: "hidden",
             }}
           >
-            <Collapsible
-              collapsed={state[0] === 1}
-              align="bottom"
-              renderChildrenCollapsed={false}
-              duration={500}
-              easing="easeInOut"
+            <Animated.View
+              style={[
+                animatedCalendarStyle,
+                {
+                  height: 400,
+                },
+              ]}
             >
-              <AgendaCalendarMenu handleMenuClose={() => setState([1])} />
-            </Collapsible>
-            <Collapsible
-              collapsed={state[0] === 0}
-              align="top"
-              renderChildrenCollapsed={true}
-              duration={500}
-              easing="easeInOut"
+              <AgendaCalendarMenu handleMenuClose={() => (state.value = 1)} />
+            </Animated.View>
+            <Animated.View
+              style={[
+                animatedSelectorStyle,
+                {
+                  height: 130,
+                },
+              ]}
             >
-              <AgendaButtons handleMenuOpen={() => setState([0])} />
+              <AgendaButtons handleMenuOpen={() => (state.value = 0)} />
               <AgendaSelector data={data} />
-            </Collapsible>
+            </Animated.View>
           </View>
 
           {column && <Column mutate={mutate} column={column} />}
