@@ -1,110 +1,214 @@
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Text from "@/ui/Text";
 import dayjs from "dayjs";
-import {
-  router,
-  useGlobalSearchParams,
-  useLocalSearchParams,
-} from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 
-import { useDarkMode } from "@/ui/color";
-import { Modal } from "@/ui/Modal";
+import { addHslAlpha } from "@/ui/color";
+import IconButton from "@/ui/IconButton";
 import {
   Calendar,
   CalendarListRef,
+  CalendarTheme,
   fromDateId,
   toDateId,
 } from "@marceloterreiro/flash-calendar";
-import { useRef } from "react";
-import { View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { useWindowDimensions, View } from "react-native";
 
-export function AgendaCalendarMenu() {
-  const ref = useRef(null);
+export function AgendaCalendarMenu({
+  handleMenuClose,
+}: {
+  handleMenuClose?: () => void;
+}) {
   const calendarRef = useRef<CalendarListRef>(null);
-
-  const isDark = useDarkMode();
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
   const { start }: any = useGlobalSearchParams();
-  const { agendaView, mode } = useLocalSearchParams();
+  const { height } = useWindowDimensions();
 
   const today = toDateId(dayjs(start).toDate());
 
-  const titleFormat = {
-    week: "[Week #]W • MMM YYYY",
-    month: "MMMM YYYY",
-    year: "YYYY",
-    schedule: "MMMM YYYY",
-    "3days": "[Week #]W • MMM YYYY",
-  }[((agendaView || mode) as any) || "week"];
+  const [calendarMonthId, setCalendarMonthId] = useState(today);
+
+  useEffect(() => {
+    setCalendarMonthId(today);
+  }, [today]);
+
+  const linearTheme: CalendarTheme = {
+    rowMonth: {
+      content: {
+        textAlign: "left",
+        textTransform: "uppercase",
+        color: addHslAlpha(theme[11], 0.5),
+        fontFamily: "body_900",
+      },
+    },
+    rowWeek: {
+      container: {
+        borderBottomWidth: 2,
+        borderBottomColor: addHslAlpha(theme[11], 0.2),
+        borderStyle: "solid",
+      },
+    },
+    itemWeekName: {
+      content: { color: addHslAlpha(theme[11], 0.6), fontFamily: "body_300" },
+    },
+    itemDayContainer: {
+      activeDayFiller: {
+        backgroundColor: theme[11],
+      },
+    },
+    itemDay: {
+      idle: ({ isPressed, isWeekend }) => ({
+        container: {
+          backgroundColor: isPressed ? theme[11] : "transparent",
+        },
+        content: {
+          fontFamily: "body_300",
+          color: addHslAlpha(theme[isPressed ? 2 : 11], isWeekend ? 0.5 : 1),
+        },
+      }),
+      today: ({ isPressed }) => ({
+        container: {
+          borderColor: "rgba(255, 255, 255, 0.5)",
+          backgroundColor: isPressed ? theme[11] : "transparent",
+        },
+        content: {
+          fontFamily: "body_700",
+          color: theme[isPressed ? 2 : 11],
+        },
+      }),
+      active: () => ({
+        container: {
+          backgroundColor: theme[11],
+        },
+        content: {
+          fontFamily: "body_700",
+          color: theme[2],
+        },
+      }),
+    },
+  };
+
+  const SafeCalendar =
+    typeof handleMenuClose === "undefined" ? Calendar : Calendar.List;
 
   return (
     <>
-      <Button
-        onPress={() => ref.current?.present()}
-        backgroundColors={{
-          default: breakpoints.md ? "transparent" : theme[3],
-          hovered: breakpoints.md ? "transparent" : theme[4],
-          pressed: breakpoints.md ? "transparent" : theme[5],
-        }}
-        borderColors={{
-          default: breakpoints.md ? "transparent" : theme[3],
-          hovered: breakpoints.md ? "transparent" : theme[4],
-          pressed: breakpoints.md ? "transparent" : theme[5],
+      <View
+        style={{
+          paddingTop: 0,
+          padding: 20,
+          height:
+            typeof handleMenuClose === "undefined" ? undefined : height - 100,
         }}
       >
-        <Text numberOfLines={1} weight={600}>
-          {dayjs(start).format(titleFormat).split("•")?.[0]}
-        </Text>
-        <Text numberOfLines={1} style={{ opacity: 0.6 }}>
-          {dayjs(start).format(titleFormat).split("• ")?.[1]}
-        </Text>
-      </Button>
-
-      <Modal animation="SCALE" ref={ref} maxWidth={300} height={500}>
+        <SafeCalendar
+          calendarActiveDateRanges={[
+            {
+              startId: toDateId(dayjs(start).startOf("week").toDate()),
+              endId: toDateId(dayjs(start).endOf("week").toDate()),
+            },
+          ]}
+          theme={linearTheme}
+          {...(typeof handleMenuClose === "undefined" && {
+            calendarInitialMonthId: today,
+            endFillColor: theme[8],
+            ref: calendarRef,
+          })}
+          calendarMonthId={calendarMonthId}
+          onCalendarDayPress={(day) => {
+            handleMenuClose?.();
+            router.setParams({
+              start: dayjs(fromDateId(day).toISOString(), "YYYY-MM-DD")
+                .utc()
+                .toISOString(),
+            });
+          }}
+        />
         <View
           style={{
-            padding: 20,
-            flex: 1,
+            flexDirection: "row",
+            gap: 10,
+            paddingTop: 10,
+            marginBottom: -10,
           }}
         >
-          <Calendar.List
-            calendarActiveDateRanges={[
-              {
-                startId: toDateId(dayjs(start).startOf("week").toDate()),
-                endId: toDateId(dayjs(start).endOf("week").toDate()),
-              },
-            ]}
-            calendarInitialMonthId={today}
-            endFillColor={theme[3]}
-            ref={calendarRef}
-            calendarColorScheme={isDark ? "dark" : "light"}
-            onCalendarDayPress={(day) => {
-              ref.current?.forceClose({ duration: 0.0001 });
-              setTimeout(() => {
-                router.setParams({
-                  start: dayjs(fromDateId(day).toISOString(), "YYYY-MM-DD")
-                    .utc()
-                    .toISOString(),
-                });
-              }, 100);
-            }}
+          {typeof handleMenuClose !== "undefined" && (
+            <Button
+              backgroundColors={{
+                default: theme[3],
+                hovered: theme[4],
+                pressed: theme[5],
+              }}
+              borderColors={{
+                default: theme[5],
+                hovered: theme[6],
+                pressed: theme[7],
+              }}
+              variant="outlined"
+              height={60}
+              bold
+              containerStyle={{ flex: 1 }}
+              onPress={handleMenuClose}
+              icon="close"
+              text="Cancel"
+            />
+          )}
+          <IconButton
+            variant="outlined"
+            size={60}
+            icon="arrow_back_ios_new"
+            onPress={() =>
+              setCalendarMonthId(
+                toDateId(
+                  dayjs(fromDateId(calendarMonthId))
+                    .subtract(1, "month")
+                    .toDate()
+                )
+              )
+            }
           />
           <Button
+            backgroundColors={{
+              default: theme[4],
+              hovered: theme[5],
+              pressed: theme[6],
+            }}
+            borderColors={{
+              default: theme[4],
+              hovered: theme[5],
+              pressed: theme[6],
+            }}
             variant="filled"
             height={60}
             bold
+            containerStyle={{ flex: 1 }}
             onPress={() => {
-              const pastMonth = dayjs(start).startOf("month").toDate();
-              calendarRef.current?.scrollToMonth(pastMonth, true);
+              if (typeof handleMenuClose !== "undefined") {
+                const pastMonth = dayjs().startOf("month").toDate();
+                calendarRef.current?.scrollToMonth(pastMonth, true);
+              } else {
+                router.setParams({ start: dayjs().toISOString() });
+                setCalendarMonthId(toDateId(dayjs().startOf("month").toDate()));
+              }
             }}
             icon="undo"
             text="Today"
           />
+          <IconButton
+            variant="outlined"
+            size={60}
+            icon="arrow_forward_ios"
+            onPress={() =>
+              setCalendarMonthId(
+                toDateId(
+                  dayjs(fromDateId(calendarMonthId)).add(1, "month").toDate()
+                )
+              )
+            }
+          />
         </View>
-      </Modal>
+      </View>
     </>
   );
 }

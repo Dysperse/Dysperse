@@ -409,9 +409,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
             </View>
           </NavbarGradient>
           <LoadingIndicator />
-          {(type === "planner" || type === "calendar") && !breakpoints.md && (
-            <AgendaButtons />
-          )}
         </>
       )}
     </>
