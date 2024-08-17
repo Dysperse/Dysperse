@@ -13,6 +13,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authStyles } from "../../components/authStyles";
 
 function inIframe() {
@@ -41,6 +42,7 @@ export default function Page() {
   const openHomePage = () =>
     Linking.openURL("https://dysperse.com?utm_source=app");
 
+  const insets = useSafeAreaInsets();
   if (breakpoints.md) return <Redirect href="/auth/sign-in" />;
 
   return (
@@ -54,7 +56,7 @@ export default function Page() {
         imageStyle={{
           resizeMode: "cover",
           width,
-          height,
+          height: height + insets.top + insets.bottom,
         }}
       >
         <View
@@ -64,18 +66,23 @@ export default function Page() {
             breakpoints.md && {
               borderColor: theme[6],
             },
-            { backgroundColor: `rgba(0, 0, 0, 0.5)`, padding: 20 },
+            {
+              backgroundColor: `rgba(0, 0, 0, 0.5)`,
+              padding: 20,
+              paddingBottom: insets.bottom + 10,
+            },
           ]}
         >
           <Text
             style={{
-              fontSize: 50,
+              fontSize: 45,
               fontFamily: "serifText800",
               color: "#fff",
               marginBottom: -5,
+              // prevent wrapping
             }}
           >
-            Productivity is your domain.
+            Productivity is {"\n"}your domain.
           </Text>
           <View
             style={{
@@ -129,6 +136,7 @@ export default function Page() {
               hovered: "rgba(255, 255, 255, 0.15)",
               pressed: "rgba(255, 255, 255, 0.2)",
             }}
+            android_ripple={{ color: "rgba(255, 255, 255, 0.2)" }}
             onPress={handleLoginPress}
           >
             <ButtonText
@@ -139,13 +147,19 @@ export default function Page() {
             </ButtonText>
           </Button>
           <Button
-            variant="filled"
-            backgroundColors={{
+            variant="outlined"
+            borderColors={{
               default: "rgba(255, 255, 255, 0.1)",
               hovered: "rgba(255, 255, 255, 0.15)",
               pressed: "rgba(255, 255, 255, 0.2)",
             }}
+            backgroundColors={{
+              default: "rgba(255, 255, 255, 0.0)",
+              hovered: "rgba(255, 255, 255, 0.1)",
+              pressed: "rgba(255, 255, 255, 0.2)",
+            }}
             height={70}
+            android_ripple={{ color: "rgba(255, 255, 255, 0.2)" }}
             onPress={handleSignUpPress}
           >
             <ButtonText

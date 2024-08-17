@@ -353,7 +353,7 @@ const VerificationPage = ({ form }: { form: UseFormReturn<any> }) => {
         }}
         weight={700}
       >
-        Are you a human!? Let's find out...
+        Are you a human!?{"\n"} Let's find out...
       </Text>
       <Turnstile
         setToken={(t) => {

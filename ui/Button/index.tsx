@@ -166,12 +166,12 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
       ]}
     >
       <Pressable
+        android_ripple={{ color: theme[6] }}
         {...props}
         onHoverIn={() => (state.value = 1)}
         onHoverOut={() => (state.value = 0)}
         onPressIn={() => (state.value = 2)}
         onPressOut={() => (state.value = 0)}
-        android_ripple={{ color: theme[6] }}
         ref={ref as LegacyRef<View>}
         style={({ hovered, pressed }: any) => [
           styles.base,

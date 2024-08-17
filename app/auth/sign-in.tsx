@@ -482,7 +482,7 @@ export default function SignIn() {
                 ]}
                 weight={800}
               >
-                Are you a human!? Let's find out...
+                Are you a human!? {"\n"} Let's find out...
               </Text>
               <Turnstile setToken={setToken} />
             </View>
