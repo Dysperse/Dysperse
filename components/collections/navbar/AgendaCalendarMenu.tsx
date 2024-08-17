@@ -87,7 +87,6 @@ export function AgendaCalendarMenu({
   const [calendarMonthId, setCalendarMonthId] = useState(today);
 
   useEffect(() => {
-    console.log("Set date back!");
     setCalendarMonthId(today);
   }, [today]);
 
@@ -123,15 +122,13 @@ export function AgendaCalendarMenu({
           theme={dysperseCalendarTheme(theme)}
           {...((typeof handleMenuClose === "undefined"
             ? ({
+                calendarMonthId,
+              } as Partial<CalendarProps>)
+            : ({
                 calendarInitialMonthId: calendarMonthId,
                 endFillColor: theme[8],
                 ref: calendarRef,
-                calendarFutureScrollRangeInMonths: 1,
-                calendarPastScrollRangeInMonths: 1,
-              } as Partial<CalendarListProps>)
-            : ({
-                calendarMonthId,
-              } as Partial<CalendarProps> & { calendarMonthId: any })) as any)}
+              } as Partial<CalendarListProps>)) as any)}
           onCalendarDayPress={(day) => {
             handleMenuClose?.();
             router.setParams({
@@ -213,6 +210,9 @@ export function AgendaCalendarMenu({
             onPress={() => {
               if (typeof handleMenuClose !== "undefined") {
                 calendarRef.current?.scrollToMonth(new Date(), true);
+                setCalendarMonthId(toDateId(dayjs().startOf("month").toDate()));
+                // router.setParams({ start: dayjs().toISOString() });
+                // handleMenuClose();
               } else {
                 router.setParams({ start: dayjs().toISOString() });
                 setCalendarMonthId(toDateId(dayjs().startOf("month").toDate()));

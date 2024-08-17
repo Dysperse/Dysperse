@@ -28,14 +28,14 @@ function Agenda() {
 
   const animatedCalendarStyle = useAnimatedStyle(() => ({
     marginTop: withSpring(state.value === 0 ? 0 : -400, {
-      damping: 40,
+      damping: 27,
       stiffness: 300,
     }),
   }));
 
   const animatedSelectorStyle = useAnimatedStyle(() => ({
     marginBottom: withSpring(state.value === 0 ? -130 : 0, {
-      damping: 40,
+      damping: 27,
       stiffness: 300,
     }),
   }));

@@ -100,6 +100,7 @@ export function AgendaButtons({
         hovered: breakpoints.md ? "transparent" : theme[4],
         pressed: breakpoints.md ? "transparent" : theme[5],
       }}
+      containerStyle={{ flex: 1 }}
     >
       <Text numberOfLines={1} weight={600}>
         {dayjs(start).format(titleFormat).split("•")?.[0]}
