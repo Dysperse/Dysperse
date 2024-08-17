@@ -366,7 +366,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 />
               </>
             </View>
-            asdf
             {!isLoading &&
               (type === "planner" || type === "calendar") &&
               breakpoints.md && <AgendaButtons />}
