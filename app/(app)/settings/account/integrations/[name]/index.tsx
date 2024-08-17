@@ -9,7 +9,6 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
-import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -381,17 +380,15 @@ const SlideProgressBar = ({ slide, length }) => {
   const theme = useColorTheme();
   const width = useSharedValue(0);
 
-  const widthStyle = useAnimatedStyle(() => {
-    return {
-      width: withSpring(`${(slide / length) * 100}%`, {
+  const widthStyle = useAnimatedStyle(() => ({
+    width: withSpring(
+      `${((parseInt(slide) || 0) / (parseInt(length) || 1)) * 100}%`,
+      {
         damping: 30,
-        overshootClamping: false,
-        restDisplacementThreshold: 0.1,
-        restSpeedThreshold: 0.1,
         stiffness: 400,
-      }),
-    };
-  });
+      }
+    ),
+  }));
 
   useEffect(() => {
     width.value = slide;
@@ -405,10 +402,10 @@ const SlideProgressBar = ({ slide, length }) => {
           {
             height: 2,
             backgroundColor: theme[11],
-            shadowColor: theme[11],
-            shadowOffset: { height: 2, width: 0 },
-            borderRadius: 10,
-            shadowRadius: 20,
+            // shadowColor: theme[11],
+            // shadowOffset: { height: 2, width: 0 },
+            // borderRadius: 10,
+            // shadowRadius: 20,
           },
         ]}
       />
@@ -420,7 +417,7 @@ function OauthRedirect({ integration }) {
   const { session } = useSession();
   const handleOpen = () =>
     WebBrowser.openAuthSessionAsync(
-      `${process.env.EXPO_PUBLIC_API_URL}/account/integrations/redirect?session=${session}&id=${integration.slug}`,
+      `${process.env.EXPO_PUBLIC_API_URL}/space/integrations/redirect?session=${session}&id=${integration.slug}`,
       // `${process.env.EXPO_PUBLIC_API_URL}/settings/space/integrations/${integration.slug}/redirect`
       Linking.createURL(
         `/settings/account/integrations/${integration.slug}/redirect`
@@ -549,109 +546,106 @@ export default function Page() {
 
   return (
     <FormProvider {...methods}>
-      <SettingsScrollView hideBack>
+      <View
+        style={[
+          { flex: 1, paddingBottom: insets.bottom, backgroundColor: theme[2] },
+          breakpoints.md && {
+            borderWidth: 1,
+            borderRadius: 20,
+            borderColor: theme[6],
+            overflow: "hidden",
+            marginTop: 50,
+            height: height - 60,
+          },
+        ]}
+      >
         <View
-          style={[
-            { height },
-            breakpoints.md && {
-              borderWidth: 1,
-              backgroundColor: theme[2],
-              borderRadius: 20,
-              borderColor: theme[6],
-              overflow: "hidden",
-              marginTop: 50,
-              height: height - 60,
-            },
-          ]}
+          style={{
+            flexDirection: "row",
+            height: 80 + insets.top,
+            paddingTop: insets.top,
+            alignItems: "center",
+            paddingHorizontal: 10,
+            zIndex: 1,
+            backgroundColor: theme[2],
+          }}
         >
+          <ConfirmationModal
+            onSuccess={handleBack}
+            title="Exit setup?"
+            secondary="This integration will not be created"
+            height={350}
+            disabled={slide !== 0}
+          >
+            <IconButton
+              icon="arrow_back_ios_new"
+              onPress={handleBack}
+              size={55}
+              disabled={connectedSuccess}
+            />
+          </ConfirmationModal>
+        </View>
+
+        <SlideProgressBar slide={slide + 1} length={slidesLength + 1} />
+
+        {data ? (
+          <View style={{ flex: 1 }}>
+            {slide === 0 && <Intro integration={data} />}
+            {slide === 1 && data.authorization.type === "oauth2" && (
+              <OauthRedirect integration={data} />
+            )}
+            {slide > 0 && slide <= data.authorization?.params?.length && (
+              <FormProvider {...methods}>
+                <ParamSlide
+                  currentSlide={slide}
+                  slide={data.authorization.params[slide - 1]}
+                />
+              </FormProvider>
+            )}
+            {slide === slidesLength - 1 ? (
+              <FormProvider {...methods}>
+                <Outro
+                  setConnectedSuccess={setConnectedSuccess}
+                  connectedIntegration={connectedIntegration}
+                  setSlide={setSlide}
+                  integration={data}
+                  submit={handleSubmit(onSubmit)}
+                />
+              </FormProvider>
+            ) : (
+              !(data.authorization.type === "oauth2" && slide === 1) && (
+                <View style={[styles.footer, { paddingHorizontal: 20 }]}>
+                  <Button
+                    large
+                    variant={connectedIntegration ? "outlined" : "filled"}
+                    icon="arrow_forward_ios"
+                    iconPosition="end"
+                    iconSize={30}
+                    text={
+                      connectedIntegration
+                        ? "Edit connection"
+                        : slide === 0
+                        ? "Connect"
+                        : "Next"
+                    }
+                    onPress={handleOpen}
+                  />
+                </View>
+              )
+            )}
+          </View>
+        ) : (
           <View
             style={{
-              flexDirection: "row",
-              height: 80 + insets.top,
-              paddingTop: insets.top,
+              height: "100%",
               alignItems: "center",
-              paddingHorizontal: 10,
-              zIndex: 1,
-              backgroundColor: theme[breakpoints.md ? 2 : 1],
+              justifyContent: "center",
             }}
           >
-            <ConfirmationModal
-              onSuccess={handleBack}
-              title="Exit setup?"
-              secondary="This integration will not be created"
-              height={350}
-              disabled={slide !== 0}
-            >
-              <IconButton
-                icon="arrow_back_ios_new"
-                onPress={handleBack}
-                size={55}
-                disabled={connectedSuccess}
-              />
-            </ConfirmationModal>
+            <Spinner />
           </View>
-
-          <SlideProgressBar slide={slide + 1} length={slidesLength + 1} />
-
-          {data ? (
-            <View style={{ flex: 1 }}>
-              {slide === 0 && <Intro integration={data} />}
-              {slide === 1 && data.authorization.type === "oauth2" && (
-                <OauthRedirect integration={data} />
-              )}
-              {slide > 0 && slide <= data.authorization?.params?.length && (
-                <FormProvider {...methods}>
-                  <ParamSlide
-                    currentSlide={slide}
-                    slide={data.authorization.params[slide - 1]}
-                  />
-                </FormProvider>
-              )}
-              {slide === slidesLength - 1 ? (
-                <FormProvider {...methods}>
-                  <Outro
-                    setConnectedSuccess={setConnectedSuccess}
-                    connectedIntegration={connectedIntegration}
-                    setSlide={setSlide}
-                    integration={data}
-                    submit={handleSubmit(onSubmit)}
-                  />
-                </FormProvider>
-              ) : (
-                !(data.authorization.type === "oauth2" && slide === 1) && (
-                  <View style={[styles.footer, { paddingHorizontal: 20 }]}>
-                    <Button
-                      large
-                      variant={connectedIntegration ? "outlined" : "filled"}
-                      icon="arrow_forward_ios"
-                      iconPosition="end"
-                      iconSize={30}
-                      text={
-                        connectedIntegration
-                          ? "Edit connection"
-                          : slide === 0
-                          ? "Connect"
-                          : "Next"
-                      }
-                      onPress={handleOpen}
-                    />
-                  </View>
-                )
-              )}
-            </View>
-          ) : (
-            <View
-              style={{
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Spinner />
-            </View>
-          )}
-        </View>
-      </SettingsScrollView>
+        )}
+      </View>
     </FormProvider>
   );
 }

@@ -10,7 +10,7 @@ import Text from "@/ui/Text";
 import { ThemeProvider } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { Platform, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -57,8 +57,8 @@ function EscapeSettings() {
 }
 
 function SettingsHeader() {
-  const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
+  const path = usePathname();
 
   return (
     <View
@@ -69,6 +69,7 @@ function SettingsHeader() {
         padding: 15,
         paddingTop: insets.top + 15,
         gap: 15,
+        display: path.includes("/integrations/") ? "none" : "flex",
       }}
     >
       <IconButton
@@ -174,7 +175,9 @@ export default function Layout() {
                     name={d}
                     key={d}
                     options={{
-                      gestureEnabled: d !== "settings/index",
+                      gestureEnabled:
+                        d !== "settings/index" &&
+                        !d.includes("/integrations/[name]"),
                       headerTitle: d !== "settings/index" && "Settings",
                       animationEnabled:
                         !breakpoints.md && d !== "settings/index",
