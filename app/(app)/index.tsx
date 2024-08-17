@@ -6,7 +6,6 @@ import { PlanDayPrompt } from "@/components/home/plan-day-trigger";
 import { StreakGoal } from "@/components/home/streaks";
 import { styles } from "@/components/home/styles";
 import { TodayText } from "@/components/home/today";
-import ReleaseModal from "@/components/layout/ReleaseModal";
 import ContentWrapper from "@/components/layout/content";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
@@ -136,7 +135,6 @@ function Page() {
           {Platform.OS === "web" && (
             <CustomizeButton view={view} setView={setView} />
           )}
-          <ReleaseModal />
           {!breakpoints.md && <MenuButton />}
           {view === "edit" ? (
             <EditWallpaper />

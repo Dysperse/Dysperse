@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
+import ReleaseModal from "../ReleaseModal";
 import Tab from "./tab";
 
 const SpaceStorageAlert = memo(function SpaceStorageAlert() {
@@ -204,6 +205,8 @@ const WebPWAInstallButton = () => {
           <Spinner />
         </Pressable>
       )}
+
+      <ReleaseModal />
 
       {Platform.OS === "web" && (
         <PWAInstallerPrompt

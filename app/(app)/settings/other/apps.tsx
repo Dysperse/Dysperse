@@ -104,6 +104,22 @@ export default function Page() {
             href: "https://app.dysperse.com",
             description: "Works on all modern browsers on any device",
           },
+          {
+            icon: "globe",
+            name: "Chrome Extension",
+            new: true,
+            href: "https://click.dysperse.com/chrome-extension",
+            description:
+              "Quickly add tasks and save any web page to Dysperse via Chrome & other browsers!",
+          },
+          {
+            icon: "globe",
+            name: "Edge Extension",
+            href: "https://app.dysperse.com",
+            new: true,
+            description:
+              "Quickly add tasks and save any web page to Dysperse via Microsoft Edge",
+          },
           { icon: "ios", name: "iOS", comingSoon: true },
           { icon: "android", name: "Android", comingSoon: true },
         ].map(
@@ -156,6 +172,20 @@ export default function Page() {
                         <Text style={{ fontSize: 12, color: "#fff" }}>
                           Experimental
                         </Text>
+                      </LinearGradient>
+                    )}
+                    {app.new && (
+                      <LinearGradient
+                        colors={["#fc9305", "#f24389", "#b01041"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={{
+                          paddingHorizontal: 10,
+                          borderRadius: 99,
+                          paddingVertical: 3,
+                        }}
+                      >
+                        <Text style={{ fontSize: 12, color: "#fff" }}>NEW</Text>
                       </LinearGradient>
                     )}
                   </View>
