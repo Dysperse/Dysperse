@@ -171,6 +171,11 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           href: "/settings/shortcuts",
         },
         {
+          name: "Show release notes",
+          icon: "campaign",
+          href: "/release",
+        },
+        {
           name: "Restart app",
           icon: "refresh",
           callback: () => {

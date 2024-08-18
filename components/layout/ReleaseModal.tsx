@@ -4,7 +4,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { memo } from "react";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import useSWR from "swr";
 
 const ReleaseModal = memo(() => {
@@ -33,6 +33,8 @@ const ReleaseModal = memo(() => {
             justifyContent: "center",
             alignItems: "center",
             zIndex: 99,
+            ...(Platform.OS === "web" &&
+              ({ WebkitAppRegion: "no-drag" } as any)),
           }}
         >
           <Pressable

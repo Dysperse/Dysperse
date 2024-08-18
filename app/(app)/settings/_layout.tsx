@@ -86,7 +86,7 @@ export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { height, width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
+
   return (
     <BlurView
       intensity={Platform.OS === "web" ? 20 : 0}
