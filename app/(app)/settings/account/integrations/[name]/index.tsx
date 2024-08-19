@@ -76,6 +76,7 @@ const Intro = ({ integration }) => {
             borderRadius: 20,
             width: 100,
             height: 100,
+            backgroundColor: theme[3],
             transform: [{ rotate: "10deg" }],
           }}
         />
@@ -451,7 +452,7 @@ function OauthRedirect({ integration }) {
         containerStyle={{ marginTop: "auto", width: "100%" }}
       >
         <ButtonText style={{ fontSize: 20 }}>
-          Open {integration.name}
+          Connect {integration.name}
         </ButtonText>
         <Icon>open_in_new</Icon>
       </Button>
@@ -520,9 +521,9 @@ export default function Page() {
   const [connectedSuccess, setConnectedSuccess] = useState(false);
 
   const slidesLength =
-    data?.authorization?.params?.length +
+    (data?.authorization?.params?.length || 0) +
     (data?.authorization.type === "oauth2"
-      ? 1
+      ? 2
       : 1 + data?.authorization?.params?.length);
 
   const onSubmit = async (values) => {
@@ -602,7 +603,8 @@ export default function Page() {
                 />
               </FormProvider>
             )}
-            {slide === slidesLength - 1 ? (
+            {slide === slidesLength - 1 &&
+            data.authorization.type !== "oauth2" ? (
               <FormProvider {...methods}>
                 <Outro
                   setConnectedSuccess={setConnectedSuccess}
@@ -615,12 +617,41 @@ export default function Page() {
             ) : (
               !(data.authorization.type === "oauth2" && slide === 1) && (
                 <View style={[styles.footer, { paddingHorizontal: 20 }]}>
+                  {connectedIntegration && slide === 0 && (
+                    <ConfirmationModal
+                      onSuccess={async () => {
+                        try {
+                          await sendApiRequest(
+                            session,
+                            "DELETE",
+                            "space/integrations",
+                            { id: connectedIntegration.integration.id }
+                          );
+                          router.replace("/settings/account/integrations");
+                        } catch (e) {
+                          console.error(e);
+                          Toast.show({ type: "error" });
+                        }
+                      }}
+                      title="Remove connection?"
+                      secondary="Tasks already created will not be deleted, but you won't see any new ones"
+                      height={350}
+                    >
+                      <Button
+                        variant="outlined"
+                        icon="delete"
+                        text="Remove connection"
+                        containerStyle={{ marginBottom: 10 }}
+                        height={50}
+                      />
+                    </ConfirmationModal>
+                  )}
                   <Button
                     large
-                    variant={connectedIntegration ? "outlined" : "filled"}
+                    variant="filled"
                     icon="arrow_forward_ios"
                     iconPosition="end"
-                    iconSize={30}
+                    height={50}
                     text={
                       connectedIntegration
                         ? "Edit connection"

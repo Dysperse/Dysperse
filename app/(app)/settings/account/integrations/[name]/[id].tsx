@@ -1,7 +1,6 @@
 import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -186,7 +185,7 @@ const CollectionsPicker = () => {
       <View
         style={{
           backgroundColor: theme[3],
-          height: 100,
+          height: 60,
           borderRadius: 20,
           borderColor: theme[4],
           borderWidth: 2,
@@ -194,7 +193,7 @@ const CollectionsPicker = () => {
           overflow: "hidden",
           flexDirection: "row",
           alignItems: "center",
-          gap: 20,
+          gap: 10,
           paddingHorizontal: 20,
         }}
       >
@@ -204,8 +203,8 @@ const CollectionsPicker = () => {
           rules={{ required: true }}
           render={({ field: { onChange, value } }) => (
             <EmojiPicker setEmoji={onChange}>
-              <IconButton style={{ borderStyle: "dashed" }} size={50}>
-                <Emoji emoji={value} size={40} />
+              <IconButton style={{ borderStyle: "dashed" }} size={40}>
+                <Emoji emoji={value} size={30} />
               </IconButton>
             </EmojiPicker>
           )}
@@ -220,7 +219,12 @@ const CollectionsPicker = () => {
               value={value}
               onChangeText={onChange}
               weight={700}
-              style={{ fontSize: 30, height: 100, flex: 1, shadowRadius: 0 }}
+              style={{
+                fontSize: 20,
+                height: 50,
+                flex: 1,
+                shadowRadius: 0,
+              }}
             />
           )}
         />
@@ -231,9 +235,9 @@ const CollectionsPicker = () => {
 
 export default function Page() {
   const { session, sessionToken } = useUser();
-  const { id } = useLocalSearchParams();
+  const { id, name } = useLocalSearchParams();
   const handleBack = () => router.replace("/settings/account/integrations");
-  const { data, error } = useSWR(["space/integrations/about", { id }]);
+  const { data, error } = useSWR(["space/integrations/about", { id: name }]);
   const integration = data?.[0];
 
   const methods = useForm({
@@ -260,6 +264,7 @@ export default function Page() {
           body: JSON.stringify({ id, ...data }),
         }
       );
+      console.log(collection);
       Toast.show({ type: "success", text1: "Connected!" });
       await createTab(sessionToken, {
         label: collection.name,
@@ -272,23 +277,11 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-    alert(JSON.stringify(data));
   };
-  const breakpoints = useResponsiveBreakpoints();
-  const theme = useColorTheme();
 
   return (
     <SettingsScrollView>
-      <View
-        style={[
-          { flex: 1 },
-          breakpoints.md && {
-            borderWidth: 1,
-            borderColor: theme[6],
-            borderRadius: 20,
-          },
-        ]}
-      >
+      <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row" }}>
           <ConfirmationModal
             height={380}
@@ -316,7 +309,7 @@ export default function Page() {
                 }}
               >
                 <Image
-                  source={{ uri: integration?.about?.icon }}
+                  source={{ uri: data?.icon }}
                   style={{
                     width: 50,
                     height: 50,
@@ -326,9 +319,7 @@ export default function Page() {
                   <Text style={{ fontSize: 20 }} weight={700}>
                     Continue setup
                   </Text>
-                  <Text style={{ opacity: 0.7 }}>
-                    {integration?.about?.name}
-                  </Text>
+                  <Text style={{ opacity: 0.7 }}>{data?.name}</Text>
                 </View>
               </View>
               <CollectionsPicker />
