@@ -54,7 +54,8 @@ export const dysperseCalendarTheme = (theme) =>
       }),
       today: ({ isPressed }) => ({
         container: {
-          borderColor: "rgba(255, 255, 255, 0.5)",
+          borderColor: addHslAlpha(theme[11], 0.2),
+          borderWidth: 2,
           backgroundColor: isPressed ? theme[11] : "transparent",
         },
         content: {

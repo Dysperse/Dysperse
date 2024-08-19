@@ -1,10 +1,10 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs, { ManipulateType } from "dayjs";
 import { router, useGlobalSearchParams } from "expo-router";
@@ -90,10 +90,11 @@ export function AgendaButtons({
   const trigger = (
     <Button
       onPress={handleMenuOpen}
+      height={45}
       backgroundColors={{
-        default: breakpoints.md ? "transparent" : theme[3],
-        hovered: breakpoints.md ? "transparent" : theme[4],
-        pressed: breakpoints.md ? "transparent" : theme[5],
+        default: breakpoints.md ? addHslAlpha(theme[8], 0) : theme[3],
+        hovered: breakpoints.md ? addHslAlpha(theme[8], 0.15) : theme[4],
+        pressed: breakpoints.md ? addHslAlpha(theme[8], 0.2) : theme[5],
       }}
       borderColors={{
         default: breakpoints.md ? "transparent" : theme[3],
@@ -102,10 +103,18 @@ export function AgendaButtons({
       }}
       containerStyle={{ flex: 1 }}
     >
-      <Text numberOfLines={1} weight={600}>
+      <Text
+        numberOfLines={1}
+        weight={900}
+        style={{ fontSize: 15, paddingTop: 5, color: theme[11] }}
+      >
         {dayjs(start).format(titleFormat).split("•")?.[0]}
       </Text>
-      <Text numberOfLines={1} style={{ opacity: 0.6 }}>
+      <Text
+        weight={300}
+        numberOfLines={1}
+        style={{ opacity: 0.6, fontSize: 15, paddingTop: 5, color: theme[11] }}
+      >
         {dayjs(start).format(titleFormat).split("• ")?.[1]}
       </Text>
     </Button>
@@ -116,12 +125,12 @@ export function AgendaButtons({
     <SafeView>
       <View
         style={[
-          { flexDirection: "row", gap: 10 },
+          { flexDirection: "row", alignItems: "center" },
           breakpoints.md
             ? { marginRight: "auto" }
             : {
                 backgroundColor: theme[3],
-                paddingHorizontal: 15,
+                paddingHorizontal: 5,
                 paddingVertical: 5,
                 flexDirection: "row-reverse",
               },
@@ -130,28 +139,43 @@ export function AgendaButtons({
         <IconButton
           variant="text"
           onPress={handleToday}
-          size={40}
+          size={45}
           disabled={isTodaysView}
           style={[
             breakpoints.md && {
               borderRadius: 20,
-              marginLeft: -40,
+              marginLeft: -45,
               marginRight: -10,
+              zIndex: 9,
             },
             !breakpoints.md && isTodaysView && { display: "none" },
             { opacity: isTodaysView ? 0 : 1 },
           ]}
         >
-          <Icon>today</Icon>
+          <View
+            style={{
+              borderWidth: 2,
+              borderTopWidth: 4,
+              borderColor: theme[11],
+              width: 20,
+              height: 20,
+              borderRadius: 2,
+              marginTop: 2,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontSize: 10, color: theme[11] }} weight={700}>
+              {dayjs().format("DD")}
+            </Text>
+          </View>
         </IconButton>
         <View
           style={[
             {
               flexDirection: "row",
               justifyContent: "space-between",
-              height: 40,
               alignItems: "center",
-              paddingHorizontal: 10,
             },
             breakpoints.md
               ? {
@@ -161,9 +185,11 @@ export function AgendaButtons({
               : { flex: 1 },
           ]}
         >
-          <IconButton onPress={handlePrev}>
-            <Icon>west</Icon>
-          </IconButton>
+          <IconButton
+            onPress={handlePrev}
+            icon="arrow_back_ios_new"
+            size={45}
+          />
           {typeof handleMenuOpen === "undefined" ? (
             <MenuPopover trigger={trigger} containerStyle={{ width: 300 }}>
               <AgendaCalendarMenu />
@@ -171,9 +197,7 @@ export function AgendaButtons({
           ) : (
             trigger
           )}
-          <IconButton onPress={handleNext}>
-            <Icon>east</Icon>
-          </IconButton>
+          <IconButton onPress={handleNext} icon="arrow_forward_ios" size={45} />
         </View>
       </View>
     </SafeView>

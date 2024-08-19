@@ -52,14 +52,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 99,
     aspectRatio: "1 / 1",
-    maxWidth: 40,
-    maxHeight: 40,
+    maxWidth: 45,
+    maxHeight: 45,
     width: "100%",
     borderWidth: 1,
     borderColor: "transparent",
   },
   innerText: {
-    fontSize: 18,
+    fontSize: 17,
   },
 });
 
@@ -107,7 +107,7 @@ const SelectionButton = memo(function SelectionButton({
         <View
           style={[
             styles.inner,
-            Platform.OS === "web" && { minWidth: 32 },
+            Platform.OS === "web" && { minWidth: 35 },
             isSelected && { backgroundColor: theme[10] },
             isToday && { borderColor: theme[isSelected ? 10 : 6] },
           ]}

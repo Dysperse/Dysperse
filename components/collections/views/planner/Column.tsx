@@ -3,8 +3,7 @@ import { Header } from "@/components/collections/views/planner/Header";
 import CreateTask from "@/components/task/create";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
-import Icon from "@/ui/Icon";
+import { Button } from "@/ui/Button";
 import RefreshControl from "@/ui/RefreshControl";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -187,7 +186,6 @@ export function Column({
             style={{
               padding: 15,
               paddingBottom: 0,
-              height: 65,
             }}
           >
             <CreateTask
@@ -235,10 +233,16 @@ export function Column({
                 );
               }}
             >
-              <Button variant="filled" containerStyle={{ flex: 1 }} height={50}>
-                <ButtonText>New</ButtonText>
-                <Icon>add</Icon>
-              </Button>
+              <Button
+                variant="filled"
+                containerStyle={{ flex: 1 }}
+                large={!breakpoints.md}
+                bold={!breakpoints.md}
+                iconPosition="end"
+                text="Create"
+                icon="stylus_note"
+                height={breakpoints.md ? 50 : 55}
+              />
             </CreateTask>
           </View>
         </>
