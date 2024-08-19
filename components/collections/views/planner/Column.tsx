@@ -12,7 +12,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { LexoRank } from "lexorank";
 import React, { useEffect, useMemo, useRef } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -253,7 +253,7 @@ export function Column({
           height: 30,
           zIndex: 1,
           marginBottom: -30,
-          marginTop: 55,
+          marginTop: Platform.OS === "android" ? 55 : undefined,
           pointerEvents: "none",
         }}
         colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
