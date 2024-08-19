@@ -253,6 +253,7 @@ export function Column({
           height: 30,
           zIndex: 1,
           marginBottom: -30,
+          marginTop: 55,
           pointerEvents: "none",
         }}
         colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
