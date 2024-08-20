@@ -56,7 +56,7 @@ export default function Chip({
   const colorScheme = useColorTheme();
 
   const specifiedTheme = useColor(
-    colorTheme || session?.user?.profile?.theme || "mint"
+    colorTheme || session?.user?.profile?.theme || "mint",
   );
 
   const theme = colorTheme ? specifiedTheme : colorScheme;
@@ -68,17 +68,15 @@ export default function Chip({
         styles.container,
         {
           paddingHorizontal: dense ? 5 : 10,
-          ...(icon && {
-            paddingRight: dense ? 7 : 12,
-          }),
+          ...(icon && { paddingRight: dense ? 7 : 12 }),
           height: dense ? 30 : 35,
           ...(outlined
             ? {
                 backgroundColor: pressed
                   ? theme[5]
                   : hovered
-                  ? theme[4]
-                  : undefined,
+                    ? theme[4]
+                    : undefined,
                 borderColor: theme[pressed ? 5 : hovered ? 4 : 3],
               }
             : {
