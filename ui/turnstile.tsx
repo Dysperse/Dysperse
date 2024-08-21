@@ -1,12 +1,15 @@
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Appearance, Platform, View } from "react-native";
 import { WebView } from "react-native-webview";
+import Text from "./Text";
 
 const Turnstile = ({
   setToken,
 }: {
   setToken: Dispatch<SetStateAction<string>>;
 }) => {
+  const [randomState, setRandomState] = React.useState(Math.random());
+
   const handleMessage = useCallback(
     (event) => {
       const newToken =
@@ -69,6 +72,7 @@ const Turnstile = ({
         }}
       >
         <iframe
+          key={randomState}
           srcDoc={htmlContent}
           style={{
             height: 65,
@@ -77,6 +81,9 @@ const Turnstile = ({
           }}
           sandbox="allow-scripts allow-same-origin"
         ></iframe>
+        <Text onPress={() => setRandomState(Math.random())}>
+          Not loading? Tap to retry
+        </Text>
       </View>
     );
   } else {
