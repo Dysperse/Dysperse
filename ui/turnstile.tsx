@@ -31,14 +31,7 @@ const Turnstile = ({
     <html>
       <head>
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=_turnstileCb" async defer></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="color-scheme" content="dark">
-      </head>
-      <body style="margin:0;display:flex;justify-content:start;overflow:hidden;background-color: ${
-        Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0"
-      }">
-        <div id="myWidget"></div>
-        <script>
+         <script>
           function _turnstileCb() {
             turnstile.render('#myWidget', {
               theme: "${Appearance.getColorScheme()}",
@@ -50,6 +43,13 @@ const Turnstile = ({
             });
           }
         </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="dark">
+      </head>
+      <body style="margin:0;display:flex;justify-content:start;overflow:hidden;background-color: ${
+        Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0"
+      }">
+        <div id="myWidget"></div>
       </body>
     </html>
   `;
