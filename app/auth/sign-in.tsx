@@ -468,9 +468,9 @@ export default function SignIn() {
                   styles.title,
                   {
                     paddingTop: 10,
+                    textAlign: "center",
                     fontFamily: "serifText800",
                   },
-                  !breakpoints.md && { textAlign: "center" },
                 ]}
               >
                 Verifying
@@ -478,7 +478,7 @@ export default function SignIn() {
               <Text
                 style={[
                   authStyles.subtitleContainer,
-                  !breakpoints.md && { textAlign: "center", opacity: 0.6 },
+                  { textAlign: "center", opacity: 0.6 },
                 ]}
                 weight={800}
               >

@@ -60,31 +60,36 @@ const Turnstile = ({
   if (Platform.OS === "web") {
     // For web, use an iframe
     return (
-      <View
-        style={{
-          borderRadius: 99,
-          width: 300,
-          height: 65,
-          overflow: "hidden",
-          borderWidth: 2,
-          borderColor:
-            Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0",
-        }}
-      >
-        <iframe
-          key={randomState}
-          srcDoc={htmlContent}
+      <>
+        <View
           style={{
-            height: 65,
+            borderRadius: 99,
             width: 300,
-            border: "none",
+            height: 65,
+            overflow: "hidden",
+            borderWidth: 2,
+            borderColor:
+              Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0",
           }}
-          sandbox="allow-scripts allow-same-origin"
-        ></iframe>
-        <Text onPress={() => setRandomState(Math.random())}>
+        >
+          <iframe
+            key={randomState}
+            srcDoc={htmlContent}
+            style={{
+              height: 65,
+              width: 300,
+              border: "none",
+            }}
+            sandbox="allow-scripts allow-same-origin"
+          ></iframe>
+        </View>
+        <Text
+          style={{ textAlign: "center" }}
+          onPress={() => setRandomState(Math.random())}
+        >
           Not loading? Tap to retry
         </Text>
-      </View>
+      </>
     );
   } else {
     // For mobile, use WebView
