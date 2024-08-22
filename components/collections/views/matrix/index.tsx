@@ -336,9 +336,9 @@ export default function Matrix() {
         if (labelIndex === -1)
           return {
             ...oldData,
-            entities: oldData.entities.map((t) =>
-              t.id === updatedTask.id ? updatedTask : t
-            ),
+            entities: oldData.entities
+              .map((t) => (t.id === updatedTask.id ? updatedTask : t))
+              .filter((t) => !t.trash),
           };
 
         const taskIndex = oldData.labels[labelIndex].entities.findIndex(
@@ -348,21 +348,23 @@ export default function Matrix() {
         if (taskIndex === -1)
           return {
             ...oldData,
-            labels: oldData.labels.map((l) =>
-              l?.id === updatedTask.label?.id
-                ? {
-                    ...l,
-                    entities: [...l.entities, updatedTask],
-                  }
-                : l.id === oldTask.label?.id
-                ? {
-                    ...l,
-                    entities: l.entities.find((t) => t.id === oldTask.id)
-                      ? l.entities.filter((t) => t.id !== oldTask.id)
-                      : [updatedTask, ...l.entities],
-                  }
-                : l
-            ),
+            labels: oldData.labels
+              .map((l) =>
+                l?.id === updatedTask.label?.id
+                  ? {
+                      ...l,
+                      entities: [...l.entities, updatedTask],
+                    }
+                  : l.id === oldTask.label?.id
+                  ? {
+                      ...l,
+                      entities: l.entities.find((t) => t.id === oldTask.id)
+                        ? l.entities.filter((t) => t.id !== oldTask.id)
+                        : [updatedTask, ...l.entities],
+                    }
+                  : l
+              )
+              .filter((t) => !t.trash),
           };
 
         return {
@@ -390,9 +392,13 @@ export default function Matrix() {
     mutate(
       (data) => {
         const labelIndex = data.labels.findIndex(
-          (l) => l.id === newTask?.label.id
+          (l) => l.id === newTask?.label?.id
         );
-        if (labelIndex === -1) return data;
+        if (labelIndex === -1)
+          return {
+            ...data,
+            entities: [...(data.entities || []), newTask],
+          };
         return {
           ...data,
           labels: data.labels.map((l) =>

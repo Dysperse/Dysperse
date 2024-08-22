@@ -7,7 +7,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text, { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -83,6 +83,7 @@ export function TaskDrawerContent({ handleClose }) {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
+  const { forceClose } = useBottomSheet();
 
   const handlePriorityChange = useCallback(() => {
     rotate.value = withSpring(!task.pinned ? -35 : 0, {
@@ -142,7 +143,14 @@ export function TaskDrawerContent({ handleClose }) {
           }}
         >
           <IconButton
-            onPress={handleClose}
+            onPress={() => {
+              handleClose();
+              forceClose(
+                breakpoints.md
+                  ? undefined
+                  : { overshootClamping: true, stiffness: 400 }
+              );
+            }}
             variant="outlined"
             size={50}
             icon="close"

@@ -200,11 +200,6 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
 
   const handleClose = useCallback(() => {
     contentRef.current?.triggerMutate();
-    setTimeout(() => {
-      sheetRef.current?.forceClose(
-        breakpoints.md ? undefined : { overshootClamping: true, stiffness: 400 }
-      );
-    }, 0);
   }, [sheetRef, breakpoints]);
 
   const trigger = cloneElement((children || <Pressable />) as any, {
