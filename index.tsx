@@ -6,9 +6,10 @@ import { renderRootComponent } from "expo-router/build/renderRootComponent";
 // This file should only import and register the root. No components or exports
 // should be added here.
 LoadSkiaWeb({
-  locateFile: (file) => `/web/static/js/${file}`,
+  locateFile: (file) => `/public/${file}`,
 })
   .then(async () => {
     renderRootComponent(App);
   })
   .catch((e) => alert(e));
+
