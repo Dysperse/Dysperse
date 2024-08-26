@@ -7,13 +7,38 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { useState } from "react";
+import { LinearGradient, vec } from "@shopify/react-native-skia";
+import React, { useState } from "react";
 import { View } from "react-native";
-import { PieChart } from "react-native-chart-kit";
 import { AbstractChartConfig } from "react-native-chart-kit/dist/AbstractChart";
+import { Pie, PolarChart } from "victory-native";
+
+function calculateGradientPoints(
+  radius: number,
+  startAngle: number,
+  endAngle: number,
+  centerX: number,
+  centerY: number
+) {
+  // Calculate the midpoint angle of the slice for a central gradient effect
+  const midAngle = (startAngle + endAngle) / 2;
+
+  // Convert angles from degrees to radians
+  const startRad = (Math.PI / 180) * startAngle;
+  const midRad = (Math.PI / 180) * midAngle;
+
+  // Calculate start point (inner edge near the pie's center)
+  const startX = centerX + radius * 0.5 * Math.cos(startRad);
+  const startY = centerY + radius * 0.5 * Math.sin(startRad);
+
+  // Calculate end point (outer edge of the slice)
+  const endX = centerX + radius * Math.cos(midRad);
+  const endY = centerY + radius * Math.sin(midRad);
+
+  return { startX, startY, endX, endY };
+}
 
 export const LabelChart = ({ data }) => {
-  const [width, setWidth] = useState(0);
   const theme = useColorTheme();
   const [showMore, setShowMore] = useState(false);
   const handleShowMore = () => setShowMore(!showMore);
@@ -31,12 +56,13 @@ export const LabelChart = ({ data }) => {
   const breakpoints = useResponsiveBreakpoints();
 
   const pieData = Object.entries(data.byLabel).map(([label]) => ({
-    name: data.byLabel[label].label.name,
-    count: data.byLabel[label].count,
+    label: data.byLabel[label].label.name,
+    value: data.byLabel[label].count,
     emoji: data.byLabel[label].label.emoji,
-    color: colors[data.byLabel[label].label.color][11],
-    legendFontColor: theme[11],
-    legendFontSize: 15,
+    colors: [
+      colors[data.byLabel[label].label.color][9],
+      colors[data.byLabel[label].label.color][11],
+    ],
   }));
 
   return pieData.length === 0 ? (
@@ -66,7 +92,6 @@ export const LabelChart = ({ data }) => {
     </View>
   ) : (
     <View
-      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       style={{
         backgroundColor: theme[3],
         borderWidth: 1,
@@ -83,22 +108,45 @@ export const LabelChart = ({ data }) => {
         >
           Completed tasks by label
         </Text>
-        <PieChart
-          paddingLeft="0"
-          data={pieData}
-          width={breakpoints.md ? Math.min(1000, width) / 2 - 20 : width}
-          height={breakpoints.md ? Math.min(1000, width) / 2 - 20 : width}
-          hasLegend={false}
-          chartConfig={chartConfig}
-          accessor={"count"}
-          center={
-            breakpoints.md
-              ? [Math.min(1000, width) / 8.5, 0]
-              : [Math.min(1000, width) / 4, 0]
-          }
-          backgroundColor="transparent"
-          absolute
-        />
+        <View style={{ flex: 1, padding: 20, aspectRatio: 1 }}>
+          <PolarChart
+            data={pieData}
+            colorKey={"colors"}
+            valueKey={"value"}
+            labelKey={"label"}
+          >
+            <Pie.Chart innerRadius={"50%"}>
+              {({ slice }) => {
+                const { startX, startY, endX, endY } = calculateGradientPoints(
+                  slice.radius,
+                  slice.startAngle,
+                  slice.endAngle,
+                  slice.center.x,
+                  slice.center.y
+                );
+
+                return (
+                  <>
+                    <Pie.Slice>
+                      <LinearGradient
+                        start={vec(startX, startY)}
+                        end={vec(endX, endY)}
+                        colors={[slice.color[0], slice.color[1]]}
+                        positions={[0, 1]}
+                      />
+                    </Pie.Slice>
+                    <Pie.SliceAngularInset
+                      angularInset={{
+                        angularStrokeWidth: 5,
+                        angularStrokeColor: theme[3],
+                      }}
+                    />
+                  </>
+                );
+              }}
+            </Pie.Chart>
+          </PolarChart>
+        </View>
       </View>
       <View
         style={{
@@ -123,10 +171,10 @@ export const LabelChart = ({ data }) => {
           >
             <Emoji emoji={label.emoji} size={30} />
             <Text style={{ fontSize: 20 }} weight={300}>
-              {label.name}
+              {label.label}
             </Text>
             <Text style={{ marginLeft: "auto", opacity: 0.5 }} weight={700}>
-              {label.count}
+              {label.value}
             </Text>
           </View>
         ))}

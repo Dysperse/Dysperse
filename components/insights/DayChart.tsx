@@ -1,50 +1,39 @@
+import jost from "@/assets/fonts/body/Jost_500Medium.ttf";
 import { cardStyles } from "@/components/insights/cardStyles";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Text, { getFontName } from "@/ui/Text";
-import { addHslAlpha } from "@/ui/color";
+import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { useState } from "react";
+import { LinearGradient, useFont, vec } from "@shopify/react-native-skia";
 import { View } from "react-native";
-import { BarChart } from "react-native-chart-kit";
-import { AbstractChartConfig } from "react-native-chart-kit/dist/AbstractChart";
-import { barDefaultProps } from "./barDefaultProps";
+import { Bar, CartesianChart } from "victory-native";
 
 export const DayChart = ({ data }) => {
+  const font = useFont(jost, 12);
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const [width, setWidth] = useState(400);
-  const chartConfig: AbstractChartConfig = {
-    color: (n = 1) => addHslAlpha(theme[11], n),
-    barPercentage: breakpoints.md ? 0.5 : 0.2,
-    propsForVerticalLabels: {
-      fontFamily: getFontName("jost", 500),
-      fontSize: 11,
-    },
-    barRadius: 5,
-  };
 
-  const barData = {
-    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) =>
-      day.slice(0, breakpoints.md ? undefined : 1)
-    ),
-    datasets: [
-      {
-        data: data.byDay,
-        colors: new Array(data.byDay).fill(() => theme[7]),
-      },
-    ],
-  };
+  const barData = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ].map((e, i) => ({
+    hour: e,
+    count: data.byDay[i],
+  }));
 
   return (
     <View
       style={[
         cardStyles.container,
         {
-          backgroundColor: theme[3],
           borderColor: theme[5],
+          backgroundColor: theme[3],
         },
       ]}
-      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <Text
         style={[{ fontSize: breakpoints.md ? 30 : 25 }, cardStyles.title]}
@@ -52,14 +41,40 @@ export const DayChart = ({ data }) => {
       >
         Productivity by day
       </Text>
-      <BarChart
-        {...barDefaultProps}
+      <CartesianChart
         data={barData}
-        width={width - 60}
-        height={370}
-        withHorizontalLabels={false}
-        chartConfig={chartConfig}
-      />
+        xKey="hour"
+        yKeys={["count"]}
+        domainPadding={{ left: 50, right: 50 }}
+        axisOptions={{
+          font,
+          labelColor: theme[11],
+          lineColor: {
+            grid: {
+              y: theme[5],
+              x: "transparent",
+            },
+            frame: theme[5],
+          },
+        }}
+      >
+        {({ points, chartBounds }) => (
+          <Bar
+            chartBounds={chartBounds}
+            points={points.count}
+            roundedCorners={{
+              topLeft: 5,
+              topRight: 5,
+            }}
+          >
+            <LinearGradient
+              start={vec(0, 0)}
+              end={vec(0, 400)}
+              colors={[theme[9], theme[6]]}
+            />
+          </Bar>
+        )}
+      </CartesianChart>
     </View>
   );
 };

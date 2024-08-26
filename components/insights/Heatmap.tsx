@@ -1,49 +1,59 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import dayjs from "dayjs";
-import { useState } from "react";
-import { View } from "react-native";
-import { ContributionGraph } from "react-native-chart-kit";
-import { AbstractChartConfig } from "react-native-chart-kit/dist/AbstractChart";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    padding: 1,
+    justifyContent: "center",
+  },
+  cell: {
+    margin: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 4,
+  },
+  cellText: {
+    color: "#000",
+    fontWeight: "bold",
+  },
+});
 
 export const Heatmap = ({ data }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-  const [width, setWidth] = useState(0);
-  const chartConfig: AbstractChartConfig = {
-    backgroundGradientFrom: "transparent",
-    backgroundGradientTo: "transparent",
-    color: (n = 1) => addHslAlpha(theme[9], n),
-    barPercentage: 0.5,
-    barRadius: 5,
-    paddingRight: 0,
-    useShadowColorFromDataset: false, // optional
-    propsForLabels: {
-      fontFamily: getFontName("jost", 700),
-      opacity: 0.5,
-      fontSize: breakpoints.md ? 16 : 12,
-      translateY: breakpoints.md ? 10 : 25,
-    },
-  };
-  const commitsData = data
-    ? // must be unique days with { date: "2021-09-01", count: 1 }. There can be multiple entries for the same day, so reduce them to a single entry
-      data.completionInstances
-        .filter((e) => e.completedAt)
-        .reduce((acc: any, item: any) => {
-          const date = dayjs(item.completedAt).format("YYYY-MM-DD");
-          const existing = acc.find((x: any) => x.date === date);
-          if (existing) {
-            existing.count += 1;
-          } else {
-            acc.push({ date, count: 1 });
-          }
-          return acc;
-        }, [])
-    : [];
+  const gray = useColor("gray");
 
-  const squareSize = (width - 20) / 52 - 2;
+  const commitsData = [
+    ...new Array(dayjs().diff(dayjs().subtract(1, "year"), "days")),
+  ]
+    .map((_, i) => ({
+      date: dayjs().subtract(1, "year").add(i, "day").format("YYYY-MM-DD"),
+      count: 0,
+    }))
+    .map((day) => ({
+      ...day,
+      count:
+        data?.completionInstances?.filter(
+          (e) =>
+            e.completedAt &&
+            dayjs(e.completedAt).format("YYYY-MM-DD") === day.date
+        ).length || 0,
+    }));
+
+  const counts = commitsData.map((item) => item.count);
+  const maxCount = Math.max(...counts);
+  const minCount = Math.min(...counts);
+
+  const getColor = (count) => {
+    const lightness = ((count - minCount) / (maxCount - minCount)) * 70;
+    return [theme[11], addHslAlpha(theme[11], lightness * 0.01)];
+  };
 
   return (
     <View
@@ -53,7 +63,6 @@ export const Heatmap = ({ data }) => {
         borderColor: theme[5],
         borderRadius: 25,
       }}
-      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
       <Text
         style={{
@@ -68,21 +77,27 @@ export const Heatmap = ({ data }) => {
         {data.completionInstances.length === 1 ? "task" : "tasks"} completed in
         the last year
       </Text>
-      <ContributionGraph
-        values={commitsData}
-        tooltipDataAttrs={() => ({} as any)}
-        style={{ padding: 0, marginTop: -20 }}
-        endDate={new Date()}
-        getMonthLabel={
-          breakpoints.md ? undefined : (m) => dayjs().month(m).format("MMM")[0]
-        }
-        width={width}
-        height={7 * (squareSize + 2) + 60}
-        numDays={365}
-        chartConfig={chartConfig}
-        squareSize={squareSize}
-        gutterSize={1}
-      />
+      <View style={{ flexDirection: "row", flexWrap: "wrap", flex: 1 }}>
+        {commitsData.map((item, index) => {
+          const t = getColor(item.count);
+          return (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.cell,
+                {
+                  width: `${100 / 52}%`,
+                  aspectRatio: "1 / 1",
+                  backgroundColor: t[0],
+                  borderWidth: 1,
+                  borderColor: t[1],
+                },
+              ]}
+              onPress={() => alert(item.date)}
+            ></TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 };
