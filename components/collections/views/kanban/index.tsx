@@ -45,7 +45,7 @@ const CollectionEmpty = () => {
         {id === "all" && "You haven't created any labels yet. \n"}
         Selected labels appear as columns here.
       </Text>
-      <CollectionLabelMenu />
+      <CollectionLabelMenu menuRef={null} />
     </View>
   );
 };
@@ -116,9 +116,20 @@ function EditKanbanOrder() {
   const { session } = useSession();
   const { data, mutate } = useCollectionContext();
 
+  const updatedKanbanOrder = data
+    ? [
+        ...data.kanbanOrder.filter((id) =>
+          data.labels.some((label) => label.id === id)
+        ),
+        ...data.labels
+          .filter((label) => !data.kanbanOrder.includes(label.id))
+          .map((label) => label.id),
+      ]
+    : [];
+
   const handleColumnReorder = (id, newIndex) => {
-    const currentIndex = data.kanbanOrder.indexOf(id);
-    const newOrder = [...data.kanbanOrder];
+    const currentIndex = updatedKanbanOrder.indexOf(id);
+    const newOrder = [...updatedKanbanOrder];
     newOrder.splice(currentIndex, 1);
     newOrder.splice(newIndex, 0, id);
 
@@ -147,14 +158,18 @@ function EditKanbanOrder() {
       style={{ padding: 20 }}
       contentContainerStyle={{ gap: 20 }}
     >
-      {data.kanbanOrder.map((label, index) => (
-        <ReorderColumn
-          index={index}
-          label={data.labels.find((i) => i.id === label)}
-          key={label}
-          handleColumnReorder={handleColumnReorder}
-        />
-      ))}
+      {updatedKanbanOrder.map((label, index) => {
+        const t = data.labels.find((i) => i.id === label);
+        if (t)
+          return (
+            <ReorderColumn
+              index={index}
+              label={t}
+              key={label}
+              handleColumnReorder={handleColumnReorder}
+            />
+          );
+      })}
     </ScrollView>
   ) : (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
