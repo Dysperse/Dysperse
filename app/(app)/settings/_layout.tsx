@@ -181,7 +181,9 @@ export default function Layout() {
                       headerTitle: d !== "settings/index" && "Settings",
                       animationEnabled:
                         !breakpoints.md && d !== "settings/index",
-                      detachPreviousScreen: d === "settings/index",
+                      detachPreviousScreen:
+                        d === "settings/index" ||
+                        d === "login/account/two-factor-authentication",
 
                       ...(!breakpoints.md && {
                         ...TransitionPresets.SlideFromRightIOS,

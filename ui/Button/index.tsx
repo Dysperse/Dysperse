@@ -4,6 +4,7 @@ import {
   PressableProps,
   StyleProp,
   StyleSheet,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
@@ -25,6 +26,8 @@ interface DButtonProps extends PressableProps {
   isLoading?: boolean;
   dense?: boolean;
   large?: boolean;
+  textStyle?: StyleProp<TextStyle>;
+  iconStyle?: StyleProp<TextStyle>;
   text?: string;
   icon?: string;
   iconSize?: number;
@@ -193,18 +196,24 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
           props.children ?? (
             <>
               {(props.iconPosition === "start" || !props.iconPosition) && (
-                <Icon size={props.iconSize} bold={props.bold}>
+                <Icon
+                  size={props.iconSize}
+                  bold={props.bold}
+                  style={props.iconStyle}
+                >
                   {props.icon}
                 </Icon>
               )}
               <ButtonText
-                style={props.large && { fontSize: 17 }}
+                style={[props.large && { fontSize: 17 }, props.textStyle]}
                 weight={props.bold ? 900 : undefined}
               >
                 {props.text}
               </ButtonText>
               {props.iconPosition === "end" && (
-                <Icon bold={props.bold}>{props.icon}</Icon>
+                <Icon bold={props.bold} style={props.iconStyle}>
+                  {props.icon}
+                </Icon>
               )}
             </>
           )

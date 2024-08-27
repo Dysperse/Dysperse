@@ -4,20 +4,23 @@ import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { Modal } from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Logo from "@/ui/logo";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Network from "expo-network";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Path, Svg } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { authStyles } from "../../components/authStyles";
 import { useSession } from "../../context/AuthProvider";
@@ -119,7 +122,136 @@ function QrLogin() {
   ) : error ? (
     <ErrorAlert message="Couldn't load an instant login QR code. Please try again later" />
   ) : (
-    <Spinner />
+    <View style={{ marginHorizontal: "auto" }}>
+      <Spinner />
+    </View>
+  );
+}
+
+function QrModal({ children }: { children: any }) {
+  const ref = useRef<BottomSheetModal>(null);
+  const trigger = cloneElement(children, {
+    onPress: () => ref.current.present(),
+  });
+
+  return (
+    <>
+      {trigger}
+      <Modal animation="SCALE" ref={ref} maxWidth={300}>
+        <IconButton
+          icon="close"
+          size={50}
+          onPress={() => ref.current.forceClose({ duration: 0.00001 })}
+          variant="outlined"
+          style={{ margin: 20, marginBottom: 0 }}
+        />
+        <QrLogin />
+      </Modal>
+    </>
+  );
+}
+
+function EmailModal({
+  control,
+  children,
+  handleSubmit,
+}: {
+  control: any;
+  children: any;
+  handleSubmit;
+}) {
+  const theme = useColorTheme();
+  const ref = useRef<BottomSheetModal>(null);
+  const inputRef = useRef(null);
+
+  const trigger = cloneElement(children, {
+    onPress: () => {
+      ref.current.present();
+      setTimeout(() => inputRef.current.focus({ preventScroll: true }), 100);
+    },
+  });
+
+  const onFinish = () => {
+    ref.current.forceClose({ duration: 0.00001 });
+    setTimeout(handleSubmit, 100);
+  };
+
+  return (
+    <>
+      {trigger}
+      <Modal animation="SCALE" ref={ref} maxWidth={400}>
+        <IconButton
+          icon="close"
+          size={50}
+          onPress={() => ref.current.forceClose({ duration: 0.00001 })}
+          variant="outlined"
+          style={{ margin: 20, marginBottom: 0 }}
+        />
+        <View style={{ padding: 20, gap: 10 }}>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextField
+                style={{
+                  height: 60,
+                  fontFamily: "body_900",
+                  borderRadius: 99,
+                  fontSize: 20,
+                  paddingHorizontal: 20,
+                }}
+                inputRef={inputRef}
+                placeholder="Email"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                onSubmitEditing={onFinish}
+                value={value}
+                variant="filled+outlined"
+              />
+            )}
+            name="email"
+          />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextField
+                style={{
+                  height: 60,
+                  fontFamily: "body_900",
+                  borderRadius: 99,
+                  fontSize: 20,
+                  paddingHorizontal: 20,
+                }}
+                placeholder="Password"
+                secureTextEntry
+                onBlur={onBlur}
+                onChangeText={onChange}
+                onSubmitEditing={onFinish}
+                value={value}
+                variant="filled+outlined"
+              />
+            )}
+            name="password"
+          />
+          <Button
+            variant="filled"
+            height={70}
+            onPress={onFinish}
+            isLoading={false}
+            text="Continue"
+            icon="east"
+            iconPosition="end"
+            large
+            bold
+          />
+        </View>
+      </Modal>
+    </>
   );
 }
 
@@ -154,164 +286,123 @@ function Credentials({
   return (
     <KeyboardAvoidingView
       behavior="padding"
-      style={{ flex: 1, flexDirection: "row" }}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
-      <ScrollView
-        style={{ maxHeight: "100%" }}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[
-          authStyles.container,
-          {
-            justifyContent: "flex-start",
-            flex: undefined,
-            paddingBottom: insets.top + 40,
-            paddingTop: 40,
-          },
-        ]}
+      <View
+        style={{
+          maxHeight: "100%",
+          flex: 1,
+          alignItems: "center",
+          width: "100%",
+        }}
       >
+        <View style={{ marginTop: "auto" }}></View>
+        <View style={{ marginTop: 20 }}></View>
+        <Logo size={80} />
         <Text
           style={[
             styles.title,
             {
               paddingTop: 10,
+              fontSize: 40,
+              color: theme[11],
+              textAlign: "center",
               fontFamily: "serifText800",
             },
             !breakpoints.md && { textAlign: "center" },
           ]}
         >
-          Sign in
+          Sign in to Dysperse
         </Text>
-        <Text
-          style={[
-            authStyles.subtitleContainer,
-            !breakpoints.md && { textAlign: "center", opacity: 0.6 },
-          ]}
-          weight={600}
-        >
-          Use your Dysperse login
-        </Text>
-        <View style={{ gap: 10 }}>
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextField
-                weight={500}
-                variant="filled+outlined"
-                style={{
-                  paddingHorizontal: 30,
-                  paddingVertical: 20,
-                  fontSize: 20,
-                  borderColor: errors.email ? "red" : theme[6],
-                  ...(Platform.OS === "web" && { outline: "none" }),
-                }}
-                placeholder="Email or username"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="email"
-          />
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Controller
-              control={control}
-              rules={{
-                maxLength: 100,
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextField
-                  weight={500}
-                  variant="filled+outlined"
-                  style={{
-                    paddingHorizontal: 30,
-                    paddingVertical: 20,
-                    fontSize: 20,
-                    flex: 1,
-                    borderColor: errors.password ? "red" : theme[6],
-                    ...(Platform.OS === "web" && { outline: "none" }),
-                  }}
-                  onSubmitEditing={handleSubmit(onSubmit)}
-                  placeholder="Password"
-                  secureTextEntry={!showPassword}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="password"
-            />
-            <IconButton
-              style={{ marginLeft: -40, transform: [{ translateX: -20 }] }}
-              size={40}
-              variant="filled"
-              icon={showPassword ? "visibility" : "visibility_off"}
-              onPress={() => setShowPassword((s) => !s)}
-            />
-          </View>
-          <Button
-            variant="filled"
-            height={70}
-            onPress={handleSubmit(onSubmit)}
-            isLoading={step === 2}
-          >
-            <ButtonText
-              style={[
-                {
-                  ...authStyles.buttonText,
-                  flex: undefined,
-                  margin: undefined,
-                },
-              ]}
-              weight={900}
-            >
-              Continue
-            </ButtonText>
-            <Icon>east</Icon>
-          </Button>
-          <Button dense onPress={handleForgot} variant="outlined" height={70}>
-            <ButtonText
-              style={[authStyles.buttonText, { opacity: 0.6 }]}
-              weight={500}
-            >
-              Need help?
-            </ButtonText>
-          </Button>
-          {breakpoints.md && (
+
+        <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
+          <EmailModal control={control} handleSubmit={onSubmit}>
             <Button
-              dense
-              onPress={handleCreateAccount}
-              variant="outlined"
-              height={50}
-            >
-              <ButtonText
-                style={[authStyles.buttonText, { opacity: 0.6 }]}
-                weight={500}
-              >
-                Create an account
-              </ButtonText>
-            </Button>
-          )}
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              containerStyle={{ width: "100%" }}
+              textStyle={{ color: theme[1] }}
+              iconStyle={{ color: theme[1] }}
+              text="Continue with Email"
+              backgroundColors={{
+                default: theme[11],
+                hovered: theme[11],
+                pressed: theme[11],
+              }}
+              icon="email"
+              bold
+              large
+            />
+          </EmailModal>
+          <QrModal>
+            <Button
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              containerStyle={{ width: "100%" }}
+              text="Continue with QR Code"
+              icon="center_focus_weak"
+              bold
+              large
+            />
+          </QrModal>
+          <Button
+            height={60}
+            variant="filled"
+            onPress={() => {
+              Toast.show({ type: "info", text1: "Coming soon!" });
+            }}
+            containerStyle={{ width: "100%", opacity: 0.5 }}
+            text="Continue with Google"
+            icon={
+              (
+                <Svg
+                  fill={theme[11]}
+                  width={24}
+                  height={24}
+                  viewBox="0 0 512 512"
+                >
+                  <title>ionicons-v5_logos</title>
+                  <Path d="M473.16,221.48l-2.26-9.59H262.46v88.22H387c-12.93,61.4-72.93,93.72-121.94,93.72-35.66,0-73.25-15-98.13-39.11a140.08,140.08,0,0,1-41.8-98.88c0-37.16,16.7-74.33,41-98.78s61-38.13,97.49-38.13c41.79,0,71.74,22.19,82.94,32.31l62.69-62.36C390.86,72.72,340.34,32,261.6,32h0c-60.75,0-119,23.27-161.58,65.71C58,139.5,36.25,199.93,36.25,256S56.83,369.48,97.55,411.6C141.06,456.52,202.68,480,266.13,480c57.73,0,112.45-22.62,151.45-63.66,38.34-40.4,58.17-96.3,58.17-154.9C475.75,236.77,473.27,222.12,473.16,221.48Z" />
+                </Svg>
+              ) as any
+            }
+            bold
+            large
+          />
+          <Button
+            height={60}
+            variant="filled"
+            onPress={() => {
+              Toast.show({ type: "info", text1: "Coming soon!" });
+            }}
+            containerStyle={{ width: "100%", opacity: 0.5 }}
+            text="Continue with Passkey"
+            icon="key"
+            bold
+            large
+          />
         </View>
-      </ScrollView>
-      {breakpoints.md && step === 0 && (
-        <View
-          style={[
-            authStyles.container,
-            {
-              borderWidth: 0,
-              alignItems: "center",
-              maxWidth: 310,
-              marginLeft: 30,
-              justifyContent: "flex-start",
-              paddingTop: 80,
-            },
-          ]}
-        >
-          <QrLogin />
-        </View>
-      )}
+        <Button
+          height={20}
+          onPress={handleCreateAccount}
+          containerStyle={{
+            width: "100%",
+            opacity: 0.5,
+            marginBottom: 10,
+            marginTop: "auto",
+          }}
+          iconPosition="end"
+          text="Create an account"
+          icon="auto_awesome"
+          large
+        />
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -428,24 +519,23 @@ export default function SignIn() {
         style={[
           authStyles.container,
           breakpoints.md && authStyles.containerDesktop,
-          breakpoints.md && step === 0 && { maxWidth: 1000 },
           breakpoints.md && {
             borderColor: theme[6],
           },
         ]}
       >
-        <IconButton
-          variant="outlined"
-          size={55}
-          icon="close"
-          onPress={handleBack}
-          style={{
-            margin: 10,
-            opacity: breakpoints.md ? 0 : 1,
-            pointerEvents: breakpoints.md ? "none" : "auto",
-          }}
-        />
-        {step === 0 || step === 2 ? (
+        {step === 4 || step === 2 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Spinner />
+          </View>
+        ) : step === 0 ? (
           <Credentials
             control={control}
             errors={errors}
