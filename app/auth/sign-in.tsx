@@ -200,6 +200,7 @@ function EmailModal({
                   fontFamily: "body_900",
                   borderRadius: 99,
                   fontSize: 20,
+                  color: theme[11],
                   paddingHorizontal: 20,
                 }}
                 inputRef={inputRef}
@@ -225,6 +226,7 @@ function EmailModal({
                   fontFamily: "body_900",
                   borderRadius: 99,
                   fontSize: 20,
+                  color: theme[11],
                   paddingHorizontal: 20,
                 }}
                 placeholder="Password"
