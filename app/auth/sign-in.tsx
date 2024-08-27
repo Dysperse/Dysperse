@@ -156,12 +156,19 @@ function Credentials({
       behavior="padding"
       style={{
         flex: 1,
-        flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
-      <View style={{ maxHeight: "100%", alignItems: "center", width: "100%" }}>
+      <View
+        style={{
+          maxHeight: "100%",
+          flex: 1,
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <View style={{ marginTop: "auto" }}></View>
         <Logo size={80} />
         <Text
           style={[
@@ -244,6 +251,21 @@ function Credentials({
             large
           />
         </View>
+        <Button
+          height={20}
+          onPress={() => {
+            Toast.show({ type: "info", text1: "Coming soon!" });
+          }}
+          containerStyle={{
+            width: "100%",
+            opacity: 0.5,
+            marginBottom: -20,
+            marginTop: "auto",
+          }}
+          text="Create an account"
+          icon="key"
+          large
+        />
       </View>
     </KeyboardAvoidingView>
   );
