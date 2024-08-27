@@ -317,6 +317,9 @@ function OpenTabsList() {
             <JumpToButton />
             <IconButton
               size={50}
+              style={{
+                ...Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
+              }}
               onPress={() => router.push("/everything")}
               variant={path === "/everything" ? "filled" : undefined}
             >
