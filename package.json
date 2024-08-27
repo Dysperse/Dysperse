@@ -24,6 +24,7 @@
     "@floating-ui/react-native": "^0.10.6",
     "@gorhom/bottom-sheet": "^5.0.0-alpha.10",
     "@gorhom/portal": "^1.0.14",
+    "@hexagon/base64": "^1.1.28",
     "@marceloterreiro/flash-calendar": "^1.0.0",
     "@radix-ui/colors": "^3.0.0",
     "@react-native-async-storage/async-storage": "1.23.1",
@@ -33,6 +34,7 @@
     "@sentry/react-native": "^5.30.0",
     "@shopify/flash-list": "1.6.4",
     "@shopify/react-native-skia": "1.2.3",
+    "@simplewebauthn/typescript-types": "^8.3.4",
     "@types/react-mentions": "^4.1.13",
     "convert-time": "^0.3.0",
     "dayjs": "^1.11.11",
@@ -90,6 +92,7 @@
     "react-native-gesture-handler": "~2.16.1",
     "react-native-image-colors": "^2.4.0",
     "react-native-markdown-display": "^7.0.2",
+    "react-native-passkeys": "^0.3.0",
     "react-native-popup-menu": "^0.16.1",
     "react-native-qrcode-svg": "^6.3.1",
     "react-native-reanimated": "~3.10.1",
@@ -125,4 +128,3 @@
   },
   "private": true
 }
-
