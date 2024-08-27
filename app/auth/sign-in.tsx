@@ -259,7 +259,6 @@ function Credentials({
           containerStyle={{
             width: "100%",
             opacity: 0.5,
-            marginBottom: -20,
             marginTop: "auto",
           }}
           text="Create an account"
