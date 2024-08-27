@@ -169,6 +169,7 @@ function Credentials({
         }}
       >
         <View style={{ marginTop: "auto" }}></View>
+        <View style={{ marginTop: 20 }}></View>
         <Logo size={80} />
         <Text
           style={[
