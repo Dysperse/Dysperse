@@ -717,8 +717,8 @@ export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
 
   const handleBack = () => {
-    if (breakpoints.md) router.replace("/");
-    else sidebarRef.current.openDrawer();
+    if (router.canGoBack()) return router.back();
+    router.replace("/");
   };
 
   return (
@@ -740,7 +740,6 @@ export default function Page() {
               <Icon style={{ opacity: 0.6 }}>
                 {breakpoints.md ? "arrow_back_ios_new" : "menu"}
               </Icon>
-              {breakpoints.md && <Text variant="eyebrow">Home</Text>}
             </View>
           }
           onPress={handleBack}

@@ -38,7 +38,6 @@ export function Actions() {
   const theme = useColorTheme();
   const { handleOpen } = useCommandPaletteContext();
   const openTrash = () => router.push("/trash");
-  const openEverything = () => router.push("/everything");
 
   const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
   const hasUnread =
@@ -56,12 +55,6 @@ export function Actions() {
         <Icon>magic_button</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
           My insights...
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={actionStyles.item} onPress={openEverything}>
-        <Icon>home_storage</Icon>
-        <Text style={{ color: theme[11] }} numberOfLines={1}>
-          Labels & Collections...
         </Text>
       </TouchableOpacity>
       <TouchableOpacity

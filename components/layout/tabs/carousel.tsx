@@ -9,7 +9,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { router, useGlobalSearchParams } from "expo-router";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -108,7 +108,7 @@ const JumpToButton = memo(function JumpToButton() {
   });
 
   return (
-    <View style={{ borderRadius: 15, overflow: "hidden", marginBottom: 5 }}>
+    <View style={{ borderRadius: 15, overflow: "hidden", flex: 1 }}>
       <Button
         onPress={() =>
           requestAnimationFrame(() => {
@@ -282,6 +282,8 @@ function OpenTabsList() {
 
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
+  const path = usePathname();
+
   return (
     <View
       style={{
@@ -311,7 +313,16 @@ function OpenTabsList() {
           />
           {Platform.OS === "web" && <WebPWAInstallButton />}
           <SpaceStorageAlert />
-          <JumpToButton />
+          <View style={{ marginBottom: 5, flexDirection: "row" }}>
+            <JumpToButton />
+            <IconButton
+              size={50}
+              onPress={() => router.push("/everything")}
+              variant={path === "/everything" ? "filled" : undefined}
+            >
+              <Icon bold>home_storage</Icon>
+            </IconButton>
+          </View>
         </>
       ) : (
         <View
