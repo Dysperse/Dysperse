@@ -5,6 +5,7 @@ import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { useBottomSheet } from "@gorhom/bottom-sheet";
 import React, {
   cloneElement,
   forwardRef,
@@ -49,6 +50,8 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   }));
 
   const theme = useColorTheme();
+  const { forceClose } = useBottomSheet();
+
   const updateTask = useCallback(
     async (key, value, sendRequest = true) => {
       const oldData = data;
@@ -85,7 +88,10 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
 
   return (
     <Pressable
-      onPress={() => handleClose()}
+      onPress={() => {
+        forceClose(breakpoints.md ? { duration: 0.00001 } : undefined);
+        handleClose();
+      }}
       style={{
         flex: 1,
         padding: 10,

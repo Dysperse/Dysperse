@@ -2,7 +2,6 @@ import { Entity } from "@/components/collections/entity";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -712,8 +711,6 @@ export default function Page() {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const [view, setView] = useState<"labels" | "collections">("labels");
-
-  const { sidebarRef } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
 
   const handleBack = () => {
