@@ -59,7 +59,7 @@ export function Actions() {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity style={actionStyles.item} onPress={openEverything}>
-        <Icon>category</Icon>
+        <Icon>home_storage</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
           Labels & Collections...
         </Text>
