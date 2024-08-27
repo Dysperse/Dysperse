@@ -43,7 +43,7 @@ function TaskRescheduleButton() {
   const handleSelect = (t, n) => {
     updateTask("start", dayjs(task.start).add(n, t).toISOString());
   };
-  const isSameDay = dayjs().isSame(dayjs(task.start), "day");
+  const isSameDay = task.start && dayjs().isSame(dayjs(task.start), "day");
 
   return (
     <MenuPopover
@@ -114,8 +114,6 @@ function TaskNotificationsButton() {
     "8h",
     "1d",
   ];
-
-  const isSameDay = dayjs().isSame(dayjs(task.start), "day");
 
   return (
     <MenuPopover
@@ -731,7 +729,7 @@ export function TaskDetails() {
                   }
                   watch={(inputName) => {
                     return {
-                      date: dayjs(task.start),
+                      date: task.start ? dayjs(task.start) : null,
                       dateOnly: task.dateOnly,
                       recurrenceRule: recurrenceRule?.options,
                     }[inputName];
