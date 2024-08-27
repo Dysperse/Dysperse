@@ -6,7 +6,7 @@
     "start": "expo start",
     "start-tunnel": "expo start --tunnel",
     "lint": "eslint ./",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && setup-skia-web",
     "build:dev": "eas build --profile development --platform android",
     "build:prod": "eas build --profile production --platform android",
     "build:web": "expo export -p web && npm install workbox-cli --global && workbox injectManifest workbox-config.js",
@@ -125,3 +125,4 @@
   },
   "private": true
 }
+
