@@ -204,7 +204,7 @@ function EmailModal({
                   paddingHorizontal: 20,
                 }}
                 inputRef={inputRef}
-                placeholder="Email"
+                placeholder="Email or username..."
                 onBlur={onBlur}
                 onChangeText={onChange}
                 onSubmitEditing={onFinish}
@@ -250,6 +250,16 @@ function EmailModal({
             iconPosition="end"
             large
             bold
+          />
+          <Button
+            variant="outlined"
+            height={50}
+            onPress={() => router.push("/auth/forgot-password")}
+            isLoading={false}
+            text="Forgot password?"
+            icon="east"
+            iconPosition="end"
+            large
           />
         </View>
       </Modal>
