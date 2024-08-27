@@ -79,7 +79,7 @@ function Templates() {
   return (
     <View style={{ flex: 1 }}>
       <FlashList
-        data={["new", "dysverse", ...data]}
+        data={["new", "dysverse", ...(Array.isArray(data) ? data : [])]}
         contentContainerStyle={{
           padding: 20,
           paddingHorizontal: 20,

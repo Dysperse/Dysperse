@@ -88,9 +88,9 @@ export const Heatmap = ({ data }) => {
                 {
                   width: `${100 / 52}%`,
                   aspectRatio: "1 / 1",
-                  backgroundColor: t[0],
+                  backgroundColor: t[1],
                   borderWidth: 1,
-                  borderColor: t[1],
+                  borderColor: t[0],
                 },
               ]}
               onPress={() => alert(item.date)}
