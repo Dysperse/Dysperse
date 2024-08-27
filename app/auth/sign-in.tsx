@@ -3,16 +3,19 @@ import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import { Modal } from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Network from "expo-network";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
@@ -119,7 +122,136 @@ function QrLogin() {
   ) : error ? (
     <ErrorAlert message="Couldn't load an instant login QR code. Please try again later" />
   ) : (
-    <Spinner />
+    <View style={{ marginHorizontal: "auto" }}>
+      <Spinner />
+    </View>
+  );
+}
+
+function QrModal({ children }: { children: any }) {
+  const ref = useRef<BottomSheetModal>(null);
+  const trigger = cloneElement(children, {
+    onPress: () => ref.current.present(),
+  });
+
+  return (
+    <>
+      {trigger}
+      <Modal animation="SCALE" ref={ref} maxWidth={300}>
+        <IconButton
+          icon="close"
+          size={50}
+          onPress={() => ref.current.forceClose({ duration: 0.00001 })}
+          variant="outlined"
+          style={{ margin: 20, marginBottom: 0 }}
+        />
+        <QrLogin />
+      </Modal>
+    </>
+  );
+}
+
+function EmailModal({
+  control,
+  children,
+  handleSubmit,
+}: {
+  control: any;
+  children: any;
+  handleSubmit;
+}) {
+  const theme = useColorTheme();
+  const ref = useRef<BottomSheetModal>(null);
+  const inputRef = useRef(null);
+
+  const trigger = cloneElement(children, {
+    onPress: () => {
+      ref.current.present();
+      setTimeout(() => inputRef.current.focus({ preventScroll: true }), 100);
+    },
+  });
+
+  const onFinish = () => {
+    ref.current.forceClose({ duration: 0.00001 });
+    setTimeout(handleSubmit, 100);
+  };
+
+  return (
+    <>
+      {trigger}
+      <Modal animation="SCALE" ref={ref} maxWidth={400}>
+        <IconButton
+          icon="close"
+          size={50}
+          onPress={() => ref.current.forceClose({ duration: 0.00001 })}
+          variant="outlined"
+          style={{ margin: 20, marginBottom: 0 }}
+        />
+        <View style={{ padding: 20, gap: 10 }}>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextField
+                style={{
+                  height: 60,
+                  fontFamily: "body_900",
+                  borderRadius: 99,
+                  fontSize: 20,
+                  paddingHorizontal: 20,
+                }}
+                inputRef={inputRef}
+                placeholder="Email"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                onSubmitEditing={onFinish}
+                value={value}
+                variant="filled+outlined"
+              />
+            )}
+            name="email"
+          />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextField
+                style={{
+                  height: 60,
+                  fontFamily: "body_900",
+                  borderRadius: 99,
+                  fontSize: 20,
+                  paddingHorizontal: 20,
+                }}
+                placeholder="Password"
+                secureTextEntry
+                onBlur={onBlur}
+                onChangeText={onChange}
+                onSubmitEditing={onFinish}
+                value={value}
+                variant="filled+outlined"
+              />
+            )}
+            name="password"
+          />
+          <Button
+            variant="filled"
+            height={70}
+            onPress={onFinish}
+            isLoading={false}
+            text="Continue"
+            icon="east"
+            iconPosition="end"
+            large
+            bold
+          />
+        </View>
+      </Modal>
+    </>
   );
 }
 
@@ -188,33 +320,37 @@ function Credentials({
         </Text>
 
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
-          <Button
-            height={60}
-            variant="filled"
-            onPress={() => {}}
-            containerStyle={{ width: "100%" }}
-            textStyle={{ color: theme[1] }}
-            iconStyle={{ color: theme[1] }}
-            text="Continue with Email"
-            backgroundColors={{
-              default: theme[11],
-              hovered: theme[11],
-              pressed: theme[11],
-            }}
-            icon="email"
-            bold
-            large
-          />
-          <Button
-            height={60}
-            variant="filled"
-            onPress={() => {}}
-            containerStyle={{ width: "100%" }}
-            text="Continue with QR Code"
-            icon="center_focus_weak"
-            bold
-            large
-          />
+          <EmailModal control={control} handleSubmit={onSubmit}>
+            <Button
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              containerStyle={{ width: "100%" }}
+              textStyle={{ color: theme[1] }}
+              iconStyle={{ color: theme[1] }}
+              text="Continue with Email"
+              backgroundColors={{
+                default: theme[11],
+                hovered: theme[11],
+                pressed: theme[11],
+              }}
+              icon="email"
+              bold
+              large
+            />
+          </EmailModal>
+          <QrModal>
+            <Button
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              containerStyle={{ width: "100%" }}
+              text="Continue with QR Code"
+              icon="center_focus_weak"
+              bold
+              large
+            />
+          </QrModal>
           <Button
             height={60}
             variant="filled"
@@ -254,16 +390,16 @@ function Credentials({
         </View>
         <Button
           height={20}
-          onPress={() => {
-            Toast.show({ type: "info", text1: "Coming soon!" });
-          }}
+          onPress={handleCreateAccount}
           containerStyle={{
             width: "100%",
             opacity: 0.5,
+            marginBottom: 10,
             marginTop: "auto",
           }}
+          iconPosition="end"
           text="Create an account"
-          icon="key"
+          icon="auto_awesome"
           large
         />
       </View>
@@ -388,7 +524,18 @@ export default function SignIn() {
           },
         ]}
       >
-        {step === 0 || step === 2 ? (
+        {step === 4 || step === 2 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Spinner />
+          </View>
+        ) : step === 0 ? (
           <Credentials
             control={control}
             errors={errors}
