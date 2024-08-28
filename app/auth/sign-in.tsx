@@ -13,8 +13,10 @@ import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Linking from "expo-linking";
 import * as Network from "expo-network";
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
@@ -267,6 +269,67 @@ function EmailModal({
   );
 }
 
+function GoogleAuth() {
+  const theme = useColorTheme();
+  const { signIn } = useSession();
+
+  const [result, setResult] =
+    useState<WebBrowser.WebBrowserAuthSessionResult | null>(null);
+
+  useEffect(() => {
+    if (result?.type === "success") {
+      const t = new URL(result.url);
+      if (t.searchParams.has("session")) {
+        signIn(t.searchParams.get("session"));
+      }
+    }
+  }, [result, signIn]);
+
+  const handleClick = async () => {
+    setResult(
+      await WebBrowser.openAuthSessionAsync(
+        `https://accounts.google.com/o/oauth2/auth?${new URLSearchParams({
+          client_id:
+            "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
+          redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/auth/login/google`,
+          scope: "profile email",
+          response_type: "code",
+        }).toString()}`,
+        Linking.createURL("/auth/google")
+      )
+    );
+  };
+
+  return (
+    <>
+      <Button
+        height={60}
+        variant="filled"
+        onPress={handleClick}
+        containerStyle={{ width: "100%" }}
+        textStyle={{ color: theme[2] }}
+        iconStyle={{ color: theme[2] }}
+        backgroundColors={{
+          default: theme[11],
+          hovered: theme[11],
+          pressed: theme[11],
+        }}
+        text="Continue with Google"
+        icon={
+          (
+            <Svg fill={theme[2]} width={24} height={24} viewBox="0 0 512 512">
+              <title>ionicons-v5_logos</title>
+              <Path d="M473.16,221.48l-2.26-9.59H262.46v88.22H387c-12.93,61.4-72.93,93.72-121.94,93.72-35.66,0-73.25-15-98.13-39.11a140.08,140.08,0,0,1-41.8-98.88c0-37.16,16.7-74.33,41-98.78s61-38.13,97.49-38.13c41.79,0,71.74,22.19,82.94,32.31l62.69-62.36C390.86,72.72,340.34,32,261.6,32h0c-60.75,0-119,23.27-161.58,65.71C58,139.5,36.25,199.93,36.25,256S56.83,369.48,97.55,411.6C141.06,456.52,202.68,480,266.13,480c57.73,0,112.45-22.62,151.45-63.66,38.34-40.4,58.17-96.3,58.17-154.9C475.75,236.77,473.27,222.12,473.16,221.48Z" />
+            </Svg>
+          ) as any
+        }
+        bold
+        large
+      />
+    </>
+  );
+}
+
 function Credentials({
   control,
   errors,
@@ -332,20 +395,14 @@ function Credentials({
         </Text>
 
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
+          <GoogleAuth />
           <EmailModal control={control} handleSubmit={onSubmit}>
             <Button
               height={60}
               variant="filled"
               onPress={() => {}}
               containerStyle={{ width: "100%" }}
-              textStyle={{ color: theme[1] }}
-              iconStyle={{ color: theme[1] }}
               text="Continue with Email"
-              backgroundColors={{
-                default: theme[11],
-                hovered: theme[11],
-                pressed: theme[11],
-              }}
               icon="email"
               bold
               large
@@ -370,30 +427,6 @@ function Credentials({
               Toast.show({ type: "info", text1: "Coming soon!" });
             }}
             containerStyle={{ width: "100%", opacity: 0.5 }}
-            text="Continue with Google"
-            icon={
-              (
-                <Svg
-                  fill={theme[11]}
-                  width={24}
-                  height={24}
-                  viewBox="0 0 512 512"
-                >
-                  <title>ionicons-v5_logos</title>
-                  <Path d="M473.16,221.48l-2.26-9.59H262.46v88.22H387c-12.93,61.4-72.93,93.72-121.94,93.72-35.66,0-73.25-15-98.13-39.11a140.08,140.08,0,0,1-41.8-98.88c0-37.16,16.7-74.33,41-98.78s61-38.13,97.49-38.13c41.79,0,71.74,22.19,82.94,32.31l62.69-62.36C390.86,72.72,340.34,32,261.6,32h0c-60.75,0-119,23.27-161.58,65.71C58,139.5,36.25,199.93,36.25,256S56.83,369.48,97.55,411.6C141.06,456.52,202.68,480,266.13,480c57.73,0,112.45-22.62,151.45-63.66,38.34-40.4,58.17-96.3,58.17-154.9C475.75,236.77,473.27,222.12,473.16,221.48Z" />
-                </Svg>
-              ) as any
-            }
-            bold
-            large
-          />
-          <Button
-            height={60}
-            variant="filled"
-            onPress={() => {
-              Toast.show({ type: "info", text1: "Coming soon!" });
-            }}
-            containerStyle={{ width: "100%", opacity: 0.5 }}
             text="Continue with Passkey"
             icon="key"
             bold
@@ -411,7 +444,7 @@ function Credentials({
           }}
           iconPosition="end"
           text="Create an account"
-          icon="auto_awesome"
+          icon="magic_button"
           large
         />
       </View>
@@ -669,3 +702,4 @@ export default function SignIn() {
     </>
   );
 }
+
