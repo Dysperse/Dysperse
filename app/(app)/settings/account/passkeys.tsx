@@ -1,8 +1,6 @@
+import { useUser } from "@/context/useUser";
 import base64 from "@hexagon/base64";
-import {
-  Base64URLString,
-  PublicKeyCredentialUserEntityJSON,
-} from "@simplewebauthn/typescript-types";
+import { Base64URLString } from "@simplewebauthn/typescript-types";
 import * as Application from "expo-application";
 import React from "react";
 import {
@@ -66,37 +64,50 @@ const rp = {
 // Don't do this in production!
 const challenge = bufferToBase64URLString(utf8StringToBuffer("fizz"));
 
-const user = {
-  id: bufferToBase64URLString(utf8StringToBuffer("290283490")),
-  displayName: "username",
-  name: "username",
-} satisfies PublicKeyCredentialUserEntityJSON;
-
-const authenticatorSelection = {
-  userVerification: "required",
-  residentKey: "required",
-} satisfies AuthenticatorSelectionCriteria;
-
 export default function App() {
   const insets = useSafeAreaInsets();
+  const { session } = useUser();
 
   const [result, setResult] = React.useState();
   const [creationResponse, setCreationResponse] = React.useState<
     NonNullable<Awaited<ReturnType<typeof passkey.create>>>["response"] | null
   >(null);
+
   const [credentialId, setCredentialId] = React.useState("");
 
   const createPasskey = async () => {
     try {
       const json = await passkey.create({
-        challenge,
-        pubKeyCredParams: [{ alg: -7, type: "public-key" }],
         rp,
-        user,
-        authenticatorSelection,
-        ...(Platform.OS !== "android" && {
-          extensions: { largeBlob: { support: "required" } },
-        }),
+        user: {
+          id: bufferToBase64URLString(utf8StringToBuffer(session.user.id)),
+          displayName: session.user.profile.name,
+          name: session.user.profile.name,
+        },
+        challenge,
+        pubKeyCredParams: [
+          {
+            type: "public-key",
+            alg: -7,
+          },
+          {
+            type: "public-key",
+            alg: -257,
+          },
+        ],
+        timeout: 60000,
+        excludeCredentials: [],
+        authenticatorSelection: {
+          authenticatorAttachment: "platform",
+          residentKey: "required",
+          requireResidentKey: true,
+          userVerification: "required",
+        },
+        attestation: "direct",
+        hints: ["client-device", "security-key"],
+        extensions: {
+          credProps: true,
+        },
       });
 
       console.log("creation json -", json);
@@ -281,3 +292,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
