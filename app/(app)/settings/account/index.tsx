@@ -554,6 +554,39 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
   );
 }
 
+function PasskeysSection() {
+  const breakpoints = useResponsiveBreakpoints();
+  const handlePress = () => router.push("/settings/account/passkeys");
+
+  return (
+    <View
+      style={{
+        flexDirection: breakpoints.md ? "row" : "column",
+        alignItems: "center",
+        gap: 20,
+      }}
+    >
+      <View style={{ flex: 1 }}>
+        <Text style={settingStyles.heading}>Two-Factor Authentication</Text>
+        <Text style={{ opacity: 0.6 }}>
+          Two-factor authentication (2FA) is an extra layer of security for your
+          account. You can choose to receive 2FA codes via SMS or an
+          authenticator app.
+        </Text>
+      </View>
+      <Button
+        height={60}
+        containerStyle={breakpoints.md ? { marginTop: 30 } : { width: "100%" }}
+        variant="filled"
+        onPress={handlePress}
+      >
+        <ButtonText>Edit</ButtonText>
+        <Icon>arrow_forward_ios</Icon>
+      </Button>
+    </View>
+  );
+}
+
 export default function Page() {
   const { session, sessionToken, mutate } = useUser();
   const { data, error } = useSWR(
@@ -602,6 +635,7 @@ export default function Page() {
           <GoalsSettings updateUserSettings={updateUserSettings} />
           <EmailSection />
           <TwoFactorAuthSection />
+          <PasskeysSection />
         </>
       ) : error ? (
         <ErrorAlert />
