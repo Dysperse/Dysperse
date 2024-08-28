@@ -15,11 +15,12 @@ export function Greeting() {
 
   return (
     <Text
-      weight={900}
       numberOfLines={1}
       style={{
+        fontFamily: "serifText800",
         color: theme[12],
-        fontSize: breakpoints.md ? 40 : 30,
+        fontSize: breakpoints.md ? 45 : 30,
+        textAlign: "center",
         marginBottom: 10,
       }}
     >

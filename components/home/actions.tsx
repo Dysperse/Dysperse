@@ -1,8 +1,11 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import dayjs from "dayjs";
 import { router } from "expo-router";
+import { useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import useSWR from "swr";
 
@@ -34,6 +37,33 @@ const styles = StyleSheet.create({
   },
 });
 
+export function PlanDayPrompt() {
+  const { session } = useUser();
+  const theme = useColorTheme();
+  const handlePress = useCallback(() => {
+    router.push("/plan");
+  }, []);
+
+  const hasCompleted = dayjs(session?.user?.profile?.lastPlanned).isToday();
+
+  return (
+    <TouchableOpacity style={actionStyles.item} onPress={handlePress}>
+      <Icon>rocket_launch</Icon>
+      <Text style={{ color: theme[11] }} numberOfLines={1}>
+        Plan my day
+      </Text>
+      {!hasCompleted && (
+        <View
+          style={[
+            styles.badge,
+            { backgroundColor: theme[9], width: 10, height: 10 },
+          ]}
+        ></View>
+      )}
+    </TouchableOpacity>
+  );
+}
+
 export function Actions() {
   const theme = useColorTheme();
   const { handleOpen } = useCommandPaletteContext();
@@ -52,9 +82,9 @@ export function Actions() {
         style={actionStyles.item}
         onPress={() => router.push("/insights")}
       >
-        <Icon>magic_button</Icon>
+        <Icon>lightbulb</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          My insights...
+          My insights
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -73,12 +103,8 @@ export function Actions() {
           </View>
         )}
       </TouchableOpacity>
-      <TouchableOpacity style={actionStyles.item} onPress={openTrash}>
-        <Icon>delete</Icon>
-        <Text style={{ color: theme[11] }} numberOfLines={1}>
-          Recently deleted
-        </Text>
-      </TouchableOpacity>
+
+      <PlanDayPrompt />
     </View>
   );
 }

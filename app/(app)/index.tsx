@@ -2,7 +2,6 @@ import { Actions } from "@/components/home/actions";
 import { EditWallpaper } from "@/components/home/edit-wallpaper";
 import { FriendActivity } from "@/components/home/friend-activity";
 import { Greeting } from "@/components/home/greeting";
-import { PlanDayPrompt } from "@/components/home/plan-day-trigger";
 import { StreakGoal } from "@/components/home/streaks";
 import { styles } from "@/components/home/styles";
 import { TodayText } from "@/components/home/today";
@@ -13,6 +12,7 @@ import { hslToHex } from "@/helpers/hslToHex";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Logo from "@/ui/logo";
 import dayjs from "dayjs";
 import { memo, useState } from "react";
 import {
@@ -124,51 +124,33 @@ function Page() {
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
+        {Platform.OS === "web" && (
+          <CustomizeButton view={view} setView={setView} />
+        )}
         <ScrollView
-          scrollEnabled={!breakpoints.md}
-          contentContainerStyle={[
-            breakpoints.md && { height, flex: 1 },
-            { position: "relative" },
-          ]}
+          centerContent
           style={{ marginTop: insets.top }}
+          contentContainerStyle={{
+            maxWidth: 400,
+            width: "100%",
+            marginHorizontal: "auto",
+          }}
         >
-          {Platform.OS === "web" && (
-            <CustomizeButton view={view} setView={setView} />
-          )}
           {!breakpoints.md && <MenuButton />}
           {view === "edit" ? (
             <EditWallpaper />
           ) : (
-            <View
-              style={[
-                styles.content,
-                !breakpoints.md && {
-                  width,
-                  paddingTop: 150,
-                  paddingHorizontal: 20,
-                },
-              ]}
-            >
-              <View style={{ marginTop: "auto" }} />
-              <Greeting />
-              <TodayText />
-              <View
-                style={[
-                  styles.contentColumnContainer,
-                  { flexDirection: breakpoints.md ? "row" : "column" },
-                ]}
-              >
-                <View style={{ flex: 1 }}>
-                  <View style={styles.leftContainer}>
-                    <Actions />
-                    <PlanDayPrompt />
-                  </View>
-                </View>
-                <View style={breakpoints.md && { flex: 1 }}>
-                  <StreakGoal />
-                  <FriendActivity />
-                </View>
+            <View style={{ gap: 20, paddingVertical: 100 }}>
+              <View style={{ alignItems: "center", marginBottom: -15 }}>
+                <Logo size={64} />
               </View>
+              <View style={{ alignItems: "center" }}>
+                <Greeting />
+                <TodayText />
+              </View>
+              <Actions />
+              <StreakGoal />
+              <FriendActivity />
             </View>
           )}
         </ScrollView>

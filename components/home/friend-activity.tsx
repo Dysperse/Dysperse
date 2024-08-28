@@ -96,7 +96,7 @@ export function FriendActivity() {
     );
 
   return (
-    <>
+    <View>
       <View style={styles.container}>
         <Text variant="eyebrow">Recent Activity</Text>
         {hasRequest && (
@@ -223,6 +223,6 @@ export function FriendActivity() {
           error && <ErrorAlert />
         )}
       </ScrollView>
-    </>
+    </View>
   );
 }

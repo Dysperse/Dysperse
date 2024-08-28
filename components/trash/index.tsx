@@ -1,18 +1,20 @@
 import { Entity } from "@/components/collections/entity";
+import ContentWrapper from "@/components/layout/content";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Alert from "@/ui/Alert";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { FlashList } from "@shopify/flash-list";
 import { useCallback } from "react";
 import { View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -30,16 +32,16 @@ const DeleteAllButton = ({ handleDelete }) => {
       <Button
         variant="filled"
         large
-        bold
-        icon="delete"
-        iconPosition="end"
-        text="Clear"
-      />
+        containerStyle={[!breakpoints.md && { width: "100%", marginTop: 20 }]}
+      >
+        <Icon>delete_forever</Icon>
+        <ButtonText>Clear</ButtonText>
+      </Button>
     </ConfirmationModal>
   );
 };
 
-export default function Trash() {
+export function Trash() {
   const { session } = useSession();
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
@@ -65,27 +67,55 @@ export default function Trash() {
   console.log(data);
 
   return (
-    <View style={{ flex: 1, maxWidth: 500, marginHorizontal: "auto" }}>
-      {Array.isArray(data) ? (
-        <FlashList
-          contentContainerStyle={{
-            paddingVertical: 50,
+    <ContentWrapper noPaddingTop>
+      {!breakpoints.md && (
+        <IconButton
+          style={{
+            position: "absolute",
+            top: 20,
+            left: 20,
+            marginTop: insets.top,
+            zIndex: 1,
           }}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={() => (
-            <View style={{ marginBottom: 20 }}>
-              <Alert
-                emoji="26A0"
-                title="Heads up!"
-                subtitle="Items are permanently deleted on the 1st of every month"
-              />
-              <DeleteAllButton handleDelete={handleDelete} />
-            </View>
-          )}
+          icon="menu"
+          size={55}
+          variant="outlined"
+          onPress={() => sidebarRef.current.openDrawer()}
+        />
+      )}
+      <View
+        style={{
+          flexDirection: breakpoints.md ? "row" : "column",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: 40,
+          paddingBottom: 20,
+          paddingTop: breakpoints.md ? 50 : 100 + insets.top,
+        }}
+      >
+        <View>
+          <Text style={{ fontSize: 40 }} weight={800}>
+            Trash
+          </Text>
+          <Text
+            style={{
+              opacity: 0.6,
+            }}
+          >
+            Items are permanently deleted on the 1st of every month
+          </Text>
+        </View>
+        <DeleteAllButton handleDelete={handleDelete} />
+      </View>
+      {Array.isArray(data) ? (
+        <FlatList
           data={data.filter((t) => t.trash)}
           style={{
             flex: 1,
             height: "100%",
+          }}
+          contentContainerStyle={{
+            paddingHorizontal: 35,
           }}
           centerContent={data.filter((t) => t.trash).length === 0}
           ListEmptyComponent={() => (
@@ -108,18 +138,21 @@ export default function Trash() {
             </View>
           )}
           renderItem={({ item }) => (
-            <Entity
-              isReadOnly={false}
-              showLabel
-              onTaskUpdate={(newTask) => {
-                console.log("New task recieved", newTask);
-                mutate((oldData) =>
-                  oldData.map((t) => (t.id === newTask.id ? newTask : t))
-                );
-              }}
-              item={item}
-            />
+            <View style={{ maxWidth: 400, width: "100%" }}>
+              <Entity
+                isReadOnly={false}
+                showLabel
+                onTaskUpdate={(newTask) => {
+                  console.log("New task recieved", newTask);
+                  mutate((oldData) =>
+                    oldData.map((t) => (t.id === newTask.id ? newTask : t))
+                  );
+                }}
+                item={item}
+              />
+            </View>
           )}
+          //   ={100}
           keyExtractor={(item: any) => item.id}
         />
       ) : error ? (
@@ -131,6 +164,6 @@ export default function Trash() {
           <Spinner />
         </View>
       )}
-    </View>
+    </ContentWrapper>
   );
 }

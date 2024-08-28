@@ -11,6 +11,7 @@ export function TodayText() {
       style={{
         color: theme[12],
         fontSize: 20,
+        textAlign: "center",
         marginBottom: 25,
         marginTop: -10,
         opacity: 0.6,

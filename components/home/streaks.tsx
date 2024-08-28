@@ -87,62 +87,64 @@ export function StreakGoal() {
 
   const desktop = breakpoints.md && width > 1000;
 
-  return error ? (
-    <ErrorAlert />
-  ) : (
-    <>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 10,
-          marginTop: breakpoints.md ? 0 : 20,
-        }}
-      >
-        <Text variant="eyebrow">Goals</Text>
-        <TouchableOpacity onPress={() => router.push("/settings/account")}>
-          <Icon style={{ opacity: 0.6, marginRight: 10 }} size={20}>
-            tune
-          </Icon>
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          backgroundColor: theme[2],
-          borderRadius: 20,
-          borderWidth: 1,
-          borderColor: theme[5],
-          marginBottom: 30,
-          padding: 20,
-          flexDirection: desktop ? "row" : "column",
-          alignItems: desktop ? "center" : "flex-start",
-          height: desktop ? 80 : undefined,
-          gap: desktop ? undefined : 20,
-          justifyContent: "center",
-        }}
-      >
-        {data ? (
-          !(
-            process.env.NODE_ENV === "development" && Platform.OS === "android"
-          ) && (
-            <>
-              <GoalIndicator
-                name="Daily goal"
-                completed={data.dayTasks || 0}
-                goal={data.user?.dailyStreakGoal || 5}
-              />
-              <GoalIndicator
-                name="Weekly goal"
-                completed={data.weekTasks || 0}
-                goal={data.user?.weeklyStreakGoal || 5}
-              />
-            </>
-          )
-        ) : (
-          <Spinner />
-        )}
-      </View>
-    </>
+  return (
+    <View>
+      {error ? (
+        <ErrorAlert />
+      ) : (
+        <>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 10,
+              marginTop: breakpoints.md ? 0 : 20,
+            }}
+          >
+            <Text variant="eyebrow">Goals</Text>
+            <TouchableOpacity onPress={() => router.push("/settings/account")}>
+              <Icon style={{ opacity: 0.6, marginRight: 10 }} size={20}>
+                stylus
+              </Icon>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              backgroundColor: theme[2],
+              borderRadius: 20,
+              borderWidth: 1,
+              borderColor: theme[5],
+              padding: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 20,
+            }}
+          >
+            {data ? (
+              !(
+                process.env.NODE_ENV === "development" &&
+                Platform.OS === "android"
+              ) && (
+                <>
+                  <GoalIndicator
+                    name="Daily goal"
+                    completed={data.dayTasks || 0}
+                    goal={data.user?.dailyStreakGoal || 5}
+                  />
+                  <GoalIndicator
+                    name="Weekly goal"
+                    completed={data.weekTasks || 0}
+                    goal={data.user?.weeklyStreakGoal || 5}
+                  />
+                </>
+              )
+            ) : (
+              <Spinner />
+            )}
+          </View>
+        </>
+      )}
+    </View>
   );
 }

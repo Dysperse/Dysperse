@@ -7,7 +7,6 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
@@ -32,6 +31,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
 import { LabelEditModal } from "../[tab]/collections/[id]/[type]";
+import Trash from "../trash";
 
 const containerStyles = StyleSheet.create({
   root: { flexDirection: "row", flex: 1 },
@@ -710,7 +710,9 @@ const Collections = () => {
 export default function Page() {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const [view, setView] = useState<"labels" | "collections">("labels");
+  const [view, setView] = useState<"labels" | "collections" | "deleted">(
+    "labels"
+  );
   const breakpoints = useResponsiveBreakpoints();
 
   const handleBack = () => {
@@ -746,33 +748,45 @@ export default function Page() {
             top: insets.top + 15,
           }}
         />
-        <ButtonGroup
-          options={[
+        <View style={{ marginHorizontal: "auto", flexDirection: "row" }}>
+          {[
             { label: "Labels", value: "labels" },
             { label: "Collections", value: "collections" },
-          ]}
-          state={[view, setView]}
-          buttonStyle={{ borderBottomWidth: 0 }}
-          containerStyle={{
-            width: 200,
-            marginHorizontal: "auto",
-            marginVertical: 10,
-          }}
-          scrollContainerStyle={{ width: "100%" }}
-          activeComponent={
-            <View
-              style={{
-                height: 4,
-                width: 10,
-                borderRadius: 99,
-                backgroundColor: theme[11],
-                margin: "auto",
-              }}
-            />
-          }
-        />
+            { label: "Recently deleted", value: "deleted" },
+          ].map((button) => (
+            <Button
+              key={button.label}
+              onPress={() => setView(button.value as any)}
+              height={64}
+              containerStyle={{ minWidth: 0 }}
+              style={{ flexDirection: "column", gap: 0, paddingHorizontal: 20 }}
+            >
+              <ButtonText>{button.label}</ButtonText>
+              {view === button.value && (
+                <View
+                  style={{
+                    height: 5,
+                    width: 15,
+                    marginTop: -7,
+                    marginBottom: -8,
+                    borderRadius: 99,
+                    backgroundColor: theme[11],
+                    marginHorizontal: "auto",
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+            </Button>
+          ))}
+        </View>
       </LinearGradient>
-      {view === "labels" ? <Labels /> : <Collections />}
+      {view === "labels" ? (
+        <Labels />
+      ) : view === "deleted" ? (
+        <Trash />
+      ) : (
+        <Collections />
+      )}
     </ContentWrapper>
   );
 }
