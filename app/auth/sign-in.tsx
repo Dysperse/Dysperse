@@ -396,18 +396,6 @@ function Credentials({
 
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
           <GoogleAuth />
-          <EmailModal control={control} handleSubmit={onSubmit}>
-            <Button
-              height={60}
-              variant="filled"
-              onPress={() => {}}
-              containerStyle={{ width: "100%" }}
-              text="Continue with Email"
-              icon="email"
-              bold
-              large
-            />
-          </EmailModal>
           <QrModal>
             <Button
               height={60}
@@ -420,6 +408,18 @@ function Credentials({
               large
             />
           </QrModal>
+          <EmailModal control={control} handleSubmit={onSubmit}>
+            <Button
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              containerStyle={{ width: "100%" }}
+              text="Continue with Email"
+              icon="email"
+              bold
+              large
+            />
+          </EmailModal>
           <Button
             height={60}
             variant="filled"
