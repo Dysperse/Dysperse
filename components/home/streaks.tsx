@@ -15,9 +15,6 @@ import { useContentWrapperContext } from "../layout/content";
 
 const GoalIndicator = ({ completed, goal, name }) => {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { width } = useContentWrapperContext();
-  const desktop = breakpoints.md && width > 1000;
 
   return (
     <View
@@ -25,7 +22,7 @@ const GoalIndicator = ({ completed, goal, name }) => {
         flexDirection: "row",
         alignItems: "center",
         gap: 20,
-        flex: desktop ? 1 : undefined,
+        flex: 1,
       }}
     >
       <View
