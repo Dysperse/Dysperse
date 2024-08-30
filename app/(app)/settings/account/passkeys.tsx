@@ -1,6 +1,7 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
@@ -10,10 +11,12 @@ import ListItemText from "@/ui/ListItemText";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import base64 from "@hexagon/base64";
 import { Base64URLString } from "@simplewebauthn/typescript-types";
 import dayjs from "dayjs";
 import * as Application from "expo-application";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { Platform, View } from "react-native";
 import * as passkey from "react-native-passkeys";
@@ -57,7 +60,7 @@ export function utf8StringToBuffer(value: string): ArrayBuffer {
  * Decode a base64url string into its original string
  */
 
-function CreatePasskey(mutate) {
+function CreatePasskey({ mutate }) {
   const { session, sessionToken } = useUser();
   const [loading, setLoading] = useState(false);
 
@@ -164,11 +167,21 @@ export function base64UrlToString(base64urlString: Base64URLString): string {
 
 export default function App() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
   const { data, error, mutate } = useSWR(["user/passkeys"]);
 
   return (
     <SettingsScrollView>
+      <View style={{ flexDirection: "row", marginBottom: 20 }}>
+        <Button
+          variant="outlined"
+          text="Login security"
+          icon="arrow_back_ios"
+          onPress={() => router.back()}
+          containerStyle={{ margin: breakpoints.md ? 0 : 20 }}
+        />
+      </View>
       <View
         style={{
           flexDirection: "row",
@@ -206,7 +219,38 @@ export default function App() {
           data.map((item) => (
             <ListItemButton disabled variant="filled" key={item.id}>
               <ListItemText
-                primary={item.friendlyName}
+                primary={
+                  <TextField
+                    style={{
+                      paddingHorizontal: 2,
+                      paddingVertical: 2,
+                      borderRadius: 2,
+                    }}
+                    variant="filled+outlined"
+                    defaultValue={item.friendlyName}
+                    onBlur={async (e) => {
+                      await sendApiRequest(
+                        sessionToken,
+                        "PUT",
+                        `user/passkeys`,
+                        {
+                          id: item.id,
+                          friendlyName: e.nativeEvent.text,
+                        }
+                      );
+                      mutate(
+                        (o) =>
+                          o.map((i) =>
+                            i.id === item.id
+                              ? { ...i, friendlyName: e.nativeEvent.text }
+                              : i
+                          ),
+                        { revalidate: false }
+                      );
+                      Toast.show({ type: "success", text1: "Saved!" });
+                    }}
+                  />
+                }
                 secondary={`Created ${dayjs(item.createdAt).fromNow()}`}
               />
               <IconButton

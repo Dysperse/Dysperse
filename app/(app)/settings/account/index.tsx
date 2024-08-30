@@ -468,7 +468,7 @@ function TwoFactorAuthSection() {
               }
             );
           } else {
-            router.push("/settings/login/account/two-factor-authentication");
+            router.replace("/settings/login/account/two-factor-authentication");
           }
         }}
         disabled={!isEnabled}
@@ -556,7 +556,7 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
 
 function PasskeysSection() {
   const breakpoints = useResponsiveBreakpoints();
-  const handlePress = () => router.push("/settings/account/passkeys");
+  const handlePress = () => router.replace("/settings/account/passkeys");
 
   return (
     <View
