@@ -11,6 +11,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import dayjs from "dayjs";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Linking from "expo-linking";
@@ -392,7 +393,16 @@ function Credentials({
         </Text>
 
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
-          <GoogleAuth />
+          {
+            // if IUSD chromebook
+            !(
+              Platform.OS === "web" &&
+              navigator.userAgent.includes("CrOS") &&
+              typeof navigator?.managed?.getHostname === "function" &&
+              dayjs.tz.guess() === "America/Los_Angeles" &&
+              navigator.language === "en-US"
+            ) && <GoogleAuth />
+          }
           <QrModal>
             <Button
               height={60}
