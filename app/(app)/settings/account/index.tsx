@@ -567,11 +567,10 @@ function PasskeysSection() {
       }}
     >
       <View style={{ flex: 1 }}>
-        <Text style={settingStyles.heading}>Two-Factor Authentication</Text>
+        <Text style={settingStyles.heading}>Passkeys</Text>
         <Text style={{ opacity: 0.6 }}>
-          Two-factor authentication (2FA) is an extra layer of security for your
-          account. You can choose to receive 2FA codes via SMS or an
-          authenticator app.
+          Passkeys are a much more faster and secure way to login to your
+          account. Log in with Face ID, Touch ID, or a security key.
         </Text>
       </View>
       <Button
@@ -645,3 +644,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

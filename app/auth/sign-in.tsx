@@ -18,10 +18,11 @@ import { router } from "expo-router";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import * as passkey from "react-native-passkeys";
 import QRCode from "react-native-qrcode-svg";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import Toast from "react-native-toast-message";
+import { rp } from "../(app)/settings/account/passkeys";
 import { authStyles } from "../../components/authStyles";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
@@ -270,25 +271,21 @@ function EmailModal({
 function Credentials({
   control,
   errors,
+  setStep,
   onSubmit,
   handleSubmit,
   step,
 }: {
   control: Control<any>;
   errors: any;
+  setStep: any;
   onSubmit: any;
   handleSubmit: any;
   step: number;
 }) {
-  const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleForgot = useCallback(
-    () => router.push("/auth/forgot-password"),
-    []
-  );
+  const { signIn } = useSession();
 
   const handleCreateAccount = useCallback(
     () => router.push("/auth/sign-up"),
@@ -390,10 +387,42 @@ function Credentials({
           <Button
             height={60}
             variant="filled"
-            onPress={() => {
-              Toast.show({ type: "info", text1: "Coming soon!" });
+            onPress={async () => {
+              try {
+                const { challenge } = await fetch(
+                  `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`
+                ).then((res) => res.json());
+
+                const json = await passkey.get({
+                  rpId: rp.id,
+                  challenge,
+                });
+
+                setStep(2);
+
+                const result = await fetch(
+                  `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`,
+                  {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                      challenge,
+                      response: json,
+                      // publicKey: bufferToBase64URLString(
+                      //   json.response?.getPublicKey().toString()
+                      // ),
+                    }),
+                  }
+                ).then((res) => res.json());
+
+                if (!result.session) throw new Error("No session");
+                signIn(result.session);
+              } catch (e) {
+                setStep(0);
+                console.error("Passkey Error!", e);
+                Toast.show({ type: "error" });
+              }
             }}
-            containerStyle={{ width: "100%", opacity: 0.5 }}
+            containerStyle={{ width: "100%" }}
             text="Continue with Passkey"
             icon="key"
             bold
@@ -554,6 +583,7 @@ export default function SignIn() {
             handleSubmit={handleSubmit}
             onSubmit={onSubmit}
             step={step}
+            setStep={setStep}
           />
         ) : step === 1 ? (
           <View style={authStyles.container}>
@@ -669,3 +699,4 @@ export default function SignIn() {
     </>
   );
 }
+
