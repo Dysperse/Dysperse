@@ -89,7 +89,7 @@ export default function Page() {
           variant="outlined"
           text="Login security"
           icon="arrow_back_ios"
-          onPress={() => router.back()}
+          onPress={() => router.replace("/settings/account")}
           containerStyle={{ margin: breakpoints.md ? 0 : 20 }}
         />
       </View>
@@ -219,3 +219,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
