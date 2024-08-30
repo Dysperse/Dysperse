@@ -118,7 +118,10 @@ export const Modal = forwardRef(
         >
           <Pressable
             onPress={(e) => e.stopPropagation()}
-            style={{ width: "100%", maxWidth: props.maxWidth || 500 }}
+            style={{
+              width: "100%",
+              maxWidth: props.maxWidth || 500,
+            }}
           >
             <Animated.View
               style={[

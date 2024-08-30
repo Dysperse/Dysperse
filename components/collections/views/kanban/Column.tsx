@@ -265,12 +265,14 @@ export function Column(props: ColumnProps) {
               >
                 <Button
                   variant="filled"
-                  height={50}
                   containerStyle={{ flex: 1 }}
-                >
-                  <Icon>add</Icon>
-                  <ButtonText>Create</ButtonText>
-                </Button>
+                  large={!breakpoints.md}
+                  bold={!breakpoints.md}
+                  iconPosition="end"
+                  text="Create"
+                  icon="stylus_note"
+                  height={breakpoints.md ? 50 : 55}
+                />
               </CreateTask>
             </View>
           )}

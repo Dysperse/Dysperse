@@ -688,7 +688,9 @@ function FocusPanelHome({
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
-                <Freeze freeze={shouldSuspendRendering}>
+                <Freeze
+                  freeze={shouldSuspendRendering || panelState === "CLOSED"}
+                >
                   {data
                     .sort(function (a, b) {
                       if (a.order < b.order) return -1;
