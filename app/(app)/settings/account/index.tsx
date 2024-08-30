@@ -468,7 +468,7 @@ function TwoFactorAuthSection() {
               }
             );
           } else {
-            router.push("/settings/login/account/two-factor-authentication");
+            router.replace("/settings/login/account/two-factor-authentication");
           }
         }}
         disabled={!isEnabled}
@@ -554,6 +554,38 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
   );
 }
 
+function PasskeysSection() {
+  const breakpoints = useResponsiveBreakpoints();
+  const handlePress = () => router.replace("/settings/account/passkeys");
+
+  return (
+    <View
+      style={{
+        flexDirection: breakpoints.md ? "row" : "column",
+        alignItems: "center",
+        gap: 20,
+      }}
+    >
+      <View style={{ flex: 1 }}>
+        <Text style={settingStyles.heading}>Passkeys</Text>
+        <Text style={{ opacity: 0.6 }}>
+          Passkeys are a much more faster and secure way to login to your
+          account. Log in with Face ID, Touch ID, or a security key.
+        </Text>
+      </View>
+      <Button
+        height={60}
+        containerStyle={breakpoints.md ? { marginTop: 30 } : { width: "100%" }}
+        variant="filled"
+        onPress={handlePress}
+      >
+        <ButtonText>Edit</ButtonText>
+        <Icon>arrow_forward_ios</Icon>
+      </Button>
+    </View>
+  );
+}
+
 export default function Page() {
   const { session, sessionToken, mutate } = useUser();
   const { data, error } = useSWR(
@@ -602,6 +634,7 @@ export default function Page() {
           <GoalsSettings updateUserSettings={updateUserSettings} />
           <EmailSection />
           <TwoFactorAuthSection />
+          <PasskeysSection />
         </>
       ) : error ? (
         <ErrorAlert />
@@ -611,3 +644,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

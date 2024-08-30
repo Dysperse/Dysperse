@@ -160,6 +160,7 @@ export default function Layout() {
                   "login/scan",
                   "login/account/index",
                   "login/account/two-factor-authentication",
+                  "login/account/passkeys",
                   "login/devices",
                   "account/profile",
                   "index",
@@ -183,7 +184,8 @@ export default function Layout() {
                         !breakpoints.md && d !== "settings/index",
                       detachPreviousScreen:
                         d === "settings/index" ||
-                        d === "login/account/two-factor-authentication",
+                        d === "login/account/two-factor-authentication" ||
+                        d === "login/account/passkeys",
 
                       ...(!breakpoints.md && {
                         ...TransitionPresets.SlideFromRightIOS,
