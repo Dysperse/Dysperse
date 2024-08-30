@@ -403,30 +403,6 @@ function Credentials({
               navigator.language === "en-US"
             ) && <GoogleAuth />
           }
-          <QrModal>
-            <Button
-              height={60}
-              variant="filled"
-              onPress={() => {}}
-              containerStyle={{ width: "100%" }}
-              text="Continue with QR Code"
-              icon="center_focus_weak"
-              bold
-              large
-            />
-          </QrModal>
-          <EmailModal control={control} handleSubmit={onSubmit}>
-            <Button
-              height={60}
-              variant="filled"
-              onPress={() => {}}
-              containerStyle={{ width: "100%" }}
-              text="Continue with Email"
-              icon="email"
-              bold
-              large
-            />
-          </EmailModal>
           <Button
             height={60}
             variant="filled"
@@ -471,6 +447,30 @@ function Credentials({
             bold
             large
           />
+          <QrModal>
+            <Button
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              containerStyle={{ width: "100%" }}
+              text="Continue with QR Code"
+              icon="center_focus_weak"
+              bold
+              large
+            />
+          </QrModal>
+          <EmailModal control={control} handleSubmit={onSubmit}>
+            <Button
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              containerStyle={{ width: "100%" }}
+              text="Continue with Email"
+              icon="email"
+              bold
+              large
+            />
+          </EmailModal>
         </View>
         <Button
           height={20}
