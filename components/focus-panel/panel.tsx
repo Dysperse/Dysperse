@@ -516,7 +516,7 @@ function PanelContent() {
           },
         ]}
       />
-      <WakeLock />
+      {process.env.NODE_ENV !== "development" && <WakeLock />}
       <NavigationContainer
         ref={r}
         documentTitle={{ enabled: false }}
