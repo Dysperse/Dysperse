@@ -37,9 +37,9 @@ export const Intro = ({ form }) => {
         style={[
           {
             marginTop: "auto",
-            fontSize: 55,
+            fontSize: 50,
             width: "100%",
-            lineHeight: 55,
+            lineHeight: 50,
             paddingTop: 10,
             marginBottom: 15,
             fontFamily: "serifText800",
@@ -47,7 +47,7 @@ export const Intro = ({ form }) => {
           },
         ]}
       >
-        Welcome to #dysperse!
+        Welcome to #dysperse.
       </Text>
       <Text
         style={{

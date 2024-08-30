@@ -253,6 +253,7 @@ export const Profile = ({ form }) => {
                     trigger={
                       <Pressable style={{ width: "33.33%" }}>
                         <TextField
+                          editable={false}
                           value={months[value[1] - 1]}
                           variant="filled+outlined"
                           placeholder="MMMM"

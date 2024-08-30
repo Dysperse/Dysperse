@@ -221,11 +221,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
         Toast.show({ type: "success", text1: "Collection up to date!" });
       },
     },
-    {
-      icon: "fluorescent",
-      text: "Customize task chips",
-      callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
-    },
+    // {
+    //   icon: "fluorescent",
+    //   text: "Customize task chips",
+    //   callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
+    // },
     {
       renderer: () => (
         <ConfirmationModal

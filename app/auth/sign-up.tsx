@@ -92,7 +92,7 @@ const ColorPressable = ({
           borderRadius: 20,
         }}
       >
-        <Text style={{ fontSize: 30, color: color.p[11] }} weight={700}>
+        <Text style={{ fontSize: 20, color: color.p[11] }} weight={700}>
           {themes[color.n].name}
         </Text>
         <Icon

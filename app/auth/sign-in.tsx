@@ -356,6 +356,13 @@ function Credentials({
     []
   );
 
+  const isIUSDChromebook =
+    Platform.OS === "web" &&
+    navigator.userAgent.includes("CrOS") &&
+    typeof navigator?.managed?.getHostname === "function" &&
+    dayjs.tz.guess() === "America/Los_Angeles" &&
+    navigator.language === "en-US";
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -395,14 +402,29 @@ function Credentials({
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
           {
             // if IUSD chromebook
-            !(
-              Platform.OS === "web" &&
-              navigator.userAgent.includes("CrOS") &&
-              typeof navigator?.managed?.getHostname === "function" &&
-              dayjs.tz.guess() === "America/Los_Angeles" &&
-              navigator.language === "en-US"
-            ) && <GoogleAuth />
+            !isIUSDChromebook && <GoogleAuth />
           }
+          <EmailModal control={control} handleSubmit={onSubmit}>
+            <Button
+              height={60}
+              variant="filled"
+              onPress={() => {}}
+              {...(isIUSDChromebook && {
+                textStyle: { color: theme[2] },
+                iconStyle: { color: theme[2] },
+                backgroundColors: {
+                  default: theme[11],
+                  hovered: theme[11],
+                  pressed: theme[11],
+                },
+              })}
+              containerStyle={{ width: "100%" }}
+              text="Continue with Email"
+              icon="email"
+              bold
+              large
+            />
+          </EmailModal>
           <Button
             height={60}
             variant="filled"
@@ -459,18 +481,6 @@ function Credentials({
               large
             />
           </QrModal>
-          <EmailModal control={control} handleSubmit={onSubmit}>
-            <Button
-              height={60}
-              variant="filled"
-              onPress={() => {}}
-              containerStyle={{ width: "100%" }}
-              text="Continue with Email"
-              icon="email"
-              bold
-              large
-            />
-          </EmailModal>
         </View>
         <Button
           height={20}
@@ -742,4 +752,3 @@ export default function SignIn() {
     </>
   );
 }
-

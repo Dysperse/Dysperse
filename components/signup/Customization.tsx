@@ -81,7 +81,7 @@ export const Customization = ({ form }) => {
         control={control}
         name="methods"
         render={({ field: { value, onChange } }) => (
-          <View>
+          <View style={{ gap: 10, marginBottom: 15 }}>
             {methods.map((method) => (
               <ListItemButton
                 variant="outlined"
@@ -96,7 +96,6 @@ export const Customization = ({ form }) => {
                 style={({ pressed, hovered }) => [
                   {
                     flexDirection: "row",
-                    marginBottom: 15,
                   },
                   value.includes(method.key) && {
                     backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],

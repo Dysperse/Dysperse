@@ -33,18 +33,18 @@ const Turnstile = ({
     <!DOCTYPE html>
     <html>
       <head>
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=_turnstileCb" async defer></script>
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
          <script>
-          function _turnstileCb() {
-            turnstile.render('#myWidget', {
-              theme: "${Appearance.getColorScheme()}",
-              sitekey: '0x4AAAAAAABo1BKboDBdlv8r',
-              callback: (token) => {
-                if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(token);
-                if(window.parent) window.parent.postMessage(token, '*');
-              },
-            });
-          }
+          turnstile.ready(function () {
+              turnstile.render('#t', {
+                theme: "${Appearance.getColorScheme()}",
+                sitekey: '0x4AAAAAAABo1BKboDBdlv8r',
+                callback: function(token) {
+                  if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(token);
+                  if(window.parent) window.parent.postMessage(token, '*');
+                  },
+              });
+          });
         </script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="color-scheme" content="dark">
@@ -52,7 +52,7 @@ const Turnstile = ({
       <body style="margin:0;display:flex;justify-content:start;overflow:hidden;background-color: ${
         Appearance.getColorScheme() === "dark" ? "#383838" : "#e0e0e0"
       }">
-        <div id="myWidget"></div>
+        <div id="t"></div>
       </body>
     </html>
   `;
