@@ -15,6 +15,7 @@ export function TodayText() {
         marginTop: -10,
         opacity: 0.6,
       }}
+      aria-valuetext="web-blur-2"
     >
       Today's {dayjs().format("MMMM Do, YYYY")}
     </Text>

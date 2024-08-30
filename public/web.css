@@ -130,3 +130,31 @@ input::-webkit-scrollbar {
 ::-webkit-input-placeholder {
   color: var(--theme-6);
 }
+
+[aria-valuetext="web-blur"] {
+  animation: blur 0.7s forwards;
+}
+
+@keyframes blur {
+  from {
+    filter: blur(10px);
+    transform: translateY(10px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}
+
+[aria-valuetext="web-blur-2"] {
+  animation: blur2 0.7s forwards;
+}
+
+@keyframes blur2 {
+  from {
+    filter: blur(10px);
+    transform: translateY(-10px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}

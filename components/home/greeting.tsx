@@ -23,6 +23,7 @@ export function Greeting() {
         textAlign: "center",
         marginBottom: 10,
       }}
+      aria-valuetext="web-blur"
     >
       {greeting}
     </Text>
