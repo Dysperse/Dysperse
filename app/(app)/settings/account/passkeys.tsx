@@ -139,8 +139,10 @@ function CreatePasskey({ mutate }) {
         }
       ).then((res) => res.json());
 
-      mutate((o) => [verificationData.store, ...o], { revalidate: false });
-      console.log(verificationData);
+      if (verificationData.store)
+        mutate((o) => [verificationData.store, ...o], { revalidate: false });
+
+      // console.log(verificationData);
 
       Toast.show({ type: "success", text1: "Success!" });
       setLoading(false);

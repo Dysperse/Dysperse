@@ -67,7 +67,7 @@ function QrLogin() {
         )
           .then((r) => r.json())
           .then((r) => {
-            console.log(r);
+            // console.log(r);
             if (r.sessionId) {
               signIn(r.sessionId);
             }
