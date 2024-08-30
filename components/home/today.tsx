@@ -6,10 +6,9 @@ export function TodayText() {
   const theme = useColorTheme();
   return (
     <Text
-      weight={500}
       numberOfLines={1}
       style={{
-        color: theme[12],
+        color: theme[11],
         fontSize: 20,
         textAlign: "center",
         marginBottom: 25,

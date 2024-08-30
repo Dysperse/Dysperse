@@ -18,7 +18,7 @@ export function Greeting() {
       numberOfLines={1}
       style={{
         fontFamily: "serifText800",
-        color: theme[12],
+        color: theme[11],
         fontSize: breakpoints.md ? 45 : 30,
         textAlign: "center",
         marginBottom: 10,
