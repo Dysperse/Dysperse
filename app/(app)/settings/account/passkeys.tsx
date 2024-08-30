@@ -195,8 +195,8 @@ export default function App() {
         <View>
           <Text style={settingStyles.title}>Passkeys</Text>
           <Text>
-            Passkeys are{" "}
-            {passkey.isSupported() ? "supported!" : "Not Supported"}
+            Passkeys are {passkey.isSupported() ? "supported" : "not Supported"}{" "}
+            on your current device.
           </Text>
         </View>
         <CreatePasskey mutate={mutate} />
@@ -286,4 +286,3 @@ export default function App() {
     </SettingsScrollView>
   );
 }
-
