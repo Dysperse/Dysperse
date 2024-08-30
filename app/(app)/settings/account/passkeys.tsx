@@ -14,7 +14,7 @@ import base64 from "@hexagon/base64";
 import { Base64URLString } from "@simplewebauthn/typescript-types";
 import dayjs from "dayjs";
 import * as Application from "expo-application";
-import React from "react";
+import React, { useState } from "react";
 import { Platform, View } from "react-native";
 import * as passkey from "react-native-passkeys";
 import Toast from "react-native-toast-message";
@@ -57,14 +57,11 @@ export function utf8StringToBuffer(value: string): ArrayBuffer {
  * Decode a base64url string into its original string
  */
 
-function CreatePasskey() {
+function CreatePasskey(mutate) {
   const { session, sessionToken } = useUser();
+  const [loading, setLoading] = useState(false);
 
-  const [creationResponse, setCreationResponse] = React.useState<
-    NonNullable<Awaited<ReturnType<typeof passkey.create>>>["response"] | null
-  >(null);
-
-  const [credentialId, setCredentialId] = React.useState("");
+  const [credentialId, setCredentialId] = useState("");
 
   const createPasskey = async () => {
     try {
@@ -96,7 +93,7 @@ function CreatePasskey() {
       });
 
       if (json?.rawId) setCredentialId(json.rawId);
-      if (json?.response) setCreationResponse(json.response);
+      // if (json?.response) setCreationResponse(json.response);
 
       Toast.show({
         type: "success",
@@ -120,6 +117,8 @@ function CreatePasskey() {
         },
       };
 
+      setLoading(true);
+
       const verificationData = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`,
         {
@@ -137,9 +136,11 @@ function CreatePasskey() {
         }
       ).then((res) => res.json());
 
+      mutate((o) => [verificationData.store, ...o], { revalidate: false });
       console.log(verificationData);
 
       Toast.show({ type: "success", text1: "Success!" });
+      setLoading(false);
     } catch (e) {
       console.error("create error", e);
     }
@@ -151,6 +152,7 @@ function CreatePasskey() {
       large
       bold
       icon="add"
+      isLoading={loading}
       text="Create"
       onPress={createPasskey}
     />
@@ -182,7 +184,7 @@ export default function App() {
             {passkey.isSupported() ? "supported!" : "Not Supported"}
           </Text>
         </View>
-        <CreatePasskey />
+        <CreatePasskey mutate={mutate} />
       </View>
 
       <View style={{ flex: 1 }}>
