@@ -140,7 +140,9 @@ function Page() {
           {view === "edit" ? (
             <EditWallpaper />
           ) : (
-            <View style={{ gap: 20, paddingVertical: 100 }}>
+            <View
+              style={{ gap: 20, paddingVertical: 100, paddingHorizontal: 20 }}
+            >
               <View style={{ alignItems: "center", marginBottom: -15 }}>
                 <Logo size={64} />
               </View>
@@ -160,3 +162,4 @@ function Page() {
 }
 
 export default memo(Page);
+

@@ -1,9 +1,11 @@
 import Content from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import IconButton from "@/ui/IconButton";
 import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
@@ -11,6 +13,19 @@ import { useCallback } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
+
+const MenuButton = () => {
+  const { sidebarRef } = useSidebarContext();
+
+  return (
+    <IconButton
+      icon="menu"
+      size={55}
+      variant="outlined"
+      onPress={() => sidebarRef.current.openDrawer()}
+    />
+  );
+};
 
 export default function Page() {
   const theme = useColorTheme();
@@ -58,7 +73,8 @@ export default function Page() {
   }, [data, mutate, sessionToken, updateExists]);
 
   return (
-    <Content>
+    <Content noPaddingTop>
+      <MenuButton />
       <ScrollView
         contentContainerStyle={{
           width: "100%",
@@ -108,3 +124,4 @@ export default function Page() {
     </Content>
   );
 }
+
