@@ -18,8 +18,6 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const DeleteAllButton = ({ handleDelete }) => {
-  const breakpoints = useResponsiveBreakpoints();
-
   return (
     <ConfirmationModal
       height={400}
@@ -64,6 +62,8 @@ export default function Trash() {
 
   console.log(data);
 
+  const isEmpty = data.filter((t) => t.trash).length === 0;
+
   return (
     <View style={{ flex: 1, maxWidth: 500, marginHorizontal: "auto" }}>
       {Array.isArray(data) ? (
@@ -79,7 +79,7 @@ export default function Trash() {
                 title="Heads up!"
                 subtitle="Items are permanently deleted on the 1st of every month"
               />
-              <DeleteAllButton handleDelete={handleDelete} />
+              {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
             </View>
           )}
           data={data.filter((t) => t.trash)}
@@ -87,7 +87,7 @@ export default function Trash() {
             flex: 1,
             height: "100%",
           }}
-          centerContent={data.filter((t) => t.trash).length === 0}
+          centerContent={isEmpty}
           ListEmptyComponent={() => (
             <View
               style={{
@@ -134,3 +134,4 @@ export default function Trash() {
     </View>
   );
 }
+

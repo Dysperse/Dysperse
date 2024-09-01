@@ -148,6 +148,25 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
     ],
     []
   );
+
+  const [calendarMonthId, setCalendarMonthId] = useState(
+    toDateId(
+      dayjs(
+        dayjs(value).isValid() ? value.toISOString() : dayjs().toISOString()
+      ).toDate()
+    )
+  );
+
+  useEffect(() => {
+    setCalendarMonthId(
+      toDateId(
+        dayjs(
+          dayjs(value).isValid() ? value.toISOString() : dayjs().toISOString()
+        ).toDate()
+      )
+    );
+  }, [value]);
+
   return (
     <View
       style={{
@@ -168,15 +187,53 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
           padding: 10,
         }}
       >
+        <View
+          style={{
+            flexDirection: "row",
+            marginBottom: -20,
+            zIndex: 99,
+            justifyContent: "space-between",
+          }}
+        >
+          <IconButton
+            icon="arrow_back"
+            onPress={() =>
+              setCalendarMonthId(
+                toDateId(
+                  dayjs(fromDateId(calendarMonthId).toISOString())
+                    .subtract(1, "month")
+                    .toDate()
+                )
+              )
+            }
+          />
+          <IconButton
+            icon="arrow_forward"
+            onPress={() =>
+              setCalendarMonthId(
+                toDateId(
+                  dayjs(fromDateId(calendarMonthId).toISOString())
+                    .add(1, "month")
+                    .toDate()
+                )
+              )
+            }
+          />
+        </View>
         <Calendar
-          calendarMonthId={toDateId(
-            dayjs(
-              dayjs(value).isValid()
-                ? value.toISOString()
-                : dayjs().toISOString()
-            ).toDate()
-          )}
-          theme={dysperseCalendarTheme(theme)}
+          calendarMonthId={calendarMonthId}
+          theme={{
+            ...dysperseCalendarTheme(theme),
+            rowMonth: {
+              content: {
+                textAlign: "center",
+                textTransform: "uppercase",
+                marginTop: -15,
+                color: addHslAlpha(theme[11], 0.5),
+                fontFamily: "body_900",
+              },
+            },
+          }}
           onCalendarDayPress={(date) => {
             setValue("date", dayjs(fromDateId(date).toISOString()));
           }}
@@ -340,7 +397,7 @@ export function RecurrencePicker({
   value: any;
   setValue: any;
   defaultRecurrenceOptions?: defaultRecurrenceOptions;
-}) {
+}): React.JSX.Element {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useUser();
