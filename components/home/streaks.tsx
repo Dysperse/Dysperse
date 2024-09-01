@@ -125,12 +125,12 @@ export function StreakGoal() {
               ) && (
                 <>
                   <GoalIndicator
-                    name="Daily goal"
+                    name="Today"
                     completed={data.dayTasks || 0}
                     goal={data.user?.dailyStreakGoal || 5}
                   />
                   <GoalIndicator
-                    name="Weekly goal"
+                    name="This week"
                     completed={data.weekTasks || 0}
                     goal={data.user?.weeklyStreakGoal || 5}
                   />
@@ -145,3 +145,4 @@ export function StreakGoal() {
     </View>
   );
 }
+
