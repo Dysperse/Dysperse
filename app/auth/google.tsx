@@ -1,12 +1,20 @@
 import Spinner from "@/ui/Spinner";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 export default function Page() {
   useEffect(() => {
-    console.log(WebBrowser.maybeCompleteAuthSession());
-    WebBrowser.maybeCompleteAuthSession();
+    try {
+      if (Platform.OS === "web") {
+        WebBrowser.maybeCompleteAuthSession();
+      } else {
+        WebBrowser.dismissAuthSession();
+        WebBrowser.dismissBrowser();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
   return (
     <View
@@ -20,3 +28,4 @@ export default function Page() {
     </View>
   );
 }
+
