@@ -1720,6 +1720,7 @@ function BottomSheetContent({
   return (
     <Pressable
       style={{
+        minHeight: 280,
         backgroundColor: addHslAlpha(
           theme[2],
           Platform.OS === "android" ? 1 : 0.5
@@ -1727,12 +1728,13 @@ function BottomSheetContent({
       }}
     >
       <BlurView
-        style={{ flex: 1, padding: 25, gap: 20 }}
+        style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
         intensity={Platform.OS === "android" ? 0 : 50}
       >
         <View
           style={{
             flex: 1,
+            flexDirection: "column",
           }}
         >
           <Footer
