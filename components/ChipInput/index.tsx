@@ -143,16 +143,17 @@ export default function ChipInput({
       style={{
         height,
         control: {
-          fontSize: 25,
+          fontSize: 30,
           flex: 1,
         },
         "&multiLine": {
           control: {
-            fontFamily: "body_900",
+            fontFamily: "serifText800",
           },
           highlighter: { ...paddingStyles, border: "1px solid transparent" },
           input: {
             ...paddingStyles,
+            // textAlign: "center",
             border: "none",
             boxShadow: "none",
             height,
@@ -276,3 +277,4 @@ export default function ChipInput({
     />
   );
 }
+

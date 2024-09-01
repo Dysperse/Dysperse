@@ -7,7 +7,6 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
-import { ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -18,13 +17,9 @@ import MenuPopover from "@/ui/MenuPopover";
 import { Modal } from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColor } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import {
-  BottomSheetModal,
-  TouchableOpacity,
-  useBottomSheet,
-} from "@gorhom/bottom-sheet";
+import { addHslAlpha, useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import {
   Calendar,
   fromDateId,
@@ -32,6 +27,7 @@ import {
 } from "@marceloterreiro/flash-calendar";
 import convertTime from "convert-time";
 import dayjs, { Dayjs } from "dayjs";
+import { BlurView } from "expo-blur";
 import React, {
   RefObject,
   cloneElement,
@@ -708,6 +704,7 @@ export function RecurrencePicker({
 const PinTask = memo(function PinTask({ watch, control }: any) {
   const orange = useColor("orange");
   const pinned = watch("pinned");
+  const breakpoints = useResponsiveBreakpoints();
 
   const rotate = useSharedValue(0);
   const rotateStyle = useAnimatedStyle(() => {
@@ -730,36 +727,33 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
       restSpeedThreshold: 2,
     });
   });
-
+  const theme = useColorTheme();
   return (
     <Controller
       control={control}
       name="pinned"
       defaultValue={false}
       render={({ field: { onChange, value } }) => (
-        <Chip
+        <IconButton
+          icon="push_pin"
+          size={breakpoints.md ? 50 : 45}
           onPress={() => onChange(!value)}
-          outlined={!value}
-          icon={
-            <Animated.View style={rotateStyle}>
-              <Icon
-                style={{
-                  ...(value && {
-                    color: orange[11],
-                  }),
-                }}
-                filled={value}
-              >
-                push_pin
-              </Icon>
-            </Animated.View>
+          variant="filled"
+          iconProps={{ filled: value }}
+          iconStyle={{ transform: [{ rotate: "-30deg" }] }}
+          backgroundColors={
+            value
+              ? {
+                  default: orange[6],
+                  hovered: orange[5],
+                  pressed: orange[4],
+                }
+              : {
+                  default: addHslAlpha(theme[9], 0.15),
+                  hovered: addHslAlpha(theme[9], 0.25),
+                  pressed: addHslAlpha(theme[9], 0.35),
+                }
           }
-          style={{
-            ...(value && {
-              backgroundColor: orange[4],
-              borderColor: orange[4],
-            }),
-          }}
         />
       )}
     />
@@ -794,45 +788,45 @@ function Footer({
   menuRef: React.MutableRefObject<BottomSheetModal>;
 }) {
   const collectionId = watch("collectionId");
+  const date = watch("date");
+  const label = watch("label");
 
+  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <ScrollView
-      horizontal
-      style={{ maxHeight: 60 }}
-      contentContainerStyle={{
-        alignItems: "center",
-        flexDirection: "row",
-        paddingHorizontal: breakpoints.md ? 10 : 25,
-        paddingVertical: 10,
-        gap: 5,
+    <View
+      style={{
+        paddingBottom: 10,
+        display: !date && !label ? "none" : "flex",
       }}
-      showsHorizontalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
     >
-      {!breakpoints.md && (
-        <Attachment
-          menuRef={menuRef}
-          control={control}
-          nameRef={nameRef}
-          setValue={setValue}
-        />
-      )}
-      <PinTask watch={watch} control={control} />
-      <DatePicker setValue={setValue} watch={watch} />
-      <CreateTaskLabelInput
-        watch={watch}
-        collectionId={collectionId}
-        control={control}
-        labelMenuRef={labelMenuRef}
-        onLabelPickerClose={() => {
-          nameRef?.current?.focus();
+      <ScrollView
+        horizontal
+        contentContainerStyle={{
+          alignItems: "center",
+          flexDirection: "row",
+          gap: 5,
         }}
-      />
+        showsHorizontalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {date && <DatePicker setValue={setValue} watch={watch} />}
+        {label && (
+          <CreateTaskLabelInput
+            watch={watch}
+            collectionId={collectionId}
+            control={control}
+            labelMenuRef={labelMenuRef}
+            onLabelPickerClose={() => {
+              nameRef?.current?.focus();
+            }}
+          />
+        )}
 
-      <TaskSuggestions />
-    </ScrollView>
+        <TaskSuggestions />
+      </ScrollView>
+    </View>
   );
 }
 
@@ -843,6 +837,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   onLabelPickerClose,
   watch,
 }: any) {
+  const theme = useColorTheme();
   const colors = useLabelColors();
   const label = watch("label");
 
@@ -876,23 +871,26 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
             autoFocus
             onClose={onLabelPickerClose}
           >
-            <Chip
-              outlined={!value}
-              label={value?.name || "Label"}
-              icon={
-                value?.emoji ? (
-                  <Emoji emoji={value?.emoji} />
-                ) : (
-                  <Icon>new_label</Icon>
-                )
-              }
-              {...(value && {
-                style: {
-                  backgroundColor: colors[value?.color]?.[4],
-                },
-              })}
-              colorTheme={value ? value?.color : undefined}
-            />
+            <ColorThemeProvider theme={colors[value?.color] || theme}>
+              <Chip
+                onDismiss={value ? () => onChange(null) : undefined}
+                label={value?.name || "Label"}
+                icon={
+                  value?.emoji ? (
+                    <Emoji emoji={value?.emoji} />
+                  ) : (
+                    <Icon>new_label</Icon>
+                  )
+                }
+                style={({ pressed, hovered }) => ({
+                  borderWidth: 1,
+                  backgroundColor: addHslAlpha(
+                    colors[value?.color]?.[9] || theme[9],
+                    pressed ? 0.3 : hovered ? 0.2 : 0.1
+                  ),
+                })}
+              />
+            </ColorThemeProvider>
           </LabelPicker>
         )}
       />
@@ -1053,7 +1051,6 @@ function TaskNameInput({
   const attachments = watch("attachments");
   const { forceClose } = useBottomSheet();
   const { data: labelData } = useSWR(["space/labels"]);
-  const breakpoints = useResponsiveBreakpoints();
 
   const suggestions = useMemo(
     () => [
@@ -1091,17 +1088,10 @@ function TaskNameInput({
             label={labelData}
             setValue={setValue}
           />
-          <View
-            style={{
-              margin: breakpoints.md ? 0 : 5,
-              marginTop: -5,
-            }}
-          >
+          <View>
             <ChipInput
               placeholder={
-                Platform.OS === "web"
-                  ? "/ for commands  @ for attachments  # for labels"
-                  : "/ for commands\n# for labels"
+                Platform.OS === "web" ? "What's on your mind?" : "# for labels"
               }
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
@@ -1181,11 +1171,7 @@ function TaskNameInput({
                   }
                 },
               }}
-              padding={{
-                left: 15,
-                right: 15,
-              }}
-              height={150}
+              height={95}
               inputRef={nameRef}
               suggestions={[
                 {
@@ -1336,9 +1322,9 @@ const TaskAttachments = ({ watch, setValue }: any) => {
         horizontal
         keyboardShouldPersistTaps="handled"
         style={{
-          marginLeft: 20,
-          marginTop: "auto",
-          maxHeight: 90,
+          marginTop: -10,
+          maxHeight: 65,
+          marginBottom: -5,
         }}
         contentContainerStyle={{ alignItems: "center", gap: 15 }}
         showsHorizontalScrollIndicator={false}
@@ -1375,7 +1361,7 @@ const TaskAttachments = ({ watch, setValue }: any) => {
             key={i}
             style={[
               {
-                backgroundColor: theme[3],
+                backgroundColor: addHslAlpha(theme[9], 0.1),
                 borderRadius: 20,
                 flexDirection: "row",
                 gap: 10,
@@ -1428,6 +1414,11 @@ const TaskAttachments = ({ watch, setValue }: any) => {
               icon="close"
               size={30}
               variant="filled"
+              backgroundColors={{
+                default: "transparent",
+                hovered: "transparent",
+                pressed: "transparent",
+              }}
               onPress={() => {
                 setValue(
                   "attachments",
@@ -1467,22 +1458,19 @@ function Attachment({ control, nameRef, setValue, menuRef }: any) {
             }}
           >
             <IconButton
-              style={{
-                width: breakpoints.md ? 35 : 100,
-                marginTop: breakpoints.md ? 63 : 0,
-                marginLeft: breakpoints.md ? 20 : -10,
-              }}
+              size={breakpoints.md ? 50 : 45}
               pressableStyle={{
                 gap: 5,
                 flexDirection: "row",
               }}
               variant="filled"
-              size={35}
+              backgroundColors={{
+                default: addHslAlpha(theme[9], 0.15),
+                hovered: addHslAlpha(theme[9], 0.25),
+                pressed: addHslAlpha(theme[9], 0.35),
+              }}
             >
               <Icon>note_stack_add</Icon>
-              {!breakpoints.md && (
-                <Text style={{ color: theme[11] }}>Attach</Text>
-              )}
             </IconButton>
           </TaskAttachmentButton>
         </>
@@ -1498,21 +1486,15 @@ const SubmitButton = memo(({ onSubmit }: any) => {
   return (
     <IconButton
       size={breakpoints.md ? 50 : 45}
+      iconStyle={{ color: theme[1] }}
+      iconProps={{ bold: true }}
       backgroundColors={{
         default: theme[10],
         hovered: theme[11],
         pressed: theme[12],
       }}
-      style={{
-        marginRight: 10,
-        height: 35,
-      }}
       variant="filled"
-      icon={
-        <Icon bold style={{ color: theme[1] }}>
-          arrow_upward
-        </Icon>
-      }
+      icon="arrow_upward"
       onPress={onSubmit}
     />
   );
@@ -1520,21 +1502,77 @@ const SubmitButton = memo(({ onSubmit }: any) => {
 
 const CancelButton = memo(() => {
   const { forceClose } = useBottomSheet();
-  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
-    <TouchableOpacity
-      style={{
-        padding: 10,
-        marginLeft: 10,
-      }}
+    <IconButton
+      size={breakpoints.md ? 50 : 45}
+      variant="outlined"
+      icon="close"
+      style={{ marginRight: "auto" }}
       onPress={() => forceClose()}
-    >
-      <ButtonText style={{ color: theme[10] }} weight={900}>
-        Cancel
-      </ButtonText>
-    </TouchableOpacity>
+    />
   );
 });
+
+function DateButton({ watch, colors, defaultValues, setValue }: any) {
+  const date = watch("date");
+  const recurrenceRule = watch("recurrenceRule");
+
+  return (
+    <View
+      style={{
+        display: date || recurrenceRule ? "none" : "flex",
+      }}
+    >
+      <TaskDatePicker
+        setValue={setValue}
+        watch={watch}
+        defaultRecurrenceOptions={{
+          dtstart: (defaultValues.date || new Date()).toISOString(),
+        }}
+      >
+        <IconButton
+          backgroundColors={colors}
+          icon="calendar_today"
+          size={50}
+          variant="filled"
+        />
+      </TaskDatePicker>
+    </View>
+  );
+}
+
+function LabelButton({ watch, colors, defaultValues, setValue }: any) {
+  const value = watch("label");
+  const breakpoints = useResponsiveBreakpoints();
+  const collectionId = watch("collectionId");
+  const labelMenuRef = useRef<BottomSheetModal>(null);
+
+  return (
+    <View
+      style={{
+        display: value ? "none" : "flex",
+      }}
+    >
+      <LabelPicker
+        label={value}
+        setLabel={(e) => setValue("label", e)}
+        defaultCollection={collectionId}
+        sheetProps={{ sheetRef: labelMenuRef }}
+        autoFocus
+        // onClose={onLabelPickerClose}
+      >
+        <IconButton
+          backgroundColors={colors}
+          icon="new_label"
+          size={breakpoints.md ? 50 : 45}
+          variant="filled"
+        />
+      </LabelPicker>
+    </View>
+  );
+}
 
 function BottomSheetContent({
   defaultValues,
@@ -1616,57 +1654,79 @@ function BottomSheetContent({
     )();
   };
 
+  const colors = {
+    default: addHslAlpha(theme[9], 0.15),
+    hovered: addHslAlpha(theme[9], 0.25),
+    pressed: addHslAlpha(theme[9], 0.35),
+  };
+
   return (
     <Pressable
       style={{
-        minHeight: 280,
-        backgroundColor: theme[1],
-        padding: 10,
-        paddingHorizontal: 0,
+        backgroundColor: addHslAlpha(
+          theme[2],
+          Platform.OS === "android" ? 1 : 0.5
+        ),
       }}
     >
-      <View style={{ flex: 1 }}>
+      <BlurView
+        style={{ flex: 1, padding: 25, gap: 20 }}
+        intensity={Platform.OS === "android" ? 0 : 50}
+      >
         <View
           style={{
-            gap: 10,
+            flex: 1,
+          }}
+        >
+          <Footer
+            menuRef={menuRef}
+            setValue={setValue}
+            watch={watch}
+            nameRef={nameRef}
+            labelMenuRef={labelMenuRef}
+            control={control}
+          />
+          <TaskNameInput
+            watch={watch}
+            control={control}
+            menuRef={menuRef}
+            handleSubmitButtonClick={handleSubmitButtonClick}
+            nameRef={nameRef}
+            setValue={setValue}
+          />
+        </View>
+        <TaskAttachments watch={watch} setValue={setValue} />
+        <View
+          style={{
+            gap: 7,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-between",
           }}
         >
           <CancelButton />
+          <DateButton
+            watch={watch}
+            setValue={setValue}
+            defaultValues={defaultValues}
+            colors={colors}
+          />
+
+          <LabelButton
+            watch={watch}
+            setValue={setValue}
+            defaultValues={defaultValues}
+            colors={colors}
+          />
+          <PinTask watch={watch} control={control} />
+          <Attachment
+            menuRef={menuRef}
+            control={control}
+            nameRef={nameRef}
+            setValue={setValue}
+          />
           <SubmitButton onSubmit={handleSubmitButtonClick} />
         </View>
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          {breakpoints.md && (
-            <Attachment
-              menuRef={menuRef}
-              control={control}
-              nameRef={nameRef}
-              setValue={setValue}
-            />
-          )}
-          <View style={{ flex: 1 }}>
-            <Footer
-              menuRef={menuRef}
-              setValue={setValue}
-              watch={watch}
-              nameRef={nameRef}
-              labelMenuRef={labelMenuRef}
-              control={control}
-            />
-            <TaskNameInput
-              watch={watch}
-              control={control}
-              menuRef={menuRef}
-              handleSubmitButtonClick={handleSubmitButtonClick}
-              nameRef={nameRef}
-              setValue={setValue}
-            />
-            <TaskAttachments watch={watch} setValue={setValue} />
-          </View>
-        </View>
-      </View>
+      </BlurView>
     </Pressable>
   );
 }
@@ -1736,6 +1796,7 @@ const CreateTask = forwardRef(
           innerStyles={{
             borderWidth: 1,
             borderColor: theme[6],
+            backgroundColor: Platform.OS === "web" ? "transparent" : theme[1],
           }}
         >
           <BottomSheetContent
@@ -1749,3 +1810,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+

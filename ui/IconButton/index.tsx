@@ -4,6 +4,7 @@ import {
   PressableProps,
   StyleProp,
   StyleSheet,
+  TextStyle,
   ViewStyle,
 } from "react-native";
 import Animated, {
@@ -15,7 +16,7 @@ import Animated, {
 import { SpringConfig } from "react-native-reanimated/lib/typescript/reanimated2/animation/springUtils";
 import { addHslAlpha } from "../color";
 import { useColorTheme } from "../color/theme-provider";
-import Icon from "../Icon";
+import Icon, { DIconProps } from "../Icon";
 
 export interface IconButtonProps extends PressableProps {
   variant?: "filled" | "outlined" | "text";
@@ -35,6 +36,8 @@ export interface IconButtonProps extends PressableProps {
     pressed?: string;
     hovered?: string;
   };
+  iconStyle?: StyleProp<TextStyle>;
+  iconProps?: DIconProps;
   animationConfigs?: SpringConfig;
 }
 
@@ -120,7 +123,11 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
               : props.pressableStyle,
           ]}
         >
-          {props.children || <Icon>{props.icon}</Icon>}
+          {props.children || (
+            <Icon style={props.iconStyle} {...props.iconProps}>
+              {props.icon}
+            </Icon>
+          )}
         </Pressable>
       </Animated.View>
     );
@@ -128,3 +135,4 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
 );
 
 export default IconButton;
+

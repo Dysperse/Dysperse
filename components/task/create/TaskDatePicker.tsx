@@ -5,6 +5,7 @@ import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import { Modal } from "@/ui/Modal";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
@@ -85,6 +86,7 @@ function TaskDatePicker({
   const dueDate = watch("date");
   const recurrence = watch("recurrenceRule");
   const dateOnly = watch("dateOnly");
+  const theme = useColorTheme();
 
   const [view, setView] = useState<"date" | "recurrence">(
     dueDateOnly ? "date" : defaultView || "date"
@@ -93,7 +95,7 @@ function TaskDatePicker({
   const trigger = cloneElement(
     children || (
       <Chip
-        outlined={!recurrence && !dueDate}
+        outlined
         icon={<Icon>{recurrence ? "loop" : "calendar_today"}</Icon>}
         onDismiss={
           (recurrence || dueDate) &&
@@ -102,6 +104,13 @@ function TaskDatePicker({
             setValue("recurrenceRule", null);
           })
         }
+        style={({ pressed, hovered }) => ({
+          borderWidth: 1,
+          borderColor: addHslAlpha(
+            theme[9],
+            pressed ? 0.3 : hovered ? 0.2 : 0.1
+          ),
+        })}
         label={
           recurrence
             ? capitalizeFirstLetter(new RRule(recurrence).toText())
@@ -154,3 +163,4 @@ function TaskDatePicker({
 }
 
 export default TaskDatePicker;
+
