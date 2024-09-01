@@ -12,6 +12,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
+import * as Application from "expo-application";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Network from "expo-network";
@@ -432,6 +433,10 @@ function Credentials({
                 const { challenge } = await fetch(
                   `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`
                 ).then((res) => res.json());
+
+                alert(
+                  Application.applicationId?.split(".").reverse().join(".")
+                );
 
                 const json = await passkey.get({
                   rpId: rp.id,

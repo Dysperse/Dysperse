@@ -84,6 +84,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     [
+      "@react-native-google-signin/google-signin",
+      {
+        iosUrlScheme:
+          "com.googleusercontent.apps.990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf",
+      },
+    ],
+    [
       "expo-notifications",
       {
         icon: "./assets/notification.png",
@@ -137,3 +144,4 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     policy: "appVersion",
   },
 });
+
