@@ -11,6 +11,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import dayjs from "dayjs";
 import * as Application from "expo-application";
 import * as Device from "expo-device";
@@ -288,19 +289,33 @@ function GoogleAuth() {
   }, [result, signIn]);
 
   const handleClick = async () => {
-    setResult(
-      await WebBrowser.openAuthSessionAsync(
-        `https://accounts.google.com/o/oauth2/auth?${new URLSearchParams({
-          client_id:
-            "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
-          redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/auth/login/google`,
-          scope: "profile email",
-          response_type: "code",
-        }).toString()}`,
-        // Linking.createURL("/auth/google")
-        "https://app.dysperse.com/auth/google"
-      )
-    );
+    if (Platform.OS === "web") {
+      setResult(
+        await WebBrowser.openAuthSessionAsync(
+          `https://accounts.google.com/o/oauth2/auth?${new URLSearchParams({
+            client_id:
+              "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
+            redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/auth/login/google`,
+            scope: "profile email",
+            response_type: "code",
+          }).toString()}`,
+          // Linking.createURL("/auth/google")
+          "https://app.dysperse.com/auth/google"
+        )
+      );
+    } else {
+      GoogleSignin.configure({
+        scopes: ["email", "profile"],
+        webClientId:
+          "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
+        offlineAccess: true,
+        forceCodeForRefreshToken: true,
+        profileImageSize: 120,
+      });
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+    }
   };
 
   return (

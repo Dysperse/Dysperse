@@ -113,7 +113,8 @@
     "use-debounce": "^10.0.1",
     "victory-native": "^41.1.0",
     "workbox-build": "^7.1.1",
-    "workbox-window": "^7.1.0"
+    "workbox-window": "^7.1.0",
+    "expo-build-properties": "~0.12.5"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",

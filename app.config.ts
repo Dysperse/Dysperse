@@ -39,6 +39,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    intentFilters: [
+      {
+        action: "VIEW",
+        autoVerify: true,
+        data: [
+          {
+            scheme: "https",
+            host: "dysperse.com",
+            pathPrefix: "/",
+          },
+        ],
+      },
+    ],
     splash: {
       resizeMode: "cover",
       image: "./assets/splash-screens/light.png",
@@ -81,6 +94,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       "expo-camera",
       {
         cameraPermission: "Allow $(PRODUCT_NAME) to access your camera.",
+      },
+    ],
+    [
+      "expo-build-properties",
+      {
+        android: {
+          compileSdkVersion: 34,
+        },
       },
     ],
     [
