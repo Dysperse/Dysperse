@@ -1147,9 +1147,7 @@ function TaskNameInput({
           />
           <View>
             <ChipInput
-              placeholder={
-                Platform.OS === "web" ? "What's on your mind?" : "# for labels"
-              }
+              placeholder="What's on your mind?"
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
                 onBlur,
@@ -1574,6 +1572,7 @@ const CancelButton = memo(() => {
 
 function DateButton({ watch, colors, defaultValues, setValue }: any) {
   const date = watch("date");
+  const breakpoints = useResponsiveBreakpoints();
   const recurrenceRule = watch("recurrenceRule");
 
   return (
@@ -1592,7 +1591,7 @@ function DateButton({ watch, colors, defaultValues, setValue }: any) {
         <IconButton
           backgroundColors={colors}
           icon="calendar_today"
-          size={50}
+          size={breakpoints.md ? 50 : 45}
           variant="filled"
         />
       </TaskDatePicker>
