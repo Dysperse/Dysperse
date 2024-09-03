@@ -151,20 +151,22 @@ export const Heatmap = ({ data }) => {
               {
                 // if month is 30 days, add 1 more cell to make it 31
               }
-              {commitsData[index].length < 31 && (
-                <View
-                  style={[
-                    styles.cell,
-                    {
-                      flex: 1,
-                      aspectRatio: "1 / 1",
-                      backgroundColor: "transparent",
-                      borderWidth: 1,
-                      borderColor: "transparent",
-                    },
-                  ]}
-                />
-              )}
+              {commitsData[index].length < 31 &&
+                [...new Array(31 - commitsData[index].length)].map((_, i) => (
+                  <View
+                    key={i}
+                    style={[
+                      styles.cell,
+                      {
+                        flex: 1,
+                        aspectRatio: "1 / 1",
+                        backgroundColor: "transparent",
+                        borderWidth: 1,
+                        borderColor: "transparent",
+                      },
+                    ]}
+                  />
+                ))}
             </View>
           </View>
         ))}
