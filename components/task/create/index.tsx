@@ -1768,26 +1768,25 @@ function BottomSheetContent({
           }}
         >
           <CancelButton />
-          <DateButton
-            watch={watch}
-            setValue={setValue}
-            defaultValues={defaultValues}
-            colors={colors}
-          />
-
-          <LabelButton
-            watch={watch}
-            setValue={setValue}
-            defaultValues={defaultValues}
-            colors={colors}
-          />
-          <PinTask watch={watch} control={control} />
           <Attachment
             menuRef={menuRef}
             control={control}
             nameRef={nameRef}
             setValue={setValue}
           />
+          <LabelButton
+            watch={watch}
+            setValue={setValue}
+            defaultValues={defaultValues}
+            colors={colors}
+          />
+          <DateButton
+            watch={watch}
+            setValue={setValue}
+            defaultValues={defaultValues}
+            colors={colors}
+          />
+          <PinTask watch={watch} control={control} />
           <SubmitButton onSubmit={handleSubmitButtonClick} />
         </View>
       </BlurView>
