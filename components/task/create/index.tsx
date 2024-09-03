@@ -17,7 +17,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import { Modal } from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import {
@@ -1639,6 +1639,7 @@ function BottomSheetContent({
 }) {
   const breakpoints = useResponsiveBreakpoints();
   const { sessionToken } = useUser();
+  const isDark = useDarkMode();
   const nameRef = useRef(null);
   const menuRef = useRef<BottomSheetModal>(null);
   const labelMenuRef = useRef<BottomSheetModal>(null);
@@ -1729,6 +1730,11 @@ function BottomSheetContent({
       <BlurView
         style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
         intensity={Platform.OS === "android" ? 0 : 50}
+        tint={
+          isDark
+            ? "systemUltraThinMaterialDark"
+            : "systemUltraThinMaterialLight"
+        }
       >
         <View
           style={{
@@ -1852,8 +1858,6 @@ const CreateTask = forwardRef(
           keyboardBehavior="interactive"
           animation={breakpoints.md ? "NONE" : "SLIDE"}
           innerStyles={{
-            borderWidth: 1,
-            borderColor: theme[6],
             backgroundColor: Platform.OS === "web" ? "transparent" : theme[1],
           }}
         >
