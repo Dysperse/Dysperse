@@ -21,7 +21,13 @@ import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Linking,
+  Platform,
+  StyleSheet,
+  View,
+} from "react-native";
 import * as passkey from "react-native-passkeys";
 import QRCode from "react-native-qrcode-svg";
 import { Path, Svg } from "react-native-svg";
@@ -519,20 +525,45 @@ function Credentials({
             />
           </QrModal>
         </View>
-        <Button
-          height={20}
-          onPress={handleCreateAccount}
-          containerStyle={{
+        <View
+          style={{
+            flexDirection: "row",
             width: "100%",
-            opacity: 0.5,
-            marginBottom: 10,
             marginTop: "auto",
+            marginBottom: 10,
+            alignItems: "center",
+            justifyContent: "center",
           }}
-          iconPosition="end"
-          text="Create an account"
-          icon="magic_button"
-          large
-        />
+        >
+          <Button
+            height={20}
+            onPress={handleCreateAccount}
+            containerStyle={{
+              opacity: 0.5,
+            }}
+            textStyle={{ fontSize: 13 }}
+            iconSize={20}
+            iconPosition="end"
+            text="Create an account"
+            icon="celebration"
+            large
+          />
+          {breakpoints.md && (
+            <Button
+              height={20}
+              containerStyle={{
+                opacity: 0.5,
+              }}
+              onPress={() => Linking.openURL("https://dysperse.com")}
+              textStyle={{ fontSize: 13 }}
+              iconSize={20}
+              iconPosition="end"
+              text="What's Dysperse?"
+              icon="info"
+              large
+            />
+          )}
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
