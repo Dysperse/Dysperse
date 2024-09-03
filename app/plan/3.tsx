@@ -133,7 +133,7 @@ function CurrentTaskFooter({
     }, 100);
   };
 
-  const isCompleted = getTaskCompletionStatus(task, dateRange);
+  const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
 
   const handleBack = () => {
     taskAnimationState.value = "PREVIOUS";
@@ -362,12 +362,13 @@ const CurrentTaskCard = ({
     ],
   }));
 
+  console.log(currentTask);
   return (
     <Animated.View style={taskAnimationStyle}>
       <TaskDrawer
         mutateList={onTaskUpdate}
         id={currentTask.id}
-        dateRange={dateRange}
+        dateRange={currentTask.recurrenceDay}
       >
         <Pressable
           style={({ pressed, hovered }) => ({
@@ -386,7 +387,7 @@ const CurrentTaskCard = ({
             position: "relative",
           })}
         >
-          {getTaskCompletionStatus(currentTask, dateRange) && (
+          {getTaskCompletionStatus(currentTask, currentTask.recurrenceDay) && (
             <Icon
               filled
               style={{
@@ -481,6 +482,7 @@ const CurrentTaskCard = ({
 };
 
 function TodaysTasks({ data, mutate, setStage, dateRange }) {
+  console.log(data);
   const t = useMemo(
     () =>
       Array.isArray(data)

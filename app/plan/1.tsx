@@ -3,6 +3,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -26,14 +27,12 @@ const TaskInput = ({ control }) => {
     () => ({
       opacity: withSpring(focus.value ? 0.6 : 0),
       color: theme[11],
-      marginTop: withSpring(focus.value ? -5 : -20, {
+      marginTop: withSpring(focus.value ? -5 : -50, {
         overshootClamping: true,
       }),
     }),
     [focus]
   );
-
-  const AnimatedText = Animated.createAnimatedComponent(Text);
 
   return (
     <View
@@ -61,14 +60,32 @@ const TaskInput = ({ control }) => {
             />
           )}
         />
-        <AnimatedText
+        <Animated.View
           style={[
             textStyles,
-            { fontSize: 12, color: theme[11], marginBottom: 5 },
+            {
+              pointerEvents: "none",
+              flexDirection: "row",
+              alignItems: "center",
+              height: 50,
+              gap: 10,
+              paddingRight: 20,
+            },
           ]}
         >
-          💡 Keep it simple, from making your bed to drinking a glass of water.
-        </AnimatedText>
+          <Emoji emoji="1F4A1" size={20} />
+          <Text
+            style={[
+              {
+                fontSize: 12,
+                color: theme[11],
+                marginBottom: 5,
+              },
+            ]}
+          >
+            Keep it simple, from making your bed to drinking a glass of water.
+          </Text>
+        </Animated.View>
       </View>
     </View>
   );

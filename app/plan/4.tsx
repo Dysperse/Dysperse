@@ -55,7 +55,7 @@ const PlannerButton = () => {
   return (
     <Button
       onPress={handleNext}
-      height={60}
+      height={40}
       style={[styles.button]}
       containerStyle={{
         marginTop: "auto",
@@ -95,29 +95,31 @@ export default function Page() {
     >
       <Text
         style={{
-          fontSize: breakpoints.md ? 70 : 40,
+          fontSize: 40,
           color: theme[11],
           marginTop: "auto",
           textAlign: "center",
+          paddingTop: 40,
+          fontFamily: "serifText800",
         }}
-        weight={900}
       >
         You're all set!
       </Text>
       <Text
-        weight={500}
+        weight={300}
         style={{
           textAlign: "center",
-          fontSize: breakpoints.md ? 20 : 17,
+          fontSize: 20,
           opacity: 0.6,
           color: theme[11],
           marginBottom: 10,
         }}
       >
-        Conquer your day with confidence. You've got this!
+        Conquer your day with confidence.{"\n"}You've got this!
       </Text>
       <PlannerButton />
       <SubmitButton />
     </LinearGradient>
   );
 }
+

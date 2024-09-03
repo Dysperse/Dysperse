@@ -6,8 +6,8 @@ export const getTaskCompletionStatus = (task, iteration): boolean => {
       iteration &&
       task.completionInstances.find(
         (instance) =>
-          dayjs(instance.iteration).isValid() &&
-          dayjs(instance.iteration).toISOString() ===
+          dayjs(instance.iteration || instance.recurrenceDay).isValid() &&
+          dayjs(instance.iteration || instance.recurrenceDay).toISOString() ===
             dayjs(iteration.toString()).toISOString()
       )
     );
@@ -15,3 +15,4 @@ export const getTaskCompletionStatus = (task, iteration): boolean => {
     return task.completionInstances.length > 0;
   }
 };
+
