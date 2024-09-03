@@ -242,7 +242,7 @@ function Tab({
         })}
         onLongPress={onLongPress}
         disabled={disabled}
-        onMouseDown={handlePress}
+        // onMouseDown={handlePress}
         onPress={handlePress}
         style={({ pressed, hovered }) => [
           styles.button,
@@ -274,3 +274,4 @@ function Tab({
 }
 
 export default React.memo(Tab);
+

@@ -10,7 +10,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
         [
           tab.collection ? "-" : undefined,
           params.type,
-          tab.collection ? undefined : "Everything",
+          tab.collection ? undefined : "All tasks",
         ].filter(Boolean),
     },
     "/[tab]/spaces/": {
@@ -35,3 +35,4 @@ export const useTabMetadata = (slug: string, tab: any) => {
 
   return startWithMatchers[match];
 };
+
