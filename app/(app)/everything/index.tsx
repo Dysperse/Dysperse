@@ -627,6 +627,15 @@ const Collections = () => {
                 placeholder="Search collections…"
                 autoFocus
               />
+              <Button
+                variant="filled"
+                large
+                containerStyle={{ marginTop: 10 }}
+                onPress={() => router.push("/collections/create")}
+              >
+                <Icon bold>add</Icon>
+                <ButtonText weight={900}>New</ButtonText>
+              </Button>
               <FlashList
                 estimatedItemSize={60}
                 data={d.filter((l) =>
@@ -790,3 +799,4 @@ export default function Page() {
     </ContentWrapper>
   );
 }
+
