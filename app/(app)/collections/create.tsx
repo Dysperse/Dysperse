@@ -126,7 +126,7 @@ function Templates() {
                 Linking.openURL(`https://dysperse.com/templates/${item.id}`);
               }}
               style={{
-                backgroundColor: "hsl(0, 0%, 90%)",
+                backgroundColor: isDark ? "hsl(0, 0%, 20%)" : "hsl(0, 0%, 90%)",
                 width: "100%",
                 flexDirection: "column",
                 padding: 0,
@@ -378,13 +378,13 @@ const Scratch = ({ children }) => {
 
 export default function Page() {
   const theme = useColor("gray");
-  const breakpoints = useResponsiveBreakpoints();
+  const isDark = useDarkMode();
 
   return (
     <ColorThemeProvider theme={theme}>
       <ContentWrapper noPaddingTop>
         <LinearGradient
-          colors={["transparent", "hsl(0, 0%, 95%)"]}
+          colors={["transparent", `hsl(0, 0%, ${isDark ? 15 : 95}%)`]}
           style={{ width: "100%", flex: 1 }}
         >
           <Templates />
@@ -393,3 +393,4 @@ export default function Page() {
     </ColorThemeProvider>
   );
 }
+
