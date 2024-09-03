@@ -1,5 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
 export const Heatmap = ({ data }) => {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-  const gray = useColor("gray");
 
   const commitsData = [
     ...new Array(dayjs().diff(dayjs().subtract(1, "year"), "days")),
@@ -44,15 +43,21 @@ export const Heatmap = ({ data }) => {
             e.completedAt &&
             dayjs(e.completedAt).format("YYYY-MM-DD") === day.date
         ).length || 0,
-    }));
+    }))
+    .reduce((acc, item) => {
+      const index = dayjs(item.date).diff(dayjs().subtract(1, "year"), "month");
+      acc[index] = acc[index] || [];
+      acc[index].push(item);
+      return acc;
+    }, []);
 
-  const counts = commitsData.map((item) => item.count);
+  const counts = commitsData.flat().map((item) => item.count);
   const maxCount = Math.max(...counts);
   const minCount = Math.min(...counts);
 
   const getColor = (count) => {
     const lightness = ((count - minCount) / (maxCount - minCount)) * 70;
-    return [theme[11], addHslAlpha(theme[11], lightness * 0.01)];
+    return [theme[9], addHslAlpha(theme[11], lightness * 0.01)];
   };
 
   return (
@@ -77,27 +82,76 @@ export const Heatmap = ({ data }) => {
         {data.completionInstances.length === 1 ? "task" : "tasks"} completed in
         the last year
       </Text>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", flex: 1 }}>
-        {commitsData.map((item, index) => {
-          const t = getColor(item.count);
-          return (
-            <TouchableOpacity
+      <View style={{ marginBottom: 20 }}>
+        {[...new Array(12)].map((_, index) => (
+          <View key={index} style={{ flexDirection: "row" }}>
+            <Text
               key={index}
-              style={[
-                styles.cell,
-                {
-                  width: `${100 / 52}%`,
-                  aspectRatio: "1 / 1",
-                  backgroundColor: t[1],
-                  borderWidth: 1,
-                  borderColor: t[0],
-                },
-              ]}
-              onPress={() => alert(item.date)}
-            ></TouchableOpacity>
-          );
-        })}
+              style={{
+                marginVertical: 3.45,
+                marginLeft: 22,
+                opacity: 0.5,
+                textTransform: "uppercase",
+                fontFamily: "mono",
+              }}
+            >
+              {dayjs().subtract(1, "year").add(index, "month").format("MMM")}
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                flex: 1,
+                paddingHorizontal: 20,
+              }}
+            >
+              {commitsData[index].map((item, index) => {
+                const t = getColor(item.count);
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.cell,
+                      {
+                        width: `${100 / 52}%`,
+                        aspectRatio: "1 / 1",
+                        backgroundColor: t[1],
+                        borderWidth: 1,
+                        borderColor: item.count ? t[0] : theme[6],
+                      },
+                    ]}
+                    onPress={() =>
+                      alert(
+                        parseFloat(
+                          t[1].split(",")[3].replace?.(")", "")
+                        )?.toFixed?.(2)
+                      )
+                    }
+                  >
+                    {item.count !== 0 && (
+                      <Text
+                        style={{
+                          fontSize: 8.5,
+                          color: theme[11],
+                          ...(parseFloat(
+                            t[1].split(",")[3].replace?.(")", "")
+                          ).toFixed(2) > parseFloat("0.5").toFixed(2)
+                            ? { color: theme[1], opacity: 0.9 }
+                            : {}),
+                        }}
+                      >
+                        {item.count}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        ))}
       </View>
     </View>
   );
 };
+

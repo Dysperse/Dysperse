@@ -1,4 +1,3 @@
-import { ProfileModal } from "@/components/ProfileModal";
 import { Co2 } from "@/components/insights/Co2";
 import { DayChart } from "@/components/insights/DayChart";
 import { Header } from "@/components/insights/Header";
@@ -10,11 +9,9 @@ import { TasksCreated } from "@/components/insights/TasksCreated";
 import ContentWrapper from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { ProfilePicture } from "@/ui/Avatar";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { useRef } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -41,28 +38,11 @@ export default function Page() {
                   fontSize: 50,
                   marginBottom: 10,
                   textAlign: "center",
+                  fontFamily: "serifText800",
                 }}
-                weight={900}
               >
                 Insights
               </Text>
-              <ProfileModal email={session.user.email}>
-                <TouchableOpacity
-                  style={{ flexDirection: "row", justifyContent: "center" }}
-                >
-                  <ProfilePicture
-                    name={session.user.profile.name}
-                    image={session.user.profile.picture}
-                    size={40}
-                  />
-                  <Text
-                    style={{ fontSize: 23, marginLeft: 10, marginTop: 5 }}
-                    weight={900}
-                  >
-                    {session.user.profile.name}
-                  </Text>
-                </TouchableOpacity>
-              </ProfileModal>
             </View>
             <View
               style={{
@@ -99,3 +79,4 @@ export default function Page() {
     </ContentWrapper>
   );
 }
+
