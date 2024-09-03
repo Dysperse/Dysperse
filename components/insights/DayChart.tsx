@@ -12,16 +12,8 @@ export const DayChart = ({ data }) => {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
-  const barData = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ].map((e, i) => ({
-    hour: e,
+  const barData = ["S", "M", "T", "W", "T", "F", "S"].map((e, i) => ({
+    day: e,
     count: data.byDay[i],
   }));
 
@@ -43,12 +35,13 @@ export const DayChart = ({ data }) => {
       </Text>
       <CartesianChart
         data={barData}
-        xKey="hour"
+        xKey="day"
         yKeys={["count"]}
         domainPadding={{ left: 50, right: 50 }}
         axisOptions={{
           font,
           labelColor: theme[11],
+          tickCount: 7,
           lineColor: {
             grid: {
               y: theme[5],
@@ -62,6 +55,7 @@ export const DayChart = ({ data }) => {
           <Bar
             chartBounds={chartBounds}
             points={points.count}
+            barWidth={20}
             roundedCorners={{
               topLeft: 5,
               topRight: 5,
@@ -78,3 +72,4 @@ export const DayChart = ({ data }) => {
     </View>
   );
 };
+

@@ -108,7 +108,7 @@ export const LabelChart = ({ data }) => {
         >
           Completed tasks by label
         </Text>
-        <View style={{ flex: 1, padding: 20, aspectRatio: 1 }}>
+        <View style={{ flex: 1, padding: 20, aspectRatio: 1, maxWidth: 400 }}>
           <PolarChart
             data={pieData}
             colorKey={"colors"}
@@ -190,3 +190,4 @@ export const LabelChart = ({ data }) => {
     </View>
   );
 };
+
