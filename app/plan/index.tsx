@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     marginTop: "auto",
     textAlign: "center",
   },
-  subtitle: { textAlign: "center", fontSize: 40, opacity: 0.7 },
+  subtitle: { textAlign: "center", fontSize: 30, opacity: 0.7 },
   buttonContainer: {
     padding: 20,
     marginTop: "auto",
@@ -43,7 +43,7 @@ export default function Page() {
 
   return (
     <LinearGradient
-      colors={[theme[2], theme[3], theme[4], theme[5], theme[6]]}
+      colors={[theme[2], theme[3], theme[4], theme[3], theme[2]]}
       style={styles.container}
     >
       <StatusBar barStyle="light-content" />
@@ -51,23 +51,25 @@ export default function Page() {
         style={[
           styles.title,
           {
-            fontSize: breakpoints.md ? 60 : 30,
+            fontSize: breakpoints.md ? 40 : 30,
             color: theme[11],
+            fontFamily: "serifText800",
           },
         ]}
-        weight={700}
       >
         {greeting}, {session.user.profile.name.split(" ")[0]}
       </Text>
-      <Text style={[styles.subtitle, { color: theme[9] }]} weight={500}>
+      <Text style={[styles.subtitle, { color: theme[9] }]} weight={300}>
         Let's plan your day!
       </Text>
       <View style={styles.buttonContainer}>
         <Button
           onPress={handleNext}
-          style={({ pressed, hovered }) => [
-            { backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9] },
-          ]}
+          backgroundColors={{
+            pressed: theme[11],
+            hovered: theme[10],
+            default: theme[9],
+          }}
           containerStyle={{ width: "100%" }}
           height={70}
         >
@@ -86,3 +88,4 @@ export default function Page() {
     </LinearGradient>
   );
 }
+

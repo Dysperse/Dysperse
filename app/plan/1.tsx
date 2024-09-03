@@ -103,14 +103,20 @@ const SubmitButton = ({ watch, handleSubmit }) => {
       onPress={handleSubmit(onSubmit)}
       disabled={!name}
       height={70}
-      style={({ pressed, hovered }) => [
-        {
-          backgroundColor: name
-            ? theme[pressed ? 11 : hovered ? 10 : 9]
-            : theme[7],
-        },
-      ]}
       containerStyle={{ marginTop: "auto" }}
+      backgroundColors={
+        name
+          ? {
+              default: theme[9],
+              hovered: theme[10],
+              pressed: theme[11],
+            }
+          : {
+              default: theme[7],
+              hovered: theme[7],
+              pressed: theme[7],
+            }
+      }
     >
       <ButtonText style={[styles.buttonText, { color: theme[name ? 1 : 10] }]}>
         Next
@@ -145,12 +151,20 @@ export default function Page() {
         }}
       >
         <Text
-          style={{ fontSize: 35, color: theme[11], marginTop: "auto" }}
+          style={{
+            fontSize: 35,
+            color: theme[11],
+            marginTop: "auto",
+            fontFamily: "serifText800",
+          }}
           weight={900}
         >
           Let's start simple.
         </Text>
-        <Text style={{ fontSize: 20, opacity: 0.6, color: theme[11] }}>
+        <Text
+          style={{ fontSize: 20, opacity: 0.6, color: theme[11] }}
+          weight={300}
+        >
           What's the easiest thing you can do today?
         </Text>
         <TaskInput control={control} />
@@ -159,3 +173,4 @@ export default function Page() {
     </LinearGradient>
   );
 }
+

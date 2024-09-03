@@ -440,7 +440,7 @@ function Root() {
                         ...TransitionPresets.ModalPresentationIOS,
                         cardStyle: breakpoints.md
                           ? {
-                              maxWidth: 800,
+                              maxWidth: 500,
                               width: "100%",
                               marginHorizontal: "auto",
                               marginVertical: 30,
@@ -469,3 +469,4 @@ function Root() {
 export default process.env.NODE_ENV === "development"
   ? Root
   : Sentry.wrap(Root);
+

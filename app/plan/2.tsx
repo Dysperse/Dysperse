@@ -32,9 +32,11 @@ const SubmitButton = () => {
     >
       <Button
         onPress={handleNext}
-        style={({ pressed, hovered }) => [
-          { backgroundColor: theme[pressed ? 11 : hovered ? 10 : 9] },
-        ]}
+        backgroundColors={{
+          default: theme[9],
+          hovered: theme[10],
+          pressed: theme[11],
+        }}
         containerStyle={{ width: "100%", marginTop: "auto", marginBottom: 20 }}
         height={70}
       >
@@ -61,8 +63,12 @@ const Header = () => {
       }}
     >
       <Text
-        style={{ fontSize: 35, color: theme[11], marginTop: "auto" }}
-        weight={900}
+        style={{
+          fontSize: 35,
+          color: theme[11],
+          marginTop: "auto",
+          fontFamily: "serifText800",
+        }}
       >
         Overdue tasks
       </Text>
@@ -73,6 +79,7 @@ const Header = () => {
           color: theme[11],
           marginBottom: 10,
         }}
+        weight={300}
       >
         Here are some tasks that you have missed the deadline for. Reschedule or
         mark them as complete to hide them from this list.
@@ -174,3 +181,4 @@ export default function Page() {
     </LinearGradient>
   );
 }
+

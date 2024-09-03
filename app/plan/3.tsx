@@ -488,7 +488,7 @@ function TodaysTasks({ data, mutate, setStage, dateRange }) {
             .find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
             ?.tasks?.filter(
               (i) =>
-                (i.start && dayjs(i.start).isSame(dayjs(), "day")) ||
+                (i.start && i.start && dayjs(i.start).isSame(dayjs(), "day")) ||
                 i.recurrenceRule
             )
         : [],
@@ -600,8 +600,14 @@ export default function Page() {
               size={50}
               style={{ marginTop: "auto", marginBottom: 10 }}
             />
-            <Text style={{ fontSize: 35, color: theme[11] }} weight={900}>
-              What's the plan?
+            <Text
+              style={{
+                fontSize: 35,
+                color: theme[11],
+                fontFamily: "serifText800",
+              }}
+            >
+              What's your plan?
             </Text>
             <Text
               style={{
@@ -610,6 +616,7 @@ export default function Page() {
                 color: theme[11],
                 marginBottom: 10,
               }}
+              weight={300}
             >
               We'll show tasks you already have scheduled for today, and also
               help you create new ones.
@@ -731,3 +738,4 @@ export default function Page() {
     </LinearGradient>
   );
 }
+

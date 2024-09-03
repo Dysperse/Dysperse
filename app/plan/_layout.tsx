@@ -10,9 +10,12 @@ import ConfirmationModal from "@/ui/ConfirmationModal";
 import IconButton from "@/ui/IconButton";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { TransitionPresets } from "@react-navigation/stack";
+import {
+  StackNavigationProp,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import { LinearGradient } from "expo-linear-gradient";
-import { Redirect, router, usePathname } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
@@ -29,13 +32,17 @@ const styles = StyleSheet.create({
 
 const SLIDE_NUM = 4;
 
-function PlanNavbar() {
+function PlanNavbar({
+  navigation,
+  route,
+}: {
+  navigation: StackNavigationProp<any>;
+  route: any;
+}) {
   const theme = useColorTheme();
   const handleClose = () =>
     router.canGoBack() ? router.back() : router.push("/");
-
-  const route = usePathname();
-  const currentSlide = parseInt(route.replace("/plan/", "")) || 0;
+  const currentSlide = parseInt(route?.name) || 0;
 
   return (
     <View style={{ backgroundColor: theme[2] }}>
@@ -64,15 +71,23 @@ function PlanNavbar() {
       <View style={styles.navbar}>
         <ConfirmationModal
           height={400}
-          onSuccess={() => router.replace("/")}
+          onSuccess={() => {
+            if (currentSlide === 0) router.back();
+            // path can either be `/plan` or `/plan/1` until `/plan/4`
+            else {
+              navigation.replace(
+                currentSlide === 1 ? "/plan" : `/plan/${currentSlide}`
+              );
+            }
+          }}
           title="Exit?"
-          disabled={currentSlide === 0}
+          disabled={currentSlide !== 0}
           secondary="Are you sure you want to exit? Tasks you've edited will be saved."
         >
           <IconButton
             onPress={handleClose}
             variant="outlined"
-            icon="close"
+            icon={currentSlide !== 0 ? "arrow_back_ios_new" : "close"}
             size={55}
           />
         </ConfirmationModal>
@@ -102,7 +117,9 @@ export default function Layout() {
                 <JsStack
                   screenOptions={{
                     ...TransitionPresets.SlideFromRightIOS,
-                    header: () => <PlanNavbar />,
+                    header: ({ navigation, route }) => (
+                      <PlanNavbar navigation={navigation} route={route} />
+                    ),
                     headerMode: "float",
                     detachPreviousScreen: false,
                     cardStyle: { backgroundColor: theme[1], display: "flex" },
@@ -117,3 +134,4 @@ export default function Layout() {
     </SelectionContextProvider>
   );
 }
+
