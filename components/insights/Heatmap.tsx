@@ -4,6 +4,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 const styles = StyleSheet.create({
   container: {
@@ -122,11 +123,13 @@ export const Heatmap = ({ data }) => {
                       },
                     ]}
                     onPress={() =>
-                      alert(
-                        parseFloat(
-                          t[1].split(",")[3].replace?.(")", "")
-                        )?.toFixed?.(2)
-                      )
+                      Toast.show({
+                        type: "info",
+                        text1: dayjs(item.date).format("MMM D, YYYY"),
+                        text2: `${item.count} ${
+                          item.count === 1 ? "task" : "tasks"
+                        } completed`,
+                      })
                     }
                   >
                     {item.count !== 0 && (
