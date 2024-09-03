@@ -378,6 +378,11 @@ function Credentials({
     dayjs.tz.guess() === "America/Los_Angeles" &&
     navigator.language === "en-US";
 
+  const handleBack = useCallback(() => {
+    if (router.canGoBack()) router.back();
+    else router.push("/");
+  }, []);
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -387,6 +392,19 @@ function Credentials({
         justifyContent: "center",
       }}
     >
+      <IconButton
+        variant="outlined"
+        size={55}
+        icon={step === 0 ? "close" : "arrow_back"}
+        onPress={handleBack}
+        style={{
+          position: "absolute",
+          top: 10,
+          left: 10,
+          display: router.canGoBack() && !breakpoints.md ? "flex" : "none",
+          zIndex: 100,
+        }}
+      />
       <View
         style={{
           maxHeight: "100%",
