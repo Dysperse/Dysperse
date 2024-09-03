@@ -114,7 +114,7 @@ export const Heatmap = ({ data }) => {
                     style={[
                       styles.cell,
                       {
-                        width: `${100 / 52}%`,
+                        flex: 1,
                         aspectRatio: "1 / 1",
                         backgroundColor: t[1],
                         borderWidth: 1,
@@ -134,19 +134,37 @@ export const Heatmap = ({ data }) => {
                         style={{
                           fontSize: 8.5,
                           color: theme[11],
-                          ...(parseFloat(
+                          ...(breakpoints.md &&
+                          parseFloat(
                             t[1].split(",")[3].replace?.(")", "")
                           ).toFixed(2) > parseFloat("0.5").toFixed(2)
                             ? { color: theme[1], opacity: 0.9 }
                             : {}),
                         }}
                       >
-                        {item.count}
+                        {breakpoints.md && item.count}
                       </Text>
                     )}
                   </TouchableOpacity>
                 );
               })}
+              {
+                // if month is 30 days, add 1 more cell to make it 31
+              }
+              {commitsData[index].length < 31 && (
+                <View
+                  style={[
+                    styles.cell,
+                    {
+                      flex: 1,
+                      aspectRatio: "1 / 1",
+                      backgroundColor: "transparent",
+                      borderWidth: 1,
+                      borderColor: "transparent",
+                    },
+                  ]}
+                />
+              )}
             </View>
           </View>
         ))}
