@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import * as Application from "expo-application";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
+import { createURL } from "expo-linking";
 import * as Network from "expo-network";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
@@ -305,8 +306,7 @@ function GoogleAuth() {
             scope: "profile email",
             response_type: "code",
           }).toString()}`,
-          // Linking.createURL("/auth/google")
-          "https://app.dysperse.com/auth/google"
+          createURL("/auth/google")
         )
       );
     } else {
