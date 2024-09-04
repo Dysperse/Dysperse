@@ -487,7 +487,7 @@ const MiniLogo = ({ onHoverIn }) => {
           webkitAppRegion: "no-drag",
         }}
       >
-        <Logo size={24} />
+        <Logo size={20} />
       </Pressable>
     )
   );
