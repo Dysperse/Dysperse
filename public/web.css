@@ -152,10 +152,12 @@ input::-webkit-scrollbar {
 @keyframes blur2 {
   from {
     filter: blur(10px);
+    opacity: 0;
     transform: translateY(-10px);
   }
   to {
     filter: blur(0px);
+    opacity: 1;
   }
 }
 
