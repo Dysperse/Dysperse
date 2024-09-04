@@ -11,13 +11,11 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import {
-  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { getProfileLastActiveRelativeTime } from "../../app/(app)";
 import { ProfileModal } from "../ProfileModal";
@@ -27,6 +25,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: -5,
+    maxWidth: "100%",
     gap: 5,
   },
   container: {
@@ -45,25 +45,25 @@ const styles = StyleSheet.create({
 
   skeletonContainer: {
     height: 90,
-    width: 100,
+    width: "20%",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
   },
   skeletonCircle: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 999,
     marginBottom: -5,
     position: "relative",
   },
-  skeletonText: { height: 15, width: 60, borderRadius: 99, marginTop: 2 },
+  skeletonText: { height: 15, width: 50, borderRadius: 99, marginTop: 2 },
   friendBadge: {
     position: "absolute",
     bottom: -3,
     right: -3,
-    height: 30,
-    borderWidth: 5,
+    height: 25,
+    borderWidth: 4,
     paddingHorizontal: 7,
   },
 });
@@ -75,11 +75,11 @@ export function FriendActivity() {
   const { height } = useWindowDimensions();
   const handleFriendsPress = useCallback(() => router.push("/friends"), []);
 
-  const friends = Array.isArray(data) && [...data, "ALL_FRIENDS"];
+  const friends = Array.isArray(data) && [...data.slice(0, 4), "ALL_FRIENDS"];
   const red = useColor("red");
 
-  if (friends.length < 8)
-    for (let i = friends.length; i < 8; i++) {
+  if (friends.length < 5)
+    for (let i = friends.length; i < 5; i++) {
       friends.push({ placeholder: i });
     }
 
@@ -103,19 +103,15 @@ export function FriendActivity() {
           <View style={[styles.badge, { backgroundColor: red[9] }]} />
         )}
       </View>
-      <ScrollView
-        contentContainerStyle={[
-          styles.scrollContentContainer,
-          Platform.OS === "web" && { paddingBottom: 0 },
-        ]}
+      <View
         style={[
           styles.scrollContainer,
           {
+            flexDirection: "row",
             borderColor: theme[4],
             backgroundColor: theme[2],
           },
         ]}
-        horizontal={breakpoints.md}
       >
         {isLoading ? (
           <View
@@ -139,12 +135,15 @@ export function FriendActivity() {
                   !breakpoints.md && { width: "33.333%", height: 115 },
                 ]}
               >
-                <Avatar size={60} disabled>
+                <Avatar size={50} disabled>
                   <Icon size={30}>groups_2</Icon>
                 </Avatar>
                 <View style={styles.allFriends}>
-                  <Text style={{ opacity: 0.6 }} numberOfLines={1}>
-                    All Friends
+                  <Text
+                    style={{ opacity: 0.6, fontSize: 13 }}
+                    numberOfLines={1}
+                  >
+                    All friends
                   </Text>
                   {hasRequest && (
                     <View style={[styles.badge, { backgroundColor: red[9] }]} />
@@ -188,7 +187,7 @@ export function FriendActivity() {
                       style={{ pointerEvents: "none" }}
                       name={friend.user.profile?.name || "--"}
                       image={friend.user.profile?.picture}
-                      size={60}
+                      size={50}
                     />
                     <Chip
                       dense
@@ -200,8 +199,8 @@ export function FriendActivity() {
                           friend.user.profile?.lastActive
                         ) === "NOW" && {
                           backgroundColor: theme[10],
-                          height: 26,
-                          width: 26,
+                          height: 23,
+                          width: 23,
                           paddingHorizontal: 0,
                         },
                       ]}
@@ -212,7 +211,7 @@ export function FriendActivity() {
                       ).replace("NOW", "")}
                     />
                   </View>
-                  <Text style={{ opacity: 0.6 }}>
+                  <Text style={{ opacity: 0.6, fontSize: 13 }}>
                     {friend.user.profile?.name.split(" ")?.[0]}
                   </Text>
                 </TouchableOpacity>
@@ -222,7 +221,8 @@ export function FriendActivity() {
         ) : (
           error && <ErrorAlert />
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 }
+
