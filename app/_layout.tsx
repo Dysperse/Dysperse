@@ -72,30 +72,28 @@ if (Platform.OS === "android") {
 }
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
-Sentry.init({
-  dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
-  enableAutoSessionTracking: true,
-  // debug: true,
-  enabled: process.env.NODE_ENV === "production",
-  tracesSampleRate: 1.0,
 
-  _experiments: {
-    replaysSessionSampleRate: 1.0,
-    replaysOnErrorSampleRate: 1.0,
-  },
+if (process.env.NODE_ENV !== "development") {
+  Sentry.init({
+    dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
+    enableAutoSessionTracking: true,
+    tracesSampleRate: 1.0,
 
-  integrations: [
-    Sentry.mobileReplayIntegration({
-      maskAllText: true,
-      maskAllImages: true,
-    }),
-    new Sentry.ReactNativeTracing({
-      // Pass instrumentation to be used as `routingInstrumentation`
-      routingInstrumentation,
-      // ...
-    }),
-  ],
-});
+    _experiments: {
+      replaysSessionSampleRate: 1.0,
+      replaysOnErrorSampleRate: 1.0,
+    },
+
+    integrations: [
+      Sentry.mobileReplayIntegration({
+        maskAllText: false,
+        maskAllImages: false,
+        maskAllVectors: false,
+      }),
+      new Sentry.ReactNativeTracing({ routingInstrumentation }),
+    ],
+  });
+}
 
 SplashScreen.preventAutoHideAsync();
 
