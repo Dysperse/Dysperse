@@ -73,7 +73,7 @@ if (Platform.OS === "android") {
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
-if (process.env.NODE_ENV !== "development") {
+if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
     enableAutoSessionTracking: true,
@@ -346,7 +346,8 @@ function Root() {
   const ref = useNavigationContainerRef();
 
   useEffect(() => {
-    if (ref) routingInstrumentation.registerNavigationContainer(ref);
+    if (ref && process.env.NODE_ENV === "production")
+      routingInstrumentation.registerNavigationContainer(ref);
   }, [ref]);
 
   useWebDevtoolsWarning();
