@@ -793,7 +793,7 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
       render={({ field: { onChange, value } }) => (
         <IconButton
           icon="push_pin"
-          size={breakpoints.md ? 50 : 45}
+          size={breakpoints.md ? 50 : 35}
           onPress={() => onChange(!value)}
           variant="filled"
           iconProps={{ filled: value }}
@@ -1513,7 +1513,7 @@ function Attachment({ control, nameRef, setValue, menuRef }: any) {
             }}
           >
             <IconButton
-              size={breakpoints.md ? 50 : 45}
+              size={breakpoints.md ? 50 : 35}
               pressableStyle={{
                 gap: 5,
                 flexDirection: "row",
@@ -1540,7 +1540,7 @@ const SubmitButton = memo(({ onSubmit }: any) => {
 
   return (
     <IconButton
-      size={breakpoints.md ? 50 : 45}
+      size={breakpoints.md ? 50 : 35}
       iconStyle={{ color: theme[1] }}
       iconProps={{ bold: true }}
       backgroundColors={{
@@ -1561,7 +1561,7 @@ const CancelButton = memo(() => {
 
   return (
     <IconButton
-      size={breakpoints.md ? 50 : 45}
+      size={breakpoints.md ? 50 : 35}
       variant="outlined"
       icon="close"
       style={{ marginRight: "auto" }}
@@ -1591,7 +1591,7 @@ function DateButton({ watch, colors, defaultValues, setValue }: any) {
         <IconButton
           backgroundColors={colors}
           icon="calendar_today"
-          size={breakpoints.md ? 50 : 45}
+          size={breakpoints.md ? 50 : 35}
           variant="filled"
         />
       </TaskDatePicker>
@@ -1622,7 +1622,7 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
         <IconButton
           backgroundColors={colors}
           icon="new_label"
-          size={breakpoints.md ? 50 : 45}
+          size={breakpoints.md ? 50 : 35}
           variant="filled"
         />
       </LabelPicker>
