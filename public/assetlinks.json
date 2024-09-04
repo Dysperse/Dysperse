@@ -1,0 +1,22 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dev.app.dysperse.com",
+      "sha256_cert_fingerprints": [
+        "ED:85:B1:EC:66:F3:DE:ED:31:23:92:9F:6A:81:51:46:6E:F6:75:D1:FF:11:CD:F1:F8:15:5E:22:70:F8:1A:E5"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.app.dysperse.com",
+      "sha256_cert_fingerprints": [
+        "AD:8A:44:D5:6B:8B:3B:94:6C:9B:1A:CF:12:EA:44:41:BC:D7:F6:ED:FB:6C:ED:2B:B5:54:DE:80:A9:67:1A:55"
+      ]
+    }
+  }
+]
