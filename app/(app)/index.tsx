@@ -136,6 +136,7 @@ function Page() {
             paddingHorizontal: 20,
             gap: 20,
             height: "100%",
+            paddingVertical: 100,
             justifyContent: "center",
             marginHorizontal: "auto",
           }}
