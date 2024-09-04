@@ -296,31 +296,48 @@ function GoogleAuth() {
   }, [result, signIn]);
 
   const handleClick = async () => {
-    if (Platform.OS === "web") {
-      setResult(
-        await WebBrowser.openAuthSessionAsync(
-          `https://accounts.google.com/o/oauth2/auth?${new URLSearchParams({
-            client_id:
-              "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
-            redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/auth/login/google`,
-            scope: "profile email",
-            response_type: "code",
-          }).toString()}`,
-          createURL("/auth/google")
-        )
-      );
-    } else {
-      GoogleSignin.configure({
-        scopes: ["email", "profile"],
-        webClientId:
-          "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
-        offlineAccess: true,
-        forceCodeForRefreshToken: true,
-        profileImageSize: 120,
-      });
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo);
+    try {
+      if (Platform.OS === "web") {
+        setResult(
+          await WebBrowser.openAuthSessionAsync(
+            `https://accounts.google.com/o/oauth2/auth?${new URLSearchParams({
+              client_id:
+                "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
+              redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/auth/login/google`,
+              scope: "profile email",
+              response_type: "code",
+            }).toString()}`,
+            createURL("/auth/google")
+          )
+        );
+      } else {
+        GoogleSignin.configure({
+          scopes: ["email", "profile"],
+          webClientId:
+            "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
+          offlineAccess: true,
+          forceCodeForRefreshToken: true,
+          profileImageSize: 120,
+        });
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        //  LOG  {"idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImIyZjgwYzYzNDYwMGVkMTMwNzIxMDFhOGI0MjIwNDQzNDMzZGIyODIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5OTAwNDAyNTY2NjEtcWE0bmJqZTlmY2kwbzJzcGJjOTZ0cnA3bzZlZmYxdjUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI5OTAwNDAyNTY2NjEta2Y0NjllOXJtbDJkYnE3N3E2ZjVnNnJwcm1namRsa2YuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTE3MTAwNjM4NDU1MTcyNjY5MTgiLCJlbWFpbCI6Im1hbnVzdmF0aGd1cnVkYXRoQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiTWFudSBHdXJ1ZGF0aCAoTWFudXN2YXRoKSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLbUc1U241WG1EMkxnWkdKSXZFNWRPeXlhMnd6V0h1bmx0bkxXYmJLb2NxNENfbzFtZD1zOTYtYyIsImdpdmVuX25hbWUiOiJNYW51IiwiZmFtaWx5X25hbWUiOiJHdXJ1ZGF0aCIsImlhdCI6MTcyNTQ5MDI2OSwiZXhwIjoxNzI1NDkzODY5fQ.win7PIMbdqk-nWG2e0EknHUyso8vIGw2t7SD1VqsFr2E-xeZ2tYpM4KG9vTKyCvHze_Vvk7KXDLsTXrkELrelDZ5yiLG-9NnLbkY94Dpn_34NkgY0znA1e231YPYbfOznKARfIr-tCKrNDq3vDx7JmgmoaaFd5X7_6nNXfw2xf_tGz6h-v5YLhPotn6XAPsBvevl4hptWMznjlJoOXsVssD-eMpff22J_iswbDW-BteQC7VxqQEc-FPLhQ_QrXDOaIpNPDSW163bWz8GBd-repeKva_IeOFZ_u6fpAdZlx9xF4k1fCIYDfS0rgjGCndXRa4pNm8JdEaerIfhvTD1oQ", "scopes": ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid", "profile", "https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/calendar.events.readonly", "email"], "serverAuthCode": "4/0AQlEd8wjICnjQA850BbJEZkAd2RGGj5483d46Wix0CfSVmdbi8XOjLbfFRBaWXxVkKgacQ", "user": {"email": "manusvathgurudath@gmail.com", "familyName": "Gurudath", "givenName": "Manu", "id": "111710063845517266918", "name": "Manu Gurudath (Manusvath)", "photo": "https://lh3.googleusercontent.com/a/ACg8ocKmG5Sn5XmD2LgZGJIvE5dOyya2wzWHunltnLWbbKocq4C_o1md=s96-c"}}
+
+        const session = await fetch(
+          `${
+            process.env.EXPO_PUBLIC_API_URL
+          }/auth/login/google?${new URLSearchParams({
+            code: userInfo.serverAuthCode,
+            scope: userInfo.scopes.join(" "),
+            returnSessionId: "true",
+          })}`
+        ).then((r) => r.json());
+
+        if (session?.id) signIn(session.id);
+      }
+    } catch (e) {
+      console.error(e);
+      Toast.show({ type: "error" });
     }
   };
 
