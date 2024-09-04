@@ -284,6 +284,22 @@ function OpenTabsList() {
   const insets = useSafeAreaInsets();
   const path = usePathname();
 
+  const footer = (
+    <View style={{ marginBottom: 5, flexDirection: "row" }}>
+      <JumpToButton />
+      <IconButton
+        size={50}
+        style={{
+          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
+        }}
+        onPress={() => router.push("/everything")}
+        variant={path === "/everything" ? "filled" : undefined}
+      >
+        <Icon bold>home_storage</Icon>
+      </IconButton>
+    </View>
+  );
+
   return (
     <View
       style={{
@@ -313,20 +329,7 @@ function OpenTabsList() {
           />
           {Platform.OS === "web" && <WebPWAInstallButton />}
           <SpaceStorageAlert />
-          <View style={{ marginBottom: 5, flexDirection: "row" }}>
-            <JumpToButton />
-            <IconButton
-              size={50}
-              style={{
-                ...(Platform.OS === "web" &&
-                  ({ WebkitAppRegion: "no-drag" } as any)),
-              }}
-              onPress={() => router.push("/everything")}
-              variant={path === "/everything" ? "filled" : undefined}
-            >
-              <Icon bold>home_storage</Icon>
-            </IconButton>
-          </View>
+          {footer}
         </>
       ) : (
         <View
@@ -344,8 +347,9 @@ function OpenTabsList() {
                 style={{
                   alignItems: "center",
                   padding: 20,
-                  marginTop: "auto",
-                  marginBottom: "auto",
+                  justifyContent: "center",
+                  marginBottom: 10,
+                  flex: 1,
                 }}
               >
                 <Text
@@ -366,7 +370,7 @@ function OpenTabsList() {
                   Try opening a view or one of your collections
                 </Text>
               </View>
-              <JumpToButton />
+              {footer}
             </>
           ) : (
             <Spinner style={{ marginHorizontal: "auto" }} />
@@ -378,3 +382,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+

@@ -19,6 +19,7 @@ const CommandPalette = memo(function CommandPalette() {
       animation="SCALE"
       height={Math.min(600, height / 1.3)}
       maxBackdropOpacity={isDark ? 0.3 : undefined}
+      animationConfigs={{ duration: 0.0001 }}
       maxWidth={breakpoints.md ? 900 : width}
       innerStyles={{
         backgroundColor: "transparent",
@@ -43,3 +44,4 @@ const CommandPalette = memo(function CommandPalette() {
 });
 
 export default CommandPalette;
+

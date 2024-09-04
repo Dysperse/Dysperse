@@ -397,10 +397,8 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
             style={[{ flex: breakpoints.md ? 1 : 0 }, { alignItems: "center" }]}
           >
             <Text
-              style={[
-                { fontSize: 40, lineHeight: 43 },
-                { textAlign: "center" },
-              ]}
+              style={{ fontSize: 40, lineHeight: 43, textAlign: "center" }}
+              weight={500}
             >
               {preview.label}
             </Text>
@@ -546,9 +544,9 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
           setLoading(false);
           return;
         }
+        handleClose();
         const data = await createTab(sessionToken, tab, false);
         mutate((oldData) => [...oldData, data], { revalidate: false });
-        handleClose();
 
         router.replace({
           pathname: data.slug,
@@ -613,3 +611,4 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
     </View>
   );
 }
+
