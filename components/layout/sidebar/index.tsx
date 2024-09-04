@@ -447,7 +447,7 @@ const Header = memo(function Header() {
   );
 });
 
-const MiniLogo = () => {
+const MiniLogo = ({ onHoverIn }) => {
   const { desktopCollapsed } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
     navigator.windowControlsOverlay.visible
@@ -462,7 +462,10 @@ const MiniLogo = () => {
     );
 
     return () => {
-      listener.remove();
+      navigator.windowControlsOverlay.removeEventListener(
+        "geometrychange",
+        listener
+      );
     };
   }, []);
 
@@ -470,17 +473,22 @@ const MiniLogo = () => {
     Platform.OS === "web" &&
     titlebarHidden &&
     desktopCollapsed && (
-      <View
+      <Pressable
+        onHoverIn={onHoverIn}
         style={{
+          flexDirection: "row",
           position: "absolute",
           top: 10,
           left: 10,
+          alignItems: "center",
+          gap: 5,
           zIndex: 1,
           marginLeft: "env(safe-area-inset-left, 10px)",
+          webkitAppRegion: "no-drag",
         }}
       >
         <Logo size={24} />
-      </View>
+      </Pressable>
     )
   );
 };
@@ -546,7 +554,9 @@ const Sidebar = ({
 
   return (
     <>
-      {Platform.OS === "web" && <MiniLogo />}
+      {Platform.OS === "web" && (
+        <MiniLogo onHoverIn={() => (desktopSlide.value = 0)} />
+      )}
       {desktopCollapsed && (
         <Pressable
           style={[
