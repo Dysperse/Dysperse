@@ -129,10 +129,14 @@ function Page() {
         )}
         <ScrollView
           centerContent
-          style={{ marginTop: insets.top }}
+          style={{ flex: 1, marginTop: insets.top }}
           contentContainerStyle={{
             maxWidth: 400,
             width: "100%",
+            paddingHorizontal: 20,
+            gap: 20,
+            height: "100%",
+            justifyContent: "center",
             marginHorizontal: "auto",
           }}
         >
@@ -140,9 +144,7 @@ function Page() {
           {view === "edit" ? (
             <EditWallpaper />
           ) : (
-            <View
-              style={{ gap: 20, paddingVertical: 100, paddingHorizontal: 20 }}
-            >
+            <>
               <View
                 style={{ alignItems: "center", marginBottom: -15 }}
                 aria-valuetext="home-logo"
@@ -156,7 +158,7 @@ function Page() {
               <Actions />
               <StreakGoal />
               <FriendActivity />
-            </View>
+            </>
           )}
         </ScrollView>
       </Wrapper>
