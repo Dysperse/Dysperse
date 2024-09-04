@@ -44,15 +44,13 @@ const styles = StyleSheet.create({
   badge: { width: 10, borderRadius: 99, height: 10 },
 
   skeletonContainer: {
-    height: 90,
     flex: 1,
+    paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
   },
   skeletonCircle: {
-    width: 50,
-    height: 50,
     borderRadius: 999,
     marginBottom: -5,
     position: "relative",
@@ -130,12 +128,9 @@ export function FriendActivity() {
               <TouchableOpacity
                 key={"all"}
                 onPress={handleFriendsPress}
-                style={[
-                  styles.skeletonContainer,
-                  !breakpoints.md && { width: "33.333%", height: 115 },
-                ]}
+                style={[styles.skeletonContainer]}
               >
-                <Avatar size={50} disabled>
+                <Avatar size={breakpoints.md ? 50 : 40} disabled>
                   <Icon size={30}>groups_2</Icon>
                 </Avatar>
                 <View style={styles.allFriends}>
@@ -151,17 +146,15 @@ export function FriendActivity() {
                 </View>
               </TouchableOpacity>
             ) : !friend.user ? (
-              <View
-                key={Math.random()}
-                style={[
-                  styles.skeletonContainer,
-                  !breakpoints.md && { width: "33.333%", height: 115 },
-                ]}
-              >
+              <View key={Math.random()} style={[styles.skeletonContainer]}>
                 <View
                   style={[
                     styles.skeletonCircle,
-                    { backgroundColor: theme[~~(7 - i / 2)] },
+                    {
+                      backgroundColor: theme[~~(7 - i / 2)],
+                      width: breakpoints.md ? 50 : 45,
+                      height: breakpoints.md ? 50 : 45,
+                    },
                   ]}
                 />
                 <View
@@ -173,21 +166,21 @@ export function FriendActivity() {
               </View>
             ) : (
               <ProfileModal email={friend.user.email} key={friend.user.email}>
-                <TouchableOpacity
-                  style={[
-                    styles.skeletonContainer,
-                    !breakpoints.md && {
-                      width: "33.333%",
-                      height: 115,
-                    },
-                  ]}
-                >
-                  <View style={styles.skeletonCircle}>
+                <TouchableOpacity style={[styles.skeletonContainer]}>
+                  <View
+                    style={[
+                      styles.skeletonCircle,
+                      {
+                        width: breakpoints.md ? 50 : 45,
+                        height: breakpoints.md ? 50 : 45,
+                      },
+                    ]}
+                  >
                     <ProfilePicture
                       style={{ pointerEvents: "none" }}
                       name={friend.user.profile?.name || "--"}
                       image={friend.user.profile?.picture}
-                      size={50}
+                      size={breakpoints.md ? 50 : 45}
                     />
                     <Chip
                       dense
