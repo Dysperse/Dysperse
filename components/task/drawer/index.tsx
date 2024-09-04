@@ -119,7 +119,10 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
           },
           {
             borderWidth: 1,
-            borderColor: theme[6],
+            borderColor: addHslAlpha(
+              theme[6],
+              Platform.OS === "android" ? 1 : 0.5
+            ),
             backgroundColor: addHslAlpha(
               theme[2],
               Platform.OS === "android" ? 1 : 0.5

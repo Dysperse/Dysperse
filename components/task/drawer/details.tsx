@@ -465,7 +465,7 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
   );
 }
 
-function TaskNote() {
+function TaskNote({ backgroundColors }) {
   const { task, updateTask } = useTaskDrawerContext();
 
   return (
@@ -478,6 +478,7 @@ function TaskNote() {
       <ListItemButton
         variant="filled"
         disabled
+        backgroundColors={backgroundColors}
         style={{ paddingVertical: 15, paddingHorizontal: 20 }}
       >
         <Icon>sticky_note_2</Icon>
@@ -650,7 +651,7 @@ export function TaskDetails() {
             content: <></>,
           },
           task.note && {
-            trigger: () => <TaskNote />,
+            trigger: () => <TaskNote backgroundColors={backgroundColors} />,
             content: (
               <View style={collapsibleMenuStyles as StyleProp<ViewStyle>}>
                 <TaskAttachmentButton
