@@ -447,6 +447,44 @@ const Header = memo(function Header() {
   );
 });
 
+const MiniLogo = () => {
+  const { desktopCollapsed } = useSidebarContext();
+  const [titlebarHidden, setTitlebarHidden] = useState(
+    navigator.windowControlsOverlay.visible
+  );
+
+  useEffect(() => {
+    const listener = navigator.windowControlsOverlay.addEventListener(
+      "geometrychange",
+      () => {
+        setTitlebarHidden(navigator.windowControlsOverlay.visible);
+      }
+    );
+
+    return () => {
+      listener.remove();
+    };
+  }, []);
+
+  return (
+    Platform.OS === "web" &&
+    titlebarHidden &&
+    desktopCollapsed && (
+      <View
+        style={{
+          position: "absolute",
+          top: 10,
+          left: 10,
+          zIndex: 1,
+          marginLeft: "env(safe-area-inset-left, 10px)",
+        }}
+      >
+        <Logo size={24} />
+      </View>
+    )
+  );
+};
+
 const Sidebar = ({
   progressValue,
 }: {
@@ -508,6 +546,7 @@ const Sidebar = ({
 
   return (
     <>
+      {Platform.OS === "web" && <MiniLogo />}
       {desktopCollapsed && (
         <Pressable
           style={[
