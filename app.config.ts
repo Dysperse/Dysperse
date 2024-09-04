@@ -39,6 +39,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    googleServicesFile: IS_DEV
+      ? process.env.GOOGLE_SERVICES_DEV
+      : process.env.GOOGLE_SERVICES,
     intentFilters: [
       {
         action: "VIEW",
@@ -69,9 +72,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: "./assets/android-icons/monochrome.png",
     },
     softwareKeyboardLayoutMode: "pan",
-    googleServicesFile: IS_DEV
-      ? process.env.GOOGLE_SERVICES_DEV
-      : process.env.GOOGLE_SERVICES,
     package: IS_DEV ? "com.dev.app.dysperse.com" : "com.app.dysperse.com",
   },
   web: {
