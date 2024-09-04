@@ -15,12 +15,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import dayjs from "dayjs";
 import { memo, useState } from "react";
-import {
-  ImageBackground,
-  Platform,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { ImageBackground, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -118,7 +113,6 @@ const Wrapper = (props) => {
 function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
-  const { width, height } = useWindowDimensions();
   const [view, setView] = useState<"home" | "activity" | "edit">("home");
 
   return (
