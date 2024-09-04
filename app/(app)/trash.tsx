@@ -1,8 +1,6 @@
 import { Entity } from "@/components/collections/entity";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -13,7 +11,6 @@ import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import { useCallback } from "react";
 import { View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -39,9 +36,6 @@ const DeleteAllButton = ({ handleDelete }) => {
 
 export default function Trash() {
   const { session } = useSession();
-  const breakpoints = useResponsiveBreakpoints();
-  const insets = useSafeAreaInsets();
-  const { sidebarRef } = useSidebarContext();
   const { data, mutate, error } = useSWR(["space/trash"]);
 
   const handleDelete = useCallback(async () => {
@@ -62,26 +56,24 @@ export default function Trash() {
 
   console.log(data);
 
-  const isEmpty = data.filter((t) => t.trash).length === 0;
+  const isEmpty = (data || []).filter((t) => t.trash).length === 0;
 
   return (
     <View style={{ flex: 1, maxWidth: 500, marginHorizontal: "auto" }}>
+      <View style={{ marginVertical: 20 }}>
+        <Alert
+          emoji="26A0"
+          title="Heads up!"
+          subtitle="Items are permanently deleted on the 1st of every month"
+        />
+        {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
+      </View>
       {Array.isArray(data) ? (
         <FlashList
           contentContainerStyle={{
             paddingVertical: 50,
           }}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={() => (
-            <View style={{ marginBottom: 20 }}>
-              <Alert
-                emoji="26A0"
-                title="Heads up!"
-                subtitle="Items are permanently deleted on the 1st of every month"
-              />
-              {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
-            </View>
-          )}
           data={data.filter((t) => t.trash)}
           style={{
             flex: 1,

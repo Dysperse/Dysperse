@@ -175,7 +175,11 @@ export const LabelDetails = ({
             >
               <Text
                 style={[
-                  { fontSize: 40, color: labelTheme[11] },
+                  {
+                    fontSize: 40,
+                    color: labelTheme[11],
+                    fontFamily: "serifText800",
+                  },
                   !breakpoints.md && { textAlign: "center" },
                 ]}
                 numberOfLines={1}
@@ -192,6 +196,7 @@ export const LabelDetails = ({
                   },
                   !breakpoints.md && { textAlign: "center" },
                 ]}
+                weight={300}
               >
                 {label._count.entities} item
                 {label._count.entities !== 1 ? "s" : ""}
@@ -403,21 +408,25 @@ export const CollectionDetails = ({
           paddingHorizontal: 20,
         }}
       >
-        <Text style={{ fontSize: 40 }} weight={900} numberOfLines={1}>
+        <Text
+          style={{ fontSize: 40, fontFamily: "serifText800" }}
+          weight={900}
+          numberOfLines={1}
+        >
           {collection.name}
         </Text>
-        <Text style={{ fontSize: 20, opacity: 0.6 }}>
+        <Text style={{ fontSize: 20, opacity: 0.6 }} weight={300}>
           Created by {collection.createdBy.profile.name}
         </Text>
         {collection.integrationId && (
-          <Text style={{ fontSize: 20, opacity: 0.6 }}>
+          <Text style={{ fontSize: 20, opacity: 0.6 }} weight={300}>
             Connected to{" "}
             {capitalizeFirstLetter(
               collection.integration.name.replaceAll("-", " ")
             )}
           </Text>
         )}
-        <Text style={{ fontSize: 20, opacity: 0.6 }}>
+        <Text style={{ fontSize: 20, opacity: 0.6 }} weight={300}>
           {collection._count.labels} label
           {collection._count.labels !== 1 && "s"} &bull;{" "}
           {collection._count.entities} item
