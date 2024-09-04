@@ -6,6 +6,7 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text, { getFontName } from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
@@ -227,11 +228,10 @@ export function TaskDrawerContent({ handleClose }) {
                     )
                   }
                   label={task?.collection?.name || "Add label"}
-                  style={({ pressed }) => ({
-                    backgroundColor: theme[pressed ? 4 : 2],
+                  style={{
                     borderWidth: 1,
                     borderColor: theme[6],
-                  })}
+                  }}
                   {...(task.label && {
                     icon: <Emoji emoji={task.label.emoji} />,
                     label: (
@@ -242,7 +242,10 @@ export function TaskDrawerContent({ handleClose }) {
                       </Text>
                     ),
                     style: {
-                      backgroundColor: labelColors[task.label.color][5],
+                      backgroundColor: addHslAlpha(
+                        labelColors[task.label.color][11],
+                        0.15
+                      ),
                     },
                   })}
                 />
@@ -256,3 +259,4 @@ export function TaskDrawerContent({ handleClose }) {
     </>
   );
 }
+

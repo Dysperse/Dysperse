@@ -4,8 +4,10 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
+import { BlurView } from "expo-blur";
 import React, {
   cloneElement,
   forwardRef,
@@ -44,6 +46,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   const insets = useSafeAreaInsets();
 
   const breakpoints = useResponsiveBreakpoints();
+  const isDark = useDarkMode();
 
   useImperativeHandle(ref, () => ({
     triggerMutate: () => mutateList(data),
@@ -117,7 +120,10 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
           {
             borderWidth: 1,
             borderColor: theme[6],
-            backgroundColor: theme[2],
+            backgroundColor: addHslAlpha(
+              theme[2],
+              Platform.OS === "android" ? 1 : 0.5
+            ),
             marginTop: "auto",
             overflow: "hidden",
             maxHeight: "100%",
@@ -126,46 +132,56 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
           },
         ]}
       >
-        {!breakpoints.md && (
-          <View
-            style={{
-              width: 25,
-              height: 5,
-              backgroundColor: theme[5],
-              borderRadius: 999,
-              marginHorizontal: "auto",
-              marginBottom: 10,
-            }}
-          />
-        )}
-        {data?.id ? (
-          <TaskDrawerContext.Provider
-            value={{
-              dateRange,
-              task: data,
-              updateTask,
-              mutateList,
-              isReadOnly,
-            }}
-          >
-            <TaskDrawerContent handleClose={handleClose} />
-          </TaskDrawerContext.Provider>
-        ) : error ? (
-          <View style={{ padding: 20 }}>
-            <ErrorAlert />
-          </View>
-        ) : (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: height * 0.65,
-              ...(Platform.OS === "web" && { flex: 1 }),
-            }}
-          >
-            <Spinner />
-          </View>
-        )}
+        <BlurView
+          style={{ flex: 1 }}
+          intensity={50}
+          tint={
+            isDark
+              ? "systemUltraThinMaterialDark"
+              : "systemUltraThinMaterialLight"
+          }
+        >
+          {!breakpoints.md && (
+            <View
+              style={{
+                width: 25,
+                height: 5,
+                backgroundColor: theme[5],
+                borderRadius: 999,
+                marginHorizontal: "auto",
+                marginBottom: 10,
+              }}
+            />
+          )}
+          {data?.id ? (
+            <TaskDrawerContext.Provider
+              value={{
+                dateRange,
+                task: data,
+                updateTask,
+                mutateList,
+                isReadOnly,
+              }}
+            >
+              <TaskDrawerContent handleClose={handleClose} />
+            </TaskDrawerContext.Provider>
+          ) : error ? (
+            <View style={{ padding: 20 }}>
+              <ErrorAlert />
+            </View>
+          ) : (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: height * 0.65,
+                ...(Platform.OS === "web" && { flex: 1 }),
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </BlurView>
       </Pressable>
     </Pressable>
   );
@@ -248,3 +264,4 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
+

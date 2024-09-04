@@ -12,6 +12,7 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
@@ -47,7 +48,7 @@ function TaskRescheduleButton() {
 
   return (
     <MenuPopover
-      trigger={<IconButton size={40} variant="filled" icon="dark_mode" />}
+      trigger={<IconButton size={40} icon="dark_mode" />}
       menuProps={{
         rendererProps: { placement: breakpoints.md ? "right" : "left" },
       }}
@@ -120,7 +121,6 @@ function TaskNotificationsButton() {
       trigger={
         <IconButton
           size={40}
-          variant="filled"
           icon={
             <Icon filled={task.notifications.length > 0}>
               {task.notifications.length > 0
@@ -508,7 +508,6 @@ export function TaskDetails() {
   const [activeSections, setActiveSections] = useState([]);
 
   const collapsibleMenuStyles = {
-    backgroundColor: theme[3],
     padding: 10,
     flexDirection: "row",
     paddingVertical: 10,
@@ -532,12 +531,18 @@ export function TaskDetails() {
           : dayjs(task.start).format("[@] h:mm A"),
       ];
 
+  const backgroundColors = {
+    default: "transparent",
+    active: "transparent",
+    hover: "transparent",
+  };
+
   return (
     <>
       <Accordion
         activeSections={activeSections}
         sectionContainerStyle={{
-          backgroundColor: theme[3],
+          backgroundColor: addHslAlpha(theme[11], 0.06),
           borderRadius: 20,
           overflow: "hidden",
           marginTop: 15,
@@ -550,8 +555,11 @@ export function TaskDetails() {
             trigger: () => (
               <ListItemButton
                 disabled
-                variant="filled"
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+                backgroundColors={backgroundColors}
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                }}
               >
                 <Icon
                   style={{
@@ -628,7 +636,7 @@ export function TaskDetails() {
           task.integrationParams && {
             trigger: () => (
               <ListItemButton
-                variant="filled"
+                backgroundColors={backgroundColors}
                 style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
                 <Icon>{task?.integrationParams?.icon || "sync_alt"}</Icon>
@@ -699,7 +707,7 @@ export function TaskDetails() {
                 }}
               >
                 <ListItemButton
-                  variant="filled"
+                  backgroundColors={backgroundColors}
                   style={{ paddingVertical: 15, paddingHorizontal: 20 }}
                   disabled={Boolean(task.start || task.recurrenceRule)}
                 >
@@ -778,7 +786,7 @@ export function TaskDetails() {
           {
             trigger: () => (
               <ListItemButton
-                variant="filled"
+                backgroundColors={backgroundColors}
                 disabled
                 style={{
                   paddingVertical: 15,
@@ -825,17 +833,19 @@ export function TaskDetails() {
                           onPress={() => updateTask("storyPoints", n)}
                           size={35}
                           backgroundColors={{
-                            default: theme[n !== task.storyPoints ? 3 : 10],
-                            pressed: theme[n !== task.storyPoints ? 4 : 11],
-                            hovered: theme[n !== task.storyPoints ? 5 : 12],
+                            default: addHslAlpha(
+                              theme[11],
+                              n === task.storyPoints ? 0.8 : 0
+                            ),
+                            pressed: addHslAlpha(
+                              theme[11],
+                              n === task.storyPoints ? 1 : 0
+                            ),
+                            hovered: addHslAlpha(
+                              theme[11],
+                              n === task.storyPoints ? 0.9 : 0
+                            ),
                           }}
-                          borderColors={
-                            n === task.storyPoints && {
-                              default: theme[10],
-                              pressed: theme[11],
-                              hovered: theme[12],
-                            }
-                          }
                           variant={breakpoints.md ? undefined : "outlined"}
                           animationConfigs={
                             breakpoints.md && { duration: 0.0001 }
@@ -875,3 +885,4 @@ export function TaskDetails() {
     </>
   );
 }
+

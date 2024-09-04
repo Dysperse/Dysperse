@@ -278,7 +278,7 @@ export const DueDatePicker = ({ watch, value, setValue }) => {
             justifyContent: "center",
           }}
         >
-          <Text weight={800} style={{ fontSize: 25 }}>
+          <Text weight={800} style={{ fontSize: 25, textAlign: "center" }}>
             {dayjs(value).format("dddd, MMMM Do")}
           </Text>
           <Text style={{ fontSize: 20, opacity: 0.6, marginBottom: 20 }}>
