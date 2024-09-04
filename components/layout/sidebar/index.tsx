@@ -473,7 +473,7 @@ const Sidebar = ({
       {
         translateX: withSpring(desktopSlide.value, {
           stiffness: 200,
-          damping: 20,
+          damping: 40,
         }),
       },
     ],
@@ -503,24 +503,25 @@ const Sidebar = ({
   const { error: storageError } = useStorageContext();
 
   useEffect(() => {
-    desktopSlide.value = desktopCollapsed ? 1 : 0;
-  }, [desktopCollapsed, desktopSlide]);
+    desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0;
+  }, [desktopCollapsed, desktopSlide, SIDEBAR_WIDTH]);
 
   return (
     <>
       {desktopCollapsed && (
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            height: "100%",
-            width: 10,
-            zIndex: 1,
-          }}
-          {...(Platform.OS === "web" && {
-            onMouseEnter: () => (desktopSlide.value = 0),
-          })}
+        <Pressable
+          style={[
+            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: "100%",
+              width: 10,
+              zIndex: 99,
+            },
+          ]}
+          onHoverIn={() => (desktopSlide.value = 0)}
         />
       )}
       <Animated.View
@@ -591,3 +592,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+

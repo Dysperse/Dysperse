@@ -5,7 +5,13 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useGlobalSearchParams } from "expo-router";
 import { createContext, memo, useContext, useEffect, useRef } from "react";
-import { Platform, StyleSheet, View, ViewProps } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  ViewProps,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
@@ -29,6 +35,7 @@ const styles = StyleSheet.create({
 });
 function ContentWrapper(props: ContentWrapperProps) {
   const { sessionToken } = useUser();
+  const { height } = useWindowDimensions();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
@@ -92,6 +99,9 @@ function ContentWrapper(props: ContentWrapperProps) {
           styles.container,
           Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
           props.style,
+          Platform.OS === "web" && {
+            maxHeight: `calc(calc(100vh - env(titlebar-area-height, 0)) - 20px)`,
+          },
         ]}
       >
         {props.children}
@@ -103,3 +113,4 @@ function ContentWrapper(props: ContentWrapperProps) {
 }
 
 export default memo(ContentWrapper);
+
