@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 
   skeletonContainer: {
     height: 90,
-    width: "20%",
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
