@@ -143,7 +143,10 @@ function Page() {
             <View
               style={{ gap: 20, paddingVertical: 100, paddingHorizontal: 20 }}
             >
-              <View style={{ alignItems: "center", marginBottom: -15 }}>
+              <View
+                style={{ alignItems: "center", marginBottom: -15 }}
+                aria-valuetext="home-logo"
+              >
                 <Logo size={64} />
               </View>
               <View style={{ alignItems: "center" }}>
