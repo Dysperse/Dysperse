@@ -129,9 +129,14 @@ function Page() {
             width: "100%",
             paddingHorizontal: 20,
             gap: 20,
-            height: "100%",
-            paddingVertical: 100,
-            justifyContent: "center",
+            ...(Platform.OS === "android"
+              ? {
+                  height: "100%",
+                  justifyContent: "center",
+                }
+              : {
+                  paddingVertical: 100,
+                }),
             marginHorizontal: "auto",
           }}
         >
