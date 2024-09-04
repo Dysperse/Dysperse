@@ -34,6 +34,7 @@ interface DButtonProps extends PressableProps {
   height?: number;
   iconPosition?: "start" | "end";
   containerStyle?: StyleProp<ViewStyle>;
+  spinnerColor?: string;
   backgroundColors?: {
     default: string;
     pressed: string;
@@ -191,7 +192,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
         ]}
       >
         {props.isLoading ? (
-          <Spinner />
+          <Spinner color={props.spinnerColor} />
         ) : (
           props.children ?? (
             <>
@@ -222,3 +223,4 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
     </Animated.View>
   );
 });
+
