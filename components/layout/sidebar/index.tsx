@@ -337,7 +337,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const itemRef = useRef<BottomSheetModal>(null);
   const labelRef = useRef<BottomSheetModal>(null);
   const breakpoints = useResponsiveBreakpoints();
-  const { sidebarRef } = useSidebarContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
   useHotkeys(["ctrl+n", "shift+n"], (e) => {
     e.preventDefault();
@@ -406,9 +406,9 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           <IconButton
             style={{ borderRadius: 10, width: "100%" }}
             backgroundColors={{
-              default: theme[3],
-              pressed: theme[5],
-              hovered: theme[4],
+              default: theme[desktopCollapsed ? 2 : 3],
+              pressed: theme[desktopCollapsed ? 3 : 5],
+              hovered: theme[desktopCollapsed ? 4 : 4],
             }}
             size={45}
             pressableStyle={{ flexDirection: "row", gap: 10 }}
@@ -606,6 +606,7 @@ const Sidebar = ({
               borderRightColor: "transparent",
               backgroundColor: theme[2],
               ...(Platform.OS === "web" &&
+                !desktopCollapsed &&
                 ({
                   paddingTop: "env(titlebar-area-height,0)",
                 } as any)),
