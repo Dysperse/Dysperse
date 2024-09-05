@@ -64,7 +64,7 @@ function WeatherModal({
   const theme = useColor(weatherDescription.colorTheme);
   const color = useMemo(() => theme[11], [theme]);
   const hour = useMemo(() => dayjs().hour(), []);
-  const base = addHslAlpha(theme[9], 0.1);
+  const base = addHslAlpha(theme[11], 0.1);
 
   const WeatherCard = ({
     icon,
