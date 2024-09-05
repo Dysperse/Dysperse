@@ -543,7 +543,7 @@ export function TaskDetails() {
       <Accordion
         activeSections={activeSections}
         sectionContainerStyle={{
-          backgroundColor: addHslAlpha(theme[11], 0.06),
+          backgroundColor: addHslAlpha(theme[5], 0.3),
           borderRadius: 20,
           overflow: "hidden",
           marginTop: 15,
@@ -886,4 +886,3 @@ export function TaskDetails() {
     </>
   );
 }
-
