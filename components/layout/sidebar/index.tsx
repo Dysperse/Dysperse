@@ -450,22 +450,25 @@ const Header = memo(function Header() {
 const MiniLogo = ({ onHoverIn }) => {
   const { desktopCollapsed } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
-    navigator.windowControlsOverlay.visible
+    navigator.windowControlsOverlay?.visible
   );
 
   useEffect(() => {
-    const listener = navigator.windowControlsOverlay.addEventListener(
-      "geometrychange",
-      () => {
-        setTitlebarHidden(navigator.windowControlsOverlay.visible);
-      }
-    );
+    const listener = navigator.windowControlsOverlay
+      ? navigator.windowControlsOverlay.addEventListener(
+          "geometrychange",
+          () => {
+            setTitlebarHidden(navigator.windowControlsOverlay.visible);
+          }
+        )
+      : () => {};
 
     return () => {
-      navigator.windowControlsOverlay.removeEventListener(
-        "geometrychange",
-        listener
-      );
+      if (navigator.windowControlsOverlay)
+        navigator.windowControlsOverlay.removeEventListener(
+          "geometrychange",
+          listener
+        );
     };
   }, []);
 
