@@ -56,8 +56,8 @@ const Spinner = (props: SpinnerProps) => {
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${sv.value}deg` }],
-    width: props.size || 20,
-    height: props.size || 20,
+    width: props.size || 24,
+    height: props.size || 24,
   }));
 
   return (
