@@ -13,7 +13,6 @@ import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import dayjs from "dayjs";
-import * as Application from "expo-application";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import { createURL } from "expo-linking";
@@ -497,9 +496,9 @@ function Credentials({
                   `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`
                 ).then((res) => res.json());
 
-                alert(
-                  Application.applicationId?.split(".").reverse().join(".")
-                );
+                // alert(
+                //   Application.applicationId?.split(".").reverse().join(".")
+                // );
 
                 const json = await passkey.get({
                   rpId: rp.id,
