@@ -399,7 +399,13 @@ const CollectionNavbar = memo(function CollectionNavbar({
                       menuProps={{
                         rendererProps: { placement: "bottom" },
                       }}
-                      trigger={<IconButton icon="pending" size={40} />}
+                      trigger={
+                        <IconButton
+                          icon="pending"
+                          size={40}
+                          style={breakpoints.md && { marginRight: 10 }}
+                        />
+                      }
                       options={(isReadOnly ? [] : collectionMenuOptions) as any}
                     />
                   )
@@ -416,3 +422,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+
