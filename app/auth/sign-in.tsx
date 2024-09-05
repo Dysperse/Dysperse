@@ -376,6 +376,65 @@ function GoogleAuth() {
   );
 }
 
+function PasskeyModal({ setStep }) {
+  const { signIn } = useSession();
+  const [loading, setLoading] = useState(false);
+  return (
+    <Button
+      height={60}
+      variant="filled"
+      isLoading={loading}
+      onPress={async () => {
+        try {
+          setLoading(true);
+          const { challenge } = await fetch(
+            `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`
+          ).then((res) => res.json());
+
+          // alert(
+          //   Application.applicationId?.split(".").reverse().join(".")
+          // );
+
+          const json = await passkey.get({
+            rpId: rp.id,
+            challenge,
+          });
+
+          setStep(2);
+
+          const result = await fetch(
+            `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({
+                challenge,
+                response: json,
+                // publicKey: bufferToBase64URLString(
+                //   json.response?.getPublicKey().toString()
+                // ),
+              }),
+            }
+          ).then((res) => res.json());
+
+          if (!result.session) throw new Error("No session");
+          signIn(result.session);
+        } catch (e) {
+          setStep(0);
+          console.error("Passkey Error!", e);
+          Toast.show({ type: "error" });
+        } finally {
+          setLoading(false);
+        }
+      }}
+      containerStyle={{ width: "100%" }}
+      text="Continue with Passkey"
+      icon="key"
+      bold
+      large
+    />
+  );
+}
+
 function Credentials({
   control,
   errors,
@@ -487,54 +546,7 @@ function Credentials({
               large
             />
           </EmailModal>
-          <Button
-            height={60}
-            variant="filled"
-            onPress={async () => {
-              try {
-                const { challenge } = await fetch(
-                  `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`
-                ).then((res) => res.json());
-
-                // alert(
-                //   Application.applicationId?.split(".").reverse().join(".")
-                // );
-
-                const json = await passkey.get({
-                  rpId: rp.id,
-                  challenge,
-                });
-
-                setStep(2);
-
-                const result = await fetch(
-                  `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`,
-                  {
-                    method: "PATCH",
-                    body: JSON.stringify({
-                      challenge,
-                      response: json,
-                      // publicKey: bufferToBase64URLString(
-                      //   json.response?.getPublicKey().toString()
-                      // ),
-                    }),
-                  }
-                ).then((res) => res.json());
-
-                if (!result.session) throw new Error("No session");
-                signIn(result.session);
-              } catch (e) {
-                setStep(0);
-                console.error("Passkey Error!", e);
-                Toast.show({ type: "error" });
-              }
-            }}
-            containerStyle={{ width: "100%" }}
-            text="Continue with Passkey"
-            icon="key"
-            bold
-            large
-          />
+          <PasskeyModal setStep={setStep} />
           <QrModal>
             <Button
               height={60}
