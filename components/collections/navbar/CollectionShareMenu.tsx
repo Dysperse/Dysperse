@@ -430,6 +430,7 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
 };
 
 const CollectionShareLink = ({ isReadOnly }) => {
+  const session = useSession();
   const handleCopy = () => Toast.show({ type: "info", text1: "Coming soon!" });
 
   return (
@@ -449,12 +450,22 @@ const CollectionShareLink = ({ isReadOnly }) => {
               </IconButton>
             }
             options={[
-              ...["No access", "Full access", "Can edit", "Can view"].map(
+              ...["No access", "Can view", "Full access", "Can edit"].map(
                 (t) => ({
                   text: t,
                   selected: false,
-                  callback: () =>
-                    Toast.show({ type: "info", text1: "Coming soon!" }),
+                  callback: async () => {
+                    if (t !== "No access" && t !== "Can view") {
+                      Toast.show({ type: "info", text1: "Coming soon!" });
+                    } else {
+                      // await sendApiRequest(
+                      //   session,
+                      //   "PUT",
+                      //   "space/collections/collection/access",
+                      //   {}
+                      // );
+                    }
+                  },
                 })
               ),
             ]}

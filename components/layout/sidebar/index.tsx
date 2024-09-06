@@ -510,6 +510,22 @@ const MiniLogo = ({ desktopSlide, onHoverIn }) => {
   );
 };
 
+function SidebarOverlay() {
+  return (
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "red",
+        zIndex: 1,
+      }}
+    ></View>
+  );
+}
+
 const Sidebar = ({
   progressValue,
 }: {
@@ -532,6 +548,7 @@ const Sidebar = ({
 
   const animatedStyles = [{ transform: [{ translateX: transform }] }];
   const desktopStyles = useAnimatedStyle(() => ({
+    // boxShadow: "0 0 0 100vw rgba(0, 0, 0, 0.4)",
     transform: [
       {
         translateX: withSpring(desktopSlide.value, {
@@ -566,14 +583,12 @@ const Sidebar = ({
     desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0;
   }, [desktopCollapsed, desktopSlide, SIDEBAR_WIDTH]);
 
+  const SafeView = breakpoints.md
+    ? (p) => <React.Fragment {...p} />
+    : (p) => <View style={{ flex: 1 }} {...p} />;
+
   return (
-    <View style={{ flex: breakpoints.md ? undefined : 1 }}>
-      {Platform.OS === "web" && (
-        <MiniLogo
-          desktopSlide={desktopSlide}
-          onHoverIn={() => (desktopSlide.value = 0)}
-        />
-      )}
+    <>
       {desktopCollapsed && (
         <Pressable
           style={[
@@ -582,77 +597,82 @@ const Sidebar = ({
               position: "absolute",
               top: 0,
               left: 0,
-              height: "100%",
+              height,
               width: 10,
-              zIndex: 99,
+              zIndex: 9999,
             },
           ]}
           onHoverIn={() => (desktopSlide.value = 0)}
         />
       )}
-      <Animated.View
-        {...(Platform.OS === "web" && {
-          onMouseEnter: () => (desktopSlide.value = 1),
-          onMouseLeave: () =>
-            (desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0),
-        })}
-        style={[
-          { flex: 1 },
-          desktopCollapsed && desktopStyles,
-          {
-            zIndex: breakpoints.md ? 1 : 0,
-            flexDirection: "row",
-            backgroundColor: theme[2],
-          },
-          pathname.includes("chrome-extension") && { display: "none" },
-          pathname.includes("settings") &&
-            breakpoints.md && {
-              zIndex: -999,
-            },
-        ]}
-      >
-        <NativeAnimated.View
+      <SafeView>
+        {Platform.OS === "web" && (
+          <MiniLogo
+            desktopSlide={desktopSlide}
+            onHoverIn={() => (desktopSlide.value = 0)}
+          />
+        )}
+        <Animated.View
+          {...(Platform.OS === "web" && {
+            onMouseEnter: () => (desktopSlide.value = 1),
+            onMouseLeave: () =>
+              (desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0),
+          })}
           style={[
-            animatedStyles,
+            { flex: breakpoints.md ? undefined : 1 },
+            desktopCollapsed && desktopStyles,
             {
-              width: SIDEBAR_WIDTH,
-              flexDirection: "column",
-              borderRightWidth: 2,
-              borderRightColor: "transparent",
+              zIndex: breakpoints.md ? 1 : 0,
+              flexDirection: "row",
               backgroundColor: theme[2],
-              ...(Platform.OS === "web" &&
-                !desktopCollapsed &&
-                ({
-                  paddingTop: "env(titlebar-area-height,0)",
-                } as any)),
             },
-            desktopCollapsed && {
-              position: "absolute",
-              shadowColor: theme[9],
-              shadowRadius: 50,
-              shadowOffset: { width: 0, height: 0 },
-              borderRadius: 25,
-              left: -100,
-              borderTopLeftRadius: 0,
-              borderBottomLeftRadius: 0,
-              width: SIDEBAR_WIDTH + 100,
-              paddingLeft: 100,
-              backgroundColor: theme[1],
-              zIndex: 99,
-              shadowOpacity: 0.4,
-              height: height - 50,
-              marginTop: 25,
-            },
+            pathname.includes("chrome-extension") && { display: "none" },
+            pathname.includes("settings") &&
+              breakpoints.md && {
+                zIndex: -999,
+              },
           ]}
         >
-          <View style={[styles.header, { marginTop: insets.top }]}>
-            <LogoButton toggleHidden={toggleHidden} />
-            <Header />
-          </View>
-          <OpenTabsList />
-        </NativeAnimated.View>
-      </Animated.View>
-    </View>
+          <NativeAnimated.View
+            style={[
+              animatedStyles,
+              {
+                width: SIDEBAR_WIDTH,
+                flexDirection: "column",
+                borderRightWidth: 2,
+                borderRightColor: "transparent",
+                backgroundColor: theme[2],
+                ...(Platform.OS === "web" &&
+                  !desktopCollapsed &&
+                  ({
+                    paddingTop: "env(titlebar-area-height,0)",
+                  } as any)),
+              },
+              desktopCollapsed && {
+                position: "absolute",
+                borderRadius: 25,
+                left: -100,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                width: SIDEBAR_WIDTH + 100,
+                paddingLeft: 100,
+                backgroundColor: theme[1],
+                zIndex: 99,
+                shadowOpacity: 0.4,
+                height: height - 50,
+                marginTop: 25,
+              },
+            ]}
+          >
+            <View style={[styles.header, { marginTop: insets.top }]}>
+              <LogoButton toggleHidden={toggleHidden} />
+              <Header />
+            </View>
+            <OpenTabsList />
+          </NativeAnimated.View>
+        </Animated.View>
+      </SafeView>
+    </>
   );
 };
 
