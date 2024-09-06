@@ -448,12 +448,25 @@ const Header = memo(function Header() {
 });
 
 const MiniLogo = ({ onHoverIn }) => {
-  const { desktopCollapsed } = useSidebarContext();
+  const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
     navigator.windowControlsOverlay?.visible
   );
 
   useEffect(() => {
+    const windowListener = document.addEventListener(
+      "mouseleave",
+      function (event) {
+        if (
+          event.clientY <= 0 ||
+          event.clientX <= 0 ||
+          event.clientX >= window.innerWidth ||
+          event.clientY >= window.innerHeight
+        ) {
+          setDesktopCollapsed(true);
+        }
+      }
+    );
     const listener = navigator.windowControlsOverlay
       ? navigator.windowControlsOverlay.addEventListener(
           "geometrychange",
@@ -469,6 +482,7 @@ const MiniLogo = ({ onHoverIn }) => {
           "geometrychange",
           listener
         );
+      document.removeEventListener("mouseleave", windowListener);
     };
   }, []);
 
