@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import { memo, useRef } from "react";
 import { StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const TimeZoneModal = () => {
   const theme = useColorTheme();
@@ -74,11 +75,9 @@ const TimeZoneModal = () => {
             <ListItemButton
               variant="filled"
               onPress={() => {
-                dayjs.tz.setDefault(
-                  dayjs.tz.guess()
-                  // "America/New_York"
-                );
-                alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
+                if (process.env.NODE_ENV === "development")
+                  return alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
+                Toast.show({ type: "info", text1: "Coming soon!" });
               }}
             >
               <ListItemText
@@ -89,7 +88,9 @@ const TimeZoneModal = () => {
             </ListItemButton>
             <ListItemButton
               onPress={() => {
-                dayjs.tz.setDefault(session?.user?.timeZone);
+                if (process.env.NODE_ENV === "development")
+                  return dayjs.tz.setDefault(session?.user?.timeZone);
+                Toast.show({ type: "info", text1: "Coming soon!" });
               }}
             >
               <ListItemText
@@ -101,7 +102,9 @@ const TimeZoneModal = () => {
 
           <Divider style={{ marginTop: 10, marginBottom: 5 }} />
 
-          <Button>
+          <Button
+            onPress={() => Toast.show({ type: "info", text1: "Coming soon!" })}
+          >
             <ButtonText>Make {dayjs.tz.guess()} my default</ButtonText>
           </Button>
         </View>
@@ -143,25 +146,29 @@ const LoadingErrors = memo(() => {
           ]}
         >
           <StatusBar barStyle="dark-content" />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            {isValidating || isStorageValidating ? (
-              <Spinner size={18} color={red[2]} />
-            ) : (
-              <Icon style={{ color: red[2] }} bold size={18}>
-                cloud_off
-              </Icon>
-            )}
-            <Text
-              style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
-              weight={700}
+          {(error || storageError) && (
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
-              {error
-                ? error.message === "Failed to fetch"
-                  ? "You're offline"
-                  : "Offline"
-                : "Offline"}
-            </Text>
-          </View>
+              {isValidating || isStorageValidating ? (
+                <Spinner size={18} color={red[2]} />
+              ) : (
+                <Icon style={{ color: red[2] }} bold size={18}>
+                  cloud_off
+                </Icon>
+              )}
+              <Text
+                style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
+                weight={700}
+              >
+                {error
+                  ? error.message === "Failed to fetch"
+                    ? "You're offline"
+                    : "Offline"
+                  : "Offline"}
+              </Text>
+            </View>
+          )}
           {isTimeZoneDifference && <TimeZoneModal />}
         </View>
       )}
