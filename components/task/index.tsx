@@ -381,7 +381,7 @@ const Task = memo(function Task({
                 <Chip
                   disabled
                   dense
-                  label={dayjs(task.start).fromNow()}
+                  label={dayjs.tz(task.start).fromNow()}
                   icon={<Icon>access_time</Icon>}
                 />
               )}
@@ -389,7 +389,7 @@ const Task = memo(function Task({
                 <Chip
                   disabled
                   dense
-                  label={dayjs(task.start).format("MMM Do")}
+                  label={dayjs.tz(task.start).format("MMM Do")}
                   icon={<Icon>calendar_today</Icon>}
                 />
               )}
@@ -418,7 +418,7 @@ const Task = memo(function Task({
               {!task.dateOnly && (
                 <Chip
                   dense
-                  label={dayjs(task.start).format("h:mm A")}
+                  label={dayjs.tz(task.start).format("h:mm A")}
                   icon={<Icon size={22}>calendar_today</Icon>}
                 />
               )}

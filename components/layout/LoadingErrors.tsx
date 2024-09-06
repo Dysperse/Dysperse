@@ -1,14 +1,114 @@
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
+import { Button, ButtonText } from "@/ui/Button";
+import Divider from "@/ui/Divider";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
+import { Modal } from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import { memo } from "react";
+import { memo, useRef } from "react";
 import { StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const TimeZoneModal = () => {
+  const theme = useColorTheme();
+  const { session } = useUser();
+
+  const ref = useRef(null);
+
+  return (
+    <>
+      <Button
+        backgroundColors={{
+          default: addHslAlpha(theme[2], 0),
+          hovered: addHslAlpha(theme[2], 0.2),
+          pressed: addHslAlpha(theme[2], 0.3),
+        }}
+        height={30}
+        onPress={() => ref.current.present()}
+      >
+        <Icon style={{ color: theme[2] }} bold size={18}>
+          travel
+        </Icon>
+        <Text style={{ color: theme[2], fontSize: 12 }} weight={900}>
+          Travel mode on
+        </Text>
+        <Icon style={{ color: theme[2], marginLeft: -10 }} size={18}>
+          expand_more
+        </Icon>
+      </Button>
+      <Modal animation="SCALE" ref={ref} maxWidth={380}>
+        <View style={{ padding: 20, alignItems: "center" }}>
+          <Emoji emoji="1F9ED" size={50} />
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 40,
+              fontFamily: "serifText800",
+              marginBottom: 10,
+              marginTop: 20,
+            }}
+          >
+            Hey there,{"\n"} time traveller.
+          </Text>
+          <Text
+            style={{ textAlign: "center", opacity: 0.6, fontSize: 20 }}
+            weight={300}
+          >
+            It looks like you're outside of {"\n"}your usual timezone.
+          </Text>
+
+          <Text
+            variant="eyebrow"
+            style={{ textAlign: "center", marginTop: 20 }}
+          >
+            Times shown in app will reflect...
+          </Text>
+          <View style={{ gap: 5, marginTop: 7, width: "100%" }}>
+            <ListItemButton
+              variant="filled"
+              onPress={() => {
+                dayjs.tz.setDefault(
+                  dayjs.tz.guess()
+                  // "America/New_York"
+                );
+                alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
+              }}
+            >
+              <ListItemText
+                primary={dayjs.tz.guess()}
+                secondary="Your current time zone"
+              />
+              <Icon>check</Icon>
+            </ListItemButton>
+            <ListItemButton
+              onPress={() => {
+                dayjs.tz.setDefault(session?.user?.timeZone);
+              }}
+            >
+              <ListItemText
+                primary={session?.user?.timeZone}
+                secondary="Your usual time zone"
+              />
+            </ListItemButton>
+          </View>
+
+          <Divider style={{ marginTop: 10, marginBottom: 5 }} />
+
+          <Button>
+            <ButtonText>Make {dayjs.tz.guess()} my default</ButtonText>
+          </Button>
+        </View>
+      </Modal>
+    </>
+  );
+};
 
 const LoadingErrors = memo(() => {
   const red = useColor("red");
@@ -62,24 +162,7 @@ const LoadingErrors = memo(() => {
                 : "Offline"}
             </Text>
           </View>
-          {isTimeZoneDifference && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
-              <Icon style={{ color: red[2] }} bold size={18}>
-                travel
-              </Icon>
-              <View>
-                <Text style={{ color: red[2], fontSize: 12 }} weight={900}>
-                  {dayjs.tz.guess()}
-                </Text>
-              </View>
-            </View>
-          )}
+          {isTimeZoneDifference && <TimeZoneModal />}
         </View>
       )}
     </>
@@ -87,4 +170,3 @@ const LoadingErrors = memo(() => {
 });
 
 export default LoadingErrors;
-

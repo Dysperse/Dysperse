@@ -93,9 +93,10 @@ export default function AppLayout() {
   const progressValue = useRef(null);
 
   const { sidebarRef, SIDEBAR_WIDTH } = useSidebarContext();
-  // useEffect(() => {
-  //     sidebarRef.current?.openDrawer?.();
-  // }, [sidebarRef]);
+  useEffect(() => {
+    if (sessionData?.user?.timeZone)
+      dayjs.tz.setDefault(sessionData?.user?.timeZone);
+  }, [sidebarRef]);
 
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
 
@@ -319,4 +320,3 @@ export default function AppLayout() {
     </StorageContextProvider>
   );
 }
-

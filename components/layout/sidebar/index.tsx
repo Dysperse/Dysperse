@@ -446,8 +446,8 @@ const Header = memo(function Header() {
   );
 });
 
-const MiniLogo = ({ onHoverIn }) => {
-  const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
+const MiniLogo = ({ desktopSlide, onHoverIn }) => {
+  const { desktopCollapsed, SIDEBAR_WIDTH } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
     navigator.windowControlsOverlay?.visible
   );
@@ -457,12 +457,13 @@ const MiniLogo = ({ onHoverIn }) => {
       "mouseleave",
       function (event) {
         if (
-          event.clientY <= 0 ||
-          event.clientX <= 0 ||
-          event.clientX >= window.innerWidth ||
-          event.clientY >= window.innerHeight
+          desktopCollapsed &&
+          (event.clientY <= 0 ||
+            event.clientX <= 0 ||
+            event.clientX >= window.innerWidth ||
+            event.clientY >= window.innerHeight)
         ) {
-          setDesktopCollapsed(true);
+          desktopSlide.value = -SIDEBAR_WIDTH;
         }
       }
     );
@@ -568,7 +569,10 @@ const Sidebar = ({
   return (
     <View style={{ flex: breakpoints.md ? undefined : 1 }}>
       {Platform.OS === "web" && (
-        <MiniLogo onHoverIn={() => (desktopSlide.value = 0)} />
+        <MiniLogo
+          desktopSlide={desktopSlide}
+          onHoverIn={() => (desktopSlide.value = 0)}
+        />
       )}
       {desktopCollapsed && (
         <Pressable
@@ -653,4 +657,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-
