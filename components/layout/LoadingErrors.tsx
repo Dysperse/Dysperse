@@ -18,7 +18,7 @@ const LoadingErrors = memo(() => {
   const { error: storageError, isStorageValidating } = useStorageContext();
   const insets = useSafeAreaInsets();
 
-  const isTimeZoneDifference = session?.user?.timeZone === dayjs.tz.guess();
+  const isTimeZoneDifference = session?.user?.timeZone !== dayjs.tz.guess();
 
   return (
     <>
