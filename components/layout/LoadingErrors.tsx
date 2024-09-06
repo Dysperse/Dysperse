@@ -12,12 +12,12 @@ const LoadingErrors = memo(() => {
   const red = useColor("red");
   const theme = useColorTheme();
   const orange = useColor("orange");
-  const { error, isValidating } = useUser();
+  const { error, isValidating, session } = useUser();
   const { error: storageError, isStorageValidating } = useStorageContext();
   const insets = useSafeAreaInsets();
 
   return (
-    !(error || storageError) && (
+    (error || storageError) && (
       <View
         style={[
           {
