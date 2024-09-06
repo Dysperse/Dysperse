@@ -17,7 +17,7 @@ const LoadingErrors = memo(() => {
   const insets = useSafeAreaInsets();
 
   return (
-    (error || storageError) && (
+    !(error || storageError) && (
       <View
         style={[
           {
@@ -57,3 +57,4 @@ const LoadingErrors = memo(() => {
 });
 
 export default LoadingErrors;
+

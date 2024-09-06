@@ -22,6 +22,22 @@ import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
 import { TaskDrawerContext } from "./context";
 
+const SafeBlurView = (props) => {
+  const isDark = useDarkMode();
+  return Platform.OS === "android" ? (
+    <React.Fragment {...props} />
+  ) : (
+    <BlurView
+      style={{ flex: 1 }}
+      intensity={50}
+      tint={
+        isDark ? "systemUltraThinMaterialDark" : "systemUltraThinMaterialLight"
+      }
+      {...props}
+    />
+  );
+};
+
 const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   {
     id,
@@ -46,7 +62,6 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   const insets = useSafeAreaInsets();
 
   const breakpoints = useResponsiveBreakpoints();
-  const isDark = useDarkMode();
 
   useImperativeHandle(ref, () => ({
     triggerMutate: () => mutateList(data),
@@ -135,15 +150,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
           },
         ]}
       >
-        <BlurView
-          style={{ flex: 1 }}
-          intensity={50}
-          tint={
-            isDark
-              ? "systemUltraThinMaterialDark"
-              : "systemUltraThinMaterialLight"
-          }
-        >
+        <SafeBlurView>
           {!breakpoints.md && (
             <View
               style={{
@@ -184,7 +191,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
               <Spinner />
             </View>
           )}
-        </BlurView>
+        </SafeBlurView>
       </Pressable>
     </Pressable>
   );
@@ -225,7 +232,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
 
   const handleClose = useCallback(() => {
     contentRef.current?.triggerMutate();
-  }, [sheetRef, breakpoints]);
+  }, []);
 
   const trigger = cloneElement((children || <Pressable />) as any, {
     onPress: handleOpen,

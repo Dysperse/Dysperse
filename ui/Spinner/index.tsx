@@ -18,7 +18,10 @@ interface SpinnerProps {
   children?: React.ReactNode;
 }
 
-const easing = () => 0;
+const easing = () => {
+  "worklet"; // This annotation is important for the worklet to run on the UI thread
+  return 0;
+};
 const duration = 83.333;
 
 const Spinner = (props: SpinnerProps) => {

@@ -3,7 +3,6 @@ import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
-import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -562,15 +561,12 @@ const Sidebar = ({
     }
   }, [setDesktopCollapsed]);
 
-  const { error } = useUser();
-  const { error: storageError } = useStorageContext();
-
   useEffect(() => {
     desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0;
   }, [desktopCollapsed, desktopSlide, SIDEBAR_WIDTH]);
 
   return (
-    <>
+    <View style={{ flex: breakpoints.md ? undefined : 1 }}>
       {Platform.OS === "web" && (
         <MiniLogo onHoverIn={() => (desktopSlide.value = 0)} />
       )}
@@ -597,6 +593,7 @@ const Sidebar = ({
             (desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0),
         })}
         style={[
+          { flex: 1 },
           desktopCollapsed && desktopStyles,
           {
             zIndex: breakpoints.md ? 1 : 0,
@@ -614,9 +611,6 @@ const Sidebar = ({
           style={[
             animatedStyles,
             {
-              height:
-                height +
-                (error || storageError ? -30 : insets.top + insets.bottom),
               width: SIDEBAR_WIDTH,
               flexDirection: "column",
               borderRightWidth: 2,
@@ -654,7 +648,7 @@ const Sidebar = ({
           <OpenTabsList />
         </NativeAnimated.View>
       </Animated.View>
-    </>
+    </View>
   );
 };
 

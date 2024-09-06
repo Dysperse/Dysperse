@@ -291,7 +291,12 @@ export default function AppLayout() {
                                 progressValue.current = v;
 
                                 return (
-                                  <Pressable style={{ flexDirection: "row" }}>
+                                  <Pressable
+                                    style={{
+                                      flex: 1,
+                                      backgroundColor: "green",
+                                    }}
+                                  >
                                     <Sidebar progressValue={v} />
                                   </Pressable>
                                 );
