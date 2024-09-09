@@ -458,12 +458,15 @@ const CollectionShareLink = ({ isReadOnly }) => {
                     if (t !== "No access" && t !== "Can view") {
                       Toast.show({ type: "info", text1: "Coming soon!" });
                     } else {
-                      // await sendApiRequest(
-                      //   session,
-                      //   "PUT",
-                      //   "space/collections/collection/access",
-                      //   {}
-                      // );
+                      await sendApiRequest(
+                        session,
+                        "PUT",
+                        "space/collections/collection/link",
+                        {
+                          disabled: t === "No access" ? "true" : "false",
+                          access: "READ_ONLY",
+                        }
+                      );
                     }
                   },
                 })
@@ -814,3 +817,4 @@ export const CollectionShareMenu = forwardRef((props, ref) => {
     </>
   );
 });
+
