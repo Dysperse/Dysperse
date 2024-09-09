@@ -2,6 +2,7 @@ import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { KanbanHeader } from "@/components/collections/views/kanban/Header";
 import CreateTask from "@/components/task/create";
+import { useSession } from "@/context/AuthProvider";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
@@ -81,6 +82,7 @@ export const ColumnFinishedComponent = () => {
 export function Column(props: ColumnProps) {
   const theme = useColorTheme();
   const columnRef = useRef(null);
+  const { session } = useSession();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access, data: collectionData } = useCollectionContext();
@@ -253,7 +255,7 @@ export function Column(props: ColumnProps) {
       </Pressable>
       {props.grid ? undefined : (
         <>
-          {!isReadOnly && (
+          {!isReadOnly && session && (
             <View style={{ padding: 15, paddingBottom: 0, height: 65 }}>
               <CreateTask
                 mutate={(n) => onEntityCreate(n, props.label)}
@@ -335,7 +337,7 @@ export function Column(props: ColumnProps) {
         }
         renderItem={({ item }) => (
           <Entity
-            isReadOnly={isReadOnly}
+            isReadOnly={isReadOnly || !session}
             item={item}
             showDate
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
@@ -346,3 +348,4 @@ export function Column(props: ColumnProps) {
     </Animated.View>
   );
 }
+

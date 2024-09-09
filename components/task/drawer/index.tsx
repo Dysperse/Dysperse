@@ -8,6 +8,7 @@ import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
+import { useLocalSearchParams, usePathname } from "expo-router";
 import React, {
   cloneElement,
   forwardRef,
@@ -57,8 +58,14 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   const { height } = useWindowDimensions();
   const { sessionToken } = useUser();
 
+  const pathname = usePathname();
+  const { id: inviteLinkId } = useLocalSearchParams();
+
   // Fetch data
-  const { data, mutate, error } = useSWR(["space/entity", { id }]);
+  const { data, mutate, error } = useSWR([
+    "space/entity",
+    { id, ...(pathname.includes("/c/") && { inviteLinkId }) },
+  ]);
   const insets = useSafeAreaInsets();
 
   const breakpoints = useResponsiveBreakpoints();
@@ -188,7 +195,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
                 ...(Platform.OS === "web" && { flex: 1 }),
               }}
             >
-              <Spinner />
+              {error ? <ErrorAlert /> : <Spinner />}
             </View>
           )}
         </SafeBlurView>
@@ -231,8 +238,9 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
   }));
 
   const handleClose = useCallback(() => {
+    if (isReadOnly) return;
     contentRef.current?.triggerMutate();
-  }, []);
+  }, [isReadOnly]);
 
   const trigger = cloneElement((children || <Pressable />) as any, {
     onPress: handleOpen,

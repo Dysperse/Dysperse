@@ -18,8 +18,15 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useLocalSearchParams } from "expo-router";
-import { ReactElement, cloneElement, memo, useRef, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import {
+  ReactElement,
+  cloneElement,
+  memo,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -270,21 +277,30 @@ const Loading = ({ error }) => (
   </ContentWrapper>
 );
 
-export default function Page() {
+export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
-  const swrKey =
-    id && type
-      ? [
-          "space/collections/collection",
-          id === "all" ? { all: "true", id: "??" } : { id },
-        ]
-      : null;
+  const swrKey = id
+    ? [
+        "space/collections/collection",
+        id === "all"
+          ? { all: "true", id: "??" }
+          : { id, isPublic: isPublic ? "true" : "false" },
+      ]
+    : null;
   const { data, mutate, error } = useSWR(swrKey);
 
   const [editOrderMode, setEditOrderMode] = useState(false);
 
+  useEffect(() => {
+    if (!type && isPublic) {
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => router.setParams({ type: "kanban" }), 200);
+      });
+    }
+  }, [isPublic, type]);
+
   let content = null;
-  switch (type as CollectionType) {
+  switch ((type || (isPublic ? "kanban" : null)) as CollectionType) {
     case "planner":
       content = <Planner />;
       break;

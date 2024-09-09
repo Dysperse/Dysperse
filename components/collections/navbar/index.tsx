@@ -377,41 +377,47 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 justifyContent: "flex-end",
               }}
             >
-              <CollectionContext.Provider value={contextValue}>
-                <CollectionSearch />
-                {!breakpoints.md && <CollectionShareMenu ref={shareMenuRef} />}
-                {isLoading ? (
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 999,
-                      backgroundColor: theme[4],
-                    }}
-                  />
-                ) : (
-                  !isReadOnly && (
-                    <MenuPopover
-                      menuRef={menuRef}
-                      closeOnSelect
-                      {...(isReadOnly && { menuProps: { opened: false } })}
-                      containerStyle={{ width: 240 }}
-                      menuProps={{
-                        rendererProps: { placement: "bottom" },
+              {session && (
+                <CollectionContext.Provider value={contextValue}>
+                  <CollectionSearch />
+                  {!breakpoints.md && session && (
+                    <CollectionShareMenu ref={shareMenuRef} />
+                  )}
+                  {isLoading ? (
+                    <View
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 999,
+                        backgroundColor: theme[4],
                       }}
-                      trigger={
-                        <IconButton
-                          icon="pending"
-                          size={40}
-                          style={breakpoints.md && { marginRight: 10 }}
-                        />
-                      }
-                      options={(isReadOnly ? [] : collectionMenuOptions) as any}
                     />
-                  )
-                )}
-                {breakpoints.md && <CollectionShareMenu ref={shareMenuRef} />}
-              </CollectionContext.Provider>
+                  ) : (
+                    !isReadOnly && (
+                      <MenuPopover
+                        menuRef={menuRef}
+                        closeOnSelect
+                        {...(isReadOnly && { menuProps: { opened: false } })}
+                        containerStyle={{ width: 240 }}
+                        menuProps={{
+                          rendererProps: { placement: "bottom" },
+                        }}
+                        trigger={
+                          <IconButton
+                            icon="pending"
+                            size={40}
+                            style={breakpoints.md && { marginRight: 10 }}
+                          />
+                        }
+                        options={
+                          (isReadOnly ? [] : collectionMenuOptions) as any
+                        }
+                      />
+                    )
+                  )}
+                  {breakpoints.md && <CollectionShareMenu ref={shareMenuRef} />}
+                </CollectionContext.Provider>
+              )}
             </View>
           </NavbarGradient>
           <LoadingIndicator />

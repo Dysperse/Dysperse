@@ -1,6 +1,7 @@
 import { columnStyles } from "@/components/collections/columnStyles";
 import { useCollectionContext } from "@/components/collections/context";
 import CreateTask from "@/components/task/create";
+import { useSession } from "@/context/AuthProvider";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
@@ -30,6 +31,7 @@ export const KanbanHeader = memo(function KanbanHeader({
 }) {
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access } = useCollectionContext();
+  const { session } = useSession();
   const isReadOnly = access?.access === "READ_ONLY";
   const theme = useColorTheme();
   const { setCurrentColumn, currentColumn, columnsLength, hasOther } =
@@ -97,7 +99,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         </Text>
       </View>
       <View style={{ flexDirection: "row", marginRight: -10 }}>
-        {label?.id && !isReadOnly && (
+        {label?.id && !isReadOnly && session && (
           <ColumnMenuTrigger label={label}>
             <IconButton size={40} icon={grid ? "edit" : "more_horiz"} />
           </ColumnMenuTrigger>
@@ -140,7 +142,7 @@ export const KanbanHeader = memo(function KanbanHeader({
           </>
         )}
       </View>
-      {grid && (
+      {grid && session && (
         <>
           <CreateTask
             defaultValues={{ label: omit(["entities"], label) }}
@@ -162,3 +164,4 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
+

@@ -552,88 +552,97 @@ export function TaskDetails() {
         touchableComponent={Pressable as any}
         easing={Easing.bezier(0.17, 0.67, 0.32, 1)}
         sections={[
-          {
-            trigger: () => (
-              <ListItemButton
-                disabled
-                backgroundColors={backgroundColors}
-                style={{
-                  paddingVertical: 15,
-                  paddingHorizontal: 20,
-                }}
-              >
-                <Icon
-                  style={{
-                    transform: [{ rotate: "-45deg" }],
-                  }}
-                >
-                  attachment
-                </Icon>
-                <ListItemText
-                  primary={
-                    task.attachments?.length > 0
-                      ? `${task.attachments?.length} attachment${
-                          task.attachments?.length > 1 ? "s" : ""
-                        }`
-                      : `Attachments`
-                  }
-                  secondaryProps={{ style: { opacity: 1 } }}
-                  secondary={
-                    <View
+          isReadOnly && task.attachments?.length === 0
+            ? null
+            : {
+                trigger: () => (
+                  <ListItemButton
+                    disabled
+                    backgroundColors={backgroundColors}
+                    style={{
+                      paddingVertical: 15,
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <Icon
                       style={{
-                        flexWrap: "wrap",
-                        gap: 5,
-                        flexDirection: "row",
+                        transform: [{ rotate: "-45deg" }],
                       }}
                     >
-                      <TaskAttachmentButton task={task} updateTask={updateTask}>
-                        <Button
-                          icon="add"
-                          text="New"
-                          variant="filled"
-                          backgroundColors={attachmentButtonStyles(theme)}
-                          borderColors={attachmentButtonStyles(theme)}
-                          dense
-                        />
-                      </TaskAttachmentButton>
-                      {task.attachments?.map((i, index) => (
-                        <TaskAttachmentPreview
+                      attachment
+                    </Icon>
+                    <ListItemText
+                      primary={
+                        task.attachments?.length > 0
+                          ? `${task.attachments?.length} attachment${
+                              task.attachments?.length > 1 ? "s" : ""
+                            }`
+                          : `Attachments`
+                      }
+                      secondaryProps={{ style: { opacity: 1 } }}
+                      secondary={
+                        <View
+                          style={{
+                            flexWrap: "wrap",
+                            gap: 5,
+                            flexDirection: "row",
+                          }}
+                        >
+                          <TaskAttachmentButton
+                            task={task}
+                            updateTask={updateTask}
+                          >
+                            <Button
+                              icon="add"
+                              text="New"
+                              variant="filled"
+                              backgroundColors={attachmentButtonStyles(theme)}
+                              borderColors={attachmentButtonStyles(theme)}
+                              dense
+                            />
+                          </TaskAttachmentButton>
+                          {task.attachments?.map((i, index) => (
+                            <TaskAttachmentPreview
+                              item={i}
+                              index={index}
+                              key={index}
+                            />
+                          ))}
+                        </View>
+                      }
+                    />
+                    {task.attachments?.length > 0 && (
+                      <IconButton
+                        style={{ opacity: 1 }}
+                        variant="outlined"
+                        icon="expand_more"
+                        disabled
+                      />
+                    )}
+                  </ListItemButton>
+                ),
+                content: (
+                  <View
+                    style={{
+                      display: task.attachments?.length > 0 ? "flex" : "none",
+                    }}
+                  >
+                    <Divider />
+                    {task.attachments?.map((i, index) => (
+                      <React.Fragment key={index}>
+                        <TaskAttachmentCard
                           item={i}
                           index={index}
                           key={index}
                         />
-                      ))}
-                    </View>
-                  }
-                />
-                {task.attachments?.length > 0 && (
-                  <IconButton
-                    style={{ opacity: 1 }}
-                    variant="outlined"
-                    icon="expand_more"
-                    disabled
-                  />
-                )}
-              </ListItemButton>
-            ),
-            content: (
-              <View
-                style={{
-                  display: task.attachments?.length > 0 ? "flex" : "none",
-                }}
-              >
-                <Divider />
-                {task.attachments?.map((i, index) => (
-                  <React.Fragment key={index}>
-                    <TaskAttachmentCard item={i} index={index} key={index} />
-                    {index !== task.attachments.length - 1 && (
-                      <Divider style={{ height: 1 }} />
-                    )}
-                  </React.Fragment>
-                ))}
-              </View>
-            ),
-          },
+                        {index !== task.attachments.length - 1 && (
+                          <Divider style={{ height: 1 }} />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </View>
+                ),
+              },
           task.integrationParams && {
             trigger: () => (
               <ListItemButton
@@ -710,7 +719,9 @@ export function TaskDetails() {
                 <ListItemButton
                   backgroundColors={backgroundColors}
                   style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-                  disabled={Boolean(task.start || task.recurrenceRule)}
+                  disabled={
+                    Boolean(task.start || task.recurrenceRule) || isReadOnly
+                  }
                 >
                   <Icon>
                     {task.start
@@ -721,7 +732,7 @@ export function TaskDetails() {
                   </Icon>
                   <ListItemText primary={dateName[0]} secondary={dateName[1]} />
                   <View style={{ flexDirection: "row" }}>
-                    <TaskNotificationsButton />
+                    {!isReadOnly && <TaskNotificationsButton />}
                     {!isReadOnly && !task.recurrenceRule && task.start && (
                       <TaskRescheduleButton />
                     )}
@@ -817,6 +828,7 @@ export function TaskDetails() {
                   />
                 </View>
                 {task.storyPoints &&
+                  !isReadOnly &&
                   complexityScale.findIndex((i) => i === task.storyPoints) !==
                     -1 && (
                     <View
@@ -886,3 +898,4 @@ export function TaskDetails() {
     </>
   );
 }
+
