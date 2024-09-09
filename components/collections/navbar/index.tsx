@@ -406,7 +406,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
                           <IconButton
                             icon="pending"
                             size={40}
-                            style={breakpoints.md && { marginRight: 10 }}
+                            style={
+                              breakpoints.md && !isAll && { marginRight: 10 }
+                            }
                           />
                         }
                         options={
@@ -428,4 +430,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-
