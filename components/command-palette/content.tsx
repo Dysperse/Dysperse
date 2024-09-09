@@ -113,10 +113,10 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
           style={({ pressed, hovered }) => ({
             backgroundColor:
               filter !== null && filter !== name
-                ? "transparent"
+                ? pressed ?addHslAlpha(theme[9], 0.1):hovered?addHslAlpha(theme[9], 0.05)
                 : filter === name
                 ? addHslAlpha(theme[9], 0.1)
-                : "transparent",
+                : pressed ?addHslAlpha(theme[9], 0.1):hovered?addHslAlpha(theme[9], 0.05): "transparent",
             zIndex: 99,
             borderColor: addHslAlpha(
               theme[9],
