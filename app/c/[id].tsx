@@ -14,36 +14,40 @@ export default function Page() {
   const { width, height } = useWindowDimensions();
   const theme = useColorTheme();
   return (
-    <View style={{ width, height, backgroundColor: theme[2], padding: 20 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 15,
-          gap: 5,
-          justifyContent: "space-between",
-          marginTop: -5,
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-          <Logo size={30} />
-          <Text style={{ color: theme[11], fontSize: 20 }} weight={300}>
-            dysperse
-          </Text>
-        </View>
+    <MenuProvider>
+      <BottomSheetModalProvider>
+        <StorageContextProvider>
+          <View
+            style={{ width, height, backgroundColor: theme[2], padding: 20 }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 15,
+                gap: 5,
+                justifyContent: "space-between",
+                marginTop: -5,
+              }}
+            >
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              >
+                <Logo size={30} />
+                <Text style={{ color: theme[11], fontSize: 20 }} weight={300}>
+                  dysperse
+                </Text>
+              </View>
 
-        <Button variant="filled" onPress={() => router.push("/auth")}>
-          <Icon>login</Icon>
-          <ButtonText>Sign in</ButtonText>
-        </Button>
-      </View>
-      <MenuProvider>
-        <BottomSheetModalProvider>
-          <StorageContextProvider>
-            <Collection isPublic />
-          </StorageContextProvider>
-        </BottomSheetModalProvider>
-      </MenuProvider>
-    </View>
+              <Button variant="filled" onPress={() => router.push("/auth")}>
+                <Icon>login</Icon>
+                <ButtonText>Sign in</ButtonText>
+              </Button>
+            </View>
+          </View>
+          <Collection isPublic />
+        </StorageContextProvider>
+      </BottomSheetModalProvider>
+    </MenuProvider>
   );
 }
