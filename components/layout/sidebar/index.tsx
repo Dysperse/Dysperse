@@ -652,15 +652,17 @@ const Sidebar = ({
                 position: "absolute",
                 borderRadius: 25,
                 left: -100,
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
                 width: SIDEBAR_WIDTH + 100,
                 paddingLeft: 100,
-                backgroundColor: theme[1],
                 zIndex: 99,
                 shadowOpacity: 0.4,
                 height: height - 50,
                 marginTop: 25,
+
+                borderWidth: 2,
+                borderColor: theme[5],
+                borderRightWidth: 2,
+                borderRightColor: theme[5],
               },
             ]}
           >
