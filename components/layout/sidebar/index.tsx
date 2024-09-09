@@ -405,9 +405,9 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           <IconButton
             style={{ borderRadius: 10, width: "100%" }}
             backgroundColors={{
-              default: theme[desktopCollapsed ? 2 : 3],
-              pressed: theme[desktopCollapsed ? 3 : 5],
-              hovered: theme[desktopCollapsed ? 4 : 4],
+              default: theme[3],
+              pressed: theme[5],
+              hovered: theme[4],
             }}
             size={45}
             pressableStyle={{ flexDirection: "row", gap: 10 }}
