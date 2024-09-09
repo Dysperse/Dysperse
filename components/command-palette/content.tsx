@@ -113,10 +113,18 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
           style={({ pressed, hovered }) => ({
             backgroundColor:
               filter !== null && filter !== name
-                ? pressed ?addHslAlpha(theme[9], 0.1):hovered?addHslAlpha(theme[9], 0.05)
+                ? pressed
+                  ? addHslAlpha(theme[9], 0.1)
+                  : hovered
+                  ? addHslAlpha(theme[9], 0.05)
+                  : "transparent"
                 : filter === name
                 ? addHslAlpha(theme[9], 0.1)
-                : pressed ?addHslAlpha(theme[9], 0.1):hovered?addHslAlpha(theme[9], 0.05): "transparent",
+                : pressed
+                ? addHslAlpha(theme[9], 0.1)
+                : hovered
+                ? addHslAlpha(theme[9], 0.05)
+                : "transparent",
             zIndex: 99,
             borderColor: addHslAlpha(
               theme[9],
@@ -611,4 +619,3 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
     </View>
   );
 }
-
