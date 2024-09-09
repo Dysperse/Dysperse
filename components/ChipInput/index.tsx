@@ -2,7 +2,6 @@ import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
-import { BlurView } from "expo-blur";
 import { FC, useEffect, useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
 import { Keyboard, Platform, Pressable, View } from "react-native";
@@ -182,12 +181,11 @@ export default function ChipInput({
         },
       }}
       customSuggestionsContainer={(children) => (
-        <BlurView
-          tint={isDark ? "dark" : "prominent"}
+        <View
           style={{
             borderRadius: 25,
             overflow: "hidden",
-            maxHeight: 300,
+            maxHeight: 155,
             width: 200,
             backgroundColor: theme[5],
           }}
@@ -198,7 +196,7 @@ export default function ChipInput({
           >
             {children}
           </ScrollView>
-        </BlurView>
+        </View>
       )}
     >
       {suggestions.map((item) => (
@@ -277,4 +275,3 @@ export default function ChipInput({
     />
   );
 }
-

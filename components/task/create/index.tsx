@@ -1740,6 +1740,7 @@ function BottomSheetContent({
           style={{
             flex: 1,
             flexDirection: "column",
+            zIndex: 0,
           }}
         >
           <Footer
@@ -1763,6 +1764,7 @@ function BottomSheetContent({
         <View
           style={{
             gap: 7,
+            zIndex: -2,
             flexDirection: "row",
             alignItems: "center",
           }}
@@ -1871,4 +1873,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-
