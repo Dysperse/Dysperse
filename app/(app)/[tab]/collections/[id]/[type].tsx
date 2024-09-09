@@ -309,6 +309,19 @@ export default function Page() {
     case "calendar":
       content = <Calendar />;
       break;
+    case "pano":
+      content = (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text>We're working hard on this view! Stay tuned for updates.</Text>
+        </View>
+      );
+      break;
     default:
       content = <Text>404: {type}</Text>;
       break;
@@ -332,3 +345,4 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
+

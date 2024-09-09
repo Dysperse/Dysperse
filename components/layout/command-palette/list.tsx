@@ -2,6 +2,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 
 export const collectionViews = {
+  pano: "panorama",
   planner: "transition_slide",
   kanban: "view_kanban",
   stream: "whatshot",
@@ -13,6 +14,7 @@ export const collectionViews = {
 };
 
 const collectionViewDescriptions = {
+  pano: "Vision tasks in flexible time frames",
   planner: "View all your tasks day by day",
   kanban: "Organize all your tasks by category",
   stream: "View all missed, upcoming, and completed tasks",
@@ -100,3 +102,4 @@ export const paletteItems = (
     },
   ];
 };
+
