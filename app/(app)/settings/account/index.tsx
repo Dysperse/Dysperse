@@ -1,4 +1,8 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
+import {
+  notificationScale,
+  notificationScaleText,
+} from "@/components/task/drawer/details";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
@@ -346,6 +350,26 @@ function TasksSettings({ updateUserSettings }: any) {
         </ListItemButton>
         <ListItemButton disabled onPress={() => {}}>
           <ListItemText
+            primary="Default notification"
+            secondary="Get reminders before a task starts"
+          />
+          <MenuPopover
+            trigger={AccountMenuTrigger({
+              text: "3 notifications",
+            })}
+            options={notificationScale.map((n, i) => ({
+              text: notificationScaleText[i]
+                .replace("m", " minutes")
+                .replace("h", " hours")
+                .replace("d", " day"),
+              selected: [5, 15, 30].includes(n),
+              callback: () =>
+                Toast.show({ type: "info", text1: "Coming soon" }),
+            }))}
+          />
+        </ListItemButton>
+        <ListItemButton disabled onPress={() => {}}>
+          <ListItemText
             primary="Time display"
             secondary="Choose how times are displayed in the app"
           />
@@ -644,4 +668,3 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
-

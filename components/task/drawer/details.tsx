@@ -99,22 +99,22 @@ function TaskRescheduleButton() {
   );
 }
 
+export const notificationScale = [5, 10, 15, 30, 60, 120, 240, 480, 1440];
+export const notificationScaleText = [
+  "5m",
+  "10m",
+  "15m",
+  "30m",
+  "1h",
+  "2h",
+  "4h",
+  "8h",
+  "1d",
+];
+
 function TaskNotificationsButton() {
   const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask } = useTaskDrawerContext();
-
-  const notificationScale = [5, 10, 15, 30, 60, 120, 240, 480, 1440];
-  const notificationScaleText = [
-    "5m",
-    "10m",
-    "15m",
-    "30m",
-    "1h",
-    "2h",
-    "4h",
-    "8h",
-    "1d",
-  ];
 
   return (
     <MenuPopover
@@ -898,4 +898,3 @@ export function TaskDetails() {
     </>
   );
 }
-
