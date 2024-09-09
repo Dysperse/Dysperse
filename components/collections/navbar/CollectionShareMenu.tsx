@@ -6,6 +6,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
+import Divider from "@/ui/Divider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -27,6 +28,7 @@ import {
   createStackNavigator,
   StackNavigationOptions,
 } from "@react-navigation/stack";
+import { setStringAsync } from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import {
   cloneElement,
@@ -429,58 +431,171 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
   );
 };
 
-const CollectionShareLink = ({ isReadOnly }) => {
-  const session = useSession();
-  const handleCopy = () => Toast.show({ type: "info", text1: "Coming soon!" });
-
+const CollectionShareLink = ({ isReadOnly, navigation }) => {
   return (
     <>
-      <ListItemButton disabled>
+      <ListItemButton onPress={() => navigation.navigate("link")}>
         <Avatar icon="link" size={40} disabled />
         <ListItemText
           truncate
-          primary="Invite link"
-          secondary="Anyone with the link can join this collection"
+          primary="Public link"
+          secondary="Anyone with the link can view this collection"
         />
-        {!isReadOnly && (
-          <MenuPopover
-            trigger={
-              <IconButton style={{ marginRight: -10 }} size={40}>
-                <Icon>more_horiz</Icon>
-              </IconButton>
-            }
-            options={[
-              ...["No access", "Can view", "Full access", "Can edit"].map(
-                (t) => ({
-                  text: t,
-                  selected: false,
-                  callback: async () => {
-                    if (t !== "No access" && t !== "Can view") {
-                      Toast.show({ type: "info", text1: "Coming soon!" });
-                    } else {
-                      await sendApiRequest(
-                        session,
-                        "PUT",
-                        "space/collections/collection/link",
-                        {
-                          disabled: t === "No access" ? "true" : "false",
-                          access: "READ_ONLY",
-                        }
-                      );
-                    }
-                  },
-                })
-              ),
-            ]}
-          />
-        )}
-        <IconButton
-          variant="outlined"
-          size={40}
-          icon="content_copy"
-          onPress={handleCopy}
-        />
+        <Icon>arrow_forward_ios</Icon>
       </ListItemButton>
+    </>
+  );
+};
+
+const Link = ({ collection, navigation }) => {
+  const theme = useColorTheme();
+  const { session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+  const { data, mutate, error } = useSWR([
+    "space/collections/collection/link",
+    { id: collection?.data?.id },
+  ]);
+  const url = `https://app.dysperse.com/c/${data?.id}`;
+
+  return (
+    <>
+      {data ? (
+        <View
+          style={{
+            padding: 20,
+            paddingTop: 0,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: theme[3],
+              padding: 10,
+              borderRadius: 20,
+              marginBottom: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              height: 60,
+              justifyContent: "center",
+            }}
+          >
+            {isLoading ? (
+              <Spinner />
+            ) : data.disabled ? (
+              <Text>Link disabled</Text>
+            ) : (
+              <>
+                <TextField
+                  value={url}
+                  style={{ flex: 1 }}
+                  variant="filled"
+                  editable={false}
+                />
+                <IconButton
+                  onPress={async () => {
+                    await setStringAsync(url);
+                    Toast.show({ type: "success", text1: "Link copied!" });
+                  }}
+                  icon="content_copy"
+                  variant="outlined"
+                  size={40}
+                />
+              </>
+            )}
+          </View>
+          {[
+            {
+              key: "NO_ACCESS",
+              text: "No access",
+              description: "Nobody can see your collection",
+            },
+            {
+              key: "READ_ONLY",
+              text: "Read only",
+              description:
+                "Anyone with the link can view this collection, even those who don't have an account.",
+            },
+          ].map((access) => (
+            <ListItemButton
+              key={access.key}
+              onPress={async () => {
+                setIsLoading(true);
+                const res = await sendApiRequest(
+                  session,
+                  "PUT",
+                  "space/collections/collection/link",
+                  {},
+                  {
+                    body: JSON.stringify({
+                      id: collection.data.id,
+                      access:
+                        access.key === "NO_ACCESS" ? undefined : access.key,
+                      disabled: access.key === "NO_ACCESS",
+                    }),
+                  }
+                );
+                if (res.error) return Toast.show({ type: "error" });
+                mutate(
+                  {
+                    ...data,
+                    access: access.key,
+                    disabled: access.key === "NO_ACCESS",
+                  },
+                  { revalidate: false }
+                );
+                setIsLoading(false);
+                Toast.show({ type: "success", text1: "Access updated!" });
+              }}
+            >
+              <ListItemText
+                primary={access.text}
+                secondary={access.description}
+              />
+              {(access.key === "NO_ACCESS"
+                ? data.disabled
+                : data.access === access.key && !data.disabled) && (
+                <Icon>check</Icon>
+              )}
+            </ListItemButton>
+          ))}
+
+          <Divider style={{ marginVertical: 20, marginTop: 5, height: 1 }} />
+          <ListItemButton
+            variant="outlined"
+            onPress={async () => {
+              setIsLoading(true);
+              await sendApiRequest(
+                session,
+                "PUT",
+                "space/collections/collection/link",
+                {},
+                {
+                  body: JSON.stringify({
+                    id: collection.data.id,
+                    refreshId: true,
+                  }),
+                }
+              );
+              await mutate();
+              setIsLoading(false);
+            }}
+          >
+            <ListItemText
+              primary="Refresh link"
+              secondary="This will generate a new link for your collection. The old link will no longer work."
+            />
+          </ListItemButton>
+        </View>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {error ? <ErrorAlert /> : <Spinner />}
+        </View>
+      )}
     </>
   );
 };
@@ -522,7 +637,7 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
           marginHorizontal: -10,
         }}
       >
-        <CollectionShareLink isReadOnly={isReadOnly} />
+        <CollectionShareLink isReadOnly={isReadOnly} navigation={navigation} />
         {!isReadOnly && (
           <FriendModal onComplete={handleSelectFriends}>
             <ListItemButton>
@@ -662,6 +777,12 @@ const Navigator = forwardRef(
               name="share"
               component={({ navigation }) => (
                 <Home collection={collection} navigation={navigation} />
+              )}
+            />
+            <Stack.Screen
+              name="link"
+              component={({ navigation }) => (
+                <Link collection={collection} navigation={navigation} />
               )}
             />
             <Stack.Screen
