@@ -21,7 +21,7 @@ export const StorageContextProvider = ({
     isLoading: !data,
     isValidating,
     isReached: !data || data?.storage?.used >= data?.storage?.limit,
-    isWarning: !data || data?.storage?.used >= data?.storage?.limit * 0.8,
+    isWarning: !data || data?.storage?.used >= data?.storage?.limit * 0.9,
   };
 
   return (

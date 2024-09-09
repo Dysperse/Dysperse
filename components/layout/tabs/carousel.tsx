@@ -57,30 +57,12 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         })}
       >
-        {isHovered && Platform.OS === "web" && (
-          <IconButton
-            onHoverIn={() => setIsHovered(true)}
-            onHoverOut={() => setIsHovered(false)}
-            icon={<Icon style={{ color: alertTheme[11] }}>close</Icon>}
-            style={{
-              position: "absolute",
-              top: -10,
-              right: -10,
-              zIndex: 999,
-              backgroundColor: alertTheme[7],
-            }}
-            onPress={() => {
-              localStorage.setItem("spaceStorageAlert", "false");
-              setIsVisible(false);
-            }}
-          />
-        )}
         <View style={{ flex: 1 }}>
           <Text
             weight={700}
             style={{ color: alertTheme[11], fontSize: 14, marginBottom: 2 }}
           >
-            Your space storage is {!isReached && isWarning && "almost "}full
+            Your storage is {!isReached && isWarning && "almost "}full
           </Text>
           <Text style={{ color: alertTheme[11], opacity: 0.7, fontSize: 12 }}>
             Try clearing up some items to free up space
@@ -382,4 +364,3 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
-
