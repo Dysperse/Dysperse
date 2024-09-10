@@ -19,8 +19,8 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
 
   const handleSave = async () => {
     try {
-      if (labels === data.labels.map((i) => i.id)) return;
-      await sendApiRequest(
+      if (labels === (data?.labels?.map((i) => i.id) || [])) return;
+      const p = await sendApiRequest(
         session,
         "PUT",
         "space/collections",
@@ -40,16 +40,6 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
     <LabelPicker
       multiple
       hideBack
-      onOpen={() => {}}
-      sheetProps={
-        {
-          // enablePanDownToClose: false,
-          // disableBackToClose: true,
-          // disableEscapeToClose: true,
-          // disableBackdropPressToClose: true,
-        }
-      }
-      autoFocus={false}
       label={labels}
       setLabel={setLabels}
       onClose={handleSave}
