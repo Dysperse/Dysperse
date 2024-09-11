@@ -45,7 +45,7 @@ const CollectionEmpty = () => {
         {id === "all" && "You haven't created any labels yet. \n"}
         Selected labels appear as columns here.
       </Text>
-      <CollectionLabelMenu menuRef={null} />
+      <CollectionLabelMenu />
     </View>
   );
 };
@@ -234,11 +234,20 @@ export default function Kanban({ editOrderMode }) {
                   minHeight: 5,
                   backgroundColor: theme[2],
                   borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-              />
+              >
+                {i === 0 && (
+                  <CollectionLabelMenu>
+                    <IconButton icon="add" variant="outlined" size={50} />
+                  </CollectionLabelMenu>
+                )}
+              </View>
             ))}
         </ScrollView>
       )}
     </KanbanContext.Provider>
   );
 }
+

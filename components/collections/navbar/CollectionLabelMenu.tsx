@@ -10,8 +10,10 @@ import { useCollectionContext } from "../context";
 
 export const CollectionLabelMenu = memo(function CollectionLabelMenu({
   onOpen,
+  children,
 }: {
-  onOpen;
+  onOpen?: () => void;
+  children?: React.ReactNode;
 }) {
   const { data, mutate } = useCollectionContext();
   const { session } = useSession();
@@ -45,12 +47,14 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
       onOpen={onOpen}
       onClose={handleSave}
     >
-      <MenuItem>
-        <Icon>label</Icon>
-        <Text variant="menuItem" weight={300}>
-          Select labels
-        </Text>
-      </MenuItem>
+      {(children as any) || (
+        <MenuItem>
+          <Icon>label</Icon>
+          <Text variant="menuItem" weight={300}>
+            Select labels
+          </Text>
+        </MenuItem>
+      )}
     </LabelPicker>
   );
 });
