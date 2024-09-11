@@ -370,10 +370,16 @@ function LabelPickerContent({
             </Pressable>
           )}
         />
-      ) : error ? (
-        <ErrorAlert />
       ) : (
-        <Spinner />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {error ? <ErrorAlert /> : <Spinner />}
+        </View>
       )}
     </View>
   );
@@ -450,3 +456,4 @@ export default function LabelPicker({
     </>
   );
 }
+
