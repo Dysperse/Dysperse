@@ -1,4 +1,5 @@
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
+import LabelPicker from "@/components/labels/picker";
 import { collectionViews } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
@@ -20,7 +21,6 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
-import { CollectionLabelMenu } from "./CollectionLabelMenu";
 import { CollectionSearch } from "./CollectionSearch";
 import { CollectionShareMenu } from "./CollectionShareMenu";
 import { NavbarEyebrow } from "./NavbarEyebrow";
@@ -59,6 +59,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const { id, mode } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
 
+  const labelPickerRef = useRef(null);
+
   const shareMenuRef = useRef(null);
 
   const isAll = id === "all";
@@ -72,6 +74,26 @@ const CollectionNavbar = memo(function CollectionNavbar({
   }));
 
   const { session } = useSession();
+
+  const setLabels = async () => {
+    try {
+      const labels = data?.labels?.map((i) => i.id) || [];
+      if (labels === (data?.labels?.map((i) => i.id) || [])) return;
+      await sendApiRequest(
+        session,
+        "PUT",
+        "space/collections",
+        {},
+        {
+          body: JSON.stringify({ labels, id: data.id, gridOrder: labels }),
+        }
+      );
+      await mutate();
+      Toast.show({ type: "success", text1: "Saved!" });
+    } catch (e) {
+      Toast.show({ type: "error", text1: "Something went wrong" });
+    }
+  };
 
   const toggleShowCompleted = async () => {
     const showCompleted = !data.showCompleted;
@@ -197,12 +219,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     !isAll && {
       icon: "label",
       text: "Select labels",
-
-      renderer: (props) => (
-        <CollectionContext.Provider value={contextValue}>
-          <CollectionLabelMenu menuRef={menuRef} {...props} />
-        </CollectionContext.Provider>
-      ),
+      callback: () => labelPickerRef.current?.present(),
     },
     !isAll &&
       (type === "grid" || type === "kanban") && {
@@ -377,6 +394,14 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 justifyContent: "flex-end",
               }}
             >
+              <LabelPicker
+                multiple
+                hideBack
+                label={data?.labels?.map((i) => i.id) || []}
+                setLabel={setLabels}
+                sheetProps={{ sheetRef: labelPickerRef }}
+                onClose={setLabels}
+              />
               {session && (
                 <CollectionContext.Provider value={contextValue}>
                   <CollectionSearch />
@@ -430,3 +455,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+

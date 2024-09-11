@@ -9,9 +9,9 @@ import LabelPicker from "../../labels/picker";
 import { useCollectionContext } from "../context";
 
 export const CollectionLabelMenu = memo(function CollectionLabelMenu({
-  menuRef,
+  onOpen,
 }: {
-  menuRef: any;
+  onOpen;
 }) {
   const { data, mutate } = useCollectionContext();
   const { session } = useSession();
@@ -20,7 +20,7 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
   const handleSave = async () => {
     try {
       if (labels === (data?.labels?.map((i) => i.id) || [])) return;
-      const p = await sendApiRequest(
+      await sendApiRequest(
         session,
         "PUT",
         "space/collections",
@@ -42,6 +42,7 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
       hideBack
       label={labels}
       setLabel={setLabels}
+      onOpen={onOpen}
       onClose={handleSave}
     >
       <MenuItem>
@@ -53,3 +54,4 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
     </LabelPicker>
   );
 });
+

@@ -399,7 +399,7 @@ export default function LabelPicker({
   disabled = false,
   defaultCollection,
 }: {
-  children: React.ReactElement;
+  children?: React.ReactElement;
   label?: string | any[] | { id: string; name: string; emoji: string };
   setLabel: (label: string | string[]) => void;
   onClose?: any;
@@ -425,7 +425,7 @@ export default function LabelPicker({
     ref.current?.close({ duration: 0.0001, overshootClamping: true });
   }, [ref, onClose]);
 
-  const trigger = cloneElement(children, {
+  const trigger = cloneElement(children || <Pressable />, {
     [triggerProp]: disabled ? undefined : handleOpen,
   });
 
