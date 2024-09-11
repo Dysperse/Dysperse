@@ -33,6 +33,7 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 import CollectionNavbar from "@/components/collections/navbar";
+import { CollectionLabelMenu } from "@/components/collections/navbar/CollectionLabelMenu";
 import Calendar from "@/components/collections/views/calendar";
 import Grid from "@/components/collections/views/grid";
 import Kanban from "@/components/collections/views/kanban";
@@ -279,6 +280,7 @@ const Loading = ({ error }) => (
 
 export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
+  const sheetRef = useRef(null);
   const swrKey = id
     ? [
         "space/collections/collection",
@@ -345,8 +347,19 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
 
   return (
     <CollectionContext.Provider
-      value={{ data, mutate, error, type, access: data?.access, swrKey }}
+      value={{
+        data,
+        mutate,
+        error,
+        type,
+        access: data?.access,
+        swrKey,
+        openLabelPicker: () => sheetRef.current?.present(),
+      }}
     >
+      <CollectionLabelMenu sheetRef={sheetRef}>
+        <Pressable />
+      </CollectionLabelMenu>
       {data ? (
         <ContentWrapper noPaddingTop>
           <CollectionNavbar

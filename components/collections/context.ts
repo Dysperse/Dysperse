@@ -8,6 +8,7 @@ export interface CollectionContext {
   error: any;
   type: CollectionType;
   swrKey: any[];
+  openLabelPicker?: () => void;
   access: null | {
     id: string;
     hasSeen: boolean;
@@ -22,3 +23,4 @@ export interface CollectionContext {
 export const CollectionContext = createContext<CollectionContext>(null);
 export type CollectionType = keyof typeof collectionViews;
 export const useCollectionContext = () => useContext(CollectionContext);
+

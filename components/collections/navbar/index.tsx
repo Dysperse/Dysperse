@@ -1,5 +1,4 @@
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
-import LabelPicker from "@/components/labels/picker";
 import { collectionViews } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
@@ -53,13 +52,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
   setEditOrderMode,
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
-  const { data, access, type, swrKey, ...ctx } = useCollectionContext();
+  const { data, access, type, swrKey, openLabelPicker, ...ctx } =
+    useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
   const { id, mode } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
-
-  const labelPickerRef = useRef(null);
 
   const shareMenuRef = useRef(null);
 
@@ -74,26 +72,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
   }));
 
   const { session } = useSession();
-
-  const setLabels = async () => {
-    try {
-      const labels = data?.labels?.map((i) => i.id) || [];
-      if (labels === (data?.labels?.map((i) => i.id) || [])) return;
-      await sendApiRequest(
-        session,
-        "PUT",
-        "space/collections",
-        {},
-        {
-          body: JSON.stringify({ labels, id: data.id, gridOrder: labels }),
-        }
-      );
-      await mutate();
-      Toast.show({ type: "success", text1: "Saved!" });
-    } catch (e) {
-      Toast.show({ type: "error", text1: "Something went wrong" });
-    }
-  };
 
   const toggleShowCompleted = async () => {
     const showCompleted = !data.showCompleted;
@@ -219,7 +197,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     !isAll && {
       icon: "label",
       text: "Select labels",
-      callback: () => labelPickerRef.current?.present(),
+      callback: openLabelPicker,
     },
     !isAll &&
       (type === "grid" || type === "kanban") && {
@@ -394,14 +372,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 justifyContent: "flex-end",
               }}
             >
-              <LabelPicker
-                multiple
-                hideBack
-                label={data?.labels?.map((i) => i.id) || []}
-                setLabel={setLabels}
-                sheetProps={{ sheetRef: labelPickerRef }}
-                onClose={setLabels}
-              />
               {session && (
                 <CollectionContext.Provider value={contextValue}>
                   <CollectionSearch />

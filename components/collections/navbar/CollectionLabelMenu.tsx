@@ -11,9 +11,11 @@ import { useCollectionContext } from "../context";
 export const CollectionLabelMenu = memo(function CollectionLabelMenu({
   onOpen,
   children,
+  sheetRef,
 }: {
   onOpen?: () => void;
   children?: React.ReactNode;
+  sheetRef?: any;
 }) {
   const { data, mutate } = useCollectionContext();
   const { session } = useSession();
@@ -41,6 +43,7 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
   return (
     <LabelPicker
       multiple
+      sheetProps={{ sheetRef }}
       hideBack
       label={labels}
       setLabel={setLabels}
