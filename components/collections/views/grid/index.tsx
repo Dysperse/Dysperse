@@ -8,7 +8,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useRef, useState } from "react";
 import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { CollectionEmpty } from "../kanban/CollectionEmpty";
+import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "../kanban/Column";
 import { ReorderingGrid } from "./ReorderingGrid";
 import { GridContext, GridContextSelectedColumn } from "./context";

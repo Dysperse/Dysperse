@@ -1,8 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
-import Icon from "@/ui/Icon";
-import { MenuItem } from "@/ui/MenuPopover";
-import Text from "@/ui/Text";
+import { Button } from "@/ui/Button";
 import { memo, useState } from "react";
 import Toast from "react-native-toast-message";
 import LabelPicker from "../../labels/picker";
@@ -51,12 +49,12 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
       onClose={handleSave}
     >
       {(children as any) || (
-        <MenuItem>
-          <Icon>label</Icon>
-          <Text variant="menuItem" weight={300}>
-            Select labels
-          </Text>
-        </MenuItem>
+        <Button
+          icon="label"
+          onPress={onOpen}
+          text="Add labels..."
+          variant="filled"
+        />
       )}
     </LabelPicker>
   );

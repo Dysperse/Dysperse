@@ -12,7 +12,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { CollectionLabelMenu } from "../../navbar/CollectionLabelMenu";
-import { CollectionEmpty } from "./CollectionEmpty";
+import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "./Column";
 import { KanbanContext } from "./context";
 

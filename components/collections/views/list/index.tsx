@@ -15,7 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
-import { CollectionEmpty } from "../kanban/CollectionEmpty";
+import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 
 export default function List() {
