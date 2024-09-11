@@ -8,6 +8,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { useRef, useState } from "react";
 import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { CollectionEmpty } from "../kanban/CollectionEmpty";
 import { Column } from "../kanban/Column";
 import { ReorderingGrid } from "./ReorderingGrid";
 import { GridContext, GridContextSelectedColumn } from "./context";
@@ -181,53 +182,58 @@ export default function Grid({ editOrderMode }) {
 
   return (
     <GridContext.Provider value={{ currentColumn, setCurrentColumn }}>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-        }
-        horizontal
-        ref={scrollRef}
-        contentContainerStyle={[
-          {
-            padding: 15,
-            gap: 15,
-            paddingRight: isMobileHome || breakpoints.md ? 30 : 0,
-            paddingBottom: currentColumn === "HOME" ? insets.bottom + 15 : 0,
-            flexDirection: "column",
-          },
-          !breakpoints.md &&
-            !isMobileHome && {
-              padding: 0,
+      {displayLabels.filter((t) => !t?.empty).length === 0 ? (
+        <CollectionEmpty />
+      ) : (
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+          }
+          horizontal
+          ref={scrollRef}
+          contentContainerStyle={[
+            {
+              padding: 15,
+              gap: 15,
+              paddingRight: isMobileHome || breakpoints.md ? 30 : 0,
+              paddingBottom: currentColumn === "HOME" ? insets.bottom + 15 : 0,
+              flexDirection: "column",
+            },
+            !breakpoints.md &&
+              !isMobileHome && {
+                padding: 0,
+                width,
+              },
+          ]}
+          scrollEnabled={
+            ((breakpoints.md || currentColumn === "HOME") &&
+              // if there are less than 4 labels, we want to disable scrolling
+              breakpoints.md &&
+              displayLabels.length > 4) ||
+            !breakpoints.md
+          }
+          style={[
+            {
+              width: "100%",
+            },
+            isMobileHome && {
+              backgroundColor: theme[3],
               width,
             },
-        ]}
-        scrollEnabled={
-          ((breakpoints.md || currentColumn === "HOME") &&
-            // if there are less than 4 labels, we want to disable scrolling
-            breakpoints.md &&
-            displayLabels.length > 4) ||
-          !breakpoints.md
-        }
-        style={[
-          {
-            width: "100%",
-          },
-          isMobileHome && {
-            backgroundColor: theme[3],
-            width,
-          },
-        ]}
-      >
-        {breakpoints.md ? (
-          rows
-        ) : currentColumn === "HOME" ? (
-          rows
-        ) : currentColumn === "OTHER" ? (
-          <Column grid entities={data.entities} />
-        ) : (
-          <Column grid label={displayLabels[currentColumn]} />
-        )}
-      </ScrollView>
+          ]}
+        >
+          {breakpoints.md ? (
+            rows
+          ) : currentColumn === "HOME" ? (
+            rows
+          ) : currentColumn === "OTHER" ? (
+            <Column grid entities={data.entities} />
+          ) : (
+            <Column grid label={displayLabels[currentColumn]} />
+          )}
+        </ScrollView>
+      )}
     </GridContext.Provider>
   );
 }
+

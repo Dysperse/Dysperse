@@ -129,15 +129,15 @@ const CloseButton = memo(function CloseButton({
 
   const handleClose = useCallback(async () => {
     setLoading(true);
-    forceClose({ duration: 0.0001, overshootClamping: true });
     await onClose?.();
+    forceClose({ duration: 0.0001, overshootClamping: true });
     setLoading(false);
   }, [forceClose, onClose]);
 
   return (
     <Button
       onPress={handleClose}
-      disabled={disabled}
+      // disabled={disabled}
       containerStyle={{ marginLeft: "auto" }}
       variant="filled"
       style={{ paddingHorizontal: 20 }}
@@ -418,7 +418,7 @@ export default function LabelPicker({
   const handleOpen = useCallback(() => {
     onOpen?.();
     ref.current?.present();
-  }, [ref]);
+  }, [ref, onOpen]);
 
   const handleClose = useCallback(async () => {
     await onClose?.();

@@ -1,12 +1,8 @@
 import { useCollectionContext } from "@/components/collections/context";
-import { CreateLabelModal } from "@/components/labels/createModal";
 import { omit } from "@/helpers/omit";
-import { Button, ButtonText } from "@/ui/Button";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
-import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
+import { CollectionEmpty } from "../kanban/CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 
 export default function List() {
@@ -79,33 +76,7 @@ export default function List() {
   return (
     <Animated.View style={[opacityStyle, { flex: 1 }]}>
       {d.length === 0 ? (
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 30,
-            flex: 1,
-          }}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 20,
-              marginBottom: 10,
-              maxWidth: 350,
-              color: theme[11],
-            }}
-            weight={900}
-          >
-            No labels found. Create a label to start adding tasks to it.
-          </Text>
-          <CreateLabelModal mutate={() => mutate()}>
-            <Button variant="filled">
-              <Icon>new_label</Icon>
-              <ButtonText>Create</ButtonText>
-            </Button>
-          </CreateLabelModal>
-        </View>
+        <CollectionEmpty />
       ) : (
         <FlashList
           data={d}
@@ -207,3 +178,4 @@ export default function List() {
     </Animated.View>
   );
 }
+
