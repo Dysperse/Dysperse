@@ -724,6 +724,15 @@ export default function SignIn() {
           },
         ]}
       >
+        {!breakpoints.md && (
+          <IconButton
+            icon="close"
+            size={55}
+            onPress={handleBack}
+            variant="outlined"
+            style={{ position: "absolute", top: 10, left: 10 }}
+          />
+        )}
         {step === 4 || step === 2 ? (
           <View
             style={{
@@ -736,11 +745,7 @@ export default function SignIn() {
             <Spinner />
           </View>
         ) : step === "email" ? (
-          <Email
-            setStep={setStep}
-            control={control}
-            handleSubmit={handleSubmit}
-          />
+          <Email setStep={setStep} control={control} handleSubmit={onSubmit} />
         ) : step === 0 ? (
           <Credentials
             control={control}
