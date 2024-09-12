@@ -15,7 +15,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
-import { router, usePathname } from "expo-router";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   InteractionManager,
@@ -447,6 +447,7 @@ const Header = memo(function Header() {
 });
 
 const MiniLogo = ({ desktopSlide, onHoverIn }) => {
+  const { fullscreen } = useGlobalSearchParams();
   const { desktopCollapsed, SIDEBAR_WIDTH } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
     navigator.windowControlsOverlay?.visible
@@ -488,8 +489,7 @@ const MiniLogo = ({ desktopSlide, onHoverIn }) => {
 
   return (
     Platform.OS === "web" &&
-    titlebarHidden &&
-    desktopCollapsed && (
+    ((titlebarHidden && desktopCollapsed) || fullscreen) && (
       <Pressable
         onHoverIn={onHoverIn}
         style={{
@@ -679,3 +679,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+
