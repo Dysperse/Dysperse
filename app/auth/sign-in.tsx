@@ -221,6 +221,7 @@ function Email({
               placeholder="Email or username..."
               onBlur={onBlur}
               onChangeText={onChange}
+              autoFocus
               onSubmitEditing={onFinish}
               value={value}
               variant="filled+outlined"
