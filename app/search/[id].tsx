@@ -274,7 +274,7 @@ function Page({ handleClose }: { handleClose: () => void }) {
   };
 
   const { id }: any = useLocalSearchParams();
-  const { data, mutate, error, isValidating } = useSWR(
+  const { data, mutate, error } = useSWR(
     id
       ? [
           "space/collections/collection",
@@ -289,12 +289,19 @@ function Page({ handleClose }: { handleClose: () => void }) {
     mutate,
     error,
     access: data?.access,
-    isValidating,
+    openLabelPicker: () => {},
+    swrKey: "space/collections/collection",
   };
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
-      style={{ backgroundColor: "rgba(0,0,0,0.05)", flex: 1, width: "100%" }}
+      style={{
+        backgroundColor: "rgba(0,0,0,0.05)",
+        flex: 1,
+        width: "100%",
+        paddingHorizontal: breakpoints.md ? 20 : 0,
+      }}
     >
       <RouteDialogContent
         title="Search"
@@ -326,3 +333,4 @@ export default function Container() {
     </RouteDialogWrapper>
   );
 }
+
