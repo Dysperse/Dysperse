@@ -58,6 +58,10 @@ export default function Page() {
           keys: "ctrl+➡",
           action: "Next planner view",
         },
+        {
+          keys: "o",
+          action: "Open pop-out (desktop only)",
+        },
         ...Object.keys(collectionViews).map((key) => ({
           keys: key[0],
           action: `${capitalizeFirstLetter(key)} view`,
@@ -135,3 +139,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
