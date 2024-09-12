@@ -57,7 +57,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY";
   const breakpoints = useResponsiveBreakpoints();
-  const { id, mode } = useGlobalSearchParams();
+  const { id, mode, fullscreen } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
 
   const shareMenuRef = useRef(null);
@@ -218,18 +218,19 @@ const CollectionNavbar = memo(function CollectionNavbar({
       },
     },
 
-    Platform.OS === "web" && {
-      icon: "open_in_new",
-      text: "Pop out",
-      callback: async (e) => {
-        const t = new URL(window.location.href);
-        t.searchParams.set("fullscreen", "true");
-        await openBrowserAsync(t.toString(), {
-          windowFeatures: { width: 800, height: 600 },
-        });
-        router.replace("/");
+    Platform.OS === "web" &&
+      !fullscreen && {
+        icon: "open_in_new",
+        text: "Pop out",
+        callback: async (e) => {
+          const t = new URL(window.location.href);
+          t.searchParams.set("fullscreen", "true");
+          await openBrowserAsync(t.toString(), {
+            windowFeatures: { width: 800, height: 600 },
+          });
+          router.replace("/");
+        },
       },
-    },
     // {
     //   icon: "fluorescent",
     //   text: "Customize task chips",
