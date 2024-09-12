@@ -310,7 +310,6 @@ export default function AppLayout() {
                                   <Pressable
                                     style={{
                                       flex: 1,
-                                      backgroundColor: "green",
                                     }}
                                   >
                                     <Sidebar progressValue={v} />
@@ -335,4 +334,3 @@ export default function AppLayout() {
     </StorageContextProvider>
   );
 }
-

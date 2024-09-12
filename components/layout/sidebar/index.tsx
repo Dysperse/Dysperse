@@ -632,22 +632,23 @@ const Sidebar = ({
                     paddingTop: "env(titlebar-area-height,0)",
                   } as any)),
               },
-              desktopCollapsed && {
-                position: "absolute",
-                borderRadius: 25,
-                left: -100,
-                width: SIDEBAR_WIDTH + 100,
-                paddingLeft: 100,
-                zIndex: 99,
-                shadowOpacity: 0.4,
-                height: height - 50,
-                marginTop: 25,
+              desktopCollapsed &&
+                breakpoints.md && {
+                  position: "absolute",
+                  borderRadius: 25,
+                  left: -100,
+                  width: SIDEBAR_WIDTH + 100,
+                  paddingLeft: 100,
+                  zIndex: 99,
+                  shadowOpacity: 0.4,
+                  height: height - 50,
+                  marginTop: 25,
 
-                borderWidth: 2,
-                borderColor: theme[5],
-                borderRightWidth: 2,
-                borderRightColor: theme[5],
-              },
+                  borderWidth: 2,
+                  borderColor: theme[5],
+                  borderRightWidth: 2,
+                  borderRightColor: theme[5],
+                },
             ]}
           >
             <View style={[styles.header, { marginTop: insets.top }]}>
@@ -663,4 +664,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-
