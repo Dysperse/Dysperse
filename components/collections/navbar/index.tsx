@@ -93,7 +93,17 @@ const CollectionNavbar = memo(function CollectionNavbar({
     await ctx.mutate();
   };
 
+  const openPopOut = async (e) => {
+    const t = new URL(window.location.href);
+    t.searchParams.set("fullscreen", "true");
+    await openBrowserAsync(t.toString(), {
+      windowFeatures: { width: 800, height: 600 },
+    });
+    router.replace("/");
+  };
+
   useHotkeys(["ctrl+r"], handleRefresh);
+  useHotkeys(["o"], openPopOut);
 
   useHotkeys(
     ["p", "k", "s", "g", "w", "l", "m", "c"],
@@ -222,14 +232,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
       !fullscreen && {
         icon: "open_in_new",
         text: "Pop out",
-        callback: async (e) => {
-          const t = new URL(window.location.href);
-          t.searchParams.set("fullscreen", "true");
-          await openBrowserAsync(t.toString(), {
-            windowFeatures: { width: 800, height: 600 },
-          });
-          router.replace("/");
-        },
+        callback: openPopOut,
       },
     // {
     //   icon: "fluorescent",
