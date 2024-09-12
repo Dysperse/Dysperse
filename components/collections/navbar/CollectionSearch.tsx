@@ -1,16 +1,20 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
-import { router, usePathname } from "expo-router";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { useCollectionContext } from "../context";
 
 export const CollectionSearch = () => {
   const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
-
+  const { fullscreen } = useGlobalSearchParams();
   const handleOpen = (e) => {
     e.preventDefault();
-    router.push(`/search/${collection.data.id || "all"}`);
+    router.push(
+      `/search/${collection.data.id || "all"}${
+        fullscreen ? "?fullscreen=true" : ""
+      }`
+    );
   };
 
   useHotkeys(["ctrl+f", "/"], handleOpen, {
@@ -29,3 +33,4 @@ export const CollectionSearch = () => {
     />
   );
 };
+
