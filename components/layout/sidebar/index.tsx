@@ -446,7 +446,7 @@ const Header = memo(function Header() {
   );
 });
 
-const MiniLogo = ({ desktopSlide, onHoverIn }) => {
+export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
   const { fullscreen } = useGlobalSearchParams();
   const { desktopCollapsed, SIDEBAR_WIDTH } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
@@ -509,22 +509,6 @@ const MiniLogo = ({ desktopSlide, onHoverIn }) => {
     )
   );
 };
-
-function SidebarOverlay() {
-  return (
-    <View
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "red",
-        zIndex: 1,
-      }}
-    ></View>
-  );
-}
 
 const Sidebar = ({
   progressValue,

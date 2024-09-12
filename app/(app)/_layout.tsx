@@ -5,7 +5,7 @@ import AppContainer from "@/components/layout/AppContainer";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SessionLoadingScreen } from "@/components/layout/loading";
-import Sidebar from "@/components/layout/sidebar";
+import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { StorageContextProvider } from "@/context/storageContext";
@@ -73,7 +73,15 @@ function DesktopLayout({ children }) {
 
   const { fullscreen } = useGlobalSearchParams();
 
-  if (fullscreen) return children;
+  if (fullscreen)
+    return (
+      <>
+        {Platform.OS === "web" && (
+          <MiniLogo desktopSlide={{ value: 0 }} onHoverIn={() => {}} />
+        )}
+        children
+      </>
+    );
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
