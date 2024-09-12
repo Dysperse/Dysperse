@@ -260,9 +260,7 @@ export default function AppLayout() {
                     {
                       flexDirection: "row",
                       flex: 1,
-                      backgroundColor: globalThis.IN_DESKTOP_ENV
-                        ? "transparent"
-                        : theme[2],
+                      backgroundColor: theme[2],
                     },
                     Platform.OS === "web" &&
                       ({ WebkitAppRegion: "drag" } as any),
