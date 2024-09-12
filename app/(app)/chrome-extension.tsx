@@ -192,7 +192,7 @@ export default function ChromeExtension() {
           <Button
             variant="filled"
             height={90}
-            onPress={() => Linking.openURL("https://app.dysperse.com")}
+            onPress={() => window.parent.postMessage("openSidePanel", "*")}
             containerStyle={{ borderRadius: 99 }}
           >
             <Icon size={40}>open_in_new</Icon>
@@ -205,3 +205,4 @@ export default function ChromeExtension() {
     </Portal>
   );
 }
+
