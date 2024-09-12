@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
 
 const Email = ({ form }: any) => {
   const { handleNext } = usePasswordContext();
-  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <>
@@ -66,8 +65,8 @@ const Email = ({ form }: any) => {
           {
             paddingTop: 10,
             fontFamily: "serifText800",
+            textAlign: "center",
           },
-          !breakpoints.md && { textAlign: "center" },
         ]}
       >
         Forgot password?
@@ -75,9 +74,9 @@ const Email = ({ form }: any) => {
       <Text
         style={[
           authStyles.subtitleContainer,
-          !breakpoints.md && { textAlign: "center", opacity: 0.6 },
+          { textAlign: "center", opacity: 0.6 },
         ]}
-        weight={800}
+        weight={300}
       >
         Enter your email and we'll send you a link to reset your password.
       </Text>
@@ -374,3 +373,4 @@ export default function Page() {
     </PasswordContext.Provider>
   );
 }
+

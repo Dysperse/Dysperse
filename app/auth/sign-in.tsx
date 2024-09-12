@@ -1,6 +1,7 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button, ButtonText } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -30,6 +31,7 @@ import {
 } from "react-native";
 import * as passkey from "react-native-passkeys";
 import QRCode from "react-native-qrcode-svg";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { rp } from "../(app)/settings/account/passkeys";
@@ -162,119 +164,119 @@ function QrModal({ children }: { children: any }) {
   );
 }
 
-function EmailModal({
+function Email({
   control,
-  children,
+  setStep,
   handleSubmit,
 }: {
   control: any;
-  children: any;
+  setStep: any;
   handleSubmit;
 }) {
   const theme = useColorTheme();
-  const ref = useRef<BottomSheetModal>(null);
   const inputRef = useRef(null);
 
-  const trigger = cloneElement(children, {
-    onPress: () => {
-      ref.current.present();
-      setTimeout(() => inputRef.current.focus({ preventScroll: true }), 100);
-    },
-  });
-
   const onFinish = () => {
-    ref.current.forceClose({ duration: 0.00001 });
     setTimeout(handleSubmit, 100);
   };
 
   return (
-    <>
-      {trigger}
-      <Modal animation="SCALE" ref={ref} maxWidth={400}>
-        <IconButton
-          icon="close"
-          size={50}
-          onPress={() => ref.current.forceClose({ duration: 0.00001 })}
-          variant="outlined"
-          style={{ margin: 20, marginBottom: 0 }}
+    <View style={{ flex: 1 }}>
+      <IconButton
+        icon="arrow_back"
+        size={55}
+        onPress={() => setStep(0)}
+        variant="outlined"
+        style={{ marginBottom: 0 }}
+      />
+      <View style={{ padding: 20, gap: 10 }}>
+        <Emoji emoji="2709" size={60} style={{ alignSelf: "center" }} />
+        <Text
+          style={{
+            fontFamily: "serifText800",
+            fontSize: 40,
+            color: theme[11],
+            textAlign: "center",
+            marginBottom: 10,
+          }}
+        >
+          Enter your email
+        </Text>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              style={{
+                height: 60,
+                fontFamily: "body_900",
+                borderRadius: 99,
+                fontSize: 20,
+                color: theme[11],
+                paddingHorizontal: 20,
+              }}
+              inputRef={inputRef}
+              placeholder="Email or username..."
+              onBlur={onBlur}
+              onChangeText={onChange}
+              onSubmitEditing={onFinish}
+              value={value}
+              variant="filled+outlined"
+            />
+          )}
+          name="email"
         />
-        <View style={{ padding: 20, gap: 10 }}>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextField
-                style={{
-                  height: 60,
-                  fontFamily: "body_900",
-                  borderRadius: 99,
-                  fontSize: 20,
-                  color: theme[11],
-                  paddingHorizontal: 20,
-                }}
-                inputRef={inputRef}
-                placeholder="Email or username..."
-                onBlur={onBlur}
-                onChangeText={onChange}
-                onSubmitEditing={onFinish}
-                value={value}
-                variant="filled+outlined"
-              />
-            )}
-            name="email"
-          />
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextField
-                style={{
-                  height: 60,
-                  fontFamily: "body_900",
-                  borderRadius: 99,
-                  fontSize: 20,
-                  color: theme[11],
-                  paddingHorizontal: 20,
-                }}
-                placeholder="Password"
-                secureTextEntry
-                onBlur={onBlur}
-                onChangeText={onChange}
-                onSubmitEditing={onFinish}
-                value={value}
-                variant="filled+outlined"
-              />
-            )}
-            name="password"
-          />
-          <Button
-            variant="filled"
-            height={70}
-            onPress={onFinish}
-            isLoading={false}
-            text="Continue"
-            icon="east"
-            iconPosition="end"
-            large
-            bold
-          />
-          <Button
-            variant="outlined"
-            height={50}
-            onPress={() => router.push("/auth/forgot-password")}
-            isLoading={false}
-            text="Forgot password?"
-            icon="east"
-            iconPosition="end"
-            large
-          />
-        </View>
-      </Modal>
-    </>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              style={{
+                height: 60,
+                fontFamily: "body_900",
+                borderRadius: 99,
+                fontSize: 20,
+                color: theme[11],
+                paddingHorizontal: 20,
+              }}
+              placeholder="Password"
+              secureTextEntry
+              onBlur={onBlur}
+              onChangeText={onChange}
+              onSubmitEditing={onFinish}
+              value={value}
+              variant="filled+outlined"
+            />
+          )}
+          name="password"
+        />
+        <Button
+          variant="filled"
+          height={70}
+          onPress={onFinish}
+          isLoading={false}
+          text="Continue"
+          icon="east"
+          iconPosition="end"
+          large
+          bold
+        />
+        <Button
+          variant="outlined"
+          height={50}
+          onPress={() => router.push("/auth/forgot-password")}
+          isLoading={false}
+          text="Forgot password?"
+          icon="east"
+          iconPosition="end"
+          large
+        />
+      </View>
+    </View>
   );
 }
 
@@ -452,7 +454,7 @@ function Credentials({
 }) {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-  const { signIn } = useSession();
+  const insets = useSafeAreaInsets();
 
   const handleCreateAccount = useCallback(
     () => router.push("/auth/sign-up"),
@@ -525,27 +527,27 @@ function Credentials({
             // if IUSD chromebook
             !isIUSDChromebook && <GoogleAuth />
           }
-          <EmailModal control={control} handleSubmit={onSubmit}>
-            <Button
-              height={60}
-              variant="filled"
-              onPress={() => {}}
-              {...(isIUSDChromebook && {
-                textStyle: { color: theme[2] },
-                iconStyle: { color: theme[2] },
-                backgroundColors: {
-                  default: theme[11],
-                  hovered: theme[11],
-                  pressed: theme[11],
-                },
-              })}
-              containerStyle={{ width: "100%" }}
-              text="Continue with Email"
-              icon="email"
-              bold
-              large
-            />
-          </EmailModal>
+          {/* <EmailModal control={control} handleSubmit={onSubmit}> */}
+          <Button
+            height={60}
+            variant="filled"
+            onPress={() => setStep("email")}
+            {...(isIUSDChromebook && {
+              textStyle: { color: theme[2] },
+              iconStyle: { color: theme[2] },
+              backgroundColors: {
+                default: theme[11],
+                hovered: theme[11],
+                pressed: theme[11],
+              },
+            })}
+            containerStyle={{ width: "100%" }}
+            text="Continue with Email"
+            icon="email"
+            bold
+            large
+          />
+          {/* </EmailModal> */}
           <PasskeyModal setStep={setStep} />
           <QrModal>
             <Button
@@ -565,7 +567,7 @@ function Credentials({
             flexDirection: "row",
             width: "100%",
             marginTop: "auto",
-            marginBottom: 10,
+            marginBottom: 10 + insets.bottom,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -732,6 +734,12 @@ export default function SignIn() {
           >
             <Spinner />
           </View>
+        ) : step === "email" ? (
+          <Email
+            setStep={setStep}
+            control={control}
+            handleSubmit={handleSubmit}
+          />
         ) : step === 0 ? (
           <Credentials
             control={control}
