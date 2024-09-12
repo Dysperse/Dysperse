@@ -229,8 +229,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
     },
 
     Platform.OS === "web" &&
-      !fullscreen && {
-        icon: "open_in_new",
+      !fullscreen &&
+      breakpoints.md && {
+        icon: "pin_invoke",
         text: "Pop out",
         callback: openPopOut,
       },
@@ -443,4 +444,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-
