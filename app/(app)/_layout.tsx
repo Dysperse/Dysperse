@@ -79,7 +79,7 @@ function DesktopLayout({ children }) {
         {Platform.OS === "web" && (
           <MiniLogo desktopSlide={{ value: 0 }} onHoverIn={() => {}} />
         )}
-        children
+        {children}
       </>
     );
 
