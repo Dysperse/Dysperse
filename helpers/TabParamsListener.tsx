@@ -20,10 +20,10 @@ export default function TabParamsListener({
 
     if (
       tab.params &&
-      JSON.stringify(omit(["tab"], params)) !==
-        JSON.stringify(omit(["tab"], tab.params))
+      JSON.stringify(omit(["tab", "fullscreen"], params)) !==
+        JSON.stringify(omit(["tab", "fullscreen"], tab.params))
     ) {
-      if (Object.keys(omit(["tab"], params)).length === 0) return;
+      if (Object.keys(omit(["tab", "fullscreen"], params)).length === 0) return;
       mutate(
         (oldData) =>
           oldData.map((oldTab) =>
@@ -40,7 +40,7 @@ export default function TabParamsListener({
         {},
         {
           body: JSON.stringify({
-            params: omit(["tab"], params),
+            params: omit(["tab", "fullscreen"], params),
             id: tab.id,
           }),
         }
@@ -49,3 +49,4 @@ export default function TabParamsListener({
   }, [data, mutate, params, sessionToken, listenFor]);
   return null;
 }
+

@@ -13,8 +13,9 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router, useGlobalSearchParams } from "expo-router";
+import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -214,6 +215,18 @@ const CollectionNavbar = memo(function CollectionNavbar({
       callback: async (e) => {
         await handleRefresh(e);
         Toast.show({ type: "success", text1: "Collection up to date!" });
+      },
+    },
+
+    Platform.OS === "web" && {
+      icon: "open_in_new",
+      text: "Pop out",
+      callback: async (e) => {
+        const t = new URL(window.location.href);
+        t.searchParams.set("fullscreen", "true");
+        await openBrowserAsync(t.toString(), {
+          windowFeatures: { width: 800, height: 600 },
+        });
       },
     },
     // {

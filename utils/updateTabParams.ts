@@ -1,4 +1,5 @@
 import { sendApiRequest } from "@/helpers/api";
+import { omit } from "@/helpers/omit";
 
 export const updateTabParams = async ({
   sessionToken,
@@ -18,7 +19,7 @@ export const updateTabParams = async ({
     {},
     {
       body: JSON.stringify({
-        params,
+        params: omit(["tab", "fullscreen"], params),
         id: tabId,
       }),
     }
@@ -26,3 +27,4 @@ export const updateTabParams = async ({
   await mutateTabList();
   return res;
 };
+

@@ -66,7 +66,7 @@ function ContentWrapper(props: ContentWrapperProps) {
         {},
         {
           body: JSON.stringify({
-            params: omit(["tab"], params),
+            params: omit(["tab", "fullscreen"], params),
             id: params.tab,
           }),
         }

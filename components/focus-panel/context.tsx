@@ -1,4 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useGlobalSearchParams } from "expo-router";
 import {
   createContext,
   Dispatch,
@@ -25,6 +26,8 @@ export const FocusPanelProvider = ({ children }) => {
   const states = ["OPEN", "CLOSED", "COLLAPSED"];
   const t = Platform.OS === "web" ? localStorage.getItem("panelState") : null;
 
+  const { fullscreen } = useGlobalSearchParams();
+
   const [panelState, setPanelState] = useState(
     Platform.OS === "web"
       ? t && states.includes(t)
@@ -41,7 +44,6 @@ export const FocusPanelProvider = ({ children }) => {
   }, [panelState]);
 
   const breakpoints = useResponsiveBreakpoints();
-
   return (
     <FocusPanelContext.Provider
       value={{
@@ -51,7 +53,8 @@ export const FocusPanelProvider = ({ children }) => {
       }}
     >
       {children}
-      {breakpoints.md && <FocusPanel />}
+      {breakpoints.md && !fullscreen && <FocusPanel />}
     </FocusPanelContext.Provider>
   );
 };
+

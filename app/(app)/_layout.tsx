@@ -29,7 +29,12 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
 import * as NavigationBar from "expo-navigation-bar";
-import { Redirect, SplashScreen, usePathname } from "expo-router";
+import {
+  Redirect,
+  SplashScreen,
+  useGlobalSearchParams,
+  usePathname,
+} from "expo-router";
 import { useEffect, useRef } from "react";
 import {
   Animated,
@@ -65,6 +70,10 @@ dayjs.extend(isToday);
 function DesktopLayout({ children }) {
   const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
+
+  const { fullscreen } = useGlobalSearchParams();
+
+  if (fullscreen) return children;
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
@@ -320,3 +329,4 @@ export default function AppLayout() {
     </StorageContextProvider>
   );
 }
+
