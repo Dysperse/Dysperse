@@ -634,7 +634,7 @@ export default function SignIn() {
   const onSubmit = useCallback(
     async (data) => {
       try {
-        if (step === 0 || step === 3) {
+        if (step === "email" || step === 0 || step === 3) {
           setStep(1);
         } else {
           setStep(step === 3 ? 4 : 2);
@@ -745,7 +745,11 @@ export default function SignIn() {
             <Spinner />
           </View>
         ) : step === "email" ? (
-          <Email setStep={setStep} control={control} handleSubmit={onSubmit} />
+          <Email
+            setStep={setStep}
+            control={control}
+            handleSubmit={handleSubmit(onSubmit)}
+          />
         ) : step === 0 ? (
           <Credentials
             control={control}
