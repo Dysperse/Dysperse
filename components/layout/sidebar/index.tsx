@@ -599,6 +599,7 @@ const Sidebar = ({
         <Animated.View
           {...(Platform.OS === "web" && {
             onMouseEnter: () => (desktopSlide.value = 1),
+            onClick: () => (desktopSlide.value = 1),
             onMouseLeave: () =>
               (desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0),
           })}
@@ -664,3 +665,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+
