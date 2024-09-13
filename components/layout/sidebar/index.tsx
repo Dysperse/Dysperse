@@ -489,7 +489,8 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
 
   return (
     Platform.OS === "web" &&
-    ((titlebarHidden && desktopCollapsed) || fullscreen) && (
+    titlebarHidden &&
+    (desktopCollapsed || fullscreen) && (
       <Pressable
         onHoverIn={onHoverIn}
         style={{
