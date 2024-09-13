@@ -790,8 +790,7 @@ export function PanelSwipeTrigger({
     <Pressable
       onHoverIn={onHoverIn}
       onHoverOut={onHoverOut}
-      onPressIn={onPressIn}
-      onPressOut={onPressOut}
+      onPress={onPressIn}
       style={[
         {
           shadowRadius: 0,
