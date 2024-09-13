@@ -493,6 +493,7 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
     (desktopCollapsed || fullscreen) && (
       <Pressable
         onHoverIn={onHoverIn}
+        onPress={onHoverIn}
         style={{
           flexDirection: "row",
           position: "absolute",
