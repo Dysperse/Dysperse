@@ -503,7 +503,7 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
           gap: 5,
           zIndex: 1,
           marginLeft: "env(safe-area-inset-left, 10px)",
-          webkitAppRegion: "no-drag",
+          webkitAppRegion: fullscreen ? undefined : "no-drag",
         }}
       >
         <Logo size={20} />
