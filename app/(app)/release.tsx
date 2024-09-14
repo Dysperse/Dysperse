@@ -3,6 +3,7 @@ import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
@@ -29,6 +30,7 @@ const MenuButton = () => {
 
 export default function Page() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { session, mutate, sessionToken } = useUser();
 
   const { data, error } = useSWR("releases", {
@@ -74,7 +76,7 @@ export default function Page() {
 
   return (
     <Content noPaddingTop>
-      <MenuButton />
+      {!breakpoints.md && <MenuButton />}
       <ScrollView
         contentContainerStyle={{
           width: "100%",
