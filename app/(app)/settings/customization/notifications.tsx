@@ -239,7 +239,7 @@ const TestNotifications = () => {
 function SubscribeButton({ data, mutate }) {
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const [tokenExists, setTokenExists] = useState(true);
+  const [tokenExists, setTokenExists] = useState(false);
 
   const checkIfTokensExist = useCallback(async () => {
     if (globalThis.IN_DESKTOP_ENV && globalThis.FCM_DEVICE_TOKEN) {
@@ -249,16 +249,16 @@ function SubscribeButton({ data, mutate }) {
       );
     } else if (Platform.OS === "web") {
       const webTokens = await registerForWebPushNotificationsAsync();
-      const expoTokens = await registerForPushNotificationsAsync();
-
-      console.log(data, webTokens, expoTokens);
 
       setTokenExists(
-        data?.subscriptions?.find?.(({ tokens }) =>
-          typeof tokens === "string"
-            ? tokens === expoTokens
-            : tokens?.endpoint === webTokens?.endpoint
+        data?.subscriptions?.find?.(
+          ({ tokens }) => tokens?.endpoint === webTokens?.endpoint
         )
+      );
+    } else {
+      const expoTokens = await registerForPushNotificationsAsync();
+      setTokenExists(
+        data?.subscriptions?.find?.(({ tokens }) => tokens === expoTokens)
       );
     }
   }, [data]);
@@ -355,16 +355,10 @@ export default function Page() {
   const { data, mutate, error } = useSWR(["user/notifications"]);
 
   const handleDelete = async (id: string) => {
-    sendApiRequest(session, "DELETE", "user/notifications", {
+    await sendApiRequest(session, "DELETE", "user/notifications", {
       id,
     });
-    mutate(
-      (oldData) =>
-        oldData?.subscriptions?.filter?.((device) => device.id !== id),
-      {
-        revalidate: false,
-      }
-    );
+    await mutate();
   };
 
   function handleToggle(key: string) {
