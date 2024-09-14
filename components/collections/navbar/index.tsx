@@ -94,6 +94,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   };
 
   const openPopOut = async (e) => {
+    if (fullscreen) return;
     const t = new URL(window.location.href);
     t.searchParams.set("fullscreen", "true");
     await openBrowserAsync(t.toString(), {
