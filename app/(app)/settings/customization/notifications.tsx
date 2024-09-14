@@ -280,7 +280,9 @@ function SubscribeButton({ data, mutate }) {
             type: "FCM",
             tokens: globalThis.FCM_DEVICE_TOKEN,
             deviceType: Device.deviceType || 0,
-            deviceName: Device.deviceName || "Unknown device",
+            deviceName:
+              navigator.userAgent.split("(")[1].split(";")[0] ||
+              "Unknown device",
           }),
         }
       );
@@ -420,7 +422,9 @@ export default function Page() {
             <Icon>{icons[device.deviceType]}</Icon>
             <ListItemText
               primary={device.deviceName}
-              secondary={type[device.deviceType]}
+              secondary={`${type[device.deviceType]} ${
+                device.type === "FCM" ? "App" : ""
+              }`}
             />
             <IconButton
               onPress={() => handleDelete(device.id)}
