@@ -242,18 +242,25 @@ function SubscribeButton({ data, mutate }) {
   const [tokenExists, setTokenExists] = useState(true);
 
   const checkIfTokensExist = useCallback(async () => {
-    const webTokens = await registerForWebPushNotificationsAsync();
-    const expoTokens = await registerForPushNotificationsAsync();
+    if (globalThis.IN_DESKTOP_ENV && globalThis.FCM_DEVICE_TOKEN) {
+      const deviceToken = globalThis.FCM_DEVICE_TOKEN;
+      setTokenExists(
+        data?.subscriptions?.find?.(({ tokens }) => tokens === deviceToken)
+      );
+    } else if (Platform.OS === "web") {
+      const webTokens = await registerForWebPushNotificationsAsync();
+      const expoTokens = await registerForPushNotificationsAsync();
 
-    console.log(data, webTokens, expoTokens);
+      console.log(data, webTokens, expoTokens);
 
-    setTokenExists(
-      data?.subscriptions?.find?.(({ tokens }) =>
-        typeof tokens === "string"
-          ? tokens === expoTokens
-          : tokens?.endpoint === webTokens?.endpoint
-      )
-    );
+      setTokenExists(
+        data?.subscriptions?.find?.(({ tokens }) =>
+          typeof tokens === "string"
+            ? tokens === expoTokens
+            : tokens?.endpoint === webTokens?.endpoint
+        )
+      );
+    }
   }, [data]);
 
   useEffect(() => {
@@ -262,7 +269,22 @@ function SubscribeButton({ data, mutate }) {
 
   const handlePress = async () => {
     setIsLoading(true);
-    if (Platform.OS === "web") {
+    if (globalThis.IN_DESKTOP_ENV && globalThis.FCM_DEVICE_TOKEN) {
+      await sendApiRequest(
+        session,
+        "POST",
+        "user/notifications",
+        {},
+        {
+          body: JSON.stringify({
+            type: "FCM",
+            tokens: globalThis.FCM_DEVICE_TOKEN,
+            deviceType: Device.deviceType || 0,
+            deviceName: Device.deviceName || "Unknown device",
+          }),
+        }
+      );
+    } else if (Platform.OS === "web") {
       const sub: any = await registerForWebPushNotificationsAsync();
       await sendApiRequest(
         session,
@@ -311,7 +333,7 @@ function SubscribeButton({ data, mutate }) {
       isLoading={isLoading || !data}
       disabled={Boolean(tokenExists)}
       onPress={handlePress}
-      variant="filled"
+      variant={tokenExists ? "outlined" : "filled"}
       containerStyle={{ marginBottom: 20 }}
     >
       <Icon>{tokenExists ? "check" : "add"}</Icon>
@@ -451,3 +473,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
