@@ -1764,7 +1764,7 @@ function BottomSheetContent({
         <View
           style={{
             gap: 7,
-            zIndex: -2,
+            zIndex: Platform.OS === "web" ? -2 : undefined,
             flexDirection: "row",
             alignItems: "center",
           }}
@@ -1873,3 +1873,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+
