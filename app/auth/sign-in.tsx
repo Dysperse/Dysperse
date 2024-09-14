@@ -394,10 +394,6 @@ function PasskeyModal({ setStep }) {
             `${process.env.EXPO_PUBLIC_API_URL}/auth/login/passkeys`
           ).then((res) => res.json());
 
-          // alert(
-          //   Application.applicationId?.split(".").reverse().join(".")
-          // );
-
           const json = await passkey.get({
             rpId: rp.id,
             challenge,
