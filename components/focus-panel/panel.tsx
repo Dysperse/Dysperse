@@ -394,7 +394,7 @@ export const Navbar = ({
               return d;
             });
           }}
-          icon="right_panel_close"
+          icon="collapse_content"
           size={!breakpoints.md ? 50 : 40}
           style={{
             padding: 10,
@@ -577,15 +577,26 @@ function PanelContent() {
         </Stack.Navigator>
       </NavigationContainer>
       {panelState === "COLLAPSED" && (
-        <IconButton
-          onPress={() => {
-            setPanelState("OPEN");
-            collapseOnBack.current = false;
-          }}
-          icon="right_panel_open"
-          size={85}
-          style={{ height: 40, opacity: 0.6, marginBottom: 5 }}
-        />
+        <View style={{ flexDirection: "row" }}>
+          <IconButton
+            onPress={() => {
+              setPanelState("OPEN");
+              collapseOnBack.current = false;
+            }}
+            icon="expand_content"
+            size={85 / 2}
+            style={{ height: 40, opacity: 0.6, marginBottom: 5 }}
+          />
+          <IconButton
+            onPress={() => {
+              setPanelState("OPEN");
+              collapseOnBack.current = false;
+            }}
+            icon="close_small"
+            size={85 / 2}
+            style={{ height: 40, opacity: 0.6, marginBottom: 5 }}
+          />
+        </View>
       )}
     </Animated.View>
   );
