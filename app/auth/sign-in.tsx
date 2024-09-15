@@ -44,6 +44,13 @@ const styles = StyleSheet.create({
   title: { fontSize: 55, width: "100%", lineHeight: 55 },
 });
 
+const isIUSDChromebook =
+  Platform.OS === "web" &&
+  navigator.userAgent.includes("CrOS") &&
+  typeof navigator?.managed?.getHostname === "function" &&
+  dayjs.tz.guess() === "America/Los_Angeles" &&
+  navigator.language === "en-US";
+
 function QrLogin() {
   const theme = useColorTheme();
   const [data, setData] = useState<any>(null);
@@ -360,7 +367,7 @@ export function GoogleAuth({
     }
   };
 
-  return (
+  return isIUSDChromebook ? null : (
     <>
       <Button
         height={60}
@@ -479,13 +486,6 @@ function Credentials({
     []
   );
 
-  const isIUSDChromebook =
-    Platform.OS === "web" &&
-    navigator.userAgent.includes("CrOS") &&
-    typeof navigator?.managed?.getHostname === "function" &&
-    dayjs.tz.guess() === "America/Los_Angeles" &&
-    navigator.language === "en-US";
-
   const handleBack = useCallback(() => {
     if (router.canGoBack()) router.back();
     else router.push("/");
@@ -541,11 +541,7 @@ function Credentials({
         </Text>
 
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
-          {
-            // if IUSD chromebook
-            !isIUSDChromebook && <GoogleAuth />
-          }
-          {/* <EmailModal control={control} handleSubmit={onSubmit}> */}
+          <GoogleAuth />
           <Button
             height={60}
             variant="filled"
