@@ -339,6 +339,8 @@ const VerificationPage = ({ form }: { form: UseFormReturn<any> }) => {
           fontSize: 30,
           marginBottom: 10,
           color: theme[11],
+          textAlign: "center",
+          fontFamily: "serifText800",
         }}
         weight={900}
       >
@@ -348,12 +350,13 @@ const VerificationPage = ({ form }: { form: UseFormReturn<any> }) => {
         style={{
           fontSize: 20,
           color: theme[11],
+          textAlign: "center",
           opacity: 0.7,
           marginBottom: 20,
         }}
         weight={700}
       >
-        Are you a human!?{"\n"} Let's find out...
+        Are you a human!? Let's find out...
       </Text>
       <Turnstile
         setToken={(t) => {
@@ -553,3 +556,4 @@ export default function Page() {
     </ColorThemeProvider>
   );
 }
+
