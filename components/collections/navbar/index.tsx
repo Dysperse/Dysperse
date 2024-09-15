@@ -111,7 +111,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     (e) => {
       router.setParams({
         type: Object.keys(collectionViews).find((v) =>
-          v === "Pano" ? e.key === "a" : v[0].toLowerCase() === e.key
+          v === "pano" ? e.key === "a" : v[0].toLowerCase() === e.key
         ),
       });
     },
