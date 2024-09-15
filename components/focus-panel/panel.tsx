@@ -598,7 +598,7 @@ function FocusPanelHome({
 }) {
   const theme = useColorTheme();
   const { data } = useSWR(["user/focus-panel"], null);
-  const { panelState } = useFocusPanelContext();
+  const { panelState, setPanelState } = useFocusPanelContext();
 
   const [shouldSuspendRendering, setShouldSuspendRendering] = useState(false);
 
@@ -646,6 +646,7 @@ function FocusPanelHome({
               paddingTop: 2,
             },
           ]}
+          centerContent={data.length === 0}
         >
           {!data ? (
             <View style={{ marginHorizontal: "auto" }}>
@@ -662,7 +663,13 @@ function FocusPanelHome({
                 gap: 5,
               }}
             >
-              <Text style={{ textAlign: "center" }} variant="eyebrow">
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: panelState === "COLLAPSED" ? 13 : undefined,
+                }}
+                variant="eyebrow"
+              >
                 This is the focus panel
               </Text>
               <Text
@@ -670,11 +677,22 @@ function FocusPanelHome({
                   textAlign: "center",
                   color: theme[11],
                   opacity: 0.45,
+                  fontSize: panelState === "COLLAPSED" ? 12 : undefined,
                 }}
               >
-                Here, you can add widgets to enhance & supercharge your
-                productivity
+                Add widgets to {"\n"}customize your experience
               </Text>
+
+              {panelState === "COLLAPSED" && (
+                <IconButton
+                  variant="filled"
+                  onPress={() => {
+                    navigation.push("New");
+                    setPanelState("OPEN");
+                  }}
+                  icon="add"
+                />
+              )}
             </View>
           ) : (
             Array.isArray(data) && (

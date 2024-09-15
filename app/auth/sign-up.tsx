@@ -169,7 +169,6 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
       </Text>
       <Text
         style={{
-          textAlign: "center",
           opacity: 0.7,
           fontSize: 20,
           color: theme[11],
@@ -331,6 +330,7 @@ const VerificationPage = ({ form }: { form: UseFormReturn<any> }) => {
         flex: 1,
         padding: 20,
         justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <Text
@@ -381,10 +381,10 @@ const Password = ({ form }: { form: UseFormReturn<any> }) => {
     <ScrollView centerContent style={{ flex: 1, padding: 20 }}>
       <Text
         style={{
-          fontSize: 30,
-          marginTop: "auto",
-          marginBottom: 10,
+          fontSize: 40,
+          marginBottom: 5,
           color: theme[11],
+          fontFamily: "serifText800",
         }}
         weight={900}
       >
@@ -397,6 +397,7 @@ const Password = ({ form }: { form: UseFormReturn<any> }) => {
           marginBottom: 20,
           color: theme[11],
         }}
+        weight={300}
       >
         Make sure it's at least 8 characters long, and it's something which
         nobody can't easily guess.

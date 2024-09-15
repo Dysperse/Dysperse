@@ -311,8 +311,10 @@ export function GoogleAuth({
       } else {
         onSuccess(Object.fromEntries(t.searchParams.entries()));
       }
+    } else {
+      setLoading(false);
     }
-  }, [result, signIn, onSuccess]);
+  }, [result, signIn, onSuccess, setLoading]);
 
   const handleClick = async () => {
     try {
