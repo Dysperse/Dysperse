@@ -158,10 +158,10 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
       </Portal>
       <Text
         style={{
-          fontSize: 30,
-          textAlign: "center",
-          marginBottom: 10,
+          fontSize: 40,
+          marginBottom: 5,
           color: theme[11],
+          fontFamily: "serifText800",
         }}
         weight={700}
       >
@@ -175,8 +175,7 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
           color: theme[11],
         }}
       >
-        You've unlocked three themes. Unlock more by completing in-app
-        achievements.
+        Dysperse has over 30+ themes to choose from. Here's 3 for now...
       </Text>
       <View style={{ gap: 20, flex: 1, paddingVertical: 20 }}>
         {[

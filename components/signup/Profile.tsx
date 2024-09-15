@@ -9,12 +9,11 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
-import { Menu } from "@/ui/Menu";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import { Controller } from "react-hook-form";
@@ -38,30 +37,19 @@ const months = [
 
 const MonthPicker = ({ onChange, trigger }) => {
   const ref = useRef(null);
-  const theme = useColorTheme();
   return (
-    <Menu trigger={trigger} height={[400]} menuRef={ref}>
-      <BottomSheetScrollView>
-        {months.map((month) => (
-          <Pressable
-            key={month}
-            onPress={() => {
-              ref.current.close();
-              setTimeout(() => {
-                onChange(months.indexOf(month) + 1);
-              }, 1000);
-            }}
-            style={{
-              padding: 20,
-              borderBottomWidth: 1,
-              borderBottomColor: theme[5],
-            }}
-          >
-            <Text>{month}</Text>
-          </Pressable>
-        ))}
-      </BottomSheetScrollView>
-    </Menu>
+    <MenuPopover
+      trigger={trigger}
+      menuRef={ref}
+      scrollViewStyle={{ height: 240 }}
+      options={months.map((month) => ({
+        text: month,
+        callback: () => {
+          ref.current.close();
+          onChange(months.indexOf(month) + 1);
+        },
+      }))}
+    />
   );
 };
 
@@ -110,7 +98,12 @@ export const Profile = ({ form }) => {
         }}
       >
         <Text
-          style={{ fontSize: 30, marginBottom: 10, color: theme[11] }}
+          style={{
+            fontSize: 40,
+            marginBottom: 5,
+            color: theme[11],
+            fontFamily: "serifText800",
+          }}
           weight={900}
         >
           Create a profile
@@ -122,9 +115,9 @@ export const Profile = ({ form }) => {
             fontSize: 20,
             marginBottom: 20,
           }}
+          weight={300}
         >
-          Productivity profiles are a great way to instantly share collections
-          and gather availability.
+          Others will see this when you interact with them.
         </Text>
         <View
           style={{
@@ -260,14 +253,19 @@ export const Profile = ({ form }) => {
                       onChange(v);
                     }}
                     trigger={
-                      <Pressable style={{ width: "33.33%" }}>
+                      <Pressable
+                        style={{
+                          width: 120,
+                          flex: 1,
+                        }}
+                      >
                         <TextField
                           editable={false}
                           value={months[value[1] - 1]}
                           variant="filled+outlined"
                           placeholder="MMMM"
                           style={[
-                            { width: "100%" },
+                            { width: "100%", pointerEvents: "none" },
                             error && { borderColor: "red" },
                           ]}
                         />

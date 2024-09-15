@@ -78,9 +78,10 @@ export const TaskCreator = ({ form }) => {
     >
       <Text
         style={{
-          fontSize: 30,
-          marginBottom: 10,
+          fontSize: 40,
+          marginBottom: 5,
           color: theme[11],
+          fontFamily: "serifText800",
           marginTop: "auto",
         }}
         weight={900}
@@ -93,8 +94,9 @@ export const TaskCreator = ({ form }) => {
           color: theme[11],
           opacity: 0.7,
         }}
+        weight={300}
       >
-        Create three tasks you would like to complete today
+        What are three things you'd like to complete today
       </Text>
       <View style={{ marginTop: 20 }}>
         {[...Array(3).keys()].map((index) => (
@@ -115,3 +117,4 @@ export const TaskCreator = ({ form }) => {
     </ScrollView>
   );
 };
+

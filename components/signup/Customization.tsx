@@ -59,13 +59,13 @@ export const Customization = ({ form }) => {
       <Text
         style={{
           marginTop: "auto",
-          fontSize: 30,
-          marginBottom: 10,
+          fontSize: 40,
+          marginBottom: 5,
+          fontFamily: "serifText800",
           color: theme[11],
         }}
-        weight={900}
       >
-        What productivity methods do you already use?
+        What productivity methods do you use?
       </Text>
       <Text
         style={{
@@ -74,8 +74,10 @@ export const Customization = ({ form }) => {
           fontSize: 20,
           marginBottom: 30,
         }}
+        weight={300}
       >
-        We'll incorporate them into your Dysperse experience.
+        We'll incorporate them into your experience here. It's completely fine
+        if you don't use any!
       </Text>
       <Controller
         control={control}
@@ -148,3 +150,4 @@ export const Customization = ({ form }) => {
     </ScrollView>
   );
 };
+
