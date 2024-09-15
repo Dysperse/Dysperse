@@ -336,9 +336,10 @@ const VerificationPage = ({ form }: { form: UseFormReturn<any> }) => {
     >
       <Text
         style={{
-          fontSize: 30,
-          marginBottom: 10,
-          color: theme[11],
+          fontSize: 55,
+          width: "100%",
+          lineHeight: 55,
+          paddingTop: 10,
           textAlign: "center",
           fontFamily: "serifText800",
         }}
@@ -348,11 +349,15 @@ const VerificationPage = ({ form }: { form: UseFormReturn<any> }) => {
       </Text>
       <Text
         style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          alignItems: "center",
+          rowGap: 10,
           fontSize: 20,
+          marginBottom: 10,
           color: theme[11],
           textAlign: "center",
-          opacity: 0.7,
-          marginBottom: 20,
+          opacity: 0.6,
         }}
         weight={700}
       >
@@ -459,6 +464,7 @@ export default function Page() {
       password: "",
       confirmPassword: "",
       theme: "mint",
+      isGoogle: false,
       methods: [],
       birthday: [dayjs().year(), dayjs().month() + 1, dayjs().date()],
       tasks: ["", "", ""],

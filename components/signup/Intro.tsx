@@ -105,6 +105,7 @@ export const Intro = ({ form }) => {
             setValue("name", res.name);
             setValue("email", res.email);
             setValue("picture", res.picture);
+            setValue("isGoogle", true);
             handleNext();
           }}
         />

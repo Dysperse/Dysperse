@@ -74,10 +74,12 @@ export const Profile = ({ form }) => {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
 
+  const isGoogle = watch("isGoogle");
+
   const [loading, setLoading] = useState(false);
   const [profileExists, setProfileExists] = useState<
     "empty" | "loading" | "error" | "available" | "taken"
-  >("empty");
+  >(isGoogle ? "available" : "empty");
 
   const debouncedEmail = useDebouncedValue(email, 500);
 
@@ -171,32 +173,36 @@ export const Profile = ({ form }) => {
             />
           </View>
           <View style={{ flex: 1 }}>
-            <Text variant="eyebrow" style={{ marginBottom: 5 }}>
-              Email
-            </Text>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-                validate: (v) => validateEmail(v),
-              }}
-              render={({ field: { value, onChange, onBlur } }) => (
-                <TextField
-                  onBlur={onBlur}
-                  onChangeText={(n) => {
-                    if (validateEmail(debouncedEmail))
-                      setProfileExists("loading");
-                    onChange(n);
-                  }}
-                  value={value || ""}
-                  variant="filled+outlined"
-                  style={{ flex: 1 }}
-                  placeholder="hello@dysperse.com"
-                />
-              )}
-              name="email"
-            />
-            {email !== "" && profileExists !== "empty" && (
+            {!isGoogle && (
+              <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+                Email
+              </Text>
+            )}
+            {!isGoogle && (
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                  validate: (v) => validateEmail(v),
+                }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <TextField
+                    onBlur={onBlur}
+                    onChangeText={(n) => {
+                      if (validateEmail(debouncedEmail))
+                        setProfileExists("loading");
+                      onChange(n);
+                    }}
+                    value={value || ""}
+                    variant="filled+outlined"
+                    style={{ flex: 1 }}
+                    placeholder="hello@dysperse.com"
+                  />
+                )}
+                name="email"
+              />
+            )}
+            {email !== "" && profileExists !== "empty" && !isGoogle && (
               <View
                 style={{
                   flexDirection: "row",
@@ -225,7 +231,10 @@ export const Profile = ({ form }) => {
                 </Text>
               </View>
             )}
-            <Text variant="eyebrow" style={{ marginBottom: 5, marginTop: 20 }}>
+            <Text
+              variant="eyebrow"
+              style={{ marginBottom: 5, marginTop: isGoogle ? 0 : 20 }}
+            >
               Birthday
             </Text>
             <Controller
@@ -341,3 +350,4 @@ export const Profile = ({ form }) => {
     </KeyboardAvoidingView>
   );
 };
+
