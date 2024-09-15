@@ -31,6 +31,8 @@ export function SessionProvider(props: React.PropsWithChildren) {
         },
         signOut: () => {
           setSession(null);
+          (window as any).disableSaveData = true;
+          localStorage.clear();
         },
         session,
         isLoading,
@@ -40,3 +42,4 @@ export function SessionProvider(props: React.PropsWithChildren) {
     </AuthContext.Provider>
   );
 }
+

@@ -657,13 +657,13 @@ function FocusPanelHome({
               paddingTop: 2,
             },
           ]}
-          centerContent={data.length === 0}
+          centerContent={data?.length === 0 || !data}
         >
           {!data ? (
             <View style={{ marginHorizontal: "auto" }}>
               <Spinner />
             </View>
-          ) : data.length === 0 ? (
+          ) : data?.length === 0 ? (
             <View
               style={{
                 flex: 1,
