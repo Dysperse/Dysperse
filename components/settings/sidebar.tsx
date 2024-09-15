@@ -167,6 +167,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
         },
         {
           name: "Keybinds",
+          keywords: ["keybinds", "shortcuts", "keyboard"],
           icon: "keyboard_command_key",
           href: "/settings/shortcuts",
         },
@@ -395,3 +396,4 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
+
