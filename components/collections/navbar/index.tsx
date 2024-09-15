@@ -107,11 +107,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
   useHotkeys(["o"], openPopOut);
 
   useHotkeys(
-    ["p", "k", "s", "g", "w", "l", "m", "c"],
+    ["p", "a", "k", "s", "g", "w", "l", "m", "c"],
     (e) => {
       router.setParams({
-        type: Object.keys(collectionViews).find(
-          (v) => v[0].toLowerCase() === e.key
+        type: Object.keys(collectionViews).find((v) =>
+          v === "Pano" ? e.key === "a" : v[0].toLowerCase() === e.key
         ),
       });
     },
