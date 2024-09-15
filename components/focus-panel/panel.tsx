@@ -589,8 +589,8 @@ function PanelContent() {
           />
           <IconButton
             onPress={() => {
-              setPanelState("OPEN");
-              collapseOnBack.current = false;
+              setPanelState("CLOSED");
+              collapseOnBack.current = true;
             }}
             icon="close_small"
             size={85 / 2}
