@@ -63,7 +63,7 @@ export default function Page() {
           action: "Open pop-out (desktop only)",
         },
         ...Object.keys(collectionViews).map((key) => ({
-          keys: key[0],
+          keys: key === "pano" ? "a" : key[0],
           action: `${capitalizeFirstLetter(key)} view`,
         })),
       ],
