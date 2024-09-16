@@ -86,18 +86,18 @@ export function Content() {
   const { isPublic } = useCollectionContext();
   const { mode: originalMode, start: originalStart } = useLocalSearchParams();
 
-  const { data, mutate } = useSWR([
-    "space/collections/collection/planner",
-    {
-      start: start.toISOString(),
-      end: end.toISOString(),
-      type,
-      timezone: dayjs.tz.guess(),
-      id: params.id,
-      isPublic: isPublic ? "true" : "false",
-      ...(params.id === "all" && { all: true }),
-    },
-  ]);
+    const { data, mutate } = useSWR([
+      "space/collections/collection/planner",
+      {
+        start: start.toISOString(),
+        end: end.toISOString(),
+        type,
+        timezone: dayjs.tz.guess(),
+        id: params.id,
+        isPublic: isPublic ? "true" : "false",
+        ...(params.id === "all" && { all: true }),
+      },
+    ]);
 
   const taskDrawerRef = useRef(null);
   const createTaskSheetRef = useRef(null);

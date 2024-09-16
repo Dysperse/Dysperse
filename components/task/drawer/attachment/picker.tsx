@@ -2,6 +2,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { useBottomSheet } from "@gorhom/bottom-sheet";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -11,7 +12,6 @@ export function TaskAttachmentPicker({
   placeholder,
   updateTask,
   task,
-  handleParentClose,
   footer = null,
   multiline,
   type,
@@ -19,12 +19,12 @@ export function TaskAttachmentPicker({
   placeholder: string;
   updateTask?: any;
   task: any;
-  handleParentClose: any;
   footer?: JSX.Element;
   multiline?: boolean;
   type: string;
 }) {
   const theme = useColorTheme();
+  const { forceClose } = useBottomSheet();
   const [isLoading, setIsLoading] = useState(false);
 
   const { control, handleSubmit } = useForm({
@@ -37,24 +37,29 @@ export function TaskAttachmentPicker({
   const onSubmit = useCallback(
     async (values) => {
       try {
-        updateTask(
-          type === "NOTE" ? "note" : "attachments",
-          type === "NOTE"
-            ? values.data
-            : [
-                ...(task.attachments || []),
-                { type, data: values.data, name: values.name },
-              ]
-        );
+        forceClose({ duration: 0.0001 });
+        setTimeout(() => {
+          setTimeout(() => {
+            updateTask(
+              type === "NOTE" ? "note" : "attachments",
+              type === "NOTE"
+                ? values.data
+                : [
+                    ...(task.attachments || []),
+                    { type, data: values.data, name: values.name },
+                  ]
+            );
+          }, 500);
+        }, 0);
         setIsLoading(false);
       } catch (e) {
+        forceClose();
         Toast.show({ type: "error" });
       } finally {
-        setTimeout(handleParentClose, 0);
         setIsLoading(false);
       }
     },
-    [updateTask, handleParentClose, type, task]
+    [updateTask, type, task]
   );
   const inputRef = useRef(null);
 
@@ -90,9 +95,7 @@ export function TaskAttachmentPicker({
             onSubmitEditing={submit}
             blurOnSubmit={false}
             onKeyPress={(e) => {
-              if (e.nativeEvent.key === "Escape") {
-                handleParentClose();
-              }
+              if (e.nativeEvent.key === "Escape") forceClose();
             }}
             style={{
               paddingHorizontal: 25,
@@ -126,9 +129,7 @@ export function TaskAttachmentPicker({
               onSubmitEditing={submit}
               blurOnSubmit={false}
               onKeyPress={(e) => {
-                if (e.nativeEvent.key === "Escape") {
-                  handleParentClose();
-                }
+                if (e.nativeEvent.key === "Escape") forceClose();
               }}
               style={{
                 backgroundColor: "transparent",

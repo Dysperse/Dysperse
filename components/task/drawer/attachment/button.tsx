@@ -335,22 +335,8 @@ export function TaskAttachmentButton({
             <TaskAttachmentPicker
               type="LINK"
               placeholder="Enter a link"
-              handleParentClose={() => menuRef.current?.close()}
               task={task}
               updateTask={updateTask}
-              footer={
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                    paddingHorizontal: 10,
-                  }}
-                >
-                  <Icon>lightbulb</Icon>
-                  <Text>Supports YouTube, Canvas, Zoom, and more.</Text>
-                </View>
-              }
             />
           )}
           {view === "Image" && (
@@ -361,7 +347,6 @@ export function TaskAttachmentButton({
               type="NOTE"
               multiline
               placeholder="Type in a note…"
-              handleParentClose={() => menuRef.current?.close()}
               task={task}
               updateTask={updateTask}
             />
