@@ -15,7 +15,7 @@ import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 
-const MenuButton = () => {
+export const MenuButton = () => {
   const { sidebarRef } = useSidebarContext();
 
   return (
@@ -134,4 +134,3 @@ export default function Page() {
     </Content>
   );
 }
-

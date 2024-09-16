@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import { Linking, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import { MenuButton } from "../release";
 
 function Card({ children }) {
   const theme = useColorTheme();
@@ -115,6 +116,7 @@ export default function Page() {
         }}
         style={{ flex: 1 }}
       >
+        <MenuButton />
         <View style={{ flexShrink: 0 }}>
           <View
             style={{ alignItems: "center", marginBottom: 15 }}
