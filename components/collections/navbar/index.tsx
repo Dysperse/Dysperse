@@ -156,70 +156,78 @@ const CollectionNavbar = memo(function CollectionNavbar({
           selected: e.text && e.id === mode,
         }))
       : []),
-    !isAll && {
-      renderer: () => (
-        <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
-          Collection
-        </Text>
-      ),
-    },
-    !isAll && {
-      icon: "lock_open",
-      text: "Lock",
-      callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
-    },
-    !isAll && {
-      icon: "edit",
-      text: "Edit",
-      callback: () => shareMenuRef.current?.openEdit(),
-    },
-    !isAll && {
-      icon: "remove_selection",
-      text: "Delete",
-      renderer: () => (
-        <ConfirmationModal
-          height={450}
-          onSuccess={async () => {
-            await sendApiRequest(session, "DELETE", "space/collections", {
-              id: data.id,
-            });
-            router.replace("/");
-            await mutate();
-          }}
-          title="Delete collection?"
-          secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
-        >
-          <MenuItem>
-            <Icon>delete</Icon>
-            <Text variant="menuItem" weight={300}>
-              Delete
-            </Text>
-          </MenuItem>
-        </ConfirmationModal>
-      ),
-    },
-    !isAll && { divider: true },
-    !isAll && {
-      renderer: () => (
-        <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
-          Labels
-        </Text>
-      ),
-    },
-    !isAll && {
-      icon: "label",
-      text: "Select labels",
-      callback: openLabelPicker,
-    },
     !isAll &&
+      session && {
+        renderer: () => (
+          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
+            Collection
+          </Text>
+        ),
+      },
+    !isAll &&
+      session && {
+        icon: "lock_open",
+        text: "Lock",
+        callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
+      },
+    !isAll &&
+      session && {
+        icon: "edit",
+        text: "Edit",
+        callback: () => shareMenuRef.current?.openEdit(),
+      },
+    !isAll &&
+      session && {
+        icon: "remove_selection",
+        text: "Delete",
+        renderer: () => (
+          <ConfirmationModal
+            height={450}
+            onSuccess={async () => {
+              await sendApiRequest(session, "DELETE", "space/collections", {
+                id: data.id,
+              });
+              router.replace("/");
+              await mutate();
+            }}
+            title="Delete collection?"
+            secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
+          >
+            <MenuItem>
+              <Icon>delete</Icon>
+              <Text variant="menuItem" weight={300}>
+                Delete
+              </Text>
+            </MenuItem>
+          </ConfirmationModal>
+        ),
+      },
+    !isAll && session && { divider: true },
+    !isAll &&
+      session && {
+        renderer: () => (
+          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
+            Labels
+          </Text>
+        ),
+      },
+    !isAll &&
+      session && {
+        icon: "label",
+        text: "Select labels",
+        callback: openLabelPicker,
+      },
+    !isAll &&
+      session &&
       (type === "grid" || type === "kanban") && {
         icon: "swipe",
         text: "Reorder",
         callback: () => setEditOrderMode(true),
       },
-    !isAll && {
-      divider: true,
-    },
+    !isAll &&
+      session && {
+        divider: true,
+      },
     {
       icon: "sync",
       text: "Refresh",
@@ -241,7 +249,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     //   text: "Customize task chips",
     //   callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
     // },
-    {
+    session && {
       renderer: () => (
         <ConfirmationModal
           height={430}
@@ -271,7 +279,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
-  ].filter((e) => e);
+  ]
+    .flat()
+    .filter((e) => e);
 
   const { sidebarRef } = useSidebarContext();
 
@@ -392,49 +402,47 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 justifyContent: "flex-end",
               }}
             >
-              {session && (
-                <CollectionContext.Provider value={contextValue}>
-                  <CollectionSearch />
-                  {!breakpoints.md && session && (
-                    <CollectionShareMenu ref={shareMenuRef} />
-                  )}
-                  {isLoading ? (
-                    <View
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 999,
-                        backgroundColor: theme[4],
+              <CollectionContext.Provider value={contextValue}>
+                {session && <CollectionSearch />}
+                {!breakpoints.md && session && (
+                  <CollectionShareMenu ref={shareMenuRef} />
+                )}
+                {isLoading ? (
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 999,
+                      backgroundColor: theme[4],
+                    }}
+                  />
+                ) : (
+                  !isReadOnly && (
+                    <MenuPopover
+                      menuRef={menuRef}
+                      closeOnSelect
+                      {...(isReadOnly && { menuProps: { opened: false } })}
+                      containerStyle={{ width: 240 }}
+                      menuProps={{
+                        rendererProps: { placement: "bottom" },
                       }}
+                      trigger={
+                        <IconButton
+                          icon="pending"
+                          size={40}
+                          style={
+                            breakpoints.md && !isAll && { marginRight: 10 }
+                          }
+                        />
+                      }
+                      options={(isReadOnly ? [] : collectionMenuOptions) as any}
                     />
-                  ) : (
-                    !isReadOnly && (
-                      <MenuPopover
-                        menuRef={menuRef}
-                        closeOnSelect
-                        {...(isReadOnly && { menuProps: { opened: false } })}
-                        containerStyle={{ width: 240 }}
-                        menuProps={{
-                          rendererProps: { placement: "bottom" },
-                        }}
-                        trigger={
-                          <IconButton
-                            icon="pending"
-                            size={40}
-                            style={
-                              breakpoints.md && !isAll && { marginRight: 10 }
-                            }
-                          />
-                        }
-                        options={
-                          (isReadOnly ? [] : collectionMenuOptions) as any
-                        }
-                      />
-                    )
-                  )}
-                  {breakpoints.md && <CollectionShareMenu ref={shareMenuRef} />}
-                </CollectionContext.Provider>
-              )}
+                  )
+                )}
+                {breakpoints.md && session && (
+                  <CollectionShareMenu ref={shareMenuRef} />
+                )}
+              </CollectionContext.Provider>
             </View>
           </NavbarGradient>
           <LoadingIndicator />

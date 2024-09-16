@@ -22,6 +22,7 @@ import {
 } from "react-native-big-calendar";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
+import { useCollectionContext } from "../../context";
 import { onTaskUpdate } from "../planner/Column";
 import { CalendarContext, useCalendarContext } from "./context";
 
@@ -82,6 +83,7 @@ export function Content() {
   const params = useLocalSearchParams();
   const colors = useLabelColors();
   const { type, start, end } = useCalendarContext();
+  const { isPublic } = useCollectionContext();
   const { mode: originalMode, start: originalStart } = useLocalSearchParams();
 
   const { data, mutate } = useSWR([
@@ -92,6 +94,7 @@ export function Content() {
       type,
       timezone: dayjs.tz.guess(),
       id: params.id,
+      isPublic: isPublic ? "true" : "false",
       ...(params.id === "all" && { all: true }),
     },
   ]);
@@ -298,3 +301,4 @@ export default function Calendar() {
     </CalendarContext.Provider>
   );
 }
+

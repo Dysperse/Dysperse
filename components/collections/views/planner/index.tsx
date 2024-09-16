@@ -15,6 +15,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import useSWR from "swr";
+import { useCollectionContext } from "../../context";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
 import { AgendaCalendarMenu } from "../../navbar/AgendaCalendarMenu";
 import { AgendaContext, usePlannerContext } from "./context";
@@ -23,6 +24,7 @@ function Agenda() {
   const breakpoints = useResponsiveBreakpoints();
   const params = useLocalSearchParams();
   const { type, start, end } = usePlannerContext();
+  const { isPublic } = useCollectionContext();
 
   const state = useSharedValue(1);
 
@@ -47,6 +49,7 @@ function Agenda() {
       end: end.toISOString(),
       type,
       timezone: dayjs.tz.guess(),
+      isPublic: isPublic ? "true" : "false",
       id: params.id,
       ...(params.id === "all" && { all: true }),
     },
@@ -190,3 +193,4 @@ export default function Planner() {
     </AgendaContext.Provider>
   );
 }
+

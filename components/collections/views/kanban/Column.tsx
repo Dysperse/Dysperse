@@ -296,7 +296,7 @@ export function Column(props: ColumnProps) {
           width: "100%",
           height: 30,
           zIndex: 1,
-          marginBottom: centerContent ? -90 : -30,
+          marginBottom: centerContent && !props.grid ? -90 : -30,
           pointerEvents: "none",
         }}
         colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}

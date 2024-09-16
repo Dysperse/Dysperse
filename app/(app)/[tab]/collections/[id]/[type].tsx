@@ -304,7 +304,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   let content = null;
   switch ((type || (isPublic ? "kanban" : null)) as CollectionType) {
     case "planner":
-      content = <Planner />;
+      content = <Planner isPublic={isPublic} />;
       break;
     case "kanban":
       content = <Kanban editOrderMode={editOrderMode} />;
@@ -325,7 +325,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       content = <Matrix />;
       break;
     case "calendar":
-      content = <Calendar />;
+      content = <Calendar isPublic={isPublic} />;
       break;
     case "pano":
       content = (
@@ -354,6 +354,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
         type,
         access: data?.access,
         swrKey,
+        isPublic,
         openLabelPicker: () => sheetRef.current?.present(),
       }}
     >

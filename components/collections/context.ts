@@ -9,6 +9,7 @@ export interface CollectionContext {
   type: CollectionType;
   swrKey: any[];
   openLabelPicker?: () => void;
+  isPublic?: boolean;
   access: null | {
     id: string;
     hasSeen: boolean;
