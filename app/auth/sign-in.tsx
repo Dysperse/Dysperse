@@ -307,9 +307,8 @@ export function GoogleAuth({
       const t = new URL(result.url);
       if (t.searchParams.has("session")) {
         signIn(t.searchParams.get("session"));
-        router.replace("/");
       } else {
-        onSuccess(Object.fromEntries(t.searchParams.entries()));
+        onSuccess?.(Object.fromEntries(t.searchParams.entries()));
       }
     } else {
       setLoading(false);
