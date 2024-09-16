@@ -360,7 +360,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       <CollectionLabelMenu sheetRef={sheetRef}>
         <Pressable />
       </CollectionLabelMenu>
-      {data ? (
+      {data && !data?.error ? (
         <ContentWrapper noPaddingTop>
           <CollectionNavbar
             editOrderMode={editOrderMode}
@@ -369,7 +369,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
           {content}
         </ContentWrapper>
       ) : (
-        <Loading error={error} />
+        <Loading error={error || data?.error} />
       )}
     </CollectionContext.Provider>
   );

@@ -200,6 +200,16 @@ export function Column(props: ColumnProps) {
         : e.completionInstances.length === 0 || e.recurrenceRule
     );
 
+  const hasNoTasks =
+    (props.label ? props.label.entities : props.entities).length > 0 &&
+    (props.label ? props.label.entities : props.entities).filter(
+      (e) => e.completionInstances.length === 0
+    ).length === 0;
+
+  const centerContent =
+    (hasNoTasks && !showCompleted) ||
+    (props.label ? props.label.entities : props.entities).length === 0;
+
   useDidUpdate(() => {
     setShowCompleted(collectionData.showCompleted);
   }, [collectionData.showCompleted]);
@@ -286,7 +296,7 @@ export function Column(props: ColumnProps) {
           width: "100%",
           height: 30,
           zIndex: 1,
-          marginBottom: -30,
+          marginBottom: centerContent ? -90 : -30,
           pointerEvents: "none",
         }}
         colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
@@ -296,9 +306,7 @@ export function Column(props: ColumnProps) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
         }
-        centerContent={
-          (props.label ? props.label.entities : props.entities).length === 0
-        }
+        centerContent={centerContent}
         ListEmptyComponent={() =>
           (props.label ? props.label.entities : props.entities).length ===
             0 && <ColumnEmptyComponent row={props.grid} />
@@ -306,10 +314,9 @@ export function Column(props: ColumnProps) {
         data={data}
         ListHeaderComponent={() => (
           <View>
-            {(props.label ? props.label.entities : props.entities).length > 0 &&
-              (props.label ? props.label.entities : props.entities).filter(
-                (e) => e.completionInstances.length === 0
-              ).length === 0 && <ColumnFinishedComponent />}
+            {hasNoTasks && !showCompleted && (
+              <ColumnEmptyComponent row={props.grid} />
+            )}
           </View>
         )}
         estimatedItemSize={300}
@@ -324,8 +331,15 @@ export function Column(props: ColumnProps) {
             0 ? null : (
             <Button
               onPress={() => setShowCompleted(!showCompleted)}
-              variant="outlined"
-              containerStyle={{ marginTop: 10 }}
+              variant={hasNoTasks && !showCompleted ? "text" : "outlined"}
+              containerStyle={
+                hasNoTasks
+                  ? {
+                      marginTop: 10,
+                      marginBottom: showCompleted ? 10 : -70,
+                    }
+                  : { marginTop: 10 }
+              }
               height={50}
             >
               <ButtonText style={{ opacity: 0.7 }} weight={600}>

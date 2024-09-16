@@ -76,7 +76,6 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   return (
     <IconButton
       onPress={handleHome}
-      onMouseDown={handleHome}
       style={{ borderRadius: 10 }}
       backgroundColors={{
         default: theme[isHome ? 4 : 3],

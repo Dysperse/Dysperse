@@ -18,7 +18,13 @@ export default function Page() {
       <BottomSheetModalProvider>
         <StorageContextProvider>
           <View
-            style={{ width, height, backgroundColor: theme[2], padding: 20 }}
+            style={{
+              width,
+              height,
+              backgroundColor: theme[2],
+              padding: 20,
+              flexDirection: "column",
+            }}
           >
             <View
               style={{
@@ -44,10 +50,11 @@ export default function Page() {
                 <ButtonText>Sign in</ButtonText>
               </Button>
             </View>
+            <Collection isPublic />
           </View>
-          <Collection isPublic />
         </StorageContextProvider>
       </BottomSheetModalProvider>
     </MenuProvider>
   );
 }
+
