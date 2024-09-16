@@ -197,7 +197,7 @@ export default function ChromeExtension() {
           >
             <Icon size={40}>dock_to_left</Icon>
             <ButtonText weight={900} style={{ fontSize: 20 }}>
-              Open Dysperse panel
+              Open in panel
             </ButtonText>
           </Button>
         </View>
