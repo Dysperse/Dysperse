@@ -1,4 +1,5 @@
 import { ProfileModal } from "@/components/ProfileModal";
+import { collectionViews } from "@/components/layout/command-palette/list";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -451,6 +452,9 @@ const Link = ({ collection, navigation }) => {
   const theme = useColorTheme();
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [defaultView, setDefaultView] = useState(
+    collection?.data?.defaultView || "kanban"
+  );
   const { data, mutate, error } = useSWR([
     "space/collections/collection/link",
     { id: collection?.data?.id },
@@ -481,7 +485,7 @@ const Link = ({ collection, navigation }) => {
             {isLoading ? (
               <Spinner />
             ) : data.disabled ? (
-              <Text>Link disabled</Text>
+              <Text variant="eyebrow">Link disabled</Text>
             ) : (
               <>
                 <TextField
@@ -502,6 +506,31 @@ const Link = ({ collection, navigation }) => {
               </>
             )}
           </View>
+          <Text variant="eyebrow">Preferences</Text>
+          <ListItemButton disabled>
+            <ListItemText
+              primary="Default view"
+              secondary="People will see this when this link is opened. They can still toggle between other views as well."
+            />
+            <MenuPopover
+              trigger={
+                <Button
+                  text={capitalizeFirstLetter(defaultView)}
+                  icon={collectionViews[defaultView]}
+                  variant="filled"
+                />
+              }
+              options={Object.keys(collectionViews).map((view) => ({
+                text: capitalizeFirstLetter(view),
+                icon: collectionViews[view],
+                selected: defaultView === view,
+                callback: () => setDefaultView(view),
+              }))}
+            />
+          </ListItemButton>
+          <Text variant="eyebrow" style={{ marginTop: 20 }}>
+            Permissions
+          </Text>
           {[
             {
               key: "NO_ACCESS",
