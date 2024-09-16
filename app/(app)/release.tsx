@@ -23,6 +23,13 @@ const MenuButton = () => {
       icon="menu"
       size={55}
       variant="outlined"
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        margin: 20,
+      }}
       onPress={() => sidebarRef.current.openDrawer()}
     />
   );
@@ -82,6 +89,7 @@ export default function Page() {
           width: "100%",
           maxWidth: 400,
           paddingHorizontal: 20,
+          paddingTop: breakpoints.md ? 20 : 100,
           marginHorizontal: "auto",
         }}
       >
