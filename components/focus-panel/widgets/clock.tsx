@@ -225,7 +225,7 @@ function Time({ setParam, params }) {
   );
 }
 
-const Stopwatch = () => {
+const Stopwatch = ({ params, setParam }) => {
   const theme = useColor("orange");
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
@@ -243,6 +243,12 @@ const Stopwatch = () => {
 
   return (
     <>
+      <TextField
+        defaultValue={params.name}
+        onBlur={(e) => setParam("name", e.nativeEvent.text)}
+        placeholder="Set a name..."
+        style={{ textAlign: "center", marginTop: -15, marginBottom: 5 }}
+      />
       <View
         style={{
           position: "relative",
@@ -806,7 +812,9 @@ export default function Clock({ widget, menuActions, setParam }) {
           {view === "Clock" && (
             <Time setParam={setParam} params={widget.params} />
           )}
-          {view === "Stopwatch" && <Stopwatch />}
+          {view === "Stopwatch" && (
+            <Stopwatch setParam={setParam} params={widget.params} />
+          )}
           {view === "Timer" && <Timer />}
           {view === "Pomodoro" && <Timer pomodoro />}
         </ColorThemeProvider>
@@ -821,3 +829,4 @@ export default function Clock({ widget, menuActions, setParam }) {
     </View>
   );
 }
+
