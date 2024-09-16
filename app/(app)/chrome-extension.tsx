@@ -195,9 +195,9 @@ export default function ChromeExtension() {
             onPress={() => window.parent.postMessage("openSidePanel", "*")}
             containerStyle={{ borderRadius: 99 }}
           >
-            <Icon size={40}>open_in_new</Icon>
+            <Icon size={40}>dock_to_left</Icon>
             <ButtonText weight={900} style={{ fontSize: 20 }}>
-              Open Dysperse
+              Open Dysperse panel
             </ButtonText>
           </Button>
         </View>
