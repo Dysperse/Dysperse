@@ -116,7 +116,7 @@ export default function Page() {
         }}
         style={{ flex: 1 }}
       >
-        <MenuButton />
+        {breakpoints.md && <MenuButton />}
         <View style={{ flexShrink: 0 }}>
           <View
             style={{ alignItems: "center", marginBottom: 15 }}
