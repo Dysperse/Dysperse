@@ -464,9 +464,11 @@ const Link = ({ collection, navigation }) => {
     ...(defaultView !== collection?.data?.defaultView && { view: defaultView }),
   });
 
-  const url = `https://app.dysperse.com/c/${data?.id}${
-    params ? `?${params}` : ""
-  }`;
+  const url = `${
+    process.env.NODE_ENV === "production"
+      ? "https://app.dysperse.com"
+      : "http://localhost:8081"
+  }/c/${data?.id}${params ? `?${params}` : ""}`;
 
   return (
     <>
