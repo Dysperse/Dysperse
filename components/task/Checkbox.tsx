@@ -119,7 +119,8 @@ function TaskCheckbox({
     );
   };
 
-  const disabled = isReadOnly || (task.recurrenceRule && !task.recurrenceDay);
+  const disabled =
+    isReadOnly || (task.recurrenceRule && !task.recurrenceDay) || !session;
 
   const trigger = cloneElement(children || <Pressable />, {
     onPress: handlePress,
@@ -178,3 +179,4 @@ function TaskCheckbox({
 }
 
 export default memo(TaskCheckbox);
+

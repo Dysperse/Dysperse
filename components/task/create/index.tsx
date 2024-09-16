@@ -1848,6 +1848,8 @@ const CreateTask = forwardRef(
 
     const breakpoints = useResponsiveBreakpoints();
     const theme = useColorTheme();
+    const { session } = useUser();
+    if (!session) return null;
 
     return (
       <>

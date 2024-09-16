@@ -588,19 +588,21 @@ export function TaskDetails() {
                             flexDirection: "row",
                           }}
                         >
-                          <TaskAttachmentButton
-                            task={task}
-                            updateTask={updateTask}
-                          >
-                            <Button
-                              icon="add"
-                              text="New"
-                              variant="filled"
-                              backgroundColors={attachmentButtonStyles(theme)}
-                              borderColors={attachmentButtonStyles(theme)}
-                              dense
-                            />
-                          </TaskAttachmentButton>
+                          {!isReadOnly && (
+                            <TaskAttachmentButton
+                              task={task}
+                              updateTask={updateTask}
+                            >
+                              <Button
+                                icon="add"
+                                text="New"
+                                variant="filled"
+                                backgroundColors={attachmentButtonStyles(theme)}
+                                borderColors={attachmentButtonStyles(theme)}
+                                dense
+                              />
+                            </TaskAttachmentButton>
+                          )}
                           {task.attachments?.map((i, index) => (
                             <TaskAttachmentPreview
                               item={i}
@@ -611,7 +613,7 @@ export function TaskDetails() {
                         </View>
                       }
                     />
-                    {task.attachments?.length > 0 && (
+                    {!isReadOnly && task.attachments?.length > 0 && (
                       <IconButton
                         style={{ opacity: 1 }}
                         variant="outlined"
@@ -621,7 +623,7 @@ export function TaskDetails() {
                     )}
                   </ListItemButton>
                 ),
-                content: (
+                content: !isReadOnly && (
                   <View
                     style={{
                       display: task.attachments?.length > 0 ? "flex" : "none",
@@ -661,7 +663,7 @@ export function TaskDetails() {
           },
           task.note && {
             trigger: () => <TaskNote backgroundColors={backgroundColors} />,
-            content: (
+            content: !isReadOnly && (
               <View style={collapsibleMenuStyles as StyleProp<ViewStyle>}>
                 <TaskAttachmentButton
                   defaultView="Note"
@@ -898,3 +900,4 @@ export function TaskDetails() {
     </>
   );
 }
+

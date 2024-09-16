@@ -14,8 +14,8 @@ export default function Page() {
   const { width, height } = useWindowDimensions();
   const theme = useColorTheme();
   return (
-    <BottomSheetModalProvider>
-      <MenuProvider>
+    <MenuProvider>
+      <BottomSheetModalProvider>
         <StorageContextProvider>
           <View
             style={{
@@ -53,8 +53,8 @@ export default function Page() {
             <Collection isPublic />
           </View>
         </StorageContextProvider>
-      </MenuProvider>
-    </BottomSheetModalProvider>
+      </BottomSheetModalProvider>
+    </MenuProvider>
   );
 }
 
