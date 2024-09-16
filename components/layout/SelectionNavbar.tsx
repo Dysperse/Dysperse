@@ -112,7 +112,7 @@ function Actions({ setIsLoading }) {
             body: JSON.stringify({ id: selection, ...t }),
           }
         );
-        await mutate(() => true);
+        await mutate(() => true, undefined, { revalidate: true });
         if (shouldClear) setSelection([]);
       } catch (e) {
         console.log(e);

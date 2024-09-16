@@ -2,7 +2,6 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
-import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import { getFontName } from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -86,18 +85,18 @@ export function Content() {
   const { isPublic } = useCollectionContext();
   const { mode: originalMode, start: originalStart } = useLocalSearchParams();
 
-    const { data, mutate } = useSWR([
-      "space/collections/collection/planner",
-      {
-        start: start.toISOString(),
-        end: end.toISOString(),
-        type,
-        timezone: dayjs.tz.guess(),
-        id: params.id,
-        isPublic: isPublic ? "true" : "false",
-        ...(params.id === "all" && { all: true }),
-      },
-    ]);
+  const { data, mutate } = useSWR([
+    "space/collections/collection/planner",
+    {
+      start: start.toISOString(),
+      end: end.toISOString(),
+      type,
+      timezone: dayjs.tz.guess(),
+      id: params.id,
+      isPublic: isPublic ? "true" : "false",
+      ...(params.id === "all" && { all: true }),
+    },
+  ]);
 
   const taskDrawerRef = useRef(null);
   const createTaskSheetRef = useRef(null);
@@ -145,9 +144,6 @@ export function Content() {
         height: "100%",
       }}
       scrollEnabled={false}
-      refreshControl={
-        <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-      }
     >
       <CalendarTaskDrawer
         mutateList={(newItem) =>
@@ -301,4 +297,3 @@ export default function Calendar() {
     </CalendarContext.Provider>
   );
 }
-
