@@ -459,7 +459,14 @@ const Link = ({ collection, navigation }) => {
     "space/collections/collection/link",
     { id: collection?.data?.id },
   ]);
-  const url = `https://app.dysperse.com/c/${data?.id}`;
+
+  const params = new URLSearchParams({
+    ...(defaultView !== collection?.data?.defaultView && { view: defaultView }),
+  });
+
+  const url = `https://app.dysperse.com/c/${data?.id}${
+    params ? `?${params}` : ""
+  }`;
 
   return (
     <>
