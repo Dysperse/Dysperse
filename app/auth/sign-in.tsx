@@ -290,10 +290,10 @@ function Email({
 
 export function GoogleAuth({
   signup,
-  onSuccess,
+  onNewAccount,
 }: {
   signup?: boolean;
-  onSuccess?: (data) => void;
+  onNewAccount?: (data) => void;
 }) {
   const theme = useColorTheme();
   const { signIn } = useSession();
@@ -308,12 +308,13 @@ export function GoogleAuth({
       if (t.searchParams.has("session")) {
         signIn(t.searchParams.get("session"));
       } else {
-        onSuccess?.(Object.fromEntries(t.searchParams.entries()));
+        setLoading(false);
+        onNewAccount?.(Object.fromEntries(t.searchParams.entries()));
       }
     } else {
       setLoading(false);
     }
-  }, [result, signIn, onSuccess, setLoading]);
+  }, [result, signIn, onNewAccount, setLoading]);
 
   const handleClick = async () => {
     try {
@@ -542,7 +543,33 @@ function Credentials({
         </Text>
 
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
-          <GoogleAuth />
+          <GoogleAuth
+            onNewAccount={(d) => {
+              Toast.show({
+                type: "success",
+                text1: "We couldn't find an account with that email",
+                props: {
+                  renderTrailingIcon: () => (
+                    <Button
+                      onPress={() => {
+                        router.push(`/auth/sign-up?${new URLSearchParams(d)}`);
+                      }}
+                    >
+                      <ButtonText
+                        style={{
+                          color: theme[11],
+                          fontSize: 15,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Sign up
+                      </ButtonText>
+                    </Button>
+                  ),
+                },
+              });
+            }}
+          />
           <Button
             height={60}
             variant="filled"

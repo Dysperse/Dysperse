@@ -101,7 +101,7 @@ export const Intro = ({ form }) => {
         </View>
         <GoogleAuth
           signup
-          onSuccess={(res) => {
+          onNewAccount={(res) => {
             setValue("name", res.name);
             setValue("email", res.email);
             setValue("picture", res.picture);
