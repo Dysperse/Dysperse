@@ -243,12 +243,21 @@ const Stopwatch = ({ params, setParam }) => {
 
   return (
     <>
-      <TextField
-        defaultValue={params.name}
-        onBlur={(e) => setParam("name", e.nativeEvent.text)}
-        placeholder="Set a name..."
-        style={{ textAlign: "center", marginTop: -15, marginBottom: 5 }}
-      />
+      {panelState !== "COLLAPSED" && (
+        <TextField
+          defaultValue={params.name}
+          onBlur={(e) => setParam("name", e.nativeEvent.text)}
+          placeholder="Set a name..."
+          style={{
+            textAlign: "center",
+            marginTop: -25,
+            marginBottom: 10,
+            borderBottomWidth: 2,
+            paddingVertical: 7,
+            borderBottomColor: theme[5],
+          }}
+        />
+      )}
       <View
         style={{
           position: "relative",
