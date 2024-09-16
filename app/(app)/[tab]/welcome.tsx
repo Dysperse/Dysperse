@@ -101,7 +101,7 @@ export default function Page() {
   };
 
   return (
-    <Content>
+    <Content noPaddingTop>
       <ScrollView
         contentContainerStyle={{
           alignItems: "center",
@@ -320,4 +320,3 @@ export default function Page() {
     </Content>
   );
 }
-
