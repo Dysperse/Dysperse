@@ -8,7 +8,7 @@ import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   createContext,
   useCallback,
@@ -456,11 +456,12 @@ const Password = ({ form }: { form: UseFormReturn<any> }) => {
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
+  const params = useLocalSearchParams();
   const form = useForm({
     defaultValues: {
-      name: "",
-      email: "",
-      picture: "",
+      name: params.name || "",
+      email: params.email || "",
+      picture: params.picture || "",
       password: "",
       confirmPassword: "",
       theme: "mint",
