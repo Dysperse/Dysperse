@@ -29,16 +29,18 @@ export function AgendaButtons({
       start: dayjs(start)
         .subtract(
           agendaView === "3days" ? 3 : 1,
-          agendaView === "3days"
-            ? "day"
-            : agendaView === "schedule"
-            ? "month"
-            : (agendaView as ManipulateType)
+          weekMode
+            ? agendaView === "3days"
+              ? "day"
+              : agendaView === "schedule"
+              ? "month"
+              : (agendaView as ManipulateType)
+            : "days"
         )
         .toISOString(),
     };
     router.setParams(newParams);
-  }, [agendaView, start]);
+  }, [agendaView, start, weekMode]);
 
   const handleNext = useCallback(() => {
     router.setParams({
@@ -46,15 +48,17 @@ export function AgendaButtons({
         .startOf(agendaView as ManipulateType)
         .add(
           agendaView === "3days" ? 3 : 1,
-          agendaView === "3days"
-            ? "day"
-            : agendaView === "schedule"
-            ? "month"
-            : (agendaView as ManipulateType)
+          weekMode
+            ? agendaView === "3days"
+              ? "day"
+              : agendaView === "schedule"
+              ? "month"
+              : (agendaView as ManipulateType)
+            : "days"
         )
         .toISOString(),
     });
-  }, [agendaView, start]);
+  }, [agendaView, start, weekMode]);
 
   const handleToday = useCallback(() => {
     router.setParams({
@@ -75,7 +79,7 @@ export function AgendaButtons({
 
   const isTodaysView = dayjs().isBetween(
     dayjs(start).startOf(agendaView as ManipulateType),
-    dayjs(start).endOf(agendaView as ManipulateType),
+    dayjs(start).endOf(weekMode ? (agendaView as ManipulateType) : "day"),
     "day",
     "[]"
   );
