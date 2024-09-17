@@ -107,11 +107,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
   useHotkeys(["o"], openPopOut);
 
   useHotkeys(
-    ["p", "a", "k", "s", "g", "w", "l", "m", "c"],
+    ["p", "y", "k", "s", "g", "w", "l", "m", "c"],
     (e) => {
       router.setParams({
         type: Object.keys(collectionViews).find((v) =>
-          v === "pano" ? e.key === "a" : v[0].toLowerCase() === e.key
+          v === "skyline" ? e.key === "y" : v[0].toLowerCase() === e.key
         ),
       });
     },
@@ -392,7 +392,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
               </>
             </View>
             {!isLoading &&
-              (type === "planner" || type === "pano" || type === "calendar") &&
+              (type === "planner" ||
+                type === "skyline" ||
+                type === "calendar") &&
               breakpoints.md && <AgendaButtons weekMode={type === "planner"} />}
             <View
               style={{

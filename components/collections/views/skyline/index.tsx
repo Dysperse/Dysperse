@@ -19,8 +19,8 @@ import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 
-const PanoContext = createContext(null);
-const usePanoContext = () => useContext(PanoContext);
+const SkylineContext = createContext(null);
+const useSkylineContext = () => useContext(SkylineContext);
 
 function Header({
   title,
@@ -249,7 +249,7 @@ function Content({ data, mutate }) {
   );
 }
 
-export default function Pano() {
+export default function Skyline() {
   // eslint-disable-next-line prefer-const
   let { start, id } = useLocalSearchParams();
   const { isPublic } = useCollectionContext();
@@ -261,7 +261,7 @@ export default function Pano() {
   );
 
   const { data, error, mutate } = useSWR([
-    "space/collections/collection/pano",
+    "space/collections/collection/skyline",
     {
       start: agendaContextValue.start.startOf("day").toISOString(),
       id: agendaContextValue.id,
@@ -272,7 +272,7 @@ export default function Pano() {
   ]);
 
   return (
-    <PanoContext.Provider value={agendaContextValue as any}>
+    <SkylineContext.Provider value={agendaContextValue as any}>
       {data ? (
         <Content data={data} mutate={mutate} />
       ) : error ? (
@@ -284,6 +284,6 @@ export default function Pano() {
           <Spinner />
         </View>
       )}
-    </PanoContext.Provider>
+    </SkylineContext.Provider>
   );
 }

@@ -39,8 +39,8 @@ import Grid from "@/components/collections/views/grid";
 import Kanban from "@/components/collections/views/kanban";
 import List from "@/components/collections/views/list";
 import Matrix from "@/components/collections/views/matrix";
-import Pano from "@/components/collections/views/pano";
 import Planner from "@/components/collections/views/planner";
+import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
 import { Modal } from "@/ui/Modal";
@@ -328,8 +328,8 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     case "calendar":
       content = <Calendar isPublic={isPublic} />;
       break;
-    case "pano":
-      content = <Pano />;
+    case "skyline":
+      content = <Skyline />;
       break;
     default:
       content = <Text>404: {type}</Text>;
