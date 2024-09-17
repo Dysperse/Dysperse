@@ -49,7 +49,7 @@ function Header({
           },
         ]}
       >
-        {breakpoints.md && (
+        {!breakpoints.md && (
           <IconButton
             icon="arrow_back"
             onPress={() =>
@@ -88,14 +88,16 @@ function Header({
             {!large && "-"} {!large && dayjs(range[1]).utc().format("MMM D")}
           </Text>
         </View>
-        <IconButton
-          icon="arrow_forward"
-          onPress={() => {
-            setSelectedColumn(
-              modes[(modes.indexOf(selectedColumn) + 1) % modes.length]
-            );
-          }}
-        />
+        {!breakpoints.md && (
+          <IconButton
+            icon="arrow_forward"
+            onPress={() => {
+              setSelectedColumn(
+                modes[(modes.indexOf(selectedColumn) + 1) % modes.length]
+              );
+            }}
+          />
+        )}
       </LinearGradient>
       <View style={{ padding: 20, paddingBottom: 0 }}>
         <CreateTask mutate={(n) => {}} defaultValues={{ date: dayjs() }}>
