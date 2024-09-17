@@ -313,7 +313,7 @@ export function Column(props: ColumnProps) {
         }
         data={data}
         ListHeaderComponent={() => (
-          <View>
+          <View style={{ zIndex: 99999 }}>
             {hasNoTasks && !showCompleted && (
               <ColumnEmptyComponent row={props.grid} />
             )}
@@ -362,4 +362,3 @@ export function Column(props: ColumnProps) {
     </Animated.View>
   );
 }
-
