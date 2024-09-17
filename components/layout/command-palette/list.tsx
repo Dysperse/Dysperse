@@ -5,39 +5,48 @@ export const COLLECTION_VIEWS = {
   skyline: {
     icon: "blur_linear",
     description: "Vision tasks in flexible time frames",
+    type: "Time Based",
   },
   planner: {
     icon: "transition_slide",
     description: "View all your tasks day by day",
+    type: "Time Based",
   },
   kanban: {
     icon: "view_kanban",
     description: "Organize all your tasks by category",
+    type: "Time Based",
   },
   stream: {
     icon: "whatshot",
     description: "View all missed, upcoming, and completed tasks",
+    type: "Time Based",
   },
   grid: {
     icon: "view_cozy",
     description:
       "Organize all your tasks by category, displayed in a neat grid view",
+    type: "Cateogry Based",
   },
   workload: {
     icon: "exercise",
     description: "Organize your tasks by an estimate of energy consumption",
+    category: "Priority Based",
   },
   list: {
     icon: "view_agenda",
     description: "View all your tasks in a traditional to-do list format",
+    type: "Cateogry Based",
   },
   matrix: {
     icon: "target",
     description: "View all your tasks by priority",
+    category: "Priority Based",
   },
   calendar: {
     icon: "calendar_today",
     description: "View all your tasks in a traditional calendar view",
+    type: "Time Based",
   },
 };
 

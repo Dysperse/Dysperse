@@ -65,12 +65,37 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
 
-  const options = Object.keys(COLLECTION_VIEWS).map((i) => ({
-    icon: COLLECTION_VIEWS[i].icon,
-    text: capitalizeFirstLetter(i),
-    selected: i.toLowerCase() === type,
-    callback: () => router.setParams({ type: i.toLowerCase() }),
-  }));
+  // Group by type
+  const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
+    (acc, [view, details]) => {
+      const type = details.type || details.category; // Use type or fallback to category
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(view);
+      return acc;
+    },
+    {}
+  );
+
+  // Convert grouped object to array of arrays
+  const options = Object.entries(groupedViews)
+    .map(([_type, views]) => [
+      {
+        renderer: () => (
+          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
+            {capitalizeFirstLetter(_type)}
+          </Text>
+        ),
+      },
+      ...views.map((e) => ({
+        icon: COLLECTION_VIEWS[e].icon,
+        text: capitalizeFirstLetter(e),
+        callback: () => router.setParams({ type: e }),
+        selected: e === type,
+      })),
+    ])
+    .flat();
 
   const { session } = useSession();
 
