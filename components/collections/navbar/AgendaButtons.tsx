@@ -89,7 +89,7 @@ export function AgendaButtons({
         schedule: "MMMM YYYY",
         "3days": "[Week #]W • MMM YYYY",
       }[((agendaView || mode) as any) || "week"]
-    : "MMM Do";
+    : "MMM Do [& after]";
 
   const trigger = (
     <Button
