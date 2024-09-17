@@ -1,5 +1,5 @@
 import { ProfileModal } from "@/components/ProfileModal";
-import { collectionViews } from "@/components/layout/command-palette/list";
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -525,13 +525,13 @@ const Link = ({ collection, navigation }) => {
               trigger={
                 <Button
                   text={capitalizeFirstLetter(defaultView)}
-                  icon={collectionViews[defaultView]}
+                  icon={COLLECTION_VIEWS[defaultView]}
                   variant="filled"
                 />
               }
-              options={Object.keys(collectionViews).map((view) => ({
+              options={Object.keys(COLLECTION_VIEWS).map((view) => ({
                 text: capitalizeFirstLetter(view),
-                icon: collectionViews[view],
+                icon: COLLECTION_VIEWS[view].icon,
                 selected: defaultView === view,
                 callback: () => setDefaultView(view),
               }))}

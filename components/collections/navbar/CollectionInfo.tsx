@@ -1,4 +1,4 @@
-import { collectionViews } from "@/components/layout/command-palette/list";
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
@@ -203,15 +203,14 @@ export const CollectionInfo = ({ navigation, collection }) => {
                 <Icon>expand_more</Icon>
               </Button>
             }
-            options={Object.keys(collectionViews).map((key) => ({
+            options={Object.keys(COLLECTION_VIEWS).map((key) => ({
               text: capitalizeFirstLetter(key),
-              icon: collectionViews[key],
+              icon: COLLECTION_VIEWS[key].icon,
               selected: data.defaultView === key,
               callback: () => updateCollection("defaultView", key),
             }))}
           />
         </ListItemButton>
-
         <ListItemButton
           onPress={() => updateCollection("public", !data.public)}
         >
@@ -242,3 +241,4 @@ export const CollectionInfo = ({ navigation, collection }) => {
     <Spinner />
   );
 };
+

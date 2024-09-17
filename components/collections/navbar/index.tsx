@@ -1,5 +1,5 @@
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
-import { collectionViews } from "@/components/layout/command-palette/list";
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -65,8 +65,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
 
-  const options = Object.keys(collectionViews).map((i) => ({
-    icon: collectionViews[i],
+  const options = Object.keys(COLLECTION_VIEWS).map((i) => ({
+    icon: COLLECTION_VIEWS[i].icon,
     text: capitalizeFirstLetter(i),
     selected: i.toLowerCase() === type,
     callback: () => router.setParams({ type: i.toLowerCase() }),
@@ -110,7 +110,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     ["p", "y", "k", "s", "g", "w", "l", "m", "c"],
     (e) => {
       router.setParams({
-        type: Object.keys(collectionViews).find((v) =>
+        type: Object.keys(COLLECTION_VIEWS).find((v) =>
           v === "skyline" ? e.key === "y" : v[0].toLowerCase() === e.key
         ),
       });

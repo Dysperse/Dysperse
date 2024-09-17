@@ -1,11 +1,11 @@
-import { collectionViews } from "../command-palette/list";
+import { COLLECTION_VIEWS } from "../command-palette/list";
 
 export const useTabMetadata = (slug: string, tab: any) => {
   if (!slug) return { icon: "square" };
 
   const startWithMatchers = {
     "/[tab]/collections/": {
-      icon: (params) => collectionViews[params.type],
+      icon: (params) => COLLECTION_VIEWS[params.type].icon,
       name: (params) =>
         [
           tab.collection ? "-" : undefined,

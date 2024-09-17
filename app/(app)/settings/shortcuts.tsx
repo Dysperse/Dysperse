@@ -1,4 +1,4 @@
-import { collectionViews } from "@/components/layout/command-palette/list";
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import Divider from "@/ui/Divider";
 import SettingsScrollView from "@/ui/SettingsScrollView";
@@ -62,7 +62,7 @@ export default function Page() {
           keys: "o",
           action: "Open pop-out (desktop only)",
         },
-        ...Object.keys(collectionViews).map((key) => ({
+        ...Object.keys(COLLECTION_VIEWS).map((key) => ({
           keys: key === "skyline" ? "y" : key[0],
           action: `${capitalizeFirstLetter(key)} view`,
         })),

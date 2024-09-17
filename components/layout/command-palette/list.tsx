@@ -1,28 +1,44 @@
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 
-export const collectionViews = {
-  skyline: "blur_linear",
-  planner: "transition_slide",
-  kanban: "view_kanban",
-  stream: "whatshot",
-  grid: "view_cozy",
-  workload: "exercise",
-  list: "view_agenda",
-  matrix: "target",
-  calendar: "calendar_today",
-};
-
-const collectionViewDescriptions = {
-  skyline: "Vision tasks in flexible time frames",
-  planner: "View all your tasks day by day",
-  kanban: "Organize all your tasks by category",
-  stream: "View all missed, upcoming, and completed tasks",
-  list: "View all your tasks in a traditional to-do list format",
-  grid: "Organize all your tasks by category, displayed in a neat grid view",
-  workload: "Organize your tasks by an estimate of energy consumption",
-  matrix: "View all your tasks by priority",
-  calendar: "View all your tasks in a traditional calendar view",
+export const COLLECTION_VIEWS = {
+  skyline: {
+    icon: "blur_linear",
+    description: "Vision tasks in flexible time frames",
+  },
+  planner: {
+    icon: "transition_slide",
+    description: "View all your tasks day by day",
+  },
+  kanban: {
+    icon: "view_kanban",
+    description: "Organize all your tasks by category",
+  },
+  stream: {
+    icon: "whatshot",
+    description: "View all missed, upcoming, and completed tasks",
+  },
+  grid: {
+    icon: "view_cozy",
+    description:
+      "Organize all your tasks by category, displayed in a neat grid view",
+  },
+  workload: {
+    icon: "exercise",
+    description: "Organize your tasks by an estimate of energy consumption",
+  },
+  list: {
+    icon: "view_agenda",
+    description: "View all your tasks in a traditional to-do list format",
+  },
+  matrix: {
+    icon: "target",
+    description: "View all your tasks by priority",
+  },
+  calendar: {
+    icon: "calendar_today",
+    description: "View all your tasks in a traditional calendar view",
+  },
 };
 
 export const paletteItems = (
@@ -33,12 +49,12 @@ export const paletteItems = (
     {
       title: "Everything",
       icon: "all_inclusive",
-      items: Object.keys(collectionViews).map((key) => ({
+      items: Object.keys(COLLECTION_VIEWS).map((key) => ({
         label: capitalizeFirstLetter(key),
         key,
-        icon: collectionViews[key],
+        icon: COLLECTION_VIEWS[key].icon,
         slug: `/[tab]/collections/[id]/[type]`,
-        about: collectionViewDescriptions[key],
+        about: COLLECTION_VIEWS[key].description,
         params: { type: key, id: "all" },
       })),
     },

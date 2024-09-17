@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { KeyedMutator } from "swr";
-import { collectionViews } from "../layout/command-palette/list";
+import { COLLECTION_VIEWS } from "../layout/command-palette/list";
 
 export interface CollectionContext {
   data: any;
@@ -22,6 +22,6 @@ export interface CollectionContext {
 }
 
 export const CollectionContext = createContext<CollectionContext>(null);
-export type CollectionType = keyof typeof collectionViews;
+export type CollectionType = keyof typeof COLLECTION_VIEWS;
 export const useCollectionContext = () => useContext(CollectionContext);
 
