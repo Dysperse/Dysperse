@@ -15,7 +15,7 @@ export const COLLECTION_VIEWS = {
   kanban: {
     icon: "view_kanban",
     description: "Organize all your tasks by category",
-    type: "Time Based",
+    type: "Category Based",
   },
   stream: {
     icon: "whatshot",
@@ -26,7 +26,7 @@ export const COLLECTION_VIEWS = {
     icon: "view_cozy",
     description:
       "Organize all your tasks by category, displayed in a neat grid view",
-    type: "Cateogry Based",
+    type: "Category Based",
   },
   workload: {
     icon: "exercise",
@@ -36,7 +36,7 @@ export const COLLECTION_VIEWS = {
   list: {
     icon: "view_agenda",
     description: "View all your tasks in a traditional to-do list format",
-    type: "Cateogry Based",
+    type: "Category Based",
   },
   matrix: {
     icon: "target",
