@@ -126,6 +126,7 @@ function Content({ data, mutate }) {
     ? ({
         backgroundColor: theme[2],
         width: 300,
+        overflow: "hidden",
         borderWidth: 1,
         borderColor: theme[5],
         borderRadius: 25,
