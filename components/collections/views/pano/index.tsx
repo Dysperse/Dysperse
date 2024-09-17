@@ -99,7 +99,13 @@ function Header({
           />
         )}
       </LinearGradient>
-      <View style={{ padding: 20, paddingBottom: 0 }}>
+      <View
+        style={{
+          padding: 20,
+          paddingBottom: 0,
+          paddingTop: breakpoints.md ? 5 : undefined,
+        }}
+      >
         <CreateTask mutate={(n) => {}} defaultValues={{ date: dayjs() }}>
           <Button
             variant="filled"
