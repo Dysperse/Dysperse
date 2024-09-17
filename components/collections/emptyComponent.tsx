@@ -59,6 +59,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     <View
       style={[
         styles.empty,
+        { pointerEvents: "none" },
         row && { flexDirection: "row", alignItems: "center", gap: 20 },
       ]}
     >
