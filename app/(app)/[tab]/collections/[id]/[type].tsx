@@ -39,6 +39,7 @@ import Grid from "@/components/collections/views/grid";
 import Kanban from "@/components/collections/views/kanban";
 import List from "@/components/collections/views/list";
 import Matrix from "@/components/collections/views/matrix";
+import Pano from "@/components/collections/views/pano";
 import Planner from "@/components/collections/views/planner";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
@@ -328,17 +329,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       content = <Calendar isPublic={isPublic} />;
       break;
     case "pano":
-      content = (
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text>We're working hard on this view! Stay tuned for updates.</Text>
-        </View>
-      );
+      content = <Pano />;
       break;
     default:
       content = <Text>404: {type}</Text>;

@@ -14,8 +14,10 @@ import { AgendaCalendarMenu } from "./AgendaCalendarMenu";
 
 export function AgendaButtons({
   handleMenuOpen,
+  weekMode,
 }: {
   handleMenuOpen?: () => void;
+  weekMode?: boolean;
 }) {
   const theme = useColorTheme();
   // eslint-disable-next-line prefer-const
@@ -79,13 +81,15 @@ export function AgendaButtons({
   );
   const breakpoints = useResponsiveBreakpoints();
 
-  const titleFormat = {
-    week: "[Week #]W • MMM YYYY",
-    month: "MMMM YYYY",
-    year: "YYYY",
-    schedule: "MMMM YYYY",
-    "3days": "[Week #]W • MMM YYYY",
-  }[((agendaView || mode) as any) || "week"];
+  const titleFormat = weekMode
+    ? {
+        week: "[Week #]W • MMM YYYY",
+        month: "MMMM YYYY",
+        year: "YYYY",
+        schedule: "MMMM YYYY",
+        "3days": "[Week #]W • MMM YYYY",
+      }[((agendaView || mode) as any) || "week"]
+    : "MMM Do";
 
   const trigger = (
     <Button
@@ -192,7 +196,7 @@ export function AgendaButtons({
           />
           {typeof handleMenuOpen === "undefined" ? (
             <MenuPopover trigger={trigger} containerStyle={{ width: 300 }}>
-              <AgendaCalendarMenu />
+              <AgendaCalendarMenu weekMode={weekMode} />
             </MenuPopover>
           ) : (
             trigger
@@ -203,3 +207,4 @@ export function AgendaButtons({
     </SafeView>
   );
 }
+

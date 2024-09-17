@@ -77,8 +77,10 @@ export const dysperseCalendarTheme = (theme) =>
 
 export function AgendaCalendarMenu({
   handleMenuClose,
+  weekMode,
 }: {
   handleMenuClose?: () => void;
+  weekMode?: boolean;
 }) {
   const calendarRef = useRef<CalendarListRef>(null);
   const theme = useColorTheme();
@@ -110,7 +112,7 @@ export function AgendaCalendarMenu({
       >
         <SafeCalendar
           calendarActiveDateRanges={[
-            typeof handleMenuClose === "undefined"
+            typeof handleMenuClose === "undefined" && weekMode
               ? {
                   startId: toDateId(dayjs(start).startOf("week").toDate()),
                   endId: toDateId(dayjs(start).endOf("week").toDate()),
