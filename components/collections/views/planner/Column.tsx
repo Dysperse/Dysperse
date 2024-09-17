@@ -308,3 +308,4 @@ export function Column({
     </Animated.View>
   );
 }
+

@@ -24,6 +24,7 @@ const usePanoContext = () => useContext(PanoContext);
 
 function Header({
   title,
+  mutate,
   large = false,
   range,
   setSelectedColumn = (t) => {},
@@ -31,6 +32,7 @@ function Header({
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { id: collectionId } = useCollectionContext();
 
   const modes = ["today", "week", "month", "year"];
 
@@ -106,7 +108,24 @@ function Header({
           paddingTop: breakpoints.md ? 5 : undefined,
         }}
       >
-        <CreateTask mutate={(n) => {}} defaultValues={{ date: dayjs() }}>
+        <CreateTask
+          mutate={(task) => {
+            mutate((oldData) => {
+              const taskStart = dayjs(task.start).utc();
+              const unit = Object.values(oldData).find(({ filterRange }) =>
+                taskStart.isBetween(filterRange[0], filterRange[1], null, "()")
+              );
+              if (unit) unit.entities.push(task as never);
+
+              return oldData;
+            });
+          }}
+          defaultValues={{
+            dateOnly: true,
+            collectionId: collectionId === "all" ? undefined : collectionId,
+            date: dayjs(range[0]),
+          }}
+        >
           <Button
             variant="filled"
             containerStyle={{ flex: 1 }}
@@ -164,7 +183,12 @@ function Content({ data, mutate }) {
     >
       {/* {JSON.stringify(data, null, 2)} */}
       <View style={[columnStyles, { width: 350 }]}>
-        <Header title="Today" large range={data.today.filterRange} />
+        <Header
+          mutate={mutate}
+          title="Today"
+          large
+          range={data.today.filterRange}
+        />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
           data={data.today.entities}
@@ -174,7 +198,7 @@ function Content({ data, mutate }) {
         />
       </View>
       <View style={columnStyles}>
-        <Header title="Week" range={data.week.filterRange} />
+        <Header mutate={mutate} title="Week" range={data.week.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
           data={data.week.entities}
@@ -184,7 +208,7 @@ function Content({ data, mutate }) {
         />
       </View>
       <View style={columnStyles}>
-        <Header title="Month" range={data.month.filterRange} />
+        <Header mutate={mutate} title="Month" range={data.month.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
           data={data.month.entities}
@@ -194,7 +218,7 @@ function Content({ data, mutate }) {
         />
       </View>
       <View style={columnStyles}>
-        <Header title="Year" range={data.year.filterRange} />
+        <Header mutate={mutate} title="Year" range={data.year.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
           data={data.year.entities}
@@ -208,6 +232,7 @@ function Content({ data, mutate }) {
   ) : (
     <View style={columnStyles}>
       <Header
+        mutate={mutate}
         selectedColumn={selectedColumn}
         setSelectedColumn={setSelectedColumn}
         title={capitalizeFirstLetter(selectedColumn)}
@@ -238,7 +263,7 @@ export default function Pano() {
   const { data, error, mutate } = useSWR([
     "space/collections/collection/pano",
     {
-      start: agendaContextValue.start.utc().toISOString(),
+      start: agendaContextValue.start.startOf("day").toISOString(),
       id: agendaContextValue.id,
       isPublic: isPublic ? "true" : "false",
       timezone: dayjs.tz.guess(),
