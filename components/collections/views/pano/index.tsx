@@ -37,7 +37,7 @@ function Header({
   return (
     <View>
       <LinearGradient
-        colors={[theme[3], theme[1]]}
+        colors={[theme[3], theme[breakpoints.md ? 2 : 1]]}
         style={[
           { padding: 20, paddingBottom: 0 },
           !breakpoints.md && {
