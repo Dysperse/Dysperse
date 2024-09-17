@@ -266,7 +266,14 @@ export function Column(props: ColumnProps) {
       {props.grid ? undefined : (
         <>
           {!isReadOnly && session && (
-            <View style={{ padding: 15, paddingBottom: 0, height: 65 }}>
+            <View
+              style={{
+                padding: 15,
+                paddingBottom: 0,
+                height: 65,
+                zIndex: 9999,
+              }}
+            >
               <CreateTask
                 mutate={(n) => onEntityCreate(n, props.label)}
                 defaultValues={{
@@ -277,7 +284,7 @@ export function Column(props: ColumnProps) {
               >
                 <Button
                   variant="filled"
-                  containerStyle={{ flex: 1 }}
+                  containerStyle={{ flex: 1, zIndex: 99 }}
                   large={!breakpoints.md}
                   bold={!breakpoints.md}
                   iconPosition="end"
@@ -313,7 +320,7 @@ export function Column(props: ColumnProps) {
         }
         data={data}
         ListHeaderComponent={() => (
-          <View style={{ zIndex: 99999 }}>
+          <View>
             {hasNoTasks && !showCompleted && (
               <ColumnEmptyComponent row={props.grid} />
             )}
