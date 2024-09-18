@@ -124,15 +124,26 @@ function ProfileModalContent({ email }) {
       </BottomSheetScrollView>
     </ColorThemeProvider>
   ) : (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+      }}
+    >
       {error ? (
         <ErrorAlert />
-      ) : data ? (
-        <View>
-          <Text>Profile not found</Text>
-        </View>
       ) : (
-        <Spinner />
+        <>
+          {data ? (
+            <View>
+              <Text>Profile not found</Text>
+            </View>
+          ) : (
+            <Spinner />
+          )}
+        </>
       )}
     </View>
   );
@@ -151,9 +162,9 @@ export function ProfileModal({ children, email }) {
         animation="SCALE"
         ref={ref}
         onClose={handleClose}
-        snapPoints={["80%"]}
         handleComponent={() => null}
         maxWidth={450}
+        height={600}
         maxBackdropOpacity={0.2}
         style={{ borderRadius: 20, overflow: "hidden" }}
       >
