@@ -22,7 +22,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
-import { createContext, useCallback, useContext } from "react";
+import { createContext, useCallback, useContext, useMemo } from "react";
 import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
@@ -333,10 +333,11 @@ export default function Page() {
     { id: params.entity },
   ]);
 
+  const contextValue = useMemo(() => ({ data }), [data]);
   if (!params.entity || error) return <ErrorPage />;
 
   return (
-    <PublishedEntityContext.Provider value={{ data }}>
+    <PublishedEntityContext.Provider value={contextValue}>
       <ColorThemeProvider setHTMLAttributes theme={theme}>
         {!isLoading && !data?.name ? (
           <ErrorPage />
@@ -364,3 +365,4 @@ export default function Page() {
     </PublishedEntityContext.Provider>
   );
 }
+

@@ -78,7 +78,6 @@ export const Modal = forwardRef(
               : withSpring(1, {
                   stiffness: 400,
                   damping: 50,
-                  // overshootClamping: true,
                 }),
         },
       ],
@@ -97,7 +96,9 @@ export const Modal = forwardRef(
           props.animation === "NONE" ||
           !props.animation
         }
-        {...(props.animation !== "SCALE" && { animationConfigs })}
+        {...((props.animation !== "SCALE" || Platform.OS === "web") && {
+          animationConfigs,
+        })}
         stackBehavior="push"
         enablePanDownToClose={props.animation !== "SCALE"}
         enableContentPanningGesture={props.animation !== "SCALE"}
@@ -148,3 +149,4 @@ export const Modal = forwardRef(
     );
   }
 );
+

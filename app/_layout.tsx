@@ -376,6 +376,16 @@ function Root() {
     [breakpoints, width]
   );
 
+  const sidebarContextValue = useMemo(
+    () => ({
+      sidebarRef: sidebarRef,
+      desktopCollapsed,
+      setDesktopCollapsed,
+      SIDEBAR_WIDTH,
+    }),
+    [desktopCollapsed, SIDEBAR_WIDTH]
+  );
+
   // idk why it crashes the app on web
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
 
@@ -385,14 +395,7 @@ function Root() {
         <SelectionContextProvider>
           <ModalStackProvider>
             <ColorThemeProvider theme={theme}>
-              <SidebarContext.Provider
-                value={{
-                  sidebarRef: sidebarRef,
-                  desktopCollapsed,
-                  setDesktopCollapsed,
-                  SIDEBAR_WIDTH,
-                }}
-              >
+              <SidebarContext.Provider value={sidebarContextValue}>
                 <SWRWrapper>
                   {Platform.OS === "web" && <WorkboxInitializer />}
                   <JsStack

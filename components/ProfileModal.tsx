@@ -1,9 +1,9 @@
 import { getProfileLastActiveRelativeTime } from "@/app/(app)";
 import { ProfilePicture } from "@/ui/Avatar";
-import BottomSheet from "@/ui/BottomSheet";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import { Modal } from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -141,23 +141,25 @@ function ProfileModalContent({ email }) {
 export function ProfileModal({ children, email }) {
   const ref = useRef<BottomSheetModal>(null);
   const handleOpen = useCallback(() => ref.current?.present(), []);
-  const handleClose = useCallback(() => ref.current?.close(), []);
+  const handleClose = useCallback(() => ref.current?.forceClose(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
 
   return (
     <>
       {trigger}
-      <BottomSheet
-        sheetRef={ref}
+      <Modal
+        animation="SCALE"
+        ref={ref}
         onClose={handleClose}
         snapPoints={["80%"]}
         handleComponent={() => null}
-        maxWidth={500}
+        maxWidth={450}
         maxBackdropOpacity={0.2}
         style={{ borderRadius: 20, overflow: "hidden" }}
       >
         <ProfileModalContent email={email} />
-      </BottomSheet>
+      </Modal>
     </>
   );
 }
+

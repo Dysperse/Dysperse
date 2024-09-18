@@ -38,14 +38,10 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
     }
   }, []);
 
-  const [isHovered, setIsHovered] = useState(false);
-
   if (isLoading || (!isVisible && !isReached)) return null;
   if (isReached || isWarning) {
     return (
       <Pressable
-        onHoverIn={() => setIsHovered(true)}
-        onHoverOut={() => setIsHovered(false)}
         onPress={() => router.push("/settings/account")}
         style={({ pressed, hovered }) => ({
           backgroundColor: alertTheme[pressed ? 7 : hovered ? 6 : 5],
@@ -76,7 +72,6 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
 
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
-
   const { handleOpen } = useCommandPaletteContext();
 
   useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
@@ -92,11 +87,6 @@ const JumpToButton = memo(function JumpToButton() {
   return (
     <View style={{ borderRadius: 15, overflow: "hidden", flex: 1 }}>
       <Button
-        onPress={() =>
-          requestAnimationFrame(() => {
-            handleOpen();
-          })
-        }
         backgroundColors={{
           default: theme[2],
           hovered: theme[4],
@@ -108,12 +98,10 @@ const JumpToButton = memo(function JumpToButton() {
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         }}
         android_ripple={{ color: theme[7] }}
-      >
-        <Icon bold>add</Icon>
-        <Text weight={700} style={{ color: theme[11] }}>
-          New tab
-        </Text>
-      </Button>
+        icon="add"
+        bold
+        text="New tab"
+      />
     </View>
   );
 });
@@ -142,24 +130,20 @@ const WebPWAInstallButton = () => {
       const wb = window.workbox;
       const promptNewVersionAvailable = () => {
         setUpdating(true);
-        wb.addEventListener("controlling", () => {
-          window.location.reload();
-        });
-
+        wb.addEventListener("controlling", () => window.location.reload());
         wb.messageSkipWaiting();
       };
-
       wb.addEventListener("waiting", promptNewVersionAvailable);
       wb.register();
     }
   }, []);
 
   const handleReload = () => {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-      registrations.forEach((registration) => {
-        registration.unregister();
-      });
-    });
+    navigator.serviceWorker
+      .getRegistrations()
+      .then((registrations) =>
+        registrations.forEach((registration) => registration.unregister())
+      );
     window.location.reload();
   };
 
@@ -189,7 +173,6 @@ const WebPWAInstallButton = () => {
       )}
 
       <ReleaseModal />
-
       {Platform.OS === "web" && (
         <PWAInstallerPrompt
           render={({ onClick }) => (
@@ -364,3 +347,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+

@@ -1,5 +1,5 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
-import React, { createContext, useContext, useRef } from "react";
+import React, { createContext, memo, useContext, useMemo, useRef } from "react";
 
 export const ModalStackContext = createContext<any>(null);
 export const useModalStack = () => useContext(ModalStackContext);
@@ -19,9 +19,14 @@ export const ModalStackProvider = ({
     }
   });
 
+  const contextValue = useMemo(() => ({ stack: ref }), [ref]);
+
+  const Children = memo(() => children);
+
   return (
-    <ModalStackContext.Provider value={{ stack: ref }}>
-      {children}
+    <ModalStackContext.Provider value={contextValue}>
+      <Children />
     </ModalStackContext.Provider>
   );
 };
+

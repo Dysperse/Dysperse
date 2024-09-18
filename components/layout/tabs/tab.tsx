@@ -121,6 +121,54 @@ function Tab({
     [tab, tabData]
   );
 
+  const tabIcon = useMemo(
+    () => (
+      <Avatar
+        disabled
+        size={tab.collection ? 23 : undefined}
+        style={{
+          backgroundColor: tab.collection ? theme[5] : "transparent",
+          marginLeft: tab.collection ? -23 : 0,
+          marginBottom: tab.collection ? -10 : 0,
+          borderRadius: 10,
+        }}
+        iconProps={{
+          size: tab.collection ? 17 : 24,
+          filled: selected,
+          style: { marginTop: -1 },
+        }}
+        icon={
+          typeof tabData.icon === "function"
+            ? tabData.icon(tab.params)
+            : tabData.icon
+        }
+      />
+    ),
+    [selected, tab, tabData, theme]
+  );
+
+  const closeIcon = useMemo(
+    () => (
+      <IconButton
+        disabled={!selected}
+        style={[
+          styles.closeButton,
+          {
+            opacity: selected ? 0.5 : 0,
+            pointerEvents: selected ? "auto" : "none",
+          },
+        ]}
+        size={50}
+        onPress={handleCloseTab}
+      >
+        <Icon size={20} style={[styles.closeIcon]}>
+          close
+        </Icon>
+      </IconButton>
+    ),
+    [selected, handleCloseTab]
+  );
+
   const tabContent = useMemo(
     () => (
       <>
@@ -140,26 +188,7 @@ function Tab({
             />
           </Avatar>
         )}
-        <Avatar
-          disabled
-          size={tab.collection ? 23 : undefined}
-          style={{
-            backgroundColor: tab.collection ? theme[5] : "transparent",
-            marginLeft: tab.collection ? -23 : 0,
-            marginBottom: tab.collection ? -10 : 0,
-            borderRadius: 10,
-          }}
-          iconProps={{
-            size: tab.collection ? 17 : 24,
-            filled: selected,
-            style: { marginTop: -1 },
-          }}
-          icon={
-            typeof tabData.icon === "function"
-              ? tabData.icon(tab.params)
-              : tabData.icon
-          }
-        />
+        {tabIcon}
         <View style={{ flex: 1 }}>
           <Text weight={400} numberOfLines={1} style={{ color: theme[11] }}>
             {tabName}
@@ -176,25 +205,10 @@ function Tab({
             </Text>
           )}
         </View>
-        <IconButton
-          disabled={!selected}
-          style={[
-            styles.closeButton,
-            {
-              opacity: selected ? 0.5 : 0,
-              pointerEvents: selected ? "auto" : "none",
-            },
-          ]}
-          size={50}
-          onPress={handleCloseTab}
-        >
-          <Icon size={20} style={[styles.closeIcon]}>
-            close
-          </Icon>
-        </IconButton>
+        {closeIcon}
       </>
     ),
-    [selected, tab, tabData, theme, handleCloseTab, tabName]
+    [selected, tab, tabData, theme, handleCloseTab, tabName, tabIcon, closeIcon]
   );
 
   const handlePress = () => {

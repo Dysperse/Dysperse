@@ -30,7 +30,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
-import { LabelEditModal } from "../[tab]/collections/[id]/[type]";
+import { LabelEditModal } from "../[tab]/collections/[id]/LabelEditModal";
 import Trash from "../trash";
 
 const containerStyles = StyleSheet.create({

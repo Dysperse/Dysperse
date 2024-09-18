@@ -1,3 +1,4 @@
+import { ColumnMenuTrigger } from "@/app/(app)/[tab]/collections/[id]/ColumnMenuTrigger";
 import { columnStyles } from "@/components/collections/columnStyles";
 import { useCollectionContext } from "@/components/collections/context";
 import CreateTask from "@/components/task/create";
@@ -10,7 +11,6 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo } from "react";
 import { View } from "react-native";
-import { ColumnMenuTrigger } from "../../../../app/(app)/[tab]/collections/[id]/[type]";
 import { useGridContext } from "../grid/context";
 import { useKanbanContext } from "./context";
 

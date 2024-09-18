@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -24,6 +25,7 @@ export const CommandPaletteProvider = ({ children }) => {
   const breakpoints = useResponsiveBreakpoints();
   const ref = useRef<BottomSheetModal>(null);
   const [defaultFilter, setDefaultFilter] = useState<string | null>(null);
+
   const handleOpen = useCallback(
     (filter?: string) => {
       if (typeof filter === "string") setDefaultFilter(filter);
@@ -39,12 +41,15 @@ export const CommandPaletteProvider = ({ children }) => {
     else router.back();
   }, [breakpoints, setDefaultFilter, defaultFilter]);
 
+  const value = useMemo(
+    () => ({ handleOpen, handleClose, sheetRef: ref, defaultFilter }),
+    [handleOpen, handleClose, ref, defaultFilter]
+  );
   return (
-    <CommandPaletteContext.Provider
-      value={{ handleOpen, handleClose, sheetRef: ref, defaultFilter }}
-    >
+    <CommandPaletteContext.Provider value={value}>
       {children}
       <CommandPalette />
     </CommandPaletteContext.Provider>
   );
 };
+
