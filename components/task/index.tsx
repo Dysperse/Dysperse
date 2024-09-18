@@ -16,7 +16,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
-import React, { cloneElement, memo, useCallback, useRef } from "react";
+import React, { cloneElement, memo, useCallback, useMemo, useRef } from "react";
 import { Linking, Platform, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -248,32 +248,46 @@ const Task = memo(function Task({
   const blue = useColor("blue");
 
   const breakpoints = useResponsiveBreakpoints();
-
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
-
   const { selection, setSelection } = useSelectionContext();
 
   const handleSelect = () => {
     if (isReadOnly) return;
-    if (selection.includes(task.id)) {
-      setSelection((d) => d.filter((e) => e !== task.id));
-    } else {
-      setSelection((d) => [...d, task.id]);
-    }
+    setSelection((prev) =>
+      prev.includes(task.id)
+        ? prev.filter((e) => e !== task.id)
+        : [...prev, task.id]
+    );
   };
 
-  const taskStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: withSpring(selection.includes(task.id) ? 0.95 : 1, {
-            damping: 50,
-            stiffness: 600,
-          }),
-        },
-      ],
-    };
-  });
+  const isSelected = useMemo(
+    () => selection.includes(task.id),
+    [selection, task?.id]
+  );
+
+  const chipExists = useMemo(
+    () =>
+      task.note ||
+      (showRelativeTime && task.start) ||
+      (showDate && task.start) ||
+      task.recurrenceRule ||
+      (showLabel && task.label) ||
+      task.pinned ||
+      !task.dateOnly ||
+      task.attachments?.length > 0,
+    [task, showDate, showLabel, showRelativeTime]
+  );
+
+  const taskStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withSpring(isSelected ? 0.95 : 1, {
+          damping: 50,
+          stiffness: 600,
+        }),
+      },
+    ],
+  }));
 
   return (
     <Animated.View style={taskStyle}>
@@ -287,9 +301,7 @@ const Task = memo(function Task({
         <ListItemButton
           onLongPress={handleSelect}
           {...(Platform.OS === "web" &&
-            breakpoints.md && {
-              onContextMenu: handleSelect,
-            })}
+            breakpoints.md && { onContextMenu: handleSelect })}
           {...(selection.length > 0 && {
             onPress: handleSelect,
           })}
@@ -298,10 +310,7 @@ const Task = memo(function Task({
             paddingLeft: breakpoints.md ? 13 : 18,
             paddingRight: breakpoints.md ? 13 : 18,
             paddingBottom: breakpoints.md ? 8 : 18,
-            ...(selection.includes(task.id) && {
-              backgroundColor: blue[4],
-              borderColor: blue[8],
-            }),
+            ...(isSelected && { backgroundColor: blue[4] }),
           }}
           style={[
             {
@@ -314,11 +323,6 @@ const Task = memo(function Task({
                 marginTop: breakpoints.md ? 0 : 5,
                 marginBottom: 8,
               }),
-              // backgroundColor: pressed
-              //   ? addHslAlpha(theme[4], 0.7)
-              //   : hovered
-              //   ? addHslAlpha(theme[3], 0.7)
-              //   : undefined,
               ...(planMode && {
                 borderWidth: 1,
                 borderColor: theme[5],
@@ -335,28 +339,11 @@ const Task = memo(function Task({
             task={task}
             mutateList={onTaskUpdate}
           />
-          <View
-            style={[
-              { gap: 5, flex: 1 },
-              isCompleted && {
-                opacity: 0.4,
-              },
-            ]}
-          >
+          <View style={[{ gap: 5, flex: 1 }, isCompleted && { opacity: 0.4 }]}>
             <View style={{ flex: 1 }}>
               <Text
                 style={{
-                  marginTop:
-                    task.note ||
-                    (showRelativeTime && task.start) ||
-                    (showDate && task.start) ||
-                    task.recurrenceRule ||
-                    (showLabel && task.label) ||
-                    task.pinned ||
-                    !task.dateOnly ||
-                    task.attachments?.length > 0
-                      ? -5
-                      : 0,
+                  marginTop: chipExists ? -5 : 0,
                   ...(isCompleted && {
                     textDecorationLine: "line-through",
                   }),
@@ -365,13 +352,7 @@ const Task = memo(function Task({
                 {task.name}
               </Text>
               {task.note ? (
-                <Text
-                  numberOfLines={1}
-                  weight={300}
-                  style={{
-                    opacity: 0.7,
-                  }}
-                >
+                <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
                   {task.note.substring(0, 100).replaceAll("\n", " ")}
                 </Text>
               ) : null}
