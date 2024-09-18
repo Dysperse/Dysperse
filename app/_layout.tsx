@@ -263,9 +263,7 @@ function SWRWrapper({ children }) {
             params
           ).toString()}`;
           const res = await fetch(url, {
-            headers: {
-              Authorization: `Bearer ${session}`,
-            },
+            headers: { Authorization: `Bearer ${session}` },
             ...init,
           });
           return await res.json();

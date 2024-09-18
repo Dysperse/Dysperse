@@ -5,7 +5,7 @@ import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import IconButton from "@/ui/IconButton";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -70,7 +70,7 @@ export const LabelEditModal = memo(function LabelEditModal({
       <Modal
         animation="SLIDE"
         onClose={() => menuRef.current.close()}
-        ref={menuRef}
+        sheetRef={menuRef}
         maxWidth={400}
       >
         <View

@@ -5,7 +5,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -290,7 +290,7 @@ export function TaskAttachmentButton({
       {trigger}
       <Modal
         animation="SCALE"
-        ref={ref}
+        sheetRef={ref}
         maxWidth={350}
         height={view === "Add" ? 357 : 500}
       >
@@ -356,3 +356,4 @@ export function TaskAttachmentButton({
     </>
   );
 }
+

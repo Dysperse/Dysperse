@@ -6,7 +6,7 @@ import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
@@ -44,7 +44,7 @@ const TimeZoneModal = () => {
           expand_more
         </Icon>
       </Button>
-      <Modal animation="SCALE" ref={ref} maxWidth={380}>
+      <Modal animation="SCALE" sheetRef={ref} maxWidth={380}>
         <View style={{ padding: 20, alignItems: "center" }}>
           <Emoji emoji="1F9ED" size={50} />
           <Text
@@ -177,3 +177,4 @@ const LoadingErrors = memo(() => {
 });
 
 export default LoadingErrors;
+

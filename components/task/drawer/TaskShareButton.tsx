@@ -3,7 +3,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { setStringAsync } from "expo-clipboard";
@@ -48,7 +48,12 @@ export function TaskShareButton() {
         icon="ios_share"
         onPress={handleOpen}
       />
-      <Modal animation="SCALE" maxWidth={420} snapPoints={[250]} ref={menuRef}>
+      <Modal
+        animation="SCALE"
+        maxWidth={420}
+        snapPoints={[250]}
+        sheetRef={menuRef}
+      >
         <View style={{ padding: 20 }}>
           <Text
             style={{ fontSize: 30, marginBottom: 10, marginLeft: 10 }}
@@ -82,3 +87,4 @@ export function TaskShareButton() {
     </>
   );
 }
+

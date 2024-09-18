@@ -5,7 +5,7 @@ import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -103,7 +103,7 @@ export function CreateLabelModal({
   return (
     <>
       {trigger}
-      <Modal ref={ref} maxWidth={460} height={500} animation="SCALE">
+      <Modal sheetRef={ref} maxWidth={460} height={500} animation="SCALE">
         <View
           style={{
             flexDirection: "row",
@@ -225,3 +225,4 @@ export function CreateLabelModal({
     </>
   );
 }
+

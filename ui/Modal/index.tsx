@@ -1,5 +1,4 @@
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { forwardRef, RefObject, useEffect } from "react";
+import { memo, useCallback, useEffect, useMemo } from "react";
 import {
   InteractionManager,
   Platform,
@@ -34,41 +33,42 @@ const SetSharedValue = ({ value, from, to }) => {
   return null;
 };
 
-export const Modal = forwardRef(
-  (
-    props: Omit<Omit<DBottomSheetProps, "sheetRef">, "onClose"> & {
-      maxWidth?: ViewStyle["maxWidth"];
-      animation: "NONE" | "SCALE" | "SLIDE";
-      onClose?: () => void;
-      innerStyles?: ViewStyle;
-      height?: ViewStyle["height"];
-    },
-    ref: RefObject<BottomSheetModal>
-  ) => {
-    const theme = useColorTheme();
-    const state = useSharedValue(0);
-    const insets = useSafeAreaInsets();
+const Modal = (
+  props: Omit<DBottomSheetProps, "onClose"> & {
+    maxWidth?: ViewStyle["maxWidth"];
+    animation: "NONE" | "SCALE" | "SLIDE";
+    onClose?: () => void;
+    innerStyles?: ViewStyle;
+    height?: ViewStyle["height"];
+  }
+) => {
+  const theme = useColorTheme();
+  const state = useSharedValue(0);
+  const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
 
-    const animationConfigs =
+  const animationConfigs = useMemo(
+    () =>
       props.animation === "NONE" || props.animation === "SCALE"
         ? { overshootClamping: true, duration: 0.0001 }
         : {
             overshootClamping: true,
             stiffness: 400,
             damping: 40,
-          };
+          },
+    [props.animation]
+  );
 
-    const handleClose = () => {
-      ref.current?.close({
-        ...animationConfigs,
-        damping: 20,
-      });
-      props.onClose?.();
-    };
+  const handleClose = useCallback(() => {
+    props.sheetRef.current?.close({
+      ...animationConfigs,
+      damping: 20,
+    });
+    props.onClose?.();
+  }, [animationConfigs, props]);
 
-    const { height } = useWindowDimensions();
-
-    const innerStyles = useAnimatedStyle(() => ({
+  const innerStyles = useAnimatedStyle(
+    () => ({
       transformOrigin: Platform.OS === "web" ? "top center" : ["50%", 0, 0],
       transform: [
         {
@@ -81,72 +81,75 @@ export const Modal = forwardRef(
                 }),
         },
       ],
-    }));
+    }),
+    []
+  );
 
-    return (
-      <BottomSheet
-        {...props}
-        maxWidth={"100%"}
-        snapPoints={["100%"]}
-        sheetRef={ref}
-        onClose={handleClose}
-        handleComponent={() => null}
-        animateOnMount={
-          props.animation === "SLIDE" ||
-          props.animation === "NONE" ||
-          !props.animation
-        }
-        {...((props.animation !== "SCALE" || Platform.OS === "web") && {
-          animationConfigs,
-        })}
-        stackBehavior="push"
-        enablePanDownToClose={props.animation !== "SCALE"}
-        enableContentPanningGesture={props.animation !== "SCALE"}
-        backgroundStyle={{ backgroundColor: "transparent" }}
+  return (
+    <BottomSheet
+      {...props}
+      maxWidth={"100%"}
+      snapPoints={["100%"]}
+      sheetRef={props.sheetRef}
+      onClose={handleClose}
+      handleComponent={() => null}
+      animateOnMount={
+        props.animation === "SLIDE" ||
+        props.animation === "NONE" ||
+        !props.animation
+      }
+      {...((props.animation !== "SCALE" || Platform.OS === "web") && {
+        animationConfigs,
+      })}
+      stackBehavior="push"
+      enablePanDownToClose={props.animation !== "SCALE"}
+      enableContentPanningGesture={props.animation !== "SCALE"}
+      backgroundStyle={{ backgroundColor: "transparent" }}
+    >
+      <SetSharedValue value={state} from={0} to={1} />
+      <Pressable
+        style={{
+          width: "100%",
+          height: "100%",
+          padding: 15,
+          paddingTop: insets.top + 15,
+          paddingBottom: insets.bottom + 15,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onPress={handleClose}
       >
-        <SetSharedValue value={state} from={0} to={1} />
         <Pressable
+          onPress={(e) => e.stopPropagation()}
           style={{
             width: "100%",
-            height: "100%",
-            padding: 15,
-            paddingTop: insets.top + 15,
-            paddingBottom: insets.bottom + 15,
-            alignItems: "center",
-            justifyContent: "center",
+            maxWidth: props.maxWidth || 500,
           }}
-          onPress={handleClose}
         >
-          <Pressable
-            onPress={(e) => e.stopPropagation()}
-            style={{
-              width: "100%",
-              maxWidth: props.maxWidth || 500,
-            }}
+          <Animated.View
+            style={[
+              props.animation === "SCALE" && innerStyles,
+              {
+                backgroundColor: theme[2],
+                borderRadius: 25,
+                overflow: "hidden",
+                shadowColor: "#000",
+                shadowOffset: { width: 25, height: 25 },
+                shadowOpacity: 0.25,
+                shadowRadius: 100,
+                height: props.height,
+                maxHeight: height - 40,
+              },
+              props.innerStyles,
+            ]}
           >
-            <Animated.View
-              style={[
-                props.animation === "SCALE" && innerStyles,
-                {
-                  backgroundColor: theme[2],
-                  borderRadius: 25,
-                  overflow: "hidden",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 25, height: 25 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 100,
-                  height: props.height,
-                  maxHeight: height - 40,
-                },
-                props.innerStyles,
-              ]}
-            >
-              {props.children}
-            </Animated.View>
-          </Pressable>
+            {props.children}
+          </Animated.View>
         </Pressable>
-      </BottomSheet>
-    );
-  }
-);
+      </Pressable>
+    </BottomSheet>
+  );
+};
+
+export default memo(Modal);
 

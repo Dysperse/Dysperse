@@ -1,6 +1,6 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
+import PanelSwipeTrigger from "@/components/focus-panel/PanelSwipeTrigger";
 import { FocusPanelProvider } from "@/components/focus-panel/context";
-import { PanelSwipeTrigger } from "@/components/focus-panel/panel";
 import AppContainer from "@/components/layout/AppContainer";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
@@ -334,3 +334,4 @@ export default function AppLayout() {
     </StorageContextProvider>
   );
 }
+

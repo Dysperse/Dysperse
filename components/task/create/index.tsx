@@ -14,7 +14,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
@@ -1857,7 +1857,7 @@ const CreateTask = forwardRef(
         <Modal
           maxBackdropOpacity={0.1}
           maxWidth={breakpoints.md ? 700 : "100%"}
-          ref={ref}
+          sheetRef={ref}
           keyboardBehavior="interactive"
           animation={breakpoints.md ? "NONE" : "SLIDE"}
           innerStyles={{

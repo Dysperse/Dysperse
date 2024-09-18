@@ -5,7 +5,7 @@ import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -157,7 +157,7 @@ function QrModal({ children }: { children: any }) {
   return (
     <>
       {trigger}
-      <Modal animation="SCALE" ref={ref} maxWidth={300}>
+      <Modal animation="SCALE" sheetRef={ref} maxWidth={300}>
         <IconButton
           icon="close"
           size={50}

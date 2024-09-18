@@ -9,7 +9,7 @@ import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import ListItemText from "@/ui/ListItemText";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -436,7 +436,7 @@ export default function LabelPicker({
       {trigger}
       <Modal
         animation="SCALE"
-        ref={ref}
+        sheetRef={ref}
         onClose={handleClose}
         maxWidth={(breakpoints.md ? 450 : "100%") as any}
         height={500}

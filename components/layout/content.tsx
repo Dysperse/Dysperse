@@ -5,13 +5,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useGlobalSearchParams } from "expo-router";
 import { createContext, memo, useContext, useEffect, useRef } from "react";
-import {
-  Platform,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-  ViewProps,
-} from "react-native";
+import { Platform, StyleSheet, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
 
@@ -35,7 +29,6 @@ const styles = StyleSheet.create({
 });
 function ContentWrapper(props: ContentWrapperProps) {
   const { sessionToken } = useUser();
-  const { height } = useWindowDimensions();
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();

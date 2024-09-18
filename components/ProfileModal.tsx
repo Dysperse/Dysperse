@@ -3,7 +3,7 @@ import { ProfilePicture } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -160,7 +160,7 @@ export function ProfileModal({ children, email }) {
       {trigger}
       <Modal
         animation="SCALE"
-        ref={ref}
+        sheetRef={ref}
         onClose={handleClose}
         handleComponent={() => null}
         maxWidth={450}

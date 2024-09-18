@@ -21,9 +21,11 @@ export const ColorThemeProvider = ({
       document.body.style.cssText = variables.join(" ");
     }
   }, [theme, setHTMLAttributes]);
+
   return (
     <ColorThemeContext.Provider value={theme}>
       {children}
     </ColorThemeContext.Provider>
   );
 };
+

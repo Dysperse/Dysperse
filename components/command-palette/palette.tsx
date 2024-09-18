@@ -1,6 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useDarkMode } from "@/ui/color";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import { BlurView } from "expo-blur";
 import { memo } from "react";
 import { useWindowDimensions } from "react-native";
@@ -15,7 +15,7 @@ const CommandPalette = memo(function CommandPalette() {
 
   return (
     <Modal
-      ref={sheetRef}
+      sheetRef={sheetRef}
       animation="SCALE"
       height={Math.min(600, height / 1.3)}
       maxBackdropOpacity={isDark ? 0.3 : undefined}

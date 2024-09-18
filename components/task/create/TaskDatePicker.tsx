@@ -3,7 +3,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
-import { Modal } from "@/ui/Modal";
+import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -130,7 +130,7 @@ function TaskDatePicker({
       {trigger}
       <Modal
         snapPoints={["100%"]}
-        ref={sheetRef}
+        sheetRef={sheetRef}
         animation="SCALE"
         maxWidth={750}
         height={breakpoints.md ? 485 : "100%"}
