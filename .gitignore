@@ -1,4 +1,4 @@
-.sentry/.defaultBabelTransformerPath
+.sentry
 
 electron/out
 google-services.json
