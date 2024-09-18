@@ -2,15 +2,6 @@ import {
   CollectionContext,
   CollectionType,
 } from "@/components/collections/context";
-import ContentWrapper from "@/components/layout/content";
-import ErrorAlert from "@/ui/Error";
-import Spinner from "@/ui/Spinner";
-import Text from "@/ui/Text";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
-import useSWR from "swr";
-
 import CollectionNavbar from "@/components/collections/navbar";
 import { CollectionLabelMenu } from "@/components/collections/navbar/CollectionLabelMenu";
 import Calendar from "@/components/collections/views/calendar";
@@ -22,6 +13,14 @@ import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
+import ContentWrapper from "@/components/layout/content";
+import ErrorAlert from "@/ui/Error";
+import Spinner from "@/ui/Spinner";
+import Text from "@/ui/Text";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
+import useSWR from "swr";
 
 export const styles = StyleSheet.create({
   header: {
@@ -71,7 +70,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   let content = null;
   switch ((type || (isPublic ? "kanban" : null)) as CollectionType) {
     case "planner":
-      content = <Planner isPublic={isPublic} />;
+      content = <Planner />;
       break;
     case "kanban":
       content = <Kanban editOrderMode={editOrderMode} />;
@@ -92,7 +91,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       content = <Matrix />;
       break;
     case "calendar":
-      content = <Calendar isPublic={isPublic} />;
+      content = <Calendar />;
       break;
     case "skyline":
       content = <Skyline />;
