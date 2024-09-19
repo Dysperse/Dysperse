@@ -17,7 +17,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef, useState } from "react";
-import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 import Swiper from "react-native-web-swiper";
 
@@ -68,16 +68,17 @@ function ThemedSlide({
       }}
     >
       <ColorThemeProvider theme={colors}>
-        <Pressable
+        <Button
           onPress={onSelect}
+          height={210}
           style={{
             backgroundColor: colors[4],
-            borderRadius: 20,
             alignItems: "center",
-            padding: 20,
+            flexDirection: "column",
             paddingHorizontal: 10,
-            height: 210,
+            borderRadius: 20,
           }}
+          containerStyle={{ borderRadius: 20 }}
         >
           <Image
             style={{ width: 100, height: 100 }}
@@ -91,7 +92,7 @@ function ThemedSlide({
           <Text style={{ fontSize: 13, textAlign: "center" }}>
             {themeData.description}
           </Text>
-        </Pressable>
+        </Button>
       </ColorThemeProvider>
     </View>
   );
