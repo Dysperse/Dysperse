@@ -232,7 +232,10 @@ function Content({ data, mutate }) {
     </ScrollView>
   ) : (
     <View
-      style={[columnStyles, { borderTopWidth: 1, borderTopColor: theme[5] }]}
+      style={[
+        columnStyles,
+        { borderTopWidth: 1, borderTopColor: theme[5], flex: 1 },
+      ]}
     >
       <AgendaButtons weekMode />
       <Header
@@ -242,13 +245,15 @@ function Content({ data, mutate }) {
         title={capitalizeFirstLetter(selectedColumn)}
         range={data[selectedColumn].filterRange}
       />
-      <FlashList
-        contentContainerStyle={{ padding: 20 }}
-        data={data[selectedColumn].entities}
-        centerContent={data[selectedColumn].entities.length === 0}
-        ListEmptyComponent={() => <ColumnEmptyComponent />}
-        renderItem={renderItem}
-      />
+      <View style={{ flex: 1 }}>
+        <FlashList
+          contentContainerStyle={{ padding: 20 }}
+          data={data[selectedColumn].entities}
+          centerContent={data[selectedColumn].entities.length === 0}
+          ListEmptyComponent={() => <ColumnEmptyComponent />}
+          renderItem={renderItem}
+        />
+      </View>
     </View>
   );
 }
