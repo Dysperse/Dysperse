@@ -18,6 +18,7 @@ import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
+import { AgendaButtons } from "../../navbar/AgendaButtons";
 
 const SkylineContext = createContext(null);
 const useSkylineContext = () => useContext(SkylineContext);
@@ -230,7 +231,10 @@ function Content({ data, mutate }) {
       <View style={{ width: 1 }} />
     </ScrollView>
   ) : (
-    <View style={columnStyles}>
+    <View
+      style={[columnStyles, { borderTopWidth: 1, borderTopColor: theme[5] }]}
+    >
+      <AgendaButtons weekMode />
       <Header
         mutate={mutate}
         selectedColumn={selectedColumn}
