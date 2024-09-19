@@ -21,8 +21,8 @@
   },
   "jade": {
     "key": 4,
-    "name": "Iris Dreamscapes",
-    "description": "Embodies the ethereal beauty of iris flowers, offering a medley of purples and blues that evoke a sense of mystery and wonder."
+    "name": "Jungle Oasis",
+    "description": "Harmonious blend of lush greens and animals in their natural habitat."
   },
   "iris": {
     "key": 5,
@@ -36,13 +36,13 @@
   },
   "plum": {
     "key": 7,
-    "name": "Velvet Twilight",
-    "description": "Smooth and luxurious, like the dusk sky."
+    "name": "Queen's Dusk",
+    "description": "A royal hue, embodying the elegance and grace of a queen"
   },
   "purple": {
     "key": 8,
-    "name": "Regal Majesty",
-    "description": "An imperial shade, exuding power and grandeur."
+    "name": "Enigmatic Aura",
+    "description": "A mysterious and enigmatic hue symbolizing strength"
   },
   "violet": {
     "key": 9,
@@ -56,13 +56,13 @@
   },
   "blue": {
     "key": 11,
-    "name": "Sapphire Cascade",
-    "description": "Flowing like a cascade of precious blue gemstones."
+    "name": "Mount Everest",
+    "description": "A majestic hue, as vast and serene as the towering peak."
   },
   "cyan": {
     "key": 12,
     "name": "Aqua Whisper",
-    "description": "Whispering tranquility, as gentle as a serene watercolor."
+    "description": "A whisper of aqua, gentle and serene like a tranquil sea."
   },
   "teal": {
     "key": 13,
@@ -71,8 +71,8 @@
   },
   "green": {
     "key": 14,
-    "name": "Emerald Eden",
-    "description": "A lush, vivid hue resembling the beauty of a mythical paradise."
+    "name": "Green Envy",
+    "description": "A shade of envy, lush and vibrant like the heart of nature."
   },
   "grass": {
     "key": 15,
@@ -91,8 +91,8 @@
   },
   "sky": {
     "key": 18,
-    "name": "Celestial Canopy",
-    "description": "The vast expanse above, painted in hues of boundless wonder."
+    "name": "Celestial Frost",
+    "description": "Ice cold and ethereal, like the frost of a winter morning."
   },
   "mint": {
     "key": 19,
@@ -131,7 +131,7 @@
   },
   "sage": {
     "key": 26,
-    "name": "Tranquil Verdigris",
+    "name": "Windy Copper",
     "description": "Calming and serene, like the patina of aged copper."
   },
   "olive": {
@@ -141,8 +141,8 @@
   },
   "sand": {
     "key": 28,
-    "name": "Golden Sahara",
-    "description": "The golden desert sands, shimmering in the light of the setting sun."
+    "name": "Golden Bounty",
+    "description": "As alluring as it can be, danger lurks in every corner."
   },
   "bronze": {
     "key": 29,
@@ -155,3 +155,4 @@
     "description": "Exuding pure euphoria, akin to the brilliance of gilded gold."
   }
 }
+
