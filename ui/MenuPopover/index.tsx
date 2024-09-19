@@ -1,6 +1,6 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { BlurView } from "expo-blur";
-import React, { ReactElement, cloneElement, useRef } from "react";
+import React, { ReactElement, cloneElement, memo, useRef } from "react";
 import {
   Platform,
   Pressable,
@@ -98,7 +98,7 @@ export function MenuItem(
   );
 }
 
-export default function MenuPopover({
+function MenuPopover({
   trigger,
   options,
   menuProps,
@@ -257,3 +257,4 @@ export default function MenuPopover({
     </Menu>
   );
 }
+export default memo(MenuPopover);

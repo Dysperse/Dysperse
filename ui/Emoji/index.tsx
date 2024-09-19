@@ -13,13 +13,7 @@ function Emoji({
 }) {
   return (
     <Image
-      style={[
-        {
-          width: size,
-          height: size,
-        },
-        style,
-      ]}
+      style={[{ width: size, height: size }, style]}
       source={{
         uri: `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emoji?.toLowerCase()}.png`,
         isAnimated: true,
@@ -27,4 +21,6 @@ function Emoji({
     />
   );
 }
+
 export default memo(Emoji);
+

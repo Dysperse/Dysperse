@@ -348,6 +348,41 @@ function SubscribeButton({ data, mutate }) {
   );
 }
 
+function NotificationPreferences({ data, mutate }) {
+  const { session } = useSession();
+
+  const handleToggle = async () => {
+    await sendApiRequest(session, "PUT", "user/notifications", {
+      key: "groupNotifications",
+      value: data.settings.groupNotifications ? "false" : "true",
+    });
+    mutate(
+      (oldData) => ({
+        ...oldData,
+        settings: {
+          ...oldData.settings,
+          groupNotifications: !oldData.settings.groupNotifications,
+        },
+      }),
+      { revalidate: false }
+    );
+  };
+
+  return (
+    <ListItemButton onPress={handleToggle}>
+      <ListItemText
+        primary="Group notifications?"
+        secondary={
+          "When you have many notifications, we'll group them together in a single notification. \nTurn this off if you like getting spammed."
+        }
+      />
+      <Icon size={35}>
+        toggle_{data.settings.groupNotifications ? "on" : "off"}
+      </Icon>
+    </ListItemButton>
+  );
+}
+
 export default function Page() {
   const { session } = useSession();
   const theme = useColorTheme();
@@ -403,6 +438,12 @@ export default function Page() {
       />
 
       <TestNotifications />
+      <Text style={settingStyles.heading}>Preferences</Text>
+      {data?.settings ? (
+        <NotificationPreferences mutate={mutate} data={data} />
+      ) : (
+        <Spinner />
+      )}
       <Text style={settingStyles.heading}>Manage devices</Text>
       <SubscribeButton data={data} mutate={mutate} />
       {data ? (

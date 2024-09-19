@@ -2,7 +2,7 @@ import { Actions } from "@/components/home/actions";
 import { EditWallpaper } from "@/components/home/edit-wallpaper";
 import { FriendActivity } from "@/components/home/friend-activity";
 import { Greeting } from "@/components/home/greeting";
-import { StreakGoal } from "@/components/home/streaks";
+import StreakGoal from "@/components/home/streaks";
 import { styles } from "@/components/home/styles";
 import { TodayText } from "@/components/home/today";
 import ContentWrapper from "@/components/layout/content";

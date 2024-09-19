@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Animated, {
   runOnUI,
@@ -52,7 +52,7 @@ const Spinner = (props: SpinnerProps) => {
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Run the animation on the UI thread using runOnUI
     runOnUI(animateSpinner)(sv);
   }, [sv]);

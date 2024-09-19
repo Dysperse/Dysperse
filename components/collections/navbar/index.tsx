@@ -11,11 +11,10 @@ import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router, useGlobalSearchParams } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -27,6 +26,7 @@ import { NavbarEyebrow } from "./NavbarEyebrow";
 import { NavbarGradient } from "./NavbarGradient";
 import { NavbarIcon } from "./NavbarIcon";
 import { NavbarTitle } from "./NavbarTitle";
+import { ViewPicker } from "./ViewPicker";
 
 interface CollectionNavbarProps {
   isLoading?: boolean;
@@ -47,6 +47,19 @@ const LoadingIndicator = () => {
   );
 };
 
+// Group by type
+export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
+  (acc, [view, details]) => {
+    const type = details.type || details.category; // Use type or fallback to category
+    if (!acc[type]) {
+      acc[type] = [];
+    }
+    acc[type].push(view);
+    return acc;
+  },
+  {}
+);
+
 const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
   editOrderMode,
@@ -64,38 +77,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
-
-  // Group by type
-  const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
-    (acc, [view, details]) => {
-      const type = details.type || details.category; // Use type or fallback to category
-      if (!acc[type]) {
-        acc[type] = [];
-      }
-      acc[type].push(view);
-      return acc;
-    },
-    {}
-  );
-
-  // Convert grouped object to array of arrays
-  const options = Object.entries(groupedViews)
-    .map(([_type, views]) => [
-      {
-        renderer: () => (
-          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
-            {capitalizeFirstLetter(_type)}
-          </Text>
-        ),
-      },
-      ...views.map((e) => ({
-        icon: COLLECTION_VIEWS[e].icon,
-        text: capitalizeFirstLetter(e),
-        callback: () => router.setParams({ type: e }),
-        selected: e === type,
-      })),
-    ])
-    .flat();
 
   const { session } = useSession();
 
@@ -368,53 +349,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 flex: breakpoints.md ? undefined : 1,
               }}
             >
-              <>
-                <MenuPopover
-                  menuProps={{
-                    rendererProps: { placement: "bottom" },
-                  }}
-                  trigger={
-                    <Pressable
-                      android_ripple={{ color: theme[5] }}
-                      style={() => ({
-                        maxWidth: breakpoints.md ? 220 : "100%",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 13,
-                        paddingLeft: 10,
-                        minWidth: 0,
-                      })}
-                    >
-                      {data?.emoji && (
-                        <NavbarIcon
-                          isAll={isAll}
-                          emoji={data.emoji}
-                          isLoading={isLoading}
-                        />
-                      )}
-                      <View style={{ minWidth: 0, flexShrink: 1 }}>
-                        <NavbarEyebrow name={type} />
-                        {isLoading ? (
-                          <View
-                            style={{
-                              width: 60,
-                              height: 17,
-                              borderRadius: 999,
-                              backgroundColor: theme[4],
-                            }}
-                          />
-                        ) : (
-                          <NavbarTitle name={data.name || "All tasks"} />
-                        )}
-                      </View>
-                      <Icon size={30} style={{ marginLeft: -5 }}>
-                        expand_more
-                      </Icon>
-                    </Pressable>
-                  }
-                  options={options}
-                />
-              </>
+              <ViewPicker isLoading={isLoading} />
             </View>
             {!isLoading &&
               (type === "planner" ||

@@ -35,7 +35,7 @@ import {
   useGlobalSearchParams,
   usePathname,
 } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   Animated,
   InteractionManager,
@@ -70,7 +70,6 @@ dayjs.extend(isToday);
 function DesktopLayout({ children }) {
   const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
-
   const { fullscreen } = useGlobalSearchParams();
 
   if (fullscreen)
@@ -110,12 +109,21 @@ export default function AppLayout() {
   const progressValue = useRef(null);
 
   const { sidebarRef, SIDEBAR_WIDTH } = useSidebarContext();
+
   useEffect(() => {
     if (sessionData?.user?.timeZone)
       dayjs.tz.setDefault(sessionData?.user?.timeZone);
   }, [sidebarRef]);
 
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
+
+  const routerTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: theme[breakpoints.sm ? 2 : 1],
+    },
+  };
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -124,6 +132,14 @@ export default function AppLayout() {
         .setAttribute("content", theme[2]);
     }
   }, [theme, breakpoints.md]);
+
+  const sidebarWidth = useMemo(
+    () =>
+      !pathname.includes("settings/") && !pathname.includes("create")
+        ? width
+        : 0,
+    [pathname, width]
+  );
 
   if (isLoading || isUserLoading) {
     return (
@@ -143,6 +159,16 @@ export default function AppLayout() {
   });
 
   if (!session) return <Redirect href="/auth" />;
+
+  const renderNavigationView = (v: Animated.Value) => {
+    progressValue.current = v;
+
+    return (
+      <Pressable style={{ flex: 1 }}>
+        <Sidebar progressValue={v} />
+      </Pressable>
+    );
+  };
 
   const content = (
     <ThemeProvider
@@ -267,15 +293,7 @@ export default function AppLayout() {
                   ]}
                 >
                   <CommandPaletteProvider>
-                    <ThemeProvider
-                      value={{
-                        ...DefaultTheme,
-                        colors: {
-                          ...DefaultTheme.colors,
-                          background: theme[breakpoints.sm ? 2 : 1],
-                        },
-                      }}
-                    >
+                    <ThemeProvider value={routerTheme}>
                       <FocusPanelProvider>
                         <View
                           style={[
@@ -286,7 +304,6 @@ export default function AppLayout() {
                         >
                           <LoadingErrors />
                           <SelectionNavbar />
-
                           {breakpoints.md ? (
                             <DesktopLayout>{content}</DesktopLayout>
                           ) : (
@@ -297,25 +314,8 @@ export default function AppLayout() {
                               drawerType="back"
                               overlayColor="transparent"
                               drawerWidth={SIDEBAR_WIDTH}
-                              edgeWidth={
-                                !pathname.includes("settings/") &&
-                                !pathname.includes("create")
-                                  ? width
-                                  : 0
-                              }
-                              renderNavigationView={(v: Animated.Value) => {
-                                progressValue.current = v;
-
-                                return (
-                                  <Pressable
-                                    style={{
-                                      flex: 1,
-                                    }}
-                                  >
-                                    <Sidebar progressValue={v} />
-                                  </Pressable>
-                                );
-                              }}
+                              edgeWidth={sidebarWidth}
+                              renderNavigationView={renderNavigationView}
                             >
                               {content}
                             </DrawerLayout>

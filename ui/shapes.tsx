@@ -1,4 +1,3 @@
-import * as React from "react";
 import Svg, { ClipPath, Defs, G, Path } from "react-native-svg";
 
 interface shapeProps {
@@ -140,3 +139,4 @@ export const shape6 = (props: shapeProps) => (
     />
   </Svg>
 );
+

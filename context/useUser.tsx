@@ -3,7 +3,7 @@ import { useSession } from "./AuthProvider";
 
 export function useUser() {
   const { session } = useSession() || {};
-  const { data, isLoading, error, mutate, isValidating } = useSWR(
+  const { data, isLoading, error, mutate } = useSWR(
     session ? ["session", { token: session }, undefined] : null
   );
 
@@ -13,6 +13,6 @@ export function useUser() {
     isLoading,
     error,
     mutate,
-    isValidating,
   };
 }
+

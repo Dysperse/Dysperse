@@ -93,6 +93,7 @@ const JumpToButton = memo(function JumpToButton() {
           pressed: theme[5],
         }}
         height={50}
+        onPress={handleOpen as any}
         style={{
           justifyContent: "flex-start",
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),

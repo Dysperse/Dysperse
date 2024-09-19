@@ -208,10 +208,10 @@ function Tab({
         {closeIcon}
       </>
     ),
-    [selected, tab, tabData, theme, handleCloseTab, tabName, tabIcon, closeIcon]
+    [tab, tabData, theme, tabName, tabIcon, closeIcon]
   );
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     router.replace({
       pathname: tab.slug,
       params: {
@@ -222,7 +222,7 @@ function Tab({
     InteractionManager.runAfterInteractions(() => {
       if (!breakpoints.md) sidebarRef?.current?.closeDrawer?.();
     });
-  };
+  }, [breakpoints, sidebarRef, tab]);
 
   useHotkeys(
     "ctrl+w",

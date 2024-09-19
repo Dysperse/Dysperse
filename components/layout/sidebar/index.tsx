@@ -256,7 +256,6 @@ export const LogoButton = memo(function LogoButton({
               }, 300);
             },
           },
-          // { divider: true, key: "1" },
           {
             icon: "question_mark",
             text: "Help",
@@ -353,6 +352,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   });
 
   const menuRef = useRef(null);
+
   return (
     <>
       <View style={{ display: "none" }}>

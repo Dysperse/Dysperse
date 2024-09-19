@@ -1,5 +1,5 @@
 import { useUser } from "@/context/useUser";
-import * as React from "react";
+import { memo, useMemo } from "react";
 import Svg, { Path } from "react-native-svg";
 import { useColor } from "./color";
 
@@ -9,7 +9,7 @@ const Logo = ({ size, color }: { size: number; color?: string }) => {
     color || session?.session?.user?.profile?.theme || "mint"
   );
 
-  const memoizedSvg = React.useMemo(() => {
+  const memoizedSvg = useMemo(() => {
     return (
       <Svg
         id="Layer_1"
@@ -65,4 +65,5 @@ const Logo = ({ size, color }: { size: number; color?: string }) => {
   return memoizedSvg;
 };
 
-export default Logo;
+export default memo(Logo);
+

@@ -7,6 +7,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router } from "expo-router";
+import { memo } from "react";
 import { Platform, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -69,7 +70,7 @@ const GoalIndicator = ({ completed, goal, name }) => {
   );
 };
 
-export function StreakGoal() {
+function StreakGoal() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { width, height } = useContentWrapperContext();
@@ -146,3 +147,4 @@ export function StreakGoal() {
   );
 }
 
+export default memo(StreakGoal);

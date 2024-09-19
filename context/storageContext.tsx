@@ -10,7 +10,7 @@ export const StorageContextProvider = ({
   children: React.ReactNode;
 }) => {
   const { session } = useUser();
-  const { data, error, isValidating } = useSWR([
+  const { data, error } = useSWR([
     "space",
     { spaceId: session?.space?.space?.id },
   ]);
@@ -20,11 +20,11 @@ export const StorageContextProvider = ({
       error,
       storage: data?.storage,
       isLoading: !data,
-      isValidating,
+      // isValidating,
       isReached: !data || data?.storage?.used >= data?.storage?.limit,
       isWarning: !data || data?.storage?.used >= data?.storage?.limit * 0.9,
     }),
-    [data, error, isValidating]
+    [data, error]
   );
 
   return (

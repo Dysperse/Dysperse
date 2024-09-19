@@ -116,9 +116,8 @@ const TimeZoneModal = () => {
 const LoadingErrors = memo(() => {
   const red = useColor("red");
   const theme = useColorTheme();
-  const orange = useColor("orange");
-  const { error, isValidating, session } = useUser();
-  const { error: storageError, isStorageValidating } = useStorageContext();
+  const { error, session } = useUser();
+  const { error: storageError } = useStorageContext();
   const insets = useSafeAreaInsets();
 
   const isTimeZoneDifference = session?.user?.timeZone !== dayjs.tz.guess();
@@ -139,10 +138,6 @@ const LoadingErrors = memo(() => {
               zIndex: 999,
               gap: 20,
             },
-            (isValidating || isStorageValidating) &&
-              !isTimeZoneDifference && {
-                backgroundColor: orange[11],
-              },
           ]}
         >
           <StatusBar barStyle="dark-content" />
@@ -150,13 +145,7 @@ const LoadingErrors = memo(() => {
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
             >
-              {isValidating || isStorageValidating ? (
-                <Spinner size={18} color={red[2]} />
-              ) : (
-                <Icon style={{ color: red[2] }} bold size={18}>
-                  cloud_off
-                </Icon>
-              )}
+              <Spinner size={18} color={red[2]} />
               <Text
                 style={{ color: red[2], fontSize: 12, marginBottom: -1 }}
                 weight={700}
