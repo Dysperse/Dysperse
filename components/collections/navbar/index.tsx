@@ -355,7 +355,15 @@ const CollectionNavbar = memo(function CollectionNavbar({
               (type === "planner" ||
                 type === "skyline" ||
                 type === "calendar") &&
-              breakpoints.md && <AgendaButtons weekMode={type === "planner"} />}
+              breakpoints.md && (
+                <AgendaButtons
+                  weekMode={
+                    type === "planner" ||
+                    type === "skyline" ||
+                    type === "calendar"
+                  }
+                />
+              )}
             <View
               style={{
                 width: breakpoints.md ? 220 : undefined,
