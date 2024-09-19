@@ -88,7 +88,7 @@ export function AgendaButtons({
   );
   const breakpoints = useResponsiveBreakpoints();
 
-  const titleFormat = weekMode
+  const titleFormat = !weekMode
     ? {
         week: "[Week #]W • MMM YYYY",
         month: "MMMM YYYY",
