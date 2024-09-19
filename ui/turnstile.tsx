@@ -8,8 +8,6 @@ const Turnstile = ({
 }: {
   setToken: Dispatch<SetStateAction<string>>;
 }) => {
-  const [randomState, setRandomState] = React.useState(Math.random());
-
   const handleMessage = useCallback(
     (event) => {
       const newToken =
@@ -73,7 +71,7 @@ const Turnstile = ({
           }}
         >
           <iframe
-            key={randomState}
+            id="turnstile"
             srcDoc={htmlContent}
             style={{
               height: 65,
@@ -85,7 +83,11 @@ const Turnstile = ({
         </View>
         <Text
           style={{ textAlign: "center" }}
-          onPress={() => setRandomState(Math.random())}
+          onPress={() =>
+            document
+              .getElementById("turnstile")
+              ?.contentWindow?.location.reload()
+          }
         >
           Not loading? Tap to retry
         </Text>
@@ -126,3 +128,4 @@ const Turnstile = ({
 };
 
 export default Turnstile;
+
