@@ -1,13 +1,13 @@
 {
   "tomato": {
     "key": 0,
-    "name": "Flaming Ruby",
-    "description": "A sizzling shade reminiscent of a blazing gem."
+    "name": "Volcanic Blaze",
+    "description": "A sizzling shades which ignites the soul."
   },
   "red": {
     "key": 1,
     "name": "Ember Glow",
-    "description": "Radiating warmth and intensity like a burning fire."
+    "description": "Radiating warmth & intensity like a burning fire."
   },
   "crimson": {
     "key": 2,
@@ -17,17 +17,17 @@
   "ruby": {
     "key": 3,
     "name": "Crimson Glow",
-    "description": "Captures the fiery intensity of a ruby gemstone, radiating passion and allure."
+    "description": "Captures the fiery intensity of a ruby gemstone, radiating passion & allure."
   },
   "jade": {
     "key": 4,
     "name": "Jungle Oasis",
-    "description": "Harmonious blend of lush greens and animals in their natural habitat."
+    "description": "Harmonious blend of lush greens & animals in their natural habitat."
   },
   "iris": {
     "key": 5,
     "name": "Tranquil Jade Oasis",
-    "description": "Soothing blend of cool greens and blues, reminiscent of precious jade."
+    "description": "Soothing blend of cool greens & blues, reminiscent of precious jade."
   },
   "pink": {
     "key": 6,
@@ -37,12 +37,12 @@
   "plum": {
     "key": 7,
     "name": "Queen's Dusk",
-    "description": "A royal hue, embodying the elegance and grace of a queen"
+    "description": "A royal hue, embodying the elegance & grace of a queen"
   },
   "purple": {
     "key": 8,
     "name": "Enigmatic Aura",
-    "description": "A mysterious and enigmatic hue symbolizing strength"
+    "description": "A mysterious & enigmatic hue symbolizing strength"
   },
   "violet": {
     "key": 9,
@@ -52,17 +52,17 @@
   "indigo": {
     "key": 10,
     "name": "Nightfall Serenade",
-    "description": "Deep and mysterious, echoing the melody of the darkening sky."
+    "description": "Deep & mysterious, echoing the melody of the darkening sky."
   },
   "blue": {
     "key": 11,
     "name": "Mount Everest",
-    "description": "A majestic hue, as vast and serene as the towering peak."
+    "description": "A majestic hue, as vast & serene as the towering peak."
   },
   "cyan": {
     "key": 12,
     "name": "Aqua Whisper",
-    "description": "A whisper of aqua, gentle and serene like a tranquil sea."
+    "description": "A whisper of aqua, gentle & serene like a tranquil sea."
   },
   "teal": {
     "key": 13,
@@ -72,37 +72,37 @@
   "green": {
     "key": 14,
     "name": "Green Envy",
-    "description": "A shade of envy, lush and vibrant like the heart of nature."
+    "description": "A shade of envy, lush & vibrant like the heart of nature."
   },
   "grass": {
     "key": 15,
     "name": "Verdant Embrace",
-    "description": "An embrace of vibrant green, reminiscent of lush, sun-kissed meadows."
+    "description": "A vibrant green hue reminiscent of lush, sun-kissed meadows."
   },
   "orange": {
     "key": 16,
     "name": "Radiant Ember",
-    "description": "Fiery and full of life, like the glow of a burning sun."
+    "description": "Fiery & full of life, like the glow of a burning sun."
   },
   "brown": {
     "key": 17,
     "name": "Cocoa Essence",
-    "description": "Rich and comforting, akin to the aroma of cocoa."
+    "description": "Rich & comforting, akin to the aroma of cocoa."
   },
   "sky": {
     "key": 18,
     "name": "Celestial Frost",
-    "description": "Ice cold and ethereal, like the frost of a winter morning."
+    "description": "Ice cold & ethereal, like the frost of a winter morning."
   },
   "mint": {
     "key": 19,
     "name": "Frosted Jade",
-    "description": "A cool and refreshing tone, akin to frosted precious jade."
+    "description": "A cool & refreshing tone, akin to frosted precious jade."
   },
   "lime": {
     "key": 20,
     "name": "Sour Citron",
-    "description": "Citrusy and vibrant, like the zest of a ripe lime."
+    "description": "Citrusy & vibrant, like the zest of a ripe lime."
   },
   "yellow": {
     "key": 21,
@@ -112,17 +112,17 @@
   "amber": {
     "key": 22,
     "name": "Honeyed Ember",
-    "description": "Warm and amber-like, reminiscent of sweet golden honey."
+    "description": "Warm & amber-like, reminiscent of sweet golden honey."
   },
   "gray": {
     "key": 23,
     "name": "Misty Moonstone",
-    "description": "Ethereal and mysterious, like a moonstone veiled in mist."
+    "description": "Ethereal & mysterious, like a moonstone veiled in mist."
   },
   "mauve": {
     "key": 24,
     "name": "Velvet Haze",
-    "description": "A soft and luxurious hue, enveloping like a velvety mist."
+    "description": "A soft & luxurious hue, enveloping like a velvety mist."
   },
   "slate": {
     "key": 25,
@@ -132,7 +132,7 @@
   "sage": {
     "key": 26,
     "name": "Windy Copper",
-    "description": "Calming and serene, like the patina of aged copper."
+    "description": "Calming & serene, like the patina of aged copper."
   },
   "olive": {
     "key": 27,
@@ -147,7 +147,7 @@
   "bronze": {
     "key": 29,
     "name": "Burnished Bronze",
-    "description": "A warm and polished hue, reminiscent of ancient bronze artifacts."
+    "description": "A warm & polished hue, reminiscent of ancient bronze artifacts."
   },
   "gold": {
     "key": 30,

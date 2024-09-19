@@ -3,23 +3,17 @@ import themes from "@/components/themes.json";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import BottomSheet from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
-import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
+import { ColorTheme, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import { cloneElement, useCallback, useRef, useState } from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
-import Swiper from "react-native-web-swiper";
 
 const styles = StyleSheet.create({
   card: {
@@ -52,73 +46,13 @@ const themePickerStyles = StyleSheet.create({
 function ThemedSlide({
   theme,
   themeData,
-  onSelect,
 }: {
   theme: ColorTheme;
   themeData: { name: string; description: string };
-  onSelect: () => void;
 }) {
+  const { sessionToken, mutate, session } = useUser();
+  const breapoints = useResponsiveBreakpoints();
   const colors = useColor(theme);
-
-  return (
-    <View
-      style={{
-        padding: 5,
-        width: "33.333%",
-      }}
-    >
-      <ColorThemeProvider theme={colors}>
-        <Button
-          onPress={onSelect}
-          height={210}
-          backgroundColors={{
-            default: colors[4],
-            hovered: colors[5],
-            pressed: colors[6],
-          }}
-          style={{
-            alignItems: "center",
-            flexDirection: "column",
-            paddingHorizontal: 10,
-            borderRadius: 20,
-          }}
-          containerStyle={{ borderRadius: 20 }}
-        >
-          <Image
-            style={{ width: 100, height: 100 }}
-            source={{
-              uri: `https://assets.dysperse.com/themes/${theme}.svg`,
-            }}
-          />
-          <Text weight={600} style={{ fontSize: 20, textAlign: "center" }}>
-            {themeData.name}
-          </Text>
-          <Text style={{ fontSize: 13, textAlign: "center" }}>
-            {themeData.description}
-          </Text>
-        </Button>
-      </ColorThemeProvider>
-    </View>
-  );
-}
-function ThemePicker({ children }: { children: React.ReactElement<any> }) {
-  const ref = useRef<BottomSheetModal>(null);
-  const { session, sessionToken, mutate } = useUser();
-  const [selectedTheme, setSelectedTheme] = useState(
-    session.user.profile.theme
-  );
-
-  const colors = useColor(selectedTheme);
-
-  const theme = {
-    ...themes[selectedTheme],
-    colors,
-  };
-
-  const handleOpen = useCallback(() => ref.current?.present(), []);
-  const trigger = cloneElement(children, { onPress: handleOpen });
-  const handleClose = useCallback(() => ref.current?.close(), []);
-  const [loading, setLoading] = useState(false);
 
   const handleSelect = async () => {
     try {
@@ -128,9 +62,7 @@ function ThemePicker({ children }: { children: React.ReactElement<any> }) {
         "user/profile",
         {},
         {
-          body: JSON.stringify({
-            color: selectedTheme,
-          }),
+          body: JSON.stringify({ color: theme }),
         }
       );
       mutate(
@@ -138,195 +70,99 @@ function ThemePicker({ children }: { children: React.ReactElement<any> }) {
           ...oldData,
           user: {
             ...oldData.user,
-            profile: {
-              ...oldData.user.profile,
-              theme: selectedTheme,
-            },
+            profile: { ...oldData.user.profile, theme },
           },
         }),
         {
           revalidate: false,
         }
       );
-      setTimeout(handleClose, 0);
     } catch (e) {
       Toast.show({
         type: "error",
         text1: "Something went wrong. Please try again later",
       });
-      setLoading(false);
     }
   };
-  const { height } = useWindowDimensions();
-  const carouselRef = useRef<Swiper>();
-  const dark = useDarkMode();
+
+  const isSelected = theme === session?.user?.profile?.theme;
 
   return (
-    <>
-      {trigger}
-      <BottomSheet
-        enableContentPanningGesture={false}
-        sheetRef={ref}
-        snapPoints={[height - 20]}
-        onClose={handleClose}
-        backgroundStyle={{
-          backgroundColor: theme.colors[4],
-        }}
-        backgroundComponent={(props) => (
-          <LinearGradient
-            {...props}
-            style={[
-              props.style,
-              {
-                borderRadius: 20,
-              },
-            ]}
-            colors={[
-              theme.colors[6],
-              theme.colors[4],
-              theme.colors[5],
-              theme.colors[6],
-            ]}
-          />
-        )}
-        handleIndicatorStyle={{
-          backgroundColor: theme.colors[8],
-        }}
-      >
-        <View style={themePickerStyles.container}>
-          <Text
-            variant="eyebrow"
-            style={{
-              fontFamily: "monospace",
-              marginTop: 5,
-              fontSize: 20,
-              color: theme.colors[11],
-            }}
-          >
-            #{(theme.key + 1).toString().padStart(2, "0")}
-          </Text>
-          <Swiper
-            containerStyle={{ width: "100%" }}
-            innerContainerStyle={{
-              width: "100%",
-              height: "100%",
-            }}
-            from={Object.keys(themes).findIndex((e) => e === selectedTheme)}
-            onIndexChanged={(e) => setSelectedTheme(Object.keys(themes)[e])}
-            onAnimationEnd={() => {
-              const i = carouselRef.current?.getActiveIndex();
-              setSelectedTheme(Object.keys(themes)[i]);
-            }}
-            ref={carouselRef}
-            controlsProps={
-              {
-                prevPos: "left",
-                nextPos: "right",
-                prevTitle: "<",
-                nextTitle: ">",
-                dotProps: { Component: () => null },
-                NextComponent: (props) => (
-                  <IconButton {...props} key={selectedTheme}>
-                    <Icon
-                      style={{
-                        color: dark
-                          ? "rgba(255,255,255,.5)"
-                          : "rgba(0,0,0,0.5)",
-                      }}
-                    >
-                      arrow_forward_ios
-                    </Icon>
-                  </IconButton>
-                ),
-                PrevComponent: (props) => (
-                  <IconButton {...props} key={selectedTheme}>
-                    <Icon
-                      style={{
-                        color: dark
-                          ? "rgba(255,255,255,.5)"
-                          : "rgba(0,0,0,0.5)",
-                      }}
-                    >
-                      arrow_back_ios
-                    </Icon>
-                  </IconButton>
-                ),
-              } as any
-            }
-            springConfig={{ damping: 30, stiffness: 400 }}
-          >
-            {Object.keys(themes).map((theme: ColorTheme) => (
-              <ThemedSlide
-                theme={theme}
-                themeData={themes[theme]}
-                onSelect={() => setSelectedTheme(theme)}
-              />
-            ))}
-          </Swiper>
-          <View
-            style={{
-              padding: 20,
-              gap: 20,
-              width: "100%",
-              alignItems: "center",
-            }}
-          >
-            <Button
-              style={({ pressed, hovered }) => [
-                themePickerStyles.button,
-                {
-                  backgroundColor: theme.colors[pressed ? 8 : hovered ? 7 : 6],
-                },
-              ]}
-              variant="filled"
-              onPress={handleSelect}
-              isLoading={loading}
+    <View
+      style={{
+        padding: 5,
+        width: breapoints.md ? "33.333%" : "50%",
+      }}
+    >
+      <ColorThemeProvider theme={colors}>
+        <Button
+          onPress={handleSelect}
+          height={210}
+          backgroundColors={{
+            default: colors[4],
+            hovered: colors[5],
+            pressed: colors[6],
+          }}
+          borderColors={{
+            default: colors[isSelected ? 11 : 4],
+            hovered: colors[isSelected ? 10 : 5],
+            pressed: colors[isSelected ? 9 : 6],
+          }}
+          style={{
+            alignItems: "center",
+            flexDirection: "column",
+            paddingHorizontal: 10,
+            borderRadius: 20,
+            position: "relative",
+          }}
+          variant="outlined"
+          containerStyle={{ borderRadius: 20, borderWidth: 2 }}
+        >
+          {isSelected && (
+            <View
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                backgroundColor: colors[11],
+                borderRadius: 50,
+                padding: 5,
+              }}
             >
-              <ButtonText
-                weight={900}
-                style={[
-                  themePickerStyles.buttonText,
-                  { color: theme.colors[11] },
-                ]}
-              >
-                Select
-              </ButtonText>
-            </Button>
-          </View>
-        </View>
-      </BottomSheet>
-    </>
+              <Icon style={{ color: colors[3] }}>check</Icon>
+            </View>
+          )}
+          <Image
+            style={{ width: 100, height: 100 }}
+            source={{
+              uri: `https://assets.dysperse.com/themes/${theme}.svg?`,
+            }}
+          />
+          <Text
+            weight={600}
+            style={{ fontSize: 20, textAlign: "center", marginBottom: -10 }}
+          >
+            {themeData.name}
+          </Text>
+          <Text
+            style={{ fontSize: 13, textAlign: "center", opacity: 0.5 }}
+            weight={500}
+          >
+            {themeData.description}
+          </Text>
+        </Button>
+      </ColorThemeProvider>
+    </View>
   );
 }
 
 export default function Page() {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
   const { session, mutate, sessionToken } = useUser();
-  const themeText = themes[session?.user?.profile?.theme || "mint"];
 
   return (
     <SettingsScrollView>
       <Text style={settingStyles.title}>Appearance</Text>
-
-      <Text style={settingStyles.heading}>Color</Text>
-      <View
-        key={theme}
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-        }}
-      >
-        {Object.keys(themes).map((theme: ColorTheme) => (
-          <ThemedSlide
-            key={theme}
-            theme={theme}
-            themeData={themes[theme]}
-            // onSelect={() => {}}
-          />
-        ))}
-      </View>
-
       <Text style={settingStyles.heading}>Theme</Text>
       {[
         { text: "Dark", icon: "dark_mode" },
@@ -386,6 +222,20 @@ export default function Page() {
             </Icon>
           </ListItemButton>
         ))}
+
+      <Text style={settingStyles.heading}>Color</Text>
+      <View
+        key={theme}
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+      >
+        {Object.keys(themes).map((theme: ColorTheme) => (
+          <ThemedSlide key={theme} theme={theme} themeData={themes[theme]} />
+        ))}
+      </View>
     </SettingsScrollView>
   );
 }
+
