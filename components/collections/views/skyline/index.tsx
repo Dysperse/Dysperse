@@ -237,7 +237,7 @@ function Content({ data, mutate }) {
         { borderTopWidth: 1, borderTopColor: theme[5], flex: 1 },
       ]}
     >
-      <AgendaButtons weekMode />
+      <AgendaButtons />
       <Header
         mutate={mutate}
         selectedColumn={selectedColumn}
