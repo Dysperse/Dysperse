@@ -71,8 +71,12 @@ function ThemedSlide({
         <Button
           onPress={onSelect}
           height={210}
+          backgroundColors={{
+            default: colors[4],
+            hovered: colors[5],
+            pressed: colors[6],
+          }}
           style={{
-            backgroundColor: colors[4],
             alignItems: "center",
             flexDirection: "column",
             paddingHorizontal: 10,
