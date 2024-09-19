@@ -14,6 +14,7 @@ import Text from "@/ui/Text";
 import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef, useState } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
@@ -30,12 +31,12 @@ const styles = StyleSheet.create({
   button: { height: 80 },
   themeCardIcon: { textAlign: "center" },
   cardTitle: { fontSize: 30 },
-  cardDescription: { opacity: 0.5, fontSize: 17 },
+  cardDescription: { opacity: 0.5 },
 });
 
 const themePickerStyles = StyleSheet.create({
   title: { textAlign: "center", fontSize: 50, lineHeight: 55, marginBottom: 5 },
-  description: { height: 70, opacity: 0.6, textAlign: "center" },
+  description: { opacity: 0.6, textAlign: "center" },
   container: { alignItems: "center", height: "100%" },
   icon: { marginTop: "auto" },
   button: { height: 80, width: "100%" },
@@ -60,17 +61,39 @@ function ThemedSlide({
   const colors = useColor(theme);
 
   return (
-    <ColorThemeProvider theme={colors}>
-      <Pressable onPress={onSelect}>
-        <Icon size={300} filled>
-          hexagon
-        </Icon>
-      </Pressable>
-      <Text weight={600} style={themePickerStyles.title}>
-        {themeData.name}
-      </Text>
-      <Text style={themePickerStyles.description}>{themeData.description}</Text>
-    </ColorThemeProvider>
+    <View
+      style={{
+        padding: 5,
+        width: "33.333%",
+      }}
+    >
+      <ColorThemeProvider theme={colors}>
+        <Pressable
+          onPress={onSelect}
+          style={{
+            backgroundColor: colors[4],
+            borderRadius: 20,
+            alignItems: "center",
+            padding: 20,
+            paddingHorizontal: 10,
+            height: 210,
+          }}
+        >
+          <Image
+            style={{ width: 100, height: 100 }}
+            source={{
+              uri: `https://assets.dysperse.com/themes/${theme}.svg`,
+            }}
+          />
+          <Text weight={600} style={{ fontSize: 20, textAlign: "center" }}>
+            {themeData.name}
+          </Text>
+          <Text style={{ fontSize: 13, textAlign: "center" }}>
+            {themeData.description}
+          </Text>
+        </Pressable>
+      </ColorThemeProvider>
+    </View>
   );
 }
 function ThemePicker({ children }: { children: React.ReactElement<any> }) {
@@ -228,21 +251,11 @@ function ThemePicker({ children }: { children: React.ReactElement<any> }) {
             springConfig={{ damping: 30, stiffness: 400 }}
           >
             {Object.keys(themes).map((theme: ColorTheme) => (
-              <View
-                key={theme}
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  paddingHorizontal: 80,
-                  justifyContent: "center",
-                }}
-              >
-                <ThemedSlide
-                  theme={theme}
-                  themeData={themes[theme]}
-                  onSelect={() => setSelectedTheme(theme)}
-                />
-              </View>
+              <ThemedSlide
+                theme={theme}
+                themeData={themes[theme]}
+                onSelect={() => setSelectedTheme(theme)}
+              />
             ))}
           </Swiper>
           <View
@@ -292,54 +305,23 @@ export default function Page() {
       <Text style={settingStyles.title}>Appearance</Text>
 
       <Text style={settingStyles.heading}>Color</Text>
-      <ThemePicker>
-        <Pressable
-          style={({ pressed, hovered }) => [
-            styles.card,
-            {
-              backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-              borderColor: theme[pressed ? 7 : hovered ? 6 : 5],
-              alignItems: "center",
-              justifyContent: breakpoints.md ? undefined : "center",
-              flexDirection: breakpoints.md ? "row" : "column",
-              gap: breakpoints.md ? 20 : 10,
-            },
-            !breakpoints.md && {
-              padding: 20,
-            },
-          ]}
-        >
-          <Icon
-            style={[
-              styles.themeCardIcon,
-              !breakpoints.md && { marginBottom: -20 },
-            ]}
-            size={breakpoints.md ? 100 : 140}
-          >
-            hexagon
-          </Icon>
-          <View style={{ flex: 1 }}>
-            <Text
-              style={[
-                styles.cardTitle,
-                !breakpoints.md && { textAlign: "center" },
-              ]}
-              weight={900}
-            >
-              {themeText.name}
-            </Text>
-            <Text
-              style={[
-                styles.cardDescription,
-                !breakpoints.md && { textAlign: "center" },
-              ]}
-              weight={500}
-            >
-              {themeText.description}
-            </Text>
-          </View>
-        </Pressable>
-      </ThemePicker>
+      <View
+        key={theme}
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+      >
+        {Object.keys(themes).map((theme: ColorTheme) => (
+          <ThemedSlide
+            key={theme}
+            theme={theme}
+            themeData={themes[theme]}
+            // onSelect={() => {}}
+          />
+        ))}
+      </View>
+
       <Text style={settingStyles.heading}>Theme</Text>
       {[
         { text: "Dark", icon: "dark_mode" },
