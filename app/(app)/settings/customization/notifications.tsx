@@ -352,7 +352,7 @@ function NotificationPreferences({ data, mutate }) {
   const { session } = useSession();
 
   const handleToggle = async () => {
-    await sendApiRequest(session, "PUT", "user/notifications", {
+    sendApiRequest(session, "PUT", "user/notifications", {
       key: "groupNotifications",
       value: data.settings.groupNotifications ? "false" : "true",
     });
@@ -376,7 +376,7 @@ function NotificationPreferences({ data, mutate }) {
           "When you have many notifications, we'll group them together in a single notification. \nTurn this off if you like getting spammed."
         }
       />
-      <Icon size={35}>
+      <Icon size={40}>
         toggle_{data.settings.groupNotifications ? "on" : "off"}
       </Icon>
     </ListItemButton>
