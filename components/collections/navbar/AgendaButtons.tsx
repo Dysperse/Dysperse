@@ -43,9 +43,12 @@ export function AgendaButtons({
   }, [agendaView, start, weekMode]);
 
   const handleNext = useCallback(() => {
+    const t = weekMode
+      ? dayjs(start).startOf(agendaView as ManipulateType)
+      : dayjs(start);
+
     router.setParams({
-      start: dayjs(start)
-        .startOf(agendaView as ManipulateType)
+      start: t
         .add(
           agendaView === "3days" ? 3 : 1,
           weekMode
