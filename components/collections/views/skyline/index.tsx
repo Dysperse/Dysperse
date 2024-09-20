@@ -1,4 +1,5 @@
 import CreateTask from "@/components/task/create";
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -11,9 +12,14 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -21,7 +27,6 @@ import { Entity } from "../../entity";
 import { AgendaButtons } from "../../navbar/AgendaButtons";
 
 const SkylineContext = createContext(null);
-const useSkylineContext = () => useContext(SkylineContext);
 
 function Header({
   title,
@@ -160,6 +165,33 @@ function Header({
   );
 }
 
+const sortedTasks = (t) =>
+  t
+    .slice()
+    .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
+    .sort((x, y) => {
+      // Get task completion status for both x and y
+      const xCompleted = getTaskCompletionStatus(x, x.recurrenceDay);
+      const yCompleted = getTaskCompletionStatus(y, y.recurrenceDay);
+
+      // If completion status is the same, sort by pinned status
+      if (xCompleted === yCompleted) {
+        // If both are pinned or both are not pinned, return 0
+        if (x.pinned === y.pinned) {
+          return 0;
+        } else {
+          // If x is pinned and y is not pinned, x should come before y
+          // If x is not pinned and y is pinned, y should come before x
+          return x.pinned ? -1 : 1;
+        }
+      } else {
+        // Sort by completion status
+        // If x is completed and y is not completed, x should come after y
+        // If y is completed and x is not completed, y should come after x
+        return xCompleted ? 1 : -1;
+      }
+    });
+
 function Content({ data, mutate }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -178,6 +210,7 @@ function Content({ data, mutate }) {
 
   const renderItem = ({ item }) => (
     <Entity
+      dateRange={item.recurrenceDay}
       isReadOnly={false}
       showDate
       showLabel
@@ -230,7 +263,7 @@ function Content({ data, mutate }) {
         />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={data.today.entities}
+          data={sortedTasks(data.today.entities)}
           centerContent={data.today.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
@@ -240,7 +273,7 @@ function Content({ data, mutate }) {
         <Header mutate={mutate} title="Week" range={data.week.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={data.week.entities}
+          data={sortedTasks(data.week.entities)}
           centerContent={data.week.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
@@ -250,7 +283,7 @@ function Content({ data, mutate }) {
         <Header mutate={mutate} title="Month" range={data.month.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={data.month.entities}
+          data={sortedTasks(data.month.entities)}
           centerContent={data.month.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
@@ -260,7 +293,7 @@ function Content({ data, mutate }) {
         <Header mutate={mutate} title="Year" range={data.year.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={data.year.entities}
+          data={sortedTasks(data.year.entities)}
           centerContent={data.year.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
@@ -318,10 +351,21 @@ export default function Skyline() {
     },
   ]);
 
+  const opacity = useSharedValue(0);
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
+  }));
+
+  useEffect(() => {
+    setTimeout(() => (opacity.value = 1), 0);
+  }, [opacity]);
+
   return (
     <SkylineContext.Provider value={agendaContextValue as any}>
       {data ? (
-        <Content data={data} mutate={mutate} />
+        <Animated.View style={[{ flex: 1 }, opacityStyle]}>
+          <Content data={data} mutate={mutate} />
+        </Animated.View>
       ) : error ? (
         <ErrorAlert />
       ) : (
