@@ -18,7 +18,7 @@ import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import {
   Calendar,
@@ -926,28 +926,27 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
             defaultCollection={collectionId}
             sheetProps={{ sheetRef: labelMenuRef }}
             autoFocus
-            onClose={onLabelPickerClose}
+            // onClose={onLabelPickerClose}
           >
-            <ColorThemeProvider theme={colors[value?.color] || theme}>
-              <Chip
-                onDismiss={value ? () => onChange(null) : undefined}
-                label={value?.name || "Label"}
-                icon={
-                  value?.emoji ? (
-                    <Emoji emoji={value?.emoji} />
-                  ) : (
-                    <Icon>new_label</Icon>
-                  )
-                }
-                style={({ pressed, hovered }) => ({
-                  borderWidth: 1,
-                  backgroundColor: addHslAlpha(
-                    colors[value?.color]?.[9] || theme[9],
-                    pressed ? 0.3 : hovered ? 0.2 : 0.1
-                  ),
-                })}
-              />
-            </ColorThemeProvider>
+            <Chip
+              colorTheme={value?.color}
+              onDismiss={value ? () => onChange(null) : undefined}
+              label={value?.name || "Label"}
+              icon={
+                value?.emoji ? (
+                  <Emoji emoji={value?.emoji} />
+                ) : (
+                  <Icon>new_label</Icon>
+                )
+              }
+              style={({ pressed, hovered }) => ({
+                borderWidth: 1,
+                backgroundColor: addHslAlpha(
+                  colors[value?.color]?.[9] || theme[9],
+                  pressed ? 0.3 : hovered ? 0.2 : 0.1
+                ),
+              })}
+            />
           </LabelPicker>
         )}
       />
@@ -1875,4 +1874,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-
