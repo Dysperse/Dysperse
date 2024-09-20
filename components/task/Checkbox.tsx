@@ -136,14 +136,23 @@ function TaskCheckbox({
           margin: -10,
           opacity: disabled ? 0.5 : 1,
         })}
-        disabled={disabled}
         onTouchStart={() => (isActive.value = 1)}
         onTouchEnd={() => (isActive.value = 0)}
         {...(Platform.OS === "web" && {
           onMouseDown: () => (isActive.value = 1),
           onMouseUp: () => (isActive.value = 0),
         })}
-        onPress={() => handlePress()}
+        onPress={() => {
+          if (disabled) {
+            if (task.recurrenceRule && !task.recurrenceDay)
+              return Toast.show({
+                type: "error",
+                text1: "Switch to a time-based view to complete this task",
+              });
+            return;
+          }
+          handlePress();
+        }}
       >
         <Animated.View
           style={[
