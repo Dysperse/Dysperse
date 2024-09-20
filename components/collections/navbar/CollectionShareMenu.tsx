@@ -461,7 +461,8 @@ const Link = ({ collection, navigation }) => {
   ]);
 
   const params = new URLSearchParams({
-    ...(defaultView !== collection?.data?.defaultView && { type: defaultView }),
+    type: defaultView,
+    // ...(defaultView !== collection?.data?.defaultView && { type: defaultView }),
   });
   const url = `${
     process.env.NODE_ENV === "production"
