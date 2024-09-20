@@ -130,7 +130,7 @@ function Header({
             defaultValues={{
               dateOnly: true,
               collectionId: collectionId === "all" ? undefined : collectionId,
-              date: dayjs(range[0]),
+              date: dayjs(range[0]).add(1, "second"),
             }}
           >
             <Button
