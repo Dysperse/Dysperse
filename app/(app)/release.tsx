@@ -60,7 +60,7 @@ export default function Page() {
           ...d,
           user: {
             ...d.user,
-            lastReleaseVersionViewed: updateExists ? 0 : data?.[0]?.id,
+            lastReleaseVersionViewed: !updateExists ? 0 : data?.[0]?.id,
           },
         };
       },
@@ -75,7 +75,7 @@ export default function Page() {
       {},
       {
         body: JSON.stringify({
-          lastReleaseVersionViewed: updateExists ? -1 : data?.[0]?.id,
+          lastReleaseVersionViewed: !updateExists ? -1 : data?.[0]?.id,
         }),
       }
     );
