@@ -17,17 +17,17 @@
   "ruby": {
     "key": 3,
     "name": "Crimson Glow",
-    "description": "Captures the fiery intensity of a ruby gemstone, radiating passion & allure."
+    "description": "Captures the Ruby's vibe, radiating passion & allure."
   },
   "jade": {
     "key": 4,
     "name": "Jungle Oasis",
-    "description": "Harmonious blend of lush greens & animals in their natural habitat."
+    "description": "Symbolizes the lush greenery of a natural oasis."
   },
   "iris": {
     "key": 5,
     "name": "Tranquil Jade Oasis",
-    "description": "Soothing blend of cool greens & blues, reminiscent of precious jade."
+    "description": "Blends green and blues, reminiscent of precious jade."
   },
   "pink": {
     "key": 6,
@@ -52,7 +52,7 @@
   "indigo": {
     "key": 10,
     "name": "Nightfall Serenade",
-    "description": "Deep & mysterious, echoing the melody of the darkening sky."
+    "description": "Mysteriously echoes the melody of the darkening sky."
   },
   "blue": {
     "key": 11,

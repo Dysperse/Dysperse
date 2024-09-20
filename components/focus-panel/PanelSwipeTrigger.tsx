@@ -81,7 +81,7 @@ function PanelSwipeTrigger({ side = "right" }: { side?: "left" | "right" }) {
           height: "100%",
           paddingHorizontal: 15,
           justifyContent: "center",
-          zIndex: 1,
+          zIndex: pathname.includes("settings") ? 0 : 1,
         },
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
         side === "left"
