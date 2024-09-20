@@ -506,7 +506,7 @@ const Link = ({ collection, navigation }) => {
                 <IconButton
                   onPress={async () => {
                     await setStringAsync(
-                      `<iframe src="${url}" width="800px" height="400px" style="border: 2px solid #aaa;border-radius: 25px" />`
+                      `<iframe src="${url}" width="800px" height="400px" style="border: 2px solid #aaa;border-radius: 25px"></iframe>`
                     );
                     Toast.show({
                       type: "success",
