@@ -76,8 +76,6 @@ function BottomSheet(props: DBottomSheetProps) {
     stiffness: 400,
   });
 
-  const Children = memo(() => props.children);
-
   return (
     <BottomSheetModal
       keyboardBlurBehavior="restore"
@@ -118,7 +116,7 @@ function BottomSheet(props: DBottomSheetProps) {
               animationConfigs={props.animationConfigs}
             />
           )}
-          <Children />
+          {props.children}
         </View>
       </ColorThemeProvider>
     </BottomSheetModal>

@@ -82,8 +82,6 @@ const AppContainer = memo(
       [insets, progressValue]
     );
 
-    const _children = useMemo(() => children, [children]);
-
     return (
       <Animated.View style={animatedStyle as any}>
         <Animated.View style={marginTopStyle} />
@@ -95,10 +93,11 @@ const AppContainer = memo(
             ]}
           />
         )}
-        {_children}
+        {children}
       </Animated.View>
     );
   }
 );
 
 export default AppContainer;
+
