@@ -38,7 +38,9 @@ function Header({
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const { id: collectionId } = useCollectionContext();
+  const { data } = useCollectionContext();
+
+  const collectionId = data?.id || "all";
 
   const modes = ["today", "week", "month", "year"];
 
