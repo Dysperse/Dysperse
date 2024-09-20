@@ -38,108 +38,125 @@ function Header({
   const modes = ["today", "week", "month", "year"];
 
   return (
-    <View>
-      <LinearGradient
-        colors={[theme[3], theme[breakpoints.md ? 2 : 1]]}
-        style={[
-          { padding: 20, paddingBottom: 0 },
-          !breakpoints.md && {
-            borderTopWidth: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderTopColor: theme[5],
-          },
-        ]}
-      >
-        {!breakpoints.md && (
-          <IconButton
-            icon="arrow_back"
-            onPress={() =>
-              setSelectedColumn(
-                modes[
-                  (modes.indexOf(selectedColumn) - 1 + modes.length) %
-                    modes.length
-                ]
-              )
-            }
-          />
-        )}
-        <View>
-          <Text
-            style={{
-              fontSize: large ? 35 : 25,
-              color: theme[11],
-              textAlign: breakpoints.md ? "left" : "center",
-            }}
-            weight={large ? 900 : 700}
-          >
-            {title}
-          </Text>
-          <Text
-            style={{
-              fontSize: 20,
-              marginBottom: 10,
-              color: theme[11],
-              opacity: 0.6,
-              textAlign: breakpoints.md ? "left" : "center",
-            }}
-          >
-            {dayjs(range[0])
-              .utc()
-              .format("MMM D" + (large ? "o" : ""))}{" "}
-            {!large && "-"} {!large && dayjs(range[1]).utc().format("MMM D")}
-          </Text>
-        </View>
-        {!breakpoints.md && (
-          <IconButton
-            icon="arrow_forward"
-            onPress={() => {
-              setSelectedColumn(
-                modes[(modes.indexOf(selectedColumn) + 1) % modes.length]
-              );
-            }}
-          />
-        )}
-      </LinearGradient>
-      <View
-        style={{
-          padding: 20,
-          paddingBottom: 0,
-          paddingTop: breakpoints.md ? 5 : undefined,
-        }}
-      >
-        <CreateTask
-          mutate={(task) => {
-            mutate((oldData) => {
-              const taskStart = dayjs(task.start).utc();
-              const unit = Object.values(oldData).find(({ filterRange }) =>
-                taskStart.isBetween(filterRange[0], filterRange[1], null, "()")
-              );
-              if (unit) unit.entities.push(task as never);
-
-              return oldData;
-            });
-          }}
-          defaultValues={{
-            dateOnly: true,
-            collectionId: collectionId === "all" ? undefined : collectionId,
-            date: dayjs(range[0]),
+    <>
+      <View>
+        <LinearGradient
+          colors={[theme[3], theme[breakpoints.md ? 2 : 1]]}
+          style={[
+            { padding: 20, paddingBottom: 0 },
+            !breakpoints.md && {
+              borderTopWidth: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderTopColor: theme[5],
+            },
+          ]}
+        >
+          {!breakpoints.md && (
+            <IconButton
+              icon="arrow_back"
+              onPress={() =>
+                setSelectedColumn(
+                  modes[
+                    (modes.indexOf(selectedColumn) - 1 + modes.length) %
+                      modes.length
+                  ]
+                )
+              }
+            />
+          )}
+          <View>
+            <Text
+              style={{
+                fontSize: large ? 35 : 25,
+                color: theme[11],
+                textAlign: breakpoints.md ? "left" : "center",
+              }}
+              weight={large ? 900 : 700}
+            >
+              {title}
+            </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                marginBottom: 10,
+                color: theme[11],
+                opacity: 0.6,
+                textAlign: breakpoints.md ? "left" : "center",
+              }}
+            >
+              {dayjs(range[0])
+                .utc()
+                .format("MMM D" + (large ? "o" : ""))}{" "}
+              {!large && "-"} {!large && dayjs(range[1]).utc().format("MMM D")}
+            </Text>
+          </View>
+          {!breakpoints.md && (
+            <IconButton
+              icon="arrow_forward"
+              onPress={() => {
+                setSelectedColumn(
+                  modes[(modes.indexOf(selectedColumn) + 1) % modes.length]
+                );
+              }}
+            />
+          )}
+        </LinearGradient>
+        <View
+          style={{
+            padding: 20,
+            paddingBottom: 0,
+            paddingTop: breakpoints.md ? 5 : undefined,
           }}
         >
-          <Button
-            variant="filled"
-            containerStyle={{ flex: 1 }}
-            large={!breakpoints.md}
-            bold={!breakpoints.md}
-            iconPosition="end"
-            text="Create"
-            icon="stylus_note"
-            height={breakpoints.md ? 50 : 55}
-          />
-        </CreateTask>
+          <CreateTask
+            mutate={(task) => {
+              mutate((oldData) => {
+                const taskStart = dayjs(task.start).utc();
+                const unit = Object.values(oldData).find(({ filterRange }) =>
+                  taskStart.isBetween(
+                    filterRange[0],
+                    filterRange[1],
+                    null,
+                    "()"
+                  )
+                );
+                if (unit) unit.entities.push(task as never);
+
+                return oldData;
+              });
+            }}
+            defaultValues={{
+              dateOnly: true,
+              collectionId: collectionId === "all" ? undefined : collectionId,
+              date: dayjs(range[0]),
+            }}
+          >
+            <Button
+              variant="filled"
+              containerStyle={{ flex: 1 }}
+              large={!breakpoints.md}
+              bold={!breakpoints.md}
+              iconPosition="end"
+              text="Create"
+              icon="stylus_note"
+              height={breakpoints.md ? 50 : 55}
+            />
+          </CreateTask>
+        </View>
       </View>
-    </View>
+      <LinearGradient
+        style={{
+          width: "100%",
+          height: 30,
+          zIndex: 1,
+          marginBottom: -30,
+          pointerEvents: "none",
+        }}
+        colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
+      />
+    </>
   );
 }
 
