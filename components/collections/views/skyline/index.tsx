@@ -119,7 +119,7 @@ function Header({
                     filterRange[0],
                     filterRange[1],
                     null,
-                    "()"
+                    "[]"
                   )
                 );
                 if (unit) unit.entities.push(task as never);
@@ -184,7 +184,28 @@ function Content({ data, mutate }) {
       item={item}
       onTaskUpdate={(newTask) => {
         if (!newTask) return;
-        mutate((oldData) => {}, { revalidate: false });
+        mutate(
+          (oldData) => {
+            const unit = Object.keys(oldData).find((key) =>
+              oldData[key].entities.find((entity) => entity.id === newTask.id)
+            );
+
+            if (unit) {
+              return {
+                ...oldData,
+                [unit]: {
+                  ...oldData[unit],
+                  entities: oldData[unit].entities
+                    .map((entity) =>
+                      entity.id === newTask.id ? newTask : entity
+                    )
+                    .filter((entity) => entity && !entity.trash),
+                },
+              };
+            }
+          },
+          { revalidate: false }
+        );
       }}
     />
   );
