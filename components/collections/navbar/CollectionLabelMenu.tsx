@@ -15,7 +15,7 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
   children?: React.ReactNode;
   sheetRef?: any;
 }) {
-  const { data, mutate } = useCollectionContext();
+  const { data, mutate,openLabelPicker } = useCollectionContext();
   const { session } = useSession();
   const [labels, setLabels] = useState(data?.labels?.map((i) => i.id) || []);
 
@@ -45,13 +45,12 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
       hideBack
       label={labels}
       setLabel={setLabels}
-      onOpen={onOpen}
       onClose={handleSave}
     >
       {(children as any) || (
         <Button
           icon="label"
-          onPress={onOpen}
+          onPress={openLabelPicker}
           text="Add labels..."
           variant="filled"
         />
@@ -59,4 +58,3 @@ export const CollectionLabelMenu = memo(function CollectionLabelMenu({
     </LabelPicker>
   );
 });
-
