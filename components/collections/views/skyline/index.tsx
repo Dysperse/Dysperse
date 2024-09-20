@@ -165,7 +165,7 @@ function Header({
   );
 }
 
-const sortedTasks = (t) =>
+export const taskSortAlgorithm = (t) =>
   t
     .slice()
     .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
@@ -263,7 +263,7 @@ function Content({ data, mutate }) {
         />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={sortedTasks(data.today.entities)}
+          data={taskSortAlgorithm(data.today.entities)}
           centerContent={data.today.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
@@ -273,7 +273,7 @@ function Content({ data, mutate }) {
         <Header mutate={mutate} title="Week" range={data.week.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={sortedTasks(data.week.entities)}
+          data={taskSortAlgorithm(data.week.entities)}
           centerContent={data.week.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
@@ -283,7 +283,7 @@ function Content({ data, mutate }) {
         <Header mutate={mutate} title="Month" range={data.month.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={sortedTasks(data.month.entities)}
+          data={taskSortAlgorithm(data.month.entities)}
           centerContent={data.month.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
@@ -293,7 +293,7 @@ function Content({ data, mutate }) {
         <Header mutate={mutate} title="Year" range={data.year.filterRange} />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={sortedTasks(data.year.entities)}
+          data={taskSortAlgorithm(data.year.entities)}
           centerContent={data.year.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}

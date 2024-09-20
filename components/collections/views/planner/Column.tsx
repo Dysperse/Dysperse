@@ -1,7 +1,6 @@
 import { Entity } from "@/components/collections/entity";
 import { Header } from "@/components/collections/views/planner/Header";
 import CreateTask from "@/components/task/create";
-import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import RefreshControl from "@/ui/RefreshControl";
@@ -11,7 +10,7 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { LexoRank } from "lexorank";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -22,6 +21,7 @@ import { KeyedMutator } from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { ColumnFinishedComponent } from "../kanban/Column";
+import { taskSortAlgorithm } from "../skyline";
 import { usePlannerContext } from "./context";
 
 export const onTaskUpdate = (newTask, mutate, column) => {
@@ -118,37 +118,6 @@ export function Column({
   const isReadOnly = access?.access === "READ_ONLY";
 
   const [refreshing] = React.useState(false);
-
-  const sortedTasks = useMemo(
-    () =>
-      column.tasks
-        .slice()
-        .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
-        .sort((x, y) => {
-          // Get task completion status for both x and y
-          const xCompleted = getTaskCompletionStatus(x, x.recurrenceDay);
-          const yCompleted = getTaskCompletionStatus(y, y.recurrenceDay);
-
-          // If completion status is the same, sort by pinned status
-          if (xCompleted === yCompleted) {
-            // If both are pinned or both are not pinned, return 0
-            if (x.pinned === y.pinned) {
-              return 0;
-            } else {
-              // If x is pinned and y is not pinned, x should come before y
-              // If x is not pinned and y is pinned, y should come before x
-              return x.pinned ? -1 : 1;
-            }
-          } else {
-            // Sort by completion status
-            // If x is completed and y is not completed, x should come after y
-            // If y is completed and x is not completed, y should come after x
-            return xCompleted ? 1 : -1;
-          }
-        }),
-    [column]
-  );
-
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -263,7 +232,7 @@ export function Column({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
         }
-        data={sortedTasks}
+        data={taskSortAlgorithm(column.tasks)}
         estimatedItemSize={100}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
