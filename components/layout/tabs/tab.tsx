@@ -130,7 +130,7 @@ function Tab({
           backgroundColor: tab.collection ? theme[5] : "transparent",
           marginLeft: tab.collection ? -23 : 0,
           marginBottom: tab.collection ? -10 : 0,
-          borderRadius: 0,
+          borderRadius: 10,
         }}
         iconProps={{
           size: tab.collection ? 17 : 24,
@@ -179,6 +179,7 @@ function Tab({
               backgroundColor: "transparent",
               marginTop: tab.collection ? -10 : 0,
               shadowRadius: 0,
+              borderRadius: 0,
             }}
             size={23}
           >
