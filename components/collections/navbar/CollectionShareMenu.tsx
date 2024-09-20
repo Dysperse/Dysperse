@@ -461,14 +461,14 @@ const Link = ({ collection, navigation }) => {
   ]);
 
   const params = new URLSearchParams({
-    ...(defaultView !== collection?.data?.defaultView && { view: defaultView }),
+    ...(defaultView !== collection?.data?.defaultView && { type: defaultView }),
   });
 
   const url = `${
     process.env.NODE_ENV === "production"
       ? "https://app.dysperse.com"
       : "http://localhost:8081"
-  }/c/${data?.id}${params ? `?${params}` : ""}`;
+  }/c/${data?.id}${Object.keys(params).length > 0 ? `?${params}` : ""}`;
 
   return (
     <>
