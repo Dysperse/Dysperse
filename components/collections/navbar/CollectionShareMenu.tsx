@@ -473,7 +473,7 @@ const Link = ({ collection, navigation }) => {
   return (
     <>
       {data ? (
-        <View
+        <ScrollView
           style={{
             padding: 20,
             paddingTop: 0,
@@ -505,6 +505,19 @@ const Link = ({ collection, navigation }) => {
                 />
                 <IconButton
                   onPress={async () => {
+                    await setStringAsync(
+                      `<iframe src="${url}" width="800px" height="400px" style="border: 2px solid #aaa;border-radius: 25px" />`
+                    );
+                    Toast.show({
+                      type: "success",
+                      text1: "Embed code copied!",
+                    });
+                  }}
+                  icon="code"
+                  size={40}
+                />
+                <IconButton
+                  onPress={async () => {
                     await setStringAsync(url);
                     Toast.show({ type: "success", text1: "Link copied!" });
                   }}
@@ -525,7 +538,7 @@ const Link = ({ collection, navigation }) => {
               trigger={
                 <Button
                   text={capitalizeFirstLetter(defaultView)}
-                  icon={COLLECTION_VIEWS[defaultView]}
+                  icon={COLLECTION_VIEWS[defaultView].icon}
                   variant="filled"
                 />
               }
@@ -622,7 +635,7 @@ const Link = ({ collection, navigation }) => {
               secondary="This will generate a new link for your collection. The old link will no longer work."
             />
           </ListItemButton>
-        </View>
+        </ScrollView>
       ) : (
         <View
           style={{
