@@ -236,7 +236,7 @@ const TestNotifications = () => {
   );
 };
 
-function useDeviceNotificationState() {
+export function useDeviceNotificationState() {
   const [state, setState] = useState<"granted" | "denied" | "prompt">();
 
   useEffect(() => {
@@ -255,9 +255,21 @@ function useDeviceNotificationState() {
       });
     }
   }, []);
+
+  return state;
 }
 
-function SubscribeButton({ data, mutate }) {
+export function SubscribeButton({
+  data,
+  mutate,
+  text,
+  onSuccess,
+}: {
+  data: any;
+  mutate: any;
+  text?: string;
+  onSuccess?: () => void;
+}) {
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [tokenExists, setTokenExists] = useState(false);
@@ -348,6 +360,7 @@ function SubscribeButton({ data, mutate }) {
       type: "success",
       text1: "You'll receive notifications on this device!",
     });
+    await onSuccess?.();
     setIsLoading(false);
   };
 
@@ -357,15 +370,16 @@ function SubscribeButton({ data, mutate }) {
       disabled={Boolean(tokenExists)}
       onPress={handlePress}
       variant={tokenExists ? "outlined" : "filled"}
-      containerStyle={{ marginBottom: 20 }}
-    >
-      <Icon>{tokenExists ? "check" : "add"}</Icon>
-      <ButtonText>
-        {tokenExists
+      bold
+      large
+      height={60}
+      text={
+        text ||
+        (tokenExists
           ? "Notifications enabled"
-          : "Enable notifications on this device"}
-      </ButtonText>
-    </Button>
+          : "Enable notifications on this device")
+      }
+    ></Button>
   );
 }
 

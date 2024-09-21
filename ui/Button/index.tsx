@@ -196,22 +196,23 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
         ) : (
           props.children ?? (
             <>
-              {(props.iconPosition === "start" || !props.iconPosition) && (
-                <Icon
-                  size={props.iconSize}
-                  bold={props.bold}
-                  style={props.iconStyle}
-                >
-                  {props.icon}
-                </Icon>
-              )}
+              {(props.iconPosition === "start" || !props.iconPosition) &&
+                props.icon && (
+                  <Icon
+                    size={props.iconSize}
+                    bold={props.bold}
+                    style={props.iconStyle}
+                  >
+                    {props.icon}
+                  </Icon>
+                )}
               <ButtonText
                 style={[props.large && { fontSize: 17 }, props.textStyle]}
                 weight={props.bold ? 900 : undefined}
               >
                 {props.text}
               </ButtonText>
-              {props.iconPosition === "end" && (
+              {props.iconPosition === "end" && props.icon && (
                 <Icon bold={props.bold} style={props.iconStyle}>
                   {props.icon}
                 </Icon>

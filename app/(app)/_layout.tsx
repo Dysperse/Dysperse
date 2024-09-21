@@ -2,6 +2,7 @@ import { CommandPaletteProvider } from "@/components/command-palette/context";
 import PanelSwipeTrigger from "@/components/focus-panel/PanelSwipeTrigger";
 import { FocusPanelProvider } from "@/components/focus-panel/context";
 import AppContainer from "@/components/layout/AppContainer";
+import NotificationsModal from "@/components/layout/NotificationsModal";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SessionLoadingScreen } from "@/components/layout/loading";
@@ -304,6 +305,7 @@ export default function AppLayout() {
                         >
                           <LoadingErrors />
                           <SelectionNavbar />
+                          <NotificationsModal />
                           {breakpoints.md ? (
                             <DesktopLayout>{content}</DesktopLayout>
                           ) : (
