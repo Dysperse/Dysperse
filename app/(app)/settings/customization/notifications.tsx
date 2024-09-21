@@ -241,14 +241,7 @@ export function useDeviceNotificationState() {
 
   useEffect(() => {
     if (Platform.OS === "web") {
-      navigator.permissions
-        .query({ name: "notifications" })
-        .then((permissionStatus) => {
-          permissionStatus.onchange = () => {
-            setState(permissionStatus.state);
-          };
-          setState(permissionStatus.state);
-        });
+      if ("Notification" in window) setState(Notification.permission);
     } else {
       Notifications.getPermissionsAsync().then(({ status }) => {
         setState(status === "undetermined" ? "prompt" : status);
