@@ -50,104 +50,120 @@ export const Customization = ({ form }) => {
   ];
 
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{
-        padding: 20,
-      }}
-    >
-      <Text
-        style={{
-          marginTop: "auto",
-          fontSize: 40,
-          marginBottom: 5,
-          fontFamily: "serifText800",
-          color: theme[11],
-        }}
-      >
-        What productivity methods do you use?
-      </Text>
-      <Text
-        style={{
-          color: theme[11],
-          opacity: 0.7,
-          fontSize: 20,
-          marginBottom: 30,
-        }}
-        weight={300}
-      >
-        We'll incorporate them into your experience here. It's completely fine
-        if you don't use any!
-      </Text>
-      <Controller
-        control={control}
-        name="methods"
-        render={({ field: { value, onChange } }) => (
-          <View style={{ gap: 10, marginBottom: 15 }}>
-            {methods.map((method) => (
-              <ListItemButton
-                variant="outlined"
-                key={method.key}
-                onPress={() => {
-                  if (value.includes(method.key)) {
-                    onChange(value.filter((v) => v !== method.key));
-                  } else {
-                    onChange([...value, method.key]);
-                  }
-                }}
-                style={({ pressed, hovered }) => [
-                  {
-                    flexDirection: "row",
-                  },
-                  value.includes(method.key) && {
-                    backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-                  },
-                ]}
-              >
-                <Avatar
-                  icon={method.icon}
-                  size={40}
-                  style={{
-                    backgroundColor: theme[value.includes(method.key) ? 7 : 6],
-                  }}
-                />
-                <ListItemText
-                  primary={method.name}
-                  secondary={method.description}
-                />
-                <Icon
-                  filled={value.includes(method.key)}
-                  style={{
-                    marginLeft: -10,
-                  }}
-                  size={30}
-                >
-                  {value.includes(method.key) ? "check_circle" : ""}
-                </Icon>
-              </ListItemButton>
-            ))}
-          </View>
-        )}
-      />
+    <>
       <Button
         onPress={handleNext}
         containerStyle={{
-          marginTop: "auto",
-          flexDirection: "row",
-          alignItems: "center",
-          width: "100%",
+          position: "absolute",
+          top: 40,
+          right: 20,
+          opacity: 0.5,
         }}
-        height={70}
-        variant="filled"
+        height={50}
       >
-        <ButtonText weight={900} style={{ fontSize: 20 }}>
-          Next
-        </ButtonText>
-        <Icon bold style={{ marginLeft: 10 }}>
-          arrow_forward
-        </Icon>
+        <ButtonText>Skip</ButtonText>
       </Button>
-    </ScrollView>
+
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          padding: 20,
+        }}
+      >
+        <Text
+          style={{
+            marginTop: "auto",
+            fontSize: 40,
+            marginBottom: 5,
+            fontFamily: "serifText800",
+            color: theme[11],
+          }}
+        >
+          What productivity methods do you use?
+        </Text>
+        <Text
+          style={{
+            color: theme[11],
+            opacity: 0.7,
+            fontSize: 20,
+            marginBottom: 30,
+          }}
+          weight={300}
+        >
+          We'll incorporate them into your experience here. It's completely fine
+          if you don't use any!
+        </Text>
+        <Controller
+          control={control}
+          name="methods"
+          render={({ field: { value, onChange } }) => (
+            <View style={{ gap: 10, marginBottom: 15 }}>
+              {methods.map((method) => (
+                <ListItemButton
+                  variant="outlined"
+                  key={method.key}
+                  onPress={() => {
+                    if (value.includes(method.key)) {
+                      onChange(value.filter((v) => v !== method.key));
+                    } else {
+                      onChange([...value, method.key]);
+                    }
+                  }}
+                  style={({ pressed, hovered }) => [
+                    {
+                      flexDirection: "row",
+                    },
+                    value.includes(method.key) && {
+                      backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+                    },
+                  ]}
+                >
+                  <Avatar
+                    icon={method.icon}
+                    size={40}
+                    style={{
+                      backgroundColor:
+                        theme[value.includes(method.key) ? 7 : 6],
+                    }}
+                  />
+                  <ListItemText
+                    primary={method.name}
+                    secondary={method.description}
+                  />
+                  <Icon
+                    filled={value.includes(method.key)}
+                    style={{
+                      marginLeft: -10,
+                    }}
+                    size={30}
+                  >
+                    {value.includes(method.key) ? "check_circle" : ""}
+                  </Icon>
+                </ListItemButton>
+              ))}
+            </View>
+          )}
+        />
+        <Button
+          onPress={handleNext}
+          containerStyle={{
+            marginTop: "auto",
+            flexDirection: "row",
+            alignItems: "center",
+            width: "100%",
+          }}
+          height={70}
+          variant="filled"
+        >
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Next
+          </ButtonText>
+          <Icon bold style={{ marginLeft: 10 }}>
+            arrow_forward
+          </Icon>
+        </Button>
+      </ScrollView>
+    </>
   );
 };
 

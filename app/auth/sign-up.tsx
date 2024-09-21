@@ -23,6 +23,7 @@ import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import TextField from "@/ui/TextArea";
 import Turnstile from "@/ui/turnstile";
 import dayjs from "dayjs";
+import { Image } from "expo-image";
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -68,6 +69,7 @@ const ColorPressable = ({
     ],
     flex: 1,
   }));
+
   const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
   return (
@@ -92,6 +94,10 @@ const ColorPressable = ({
           borderRadius: 20,
         }}
       >
+        <Image
+          source={{ uri: `https://assets.dysperse.com/themes/${color.n}.svg` }}
+          style={{ width: 40, height: 40 }}
+        />
         <Text style={{ fontSize: 20, color: color.p[11] }} weight={700}>
           {themes[color.n].name}
         </Text>

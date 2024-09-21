@@ -39,9 +39,11 @@ export const TaskInput = ({ form, index }) => {
     >
       <View style={[taskInputStyles.check, { borderColor: theme[6] }]} />
       <Controller
-        rules={{
-          validate: (v) => v.find((t) => t.trim().length === 0),
-        }}
+        rules={
+          {
+            // validate: (v) => v.find((t) => t.trim().length === 0),
+          }
+        }
         control={form.control}
         name="tasks"
         render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -69,52 +71,66 @@ export const TaskCreator = ({ form }) => {
   const { handleNext } = useSignupContext();
 
   return (
-    <ScrollView
-      centerContent
-      style={{
-        flex: 1,
-        padding: 20,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 40,
-          marginBottom: 5,
-          color: theme[11],
-          fontFamily: "serifText800",
-          marginTop: "auto",
-        }}
-        weight={900}
-      >
-        Your very first tasks
-      </Text>
-      <Text
-        style={{
-          fontSize: 20,
-          color: theme[11],
-          opacity: 0.7,
-        }}
-        weight={300}
-      >
-        What are three things you'd like to complete today
-      </Text>
-      <View style={{ marginTop: 20 }}>
-        {[...Array(3).keys()].map((index) => (
-          <TaskInput form={form} index={index} key={index} />
-        ))}
-      </View>
+    <>
       <Button
         onPress={handleNext}
-        variant="filled"
-        height={60}
-        containerStyle={{ marginTop: "auto" }}
+        containerStyle={{
+          position: "absolute",
+          top: 40,
+          right: 20,
+          opacity: 0.5,
+        }}
+        height={50}
       >
-        <ButtonText weight={700} style={{ fontSize: 20 }}>
-          Next
-        </ButtonText>
-        <Icon>arrow_forward</Icon>
+        <ButtonText>Skip</ButtonText>
       </Button>
-    </ScrollView>
+      <ScrollView
+        centerContent
+        style={{
+          flex: 1,
+          padding: 20,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 40,
+            marginBottom: 5,
+            color: theme[11],
+            fontFamily: "serifText800",
+            marginTop: "auto",
+          }}
+          weight={900}
+        >
+          Your very first tasks
+        </Text>
+        <Text
+          style={{
+            fontSize: 20,
+            color: theme[11],
+            opacity: 0.7,
+          }}
+          weight={300}
+        >
+          What are three things you'd like to complete today?
+        </Text>
+        <View style={{ marginTop: 20 }}>
+          {[...Array(3).keys()].map((index) => (
+            <TaskInput form={form} index={index} key={index} />
+          ))}
+        </View>
+        <Button
+          onPress={handleNext}
+          variant="filled"
+          height={60}
+          containerStyle={{ marginTop: "auto" }}
+        >
+          <ButtonText weight={700} style={{ fontSize: 20 }}>
+            Next
+          </ButtonText>
+          <Icon>arrow_forward</Icon>
+        </Button>
+      </ScrollView>
+    </>
   );
 };
 

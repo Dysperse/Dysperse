@@ -236,6 +236,27 @@ const TestNotifications = () => {
   );
 };
 
+function useDeviceNotificationState() {
+  const [state, setState] = useState<"granted" | "denied" | "prompt">();
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      navigator.permissions
+        .query({ name: "notifications" })
+        .then((permissionStatus) => {
+          permissionStatus.onchange = () => {
+            setState(permissionStatus.state);
+          };
+          setState(permissionStatus.state);
+        });
+    } else {
+      Notifications.getPermissionsAsync().then(({ status }) => {
+        setState(status === "undetermined" ? "prompt" : status);
+      });
+    }
+  }, []);
+}
+
 function SubscribeButton({ data, mutate }) {
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
