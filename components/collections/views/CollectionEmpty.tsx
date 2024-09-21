@@ -1,12 +1,14 @@
+import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
-import { CollectionLabelMenu } from "../navbar/CollectionLabelMenu";
+import { useCollectionContext } from "../context";
 
 export const CollectionEmpty = () => {
   const theme = useColorTheme();
+  const { openLabelPicker } = useCollectionContext();
   const { id } = useLocalSearchParams();
 
   return (
@@ -50,7 +52,12 @@ export const CollectionEmpty = () => {
           With collections, you can group related items together and view them
           in different ways.
         </Text>
-        <CollectionLabelMenu />
+        <Button
+          icon="label"
+          onPress={openLabelPicker}
+          text="Add labels..."
+          variant="filled"
+        />
       </View>
     </View>
   );

@@ -12,12 +12,12 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   label: any;
   children: ReactElement;
 }) {
-  const { mutate } = useCollectionContext();
+  const { mutate, openLabelPicker } = useCollectionContext();
 
   return (
     <MenuPopover
       trigger={children}
-      containerStyle={{ width: 150 }}
+      containerStyle={{ width: 160 }}
       options={[
         {
           renderer: () => (
@@ -48,6 +48,11 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
               }
             />
           ),
+        },
+        {
+          icon: "label",
+          text: "Select labels",
+          callback: openLabelPicker,
         },
       ]}
     />

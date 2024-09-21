@@ -56,7 +56,7 @@ export default function Chip({
   const colorScheme = useColorTheme();
 
   const specifiedTheme = useColor(
-    colorTheme || session?.user?.profile?.theme || "mint",
+    colorTheme || session?.user?.profile?.theme || "mint"
   );
 
   const theme = colorTheme ? specifiedTheme : colorScheme;
@@ -75,8 +75,8 @@ export default function Chip({
                 backgroundColor: pressed
                   ? theme[5]
                   : hovered
-                    ? theme[4]
-                    : undefined,
+                  ? theme[4]
+                  : undefined,
                 borderColor: theme[pressed ? 5 : hovered ? 4 : 3],
               }
             : {
@@ -117,6 +117,7 @@ export default function Chip({
             onDismiss();
           }}
           icon="close"
+          iconStyle={{ color: color || theme[11] }}
           style={{ marginRight: -5 }}
           size={dense ? 20 : 33}
         />

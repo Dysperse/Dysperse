@@ -456,4 +456,3 @@ export default function LabelPicker({
     </>
   );
 }
-
