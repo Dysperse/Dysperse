@@ -241,7 +241,12 @@ export function useDeviceNotificationState() {
 
   useEffect(() => {
     if (Platform.OS === "web") {
-      if ("Notification" in window) setState(Notification.permission);
+      if ("Notification" in window)
+        setState(
+          Notification.permission === "default"
+            ? "prompt"
+            : Notification.permission
+        );
     } else {
       Notifications.getPermissionsAsync().then(({ status }) => {
         setState(status === "undetermined" ? "prompt" : status);
