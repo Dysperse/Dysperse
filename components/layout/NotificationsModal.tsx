@@ -15,7 +15,7 @@ import useSWR from "swr";
 export default function NotificationsModal() {
   const t = useDeviceNotificationState();
   const ref = useRef<BottomSheetModal>(null);
-  const { data, mutate, error } = useSWR(["user/notifications"]);
+  const { data, mutate } = useSWR(["user/notifications"]);
 
   const show = useCallback(async () => {
     if (t === "prompt") {
@@ -38,7 +38,12 @@ export default function NotificationsModal() {
   };
 
   return (
-    <Modal sheetRef={ref} animation="SCALE" maxWidth={370}>
+    <Modal
+      sheetRef={ref}
+      animation="SCALE"
+      maxWidth={370}
+      onClose={handleDismiss}
+    >
       <View style={{ padding: 20, alignItems: "center" }}>
         <Emoji emoji="1f514" size={50} style={{ marginTop: 10 }} />
         <Text
