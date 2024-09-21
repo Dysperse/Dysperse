@@ -741,8 +741,8 @@ function FocusPanelHome({
 
 const FocusPanel = memo(function FocusPanel() {
   const { panelState, setPanelState } = useFocusPanelContext();
-  const marginRight = useSharedValue(-350);
-  const width = useSharedValue(350);
+  const marginRight = useSharedValue(panelState === "CLOSED" ? -350 : 0);
+  const width = useSharedValue(panelState === "COLLAPSED" ? 100 : 350);
 
   useHotkeys("\\", () =>
     setPanelState(panelState === "OPEN" ? "CLOSED" : "OPEN")
