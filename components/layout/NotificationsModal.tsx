@@ -67,6 +67,7 @@ export default function NotificationsModal() {
             onSuccess={handleDismiss}
             text="Sure!"
             data={data}
+            disableAutoCheck
             mutate={mutate}
           />
           <Button

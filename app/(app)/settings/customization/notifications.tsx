@@ -262,11 +262,13 @@ export function SubscribeButton({
   mutate,
   text,
   onSuccess,
+  disableAutoCheck,
 }: {
   data: any;
   mutate: any;
   text?: string;
   onSuccess?: () => void;
+  disableAutoCheck?: boolean;
 }) {
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -295,8 +297,8 @@ export function SubscribeButton({
   }, [data]);
 
   useEffect(() => {
-    checkIfTokensExist();
-  }, [checkIfTokensExist]);
+    if (!disableAutoCheck) checkIfTokensExist();
+  }, [checkIfTokensExist, disableAutoCheck]);
 
   const handlePress = async () => {
     setIsLoading(true);
