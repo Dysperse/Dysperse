@@ -10,7 +10,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Turnstile from "@/ui/turnstile";
 import * as Device from "expo-device";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import {
   createContext,
   useCallback,
@@ -21,6 +21,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { inIframe } from "..";
 import { authStyles } from "../../../components/authStyles";
 
 const PasswordContext = createContext(null);
@@ -329,6 +330,7 @@ export default function Page() {
     }
   };
 
+  if (inIframe()) return <Redirect href="/auth" />;
   return (
     <PasswordContext.Provider
       value={{

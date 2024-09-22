@@ -8,7 +8,7 @@ import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
 import {
   createContext,
   useCallback,
@@ -33,6 +33,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { inIframe } from ".";
 import { authStyles } from "../../components/authStyles";
 import { Intro } from "../../components/signup/Intro";
 import { Profile } from "../../components/signup/Profile";
@@ -149,6 +150,8 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
     active: "#000",
     cleanup: theme[2],
   });
+
+  if (inIframe()) return <Redirect href="/auth" />;
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
