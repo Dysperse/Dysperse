@@ -24,7 +24,7 @@ function Icon({
       maxFontSizeMultiplier={1}
       style={[
         {
-          overflow: "hidden",
+          overflow: Platform.OS == "web" ? "hidden" : "visible",
           maxWidth: size + 3,
           color: theme[11],
           fontFamily: bold
