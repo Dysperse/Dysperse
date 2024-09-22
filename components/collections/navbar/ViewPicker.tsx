@@ -47,7 +47,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         <Pressable
           android_ripple={{ color: theme[5] }}
           style={() => ({
-            maxWidth: breakpoints.md ? 220 : "100%",
+            maxWidth: breakpoints.md ? 240 : "100%",
             flexDirection: "row",
             alignItems: "center",
             gap: 13,
@@ -86,3 +86,4 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     />
   );
 });
+

@@ -5,7 +5,8 @@ import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { TransitionPresets } from "@react-navigation/stack";
-import { View, useWindowDimensions } from "react-native";
+import { useEffect } from "react";
+import { Platform, View, useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 
@@ -13,6 +14,13 @@ export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { height, width } = useWindowDimensions();
+
+  useEffect(() => {
+    if (Platform.OS === "web" && window.self !== window.top) {
+      // Block the app from being rendered in an iframe
+      window.location.href = "https://dysperse.com";
+    }
+  }, []);
 
   return (
     <BottomSheetModalProvider>
