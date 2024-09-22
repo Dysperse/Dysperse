@@ -16,7 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authStyles } from "../../components/authStyles";
 
-function inIframe() {
+export function inIframe() {
   if (Platform.OS !== "web") return false;
   try {
     return window.self !== window.top;
@@ -174,3 +174,4 @@ export default function Page() {
     </View>
   );
 }
+

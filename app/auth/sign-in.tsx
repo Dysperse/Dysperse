@@ -18,7 +18,7 @@ import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import { createURL } from "expo-linking";
 import * as Network from "expo-network";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
@@ -34,6 +34,7 @@ import QRCode from "react-native-qrcode-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import Toast from "react-native-toast-message";
+import { inIframe } from ".";
 import { rp } from "../(app)/settings/account/passkeys";
 import { authStyles } from "../../components/authStyles";
 import { useSession } from "../../context/AuthProvider";
@@ -752,6 +753,8 @@ export default function SignIn() {
   }, []);
 
   const breakpoints = useResponsiveBreakpoints();
+
+  if (inIframe()) return <Redirect href="/auth" />;
 
   return (
     <>

@@ -5,8 +5,7 @@ import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { TransitionPresets } from "@react-navigation/stack";
-import { useEffect, useState } from "react";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 
@@ -14,18 +13,6 @@ export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { height, width } = useWindowDimensions();
-  const [hidden, setHidden] = useState(false);
-
-  useEffect(() => {
-    if (Platform.OS === "web" && window.self !== window.top) {
-      // Block the app from being rendered in an iframe
-      setHidden(true);
-    }
-  }, []);
-
-  if (hidden) {
-    return <View />;
-  }
 
   return (
     <BottomSheetModalProvider>
