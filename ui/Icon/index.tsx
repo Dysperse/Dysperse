@@ -24,7 +24,7 @@ function Icon({
       maxFontSizeMultiplier={1}
       style={[
         {
-          overflow: "visible",
+          overflow: "hidden",
           maxWidth: size + 3,
           color: theme[11],
           fontFamily: bold
@@ -50,3 +50,4 @@ function Icon({
 }
 
 export default memo(Icon);
+

@@ -100,6 +100,16 @@ function DesktopLayout({ children }) {
   );
 }
 
+const WebAnimationComponent = ({ children }) => {
+  if (Platform.OS === "web") {
+    return (
+      <View aria-valuetext="web-app-animation" style={{ flex: 1 }}>
+        {children}
+      </View>
+    );
+  } else return children;
+};
+
 export default function AppLayout() {
   const { session, isLoading } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
@@ -255,85 +265,87 @@ export default function AppLayout() {
   );
 
   return (
-    <StorageContextProvider>
-      <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
-      <ColorThemeProvider theme={theme} setHTMLAttributes>
-        <GestureHandlerRootView
-          style={{
-            flex: 1,
-            overflow: "hidden",
-            width,
-            height,
-            backgroundColor: globalThis.IN_DESKTOP_ENV
-              ? "transparent"
-              : theme[2],
-          }}
-        >
-          <BottomSheetModalProvider>
-            <MenuProvider
-              skipInstanceCheck
-              customStyles={{
-                backdrop: {
-                  flex: 1,
-                  opacity: 1,
-                  ...(Platform.OS === "web" &&
-                    ({ WebkitAppRegion: "no-drag" } as any)),
-                },
-              }}
-            >
-              <PortalProvider>
-                <View
-                  style={[
-                    {
-                      flexDirection: "row",
-                      flex: 1,
-                      backgroundColor: theme[2],
-                    },
-                    Platform.OS === "web" &&
-                      ({ WebkitAppRegion: "drag" } as any),
-                  ]}
-                >
-                  <CommandPaletteProvider>
-                    <ThemeProvider value={routerTheme}>
-                      <FocusPanelProvider>
-                        <View
-                          style={[
-                            breakpoints.md
-                              ? { flex: 1, height }
-                              : { width: "100%" },
-                          ]}
-                        >
-                          <LoadingErrors />
-                          <SelectionNavbar />
-                          <NotificationsModal />
-                          {breakpoints.md ? (
-                            <DesktopLayout>{content}</DesktopLayout>
-                          ) : (
-                            <DrawerLayout
-                              ref={sidebarRef}
-                              useNativeAnimations={false}
-                              drawerPosition="left"
-                              drawerType="back"
-                              overlayColor="transparent"
-                              drawerWidth={SIDEBAR_WIDTH}
-                              edgeWidth={sidebarWidth}
-                              renderNavigationView={renderNavigationView}
-                            >
-                              {content}
-                            </DrawerLayout>
-                          )}
-                        </View>
-                      </FocusPanelProvider>
-                    </ThemeProvider>
-                  </CommandPaletteProvider>
-                </View>
-              </PortalProvider>
-            </MenuProvider>
-            <Toast config={toastConfig(theme)} />
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-      </ColorThemeProvider>
-    </StorageContextProvider>
+    <WebAnimationComponent>
+      <StorageContextProvider>
+        <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
+        <ColorThemeProvider theme={theme} setHTMLAttributes>
+          <GestureHandlerRootView
+            style={{
+              flex: 1,
+              overflow: "hidden",
+              width,
+              height,
+              backgroundColor: globalThis.IN_DESKTOP_ENV
+                ? "transparent"
+                : theme[2],
+            }}
+          >
+            <BottomSheetModalProvider>
+              <MenuProvider
+                skipInstanceCheck
+                customStyles={{
+                  backdrop: {
+                    flex: 1,
+                    opacity: 1,
+                    ...(Platform.OS === "web" &&
+                      ({ WebkitAppRegion: "no-drag" } as any)),
+                  },
+                }}
+              >
+                <PortalProvider>
+                  <View
+                    style={[
+                      {
+                        flexDirection: "row",
+                        flex: 1,
+                        backgroundColor: theme[2],
+                      },
+                      Platform.OS === "web" &&
+                        ({ WebkitAppRegion: "drag" } as any),
+                    ]}
+                  >
+                    <CommandPaletteProvider>
+                      <ThemeProvider value={routerTheme}>
+                        <FocusPanelProvider>
+                          <View
+                            style={[
+                              breakpoints.md
+                                ? { flex: 1, height }
+                                : { width: "100%" },
+                            ]}
+                          >
+                            <LoadingErrors />
+                            <SelectionNavbar />
+                            <NotificationsModal />
+                            {breakpoints.md ? (
+                              <DesktopLayout>{content}</DesktopLayout>
+                            ) : (
+                              <DrawerLayout
+                                ref={sidebarRef}
+                                useNativeAnimations={false}
+                                drawerPosition="left"
+                                drawerType="back"
+                                overlayColor="transparent"
+                                drawerWidth={SIDEBAR_WIDTH}
+                                edgeWidth={sidebarWidth}
+                                renderNavigationView={renderNavigationView}
+                              >
+                                {content}
+                              </DrawerLayout>
+                            )}
+                          </View>
+                        </FocusPanelProvider>
+                      </ThemeProvider>
+                    </CommandPaletteProvider>
+                  </View>
+                </PortalProvider>
+              </MenuProvider>
+              <Toast config={toastConfig(theme)} />
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </ColorThemeProvider>
+      </StorageContextProvider>
+    </WebAnimationComponent>
   );
 }
 
