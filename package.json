@@ -9,7 +9,7 @@
     "postinstall": "patch-package && setup-skia-web",
     "build:dev": "eas build --profile development --platform android",
     "build:prod": "npm i -g eas-cli && eas build --profile production --platform android",
-    "build:web": "expo export -p web && npm install workbox-cli --global && workbox injectManifest workbox-config.js",
+    "build:web": "node ./minify-web.js && expo export -p web && npm install workbox-cli --global && workbox injectManifest workbox-config.js",
     "build:electron": "expo export -p web --output-dir ./electron/src/dist",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -46,6 +46,7 @@
     "expo-av": "~14.0.5",
     "expo-battery": "~8.0.1",
     "expo-blur": "~13.0.2",
+    "expo-build-properties": "~0.12.5",
     "expo-camera": "~15.0.11",
     "expo-clipboard": "~6.0.3",
     "expo-constants": "~16.0.2",
@@ -70,6 +71,7 @@
     "expo-system-ui": "~3.0.6",
     "expo-updates": "~0.25.17",
     "expo-web-browser": "~13.0.3",
+    "html-minifier": "^4.0.0",
     "lexorank": "^1.0.5",
     "mime-types": "^2.1.35",
     "npx": "^10.2.2",
@@ -113,8 +115,7 @@
     "use-debounce": "^10.0.1",
     "victory-native": "^41.1.0",
     "workbox-build": "^7.1.1",
-    "workbox-window": "^7.1.0",
-    "expo-build-properties": "~0.12.5"
+    "workbox-window": "^7.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
