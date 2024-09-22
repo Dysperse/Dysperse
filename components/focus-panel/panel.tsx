@@ -486,100 +486,22 @@ function PanelContent() {
   );
 
   return (
-    <Animated.View
-      style={[
-        {
-          borderRadius: breakpoints.md ? 20 : 0,
-          flex: 1,
-          overflow: "hidden",
-        },
-        !breakpoints.md && { width: width },
-      ]}
-    >
-      <Animated.View
-        style={[
-          opacityStyle,
-          {
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            borderWidth: 2,
-            borderColor: theme[panelState === "COLLAPSED" ? 2 : 5],
-            zIndex: 99,
-            borderRadius: 20,
-            pointerEvents: "none",
-          },
-        ]}
-      />
-      {process.env.NODE_ENV !== "development" && <WakeLock />}
-      <NavigationContainer
-        ref={r}
-        documentTitle={{ enabled: false }}
-        independent={true}
-        onStateChange={(state) => {
-          const currentRouteName = state.routes[state.index].name;
-          if (
-            currentRouteName === "New" ||
-            currentRouteName === "Focus" ||
-            currentRouteName === "Word of the day" ||
-            currentRouteName === "Stocks"
-          ) {
-            opacity.value = breakpoints.md ? 1 : 0;
-          } else {
-            opacity.value = 0;
-          }
-        }}
-        theme={{
-          colors: {
-            background: theme[panelState === "COLLAPSED" ? 2 : 1],
-            card: theme[panelState === "COLLAPSED" ? 2 : 1],
-            primary: theme[1],
-            border: theme[6],
-            text: theme[11],
-            notification: theme[9],
-          },
-          dark: true,
-        }}
-      >
-        <Stack.Navigator screenOptions={screenOptions}>
-          <Stack.Screen
-            name="Focus"
-            options={{
-              cardStyle: {
-                paddingHorizontal: 2,
-                width: breakpoints.md
-                  ? panelState === "COLLAPSED"
-                    ? 85
-                    : 340
-                  : "100%",
-              },
-            }}
-            component={FocusPanelHome}
-          />
-          <Stack.Screen
-            name="Weather"
-            component={FocusPanelWeather}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Spotify"
-            component={FocusPanelSpotify}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Word of the day" component={WordOfTheDayScreen} />
-          <Stack.Screen name="Stocks" component={TopStocksScreen} />
-          <Stack.Screen name="New" component={NewWidget} />
-        </Stack.Navigator>
-      </NavigationContainer>
+    <>
       {panelState === "COLLAPSED" && (
         <MenuPopover
+          menuProps={{
+            style: {
+              zIndex: 999,
+            },
+          }}
           trigger={
             <IconButton
               style={{
                 height: 40,
                 alignSelf: "center",
                 opacity: 0.3,
-                marginBottom: 5,
+                marginTop: -20,
+                marginBottom: -10,
               }}
               onPress={() => setPanelState("OPEN")}
               icon="more_horiz"
@@ -606,7 +528,96 @@ function PanelContent() {
           ]}
         />
       )}
-    </Animated.View>
+      <Animated.View
+        style={[
+          {
+            borderRadius: breakpoints.md ? 20 : 0,
+            flex: 1,
+            overflow: "hidden",
+          },
+          !breakpoints.md && { width: width },
+        ]}
+      >
+        <Animated.View
+          style={[
+            opacityStyle,
+            {
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              borderWidth: 2,
+              borderColor: theme[panelState === "COLLAPSED" ? 2 : 5],
+              zIndex: 99,
+              borderRadius: 20,
+              pointerEvents: "none",
+            },
+          ]}
+        />
+        {process.env.NODE_ENV !== "development" && <WakeLock />}
+        <NavigationContainer
+          ref={r}
+          documentTitle={{ enabled: false }}
+          independent={true}
+          onStateChange={(state) => {
+            const currentRouteName = state.routes[state.index].name;
+            if (
+              currentRouteName === "New" ||
+              currentRouteName === "Focus" ||
+              currentRouteName === "Word of the day" ||
+              currentRouteName === "Stocks"
+            ) {
+              opacity.value = breakpoints.md ? 1 : 0;
+            } else {
+              opacity.value = 0;
+            }
+          }}
+          theme={{
+            colors: {
+              background: theme[panelState === "COLLAPSED" ? 2 : 1],
+              card: theme[panelState === "COLLAPSED" ? 2 : 1],
+              primary: theme[1],
+              border: theme[6],
+              text: theme[11],
+              notification: theme[9],
+            },
+            dark: true,
+          }}
+        >
+          <Stack.Navigator screenOptions={screenOptions}>
+            <Stack.Screen
+              name="Focus"
+              options={{
+                cardStyle: {
+                  paddingHorizontal: 2,
+                  width: breakpoints.md
+                    ? panelState === "COLLAPSED"
+                      ? 85
+                      : 340
+                    : "100%",
+                },
+              }}
+              component={FocusPanelHome}
+            />
+            <Stack.Screen
+              name="Weather"
+              component={FocusPanelWeather}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Spotify"
+              component={FocusPanelSpotify}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Word of the day"
+              component={WordOfTheDayScreen}
+            />
+            <Stack.Screen name="Stocks" component={TopStocksScreen} />
+            <Stack.Screen name="New" component={NewWidget} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Animated.View>
+    </>
   );
 }
 
