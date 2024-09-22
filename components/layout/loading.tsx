@@ -18,7 +18,7 @@ export function SessionLoadingScreen() {
         Platform.OS === "web" && ({ WebkitAppRegion: "drag" } as any),
       ]}
     >
-      <Logo size={150} />
+      <Logo size={150} color="mint" />
     </View>
   );
 }

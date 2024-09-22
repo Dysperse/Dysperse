@@ -61,3 +61,4 @@ export function useColor(base: ColorTheme, forceMode?: boolean) {
 
   return getColorPalette;
 }
+

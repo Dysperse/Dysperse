@@ -9,8 +9,32 @@ body,
   overflow: hidden;
   overscroll-behavior-x: none;
   overscroll-behavior-y: none;
-  background: #0f1b1b;
+  background: hsl(164, 88.2%, 96.7%);
   user-select: none;
+}
+
+.dark {
+  display: none;
+}
+.loading-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (prefers-color-scheme: dark) {
+  html,
+  body,
+  #root {
+    background: hsl(174, 51.2%, 8%);
+  }
+  .dark {
+    display: block;
+  }
+  .light {
+    display: none;
+  }
 }
 
 * {
