@@ -1,5 +1,6 @@
-import fs from 'fs';
-import { minify } from 'html-minifier';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const fs = require('fs');
+const minify = require('html-minifier').minify;
 
 const file = fs.readFileSync('./public/index.html', 'utf8');
 const f2 = fs.readFileSync('./public/web.css', 'utf8');
