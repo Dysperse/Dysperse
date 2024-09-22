@@ -8,7 +8,7 @@
     "lint": "eslint ./",
     "postinstall": "patch-package && setup-skia-web",
     "build:dev": "eas build --profile development --platform android",
-    "build:prod": "eas build --profile production --platform android",
+    "build:prod": "npm i -g eas-cli && eas build --profile production --platform android",
     "build:web": "expo export -p web && npm install workbox-cli --global && workbox injectManifest workbox-config.js",
     "build:electron": "expo export -p web --output-dir ./electron/src/dist",
     "android": "expo run:android",
