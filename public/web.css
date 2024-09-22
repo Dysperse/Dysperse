@@ -161,17 +161,14 @@ input::-webkit-scrollbar {
 
 [aria-valuetext="web-app-animation"] {
   animation: appAnimation 0.5s cubic-bezier(0.61, 1, 0.88, 1) forwards;
-  filter: blur(20px);
   transform: scale(1.2);
 }
 
 @keyframes appAnimation {
   from {
-    filter: blur(20px);
     transform: scale(1.2);
   }
   to {
-    filter: blur(0px);
     transform: scale(1);
   }
 }
