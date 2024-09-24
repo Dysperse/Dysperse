@@ -187,25 +187,27 @@ export default function Kanban({ editOrderMode }) {
             (breakpoints.md || currentColumn === -1) && (
               <Column entities={data.entities} />
             )}
-          <View
-            style={{
-              width: 300,
-              flex: 1,
-              minWidth: 5,
-              minHeight: 5,
-              backgroundColor: theme[2],
-              borderRadius: 20,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconButton
-              icon="add"
-              variant="outlined"
-              size={50}
-              onPress={openLabelPicker}
-            />
-          </View>
+          {breakpoints.md && (
+            <View
+              style={{
+                width: 300,
+                flex: 1,
+                minWidth: 5,
+                minHeight: 5,
+                backgroundColor: theme[2],
+                borderRadius: 20,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <IconButton
+                icon="add"
+                variant="outlined"
+                size={50}
+                onPress={openLabelPicker}
+              />
+            </View>
+          )}
           {columns?.length <= 4 &&
             breakpoints.md &&
             [...new Array(4 - columns?.length)].map((_, i) => (
@@ -228,3 +230,4 @@ export default function Kanban({ editOrderMode }) {
     </KanbanContext.Provider>
   );
 }
+
