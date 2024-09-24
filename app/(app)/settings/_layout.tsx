@@ -162,7 +162,6 @@ export default function Layout() {
                   "login/account/two-factor-authentication",
                   "login/account/passkeys",
                   "login/devices",
-                  "account/profile",
                   "index",
                   "shortcuts",
                   "personal-information",

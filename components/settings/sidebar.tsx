@@ -89,13 +89,17 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
             "2fa",
             "two",
             "factor",
+            "profile",
+            "account",
+            "user",
+            "personal",
           ],
         },
         {
-          name: "Profile",
-          icon: "alternate_email",
-          href: "/settings/account/profile",
-          keywords: ["profile", "account", "user", "personal"],
+          name: "Tasks",
+          icon: "verified",
+          href: "/settings/tasks",
+          keywords: [],
         },
         {
           name: "Integrations",
@@ -396,4 +400,3 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
-

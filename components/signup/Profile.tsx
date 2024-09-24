@@ -348,4 +348,3 @@ export const Profile = ({ form }) => {
     </KeyboardAvoidingView>
   );
 };
-

@@ -1,13 +1,9 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
-import {
-  notificationScale,
-  notificationScaleText,
-} from "@/components/task/drawer/details";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar } from "@/ui/Avatar";
+import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -16,14 +12,16 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import dayjs from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -31,6 +29,7 @@ import { View } from "react-native";
 import Animated, { BounceInLeft } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { pickImageAsync } from "./profile";
 
 function Section({ children }: any) {
   const theme = useColorTheme();
@@ -307,153 +306,6 @@ function AccountMenuTrigger({ text }: any) {
   );
 }
 
-function TasksSettings({ updateUserSettings }: any) {
-  const { mutate, session } = useUser();
-
-  const theme = useColorTheme();
-  const showComingSoon = () =>
-    Toast.show({ type: "info", text1: "Coming soon!" });
-
-  return !session?.user ? null : (
-    <>
-      <Text style={settingStyles.heading} weight={700}>
-        Tasks
-      </Text>
-      <View
-        style={{
-          gap: 10,
-          marginTop: 5,
-          padding: 10,
-          borderWidth: 1,
-          borderColor: theme[5],
-          borderRadius: 25,
-        }}
-      >
-        <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Week start"
-            secondary="This setting affects recurring tasks"
-          />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: capitalizeFirstLetter(
-                session?.user?.weekStart?.toLowerCase()
-              ),
-            })}
-            options={[{ text: "Sunday" }, { text: "Monday" }].map((e) => ({
-              ...e,
-              selected: e.text.toUpperCase() === session.user.weekStart,
-              callback: () =>
-                updateUserSettings("weekStart", e.text.toUpperCase()),
-            }))}
-          />
-        </ListItemButton>
-        <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Default notification"
-            secondary="Get reminders before a task starts"
-          />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: "3 notifications",
-            })}
-            options={notificationScale.map((n, i) => ({
-              text: notificationScaleText[i]
-                .replace("m", " minutes")
-                .replace("h", " hours")
-                .replace("d", " day"),
-              selected: [5, 15, 30].includes(n),
-              callback: () =>
-                Toast.show({ type: "info", text1: "Coming soon" }),
-            }))}
-          />
-        </ListItemButton>
-        <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Time display"
-            secondary="Choose how times are displayed in the app"
-          />
-          <MenuPopover
-            trigger={AccountMenuTrigger({ text: "12 hour" })}
-            options={[{ text: "12 hour" }, { text: "24 hour" }].map((e) => ({
-              ...e,
-              selected: session.user.militaryTime
-                ? e.text === "24 hour"
-                : e.text === "12 hour",
-              callback: () =>
-                updateUserSettings("militaryTime", !session.user.militaryTime),
-            }))}
-          />
-        </ListItemButton>
-        <ListItemButton disabled onPress={() => {}}>
-          <ListItemText
-            primary="Maps provider"
-            secondary="Locations will open in this app"
-          />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: `${capitalizeFirstLetter(
-                session.user.mapsProvider.toLowerCase()
-              )} maps`,
-            })}
-            options={[
-              { text: "Google Maps", value: "GOOGLE" },
-              { text: "Apple Maps", value: "APPLE" },
-            ].map((e) => ({
-              ...e,
-              selected: e.value === session.user.mapsProvider,
-              callback: () => updateUserSettings("mapsProvider", e.value),
-            }))}
-          />
-        </ListItemButton>
-        <ListItemButton
-          onPress={() =>
-            updateUserSettings("vanishMode", !session.user.vanishMode)
-          }
-        >
-          <ListItemText
-            primary="Vanish mode"
-            secondary="Delete completed tasks after 14 days"
-          />
-          <Icon
-            style={{ opacity: session.user.vanishMode ? 1 : 0.6 }}
-            size={40}
-          >
-            toggle_{session.user.vanishMode ? "on" : "off"}
-          </Icon>
-        </ListItemButton>
-        <ListItemButton onPress={showComingSoon}>
-          <ListItemText
-            primary="Enable working hours"
-            secondary="Set the hours you're available during the day."
-          />
-          <Icon style={{ opacity: 0.6 }} size={40}>
-            toggle_off
-          </Icon>
-        </ListItemButton>
-        <ListItemButton
-          onPress={() =>
-            updateUserSettings("privateTasks", !session.user.privateTasks)
-          }
-        >
-          <ListItemText
-            primary="Private tasks by default"
-            secondary="New tasks are private by default"
-          />
-          <Icon
-            size={40}
-            style={{
-              opacity: session.user.privateTasks ? 1 : 0.6,
-            }}
-          >
-            toggle_{session.user.privateTasks ? "on" : "off"}
-          </Icon>
-        </ListItemButton>
-      </View>
-    </>
-  );
-}
-
 function TwoFactorAuthSection() {
   const breakpoints = useResponsiveBreakpoints();
   const { session, sessionToken, mutate } = useUser();
@@ -512,69 +364,172 @@ function TwoFactorAuthSection() {
   );
 }
 
-function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
-  const { session } = useUser();
+function ProfileBanner() {
+  const { session, sessionToken, mutate } = useUser();
+  const theme = useColorTheme();
+  const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onChange = async (key, value) => {
+    try {
+      sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/profile",
+        {},
+        {
+          body: JSON.stringify({ [key]: value }),
+        }
+      );
+      mutate(
+        (oldData) => ({
+          ...oldData,
+          user: {
+            ...oldData.user,
+            profile: { ...oldData.user.profile, [key]: value },
+          },
+        }),
+        { revalidate: false }
+      );
+      Toast.show({ type: "success", text1: "Saved!" });
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
+  };
+
+  const eyebrowStyles = {
+    marginTop: editing ? 20 : 10,
+    marginBottom: editing ? 2 : 0,
+  };
+
   return (
-    <>
-      <Text style={settingStyles.heading} weight={700}>
-        Goals
-      </Text>
-      <Section>
-        <ListItemButton disabled>
-          <ListItemText
-            primary="Daily task goal"
-            secondary="How many tasks you want to complete daily?"
+    <View
+      style={{
+        borderRadius: 20,
+        backgroundColor: theme[3],
+        overflow: "hidden",
+        marginTop: 20,
+        paddingBottom: 20,
+      }}
+    >
+      <LinearGradient
+        colors={[theme[9], theme[5]]}
+        style={{
+          padding: 30,
+          height: 140,
+          marginBottom: 20,
+        }}
+      >
+        <View style={{ top: 80, position: "absolute", left: 30 }}>
+          <ProfilePicture
+            name={session?.user?.profile?.name || "--"}
+            image={session?.user?.profile?.picture}
+            size={90}
           />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: `${session.user.dailyStreakGoal} tasks`,
-            })}
-            options={[
-              { text: "3 tasks" },
-              { text: "5 tasks" },
-              { text: "10 tasks" },
-            ].map((e) => ({
-              ...e,
-              selected:
-                session.user.dailyStreakGoal === parseInt(e.text.split(" ")[0]),
-              callback: () =>
-                updateUserSettings(
-                  "dailyStreakGoal",
-                  parseInt(e.text.replace(" tasks", ""))
-                ),
-            }))}
-          />
-        </ListItemButton>
-        <ListItemButton disabled>
-          <ListItemText
-            primary="Weekly task goal"
-            secondary="How many tasks you want to complete weekly?"
-          />
-          <MenuPopover
-            trigger={AccountMenuTrigger({
-              text: `${session.user.weeklyStreakGoal} tasks`,
-            })}
-            options={[
-              { text: "10 tasks" },
-              { text: "15 tasks" },
-              { text: "20 tasks" },
-              { text: "30 tasks" },
-              { text: "50 tasks" },
-            ].map((e) => ({
-              ...e,
-              selected:
-                session.user.weeklyStreakGoal ===
-                parseInt(e.text.split(" ")[0]),
-              callback: () =>
-                updateUserSettings(
-                  "weeklyStreakGoal",
-                  parseInt(e.text.replace(" tasks", ""))
-                ),
-            }))}
-          />
-        </ListItemButton>
-      </Section>
-    </>
+          {editing && (
+            <View
+              style={{
+                backgroundColor: addHslAlpha(theme[12], 0.8),
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                borderRadius: 99,
+                alignItems: "center",
+                justifyContent: "center",
+                bottom: 0,
+              }}
+            >
+              {loading ? (
+                <Spinner color={theme[1]} />
+              ) : (
+                <IconButton
+                  onPress={() =>
+                    pickImageAsync(setLoading, (e) => onChange("picture", e))
+                  }
+                  icon="upload"
+                  iconStyle={{ color: theme[1] }}
+                  iconProps={{ bold: true }}
+                />
+              )}
+            </View>
+          )}
+        </View>
+      </LinearGradient>
+      <View style={{ paddingHorizontal: 40, position: "relative" }}>
+        <IconButton
+          size={50}
+          icon={editing ? "check" : "edit"}
+          variant={editing ? "outlined" : undefined}
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            margin: 10,
+            marginTop: -5,
+          }}
+          onPress={() => setEditing((e) => !e)}
+        />
+        <View style={{ marginTop: 20 }} />
+        {editing && <Text variant="eyebrow">Name</Text>}
+        <TextField
+          defaultValue={session.user.profile.name}
+          weight={900}
+          variant={editing ? "filled+outlined" : undefined}
+          editable={editing}
+          onBlur={(e) => editing && onChange("name", e.nativeEvent.text)}
+          style={{ fontSize: 40, color: theme[12] }}
+        />
+        {editing && (
+          <Text variant="eyebrow" style={eyebrowStyles}>
+            Username
+          </Text>
+        )}
+        <TextField
+          value={
+            session.user.username
+              ? `@${session.user.username}`
+              : session.user.email
+          }
+          variant={editing ? "filled+outlined" : undefined}
+          weight={900}
+          editable={editing}
+          style={{
+            fontSize: 20,
+            opacity: 0.6,
+            color: theme[12],
+          }}
+        />
+        {(editing || session.user.profile.bio) && (
+          <>
+            <Text variant="eyebrow" style={eyebrowStyles}>
+              About me
+            </Text>
+            <TextField
+              variant={editing ? "filled+outlined" : undefined}
+              multiline
+              onBlur={(e) => onChange("bio", e.nativeEvent.text)}
+              defaultValue={session.user.profile.bio}
+              style={{ marginVertical: 5 }}
+              numberOfLines={1}
+              placeholder="Tell the world about yourself <3"
+            />
+          </>
+        )}
+        {(editing || session.user.profile.birthday) && (
+          <>
+            <Text variant="eyebrow" style={eyebrowStyles}>
+              Birthday
+            </Text>
+            <TextField
+              value={dayjs(session.user.profile.birthday).format("MMMM Do")}
+              style={{ marginVertical: 5 }}
+              placeholder="What's your birthday?"
+            />
+          </>
+        )}
+      </View>
+    </View>
   );
 }
 
@@ -616,46 +571,19 @@ export default function Page() {
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
 
-  const updateUserSettings = (key, value) => {
-    try {
-      mutate(
-        (prev) => ({
-          ...prev,
-          user: { ...prev.user, [key]: value },
-        }),
-        { revalidate: false }
-      );
-
-      sendApiRequest(
-        sessionToken,
-        "PUT",
-        "user/account",
-        {},
-        {
-          body: JSON.stringify({
-            [key]: value,
-          }),
-        }
-      );
-
-      Toast.show({ type: "success", text1: "Saved!" });
-    } catch (e) {
-      console.error(e);
-      Toast.show({ type: "error" });
-    }
-  };
-
   return (
     <SettingsScrollView>
       <Text style={settingStyles.title}>Account</Text>
       {data ? (
         <>
           <Text style={settingStyles.heading} weight={700}>
+            Profile
+          </Text>
+          <ProfileBanner />
+          <Text style={settingStyles.heading} weight={700}>
             Storage
           </Text>
           <SpaceStorage data={data} />
-          <TasksSettings data={data} updateUserSettings={updateUserSettings} />
-          <GoalsSettings updateUserSettings={updateUserSettings} />
           <EmailSection />
           <TwoFactorAuthSection />
           <PasskeysSection />

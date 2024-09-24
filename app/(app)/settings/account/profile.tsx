@@ -11,7 +11,6 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
-import { LinearGradient } from "expo-linear-gradient";
 import { ReactElement, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -31,20 +30,24 @@ export const pickImageAsync = async (setLoading, onChange) => {
 
       // convert to File
       const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
-      const file = new File([blob], result.assets[0].fileName, {
-        type: blob.type,
-      });
       const form = new FormData();
-      form.append("image", file);
 
-      const res = await fetch(
-        "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
-        {
-          method: "POST",
-          body: form,
-        }
-      ).then((res) => res.json());
-      onChange(res.data.display_url);
+      form.append(
+        "source",
+        new File([blob], "filename", {
+          type: "image/png",
+          lastModified: new Date().getTime(),
+        })
+      );
+
+      const res = await fetch("https://api.dysperse.com/upload", {
+        method: "POST",
+        body: form,
+      }).then((res) => res.json());
+
+      console.log(res);
+
+      onChange(res.image.display_url);
     } else {
       alert("You did not select any image.");
     }
@@ -85,28 +88,6 @@ export const ProfilePictureUploadButton = ({
     />
   );
 };
-
-function ProfileBanner({ data }) {
-  const theme = useColorTheme();
-
-  return (
-    <LinearGradient
-      colors={[theme[9], theme[5]]}
-      style={{
-        padding: 30,
-        height: 140,
-        marginBottom: 20,
-      }}
-    >
-      <ProfilePicture
-        style={{ top: 80, position: "absolute", left: 30 }}
-        name={data.profile?.name || "--"}
-        image={data.profile?.picture}
-        size={90}
-      />
-    </LinearGradient>
-  );
-}
 
 export default function Page() {
   const theme = useColorTheme();
@@ -167,7 +148,7 @@ export default function Page() {
           marginTop: 20,
         }}
       >
-        <ProfileBanner data={session.user} />
+        <ProfileBanner />
         <View style={{ paddingHorizontal: 40 }}>
           <Text weight={800} style={{ fontSize: 30, marginTop: 20 }}>
             {session.user.profile.name}
@@ -194,20 +175,6 @@ export default function Page() {
             />
           )}
         />
-        <Controller
-          control={control}
-          name="bio"
-          render={({ field: { onChange, value } }) => (
-            <TextField
-              multiline
-              onChangeText={onChange}
-              variant="filled+outlined"
-              value={value}
-              style={{ marginBottom: 10 }}
-              placeholder="Tell the world about yourself <3"
-            />
-          )}
-        />
         <Text style={settingStyles.heading}>Picture</Text>
         <ProfilePictureUploadButton control={control} />
 
@@ -216,13 +183,6 @@ export default function Page() {
           variant="filled+outlined"
           value={session.user.username}
           style={{ marginBottom: 10 }}
-        />
-        <Text style={settingStyles.heading}>Birthday</Text>
-        <TextField
-          editable={false}
-          variant="filled+outlined"
-          value={dayjs(session.user.profile.birthday).format("MMMM D, YYYY")}
-          placeholder="Tell the world about yourself <3"
         />
 
         <Button
