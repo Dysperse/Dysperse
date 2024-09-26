@@ -200,14 +200,20 @@ export function Column(props: ColumnProps) {
         : e.completionInstances.length === 0 || e.recurrenceRule
     );
 
-  const hasNoTasks =
+  const hasNoCompleteTasks =
     (props.label ? props.label.entities : props.entities).length > 0 &&
     (props.label ? props.label.entities : props.entities).filter(
       (e) => e.completionInstances.length === 0
     ).length === 0;
 
+  const hasNoIncompleteTasks =
+    (props.label ? props.label.entities : props.entities).length > 0 &&
+    (props.label ? props.label.entities : props.entities).filter(
+      (e) => e.completionInstances.length > 0
+    ).length === 0;
+
   const centerContent =
-    (hasNoTasks && !showCompleted) ||
+    (hasNoCompleteTasks && !showCompleted) ||
     (props.label ? props.label.entities : props.entities).length === 0;
 
   useDidUpdate(() => {
@@ -321,7 +327,7 @@ export function Column(props: ColumnProps) {
         data={data}
         ListHeaderComponent={() => (
           <View>
-            {hasNoTasks && !showCompleted && (
+            {hasNoCompleteTasks && !showCompleted && (
               <ColumnEmptyComponent row={props.grid} />
             )}
           </View>
@@ -332,29 +338,34 @@ export function Column(props: ColumnProps) {
           paddingTop: 15,
           paddingBottom: insets.bottom + 15,
         }}
-        ListFooterComponent={() =>
-          collectionData.showCompleted ||
-          (props.label ? props.label.entities : props.entities).length ===
-            0 ? null : (
-            <Button
-              onPress={() => setShowCompleted(!showCompleted)}
-              variant={hasNoTasks && !showCompleted ? "text" : "outlined"}
-              containerStyle={
-                hasNoTasks
-                  ? {
-                      marginTop: 10,
-                      marginBottom: showCompleted ? 10 : -70,
+        ListFooterComponent={
+          hasNoIncompleteTasks
+            ? null
+            : () =>
+                collectionData.showCompleted ||
+                (props.label ? props.label.entities : props.entities).length ===
+                  0 ? null : (
+                  <Button
+                    onPress={() => setShowCompleted(!showCompleted)}
+                    variant={
+                      hasNoCompleteTasks && !showCompleted ? "text" : "outlined"
                     }
-                  : { marginTop: 10 }
-              }
-              height={50}
-            >
-              <ButtonText style={{ opacity: 0.7 }} weight={600}>
-                {showCompleted ? "Hide completed" : "Completed"} tasks
-              </ButtonText>
-              <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
-            </Button>
-          )
+                    containerStyle={
+                      hasNoCompleteTasks
+                        ? {
+                            marginTop: 10,
+                            marginBottom: showCompleted ? 10 : -70,
+                          }
+                        : { marginTop: 10 }
+                    }
+                    height={50}
+                  >
+                    <ButtonText style={{ opacity: 0.7 }} weight={600}>
+                      {showCompleted ? "Hide completed" : "Completed"} tasks
+                    </ButtonText>
+                    <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
+                  </Button>
+                )
         }
         renderItem={({ item }) => (
           <Entity
@@ -369,3 +380,4 @@ export function Column(props: ColumnProps) {
     </Animated.View>
   );
 }
+
