@@ -5,7 +5,7 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
@@ -55,11 +55,11 @@ function TaskNameInput() {
         onFocus={() => setIsFocused(true)}
         style={[
           {
-            fontFamily: getFontName("jost", 800),
+            fontFamily: "serifText800",
             color: theme[12],
             padding: 20,
             paddingVertical: 10,
-            marginTop: 10,
+            marginBottom: 5,
             textAlign: "center",
             borderRadius: 20,
             borderWidth: 2,
@@ -67,11 +67,11 @@ function TaskNameInput() {
             borderColor: "transparent",
           },
           isFocused && {
-            backgroundColor: theme[3],
-            borderColor: theme[6],
+            backgroundColor: addHslAlpha(theme[8], 0.1),
+            borderColor: addHslAlpha(theme[8], 0.5),
           },
         ]}
-        fontSize={breakpoints.md ? 40 : 30}
+        fontSize={breakpoints.md ? 45 : 30}
       />
     </>
   );
@@ -177,7 +177,6 @@ export function TaskDrawerContent({ handleClose }) {
         <View style={{ paddingBottom: 50, paddingHorizontal: 20 }}>
           <View
             style={{
-              paddingHorizontal: 10,
               gap: 10,
               marginTop: 50,
               flexDirection: "row",

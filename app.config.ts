@@ -127,6 +127,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     "expo-router",
+    "expo-secure-store",
     [
       "expo-location",
       {
@@ -165,3 +166,4 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     policy: "appVersion",
   },
 });
+

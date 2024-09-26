@@ -347,16 +347,12 @@ export function Column(props: ColumnProps) {
                   0 ? null : (
                   <Button
                     onPress={() => setShowCompleted(!showCompleted)}
-                    variant={
-                      hasNoCompleteTasks && !showCompleted ? "text" : "outlined"
-                    }
                     containerStyle={
                       hasNoCompleteTasks
                         ? {
-                            marginTop: 10,
                             marginBottom: showCompleted ? 10 : -70,
                           }
-                        : { marginTop: 10 }
+                        : {}
                     }
                     height={50}
                   >
