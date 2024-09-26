@@ -245,7 +245,7 @@ function LabelPickerContent({
       {Array.isArray(data) ? (
         <FlashList
           showsVerticalScrollIndicator={false}
-          estimatedItemSize={55}
+          estimatedItemSize={62}
           data={data
             .filter((label) =>
               label.name.toLowerCase().includes(query.toLowerCase())
