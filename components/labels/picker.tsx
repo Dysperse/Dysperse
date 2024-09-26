@@ -8,6 +8,7 @@ import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
@@ -249,6 +250,18 @@ function LabelPickerContent({
             .filter((label) =>
               label.name.toLowerCase().includes(query.toLowerCase())
             )
+            .sort(
+              // sort by selected on top
+              (a, b) =>
+                (a.id === (label as any)?.id ||
+                (multiple && Array.isArray(label) && label.includes(a.id))
+                  ? -1
+                  : 1) -
+                (b.id === (label as any)?.id ||
+                (multiple && Array.isArray(label) && label.includes(b.id))
+                  ? -1
+                  : 1)
+            )
             .filter((label) =>
               selectedCollection
                 ? label.collections
@@ -309,66 +322,59 @@ function LabelPickerContent({
               )}
             </View>
           }
-          renderItem={({ item }: any) => (
-            <Pressable
-              onPress={() => {
-                if (multiple && Array.isArray(label)) {
-                  if (label.includes(item.id) && typeof label === "object") {
-                    setLabel(label.filter((id) => id !== item.id));
+          renderItem={({ item }: any) => {
+            const isSelected =
+              (label as any)?.id == item.id ||
+              (multiple && Array.isArray(label) && label.includes(item.id));
+
+            return (
+              <ListItemButton
+                onPress={() => {
+                  if (multiple && Array.isArray(label)) {
+                    if (label.includes(item.id) && typeof label === "object") {
+                      setLabel(label.filter((id) => id !== item.id));
+                    } else {
+                      setLabel([...label, item.id]);
+                    }
                   } else {
-                    setLabel([...label, item.id]);
+                    setLabel(item.id === (label as any)?.id ? null : item);
+                    setTimeout(handleClose, 0);
                   }
-                } else {
-                  setLabel(item.id === (label as any)?.id ? null : item);
-                  setTimeout(handleClose, 0);
-                }
-              }}
-              style={({ pressed, hovered }) => [
-                labelPickerStyles.labelOption,
-                {
-                  backgroundColor:
-                    theme[
-                      (pressed ? 4 : hovered ? 3 : 2) +
-                        ((multiple &&
-                          ((label as any)?.id || label).includes(item.id)) ||
-                        (!multiple && ((label as any)?.id || label) == item.id)
-                          ? 1
-                          : 0)
-                    ],
-                },
-              ]}
-            >
-              <View
-                style={[
-                  labelPickerStyles.labelDot,
-                  {
-                    backgroundColor: colors[item.color][5],
-                  },
-                ]}
+                }}
+                style={{ paddingVertical: 0, marginBottom: 5 }}
+                variant={isSelected ? "filled" : undefined}
               >
-                <Emoji emoji={item.emoji} size={20} />
-              </View>
-              <ListItemText
-                primary={item.name}
-                secondary={`${item._count.entities} item${
-                  item._count.entities !== 1 ? "s" : ""
-                }`}
-              />
-              {((label as any)?.id == item.id || multiple) && (
-                <Icon
-                  filled={
-                    multiple && Array.isArray(label) && label.includes(item.id)
-                  }
-                  size={30}
+                <View
+                  style={[
+                    labelPickerStyles.labelDot,
+                    {
+                      backgroundColor: colors[item.color][5],
+                    },
+                  ]}
                 >
-                  {(label as any)?.id == item.id ||
-                  (multiple && Array.isArray(label) && label.includes(item.id))
-                    ? "check_circle"
-                    : "circle"}
-                </Icon>
-              )}
-            </Pressable>
-          )}
+                  <Emoji emoji={item.emoji} size={20} />
+                </View>
+                <ListItemText
+                  primary={item.name}
+                  secondary={`${item._count.entities} item${
+                    item._count.entities !== 1 ? "s" : ""
+                  }`}
+                />
+                {((label as any)?.id == item.id || multiple) && (
+                  <Icon
+                    filled={
+                      multiple &&
+                      Array.isArray(label) &&
+                      label.includes(item.id)
+                    }
+                    size={30}
+                  >
+                    {isSelected ? "check_circle" : "circle"}
+                  </Icon>
+                )}
+              </ListItemButton>
+            );
+          }}
         />
       ) : (
         <View
@@ -456,3 +462,4 @@ export default function LabelPicker({
     </>
   );
 }
+
