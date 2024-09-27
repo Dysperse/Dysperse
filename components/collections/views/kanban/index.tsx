@@ -154,7 +154,7 @@ export default function Kanban({ editOrderMode }) {
     ? data.kanbanOrder.map((id) => data.labels.find((l) => l.id === id))
     : [];
 
-  const isReadOnly = access?.access === "READ_ONLY";
+  const isReadOnly = access?.access === "READ_ONLY" || isPublic;
 
   return !data.labels ? null : (
     <KanbanContext.Provider
