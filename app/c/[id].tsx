@@ -9,6 +9,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
+import { inIframe } from "../auth";
 
 export default function Page() {
   const { width, height } = useWindowDimensions();
@@ -52,7 +53,16 @@ export default function Page() {
                   <Icon>north_east</Icon>
                 </Pressable>
 
-                <Button variant="filled" onPress={() => router.push("/auth")}>
+                <Button
+                  variant="filled"
+                  onPress={() => {
+                    if (inIframe()) {
+                      Linking.openURL("https://app.dysperse.com/auth");
+                    } else {
+                      router.push("/auth");
+                    }
+                  }}
+                >
                   <Icon>login</Icon>
                   <ButtonText>Sign in</ButtonText>
                 </Button>

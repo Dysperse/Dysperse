@@ -145,7 +145,7 @@ function EditKanbanOrder() {
 
 export default function Kanban({ editOrderMode }) {
   const breakpoints = useResponsiveBreakpoints();
-  const { data, openLabelPicker } = useCollectionContext();
+  const { data, openLabelPicker, access, isPublic } = useCollectionContext();
   const theme = useColorTheme();
 
   const [currentColumn, setCurrentColumn] = useState(0);
@@ -153,6 +153,8 @@ export default function Kanban({ editOrderMode }) {
   const columns = data.kanbanOrder
     ? data.kanbanOrder.map((id) => data.labels.find((l) => l.id === id))
     : [];
+
+  const isReadOnly = access.access === "READ_ONLY";
 
   return !data.labels ? null : (
     <KanbanContext.Provider
@@ -187,7 +189,7 @@ export default function Kanban({ editOrderMode }) {
             (breakpoints.md || currentColumn === -1) && (
               <Column entities={data.entities} />
             )}
-          {breakpoints.md && (
+          {breakpoints.md && !isReadOnly && (
             <View
               style={{
                 width: 300,
