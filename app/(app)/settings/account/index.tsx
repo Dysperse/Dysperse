@@ -456,7 +456,13 @@ function ProfileBanner() {
           )}
         </View>
       </LinearGradient>
-      <View style={{ paddingHorizontal: 40, position: "relative" }}>
+      <View
+        style={{
+          paddingHorizontal: 30,
+          pointerEvents: editing ? undefined : "auto",
+          position: "relative",
+        }}
+      >
         <IconButton
           size={50}
           icon={editing ? "check" : "edit"}
@@ -596,3 +602,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
