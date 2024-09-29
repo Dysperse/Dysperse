@@ -379,7 +379,6 @@ export default function Page() {
                   maxWidth: "100%",
                   backgroundColor: theme[3],
                   borderRadius: 20,
-                  borderWidth: 1,
                   marginBottom: 10,
                   padding: 20,
                   paddingTop: 21,
