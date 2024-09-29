@@ -322,7 +322,12 @@ const attachmentButtonStyles = (theme) => ({
   hovered: theme[7],
 });
 
-export const handleLocationPress = (session, item) => {
+export const handleLocationPress = (
+  session = {
+    user: { mapsProvider: "GOOGLE" },
+  },
+  item
+) => {
   if (item.type === "LOCATION" && item?.data?.rich) {
     if (session.user?.mapsProvider === "APPLE") {
       Linking.openURL(

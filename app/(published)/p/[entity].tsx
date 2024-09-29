@@ -1,6 +1,7 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
 import {
+  handleLocationPress,
   isValidHttpUrl,
   normalizeRecurrenceRuleObject,
 } from "@/components/task/drawer/details";
@@ -140,6 +141,9 @@ const TaskAttachmentCard = ({ item }) => {
       if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
       break;
     case "LOCATION":
+      if (name.rich) {
+        name = name.name;
+      }
       icon = isValidHttpUrl(item.data) ? "link" : "map";
       if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
       break;
@@ -149,12 +153,19 @@ const TaskAttachmentCard = ({ item }) => {
   }
 
   const handleOpenPress = useCallback(() => {
+    if (item.type === "LOCATION") {
+      alert(JSON.stringify(item.data));
+      handleLocationPress(undefined, {
+        type: "LOCATION",
+        data: item.data,
+      });
+    }
     if (isValidHttpUrl(item.data)) {
       Linking.openURL(item.data);
     } else {
       Linking.openURL(`https://maps.google.com/?q=${item.data}`);
     }
-  }, [item.data]);
+  }, [item.data, handleLocationPress]);
 
   return (
     <Pressable
