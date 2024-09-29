@@ -487,7 +487,7 @@ export default function Page() {
             variant="filled"
             disabled
             key={device.id}
-            style={{ marginBottom: 10 }}
+            style={{ marginTop: 10 }}
           >
             <Icon>{icons[device.deviceType]}</Icon>
             <ListItemText
