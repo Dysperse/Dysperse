@@ -7,6 +7,12 @@ import { renderRootComponent } from "expo-router/build/renderRootComponent";
 LoadSkiaWeb({
   locateFile: (file) =>
     `https://cdn.jsdelivr.net/npm/canvaskit-wasm@${version}/bin/full/${file}`,
-}).then(async () => {
-  renderRootComponent(App);
-});
+})
+  .then(async () => {
+    renderRootComponent(App);
+  })
+  .catch(() => {
+    // better than nothing tbh
+    renderRootComponent(App);
+  });
+
