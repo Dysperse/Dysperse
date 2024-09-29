@@ -395,11 +395,13 @@ export default function Page() {
                       transform: [{ translateY: -1 }],
                     }}
                   >
-                    <ProfilePicture
-                      size={24}
-                      image={data.space.members?.[0]?.user?.profile?.picture}
-                      name={data.space.members?.[0]?.user?.profile?.name}
-                    />
+                    {data.space.members?.[0]?.user?.profile?.name && (
+                      <ProfilePicture
+                        size={24}
+                        image={data.space.members?.[0]?.user?.profile?.picture}
+                        name={data.space.members?.[0]?.user?.profile?.name}
+                      />
+                    )}
                     <Text weight={700}>
                       {data.space.members?.[0]?.user?.profile?.name ||
                         "an anonymous Dysperse user"}
