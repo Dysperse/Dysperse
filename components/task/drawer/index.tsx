@@ -180,7 +180,10 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
                 isReadOnly,
               }}
             >
-              <TaskDrawerContent handleClose={handleClose} />
+              <TaskDrawerContent
+                forceClose={forceClose}
+                handleClose={handleClose}
+              />
             </TaskDrawerContext.Provider>
           ) : error ? (
             <View style={{ padding: 20 }}>
@@ -282,3 +285,4 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
+

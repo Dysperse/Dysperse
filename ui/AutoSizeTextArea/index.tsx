@@ -1,6 +1,6 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
-import { Keyboard, StyleProp, TextInputProps } from "react-native";
+import { Keyboard, StyleProp, TextInput, TextInputProps } from "react-native";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -8,6 +8,7 @@ interface DTextAreaProps extends TextInputProps {
   inputStyle?: StyleProp<any>;
   inputDefaultValue?: string;
   disabled?: boolean;
+  bottomSheet?: boolean;
 }
 
 export default function AutoSizeTextArea(props: DTextAreaProps) {
@@ -21,8 +22,10 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
     });
   }, [ref]);
 
+  const SafeTextInput = props.bottomSheet ? BottomSheetTextInput : TextInput;
+
   return (
-    <BottomSheetTextInput
+    <SafeTextInput
       ref={ref}
       {...props}
       defaultValue={props.inputDefaultValue}
@@ -50,3 +53,4 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
     />
   );
 }
+

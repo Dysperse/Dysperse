@@ -8,11 +8,12 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -25,7 +26,7 @@ import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
 
-function TaskNameInput() {
+function TaskNameInput({ bottomSheet }) {
   const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
@@ -35,6 +36,7 @@ function TaskNameInput() {
   return (
     <>
       <AutoSizeTextArea
+        bottomSheet={bottomSheet}
         onBlur={() => {
           setIsFocused(false);
           if (name === task.name) return;
@@ -77,14 +79,21 @@ function TaskNameInput() {
   );
 }
 
-export function TaskDrawerContent({ handleClose }) {
+export function TaskDrawerContent({
+  handleClose,
+  forceClose,
+}: {
+  handleClose: () => void;
+  forceClose?: (config?: any) => void;
+}) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
-  const { forceClose } = useBottomSheet();
+
+  const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const handlePriorityChange = useCallback(() => {
     rotate.value = withSpring(!task.pinned ? -35 : 0, {
@@ -143,19 +152,21 @@ export function TaskDrawerContent({ handleClose }) {
             width: "100%",
           }}
         >
-          <IconButton
-            onPress={() => {
-              handleClose();
-              forceClose(
-                breakpoints.md
-                  ? undefined
-                  : { overshootClamping: true, stiffness: 400 }
-              );
-            }}
-            variant="outlined"
-            size={50}
-            icon="close"
-          />
+          {forceClose && (
+            <IconButton
+              onPress={() => {
+                handleClose();
+                forceClose(
+                  breakpoints.md
+                    ? undefined
+                    : { overshootClamping: true, stiffness: 400 }
+                );
+              }}
+              variant="outlined"
+              size={50}
+              icon="close"
+            />
+          )}
           <View style={{ flex: 1 }} />
           {!isReadOnly && (
             <IconButton
@@ -173,7 +184,7 @@ export function TaskDrawerContent({ handleClose }) {
         colors={[theme[2], "transparent"]}
         style={{ height: 40, width: "100%", marginBottom: -40, zIndex: 1 }}
       />
-      <BottomSheetScrollView showsHorizontalScrollIndicator={false}>
+      <SafeScrollView showsHorizontalScrollIndicator={false}>
         <View style={{ paddingBottom: 50, paddingHorizontal: 20 }}>
           <View
             style={{
@@ -251,10 +262,10 @@ export function TaskDrawerContent({ handleClose }) {
               </LabelPicker>
             )}
           </View>
-          <TaskNameInput />
+          <TaskNameInput bottomSheet={Boolean(forceClose)} />
           <TaskDetails />
         </View>
-      </BottomSheetScrollView>
+      </SafeScrollView>
     </>
   );
 }

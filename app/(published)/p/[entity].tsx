@@ -1,5 +1,7 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { TaskImportantChip, TaskLabelChip } from "@/components/task";
+import { TaskDrawerContent } from "@/components/task/drawer/content";
+import { TaskDrawerContext } from "@/components/task/drawer/context";
 import {
   handleLocationPress,
   isValidHttpUrl,
@@ -8,7 +10,7 @@ import {
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
-import { Avatar } from "@/ui/Avatar";
+import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
@@ -20,11 +22,12 @@ import Logo from "@/ui/logo";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { createContext, useCallback, useContext, useMemo } from "react";
-import { Linking, Pressable, useWindowDimensions, View } from "react-native";
+import { Linking, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import useSWR from "swr";
@@ -41,16 +44,21 @@ const Header = () => {
   }, [params]);
 
   return (
-    <>
+    <View
+      style={{
+        height: 100,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+      }}
+    >
       <Pressable
         onPress={() => Linking.openURL("https://dysperse.com")}
         style={{
           alignItems: "center",
           gap: 10,
           flexDirection: "row",
-          position: "absolute",
-          top: 20,
-          left: 20,
         }}
       >
         <Logo size={50} color="mint" />
@@ -66,13 +74,12 @@ const Header = () => {
         <Icon>north_east</Icon>
       </Pressable>
       <IconButton
-        style={{ position: "absolute", top: 20, right: 20 }}
         icon="ios_share"
         size={50}
         variant="outlined"
         onPress={handleShare}
       />
-    </>
+    </View>
   );
 };
 
@@ -336,12 +343,10 @@ const Info = () => {
 
 export default function Page() {
   const theme = useColor("mint");
-  const breakpoints = useResponsiveBreakpoints();
-  const { height } = useWindowDimensions();
   const params = useLocalSearchParams();
   const { data, isLoading, error } = useSWR([
     "published",
-    { id: params.entity },
+    { id: params.entity, user: "true" },
   ]);
 
   const contextValue = useMemo(() => ({ data }), [data]);
@@ -352,25 +357,81 @@ export default function Page() {
       <ColorThemeProvider setHTMLAttributes theme={theme}>
         {!isLoading && !data?.name ? (
           <ErrorPage />
+        ) : !data?.name ? (
+          <Spinner />
         ) : (
-          <ScrollView
-            centerContent
-            style={{ backgroundColor: theme[2], height }}
-            contentContainerStyle={{
-              padding: breakpoints.md ? 50 : 20,
-              alignItems: "center",
-              paddingTop: 100,
-            }}
-          >
-            {(isLoading || data?.name) && <Header />}
-            {data?.name ? (
-              <Info />
-            ) : isLoading ? (
-              <Spinner color={theme[9]} />
-            ) : (
-              <ErrorPage />
-            )}
-          </ScrollView>
+          <BottomSheetModalProvider>
+            <ScrollView
+              style={{
+                backgroundColor: theme[1],
+                height: 100,
+              }}
+              contentContainerStyle={{
+                alignItems: "center",
+                paddingBottom: 50,
+                paddingHorizontal: 20,
+              }}
+            >
+              <Header />
+              <View
+                style={{
+                  width: 500,
+                  maxWidth: "100%",
+                  backgroundColor: theme[3],
+                  borderRadius: 20,
+                  borderWidth: 1,
+                  marginBottom: 10,
+                  padding: 20,
+                  paddingTop: 21,
+                  overflow: "hidden",
+                }}
+              >
+                <Text style={{ textAlign: "center" }}>
+                  You're viewing a task shared by{"  "}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 5,
+                      transform: [{ translateY: -1 }],
+                    }}
+                  >
+                    <ProfilePicture
+                      size={24}
+                      image={data.space.members?.[0]?.user?.profile?.picture}
+                      name={data.space.members?.[0]?.user?.profile?.name}
+                    />
+                    <Text weight={700}>
+                      {data.space.members?.[0]?.user?.profile?.name ||
+                        "an anonymous Dysperse user"}
+                    </Text>
+                  </View>
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: 500,
+                  maxWidth: "100%",
+                  backgroundColor: theme[2],
+                  borderRadius: 20,
+                  borderWidth: 1,
+                  overflow: "hidden",
+                  borderColor: theme[5],
+                }}
+              >
+                <TaskDrawerContext.Provider
+                  value={{
+                    dateRange: null,
+                    task: data,
+                    updateTask: () => {},
+                    mutateList: () => {},
+                    isReadOnly: true,
+                  }}
+                >
+                  <TaskDrawerContent handleClose={() => {}} />
+                </TaskDrawerContext.Provider>
+              </View>
+            </ScrollView>
+          </BottomSheetModalProvider>
         )}
       </ColorThemeProvider>
     </PublishedEntityContext.Provider>
