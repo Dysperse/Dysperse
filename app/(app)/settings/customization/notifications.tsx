@@ -159,7 +159,7 @@ const notificationSettings = [
     ],
   },
   {
-    name: "Entities",
+    name: "TASK",
     options: [
       {
         key: "ENTITY_START",
