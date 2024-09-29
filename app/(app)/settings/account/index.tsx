@@ -459,8 +459,6 @@ function ProfileBanner() {
       <View
         style={{
           paddingHorizontal: 30,
-          pointerEvents: editing ? undefined : "none",
-          position: "relative",
         }}
       >
         <IconButton
@@ -472,68 +470,75 @@ function ProfileBanner() {
             top: 0,
             right: 0,
             margin: 10,
+            zIndex: 99,
             marginTop: -5,
           }}
           onPress={() => setEditing((e) => !e)}
         />
-        <View style={{ marginTop: 20 }} />
-        {editing && <Text variant="eyebrow">Name</Text>}
-        <TextField
-          defaultValue={session.user.profile.name}
-          weight={900}
-          variant={editing ? "filled+outlined" : undefined}
-          editable={editing}
-          onBlur={(e) => editing && onChange("name", e.nativeEvent.text)}
-          style={{ fontSize: 40, color: theme[12] }}
-        />
-        {editing && (
-          <Text variant="eyebrow" style={eyebrowStyles}>
-            Username
-          </Text>
-        )}
-        <TextField
-          value={
-            session.user.username
-              ? `@${session.user.username}`
-              : session.user.email
-          }
-          variant={editing ? "filled+outlined" : undefined}
-          weight={900}
-          editable={editing}
+        <View
           style={{
-            fontSize: 20,
-            opacity: 0.6,
-            color: theme[12],
+            pointerEvents: editing ? undefined : "none",
           }}
-        />
-        {(editing || session.user.profile.bio) && (
-          <>
+        >
+          <View style={{ marginTop: 20 }} />
+          {editing && <Text variant="eyebrow">Name</Text>}
+          <TextField
+            defaultValue={session.user.profile.name}
+            weight={900}
+            variant={editing ? "filled+outlined" : undefined}
+            editable={editing}
+            onBlur={(e) => editing && onChange("name", e.nativeEvent.text)}
+            style={{ fontSize: 40, color: theme[12] }}
+          />
+          {editing && (
             <Text variant="eyebrow" style={eyebrowStyles}>
-              About me
+              Username
             </Text>
-            <TextField
-              variant={editing ? "filled+outlined" : undefined}
-              multiline
-              onBlur={(e) => onChange("bio", e.nativeEvent.text)}
-              defaultValue={session.user.profile.bio}
-              style={{ marginVertical: 5 }}
-              numberOfLines={1}
-              placeholder="Tell the world about yourself <3"
-            />
-          </>
-        )}
-        {(editing || session.user.profile.birthday) && (
-          <>
-            <Text variant="eyebrow" style={eyebrowStyles}>
-              Birthday
-            </Text>
-            <TextField
-              value={dayjs(session.user.profile.birthday).format("MMMM Do")}
-              style={{ marginVertical: 5 }}
-              placeholder="What's your birthday?"
-            />
-          </>
-        )}
+          )}
+          <TextField
+            value={
+              session.user.username
+                ? `@${session.user.username}`
+                : session.user.email
+            }
+            variant={editing ? "filled+outlined" : undefined}
+            weight={900}
+            editable={editing}
+            style={{
+              fontSize: 20,
+              opacity: 0.6,
+              color: theme[12],
+            }}
+          />
+          {(editing || session.user.profile.bio) && (
+            <>
+              <Text variant="eyebrow" style={eyebrowStyles}>
+                About me
+              </Text>
+              <TextField
+                variant={editing ? "filled+outlined" : undefined}
+                multiline
+                onBlur={(e) => onChange("bio", e.nativeEvent.text)}
+                defaultValue={session.user.profile.bio}
+                style={{ marginVertical: 5 }}
+                numberOfLines={1}
+                placeholder="Tell the world about yourself <3"
+              />
+            </>
+          )}
+          {(editing || session.user.profile.birthday) && (
+            <>
+              <Text variant="eyebrow" style={eyebrowStyles}>
+                Birthday
+              </Text>
+              <TextField
+                value={dayjs(session.user.profile.birthday).format("MMMM Do")}
+                style={{ marginVertical: 5 }}
+                placeholder="What's your birthday?"
+              />
+            </>
+          )}
+        </View>
       </View>
     </View>
   );
