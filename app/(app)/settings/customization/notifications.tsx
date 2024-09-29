@@ -1,10 +1,7 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
-import Alert from "@/ui/Alert";
-import { Button, ButtonText } from "@/ui/Button";
-import { addHslAlpha } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
+import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -222,17 +219,16 @@ const TestNotifications = () => {
 
   return (
     <Button
+      height={60}
       onPress={handleTest}
       variant="filled"
       large
-      containerStyle={{ marginTop: 20 }}
+      text="Show an example"
+      icon="send"
+      containerStyle={{ flex: 1 }}
+      iconPosition="end"
       isLoading={isLoading}
-    >
-      <ButtonText style={{ fontSize: 20 }} weight={700}>
-        Show an example
-      </ButtonText>
-      <Icon bold>send</Icon>
-    </Button>
+    />
   );
 };
 
@@ -262,12 +258,14 @@ export function SubscribeButton({
   mutate,
   text,
   onSuccess,
+  settings,
   disableAutoCheck,
 }: {
   data: any;
   mutate: any;
   text?: string;
   onSuccess?: () => void;
+  settings?: boolean;
   disableAutoCheck?: boolean;
 }) {
   const { session } = useSession();
@@ -370,15 +368,18 @@ export function SubscribeButton({
       disabled={Boolean(tokenExists)}
       onPress={handlePress}
       variant={tokenExists ? "outlined" : "filled"}
-      bold
+      bold={!settings}
       large
       height={60}
+      containerStyle={[settings && [{ flex: 1 }]]}
       text={
         text ||
         (tokenExists
           ? "Notifications enabled"
-          : "Enable notifications on this device")
+          : `Enable${settings ? "" : " notifications"} on this device`)
       }
+      icon={settings ? "add_circle" : undefined}
+      iconPosition="end"
     ></Button>
   );
 }
@@ -411,7 +412,10 @@ function NotificationPreferences({ data, mutate }) {
           "When you have many notifications, we'll group them together in a single notification. \nTurn this off if you like getting spammed."
         }
       />
-      <Icon size={40}>
+      <Icon
+        size={50}
+        style={{ opacity: data.settings.groupNotifications ? 1 : 0.4 }}
+      >
         toggle_{data.settings.groupNotifications ? "on" : "off"}
       </Icon>
     </ListItemButton>
@@ -420,8 +424,6 @@ function NotificationPreferences({ data, mutate }) {
 
 export default function Page() {
   const { session } = useSession();
-  const theme = useColorTheme();
-
   const { data, mutate, error } = useSWR(["user/notifications"]);
 
   const handleDelete = async (id: string) => {
@@ -451,28 +453,10 @@ export default function Page() {
   return (
     <SettingsScrollView>
       <Text style={settingStyles.title}>Notifications</Text>
-      <Text weight={600}>
-        Here, you can control how much you want to be{" "}
-        <Text
-          weight={600}
-          style={{
-            textDecorationLine: "line-through",
-            color: addHslAlpha(theme[12], 0.6),
-          }}
-        >
-          annoyed
-        </Text>{" "}
-        notified.
-      </Text>
-
-      <Alert
-        style={{ marginTop: 20, marginBottom: -5 }}
-        emoji="1f6a7"
-        title="Work in progress"
-        subtitle="We're working hard to add notifications to the app. Stay tuned!"
-      />
-
-      <TestNotifications />
+      <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
+        <SubscribeButton settings data={data} mutate={mutate} />
+        <TestNotifications />
+      </View>
       <Text style={settingStyles.heading}>Preferences</Text>
       {data?.settings ? (
         <NotificationPreferences mutate={mutate} data={data} />
@@ -480,7 +464,6 @@ export default function Page() {
         <Spinner />
       )}
       <Text style={settingStyles.heading}>Manage devices</Text>
-      <SubscribeButton data={data} mutate={mutate} />
       {data ? (
         data?.subscriptions?.map?.((device) => (
           <ListItemButton

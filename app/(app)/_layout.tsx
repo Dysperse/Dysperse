@@ -32,6 +32,7 @@ import weekday from "dayjs/plugin/weekday";
 import * as NavigationBar from "expo-navigation-bar";
 import {
   Redirect,
+  router,
   SplashScreen,
   useGlobalSearchParams,
   usePathname,
@@ -43,8 +44,8 @@ import {
   Platform,
   Pressable,
   StatusBar,
-  View,
   useWindowDimensions,
+  View,
 } from "react-native";
 import {
   DrawerLayout,
@@ -111,7 +112,7 @@ const WebAnimationComponent = ({ children }) => {
 };
 
 export default function AppLayout() {
-  const { session, isLoading } = useSession();
+  const { session, isLoading, signOut } = useSession();
   const { session: sessionData, isLoading: isUserLoading } = useUser();
   const { width, height } = useWindowDimensions();
   const isDark = useDarkMode();
@@ -151,6 +152,18 @@ export default function AppLayout() {
         : 0,
     [pathname, width]
   );
+
+  useEffect(() => {
+    if (session && !isUserLoading && !sessionData?.user) {
+      Toast.show({
+        type: "error",
+        text1: "You've been signed out",
+        text2: "Please sign in again",
+      });
+      signOut();
+      router.navigate("/auth");
+    }
+  }, [isUserLoading, session, signOut, sessionData]);
 
   if (isLoading || isUserLoading) {
     return (
