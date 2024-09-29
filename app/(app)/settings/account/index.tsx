@@ -459,7 +459,7 @@ function ProfileBanner() {
       <View
         style={{
           paddingHorizontal: 30,
-          pointerEvents: editing ? undefined : "auto",
+          pointerEvents: editing ? undefined : "none",
           position: "relative",
         }}
       >
