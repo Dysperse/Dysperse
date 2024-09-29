@@ -357,8 +357,6 @@ export default function Page() {
       <ColorThemeProvider setHTMLAttributes theme={theme}>
         {!isLoading && !data?.name ? (
           <ErrorPage />
-        ) : !data?.name ? (
-          <Spinner />
         ) : (
           <BottomSheetModalProvider>
             <ScrollView
@@ -373,64 +371,72 @@ export default function Page() {
               }}
             >
               <Header />
-              <View
-                style={{
-                  width: 500,
-                  maxWidth: "100%",
-                  backgroundColor: theme[3],
-                  borderRadius: 20,
-                  marginBottom: 10,
-                  padding: 20,
-                  paddingTop: 21,
-                  overflow: "hidden",
-                }}
-              >
-                <Text style={{ textAlign: "center" }}>
-                  You're viewing a task shared by{"  "}
+              {!data?.name ? (
+                <Spinner />
+              ) : (
+                <>
                   <View
                     style={{
-                      flexDirection: "row",
-                      gap: 5,
-                      transform: [{ translateY: -1 }],
+                      width: 500,
+                      maxWidth: "100%",
+                      backgroundColor: theme[3],
+                      borderRadius: 20,
+                      marginBottom: 10,
+                      padding: 20,
+                      paddingTop: 21,
+                      overflow: "hidden",
                     }}
                   >
-                    {data.space.members?.[0]?.user?.profile?.name && (
-                      <ProfilePicture
-                        size={24}
-                        image={data.space.members?.[0]?.user?.profile?.picture}
-                        name={data.space.members?.[0]?.user?.profile?.name}
-                      />
-                    )}
-                    <Text weight={700}>
-                      {data.space.members?.[0]?.user?.profile?.name ||
-                        "an anonymous Dysperse user"}
+                    <Text style={{ textAlign: "center" }}>
+                      You're viewing a task shared by{"  "}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 5,
+                          transform: [{ translateY: -1 }],
+                        }}
+                      >
+                        {data.space.members?.[0]?.user?.profile?.name && (
+                          <ProfilePicture
+                            size={24}
+                            image={
+                              data.space.members?.[0]?.user?.profile?.picture
+                            }
+                            name={data.space.members?.[0]?.user?.profile?.name}
+                          />
+                        )}
+                        <Text weight={700}>
+                          {data.space.members?.[0]?.user?.profile?.name ||
+                            "an anonymous Dysperse user"}
+                        </Text>
+                      </View>
                     </Text>
                   </View>
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: 500,
-                  maxWidth: "100%",
-                  backgroundColor: theme[2],
-                  borderRadius: 20,
-                  borderWidth: 1,
-                  overflow: "hidden",
-                  borderColor: theme[5],
-                }}
-              >
-                <TaskDrawerContext.Provider
-                  value={{
-                    dateRange: null,
-                    task: data,
-                    updateTask: () => {},
-                    mutateList: () => {},
-                    isReadOnly: true,
-                  }}
-                >
-                  <TaskDrawerContent handleClose={() => {}} />
-                </TaskDrawerContext.Provider>
-              </View>
+                  <View
+                    style={{
+                      width: 500,
+                      maxWidth: "100%",
+                      backgroundColor: theme[2],
+                      borderRadius: 20,
+                      borderWidth: 1,
+                      overflow: "hidden",
+                      borderColor: theme[5],
+                    }}
+                  >
+                    <TaskDrawerContext.Provider
+                      value={{
+                        dateRange: null,
+                        task: data,
+                        updateTask: () => {},
+                        mutateList: () => {},
+                        isReadOnly: true,
+                      }}
+                    >
+                      <TaskDrawerContent handleClose={() => {}} />
+                    </TaskDrawerContext.Provider>
+                  </View>
+                </>
+              )}
             </ScrollView>
           </BottomSheetModalProvider>
         )}
