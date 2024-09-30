@@ -169,12 +169,15 @@ export function Column(props: ColumnProps) {
     if (!newTask) return;
     mutate(
       (data) => {
-        const labelIndex = data.labels.findIndex((l) => l.id === label.id);
-        if (labelIndex === -1) return data;
+        if (data.labels.findIndex((l) => l.id === newTask?.label?.id) === -1)
+          return data;
+
         return {
           ...data,
           labels: data.labels.map((l) =>
-            l.id === label.id ? { ...l, entities: [...l.entities, newTask] } : l
+            l.id === newTask?.label?.id
+              ? { ...l, entities: [...l.entities, newTask] }
+              : l
           ),
         };
       },
@@ -376,4 +379,3 @@ export function Column(props: ColumnProps) {
     </Animated.View>
   );
 }
-
