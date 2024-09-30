@@ -18,7 +18,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import TaskDatePicker from "../task/create/TaskDatePicker";
 
 function NavbarHeader({ isLoading }) {
@@ -76,6 +76,7 @@ function Actions({ setIsLoading }) {
   const { setSelection } = useSelectionContext();
   const { isLoading } = useSelectionContext();
   const blue = useColor("blue");
+  const { mutate } = useSWRConfig();
 
   const itemStyle: ViewStyle = useMemo(
     () =>
@@ -112,7 +113,7 @@ function Actions({ setIsLoading }) {
             body: JSON.stringify({ id: selection, ...t }),
           }
         );
-        await mutate(() => true, undefined, { revalidate: true });
+        await mutate(() => true);
         if (shouldClear) setSelection([]);
       } catch (e) {
         console.log(e);
