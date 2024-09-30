@@ -83,87 +83,89 @@ export function Trash() {
           onPress={() => sidebarRef.current.openDrawer()}
         />
       )}
-      <View
-        style={{
-          flexDirection: breakpoints.md ? "row" : "column",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 40,
-          paddingBottom: 20,
-          paddingTop: breakpoints.md ? 50 : 100 + insets.top,
-        }}
-      >
-        <View>
-          <Text style={{ fontSize: 40 }} weight={800}>
-            Trash
-          </Text>
-          <Text
-            style={{
-              opacity: 0.6,
-            }}
-          >
-            Items are permanently deleted on the 1st of every month
-          </Text>
-        </View>
-        <DeleteAllButton handleDelete={handleDelete} />
-      </View>
-      {Array.isArray(data) ? (
-        <FlatList
-          data={data.filter((t) => t.trash)}
+      <View style={{ paddingHorizontal: 20 }}>
+        <View
           style={{
-            flex: 1,
-            height: "100%",
+            flexDirection: breakpoints.md ? "row" : "column",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingBottom: 20,
+            paddingHorizontal: 20,
+            paddingTop: breakpoints.md ? 50 : 100 + insets.top,
           }}
-          contentContainerStyle={{
-            paddingHorizontal: 35,
-          }}
-          centerContent={data.filter((t) => t.trash).length === 0}
-          ListEmptyComponent={() => (
-            <View
+        >
+          <View>
+            <Text style={{ fontSize: 40 }} weight={800}>
+              Trash
+            </Text>
+            <Text
               style={{
-                alignItems: "center",
+                opacity: 0.6,
               }}
             >
-              <Emoji size={50} emoji="1f389" />
-              <Text
+              Items are permanently deleted on the 1st of every month
+            </Text>
+          </View>
+          <DeleteAllButton handleDelete={handleDelete} />
+        </View>
+        {Array.isArray(data) ? (
+          <FlatList
+            data={data.filter((t) => t.trash)}
+            style={{
+              flex: 1,
+              height: "100%",
+            }}
+            contentContainerStyle={{
+              paddingHorizontal: 35,
+            }}
+            centerContent={data.filter((t) => t.trash).length === 0}
+            ListEmptyComponent={() => (
+              <View
                 style={{
-                  fontSize: 20,
-                  textAlign: "center",
-                  padding: 20,
-                  opacity: 0.6,
+                  alignItems: "center",
                 }}
               >
-                Nothing to see here!
-              </Text>
-            </View>
-          )}
-          renderItem={({ item }) => (
-            <View style={{ maxWidth: 400, width: "100%" }}>
-              <Entity
-                isReadOnly={false}
-                showLabel
-                onTaskUpdate={(newTask) => {
-                  console.log("New task recieved", newTask);
-                  mutate((oldData) =>
-                    oldData.map((t) => (t.id === newTask.id ? newTask : t))
-                  );
-                }}
-                item={item}
-              />
-            </View>
-          )}
-          //   ={100}
-          keyExtractor={(item: any) => item.id}
-        />
-      ) : error ? (
-        <ErrorAlert />
-      ) : (
-        <View
-          style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
-        >
-          <Spinner />
-        </View>
-      )}
+                <Emoji size={50} emoji="1f389" />
+                <Text
+                  style={{
+                    fontSize: 20,
+                    textAlign: "center",
+                    padding: 20,
+                    opacity: 0.6,
+                  }}
+                >
+                  Nothing to see here!
+                </Text>
+              </View>
+            )}
+            renderItem={({ item }) => (
+              <View style={{ maxWidth: 400, width: "100%" }}>
+                <Entity
+                  isReadOnly={false}
+                  showLabel
+                  onTaskUpdate={(newTask) => {
+                    console.log("New task recieved", newTask);
+                    mutate((oldData) =>
+                      oldData.map((t) => (t.id === newTask.id ? newTask : t))
+                    );
+                  }}
+                  item={item}
+                />
+              </View>
+            )}
+            //   ={100}
+            keyExtractor={(item: any) => item.id}
+          />
+        ) : error ? (
+          <ErrorAlert />
+        ) : (
+          <View
+            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+          >
+            <Spinner />
+          </View>
+        )}
+      </View>
     </ContentWrapper>
   );
 }
