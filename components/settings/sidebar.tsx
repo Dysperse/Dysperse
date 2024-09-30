@@ -9,7 +9,6 @@ import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Logo from "@/ui/logo";
 import { cacheDirectory, deleteAsync } from "expo-file-system";
 import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
@@ -277,21 +276,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           marginBottom: 20,
         }}
       >
-        {breakpoints.md ? (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 20,
-              gap: 7,
-            }}
-          >
-            <Logo size={30} />
-            <Text style={{ color: theme[11] }} weight={700}>
-              Settings
-            </Text>
-          </View>
-        ) : (
+        {!breakpoints.md && (
           <Text
             style={{
               marginTop: 20,
