@@ -17,11 +17,14 @@ import { GridContext, GridContextSelectedColumn } from "./context";
 export default function Grid({ editOrderMode }) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const { data, mutate, openLabelPicker } = useCollectionContext();
+  const { data, mutate, openLabelPicker, access, isPublic } =
+    useCollectionContext();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const scrollRef = useRef<ScrollView>(null);
   const [contentWidth, setContentWidth] = useState(width - 200);
+
+  const isReadOnly = access.access === "READ_ONLY" || isPublic;
 
   const [currentColumn, setCurrentColumn] =
     useState<GridContextSelectedColumn>("HOME");
@@ -164,17 +167,20 @@ export default function Grid({ editOrderMode }) {
                     label.empty && {
                       borderWidth: 1,
                       borderColor: addHslAlpha(theme[5], 0.5),
+                      alignItems: "center",
+                      justifyContent: "center",
                     },
                   ]}
                 >
                   {label.empty ? (
-                    <>
+                    isReadOnly && (
                       <IconButton
                         onPress={openLabelPicker}
                         size={55}
+                        icon="add"
                         variant="outlined"
                       />
-                    </>
+                    )
                   ) : label.other ? (
                     <Column grid entities={data.entities} />
                   ) : (
