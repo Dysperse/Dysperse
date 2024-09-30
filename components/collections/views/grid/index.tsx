@@ -1,6 +1,7 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
+import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
@@ -16,10 +17,11 @@ import { GridContext, GridContextSelectedColumn } from "./context";
 export default function Grid({ editOrderMode }) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const { data, mutate } = useCollectionContext();
+  const { data, mutate, openLabelPicker } = useCollectionContext();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const scrollRef = useRef<ScrollView>(null);
+  const [contentWidth, setContentWidth] = useState(width - 200);
 
   const [currentColumn, setCurrentColumn] =
     useState<GridContextSelectedColumn>("HOME");
@@ -154,9 +156,9 @@ export default function Grid({ editOrderMode }) {
                       backgroundColor: theme[2],
                       borderRadius: 25,
                       width: breakpoints.md
-                        ? displayLabels.length > 4
-                          ? width / 2 - 230
-                          : width / 2 - 145
+                        ? displayLabels.length <= 4
+                          ? (contentWidth - 40) / 2
+                          : 500
                         : "100%",
                     },
                     label.empty && {
@@ -166,7 +168,13 @@ export default function Grid({ editOrderMode }) {
                   ]}
                 >
                   {label.empty ? (
-                    <></>
+                    <>
+                      <IconButton
+                        onPress={openLabelPicker}
+                        size={55}
+                        variant="outlined"
+                      />
+                    </>
                   ) : label.other ? (
                     <Column grid entities={data.entities} />
                   ) : (
@@ -186,6 +194,7 @@ export default function Grid({ editOrderMode }) {
         <CollectionEmpty />
       ) : (
         <ScrollView
+          onLayout={(e) => setContentWidth(e.nativeEvent.layout.width)}
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
@@ -236,4 +245,3 @@ export default function Grid({ editOrderMode }) {
     </GridContext.Provider>
   );
 }
-
