@@ -378,7 +378,9 @@ export function SubscribeButton({
           ? "Notifications enabled"
           : `Enable${settings ? "" : " notifications"} on this device`)
       }
-      icon={settings ? "add_circle" : undefined}
+      icon={
+        settings ? (tokenExists ? "check_circle" : "add_circle") : undefined
+      }
       iconPosition="end"
     ></Button>
   );
@@ -530,4 +532,3 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
-
