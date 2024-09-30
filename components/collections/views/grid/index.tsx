@@ -24,7 +24,7 @@ export default function Grid({ editOrderMode }) {
   const scrollRef = useRef<ScrollView>(null);
   const [contentWidth, setContentWidth] = useState(width - 200);
 
-  const isReadOnly = access.access === "READ_ONLY" || isPublic;
+  const isReadOnly = access?.access === "READ_ONLY" || isPublic;
 
   const [currentColumn, setCurrentColumn] =
     useState<GridContextSelectedColumn>("HOME");
