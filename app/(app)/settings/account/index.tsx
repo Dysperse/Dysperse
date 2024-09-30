@@ -484,7 +484,7 @@ function ProfileBanner() {
           {editing && <Text variant="eyebrow">Name</Text>}
           <TextField
             defaultValue={session.user.profile.name}
-            weight={900}
+            weight={700}
             variant={editing ? "filled+outlined" : undefined}
             editable={editing}
             onBlur={(e) => editing && onChange("name", e.nativeEvent.text)}
@@ -502,7 +502,6 @@ function ProfileBanner() {
                 : session.user.email
             }
             variant={editing ? "filled+outlined" : undefined}
-            weight={900}
             editable={editing}
             style={{
               fontSize: 20,
@@ -607,4 +606,3 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
-
