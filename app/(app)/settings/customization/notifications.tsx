@@ -1,6 +1,7 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -426,6 +427,7 @@ function NotificationPreferences({ data, mutate }) {
 
 export default function Page() {
   const { session } = useSession();
+  const breakpoints = useResponsiveBreakpoints();
   const { data, mutate, error } = useSWR(["user/notifications"]);
 
   const handleDelete = async (id: string) => {
@@ -455,7 +457,13 @@ export default function Page() {
   return (
     <SettingsScrollView>
       <Text style={settingStyles.title}>Notifications</Text>
-      <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
+      <View
+        style={{
+          flexDirection: breakpoints.md ? "row" : undefined,
+          gap: 10,
+          marginTop: 10,
+        }}
+      >
         <SubscribeButton settings data={data} mutate={mutate} />
         <TestNotifications />
       </View>

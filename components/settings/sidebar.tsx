@@ -22,6 +22,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { settingStyles } from "./settingsStyles";
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -278,11 +279,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
       >
         {!breakpoints.md && (
           <Text
-            style={{
-              marginTop: 20,
-              fontSize: 40,
-              marginBottom: 10,
-            }}
+            style={settingStyles.title}
             weight={900}
           >
             Settings
