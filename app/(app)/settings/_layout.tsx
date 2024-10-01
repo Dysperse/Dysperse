@@ -67,8 +67,8 @@ export function forScaleFromCenterAndroid({
   );
 
   const opacity = progress.interpolate({
-    inputRange: [0, 1, 2],
-    outputRange: [0, 1, 0],
+    inputRange: [0, 1, 1, 2],
+    outputRange: [0, 1, 1, 0],
   });
 
   const translateY = conditional(
