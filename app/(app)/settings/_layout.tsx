@@ -8,11 +8,87 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { ThemeProvider } from "@react-navigation/native";
+import type {
+  StackCardInterpolatedStyle,
+  StackCardInterpolationProps,
+} from "@react-navigation/stack";
 import { TransitionPresets } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
 import { router, usePathname } from "expo-router";
-import { Platform, useWindowDimensions, View } from "react-native";
+import {
+  Animated,
+  Easing,
+  Platform,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+function conditional(condition, main, fallback) {
+  return add(
+    multiply(condition, main),
+    multiply(
+      condition.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, 0],
+      }),
+      fallback
+    )
+  );
+}
+
+const { add, multiply } = Animated;
+
+const ScaleFromCenterAndroidSpec = {
+  animation: "timing",
+  config: {
+    duration: 400,
+    easing: Easing.bezier(0.33, 1, 0.68, 1),
+  },
+};
+export function forScaleFromCenterAndroid({
+  current,
+  next,
+  closing,
+}: StackCardInterpolationProps): StackCardInterpolatedStyle {
+  const progress = add(
+    current.progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    }),
+    next
+      ? next.progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 1],
+          extrapolate: "clamp",
+        })
+      : 0
+  );
+
+  const opacity = progress.interpolate({
+    inputRange: [0, 1, 2],
+    outputRange: [0, 1, 0],
+  });
+
+  const translateY = conditional(
+    closing,
+    current.progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [100, 1],
+      extrapolate: "clamp",
+    }),
+    progress.interpolate({
+      inputRange: [0, 1, 2],
+      outputRange: [100, 0, 0],
+      extrapolate: "clamp",
+    })
+  );
+
+  return {
+    cardStyle: { opacity, transform: [{ translateY }] },
+  };
+}
 
 function EscapeSettings() {
   const breakpoints = useResponsiveBreakpoints();
@@ -82,6 +158,43 @@ function SettingsHeader() {
   );
 }
 
+/**
+ * Simple fade animation for the header elements.
+ */
+export function forFade({ current, next }) {
+  const progress = add(
+    current.progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    }),
+    next
+      ? next.progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 1],
+          extrapolate: "clamp",
+        })
+      : 0
+  );
+
+  const opacity = progress.interpolate({
+    inputRange: [0, 1, 2],
+    outputRange: [0, 1, 0],
+  });
+
+  return {
+    leftButtonStyle: { opacity },
+    rightButtonStyle: { opacity },
+    titleStyle: { opacity },
+    backgroundStyle: {
+      opacity: progress.interpolate({
+        inputRange: [0, 1, 1.9, 2],
+        outputRange: [0, 1, 1, 0],
+      }),
+    },
+  };
+}
+
 export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -89,7 +202,7 @@ export default function Layout() {
 
   return (
     <BlurView
-      intensity={Platform.OS === "web" ? 20 : 0}
+      intensity={Platform.OS === "web" ? 10 : 0}
       style={{
         ...(Platform.OS === "web" &&
           ({
@@ -133,10 +246,7 @@ export default function Layout() {
               value={{
                 colors: {
                   primary: theme[1],
-                  background:
-                    Platform.OS == "web" && breakpoints.md
-                      ? "transparent"
-                      : theme[2],
+                  background: Platform.OS === "web" ? "transparent" : theme[2],
                   card: theme[1],
                   text: theme[4],
                   border: theme[5],
@@ -163,6 +273,7 @@ export default function Layout() {
                   "login/account/passkeys",
                   "login/devices",
                   "index",
+                  "tasks",
                   "shortcuts",
                   "personal-information",
                   "account/index",
@@ -179,17 +290,27 @@ export default function Layout() {
                         d !== "settings/index" &&
                         !d.includes("/integrations/[name]"),
                       headerTitle: d !== "settings/index" && "Settings",
-                      animationEnabled:
-                        !breakpoints.md && d !== "settings/index",
+                      animationEnabled: true,
+                      // !breakpoints.md && d !== "settings/index",
                       detachPreviousScreen:
                         d === "settings/index" ||
                         d === "login/account/two-factor-authentication" ||
                         d === "login/account/passkeys",
 
-                      ...(!breakpoints.md && {
-                        ...TransitionPresets.SlideFromRightIOS,
-                        cardStyleInterpolator: forHorizontalIOS,
-                      }),
+                      ...(breakpoints.md
+                        ? {
+                            gestureDirection: "horizontal",
+                            transitionSpec: {
+                              open: ScaleFromCenterAndroidSpec,
+                              close: ScaleFromCenterAndroidSpec,
+                            },
+                            cardStyleInterpolator: forScaleFromCenterAndroid,
+                            headerStyleInterpolator: forFade,
+                          }
+                        : {
+                            ...TransitionPresets.SlideFromRightIOS,
+                            cardStyleInterpolator: forHorizontalIOS,
+                          }),
                     }}
                   />
                 ))}
@@ -201,3 +322,4 @@ export default function Layout() {
     </BlurView>
   );
 }
+

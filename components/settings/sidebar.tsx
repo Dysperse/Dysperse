@@ -59,10 +59,14 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (inputRef.current && breakpoints.md) {
+    if (
+      inputRef.current &&
+      breakpoints.md &&
+      pathname === "/settings/account"
+    ) {
       inputRef.current.focus();
     }
-  });
+  }, [breakpoints.md, pathname]);
 
   useHotkeys(["ctrl+f", "/"], (event) => {
     event.preventDefault();
@@ -278,10 +282,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
         }}
       >
         {!breakpoints.md && (
-          <Text
-            style={settingStyles.title}
-            weight={900}
-          >
+          <Text style={settingStyles.title} weight={900}>
             Settings
           </Text>
         )}
@@ -397,3 +398,4 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
+
