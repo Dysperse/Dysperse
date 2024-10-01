@@ -154,34 +154,42 @@ function TaskCheckbox({
           handlePress();
         }}
       >
-        <Animated.View
-          style={[
-            animatedStyle,
-            {
-              borderColor: theme[isCompleted ? 11 : 12],
-              opacity: isCompleted ? 0.7 : 0.45,
-              width: 25,
-              height: 25,
-              borderWidth: 1.5,
-              borderRadius: 99,
-              backgroundColor: isCompleted ? theme[11] : undefined,
-              alignItems: "center",
-            },
-          ]}
-        >
-          {isCompleted && (
-            <Icon
-              bold
-              size={20}
-              style={{
-                lineHeight: 24.5,
-                color: theme[1],
-              }}
-            >
-              check
-            </Icon>
-          )}
-        </Animated.View>
+        {({ pressed, hovered }) => (
+          <Animated.View
+            style={[
+              animatedStyle,
+              {
+                borderColor: theme[isCompleted ? 11 : 12],
+                opacity: isCompleted ? 0.7 : 0.45,
+                width: 25,
+                height: 25,
+                borderWidth: hovered ? 2 : 1,
+                borderRadius: 99,
+                backgroundColor: isCompleted
+                  ? theme[11]
+                  : pressed
+                  ? theme[7]
+                  : hovered
+                  ? theme[5]
+                  : theme[1],
+                alignItems: "center",
+              },
+            ]}
+          >
+            {isCompleted && (
+              <Icon
+                bold
+                size={20}
+                style={{
+                  lineHeight: 24.5,
+                  color: theme[1],
+                }}
+              >
+                check
+              </Icon>
+            )}
+          </Animated.View>
+        )}
       </Pressable>
     </>
   );
