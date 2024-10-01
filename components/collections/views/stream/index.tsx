@@ -3,10 +3,9 @@ import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import CreateTask from "@/components/task/create";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
 import Emoji from "@/ui/Emoji";
-import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -231,56 +230,74 @@ export default function Stream() {
                   marginHorizontal: "auto",
                 }}
               />
-              {!isReadOnly && (
-                <CreateTask
-                  defaultValues={{
-                    collectionId: data.id,
-                  }}
-                  mutate={(newTask) => {
-                    if (!newTask) return;
-                    mutate(
-                      (oldData) => {
-                        const labelIndex = oldData.labels.findIndex(
-                          (l) => l.id === newTask.label.id
-                        );
-                        if (labelIndex === -1)
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  maxWidth: 400,
+                  marginHorizontal: "auto",
+                  borderColor: theme[5],
+                  borderWidth: 1,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  borderRadius: 20,
+                }}
+              >
+                <Text weight={900} style={{ color: theme[11] }}>
+                  {filteredTasks.length}{" "}
+                  {filteredTasks.length === 1 ? "item" : "items"}
+                </Text>
+                {!isReadOnly && (
+                  <CreateTask
+                    defaultValues={{
+                      collectionId: data.id,
+                    }}
+                    mutate={(newTask) => {
+                      if (!newTask) return;
+                      mutate(
+                        (oldData) => {
+                          const labelIndex = oldData.labels.findIndex(
+                            (l) => l.id === newTask.label.id
+                          );
+                          if (labelIndex === -1)
+                            return {
+                              ...oldData,
+                              entities: [...oldData.entities, newTask],
+                            };
                           return {
                             ...oldData,
-                            entities: [...oldData.entities, newTask],
+                            labels: oldData.labels.map((l) =>
+                              l.id === newTask.label.id
+                                ? {
+                                    ...l,
+                                    entities: [...l.entities, newTask],
+                                  }
+                                : l
+                            ),
                           };
-                        return {
-                          ...oldData,
-                          labels: oldData.labels.map((l) =>
-                            l.id === newTask.label.id
-                              ? {
-                                  ...l,
-                                  entities: [...l.entities, newTask],
-                                }
-                              : l
-                          ),
-                        };
-                      },
-                      {
-                        revalidate: false,
-                      }
-                    );
-                  }}
-                >
-                  <Button
-                    variant="filled"
-                    height={50}
-                    containerStyle={{
-                      flex: 1,
-                      width: "100%",
-                      maxWidth: 400,
-                      marginHorizontal: "auto",
+                        },
+                        {
+                          revalidate: false,
+                        }
+                      );
                     }}
                   >
-                    <ButtonText>New</ButtonText>
-                    <Icon>add</Icon>
-                  </Button>
-                </CreateTask>
-              )}
+                    <Button
+                      variant="filled"
+                      height={50}
+                      containerStyle={{
+                        marginLeft: "auto",
+                      }}
+                      style={{ paddingHorizontal: 20 }}
+                      text="Create"
+                      iconPosition="end"
+                      icon="stylus_note"
+                    />
+                  </CreateTask>
+                )}
+              </View>
             </View>
           </>
         }
@@ -309,3 +326,4 @@ export default function Stream() {
     </Animated.View>
   );
 }
+
