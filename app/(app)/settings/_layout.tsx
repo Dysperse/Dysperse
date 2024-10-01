@@ -80,7 +80,7 @@ export function forScaleFromCenterAndroid({
     }),
     progress.interpolate({
       inputRange: [0, 1, 2],
-      outputRange: [100, 0, 0],
+      outputRange: [50, 0, 0],
       extrapolate: "clamp",
     })
   );
