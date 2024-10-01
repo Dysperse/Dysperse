@@ -39,6 +39,7 @@ const Modal = (
     animation: "NONE" | "SCALE" | "SLIDE";
     onClose?: () => void;
     innerStyles?: ViewStyle;
+    disablePan?: boolean;
     height?: ViewStyle["height"];
   }
 ) => {
@@ -102,8 +103,12 @@ const Modal = (
         animationConfigs,
       })}
       stackBehavior="push"
-      enablePanDownToClose={props.animation !== "SCALE"}
-      enableContentPanningGesture={props.animation !== "SCALE"}
+      enablePanDownToClose={
+        props.disablePan ? false : props.animation !== "SCALE"
+      }
+      enableContentPanningGesture={
+        props.disablePan ? false : props.animation !== "SCALE"
+      }
       backgroundStyle={{ backgroundColor: "transparent" }}
     >
       <SetSharedValue value={state} from={0} to={1} />

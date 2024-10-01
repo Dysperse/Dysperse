@@ -1854,6 +1854,7 @@ const CreateTask = forwardRef(
       <>
         {trigger}
         <Modal
+          disablePan={breakpoints.md}
           maxBackdropOpacity={0.1}
           maxWidth={breakpoints.md ? 700 : "100%"}
           sheetRef={ref}
@@ -1874,3 +1875,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+
