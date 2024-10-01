@@ -160,7 +160,7 @@ input::-webkit-scrollbar {
 }
 
 [aria-valuetext="web-app-animation"] {
-  animation: appAnimation 0.2s cubic-bezier(0.61, 1, 0.88, 1);
+  animation: appAnimation 0.6s cubic-bezier(0.85, 0, 0.15, 1);
 }
 
 @keyframes appAnimation {
