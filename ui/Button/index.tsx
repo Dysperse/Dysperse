@@ -178,16 +178,17 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
         onPressOut={() => (state.value = 0)}
         ref={ref as LegacyRef<View>}
         style={({ hovered, pressed }: any) => [
+          {
+            flex: 1,
+            gap: props.dense ? 3 : 10,
+          },
           styles.base,
           props.isLoading && styles.loading,
           props.variant === "outlined" && styles.outlined,
           typeof props.style === "function"
             ? props["style" as any]({ hovered, pressed })
             : props.style,
-          {
-            flex: 1,
-            gap: props.dense ? 3 : 10,
-          },
+
           props.large && { paddingHorizontal: 20 },
         ]}
       >
@@ -224,4 +225,3 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
     </Animated.View>
   );
 });
-

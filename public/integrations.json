@@ -1,5 +1,19 @@
 [
   {
+    "name": "Email forwarding",
+    "description": "Forward tasks to hello@dysperse.com and they'll appear as tasks",
+    "icon": "email",
+    "slug": "email-forwarding",
+    "availableOptions": {}
+  },
+  {
+    "name": "Spotify",
+    "description": "Display what's currently playing in your sidebar",
+    "icon": "https://cdn.brandfetch.io/id20mQyGeY/theme/dark/symbol.svg?k=bfHSJFAPEG",
+    "slug": "spotify",
+    "availableOptions": {}
+  },
+  {
     "name": "Google Calendar",
     "description": "Sync your calendar events with collections",
     "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png",
@@ -14,15 +28,22 @@
     "availableOptions": {}
   },
   {
+    "name": "Outlook Calendar",
+    "description": "Sync your calendar events with collections",
+    "icon": "https://cdn.brandfetch.io/idosUKQbqO/theme/dark/logo.svg?k=bfHSJFAPEG",
+    "slug": "apple-calendar",
+    "availableOptions": {}
+  },
+  {
     "name": "Canvas LMS",
     "description": "Automatically sync assignments and quizzes to collections",
-    "icon": "https://s6.imgcdn.dev/fZLql.jpg",
+    "icon": "https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png",
     "slug": "canvas-lms",
     "availableOptions": {}
   },
   {
     "name": "Notion",
-    "description": "Connect databases to your collections.",
+    "description": "Connect your databases to dysperse collections.",
     "icon": "https://cdn.brandfetch.io/idPYUoikV7/theme/dark/symbol.svg?k=bfHSJFAPEG",
     "slug": "notion",
     "availableOptions": {}

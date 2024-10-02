@@ -3,8 +3,8 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
-import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
@@ -12,6 +12,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { Fragment } from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 import useSWR from "swr";
 
@@ -97,8 +98,7 @@ function AllIntegrations({ connected }) {
   );
 }
 
-function SpotifyIntegration() {
-  const theme = useColorTheme();
+function SpotifyIntegration({ children }) {
   const { session, sessionToken, mutate } = useUser();
 
   const handleSpotifyAuthorization = () => {
@@ -128,43 +128,25 @@ function SpotifyIntegration() {
       }}
       disabled={!session.user?.profile?.spotifyAuthTokens}
     >
-      <Pressable
-        style={({ pressed, hovered }) => [
-          styles.button,
-          {
-            backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-          },
-        ]}
-        onPress={handleSpotifyAuthorization}
-      >
-        <Avatar
-          image="https://cdn.brandfetch.io/id20mQyGeY/theme/dark/idC9Lfpyms.svg?k=bfHSJFAPEG"
-          size={40}
-        />
-        <View style={{ flex: 1 }}>
-          <Text numberOfLines={1} weight={700} style={styles.name}>
-            Spotify
-          </Text>
-          <Text numberOfLines={1} weight={300} style={styles.description}>
-            See what you're currently listening to from the focus panel
-          </Text>
-        </View>
-        {session.user?.profile?.spotifyAuthTokens && <Icon>toggle_on</Icon>}
-      </Pressable>
+      {children}
     </ConfirmationModal>
   );
 }
 
 export default function Page() {
   const theme = useColorTheme();
+  const { session } = useUser();
   const { data } = useSWR(["space/integrations"]);
+
+  const { data: integrationsList } = useSWR("/integrations.json", (t) =>
+    fetch(t).then((t) => t.json())
+  );
 
   return (
     <SettingsScrollView>
       <Text style={settingStyles.title}>Integrations</Text>
       <Text style={{ fontSize: 17, opacity: 0.7 }}>
-        Introducing more chaos. Continue using all your favorite tools,
-        alongside #dysperse.
+        Connect calendars with Dysperse for a seamless experience
       </Text>
       {process.env.NODE_ENV !== "development" && (
         <Alert
@@ -175,29 +157,106 @@ export default function Page() {
       Notion, Google Calendar, and more."
         />
       )}
-
-      <SpotifyIntegration />
-      <Divider style={{ marginVertical: 10 }} />
-      <Pressable
-        style={({ pressed, hovered }) => [
-          styles.button,
-          {
-            backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
-          },
-        ]}
+      <View
+        style={{
+          marginHorizontal: -10,
+          marginTop: 10,
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
       >
-        <Avatar icon="email" size={40} />
-        <View style={{ flex: 1 }}>
-          <Text numberOfLines={1} weight={700} style={styles.name}>
-            Email forwarding
-          </Text>
-          <Text numberOfLines={1} weight={300} style={styles.description}>
-            Send emails to tasks@dysperse.com and they'll show up in your list!
-          </Text>
-        </View>
-        <Icon>check</Icon>
-      </Pressable>
-      <AllIntegrations connected={data} />
+        {!data || !integrationsList ? (
+          <View style={{ padding: 10 }}>
+            <Spinner />
+          </View>
+        ) : (
+          integrationsList.map((item) => {
+            const Container =
+              item.slug === "spotify" ? SpotifyIntegration : Fragment;
+
+            const hasConnected = data.find(
+              (i) => item.slug === i.integration?.name
+            );
+
+            const showCheck =
+              item.slug === "email-forwarding" ||
+              (item.slug === "spotify" &&
+                session.user?.profile?.spotifyAuthTokens) ||
+              hasConnected;
+
+            return (
+              <View
+                style={{
+                  width: "50%",
+                  padding: 10,
+                }}
+              >
+                <Container>
+                  <Button
+                    variant="filled"
+                    height={"auto"}
+                    containerStyle={{ borderRadius: 20, flex: 1 }}
+                    style={{
+                      padding: 15,
+                      flexDirection: "column",
+                      flex: 1,
+                      gap: 0,
+                      justifyContent: "flex-start",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    {showCheck && (
+                      <Icon
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          margin: 10,
+                        }}
+                        size={30}
+                        filled
+                      >
+                        check_circle
+                      </Icon>
+                    )}
+                    <View
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 20,
+                        backgroundColor: theme[5],
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.icon.startsWith("https") ? (
+                        <Image
+                          source={{ uri: item.icon }}
+                          contentFit="contain"
+                          style={{ height: 30, width: 30 }}
+                        />
+                      ) : (
+                        <Icon size={30}>{item.icon}</Icon>
+                      )}
+                    </View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[12], fontSize: 20, marginTop: 10 }}
+                    >
+                      {item.name}
+                    </Text>
+                    <Text style={{ color: theme[11], opacity: 0.8 }}>
+                      {item.description}
+                    </Text>
+                  </Button>
+                </Container>
+              </View>
+            );
+          })
+        )}
+      </View>
+
+      {/* <AllIntegrations connected={data} /> */}
     </SettingsScrollView>
   );
 }
