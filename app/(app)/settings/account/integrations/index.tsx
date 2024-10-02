@@ -14,6 +14,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Fragment } from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 const styles = StyleSheet.create({
@@ -193,7 +194,7 @@ export default function Page() {
               >
                 <Container>
                   <Button
-                    variant="filled"
+                    variant={showCheck ? "filled" : "outlined"}
                     height={"auto"}
                     containerStyle={{ borderRadius: 20, flex: 1 }}
                     style={{
@@ -203,6 +204,10 @@ export default function Page() {
                       gap: 0,
                       justifyContent: "flex-start",
                       alignItems: "flex-start",
+                    }}
+                    onPress={() => {
+                      if (item.comingSoon)
+                        Toast.show({ type: "info", text1: "Coming soon!" });
                     }}
                   >
                     {showCheck && (
