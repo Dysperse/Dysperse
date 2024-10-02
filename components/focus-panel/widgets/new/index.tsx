@@ -14,7 +14,7 @@ import { InteractionManager, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { SpotifySvg, UpcomingSvg, Widget } from "../../panel";
+import { UpcomingSvg, Widget } from "../../panel";
 
 export function NewWidget({
   navigation,
@@ -109,7 +109,7 @@ export function NewWidget({
       widgets: [
         {
           text: "Music",
-          icon: <SpotifySvg />,
+          icon: "https://cdn.brandfetch.io/id20mQyGeY/theme/dark/idC9Lfpyms.svg?k=bfHSJFAPEG",
           secondary: "With Spotify",
           onlyOnce: true,
         },
@@ -175,7 +175,12 @@ export function NewWidget({
             >
               <Avatar
                 disabled
-                icon={item.icon as any}
+                icon={
+                  item.icon?.startsWith?.("https")
+                    ? undefined
+                    : (item.icon as any)
+                }
+                image={item.icon?.startsWith?.("https") ? item.icon : undefined}
                 size={40}
                 style={{ borderRadius: 15, backgroundColor: theme[3] }}
               />

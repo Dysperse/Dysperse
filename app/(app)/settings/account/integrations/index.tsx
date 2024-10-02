@@ -1,4 +1,3 @@
-import { SpotifySvg } from "@/components/focus-panel/panel";
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -138,7 +137,10 @@ function SpotifyIntegration() {
         ]}
         onPress={handleSpotifyAuthorization}
       >
-        <Avatar icon={(<SpotifySvg />) as any} size={40} />
+        <Avatar
+          image="https://cdn.brandfetch.io/id20mQyGeY/theme/dark/idC9Lfpyms.svg?k=bfHSJFAPEG"
+          size={40}
+        />
         <View style={{ flex: 1 }}>
           <Text numberOfLines={1} weight={700} style={styles.name}>
             Spotify
@@ -164,18 +166,18 @@ export default function Page() {
         Introducing more chaos. Continue using all your favorite tools,
         alongside #dysperse.
       </Text>
-      <Alert
-        style={{ marginTop: 20 }}
-        emoji="1f6a7"
-        title="Coming soon"
-        subtitle="Soon, you'll be able to connect your account to other services like
+      {process.env.NODE_ENV !== "development" && (
+        <Alert
+          style={{ marginTop: 20 }}
+          emoji="1f6a7"
+          title="Coming soon"
+          subtitle="Soon, you'll be able to connect your account to other services like
       Notion, Google Calendar, and more."
-      />
+        />
+      )}
 
       <SpotifyIntegration />
-
       <Divider style={{ marginVertical: 10 }} />
-
       <Pressable
         style={({ pressed, hovered }) => [
           styles.button,

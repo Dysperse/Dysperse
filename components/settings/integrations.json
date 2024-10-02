@@ -1,21 +1,20 @@
 [
   {
     "name": "Google Calendar",
-    "about": {
-      "text": "Google Calendar is a time-management and scheduling calendar service developed by Google. It was created by Mike Samuel as part of his 20% project at Google. It became available in beta release April 13, 2006, and in general release in July 2009, on the web and as mobile apps for the Android and iOS platforms",
-      "source": "https://en.wikipedia.org/wiki/Google_Calendar"
-    },
     "description": "Sync your calendar events with collections",
     "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png",
     "slug": "google-calendar",
     "availableOptions": {}
   },
   {
+    "name": "Apple Calendar",
+    "description": "Sync your calendar events with collections",
+    "icon": "https://help.apple.com/assets/65D689DF13D1B1E17703916F/65D689E0D302CF88600FDD25/en_US/941b3852f089696217cabe420c7a459f.png",
+    "slug": "apple-calendar",
+    "availableOptions": {}
+  },
+  {
     "name": "Canvas LMS",
-    "about": {
-      "text": "Canvas LMS is an open and reliable web-based software that allows institutions to manage digital learning, educators to create and present online learning materials and assess student learning, and students to engage in courses and receive feedback about skill development and learning achievement",
-      "source": "https://community.canvaslms.com/t5/Canvas-Basics-Guide/What-is-Canvas/ta-p/45#:~:text=Canvas%20LMS%20is%20an%20open,skill%20development%20and%20learning%20achievement."
-    },
     "description": "Automatically sync assignments and quizzes to collections",
     "icon": "https://s6.imgcdn.dev/fZLql.jpg",
     "slug": "canvas-lms",
@@ -23,23 +22,15 @@
   },
   {
     "name": "Notion",
-    "about": {
-      "text": "Notion is a freemium productivity and note-taking web application developed by Notion Labs Inc. It offers organizational tools including task management, project tracking, to-do lists, and bookmarking.",
-      "source": "https://en.wikipedia.org/wiki/Notion_(productivity_software)"
-    },
     "description": "Connect databases to your collections.",
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png",
+    "icon": "https://cdn.brandfetch.io/idPYUoikV7/theme/dark/symbol.svg?k=bfHSJFAPEG",
     "slug": "notion",
     "availableOptions": {}
   },
   {
     "name": "Gmail",
-    "about": {
-      "text": "Gmail is an email service provided by Google. As of 2019, it had 1.5 billion active users worldwide, making it the largest email service in the world. It also provides a webmail interface, accessible through a web browser, and is also accessible through the official mobile application",
-      "source": "https://en.wikipedia.org/wiki/Gmail"
-    },
     "description": "Starred emails will be added to your collections",
-    "icon": "https://cdn-icons-png.flaticon.com/512/5968/5968534.png",
+    "icon": "https://cdn.brandfetch.io/id5o3EIREg/theme/dark/symbol.svg?k=bfHSJFAPEG",
     "slug": "gmail",
     "availableOptions": {}
   }
