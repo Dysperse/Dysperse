@@ -139,8 +139,13 @@ export default function Page() {
   const { session } = useUser();
   const { data } = useSWR(["space/integrations"]);
 
-  const { data: integrationsList } = useSWR("/integrations.json", (t) =>
-    fetch(t).then((t) => t.json())
+  const { data: integrationsList } = useSWR(
+    `${
+      process.env.NODE_ENV === "development"
+        ? "/integrations.json"
+        : "https://app.dysperse.com/integrations.json"
+    }`,
+    (t) => fetch(t).then((t) => t.json())
   );
 
   return (
