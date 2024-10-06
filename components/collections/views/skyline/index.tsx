@@ -5,6 +5,7 @@ import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
+import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
@@ -245,6 +246,10 @@ function Content({ data, mutate }) {
     />
   );
 
+  const refreshControl = (
+    <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+  );
+
   return breakpoints.md ? (
     <ScrollView
       contentContainerStyle={{
@@ -269,6 +274,7 @@ function Content({ data, mutate }) {
           centerContent={data.today.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
+          refreshControl={refreshControl}
         />
       </View>
       <View style={columnStyles}>
@@ -279,6 +285,7 @@ function Content({ data, mutate }) {
           centerContent={data.week.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
+          refreshControl={refreshControl}
         />
       </View>
       <View style={columnStyles}>
@@ -289,6 +296,7 @@ function Content({ data, mutate }) {
           centerContent={data.month.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
+          refreshControl={refreshControl}
         />
       </View>
       <View style={columnStyles}>
@@ -299,6 +307,7 @@ function Content({ data, mutate }) {
           centerContent={data.year.entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
+          refreshControl={refreshControl}
         />
       </View>
       <View style={{ width: 1 }} />
@@ -325,6 +334,7 @@ function Content({ data, mutate }) {
           centerContent={data[selectedColumn].entities.length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
+          refreshControl={refreshControl}
         />
       </View>
     </View>
@@ -380,3 +390,4 @@ export default function Skyline() {
     </SkylineContext.Provider>
   );
 }
+
