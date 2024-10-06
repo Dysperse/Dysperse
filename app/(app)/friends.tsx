@@ -364,14 +364,26 @@ function BlockRequestButton({ mutate, id }) {
   );
 }
 
-function FriendOptionsButton() {
+function FriendOptionsButton({ id }) {
+  const { sessionToken } = useUser();
+
   return (
     <ConfirmationModal
       height={410}
       title="Remove friend?"
       secondary="You can add this user back any time. We won't let this person know you've removed them."
       onSuccess={async () => {
-        Toast.show({ type: "success", text1: "Coming soon!" });
+        sendApiRequest(
+          sessionToken,
+          "DELETE",
+          "user/friends",
+          {},
+          {
+            body: JSON.stringify({
+              userId: id,
+            }),
+          }
+        );
       }}
     >
       <IconButton size={40} style={{ marginRight: -10 }}>
@@ -581,9 +593,7 @@ export default function Page() {
                       <AcceptRequestButton mutate={mutate} id={item.user.id} />
                     </>
                   ) : (
-                    <>
-                      <FriendOptionsButton />
-                    </>
+                    <FriendOptionsButton id={item.user.id} />
                   )}
                 </ListItemButton>
               </ProfileModal>
@@ -595,3 +605,4 @@ export default function Page() {
     </ContentWrapper>
   );
 }
+
