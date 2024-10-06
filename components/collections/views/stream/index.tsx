@@ -135,6 +135,7 @@ export default function Stream() {
         return (
           !t.start && !t.recurrenceRule && t.completionInstances.length === 0
         );
+      else if (view === "repeating") return t.recurrenceRule;
     })
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
