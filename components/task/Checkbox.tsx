@@ -3,6 +3,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { cloneElement, memo } from "react";
@@ -167,11 +168,7 @@ function TaskCheckbox({
                 borderRadius: 99,
                 backgroundColor: isCompleted
                   ? theme[11]
-                  : pressed
-                  ? theme[7]
-                  : hovered
-                  ? theme[5]
-                  : theme[1],
+                  : addHslAlpha(theme[11], pressed ? 0.2 : hovered ? 0.1 : 0),
                 alignItems: "center",
               },
             ]}
@@ -196,4 +193,3 @@ function TaskCheckbox({
 }
 
 export default memo(TaskCheckbox);
-

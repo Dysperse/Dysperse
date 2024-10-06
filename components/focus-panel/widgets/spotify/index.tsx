@@ -4,10 +4,10 @@ import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { Image } from "expo-image";
 import { Linking, Pressable, View } from "react-native";
 import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
-import { SpotifySvg } from "../../panel";
 import { widgetMenuStyles } from "../../widgetMenuStyles";
 import { SpotifyPreview } from "./SpotifyPreview";
 
@@ -54,7 +54,12 @@ export default function Spotify({ menuActions, params, navigation }) {
             aspectRatio: panelState === "COLLAPSED" ? 1 : undefined,
           })}
         >
-          <SpotifySvg />
+          <Image
+            style={{ width: 24, height: 24 }}
+            source={{
+              uri: "https://cdn.brandfetch.io/id20mQyGeY/theme/dark/symbol.svg?k=bfHSJFAPEG",
+            }}
+          />
           <Text
             style={{ marginTop: 5, fontSize: 20, textAlign: "center" }}
             weight={900}
@@ -81,7 +86,12 @@ export default function Spotify({ menuActions, params, navigation }) {
           }}
         >
           {panelState === "COLLAPSED" ? (
-            <SpotifySvg />
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={{
+                uri: "https://cdn.brandfetch.io/id20mQyGeY/theme/dark/symbol.svg?k=bfHSJFAPEG",
+              }}
+            />
           ) : (
             <Text
               weight={900}

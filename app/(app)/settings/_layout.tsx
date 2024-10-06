@@ -292,10 +292,11 @@ export default function Layout() {
                       headerTitle: d !== "settings/index" && "Settings",
                       animationEnabled: true,
                       // !breakpoints.md && d !== "settings/index",
-                      detachPreviousScreen:
-                        d === "settings/index" ||
-                        d === "login/account/two-factor-authentication" ||
-                        d === "login/account/passkeys",
+                      detachPreviousScreen: breakpoints.md
+                        ? true
+                        : d === "settings/index" ||
+                          d === "login/account/two-factor-authentication" ||
+                          d === "login/account/passkeys",
 
                       ...(breakpoints.md
                         ? {
@@ -322,4 +323,3 @@ export default function Layout() {
     </BlurView>
   );
 }
-
