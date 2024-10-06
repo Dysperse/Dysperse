@@ -764,15 +764,6 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
   const breakpoints = useResponsiveBreakpoints();
 
   const rotate = useSharedValue(0);
-  const rotateStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          rotate: `${rotate.value}deg`,
-        },
-      ],
-    };
-  });
 
   useEffect(() => {
     rotate.value = withSpring(pinned ? -35 : 0, {
@@ -785,6 +776,7 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
     });
   });
   const theme = useColorTheme();
+
   return (
     <Controller
       control={control}
@@ -797,7 +789,10 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
           onPress={() => onChange(!value)}
           variant="filled"
           iconProps={{ filled: value }}
-          iconStyle={{ transform: [{ rotate: "-30deg" }] }}
+          iconStyle={{
+            transform: [{ rotate: "-30deg" }],
+            color: value ? orange[9] : theme[9],
+          }}
           backgroundColors={
             value
               ? {
