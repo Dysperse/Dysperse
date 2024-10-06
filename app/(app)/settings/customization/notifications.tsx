@@ -175,12 +175,12 @@ const notificationSettings = [
     name: "Friends",
     options: [
       {
-        key: "FRIEND_REQUEST_ME",
+        key: "FRIEND_REQUEST_SEND",
         name: "Friend requests",
         description: "Notify me when someone sends me a friend request",
       },
       {
-        key: "FRIEND_REQUEST_OTHER",
+        key: "FRIEND_REQUEST_ACCEPT",
         name: "Friend requests",
         description: "Notify me when someone accepts my friend request",
       },
@@ -540,3 +540,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
