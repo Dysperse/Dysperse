@@ -1,18 +1,16 @@
-import { styles } from "@/app/(app)/[tab]/collections/[id]/[type]";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import CreateTask from "@/components/task/create";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Emoji from "@/ui/Emoji";
 import RefreshControl from "@/ui/RefreshControl";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState, useTransition } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -140,56 +138,123 @@ export default function Stream() {
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <Animated.View style={[opacityStyle, { flex: 1 }]}>
-      <ButtonGroup
-        options={[
-          { label: "Backlog", value: "backlog" },
-          { label: "Upcoming", value: "upcoming" },
-          { label: "Completed", value: "completed" },
-          { label: "Unscheduled", value: "unscheduled" },
-        ]}
-        state={[
-          view,
-          (e: any) => {
-            selectTab(e);
-            router.setParams({ view: e });
-          },
-        ]}
-        scrollContainerStyle={{ width: "100%" }}
-        buttonStyle={[
-          { paddingHorizontal: 0, borderBottomWidth: 0 },
-          !breakpoints.md && {
-            borderTopColor: theme[5],
-            borderTopWidth: 1,
+    <Animated.View
+      style={[
+        opacityStyle,
+        { flex: 1, flexDirection: breakpoints.md ? "row" : "column" },
+      ]}
+    >
+      <View
+        style={{
+          width: breakpoints.md ? 350 : "100%",
+          flexDirection: breakpoints.md ? "column" : "row",
+          padding: breakpoints.md ? 40 : 0,
+        }}
+      >
+        <TextField
+          variant="filled+outlined"
+          placeholder="Search items…"
+          onChangeText={setQuery}
+          style={{
+            height: 50,
+            fontSize: 18,
+            width: "100%",
+            maxWidth: 400,
+            marginHorizontal: "auto",
+          }}
+        />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            maxWidth: 400,
+            marginHorizontal: "auto",
+            borderColor: theme[5],
+            marginVertical: 10,
+            borderWidth: 1,
+            paddingHorizontal: 20,
             paddingVertical: 10,
-            backgroundColor: theme[3],
-          },
-        ]}
-        containerStyle={{
-          width: breakpoints.md ? 450 : "100%",
-          marginTop: breakpoints.md ? 20 : 0,
-          marginHorizontal: "auto",
-        }}
-        buttonTextStyle={{
-          color: theme[10],
-          fontFamily: getFontName("jost", 400),
-        }}
-        selectedButtonTextStyle={{
-          color: theme[11],
-          fontFamily: getFontName("jost", 600),
-        }}
-        activeComponent={
-          <View
+            borderRadius: 20,
+          }}
+        >
+          <Text weight={900} style={{ color: theme[11] }}>
+            {filteredTasks.length}{" "}
+            {filteredTasks.length === 1 ? "item" : "items"}
+          </Text>
+          {!isReadOnly && (
+            <CreateTask
+              defaultValues={{
+                collectionId: data.id,
+              }}
+              mutate={(newTask) => {
+                if (!newTask) return;
+                mutate(
+                  (oldData) => {
+                    const labelIndex = oldData.labels.findIndex(
+                      (l) => l.id === newTask.label.id
+                    );
+                    if (labelIndex === -1)
+                      return {
+                        ...oldData,
+                        entities: [...oldData.entities, newTask],
+                      };
+                    return {
+                      ...oldData,
+                      labels: oldData.labels.map((l) =>
+                        l.id === newTask.label.id
+                          ? {
+                              ...l,
+                              entities: [...l.entities, newTask],
+                            }
+                          : l
+                      ),
+                    };
+                  },
+                  {
+                    revalidate: false,
+                  }
+                );
+              }}
+            >
+              <Button
+                variant="filled"
+                height={50}
+                containerStyle={{
+                  marginLeft: "auto",
+                }}
+                style={{ paddingHorizontal: 20 }}
+                text="Create"
+                iconPosition="end"
+                icon="stylus_note"
+              />
+            </CreateTask>
+          )}
+        </View>
+        {[
+          { label: "Backlog", value: "backlog", icon: "west" },
+          { label: "Upcoming", value: "upcoming", icon: "east" },
+          { label: "Completed", value: "completed", icon: "check_circle" },
+          { label: "Unscheduled", value: "unscheduled", icon: "sunny" },
+          { label: "Repeating", value: "repeating", icon: "loop" },
+        ].map((e) => (
+          <Button
+            key={e.value}
+            icon={e.icon}
+            backgroundColors={{
+              default: theme[e.value === view ? 5 : 1],
+              hovered: theme[e.value === view ? 6 : 3],
+              pressed: theme[e.value === view ? 7 : 4],
+            }}
+            onPress={() => selectTab(e.value)}
+            text={e.label}
             style={{
-              height: 5,
-              width: 12,
-              borderRadius: 999,
-              backgroundColor: theme[11],
-              marginHorizontal: "auto",
+              justifyContent: "flex-start",
             }}
           />
-        }
-      />
+        ))}
+      </View>
       <FlashList
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={() => mutate()} />
@@ -215,92 +280,6 @@ export default function Stream() {
             </View>
           )
         }
-        ListHeaderComponent={
-          <>
-            <View style={[styles.header, { flexDirection: "column" }]}>
-              <TextField
-                variant="filled+outlined"
-                placeholder="Search items…"
-                onChangeText={setQuery}
-                style={{
-                  height: 50,
-                  fontSize: 18,
-                  width: "100%",
-                  maxWidth: 400,
-                  marginHorizontal: "auto",
-                }}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  maxWidth: 400,
-                  marginHorizontal: "auto",
-                  borderColor: theme[5],
-                  borderWidth: 1,
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
-                  borderRadius: 20,
-                }}
-              >
-                <Text weight={900} style={{ color: theme[11] }}>
-                  {filteredTasks.length}{" "}
-                  {filteredTasks.length === 1 ? "item" : "items"}
-                </Text>
-                {!isReadOnly && (
-                  <CreateTask
-                    defaultValues={{
-                      collectionId: data.id,
-                    }}
-                    mutate={(newTask) => {
-                      if (!newTask) return;
-                      mutate(
-                        (oldData) => {
-                          const labelIndex = oldData.labels.findIndex(
-                            (l) => l.id === newTask.label.id
-                          );
-                          if (labelIndex === -1)
-                            return {
-                              ...oldData,
-                              entities: [...oldData.entities, newTask],
-                            };
-                          return {
-                            ...oldData,
-                            labels: oldData.labels.map((l) =>
-                              l.id === newTask.label.id
-                                ? {
-                                    ...l,
-                                    entities: [...l.entities, newTask],
-                                  }
-                                : l
-                            ),
-                          };
-                        },
-                        {
-                          revalidate: false,
-                        }
-                      );
-                    }}
-                  >
-                    <Button
-                      variant="filled"
-                      height={50}
-                      containerStyle={{
-                        marginLeft: "auto",
-                      }}
-                      style={{ paddingHorizontal: 20 }}
-                      text="Create"
-                      iconPosition="end"
-                      icon="stylus_note"
-                    />
-                  </CreateTask>
-                )}
-              </View>
-            </View>
-          </>
-        }
         data={filteredTasks}
         estimatedItemSize={113}
         contentContainerStyle={{
@@ -309,9 +288,7 @@ export default function Stream() {
           paddingBottom: insets.bottom + 15,
         }}
         renderItem={({ item }) => (
-          <View
-            style={{ maxWidth: 400, width: "100%", marginHorizontal: "auto" }}
-          >
+          <View style={{ maxWidth: 400, width: "100%" }}>
             <Entity
               isReadOnly={isReadOnly}
               showRelativeTime={view !== "unscheduled"}
