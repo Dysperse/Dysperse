@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState, useTransition } from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -147,8 +148,8 @@ export default function Stream() {
       <View
         style={{
           width: breakpoints.md ? 350 : "100%",
-          flexDirection: breakpoints.md ? "column" : "row",
-          padding: breakpoints.md ? 40 : 0,
+          padding: breakpoints.md ? 40 : 20,
+          paddingBottom: 0,
         }}
       >
         <TextField
@@ -232,28 +233,30 @@ export default function Stream() {
             </CreateTask>
           )}
         </View>
-        {[
-          { label: "Backlog", value: "backlog", icon: "west" },
-          { label: "Upcoming", value: "upcoming", icon: "east" },
-          { label: "Completed", value: "completed", icon: "check_circle" },
-          { label: "Unscheduled", value: "unscheduled", icon: "sunny" },
-          { label: "Repeating", value: "repeating", icon: "loop" },
-        ].map((e) => (
-          <Button
-            key={e.value}
-            icon={e.icon}
-            backgroundColors={{
-              default: theme[e.value === view ? 5 : 1],
-              hovered: theme[e.value === view ? 6 : 3],
-              pressed: theme[e.value === view ? 7 : 4],
-            }}
-            onPress={() => selectTab(e.value)}
-            text={e.label}
-            style={{
-              justifyContent: "flex-start",
-            }}
-          />
-        ))}
+        <ScrollView horizontal={!breakpoints.md}>
+          {[
+            { label: "Backlog", value: "backlog", icon: "west" },
+            { label: "Upcoming", value: "upcoming", icon: "east" },
+            { label: "Completed", value: "completed", icon: "check_circle" },
+            { label: "Unscheduled", value: "unscheduled", icon: "sunny" },
+            { label: "Repeating", value: "repeating", icon: "loop" },
+          ].map((e) => (
+            <Button
+              key={e.value}
+              icon={e.icon}
+              backgroundColors={{
+                default: theme[e.value === view ? 5 : 1],
+                hovered: theme[e.value === view ? 6 : 3],
+                pressed: theme[e.value === view ? 7 : 4],
+              }}
+              onPress={() => selectTab(e.value)}
+              text={e.label}
+              style={{
+                justifyContent: "flex-start",
+              }}
+            />
+          ))}
+        </ScrollView>
       </View>
       <FlashList
         refreshControl={
