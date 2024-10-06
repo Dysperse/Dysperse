@@ -791,7 +791,7 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
           iconProps={{ filled: value }}
           iconStyle={{
             transform: [{ rotate: "-30deg" }],
-            color: value ? orange[9] : theme[9],
+            color: value ? orange[11] : theme[11],
           }}
           backgroundColors={
             value
