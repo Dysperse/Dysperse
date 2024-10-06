@@ -144,16 +144,16 @@ const notificationSettings = [
         name: "Invite",
         description: "Notify me when I'm invited to a collection",
       },
-      {
-        key: "COLLECTION_ITEM_CREATE",
-        name: "Create",
-        description: "Notify me when a new entity is created in a collection",
-      },
-      {
-        key: "COLLECTION_ITEM_UPDATE",
-        name: "Edit",
-        description: "Notify me when labels are edited in a collection",
-      },
+      // {
+      //   key: "COLLECTION_ITEM_CREATE",
+      //   name: "Create",
+      //   description: "Notify me when a new entity is created in a collection",
+      // },
+      // {
+      //   key: "COLLECTION_ITEM_UPDATE",
+      //   name: "Edit",
+      //   description: "Notify me when labels are edited in a collection",
+      // },
     ],
   },
   {
