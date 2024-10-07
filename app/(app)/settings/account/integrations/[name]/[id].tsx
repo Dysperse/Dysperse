@@ -1,6 +1,5 @@
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
-import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
@@ -65,7 +64,7 @@ const CalendarPicker = () => {
           }}
         />
         <View style={{ flex: 1 }}>
-          <Text weight={900}>{item.summary}</Text>
+          <Text weight={500}>{item.summary}</Text>
           <Text style={{ opacity: 0.6, fontSize: 12 }}>{item.description}</Text>
         </View>
         <LabelPicker
@@ -239,11 +238,7 @@ export default function Page() {
 
   const methods = useForm({
     defaultValues: {
-      collection: {
-        name: `${session?.user?.profile?.name?.split(" ")?.[0]}'s collection`,
-        emoji: "1f600",
-      },
-      labels: [],
+      labels: {},
     },
   });
 
@@ -255,7 +250,7 @@ export default function Page() {
       const collection = await sendApiRequest(
         sessionToken,
         "POST",
-        "space/integrations/connect",
+        "space/integrations",
         {},
         {
           body: JSON.stringify({ id, ...data }),
@@ -263,12 +258,6 @@ export default function Page() {
       );
       console.log(collection);
       Toast.show({ type: "success", text1: "Connected!" });
-      await createTab(sessionToken, {
-        label: collection.name,
-        icon: "view_kanban",
-        slug: `/[tab]/collections/[id]/[type]`,
-        params: { id: collection.id, type: "kanban" },
-      });
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
@@ -321,8 +310,9 @@ export default function Page() {
             <Button
               isLoading={loading}
               onPress={methods.handleSubmit(onSubmit)}
-              text="Done"
-              icon="check"
+              text="Save changes"
+              iconPosition="end"
+              icon="east"
               variant="filled"
               large
             />
