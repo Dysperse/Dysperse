@@ -238,7 +238,7 @@ export default function Page() {
 
   const methods = useForm({
     defaultValues: {
-      labels: {},
+      labels: integration?.params?.labels || {},
     },
   });
 
@@ -249,7 +249,7 @@ export default function Page() {
       setLoading(true);
       const collection = await sendApiRequest(
         sessionToken,
-        "POST",
+        "PUT",
         "space/integrations",
         {},
         {
