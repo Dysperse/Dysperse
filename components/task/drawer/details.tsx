@@ -438,7 +438,7 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
         <TextField
           variant="filled+outlined"
           editable={editable}
-          defaultValue={item?.data?.full_name || item.data}
+          defaultValue={item?.data?.full_name || item.data?.val || item.data}
           placeholder={item.type === "LINK" ? "Link…" : "Location…"}
           style={{
             paddingVertical: 3,
