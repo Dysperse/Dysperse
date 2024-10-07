@@ -364,7 +364,7 @@ function TaskAttachmentPreview({ item, index }: { item: any; index: number }) {
   const { icon, name } = getAttachmentPreview(item);
   const handleOpenPress = useCallback(() => {
     if (isValidHttpUrl(item.data)) {
-      Linking.openURL(item.data);
+      Linking.openURL(item.data?.val || item.data);
     } else {
       handleLocationPress(session, item);
     }
