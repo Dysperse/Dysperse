@@ -5,7 +5,7 @@ export const useTabMetadata = (slug: string, tab: any) => {
 
   const startWithMatchers = {
     "/[tab]/collections/": {
-      icon: (params) => COLLECTION_VIEWS[params.type].icon,
+      icon: (params) => COLLECTION_VIEWS[params.type]?.icon,
       name: (params) =>
         [
           tab.collection ? "-" : undefined,

@@ -138,9 +138,9 @@ function Tab({
           style: { marginTop: -1 },
         }}
         icon={
-          typeof tabData.icon === "function"
-            ? tabData.icon(tab.params)
-            : tabData.icon
+          typeof tabData?.icon === "function"
+            ? tabData?.icon?.(tab.params)
+            : tabData?.icon
         }
       />
     ),
