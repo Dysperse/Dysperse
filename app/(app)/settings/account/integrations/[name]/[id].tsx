@@ -4,16 +4,14 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
-import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
-import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
   Controller,
@@ -125,94 +123,159 @@ const CalendarPicker = () => {
           borderColor: theme[5],
         }}
       >
-        <Controller
-          control={control}
-          name="labels"
-          render={({ field: { value, onChange } }) => (
-            <>
-              {data.items.length === 0 && (
-                <View
-                  style={{
-                    height: 297,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text>No calendars found in your Google account</Text>
-                </View>
-              )}
-              {data.items.map((item) => (
-                <CalendarButton
-                  key={item.id}
-                  value={value}
-                  onChange={onChange}
-                  item={item}
-                />
-              ))}
-            </>
-          )}
-        />
+        {Array.isArray(data?.items) && (
+          <Controller
+            control={control}
+            name="labels"
+            render={({ field: { value, onChange } }) => (
+              <>
+                {data.items.length === 0 && (
+                  <View
+                    style={{
+                      height: 297,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text>No calendars found in your Google account</Text>
+                  </View>
+                )}
+                {data.items.map((item) => (
+                  <CalendarButton
+                    key={item.id}
+                    value={value}
+                    onChange={onChange}
+                    item={item}
+                  />
+                ))}
+              </>
+            )}
+          />
+        )}
       </View>
     </>
   );
 };
 
-const CollectionsPicker = () => {
+const CourseLabelPicker = ({ calendarUrl }) => {
   const theme = useColorTheme();
-  const { data } = useSWR(["space/collections"]);
+  const { data } = useSWR([
+    "space/integrations/canvas-lms-labels",
+    { calendarUrl },
+  ]);
 
   const { control } = useFormContext();
+
+  const CourseButton = ({
+    value,
+    onChange,
+    item,
+  }: {
+    value: any;
+    onChange: any;
+    item: any;
+  }) => {
+    const labelColors = useLabelColors();
+
+    const t = value[item.integrationParams.id];
+
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 20,
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+          alignItems: "center",
+        }}
+      >
+        <Emoji emoji={item.emoji} />
+        <View style={{ flex: 1 }}>
+          <Text weight={500}>{item.name}</Text>
+        </View>
+        <LabelPicker
+          setLabel={(newLabel: any) => {
+            onChange({
+              ...value,
+              [item.integrationParams.id]: newLabel,
+            });
+          }}
+        >
+          <Button
+            backgroundColors={
+              !t
+                ? undefined
+                : {
+                    default: labelColors[t.color][3],
+                    hovered: labelColors[t.color][4],
+                    pressed: labelColors[t.color][5],
+                  }
+            }
+            textStyle={{
+              color: !t ? theme[11] : labelColors[t.color][11],
+            }}
+            iconStyle={{
+              color: !t ? theme[11] : labelColors[t.color][11],
+            }}
+            text={t ? t.name : "Connect"}
+            icon={t ? "check" : "add"}
+            variant="filled"
+          />
+        </LabelPicker>
+      </View>
+    );
+  };
 
   return !data ? (
     <Spinner />
   ) : (
     <>
-      <View
+      <Text
         style={{
-          backgroundColor: theme[3],
-          height: 60,
-          borderRadius: 20,
-          borderColor: theme[4],
-          borderWidth: 2,
-          marginTop: 10,
-          overflow: "hidden",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
-          paddingHorizontal: 20,
+          opacity: 0.6,
+          fontSize: 20,
+          marginTop: 20,
         }}
       >
-        <Controller
-          control={control}
-          name="collection.emoji"
-          rules={{ required: true }}
-          render={({ field: { onChange, value } }) => (
-            <EmojiPicker setEmoji={onChange}>
-              <IconButton style={{ borderStyle: "dashed" }} size={40}>
-                <Emoji emoji={value} size={30} />
-              </IconButton>
-            </EmojiPicker>
-          )}
-        />
-        <Controller
-          control={control}
-          name="collection.name"
-          rules={{ required: true }}
-          render={({ field: { onChange, value } }) => (
-            <TextField
-              placeholder="Name"
-              value={value}
-              onChangeText={onChange}
-              weight={700}
-              style={{
-                fontSize: 20,
-                height: 50,
-                flex: 1,
-                shadowRadius: 0,
-              }}
-            />
-          )}
-        />
+        Select courses
+      </Text>
+      <View
+        style={{
+          marginTop: 10,
+          borderWidth: 1,
+          borderRadius: 20,
+          borderColor: theme[5],
+        }}
+      >
+        {Array.isArray(data) && (
+          <Controller
+            control={control}
+            name="labels"
+            render={({ field: { value, onChange } }) => (
+              <>
+                {data.length === 0 && (
+                  <View
+                    style={{
+                      height: 297,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text>No courses found in your Canvas Calendar</Text>
+                  </View>
+                )}
+                {data.map((item) => (
+                  <CourseButton
+                    key={item.id}
+                    value={value}
+                    onChange={onChange}
+                    item={item}
+                  />
+                ))}
+              </>
+            )}
+          />
+        )}
       </View>
     </>
   );
@@ -233,7 +296,6 @@ export default function Page() {
 
   const integration = data?.[0]?.integration;
   const integrationMetadata = metadata?.find((i) => i.slug === name);
-
   const isLoading = !data || !metadata;
 
   const methods = useForm({
@@ -242,12 +304,26 @@ export default function Page() {
         ? integration.labels
             .map((i) => i)
             .reduce((acc, curr) => {
-              acc[curr.integrationParams?.calendarId] = curr;
+              acc[
+                curr.integrationParams?.calendarId || curr.integrationParams?.id
+              ] = curr;
               return acc;
             }, {})
         : {},
     },
   });
+
+  const handleDelete = async () => {
+    try {
+      await sendApiRequest(sessionToken, "DELETE", "space/integrations", {
+        id,
+      });
+      router.replace("/settings/account/integrations/" + name);
+      Toast.show({ type: "success", text1: "Deleted!" });
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
+  };
 
   const [loading, setLoading] = useState(false);
 
@@ -279,10 +355,8 @@ export default function Page() {
     }
   };
 
-  return isLoading ? (
-    <Spinner />
-  ) : error ? (
-    <ErrorAlert />
+  return !data ? (
+    <View>{isLoading ? <Spinner /> : <ErrorAlert />}</View>
   ) : (
     <ScrollView style={{ padding: 40 }}>
       <FormProvider {...methods}>
@@ -307,19 +381,37 @@ export default function Page() {
                 Settings
               </Text>
               <Text style={{ opacity: 0.5 }}>
-                {integration.params?.account?.email} &bull;{" "}
+                {`${integration.params?.account?.email || ""}${
+                  integration.params?.account?.email ? " | " : ""
+                }`}
                 {integrationMetadata.name}
               </Text>
             </View>
           </View>
           {integrationMetadata.id === "GOOGLE_CALENDAR" && <CalendarPicker />}
+          {integrationMetadata.id === "CANVAS_LMS" && (
+            <CourseLabelPicker calendarUrl={integration.params?.calendarUrl} />
+          )}
           <View
             style={{
               flexDirection: "row",
               marginVertical: 20,
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
             }}
           >
+            <ConfirmationModal
+              onSuccess={handleDelete}
+              title="Delete integration?"
+              secondary="This integration will be removed from your account"
+            >
+              <Button
+                isLoading={loading}
+                text="Delete"
+                icon="delete"
+                variant="outlined"
+                large
+              />
+            </ConfirmationModal>
             <Button
               isLoading={loading}
               onPress={methods.handleSubmit(onSubmit)}

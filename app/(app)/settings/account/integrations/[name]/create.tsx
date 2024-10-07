@@ -243,7 +243,13 @@ const Outro = ({
             Tap the button below to finish connecting {integration.name}.
           </Text>
 
-          <Button large variant="filled" text="Connect" onPress={handleClick} />
+          <Button
+            large
+            variant="filled"
+            text="Connect"
+            onPress={handleClick}
+            containerStyle={{ marginBottom: "auto" }}
+          />
         </>
       ) : (
         <>
