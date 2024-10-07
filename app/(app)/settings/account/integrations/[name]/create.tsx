@@ -195,7 +195,6 @@ const Outro = ({
   submit,
   setSlide,
 }) => {
-  const supportsLabelMapping = integration.supportsLabelMapping;
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
   const handleClick = async () => {
@@ -233,25 +232,18 @@ const Outro = ({
           >
             Almost there...
           </Text>
-          {supportsLabelMapping ? (
-            <LabelCustomizer
-              status={status}
-              handleSubmit={handleClick}
-              connectedIntegration={connectedIntegration}
-              setSlide={setSlide}
-            />
-          ) : (
-            <Text
-              style={{
-                width: "100%",
-                marginBottom: 20,
-                opacity: 0.8,
-                fontSize: 20,
-              }}
-            >
-              Tap the button below to finish connecting {integration.name}.
-            </Text>
-          )}
+          <Text
+            style={{
+              width: "100%",
+              marginBottom: 20,
+              opacity: 0.8,
+              fontSize: 20,
+            }}
+          >
+            Tap the button below to finish connecting {integration.name}.
+          </Text>
+
+          <Button large variant="filled" text="Connect" onPress={handleClick} />
         </>
       ) : (
         <>
@@ -469,20 +461,19 @@ export default function Page() {
   const onSubmit = async (values) => {
     try {
       setSlide(-1);
-      await sendApiRequest(
+      const { id } = await sendApiRequest(
         session,
         "POST",
-        "space/integrations/connect",
+        "space/integrations",
         {},
         {
-          body: JSON.stringify({
-            name: values.integration,
-            type: values.integration,
-            ...values,
-          }),
+          body: JSON.stringify(values),
         }
       );
-      router.replace("/settings/account/integrations");
+
+      if (id)
+        router.replace(`/settings/account/integrations/${values.name}/${id}`);
+      else throw new Error("Couldn't connect");
     } catch (e) {
       setSlide(0);
       console.error(e);

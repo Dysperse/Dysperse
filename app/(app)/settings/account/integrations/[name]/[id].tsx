@@ -312,7 +312,7 @@ export default function Page() {
               </Text>
             </View>
           </View>
-          <CalendarPicker />
+          {integrationMetadata.id === "GOOGLE_CALENDAR" && <CalendarPicker />}
           <View
             style={{
               flexDirection: "row",
