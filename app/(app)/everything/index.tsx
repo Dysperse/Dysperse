@@ -785,7 +785,7 @@ export default function Page() {
                   style={{
                     height: 5,
                     width: 15,
-                    marginTop: -7,
+                    marginTop: 3,
                     marginBottom: -8,
                     borderRadius: 99,
                     backgroundColor: theme[11],
@@ -808,4 +808,3 @@ export default function Page() {
     </ContentWrapper>
   );
 }
-
