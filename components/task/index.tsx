@@ -136,8 +136,8 @@ export const TaskAttachmentChips = memo(
             (attachment.type === "LINK"
               ? isVideoChatPlatform(attachment.data)
                 ? "Join meeting"
-                : isValidHttpUrl(attachment.data)
-                ? new URL(attachment.data).hostname
+                : isValidHttpUrl(attachment.data?.val || attachment.data)
+                ? new URL(attachment.data?.val || attachment.data).hostname
                 : "Link"
               : attachment.type === "LOCATION"
               ? "Maps"
