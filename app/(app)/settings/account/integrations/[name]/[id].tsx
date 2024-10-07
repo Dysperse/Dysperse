@@ -1,23 +1,20 @@
+import LabelPicker from "@/components/labels/picker";
+import { useLabelColors } from "@/components/labels/useLabelColors";
 import { createTab } from "@/components/layout/openTab";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
-import { Button, ButtonText } from "@/ui/Button";
-import ConfirmationModal from "@/ui/ConfirmationModal";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
   Controller,
@@ -25,7 +22,8 @@ import {
   useForm,
   useFormContext,
 } from "react-hook-form";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -47,59 +45,65 @@ const CalendarPicker = () => {
     value: any;
     onChange: any;
     item: any;
-  }) => (
-    <Pressable
-      style={({ pressed, hovered }) => ({
-        backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-        flexDirection: "row",
-        height: 70,
-        gap: 20,
-        paddingHorizontal: 20,
-        paddingRight: 30,
-        paddingVertical: 20,
-        alignItems: "center",
-      })}
-      onPress={() => {
-        if (value.find((i) => i.id === item.id)) {
-          onChange(value.filter((i) => i.id !== item.id));
-        } else {
-          onChange([
-            ...value,
-            {
-              id: item.id,
-              name: item.summary,
-              // TODO: Add more functionality
-              integrationParams: {
-                calendarId: item.id,
-              },
-            },
-          ]);
-        }
-        console.log(value);
-      }}
-    >
-      <Avatar
+  }) => {
+    const labelColors = useLabelColors();
+
+    return (
+      <View
         style={{
-          backgroundColor: item.backgroundColor,
+          flexDirection: "row",
+          gap: 20,
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+          alignItems: "center",
         }}
-      />
-      <View style={{ flex: 1 }}>
-        <Text numberOfLines={1} weight={900}>
-          {item.summary}
-        </Text>
-        <Text numberOfLines={1} style={{ opacity: 0.6 }}>
-          {item.description}
-        </Text>
-      </View>
-      <Icon
-        size={30}
-        style={{ marginLeft: "auto" }}
-        filled={value.find((i) => i.id === item.id)}
       >
-        {value.find((i) => i.id === item.id) ? "check_circle" : "circle"}
-      </Icon>
-    </Pressable>
-  );
+        <Avatar
+          size={10}
+          style={{
+            backgroundColor: item.backgroundColor,
+          }}
+        />
+        <View style={{ flex: 1 }}>
+          <Text weight={900}>{item.summary}</Text>
+          <Text style={{ opacity: 0.6, fontSize: 12 }}>{item.description}</Text>
+        </View>
+        <LabelPicker
+          setLabel={(newLabel: any) => {
+            onChange({
+              ...value,
+              [item.id]: newLabel,
+            });
+          }}
+        >
+          <Button
+            backgroundColors={
+              !value[item.id]
+                ? undefined
+                : {
+                    default: labelColors[value[item.id].color][3],
+                    hovered: labelColors[value[item.id].color][4],
+                    pressed: labelColors[value[item.id].color][5],
+                  }
+            }
+            textStyle={{
+              color: !value[item.id]
+                ? theme[11]
+                : labelColors[value[item.id].color][11],
+            }}
+            iconStyle={{
+              color: !value[item.id]
+                ? theme[11]
+                : labelColors[value[item.id].color][11],
+            }}
+            text={value[item.id] ? value[item.id].name : "Connect"}
+            icon={value[item.id] ? "check" : "add"}
+            variant="filled"
+          />
+        </LabelPicker>
+      </View>
+    );
+  };
 
   return !data ? (
     <Spinner />
@@ -116,23 +120,18 @@ const CalendarPicker = () => {
       </Text>
       <View
         style={{
-          backgroundColor: theme[3],
-          height: 300,
-          borderRadius: 20,
-          borderColor: theme[4],
-          borderWidth: 2,
           marginTop: 10,
-          overflow: "hidden",
+          borderWidth: 1,
+          borderRadius: 20,
+          borderColor: theme[5],
         }}
       >
         <Controller
           control={control}
           name="labels"
           render={({ field: { value, onChange } }) => (
-            <FlashList
-              key={JSON.stringify(value)}
-              data={data.items}
-              ListEmptyComponent={() => (
+            <>
+              {data.items.length === 0 && (
                 <View
                   style={{
                     height: 297,
@@ -143,22 +142,18 @@ const CalendarPicker = () => {
                   <Text>No calendars found in your Google account</Text>
                 </View>
               )}
-              renderItem={({ item }) => (
-                <CalendarButton value={value} onChange={onChange} item={item} />
-              )}
-              keyExtractor={({ id }) => id}
-              estimatedItemSize={70}
-            />
+              {data.items.map((item) => (
+                <CalendarButton
+                  key={item.id}
+                  value={value}
+                  onChange={onChange}
+                  item={item}
+                />
+              ))}
+            </>
           )}
         />
       </View>
-      <Alert
-        title="Calendars create labels, which you can customize later."
-        emoji="1f3f7"
-        style={{ marginTop: 20 }}
-        dense
-        italicize
-      />
     </>
   );
 };
@@ -173,15 +168,6 @@ const CollectionsPicker = () => {
     <Spinner />
   ) : (
     <>
-      <Text
-        style={{
-          opacity: 0.6,
-          fontSize: 20,
-          marginTop: 20,
-        }}
-      >
-        Create collection
-      </Text>
       <View
         style={{
           backgroundColor: theme[3],
@@ -236,9 +222,20 @@ const CollectionsPicker = () => {
 export default function Page() {
   const { session, sessionToken } = useUser();
   const { id, name } = useLocalSearchParams();
-  const handleBack = () => router.replace("/settings/account/integrations");
-  const { data, error } = useSWR(["space/integrations/about", { id: name }]);
-  const integration = data?.[0];
+  const { data: metadata } = useSWR(
+    `${
+      process.env.NODE_ENV === "development"
+        ? "/integrations.json"
+        : "https://app.dysperse.com/integrations.json"
+    }`,
+    (t) => fetch(t).then((t) => t.json())
+  );
+  const { data, error } = useSWR(["space/integrations", { id }]);
+
+  const integration = data?.[0]?.integration;
+  const integrationMetadata = metadata?.find((i) => i.slug === name);
+
+  const isLoading = !data || !metadata;
 
   const methods = useForm({
     defaultValues: {
@@ -279,83 +276,60 @@ export default function Page() {
     }
   };
 
-  return (
-    <SettingsScrollView>
-      <View style={{ flex: 1 }}>
-        <View style={{ flexDirection: "row" }}>
-          <ConfirmationModal
-            height={380}
-            title="Exit setup?"
-            secondary="This will discard any changes you've made."
-            onSuccess={handleBack}
-          >
-            <Button variant="outlined">
-              <Icon>arrow_back_ios_new</Icon>
-              <ButtonText>
-                {integration ? integration?.about?.name : "Back"}
-              </ButtonText>
-            </Button>
-          </ConfirmationModal>
-        </View>
-        {data ? (
-          <FormProvider {...methods}>
-            <View style={{ marginVertical: 20, paddingTop: 20 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 30,
-                  marginBottom: 20,
-                }}
-              >
-                <Image
-                  source={{ uri: data?.icon }}
-                  style={{
-                    width: 50,
-                    height: 50,
-                  }}
-                />
-                <View>
-                  <Text style={{ fontSize: 20 }} weight={700}>
-                    Continue setup
-                  </Text>
-                  <Text style={{ opacity: 0.7 }}>{data?.name}</Text>
-                </View>
-              </View>
-              <CollectionsPicker />
-              <CalendarPicker />
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginVertical: 20,
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Button
-                  isLoading={loading}
-                  onPress={methods.handleSubmit(onSubmit)}
-                  text="Done"
-                  icon="check"
-                  variant="filled"
-                  large
-                />
-              </View>
-            </View>
-          </FormProvider>
-        ) : error ? (
-          <ErrorAlert />
-        ) : (
+  return isLoading ? (
+    <Spinner />
+  ) : error ? (
+    <ErrorAlert />
+  ) : (
+    <ScrollView style={{ padding: 40 }}>
+      <FormProvider {...methods}>
+        <View style={{ marginTop: 10 }}>
           <View
             style={{
+              flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
+              gap: 30,
+              marginBottom: 20,
             }}
           >
-            <Spinner />
+            <Image
+              source={{ uri: integrationMetadata?.icon }}
+              style={{
+                width: 50,
+                height: 50,
+              }}
+            />
+            <View>
+              <Text style={{ fontSize: 20 }} weight={700}>
+                Settings
+              </Text>
+              <Text style={{ opacity: 0.5 }}>
+                {integration.params?.account?.email} &bull;{" "}
+                {integrationMetadata.name}
+              </Text>
+            </View>
           </View>
-        )}
-      </View>
-    </SettingsScrollView>
+
+          <CalendarPicker />
+          <View
+            style={{
+              flexDirection: "row",
+              marginVertical: 20,
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              isLoading={loading}
+              onPress={methods.handleSubmit(onSubmit)}
+              text="Done"
+              icon="check"
+              variant="filled"
+              large
+            />
+          </View>
+        </View>
+      </FormProvider>
+    </ScrollView>
   );
 }
+

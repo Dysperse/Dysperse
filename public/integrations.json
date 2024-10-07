@@ -23,7 +23,11 @@
     "slug": "google-calendar",
     "availableOptions": {},
     "authorization": {
-      "type": "GoogleOAuth2"
+      "type": "GoogleOAuth2",
+      "scopes": [
+        "https://www.googleapis.com/auth/calendar.readonly",
+        "https://www.googleapis.com/auth/calendar.events.readonly"
+      ]
     }
   },
   {

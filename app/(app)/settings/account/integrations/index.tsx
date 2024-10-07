@@ -225,8 +225,6 @@ const IntegrationItem = ({ item, data }) => {
 };
 
 export default function Page() {
-  const theme = useColorTheme();
-  const { session } = useUser();
   const { data } = useSWR(["space/integrations"]);
 
   const { data: integrationsList } = useSWR(

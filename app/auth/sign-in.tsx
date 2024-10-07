@@ -293,10 +293,14 @@ export function GoogleAuth({
   signup,
   onNewAccount,
   additionalScopes = [],
+  redirectPath,
+  getRefreshToken,
 }: {
   signup?: boolean;
   onNewAccount?: (data) => void;
   additionalScopes?: string[];
+  redirectPath?: string;
+  getRefreshToken?: boolean;
 }) {
   const theme = useColorTheme();
   const { signIn } = useSession();
@@ -328,7 +332,13 @@ export function GoogleAuth({
             `https://accounts.google.com/o/oauth2/auth?${new URLSearchParams({
               client_id:
                 "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
-              redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/auth/login/google`,
+              redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/${
+                redirectPath || "auth/login/google"
+              }`,
+              ...(getRefreshToken && {
+                access_type: "offline",
+                prompt: "consent",
+              }),
               scope:
                 "profile email" +
                 (additionalScopes ? " " + additionalScopes.join(" ") : ""),
