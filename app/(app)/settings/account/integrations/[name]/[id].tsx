@@ -238,7 +238,14 @@ export default function Page() {
 
   const methods = useForm({
     defaultValues: {
-      labels: integration?.params?.labels || {},
+      labels: integration?.labels
+        ? integration.labels
+            .map((i) => i)
+            .reduce((acc, curr) => {
+              acc[curr.integrationParams?.calendarId] = curr;
+              return acc;
+            }, {})
+        : {},
     },
   });
 
@@ -253,7 +260,14 @@ export default function Page() {
         "space/integrations",
         {},
         {
-          body: JSON.stringify({ id, ...data }),
+          body: JSON.stringify({
+            id,
+            ...data,
+            labels: Object.keys(data.labels).reduce((acc, curr) => {
+              acc[curr] = data.labels[curr].id;
+              return acc;
+            }, {}),
+          }),
         }
       );
       console.log(collection);
@@ -298,7 +312,6 @@ export default function Page() {
               </Text>
             </View>
           </View>
-
           <CalendarPicker />
           <View
             style={{
