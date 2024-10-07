@@ -21,7 +21,10 @@
     "description": "Sync your calendar events with collections",
     "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png",
     "slug": "google-calendar",
-    "availableOptions": {}
+    "availableOptions": {},
+    "authorization": {
+      "type": "GoogleOAuth2"
+    }
   },
   {
     "name": "Apple Calendar",
@@ -95,7 +98,7 @@
     "comingSoon": true,
     "availableOptions": {},
     "authorization": {
-      "type": "oauth2"
+      "type": "GoogleOAuth2"
     }
   }
 ]
