@@ -528,7 +528,7 @@ export default function Page() {
 
   const slidesLength =
     (data?.authorization?.params?.length || 0) +
-    (data?.authorization.type === "oauth2"
+    (data?.authorization.type === "GoogleOAuth2"
       ? 2
       : 1 + data?.authorization?.params?.length);
 
@@ -598,7 +598,7 @@ export default function Page() {
         {data ? (
           <View style={{ flex: 1 }}>
             {slide === 0 && <Intro integration={data} />}
-            {slide === 1 && data.authorization.type === "oauth2" && (
+            {slide === 1 && data.authorization.type === "GoogleOAuth2" && (
               <OauthRedirect integration={data} />
             )}
             {slide > 0 && slide <= data.authorization?.params?.length && (
@@ -610,7 +610,7 @@ export default function Page() {
               </FormProvider>
             )}
             {slide === slidesLength - 1 &&
-            data.authorization.type !== "oauth2" ? (
+            data.authorization.type !== "GoogleOAuth2" ? (
               <FormProvider {...methods}>
                 <Outro
                   setConnectedSuccess={setConnectedSuccess}
@@ -621,7 +621,7 @@ export default function Page() {
                 />
               </FormProvider>
             ) : (
-              !(data.authorization.type === "oauth2" && slide === 1) && (
+              !(data.authorization.type === "GoogleOAuth2" && slide === 1) && (
                 <View style={[styles.footer, { paddingHorizontal: 20 }]}>
                   {connectedIntegration && slide === 0 && (
                     <ConfirmationModal
