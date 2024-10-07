@@ -476,7 +476,7 @@ export default function Page() {
           body: JSON.stringify(values),
         }
       );
-      alert(JSON.stringify(data));
+      alert(JSON.stringify(values));
 
       if (data.id)
         router.replace(
