@@ -464,9 +464,17 @@ export default function Page() {
   const { name } = useLocalSearchParams();
   const [slide, setSlide] = useState(0);
 
-  const { data } = useSWR(
-    name ? ["space/integrations/about", { id: name }] : null
+  const { data: integrationData } = useSWR(
+    `${
+      process.env.NODE_ENV === "development"
+        ? "/integrations.json"
+        : "https://app.dysperse.com/integrations.json"
+    }`,
+    (t) => fetch(t).then((t) => t.json())
   );
+
+  const data = integrationData?.find((i) => i.slug === name);
+  alert(JSON.stringify(data));
 
   const { data: integrations } = useSWR(["space/integrations"]);
 
