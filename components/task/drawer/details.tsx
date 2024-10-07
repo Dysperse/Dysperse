@@ -291,11 +291,11 @@ function EditAttachment({
 
 const getAttachmentPreview = (item) => {
   let icon = "";
-  let name = item.data;
+  let name = item.data.val ? item.data.val : item.data;
   switch (item.type) {
     case "LINK":
       icon = "link";
-      if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
+      if (isValidHttpUrl(name)) name = new URL(name).hostname;
       break;
     case "LOCATION":
       icon = isValidHttpUrl(item.data) ? "link" : "map";
