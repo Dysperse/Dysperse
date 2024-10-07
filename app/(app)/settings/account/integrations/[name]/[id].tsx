@@ -325,7 +325,7 @@ export default function Page() {
               onPress={methods.handleSubmit(onSubmit)}
               text="Save changes"
               iconPosition="end"
-              icon="east"
+              icon="check"
               variant="filled"
               large
             />
