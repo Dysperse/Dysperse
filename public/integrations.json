@@ -25,7 +25,6 @@
     "description": "Sync your calendar events with collections",
     "icon": "https://help.apple.com/assets/65D689DF13D1B1E17703916F/65D689E0D302CF88600FDD25/en_US/941b3852f089696217cabe420c7a459f.png",
     "slug": "apple-calendar",
-    "comingSoon": true,
     "availableOptions": {}
   },
   {
@@ -60,3 +59,4 @@
     "availableOptions": {}
   }
 ]
+

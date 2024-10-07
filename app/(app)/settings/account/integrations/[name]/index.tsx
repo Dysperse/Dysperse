@@ -115,9 +115,7 @@ const LabelCustomizer = ({
         text1: "Couldn't find any labels",
         text2: "Check if you entered everything correctly",
       });
-    } else {
-      setValue("labels", data);
-    }
+    } else setValue("labels", data);
   }, [data, setSlide, setValue]);
 
   return (
@@ -680,3 +678,4 @@ export default function Page() {
     </FormProvider>
   );
 }
+

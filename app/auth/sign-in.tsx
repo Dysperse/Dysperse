@@ -292,9 +292,11 @@ function Email({
 export function GoogleAuth({
   signup,
   onNewAccount,
+  additionalScopes = [],
 }: {
   signup?: boolean;
   onNewAccount?: (data) => void;
+  additionalScopes?: string[];
 }) {
   const theme = useColorTheme();
   const { signIn } = useSession();
@@ -327,7 +329,9 @@ export function GoogleAuth({
               client_id:
                 "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
               redirect_uri: `${process.env.EXPO_PUBLIC_API_URL}/auth/login/google`,
-              scope: "profile email",
+              scope:
+                "profile email" +
+                (additionalScopes ? " " + additionalScopes.join(" ") : ""),
               response_type: "code",
             }).toString()}`,
             createURL("/auth/google")
@@ -336,7 +340,7 @@ export function GoogleAuth({
       } else {
         setLoading(true);
         GoogleSignin.configure({
-          scopes: ["email", "profile"],
+          scopes: ["email", "profile", ...additionalScopes],
           webClientId:
             "990040256661-kf469e9rml2dbq77q6f5g6rprmgjdlkf.apps.googleusercontent.com",
           offlineAccess: true,

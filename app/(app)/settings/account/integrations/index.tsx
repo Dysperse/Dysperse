@@ -134,6 +134,96 @@ function SpotifyIntegration({ children }) {
   );
 }
 
+const IntegrationItem = ({ item, data }) => {
+  const theme = useColorTheme();
+  const { session } = useUser();
+
+  const Container = item.slug === "spotify" ? SpotifyIntegration : Fragment;
+
+  const hasConnected = data.find((i) => item.slug === i.integration?.name);
+
+  const showCheck =
+    item.slug === "email-forwarding" ||
+    (item.slug === "spotify" && session.user?.profile?.spotifyAuthTokens) ||
+    hasConnected;
+
+  return (
+    <View
+      key={item.slug}
+      style={{
+        width: "50%",
+        padding: 10,
+      }}
+    >
+      <Container>
+        <Button
+          variant={showCheck ? "filled" : "outlined"}
+          height={"auto" as any}
+          containerStyle={{ borderRadius: 20, flex: 1 }}
+          style={{
+            padding: 15,
+            flexDirection: "column",
+            flex: 1,
+            borderRadius: 0,
+            gap: 0,
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+          onPress={() => {
+            if (item.comingSoon)
+              Toast.show({ type: "info", text1: "Coming soon!" });
+            else router.push(`/settings/account/integrations/${item.slug}`);
+          }}
+        >
+          {showCheck && (
+            <Icon
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                margin: 10,
+              }}
+              size={30}
+              filled
+            >
+              check_circle
+            </Icon>
+          )}
+          <View
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 20,
+              backgroundColor: theme[5],
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {item.icon.startsWith("https") ? (
+              <Image
+                source={{ uri: item.icon }}
+                contentFit="contain"
+                style={{ height: 30, width: 30 }}
+              />
+            ) : (
+              <Icon size={30}>{item.icon}</Icon>
+            )}
+          </View>
+          <Text
+            weight={700}
+            style={{ color: theme[12], fontSize: 20, marginTop: 10 }}
+          >
+            {item.name}
+          </Text>
+          <Text style={{ color: theme[11], opacity: 0.8 }}>
+            {item.description}
+          </Text>
+        </Button>
+      </Container>
+    </View>
+  );
+};
+
 export default function Page() {
   const theme = useColorTheme();
   const { session } = useUser();
@@ -176,93 +266,9 @@ export default function Page() {
             <Spinner />
           </View>
         ) : (
-          integrationsList.map((item) => {
-            const Container =
-              item.slug === "spotify" ? SpotifyIntegration : Fragment;
-
-            const hasConnected = data.find(
-              (i) => item.slug === i.integration?.name
-            );
-
-            const showCheck =
-              item.slug === "email-forwarding" ||
-              (item.slug === "spotify" &&
-                session.user?.profile?.spotifyAuthTokens) ||
-              hasConnected;
-
-            return (
-              <View
-                style={{
-                  width: "50%",
-                  padding: 10,
-                }}
-              >
-                <Container>
-                  <Button
-                    variant={showCheck ? "filled" : "outlined"}
-                    height={"auto"}
-                    containerStyle={{ borderRadius: 20, flex: 1 }}
-                    style={{
-                      padding: 15,
-                      flexDirection: "column",
-                      flex: 1,
-                      gap: 0,
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                    }}
-                    onPress={() => {
-                      if (item.comingSoon)
-                        Toast.show({ type: "info", text1: "Coming soon!" });
-                    }}
-                  >
-                    {showCheck && (
-                      <Icon
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          margin: 10,
-                        }}
-                        size={30}
-                        filled
-                      >
-                        check_circle
-                      </Icon>
-                    )}
-                    <View
-                      style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 20,
-                        backgroundColor: theme[5],
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {item.icon.startsWith("https") ? (
-                        <Image
-                          source={{ uri: item.icon }}
-                          contentFit="contain"
-                          style={{ height: 30, width: 30 }}
-                        />
-                      ) : (
-                        <Icon size={30}>{item.icon}</Icon>
-                      )}
-                    </View>
-                    <Text
-                      weight={700}
-                      style={{ color: theme[12], fontSize: 20, marginTop: 10 }}
-                    >
-                      {item.name}
-                    </Text>
-                    <Text style={{ color: theme[11], opacity: 0.8 }}>
-                      {item.description}
-                    </Text>
-                  </Button>
-                </Container>
-              </View>
-            );
-          })
+          integrationsList.map((item) => (
+            <IntegrationItem key={item.name} data={data} item={item} />
+          ))
         )}
       </View>
 
@@ -270,3 +276,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
