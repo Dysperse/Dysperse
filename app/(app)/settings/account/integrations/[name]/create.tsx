@@ -467,7 +467,7 @@ export default function Page() {
   const onSubmit = async (values) => {
     try {
       setSlide(-1);
-      const { id } = await sendApiRequest(
+      const data = await sendApiRequest(
         session,
         "POST",
         "space/integrations",
@@ -476,9 +476,12 @@ export default function Page() {
           body: JSON.stringify(values),
         }
       );
+      alert(JSON.stringify(data));
 
-      if (id)
-        router.replace(`/settings/account/integrations/${values.name}/${id}`);
+      if (data.id)
+        router.replace(
+          `/settings/account/integrations/${values.name}/${data.id}`
+        );
       else throw new Error("Couldn't connect");
     } catch (e) {
       setSlide(0);
@@ -561,4 +564,3 @@ export default function Page() {
     </FormProvider>
   );
 }
-

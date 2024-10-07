@@ -402,15 +402,9 @@ export default function Page() {
             <ConfirmationModal
               onSuccess={handleDelete}
               title="Delete integration?"
-              secondary="This integration will be removed from your account"
+              secondary="Tasks connected to this integration will be permanently deleted from Dysperse!"
             >
-              <Button
-                isLoading={loading}
-                text="Delete"
-                icon="delete"
-                variant="outlined"
-                large
-              />
+              <Button text="Delete" icon="delete" variant="outlined" large />
             </ConfirmationModal>
             <Button
               isLoading={loading}
@@ -427,4 +421,3 @@ export default function Page() {
     </ScrollView>
   );
 }
-
