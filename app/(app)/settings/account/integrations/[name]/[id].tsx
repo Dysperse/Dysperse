@@ -3,10 +3,11 @@ import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -219,16 +220,25 @@ const CourseLabelPicker = ({ calendarUrl }) => {
                     pressed: labelColors[t.color][5],
                   }
             }
-            textStyle={{
-              color: !t ? theme[11] : labelColors[t.color][11],
-            }}
-            iconStyle={{
-              color: !t ? theme[11] : labelColors[t.color][11],
-            }}
-            text={t ? t.name : "Connect"}
-            icon={t ? "check" : "add"}
             variant="filled"
-          />
+          >
+            {t?.emoji ? (
+              <Emoji emoji={t.emoji} />
+            ) : (
+              <Icon
+                style={{ color: !t ? theme[11] : labelColors[t.color][11] }}
+              >
+                {t ? "check" : "add"}
+              </Icon>
+            )}
+            <ButtonText
+              style={{
+                color: !t ? theme[11] : labelColors[t.color][11],
+              }}
+            >
+              {t?.name ? t.name : "Connect"}
+            </ButtonText>
+          </Button>
         </LabelPicker>
       </View>
     );
