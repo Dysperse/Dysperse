@@ -12,7 +12,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Controller,
   FormProvider,
@@ -27,7 +27,7 @@ import useSWR from "swr";
 const CalendarPicker = () => {
   const theme = useColorTheme();
   const { id } = useLocalSearchParams();
-  const { data } = useSWR([
+  const { data, error } = useSWR([
     "space/integrations/settings/google-calendar",
     { id },
   ]);
@@ -103,7 +103,15 @@ const CalendarPicker = () => {
   };
 
   return !data ? (
-    <Spinner />
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+      }}
+    >
+      {error ? <ErrorAlert /> : <Spinner />}
+    </View>
   ) : (
     <>
       <Text
@@ -300,18 +308,28 @@ export default function Page() {
 
   const methods = useForm({
     defaultValues: {
-      labels: integration?.labels
-        ? integration.labels
-            .map((i) => i)
-            .reduce((acc, curr) => {
-              acc[
-                curr.integrationParams?.calendarId || curr.integrationParams?.id
-              ] = curr;
-              return acc;
-            }, {})
-        : {},
+      labels: {},
     },
   });
+
+  useEffect(() => {
+    if (integration?.labels) {
+      methods.setValue(
+        "labels",
+        integration?.labels
+          ? integration.labels
+              .map((i) => i)
+              .reduce((acc, curr) => {
+                acc[
+                  curr.integrationParams?.calendarId ||
+                    curr.integrationParams?.id
+                ] = curr;
+                return acc;
+              }, {})
+          : {}
+      );
+    }
+  }, [integration, methods]);
 
   const handleDelete = async () => {
     try {
@@ -421,3 +439,4 @@ export default function Page() {
     </ScrollView>
   );
 }
+
