@@ -16,7 +16,14 @@ import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   InteractionManager,
   Linking,
@@ -89,7 +96,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   );
 });
 
-const SyncButton = memo(function SyncButton() {
+const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const theme = useColorTheme();
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -142,6 +149,10 @@ const SyncButton = memo(function SyncButton() {
     }
   }, [handleSync]);
 
+  useImperativeHandle(syncRef, () => ({
+    sync: handleSync,
+  }));
+
   return (
     <>
       <Portal>
@@ -160,14 +171,14 @@ const SyncButton = memo(function SyncButton() {
           ]}
         />
       </Portal>
-      <MenuItem
+      {/* <MenuItem
         onPress={handleSync}
         disabled={isLoading}
         style={isLoading && { opacity: 0.6 }}
       >
         <Icon>sync</Icon>
         <Text variant="menuItem">Sync now</Text>
-      </MenuItem>
+      </MenuItem> */}
     </>
   );
 });
@@ -200,6 +211,7 @@ export const LogoButton = memo(function LogoButton({
   const toggleFocus = () =>
     setPanelState((t) => (t === "CLOSED" ? "OPEN" : "CLOSED"));
   const menuRef = useRef(null);
+  const syncRef = useRef(null);
 
   return (
     <View
@@ -212,6 +224,7 @@ export const LogoButton = memo(function LogoButton({
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
+      <SyncButton syncRef={syncRef} />
       <MenuPopover
         menuProps={{
           rendererProps: {
@@ -244,7 +257,11 @@ export const LogoButton = memo(function LogoButton({
         }
         options={[
           session?.space?.space?._count?.integrations > 0 && {
-            renderer: () => <SyncButton />,
+            icon: "sync",
+            text: "Sync now",
+            callback: () => {
+              syncRef.current.sync();
+            },
           },
           {
             icon: "settings",
@@ -467,21 +484,15 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
         }
       }
     );
-    const listener = navigator.windowControlsOverlay
-      ? navigator.windowControlsOverlay.addEventListener(
-          "geometrychange",
-          () => {
-            setTitlebarHidden(navigator.windowControlsOverlay.visible);
-          }
-        )
+    const t = (navigator as any).windowControlsOverlay;
+    const listener = t
+      ? t.addEventListener("geometrychange", () => {
+          setTitlebarHidden(t.visible);
+        })
       : () => {};
 
     return () => {
-      if (navigator.windowControlsOverlay)
-        navigator.windowControlsOverlay.removeEventListener(
-          "geometrychange",
-          listener
-        );
+      if (t) t.removeEventListener("geometrychange", listener);
       document.removeEventListener("mouseleave", windowListener);
     };
   }, []);
@@ -501,8 +512,8 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
           alignItems: "center",
           gap: 5,
           zIndex: 1,
-          marginLeft: "env(safe-area-inset-left, 10px)",
-          webkitAppRegion: fullscreen ? undefined : "no-drag",
+          ["marginLeft" as any]: "env(safe-area-inset-left, 10px)",
+          ["webkitAppRegion" as any]: fullscreen ? undefined : "no-drag",
         }}
       >
         <Logo size={20} />
