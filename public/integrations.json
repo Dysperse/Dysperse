@@ -42,7 +42,7 @@
       "params": [
         {
           "id": "calendarUrl",
-          "name": "Apple URL",
+          "name": "webcal:// link",
           "helper": [
             "Navigate to icloud.com and login with your Apple ID",
             "Go to your calendar",
