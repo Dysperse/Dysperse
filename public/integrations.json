@@ -43,7 +43,12 @@
         {
           "id": "calendarUrl",
           "name": "Apple URL",
-          "helper": ["Copy the URL and paste it here"],
+          "helper": [
+            "Navigate to icloud.com and login with your Apple ID",
+            "Go to your calendar",
+            "Click on the share button next to the calendar you want to sync",
+            "Turn on \"Public Calendar,\" copy the URL, and paste it here"
+          ],
           "type": "string",
           "required": true
         }
