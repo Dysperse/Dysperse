@@ -188,9 +188,13 @@ export const LogoButton = memo(function LogoButton({
 }: {
   toggleHidden: any;
 }) {
-  const { session, sessionToken } = useUser();
   const theme = useColorTheme();
+  const menuRef = useRef(null);
+  const { session, sessionToken } = useUser();
   const breakpoints = useResponsiveBreakpoints();
+  const { panelState, setPanelState } = useFocusPanelContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
+
   const openSupport = useCallback(() => {
     Linking.openURL("https://blog.dysperse.com");
   }, []);
@@ -201,17 +205,15 @@ export const LogoButton = memo(function LogoButton({
     Linking.openURL("https://tally.so/r/mVZjvE?email=" + session?.user?.email);
   }, [session]);
 
-  const { panelState, setPanelState } = useFocusPanelContext();
-  const { sidebarRef, desktopCollapsed } = useSidebarContext();
+  const toggleFocus = () =>
+    setPanelState((t) => (t === "CLOSED" ? "OPEN" : "CLOSED"));
 
   useEffect(() => {
     sendApiRequest(sessionToken, "POST", "space/integrations/sync", {});
   }, [sessionToken]);
 
-  const toggleFocus = () =>
-    setPanelState((t) => (t === "CLOSED" ? "OPEN" : "CLOSED"));
-  const menuRef = useRef(null);
   const syncRef = useRef(null);
+  const [isLoading, setLoading] = useState(false);
 
   return (
     <View
@@ -259,8 +261,11 @@ export const LogoButton = memo(function LogoButton({
           session?.space?.space?._count?.integrations > 0 && {
             icon: "sync",
             text: "Sync now",
-            callback: () => {
-              syncRef.current.sync();
+            disabled: isLoading,
+            callback: async () => {
+              setLoading(true);
+              await syncRef.current.sync();
+              setLoading(false);
             },
           },
           {
