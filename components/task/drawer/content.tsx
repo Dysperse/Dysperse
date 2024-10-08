@@ -226,7 +226,7 @@ export function TaskDrawerContent({
                 }}
                 onClose={() => {}}
                 defaultCollection={collectionId as any}
-                disabled={Boolean(task.label?.integrationParams)}
+                // disabled={Boolean(task.label?.integrationParams)}
               >
                 <Chip
                   disabled={isReadOnly}
