@@ -170,7 +170,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
       name: "Other",
       settings: [
         {
-          name: "Get the app",
+          name: "Get the apps",
           icon: "download",
           href: "/settings/other/apps",
         },
