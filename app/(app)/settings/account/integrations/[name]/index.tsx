@@ -63,6 +63,7 @@ function IntegrationList({ integrations, about }) {
       contentContainerStyle={{ padding: breakpoints.md ? 40 : 20 }}
       renderItem={({ item, index }) => (
         <ListItemButton
+          variant="filled"
           onPress={() =>
             router.push(
               `/settings/account/integrations/${name}/${item.integration.id}`
