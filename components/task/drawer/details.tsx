@@ -661,7 +661,7 @@ export function TaskDetails() {
                   primary={`From ${
                     task?.integrationParams?.from || "integration"
                   }`}
-                  secondary={JSON.stringify(task, null, 2)}
+                  // secondary={JSON.stringify(task, null, 2)}
                 />
               </ListItemButton>
             ),
