@@ -143,7 +143,7 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
     if (Platform.OS === "web") {
       const lastSynced = localStorage.getItem("lastSyncedTimestamp");
       const diff = Date.now() - parseInt(lastSynced);
-      if (diff > 1000 * 60 * 60 || !lastSynced) {
+      if (diff > 1000 * 60 * 30 || !lastSynced) {
         handleSync();
       }
     }
