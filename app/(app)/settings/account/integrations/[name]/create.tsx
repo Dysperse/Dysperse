@@ -476,7 +476,6 @@ export default function Page() {
           body: JSON.stringify(values),
         }
       );
-      alert(JSON.stringify(values));
 
       if (data.id)
         router.replace(
@@ -564,3 +563,4 @@ export default function Page() {
     </FormProvider>
   );
 }
+

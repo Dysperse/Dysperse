@@ -161,7 +161,6 @@ const TaskAttachmentCard = ({ item }) => {
 
   const handleOpenPress = useCallback(() => {
     if (item.type === "LOCATION") {
-      alert(JSON.stringify(item.data));
       handleLocationPress(undefined, {
         type: "LOCATION",
         data: item.data,
