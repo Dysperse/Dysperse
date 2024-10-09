@@ -368,6 +368,7 @@ export default function Page() {
             id,
             ...data,
             labels: Object.keys(data.labels).reduce((acc, curr) => {
+              if (curr === "undefined") return acc;
               acc[curr] = data.labels[curr].id;
               return acc;
             }, {}),

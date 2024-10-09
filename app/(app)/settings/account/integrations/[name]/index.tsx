@@ -96,6 +96,7 @@ function IntegrationList({ integrations, about }) {
             }
             secondary={`Last synced ${dayjs(item.lastSynced).fromNow()}`}
           />
+
           <Icon>arrow_forward_ios</Icon>
         </ListItemButton>
       )}
