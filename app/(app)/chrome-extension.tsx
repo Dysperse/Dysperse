@@ -47,10 +47,9 @@ function Branding() {
             callback: () => Linking.openURL("https://dysperse.com"),
           },
           {
-            icon: "person",
-            text: "Account",
-            callback: () =>
-              Linking.openURL("https://app.dysperse.com/settings/account"),
+            icon: "north_east",
+            text: "Open Dysperse",
+            callback: () => Linking.openURL("https://app.dysperse.com"),
           },
           {
             icon: "settings",
@@ -203,3 +202,4 @@ export default function ChromeExtension() {
     </Portal>
   );
 }
+
