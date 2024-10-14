@@ -9,6 +9,8 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -329,6 +331,33 @@ export const Profile = ({ form }) => {
                 />
               )}
             />
+
+            <View>
+              <Controller
+                control={control}
+                name="allowMarketingEmails"
+                render={({ field: { value, onChange } }) => (
+                  <ListItemButton
+                    variant="outlined"
+                    onPress={() => onChange(!value)}
+                  >
+                    <ListItemText
+                      primary="Stay updated with our latest news and updates"
+                      secondary="We'll only send updates once a month!"
+                    />
+
+                    <Icon
+                      size={30}
+                      style={{
+                        opacity: value ? 1 : 0.5,
+                      }}
+                    >
+                      toggle_{value ? "on" : "off"}
+                    </Icon>
+                  </ListItemButton>
+                )}
+              />
+            </View>
           </View>
         </View>
         <Button
@@ -348,3 +377,4 @@ export const Profile = ({ form }) => {
     </KeyboardAvoidingView>
   );
 };
+

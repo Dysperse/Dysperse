@@ -474,6 +474,7 @@ export default function Page() {
       password: "",
       confirmPassword: "",
       theme: "mint",
+      allowMarketingEmails: true,
       isGoogle: false,
       methods: [],
       birthday: [dayjs().year(), dayjs().month() + 1, dayjs().date()],
