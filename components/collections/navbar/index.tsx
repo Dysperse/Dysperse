@@ -66,9 +66,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
   setEditOrderMode,
 }: CollectionNavbarProps) {
   const theme = useColorTheme();
+  const { session } = useSession();
   const { data, access, type, swrKey, openLabelPicker, ...ctx } =
     useCollectionContext();
-  const isReadOnly = access?.access === "READ_ONLY";
+  const isReadOnly = access?.access === "READ_ONLY" || (!access && !session);
   const breakpoints = useResponsiveBreakpoints();
   const { id, mode, fullscreen } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
@@ -77,8 +78,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
-
-  const { session } = useSession();
 
   const toggleShowCompleted = async () => {
     const showCompleted = !data.showCompleted;
@@ -366,7 +365,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
             >
               <CollectionContext.Provider value={contextValue}>
                 {session && <CollectionSearch />}
-                {!breakpoints.md && session && (
+                {!breakpoints.md && session && !isReadOnly && (
                   <CollectionShareMenu ref={shareMenuRef} />
                 )}
                 {isLoading ? (
@@ -401,7 +400,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     />
                   )
                 )}
-                {breakpoints.md && session && (
+                {breakpoints.md && session && !isReadOnly && (
                   <CollectionShareMenu ref={shareMenuRef} />
                 )}
               </CollectionContext.Provider>

@@ -64,12 +64,16 @@ export const LabelEditModal = memo(function LabelEditModal({
 
   const nameRef = useRef(null);
 
+  const handleButtonClick = handleSubmit(onSubmit, (err) =>
+    Toast.show({ type: "error", text1: "Please type a name" })
+  );
+
   return (
     <>
       {_trigger}
       <Modal
         animation="SLIDE"
-        onClose={() => menuRef.current.close()}
+        onClose={() => menuRef.current?.close?.()}
         sheetRef={menuRef}
         maxWidth={400}
       >
@@ -118,6 +122,7 @@ export const LabelEditModal = memo(function LabelEditModal({
                   onChangeText={onChange}
                   value={value}
                   bottomSheet
+                  onSubmitEditing={handleButtonClick}
                 />
               )}
               name="name"
@@ -160,9 +165,7 @@ export const LabelEditModal = memo(function LabelEditModal({
           </View>
           <Button
             height={60}
-            onPress={handleSubmit(onSubmit, (err) =>
-              Toast.show({ type: "error", text1: "Please type a name" })
-            )}
+            onPress={handleButtonClick}
             text="Done"
             icon="check"
             iconPosition="end"
