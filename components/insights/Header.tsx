@@ -6,6 +6,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -20,6 +21,8 @@ export function Header({ scrollRef }) {
     if (breakpoints.md) router.replace("/");
     else sidebarRef.current.openDrawer();
   };
+
+  useHotkeys("esc", handleBack);
 
   return (
     <Pressable onPress={() => scrollRef.current?.scrollTo({ y: 0 })}>
@@ -56,3 +59,4 @@ export function Header({ scrollRef }) {
     </Pressable>
   );
 }
+
