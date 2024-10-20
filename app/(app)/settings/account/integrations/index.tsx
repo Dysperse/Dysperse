@@ -140,10 +140,11 @@ const IntegrationItem = ({ item, data }) => {
 
   const Container = item.slug === "spotify" ? SpotifyIntegration : Fragment;
 
-  const hasConnected = data.find((i) => item.slug === i.integration?.name);
+  const hasConnected = data?.find?.((i) => item.slug === i.integration?.name);
 
   const showCheck =
     item.slug === "email-forwarding" ||
+    item.slug === "ical-feed" ||
     (item.slug === "spotify" && session.user?.profile?.spotifyAuthTokens) ||
     hasConnected;
 
@@ -170,6 +171,7 @@ const IntegrationItem = ({ item, data }) => {
             alignItems: "flex-start",
           }}
           onPress={() => {
+            if (item.navigate === false) return;
             if (item.comingSoon)
               Toast.show({ type: "info", text1: "Coming soon!" });
             else router.push(`/settings/account/integrations/${item.slug}`);

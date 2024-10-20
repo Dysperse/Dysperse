@@ -1,5 +1,6 @@
 [
   {
+    "navigate": false,
     "name": "Email forwarding",
     "id": "EMAIL_FORWARDING",
     "description": "Forward tasks to hello@dysperse.com and they'll appear as tasks",
@@ -8,6 +9,16 @@
     "availableOptions": {}
   },
   {
+    "navigate": false,
+    "name": "iCal feed",
+    "id": "ICAL_FEED",
+    "description": "Let Dysperse tasks appear in other calendar apps",
+    "icon": "calendar_today",
+    "slug": "ical-feed",
+    "availableOptions": {}
+  },
+  {
+    "navigate": false,
     "name": "Spotify",
     "id": "SPOTIFY",
     "description": "Display what's currently playing in your sidebar",

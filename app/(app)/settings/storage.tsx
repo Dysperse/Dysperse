@@ -1,6 +1,8 @@
 import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -11,8 +13,10 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { useCallback } from "react";
 import { View } from "react-native";
 import Animated, { BounceInLeft } from "react-native-reanimated";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 function SpaceStorage({ data }: { data: any }) {
@@ -118,10 +122,32 @@ function SpaceStorage({ data }: { data: any }) {
 }
 
 export default function Page() {
-  const { session } = useUser();
-  const { data, error } = useSWR(
+  const { session, sessionToken } = useUser();
+  const { data, mutate, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
+
+  const handleTrashDelete = useCallback(async () => {
+    try {
+      await sendApiRequest(sessionToken, "DELETE", "space/trash");
+      await mutate();
+      Toast.show({ type: "success", text1: "Trash emptied!" });
+    } catch (e) {
+      Toast.show({ type: "error" });
+      await mutate();
+    }
+  }, [sessionToken, mutate]);
+
+  const deleteCompletedTasks = useCallback(async () => {
+    try {
+      await sendApiRequest(sessionToken, "GET", "space/deleteCompletedTasks");
+      await mutate();
+      Toast.show({ type: "success", text1: "Trash emptied!" });
+    } catch (e) {
+      Toast.show({ type: "error" });
+      await mutate();
+    }
+  }, [sessionToken, mutate]);
 
   return (
     <SettingsScrollView>
@@ -146,30 +172,36 @@ export default function Page() {
         Running out of space? Here's what you can do...
       </Text>
       <View style={{ marginTop: 10, gap: 10 }}>
-        <ListItemButton variant="outlined">
-          <Icon>check_circle</Icon>
-          <ListItemText
-            primary="Delete completed tasks"
-            secondary="Permanently delete all completed tasks"
-          />
-          <Text>{data?.storage?.completeTasksCount || 0}</Text>
-        </ListItemButton>
-        {/* <ListItemButton variant="outlined">
-          <Icon>history</Icon>
-          <ListItemText
-            primary="Delete old tasks"
-            secondary="Delete tasks that are older than 30 days"
-          />
-          <Text>{data?.storage?.moreThan30DaysOld || 0}</Text>
-        </ListItemButton> */}
-        <ListItemButton variant="outlined">
-          <Icon>delete</Icon>
-          <ListItemText
-            primary="Empty trash"
-            secondary="Permanently delete all items in the trash"
-          />
-          <Text>{data?.storage?.inTrash || 0}</Text>
-        </ListItemButton>
+        <ConfirmationModal
+          height={400}
+          title="Move completed items to trash?"
+          secondary="You'll be able to undo this in case you change your mind."
+          onSuccess={deleteCompletedTasks}
+        >
+          <ListItemButton variant="outlined">
+            <Icon>check_circle</Icon>
+            <ListItemText
+              primary="Delete completed tasks"
+              secondary="Permanently delete all completed tasks, excluding repeating ones"
+            />
+            <Text>{data?.storage?.completeTasksCount || 0}</Text>
+          </ListItemButton>
+        </ConfirmationModal>
+        <ConfirmationModal
+          height={400}
+          title="Permanently delete trash?"
+          secondary="Careful! You can't undo this."
+          onSuccess={handleTrashDelete}
+        >
+          <ListItemButton variant="outlined">
+            <Icon>delete</Icon>
+            <ListItemText
+              primary="Empty trash"
+              secondary="Permanently delete all items in the trash"
+            />
+            <Text>{data?.storage?.entitiesInTrash || 0}</Text>
+          </ListItemButton>
+        </ConfirmationModal>
       </View>
     </SettingsScrollView>
   );
