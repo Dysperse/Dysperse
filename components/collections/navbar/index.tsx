@@ -108,6 +108,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
     router.replace("/");
   };
 
+  useHotkeys(["ctrl+d"], (e) => {
+    e.preventDefault();
+    shareMenuRef.current?.openEdit();
+  });
   useHotkeys(["ctrl+r"], handleRefresh);
   useHotkeys(["o"], openPopOut);
 
@@ -414,3 +418,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+
