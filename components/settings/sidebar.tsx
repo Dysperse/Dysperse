@@ -107,6 +107,12 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           keywords: [],
         },
         {
+          name: "Storage",
+          icon: "cloud",
+          href: "/settings/storage",
+          keywords: [],
+        },
+        {
           name: "Integrations",
           icon: "interests",
           href: "/settings/account/integrations",

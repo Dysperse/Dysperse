@@ -274,6 +274,7 @@ export default function Layout() {
                   "login/devices",
                   "index",
                   "tasks",
+                  "storage",
                   "shortcuts",
                   "personal-information",
                   "account/index",
@@ -323,3 +324,4 @@ export default function Layout() {
     </BlurView>
   );
 }
+

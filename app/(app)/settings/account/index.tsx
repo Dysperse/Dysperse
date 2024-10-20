@@ -3,22 +3,19 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar, ProfilePicture } from "@/ui/Avatar";
+import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
@@ -26,7 +23,6 @@ import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import Animated, { BounceInLeft } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { pickImageAsync } from "./profile";
@@ -45,101 +41,6 @@ function Section({ children }: any) {
     >
       {children}
     </View>
-  );
-}
-function SpaceStorage({ data }: { data: any }) {
-  const theme = useColorTheme();
-
-  return (
-    <>
-      <Section>
-        <ListItemButton disabled style={{ backgroundColor: "transparent" }}>
-          <ListItemText
-            style={{ paddingVertical: 20 }}
-            primaryProps={{
-              style: { textAlign: "center", fontSize: 25 },
-              weight: 900,
-            }}
-            secondaryProps={{
-              style: { textAlign: "center", fontSize: 20, opacity: 0.5 },
-            }}
-            primary={`${-~(
-              (data.storage?.used / data.storage?.limit) *
-              100
-            )}% used`}
-            secondary={`${-~(data.storage?.limit - data.storage?.used)}/${
-              data.storage?.limit
-            } credits left`}
-          />
-        </ListItemButton>
-        <View
-          style={{
-            width: "100%",
-            height: 5,
-            borderRadius: 99,
-            backgroundColor: theme[4],
-            overflow: "hidden",
-          }}
-        >
-          <Animated.View
-            entering={BounceInLeft.duration(700).overshootClamping(0)}
-            style={{
-              width: `${-~((data.storage?.used / data.storage?.limit) * 100)}%`,
-              height: "100%",
-              marginLeft: -15,
-              backgroundColor: theme[9],
-              borderRadius: 99,
-              overflow: "hidden",
-            }}
-          >
-            {data.storage?.inTrash > 0 && (
-              <View
-                style={{
-                  width: `${-~(
-                    (data.storage?.inTrash / data.storage?.limit) *
-                    100
-                  )}%`,
-                  height: "100%",
-                  backgroundColor: theme[8],
-                  marginLeft: "auto",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: 99,
-                }}
-              />
-            )}
-          </Animated.View>
-        </View>
-        <View
-          style={{
-            marginVertical: 10,
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            { name: "tasks", icon: "task_alt" },
-            { name: "integrations", icon: "interests" },
-            { name: "labels", icon: "label" },
-            { name: "collections", icon: "shapes" },
-          ].map(({ name, icon }) => (
-            <ListItemButton key={name} disabled style={{ width: "50%" }}>
-              <Avatar icon={icon} size={40} />
-              <ListItemText
-                primary={`${~~parseInt(
-                  (
-                    (data.storage?.breakdown?.[name] / data.storage?.limit) *
-                    100
-                  ).toFixed(2)
-                )}%`}
-                secondary={`${capitalizeFirstLetter(name)}`}
-              />
-            </ListItemButton>
-          ))}
-        </View>
-      </Section>
-    </>
   );
 }
 
@@ -590,10 +491,6 @@ export default function Page() {
             Profile
           </Text>
           <ProfileBanner />
-          <Text style={settingStyles.heading} weight={700}>
-            Storage
-          </Text>
-          <SpaceStorage data={data} />
           <EmailSection />
           <TwoFactorAuthSection />
           <PasskeysSection />
@@ -606,3 +503,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
