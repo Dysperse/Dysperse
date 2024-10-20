@@ -47,6 +47,14 @@ export default function Page() {
           action: "Search",
         },
         {
+          keys: "ctrl+r",
+          action: "Refresh collection",
+        },
+        {
+          keys: "ctrl+d",
+          action: "Open collection details",
+        },
+        {
           keys: "ctrl+⬅",
           action: "Previous planner view",
         },
