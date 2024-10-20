@@ -758,7 +758,7 @@ const Navbar = ({ navigation, title, icon = "close", handleClose }) => {
       />
       <Text
         style={{
-          fontSize: 30,
+          fontSize: 25,
           marginHorizontal: "auto",
           paddingRight: 55,
           fontFamily: "serifText800",
