@@ -680,7 +680,7 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
     }
   };
   return (
-    <View style={{ padding: 10, paddingTop: 0 }}>
+    <View style={{ padding: 10, paddingTop: 0, marginTop: -20 }}>
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 0 }]}>
         People
       </Text>
@@ -761,8 +761,8 @@ const Navbar = ({ navigation, title, icon = "close", handleClose }) => {
           fontSize: 30,
           marginHorizontal: "auto",
           paddingRight: 55,
+          fontFamily: "serifText800",
         }}
-        weight={800}
       >
         {title}
       </Text>
