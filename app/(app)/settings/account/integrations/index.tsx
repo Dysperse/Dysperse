@@ -10,6 +10,7 @@ import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { setStringAsync } from "expo-clipboard";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Fragment } from "react";
@@ -171,6 +172,13 @@ const IntegrationItem = ({ item, data }) => {
             alignItems: "flex-start",
           }}
           onPress={() => {
+            if (item.slug === "ical-feed") {
+              setStringAsync(
+                "https://api.dysperse.com/ical/" + session.space?.id
+              );
+              Toast.show({ type: "success", text1: "Copied to clipboard" });
+              return;
+            }
             if (item.navigate === false) return;
             if (item.comingSoon)
               Toast.show({ type: "info", text1: "Coming soon!" });
