@@ -1728,7 +1728,6 @@ const CreateTask = forwardRef(
         date: null,
         agendaOrder: null,
         collectionId: null,
-        storyPoints: 2,
         dateOnly: true,
       },
       onPress = () => {},
