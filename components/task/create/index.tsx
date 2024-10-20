@@ -977,15 +977,14 @@ function NlpProcessor({
         );
       }
     });
+    const regex = /(?:at|from|during|after|before|by)\s(\d+)(am|pm|)/i;
 
     if (
       dayjs(dateValue).isValid() &&
-      value.match(/(?:at|from|during|after|before)\s(\d+)(am|pm|) /i) &&
+      value.match(regex) &&
       !value.includes("](time-prediction)")
     ) {
-      const match = value.match(
-        /(?:at|from|during|after|before)\s(\d+)(am|pm|)/i
-      );
+      const match = value.match(regex);
       const time = match[1];
       let amPm = value.toLowerCase().includes("p") ? "pm" : "am";
 
