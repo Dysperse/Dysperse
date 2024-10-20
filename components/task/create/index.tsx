@@ -448,8 +448,6 @@ export function RecurrencePicker({
     []
   );
 
-  console.log(value);
-
   return (
     <>
       {recurrenceRule && (
@@ -630,7 +628,6 @@ export function RecurrencePicker({
                   ) {
                     n = n.year(dayjs().year());
                   }
-                  console.log(n);
                   if (n.isValid()) {
                     endsInputCountRef.current?.clear();
                     setValue("recurrenceRule", {
@@ -876,12 +873,11 @@ function Footer({
           />
         )}
 
-        <TaskSuggestions />
+        {/* <TaskSuggestions /> */}
       </ScrollView>
     </View>
   );
 }
-
 const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   control,
   collectionId,
@@ -950,16 +946,20 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
 });
 
 function NlpProcessor({
+  watch,
   value,
   setValue,
   onChange,
   suggestions,
 }: {
+  watch: any;
   value: string;
   setValue: any;
   onChange: any;
   suggestions: any;
 }) {
+  const dateValue = watch("date");
+
   useEffect(() => {
     const replacementString = Platform.OS === "web" ? "@" : "/";
     suggestions.forEach((suggestion) => {
@@ -979,6 +979,7 @@ function NlpProcessor({
     });
 
     if (
+      dayjs(dateValue).isValid() &&
       value.match(/(?:at|from|during|after|before)\s(\d+)(am|pm|) /i) &&
       !value.includes("](time-prediction)")
     ) {
@@ -1022,6 +1023,16 @@ function NlpProcessor({
           match[0],
           `${replacementString}[${match[0]}](time-prediction)`
         )
+      );
+
+      setValue("dateOnly", false);
+      setValue(
+        "date",
+        dayjs(dateValue)
+          .hour(Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0))
+          .minute(0)
+          .second(0)
+          .millisecond(0)
       );
     }
 
@@ -1100,6 +1111,7 @@ function TaskNameInput({
   watch;
 }) {
   const attachments = watch("attachments");
+  const name = watch("name");
   const { forceClose } = useBottomSheet();
   const { data: labelData } = useSWR(["space/labels"]);
 
@@ -1120,6 +1132,10 @@ function TaskNameInput({
     });
   }, [nameRef]);
 
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
+
   return (
     <Controller
       control={control}
@@ -1128,6 +1144,7 @@ function TaskNameInput({
       render={({ field: { onChange, onBlur, value } }) => (
         <>
           <NlpProcessor
+            watch={watch}
             value={value}
             onChange={onChange}
             setValue={setValue}
@@ -1256,109 +1273,6 @@ function TaskNameInput({
     />
   );
 }
-
-const TaskSuggestions = () => {
-  const theme = useColorTheme();
-
-  // const generateChipLabel = useCallback(() => {
-  //   if (!name) return null;
-  //   const regex = /(?:at|from|during|after|before)\s(\d+)/i;
-  //   const match = name.match(regex);
-
-  //   if (match) {
-  //     const time = match[1];
-  //     let amPm = name.toLowerCase().includes("p") ? "pm" : "am";
-
-  //     if (
-  //       !name.toLowerCase().includes("am") &&
-  //       !name.toLowerCase().includes("pm")
-  //     ) {
-  //       // make these values sensitive to a human's life
-  //       amPm = {
-  //         "1": "pm",
-  //         "2": "pm",
-  //         "3": "pm",
-  //         "4": "pm",
-  //         "5": "pm",
-  //         "6": "pm",
-  //         "7": "pm",
-  //         "8": "pm",
-  //         "9": "pm",
-  //         "10": "pm",
-  //         "11": "am",
-  //         "12": "pm",
-  //       }[time];
-  //     }
-
-  //     if (Number(time) > 12) return null;
-  //     if (
-  //       dayjs(currentDate).hour() ===
-  //         Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0) ||
-  //       name.includes("every")
-  //     )
-  //       return null;
-  //     return {
-  //       label: `At ${time} ${amPm}`,
-  //       onPress: () => {
-  //         setValue(
-  //           "date",
-  //           dayjs(currentDate)
-  //             .hour(Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0))
-  //             .minute(0)
-  //         );
-  //         setValue("dateOnly", false);
-  //       },
-  //       icon: "magic_button",
-  //     };
-  //   }
-  // }, [name, setValue, currentDate]);
-
-  // const generateRecurrenceLabel = useCallback(() => {
-  //   try {
-  //     if (!name.includes("every")) return null;
-  //     const split = name.toLowerCase().toString().split("every ");
-  //     const text = "Every " + split[split[1] ? 1 : 0];
-
-  //     const rule = RRule.fromText(text);
-
-  //     if (currentRecurrenceRule?.toText() === rule.toText()) return null;
-
-  //     return {
-  //       label: capitalizeFirstLetter(rule.toText()),
-  //       onPress: () => {
-  //         setValue("date", null);
-  //         setValue("recurrenceRule", rule.options);
-  //       },
-  //       icon: "magic_button",
-  //     };
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }, [name, setValue, currentRecurrenceRule]);
-
-  const suggestions = [
-    // generateChipLabel(), generateRecurrenceLabel()
-  ];
-
-  return (
-    suggestions.length > 0 && (
-      <>
-        {suggestions
-          .filter((e) => e)
-          .map((suggestion, i) => (
-            <Chip
-              key={i}
-              outlined
-              style={{ borderColor: theme[5] }}
-              label={suggestion.label}
-              icon={suggestion.icon}
-              onPress={suggestion.onPress}
-            />
-          ))}
-      </>
-    )
-  );
-};
 
 const TaskAttachments = ({ watch, setValue }: any) => {
   const theme = useColorTheme();
