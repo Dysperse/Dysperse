@@ -3,6 +3,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -36,6 +37,7 @@ export const PublishCollection = ({ collection, navigation }: any) => {
 
   return (
     <View style={{ marginHorizontal: -10 }}>
+      {data?.public && <Divider style={{ width: "60%", marginVertical: 10 }} />}
       {data?.public ? (
         <>
           <ListItemButton disabled>
@@ -96,3 +98,4 @@ export const PublishCollection = ({ collection, navigation }: any) => {
     </View>
   );
 };
+

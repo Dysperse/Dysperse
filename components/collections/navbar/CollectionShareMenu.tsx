@@ -434,17 +434,18 @@ const CollectionInvitedUser = ({ isReadOnly, mutateList, user }: any) => {
 
 const CollectionShareLink = ({ isReadOnly, navigation }) => {
   return (
-    <>
-      <ListItemButton onPress={() => navigation.navigate("link")}>
-        <Avatar icon="link" size={40} disabled />
-        <ListItemText
-          truncate
-          primary="Public link"
-          secondary="Anyone with the link can view this collection"
-        />
-        <Icon>arrow_forward_ios</Icon>
-      </ListItemButton>
-    </>
+    <ListItemButton
+      onPress={() => navigation.navigate("link")}
+      style={{ marginHorizontal: -10 }}
+    >
+      <Avatar icon="link" size={40} disabled />
+      <ListItemText
+        truncate
+        primary="Public link"
+        secondary="Anyone with the link can view this collection"
+      />
+      <Icon>arrow_forward_ios</Icon>
+    </ListItemButton>
   );
 };
 
@@ -688,7 +689,6 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
           marginHorizontal: -10,
         }}
       >
-        <CollectionShareLink isReadOnly={isReadOnly} navigation={navigation} />
         {!isReadOnly && (
           <FriendModal onComplete={handleSelectFriends}>
             <ListItemButton>
@@ -696,6 +696,22 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
               <ListItemText primary="Invite people" />
             </ListItemButton>
           </FriendModal>
+        )}
+        {collection.data?.createdBy && (
+          <ProfileModal email={collection.data.createdBy.email}>
+            <ListItemButton>
+              <ProfilePicture
+                disabled
+                name={collection.data.createdBy.profile.name}
+                size={40}
+                image={collection.data.createdBy.profile.picture}
+              />
+              <ListItemText
+                primary={collection.data.createdBy.profile.name}
+                secondary="Owner"
+              />
+            </ListItemButton>
+          </ProfileModal>
         )}
         {data &&
           data.invitedUsers.map((user) => (
@@ -708,8 +724,9 @@ const CollectionMembers = ({ collection, mutateList, navigation }) => {
           ))}
       </View>
       <Text variant="eyebrow" style={[modalStyles.eyebrow, { marginTop: 20 }]}>
-        Template
+        Publish
       </Text>
+      <CollectionShareLink isReadOnly={isReadOnly} navigation={navigation} />
       <PublishCollection collection={collection} navigation={navigation} />
     </View>
   );
@@ -832,6 +849,16 @@ const Navigator = forwardRef(
             />
             <Stack.Screen
               name="link"
+              options={{
+                header: ({ navigation }) => (
+                  <Navbar
+                    title="Public link"
+                    navigation={navigation}
+                    icon="arrow_back_ios_new"
+                    handleClose={handleClose}
+                  />
+                ),
+              }}
               component={({ navigation }) => (
                 <Link collection={collection} navigation={navigation} />
               )}

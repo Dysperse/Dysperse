@@ -372,37 +372,24 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 {!breakpoints.md && session && !isReadOnly && (
                   <CollectionShareMenu ref={shareMenuRef} />
                 )}
-                {isLoading ? (
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 999,
-                      backgroundColor: theme[4],
+                {!isLoading && !isReadOnly && (
+                  <MenuPopover
+                    menuRef={menuRef}
+                    closeOnSelect
+                    {...(isReadOnly && { menuProps: { opened: false } })}
+                    containerStyle={{ width: 240 }}
+                    menuProps={{
+                      rendererProps: { placement: "bottom" },
                     }}
+                    trigger={
+                      <IconButton
+                        icon="pending"
+                        size={40}
+                        style={breakpoints.md && !isAll && { marginRight: 10 }}
+                      />
+                    }
+                    options={(isReadOnly ? [] : collectionMenuOptions) as any}
                   />
-                ) : (
-                  !isReadOnly && (
-                    <MenuPopover
-                      menuRef={menuRef}
-                      closeOnSelect
-                      {...(isReadOnly && { menuProps: { opened: false } })}
-                      containerStyle={{ width: 240 }}
-                      menuProps={{
-                        rendererProps: { placement: "bottom" },
-                      }}
-                      trigger={
-                        <IconButton
-                          icon="pending"
-                          size={40}
-                          style={
-                            breakpoints.md && !isAll && { marginRight: 10 }
-                          }
-                        />
-                      }
-                      options={(isReadOnly ? [] : collectionMenuOptions) as any}
-                    />
-                  )
                 )}
                 {breakpoints.md && session && !isReadOnly && (
                   <CollectionShareMenu ref={shareMenuRef} />
