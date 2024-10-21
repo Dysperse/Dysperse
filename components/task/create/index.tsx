@@ -1101,10 +1101,10 @@ const TimeSuggestion = forwardRef(function TimeSuggestion(
       setShow(
         value.match(regex) && !value.includes("](time-prediction)")
           ? "time"
-          : !localStorage.getItem("attachmentSuggestion")
-          ? "attachment"
           : hasTypedRef.current && !value
           ? "backspace"
+          : !localStorage.getItem("attachmentSuggestion")
+          ? "attachment"
           : false
       );
     }
@@ -1321,12 +1321,7 @@ function TaskNameInput({
                 },
               ]}
               value={value}
-              setValue={(d) => {
-                onChange(d);
-                if (d === "") {
-                  setValue("pinned", false);
-                }
-              }}
+              setValue={onChange}
             />
           </View>
         </>
