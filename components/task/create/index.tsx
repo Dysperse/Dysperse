@@ -1081,19 +1081,27 @@ function LabelNlpProcessor({
 }
 
 function TimeSuggestion({ value }) {
-  const [show, setShow] = useState<"time" | "attachment" | false>(false);
+  const [show, setShow] = useState<"time" | "attachment" | "backspace" | false>(
+    false
+  );
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+  const hasTypedRef = useRef(false);
 
   useEffect(() => {
     if (Platform.OS === "web") {
+      if (value !== "") hasTypedRef.current = true;
+
       const regex =
         /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
+
       setShow(
         value.match(regex) && !value.includes("](time-prediction)")
           ? "time"
           : !localStorage.getItem("attachmentSuggestion")
           ? "attachment"
+          : hasTypedRef.current && !value
+          ? "backspace"
           : false
       );
     }
@@ -1122,6 +1130,7 @@ function TimeSuggestion({ value }) {
           {
             time: "Typing a date? Hit [space] to confirm",
             attachment: "Type @ to attach something!",
+            backspace: "Hit [backspace] to reset",
           }[show]
         }
       </Text>
@@ -1136,6 +1145,7 @@ function TaskNameInput({
   nameRef,
   setValue,
   watch,
+  reset,
 }: {
   control: any;
   handleSubmitButtonClick: any;
@@ -1143,6 +1153,7 @@ function TaskNameInput({
   nameRef: any;
   setValue: any;
   watch;
+  reset;
 }) {
   const attachments = watch("attachments");
   const name = watch("name");
@@ -1274,6 +1285,9 @@ function TaskNameInput({
                   if (e.key === "Escape") {
                     if (value) return onChange("");
                     forceClose();
+                  }
+                  if (e.key === "Backspace" && value === "") {
+                    reset();
                   }
                 },
               }}
@@ -1697,6 +1711,7 @@ function BottomSheetContent({
             control={control}
           />
           <TaskNameInput
+            reset={reset}
             watch={watch}
             control={control}
             menuRef={menuRef}
@@ -1820,4 +1835,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-
