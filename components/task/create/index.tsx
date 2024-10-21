@@ -1080,6 +1080,41 @@ function LabelNlpProcessor({
   return null;
 }
 
+function TimeSuggestion({ value }) {
+  const [show, setShow] = useState(false);
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
+  useEffect(() => {
+    const regex =
+      /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
+    setShow(value.match(regex) && !value.includes("](time-prediction)"));
+  }, [value, setShow]);
+
+  return show ? (
+    <View
+      style={{
+        flexDirection: "row",
+        backgroundColor: theme[3],
+        borderWidth: 1,
+        borderColor: theme[5],
+        borderRadius: 5,
+        position: "absolute",
+        paddingHorizontal: 5,
+        zIndex: 999,
+        top: 7,
+        right: 0,
+        gap: 5,
+        display: breakpoints.md ? "flex" : "none",
+      }}
+    >
+      <Icon size={20}>magic_button</Icon>
+      <Text style={{ color: theme[11], fontSize: 14 }}>
+        Typing a date? Hit [space] to confirm
+      </Text>
+    </View>
+  ) : null;
+}
+
 function TaskNameInput({
   control,
   handleSubmitButtonClick,
@@ -1149,6 +1184,7 @@ function TaskNameInput({
             label={labelData}
             setValue={setValue}
           />
+          <TimeSuggestion value={value} />
           <View>
             <ChipInput
               placeholder="What's on your mind?"
