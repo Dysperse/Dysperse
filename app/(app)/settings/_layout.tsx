@@ -202,7 +202,7 @@ export default function Layout() {
 
   return (
     <BlurView
-      intensity={Platform.OS === "web" ? 10 : 0}
+      intensity={breakpoints.md ? 10 : 0}
       style={{
         ...(Platform.OS === "web" &&
           ({
@@ -219,10 +219,9 @@ export default function Layout() {
       <View
         style={{
           height: "100%",
-          backgroundColor:
-            Platform.OS === "web"
-              ? addHslAlpha(theme[2], Platform.OS === "web" ? 0.9 : 1)
-              : theme[1],
+          backgroundColor: breakpoints.md
+            ? addHslAlpha(theme[2], Platform.OS === "web" ? 0.9 : 1)
+            : theme[1],
         }}
       >
         <EscapeSettings />
@@ -246,7 +245,7 @@ export default function Layout() {
               value={{
                 colors: {
                   primary: theme[1],
-                  background: Platform.OS === "web" ? "transparent" : theme[2],
+                  background: breakpoints.md ? "transparent" : theme[2],
                   card: theme[1],
                   text: theme[4],
                   border: theme[5],
@@ -324,4 +323,3 @@ export default function Layout() {
     </BlurView>
   );
 }
-

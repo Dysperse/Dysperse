@@ -125,7 +125,7 @@ function Page() {
           centerContent
           style={{ flex: 1, marginTop: insets.top }}
           contentContainerStyle={{
-            maxWidth: 400,
+            maxWidth: breakpoints.md ? 400 : undefined,
             width: "100%",
             paddingHorizontal: 20,
             gap: 20,
@@ -167,4 +167,3 @@ function Page() {
 }
 
 export default memo(Page);
-
