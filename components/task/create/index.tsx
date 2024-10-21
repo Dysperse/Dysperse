@@ -978,24 +978,19 @@ function NlpProcessor({
       }
     });
     const regex =
-      /(?:at|from|during|after|before|by)\s((\d{1,2})(?::(\d{2}))?)(am|pm)?\s/i;
+      /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)\s/i;
     if (
       dayjs(dateValue).isValid() &&
       value.match(regex) &&
       !value.includes("](time-prediction)")
     ) {
       const match = value.match(regex);
-      const time = match[1];
-      const hour = time.includes(":") ? time.split(":")[0] : time;
-      const minutes = time.includes(":") ? Number(time.split(":")[1]) : 0;
+      // 0: "at 10:00pm ", 1: "10:00", 2: "10", 3: "00", 4: "pm"
+      const [_, time, hour, minutes] = match;
+      let amPm = match[4];
 
-      let amPm = value.toLowerCase().includes("p") ? "pm" : "am";
-
-      if (
-        !value.toLowerCase().includes("am") &&
-        !value.toLowerCase().includes("pm")
-      ) {
-        // make these values sensitive to a human's life
+      if (!amPm) {
+        // make these values sensitive to a typical human day
         amPm = {
           "1": "pm",
           "2": "pm",
@@ -1011,14 +1006,6 @@ function NlpProcessor({
           "12": "pm",
         }[hour];
       }
-
-      if (Number(hour) > 12) return;
-      if (
-        dayjs().hour() ===
-          Number(hour) + (amPm === "pm" && hour !== "12" ? 12 : 0) ||
-        value.includes("every")
-      )
-        return;
 
       onChange(
         value.replace(
@@ -1036,7 +1023,7 @@ function NlpProcessor({
               ? 0
               : Number(hour) + (amPm === "pm" && hour !== "12" ? 12 : 0)
           )
-          .minute(minutes)
+          .minute(Number(minutes) || 0)
           .second(0)
           .millisecond(0)
       );
