@@ -1080,13 +1080,12 @@ function LabelNlpProcessor({
   return null;
 }
 
-function TimeSuggestion({ value }) {
+function TimeSuggestion({ value, hasTypedRef }) {
   const [show, setShow] = useState<"time" | "attachment" | "backspace" | false>(
     false
   );
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
-  const hasTypedRef = useRef(false);
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -1185,6 +1184,8 @@ function TaskNameInput({
     });
   }, [nameRef]);
 
+  const hasTypedRef = useRef(false);
+
   return (
     <Controller
       control={control}
@@ -1205,7 +1206,7 @@ function TaskNameInput({
             label={labelData}
             setValue={setValue}
           />
-          <TimeSuggestion value={value} />
+          <TimeSuggestion value={value} hasTypedRef={hasTypedRef} />
           <View>
             <ChipInput
               placeholder="What's on your mind?"
@@ -1288,6 +1289,7 @@ function TaskNameInput({
                   }
                   if (e.key === "Backspace" && value === "") {
                     reset();
+                    hasTypedRef.current = false;
                   }
                 },
               }}
