@@ -977,8 +977,8 @@ function NlpProcessor({
         );
       }
     });
-    const regex = /(?:at|from|during|after|before|by)\s(\d+)(am|pm|)/i;
-
+    const regex =
+      /(?:at|from|during|after|before|by)\s((\d{1,2})(?::(\d{2}))?)(am|pm)?\s/i;
     if (
       dayjs(dateValue).isValid() &&
       value.match(regex) &&
@@ -986,6 +986,9 @@ function NlpProcessor({
     ) {
       const match = value.match(regex);
       const time = match[1];
+      const hour = time.includes(":") ? time.split(":")[0] : time;
+      const minutes = time.includes(":") ? Number(time.split(":")[1]) : 0;
+
       let amPm = value.toLowerCase().includes("p") ? "pm" : "am";
 
       if (
@@ -1006,13 +1009,13 @@ function NlpProcessor({
           "10": "pm",
           "11": "am",
           "12": "pm",
-        }[time];
+        }[hour];
       }
 
-      if (Number(time) > 12) return;
+      if (Number(hour) > 12) return;
       if (
         dayjs().hour() ===
-          Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0) ||
+          Number(hour) + (amPm === "pm" && hour !== "12" ? 12 : 0) ||
         value.includes("every")
       )
         return;
@@ -1028,20 +1031,19 @@ function NlpProcessor({
       setValue(
         "date",
         dayjs(dateValue)
-          .hour(Number(time) + (amPm === "pm" && time !== "12" ? 12 : 0))
-          .minute(0)
+          .hour(
+            hour == "12" && amPm === "am"
+              ? 0
+              : Number(hour) + (amPm === "pm" && hour !== "12" ? 12 : 0)
+          )
+          .minute(minutes)
           .second(0)
           .millisecond(0)
       );
     }
 
-    if (/\]\(time-prediction\) (pm|PM|am|AM) /.test(value)) {
-      onChange(
-        value.replace(
-          /\]\(time-prediction\) (pm|PM|am|AM) /g,
-          (match, p1) => `${p1}](time-prediction) `
-        )
-      );
+    if (value.includes(" ](time-prediction)")) {
+      onChange(value.replace(" ](time-prediction)", "](time-prediction) "));
     }
 
     if (
