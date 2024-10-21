@@ -1081,13 +1081,22 @@ function LabelNlpProcessor({
 }
 
 function TimeSuggestion({ value }) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState<"time" | "attachment" | false>(false);
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+
   useEffect(() => {
-    const regex =
-      /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
-    setShow(value.match(regex) && !value.includes("](time-prediction)"));
+    if (Platform.OS === "web") {
+      const regex =
+        /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
+      setShow(
+        value.match(regex) && !value.includes("](time-prediction)")
+          ? "time"
+          : !localStorage.getItem("attachmentSuggestion")
+          ? "attachment"
+          : false
+      );
+    }
   }, [value, setShow]);
 
   return show ? (
@@ -1109,7 +1118,12 @@ function TimeSuggestion({ value }) {
     >
       <Icon size={20}>magic_button</Icon>
       <Text style={{ color: theme[11], fontSize: 14 }}>
-        Typing a date? Hit [space] to confirm
+        {
+          {
+            time: "Typing a date? Hit [space] to confirm",
+            attachment: "Type @ to attach something!",
+          }[show]
+        }
       </Text>
     </View>
   ) : null;
@@ -1257,6 +1271,7 @@ function TaskNameInput({
                   }
                   if (e.key === "@") {
                     e.preventDefault();
+                    localStorage.setItem("attachmentSuggestion", "true");
                     nameRef.current?.blur();
                     menuRef.current?.present();
                   }
