@@ -48,10 +48,13 @@ function Header({
   return (
     <>
       <View>
-        <LinearGradient
-          colors={[theme[3], theme[breakpoints.md ? 2 : 1]]}
+        <View
           style={[
-            { padding: 20, paddingBottom: 0 },
+            {
+              padding: 20,
+              paddingBottom: 0,
+              backgroundColor: theme[breakpoints.md ? 2 : 1],
+            },
             !breakpoints.md && {
               borderTopWidth: 1,
               flexDirection: "row",
@@ -110,7 +113,7 @@ function Header({
               }}
             />
           )}
-        </LinearGradient>
+        </View>
         <View
           style={{
             padding: 20,
@@ -390,4 +393,3 @@ export default function Skyline() {
     </SkylineContext.Provider>
   );
 }
-

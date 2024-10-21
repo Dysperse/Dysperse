@@ -374,7 +374,7 @@ export function Column(props: ColumnProps) {
             onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
           />
         )}
-        keyExtractor={(i: any, d) => i.id}
+        keyExtractor={(i: any) => i.id}
       />
     </Animated.View>
   );
