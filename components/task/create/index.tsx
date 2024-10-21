@@ -1018,11 +1018,7 @@ function NlpProcessor({
       setValue(
         "date",
         dayjs(dateValue)
-          .hour(
-            hour == "12" && amPm === "am"
-              ? 0
-              : Number(hour) + (amPm === "pm" && hour !== "12" ? 12 : 0)
-          )
+          .hour((Number(hour) % 12) + (amPm === "pm" ? 12 : 0))
           .minute(Number(minutes) || 0)
           .second(0)
           .millisecond(0)
