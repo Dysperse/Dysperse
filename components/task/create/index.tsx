@@ -1080,10 +1080,14 @@ function LabelNlpProcessor({
   return null;
 }
 
-function TimeSuggestion({ value, hasTypedRef }) {
+const TimeSuggestion = forwardRef(function TimeSuggestion(
+  { value }: { value: any },
+  ref
+) {
   const [show, setShow] = useState<"time" | "attachment" | "backspace" | false>(
     false
   );
+  const hasTypedRef = useRef(false);
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
@@ -1105,6 +1109,10 @@ function TimeSuggestion({ value, hasTypedRef }) {
       );
     }
   }, [value, setShow]);
+
+  useImperativeHandle(ref, () => ({
+    clearSuggestion: () => setShow(false),
+  }));
 
   return show ? (
     <View
@@ -1135,7 +1143,7 @@ function TimeSuggestion({ value, hasTypedRef }) {
       </Text>
     </View>
   ) : null;
-}
+});
 
 function TaskNameInput({
   control,
@@ -1184,7 +1192,7 @@ function TaskNameInput({
     });
   }, [nameRef]);
 
-  const hasTypedRef = useRef(false);
+  const ref = useRef(null);
 
   return (
     <Controller
@@ -1206,7 +1214,7 @@ function TaskNameInput({
             label={labelData}
             setValue={setValue}
           />
-          <TimeSuggestion value={value} hasTypedRef={hasTypedRef} />
+          <TimeSuggestion value={value} ref={ref} />
           <View>
             <ChipInput
               placeholder="What's on your mind?"
@@ -1289,7 +1297,7 @@ function TaskNameInput({
                   }
                   if (e.key === "Backspace" && value === "") {
                     reset();
-                    hasTypedRef.current = false;
+                    ref.current.clearSuggestion();
                   }
                 },
               }}
