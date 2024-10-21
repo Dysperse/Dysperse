@@ -969,6 +969,7 @@ function NlpProcessor({
           `${replacementString}[${suggestion.name}](${suggestion.id})`
         )
       ) {
+        setValue(suggestion.value[0], suggestion.value[1]);
         onChange(
           value.replace(
             suggestion.name,
@@ -1101,19 +1102,19 @@ function TaskNameInput({
 
   const suggestions = useMemo(
     () => [
-      { id: "1", name: "tmw" },
-      { id: "2", name: "today" },
-      { id: "3", name: "!!" },
-      { id: "4", name: "tomorrow" },
-      { id: "5", name: "important" },
-      { id: "6", name: "eod" },
-      { id: "7", name: "eow" },
-      { id: "8", name: "eom" },
-      { id: "9", name: "eoy" },
-      { id: "10", name: "EOD" },
-      { id: "11", name: "EOW" },
-      { id: "12", name: "EOM" },
-      { id: "13", name: "EOY" },
+      { id: "1", name: "tmw", value: ["date", dayjs().add(1, "day")] },
+      { id: "2", name: "today", value: ["date", dayjs()] },
+      { id: "3", name: "!!", value: ["pinned", true] },
+      { id: "4", name: "tomorrow", value: ["date", dayjs().add(1, "day")] },
+      { id: "5", name: "important", value: ["pinned", true] },
+      { id: "6", name: "eod", value: ["date", dayjs().endOf("day")] },
+      { id: "7", name: "eow", value: ["date", dayjs().endOf("week")] },
+      { id: "8", name: "eom", value: ["date", dayjs().endOf("month")] },
+      { id: "9", name: "eoy", value: ["date", dayjs().endOf("year")] },
+      { id: "10", name: "EOD", value: ["date", dayjs().endOf("day")] },
+      { id: "11", name: "EOW", value: ["date", dayjs().endOf("week")] },
+      { id: "12", name: "EOM", value: ["date", dayjs().endOf("month")] },
+      { id: "13", name: "EOY", value: ["date", dayjs().endOf("year")] },
     ],
     []
   );
@@ -1251,9 +1252,6 @@ function TaskNameInput({
               value={value}
               setValue={(d) => {
                 onChange(d);
-                if (d.includes("!!") || d.includes("important")) {
-                  setValue("pinned", true);
-                }
                 if (d === "") {
                   setValue("pinned", false);
                 }
