@@ -1041,7 +1041,7 @@ function NlpProcessor({
     if (value.includes("h](end)our")) {
       onChange(value.replace(/([0-9])\s*h\]\(end\)our/, "$1 hour](end)"));
     }
-  }, [value, suggestions, onChange]);
+  }, [value, suggestions, onChange, dateValue, setValue]);
 
   return null;
 }
@@ -1106,6 +1106,14 @@ function TaskNameInput({
       { id: "3", name: "!!" },
       { id: "4", name: "tomorrow" },
       { id: "5", name: "important" },
+      { id: "6", name: "eod" },
+      { id: "7", name: "eow" },
+      { id: "8", name: "eom" },
+      { id: "9", name: "eoy" },
+      { id: "10", name: "EOD" },
+      { id: "11", name: "EOW" },
+      { id: "12", name: "EOM" },
+      { id: "13", name: "EOY" },
     ],
     []
   );
