@@ -152,23 +152,25 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
             marginTop: "auto",
             overflow: "hidden",
             maxHeight: "100%",
-            paddingTop: breakpoints.md ? 0 : 15,
             borderRadius: 25,
           },
         ]}
       >
         <SafeBlurView>
           {!breakpoints.md && (
-            <View
-              style={{
-                width: 25,
-                height: 5,
-                backgroundColor: theme[5],
-                borderRadius: 999,
-                marginHorizontal: "auto",
-                marginBottom: 10,
-              }}
-            />
+            <View style={{ backgroundColor: theme[2] }}>
+              <View
+                style={{
+                  width: 25,
+                  height: 5,
+                  marginTop: 15,
+                  backgroundColor: theme[5],
+                  borderRadius: 999,
+                  marginHorizontal: "auto",
+                  marginBottom: 10,
+                }}
+              />
+            </View>
           )}
           {data?.id ? (
             <TaskDrawerContext.Provider
@@ -285,4 +287,3 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
-
