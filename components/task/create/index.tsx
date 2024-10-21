@@ -1174,10 +1174,6 @@ function TaskNameInput({
     });
   }, [nameRef]);
 
-  useEffect(() => {
-    console.log(name);
-  }, [name]);
-
   return (
     <Controller
       control={control}
