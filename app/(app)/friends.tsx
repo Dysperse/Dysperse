@@ -149,7 +149,6 @@ const Suggestions = ({ watch, setValue }) => {
 };
 
 function AddFriend({ friends, mutate, setView }) {
-  const theme = useColorTheme();
   const [loading, setLoading] = useState(false);
 
   const { control, handleSubmit, watch, setValue } = useForm({

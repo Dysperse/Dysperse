@@ -476,6 +476,28 @@ function PasskeysSection() {
   );
 }
 
+function DeleteAccountSection() {
+  return (
+    <View style={{ flexDirection: "row" }}>
+      <View>
+        <Text style={settingStyles.heading}>Delete my account</Text>
+        <Text style={{ opacity: 0.6 }}>
+          View options to have your data permanently deleted
+        </Text>
+      </View>
+      <Button
+        height={60}
+        onPress={() => router.replace("/settings/account/delete-account")}
+        containerStyle={{ marginTop: 30, marginLeft: "auto" }}
+        variant="filled"
+      >
+        <ButtonText>Continue</ButtonText>
+        <Icon>arrow_forward_ios</Icon>
+      </Button>
+    </View>
+  );
+}
+
 export default function Page() {
   const { session, sessionToken, mutate } = useUser();
   const { data, error } = useSWR(
@@ -494,6 +516,7 @@ export default function Page() {
           <EmailSection />
           <TwoFactorAuthSection />
           <PasskeysSection />
+          <DeleteAccountSection />
         </>
       ) : error ? (
         <ErrorAlert />
