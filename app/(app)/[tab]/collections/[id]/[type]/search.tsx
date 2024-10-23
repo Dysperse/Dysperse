@@ -109,99 +109,115 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
 
   return (
     <>
-      <View style={{ gap: 10, paddingHorizontal: 20 }}>
+      <View
+        style={{
+          gap: 10,
+          paddingHorizontal: 20,
+          flex: 1,
+        }}
+      >
         <View
-          style={{ width: 450, maxWidth: "100%", marginHorizontal: "auto" }}
+          style={{
+            width: 450,
+            maxWidth: "100%",
+            marginHorizontal: "auto",
+            flex: 1,
+          }}
         >
-          <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "serifText800",
-              fontSize: 30,
-              marginTop: 30,
-              marginBottom: 20,
-            }}
-          >
-            {filtered.length} result{filtered.length !== 1 && "s"}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <TextField
-              inputRef={inputRef}
-              placeholder="Find tasks…"
-              onKeyPress={({ nativeEvent }) => {
-                if (nativeEvent.key === "Enter") {
-                  listRef.current.scrollToOffset({ animated: true, offset: 0 });
-                }
-                if (nativeEvent.key === "Escape") handleClose();
-              }}
-              variant="filled+outlined"
-              onChangeText={handleSearch}
-              weight={900}
+          <View>
+            <Text
               style={{
-                flex: 1,
-                height: 60,
-                paddingHorizontal: 20,
-                fontSize: 20,
-                borderRadius: 999,
+                textAlign: "center",
+                fontFamily: "serifText800",
+                fontSize: 30,
+                marginTop: 30,
+                marginBottom: 20,
               }}
-            />
-            {(query || activeFilters.length > 0) && (
-              <Button
-                variant="outlined"
-                onPress={() => {
-                  setQuery("");
-                  setActiveFilters([]);
+            >
+              {filtered.length} result{filtered.length !== 1 && "s"}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <TextField
+                inputRef={inputRef}
+                placeholder="Find tasks…"
+                onKeyPress={({ nativeEvent }) => {
+                  if (nativeEvent.key === "Enter") {
+                    listRef.current.scrollToOffset({
+                      animated: true,
+                      offset: 0,
+                    });
+                  }
+                  if (nativeEvent.key === "Escape") handleClose();
                 }}
-                height={60}
-                containerStyle={{ maxWidth: 120 }}
-              >
-                <Text weight={900} style={{ color: theme[11] }}>
-                  Clear
-                </Text>
-              </Button>
-            )}
-          </View>
-          <ScrollView
-            horizontal
-            contentContainerStyle={{
-              gap: 10,
-            }}
-            style={{ marginTop: 20, marginBottom: 5 }}
-            showsHorizontalScrollIndicator={false}
-          >
-            {filters.map((filter) => (
-              <Chip
-                key={filter.label}
-                label={filter.label}
-                icon={
-                  <Icon filled={activeFilters.includes(filter.label)}>
-                    {filter.icon}
-                  </Icon>
-                }
-                onPress={() => {
-                  setActiveFilters((prev) =>
-                    prev.includes(filter.label)
-                      ? prev.filter((f) => f !== filter.label)
-                      : [...prev, filter.label]
-                  );
-                  inputRef.current.focus();
-                }}
+                variant="filled+outlined"
+                onChangeText={handleSearch}
+                weight={900}
                 style={{
-                  borderColor:
-                    theme[activeFilters.includes(filter.label) ? 8 : 3],
-                  backgroundColor:
-                    theme[activeFilters.includes(filter.label) ? 6 : 1],
+                  flex: 1,
+                  height: 60,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                  borderRadius: 999,
                 }}
               />
-            ))}
-          </ScrollView>
-          <View style={{ marginHorizontal: -20 }}>
+              {(query || activeFilters.length > 0) && (
+                <Button
+                  variant="outlined"
+                  onPress={() => {
+                    setQuery("");
+                    setActiveFilters([]);
+                  }}
+                  height={60}
+                  containerStyle={{ maxWidth: 120 }}
+                >
+                  <Text weight={900} style={{ color: theme[11] }}>
+                    Clear
+                  </Text>
+                </Button>
+              )}
+            </View>
+            <ScrollView
+              horizontal
+              contentContainerStyle={{
+                gap: 10,
+              }}
+              style={{ marginTop: 20, marginBottom: 5 }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {filters.map((filter) => (
+                <Chip
+                  key={filter.label}
+                  label={filter.label}
+                  icon={
+                    <Icon filled={activeFilters.includes(filter.label)}>
+                      {filter.icon}
+                    </Icon>
+                  }
+                  onPress={() => {
+                    setActiveFilters((prev) =>
+                      prev.includes(filter.label)
+                        ? prev.filter((f) => f !== filter.label)
+                        : [...prev, filter.label]
+                    );
+                    inputRef.current.focus();
+                  }}
+                  style={{
+                    borderColor:
+                      theme[activeFilters.includes(filter.label) ? 8 : 3],
+                    backgroundColor:
+                      theme[activeFilters.includes(filter.label) ? 6 : 1],
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </View>
+          <View style={{ marginHorizontal: -20, flex: 1 }}>
             <FlashList
               ref={listRef}
               keyboardShouldPersistTaps="handled"
@@ -212,7 +228,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 paddingTop: 15,
                 paddingHorizontal: 15,
               }}
-              estimatedItemSize={95}
+              estimatedItemSize={150}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <Entity

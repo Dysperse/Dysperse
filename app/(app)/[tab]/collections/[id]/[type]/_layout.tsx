@@ -129,6 +129,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
           <JsStack
             screenOptions={{
               header: () => null,
+              animationEnabled: true,
               detachPreviousScreen: false,
               cardStyle: { backgroundColor: theme[1] },
             }}

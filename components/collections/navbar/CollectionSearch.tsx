@@ -1,8 +1,9 @@
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button, ButtonText } from "@/ui/Button";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { router, usePathname } from "expo-router";
-import { useCollectionContext } from "../context";
 
 export const CollectionSearch = () => {
   const pathname = usePathname();
@@ -20,15 +21,21 @@ export const CollectionSearch = () => {
     ignoreEventWhen: () => pathname.includes("settings"),
   });
 
-  const collection = useCollectionContext();
-
-  return (
+  return pathname.includes("search") ? (
+    <Button
+      variant="filled"
+      style={{ paddingHorizontal: 20 }}
+      onPress={()=>router.back()}
+    >
+      <ButtonText>Done</ButtonText>
+      <Icon>done</Icon>
+    </Button>
+  ) : (
     <IconButton
       size={40}
       style={[breakpoints.md && { borderRadius: 20 }]}
-      icon={pathname.includes("search") ? "close" : "search"}
+      icon="search"
       onPress={handleClick}
-      variant={pathname.includes("search") ? "filled" : "text"}
     />
   );
 };

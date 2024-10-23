@@ -11,7 +11,7 @@ import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { router, useGlobalSearchParams } from "expo-router";
+import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
@@ -73,7 +73,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const breakpoints = useResponsiveBreakpoints();
   const { id, mode, fullscreen } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
-
+  const pathname = usePathname();
+  const isSearch = pathname.includes("/search");
   const shareMenuRef = useRef(null);
 
   const isAll = id === "all";
@@ -372,7 +373,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 {!breakpoints.md && session && !isReadOnly && (
                   <CollectionShareMenu ref={shareMenuRef} />
                 )}
-                {!isLoading && !isReadOnly && (
+                {!isLoading && !isReadOnly && !isSearch && (
                   <MenuPopover
                     menuRef={menuRef}
                     closeOnSelect
@@ -391,7 +392,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     options={(isReadOnly ? [] : collectionMenuOptions) as any}
                   />
                 )}
-                {breakpoints.md && session && !isReadOnly && (
+                {breakpoints.md && session && !isReadOnly && !isSearch && (
                   <CollectionShareMenu ref={shareMenuRef} />
                 )}
               </CollectionContext.Provider>
@@ -405,4 +406,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-
