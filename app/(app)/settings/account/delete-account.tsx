@@ -37,10 +37,9 @@ export default function Page() {
       reason: "",
       feedback: "",
       alternative: "",
-      stay: "",
       satisfaction: "",
-      captcha: "",
       email: session.user.email,
+      captcha: "",
     },
   });
   const onSubmit = async (data) => {
@@ -121,7 +120,7 @@ export default function Page() {
       <Controller
         control={control}
         name="feedback"
-        rules={{ required: true, minLength: 150 }}
+        rules={{ required: true, minLength: 50 }}
         render={({
           field: { onChange, onBlur, value },
           fieldState: { error },
@@ -133,7 +132,7 @@ export default function Page() {
             onChangeText={onChange}
             style={{ height: 100, borderColor: error ? "red" : undefined }}
             variant="filled+outlined"
-            placeholder="Anything specific? Please type 150 characters or more"
+            placeholder="Anything specific? Please type 50 characters or more"
           />
         )}
       />
