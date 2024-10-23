@@ -12,6 +12,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
+import Toast from "react-native-toast-message";
 
 function SubmitButton({ watch, submit, loading }) {
   const captcha = watch("captcha");
@@ -45,13 +46,19 @@ export default function Page() {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      await sendApiRequest(sessionToken, "DELETE", "user/delete-account", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-      router.push("/settings/account/deleted");
-      signOut();
+      const t = await sendApiRequest(
+        sessionToken,
+        "DELETE",
+        "user/delete-account",
+        {},
+        {
+          body: JSON.stringify(data),
+        }
+      );
+      if (t.success) signOut();
+      else throw new Error("Something went wrong");
     } catch (error) {
+      Toast.show({ type: "error" });
       console.error(error);
       setLoading(false);
     }
