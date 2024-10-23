@@ -356,6 +356,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
               <ViewPicker isLoading={isLoading} />
             </View>
             {!isLoading &&
+              !isSearch &&  
               (type === "planner" ||
                 type === "skyline" ||
                 type === "calendar") &&

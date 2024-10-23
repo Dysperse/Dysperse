@@ -19,6 +19,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { ThemeProvider } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
@@ -126,15 +127,29 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
             editOrderMode={editOrderMode}
             setEditOrderMode={setEditOrderMode}
           />
-          <JsStack
-            screenOptions={{
-              header: () => null,
-              animationEnabled: true,
-              detachPreviousScreen: false,
-              cardStyle: { backgroundColor: theme[1] },
+          <ThemeProvider
+            value={{
+              colors: {
+                background: theme[2],
+                card: theme[2],
+                primary: theme[2],
+                border: theme[6],
+                text: theme[11],
+                notification: theme[9],
+              },
+              dark: true,
             }}
-          />
-          {/* {content} */}
+          >
+            <JsStack
+              screenOptions={{
+                header: () => null,
+                animationEnabled: true,
+                detachPreviousScreen: false,
+                freezeOnBlur: true,
+                cardStyle: { backgroundColor: theme[1] },
+              }}
+            />
+          </ThemeProvider>
         </ContentWrapper>
       ) : (
         <Loading error={error || data?.error} />
