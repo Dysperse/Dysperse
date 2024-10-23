@@ -35,7 +35,6 @@ import {
   Appearance,
   Platform,
   StatusBar,
-  View,
   useWindowDimensions,
 } from "react-native";
 import "react-native-gesture-handler";
@@ -189,23 +188,6 @@ function Root() {
                         ...TransitionPresets.ModalPresentationIOS,
                       }}
                     />
-                    {["search/[id]"].map((p) => (
-                      <JsStack.Screen
-                        key={p}
-                        name={p}
-                        options={{
-                          presentation: "modal",
-                          animationEnabled: !breakpoints.md,
-                          detachPreviousScreen: false,
-                          gestureResponseDistance: width,
-                          cardStyle: { backgroundColor: "transparent" },
-                          cardOverlay: (props) => (
-                            <View {...props} style={{ flex: 1 }} />
-                          ),
-                          ...TransitionPresets.ModalPresentationIOS,
-                        }}
-                      />
-                    ))}
                     <JsStack.Screen
                       name="plan"
                       options={{
@@ -245,4 +227,3 @@ function Root() {
 export default process.env.NODE_ENV === "development"
   ? Root
   : Sentry.wrap(Root);
-
