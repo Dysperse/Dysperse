@@ -25,7 +25,7 @@ export default function Layout() {
         <JsStack
           screenOptions={{
             header: () => null,
-            animationEnabled: false,
+            animationEnabled: true,
             freezeOnBlur: true,
             detachPreviousScreen: false,
           }}
