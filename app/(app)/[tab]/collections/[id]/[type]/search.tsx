@@ -138,7 +138,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           paddingHorizontal: 20,
           paddingTop: 60,
           flex: 1,
-          backgroundColor: addHslAlpha(theme[1], 0.5),
+          backgroundColor: addHslAlpha(theme[1], 0.8),
         }}
       >
         <View

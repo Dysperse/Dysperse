@@ -25,21 +25,25 @@ export default function Layout() {
         <JsStack
           screenOptions={{
             header: () => null,
-            animationEnabled: true,
+            animationEnabled: false,
             freezeOnBlur: true,
             detachPreviousScreen: false,
           }}
         >
-          <JsStack.Screen
-            name="search"
-            options={{
-              ...TransitionPresets.ScaleFromCenterAndroid,
-              presentation: "transparentModal",
-              cardStyle: {
-                backgroundColor: "transparent",
-              },
-            }}
-          />
+          {["search", "customize", "share/index", "share/link"].map((t) => (
+            <JsStack.Screen
+              name={t}
+              key={t}
+              options={{
+                ...TransitionPresets.ScaleFromCenterAndroid,
+                presentation: "transparentModal",
+                cardStyle: {
+                  backgroundColor: "transparent",
+                  flex: 1,
+                },
+              }}
+            />
+          ))}
         </JsStack>
       </ThemeProvider>
     </ContentWrapper>

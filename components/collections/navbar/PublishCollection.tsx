@@ -8,13 +8,15 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import { router, usePathname } from "expo-router";
 import { Linking, View } from "react-native";
 import Toast from "react-native-toast-message";
 
-export const PublishCollection = ({ collection, navigation }: any) => {
+export const PublishCollection = ({ collection }: any) => {
   const { data, mutate } = collection;
   const { session } = useSession();
   const theme = useColorTheme();
+  const pathname = usePathname();
 
   const updateCollection = async (key, value) => {
     try {
@@ -86,7 +88,9 @@ export const PublishCollection = ({ collection, navigation }: any) => {
           </Button>
         </ListItemButton>
       )}
-      <ListItemButton onPress={() => navigation.navigate("publish")}>
+      <ListItemButton
+        onPress={() => router.replace(pathname.replace("/share", "/customize"))}
+      >
         <Avatar icon="format_paint" size={40} disabled />
         <ListItemText
           primary={

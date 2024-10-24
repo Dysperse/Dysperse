@@ -183,7 +183,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
       session && {
         icon: "edit",
         text: "Edit",
-        callback: () => shareMenuRef.current?.openEdit(),
+        callback: () => router.push(pathname + "/customize"),
       },
     !isAll &&
       session && {

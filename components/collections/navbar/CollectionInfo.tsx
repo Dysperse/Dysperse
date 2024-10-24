@@ -15,9 +15,9 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
 const collectionCategories = [
@@ -74,7 +74,7 @@ export const CollectionInfo = ({ navigation, collection }) => {
   };
 
   return data ? (
-    <BottomSheetScrollView contentContainerStyle={{ padding: 30 }}>
+    <ScrollView contentContainerStyle={{ padding: 30 }}>
       {collection.public && (
         <Alert
           title="Heads up!"
@@ -236,7 +236,7 @@ export const CollectionInfo = ({ navigation, collection }) => {
           </Icon>
         </ListItemButton>
       </View>
-    </BottomSheetScrollView>
+    </ScrollView>
   ) : (
     <Spinner />
   );
