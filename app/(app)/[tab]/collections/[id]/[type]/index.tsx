@@ -13,7 +13,6 @@ import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
-import ContentWrapper from "@/components/layout/content";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -32,7 +31,7 @@ export const styles = StyleSheet.create({
 });
 
 const Loading = ({ error }) => (
-  <ContentWrapper noPaddingTop>
+  <>
     <CollectionNavbar
       isLoading
       editOrderMode={false}
@@ -41,7 +40,7 @@ const Loading = ({ error }) => (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {error ? <ErrorAlert /> : <Spinner />}
     </View>
-  </ContentWrapper>
+  </>
 );
 
 export default function Page({ isPublic }: { isPublic: boolean }) {
