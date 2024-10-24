@@ -128,12 +128,9 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           top: 30,
           left: 30,
           zIndex: 1,
-        }}
-        pressableStyle={{
           borderWidth: 2,
-          borderColor: theme[7],
         }}
-        variant="filled"
+        variant="outlined"
       />
       <View
         style={{
