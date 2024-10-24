@@ -3,33 +3,20 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
-import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
-import { InteractionManager } from "react-native";
+import { memo, useCallback } from "react";
 import { styles } from "./styles";
 
-export const CollectionShareMenu = forwardRef((props, ref) => {
-  const sheetRef = useRef<BottomSheetModal>(null);
+export const CollectionShareMenu = memo(() => {
   const { id } = useLocalSearchParams();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const pathname = usePathname();
 
-  const handleOpen = useCallback(() => sheetRef.current?.present(), []);
-
-  const navigatorRef = useRef(null);
-
-  useImperativeHandle(ref, () => ({
-    openEdit: () => {
-      handleOpen();
-      InteractionManager.runAfterInteractions(() => {
-        setTimeout(() => {
-          navigatorRef.current?.open();
-        }, 100);
-      });
-    },
-  }));
+  const handleOpen = useCallback(
+    () => router.push(pathname + "/share"),
+    [pathname]
+  );
 
   return (
     <>
@@ -37,17 +24,14 @@ export const CollectionShareMenu = forwardRef((props, ref) => {
         <>
           {breakpoints.md ? (
             <Button
-              // onPress={handleOpen}
-              onPress={() => router.push(pathname + "/share")}
+              onPress={handleOpen}
               backgroundColors={{
                 default: theme[5],
                 hovered: theme[6],
                 pressed: theme[7],
               }}
               height={43}
-              containerStyle={{
-                borderRadius: 20,
-              }}
+              containerStyle={{ borderRadius: 20 }}
               style={[
                 styles.navbarIconButton,
                 {
