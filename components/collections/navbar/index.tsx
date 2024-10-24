@@ -110,7 +110,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
   useHotkeys(["ctrl+d"], (e) => {
     e.preventDefault();
-    shareMenuRef.current?.openEdit();
+    router.push(pathname + "/customize");
   });
   useHotkeys(["ctrl+r"], handleRefresh);
   useHotkeys(["o"], openPopOut);
