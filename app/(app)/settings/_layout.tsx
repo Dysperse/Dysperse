@@ -39,7 +39,7 @@ function conditional(condition, main, fallback) {
 
 const { add, multiply } = Animated;
 
-const ScaleFromCenterAndroidSpec = {
+export const ScaleFromCenterAndroidSpec = {
   animation: "timing",
   config: {
     duration: 400,
@@ -323,3 +323,4 @@ export default function Layout() {
     </BlurView>
   );
 }
+

@@ -1,4 +1,8 @@
-import { CollectionType } from "@/components/collections/context";
+import {
+  CollectionContext,
+  CollectionType,
+} from "@/components/collections/context";
+import CollectionNavbar from "@/components/collections/navbar";
 import { CollectionLabelMenu } from "@/components/collections/navbar/CollectionLabelMenu";
 import Calendar from "@/components/collections/views/calendar";
 import Grid from "@/components/collections/views/grid";
@@ -9,11 +13,12 @@ import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
+import ContentWrapper from "@/components/layout/content";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import useSWR from "swr";
 
@@ -27,9 +32,16 @@ export const styles = StyleSheet.create({
 });
 
 const Loading = ({ error }) => (
-  <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-    {error ? <ErrorAlert /> : <Spinner />}
-  </View>
+  <ContentWrapper noPaddingTop>
+    <CollectionNavbar
+      isLoading
+      editOrderMode={false}
+      setEditOrderMode={() => {}}
+    />
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      {error ? <ErrorAlert /> : <Spinner />}
+    </View>
+  </ContentWrapper>
 );
 
 export default function Page({ isPublic }: { isPublic: boolean }) {
@@ -89,16 +101,37 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       break;
   }
 
+  const collectionContextValue = useMemo(
+    () => ({
+      data,
+      mutate,
+      error,
+      type,
+      access: data?.access,
+      swrKey,
+      isPublic,
+      openLabelPicker: () => sheetRef.current?.present(),
+    }),
+    [data, mutate, error, type, isPublic, swrKey]
+  );
+
   return (
-    <>
+    <CollectionContext.Provider value={collectionContextValue}>
       <CollectionLabelMenu sheetRef={sheetRef}>
         <Pressable />
       </CollectionLabelMenu>
       {data && !data?.error ? (
-        content
+        <>
+          <CollectionNavbar
+            editOrderMode={editOrderMode}
+            setEditOrderMode={setEditOrderMode}
+          />
+          {content}
+        </>
       ) : (
         <Loading error={error || data?.error} />
       )}
-    </>
+    </CollectionContext.Provider>
   );
 }
+

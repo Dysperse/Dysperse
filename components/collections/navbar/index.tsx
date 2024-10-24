@@ -74,7 +74,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
   const { id, mode, fullscreen } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
   const pathname = usePathname();
-  const isSearch = pathname.includes("/search");
   const shareMenuRef = useRef(null);
 
   const isAll = id === "all";
@@ -356,7 +355,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
               <ViewPicker isLoading={isLoading} />
             </View>
             {!isLoading &&
-              !isSearch &&  
               (type === "planner" ||
                 type === "skyline" ||
                 type === "calendar") &&
@@ -374,7 +372,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 {!breakpoints.md && session && !isReadOnly && (
                   <CollectionShareMenu ref={shareMenuRef} />
                 )}
-                {!isLoading && !isReadOnly && !isSearch && (
+                {!isLoading && !isReadOnly && (
                   <MenuPopover
                     menuRef={menuRef}
                     closeOnSelect
@@ -393,7 +391,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     options={(isReadOnly ? [] : collectionMenuOptions) as any}
                   />
                 )}
-                {breakpoints.md && session && !isReadOnly && !isSearch && (
+                {breakpoints.md && session && !isReadOnly && (
                   <CollectionShareMenu ref={shareMenuRef} />
                 )}
               </CollectionContext.Provider>
@@ -407,3 +405,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+

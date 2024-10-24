@@ -6,11 +6,14 @@ import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
+import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -108,12 +111,37 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   useHotkeys("esc", () => router.back());
 
   return (
-    <>
+    <BlurView
+      intensity={30}
+      style={{
+        flex: 1,
+        borderRadius: 20,
+        overflow: "hidden",
+      }}
+    >
+      <IconButton
+        size={55}
+        icon="close"
+        onPress={handleClose}
+        style={{
+          position: "absolute",
+          top: 30,
+          left: 30,
+          zIndex: 1,
+        }}
+        pressableStyle={{
+          borderWidth: 2,
+          borderColor: theme[7],
+        }}
+        variant="filled"
+      />
       <View
         style={{
           gap: 10,
           paddingHorizontal: 20,
+          paddingTop: 60,
           flex: 1,
+          backgroundColor: addHslAlpha(theme[1], 0.5),
         }}
       >
         <View
@@ -208,10 +236,14 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                     inputRef.current.focus();
                   }}
                   style={{
-                    borderColor:
-                      theme[activeFilters.includes(filter.label) ? 8 : 3],
-                    backgroundColor:
-                      theme[activeFilters.includes(filter.label) ? 6 : 1],
+                    borderColor: addHslAlpha(
+                      theme[11],
+                      activeFilters.includes(filter.label) ? 0.5 : 0.2
+                    ),
+                    backgroundColor: addHslAlpha(
+                      theme[11],
+                      activeFilters.includes(filter.label) ? 0.1 : 0
+                    ),
                   }}
                 />
               ))}
@@ -286,7 +318,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           </View>
         </View>
       </View>
-    </>
+    </BlurView>
   );
 }
 
@@ -332,3 +364,4 @@ export default function Page() {
     </>
   );
 }
+
