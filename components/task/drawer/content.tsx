@@ -73,7 +73,7 @@ function TaskNameInput({ bottomSheet }) {
             borderColor: addHslAlpha(theme[8], 0.5),
           },
         ]}
-        fontSize={breakpoints.md ? 45 : 30}
+        fontSize={breakpoints.md ? 40 : 30}
       />
     </>
   );
