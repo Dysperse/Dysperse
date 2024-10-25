@@ -164,4 +164,3 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
-
