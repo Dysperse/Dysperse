@@ -269,6 +269,7 @@ export default function AppLayout() {
           <JsStack.Screen
             name="settings"
             options={{
+              detachPreviousScreen: !breakpoints.md,
               cardStyle: { padding: 0 },
             }}
           />

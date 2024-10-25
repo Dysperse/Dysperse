@@ -291,12 +291,7 @@ export default function Layout() {
                         !d.includes("/integrations/[name]"),
                       headerTitle: d !== "settings/index" && "Settings",
                       animationEnabled: true,
-                      // !breakpoints.md && d !== "settings/index",
-                      detachPreviousScreen: breakpoints.md
-                        ? true
-                        : d === "settings/index" ||
-                          d === "login/account/two-factor-authentication" ||
-                          d === "login/account/passkeys",
+                      detachPreviousScreen: true,
 
                       ...(breakpoints.md
                         ? {
