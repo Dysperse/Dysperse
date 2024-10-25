@@ -21,8 +21,8 @@ export const StorageContextProvider = ({
       error,
       storage: data?.storage,
       isLoading: !data,
-      // isReached: !data || data?.storage?.used >= data?.storage?.limit,
-      isReached: true,
+      isReached: !data || data?.storage?.used >= data?.storage?.limit,
+      // isReached: true,
       isWarning: !data || data?.storage?.used >= data?.storage?.limit * 0.9,
     }),
     [data, error]

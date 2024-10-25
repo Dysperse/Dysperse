@@ -1,4 +1,5 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -45,9 +46,14 @@ export function PlanDayPrompt() {
   }, []);
 
   const hasCompleted = dayjs(session?.user?.profile?.lastPlanned).isToday();
+  const { isReached } = useStorageContext();
 
   return (
-    <TouchableOpacity style={actionStyles.item} onPress={handlePress}>
+    <TouchableOpacity
+      style={[actionStyles.item, isReached && { opacity: 0.5 }]}
+      onPress={handlePress}
+      disabled={isReached}
+    >
       <Icon>rocket_launch</Icon>
       <Text style={{ color: theme[11] }} numberOfLines={1}>
         Plan my day
