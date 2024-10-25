@@ -56,7 +56,7 @@ function Share({ handleClose }) {
               style={{
                 textAlign: "center",
                 fontFamily: "serifText800",
-                fontSize: 30,
+                fontSize: 40,
                 marginTop: 30,
                 marginBottom: 20,
               }}
