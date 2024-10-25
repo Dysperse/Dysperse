@@ -1,10 +1,13 @@
 import { JsStack } from "@/components/layout/_stack";
 import ContentWrapper from "@/components/layout/content";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ThemeProvider } from "@react-navigation/native";
+import { TransitionPresets } from "@react-navigation/stack";
 
 export default function Layout() {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <ContentWrapper noPaddingTop>
@@ -24,7 +27,7 @@ export default function Layout() {
         <JsStack
           screenOptions={{
             header: () => null,
-            animationEnabled: false,
+            animationEnabled: !breakpoints.md,
             freezeOnBlur: true,
             detachPreviousScreen: false,
           }}
@@ -34,7 +37,8 @@ export default function Layout() {
               name={t}
               key={t}
               options={{
-                presentation: "transparentModal",
+                presentation: breakpoints.md ? "transparentModal" : "modal",
+                ...(!breakpoints.md && TransitionPresets.ModalPresentationIOS),
                 cardStyle: {
                   backgroundColor: "transparent",
                   flex: 1,
