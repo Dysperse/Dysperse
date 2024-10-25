@@ -4,6 +4,7 @@ import { useUser } from "./useUser";
 
 export const StorageContext = createContext<any>(null);
 export const useStorageContext = () => useContext(StorageContext);
+
 export const StorageContextProvider = ({
   children,
 }: {
@@ -20,8 +21,8 @@ export const StorageContextProvider = ({
       error,
       storage: data?.storage,
       isLoading: !data,
-      // isValidating,
-      isReached: !data || data?.storage?.used >= data?.storage?.limit,
+      // isReached: !data || data?.storage?.used >= data?.storage?.limit,
+      isReached: true,
       isWarning: !data || data?.storage?.used >= data?.storage?.limit * 0.9,
     }),
     [data, error]
@@ -31,4 +32,3 @@ export const StorageContextProvider = ({
     <StorageContext.Provider value={value}>{children}</StorageContext.Provider>
   );
 };
-

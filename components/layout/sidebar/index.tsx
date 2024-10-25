@@ -3,6 +3,7 @@ import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
 import { useSession } from "@/context/AuthProvider";
+import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -374,6 +375,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   });
 
   const menuRef = useRef(null);
+  const { isReached } = useStorageContext();
 
   return (
     <>
@@ -430,6 +432,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
               pressed: theme[5],
               hovered: theme[4],
             }}
+            disabled={isReached}
             size={45}
             pressableStyle={{ flexDirection: "row", gap: 10 }}
           >
@@ -681,4 +684,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-

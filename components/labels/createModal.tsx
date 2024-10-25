@@ -1,3 +1,4 @@
+import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
@@ -100,7 +101,9 @@ export function CreateLabelModal({
     }
   };
 
-  return (
+  const { isReached } = useStorageContext();
+
+  return isReached ? null : (
     <>
       {trigger}
       <Modal sheetRef={ref} maxWidth={460} height={500} animation="SCALE">
@@ -225,4 +228,3 @@ export function CreateLabelModal({
     </>
   );
 }
-

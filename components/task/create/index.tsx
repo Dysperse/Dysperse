@@ -1822,7 +1822,6 @@ const CreateTask = forwardRef(
 
     const trigger = cloneElement((children || <Pressable />) as any, {
       onPress: handleOpen,
-      disabled: isReached,
     });
 
     const breakpoints = useResponsiveBreakpoints();
@@ -1830,7 +1829,7 @@ const CreateTask = forwardRef(
     const { session } = useUser();
     if (!session) return null;
 
-    return (
+    return isReached ? null : (
       <>
         {trigger}
         <Modal

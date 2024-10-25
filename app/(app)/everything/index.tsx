@@ -3,6 +3,7 @@ import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
+import { useStorageContext } from "@/context/storageContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -598,6 +599,7 @@ const Collections = () => {
   const [selectedCollection, setSelectedCollection] = useState<number | null>(
     null
   );
+  const { isReached } = useStorageContext();
   const theme = useColorTheme();
   const [query, setQuery] = useState("");
   const { data, mutate, error } = useSWR(["space/collections"]);
@@ -636,15 +638,17 @@ const Collections = () => {
                 placeholder="Search collections…"
                 autoFocus
               />
-              <Button
-                variant="filled"
-                large
-                containerStyle={{ marginTop: 10 }}
-                onPress={() => router.push("/collections/create")}
-              >
-                <Icon bold>add</Icon>
-                <ButtonText weight={900}>New</ButtonText>
-              </Button>
+              {!isReached && (
+                <Button
+                  variant="filled"
+                  large
+                  containerStyle={{ marginTop: 10 }}
+                  onPress={() => router.push("/collections/create")}
+                >
+                  <Icon bold>add</Icon>
+                  <ButtonText weight={900}>New</ButtonText>
+                </Button>
+              )}
               <FlashList
                 estimatedItemSize={60}
                 data={d.filter((l) =>

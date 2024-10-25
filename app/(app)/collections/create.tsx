@@ -1,6 +1,7 @@
 import LabelPicker from "@/components/labels/picker";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
+import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -19,7 +20,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { cloneElement, memo, useRef, useState } from "react";
+import { cloneElement, memo, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   InteractionManager,
@@ -379,6 +380,11 @@ const Scratch = ({ children }) => {
 export default function Page() {
   const theme = useColor("gray");
   const isDark = useDarkMode();
+  const { isReached } = useStorageContext();
+
+  useEffect(() => {
+    if (isReached) router.replace("/");
+  }, []);
 
   return (
     <ColorThemeProvider theme={theme}>
@@ -393,4 +399,3 @@ export default function Page() {
     </ColorThemeProvider>
   );
 }
-
