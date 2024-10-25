@@ -1153,6 +1153,7 @@ function TaskNameInput({
   setValue,
   watch,
   reset,
+  submitRef,
 }: {
   control: any;
   handleSubmitButtonClick: any;
@@ -1161,6 +1162,7 @@ function TaskNameInput({
   setValue: any;
   watch;
   reset;
+  submitRef;
 }) {
   const attachments = watch("attachments");
   const name = watch("name");
@@ -1236,6 +1238,7 @@ function TaskNameInput({
                           swipeable: false,
                           visibilityTime: 1e9,
                         });
+                        submitRef.current.setDisabled(true);
                         const form: any = new FormData();
                         const blob = item.getAsFile();
 
@@ -1255,6 +1258,7 @@ function TaskNameInput({
                           }
                         ).then((res) => res.json());
                         if (res.error) {
+                          submitRef.current.setDisabled(false);
                           Toast.hide();
                           Toast.show({
                             type: "error",
@@ -1262,12 +1266,12 @@ function TaskNameInput({
                             text2: res.error.message,
                           });
                         } else {
-                          console.log(res);
                           setValue("attachments", [
                             ...attachments,
                             { type: "IMAGE", data: res.image.display_url },
                           ]);
 
+                          submitRef.current.setDisabled(false);
                           Toast.hide();
                           Toast.show({
                             type: "success",
@@ -1498,12 +1502,20 @@ function Attachment({ control, nameRef, setValue, menuRef }: any) {
   );
 }
 
-const SubmitButton = memo(({ onSubmit }: any) => {
+const SubmitButton = forwardRef(({ onSubmit }: any, ref) => {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
+  const [disabled, setDisabled] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    isDisabled: () => disabled,
+    setDisabled: (t) => setDisabled(t),
+  }));
+
   return (
     <IconButton
+      disabled={disabled}
       size={breakpoints.md ? 50 : 35}
       iconStyle={{ color: theme[1] }}
       iconProps={{ bold: true }}
@@ -1605,6 +1617,7 @@ function BottomSheetContent({
   const { sessionToken } = useUser();
   const isDark = useDarkMode();
   const nameRef = useRef(null);
+  const submitRef = useRef(null);
   const menuRef = useRef<BottomSheetModal>(null);
   const labelMenuRef = useRef<BottomSheetModal>(null);
   const theme = useColorTheme();
@@ -1667,12 +1680,13 @@ function BottomSheetContent({
   };
 
   const handleSubmitButtonClick = () => {
-    handleSubmit(onSubmit, () =>
-      Toast.show({
-        type: "error",
-        text1: "Type in a task name",
-      })
-    )();
+    if (!submitRef.current.isDisabled())
+      handleSubmit(onSubmit, () =>
+        Toast.show({
+          type: "error",
+          text1: "Type in a task name",
+        })
+      )();
   };
 
   const colors = {
@@ -1716,6 +1730,7 @@ function BottomSheetContent({
             control={control}
           />
           <TaskNameInput
+            submitRef={submitRef}
             reset={reset}
             watch={watch}
             control={control}
@@ -1754,7 +1769,7 @@ function BottomSheetContent({
             colors={colors}
           />
           <PinTask watch={watch} control={control} />
-          <SubmitButton onSubmit={handleSubmitButtonClick} />
+          <SubmitButton ref={submitRef} onSubmit={handleSubmitButtonClick} />
         </View>
       </BlurView>
     </Pressable>
