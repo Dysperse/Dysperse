@@ -579,7 +579,7 @@ export default function Page() {
                       dayjs(item.user.profile?.lastActive).diff(
                         dayjs(),
                         "minute"
-                      ) <= 5
+                      ) >= -5
                         ? "now"
                         : dayjs(item.user.profile?.lastActive).fromNow()
                     }`}
