@@ -40,7 +40,7 @@ export default function Layout() {
                 presentation: breakpoints.md ? "transparentModal" : "modal",
                 ...(!breakpoints.md && TransitionPresets.ModalPresentationIOS),
                 cardStyle: {
-                  backgroundColor: "transparent",
+                  backgroundColor: breakpoints.md ? "transparent" : undefined,
                   flex: 1,
                 },
               }}
