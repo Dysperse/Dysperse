@@ -323,6 +323,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
 }
 
 export default function Page() {
+  const theme = useColorTheme();
   const listRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -364,4 +365,3 @@ export default function Page() {
     </>
   );
 }
-

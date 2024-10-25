@@ -1,9 +1,26 @@
 import { JsStack } from "@/components/layout/_stack";
 import ContentWrapper from "@/components/layout/content";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ThemeProvider } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
+import { usePathname } from "expo-router";
+import { StatusBar } from "react-native";
+
+function StatusBarStyling() {
+  const theme = useColorTheme();
+  const pathname = usePathname();
+  const t = ["customize", "search", "share"];
+  const isModal = t.find((p) => pathname.includes(p));
+
+  useWebStatusBar({
+    active: isModal ? "#000" : theme[2],
+    cleanup: theme[2],
+  });
+
+  return isModal && <StatusBar barStyle="light-content" />;
+}
 
 export default function Layout() {
   const theme = useColorTheme();
@@ -24,6 +41,7 @@ export default function Layout() {
           dark: true,
         }}
       >
+        <StatusBarStyling />
         <JsStack
           screenOptions={{
             header: () => null,
@@ -51,4 +69,3 @@ export default function Layout() {
     </ContentWrapper>
   );
 }
-

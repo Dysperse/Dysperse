@@ -12,11 +12,6 @@ export default function Page() {
   const theme = useColorTheme();
   const { data, mutate, error } = useSWR(["space/collections"]);
 
-  useWebStatusBar({
-    active: "#000",
-    cleanup: theme[2],
-  });
-
   const handleBack = () => {
     if (router.canGoBack()) {
       router.back();
@@ -24,6 +19,11 @@ export default function Page() {
       router.push("/everything");
     }
   };
+
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
 
   return (
     <>

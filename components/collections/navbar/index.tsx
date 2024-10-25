@@ -107,6 +107,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   };
 
   useHotkeys(["ctrl+d"], (e) => {
+    if (id === "all") return;
     e.preventDefault();
     router.navigate({
       pathname: "[tab]/collections/[id]/[view]/customize",
@@ -406,4 +407,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-
