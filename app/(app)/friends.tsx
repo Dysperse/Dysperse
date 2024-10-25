@@ -575,9 +575,14 @@ export default function Page() {
                   <ListItemText
                     truncate
                     primary={item.user.profile?.name}
-                    secondary={`Active ${dayjs(
-                      item.user.profile?.lastActive
-                    ).fromNow()}`}
+                    secondary={`Active ${
+                      dayjs(item.user.profile?.lastActive).diff(
+                        dayjs(),
+                        "minute"
+                      ) <= 5
+                        ? "now"
+                        : dayjs(item.user.profile?.lastActive).fromNow()
+                    }`}
                   />
                   {view === "pending" ? (
                     <DeleteRequestButton mutate={mutate} id={item.user.id} />
