@@ -14,7 +14,7 @@ import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { useCallback, useRef, useState } from "react";
@@ -544,7 +544,7 @@ export function TaskDetails() {
   };
 
   return (
-    <>
+    <BottomSheetFlatList>
       <Accordion
         activeSections={activeSections}
         sectionContainerStyle={{
@@ -922,7 +922,6 @@ export function TaskDetails() {
         renderContent={(section) => section.content}
         onChange={setActiveSections}
       />
-    </>
+    </BottomSheetFlatList>
   );
 }
-

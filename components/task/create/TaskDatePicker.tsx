@@ -1,56 +1,38 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import Chip from "@/ui/Chip";
+import {
+  defaultRecurrenceOptions,
+  DueDatePicker,
+  RecurrencePicker,
+} from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Modal from "@/ui/Modal";
-import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useState } from "react";
-import { View } from "react-native";
+import { Easing, Pressable } from "react-native";
+import Accordion from "react-native-collapsible/Accordion";
 import { RRule } from "rrule";
-import { defaultRecurrenceOptions, DueDatePicker, RecurrencePicker } from ".";
 
 function Header({ title, handleClose }: { title: string; handleClose: any }) {
   const theme = useColorTheme();
   return (
-    <View
-      style={{
-        borderBottomWidth: 1,
-        marginBottom: 10,
-        paddingLeft: 30,
-        paddingRight: 20,
-        paddingVertical: 10,
-        borderBottomColor: theme[5],
-        backgroundColor: theme[3],
-        flexDirection: "row",
-        alignItems: "center",
-      }}
+    <Button
+      variant="filled"
+      style={({ pressed, hovered }) => ({
+        backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
+      })}
+      containerStyle={{ width: 120 }}
+      onPress={handleClose}
     >
-      <Text
-        style={{
-          fontSize: 20,
-          flex: 1,
-        }}
-        weight={800}
-      >
-        {title || "Edit"}
-      </Text>
-      <Button
-        variant="filled"
-        style={({ pressed, hovered }) => ({
-          backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-        })}
-        containerStyle={{ width: 120 }}
-        onPress={handleClose}
-      >
-        <ButtonText>Done</ButtonText>
-        <Icon>check</Icon>
-      </Button>
-    </View>
+      <ButtonText>Done</ButtonText>
+      <Icon>check</Icon>
+    </Button>
   );
 }
 
@@ -76,6 +58,8 @@ function TaskDatePicker({
   const breakpoints = useResponsiveBreakpoints();
   const _ref = React.useRef<BottomSheetModal>(null);
   const sheetRef = _sheetRef || _ref;
+
+  const [activeSections, setActiveSections] = useState([0]);
 
   const handleClose = useCallback(
     () => sheetRef.current?.forceClose({ duration: 0.0001 }),
@@ -132,35 +116,60 @@ function TaskDatePicker({
         snapPoints={["100%"]}
         sheetRef={sheetRef}
         animation="SCALE"
-        maxWidth={750}
-        height={breakpoints.md ? 485 : "100%"}
+        height={breakpoints.md ? 900 : "100%"}
       >
         <Header title={title} handleClose={handleClose} />
-        <BottomSheetScrollView>
-          {dueDateOnly !== true && (
-            <ButtonGroup
-              options={[
-                { value: "date", label: "Date" },
-                { value: "recurrence", label: "Repeat" },
-              ]}
-              state={[view, setView]}
-              containerStyle={{ marginBottom: breakpoints.md ? 0 : 20 }}
-            />
-          )}
-          {view === "date" ? (
-            <DueDatePicker watch={watch} setValue={setValue} value={dueDate} />
-          ) : (
-            <RecurrencePicker
-              defaultRecurrenceOptions={defaultRecurrenceOptions}
-              setValue={setValue}
-              value={recurrence}
-            />
-          )}
-        </BottomSheetScrollView>
+        <Accordion
+          containerStyle={{ padding: 10, gap: 10  }}
+          activeSections={activeSections}
+          sectionContainerStyle={{
+            backgroundColor: addHslAlpha(theme[5], 0.3),
+            borderRadius: 20,
+            overflow: "hidden",
+          }}
+          align="bottom"
+          underlayColor="transparent"
+          touchableComponent={Pressable as any}
+          easing={Easing.bezier(0.17, 0.67, 0.32, 1)}
+          sections={[
+            {
+              trigger: () => (
+                <ListItemButton disabled>
+                  <Icon>today</Icon>
+                  <ListItemText primary="Due date" />
+                </ListItemButton>
+              ),
+              content: (
+                <DueDatePicker
+                  watch={watch}
+                  setValue={setValue}
+                  value={dueDate}
+                />
+              ),
+            },
+            {
+              trigger: () => (
+                <ListItemButton disabled>
+                  <Icon>loop</Icon>
+                  <ListItemText primary="Repeats" />
+                </ListItemButton>
+              ),
+              content: (
+                <RecurrencePicker
+                  defaultRecurrenceOptions={defaultRecurrenceOptions}
+                  setValue={setValue}
+                  value={recurrence}
+                />
+              ),
+            },
+          ].filter((e) => e)}
+          renderHeader={(section) => section.trigger()}
+          renderContent={(section) => section.content}
+          onChange={setActiveSections}
+        />
       </Modal>
     </>
   );
 }
 
 export default TaskDatePicker;
-
