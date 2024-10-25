@@ -78,7 +78,7 @@ export const ImageViewer = ({ children, image }) => {
           maxWidth="100%"
           backgroundStyle={{
             backgroundColor: "transparent",
-            backdropFilter: "blur(10px)",
+            ...(Platform.OS === "web" && { backdropFilter: "blur(10px)" }),
           }}
           animationConfigs={{
             damping: 100,
