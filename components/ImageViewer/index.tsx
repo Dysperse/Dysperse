@@ -1,13 +1,15 @@
 import BottomSheet from "@/ui/BottomSheet";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import * as MediaLibrary from "expo-media-library";
-import React, { cloneElement, useCallback, useRef } from "react";
+import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -54,6 +56,9 @@ async function saveImageToCameraRoll(imageUrl) {
 export const ImageViewer = ({ children, image }) => {
   const ref = useRef<BottomSheetModal>();
   const theme = useColorTheme();
+  const [state, setState] = useState<"loading" | "error" | "success">(
+    "loading"
+  );
   const handleOpen = useCallback(() => ref.current.present(), []);
   const handleClose = useCallback(() => ref.current.dismiss(), []);
 
@@ -103,12 +108,20 @@ export const ImageViewer = ({ children, image }) => {
                 flex: 1,
               }}
             >
-              <Image
-                contentFit="contain"
-                contentPosition="center"
-                source={{ uri: image }}
-                style={{ flex: 1, width: "100%" }}
-              />
+              {state === "success" ? (
+                <Image
+                  onError={() => setState("error")}
+                  onLoad={() => setState("success")}
+                  contentFit="contain"
+                  contentPosition="center"
+                  source={{ uri: image }}
+                  style={{ flex: 1, width: "100%" }}
+                />
+              ) : state === "error" ? (
+                <ErrorAlert />
+              ) : (
+                <Spinner />
+              )}
             </View>
             <LinearGradient
               colors={[theme[1], "transparent"]}
