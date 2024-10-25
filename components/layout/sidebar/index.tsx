@@ -359,7 +359,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const breakpoints = useResponsiveBreakpoints();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
-  useHotkeys(["ctrl+n", "shift+n"], (e) => {
+  useHotkeys(["ctrl+n", "shift+n", "space"], (e) => {
     e.preventDefault();
     itemRef.current?.present();
   });

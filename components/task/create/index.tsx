@@ -7,10 +7,13 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
+import { DatePicker } from "@/ui/DatePicker";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
+import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -42,7 +45,6 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
-import TaskDatePicker from "./TaskDatePicker";
 
 const PinTask = memo(function PinTask({ watch, control }: any) {
   const orange = useColor("orange");
@@ -98,18 +100,6 @@ const PinTask = memo(function PinTask({ watch, control }: any) {
   );
 });
 
-function DatePicker({ setValue, watch }: any) {
-  const date = watch("date");
-
-  return (
-    <TaskDatePicker
-      setValue={setValue}
-      watch={watch}
-      defaultRecurrenceOptions={{ dtstart: date || new Date() }}
-    />
-  );
-}
-
 function Footer({
   nameRef,
   labelMenuRef,
@@ -128,9 +118,6 @@ function Footer({
   const collectionId = watch("collectionId");
   const date = watch("date");
   const label = watch("label");
-
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
@@ -839,6 +826,10 @@ function DateButton({ watch, colors, defaultValues, setValue }: any) {
   const date = watch("date");
   const breakpoints = useResponsiveBreakpoints();
   const recurrenceRule = watch("recurrenceRule");
+  const dateOnly = watch("dateOnly");
+
+  const dateRef = useRef(null);
+  const recurrenceRef = useRef(null);
 
   return (
     <View
@@ -846,20 +837,40 @@ function DateButton({ watch, colors, defaultValues, setValue }: any) {
         display: date || recurrenceRule ? "none" : "flex",
       }}
     >
-      <TaskDatePicker
+      <DatePicker
+        ref={dateRef}
+        value={{ date, dateOnly }}
         setValue={setValue}
-        watch={watch}
-        defaultRecurrenceOptions={{
-          dtstart: (defaultValues.date || new Date()).toISOString(),
-        }}
-      >
-        <IconButton
-          backgroundColors={colors}
-          icon="calendar_today"
-          size={breakpoints.md ? 50 : 35}
-          variant="filled"
-        />
-      </TaskDatePicker>
+      />
+      <RecurrencePicker
+        ref={recurrenceRef}
+        value={recurrenceRule}
+        setValue={(t: any) => setValue("recurrenceRule", t)}
+      />
+      <MenuPopover
+        menuProps={{ rendererProps: { placement: "top" } }}
+        options={[
+         
+          {
+            text: "Set recurrence",
+            icon: "loop",
+            callback: () => recurrenceRef.current.present(),
+          },
+          {
+            text: "Set due date",
+            icon: "today",
+            callback: () => dateRef.current.present(),
+          },
+        ]}
+        trigger={
+          <IconButton
+            backgroundColors={colors}
+            icon="calendar_today"
+            size={breakpoints.md ? 50 : 35}
+            variant="filled"
+          />
+        }
+      />
     </View>
   );
 }

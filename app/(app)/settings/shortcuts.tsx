@@ -84,6 +84,10 @@ export default function Page() {
           action: "Create tasks",
         },
         {
+          keys: "space",
+          action: "Create tasks",
+        },
+        {
           keys: "#",
           action: "Open label picker",
         },
@@ -147,4 +151,3 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
-
