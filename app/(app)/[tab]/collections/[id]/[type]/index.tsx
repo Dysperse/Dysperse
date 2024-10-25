@@ -13,10 +13,15 @@ import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
+import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { router, useLocalSearchParams } from "expo-router";
+import {
+  router,
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import useSWR from "swr";
@@ -46,6 +51,8 @@ const Loading = ({ error }) => (
 export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
   const sheetRef = useRef(null);
+  const t = useGlobalSearchParams();
+
   const swrKey = id
     ? [
         "space/collections/collection",
@@ -125,7 +132,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
             editOrderMode={editOrderMode}
             setEditOrderMode={setEditOrderMode}
           />
-          {content}
+          <FadeOnRender key={JSON.stringify(t)}>{content}</FadeOnRender>
         </>
       ) : (
         <Loading error={error || data?.error} />

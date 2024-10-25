@@ -11,14 +11,9 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
@@ -44,15 +39,6 @@ export default function Stream() {
   const breakpoints = useResponsiveBreakpoints();
 
   const isReadOnly = access?.access === "READ_ONLY";
-
-  const opacity = useSharedValue(0);
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
-  }));
-
-  useEffect(() => {
-    setTimeout(() => (opacity.value = 1), 0);
-  }, [opacity]);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
@@ -140,11 +126,8 @@ export default function Stream() {
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <Animated.View
-      style={[
-        opacityStyle,
-        { flex: 1, flexDirection: breakpoints.md ? "row" : "column" },
-      ]}
+    <View
+      style={[{ flex: 1, flexDirection: breakpoints.md ? "row" : "column" }]}
     >
       <View
         style={{
@@ -304,7 +287,7 @@ export default function Stream() {
         )}
         keyExtractor={(i, d) => `${i.id}-${d}`}
       />
-    </Animated.View>
+    </View>
   );
 }
 

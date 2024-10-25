@@ -2,7 +2,6 @@ import { JsStack } from "@/components/layout/_stack";
 import ContentWrapper from "@/components/layout/content";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ThemeProvider } from "@react-navigation/native";
-import { TransitionPresets } from "@react-navigation/stack";
 
 export default function Layout() {
   const theme = useColorTheme();
@@ -25,7 +24,7 @@ export default function Layout() {
         <JsStack
           screenOptions={{
             header: () => null,
-            animationEnabled: true,
+            animationEnabled: false,
             freezeOnBlur: true,
             detachPreviousScreen: false,
           }}
@@ -35,7 +34,6 @@ export default function Layout() {
               name={t}
               key={t}
               options={{
-                ...TransitionPresets.ScaleFromCenterAndroid,
                 presentation: "transparentModal",
                 cardStyle: {
                   backgroundColor: "transparent",

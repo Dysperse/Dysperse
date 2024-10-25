@@ -6,13 +6,8 @@ import RefreshControl from "@/ui/RefreshControl";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 import { CollectionEmpty } from "../CollectionEmpty";
@@ -64,17 +59,8 @@ export default function List() {
   const { width } = useWindowDimensions();
   const ref = useRef(null);
 
-  const opacity = useSharedValue(0);
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
-  }));
-
-  useEffect(() => {
-    setTimeout(() => (opacity.value = 1), 0);
-  }, [opacity]);
-
   return (
-    <Animated.View style={[opacityStyle, { flex: 1 }]}>
+    <View style={{ flex: 1 }}>
       {d.length === 0 ? (
         <CollectionEmpty />
       ) : (
@@ -175,7 +161,7 @@ export default function List() {
           estimatedItemSize={100}
         />
       )}
-    </Animated.View>
+    </View>
   );
 }
 

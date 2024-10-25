@@ -13,14 +13,9 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 import { View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -366,21 +361,12 @@ export default function Skyline() {
     },
   ]);
 
-  const opacity = useSharedValue(0);
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
-  }));
-
-  useEffect(() => {
-    setTimeout(() => (opacity.value = 1), 0);
-  }, [opacity]);
-
   return (
     <SkylineContext.Provider value={agendaContextValue as any}>
       {data ? (
-        <Animated.View style={[{ flex: 1 }, opacityStyle]}>
+        <View style={{ flex: 1 }}>
           <Content data={data} mutate={mutate} />
-        </Animated.View>
+        </View>
       ) : error ? (
         <ErrorAlert />
       ) : (
@@ -393,3 +379,4 @@ export default function Skyline() {
     </SkylineContext.Provider>
   );
 }
+

@@ -16,11 +16,6 @@ import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
@@ -93,19 +88,6 @@ export function Column(props: ColumnProps) {
   );
 
   const isReadOnly = access?.access === "READ_ONLY";
-
-  const opacity = useSharedValue(0);
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, {
-      damping: 20,
-      stiffness: 90,
-      overshootClamping: true,
-    }),
-  }));
-
-  useEffect(() => {
-    setTimeout(() => (opacity.value = 1), 0);
-  }, [opacity]);
 
   const onTaskUpdate = (updatedTask, oldTask) => {
     mutate(
@@ -224,9 +206,8 @@ export function Column(props: ColumnProps) {
   }, [collectionData.showCompleted]);
 
   return (
-    <Animated.View
+    <View
       style={[
-        opacityStyle,
         props.grid
           ? {
               position: "relative",
@@ -376,6 +357,7 @@ export function Column(props: ColumnProps) {
         )}
         keyExtractor={(i: any) => i.id}
       />
-    </Animated.View>
+    </View>
   );
 }
+

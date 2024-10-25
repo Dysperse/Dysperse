@@ -10,13 +10,8 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { LexoRank } from "lexorank";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import { KeyedMutator } from "swr";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -105,25 +100,14 @@ export function Column({
   const { width } = useWindowDimensions();
   const { id: collectionId } = usePlannerContext();
   const { access } = useCollectionContext();
-
-  const opacity = useSharedValue(0);
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
-  }));
-
-  useEffect(() => {
-    setTimeout(() => (opacity.value = 1), 0);
-  }, [opacity]);
-
   const isReadOnly = access?.access === "READ_ONLY";
 
   const [refreshing] = React.useState(false);
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <Animated.View
+    <View
       style={[
-        opacityStyle,
         {
           ...(breakpoints.md && {
             backgroundColor: theme[2],
@@ -274,7 +258,7 @@ export function Column({
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}
       />
-    </Animated.View>
+    </View>
   );
 }
 

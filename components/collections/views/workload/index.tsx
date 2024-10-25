@@ -12,20 +12,9 @@ import Text, { getFontName } from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
@@ -246,19 +235,9 @@ const StoryPoint = ({
     );
   };
 
-  const opacity = useSharedValue(0);
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, { damping: 20, stiffness: 90 }),
-  }));
-
-  useEffect(() => {
-    setTimeout(() => (opacity.value = 1), 0);
-  }, [opacity]);
-
   return (
-    <Animated.View
+    <View
       style={[
-        opacityStyle,
         {
           marginBottom: breakpoints.md ? 10 : 0,
           backgroundColor: theme[breakpoints.md ? 2 : 1],
@@ -372,7 +351,7 @@ const StoryPoint = ({
         )}
         keyExtractor={(i, d) => `${i.id}-${d}`}
       />
-    </Animated.View>
+    </View>
   );
 };
 

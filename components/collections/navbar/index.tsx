@@ -10,7 +10,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
@@ -65,13 +64,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
   editOrderMode,
   setEditOrderMode,
 }: CollectionNavbarProps) {
-  const theme = useColorTheme();
   const { session } = useSession();
   const { data, access, type, swrKey, openLabelPicker, ...ctx } =
     useCollectionContext();
   const isReadOnly = access?.access === "READ_ONLY" || (!access && !session);
   const breakpoints = useResponsiveBreakpoints();
-  const { id, mode, fullscreen } = useGlobalSearchParams();
+  const { id, mode, fullscreen, tab } = useGlobalSearchParams();
   const menuRef = useRef<Menu>(null);
   const pathname = usePathname();
   const shareMenuRef = useRef(null);
@@ -110,7 +108,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
   useHotkeys(["ctrl+d"], (e) => {
     e.preventDefault();
-    router.push(pathname + "/customize");
+    router.navigate({
+      pathname: "[tab]/collections/[id]/[view]/customize",
+      params: { id, tab, view: type },
+    });
   });
   useHotkeys(["ctrl+r"], handleRefresh);
   useHotkeys(["o"], openPopOut);

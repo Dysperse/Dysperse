@@ -1,5 +1,6 @@
 import { CollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
+import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
@@ -247,71 +248,73 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
             </ScrollView>
           </View>
           <View style={{ marginHorizontal: -20, flex: 1 }}>
-            <FlashList
-              ref={listRef}
-              keyboardShouldPersistTaps="handled"
-              data={filtered}
-              style={{ backgroundColor: "red" }}
-              contentContainerStyle={{
-                padding: 25,
-                paddingTop: 15,
-                paddingHorizontal: 15,
-              }}
-              estimatedItemSize={150}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <Entity
-                  showDate
-                  showLabel
-                  isReadOnly={collection.isReadOnly}
-                  item={item}
-                  onTaskUpdate={(newTask) => {
-                    if (!newTask) return;
-                    mutate(
-                      (oldData) => {
-                        const labelIndex = oldData.labels.findIndex(
-                          (l) => l?.id === newTask.label?.id
-                        );
-                        return labelIndex === -1
-                          ? {
-                              ...oldData,
-                              entities: oldData.entities.map((e) =>
-                                e.id === newTask.id ? newTask : e
-                              ),
-                            }
-                          : {
-                              ...oldData,
-                              labels: oldData.labels.map((l) =>
-                                l.id === newTask.label.id
-                                  ? {
-                                      ...l,
-                                      entities: l.entities.map((e) =>
-                                        e.id === newTask.id ? newTask : e
-                                      ),
-                                    }
-                                  : l
-                              ),
-                            };
-                      },
-                      {
-                        revalidate: false,
-                      }
-                    );
-                  }}
-                />
-              )}
-              stickyHeaderHiddenOnScroll
-              ListEmptyComponent={
-                <View style={styles.empty}>
-                  <Emoji emoji="1f494" size={64} />
-                  <Text style={styles.emptyHeading}>Oh no!</Text>
-                  <Text style={styles.emptySubheading}>
-                    Nothing in this collection matched your search.
-                  </Text>
-                </View>
-              }
-              centerContent={filtered.length === 0}
-            />
+            <FadeOnRender>
+              <FlashList
+                ref={listRef}
+                keyboardShouldPersistTaps="handled"
+                data={filtered}
+                style={{ backgroundColor: "red" }}
+                contentContainerStyle={{
+                  padding: 25,
+                  paddingTop: 15,
+                  paddingHorizontal: 15,
+                }}
+                estimatedItemSize={150}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <Entity
+                    showDate
+                    showLabel
+                    isReadOnly={collection.isReadOnly}
+                    item={item}
+                    onTaskUpdate={(newTask) => {
+                      if (!newTask) return;
+                      mutate(
+                        (oldData) => {
+                          const labelIndex = oldData.labels.findIndex(
+                            (l) => l?.id === newTask.label?.id
+                          );
+                          return labelIndex === -1
+                            ? {
+                                ...oldData,
+                                entities: oldData.entities.map((e) =>
+                                  e.id === newTask.id ? newTask : e
+                                ),
+                              }
+                            : {
+                                ...oldData,
+                                labels: oldData.labels.map((l) =>
+                                  l.id === newTask.label.id
+                                    ? {
+                                        ...l,
+                                        entities: l.entities.map((e) =>
+                                          e.id === newTask.id ? newTask : e
+                                        ),
+                                      }
+                                    : l
+                                ),
+                              };
+                        },
+                        {
+                          revalidate: false,
+                        }
+                      );
+                    }}
+                  />
+                )}
+                stickyHeaderHiddenOnScroll
+                ListEmptyComponent={
+                  <View style={styles.empty}>
+                    <Emoji emoji="1f494" size={64} />
+                    <Text style={styles.emptyHeading}>Oh no!</Text>
+                    <Text style={styles.emptySubheading}>
+                      Nothing in this collection matched your search.
+                    </Text>
+                  </View>
+                }
+                centerContent={filtered.length === 0}
+              />
+            </FadeOnRender>
           </View>
         </View>
       </View>
