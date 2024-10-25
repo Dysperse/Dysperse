@@ -3,8 +3,6 @@ import { useUser } from "@/context/useUser";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
-import BottomSheet from "@/ui/BottomSheet";
-import { Button, ButtonText } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -13,16 +11,15 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
-import { Image } from "expo-image";
-import React, { cloneElement, memo, useCallback, useMemo, useRef } from "react";
+import React, { memo, useMemo } from "react";
 import { Linking, Platform, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { ImageViewer } from "../ImageViewer";
 import TaskCheckbox from "./Checkbox";
 import { TaskDrawer } from "./drawer";
 import {
@@ -30,58 +27,6 @@ import {
   isValidHttpUrl,
   normalizeRecurrenceRuleObject,
 } from "./drawer/details";
-
-const ImageViewer = ({ children, image }) => {
-  const ref = useRef<BottomSheetModal>();
-  const handleOpen = useCallback(() => ref.current.present(), []);
-  const handleClose = useCallback(() => ref.current.dismiss(), []);
-
-  const trigger = cloneElement(
-    children,
-    image
-      ? {
-          onPress: handleOpen,
-        }
-      : undefined
-  );
-
-  return (
-    <>
-      {trigger}
-      {image && (
-        <BottomSheet snapPoints={["60%"]} sheetRef={ref} onClose={handleClose}>
-          <View
-            style={{
-              width: "100%",
-              aspectRatio: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              flex: 1,
-            }}
-          >
-            <Image
-              contentFit="contain"
-              contentPosition="center"
-              source={{ uri: image }}
-              style={{ flex: 1, width: "100%", borderRadius: 20 }}
-            />
-          </View>
-          <View style={{ padding: 10 }}>
-            <Button variant="filled" style={{ height: 60 }}>
-              <ButtonText
-                style={{ fontSize: 20 }}
-                onPress={() => Linking.openURL(image)}
-              >
-                Open
-              </ButtonText>
-              <Icon>open_in_new</Icon>
-            </Button>
-          </View>
-        </BottomSheet>
-      )}
-    </>
-  );
-};
 
 export const videoChatPlatforms = [
   "zoom.us",
