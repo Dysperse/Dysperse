@@ -1,5 +1,6 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
+import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import CreateTask from "@/components/task/create";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
@@ -242,51 +243,53 @@ export default function Stream() {
           ))}
         </ScrollView>
       </View>
-      <FlashList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-        }
-        ListEmptyComponent={() =>
-          query === "" ? (
-            <ColumnEmptyComponent />
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 20,
-                padding: 20,
-              }}
-            >
-              <Emoji emoji="1f62d" size={40} />
-              <Text style={{ fontSize: 20 }} weight={200}>
-                We couldn't find anything called{" "}
-                <Text weight={700}>"{query}"</Text>
-              </Text>
+      <FadeOnRender key={view} animateUp>
+        <FlashList
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+          }
+          ListEmptyComponent={() =>
+            query === "" ? (
+              <ColumnEmptyComponent />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 20,
+                  padding: 20,
+                }}
+              >
+                <Emoji emoji="1f62d" size={40} />
+                <Text style={{ fontSize: 20 }} weight={200}>
+                  We couldn't find anything called{" "}
+                  <Text weight={700}>"{query}"</Text>
+                </Text>
+              </View>
+            )
+          }
+          data={filteredTasks}
+          estimatedItemSize={113}
+          contentContainerStyle={{
+            padding: 15,
+            paddingTop: 40,
+            paddingBottom: insets.bottom + 15,
+          }}
+          renderItem={({ item }) => (
+            <View style={{ maxWidth: 400, width: "100%" }}>
+              <Entity
+                isReadOnly={isReadOnly}
+                showRelativeTime={view !== "unscheduled"}
+                showLabel
+                item={item}
+                onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
+              />
             </View>
-          )
-        }
-        data={filteredTasks}
-        estimatedItemSize={113}
-        contentContainerStyle={{
-          padding: 15,
-          paddingTop: 40,
-          paddingBottom: insets.bottom + 15,
-        }}
-        renderItem={({ item }) => (
-          <View style={{ maxWidth: 400, width: "100%" }}>
-            <Entity
-              isReadOnly={isReadOnly}
-              showRelativeTime={view !== "unscheduled"}
-              showLabel
-              item={item}
-              onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
-            />
-          </View>
-        )}
-        keyExtractor={(i, d) => `${i.id}-${d}`}
-      />
+          )}
+          keyExtractor={(i, d) => `${i.id}-${d}`}
+        />
+      </FadeOnRender>
     </View>
   );
 }

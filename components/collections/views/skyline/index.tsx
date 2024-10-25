@@ -75,21 +75,20 @@ function Header({
           <View>
             <Text
               style={{
-                fontSize: large ? 35 : 25,
                 color: theme[11],
-                textAlign: breakpoints.md ? "left" : "center",
+                fontSize: large ? 27 : 20,
+                textAlign: "center",
               }}
-              weight={large ? 900 : 700}
+              weight={900}
             >
               {title}
             </Text>
             <Text
               style={{
-                fontSize: 20,
                 marginBottom: 10,
                 color: theme[11],
                 opacity: 0.6,
-                textAlign: breakpoints.md ? "left" : "center",
+                textAlign: "center",
               }}
             >
               {dayjs(range[0])
@@ -201,7 +200,7 @@ function Content({ data, mutate }) {
   const columnStyles = breakpoints.md
     ? ({
         backgroundColor: theme[2],
-        width: 300,
+        width: 320,
         overflow: "hidden",
         borderWidth: 1,
         borderColor: theme[5],
@@ -258,8 +257,7 @@ function Content({ data, mutate }) {
       horizontal
       style={{ flex: 1 }}
     >
-      {/* {JSON.stringify(data, null, 2)} */}
-      <View style={[columnStyles, { width: 350 }]}>
+      <View style={[columnStyles, { width: 370 }]}>
         <Header
           mutate={mutate}
           title="Today"
