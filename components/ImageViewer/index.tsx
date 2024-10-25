@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as MediaLibrary from "expo-media-library";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
 import { Linking, Platform, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 async function saveImageToCameraRoll(imageUrl) {
@@ -55,6 +56,7 @@ async function saveImageToCameraRoll(imageUrl) {
 
 export const ImageViewer = ({ children, image }) => {
   const ref = useRef<BottomSheetModal>();
+  const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const [state, setState] = useState<"loading" | "error" | "success">(
     "loading"
@@ -133,13 +135,14 @@ export const ImageViewer = ({ children, image }) => {
                 top: 0,
                 right: 0,
                 width: "100%",
-                height: 200,
+                height: 200 + insets.top,
                 zIndex: -1,
               }}
             />
             <View
               style={{
                 padding: 20,
+                paddingTop: insets.top,
                 gap: 5,
                 flexDirection: "row",
                 position: "absolute",
