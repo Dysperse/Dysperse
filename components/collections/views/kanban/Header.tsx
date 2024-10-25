@@ -79,7 +79,7 @@ export const KanbanHeader = memo(function KanbanHeader({
             },
       ]}
     >
-      <Emoji emoji={label.emoji || "1f4ad"} size={grid ? 25 : 35} />
+      {label.emoji && <Emoji emoji={label.emoji} size={grid ? 25 : 35} />}
       <View
         style={{
           flex: 1,
@@ -87,7 +87,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         }}
       >
         <Text style={{ fontSize: 20 }} weight={800} numberOfLines={1}>
-          {label.name || "Other"}
+          {label.name || "Unlabeled"}
         </Text>
         <Text weight={300} numberOfLines={1}>
           {grid
@@ -164,3 +164,4 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
+
