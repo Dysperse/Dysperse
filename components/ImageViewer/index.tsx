@@ -81,8 +81,8 @@ export const ImageViewer = ({ children, image }) => {
             ...(Platform.OS === "web" && { backdropFilter: "blur(10px)" }),
           }}
           animationConfigs={{
-            damping: 100,
-            stiffness: 100,
+            stiffness: 400,
+            damping: 40,
             overshootClamping: true,
           }}
         >
@@ -111,7 +111,7 @@ export const ImageViewer = ({ children, image }) => {
               />
             </View>
             <LinearGradient
-              colors={[theme[1], theme[1], theme[1], "transparent"]}
+              colors={[theme[1], "transparent"]}
               style={{
                 padding: 20,
                 gap: 5,
@@ -120,7 +120,7 @@ export const ImageViewer = ({ children, image }) => {
                 top: 0,
                 right: 0,
                 width: "100%",
-                height: 90,
+                height: 200,
                 zIndex: -1,
               }}
             />
