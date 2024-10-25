@@ -1652,7 +1652,7 @@ function BottomSheetContent({
         {
           body: JSON.stringify({
             ...data,
-            name: data.name.replaceAll(/@\[(.*?)\]\((.*?)\)/g, "$1"),
+            name: data.name.replaceAll(/[@\/]\[(.*?)\]\((.*?)\)/g, "$1"),
             start: data?.date?.toISOString(),
             agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,

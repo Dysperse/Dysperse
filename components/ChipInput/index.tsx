@@ -1,4 +1,4 @@
-import { addHslAlpha, useDarkMode } from "@/ui/color";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
@@ -111,7 +111,6 @@ export default function ChipInput({
   inputProps?: any;
 }) {
   const theme = useColorTheme();
-  const isDark = useDarkMode();
   const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
 
   const paddingStyles = {
@@ -152,7 +151,6 @@ export default function ChipInput({
           highlighter: { ...paddingStyles, border: "1px solid transparent" },
           input: {
             ...paddingStyles,
-            // textAlign: "center",
             border: "none",
             boxShadow: "none",
             height,
