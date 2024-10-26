@@ -1,32 +1,16 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
-import { defaultRecurrenceOptions } from "@/ui/DatePicker";
+import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
 import Modal from "@/ui/Modal";
+import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback, useState } from "react";
 import { RRule } from "rrule";
-
-function Header({ title, handleClose }: { title: string; handleClose: any }) {
-  const theme = useColorTheme();
-  return (
-    <Button
-      variant="filled"
-      style={({ pressed, hovered }) => ({
-        backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-      })}
-      containerStyle={{ width: 120 }}
-      onPress={handleClose}
-    >
-      <ButtonText>Done</ButtonText>
-      <Icon>check</Icon>
-    </Button>
-  );
-}
 
 function TaskDatePicker({
   defaultView,
@@ -45,8 +29,14 @@ function TaskDatePicker({
   dueDateOnly?: boolean;
   title?: string;
   sheetRef?: React.MutableRefObject<BottomSheetModal>;
-  defaultRecurrenceOptions?: defaultRecurrenceOptions;
+  defaultRecurrenceOptions?: any;
 }) {
+  const dateRef = React.useRef(null);
+  const recurrenceRef = React.useRef(null);
+  const date = watch("date");
+  const end = watch("end");
+  const recurrenceRule = watch("recurrenceRule");
+
   const breakpoints = useResponsiveBreakpoints();
   const _ref = React.useRef<BottomSheetModal>(null);
   const sheetRef = _sheetRef || _ref;
@@ -112,7 +102,18 @@ function TaskDatePicker({
         height={breakpoints.md ? 300 : "100%"}
         innerStyles={{ gap: 10, padding: 20 }}
       >
+        <DatePicker
+          ref={dateRef}
+          value={{ date, dateOnly, end }}
+          setValue={setValue}
+        />
+        <RecurrencePicker
+          ref={recurrenceRef}
+          value={recurrenceRule}
+          setValue={(t: any) => setValue("recurrenceRule", t)}
+        />
         <Button
+          onPress={() => dateRef.current?.present()}
           bold
           large
           height={80}
@@ -121,6 +122,7 @@ function TaskDatePicker({
           text="Set deadline"
         />
         <Button
+          onPress={() => recurrenceRef.current?.present()}
           bold
           large
           height={80}
