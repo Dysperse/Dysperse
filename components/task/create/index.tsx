@@ -823,9 +823,11 @@ const CancelButton = memo(() => {
 });
 
 function DateButton({ watch, colors, defaultValues, setValue }: any) {
-  const date = watch("date");
   const breakpoints = useResponsiveBreakpoints();
   const recurrenceRule = watch("recurrenceRule");
+
+  const date = watch("date");
+  const end = watch("end");
   const dateOnly = watch("dateOnly");
 
   const dateRef = useRef(null);
@@ -839,7 +841,7 @@ function DateButton({ watch, colors, defaultValues, setValue }: any) {
     >
       <DatePicker
         ref={dateRef}
-        value={{ date, dateOnly }}
+        value={{ date, dateOnly, end }}
         setValue={setValue}
       />
       <RecurrencePicker
@@ -850,7 +852,6 @@ function DateButton({ watch, colors, defaultValues, setValue }: any) {
       <MenuPopover
         menuProps={{ rendererProps: { placement: "top" } }}
         options={[
-         
           {
             text: "Set recurrence",
             icon: "loop",
@@ -952,7 +953,7 @@ function BottomSheetContent({
         {
           body: JSON.stringify({
             ...data,
-            name: data.name.replaceAll(/[@\/]\[(.*?)\]\((.*?)\)/g, "$1"),
+            name: data.name.replaceAll(/[@/]\[(.*?)\]\((.*?)\)/g, "$1"),
             start: data?.date?.toISOString(),
             agendaOrder: defaultValues.agendaOrder,
             pinned: data.pinned,
@@ -1154,3 +1155,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+

@@ -43,6 +43,12 @@ export const dysperseCalendarTheme = (theme) =>
       },
     },
     itemDay: {
+      disabled: () => ({
+        content: {
+          fontFamily: "body_300",
+          color: addHslAlpha(theme[11], 0.2),
+        },
+      }),
       idle: ({ isPressed, isWeekend }) => ({
         container: {
           backgroundColor: isPressed ? theme[11] : "transparent",
