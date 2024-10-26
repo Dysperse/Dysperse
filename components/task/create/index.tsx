@@ -116,6 +116,7 @@ function Footer({
   dateRef: React.MutableRefObject<BottomSheetModal>;
 }) {
   const theme = useColorTheme();
+  const recurrenceRule = watch("recurrenceRule");
   const collectionId = watch("collectionId");
   const date = watch("date");
   const dateOnly = watch("dateOnly");
@@ -125,7 +126,7 @@ function Footer({
     <View
       style={{
         paddingBottom: 10,
-        display: !date && !label ? "none" : "flex",
+        display: !date && !label && !recurrenceRule ? "none" : "flex",
       }}
     >
       <ScrollView
@@ -138,14 +139,17 @@ function Footer({
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {date && (
+        {(date || recurrenceRule) && (
           <Chip
             onPress={() => dateRef.current.present()}
-            label={dayjs(date).format(
-              dateOnly ? "MMMM Do" : "MMM D [@] h:mm A"
-            )}
+            label={
+              recurrenceRule
+                ? "Repeats"
+                : dayjs(date).format(dateOnly ? "MMMM Do" : "MMM D [@] h:mm A")
+            }
             icon={<Icon>calendar_today</Icon>}
             onDismiss={() => {
+              setValue("recurrenceRule", null);
               setValue("date", null);
               setValue("end", null);
               setValue("dateOnly", true);
