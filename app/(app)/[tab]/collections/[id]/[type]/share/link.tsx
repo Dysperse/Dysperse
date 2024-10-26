@@ -24,7 +24,7 @@ import { setStringAsync } from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { ScrollView, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -258,7 +258,10 @@ function Share({ handleClose }) {
           paddingHorizontal: 20,
           paddingTop: 60,
           flex: 1,
-          backgroundColor: addHslAlpha(theme[1], 0.8),
+          backgroundColor: addHslAlpha(
+            theme[1],
+            Platform.OS === "android" ? 1 : 0.8
+          ),
         }}
       >
         <View
@@ -315,7 +318,7 @@ export default function Page() {
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      {data && <Share handleClose={handleClose} data={data} />}
+      {data && <Share handleClose={handleClose} />}
     </CollectionContext.Provider>
   );
 }
