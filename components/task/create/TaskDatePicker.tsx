@@ -9,20 +9,17 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { cloneElement, useCallback, useState } from "react";
+import React, { cloneElement, useCallback } from "react";
 import { RRule } from "rrule";
 
 function TaskDatePicker({
-  defaultView,
   setValue,
   watch,
   children,
   dueDateOnly,
-  title,
   sheetRef: _sheetRef,
   defaultRecurrenceOptions,
 }: {
-  defaultView?: "date" | "recurrence";
   setValue: any;
   watch: any;
   children?: any;
@@ -41,22 +38,12 @@ function TaskDatePicker({
   const _ref = React.useRef<BottomSheetModal>(null);
   const sheetRef = _sheetRef || _ref;
 
-  const [activeSections, setActiveSections] = useState([0]);
-
-  const handleClose = useCallback(
-    () => sheetRef.current?.forceClose({ duration: 0.0001 }),
-    [sheetRef]
-  );
   const handleOpen = useCallback(() => sheetRef.current.present(), [sheetRef]);
 
   const dueDate = watch("date");
   const recurrence = watch("recurrenceRule");
   const dateOnly = watch("dateOnly");
   const theme = useColorTheme();
-
-  const [view, setView] = useState<"date" | "recurrence">(
-    dueDateOnly ? "date" : defaultView || "date"
-  );
 
   const trigger = cloneElement(
     children || (
