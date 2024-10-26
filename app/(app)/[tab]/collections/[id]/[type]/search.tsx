@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 
@@ -139,7 +139,10 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           paddingHorizontal: 20,
           paddingTop: 60,
           flex: 1,
-          backgroundColor: addHslAlpha(theme[1], 0.8),
+          backgroundColor: addHslAlpha(
+            theme[1],
+            Platform.OS === "android" ? 1 : 0.8
+          ),
         }}
       >
         <View
@@ -365,3 +368,4 @@ export default function Page() {
     </>
   );
 }
+
