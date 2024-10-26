@@ -187,7 +187,7 @@ function CalendarPreview({ value, setValue, view }) {
   );
 }
 
-function AllDaySwitch({ value, setValue }) {
+function AllDaySwitch({ view, value, setValue }) {
   const ref = useRef(null);
 
   return (
@@ -210,9 +210,9 @@ function AllDaySwitch({ value, setValue }) {
           <Pressable onPress={(e) => e.stopPropagation()} style={{ flex: 1 }}>
             <TimeInput
               ref={ref}
-              value={value?.date}
+              value={view === "start" ? value?.date : value?.end}
               setValue={setValue}
-              valueKey="date"
+              valueKey={view === "start" ? "date" : "end"}
             />
           </Pressable>
         )}
@@ -288,7 +288,7 @@ export const DatePicker = forwardRef(
               </View>
             </Collapsible>
             <CalendarPreview value={value} setValue={setValue} view={view} />
-            <AllDaySwitch value={value} setValue={setValue} />
+            <AllDaySwitch value={value} setValue={setValue} view={view} />
           </View>
         </View>
       </Modal>
