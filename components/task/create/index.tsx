@@ -109,6 +109,7 @@ function Footer({
   watch,
   control,
   dateRef,
+  recurrenceRef,
 }: {
   nameRef: any;
   labelMenuRef: React.MutableRefObject<BottomSheetModal>;
@@ -116,6 +117,7 @@ function Footer({
   watch: any;
   control: any;
   dateRef: React.MutableRefObject<BottomSheetModal>;
+  recurrenceRef: React.MutableRefObject<BottomSheetModal>;
 }) {
   const theme = useColorTheme();
   const recurrenceRule = watch("recurrenceRule");
@@ -152,6 +154,10 @@ function Footer({
                 setValue("recurrenceRule", null);
               })
             }
+            onPress={() => {
+              if (date) dateRef.current.present();
+              else if (recurrenceRule) recurrenceRef.current.present();
+            }}
             style={({ pressed, hovered }) => ({
               borderWidth: 1,
               borderColor: addHslAlpha(
@@ -853,15 +859,20 @@ const CancelButton = memo(() => {
   );
 });
 
-function DateButton({ watch, colors, dateRef, defaultValues, setValue }: any) {
+function DateButton({
+  watch,
+  colors,
+  dateRef,
+  recurrenceRef,
+  defaultValues,
+  setValue,
+}: any) {
   const breakpoints = useResponsiveBreakpoints();
   const recurrenceRule = watch("recurrenceRule");
 
   const date = watch("date");
   const end = watch("end");
   const dateOnly = watch("dateOnly");
-
-  const recurrenceRef = useRef(null);
 
   return (
     <View
@@ -949,6 +960,7 @@ function BottomSheetContent({
   const isDark = useDarkMode();
   const nameRef = useRef(null);
   const dateRef = useRef(null);
+  const recurrenceRef = useRef(null);
   const submitRef = useRef(null);
   const menuRef = useRef<BottomSheetModal>(null);
   const labelMenuRef = useRef<BottomSheetModal>(null);
@@ -1055,6 +1067,7 @@ function BottomSheetContent({
         >
           <Footer
             dateRef={dateRef}
+            recurrenceRef={recurrenceRef}
             setValue={setValue}
             watch={watch}
             nameRef={nameRef}
@@ -1099,6 +1112,7 @@ function BottomSheetContent({
             setValue={setValue}
             defaultValues={defaultValues}
             dateRef={dateRef}
+            recurrenceRef={recurrenceRef}
             colors={colors}
           />
           <PinTask watch={watch} control={control} />
