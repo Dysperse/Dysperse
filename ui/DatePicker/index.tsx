@@ -233,11 +233,22 @@ export const DatePicker = forwardRef(
       if (view === "end" && !value?.end) {
         setValue("end", dayjs(value?.date).add(1, "hour"));
       }
+      if (value?.end && !dayjs(value?.end).isValid()) {
+        setValue("end", null);
+      }
     }, [view, setValue, value]);
+
+    const secondary = value?.end
+      ? `to ${dayjs(value?.end).format(
+          value.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
+        )}`
+      : !value?.dateOnly && value?.date
+      ? `at ${dayjs(value?.date).format("h:mm A")}`
+      : "";
 
     return (
       <Modal sheetRef={ref} animation="SCALE" maxWidth={400}>
-        <View style={{ padding: 20 }}>
+        <View style={{ padding: 20, paddingTop: 15 }}>
           <View
             style={{
               flexDirection: "row",
@@ -250,14 +261,14 @@ export const DatePicker = forwardRef(
                 opacity: !value?.date && !value?.end && value?.dateOnly ? 0 : 1,
               }}
               onPress={() => {
-                setValue("date", null);
                 setValue("end", null);
+                setValue("date", null);
                 setValue("dateOnly", true);
               }}
             >
               <ButtonText>Clear</ButtonText>
             </Button>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, height: 50, justifyContent: "center" }}>
               <Text weight={800} style={{ fontSize: 20, textAlign: "center" }}>
                 {value?.date
                   ? dayjs(value?.date).format(
@@ -267,15 +278,11 @@ export const DatePicker = forwardRef(
                     )
                   : "Select a date"}
               </Text>
-              <Text style={{ opacity: 0.5, textAlign: "center" }}>
-                {value?.end
-                  ? `to ${dayjs(value?.end).format(
-                      value.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
-                    )}`
-                  : !value?.dateOnly && value?.date
-                  ? `at ${dayjs(value?.date).format("h:mm A")}`
-                  : ""}
-              </Text>
+              <Collapsible collapsed={!secondary}>
+                <Text style={{ opacity: 0.5, textAlign: "center" }}>
+                  {secondary}
+                </Text>
+              </Collapsible>
             </View>
             <IconButton
               icon="check"
