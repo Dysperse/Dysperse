@@ -1,16 +1,8 @@
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
-import Chip from "@/ui/Chip";
 import { DatePicker } from "@/ui/DatePicker";
-import Icon from "@/ui/Icon";
-import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
-import { addHslAlpha } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, { cloneElement, useCallback } from "react";
-import { RRule } from "rrule";
+import { Pressable } from "react-native";
 
 function TaskDatePicker({
   setValue,
@@ -34,92 +26,35 @@ function TaskDatePicker({
   const end = watch("end");
   const recurrenceRule = watch("recurrenceRule");
 
-  const breakpoints = useResponsiveBreakpoints();
-  const _ref = React.useRef<BottomSheetModal>(null);
-  const sheetRef = _sheetRef || _ref;
-
-  const handleOpen = useCallback(() => sheetRef.current.present(), [sheetRef]);
-
   const dueDate = watch("date");
   const recurrence = watch("recurrenceRule");
   const dateOnly = watch("dateOnly");
-  const theme = useColorTheme();
 
-  const trigger = cloneElement(
-    children || (
-      <Chip
-        outlined
-        icon={<Icon>{recurrence ? "loop" : "calendar_today"}</Icon>}
-        onDismiss={
-          (recurrence || dueDate) &&
-          (() => {
-            setValue("date", null);
-            setValue("recurrenceRule", null);
-          })
-        }
-        style={({ pressed, hovered }) => ({
-          borderWidth: 1,
-          borderColor: addHslAlpha(
-            theme[9],
-            pressed ? 0.3 : hovered ? 0.2 : 0.1
-          ),
-        })}
-        label={
-          recurrence
-            ? capitalizeFirstLetter(new RRule(recurrence).toText())
-            : dueDate
-            ? dueDate.format(dateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
-            : undefined
-        }
-      />
-    ),
-    {
-      onPress: handleOpen,
+  const handleOpen = useCallback(() => {
+    if (dueDate || dueDateOnly) {
+      dateRef.current?.present();
+    } else {
+      recurrenceRef.current?.present();
     }
-  );
+  }, [dueDate, dueDateOnly]);
+
+  const trigger = cloneElement(children || <Pressable />, {
+    onPress: handleOpen,
+  });
 
   return (
     <>
       {trigger}
-      <Modal
-        snapPoints={["100%"]}
-        sheetRef={sheetRef}
-        animation="SCALE"
-        maxWidth={320}
-        height={breakpoints.md ? 210 : "100%"}
-        innerStyles={{ gap: 10, padding: 20 }}
-      >
-        <DatePicker
-          ref={dateRef}
-          value={{ date, dateOnly, end }}
-          setValue={setValue}
-        />
-        <RecurrencePicker
-          ref={recurrenceRef}
-          value={recurrenceRule}
-          setValue={(t: any) => setValue("recurrenceRule", t)}
-        />
-        <Button
-          onPress={() => dateRef.current?.present()}
-          bold
-          large
-          height={80}
-          variant="filled"
-          icon="today"
-          text="Set deadline"
-        />
-        {!dueDateOnly && (
-          <Button
-            onPress={() => recurrenceRef.current?.present()}
-            bold
-            large
-            height={80}
-            variant="filled"
-            icon="loop"
-            text="Set recurrence"
-          />
-        )}
-      </Modal>
+      <DatePicker
+        ref={dateRef}
+        value={{ date, dateOnly, end }}
+        setValue={setValue}
+      />
+      <RecurrencePicker
+        ref={recurrenceRef}
+        value={recurrenceRule}
+        setValue={(t: any) => setValue("recurrenceRule", t)}
+      />
     </>
   );
 }

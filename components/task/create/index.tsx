@@ -17,6 +17,7 @@ import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
@@ -43,6 +44,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { RRule } from "rrule";
 import useSWR from "swr";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 
@@ -141,21 +143,29 @@ function Footer({
       >
         {(date || recurrenceRule) && (
           <Chip
-            onPress={() => dateRef.current.present()}
+            outlined
+            icon={<Icon>{recurrenceRule ? "loop" : "calendar_today"}</Icon>}
+            onDismiss={
+              (recurrenceRule || date) &&
+              (() => {
+                setValue("date", null);
+                setValue("recurrenceRule", null);
+              })
+            }
+            style={({ pressed, hovered }) => ({
+              borderWidth: 1,
+              borderColor: addHslAlpha(
+                theme[9],
+                pressed ? 0.3 : hovered ? 0.2 : 0.1
+              ),
+            })}
             label={
               recurrenceRule
-                ? "Repeats"
-                : dayjs(date).format(dateOnly ? "MMMM Do" : "MMM D [@] h:mm A")
+                ? capitalizeFirstLetter(new RRule(recurrenceRule).toText())
+                : date
+                ? date.format(dateOnly ? "MMM Do" : "MMM Do [@] h:mm a")
+                : undefined
             }
-            icon={<Icon>calendar_today</Icon>}
-            onDismiss={() => {
-              setValue("recurrenceRule", null);
-              setValue("date", null);
-              setValue("end", null);
-              setValue("dateOnly", true);
-            }}
-            outlined
-            style={{ borderColor: theme[5], borderWidth: 1 }}
           />
         )}
         {label && (
