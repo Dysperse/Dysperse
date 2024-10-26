@@ -135,59 +135,10 @@ function TaskDatePicker({
           icon="close"
           text="Cancel"
         />
-        {/* <BottomSheetScrollView>
-          <Accordion
-            containerStyle={{ padding: 10, gap: 10 }}
-            activeSections={activeSections}
-            sectionContainerStyle={{
-              backgroundColor: addHslAlpha(theme[5], 0.3),
-              borderRadius: 20,
-              overflow: "hidden",
-            }}
-            align="bottom"
-            underlayColor="transparent"
-            touchableComponent={Pressable as any}
-            easing={Easing.bezier(0.17, 0.67, 0.32, 1)}
-            sections={[
-              {
-                trigger: () => (
-                  <ListItemButton disabled>
-                    <Icon>today</Icon>
-                    <ListItemText primary="Due date" />
-                  </ListItemButton>
-                ),
-                content: (
-                  <DueDatePicker
-                    watch={watch}
-                    setValue={setValue}
-                    value={dueDate}
-                  />
-                ),
-              },
-              {
-                trigger: () => (
-                  <ListItemButton disabled>
-                    <Icon>loop</Icon>
-                    <ListItemText primary="Repeats" />
-                  </ListItemButton>
-                ),
-                content: (
-                  <RecurrencePicker
-                    defaultRecurrenceOptions={defaultRecurrenceOptions}
-                    setValue={setValue}
-                    value={recurrence}
-                  />
-                ),
-              },
-            ].filter((e) => e)}
-            renderHeader={(section) => section.trigger()}
-            renderContent={(section) => section.content}
-            onChange={setActiveSections}
-          />
-        </BottomSheetScrollView> */}
       </Modal>
     </>
   );
 }
 
 export default TaskDatePicker;
+
