@@ -99,7 +99,7 @@ function TaskDatePicker({
         sheetRef={sheetRef}
         animation="SCALE"
         maxWidth={320}
-        height={breakpoints.md ? 300 : "100%"}
+        height={breakpoints.md ? 210 : "100%"}
         innerStyles={{ gap: 10, padding: 20 }}
       >
         <DatePicker
@@ -121,22 +121,17 @@ function TaskDatePicker({
           icon="today"
           text="Set deadline"
         />
-        <Button
-          onPress={() => recurrenceRef.current?.present()}
-          bold
-          large
-          height={80}
-          variant="filled"
-          icon="loop"
-          text="Set recurrence"
-        />
-        <Button
-          large
-          height={80}
-          variant="outlined"
-          icon="close"
-          text="Cancel"
-        />
+        {!dueDateOnly && (
+          <Button
+            onPress={() => recurrenceRef.current?.present()}
+            bold
+            large
+            height={80}
+            variant="filled"
+            icon="loop"
+            text="Set recurrence"
+          />
+        )}
       </Modal>
     </>
   );
