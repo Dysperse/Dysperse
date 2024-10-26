@@ -244,8 +244,19 @@ export const DatePicker = forwardRef(
               alignItems: "center",
             }}
           >
-            <IconButton icon="close" size={40} variant="outlined" />
-
+            <Button
+              dense
+              style={{
+                opacity: !value?.date && !value?.end && value?.dateOnly ? 0 : 1,
+              }}
+              onPress={() => {
+                setValue("date", null);
+                setValue("end", null);
+                setValue("dateOnly", true);
+              }}
+            >
+              <ButtonText>Clear</ButtonText>
+            </Button>
             <View style={{ flex: 1 }}>
               <Text weight={800} style={{ fontSize: 20, textAlign: "center" }}>
                 {value?.date
@@ -261,16 +272,22 @@ export const DatePicker = forwardRef(
                   ? `to ${dayjs(value?.end).format(
                       value.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
                     )}`
-                  : !value?.dateOnly
+                  : !value?.dateOnly && value?.date
                   ? `at ${dayjs(value?.date).format("h:mm A")}`
                   : ""}
               </Text>
             </View>
-            <IconButton icon="check" size={40} variant="filled" />
+            <IconButton
+              icon="check"
+              style={{ marginLeft: 20 }}
+              size={40}
+              variant="filled"
+              onPress={() => ref.current.close()}
+            />
           </View>
-          <View style={{ paddingTop: 20, gap: 10 }}>
+          <View style={{ paddingTop: 10, gap: 10 }}>
             <Collapsible collapsed={Boolean(!value?.date)}>
-              <View style={{ flexDirection: "row", gap: 10 }}>
+              <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
                 <Button
                   bold={view === "start"}
                   text="Start"

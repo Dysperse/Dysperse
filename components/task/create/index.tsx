@@ -106,17 +106,19 @@ function Footer({
   setValue,
   watch,
   control,
-  menuRef,
+  dateRef,
 }: {
   nameRef: any;
   labelMenuRef: React.MutableRefObject<BottomSheetModal>;
   setValue: any;
   watch: any;
   control: any;
-  menuRef: React.MutableRefObject<BottomSheetModal>;
+  dateRef: React.MutableRefObject<BottomSheetModal>;
 }) {
+  const theme = useColorTheme();
   const collectionId = watch("collectionId");
   const date = watch("date");
+  const dateOnly = watch("dateOnly");
   const label = watch("label");
 
   return (
@@ -136,7 +138,22 @@ function Footer({
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {date && <DatePicker setValue={setValue} watch={watch} />}
+        {date && (
+          <Chip
+            onPress={() => dateRef.current.present()}
+            label={dayjs(date).format(
+              dateOnly ? "MMMM Do" : "MMM D [@] h:mm A"
+            )}
+            icon={<Icon>calendar_today</Icon>}
+            onDismiss={() => {
+              setValue("date", null);
+              setValue("end", null);
+              setValue("dateOnly", true);
+            }}
+            outlined
+            style={{ borderColor: theme[5], borderWidth: 1 }}
+          />
+        )}
         {label && (
           <CreateTaskLabelInput
             watch={watch}
@@ -822,7 +839,7 @@ const CancelButton = memo(() => {
   );
 });
 
-function DateButton({ watch, colors, defaultValues, setValue }: any) {
+function DateButton({ watch, colors, dateRef, defaultValues, setValue }: any) {
   const breakpoints = useResponsiveBreakpoints();
   const recurrenceRule = watch("recurrenceRule");
 
@@ -830,7 +847,6 @@ function DateButton({ watch, colors, defaultValues, setValue }: any) {
   const end = watch("end");
   const dateOnly = watch("dateOnly");
 
-  const dateRef = useRef(null);
   const recurrenceRef = useRef(null);
 
   return (
@@ -918,6 +934,7 @@ function BottomSheetContent({
   const { sessionToken } = useUser();
   const isDark = useDarkMode();
   const nameRef = useRef(null);
+  const dateRef = useRef(null);
   const submitRef = useRef(null);
   const menuRef = useRef<BottomSheetModal>(null);
   const labelMenuRef = useRef<BottomSheetModal>(null);
@@ -1023,7 +1040,7 @@ function BottomSheetContent({
           }}
         >
           <Footer
-            menuRef={menuRef}
+            dateRef={dateRef}
             setValue={setValue}
             watch={watch}
             nameRef={nameRef}
@@ -1067,6 +1084,7 @@ function BottomSheetContent({
             watch={watch}
             setValue={setValue}
             defaultValues={defaultValues}
+            dateRef={dateRef}
             colors={colors}
           />
           <PinTask watch={watch} control={control} />
