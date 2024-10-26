@@ -250,7 +250,9 @@ export const DatePicker = forwardRef(
               <Text weight={800} style={{ fontSize: 20, textAlign: "center" }}>
                 {value?.date
                   ? dayjs(value?.date).format(
-                      value.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
+                      value.dateOnly || !value.end
+                        ? "MMMM Do"
+                        : "MMM Do [@] h:mm A"
                     )
                   : "Select a date"}
               </Text>
@@ -259,6 +261,8 @@ export const DatePicker = forwardRef(
                   ? `to ${dayjs(value?.end).format(
                       value.dateOnly ? "MMMM Do" : "MMM Do [@] h:mm A"
                     )}`
+                  : !value?.dateOnly
+                  ? `at ${dayjs(value?.date).format("h:mm A")}`
                   : ""}
               </Text>
             </View>
