@@ -12,8 +12,9 @@ import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import { Linking, Pressable, View } from "react-native";
+import { Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { MenuButton } from "../release";
 
@@ -103,222 +104,225 @@ export default function Page() {
 
   return (
     <Content noPaddingTop>
-      <ScrollView
-        contentContainerStyle={{
-          alignItems: "center",
-          flex: 1,
-          gap: 20,
-          paddingVertical: 100,
-          padding: 25,
-          maxWidth: 500,
-          width: "100%",
-          marginHorizontal: "auto",
-        }}
-        style={{ flex: 1 }}
-      >
-        {!breakpoints.md && <MenuButton />}
-        <View style={{ flexShrink: 0 }}>
-          <View
-            style={{ alignItems: "center", marginBottom: 15 }}
-            aria-valuetext="home-logo"
-          >
-            <Logo size={64} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          contentContainerStyle={{
+            alignItems: "center",
+            flex: Platform.OS === "web" ? 1 : undefined,
+            gap: 20,
+            paddingVertical: 100,
+            padding: 25,
+            maxWidth: 500,
+            width: "100%",
+            marginHorizontal: "auto",
+          }}
+          style={{ flex: 1 }}
+        >
+          {!breakpoints.md && <MenuButton />}
+          <View style={{ flexShrink: 0 }}>
+            <View
+              style={{ alignItems: "center", marginBottom: 15 }}
+              aria-valuetext="home-logo"
+            >
+              <Logo size={64} />
+            </View>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontFamily: "serifText800",
+                color: theme[11],
+                fontSize: breakpoints.md ? 45 : 30,
+                textAlign: "center",
+                marginBottom: 10,
+              }}
+              aria-valuetext="web-blur"
+            >
+              Well, hello there!
+            </Text>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: theme[11],
+                fontSize: 20,
+                textAlign: "center",
+                marginBottom: 25,
+                marginTop: -5,
+                opacity: 0.6,
+              }}
+              aria-valuetext="web-blur-2"
+            >
+              Here's our app in a nutshell.
+            </Text>
           </View>
-          <Text
-            numberOfLines={1}
-            style={{
-              fontFamily: "serifText800",
-              color: theme[11],
-              fontSize: breakpoints.md ? 45 : 30,
-              textAlign: "center",
-              marginBottom: 10,
-            }}
-            aria-valuetext="web-blur"
-          >
-            Well, hello there!
-          </Text>
-          <Text
-            numberOfLines={1}
-            style={{
-              color: theme[11],
-              fontSize: 20,
-              textAlign: "center",
-              marginBottom: 25,
-              marginTop: -5,
-              opacity: 0.6,
-            }}
-            aria-valuetext="web-blur-2"
-          >
-            Here's our app in a nutshell.
-          </Text>
-        </View>
 
-        <Card>
-          <Text
-            variant="eyebrow"
-            style={{ textAlign: "center", marginBottom: 10 }}
-          >
-            #1
-          </Text>
-          <Text style={{ fontSize: 25 }} weight={300}>
-            Think of Dysperse as your everyday web browser, but for
-            organization.
-          </Text>
-          <Text
-            style={{
-              marginTop: 5,
-              fontSize: 17,
-              opacity: 0.7,
-            }}
-          >
-            Create new tabs, drag 'em around, and {"\n"}close them once you're
-            done.
-          </Text>
-        </Card>
+          <Card>
+            <Text
+              variant="eyebrow"
+              style={{ textAlign: "center", marginBottom: 10 }}
+            >
+              #1
+            </Text>
+            <Text style={{ fontSize: 25 }} weight={300}>
+              Think of Dysperse as your everyday web browser, but for
+              organization.
+            </Text>
+            <Text
+              style={{
+                marginTop: 5,
+                fontSize: 17,
+                opacity: 0.7,
+              }}
+            >
+              Create new tabs, drag 'em around, and {"\n"}close them once you're
+              done.
+            </Text>
+          </Card>
 
-        <Card>
-          <Text
-            variant="eyebrow"
-            style={{ textAlign: "center", marginBottom: 10 }}
-          >
-            #2
-          </Text>
-          <Text style={{ fontSize: 25 }} weight={300}>
-            Tasks are the heart of Dysperse.
-          </Text>
-          <Text
-            style={{
-              marginTop: 5,
-              fontSize: 17,
-              opacity: 0.7,
-            }}
-          >
-            They come in all shapes and sizes. In fact, let's create one now!
-          </Text>
+          <Card>
+            <Text
+              variant="eyebrow"
+              style={{ textAlign: "center", marginBottom: 10 }}
+            >
+              #2
+            </Text>
+            <Text style={{ fontSize: 25 }} weight={300}>
+              Tasks are the heart of Dysperse.
+            </Text>
+            <Text
+              style={{
+                marginTop: 5,
+                fontSize: 17,
+                opacity: 0.7,
+              }}
+            >
+              They come in all shapes and sizes. In fact, let's create one now!
+            </Text>
 
-          <CreateTask defaultValues={{ date: dayjs() }} mutate={() => {}}>
+            <CreateTask defaultValues={{ date: dayjs() }} mutate={() => {}}>
+              <Button
+                text="Create Task"
+                icon="add"
+                variant="outlined"
+                containerStyle={{ marginTop: 10 }}
+              />
+            </CreateTask>
+          </Card>
+
+          <Card>
+            <Text
+              variant="eyebrow"
+              style={{ textAlign: "center", marginBottom: 10 }}
+            >
+              #3
+            </Text>
+            <Text style={{ fontSize: 25 }} weight={300}>
+              Where did my tasks go?
+            </Text>
+            <Text
+              style={{
+                marginTop: 5,
+                fontSize: 17,
+                opacity: 0.7,
+              }}
+            >
+              By default, tasks will appear in any of the "All tasks"
+              collection. This is a special collection that shows all tasks,
+              regardless of their label or collection.
+            </Text>
+
             <Button
-              text="Create Task"
-              icon="add"
+              onPress={handleCreateTab}
+              text="Take me there!"
+              iconPosition="end"
+              icon="north_east"
               variant="outlined"
               containerStyle={{ marginTop: 10 }}
             />
-          </CreateTask>
-        </Card>
+          </Card>
 
-        <Card>
-          <Text
-            variant="eyebrow"
-            style={{ textAlign: "center", marginBottom: 10 }}
-          >
-            #3
-          </Text>
-          <Text style={{ fontSize: 25 }} weight={300}>
-            Where did my tasks go?
-          </Text>
-          <Text
-            style={{
-              marginTop: 5,
-              fontSize: 17,
-              opacity: 0.7,
-            }}
-          >
-            By default, tasks will appear in any of the "All tasks" collection.
-            This is a special collection that shows all tasks, regardless of
-            their label or collection.
-          </Text>
+          <Card>
+            <Text
+              variant="eyebrow"
+              style={{ textAlign: "center", marginBottom: 10 }}
+            >
+              #4
+            </Text>
+            <Text style={{ fontSize: 25 }} weight={300}>
+              What is a label?
+            </Text>
+            <Text
+              style={{
+                marginTop: 5,
+                fontSize: 17,
+                opacity: 0.7,
+              }}
+            >
+              Labels are a way to identify and separate your tasks. We recommend
+              them to be one or two words long.
+            </Text>
 
-          <Button
-            onPress={handleCreateTab}
-            text="Take me there!"
-            iconPosition="end"
-            icon="north_east"
-            variant="outlined"
-            containerStyle={{ marginTop: 10 }}
-          />
-        </Card>
+            <CreateLabelModal
+              onCreate={() => {
+                Toast.show({ type: "success", text1: "Label created!" });
+              }}
+              mutate={() => {}}
+            >
+              <Button
+                text="Create a label"
+                iconPosition="end"
+                icon="add"
+                variant="outlined"
+                containerStyle={{ marginTop: 10 }}
+              />
+            </CreateLabelModal>
+          </Card>
 
-        <Card>
-          <Text
-            variant="eyebrow"
-            style={{ textAlign: "center", marginBottom: 10 }}
-          >
-            #4
-          </Text>
-          <Text style={{ fontSize: 25 }} weight={300}>
-            What is a label?
-          </Text>
-          <Text
-            style={{
-              marginTop: 5,
-              fontSize: 17,
-              opacity: 0.7,
-            }}
-          >
-            Labels are a way to identify and separate your tasks. We recommend
-            them to be one or two words long.
-          </Text>
+          <Card>
+            <Text
+              variant="eyebrow"
+              style={{ textAlign: "center", marginBottom: 10 }}
+            >
+              #5
+            </Text>
+            <Text style={{ fontSize: 25 }} weight={300}>
+              Let's do something with those labels
+            </Text>
+            <Text
+              style={{
+                marginTop: 5,
+                fontSize: 17,
+                opacity: 0.7,
+              }}
+            >
+              Collections are a way to group labels together and view as you'd
+              like in a tab. Labels can even be part of multiple collections.
+              Sweet!
+            </Text>
 
-          <CreateLabelModal
-            onCreate={() => {
-              Toast.show({ type: "success", text1: "Label created!" });
-            }}
-            mutate={() => {}}
-          >
             <Button
-              text="Create a label"
+              onPress={() => router.push("/collections/create")}
+              text="Create a collection"
               iconPosition="end"
               icon="add"
               variant="outlined"
               containerStyle={{ marginTop: 10 }}
             />
-          </CreateLabelModal>
-        </Card>
+          </Card>
 
-        <Card>
-          <Text
-            variant="eyebrow"
-            style={{ textAlign: "center", marginBottom: 10 }}
-          >
-            #5
-          </Text>
-          <Text style={{ fontSize: 25 }} weight={300}>
-            Let's do something with those labels
-          </Text>
-          <Text
-            style={{
-              marginTop: 5,
-              fontSize: 17,
-              opacity: 0.7,
-            }}
-          >
-            Collections are a way to group labels together and view as you'd
-            like in a tab. Labels can even be part of multiple collections.
-            Sweet!
-          </Text>
-
-          <Button
-            onPress={() => router.push("/collections/create")}
-            text="Create a collection"
-            iconPosition="end"
-            icon="add"
-            variant="outlined"
-            containerStyle={{ marginTop: 10 }}
-          />
-        </Card>
-
-        <View style={{ paddingVertical: 30, gap: 30 }}>
-          <Divider />
-          <Text
-            style={{ textAlign: "center", fontSize: 20, opacity: 0.5 }}
-            weight={500}
-          >
-            Now that you've got the basics down, feel free to play around and
-            see what works for you!
-          </Text>
-          <Footer />
-        </View>
-      </ScrollView>
+          <View style={{ paddingVertical: 30, gap: 30 }}>
+            <Divider />
+            <Text
+              style={{ textAlign: "center", fontSize: 20, opacity: 0.5 }}
+              weight={500}
+            >
+              Now that you've got the basics down, feel free to play around and
+              see what works for you!
+            </Text>
+            <Footer />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </Content>
   );
 }
+
