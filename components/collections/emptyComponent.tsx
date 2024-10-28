@@ -39,9 +39,11 @@ const messages = [
 export const ColumnEmptyComponent = function ColumnEmptyComponent({
   row,
   dense,
+  list,
 }: {
   row?: boolean;
   dense?: boolean;
+  list?: boolean;
 }) {
   const theme = useColorTheme();
 
@@ -61,6 +63,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
         styles.empty,
         { pointerEvents: "none" },
         row && { flexDirection: "row", alignItems: "center", gap: 20 },
+        list && { paddingVertical: 70 },
       ]}
     >
       <View
@@ -103,3 +106,4 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     </View>
   );
 };
+

@@ -79,7 +79,7 @@ export default function List() {
             if (item.empty) {
               return (
                 <View>
-                  <ColumnEmptyComponent />
+                  <ColumnEmptyComponent list />
                 </View>
               );
             } else if (item.header) {
