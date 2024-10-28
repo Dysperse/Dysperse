@@ -1,5 +1,6 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { omit } from "@/helpers/omit";
+import { Button } from "@/ui/Button";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import RefreshControl from "@/ui/RefreshControl";
@@ -13,22 +14,107 @@ import { Entity } from "../../entity";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 
-export default function List() {
-  const isDark = useDarkMode();
-  const { data, mutate } = useCollectionContext();
+function ListItem({ d, data, item, listRef, onTaskUpdate }) {
   const theme = useColorTheme();
+  const isDark = useDarkMode();
+  const { width } = useWindowDimensions();
 
-  const d = data.labels.reduce((acc, curr) => {
-    acc.push({ header: true, ...omit(["entities"], curr) });
-    const t = curr.entities.sort(
-      (a, b) => a.completionInstances?.length - b.completionInstances?.length
+  if (item.empty) {
+    return (
+      <View>
+        <ColumnEmptyComponent list />
+      </View>
     );
-    acc.push(...t);
-    if (t.length === 0) {
-      acc.push({ empty: true });
-    }
-    return acc;
-  }, []);
+  } else if (item.create) {
+    return (
+      <View>
+        <Button
+          icon="stylus_note"
+          text="Create"
+          bold
+          variant="filled"
+          height={60}
+        />
+      </View>
+    );
+  } else if (item.header) {
+    // Rendering header
+    return (
+      <LinearGradient colors={[theme[1], "transparent"]}>
+        <Pressable
+          onPress={() => {
+            listRef.current?.scrollToIndex({
+              index: d.indexOf(item),
+              animated: true,
+            });
+          }}
+          style={{
+            width: "100%",
+            borderRadius: 99,
+            overflow: "hidden",
+            backgroundColor: addHslAlpha(
+              theme[3],
+              Platform.OS === "android" ? 1 : 0.5
+            ),
+          }}
+        >
+          <BlurView
+            intensity={Platform.OS === "android" ? 0 : 50}
+            tint={!isDark ? "prominent" : "systemMaterialDark"}
+            style={{
+              height: 80,
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: addHslAlpha(theme[7], 0.3),
+            }}
+          >
+            <KanbanHeader
+              hideNavigation
+              label={{
+                ...item,
+                entitiesLength: data.labels
+                  .find((l) => l.id === item.id)
+                  ?.entities?.filter((e) => e.completionInstances.length === 0)
+                  ?.length,
+              }}
+              grid
+            />
+          </BlurView>
+        </Pressable>
+      </LinearGradient>
+    );
+  } else {
+    // Render item
+    return (
+      <Entity
+        onTaskUpdate={onTaskUpdate}
+        item={item}
+        isReadOnly={false}
+        showRelativeTime
+      />
+    );
+  }
+}
+
+export default function List() {
+  const { data, mutate } = useCollectionContext();
+
+  const d = [
+    { create: true },
+    ...data.labels.reduce((acc, curr) => {
+      acc.push({ header: true, ...omit(["entities"], curr) });
+      const t = curr.entities.sort(
+        (a, b) => a.completionInstances?.length - b.completionInstances?.length
+      );
+      acc.push(...t);
+      if (t.length === 0) {
+        acc.push({ empty: true });
+      }
+      return acc;
+    }, []),
+  ];
 
   const onTaskUpdate = (newTask: any) => {
     mutate(
@@ -56,8 +142,8 @@ export default function List() {
     );
   };
 
-  const { width } = useWindowDimensions();
   const ref = useRef(null);
+  const { width } = useWindowDimensions();
 
   return (
     <View style={{ flex: 1 }}>
@@ -74,86 +160,25 @@ export default function List() {
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
-          contentContainerStyle={{ paddingBottom: 50 }}
-          renderItem={({ item }: any) => {
-            if (item.empty) {
-              return (
-                <View>
-                  <ColumnEmptyComponent list />
-                </View>
-              );
-            } else if (item.header) {
-              // Rendering header
-              return (
-                <LinearGradient colors={[theme[1], "transparent"]}>
-                  <Pressable
-                    onPress={() => {
-                      ref.current?.scrollToIndex({
-                        index: d.indexOf(item),
-                        animated: true,
-                      });
-                    }}
-                    style={{
-                      margin: 10,
-                      width: 750,
-                      maxWidth: width - 40,
-                      marginHorizontal: "auto",
-                      borderRadius: 99,
-                      overflow: "hidden",
-                      backgroundColor: addHslAlpha(
-                        theme[3],
-                        Platform.OS === "android" ? 1 : 0.5
-                      ),
-                    }}
-                  >
-                    <BlurView
-                      intensity={Platform.OS === "android" ? 0 : 50}
-                      tint={!isDark ? "prominent" : "systemMaterialDark"}
-                      style={{
-                        height: 80,
-                        width: "100%",
-                        overflow: "hidden",
-                        borderRadius: 999,
-                        borderWidth: 1,
-                        borderColor: addHslAlpha(theme[7], 0.3),
-                      }}
-                    >
-                      <KanbanHeader
-                        hideNavigation
-                        label={{
-                          ...item,
-                          entitiesLength: data.labels
-                            .find((l) => l.id === item.id)
-                            ?.entities?.filter(
-                              (e) => e.completionInstances.length === 0
-                            )?.length,
-                        }}
-                        grid
-                      />
-                    </BlurView>
-                  </Pressable>
-                </LinearGradient>
-              );
-            } else {
-              // Render item
-              return (
-                <View
-                  style={{
-                    marginHorizontal: "auto",
-                    width: 750,
-                    maxWidth: width - 40,
-                  }}
-                >
-                  <Entity
-                    onTaskUpdate={onTaskUpdate}
-                    item={item}
-                    isReadOnly={false}
-                    showRelativeTime
-                  />
-                </View>
-              );
-            }
-          }}
+          contentContainerStyle={{ paddingVertical: 50 }}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                width: 600,
+                marginHorizontal: "auto",
+                maxWidth: width - 40,
+                marginBottom: 10,
+              }}
+            >
+              <ListItem
+                d={d}
+                data={data}
+                onTaskUpdate={onTaskUpdate}
+                item={item}
+                listRef={ref}
+              />
+            </View>
+          )}
           getItemType={(item) => {
             // To achieve better performance, specify the type based on the item
             return typeof item === "string" ? "sectionHeader" : "row";
@@ -164,4 +189,3 @@ export default function List() {
     </View>
   );
 }
-

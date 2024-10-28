@@ -1,4 +1,5 @@
 import LabelPicker from "@/components/labels/picker";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import Chip from "@/ui/Chip";
@@ -107,21 +108,47 @@ export function TaskDrawerContent({
     updateTask("pinned", !task.pinned);
   }, [task.pinned, updateTask, rotate]);
 
-  const handleDelete = useCallback(async () => {
-    try {
-      const t = !task.trash;
-      updateTask("trash", t);
-      Toast.show({
-        type: "success",
-        text1: t ? "Task deleted!" : "Task restored!",
-      });
-    } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later",
-      });
-    }
-  }, [updateTask, task]);
+  const handleDelete = useCallback(
+    async (d) => {
+      try {
+        const t = typeof d === "boolean" ? d : !task.trash;
+        updateTask("trash", t);
+        Toast.show({
+          type: "success",
+          text1: t ? "Task deleted!" : "Task restored!",
+
+          props: {
+            renderTrailingIcon: !t
+              ? null
+              : () => (
+                  <IconButton
+                    icon="undo"
+                    size={40}
+                    style={{
+                      marginRight: 5,
+                      marginLeft: -10,
+                    }}
+                    backgroundColors={{
+                      default: theme[5],
+                      hovered: theme[6],
+                      pressed: theme[7],
+                    }}
+                    onPress={() => handleDelete(false)}
+                  />
+                ),
+          },
+        });
+      } catch (e) {
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong. Please try again later",
+        });
+      }
+    },
+    [updateTask, task]
+  );
+
+  useHotkeys(["delete", "backspace"], () => handleDelete(true));
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {
