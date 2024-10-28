@@ -75,7 +75,12 @@ function Footer() {
               Linking.openURL(card.href);
             }
           }}
-          style={{ flexDirection: "row", gap: 20, alignItems: "center" }}
+          style={{
+            flexDirection: "row",
+            gap: 20,
+            alignItems: "center",
+            width: Platform.OS === "web" ? undefined : "100%",
+          }}
           key={card.title}
         >
           <View style={{ flex: 1 }}>
