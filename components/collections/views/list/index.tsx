@@ -76,11 +76,13 @@ function ListItem({ d, data, item, listRef, onTaskUpdate }) {
                 hideNavigation
                 label={{
                   ...item,
-                  entitiesLength: data.labels
-                    .find((l) => l.id === item.id)
-                    ?.entities?.filter(
-                      (e) => e.completionInstances.length === 0
-                    )?.length,
+                  entitiesLength:
+                    item.entitiesLength ||
+                    data.labels
+                      .find((l) => l.id === item.id)
+                      ?.entities?.filter(
+                        (e) => e.completionInstances.length === 0
+                      )?.length,
                 }}
                 grid
                 list
@@ -107,7 +109,9 @@ export default function List() {
   const { data, mutate } = useCollectionContext();
   const d = [
     { create: true },
-    ...(data.entities ? [{ header: true, entities: data.entities }] : []),
+    ...(data.entities && data.labels.length > 0
+      ? [{ header: true, entitiesLength: data.entities.length }]
+      : []),
     ...(data.entities || []),
     ...data.labels.reduce((acc, curr) => {
       acc.push({ header: true, ...omit(["entities"], curr) });
@@ -195,3 +199,4 @@ export default function List() {
     </View>
   );
 }
+
