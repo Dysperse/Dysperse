@@ -103,7 +103,7 @@ const SpotifyLargePreview = ({ data, navigation, mutate }) => {
             color: addHslAlpha(textColor, 0.7),
           }}
         >
-          {data.item.artists.map((a) => a.name).join(", ")}
+          {data?.item?.artists?.map((a) => a.name)?.join(", ")}
         </Text>
         <View
           style={{
@@ -243,3 +243,4 @@ export function FocusPanelSpotify({ navigation }) {
     </>
   );
 }
+
