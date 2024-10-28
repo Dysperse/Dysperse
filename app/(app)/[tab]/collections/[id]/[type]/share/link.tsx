@@ -5,6 +5,7 @@ import {
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { Button } from "@/ui/Button";
 import Divider from "@/ui/Divider";
 import ErrorAlert from "@/ui/Error";
@@ -23,7 +24,6 @@ import { BlurView } from "expo-blur";
 import { setStringAsync } from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";

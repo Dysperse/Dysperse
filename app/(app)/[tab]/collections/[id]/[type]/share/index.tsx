@@ -7,6 +7,7 @@ import { PublishCollection } from "@/components/collections/navbar/PublishCollec
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
@@ -30,7 +31,6 @@ import { BlurView } from "expo-blur";
 import { setStringAsync } from "expo-clipboard";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import {
   Platform,
   Pressable,

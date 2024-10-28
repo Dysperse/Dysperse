@@ -3,13 +3,13 @@ import {
   useCollectionContext,
 } from "@/components/collections/context";
 import { CollectionInfo } from "@/components/collections/navbar/CollectionInfo";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
-import { useHotkeys } from "react-hotkeys-hook";
 import { Platform, ScrollView, View } from "react-native";
 import useSWR from "swr";
 

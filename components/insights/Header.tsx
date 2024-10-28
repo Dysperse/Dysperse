@@ -1,4 +1,5 @@
 import { useSidebarContext } from "@/components/layout/sidebar/context";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -6,7 +7,6 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useHotkeys } from "react-hotkeys-hook";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
