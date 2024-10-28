@@ -17,9 +17,11 @@ import { useKanbanContext } from "./context";
 export const KanbanHeader = memo(function KanbanHeader({
   label,
   grid,
+  list,
   hideNavigation,
 }: {
   grid?: boolean;
+  list?: boolean;
   hideNavigation?: boolean;
   label: {
     id: string;
@@ -79,11 +81,14 @@ export const KanbanHeader = memo(function KanbanHeader({
             },
       ]}
     >
-      {label.emoji && <Emoji emoji={label.emoji} size={grid ? 25 : 35} />}
+      {label.emoji && (
+        <Emoji emoji={label.emoji} size={list ? 35 : grid ? 25 : 35} />
+      )}
       <View
         style={{
           flex: 1,
-          ...(grid && { flexDirection: "row", gap: 20, alignItems: "center" }),
+          ...(grid &&
+            !list && { flexDirection: "row", gap: 20, alignItems: "center" }),
         }}
       >
         <Text style={{ fontSize: 20 }} weight={800} numberOfLines={1}>
@@ -95,13 +100,20 @@ export const KanbanHeader = memo(function KanbanHeader({
               ? ""
               : label.entitiesLength
             : label.entitiesLength}
-          {!grid && ` item${label.entitiesLength !== 1 ? "s" : ""}`}
+          {label.entitiesLength
+            ? ` item${label.entitiesLength !== 1 ? "s" : ""}`
+            : ""}
         </Text>
       </View>
       <View style={{ flexDirection: "row", marginRight: -10 }}>
         {label?.id && !isReadOnly && session && (
           <ColumnMenuTrigger label={label}>
-            <IconButton size={40} icon={grid ? "edit" : "more_horiz"} />
+            <IconButton
+              size={40}
+              icon="more_horiz"
+              iconProps={{ bold: true }}
+              iconStyle={{ opacity: 0.7 }}
+            />
           </ColumnMenuTrigger>
         )}
         {grid && !breakpoints.md && !hideNavigation ? (

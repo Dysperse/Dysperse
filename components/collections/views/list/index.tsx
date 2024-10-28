@@ -32,58 +32,63 @@ function ListItem({ d, data, item, listRef, onTaskUpdate }) {
           icon="stylus_note"
           text="Create"
           bold
+          large
           variant="filled"
-          height={60}
+          height={70}
         />
       </View>
     );
   } else if (item.header) {
     // Rendering header
     return (
-      <LinearGradient colors={[theme[1], "transparent"]}>
-        <Pressable
-          onPress={() => {
-            listRef.current?.scrollToIndex({
-              index: d.indexOf(item),
-              animated: true,
-            });
-          }}
-          style={{
-            width: "100%",
-            borderRadius: 99,
-            overflow: "hidden",
-            backgroundColor: addHslAlpha(
-              theme[3],
-              Platform.OS === "android" ? 1 : 0.5
-            ),
-          }}
-        >
-          <BlurView
-            intensity={Platform.OS === "android" ? 0 : 50}
-            tint={!isDark ? "prominent" : "systemMaterialDark"}
+      <>
+        <View style={{ paddingTop: 20, backgroundColor: theme[1] }} />
+        <LinearGradient colors={[theme[1], "transparent"]}>
+          <Pressable
+            onPress={() => {
+              listRef.current?.scrollToIndex({
+                index: d.indexOf(item),
+                animated: true,
+              });
+            }}
             style={{
-              height: 80,
               width: "100%",
               overflow: "hidden",
-              borderRadius: 999,
-              borderWidth: 1,
+              backgroundColor: addHslAlpha(
+                theme[3],
+                Platform.OS === "android" ? 1 : 0.5
+              ),
+              borderRadius: 99,
               borderColor: addHslAlpha(theme[7], 0.3),
             }}
           >
-            <KanbanHeader
-              hideNavigation
-              label={{
-                ...item,
-                entitiesLength: data.labels
-                  .find((l) => l.id === item.id)
-                  ?.entities?.filter((e) => e.completionInstances.length === 0)
-                  ?.length,
+            <BlurView
+              intensity={Platform.OS === "android" ? 0 : 20}
+              tint={!isDark ? "prominent" : "systemMaterialDark"}
+              style={{
+                borderRadius: 99,
+                height: 80,
+                width: "100%",
+                overflow: "hidden",
               }}
-              grid
-            />
-          </BlurView>
-        </Pressable>
-      </LinearGradient>
+            >
+              <KanbanHeader
+                hideNavigation
+                label={{
+                  ...item,
+                  entitiesLength: data.labels
+                    .find((l) => l.id === item.id)
+                    ?.entities?.filter(
+                      (e) => e.completionInstances.length === 0
+                    )?.length,
+                }}
+                grid
+                list
+              />
+            </BlurView>
+          </Pressable>
+        </LinearGradient>
+      </>
     );
   } else {
     // Render item
@@ -100,9 +105,10 @@ function ListItem({ d, data, item, listRef, onTaskUpdate }) {
 
 export default function List() {
   const { data, mutate } = useCollectionContext();
-
   const d = [
     { create: true },
+    ...(data.entities ? [{ header: true, entities: data.entities }] : []),
+    ...(data.entities || []),
     ...data.labels.reduce((acc, curr) => {
       acc.push({ header: true, ...omit(["entities"], curr) });
       const t = curr.entities.sort(
@@ -160,7 +166,7 @@ export default function List() {
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
-          contentContainerStyle={{ paddingVertical: 50 }}
+          contentContainerStyle={{ paddingVertical: 30 }}
           renderItem={({ item }) => (
             <View
               style={{
