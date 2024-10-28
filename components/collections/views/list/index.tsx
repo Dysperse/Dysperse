@@ -8,7 +8,7 @@ import RefreshControl from "@/ui/RefreshControl";
 import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
@@ -147,19 +147,36 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
   }
 }
 
+const incompleteEntitiesFilter = (e) =>
+  e.recurrenceRule || e.completionInstances.length === 0;
+
 export default function List() {
   const { data, mutate } = useCollectionContext();
+  const [showCompleted, setShowCompleted] = useState(data.showCompleted);
+
   const d = [
     { create: true },
     ...(data.entities?.length > 0 && data.labels.length > 0
-      ? [{ header: true, entitiesLength: data.entities.length }]
+      ? [
+          {
+            header: true,
+            entitiesLength: data.entities.filter(
+              (e) => incompleteEntitiesFilter(e) || showCompleted
+            ).length,
+          },
+        ]
       : []),
-    ...(data.entities || []),
+    ...(data.entities.filter(
+      (e) => incompleteEntitiesFilter(e) || showCompleted
+    ) || []),
     ...data.labels.reduce((acc, curr) => {
       acc.push({ header: true, ...omit(["entities"], curr) });
-      const t = curr.entities.sort(
-        (a, b) => a.completionInstances?.length - b.completionInstances?.length
-      );
+      const t = curr.entities
+        .sort(
+          (a, b) =>
+            a.completionInstances?.length - b.completionInstances?.length
+        )
+        .filter((e) => incompleteEntitiesFilter(e) || showCompleted);
       acc.push(...t);
       if (t.length === 0) {
         acc.push({ empty: true });
@@ -167,7 +184,6 @@ export default function List() {
       return acc;
     }, []),
   ];
-
   const onTaskUpdate = (newTask: any) => {
     mutate(
       (oldData) => {

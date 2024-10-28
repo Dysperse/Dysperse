@@ -100,7 +100,7 @@ export const KanbanHeader = memo(function KanbanHeader({
               ? ""
               : label.entitiesLength
             : label.entitiesLength}
-          {label.entitiesLength
+          {typeof label.entitiesLength === "number"
             ? ` item${label.entitiesLength !== 1 ? "s" : ""}`
             : ""}
         </Text>
@@ -176,3 +176,4 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
+
