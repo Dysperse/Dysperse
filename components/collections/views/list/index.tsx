@@ -1,4 +1,5 @@
 import { useCollectionContext } from "@/components/collections/context";
+import CreateTask from "@/components/task/create";
 import { omit } from "@/helpers/omit";
 import { Button } from "@/ui/Button";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
@@ -14,7 +15,7 @@ import { Entity } from "../../entity";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 
-function ListItem({ d, data, item, listRef, onTaskUpdate }) {
+function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
   const { width } = useWindowDimensions();
@@ -27,7 +28,48 @@ function ListItem({ d, data, item, listRef, onTaskUpdate }) {
     );
   } else if (item.create) {
     return (
-      <View>
+      <CreateTask
+        defaultValues={{ collectionId: data.id }}
+        mutate={(newTask) => {
+          // if the new task's labelId is not null, then add it to the label if it exists in the data.
+          // if the label does not exist, then add it to the entities array
+
+          if (newTask.labelId) {
+            mutate(
+              (oldData) => {
+                const newLabels = oldData.labels.map((label: any) => {
+                  if (label.id === newTask.labelId) {
+                    return {
+                      ...label,
+                      entities: [newTask, ...label.entities],
+                    };
+                  }
+                  return label;
+                });
+                return {
+                  ...oldData,
+                  labels: newLabels,
+                };
+              },
+              {
+                revalidate: false,
+              }
+            );
+          } else {
+            mutate(
+              (oldData) => {
+                return {
+                  ...oldData,
+                  entities: [newTask, ...oldData.entities],
+                };
+              },
+              {
+                revalidate: false,
+              }
+            );
+          }
+        }}
+      >
         <Button
           icon="stylus_note"
           text="Create"
@@ -36,7 +78,7 @@ function ListItem({ d, data, item, listRef, onTaskUpdate }) {
           variant="filled"
           height={70}
         />
-      </View>
+      </CreateTask>
     );
   } else if (item.header) {
     // Rendering header
@@ -109,7 +151,7 @@ export default function List() {
   const { data, mutate } = useCollectionContext();
   const d = [
     { create: true },
-    ...(data.entities && data.labels.length > 0
+    ...(data.entities?.length > 0 && data.labels.length > 0
       ? [{ header: true, entitiesLength: data.entities.length }]
       : []),
     ...(data.entities || []),
@@ -129,24 +171,39 @@ export default function List() {
   const onTaskUpdate = (newTask: any) => {
     mutate(
       (oldData) => {
-        const newLabels = oldData.labels.map((label: any) => {
-          if (label.id === newTask?.labelId) {
-            return {
-              ...label,
-              entities: label.entities.map((task: any) => {
+        if (newTask?.labelId) {
+          const newLabels = oldData.labels.map((label: any) => {
+            if (label.id === newTask?.labelId) {
+              return {
+                ...label,
+                entities: label.entities
+                  .map((task: any) => {
+                    if (task.id === newTask.id) return newTask;
+                    return task;
+                  })
+                  .filter((t) => !t.trash),
+              };
+            }
+            return label;
+          });
+
+          return {
+            ...oldData,
+            labels: newLabels,
+          };
+        } else {
+          return {
+            ...oldData,
+            entities: oldData.entities
+              .map((task: any) => {
                 if (task.id === newTask.id) {
                   return newTask;
                 }
                 return task;
-              }),
-            };
-          }
-          return label;
-        });
-        return {
-          ...oldData,
-          labels: newLabels,
-        };
+              })
+              .filter((t) => !t.trash),
+          };
+        }
       },
       { revalidate: false }
     );
@@ -186,6 +243,7 @@ export default function List() {
                 onTaskUpdate={onTaskUpdate}
                 item={item}
                 listRef={ref}
+                mutate={mutate}
               />
             </View>
           )}
