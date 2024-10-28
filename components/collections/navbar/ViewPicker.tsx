@@ -42,7 +42,10 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
 
   return (
     <MenuPopover
-      menuProps={{ rendererProps: { placement: "bottom" } }}
+      menuProps={{
+        rendererProps: { placement: "bottom" },
+      }}
+      containerStyle={{ width: 220 }}
       trigger={
         <Pressable
           android_ripple={{ color: theme[5] }}
