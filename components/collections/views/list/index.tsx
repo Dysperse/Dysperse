@@ -156,7 +156,9 @@ export default function List() {
 
   const d = [
     { create: true },
-    ...(data.entities?.length > 0 && data.labels.length > 0
+    ...(data.entities.filter(
+      (e) => incompleteEntitiesFilter(e) || showCompleted
+    )?.length > 0 && data.labels.length > 0
       ? [
           {
             header: true,
