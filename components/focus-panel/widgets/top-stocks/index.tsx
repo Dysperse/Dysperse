@@ -52,7 +52,7 @@ function StockChange({ subtle, number }: { subtle?: boolean; number: number }) {
           opacity: 1,
         }}
       >
-        {number}%
+        {Math.abs(number)}%
       </Text>
     </Pressable>
   );
