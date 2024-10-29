@@ -365,11 +365,13 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   useHotkeys(["ctrl+n", "shift+n", "space"], (e) => {
     e.preventDefault();
     itemRef.current?.present();
+  });
 
+  useEffect(() => {
     if (pathname.includes("/collections/") && id !== "all") {
       setDefaultValues({ collectionId: id });
     }
-  });
+  }, [id, pathname]);
 
   useHotkeys(["ctrl+shift+n"], (e) => {
     e.preventDefault();
