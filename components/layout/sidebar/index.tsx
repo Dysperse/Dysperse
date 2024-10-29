@@ -357,11 +357,18 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const itemRef = useRef<BottomSheetModal>(null);
   const labelRef = useRef<BottomSheetModal>(null);
   const breakpoints = useResponsiveBreakpoints();
-  const { sidebarRef, desktopCollapsed } = useSidebarContext();
+  const { sidebarRef } = useSidebarContext();
 
+  const [defaultValues, setDefaultValues] = useState<any>({});
+  const { id } = useGlobalSearchParams();
+  const pathname = usePathname();
   useHotkeys(["ctrl+n", "shift+n", "space"], (e) => {
     e.preventDefault();
     itemRef.current?.present();
+
+    if (pathname.includes("/collections/")) {
+      setDefaultValues({ collectionId: id });
+    }
   });
 
   useHotkeys(["ctrl+shift+n"], (e) => {
@@ -383,6 +390,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
         <CreateTask
           mutate={() => mutate(() => true)}
           ref={itemRef}
+          defaultValues={defaultValues}
           onPress={() => {
             menuRef.current.close();
           }}
@@ -684,3 +692,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+
