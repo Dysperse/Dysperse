@@ -130,7 +130,8 @@ function Footer({
     <View
       style={{
         paddingBottom: 10,
-        display: !date && !label && !recurrenceRule ? "none" : "flex",
+        display:
+          !date && !label && !recurrenceRule && !collectionId ? "none" : "flex",
       }}
     >
       <ScrollView
@@ -174,7 +175,7 @@ function Footer({
             }
           />
         )}
-        {label && (
+        {(label || collectionId) && (
           <CreateTaskLabelInput
             watch={watch}
             collectionId={collectionId}
@@ -201,8 +202,8 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   const theme = useColorTheme();
   const colors = useLabelColors();
   const label = watch("label");
-
   const animation = useSharedValue(1);
+  const { data: collectionData } = useSWR(["space/collections"]);
 
   const animationStyle = useAnimatedStyle(() => ({
     transform: [{ scale: animation.value }],
@@ -230,27 +231,52 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
             defaultCollection={collectionId}
             sheetProps={{ sheetRef: labelMenuRef }}
             autoFocus
-            // onClose={onLabelPickerClose}
           >
-            <Chip
-              colorTheme={value?.color}
-              onDismiss={value ? () => onChange(null) : undefined}
-              label={value?.name || "Label"}
-              icon={
-                value?.emoji ? (
-                  <Emoji emoji={value?.emoji} />
-                ) : (
-                  <Icon>new_label</Icon>
-                )
-              }
-              style={({ pressed, hovered }) => ({
-                borderWidth: 1,
-                backgroundColor: addHslAlpha(
-                  colors[value?.color]?.[9] || theme[9],
-                  pressed ? 0.3 : hovered ? 0.2 : 0.1
-                ),
-              })}
-            />
+            {label ? (
+              <Chip
+                colorTheme={value?.color}
+                onDismiss={value ? () => onChange(null) : undefined}
+                label={value?.name || "Label"}
+                icon={
+                  value?.emoji ? (
+                    <Emoji emoji={value?.emoji} />
+                  ) : (
+                    <Icon>new_label</Icon>
+                  )
+                }
+                style={({ pressed, hovered }) => ({
+                  borderWidth: 1,
+                  backgroundColor: addHslAlpha(
+                    colors[value?.color]?.[9] || theme[9],
+                    pressed ? 0.3 : hovered ? 0.2 : 0.1
+                  ),
+                })}
+              />
+            ) : (
+              collectionId && (
+                <Chip
+                  icon={
+                    <Emoji
+                      emoji={
+                        collectionData?.find((e) => e.id === collectionId)
+                          ?.emoji
+                      }
+                    />
+                  }
+                  style={({ pressed, hovered }) => ({
+                    borderWidth: 1,
+                    borderColor: addHslAlpha(
+                      colors[value?.color]?.[9] || theme[9],
+                      pressed ? 0.3 : hovered ? 0.2 : 0.1
+                    ),
+                  })}
+                  label={
+                    collectionData &&
+                    collectionData.find((e) => e.id === collectionId)?.name
+                  }
+                />
+              )
+            )}
           </LabelPicker>
         )}
       />
@@ -933,7 +959,6 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
         defaultCollection={collectionId}
         sheetProps={{ sheetRef: labelMenuRef }}
         autoFocus
-        // onClose={onLabelPickerClose}
       >
         <IconButton
           backgroundColors={colors}

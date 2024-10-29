@@ -366,7 +366,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     e.preventDefault();
     itemRef.current?.present();
 
-    if (pathname.includes("/collections/")) {
+    if (pathname.includes("/collections/") && id !== "all") {
       setDefaultValues({ collectionId: id });
     }
   });
