@@ -14,6 +14,7 @@ import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -256,12 +257,16 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
               collectionId && (
                 <Chip
                   icon={
-                    <Emoji
-                      emoji={
-                        collectionData?.find((e) => e.id === collectionId)
-                          ?.emoji
-                      }
-                    />
+                    collectionData ? (
+                      <Emoji
+                        emoji={
+                          collectionData?.find((e) => e.id === collectionId)
+                            ?.emoji
+                        }
+                      />
+                    ) : (
+                      <Spinner />
+                    )
                   }
                   style={({ pressed, hovered }) => ({
                     borderWidth: 1,
@@ -271,8 +276,9 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                     ),
                   })}
                   label={
-                    collectionData &&
-                    collectionData.find((e) => e.id === collectionId)?.name
+                    collectionData
+                      ? collectionData.find((e) => e.id === collectionId)?.name
+                      : "Loading..."
                   }
                 />
               )
