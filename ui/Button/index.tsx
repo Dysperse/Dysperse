@@ -127,6 +127,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
   ];
 
   const animatedStyle = useAnimatedStyle(() => ({
+    transformOrigin: "left bottom",
     transform: [
       {
         scale: withSpring(state.value === 2 ? 0.95 : 1, {

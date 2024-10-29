@@ -1,5 +1,6 @@
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -12,7 +13,7 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useRef } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { groupedViews } from ".";
 import { useCollectionContext } from "../context";
@@ -72,7 +73,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
 
   return (
     <>
-      <Pressable
+      <Button
         onPress={() => {
           ref.current?.present();
           if (Platform.OS === "web" && breakpoints.md) {
@@ -88,10 +89,14 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
           }
         }}
         android_ripple={{ color: theme[5] }}
-        style={() => ({
+        containerStyle={{
+          padding: 0,
           maxWidth: breakpoints.md ? 240 : "100%",
+        }}
+        style={() => ({
           flexDirection: "row",
           alignItems: "center",
+          justifyContent: "flex-start",
           gap: 13,
           paddingLeft: 10,
           minWidth: 0,
@@ -118,7 +123,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         <Icon size={30} style={{ marginLeft: -5 }}>
           expand_more
         </Icon>
-      </Pressable>
+      </Button>
 
       <Modal
         transformCenter
@@ -178,4 +183,3 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     </>
   );
 });
-
