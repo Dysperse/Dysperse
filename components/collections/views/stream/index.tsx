@@ -185,7 +185,15 @@ export default function Stream() {
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <View style={[{ flex: 1, maxHeight: height - 50 }]}>
+    <View
+      style={[
+        {
+          flex: 1,
+          maxHeight: height - 50,
+          flexDirection: breakpoints.md ? "row" : undefined,
+        },
+      ]}
+    >
       {!breakpoints.md && <StreamViewPicker />}
       <View
         style={{
