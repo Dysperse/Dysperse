@@ -5,7 +5,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
+import { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor, useDarkMode } from "@/ui/color";
@@ -471,47 +471,6 @@ function PanelContent() {
 
   return (
     <>
-      {panelState === "COLLAPSED" && (
-        <MenuPopover
-          menuProps={{
-            style: {
-              zIndex: 999,
-            },
-          }}
-          trigger={
-            <IconButton
-              style={{
-                height: 40,
-                alignSelf: "center",
-                opacity: 0.3,
-                marginTop: -20,
-                marginBottom: -10,
-              }}
-              onPress={() => setPanelState("OPEN")}
-              icon="more_horiz"
-              iconProps={{ bold: true }}
-            />
-          }
-          options={[
-            {
-              text: "Expand",
-              icon: "expand_content",
-              callback: () => {
-                setPanelState("OPEN");
-                collapseOnBack.current = false;
-              },
-            },
-            {
-              text: "Close",
-              icon: "close",
-              callback: () => {
-                setPanelState("CLOSED");
-                collapseOnBack.current = true;
-              },
-            },
-          ]}
-        />
-      )}
       <Animated.View
         style={[
           {
