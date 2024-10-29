@@ -13,6 +13,7 @@ import { BlurView } from "expo-blur";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useRef } from "react";
 import { Platform, Pressable, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { groupedViews } from ".";
 import { useCollectionContext } from "../context";
 import { NavbarEyebrow } from "./NavbarEyebrow";
@@ -62,9 +63,9 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
           lastPress.current = now;
         }
       };
-      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyDown);
       return () => {
-        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("keyup", handleKeyDown);
       };
     }
   }, []);
@@ -72,7 +73,18 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
   return (
     <>
       <Pressable
-        onPress={() => ref.current?.present()}
+        onPress={() => {
+          ref.current?.present();
+          const t = localStorage.getItem("shiftShiftTip");
+          if (t !== "true") {
+            Toast.show({
+              type: "info",
+              text1: "Pro tip",
+              text2: "Press shift twice to open this dialog!",
+            });
+            localStorage.setItem("shiftShiftTip", "true");
+          }
+        }}
         android_ripple={{ color: theme[5] }}
         style={() => ({
           maxWidth: breakpoints.md ? 240 : "100%",
