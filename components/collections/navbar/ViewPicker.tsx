@@ -75,14 +75,16 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
       <Pressable
         onPress={() => {
           ref.current?.present();
-          const t = localStorage.getItem("shiftShiftTip");
-          if (t !== "true") {
-            Toast.show({
-              type: "info",
-              text1: "Pro tip",
-              text2: "Press shift twice to open this dialog!",
-            });
-            localStorage.setItem("shiftShiftTip", "true");
+          if (Platform.OS === "web" && breakpoints.md) {
+            const t = localStorage.getItem("shiftShiftTip");
+            if (t !== "true") {
+              Toast.show({
+                type: "info",
+                text1: "Pro tip",
+                text2: "Press shift twice to open this dialog!",
+              });
+              localStorage.setItem("shiftShiftTip", "true");
+            }
           }
         }}
         android_ripple={{ color: theme[5] }}
