@@ -91,6 +91,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         android_ripple={{ color: theme[5] }}
         containerStyle={{
           padding: 0,
+          transformOrigin: "left bottom",
           maxWidth: breakpoints.md ? 240 : "100%",
         }}
         style={() => ({
