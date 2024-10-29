@@ -47,6 +47,10 @@ export default function Page() {
           action: "Search",
         },
         {
+          keys: "shift shift",
+          action: "Open view switcher",
+        },
+        {
           keys: "ctrl+r",
           action: "Refresh collection",
         },
@@ -151,3 +155,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

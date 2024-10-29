@@ -63,7 +63,9 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         }
       };
       window.addEventListener("keydown", handleKeyDown);
-      return () => window.removeEventListener("keydown", handleKeyDown);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
     }
   }, []);
 
