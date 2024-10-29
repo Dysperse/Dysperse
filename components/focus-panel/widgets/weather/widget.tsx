@@ -324,7 +324,7 @@ export default function WeatherWidget({
             {({ pressed, hovered }) => (
               <LinearGradient
                 colors={[
-                  weatherColor[pressed ? 6 : hovered ? 5 : 4],
+                  weatherColor[pressed ? 6 : hovered ? 5 : 3],
                   weatherColor[pressed ? 5 : hovered ? 4 : 3],
                 ]}
                 style={[

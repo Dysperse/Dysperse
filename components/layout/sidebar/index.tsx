@@ -330,10 +330,39 @@ export const LogoButton = memo(function LogoButton({
                 selected: !desktopCollapsed,
               },
               {
-                icon: "dock_to_left",
-                text: "Focus panel",
-                selected: panelState !== "CLOSED",
-                callback: toggleFocus,
+                renderer: () => (
+                  <Text
+                    style={{ padding: 10, paddingBottom: 0 }}
+                    variant="eyebrow"
+                  >
+                    FOCUS PANEL
+                  </Text>
+                ),
+              },
+
+              {
+                icon:
+                  panelState === "OPEN"
+                    ? "radio_button_checked"
+                    : "radio_button_unchecked",
+                text: "Full",
+                callback: () => setPanelState("OPEN"),
+              },
+              {
+                icon:
+                  panelState === "COLLAPSED"
+                    ? "radio_button_checked"
+                    : "radio_button_unchecked",
+                text: "Collapsed",
+                callback: () => setPanelState("COLLAPSED"),
+              },
+              {
+                icon:
+                  panelState === "CLOSED"
+                    ? "radio_button_checked"
+                    : "radio_button_unchecked",
+                text: "Closed",
+                callback: () => setPanelState("CLOSED"),
               },
             ]}
           />

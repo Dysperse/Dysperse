@@ -799,7 +799,7 @@ export default function Clock({ widget, menuActions, setParam }) {
         style={
           panelState === "COLLAPSED"
             ? {
-                backgroundColor: theme[4],
+                backgroundColor: theme[3],
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 20,
@@ -807,7 +807,7 @@ export default function Clock({ widget, menuActions, setParam }) {
             : [
                 widgetStyles.card,
                 {
-                  backgroundColor: theme[4],
+                  backgroundColor: theme[3],
                   paddingVertical: 30,
                   paddingBottom: 15,
                 },
@@ -838,4 +838,3 @@ export default function Clock({ widget, menuActions, setParam }) {
     </View>
   );
 }
-

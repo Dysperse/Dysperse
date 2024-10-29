@@ -45,8 +45,6 @@ export default function Spotify({ menuActions, params, navigation }) {
           style={({ pressed, hovered }) => ({
             padding: 20,
             backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-            borderWidth: 1,
-            borderColor: theme[5],
             borderRadius: 20,
             justifyContent: "center",
             alignItems: "center",
@@ -77,8 +75,6 @@ export default function Spotify({ menuActions, params, navigation }) {
           style={{
             padding: 20,
             backgroundColor: theme[3],
-            borderWidth: 1,
-            borderColor: theme[5],
             borderRadius: 20,
             justifyContent: "center",
             alignItems: "center",
