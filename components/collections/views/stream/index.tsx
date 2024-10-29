@@ -5,20 +5,77 @@ import CreateTask from "@/components/task/create";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
+import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
+import Modal from "@/ui/Modal";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { useLocalSearchParams } from "expo-router";
-import { useState, useTransition } from "react";
-import { View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { useRef, useState, useTransition } from "react";
+import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
 type streamType = "backlog" | "upcoming" | "completed" | "unscheduled";
+const streamViews = [
+  { label: "Backlog", value: "backlog", icon: "west" },
+  { label: "Upcoming", value: "upcoming", icon: "east" },
+  { label: "Completed", value: "completed", icon: "check_circle" },
+  { label: "Unscheduled", value: "unscheduled", icon: "sunny" },
+  { label: "Repeating", value: "repeating", icon: "loop" },
+];
+
+function StreamViewPicker() {
+  const theme = useColorTheme();
+  const ref = useRef(null);
+  const { view } = useLocalSearchParams();
+  const currentView = streamViews.find((e) => e.value === (view || "backlog"));
+
+  return (
+    <>
+      <Pressable
+        onPress={() => ref.current.present()}
+        style={{
+          padding: 10,
+          backgroundColor: theme[3],
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          borderTopWidth: 1,
+          gap: 5,
+          borderTopColor: theme[5],
+        }}
+      >
+        <Text weight={600}>{currentView.label}</Text>
+        <Icon bold>expand_more</Icon>
+      </Pressable>
+
+      <Modal sheetRef={ref} animation="SLIDE" height="auto">
+        <View style={{ padding: 20 }}>
+          {streamViews.map((e) => (
+            <ListItemButton
+              key={e.value}
+              onPress={() => {
+                router.setParams({ view: e.value });
+                ref.current.close();
+              }}
+              variant={e.value === currentView.value ? "filled" : "default"}
+            >
+              <Icon>{e.icon}</Icon>
+              <ListItemText primary={e.label} />
+            </ListItemButton>
+          ))}
+        </View>
+      </Modal>
+    </>
+  );
+}
 
 export default function Stream() {
   const params = useLocalSearchParams();
@@ -130,6 +187,7 @@ export default function Stream() {
     <View
       style={[{ flex: 1, flexDirection: breakpoints.md ? "row" : "column" }]}
     >
+      {!breakpoints.md && <StreamViewPicker />}
       <View
         style={{
           width: breakpoints.md ? 350 : "100%",
@@ -218,30 +276,26 @@ export default function Stream() {
             </CreateTask>
           )}
         </View>
-        <ScrollView horizontal={!breakpoints.md}>
-          {[
-            { label: "Backlog", value: "backlog", icon: "west" },
-            { label: "Upcoming", value: "upcoming", icon: "east" },
-            { label: "Completed", value: "completed", icon: "check_circle" },
-            { label: "Unscheduled", value: "unscheduled", icon: "sunny" },
-            { label: "Repeating", value: "repeating", icon: "loop" },
-          ].map((e) => (
-            <Button
-              key={e.value}
-              icon={e.icon}
-              backgroundColors={{
-                default: theme[e.value === view ? 5 : 1],
-                hovered: theme[e.value === view ? 6 : 3],
-                pressed: theme[e.value === view ? 7 : 4],
-              }}
-              onPress={() => selectTab(e.value)}
-              text={e.label}
-              style={{
-                justifyContent: "flex-start",
-              }}
-            />
-          ))}
-        </ScrollView>
+        {breakpoints.md && (
+          <ScrollView>
+            {streamViews.map((e) => (
+              <Button
+                key={e.value}
+                icon={e.icon}
+                backgroundColors={{
+                  default: theme[e.value === view ? 5 : 1],
+                  hovered: theme[e.value === view ? 6 : 3],
+                  pressed: theme[e.value === view ? 7 : 4],
+                }}
+                onPress={() => selectTab(e.value)}
+                text={e.label}
+                style={{
+                  justifyContent: "flex-start",
+                }}
+              />
+            ))}
+          </ScrollView>
+        )}
       </View>
       <FadeOnRender key={view} animateUp>
         <FlashList

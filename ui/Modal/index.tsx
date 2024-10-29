@@ -41,6 +41,7 @@ const Modal = (
     innerStyles?: ViewStyle;
     disablePan?: boolean;
     height?: ViewStyle["height"];
+    transformCenter?: boolean;
   }
 ) => {
   const theme = useColorTheme();
@@ -70,7 +71,11 @@ const Modal = (
 
   const innerStyles = useAnimatedStyle(
     () => ({
-      transformOrigin: Platform.OS === "web" ? "top center" : ["50%", 0, 0],
+      transformOrigin: props.transformCenter
+        ? undefined
+        : Platform.OS === "web"
+        ? "top center"
+        : ["50%", 0, 0],
       transform: [
         {
           scale:
