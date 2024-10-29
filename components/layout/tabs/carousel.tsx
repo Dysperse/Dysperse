@@ -42,7 +42,7 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
   if (isReached || isWarning) {
     return (
       <Pressable
-        onPress={() => router.push("/settings/account")}
+        onPress={() => router.push("/settings/storage")}
         style={({ pressed, hovered }) => ({
           backgroundColor: alertTheme[pressed ? 7 : hovered ? 6 : 5],
           padding: 15,
@@ -348,4 +348,3 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
-
