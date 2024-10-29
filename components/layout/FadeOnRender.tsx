@@ -44,3 +44,4 @@ export function FadeOnRender({
 
   return <Animated.View style={opacityStyle}>{children}</Animated.View>;
 }
+

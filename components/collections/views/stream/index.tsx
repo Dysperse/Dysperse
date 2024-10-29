@@ -17,7 +17,7 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState, useTransition } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -155,6 +155,7 @@ export default function Stream() {
     );
   };
 
+  const { height } = useWindowDimensions();
   const [query, setQuery] = useState("");
 
   const filteredTasks = [
@@ -184,9 +185,7 @@ export default function Stream() {
     .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <View
-      style={[{ flex: 1, flexDirection: breakpoints.md ? "row" : "column" }]}
-    >
+    <View style={[{ flex: 1, maxHeight: height - 50 }]}>
       {!breakpoints.md && <StreamViewPicker />}
       <View
         style={{
