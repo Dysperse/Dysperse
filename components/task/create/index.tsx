@@ -431,21 +431,19 @@ const TimeSuggestion = forwardRef(function TimeSuggestion(
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: theme[3],
-        borderWidth: 1,
-        borderColor: theme[5],
         borderRadius: 5,
         position: "absolute",
         paddingHorizontal: 5,
         zIndex: 999,
-        top: 7,
-        right: 0,
+        top: -12,
+        right: -10,
         gap: 5,
+        opacity: 0.3,
         display: breakpoints.md ? "flex" : "none",
       }}
     >
       <Icon size={20}>magic_button</Icon>
-      <Text style={{ color: theme[11], fontSize: 14 }}>
+      <Text style={{ color: theme[11], fontSize: 13 }}>
         {
           {
             time: "Typing a date? Hit [space] to confirm",
