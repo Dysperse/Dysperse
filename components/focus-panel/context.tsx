@@ -32,7 +32,7 @@ export const FocusPanelProvider = ({ children }) => {
     Platform.OS === "web"
       ? t && states.includes(t)
         ? (t as PanelState)
-        : "COLLAPSED"
+        : "CLOSED"
       : "COLLAPSED"
   );
   const collapseOnBack = useRef(panelState === "COLLAPSED");
