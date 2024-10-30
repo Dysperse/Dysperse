@@ -1,8 +1,8 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import BottomSheet from "@/ui/BottomSheet";
 import ErrorAlert from "@/ui/Error";
+import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -113,98 +113,74 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
 
   return (
     <Pressable
-      onPress={() => {
-        forceClose(breakpoints.md ? { duration: 0.00001 } : undefined);
-        handleClose();
-      }}
-      style={{
-        flex: 1,
-        padding: 10,
-        paddingTop: breakpoints.md ? 10 : 100,
-        paddingBottom: insets.bottom + 10,
-      }}
+      onPress={(e) => e.stopPropagation()}
+      style={[
+        {
+          flex: 1,
+          borderWidth: 1,
+          borderColor: addHslAlpha(
+            theme[6],
+            Platform.OS === "android" ? 1 : 0.5
+          ),
+          backgroundColor: addHslAlpha(
+            theme[2],
+            Platform.OS === "android" ? 1 : 0.5
+          ),
+          marginTop: "auto",
+          overflow: "hidden",
+          maxHeight: "100%",
+          borderRadius: 25,
+        },
+      ]}
     >
-      <Pressable
-        onPress={(e) => e.stopPropagation()}
-        style={[
-          breakpoints.md && {
-            margin: "auto",
-            width: 500,
-            height: Math.min(700, height - 100),
-            shadowRadius: 50,
-            shadowOffset: {
-              width: 20,
-              height: 20,
-            },
-            shadowColor: "rgba(0,0,0,0.12)",
-            overflow: "hidden",
-          },
-          {
-            borderWidth: 1,
-            borderColor: addHslAlpha(
-              theme[6],
-              Platform.OS === "android" ? 1 : 0.5
-            ),
-            backgroundColor: addHslAlpha(
-              theme[2],
-              Platform.OS === "android" ? 1 : 0.5
-            ),
-            marginTop: "auto",
-            overflow: "hidden",
-            maxHeight: "100%",
-            borderRadius: 25,
-          },
-        ]}
-      >
-        <SafeBlurView>
-          {!breakpoints.md && (
-            <View style={{ backgroundColor: theme[2] }}>
-              <View
-                style={{
-                  width: 25,
-                  height: 5,
-                  marginTop: 15,
-                  backgroundColor: theme[5],
-                  borderRadius: 999,
-                  marginHorizontal: "auto",
-                  marginBottom: 10,
-                }}
-              />
-            </View>
-          )}
-          {data?.id ? (
-            <TaskDrawerContext.Provider
-              value={{
-                dateRange,
-                task: data,
-                updateTask,
-                mutateList,
-                isReadOnly,
-              }}
-            >
-              <TaskDrawerContent
-                forceClose={forceClose}
-                handleClose={handleClose}
-              />
-            </TaskDrawerContext.Provider>
-          ) : error ? (
-            <View style={{ padding: 20 }}>
-              <ErrorAlert />
-            </View>
-          ) : (
+      <SafeBlurView>
+        {!breakpoints.md && (
+          <View style={{ backgroundColor: theme[2] }}>
             <View
               style={{
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: height * 0.65,
-                ...(Platform.OS === "web" && { flex: 1 }),
+                width: 25,
+                height: 5,
+                marginTop: 15,
+                backgroundColor: theme[5],
+                borderRadius: 999,
+                marginHorizontal: "auto",
+                marginBottom: 10,
               }}
-            >
-              {error ? <ErrorAlert /> : <Spinner />}
-            </View>
-          )}
-        </SafeBlurView>
-      </Pressable>
+            />
+          </View>
+        )}
+        {data?.id ? (
+          <TaskDrawerContext.Provider
+            value={{
+              dateRange,
+              task: data,
+              updateTask,
+              mutateList,
+              isReadOnly,
+            }}
+          >
+            <TaskDrawerContent
+              forceClose={forceClose}
+              handleClose={handleClose}
+            />
+          </TaskDrawerContext.Provider>
+        ) : error ? (
+          <View style={{ padding: 20 }}>
+            <ErrorAlert />
+          </View>
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: height * 0.65,
+              ...(Platform.OS === "web" && { flex: 1 }),
+            }}
+          >
+            {error ? <ErrorAlert /> : <Spinner />}
+          </View>
+        )}
+      </SafeBlurView>
     </Pressable>
   );
 });
@@ -229,9 +205,8 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
   }: TaskDrawerProps,
   ref
 ) {
-  const { width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const contentRef = useRef(null);
-
   const sheetRef = useRef(null);
 
   // callbacks
@@ -256,24 +231,24 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
   return (
     <>
       {trigger}
-      <BottomSheet
+      <Modal
+        animation="BOTH"
         sheetRef={sheetRef}
-        animateOnMount={!breakpoints.md}
-        snapPoints={["100%"]}
+        maxWidth={500}
+        height={Math.min(700, height - 100)}
         onClose={handleClose}
-        style={{ width: "100%" }}
-        maxWidth={width}
-        backgroundStyle={{ backgroundColor: "transparent" }}
-        handleComponent={() => null}
-        maxBackdropOpacity={0.1}
-        enableContentPanningGesture={!breakpoints.md}
-        {...(breakpoints.md && {
-          maxBackdropOpacity: 0.05,
-          animationConfigs: {
-            overshootClamping: true,
-            duration: 0.0001,
-          },
-        })}
+        transformCenter
+        containerStyle={
+          breakpoints.md && {
+            shadowRadius: 50,
+            shadowOffset: {
+              width: 20,
+              height: 20,
+            },
+            shadowColor: "rgba(0,0,0,0.12)",
+          }
+        }
+        maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
       >
         <TaskDrawerWrapper
           ref={contentRef}
@@ -283,7 +258,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
           mutateList={mutateList}
           isReadOnly={isReadOnly}
         />
-      </BottomSheet>
+      </Modal>
     </>
   );
 });

@@ -36,7 +36,7 @@ const SetSharedValue = ({ value, from, to }) => {
 const Modal = (
   props: Omit<DBottomSheetProps, "onClose"> & {
     maxWidth?: ViewStyle["maxWidth"];
-    animation: "NONE" | "SCALE" | "SLIDE";
+    animation: "NONE" | "SCALE" | "SLIDE" | "BOTH";
     onClose?: () => void;
     innerStyles?: ViewStyle;
     disablePan?: boolean;
@@ -54,9 +54,9 @@ const Modal = (
       props.animation === "NONE" || props.animation === "SCALE"
         ? { overshootClamping: true, duration: 0.0001 }
         : {
-            overshootClamping: true,
+            overshootClamping: props.animation !== "BOTH",
             stiffness: 400,
-            damping: 40,
+            damping: props.animation === "BOTH" ? 35 : 40,
           },
     [props.animation]
   );
@@ -95,6 +95,7 @@ const Modal = (
       onClose={handleClose}
       handleComponent={() => null}
       animateOnMount={
+        props.animation === "BOTH" ||
         props.animation === "SLIDE" ||
         props.animation === "NONE" ||
         !props.animation
@@ -133,7 +134,8 @@ const Modal = (
         >
           <Animated.View
             style={[
-              props.animation === "SCALE" && innerStyles,
+              (props.animation === "SCALE" || props.animation === "BOTH") &&
+                innerStyles,
               {
                 transformOrigin:
                   Platform.OS === "web"
@@ -163,4 +165,3 @@ const Modal = (
 };
 
 export default memo(Modal);
-
