@@ -83,18 +83,18 @@ const StoryPointHeader = ({
           columnRef.current.scrollToOffset({ index: 0, animated: true })
         }
         style={{
+          flexDirection: "row",
           alignItems: "center",
           marginHorizontal: "auto",
-          justifyContent: "center",
-          gap: 10,
+          gap: 15,
         }}
       >
         <View
           style={{
             flexDirection: "column",
             alignItems: "center",
-            width: 60,
-            height: 60,
+            width: 40,
+            height: 40,
             justifyContent: "center",
             marginHorizontal: "auto",
             position: "relative",
@@ -107,19 +107,21 @@ const StoryPointHeader = ({
               left: 0,
             }}
           >
-            <Shape size={60} color={theme[5]} />
+            <Shape size={40} color={theme[5]} />
           </View>
           <Text
             style={{
               color: theme[11],
-              fontSize: 20,
+              fontSize: 18,
               fontFamily: getFontName("jetBrainsMono", 500),
             }}
           >
             {scale}
           </Text>
         </View>
-        <Text variant="eyebrow">{STORY_POINT_SCALE[index]}</Text>
+        <Text weight={900} style={{ color: theme[11] }}>
+          {STORY_POINT_SCALE[index]}
+        </Text>
       </Pressable>
       {!breakpoints.md && (
         <IconButton
