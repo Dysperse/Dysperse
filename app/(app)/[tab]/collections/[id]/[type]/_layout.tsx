@@ -47,6 +47,7 @@ export default function Layout() {
             header: () => null,
             animationEnabled: !breakpoints.md,
             freezeOnBlur: true,
+            gestureEnabled: true,
             detachPreviousScreen: false,
           }}
         >
@@ -69,3 +70,4 @@ export default function Layout() {
     </ContentWrapper>
   );
 }
+

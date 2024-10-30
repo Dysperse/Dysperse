@@ -12,6 +12,7 @@ import useSWR from "swr";
 interface ContentWrapperProps extends ViewProps {
   enabled?: boolean;
   noPaddingTop?: boolean;
+  pointerEvents?: ViewProps["pointerEvents"];
 }
 
 const ContentWrapperContext = createContext({

@@ -176,13 +176,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
         ),
       },
     !isAll &&
-      session &&
-      process.env.NODE_ENV === "development" && {
-        icon: "lock_open",
-        text: "Lock",
-        callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
-      },
-    !isAll &&
       session && {
         icon: "edit",
         text: "Edit",
@@ -408,3 +401,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+
