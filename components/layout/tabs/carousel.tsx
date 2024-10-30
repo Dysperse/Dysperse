@@ -218,7 +218,7 @@ function OpenTabsList() {
     });
   };
 
-  useHotkeys("ctrl+tab", (e) => {
+  useHotkeys(["ctrl+tab", "alt+ArrowDown"], (e) => {
     e.preventDefault();
     const i = data.findIndex((i) => i.id === tab);
     let d = i + 1;
@@ -226,7 +226,7 @@ function OpenTabsList() {
     handleSnapToIndex(d);
   });
 
-  useHotkeys("ctrl+shift+tab", (e) => {
+  useHotkeys(["ctrl+shift+tab", "alt+ArrowUp"], (e) => {
     e.preventDefault();
     const i = data.findIndex((i) => i.id === tab);
     let d = i - 1;
