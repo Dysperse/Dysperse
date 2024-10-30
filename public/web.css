@@ -196,7 +196,7 @@ input::-webkit-scrollbar {
   }
   to {
     filter: blur(0px);
-    opacity: 1;
+    opacity: 0.6;
   }
 }
 

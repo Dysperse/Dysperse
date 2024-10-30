@@ -91,7 +91,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         android_ripple={{ color: theme[5] }}
         containerStyle={{
           padding: 0,
-          transformOrigin: "left bottom",
+          transformOrigin: breakpoints.md ? "left bottom" : undefined,
           maxWidth: breakpoints.md ? 240 : "100%",
         }}
         style={() => ({
@@ -131,14 +131,27 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         animation={breakpoints.md ? "SCALE" : "SLIDE"}
         sheetRef={ref}
         maxWidth={400}
-        innerStyles={{ backgroundColor: "transparent" }}
+        innerStyles={{
+          backgroundColor: "transparent",
+          height: "100%",
+          justifyContent: "center",
+        }}
       >
-        <BlurView style={{ flex: 1 }}>
+        <BlurView
+          style={{
+            borderRadius: 25,
+            maxHeight: "100%",
+            overflow: "hidden",
+          }}
+        >
           <BottomSheetScrollView
             style={{
+              height: "auto",
               padding: 10,
-              flex: 1,
-              backgroundColor: addHslAlpha(theme[2], 0.7),
+              backgroundColor: addHslAlpha(
+                theme[2],
+                Platform.OS === "android" ? 1 : 0.7
+              ),
             }}
             showsHorizontalScrollIndicator={false}
           >
@@ -184,3 +197,4 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     </>
   );
 });
+

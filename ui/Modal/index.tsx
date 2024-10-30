@@ -71,12 +71,6 @@ const Modal = (
 
   const innerStyles = useAnimatedStyle(
     () => ({
-      transformOrigin:
-        Platform.OS === "web"
-          ? props.transformCenter
-            ? undefined
-            : "top center"
-          : ["50%", 0, 0],
       transform: [
         {
           scale:
@@ -141,6 +135,12 @@ const Modal = (
             style={[
               props.animation === "SCALE" && innerStyles,
               {
+                transformOrigin:
+                  Platform.OS === "web"
+                    ? props.transformCenter
+                      ? "center center"
+                      : "top center"
+                    : ["50%", 0, 0],
                 backgroundColor: theme[2],
                 borderRadius: 25,
                 overflow: "hidden",
@@ -163,3 +163,4 @@ const Modal = (
 };
 
 export default memo(Modal);
+
