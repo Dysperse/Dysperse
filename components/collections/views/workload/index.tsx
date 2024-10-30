@@ -1,10 +1,9 @@
 import CreateTask from "@/components/task/create";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
 import * as shapes from "@/ui/shapes";
@@ -299,16 +298,16 @@ const StoryPoint = ({
             >
               <Button
                 variant="filled"
-                height={60}
-                containerStyle={{ flex: 1, marginTop: 15 }}
-                disabled={isReadOnly}
-              >
-                <ButtonText>New</ButtonText>
-                <Icon>add</Icon>
-              </Button>
+                containerStyle={{ flex: 1 }}
+                large={!breakpoints.md}
+                bold={!breakpoints.md}
+                iconPosition="end"
+                text="Create"
+                icon="stylus_note"
+                height={breakpoints.md ? 50 : 55}
+              />
             </CreateTask>
           </View>
-
           {filteredTasks.length > 0 &&
             !filteredTasks.find(
               (task) =>
@@ -388,4 +387,3 @@ export default function Workload() {
     />
   );
 }
-

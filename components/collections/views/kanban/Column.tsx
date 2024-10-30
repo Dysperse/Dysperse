@@ -360,4 +360,3 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
-
