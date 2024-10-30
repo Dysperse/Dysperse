@@ -751,7 +751,6 @@ export function TaskDetails() {
             content: isReadOnly ? null : (
               <View style={collapsibleMenuStyles as StyleProp<ViewStyle>}>
                 <TaskDatePicker
-                  defaultView={task.recurrenceRule ? "recurrence" : "date"}
                   setValue={(name, value) =>
                     updateTask(name === "date" ? "start" : name, value)
                   }
@@ -925,4 +924,3 @@ export function TaskDetails() {
     </>
   );
 }
-

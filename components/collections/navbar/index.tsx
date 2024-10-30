@@ -120,7 +120,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   useHotkeys(
     ["p", "y", "k", "s", "g", "w", "l", "m", "c"],
     (e) => {
-      router.setParams({
+      router.setParams({  
         type: Object.keys(COLLECTION_VIEWS).find((v) =>
           v === "skyline" ? e.key === "y" : v[0].toLowerCase() === e.key
         ),
