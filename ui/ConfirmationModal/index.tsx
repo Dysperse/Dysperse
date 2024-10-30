@@ -1,6 +1,6 @@
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import { cloneElement, useCallback, useRef, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 import { Button, ButtonText } from "../Button";
 import { useColorTheme } from "../color/theme-provider";
@@ -131,38 +131,25 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
           stiffness: 400,
           damping: 40,
         }}
-        backgroundStyle={{
-          backgroundColor: "transparent",
-        }}
         handleComponent={() => null}
+        innerStyles={styles.container}
         sheetRef={ref}
       >
-        <Pressable
-          style={[
-            styles.container,
-            {
-              backgroundColor: theme[2],
-              width: "100%",
-              marginHorizontal: "auto",
-            },
-          ]}
-        >
-          <Text style={[styles.title, { color: theme[11] }]} weight={600}>
-            {props.title}
-          </Text>
-          <Text weight={500} style={[styles.secondary, { color: theme[11] }]}>
-            {props.secondary}
-          </Text>
-          <ConfirmationModalButton
-            skipLoading={props.skipLoading}
-            onSuccess={props.onSuccess}
-          />
-          <Button height={70} variant="outlined" onPress={handleClose}>
-            <ButtonText weight={900} style={styles.buttonText}>
-              Cancel
-            </ButtonText>
-          </Button>
-        </Pressable>
+        <Text style={[styles.title, { color: theme[11] }]} weight={600}>
+          {props.title}
+        </Text>
+        <Text weight={500} style={[styles.secondary, { color: theme[11] }]}>
+          {props.secondary}
+        </Text>
+        <ConfirmationModalButton
+          skipLoading={props.skipLoading}
+          onSuccess={props.onSuccess}
+        />
+        <Button height={70} variant="outlined" onPress={handleClose}>
+          <ButtonText weight={900} style={styles.buttonText}>
+            Cancel
+          </ButtonText>
+        </Button>
       </Modal>
     </>
   );

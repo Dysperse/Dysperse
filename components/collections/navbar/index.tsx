@@ -120,7 +120,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   useHotkeys(
     ["p", "y", "k", "s", "g", "w", "l", "m", "c"],
     (e) => {
-      router.setParams({  
+      router.setParams({
         type: Object.keys(COLLECTION_VIEWS).find((v) =>
           v === "skyline" ? e.key === "y" : v[0].toLowerCase() === e.key
         ),
@@ -210,16 +210,16 @@ const CollectionNavbar = memo(function CollectionNavbar({
     !isAll && session && { divider: true },
     !isAll &&
       session && {
-        renderer: () => (
-          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
-            Labels
-          </Text>
-        ),
-      },
-    !isAll &&
-      session && {
         icon: "label",
-        text: "Select labels",
+        renderer: () => (
+          <MenuItem>
+            <Icon>label</Icon>
+            <Text variant="menuItem">
+              Showing {data.labels.length} label
+              {data.labels.length !== 1 && "s"}
+            </Text>
+          </MenuItem>
+        ),
         callback: openLabelPicker,
       },
     !isAll &&
@@ -233,14 +233,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
       session && {
         divider: true,
       },
-    {
-      icon: "sync",
-      text: "Refresh",
-      callback: async (e) => {
-        await handleRefresh(e);
-        Toast.show({ type: "success", text1: "Collection up to date!" });
-      },
-    },
 
     Platform.OS === "web" &&
       !fullscreen &&
@@ -273,7 +265,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 Toast.show({ type: "info", text1: "Coming soon" });
             }}
           >
-            <Icon>edit_attributes</Icon>
+            <Icon>check_circle</Icon>
             <Text variant="menuItem" weight={300}>
               {data.showCompleted ? "Show" : "Hide"} completed
             </Text>
@@ -401,4 +393,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-
