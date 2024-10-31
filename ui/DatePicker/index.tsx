@@ -133,7 +133,9 @@ function CalendarPreview({ value, setValue, view }) {
             dayjs(fromDateId(calendarMonthId).toDateString()).isSame(
               dayjs(value?.end),
               "month"
-            ) && view === "start"
+            ) &&
+            view === "start" &&
+            dayjs(value.end).isValid()
           }
           icon="arrow_forward"
           onPress={() =>
@@ -323,4 +325,3 @@ export const DatePicker = forwardRef(
     );
   }
 );
-

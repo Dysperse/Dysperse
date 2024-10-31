@@ -150,6 +150,8 @@ export const ImageViewer = ({ children, image }) => {
                 right: 0,
                 height: 90,
                 width: "100%",
+                ...(Platform.OS === "web" &&
+                  ({ marginTop: "env(titlebar-area-height,0)" } as any)),
               }}
             >
               <IconButton
