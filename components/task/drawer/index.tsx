@@ -238,6 +238,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
         height={Math.min(700, height - 100)}
         onClose={handleClose}
         transformCenter
+        closeContainerStyles={!breakpoints.md && { justifyContent: "flex-end" }}
         containerStyle={
           breakpoints.md && {
             shadowRadius: 50,

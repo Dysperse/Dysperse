@@ -42,6 +42,7 @@ const Modal = (
     disablePan?: boolean;
     height?: ViewStyle["height"];
     transformCenter?: boolean;
+    closeContainerStyles?:ViewStyle
   }
 ) => {
   const theme = useColorTheme();
@@ -122,6 +123,7 @@ const Modal = (
           paddingBottom: insets.bottom + 15,
           alignItems: "center",
           justifyContent: "center",
+          ...props.closeContainerStyles,
         }}
         onPress={handleClose}
       >
