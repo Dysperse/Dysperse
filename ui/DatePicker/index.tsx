@@ -82,12 +82,12 @@ function CalendarPreview({ value, setValue, view }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const [calendarMonthId, setCalendarMonthId] = useState(
-    toDateId(dayjs().toDate())
+    toDateId(dayjs(value?.date).toDate())
   );
 
   useEffect(() => {
-    setCalendarMonthId(toDateId(dayjs().toDate()));
-  }, []);
+    setCalendarMonthId(toDateId(dayjs(value?.date).toDate()));
+  }, [value]);
 
   const onCalendarDayPress = (date) =>
     setValue(
