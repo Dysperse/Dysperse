@@ -1,6 +1,12 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
-import { Keyboard, StyleProp, TextInput, TextInputProps } from "react-native";
+import {
+  Keyboard,
+  Platform,
+  StyleProp,
+  TextInput,
+  TextInputProps,
+} from "react-native";
 
 interface DTextAreaProps extends TextInputProps {
   inputClassName?: string;
@@ -35,6 +41,7 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
           height: layoutHeight,
           overflow: "hidden",
           fontSize: props.fontSize || 15,
+          ...(Platform.OS === "web" && { textWrap: "balance" }),
         },
         props.style,
       ]}
