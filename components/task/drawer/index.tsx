@@ -192,6 +192,7 @@ export interface TaskDrawerProps {
   disabled?: boolean;
   isReadOnly?: boolean;
   dateRange?: string;
+  onDoublePress?: () => void;
 }
 
 export const TaskDrawer = forwardRef(function TaskDrawer(
@@ -202,6 +203,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     disabled,
     isReadOnly,
     dateRange,
+    onDoublePress,
   }: TaskDrawerProps,
   ref
 ) {
@@ -222,8 +224,19 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     contentRef.current?.triggerMutate();
   }, [isReadOnly]);
 
+  const tappedRef = useRef(0);
+
+  const handleRefTap = () => {
+    tappedRef.current++;
+    setTimeout(() => {
+      if (tappedRef.current == 2) onDoublePress();
+      else if (tappedRef.current == 1) handleOpen();
+      tappedRef.current = 0;
+    }, 200);
+  };
+
   const trigger = cloneElement((children || <Pressable />) as any, {
-    onPress: handleOpen,
+    onPress: typeof onDoublePress === "function" ? handleRefTap : handleOpen,
   });
 
   if (disabled) return children;
@@ -267,4 +280,3 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
-
