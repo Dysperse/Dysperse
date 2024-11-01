@@ -235,7 +235,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
         animation="BOTH"
         sheetRef={sheetRef}
         maxWidth={500}
-        height={Math.min(700, height - 100)}
+        height="auto"
         onClose={handleClose}
         transformCenter
         closeContainerStyles={!breakpoints.md && { justifyContent: "flex-end" }}
@@ -263,3 +263,4 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
+

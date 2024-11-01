@@ -4,12 +4,14 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import { DatePicker } from "@/ui/DatePicker";
 import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
+import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
@@ -506,6 +508,25 @@ export const normalizeRecurrenceRuleObject = (rule) => {
   });
 };
 
+const TaskCollapsibleAction = ({
+  icon,
+  text,
+  onPress,
+}: {
+  icon: string;
+  text: string;
+  onPress?: () => any;
+}) => {
+  return (
+    <Pressable style={drawerStyles.collapsibleMenuItem} onPress={onPress}>
+      <IconButton size={50} disabled style={{ opacity: 1 }} variant="outlined">
+        <Icon>{icon}</Icon>
+      </IconButton>
+      <Text>{text}</Text>
+    </Pressable>
+  );
+};
+
 export function TaskDetails() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -517,7 +538,7 @@ export function TaskDetails() {
     padding: 10,
     flexDirection: "row",
     paddingVertical: 10,
-  };
+  } as StyleProp<ViewStyle>;
 
   const noteMenuRef = useRef<BottomSheetModal>(null);
 
@@ -537,6 +558,8 @@ export function TaskDetails() {
           : dayjs(task.start).format("[@] h:mm A"),
       ];
 
+  const addRecurrenceRef = useRef(null);
+  const addDateRef = useRef(null);
   const backgroundColors = {
     default: "transparent",
     active: "transparent",
@@ -661,7 +684,6 @@ export function TaskDetails() {
                   primary={`From ${
                     task?.integrationParams?.from || "integration"
                   }`}
-                  // secondary={JSON.stringify(task, null, 2)}
                 />
               </ListItemButton>
             ),
@@ -670,7 +692,7 @@ export function TaskDetails() {
           task.note && {
             trigger: () => <TaskNote backgroundColors={backgroundColors} />,
             content: !isReadOnly && (
-              <View style={collapsibleMenuStyles as StyleProp<ViewStyle>}>
+              <View style={collapsibleMenuStyles}>
                 <TaskAttachmentButton
                   defaultView="Note"
                   menuRef={noteMenuRef}
@@ -678,78 +700,43 @@ export function TaskDetails() {
                   task={task}
                   updateTask={updateTask}
                 >
-                  <Pressable
-                    style={drawerStyles.collapsibleMenuItem}
-                    android_ripple={{ color: theme[5] }}
-                  >
-                    <IconButton
-                      disabled
-                      size={50}
-                      variant="outlined"
-                      style={{ opacity: 1 }}
-                      icon="edit"
-                    />
-                    <Text>Edit</Text>
-                  </Pressable>
+                  <TaskCollapsibleAction icon="edit" text="Edit" />
                 </TaskAttachmentButton>
-                <Pressable
-                  style={drawerStyles.collapsibleMenuItem}
+                <TaskCollapsibleAction
+                  icon="close"
+                  text="Remove"
                   onPress={() => updateTask("note", null)}
-                  android_ripple={{ color: theme[5] }}
-                >
-                  <IconButton
-                    size={50}
-                    variant="outlined"
-                    disabled
-                    style={{ opacity: 1 }}
-                    icon="close"
-                  />
-                  <Text>Remove</Text>
-                </Pressable>
+                />
               </View>
             ),
           },
           {
             trigger: () => (
-              <TaskDatePicker
-                defaultView={task.recurrenceRule ? "recurrence" : "date"}
-                setValue={(name, value) =>
-                  updateTask(name === "date" ? "start" : name, value)
-                }
-                watch={(inputName) => {
-                  return {
-                    date: null,
-                    dateOnly: task.dateOnly,
-                    recurrenceRule: recurrenceRule?.options,
-                  }[inputName];
-                }}
+              <ListItemButton
+                disabled
+                backgroundColors={backgroundColors}
+                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
               >
-                <ListItemButton
-                  backgroundColors={backgroundColors}
-                  style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-                  disabled={
-                    Boolean(task.start || task.recurrenceRule) || isReadOnly
-                  }
-                >
-                  <Icon>
-                    {task.start
-                      ? "calendar_today"
-                      : task.recurrenceRule
-                      ? "loop"
-                      : "calendar_add_on"}
-                  </Icon>
-                  <ListItemText primary={dateName[0]} secondary={dateName[1]} />
-                  <View style={{ flexDirection: "row" }}>
-                    {!isReadOnly && <TaskNotificationsButton />}
-                    {!isReadOnly && !task.recurrenceRule && task.start && (
-                      <TaskRescheduleButton />
-                    )}
-                  </View>
-                </ListItemButton>
-              </TaskDatePicker>
+                <Icon>
+                  {task.start
+                    ? "calendar_today"
+                    : task.recurrenceRule
+                    ? "loop"
+                    : "calendar_add_on"}
+                </Icon>
+                <ListItemText primary={dateName[0]} secondary={dateName[1]} />
+                <View style={{ flexDirection: "row" }}>
+                  {!isReadOnly && (task.start || task.recurrenceRule) && (
+                    <TaskNotificationsButton />
+                  )}
+                  {!isReadOnly && !task.recurrenceRule && task.start && (
+                    <TaskRescheduleButton />
+                  )}
+                </View>
+              </ListItemButton>
             ),
-            content: isReadOnly ? null : (
-              <View style={collapsibleMenuStyles as StyleProp<ViewStyle>}>
+            content: isReadOnly ? null : task.start || task.recurrenceRule ? (
+              <View style={collapsibleMenuStyles}>
                 <TaskDatePicker
                   setValue={(name, value) =>
                     updateTask(name === "date" ? "start" : name, value)
@@ -762,43 +749,39 @@ export function TaskDetails() {
                     }[inputName];
                   }}
                 >
-                  <Pressable
-                    style={drawerStyles.collapsibleMenuItem}
-                    android_ripple={{ color: theme[5] }}
-                  >
-                    <IconButton
-                      disabled
-                      style={{
-                        opacity: 1,
-                      }}
-                      variant="outlined"
-                      size={50}
-                    >
-                      <Icon>edit</Icon>
-                    </IconButton>
-                    <Text>Edit</Text>
-                  </Pressable>
+                  <TaskCollapsibleAction icon="edit" text="Edit" />
                 </TaskDatePicker>
-                <Pressable
-                  style={drawerStyles.collapsibleMenuItem}
-                  android_ripple={{ color: theme[5] }}
+                <TaskCollapsibleAction
+                  icon="close"
+                  text="Remove"
                   onPress={() => {
                     updateTask("recurrenceRule", null);
                     updateTask("start", null);
                   }}
-                >
-                  <IconButton
-                    style={{
-                      opacity: 1,
-                    }}
-                    variant="outlined"
-                    size={50}
-                    disabled
-                  >
-                    <Icon>close</Icon>
-                  </IconButton>
-                  <Text>Remove</Text>
-                </Pressable>
+                />
+              </View>
+            ) : (
+              <View style={[collapsibleMenuStyles, { height: 100 }]}>
+                <RecurrencePicker
+                  value={recurrenceRule?.options}
+                  setValue={(value) => updateTask("recurrenceRule", value)}
+                  ref={addRecurrenceRef}
+                />
+                <DatePicker
+                  value={{ date: null, dateOnly: true, end: null }}
+                  setValue={updateTask}
+                  ref={addDateRef}
+                />
+                <TaskCollapsibleAction
+                  icon="loop"
+                  text="Add recurrence"
+                  onPress={() => addRecurrenceRef.current?.present()}
+                />
+                <TaskCollapsibleAction
+                  icon="today"
+                  text="Set due date"
+                  onPress={() => addDateRef.current?.present()}
+                />
               </View>
             ),
           },
@@ -924,3 +907,4 @@ export function TaskDetails() {
     </>
   );
 }
+

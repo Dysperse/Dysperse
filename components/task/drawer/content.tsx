@@ -212,7 +212,7 @@ export function TaskDrawerContent({
         style={{ height: 40, width: "100%", marginBottom: -40, zIndex: 1 }}
       />
       <SafeScrollView showsHorizontalScrollIndicator={false}>
-        <View style={{ paddingBottom: 50, paddingHorizontal: 20 }}>
+        <View style={{ paddingBottom: 30, paddingHorizontal: 20 }}>
           <View
             style={{
               gap: 10,
@@ -296,3 +296,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+
