@@ -3,6 +3,7 @@ import PanelSwipeTrigger from "@/components/focus-panel/PanelSwipeTrigger";
 import { FocusPanelProvider } from "@/components/focus-panel/context";
 import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
+import TabFriendModal from "@/components/layout/TabFriendModal";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SessionLoadingScreen } from "@/components/layout/loading";
@@ -331,6 +332,7 @@ export default function AppLayout() {
                             <LoadingErrors />
                             <SelectionNavbar />
                             <NotificationsModal />
+                            <TabFriendModal />
                             {breakpoints.md ? (
                               <DesktopLayout>{content}</DesktopLayout>
                             ) : (
