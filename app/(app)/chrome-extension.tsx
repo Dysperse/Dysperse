@@ -17,7 +17,6 @@ import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function Branding() {
-  const theme = useColorTheme();
   const { session } = useUser();
 
   return (
