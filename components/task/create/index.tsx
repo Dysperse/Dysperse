@@ -36,9 +36,9 @@ import React, {
 } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Platform, Pressable, View } from "react-native";
+import Collapsible from "react-native-collapsible";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
-  SlideInUp,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -999,38 +999,55 @@ function SubTaskInformation({ watch }) {
   const parentTask = watch("parentTask");
   const theme = useColorTheme();
   return (
-    parentTask && (
-      <Animated.View
-        entering={SlideInUp}
+    <View
+      style={{
+        marginTop: -25,
+        marginHorizontal: -25,
+      }}
+    >
+      <Collapsible
+        collapsed={!parentTask}
+        duration={200}
         style={{
-          backgroundColor: addHslAlpha(theme[11], 0.8),
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 20,
-          marginTop: -25,
-          marginHorizontal: -25,
-          height: 60,
+          backgroundColor: addHslAlpha(theme[9], 0.15),
         }}
       >
-        <Icon bold style={{ color: theme[1] }}>
-          subdirectory_arrow_right
-        </Icon>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text weight={900} style={{ color: theme[1], fontSize: 16 }}>
-            Creating subtask
-          </Text>
-          <Text
-            style={{ opacity: 0.7, fontSize: 13, color: theme[1] }}
-            weight={300}
-            numberOfLines={1}
-          >
-            {parentTask?.name}
-          </Text>
+        <View
+          style={{
+            gap: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+          }}
+        >
+          <Icon bold style={{ color: theme[11] }}>
+            subdirectory_arrow_right
+          </Icon>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text weight={900} style={{ color: theme[11], fontSize: 16 }}>
+              Creating subtask
+            </Text>
+            <Text
+              style={{ opacity: 0.7, fontSize: 13, color: theme[11] }}
+              weight={300}
+              numberOfLines={1}
+            >
+              {parentTask?.name}
+            </Text>
+          </View>
+          <IconButton
+            variant="filled"
+            icon="close"
+            backgroundColors={{
+              default: addHslAlpha(theme[9], 0.05),
+              hovered: addHslAlpha(theme[9], 0.15),
+              pressed: addHslAlpha(theme[9], 0.25),
+            }}
+          />
         </View>
-      </Animated.View>
-    )
+      </Collapsible>
+    </View>
   );
 }
 
@@ -1280,7 +1297,6 @@ const CreateTask = forwardRef(
         {trigger}
         <Modal
           disablePan={breakpoints.md}
-          maxBackdropOpacity={0.05}
           maxWidth={breakpoints.md ? 700 : "100%"}
           sheetRef={ref}
           keyboardBehavior="interactive"
@@ -1302,3 +1318,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+
