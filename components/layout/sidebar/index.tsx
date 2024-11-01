@@ -196,7 +196,8 @@ export const LogoButton = memo(function LogoButton({
   const { panelState, setPanelState } = useFocusPanelContext();
   const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
-  const openSupport = useCallback(() => {
+  const openSupport = useCallback((e) => {
+    e?.preventDefault();
     Linking.openURL("https://blog.dysperse.com");
   }, []);
   const openFeedback = useCallback(() => {
@@ -206,12 +207,11 @@ export const LogoButton = memo(function LogoButton({
     Linking.openURL("https://tally.so/r/mVZjvE?email=" + session?.user?.email);
   }, [session]);
 
-  const toggleFocus = () =>
-    setPanelState((t) => (t === "CLOSED" ? "OPEN" : "CLOSED"));
-
   useEffect(() => {
     sendApiRequest(sessionToken, "POST", "space/integrations/sync", {});
   }, [sessionToken]);
+
+  useHotkeys("F1", openSupport);
 
   const syncRef = useRef(null);
   const [isLoading, setLoading] = useState(false);
@@ -723,3 +723,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+
