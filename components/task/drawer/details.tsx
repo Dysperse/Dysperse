@@ -10,9 +10,9 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
-import Text, { getFontName } from "@/ui/Text";
+import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -527,9 +527,153 @@ const TaskCollapsibleAction = ({
   );
 };
 
-export function TaskDetails() {
+function ComplexityTrigger({ backgroundColors }) {
+  const ref = useRef(null);
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+
+  const complexityScale = [2, 4, 8, 16, 32];
+
+  return (
+    <ListItemButton
+      backgroundColors={backgroundColors}
+      disabled
+      style={{
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+      }}
+      pressableStyle={{
+        flexDirection: breakpoints.md ? "row" : "column",
+        alignItems: breakpoints.md ? undefined : "flex-start",
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          flex: 1,
+          gap: 20,
+        }}
+      >
+        <Icon>exercise</Icon>
+        <ListItemText
+          primary="Complexity"
+          secondary={
+            STORY_POINT_SCALE[
+              complexityScale.findIndex((i) => i === task.storyPoints)
+            ] || "How difficult is this task?"
+          }
+        />
+      </View>
+      {!isReadOnly && (
+        <View
+          style={[
+            {
+              flexDirection: "row",
+              gap: 3,
+            },
+            !breakpoints.md && { width: "100%", flex: 1 },
+          ]}
+        >
+          {task.storyPoints && (
+            <IconButton
+              onPress={() => updateTask("storyPoints", null)}
+              size={35}
+              variant={breakpoints.md ? undefined : "outlined"}
+              animationConfigs={breakpoints.md && { duration: 0.0001 }}
+              style={[
+                breakpoints.md
+                  ? { borderRadius: 10 }
+                  : { width: undefined, flex: 1 },
+              ]}
+            >
+              <Icon style={{ color: theme[11] }}>close</Icon>
+            </IconButton>
+          )}
+          <MenuPopover
+            menuRef={ref}
+            containerStyle={{ width: 200 }}
+            trigger={
+              task.storyPoints ? (
+                <Pressable
+                  style={({ pressed, hovered }) => ({
+                    paddingLeft: 5,
+                    gap: 5,
+                    width: 60,
+                    height: 35,
+                    backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                  })}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "mono",
+                      color: theme[1],
+                    }}
+                  >
+                    {String(task.storyPoints).padStart(2, "0")}
+                  </Text>
+                  <Icon style={{ color: theme[1] }}>expand_more</Icon>
+                </Pressable>
+              ) : (
+                <IconButton size={35} variant="outlined" icon="add" />
+              )
+            }
+            options={
+              complexityScale.map((n) => ({
+                renderer: () => (
+                  <MenuItem
+                    onPress={() => {
+                      updateTask("storyPoints", n);
+                      ref.current?.close();
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 30,
+                        height: 30,
+                        backgroundColor: addHslAlpha(
+                          theme[11],
+                          n === task.storyPoints ? 1 : 0.1
+                        ),
+                        borderRadius: 10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "mono",
+                          color: theme[n === task.storyPoints ? 1 : 11],
+                        }}
+                      >
+                        {String(n).padStart(2, "0")}
+                      </Text>
+                    </View>
+                    <Text variant="menuItem">
+                      {
+                        STORY_POINT_SCALE[
+                          complexityScale.findIndex((i) => i === n)
+                        ]
+                      }
+                    </Text>
+                  </MenuItem>
+                ),
+              })) as any
+            }
+          />
+        </View>
+      )}
+    </ListItemButton>
+  );
+}
+
+export function TaskDetails() {
+  const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   const [activeSections, setActiveSections] = useState([]);
@@ -542,7 +686,6 @@ export function TaskDetails() {
 
   const noteMenuRef = useRef<BottomSheetModal>(null);
 
-  const complexityScale = [2, 4, 8, 16, 32];
   const recurrenceRule =
     task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
 
@@ -790,112 +933,7 @@ export function TaskDetails() {
             ? null
             : {
                 trigger: () => (
-                  <ListItemButton
-                    backgroundColors={backgroundColors}
-                    disabled
-                    style={{
-                      paddingVertical: 15,
-                      paddingHorizontal: 20,
-                    }}
-                    pressableStyle={{
-                      flexDirection: breakpoints.md ? "row" : "column",
-                      alignItems: breakpoints.md ? undefined : "flex-start",
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        flex: 1,
-                        gap: 20,
-                      }}
-                    >
-                      <Icon>exercise</Icon>
-                      <ListItemText
-                        primary="Complexity"
-                        secondary={
-                          STORY_POINT_SCALE[
-                            complexityScale.findIndex(
-                              (i) => i === task.storyPoints
-                            )
-                          ] || "How difficult is this task?"
-                        }
-                      />
-                    </View>
-                    {!isReadOnly && (
-                      <View
-                        style={[
-                          {
-                            flexDirection: "row",
-                            gap: 3,
-                          },
-                          !breakpoints.md && { width: "100%", flex: 1 },
-                        ]}
-                      >
-                        {task.storyPoints && (
-                          <IconButton
-                            onPress={() => updateTask("storyPoints", null)}
-                            size={35}
-                            variant={breakpoints.md ? undefined : "outlined"}
-                            animationConfigs={
-                              breakpoints.md && { duration: 0.0001 }
-                            }
-                            style={[
-                              breakpoints.md
-                                ? { borderRadius: 10 }
-                                : { width: undefined, flex: 1 },
-                            ]}
-                          >
-                            <Icon style={{ color: theme[11] }}>close</Icon>
-                          </IconButton>
-                        )}
-                        {complexityScale.map((n) => (
-                          <IconButton
-                            key={n}
-                            onPress={() => updateTask("storyPoints", n)}
-                            size={35}
-                            backgroundColors={{
-                              default: addHslAlpha(
-                                theme[11],
-                                n === task.storyPoints ? 0.8 : 0
-                              ),
-                              pressed: addHslAlpha(
-                                theme[11],
-                                n === task.storyPoints ? 1 : 0
-                              ),
-                              hovered: addHslAlpha(
-                                theme[11],
-                                n === task.storyPoints ? 0.9 : 0
-                              ),
-                            }}
-                            variant={breakpoints.md ? undefined : "outlined"}
-                            animationConfigs={
-                              breakpoints.md && { duration: 0.0001 }
-                            }
-                            style={[
-                              breakpoints.md
-                                ? {
-                                    borderRadius: 10,
-                                  }
-                                : {
-                                    width: undefined,
-                                    flex: 1,
-                                  },
-                            ]}
-                          >
-                            <Text
-                              style={{
-                                fontFamily: getFontName("jetBrainsMono", 500),
-                                color: theme[n === task.storyPoints ? 3 : 11],
-                              }}
-                            >
-                              {String(n).padStart(2, "0")}
-                            </Text>
-                          </IconButton>
-                        ))}
-                      </View>
-                    )}
-                  </ListItemButton>
+                  <ComplexityTrigger backgroundColors={backgroundColors} />
                 ),
                 content: <></>,
               },
