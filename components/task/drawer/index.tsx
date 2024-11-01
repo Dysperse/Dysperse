@@ -249,6 +249,10 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
             shadowColor: "rgba(0,0,0,0.12)",
           }
         }
+        innerStyles={{
+          backgroundColor:
+            Platform.OS === "android" ? undefined : "transparent",
+        }}
         maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
       >
         <TaskDrawerWrapper
