@@ -142,7 +142,7 @@ export const ImageViewer = ({ children, image }) => {
             <View
               style={{
                 padding: 20,
-                paddingTop: insets.top,
+                paddingTop: insets.top + 20,
                 gap: 5,
                 flexDirection: "row",
                 position: "absolute",
@@ -186,3 +186,4 @@ export const ImageViewer = ({ children, image }) => {
     </>
   );
 };
+

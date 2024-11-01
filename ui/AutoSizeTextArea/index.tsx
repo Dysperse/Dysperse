@@ -41,7 +41,7 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
           height: layoutHeight,
           overflow: "hidden",
           fontSize: props.fontSize || 15,
-          ...(Platform.OS === "web" && { textWrap: "balance" }),
+          ...(Platform.OS === "web" && { textWrap: "pretty" }),
         },
         props.style,
       ]}
