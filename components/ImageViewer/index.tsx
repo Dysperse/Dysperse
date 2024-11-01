@@ -1,7 +1,6 @@
 import BottomSheet from "@/ui/BottomSheet";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -110,19 +109,27 @@ export const ImageViewer = ({ children, image }) => {
                 flex: 1,
               }}
             >
-              {state === "success" ? (
-                <Image
-                  onError={() => setState("error")}
-                  onLoad={() => setState("success")}
-                  contentFit="contain"
-                  contentPosition="center"
-                  source={{ uri: image }}
-                  style={{ flex: 1, width: "100%" }}
-                />
-              ) : state === "error" ? (
-                <ErrorAlert />
-              ) : (
-                <Spinner />
+              <Image
+                onError={() => setState("error")}
+                onLoadEnd={() => setState("success")}
+                contentFit="contain"
+                contentPosition="center"
+                source={{ uri: image }}
+                style={{ flex: 1, width: "100%" }}
+              />
+              {state === "loading" && (
+                <View
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 9999,
+                  }}
+                >
+                  <Spinner />
+                </View>
               )}
             </View>
             <LinearGradient
