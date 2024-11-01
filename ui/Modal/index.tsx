@@ -42,7 +42,7 @@ const Modal = (
     disablePan?: boolean;
     height?: ViewStyle["height"];
     transformCenter?: boolean;
-    closeContainerStyles?:ViewStyle
+    closeContainerStyles?: ViewStyle;
   }
 ) => {
   const theme = useColorTheme();
@@ -64,11 +64,12 @@ const Modal = (
 
   const handleClose = useCallback(() => {
     props.sheetRef.current?.close({
-      ...animationConfigs,
+      overshootClamping: true,
       damping: 20,
+      stiffness: 300,
     });
     props.onClose?.();
-  }, [animationConfigs, props]);
+  }, [props]);
 
   const innerStyles = useAnimatedStyle(
     () => ({
@@ -167,3 +168,4 @@ const Modal = (
 };
 
 export default memo(Modal);
+
