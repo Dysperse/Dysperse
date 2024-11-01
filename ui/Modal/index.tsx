@@ -64,9 +64,13 @@ const Modal = (
 
   const handleClose = useCallback(() => {
     props.sheetRef.current?.close({
-      overshootClamping: true,
-      damping: 20,
-      stiffness: 300,
+      ...(props.animation !== "SCALE"
+        ? { duration: 0.0001 }
+        : {
+            overshootClamping: true,
+            damping: 20,
+            stiffness: 300,
+          }),
     });
     props.onClose?.();
   }, [props]);
