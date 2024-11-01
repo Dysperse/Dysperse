@@ -836,6 +836,11 @@ export function TaskDetails() {
             trigger: () => <TaskNote backgroundColors={backgroundColors} />,
             content: !isReadOnly && (
               <View style={collapsibleMenuStyles}>
+                <TaskCollapsibleAction
+                  icon="close"
+                  text="Remove"
+                  onPress={() => updateTask("note", null)}
+                />
                 <TaskAttachmentButton
                   defaultView="Note"
                   menuRef={noteMenuRef}
@@ -845,11 +850,6 @@ export function TaskDetails() {
                 >
                   <TaskCollapsibleAction icon="edit" text="Edit" />
                 </TaskAttachmentButton>
-                <TaskCollapsibleAction
-                  icon="close"
-                  text="Remove"
-                  onPress={() => updateTask("note", null)}
-                />
               </View>
             ),
           },
@@ -880,6 +880,14 @@ export function TaskDetails() {
             ),
             content: isReadOnly ? null : task.start || task.recurrenceRule ? (
               <View style={collapsibleMenuStyles}>
+                <TaskCollapsibleAction
+                  icon="close"
+                  text="Remove"
+                  onPress={() => {
+                    updateTask("recurrenceRule", null);
+                    updateTask("start", null);
+                  }}
+                />
                 <TaskDatePicker
                   setValue={(name, value) =>
                     updateTask(name === "date" ? "start" : name, value)
@@ -894,14 +902,6 @@ export function TaskDetails() {
                 >
                   <TaskCollapsibleAction icon="edit" text="Edit" />
                 </TaskDatePicker>
-                <TaskCollapsibleAction
-                  icon="close"
-                  text="Remove"
-                  onPress={() => {
-                    updateTask("recurrenceRule", null);
-                    updateTask("start", null);
-                  }}
-                />
               </View>
             ) : (
               <View style={[collapsibleMenuStyles, { height: 100 }]}>
