@@ -634,7 +634,6 @@ function TaskNameInput({
                       const url = e.clipboardData
                         .getData("text/plain")
                         .match(/!\[.*\]\((.*)\)/)[1];
-                      alert(url);
                       setValue("attachments", [
                         ...attachments,
                         { type: "IMAGE", data: url },
