@@ -49,7 +49,7 @@ function TaskNameInput({ bottomSheet }) {
         textAlign="center"
         value={name}
         onKeyPress={(e) => {
-          if (e.nativeEvent.key === "Enter") {
+          if (e.nativeEvent.key === "Enter" || e.nativeEvent.key === "Escape") {
             e.preventDefault();
             e.target.blur();
           }
