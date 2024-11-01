@@ -769,7 +769,7 @@ export function TaskDetails() {
                 />
                 <DatePicker
                   value={{ date: null, dateOnly: true, end: null }}
-                  setValue={updateTask}
+                  setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
                   ref={addDateRef}
                 />
                 <TaskCollapsibleAction
