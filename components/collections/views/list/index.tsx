@@ -252,7 +252,7 @@ export default function List() {
                 width: 600,
                 marginHorizontal: "auto",
                 maxWidth: width - 40,
-                marginBottom: 10,
+                marginBottom: item.header ? 10 : 0,
               }}
             >
               <ListItem
@@ -275,4 +275,3 @@ export default function List() {
     </View>
   );
 }
-

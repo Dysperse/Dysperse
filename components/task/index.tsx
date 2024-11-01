@@ -1,4 +1,5 @@
 import { useSelectionContext } from "@/context/SelectionContext";
+import { useGlobalTaskContext } from "@/context/globalTaskContext";
 import { useUser } from "@/context/useUser";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -195,6 +196,7 @@ const Task = memo(function Task({
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
   const { selection, setSelection } = useSelectionContext();
+  const { globalTaskCreateRef, setDefaultValues } = useGlobalTaskContext();
 
   const handleSelect = () => {
     if (isReadOnly) return;
@@ -237,6 +239,12 @@ const Task = memo(function Task({
   return (
     <Animated.View style={taskStyle}>
       <TaskDrawer
+        onDoublePress={() => {
+          globalTaskCreateRef.current.present();
+          setTimeout(() => {
+            globalTaskCreateRef.current.setValue("parentTask", task);
+          }, 100);
+        }}
         id={task.id}
         mutateList={onTaskUpdate}
         dateRange={dateRange}
@@ -357,4 +365,3 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
-

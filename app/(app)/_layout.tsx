@@ -10,6 +10,7 @@ import { SessionLoadingScreen } from "@/components/layout/loading";
 import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
+import { GlobalTaskContextProvider } from "@/context/globalTaskContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -322,34 +323,36 @@ export default function AppLayout() {
                     <CommandPaletteProvider>
                       <ThemeProvider value={routerTheme}>
                         <FocusPanelProvider>
-                          <View
-                            style={[
-                              breakpoints.md
-                                ? { flex: 1, height }
-                                : { width: "100%" },
-                            ]}
-                          >
-                            <LoadingErrors />
-                            <SelectionNavbar />
-                            <NotificationsModal />
-                            <TabFriendModal />
-                            {breakpoints.md ? (
-                              <DesktopLayout>{content}</DesktopLayout>
-                            ) : (
-                              <DrawerLayout
-                                ref={sidebarRef}
-                                useNativeAnimations={false}
-                                drawerPosition="left"
-                                drawerType="back"
-                                overlayColor="transparent"
-                                drawerWidth={SIDEBAR_WIDTH}
-                                edgeWidth={sidebarWidth}
-                                renderNavigationView={renderNavigationView}
-                              >
-                                {content}
-                              </DrawerLayout>
-                            )}
-                          </View>
+                          <GlobalTaskContextProvider>
+                            <View
+                              style={[
+                                breakpoints.md
+                                  ? { flex: 1, height }
+                                  : { width: "100%" },
+                              ]}
+                            >
+                              <LoadingErrors />
+                              <SelectionNavbar />
+                              <NotificationsModal />
+                              <TabFriendModal />
+                              {breakpoints.md ? (
+                                <DesktopLayout>{content}</DesktopLayout>
+                              ) : (
+                                <DrawerLayout
+                                  ref={sidebarRef}
+                                  useNativeAnimations={false}
+                                  drawerPosition="left"
+                                  drawerType="back"
+                                  overlayColor="transparent"
+                                  drawerWidth={SIDEBAR_WIDTH}
+                                  edgeWidth={sidebarWidth}
+                                  renderNavigationView={renderNavigationView}
+                                >
+                                  {content}
+                                </DrawerLayout>
+                              )}
+                            </View>
+                          </GlobalTaskContextProvider>
                         </FocusPanelProvider>
                       </ThemeProvider>
                     </CommandPaletteProvider>
@@ -364,4 +367,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-

@@ -43,12 +43,18 @@ function ContentWrapper(props: ContentWrapperProps) {
   useEffect(() => {
     if (params.tab) {
       mutate(
-        (oldData) =>
-          oldData.map((oldTab) =>
-            oldTab.id === params.tab
-              ? { ...oldTab, params: omit(["tab", "params", "screen"], params) }
-              : oldTab
-          ),
+        (oldData) => {
+          if (oldData) {
+            return oldData.map((oldTab) =>
+              oldTab.id === params.tab
+                ? {
+                    ...oldTab,
+                    params: omit(["tab", "params", "screen"], params),
+                  }
+                : oldTab
+            );
+          }
+        },
         {
           revalidate: false,
         }
@@ -107,4 +113,3 @@ function ContentWrapper(props: ContentWrapperProps) {
 }
 
 export default memo(ContentWrapper);
-

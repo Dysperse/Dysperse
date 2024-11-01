@@ -232,7 +232,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
       if (tappedRef.current == 2) onDoublePress();
       else if (tappedRef.current == 1) handleOpen();
       tappedRef.current = 0;
-    }, 200);
+    }, 250);
   };
 
   const trigger = cloneElement((children || <Pressable />) as any, {

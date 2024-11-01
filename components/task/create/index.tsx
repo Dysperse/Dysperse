@@ -38,6 +38,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
+  SlideInUp,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -919,8 +920,9 @@ function DateButton({
   const date = watch("date");
   const end = watch("end");
   const dateOnly = watch("dateOnly");
+  const parentTask = watch("parentTask");
 
-  return (
+  return parentTask ? null : (
     <View
       style={{
         display: date || recurrenceRule ? "none" : "flex",
@@ -993,180 +995,227 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
   );
 }
 
-function BottomSheetContent({
-  defaultValues,
-  mutateList,
-}: {
-  defaultValues: CreateTaskDrawerProps["defaultValues"];
-  mutateList: any;
-}) {
-  const breakpoints = useResponsiveBreakpoints();
-  const { sessionToken } = useUser();
-  const isDark = useDarkMode();
-  const nameRef = useRef(null);
-  const dateRef = useRef(null);
-  const recurrenceRef = useRef(null);
-  const submitRef = useRef(null);
-  const menuRef = useRef<BottomSheetModal>(null);
-  const labelMenuRef = useRef<BottomSheetModal>(null);
+function SubTaskInformation({ watch }) {
+  const parentTask = watch("parentTask");
   const theme = useColorTheme();
-  const { control, handleSubmit, reset, watch, setValue } = useForm({
-    defaultValues: {
-      dateOnly:
-        typeof defaultValues.dateOnly === "boolean"
-          ? defaultValues.dateOnly
-          : true,
-      name: defaultValues.name || "",
-      date: defaultValues.date,
-      pinned: defaultValues.pinned || false,
-      label: defaultValues.label,
-      storyPoints: defaultValues.storyPoints,
-      collectionId: defaultValues.collectionId,
-      attachments: [],
-      note: "",
-    },
-  });
-
-  useEffect(() => {
-    nameRef.current.focus({ preventScroll: true });
-  }, [nameRef, breakpoints]);
-
-  const onSubmit = async (data) => {
-    try {
-      sendApiRequest(
-        sessionToken,
-        "POST",
-        "space/entity",
-        {},
-        {
-          body: JSON.stringify({
-            ...data,
-            name: data.name.replaceAll(/[@/]\[(.*?)\]\((.*?)\)/g, "$1"),
-            start: data?.date?.toISOString(),
-            agendaOrder: defaultValues.agendaOrder,
-            pinned: data.pinned,
-            labelId: data.label?.id,
-            type: "TASK",
-            collectionId: data.label?.id ? null : data.collectionId,
-          }),
-        }
-      )
-        .then((e) => mutateList(e))
-        .then((e) => console.log(e));
-      reset(defaultValues);
-
-      Toast.show({
-        type: "success",
-        text1: "Created task!",
-      });
-      nameRef.current.focus();
-    } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
-    }
-  };
-
-  const handleSubmitButtonClick = () => {
-    if (!submitRef.current.isDisabled())
-      handleSubmit(onSubmit, () =>
-        Toast.show({
-          type: "error",
-          text1: "Type in a task name",
-        })
-      )();
-  };
-
-  const colors = {
-    default: addHslAlpha(theme[9], 0.15),
-    hovered: addHslAlpha(theme[9], 0.25),
-    pressed: addHslAlpha(theme[9], 0.35),
-  };
-
   return (
-    <Pressable
-      style={{
-        minHeight: Platform.OS === "android" ? 280 : undefined,
-        backgroundColor: addHslAlpha(
-          theme[2],
-          Platform.OS === "android" ? 1 : 0.5
-        ),
-      }}
-    >
-      <BlurView
-        style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
-        intensity={Platform.OS === "android" ? 0 : 50}
-        tint={
-          isDark
-            ? "systemUltraThinMaterialDark"
-            : "systemUltraThinMaterialLight"
-        }
+    parentTask && (
+      <Animated.View
+        entering={SlideInUp}
+        style={{
+          backgroundColor: addHslAlpha(theme[11], 0.8),
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 20,
+          marginTop: -25,
+          marginHorizontal: -25,
+          height: 60,
+        }}
       >
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "column",
-            zIndex: 0,
-          }}
-        >
-          <Footer
-            dateRef={dateRef}
-            recurrenceRef={recurrenceRef}
-            setValue={setValue}
-            watch={watch}
-            nameRef={nameRef}
-            labelMenuRef={labelMenuRef}
-            control={control}
-          />
-          <TaskNameInput
-            submitRef={submitRef}
-            reset={reset}
-            watch={watch}
-            control={control}
-            menuRef={menuRef}
-            handleSubmitButtonClick={handleSubmitButtonClick}
-            nameRef={nameRef}
-            setValue={setValue}
-          />
+        <Icon bold style={{ color: theme[1] }}>
+          subdirectory_arrow_right
+        </Icon>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text weight={900} style={{ color: theme[1], fontSize: 16 }}>
+            Creating subtask
+          </Text>
+          <Text
+            style={{ opacity: 0.7, fontSize: 13, color: theme[1] }}
+            weight={300}
+            numberOfLines={1}
+          >
+            {parentTask?.name}
+          </Text>
         </View>
-        <TaskAttachments watch={watch} setValue={setValue} />
-        <View
-          style={{
-            gap: 7,
-            zIndex: Platform.OS === "web" ? -2 : undefined,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <CancelButton />
-          <Attachment
-            menuRef={menuRef}
-            control={control}
-            nameRef={nameRef}
-            setValue={setValue}
-          />
-          <LabelButton
-            watch={watch}
-            setValue={setValue}
-            defaultValues={defaultValues}
-            colors={colors}
-          />
-          <DateButton
-            watch={watch}
-            setValue={setValue}
-            defaultValues={defaultValues}
-            dateRef={dateRef}
-            recurrenceRef={recurrenceRef}
-            colors={colors}
-          />
-          <PinTask watch={watch} control={control} />
-          <SubmitButton ref={submitRef} onSubmit={handleSubmitButtonClick} />
-        </View>
-      </BlurView>
-    </Pressable>
+      </Animated.View>
+    )
   );
 }
+
+const BottomSheetContent = forwardRef(
+  (
+    {
+      defaultValues,
+      mutateList,
+    }: {
+      defaultValues: CreateTaskDrawerProps["defaultValues"];
+      mutateList: any;
+    },
+    formRef
+  ) => {
+    const breakpoints = useResponsiveBreakpoints();
+    const { sessionToken } = useUser();
+    const isDark = useDarkMode();
+    const nameRef = useRef(null);
+    const dateRef = useRef(null);
+    const recurrenceRef = useRef(null);
+    const submitRef = useRef(null);
+    const menuRef = useRef<BottomSheetModal>(null);
+    const labelMenuRef = useRef<BottomSheetModal>(null);
+    const theme = useColorTheme();
+    const { control, handleSubmit, reset, watch, setValue } = useForm({
+      defaultValues: {
+        dateOnly:
+          typeof defaultValues.dateOnly === "boolean"
+            ? defaultValues.dateOnly
+            : true,
+        name: defaultValues.name || "",
+        date: defaultValues.date,
+        pinned: defaultValues.pinned || false,
+        label: defaultValues.label,
+        storyPoints: defaultValues.storyPoints,
+        collectionId: defaultValues.collectionId,
+        attachments: [],
+        note: "",
+      },
+    });
+
+    useImperativeHandle(formRef, () => ({ setValue }));
+
+    useEffect(() => {
+      nameRef.current.focus({ preventScroll: true });
+    }, [nameRef, breakpoints]);
+
+    const onSubmit = async (data) => {
+      try {
+        sendApiRequest(
+          sessionToken,
+          "POST",
+          "space/entity",
+          {},
+          {
+            body: JSON.stringify({
+              ...data,
+              name: data.name.replaceAll(/[@/]\[(.*?)\]\((.*?)\)/g, "$1"),
+              start: data?.date?.toISOString(),
+              agendaOrder: defaultValues.agendaOrder,
+              pinned: data.pinned,
+              labelId: data.label?.id,
+              type: "TASK",
+              collectionId: data.label?.id ? null : data.collectionId,
+            }),
+          }
+        )
+          .then((e) => mutateList(e))
+          .then((e) => console.log(e));
+        reset(defaultValues);
+
+        Toast.show({
+          type: "success",
+          text1: "Created task!",
+        });
+        nameRef.current.focus();
+      } catch (e) {
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong. Please try again later.",
+        });
+      }
+    };
+
+    const handleSubmitButtonClick = () => {
+      if (!submitRef.current.isDisabled())
+        handleSubmit(onSubmit, () =>
+          Toast.show({
+            type: "error",
+            text1: "Type in a task name",
+          })
+        )();
+    };
+
+    const colors = {
+      default: addHslAlpha(theme[9], 0.15),
+      hovered: addHslAlpha(theme[9], 0.25),
+      pressed: addHslAlpha(theme[9], 0.35),
+    };
+
+    return (
+      <Pressable
+        style={{
+          minHeight: Platform.OS === "android" ? 280 : undefined,
+          backgroundColor: addHslAlpha(
+            theme[2],
+            Platform.OS === "android" ? 1 : 0.5
+          ),
+        }}
+      >
+        <BlurView
+          style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
+          intensity={Platform.OS === "android" ? 0 : 50}
+          tint={
+            isDark
+              ? "systemUltraThinMaterialDark"
+              : "systemUltraThinMaterialLight"
+          }
+        >
+          <SubTaskInformation watch={watch} />
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "column",
+              zIndex: 0,
+            }}
+          >
+            <Footer
+              dateRef={dateRef}
+              recurrenceRef={recurrenceRef}
+              setValue={setValue}
+              watch={watch}
+              nameRef={nameRef}
+              labelMenuRef={labelMenuRef}
+              control={control}
+            />
+            <TaskNameInput
+              submitRef={submitRef}
+              reset={reset}
+              watch={watch}
+              control={control}
+              menuRef={menuRef}
+              handleSubmitButtonClick={handleSubmitButtonClick}
+              nameRef={nameRef}
+              setValue={setValue}
+            />
+          </View>
+          <TaskAttachments watch={watch} setValue={setValue} />
+          <View
+            style={{
+              gap: 7,
+              zIndex: Platform.OS === "web" ? -2 : undefined,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <CancelButton />
+            <Attachment
+              menuRef={menuRef}
+              control={control}
+              nameRef={nameRef}
+              setValue={setValue}
+            />
+            <LabelButton
+              watch={watch}
+              setValue={setValue}
+              defaultValues={defaultValues}
+              colors={colors}
+            />
+            <DateButton
+              watch={watch}
+              setValue={setValue}
+              defaultValues={defaultValues}
+              dateRef={dateRef}
+              recurrenceRef={recurrenceRef}
+              colors={colors}
+            />
+            <PinTask watch={watch} control={control} />
+            <SubmitButton ref={submitRef} onSubmit={handleSubmitButtonClick} />
+          </View>
+        </BlurView>
+      </Pressable>
+    );
+  }
+);
 
 export interface CreateTaskDrawerProps {
   children?: React.ReactNode;
@@ -1180,6 +1229,7 @@ export interface CreateTaskDrawerProps {
     dateOnly?: boolean;
     name?: string;
     pinned?: boolean;
+    parentTask?: any;
   };
   onPress?: () => void;
   mutate: (newTask) => void;
@@ -1201,8 +1251,12 @@ const CreateTask = forwardRef(
     forwardedRef
   ) => {
     const ref = useRef<BottomSheetModal>(null);
+    const formRef = useRef(null);
 
-    useImperativeHandle(forwardedRef, () => ref.current);
+    useImperativeHandle(forwardedRef, () => ({
+      ...ref.current,
+      setValue: (...e) => formRef.current?.setValue(...e),
+    }));
 
     // callbacks
     const handleOpen = useCallback(() => {
@@ -1226,7 +1280,7 @@ const CreateTask = forwardRef(
         {trigger}
         <Modal
           disablePan={breakpoints.md}
-          maxBackdropOpacity={0.1}
+          maxBackdropOpacity={0.05}
           maxWidth={breakpoints.md ? 700 : "100%"}
           sheetRef={ref}
           keyboardBehavior="interactive"
@@ -1237,6 +1291,7 @@ const CreateTask = forwardRef(
           }}
         >
           <BottomSheetContent
+            ref={formRef}
             defaultValues={defaultValues}
             mutateList={mutate}
           />
@@ -1247,4 +1302,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-
