@@ -212,7 +212,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
       session && {
         icon: "label",
         renderer: () => (
-          <MenuItem>
+          <MenuItem onPress={openLabelPicker}>
             <Icon>label</Icon>
             <Text variant="menuItem">
               Showing {data.labels.length} label
@@ -220,7 +220,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
             </Text>
           </MenuItem>
         ),
-        callback: openLabelPicker,
       },
     !isAll &&
       session &&
@@ -393,3 +392,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+
