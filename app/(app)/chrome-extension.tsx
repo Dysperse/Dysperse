@@ -40,6 +40,7 @@ function Branding() {
           style: { marginLeft: "auto" },
           rendererProps: { placement: "bottom" },
         }}
+        containerStyle={{ width: 300 }}
         options={[
           {
             icon: "info",
