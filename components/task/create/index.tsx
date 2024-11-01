@@ -623,6 +623,23 @@ function TaskNameInput({
                         }
                       }
                     }
+
+                    if (
+                      e.clipboardData
+                        .getData("text/plain")
+                        .match(/!?\[.*\]\(.*\)/)
+                    ) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const url = e.clipboardData
+                        .getData("text/plain")
+                        .match(/!\[.*\]\((.*)\)/)[1];
+                      alert(url);
+                      setValue("attachments", [
+                        ...attachments,
+                        { type: "IMAGE", data: url },
+                      ]);
+                    }
                   },
                 }),
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
@@ -1231,3 +1248,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+
