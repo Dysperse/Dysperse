@@ -454,7 +454,7 @@ const TimeSuggestion = forwardRef(
         hintRef.current.setMessage(
           value.match(regex) && !value.includes("](time-prediction)") && date
             ? {
-                time: "Typing a date? Hit [space] to confirm",
+                text: "Typing a date? Hit [space] to confirm",
                 icon: "emoji_objects",
               }
             : Object.keys(COLLECTION_VIEWS).find(
@@ -492,10 +492,15 @@ const TimeSuggestion = forwardRef(
                 text: "Type # to add a tag",
                 icon: "emoji_objects",
               }
+            : !localStorage.getItem("tmwSuggestion")
+            ? {
+                text: `Type "tmw" to set a due date for tomorrow`,
+                icon: "emoji_objects",
+              }
             : false
         );
       }
-    }, [value, hintRef, date, label, pathname, type]);
+    }, [value, hintRef, date, label, pathname, type, isDirty]);
     return null;
   }
 );
@@ -669,13 +674,12 @@ function TaskNameInput({
                   }
                   if (e.key === "@") {
                     e.preventDefault();
-                    localStorage.setItem("attachmentSuggestion", "true");
+                    if (Platform.OS === "web")
+                      localStorage.setItem("attachmentSuggestion", "true");
                     nameRef.current?.blur();
                     menuRef.current?.present();
                   }
-                  if (e.key === "#") {
-                    localStorage.setItem("tagSuggestion", "true");
-                  }
+
                   if (e.key === "Escape") {
                     if (value) return onChange("");
                     forceClose();
@@ -684,9 +688,17 @@ function TaskNameInput({
                     reset();
                     hintRef.current.setMessage(false);
                   }
-                  if (value.includes("!!") && Platform.OS === "web") {
-                    localStorage.setItem("importantSuggestion", "true");
-                    hintRef.current.setMessage(false);
+                  if (Platform.OS === "web") {
+                    if (value.includes("!!")) {
+                      localStorage.setItem("importantSuggestion", "true");
+                      hintRef.current.setMessage(false);
+                    }
+                    if (value.includes("tmw")) {
+                      localStorage.setItem("tmwSuggestion", "true");
+                    }
+                    if (e.key === "#") {
+                      localStorage.setItem("tagSuggestion", "true");
+                    }
                   }
                 },
               }}
