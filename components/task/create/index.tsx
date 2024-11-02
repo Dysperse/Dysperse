@@ -503,7 +503,7 @@ const TimeSuggestion = forwardRef(
             : false
         );
       }
-    }, [value, hintRef, date, label, pathname, type, isDirty]);
+    }, [value, hintRef, date, label, pathname, type, isDirty, parentTask]);
     return null;
   }
 );
@@ -1038,6 +1038,7 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
 function SubTaskInformation({ watch, setValue }) {
   const parentTask = watch("parentTask");
   const theme = useColorTheme();
+
   return (
     <View
       style={{
