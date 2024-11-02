@@ -444,6 +444,10 @@ const TimeSuggestion = forwardRef(
             ? "backspace"
             : !localStorage.getItem("attachmentSuggestion")
             ? "attachment"
+            : !localStorage.getItem("importantSuggestion")
+            ? "important"
+            : !localStorage.getItem("tagSuggestion")
+            ? "tag"
             : false
         );
       }
@@ -617,12 +621,19 @@ function TaskNameInput({
                     nameRef.current?.blur();
                     menuRef.current?.present();
                   }
+                  if (e.key === "#") {
+                    localStorage.setItem("tagSuggestion", "true");
+                  }
                   if (e.key === "Escape") {
                     if (value) return onChange("");
                     forceClose();
                   }
                   if (e.key === "Backspace" && value === "") {
                     reset();
+                    hintRef.current.setMessage(false);
+                  }
+                  if (value.includes("!!") && Platform.OS === "web") {
+                    localStorage.setItem("importantSuggestion", "true");
                     hintRef.current.setMessage(false);
                   }
                 },
@@ -1284,13 +1295,17 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
               : "systemUltraThinMaterialLight"
           }
         >
-          <Icon style={{ opacity: 0.5 }}>magic_button</Icon>
+          <Icon style={{ opacity: 0.5 }}>
+            {message === "time" ? "magic_button" : "emoji_objects"}
+          </Icon>
           <Text style={{ color: theme[11], opacity: 0.5 }}>
             {
               {
                 time: "Typing a date? Hit [space] to confirm",
                 attachment: "Type @ to attach something!",
+                important: 'Type "!!" to mark as important',
                 backspace: "Hit [backspace] to reset",
+                tag: "Type # to add a tag",
               }[message]
             }
           </Text>
