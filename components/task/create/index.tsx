@@ -23,10 +23,10 @@ import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
 import React, {
-  RefObject,
   cloneElement,
   forwardRef,
   memo,
+  RefObject,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -426,68 +426,31 @@ function LabelNlpProcessor({
   return null;
 }
 
-const TimeSuggestion = forwardRef(function TimeSuggestion(
-  { value }: { value: any },
-  ref
-) {
-  const [show, setShow] = useState<"time" | "attachment" | "backspace" | false>(
-    false
-  );
-  const hasTypedRef = useRef(false);
-  const breakpoints = useResponsiveBreakpoints();
-  const theme = useColorTheme();
+const TimeSuggestion = forwardRef(
+  ({ value, hintRef }: { value: any; hintRef: any }, ref) => {
+    const hasTypedRef = useRef(false);
 
-  useEffect(() => {
-    if (Platform.OS === "web") {
-      if (value !== "") hasTypedRef.current = true;
+    useEffect(() => {
+      if (Platform.OS === "web") {
+        if (value !== "") hasTypedRef.current = true;
 
-      const regex =
-        /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
+        const regex =
+          /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
 
-      setShow(
-        value.match(regex) && !value.includes("](time-prediction)")
-          ? "time"
-          : hasTypedRef.current && !value
-          ? "backspace"
-          : !localStorage.getItem("attachmentSuggestion")
-          ? "attachment"
-          : false
-      );
-    }
-  }, [value, setShow]);
-
-  useImperativeHandle(ref, () => ({
-    clearSuggestion: () => setShow(false),
-  }));
-
-  return show ? (
-    <View
-      style={{
-        flexDirection: "row",
-        borderRadius: 5,
-        position: "absolute",
-        paddingHorizontal: 5,
-        zIndex: 999,
-        top: -12,
-        right: -10,
-        gap: 5,
-        opacity: 0.3,
-        display: breakpoints.md ? "flex" : "none",
-      }}
-    >
-      <Icon size={20}>magic_button</Icon>
-      <Text style={{ color: theme[11], fontSize: 13 }}>
-        {
-          {
-            time: "Typing a date? Hit [space] to confirm",
-            attachment: "Type @ to attach something!",
-            backspace: "Hit [backspace] to reset",
-          }[show]
-        }
-      </Text>
-    </View>
-  ) : null;
-});
+        hintRef.current.setMessage(
+          value.match(regex) && !value.includes("](time-prediction)")
+            ? "time"
+            : hasTypedRef.current && !value
+            ? "backspace"
+            : !localStorage.getItem("attachmentSuggestion")
+            ? "attachment"
+            : false
+        );
+      }
+    }, [value, hintRef]);
+    return null;
+  }
+);
 
 function TaskNameInput({
   control,
@@ -498,6 +461,7 @@ function TaskNameInput({
   watch,
   reset,
   submitRef,
+  hintRef,
 }: {
   control: any;
   handleSubmitButtonClick: any;
@@ -507,9 +471,9 @@ function TaskNameInput({
   watch;
   reset;
   submitRef;
+  hintRef;
 }) {
   const attachments = watch("attachments");
-  const name = watch("name");
   const { forceClose } = useBottomSheet();
   const { data: labelData } = useSWR(["space/labels"]);
 
@@ -538,8 +502,6 @@ function TaskNameInput({
     });
   }, [nameRef]);
 
-  const ref = useRef(null);
-
   return (
     <Controller
       control={control}
@@ -560,8 +522,8 @@ function TaskNameInput({
             label={labelData}
             setValue={setValue}
           />
-          <TimeSuggestion value={value} ref={ref} />
           <View>
+            <TimeSuggestion value={value} hintRef={hintRef} />
             <ChipInput
               placeholder="What's on your mind?"
               onSubmitEditing={() => handleSubmitButtonClick()}
@@ -661,7 +623,7 @@ function TaskNameInput({
                   }
                   if (e.key === "Backspace" && value === "") {
                     reset();
-                    ref.current.clearSuggestion();
+                    hintRef.current.setMessage(false);
                   }
                 },
               }}
@@ -995,7 +957,7 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
   );
 }
 
-function SubTaskInformation({ watch }) {
+function SubTaskInformation({ watch, setValue }) {
   const parentTask = watch("parentTask");
   const theme = useColorTheme();
   return (
@@ -1044,6 +1006,9 @@ function SubTaskInformation({ watch }) {
               hovered: addHslAlpha(theme[9], 0.15),
               pressed: addHslAlpha(theme[9], 0.25),
             }}
+            onPress={() => {
+              setValue("parentTask", null);
+            }}
           />
         </View>
       </Collapsible>
@@ -1056,9 +1021,11 @@ const BottomSheetContent = forwardRef(
     {
       defaultValues,
       mutateList,
+      hintRef,
     }: {
       defaultValues: CreateTaskDrawerProps["defaultValues"];
       mutateList: any;
+      hintRef;
     },
     formRef
   ) => {
@@ -1167,7 +1134,7 @@ const BottomSheetContent = forwardRef(
               : "systemUltraThinMaterialLight"
           }
         >
-          <SubTaskInformation watch={watch} />
+          <SubTaskInformation watch={watch} setValue={setValue} />
           <View
             style={{
               flex: 1,
@@ -1185,6 +1152,7 @@ const BottomSheetContent = forwardRef(
               control={control}
             />
             <TaskNameInput
+              hintRef={hintRef}
               submitRef={submitRef}
               reset={reset}
               watch={watch}
@@ -1252,6 +1220,86 @@ export interface CreateTaskDrawerProps {
   mutate: (newTask) => void;
 }
 
+const CreateTaskOuterContent = forwardRef((props, ref) => {
+  const isDark = useDarkMode();
+  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
+  const [message, setMessage] = useState("");
+
+  useImperativeHandle(ref, () => ({
+    setMessage,
+  }));
+
+  const animation = useSharedValue(0);
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withSpring(animation.value, {
+          damping: 23,
+          stiffness: 300,
+        }),
+      },
+    ],
+  }));
+
+  useEffect(() => {
+    if (message) {
+      animation.value = 1;
+    }
+    return () => {
+      animation.value = 0;
+    };
+  }, [message, animation]);
+
+  return (
+    message &&
+    breakpoints.md && (
+      <Animated.View
+        style={[
+          animatedStyles,
+          {
+            position: "absolute",
+            bottom: -55,
+            width: "100%",
+            left: 0,
+            alignItems: "center",
+            justifyContent: "center",
+          },
+        ]}
+      >
+        <BlurView
+          style={{
+            flex: 1,
+            paddingHorizontal: 15,
+            paddingVertical: 7,
+            borderRadius: 20,
+            alignItems: "center",
+            gap: 10,
+            flexDirection: "row",
+          }}
+          intensity={Platform.OS === "android" ? 0 : 50}
+          tint={
+            isDark
+              ? "systemUltraThinMaterialDark"
+              : "systemUltraThinMaterialLight"
+          }
+        >
+          <Icon style={{ opacity: 0.5 }}>magic_button</Icon>
+          <Text style={{ color: theme[11], opacity: 0.5 }}>
+            {
+              {
+                time: "Typing a date? Hit [space] to confirm",
+                attachment: "Type @ to attach something!",
+                backspace: "Hit [backspace] to reset",
+              }[message]
+            }
+          </Text>
+        </BlurView>
+      </Animated.View>
+    )
+  );
+});
+
 const CreateTask = forwardRef(
   (
     {
@@ -1290,6 +1338,8 @@ const CreateTask = forwardRef(
     const breakpoints = useResponsiveBreakpoints();
     const theme = useColorTheme();
     const { session } = useUser();
+    const hintRef = useRef(null);
+
     if (!session) return null;
 
     return isReached ? null : (
@@ -1305,9 +1355,11 @@ const CreateTask = forwardRef(
           innerStyles={{
             backgroundColor: Platform.OS === "web" ? "transparent" : theme[1],
           }}
+          outerContent={<CreateTaskOuterContent ref={hintRef} />}
         >
           <BottomSheetContent
             ref={formRef}
+            hintRef={hintRef}
             defaultValues={defaultValues}
             mutateList={mutate}
           />
