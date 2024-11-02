@@ -853,7 +853,7 @@ export function TaskDetails() {
               </View>
             ),
           },
-          {
+          !task.parentTaskId && {
             trigger: () => (
               <ListItemButton
                 disabled

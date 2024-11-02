@@ -196,7 +196,7 @@ const Task = memo(function Task({
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
   const { selection, setSelection } = useSelectionContext();
-  const { globalTaskCreateRef, setDefaultValues } = useGlobalTaskContext();
+  const { globalTaskCreateRef } = useGlobalTaskContext();
 
   const handleSelect = () => {
     if (isReadOnly) return;
@@ -237,131 +237,145 @@ const Task = memo(function Task({
   }));
 
   return (
-    <Animated.View style={taskStyle}>
-      <TaskDrawer
-        onDoublePress={() => {
-          globalTaskCreateRef.current.present();
-          setTimeout(() => {
-            globalTaskCreateRef.current.setValue("parentTask", task);
-          }, 100);
-        }}
-        id={task.id}
-        mutateList={onTaskUpdate}
-        dateRange={dateRange}
-        isReadOnly={isReadOnly}
-        disabled={selection.length > 0}
+    <>
+      <Animated.View
+        style={[taskStyle, task.parentTaskId && { marginLeft: 20 }]}
       >
-        <ListItemButton
-          onLongPress={handleSelect}
-          {...(Platform.OS === "web" &&
-            breakpoints.md && { onContextMenu: handleSelect })}
-          {...(selection.length > 0 && {
-            onPress: handleSelect,
-          })}
-          pressableStyle={{
-            paddingTop: breakpoints.md ? 13 : 18,
-            paddingLeft: breakpoints.md ? 13 : 18,
-            paddingRight: breakpoints.md ? 13 : 18,
-            paddingBottom: breakpoints.md ? 8 : 18,
-            ...(isSelected && { backgroundColor: blue[4] }),
-          }}
-          style={[
-            {
-              flexShrink: 0,
-              borderRadius: 25,
-              borderColor: "transparent",
-              ...(!breakpoints.md && {
-                borderWidth: 1,
-                borderColor: theme[4],
-                marginTop: breakpoints.md ? 0 : 5,
-                marginBottom: 8,
-              }),
-              ...(planMode && {
-                borderWidth: 1,
-                borderColor: theme[5],
-                backgroundColor: theme[2],
-                marginBottom: 10,
-                borderRadius: 20,
-              }),
-              alignItems: "stretch",
-            },
-          ]}
+        <TaskDrawer
+          onDoublePress={
+            task.parentTaskId
+              ? null
+              : () => {
+                  globalTaskCreateRef.current.present();
+                  setTimeout(() => {
+                    globalTaskCreateRef.current.setValue("parentTask", task);
+                  }, 100);
+                }
+          }
+          id={task.id}
+          mutateList={onTaskUpdate}
+          dateRange={dateRange}
+          isReadOnly={isReadOnly}
+          disabled={selection.length > 0}
         >
-          <TaskCheckbox
-            isReadOnly={isReadOnly}
-            task={task}
-            mutateList={onTaskUpdate}
-          />
-          <View style={[{ gap: 5, flex: 1 }, isCompleted && { opacity: 0.4 }]}>
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  marginTop: chipExists ? -5 : 0,
-                  ...(isCompleted && {
-                    textDecorationLine: "line-through",
-                  }),
-                }}
-              >
-                {task.name}
-              </Text>
-              {task.note ? (
-                <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
-                  {task.note.substring(0, 100).replaceAll("\n", " ")}
-                </Text>
-              ) : null}
-            </View>
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
-              {showRelativeTime && task.start && (
-                <Chip
-                  disabled
-                  dense
-                  label={dayjs(task.start).fromNow()}
-                  icon={<Icon>access_time</Icon>}
-                />
-              )}
-              {showDate && task.start && (
-                <Chip
-                  disabled
-                  dense
-                  label={dayjs(task.start).format("MMM Do")}
-                  icon={<Icon>calendar_today</Icon>}
-                />
-              )}
-              {task.recurrenceRule && (
-                <Chip
-                  dense
-                  label="Repeats"
-                  icon="loop"
-                  onPress={() => {
-                    Toast.show({
-                      type: "info",
-                      text1: capitalizeFirstLetter(
-                        normalizeRecurrenceRuleObject(
-                          task.recurrenceRule
-                        ).toText()
-                      ),
-                    });
+          <ListItemButton
+            onLongPress={handleSelect}
+            {...(Platform.OS === "web" &&
+              breakpoints.md && { onContextMenu: handleSelect })}
+            {...(selection.length > 0 && {
+              onPress: handleSelect,
+            })}
+            pressableStyle={{
+              paddingTop: breakpoints.md ? 13 : 18,
+              paddingLeft: breakpoints.md ? 13 : 18,
+              paddingRight: breakpoints.md ? 13 : 18,
+              paddingBottom: breakpoints.md ? 8 : 18,
+              ...(isSelected && { backgroundColor: blue[4] }),
+            }}
+            style={[
+              {
+                flexShrink: 0,
+                borderRadius: 25,
+                borderColor: "transparent",
+                ...(!breakpoints.md && {
+                  borderWidth: 1,
+                  borderColor: theme[4],
+                  marginTop: breakpoints.md ? 0 : 5,
+                  marginBottom: 8,
+                }),
+                ...(planMode && {
+                  borderWidth: 1,
+                  borderColor: theme[5],
+                  backgroundColor: theme[2],
+                  marginBottom: 10,
+                  borderRadius: 20,
+                }),
+                alignItems: "stretch",
+              },
+            ]}
+          >
+            <TaskCheckbox
+              isReadOnly={isReadOnly}
+              task={task}
+              mutateList={onTaskUpdate}
+            />
+            <View
+              style={[{ gap: 5, flex: 1 }, isCompleted && { opacity: 0.4 }]}
+            >
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    marginTop: chipExists ? -5 : 0,
+                    ...(isCompleted && {
+                      textDecorationLine: "line-through",
+                    }),
                   }}
-                />
-              )}
-              {showLabel && task.label && <TaskLabelChip task={task} />}
-              {task.attachments && (
-                <TaskAttachmentChips attachments={task.attachments} />
-              )}
-              {task.pinned && <TaskImportantChip />}
-              {!task.dateOnly && (
-                <Chip
-                  dense
-                  label={dayjs(task.start).format("h:mm A")}
-                  icon={<Icon size={22}>calendar_today</Icon>}
-                />
-              )}
+                >
+                  {task.name}
+                </Text>
+                {task.note ? (
+                  <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
+                    {task.note.substring(0, 100).replaceAll("\n", " ")}
+                  </Text>
+                ) : null}
+              </View>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+                {showRelativeTime && task.start && (
+                  <Chip
+                    disabled
+                    dense
+                    label={dayjs(task.start).fromNow()}
+                    icon={<Icon>access_time</Icon>}
+                  />
+                )}
+                {showDate && task.start && (
+                  <Chip
+                    disabled
+                    dense
+                    label={dayjs(task.start).format("MMM Do")}
+                    icon={<Icon>calendar_today</Icon>}
+                  />
+                )}
+                {task.recurrenceRule && (
+                  <Chip
+                    dense
+                    label="Repeats"
+                    icon="loop"
+                    onPress={() => {
+                      Toast.show({
+                        type: "info",
+                        text1: capitalizeFirstLetter(
+                          normalizeRecurrenceRuleObject(
+                            task.recurrenceRule
+                          ).toText()
+                        ),
+                      });
+                    }}
+                  />
+                )}
+                {showLabel && task.label && <TaskLabelChip task={task} />}
+                {task.attachments && (
+                  <TaskAttachmentChips attachments={task.attachments} />
+                )}
+                {task.pinned && <TaskImportantChip />}
+                {!task.dateOnly && (
+                  <Chip
+                    dense
+                    label={dayjs(task.start).format("h:mm A")}
+                    icon={<Icon size={22}>calendar_today</Icon>}
+                  />
+                )}
+              </View>
             </View>
-          </View>
-        </ListItemButton>
-      </TaskDrawer>
-    </Animated.View>
+          </ListItemButton>
+        </TaskDrawer>
+      </Animated.View>
+      {task.subtasks?.map((subtask) => (
+        <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
+      ))}
+    </>
   );
 });
 
 export default React.memo(Task);
+

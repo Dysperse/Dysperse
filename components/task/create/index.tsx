@@ -129,6 +129,7 @@ function Footer({
   const date = watch("date");
   const dateOnly = watch("dateOnly");
   const label = watch("label");
+  const parentTask = watch("parentTask");
 
   return (
     <View
@@ -148,7 +149,7 @@ function Footer({
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {(date || recurrenceRule) && (
+        {(date || recurrenceRule) && !parentTask && (
           <Chip
             outlined
             icon={<Icon>{recurrenceRule ? "loop" : "calendar_today"}</Icon>}
@@ -179,7 +180,7 @@ function Footer({
             }
           />
         )}
-        {(label || collectionId) && (
+        {(label || collectionId) && !parentTask && (
           <CreateTaskLabelInput
             watch={watch}
             collectionId={collectionId}
@@ -689,7 +690,8 @@ function TaskNameInput({
                   }
                   if (e.key === "Backspace" && value === "") {
                     reset();
-                    hintRef.current.setMessage(false);
+                    if (hintRef.current.message === "Hit [backspace] to reset")
+                      hintRef.current.setMessage(false);
                   }
                   if (Platform.OS === "web") {
                     if (value.includes("!!")) {
@@ -1010,8 +1012,9 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
   const breakpoints = useResponsiveBreakpoints();
   const collectionId = watch("collectionId");
   const labelMenuRef = useRef<BottomSheetModal>(null);
+  const parentTask = watch("parentTask");
 
-  return (
+  return parentTask ? null : (
     <View
       style={{
         display: value ? "none" : "flex",
@@ -1157,6 +1160,8 @@ const BottomSheetContent = forwardRef(
               pinned: data.pinned,
               labelId: data.label?.id,
               type: "TASK",
+              parentTask: undefined,
+              parentId: data.parentTask?.id,
               collectionId: data.label?.id ? null : data.collectionId,
             }),
           }
@@ -1306,6 +1311,7 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
   const [message, setMessage] = useState("");
 
   useImperativeHandle(ref, () => ({
+    message,
     setMessage,
   }));
 

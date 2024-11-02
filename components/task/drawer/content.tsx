@@ -244,7 +244,7 @@ export function TaskDrawerContent({
                 borderColor: task.pinned ? labelColors.orange[3] : theme[6],
               }}
             />
-            {task && (
+            {task && !task.parentTaskId && (
               <LabelPicker
                 label={task.label}
                 setLabel={(e) => {
