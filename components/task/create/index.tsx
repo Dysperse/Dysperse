@@ -1,6 +1,7 @@
 import ChipInput from "@/components/ChipInput";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -22,6 +23,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
+import { useGlobalSearchParams, usePathname } from "expo-router";
 import React, {
   cloneElement,
   forwardRef,
@@ -427,8 +429,20 @@ function LabelNlpProcessor({
 }
 
 const TimeSuggestion = forwardRef(
-  ({ value, hintRef }: { value: any; hintRef: any }, ref) => {
+  (
+    {
+      value,
+      hintRef,
+      watch,
+      isDirty,
+    }: { value: any; hintRef: any; watch; isDirty },
+    ref
+  ) => {
     const hasTypedRef = useRef(false);
+    const date = watch("date");
+    const label = watch("label");
+    const pathname = usePathname();
+    const { type } = useGlobalSearchParams();
 
     useEffect(() => {
       if (Platform.OS === "web") {
@@ -438,20 +452,50 @@ const TimeSuggestion = forwardRef(
           /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
 
         hintRef.current.setMessage(
-          value.match(regex) && !value.includes("](time-prediction)")
-            ? "time"
-            : hasTypedRef.current && !value
-            ? "backspace"
+          value.match(regex) && !value.includes("](time-prediction)") && date
+            ? {
+                time: "Typing a date? Hit [space] to confirm",
+                icon: "emoji_objects",
+              }
+            : Object.keys(COLLECTION_VIEWS).find(
+                (e) => e === type && COLLECTION_VIEWS[e].type === "Time Based"
+              ) && !date
+            ? {
+                text: `This task won't appear in ${type} view without a date`,
+                icon: "info",
+              }
+            : Object.keys(COLLECTION_VIEWS).find(
+                (e) =>
+                  e === type && COLLECTION_VIEWS[e].type === "Category Based"
+              ) && !label
+            ? {
+                text: `Since this task doesn't have a label, it'll appear in a special "Unlabeled" category`,
+                icon: "info",
+              }
+            : isDirty && !value
+            ? {
+                text: "Hit [backspace] to reset",
+                icon: "magic_button",
+              }
             : !localStorage.getItem("attachmentSuggestion")
-            ? "attachment"
+            ? {
+                text: "Type @ to attach something!",
+                icon: "emoji_objects",
+              }
             : !localStorage.getItem("importantSuggestion")
-            ? "important"
+            ? {
+                text: 'Type "!!" to mark as important',
+                icon: "emoji_objects",
+              }
             : !localStorage.getItem("tagSuggestion")
-            ? "tag"
+            ? {
+                text: "Type # to add a tag",
+                icon: "emoji_objects",
+              }
             : false
         );
       }
-    }, [value, hintRef]);
+    }, [value, hintRef, date, label, pathname, type]);
     return null;
   }
 );
@@ -511,7 +555,10 @@ function TaskNameInput({
       control={control}
       rules={{ required: true }}
       name="name"
-      render={({ field: { onChange, onBlur, value } }) => (
+      render={({
+        field: { onChange, onBlur, value },
+        formState: { isDirty },
+      }) => (
         <>
           <NlpProcessor
             watch={watch}
@@ -527,7 +574,12 @@ function TaskNameInput({
             setValue={setValue}
           />
           <View>
-            <TimeSuggestion value={value} hintRef={hintRef} />
+            <TimeSuggestion
+              isDirty={isDirty}
+              watch={watch}
+              value={value}
+              hintRef={hintRef}
+            />
             <ChipInput
               placeholder="What's on your mind?"
               onSubmitEditing={() => handleSubmitButtonClick()}
@@ -1295,20 +1347,8 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
               : "systemUltraThinMaterialLight"
           }
         >
-          <Icon style={{ opacity: 0.5 }}>
-            {message === "time" ? "magic_button" : "emoji_objects"}
-          </Icon>
-          <Text style={{ color: theme[11], opacity: 0.5 }}>
-            {
-              {
-                time: "Typing a date? Hit [space] to confirm",
-                attachment: "Type @ to attach something!",
-                important: 'Type "!!" to mark as important',
-                backspace: "Hit [backspace] to reset",
-                tag: "Type # to add a tag",
-              }[message]
-            }
-          </Text>
+          <Icon style={{ opacity: 0.5 }}>{message.icon}</Icon>
+          <Text style={{ color: theme[11], opacity: 0.5 }}>{message.text}</Text>
         </BlurView>
       </Animated.View>
     )
