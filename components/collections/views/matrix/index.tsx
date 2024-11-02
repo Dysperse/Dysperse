@@ -1,3 +1,4 @@
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import CreateTask from "@/components/task/create";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
@@ -47,13 +48,13 @@ const styles = StyleSheet.create({
 
 const Cell = ({
   onEntityCreate,
-  handleMutate,
+  onTaskUpdate,
   tasks,
   defaultOptions,
   handleHome,
 }: {
   onEntityCreate: any;
-  handleMutate: any;
+  onTaskUpdate: any;
   tasks: any;
   defaultOptions: any;
   handleHome?: any;
@@ -75,6 +76,7 @@ const Cell = ({
         (a, b) => a.completionInstances.length - b.completionInstances.length
       )
     : tasks.filter((e) => e.completionInstances.length === 0);
+
   return (
     <View
       style={[
@@ -140,7 +142,7 @@ const Cell = ({
             showRelativeTime
             showLabel
             isReadOnly={false}
-            onTaskUpdate={(newData) => handleMutate(newData, item)}
+            onTaskUpdate={mutations.categoryBased.update(mutate)}
             item={item}
           />
         )}
@@ -309,101 +311,19 @@ export default function Matrix() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
-
   const [currentColumn, setCurrentColumn] = useState(null);
   const { data, mutate } = useCollectionContext();
 
-  const filteredTasks = [
-    ...data.entities,
-    ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
-  ];
-
-  const onTaskUpdate = (updatedTask, oldTask) => {
-    mutate(
-      (oldData) => {
-        const labelIndex = oldData.labels.findIndex(
-          (l) => l.id === updatedTask.label?.id
-        );
-        if (labelIndex === -1)
-          return {
-            ...oldData,
-            entities: oldData.entities
-              .map((t) => (t.id === updatedTask.id ? updatedTask : t))
-              .filter((t) => !t.trash),
-          };
-
-        const taskIndex = oldData.labels[labelIndex].entities.findIndex(
-          (t) => t.id === updatedTask.id
-        );
-
-        if (taskIndex === -1)
-          return {
-            ...oldData,
-            labels: oldData.labels
-              .map((l) =>
-                l?.id === updatedTask.label?.id
-                  ? {
-                      ...l,
-                      entities: [...l.entities, updatedTask],
-                    }
-                  : l.id === oldTask.label?.id
-                  ? {
-                      ...l,
-                      entities: l.entities.find((t) => t.id === oldTask.id)
-                        ? l.entities.filter((t) => t.id !== oldTask.id)
-                        : [updatedTask, ...l.entities],
-                    }
-                  : l
-              )
-              .filter((t) => !t.trash),
-          };
-
-        return {
-          ...oldData,
-          labels: [
-            ...oldData.labels.slice(0, labelIndex),
-            {
-              ...oldData.labels[labelIndex],
-              entities: oldData.labels[labelIndex].entities
-                .map((t, i) => (i === taskIndex ? updatedTask : t))
-                .filter((t) => !t.trash),
-            },
-            ...oldData.labels.slice(labelIndex + 1),
-          ],
-        };
-      },
-      {
-        revalidate: false,
-      }
-    );
-  };
-
-  const onEntityCreate = (newTask) => {
-    if (!newTask) return;
-    mutate(
-      (data) => {
-        const labelIndex = data.labels.findIndex(
-          (l) => l.id === newTask?.label?.id
-        );
-        if (labelIndex === -1)
-          return {
-            ...data,
-            entities: [...(data.entities || []), newTask],
-          };
-        return {
-          ...data,
-          labels: data.labels.map((l) =>
-            l.id === newTask?.lebel.id
-              ? { ...l, entities: [...l.entities, newTask] }
-              : l
-          ),
-        };
-      },
-      {
-        revalidate: false,
-      }
-    );
-  };
+  const filteredTasks = useMemo(
+    () => [
+      ...Object.values(data.entities),
+      ...data.labels.reduce(
+        (acc, curr) => [...acc, ...Object.values(curr.entities)],
+        []
+      ),
+    ],
+    [data]
+  );
 
   const grid = useMemo(
     () => ({
@@ -469,8 +389,8 @@ export default function Matrix() {
             <Label size={100} y="Important" />
             {breakpoints.md ? (
               <Cell
-                onEntityCreate={onEntityCreate}
-                handleMutate={onTaskUpdate}
+                onEntityCreate={mutations.categoryBased.add(mutate)}
+                onTaskUpdate={mutations.categoryBased.update(mutate)}
                 tasks={grid.pinnedImportant}
                 defaultOptions={{ pinned: true, due: dayjs().startOf("day") }}
               />
@@ -482,8 +402,8 @@ export default function Matrix() {
             )}
             {breakpoints.md ? (
               <Cell
-                onEntityCreate={onEntityCreate}
-                handleMutate={onTaskUpdate}
+                onEntityCreate={mutations.categoryBased.add(mutate)}
+                onTaskUpdate={mutations.categoryBased.update(mutate)}
                 tasks={grid.important}
                 defaultOptions={{ due: dayjs().startOf("day") }}
               />
@@ -498,8 +418,8 @@ export default function Matrix() {
             <Label size={150} y="Less important" />
             {breakpoints.md ? (
               <Cell
-                onEntityCreate={onEntityCreate}
-                handleMutate={onTaskUpdate}
+                onEntityCreate={mutations.categoryBased.add(mutate)}
+                onTaskUpdate={mutations.categoryBased.update(mutate)}
                 tasks={grid.pinned}
                 defaultOptions={{ pinned: true }}
               />
@@ -511,8 +431,8 @@ export default function Matrix() {
             )}
             {breakpoints.md ? (
               <Cell
-                onEntityCreate={onEntityCreate}
-                handleMutate={onTaskUpdate}
+                onEntityCreate={mutations.categoryBased.add(mutate)}
+                onTaskUpdate={mutations.categoryBased.update(mutate)}
                 tasks={grid.other}
                 defaultOptions={{}}
               />
@@ -526,8 +446,8 @@ export default function Matrix() {
         </>
       ) : (
         <Cell
-          onEntityCreate={onEntityCreate}
-          handleMutate={onTaskUpdate}
+          onEntityCreate={mutations.categoryBased.add(mutate)}
+          onTaskUpdate={mutations.categoryBased.update(mutate)}
           tasks={grid[currentColumn]}
           defaultOptions={{ pinned: true }}
           handleHome={() => setCurrentColumn(null)}

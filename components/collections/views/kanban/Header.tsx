@@ -50,7 +50,9 @@ export const KanbanHeader = memo(function KanbanHeader({
         return {
           ...data,
           labels: data.labels.map((l) =>
-            l.id === label.id ? { ...l, entities: [...l.entities, newTask] } : l
+            l.id === label.id
+              ? { ...l, entities: { ...l.entities, [newTask.id]: newTask } }
+              : l
           ),
         };
       },

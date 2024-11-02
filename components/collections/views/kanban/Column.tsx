@@ -1,3 +1,4 @@
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { KanbanHeader } from "@/components/collections/views/kanban/Header";
@@ -88,66 +89,7 @@ export function Column(props: ColumnProps) {
   );
 
   const isReadOnly = access?.access === "READ_ONLY";
-
-  const onTaskUpdate = (updatedTask, oldTask) => {
-    mutate(
-      (oldData) => {
-        const labelIndex = oldData.labels.findIndex(
-          (l) => l.id === updatedTask.label?.id
-        );
-        if (labelIndex === -1)
-          return {
-            ...oldData,
-            entities: oldData.entities.map((t) =>
-              t.id === updatedTask.id ? updatedTask : t
-            ),
-          };
-
-        const taskIndex = oldData.labels[labelIndex].entities.findIndex(
-          (t) => t.id === updatedTask.id
-        );
-
-        if (taskIndex === -1)
-          return {
-            ...oldData,
-            labels: oldData.labels.map((l) =>
-              l?.id === updatedTask.label?.id
-                ? {
-                    ...l,
-                    entities: [...l.entities, updatedTask],
-                  }
-                : l.id === oldTask.label?.id
-                ? {
-                    ...l,
-                    entities: l.entities.find((t) => t.id === oldTask.id)
-                      ? l.entities.filter((t) => t.id !== oldTask.id)
-                      : [updatedTask, ...l.entities],
-                  }
-                : l
-            ),
-          };
-
-        return {
-          ...oldData,
-          labels: [
-            ...oldData.labels.slice(0, labelIndex),
-            {
-              ...oldData.labels[labelIndex],
-              entities: oldData.labels[labelIndex].entities
-                .map((t, i) => (i === taskIndex ? updatedTask : t))
-                .filter((t) => !t.trash),
-            },
-            ...oldData.labels.slice(labelIndex + 1),
-          ],
-        };
-      },
-      {
-        revalidate: Boolean(oldTask.recurrenceRule),
-      }
-    );
-  };
-
-  const onEntityCreate = (newTask, label) => {
+  const onEntityCreate = (newTask) => {
     if (!newTask) return;
     mutate(
       (data) => {
@@ -158,48 +100,47 @@ export function Column(props: ColumnProps) {
           ...data,
           labels: data.labels.map((l) =>
             l.id === newTask?.label?.id
-              ? { ...l, entities: [...l.entities, newTask] }
+              ? { ...l, entities: { ...l.entities, [newTask.id]: newTask } }
               : l
           ),
         };
       },
-      {
-        revalidate: false,
-      }
+      { revalidate: false }
     );
   };
 
-  const data = (props.label ? props.label.entities : props.entities)
-    .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
-    .sort((x, y) => (x.pinned === y.pinned ? 0 : x.pinned ? -1 : 1))
-    .sort((x, y) =>
-      x.completionInstances.length === y.completionInstances.length
-        ? 0
-        : x.completionInstances.length === 0
-        ? -1
-        : 0
+  const data = Object.values(props.label?.entities || props.entities)
+    .filter(
+      (e) =>
+        (showCompleted
+          ? true
+          : e.completionInstances.length === 0 || e.recurrenceRule) && !e.trash
     )
-    .filter((e) =>
-      showCompleted
-        ? true
-        : e.completionInstances.length === 0 || e.recurrenceRule
-    );
+    .sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      if (a.completionInstances.length !== b.completionInstances.length)
+        return a.completionInstances.length === 0 ? -1 : 1;
+      return a.agendaOrder?.toString()?.localeCompare(b.agendaOrder);
+    });
+
+  const hasItems =
+    Object.keys(props.label?.entities || props.entities).length > 0;
 
   const hasNoCompleteTasks =
-    (props.label ? props.label.entities : props.entities).length > 0 &&
-    (props.label ? props.label.entities : props.entities).filter(
+    hasItems &&
+    Object.values(props.label?.entities || props.entities).filter(
       (e) => e.completionInstances.length === 0
     ).length === 0;
 
   const hasNoIncompleteTasks =
-    (props.label ? props.label.entities : props.entities).length > 0 &&
-    (props.label ? props.label.entities : props.entities).filter(
+    hasItems &&
+    Object.values(props.label?.entities || props.entities).filter(
       (e) => e.completionInstances.length > 0
     ).length === 0;
 
   const centerContent =
     (hasNoCompleteTasks && !showCompleted) ||
-    (props.label ? props.label.entities : props.entities).length === 0;
+    Object.keys(props.label?.entities || props.entities).length === 0;
 
   useDidUpdate(() => {
     setShowCompleted(collectionData.showCompleted);
@@ -247,9 +188,9 @@ export function Column(props: ColumnProps) {
           label={{
             ...props.label,
             entities: undefined,
-            entitiesLength: (props.label || props).entities.filter(
-              (e) => e.completionInstances.length === 0
-            ).length,
+            entitiesLength: Object.values(
+              props.label.entities || props.entities
+            ).filter((e) => e.completionInstances.length === 0).length,
           }}
         />
       </Pressable>
@@ -305,7 +246,7 @@ export function Column(props: ColumnProps) {
         }
         centerContent={centerContent}
         ListEmptyComponent={() =>
-          (props.label ? props.label.entities : props.entities).length ===
+          Object.values(props.label?.entities || props.entities).length ===
             0 && <ColumnEmptyComponent row={props.grid} />
         }
         data={data}
@@ -327,8 +268,8 @@ export function Column(props: ColumnProps) {
             ? null
             : () =>
                 collectionData.showCompleted ||
-                (props.label ? props.label.entities : props.entities).length ===
-                  0 ? null : (
+                Object.values(props.label?.entities || props.entities)
+                  .length === 0 ? null : (
                   <Button
                     onPress={() => setShowCompleted(!showCompleted)}
                     containerStyle={
@@ -352,7 +293,7 @@ export function Column(props: ColumnProps) {
             isReadOnly={isReadOnly || !session}
             item={item}
             showDate
-            onTaskUpdate={(newData) => onTaskUpdate(newData, item)}
+            onTaskUpdate={mutations.categoryBased.update(mutate)}
           />
         )}
         keyExtractor={(i: any) => i.id}
@@ -360,3 +301,4 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
+
