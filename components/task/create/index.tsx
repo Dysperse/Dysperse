@@ -441,6 +441,7 @@ const TimeSuggestion = forwardRef(
     const hasTypedRef = useRef(false);
     const date = watch("date");
     const label = watch("label");
+    const parentTask = watch("parentTask");
     const pathname = usePathname();
     const { type } = useGlobalSearchParams();
 
@@ -467,7 +468,9 @@ const TimeSuggestion = forwardRef(
             : Object.keys(COLLECTION_VIEWS).find(
                 (e) =>
                   e === type && COLLECTION_VIEWS[e].type === "Category Based"
-              ) && !label
+              ) &&
+              !label &&
+              !parentTask
             ? {
                 text: `Since this task doesn't have a label, it'll appear in a special "Unlabeled" category`,
                 icon: "info",
