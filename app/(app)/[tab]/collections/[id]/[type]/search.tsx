@@ -20,6 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
+import { mutations } from "../../mutations";
 
 const styles = StyleSheet.create({
   header: {
@@ -79,20 +80,24 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   const handleSearch = (text) => setQuery(text);
 
   const filtered = [
-    ...data.entities,
-    ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
+    ...Object.values(data.entities),
+    ...data.labels.reduce(
+      (acc, curr) => [...acc, ...Object.values(curr.entities)],
+      []
+    ),
   ]
-    .filter(
-      (item) =>
-        item.name.toLowerCase().includes(query.toLowerCase()) ||
-        item.note?.toLowerCase()?.includes(query.toLowerCase())
-    )
     .filter((item) => {
-      return activeFilters.length
+      const matchesQuery =
+        item.name.toLowerCase().includes(query.toLowerCase()) ||
+        item.note?.toLowerCase()?.includes(query.toLowerCase());
+
+      const matchesFilters = activeFilters.length
         ? activeFilters.some((filter) =>
             filters.find((f) => f.label === filter)?.filter(item)
           )
         : true;
+
+      return matchesQuery && matchesFilters;
     })
     .sort((a, b) => {
       if (a.completionInstances.length && !b.completionInstances.length)
@@ -103,6 +108,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
       if (!a.recurrenceRule && b.recurrenceRule) return 1;
       return 0;
     });
+
   const breakpoints = useResponsiveBreakpoints();
 
   useEffect(() => {
@@ -270,39 +276,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                     showLabel
                     isReadOnly={collection.isReadOnly}
                     item={item}
-                    onTaskUpdate={(newTask) => {
-                      if (!newTask) return;
-                      mutate(
-                        (oldData) => {
-                          const labelIndex = oldData.labels.findIndex(
-                            (l) => l?.id === newTask.label?.id
-                          );
-                          return labelIndex === -1
-                            ? {
-                                ...oldData,
-                                entities: oldData.entities.map((e) =>
-                                  e.id === newTask.id ? newTask : e
-                                ),
-                              }
-                            : {
-                                ...oldData,
-                                labels: oldData.labels.map((l) =>
-                                  l.id === newTask.label.id
-                                    ? {
-                                        ...l,
-                                        entities: l.entities.map((e) =>
-                                          e.id === newTask.id ? newTask : e
-                                        ),
-                                      }
-                                    : l
-                                ),
-                              };
-                        },
-                        {
-                          revalidate: false,
-                        }
-                      );
-                    }}
+                    onTaskUpdate={mutations.categoryBased.update(mutate)}
                   />
                 )}
                 stickyHeaderHiddenOnScroll

@@ -17,7 +17,6 @@ import React, {
   useRef,
 } from "react";
 import { Platform, Pressable, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { TaskDrawerContent } from "./content";
@@ -66,7 +65,6 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
     "space/entity",
     { id, ...(pathname.includes("/c/") && { inviteLinkId }) },
   ]);
-  const insets = useSafeAreaInsets();
 
   const breakpoints = useResponsiveBreakpoints();
 
@@ -135,7 +133,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
     >
       <SafeBlurView>
         {!breakpoints.md && (
-          <View style={{ backgroundColor: theme[2] }}>
+          <View style={{ backgroundColor: data ? theme[2] : undefined }}>
             <View
               style={{
                 width: 25,
@@ -232,7 +230,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
       if (tappedRef.current == 2) onDoublePress();
       else if (tappedRef.current == 1) handleOpen();
       tappedRef.current = 0;
-    }, 200);
+    }, 250);
   };
 
   const trigger = cloneElement((children || <Pressable />) as any, {
@@ -280,3 +278,4 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
+

@@ -1,3 +1,4 @@
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import CreateTask, { CreateTaskDrawerProps } from "@/components/task/create";
 import { TaskDrawer, TaskDrawerProps } from "@/components/task/drawer";
@@ -22,7 +23,6 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
-import { onTaskUpdate } from "../planner/Column";
 import { CalendarContext, useCalendarContext } from "./context";
 
 export interface MyCustomEventType {
@@ -103,18 +103,16 @@ export function Content() {
 
   const tasks = data?.reduce((acc, col) => {
     return acc.concat(
-      (col?.tasks || []).map((task) => ({
+      Object.values(col?.entities || {}).map((task) => ({
         ...task,
         dateRange: [dayjs(col.start).toDate(), dayjs(col.end).toDate()],
       }))
     );
   }, []);
 
-  console.log(tasks);
-
   const filteredEvents = useMemo(
     () =>
-      (tasks || [])
+      Object.values(tasks || {})
         .filter((e) => e.start || e.recurrenceRule)
         .map(
           (task) =>
@@ -146,13 +144,7 @@ export function Content() {
       scrollEnabled={false}
     >
       <CalendarTaskDrawer
-        mutateList={(newItem) =>
-          onTaskUpdate(
-            newItem,
-            mutate,
-            data.find((d) => d.tasks.find((t) => t.id === newItem.id))
-          )
-        }
+        mutateList={mutations.timeBased.update(mutate)}
         tasks={tasks}
         ref={taskDrawerRef}
       />

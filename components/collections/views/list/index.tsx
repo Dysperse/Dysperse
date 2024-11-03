@@ -1,3 +1,4 @@
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { useCollectionContext } from "@/components/collections/context";
 import CreateTask from "@/components/task/create";
 import { omit } from "@/helpers/omit";
@@ -18,7 +19,6 @@ import { KanbanHeader } from "../kanban/Header";
 function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
-  const { width } = useWindowDimensions();
 
   if (item.empty) {
     return (
@@ -81,7 +81,6 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
       </CreateTask>
     );
   } else if (item.header) {
-    // Rendering header
     return (
       <>
         <View style={{ paddingTop: 20, backgroundColor: theme[1] }} />
@@ -120,11 +119,10 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
                   ...item,
                   entitiesLength:
                     item.entitiesLength ||
-                    data.labels
-                      .find((l) => l.id === item.id)
-                      ?.entities?.filter(
-                        (e) => e.completionInstances.length === 0
-                      )?.length,
+                    Object.values(
+                      data.labels.find((l) => l.id === item.id)?.entities
+                    )?.filter((e) => e.completionInstances.length === 0)
+                      ?.length,
                 }}
                 grid
                 list
@@ -135,7 +133,6 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
       </>
     );
   } else {
-    // Render item
     return (
       <Entity
         onTaskUpdate={onTaskUpdate}
@@ -154,78 +151,37 @@ export default function List() {
   const { data, mutate } = useCollectionContext();
   const [showCompleted, setShowCompleted] = useState(data.showCompleted);
 
+  const shownEntities = Object.values(data.entities).filter(
+    (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
+  );
+
   const d = [
     { create: true },
-    ...(data.entities.filter(
-      (e) => incompleteEntitiesFilter(e) || showCompleted
-    )?.length > 0 && data.labels.length > 0
+    ...(shownEntities.length > 0 && data.labels.length > 0
       ? [
           {
             header: true,
-            entitiesLength: data.entities.filter(
-              (e) => incompleteEntitiesFilter(e) || showCompleted
-            ).length,
+            entitiesLength: shownEntities.length,
           },
         ]
       : []),
-    ...(data.entities.filter(
-      (e) => incompleteEntitiesFilter(e) || showCompleted
-    ) || []),
+    ...(shownEntities || []),
     ...data.labels.reduce((acc, curr) => {
       acc.push({ header: true, ...omit(["entities"], curr) });
-      const t = curr.entities
+      const t = Object.values(curr.entities)
+        .filter(
+          (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
+        )
         .sort(
           (a, b) =>
             a.completionInstances?.length - b.completionInstances?.length
-        )
-        .filter((e) => incompleteEntitiesFilter(e) || showCompleted);
+        );
+
       acc.push(...t);
-      if (t.length === 0) {
-        acc.push({ empty: true });
-      }
+      if (t.length === 0) acc.push({ empty: true });
       return acc;
     }, []),
   ];
-  const onTaskUpdate = (newTask: any) => {
-    mutate(
-      (oldData) => {
-        if (newTask?.labelId) {
-          const newLabels = oldData.labels.map((label: any) => {
-            if (label.id === newTask?.labelId) {
-              return {
-                ...label,
-                entities: label.entities
-                  .map((task: any) => {
-                    if (task.id === newTask.id) return newTask;
-                    return task;
-                  })
-                  .filter((t) => !t.trash),
-              };
-            }
-            return label;
-          });
-
-          return {
-            ...oldData,
-            labels: newLabels,
-          };
-        } else {
-          return {
-            ...oldData,
-            entities: oldData.entities
-              .map((task: any) => {
-                if (task.id === newTask.id) {
-                  return newTask;
-                }
-                return task;
-              })
-              .filter((t) => !t.trash),
-          };
-        }
-      },
-      { revalidate: false }
-    );
-  };
 
   const ref = useRef(null);
   const { width } = useWindowDimensions();
@@ -252,13 +208,13 @@ export default function List() {
                 width: 600,
                 marginHorizontal: "auto",
                 maxWidth: width - 40,
-                marginBottom: 10,
+                marginBottom: item.header ? 10 : 0,
               }}
             >
               <ListItem
                 d={d}
                 data={data}
-                onTaskUpdate={onTaskUpdate}
+                onTaskUpdate={mutations.categoryBased.update(mutate)}
                 item={item}
                 listRef={ref}
                 mutate={mutate}

@@ -1,3 +1,4 @@
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import CreateTask from "@/components/task/create";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -151,90 +152,29 @@ const StoryPoint = ({
   const columnRef = useRef(null);
 
   const filteredTasks = [
-    ...data.entities,
-    ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
+    ...Object.values(data.entities),
+    ...data.labels.reduce(
+      (acc, curr) => [...acc, ...Object.values(curr.entities)],
+      []
+    ),
   ]
     .filter((t) => t.storyPoints === scale && !t.trash)
     .slice()
-    .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
-    .sort((x, y) => {
-      const xCompleted = x.completionInstances.length > 0;
-      const yCompleted = y.completionInstances.length > 0;
+    .sort((a, b) => {
+      const agendaOrderComparison = a.agendaOrder
+        ?.toString()
+        ?.localeCompare(b.agendaOrder);
+      if (agendaOrderComparison !== 0) return agendaOrderComparison;
 
-      // If completion status is the same, sort by pinned status
+      const xCompleted = a.completionInstances.length > 0;
+      const yCompleted = b.completionInstances.length > 0;
+
       if (xCompleted === yCompleted) {
-        // If both are pinned or both are not pinned, return 0
-        if (x.pinned === y.pinned) {
-          return 0;
-        } else {
-          // If x is pinned and y is not pinned, x should come before y
-          // If x is not pinned and y is pinned, y should come before x
-          return x.pinned ? -1 : 1;
-        }
+        return a.pinned === b.pinned ? 0 : a.pinned ? -1 : 1;
       } else {
-        // Sort by completion status
-        // If x is completed and y is not completed, x should come after y
-        // If y is completed and x is not completed, y should come after x
         return xCompleted ? 1 : -1;
       }
     });
-
-  const onTaskUpdate = (updatedTask, oldTask) => {
-    mutate(
-      (oldData) => {
-        const labelIndex = oldData.labels.findIndex(
-          (l) => l.id === updatedTask.label?.id
-        );
-        if (labelIndex === -1) {
-          return {
-            ...oldData,
-            entities: oldData.entities.map((t) =>
-              t.id === updatedTask.id ? updatedTask : t
-            ),
-          };
-        }
-
-        const taskIndex = oldData.labels[labelIndex].entities.findIndex(
-          (t) => t.id === updatedTask.id
-        );
-
-        if (taskIndex === -1)
-          return {
-            ...oldData,
-            labels: oldData.labels.map((l) =>
-              l.id === updatedTask.label?.id
-                ? {
-                    ...l,
-                    entities: [...l.entities, updatedTask],
-                  }
-                : l.id === oldTask.label?.id
-                ? {
-                    ...l,
-                    entities: l.entities.filter((t) => t.id !== oldTask.id),
-                  }
-                : l
-            ),
-          };
-
-        return {
-          ...oldData,
-          labels: [
-            ...oldData.labels.slice(0, labelIndex),
-            {
-              ...oldData.labels[labelIndex],
-              entities: oldData.labels[labelIndex].entities
-                .map((t, i) => (i === taskIndex ? updatedTask : t))
-                .filter((t) => !t.trash),
-            },
-            ...oldData.labels.slice(labelIndex + 1),
-          ],
-        };
-      },
-      {
-        revalidate: false,
-      }
-    );
-  };
 
   return (
     <View
@@ -269,34 +209,7 @@ const StoryPoint = ({
                 date: dayjs(),
                 storyPoints: scale,
               }}
-              mutate={(newTask) => {
-                mutate((oldData) => {
-                  const labelIndex = oldData.labels.findIndex(
-                    (l) => l.id === newTask.label?.id
-                  );
-                  if (labelIndex === -1) {
-                    return {
-                      ...oldData,
-                      entities: [...oldData.entities, newTask],
-                    };
-                  }
-
-                  return {
-                    ...oldData,
-                    labels: [
-                      ...oldData.labels.slice(0, labelIndex),
-                      {
-                        ...oldData.labels[labelIndex],
-                        entities: [
-                          ...oldData.labels[labelIndex].entities,
-                          newTask,
-                        ],
-                      },
-                      ...oldData.labels.slice(labelIndex + 1),
-                    ],
-                  };
-                });
-              }}
+              mutate={mutations.categoryBased.add(mutate)}
             >
               <Button
                 variant="filled"
@@ -347,7 +260,7 @@ const StoryPoint = ({
             showLabel
             isReadOnly={isReadOnly}
             item={item}
-            onTaskUpdate={onTaskUpdate}
+            onTaskUpdate={mutations.categoryBased.update(mutate)}
           />
         )}
         keyExtractor={(i, d) => `${i.id}-${d}`}
@@ -357,7 +270,6 @@ const StoryPoint = ({
 };
 
 export default function Workload() {
-  const theme = useColorTheme();
   const { mutate } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
   const [selectedScale, setSelectedScale] = useState(0);
@@ -389,3 +301,4 @@ export default function Workload() {
     />
   );
 }
+

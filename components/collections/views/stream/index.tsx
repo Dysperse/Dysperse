@@ -2,6 +2,7 @@ import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import CreateTask from "@/components/task/create";
+import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
@@ -80,6 +81,7 @@ function StreamViewPicker() {
 export default function Stream() {
   const params = useLocalSearchParams();
   const insets = useSafeAreaInsets();
+  const { data, mutate, access } = useCollectionContext();
 
   const [, startTransition] = useTransition();
   const [view, setView] = useState<streamType>(
@@ -92,10 +94,8 @@ export default function Stream() {
     });
   }
 
-  const { data, mutate, access } = useCollectionContext();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-
   const isReadOnly = access?.access === "READ_ONLY";
 
   const onTaskUpdate = (updatedTask, oldTask) => {
@@ -107,29 +107,25 @@ export default function Stream() {
         if (labelIndex === -1) {
           return {
             ...oldData,
-            entities: oldData.entities.map((t) =>
-              t.id === updatedTask.id ? updatedTask : t
-            ),
+            entities: { ...oldData.entities, [updatedTask.id]: updatedTask },
           };
         }
-
-        const taskIndex = oldData.labels[labelIndex].entities.findIndex(
-          (t) => t.id === updatedTask.id
-        );
-
-        if (taskIndex === -1)
+        const taskIndex = oldData.labels[labelIndex].entities[updatedTask.id];
+        if (!taskIndex)
           return {
             ...oldData,
             labels: oldData.labels.map((l) =>
-              l.id === updatedTask.label?.id
+              l?.id === updatedTask.label?.id
                 ? {
                     ...l,
-                    entities: [...l.entities, updatedTask],
+                    entities: { ...l.entities, [updatedTask.id]: updatedTask },
                   }
                 : l.id === oldTask.label?.id
                 ? {
                     ...l,
-                    entities: l.entities.filter((t) => t.id !== oldTask.id),
+                    entities: l.entities[oldTask.id]
+                      ? omit([oldTask.id], l.entities)
+                      : { ...l.entities, [updatedTask.id]: updatedTask },
                   }
                 : l
             ),
@@ -137,16 +133,17 @@ export default function Stream() {
 
         return {
           ...oldData,
-          labels: [
-            ...oldData.labels.slice(0, labelIndex),
-            {
-              ...oldData.labels[labelIndex],
-              entities: oldData.labels[labelIndex].entities
-                .map((t, i) => (i === taskIndex ? updatedTask : t))
-                .filter((t) => !t.trash),
-            },
-            ...oldData.labels.slice(labelIndex + 1),
-          ],
+          labels: oldData.labels.map((l) =>
+            l.id === updatedTask.label?.id
+              ? {
+                  ...l,
+                  entities: {
+                    ...l.entities,
+                    [updatedTask.id]: updatedTask,
+                  },
+                }
+              : l
+          ),
         };
       },
       {
@@ -159,30 +156,32 @@ export default function Stream() {
   const [query, setQuery] = useState("");
 
   const filteredTasks = [
-    ...data.entities,
-    ...data.labels.reduce((acc, curr) => [...acc, ...curr.entities], []),
-  ]
-    .filter((t) => {
-      if (t.trash) return false;
-      if (view === "backlog")
-        return (
-          !t.completionInstances.length &&
-          dayjs(t.start).isBefore(dayjs()) &&
-          (!t.dateOnly || !dayjs(t.start).isToday())
-        );
-      else if (view === "upcoming")
-        return (
-          dayjs(t.start).isAfter(dayjs().startOf("day")) &&
-          !t.completionInstances.length
-        );
-      else if (view === "completed") return t.completionInstances.length;
-      else if (view === "unscheduled")
-        return (
-          !t.start && !t.recurrenceRule && t.completionInstances.length === 0
-        );
-      else if (view === "repeating") return t.recurrenceRule;
-    })
-    .filter((t) => t.name.toLowerCase().includes(query.toLowerCase()));
+    ...Object.values(data.entities),
+    ...data.labels.reduce(
+      (acc, curr) => [...acc, ...Object.values(curr.entities)],
+      []
+    ),
+  ].filter((t) => {
+    if (t.trash || !t.name.toLowerCase().includes(query.toLowerCase()))
+      return false;
+    if (view === "backlog")
+      return (
+        !t.completionInstances.length &&
+        dayjs(t.start).isBefore(dayjs()) &&
+        (!t.dateOnly || !dayjs(t.start).isToday())
+      );
+    else if (view === "upcoming")
+      return (
+        dayjs(t.start).isAfter(dayjs().startOf("day")) &&
+        !t.completionInstances.length
+      );
+    else if (view === "completed") return t.completionInstances.length;
+    else if (view === "unscheduled")
+      return (
+        !t.start && !t.recurrenceRule && t.completionInstances.length === 0
+      );
+    else if (view === "repeating") return t.recurrenceRule;
+  });
 
   return (
     <View

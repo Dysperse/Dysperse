@@ -1,3 +1,4 @@
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import CreateTask from "@/components/task/create";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -30,7 +31,7 @@ function Header({
   large = false,
   range,
   setSelectedColumn = (t) => {},
-  selectedColumn = "today",
+  selectedColumn = 0,
 }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -38,7 +39,13 @@ function Header({
 
   const collectionId = data?.id || "all";
 
-  const modes = ["today", "week", "month", "year"];
+  /**
+   * 0: Today
+   * 1: Week
+   * 2: Month
+   * 3: Year
+   */
+  const modes = [0, 1, 2, 3];
 
   return (
     <>
@@ -64,10 +71,7 @@ function Header({
               icon="arrow_back"
               onPress={() =>
                 setSelectedColumn(
-                  modes[
-                    (modes.indexOf(selectedColumn) - 1 + modes.length) %
-                      modes.length
-                  ]
+                  modes[(selectedColumn - 1 + modes.length) % modes.length]
                 )
               }
             />
@@ -100,11 +104,9 @@ function Header({
           {!breakpoints.md && (
             <IconButton
               icon="arrow_forward"
-              onPress={() => {
-                setSelectedColumn(
-                  modes[(modes.indexOf(selectedColumn) + 1) % modes.length]
-                );
-              }}
+              onPress={() =>
+                setSelectedColumn((selectedColumn + 1) % modes.length)
+              }
             />
           )}
         </View>
@@ -116,22 +118,7 @@ function Header({
           }}
         >
           <CreateTask
-            mutate={(task) => {
-              mutate((oldData) => {
-                const taskStart = dayjs(task.start).utc();
-                const unit = Object.values(oldData).find(({ filterRange }) =>
-                  taskStart.isBetween(
-                    filterRange[0],
-                    filterRange[1],
-                    null,
-                    "[]"
-                  )
-                );
-                if (unit) unit.entities.push(task as never);
-
-                return oldData;
-              });
-            }}
+            mutate={mutations.timeBased.add(mutate)}
             defaultValues={{
               dateOnly: true,
               collectionId: collectionId === "all" ? undefined : collectionId,
@@ -168,6 +155,7 @@ function Header({
 export const taskSortAlgorithm = (t) =>
   t
     .slice()
+    .filter((t) => t && !t.trash)
     .sort((a, b) => a.agendaOrder?.toString()?.localeCompare(b.agendaOrder))
     .sort((x, y) => {
       // Get task completion status for both x and y
@@ -195,7 +183,7 @@ export const taskSortAlgorithm = (t) =>
 function Content({ data, mutate }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const [selectedColumn, setSelectedColumn] = useState("today");
+  const [selectedColumn, setSelectedColumn] = useState(0);
 
   const columnStyles = breakpoints.md
     ? ({
@@ -215,31 +203,7 @@ function Content({ data, mutate }) {
       showDate
       showLabel
       item={item}
-      onTaskUpdate={(newTask) => {
-        if (!newTask) return;
-        mutate(
-          (oldData) => {
-            const unit = Object.keys(oldData).find((key) =>
-              oldData[key].entities.find((entity) => entity.id === newTask.id)
-            );
-
-            if (unit) {
-              return {
-                ...oldData,
-                [unit]: {
-                  ...oldData[unit],
-                  entities: oldData[unit].entities
-                    .map((entity) =>
-                      entity.id === newTask.id ? newTask : entity
-                    )
-                    .filter((entity) => entity && !entity.trash),
-                },
-              };
-            }
-          },
-          { revalidate: false }
-        );
-      }}
+      onTaskUpdate={mutations.timeBased.update(mutate)}
     />
   );
 
@@ -262,45 +226,57 @@ function Content({ data, mutate }) {
           mutate={mutate}
           title="Today"
           large
-          range={data.today.filterRange}
+          range={[data[0].start, data[0].end]}
         />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(data.today.entities)}
-          centerContent={data.today.entities.length === 0}
+          data={taskSortAlgorithm(Object.values(data[0].entities))}
+          centerContent={Object.keys(data[0].entities).length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
           refreshControl={refreshControl}
         />
       </View>
       <View style={columnStyles}>
-        <Header mutate={mutate} title="Week" range={data.week.filterRange} />
+        <Header
+          mutate={mutate}
+          title="Week"
+          range={[data[1].start, data[1].end]}
+        />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(data.week.entities)}
-          centerContent={data.week.entities.length === 0}
+          data={taskSortAlgorithm(Object.values(data[1].entities))}
+          centerContent={Object.keys(data[1].entities).length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
           refreshControl={refreshControl}
         />
       </View>
       <View style={columnStyles}>
-        <Header mutate={mutate} title="Month" range={data.month.filterRange} />
+        <Header
+          mutate={mutate}
+          title="Month"
+          range={[data[2].start, data[2].end]}
+        />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(data.month.entities)}
-          centerContent={data.month.entities.length === 0}
+          data={taskSortAlgorithm(Object.values(data[2].entities))}
+          centerContent={Object.keys(data[2].entities).length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
           refreshControl={refreshControl}
         />
       </View>
       <View style={columnStyles}>
-        <Header mutate={mutate} title="Year" range={data.year.filterRange} />
+        <Header
+          mutate={mutate}
+          title="Year"
+          range={[data[3].start, data[3].end]}
+        />
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={taskSortAlgorithm(data.year.entities)}
-          centerContent={data.year.entities.length === 0}
+          data={taskSortAlgorithm(Object.values(data[3].entities))}
+          centerContent={Object.keys(data[3].entities).length === 0}
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
           refreshControl={refreshControl}
@@ -320,14 +296,18 @@ function Content({ data, mutate }) {
         mutate={mutate}
         selectedColumn={selectedColumn}
         setSelectedColumn={setSelectedColumn}
-        title={capitalizeFirstLetter(selectedColumn)}
-        range={data[selectedColumn].filterRange}
+        title={capitalizeFirstLetter(
+          ["Today", "Week", "Month", "Year"][selectedColumn]
+        )}
+        range={[data[selectedColumn].start, data[selectedColumn].end]}
       />
       <View style={{ flex: 1 }}>
         <FlashList
           contentContainerStyle={{ padding: 20 }}
-          data={data[selectedColumn].entities}
-          centerContent={data[selectedColumn].entities.length === 0}
+          data={Object.values(data[selectedColumn].entities)}
+          centerContent={
+            Object.keys(data[selectedColumn].entities).length === 0
+          }
           ListEmptyComponent={() => <ColumnEmptyComponent />}
           renderItem={renderItem}
           refreshControl={refreshControl}

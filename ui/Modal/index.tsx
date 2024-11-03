@@ -165,6 +165,7 @@ const Modal = (
           >
             {props.children}
           </Animated.View>
+          {props.outerContent}
         </Pressable>
       </Pressable>
     </BottomSheet>

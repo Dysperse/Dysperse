@@ -164,7 +164,7 @@ function TaskCheckbox({
                 opacity: isCompleted ? 0.7 : 0.45,
                 width: 25,
                 height: 25,
-                borderWidth: hovered ? 2 : 1,
+                borderWidth: isCompleted ? 1 : hovered ? 2 : 1,
                 borderRadius: 99,
                 backgroundColor: isCompleted
                   ? theme[11]
@@ -193,3 +193,4 @@ function TaskCheckbox({
 }
 
 export default memo(TaskCheckbox);
+
