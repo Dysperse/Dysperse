@@ -1,4 +1,5 @@
 import { useDeviceNotificationState } from "@/app/(app)/settings/customization/notifications";
+import { useHotkeys } from "@/helpers/useHotKeys";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Modal from "@/ui/Modal";
@@ -7,7 +8,6 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useCallback, useRef } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { View } from "react-native";
 import useSWR from "swr";
 

@@ -51,14 +51,7 @@ export function EditWallpaper() {
 
   return (
     <ScrollView
-      style={{ height: "100%", marginHorizontal: "auto" }}
-      contentContainerStyle={{
-        justifyContent: "center",
-        paddingBottom: 100,
-        paddingHorizontal: 30,
-        paddingTop: 100,
-        maxWidth: 800,
-      }}
+      style={{ height: "100%", width: "100%" }}
       showsVerticalScrollIndicator={false}
     >
       <Text style={{ fontSize: 40, marginVertical: 20 }} weight={800}>
@@ -160,3 +153,4 @@ export function EditWallpaper() {
     </ScrollView>
   );
 }
+
