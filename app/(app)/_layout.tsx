@@ -5,9 +5,12 @@ import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
 import TabFriendModal from "@/components/layout/TabFriendModal";
 import { JsStack } from "@/components/layout/_stack";
+import {
+  arcAnimation,
+  arcAnimationSpec,
+} from "@/components/layout/arcAnimations";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SessionLoadingScreen } from "@/components/layout/loading";
-import { planAnimation } from "@/components/layout/plan";
 import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
@@ -278,7 +281,8 @@ export default function AppLayout() {
               animationEnabled: true,
               gestureEnabled: false,
               ...TransitionPresets.ModalPresentationIOS,
-              cardStyleInterpolator: planAnimation,
+              cardStyleInterpolator: arcAnimation,
+              transitionSpec: arcAnimationSpec,
               cardStyle: breakpoints.md
                 ? {
                     maxWidth: 500,

@@ -29,7 +29,7 @@ function conditional(
   );
 }
 
-export function planAnimation({
+export function arcAnimation({
   current,
   next,
   closing,
@@ -38,13 +38,13 @@ export function planAnimation({
     current.progress.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
-      // extrapolate: "clamp",
+      extrapolate: "clamp",
     }),
     next
       ? next.progress.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 1],
-          // extrapolate: "clamp",
+          extrapolate: "clamp",
         })
       : 0
   );
@@ -59,7 +59,7 @@ export function planAnimation({
     current.progress.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
-      // extrapolate: "clamp",
+      extrapolate: "clamp",
     }),
     progress.interpolate({
       inputRange: [0, 1, 2],
@@ -74,4 +74,23 @@ export function planAnimation({
     },
   };
 }
+
+export const arcAnimationSpec = {
+  open: {
+    animation: "spring",
+    config: {
+      stiffness: 200,
+      damping: 40,
+      overshootClamping: true,
+    },
+  },
+  close: {
+    animation: "spring",
+    config: {
+      stiffness: 200,
+      damping: 40,
+      overshootClamping: true,
+    },
+  },
+};
 

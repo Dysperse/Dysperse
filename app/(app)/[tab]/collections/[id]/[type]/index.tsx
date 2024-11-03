@@ -13,6 +13,7 @@ import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
+import ContentWrapper from "@/components/layout/content";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
@@ -128,24 +129,26 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   );
 
   return (
-    <CollectionContext.Provider value={collectionContextValue}>
-      <CollectionLabelMenu sheetRef={sheetRef}>
-        <Pressable />
-      </CollectionLabelMenu>
-      {data && !data?.error ? (
-        <>
-          <CollectionNavbar
-            editOrderMode={editOrderMode}
-            setEditOrderMode={setEditOrderMode}
-          />
-          <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
-            {content}
-          </FadeOnRender>
-        </>
-      ) : (
-        <Loading error={error || data?.error} />
-      )}
-    </CollectionContext.Provider>
+    <ContentWrapper noPaddingTop>
+      <CollectionContext.Provider value={collectionContextValue}>
+        <CollectionLabelMenu sheetRef={sheetRef}>
+          <Pressable />
+        </CollectionLabelMenu>
+        {data && !data?.error ? (
+          <>
+            <CollectionNavbar
+              editOrderMode={editOrderMode}
+              setEditOrderMode={setEditOrderMode}
+            />
+            <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
+              {content}
+            </FadeOnRender>
+          </>
+        ) : (
+          <Loading error={error || data?.error} />
+        )}
+      </CollectionContext.Provider>
+    </ContentWrapper>
   );
 }
 

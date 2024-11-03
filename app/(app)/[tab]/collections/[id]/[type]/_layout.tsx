@@ -1,5 +1,8 @@
 import { JsStack } from "@/components/layout/_stack";
-import ContentWrapper from "@/components/layout/content";
+import {
+  arcAnimation,
+  arcAnimationSpec,
+} from "@/components/layout/arcAnimations";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -27,11 +30,11 @@ export default function Layout() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <ContentWrapper noPaddingTop>
+    <>
       <ThemeProvider
         value={{
           colors: {
-            background: theme[1],
+            background: theme[2],
             card: "transparent",
             primary: theme[2],
             border: theme[6],
@@ -45,7 +48,7 @@ export default function Layout() {
         <JsStack
           screenOptions={{
             header: () => null,
-            animationEnabled: !breakpoints.md,
+            animationEnabled: true,
             freezeOnBlur: true,
             gestureEnabled: true,
             detachPreviousScreen: false,
@@ -56,20 +59,28 @@ export default function Layout() {
               name={t}
               key={t}
               options={{
-                presentation: breakpoints.md ? "transparentModal" : "modal",
-                gestureEnabled: true,
-                gestureResponseDistance: 100,
-                ...(!breakpoints.md && TransitionPresets.ModalPresentationIOS),
-                cardStyle: {
-                  backgroundColor: breakpoints.md ? "transparent" : undefined,
-                  flex: 1,
-                },
+                ...TransitionPresets.ModalPresentationIOS,
+                cardStyleInterpolator: arcAnimation,
+                transitionSpec: arcAnimationSpec,
+
+                cardStyle: breakpoints.md
+                  ? {
+                      maxWidth: 800,
+                      width: "100%",
+                      marginHorizontal: "auto",
+                      marginVertical: 30,
+                      borderRadius: 25,
+                      borderWidth: 2,
+                      borderColor: theme[5],
+                      transform: breakpoints.md ? [{ scale: 1.03 }] : undefined,
+                    }
+                  : undefined,
               }}
             />
           ))}
         </JsStack>
       </ThemeProvider>
-    </ContentWrapper>
+    </>
   );
 }
 
