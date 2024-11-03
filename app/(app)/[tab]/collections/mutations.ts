@@ -130,26 +130,39 @@ export const mutations = {
 
       mutate(
         (oldData) => {
-          return oldData.map((oldColumn) => ({
-            ...oldColumn,
-            entities: {
-              ...oldColumn.entities,
-              ...(oldColumn.entities[newTask.parentTaskId || newTask.id] &&
-              newTask.parentTaskId
-                ? {
-                    [newTask.parentTaskId]: {
-                      ...oldColumn.entities[newTask.parentTaskId],
-                      subtasks: {
-                        ...oldColumn.entities[newTask.parentTaskId].subtasks,
-                        [newTask.id]: newTask,
-                      },
+          return oldData.map((oldColumn) => {
+            // Check if the column contains the parentTaskId
+            if (
+              newTask.parentTaskId &&
+              oldColumn.entities[newTask.parentTaskId]
+            ) {
+              return {
+                ...oldColumn,
+                entities: {
+                  ...oldColumn.entities,
+                  [newTask.parentTaskId]: {
+                    ...oldColumn.entities[newTask.parentTaskId],
+                    subtasks: {
+                      ...oldColumn.entities[newTask.parentTaskId].subtasks,
+                      [newTask.id]: newTask,
                     },
-                  }
-                : {
-                    [newTask.id]: newTask,
-                  }),
-            },
-          }));
+                  },
+                },
+              };
+            } else if (!newTask.parentTaskId) {
+              // Add new task directly if there is no parentTaskId
+              return {
+                ...oldColumn,
+                entities: {
+                  ...oldColumn.entities,
+                  [newTask.id]: newTask,
+                },
+              };
+            }
+
+            // Return the column as-is if it doesn't contain the parentTaskId
+            return oldColumn;
+          });
         },
         { revalidate: false }
       );
