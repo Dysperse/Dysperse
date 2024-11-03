@@ -196,7 +196,7 @@ const Task = memo(function Task({
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
   const { selection, setSelection } = useSelectionContext();
-  const { globalTaskCreateRef } = useGlobalTaskContext();
+  const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext();
 
   const handleSelect = () => {
     if (isReadOnly) return;
@@ -249,6 +249,9 @@ const Task = memo(function Task({
                   globalTaskCreateRef.current.present();
                   setTimeout(() => {
                     globalTaskCreateRef.current.setValue("parentTask", task);
+                    wrapperRef.current.mutateValue((newTask) => {
+                      onTaskUpdate(newTask);
+                    });
                   }, 100);
                 }
           }
@@ -370,9 +373,10 @@ const Task = memo(function Task({
           </ListItemButton>
         </TaskDrawer>
       </Animated.View>
-      {task.subtasks?.map((subtask) => (
-        <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
-      ))}
+      {task.subtasks &&
+        Object.values(task.subtasks)?.map((subtask) => (
+          <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
+        ))}
     </>
   );
 });

@@ -165,7 +165,7 @@ export function AgendaSelector({ data }) {
             itemStart={item?.start}
             items={
               item?.tasks &&
-              item.tasks.filter(
+              Object.values(item.tasks).filter(
                 (task) => !getTaskCompletionStatus(task, task?.recurrenceDay)
               )
             }
@@ -176,3 +176,4 @@ export function AgendaSelector({ data }) {
     </View>
   );
 }
+

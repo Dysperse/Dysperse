@@ -89,25 +89,6 @@ export function Column(props: ColumnProps) {
   );
 
   const isReadOnly = access?.access === "READ_ONLY";
-  const onEntityCreate = (newTask) => {
-    if (!newTask) return;
-    mutate(
-      (data) => {
-        if (data.labels.findIndex((l) => l.id === newTask?.label?.id) === -1)
-          return data;
-
-        return {
-          ...data,
-          labels: data.labels.map((l) =>
-            l.id === newTask?.label?.id
-              ? { ...l, entities: { ...l.entities, [newTask.id]: newTask } }
-              : l
-          ),
-        };
-      },
-      { revalidate: false }
-    );
-  };
 
   const data = Object.values(props.label?.entities || props.entities)
     .filter(
@@ -187,9 +168,8 @@ export function Column(props: ColumnProps) {
           grid={props.grid}
           label={{
             ...props.label,
-            entities: undefined,
             entitiesLength: Object.values(
-              props.label.entities || props.entities
+              props.label?.entities || props?.entities || {}
             ).filter((e) => e.completionInstances.length === 0).length,
           }}
         />
@@ -206,7 +186,7 @@ export function Column(props: ColumnProps) {
               }}
             >
               <CreateTask
-                mutate={(n) => onEntityCreate(n, props.label)}
+                mutate={mutations.categoryBased.add(mutate)}
                 defaultValues={{
                   label: omit(["entities"], props.label),
                   collectionId: collectionData.id,

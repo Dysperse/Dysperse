@@ -461,7 +461,9 @@ const TimeSuggestion = forwardRef(
               }
             : Object.keys(COLLECTION_VIEWS).find(
                 (e) => e === type && COLLECTION_VIEWS[e].type === "Time Based"
-              ) && !date
+              ) &&
+              !date &&
+              !parentTask
             ? {
                 text: `This task won't appear in ${type} view without a date`,
                 icon: "info",

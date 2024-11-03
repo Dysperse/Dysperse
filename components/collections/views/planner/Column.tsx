@@ -1,3 +1,4 @@
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { Entity } from "@/components/collections/entity";
 import { Header } from "@/components/collections/views/planner/Header";
 import CreateTask from "@/components/task/create";
@@ -18,75 +19,6 @@ import { ColumnEmptyComponent } from "../../emptyComponent";
 import { ColumnFinishedComponent } from "../kanban/Column";
 import { taskSortAlgorithm } from "../skyline";
 import { usePlannerContext } from "./context";
-
-export const onTaskUpdate = (newTask, mutate, column) => {
-  mutate(
-    (oldData) => {
-      const oldTask = oldData
-        ?.find((oldColumn) => oldColumn.start === column.start)
-        ?.tasks.find((oldTask) => oldTask?.id === newTask?.id);
-
-      if (
-        Boolean(oldTask?.recurrenceRule) !== Boolean(newTask?.recurrenceRule)
-      ) {
-        return true;
-      }
-
-      if (!oldTask) {
-        return oldData;
-      }
-      return oldData.map(
-        newTask.recurrenceRule
-          ? (oldColumn) => {
-              return {
-                ...oldColumn,
-                tasks: oldColumn.tasks
-                  .map((task) =>
-                    task.id === newTask.id ? { ...task, ...newTask } : task
-                  )
-                  .filter((t) => !t.trash),
-              };
-            }
-          : (oldColumn) => {
-              const isTargetColumn = dayjs(newTask.start).isBetween(
-                oldColumn.start,
-                oldColumn.end,
-                null,
-                "[]"
-              );
-
-              if (!isTargetColumn) {
-                return {
-                  ...oldColumn,
-                  tasks: oldColumn.tasks
-                    .filter((task) => task.id !== newTask.id)
-                    .filter((t) => !t.trash),
-                };
-              }
-
-              return {
-                ...oldColumn,
-                tasks: (oldColumn.tasks.find((task) => task?.id === newTask?.id)
-                  ? oldColumn.tasks
-                  : [newTask, ...oldColumn.tasks]
-                )
-                  .map((oldTask) =>
-                    oldTask?.id === newTask?.id
-                      ? newTask.trash === true
-                        ? undefined
-                        : newTask
-                      : oldTask
-                  )
-                  .filter((e) => e),
-              };
-            }
-      );
-    },
-    {
-      revalidate: false,
-    }
-  );
-};
 
 export function Column({
   mutate,
@@ -147,44 +79,13 @@ export function Column({
                 collectionId: collectionId === "all" ? undefined : collectionId,
                 date: dayjs(column.start),
                 agendaOrder: LexoRank.parse(
-                  column.tasks[column.tasks.length - 1]?.agendaOrder ||
+                  column.entities[column.entities.length - 1]?.agendaOrder ||
                     LexoRank.max().toString()
                 )
                   .genNext()
                   .toString(),
               }}
-              mutate={(newTask) => {
-                console.log(newTask);
-                if (!newTask) return;
-                if (
-                  !dayjs(newTask.start)
-                    .utc()
-                    .isBetween(
-                      dayjs(column.start),
-                      dayjs(column.end),
-                      null,
-                      "[]"
-                    ) ||
-                  !newTask.start
-                )
-                  return;
-
-                mutate(
-                  (oldData) =>
-                    oldData.map((oldColumn) =>
-                      oldColumn.start === column.start &&
-                      oldColumn.end === column.end
-                        ? {
-                            ...oldColumn,
-                            tasks: [...oldColumn.tasks, newTask],
-                          }
-                        : oldColumn
-                    ),
-                  {
-                    revalidate: false,
-                  }
-                );
-              }}
+              mutate={mutations.timeBased.add(mutate)}
             >
               <Button
                 variant="filled"
@@ -216,7 +117,7 @@ export function Column({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
         }
-        data={taskSortAlgorithm(column.tasks)}
+        data={taskSortAlgorithm(Object.values(column.entities))}
         estimatedItemSize={100}
         contentContainerStyle={{
           padding: width > 600 ? 15 : 0,
@@ -224,7 +125,7 @@ export function Column({
           paddingTop: 15,
           paddingHorizontal: 15,
         }}
-        centerContent={column.tasks.length === 0}
+        centerContent={Object.keys(column.entities).length === 0}
         ListEmptyComponent={() => (
           <View style={{ marginVertical: "auto" }}>
             <ColumnEmptyComponent />
@@ -232,8 +133,8 @@ export function Column({
         )}
         ListHeaderComponent={() => (
           <View>
-            {column.tasks.length > 0 &&
-              !column.tasks.find((task) =>
+            {Object.keys(column.entities).length > 0 &&
+              !Object.values(column.entities).find((task) =>
                 task.recurrenceRule
                   ? !task.completionInstances.find((instance) =>
                       dayjs(instance.iteration).isBetween(
@@ -253,7 +154,10 @@ export function Column({
             dateRange={item.recurrenceDay}
             isReadOnly={isReadOnly}
             item={item}
-            onTaskUpdate={(newItem) => onTaskUpdate(newItem, mutate, column)}
+            onTaskUpdate={mutations.timeBased.update(
+              mutate,
+              item.recurrenceDay
+            )}
           />
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}
@@ -261,3 +165,4 @@ export function Column({
     </View>
   );
 }
+

@@ -1,4 +1,5 @@
 import { ColumnMenuTrigger } from "@/app/(app)/[tab]/collections/[id]/ColumnMenuTrigger";
+import { mutations } from "@/app/(app)/[tab]/collections/mutations";
 import { columnStyles } from "@/components/collections/columnStyles";
 import { useCollectionContext } from "@/components/collections/context";
 import CreateTask from "@/components/task/create";
@@ -40,27 +41,6 @@ export const KanbanHeader = memo(function KanbanHeader({
     useKanbanContext() || {};
 
   const { setCurrentColumn: setCurrentColumn_grid } = useGridContext() || {};
-
-  const onEntityCreate = (newTask) => {
-    if (!newTask) return;
-    mutate(
-      (data) => {
-        const labelIndex = data.labels.findIndex((l) => l.id === label.id);
-        if (labelIndex === -1) return data;
-        return {
-          ...data,
-          labels: data.labels.map((l) =>
-            l.id === label.id
-              ? { ...l, entities: { ...l.entities, [newTask.id]: newTask } }
-              : l
-          ),
-        };
-      },
-      {
-        revalidate: false,
-      }
-    );
-  };
 
   return (
     <View
@@ -160,7 +140,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         <>
           <CreateTask
             defaultValues={{ label: omit(["entities"], label) }}
-            mutate={onEntityCreate}
+            mutate={mutations.categoryBased.add(mutate)}
           >
             <IconButton
               size={40}

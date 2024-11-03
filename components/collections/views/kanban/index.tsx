@@ -185,7 +185,8 @@ export default function Kanban({ editOrderMode }) {
             : columns[currentColumn] && (
                 <Column label={columns[currentColumn]} />
               )}
-          {data.entities?.length > 0 &&
+          {data &&
+            Object.keys(data.entities)?.length > 0 &&
             (breakpoints.md || currentColumn === -1) && (
               <Column entities={data.entities} />
             )}

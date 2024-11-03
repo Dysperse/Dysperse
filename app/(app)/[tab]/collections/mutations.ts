@@ -1,18 +1,24 @@
+import dayjs from "dayjs";
+
 export const mutations = {
   categoryBased: {
     add: (mutate) => (newTask) => {
       if (!newTask) return;
+      if (newTask.parentTaskId) return mutate();
+
       mutate(
-        (data) => {
-          if (data.labels.findIndex((l) => l.id === newTask?.label?.id) === -1)
+        (oldData) => {
+          if (
+            oldData.labels.findIndex((l) => l.id === newTask?.label?.id) === -1
+          )
             return {
-              ...data,
-              entities: { ...data.entities, [newTask.id]: newTask },
+              ...oldData,
+              entities: { ...oldData.entities, [newTask.id]: newTask },
             };
 
           return {
-            ...data,
-            labels: data.labels.map((l) =>
+            ...oldData,
+            labels: oldData.labels.map((l) =>
               l.id === newTask?.label?.id
                 ? { ...l, entities: { ...l.entities, [newTask.id]: newTask } }
                 : l
@@ -23,14 +29,34 @@ export const mutations = {
       );
     },
     update: (mutate) => (newTask) => {
+      if (!newTask) return;
       mutate(
         (oldData) => {
-          if (newTask?.labelId) {
+          if (
+            newTask?.labelId ||
+            (newTask?.parentTaskId &&
+              oldData.entities[newTask.parentTaskId]?.labelId)
+          ) {
             const newLabels = oldData.labels.map((label: any) => {
-              if (label.id === newTask?.labelId) {
+              if (
+                label.id === newTask?.labelId ||
+                (newTask.parentTaskId &&
+                  label.id === label.entities[newTask.parentTaskId]?.labelId)
+              ) {
                 return {
                   ...label,
-                  entities: { ...label.entities, [newTask.id]: newTask },
+                  entities: {
+                    ...label.entities,
+                    [newTask.parentTaskId || newTask.id]: newTask.parentTaskId
+                      ? {
+                          ...label.entities[newTask.parentTaskId],
+                          subtasks: {
+                            ...label.entities[newTask.parentTaskId].subtasks,
+                            [newTask.id]: newTask,
+                          },
+                        }
+                      : newTask,
+                  },
                 };
               }
               return label;
@@ -40,9 +66,90 @@ export const mutations = {
           } else {
             return {
               ...oldData,
-              entities: { ...oldData.entities, [newTask.id]: newTask },
+              entities: {
+                ...oldData.entities,
+                [newTask.parentTaskId || newTask.id]: newTask.parentTaskId
+                  ? {
+                      ...oldData.entities[newTask.parentTaskId],
+                      subtasks: {
+                        ...oldData.entities[newTask.parentTaskId].subtasks,
+                        [newTask.id]: newTask,
+                      },
+                    }
+                  : newTask,
+              },
             };
           }
+        },
+        { revalidate: false }
+      );
+    },
+  },
+
+  timeBased: {
+    add: (mutate) => (newTask) => {
+      if (!newTask) return;
+      if (newTask.recurrenceRule || newTask.parentTaskId) return mutate();
+
+      mutate(
+        (oldData) => {
+          const dateIndex = oldData.findIndex((column) =>
+            dayjs(newTask.start).isBetween(
+              column.start,
+              column.end,
+              "day",
+              "[]"
+            )
+          );
+
+          if (dateIndex === -1)
+            return [
+              ...oldData,
+              {
+                start: dayjs(newTask.start).startOf("day").toISOString(),
+                end: dayjs(newTask.start).endOf("day").toISOString(),
+                entities: { [newTask.id]: newTask },
+              },
+            ];
+
+          return oldData.map((oldColumn, index) => {
+            if (index === dateIndex)
+              return {
+                ...oldColumn,
+                entities: { ...oldColumn.entities, [newTask.id]: newTask },
+              };
+            return oldColumn;
+          });
+        },
+        { revalidate: false }
+      );
+    },
+    update: (mutate) => (newTask) => {
+      if (!newTask) return;
+      if (newTask.recurrenceRule) return mutate();
+
+      mutate(
+        (oldData) => {
+          return oldData.map((oldColumn) => ({
+            ...oldColumn,
+            entities: {
+              ...oldColumn.entities,
+              ...(oldColumn.entities[newTask.parentTaskId || newTask.id] &&
+              newTask.parentTaskId
+                ? {
+                    [newTask.parentTaskId]: {
+                      ...oldColumn.entities[newTask.parentTaskId],
+                      subtasks: {
+                        ...oldColumn.entities[newTask.parentTaskId].subtasks,
+                        [newTask.id]: newTask,
+                      },
+                    },
+                  }
+                : {
+                    [newTask.id]: newTask,
+                  }),
+            },
+          }));
         },
         { revalidate: false }
       );

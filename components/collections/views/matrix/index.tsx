@@ -117,7 +117,7 @@ const Cell = ({
             {remainingTasks.length} task{remainingTasks.length !== 1 && "s"}
           </Text>
           <CreateTask
-            mutate={(n) => onEntityCreate(n)}
+            mutate={mutations.categoryBased.add(mutate)}
             defaultValues={defaultOptions}
           >
             <IconButton
