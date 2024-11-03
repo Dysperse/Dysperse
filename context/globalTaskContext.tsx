@@ -11,16 +11,18 @@ export const useGlobalTaskContext = () => useContext(GlobalTaskContext);
 
 const CreateTaskWrapper = ({ wrapperRef, modalRef }) => {
   const mutateValue = useRef(() => {});
+  const [defaultValues, setDefaultValues] = React.useState({});
 
   useImperativeHandle(wrapperRef, () => ({
     mutateValue: (t) => (mutateValue.current = t),
+    setDefaultValues,
   }));
 
   return (
     <CreateTask
       mutate={(newTask) => mutateValue.current(newTask)}
       ref={modalRef}
-      defaultValues={{}}
+      defaultValues={defaultValues}
     />
   );
 };

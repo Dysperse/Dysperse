@@ -246,6 +246,7 @@ const Task = memo(function Task({
             task.parentTaskId
               ? null
               : () => {
+                  wrapperRef.current.setDefaultValues({ parentTask: task });
                   globalTaskCreateRef.current.present();
                   setTimeout(() => {
                     globalTaskCreateRef.current.setValue("parentTask", task);

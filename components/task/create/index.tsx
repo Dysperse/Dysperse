@@ -1132,6 +1132,7 @@ const BottomSheetContent = forwardRef(
         name: defaultValues.name || "",
         date: defaultValues.date,
         pinned: defaultValues.pinned || false,
+        parentTask: defaultValues.parentTask,
         label: defaultValues.label,
         storyPoints: defaultValues.storyPoints,
         collectionId: defaultValues.collectionId,
