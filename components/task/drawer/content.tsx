@@ -203,7 +203,7 @@ export function TaskDrawerContent({
               icon={task.trash ? "restore_from_trash" : "delete"}
             />
           )}
-          <TaskShareButton />
+          {!task.parentTaskId && <TaskShareButton />}
           {!isReadOnly && <TaskCompleteButton />}
         </View>
       </View>

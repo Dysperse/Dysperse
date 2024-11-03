@@ -473,7 +473,8 @@ const TimeSuggestion = forwardRef(
                   e === type && COLLECTION_VIEWS[e].type === "Category Based"
               ) &&
               !label &&
-              !parentTask
+              !parentTask &&
+              type !== "list"
             ? {
                 text: `Since this task doesn't have a label, it'll appear in a special "Unlabeled" category`,
                 icon: "info",

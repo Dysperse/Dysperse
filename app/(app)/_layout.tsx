@@ -308,22 +308,22 @@ export default function AppLayout() {
                   },
                 }}
               >
-                <PortalProvider>
-                  <View
-                    style={[
-                      {
-                        flexDirection: "row",
-                        flex: 1,
-                        backgroundColor: theme[2],
-                      },
-                      Platform.OS === "web" &&
-                        ({ WebkitAppRegion: "drag" } as any),
-                    ]}
-                  >
-                    <CommandPaletteProvider>
-                      <ThemeProvider value={routerTheme}>
-                        <FocusPanelProvider>
-                          <GlobalTaskContextProvider>
+                <GlobalTaskContextProvider>
+                  <PortalProvider>
+                    <View
+                      style={[
+                        {
+                          flexDirection: "row",
+                          flex: 1,
+                          backgroundColor: theme[2],
+                        },
+                        Platform.OS === "web" &&
+                          ({ WebkitAppRegion: "drag" } as any),
+                      ]}
+                    >
+                      <CommandPaletteProvider>
+                        <ThemeProvider value={routerTheme}>
+                          <FocusPanelProvider>
                             <View
                               style={[
                                 breakpoints.md
@@ -352,12 +352,12 @@ export default function AppLayout() {
                                 </DrawerLayout>
                               )}
                             </View>
-                          </GlobalTaskContextProvider>
-                        </FocusPanelProvider>
-                      </ThemeProvider>
-                    </CommandPaletteProvider>
-                  </View>
-                </PortalProvider>
+                          </FocusPanelProvider>
+                        </ThemeProvider>
+                      </CommandPaletteProvider>
+                    </View>
+                  </PortalProvider>
+                </GlobalTaskContextProvider>
               </MenuProvider>
               <Toast config={toastConfig(theme)} />
             </BottomSheetModalProvider>
@@ -367,3 +367,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+

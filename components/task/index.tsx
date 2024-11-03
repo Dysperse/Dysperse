@@ -242,6 +242,7 @@ const Task = memo(function Task({
         style={[taskStyle, task.parentTaskId && { marginLeft: 20 }]}
       >
         <TaskDrawer
+          smallWidth={task.parentTaskId}
           onDoublePress={
             task.parentTaskId
               ? null

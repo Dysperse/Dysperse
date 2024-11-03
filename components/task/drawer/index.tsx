@@ -191,6 +191,7 @@ export interface TaskDrawerProps {
   isReadOnly?: boolean;
   dateRange?: string;
   onDoublePress?: () => void;
+  smallWidth?: boolean;
 }
 
 export const TaskDrawer = forwardRef(function TaskDrawer(
@@ -202,6 +203,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     isReadOnly,
     dateRange,
     onDoublePress,
+    smallWidth,
   }: TaskDrawerProps,
   ref
 ) {
@@ -245,7 +247,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
       <Modal
         animation="BOTH"
         sheetRef={sheetRef}
-        maxWidth={500}
+        maxWidth={smallWidth ? 400 : 500}
         height="auto"
         onClose={handleClose}
         transformCenter

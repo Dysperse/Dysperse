@@ -1,4 +1,5 @@
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import { Entity } from "@/components/collections/entity";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -32,6 +33,7 @@ import {
 } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
 import { RRule } from "rrule";
+import CreateTask from "../create";
 import TaskDatePicker from "../create/TaskDatePicker";
 import { TaskAttachmentButton } from "./attachment/button";
 import { useTaskDrawerContext } from "./context";
@@ -672,6 +674,68 @@ function ComplexityTrigger({ backgroundColors }) {
   );
 }
 
+function SubtaskList({ backgroundColors }) {
+  const theme = useColorTheme();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+
+  return (
+    <>
+      <ListItemButton
+        backgroundColors={backgroundColors}
+        style={{ paddingVertical: 15, paddingHorizontal: 20 }}
+      >
+        <Icon>list</Icon>
+        <ListItemText
+          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+          primary="Subtasks"
+          secondary={`${Object.keys(task.subtasks).length}`}
+        />
+        <CreateTask
+          mutate={(newTask) => {
+            updateTask(
+              "subtasks",
+              { ...task.subtasks, [newTask.id]: newTask },
+              false
+            );
+          }}
+          defaultValues={{ parentTask: task }}
+        >
+          <Button
+            icon="add"
+            text="New"
+            iconPosition="end"
+            backgroundColors={{
+              default: addHslAlpha(theme[11], 0.05),
+              pressed: addHslAlpha(theme[11], 0.1),
+              hovered: addHslAlpha(theme[11], 0.2),
+            }}
+            dense
+          />
+        </CreateTask>
+      </ListItemButton>
+      <View style={{ marginHorizontal: -15 }}>
+        {Object.values(task.subtasks).map((t) => (
+          <Entity
+            isReadOnly={isReadOnly}
+            item={t}
+            onTaskUpdate={(newTask) => {
+              updateTask(
+                "subtasks",
+                {
+                  ...task.subtasks,
+                  [t.id]: newTask,
+                },
+                false
+              );
+            }}
+            key={t.id}
+          />
+        ))}
+      </View>
+    </>
+  );
+}
+
 export function TaskDetails() {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
@@ -936,6 +1000,13 @@ export function TaskDetails() {
                   <ComplexityTrigger backgroundColors={backgroundColors} />
                 ),
                 content: <></>,
+              },
+          (isReadOnly && task.subtasks?.length === 0) || task.parentTaskId
+            ? null
+            : {
+                trigger: () => (
+                  <SubtaskList backgroundColors={backgroundColors} />
+                ),
               },
         ].filter((e) => e)}
         renderHeader={(section) => section.trigger()}
