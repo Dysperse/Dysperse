@@ -702,10 +702,11 @@ function SubtaskList({ backgroundColors }) {
           }}
           onPress={() => {
             if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
+              localStorage.setItem("subtaskTip", "true");
               Toast.show({
                 type: "info",
                 text1: "Pro tip",
-                text2: "Double click on a task to open this popup",
+                text2: "Tap twice on a task to open this popup",
                 visibilityTime: 5000,
               });
             }
