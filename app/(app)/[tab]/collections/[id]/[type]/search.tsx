@@ -14,7 +14,6 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
-import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
@@ -118,8 +117,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   useHotkeys("esc", () => router.back());
 
   return (
-    <BlurView
-      intensity={30}
+    <View
       style={{
         flex: 1,
         borderRadius: 20,
@@ -295,12 +293,11 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
           </View>
         </View>
       </View>
-    </BlurView>
+    </View>
   );
 }
 
 export default function Page() {
-  const theme = useColorTheme();
   const listRef = useRef(null);
   const inputRef = useRef(null);
 

@@ -8,7 +8,6 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
 import { Platform, ScrollView, View } from "react-native";
 import useSWR from "swr";
@@ -19,7 +18,7 @@ function Share({ handleClose }) {
   useHotkeys("esc", () => router.back());
 
   return (
-    <BlurView intensity={30} style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <IconButton
         size={55}
         icon="close"
@@ -70,7 +69,7 @@ function Share({ handleClose }) {
           </View>
         </View>
       </ScrollView>
-    </BlurView>
+    </View>
   );
 }
 

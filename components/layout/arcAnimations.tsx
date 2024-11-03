@@ -38,13 +38,13 @@ export function arcAnimation({
     current.progress.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
-      extrapolate: "clamp",
+      // extrapolate: "clamp",
     }),
     next
       ? next.progress.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 1],
-          extrapolate: "clamp",
+          // extrapolate: "clamp",
         })
       : 0
   );
@@ -59,7 +59,7 @@ export function arcAnimation({
     current.progress.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
-      extrapolate: "clamp",
+      // extrapolate: "clamp",
     }),
     progress.interpolate({
       inputRange: [0, 1, 2],
@@ -92,5 +92,5 @@ export const arcAnimationSpec = {
       overshootClamping: true,
     },
   },
-};
+} as any;
 

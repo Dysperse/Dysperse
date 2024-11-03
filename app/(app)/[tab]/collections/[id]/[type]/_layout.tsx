@@ -54,6 +54,7 @@ export default function Layout() {
             detachPreviousScreen: false,
           }}
         >
+          <JsStack.Screen name="index" options={{ animationEnabled: false }} />
           {["search", "customize", "share/index", "share/link"].map((t) => (
             <JsStack.Screen
               name={t}
@@ -62,7 +63,6 @@ export default function Layout() {
                 ...TransitionPresets.ModalPresentationIOS,
                 cardStyleInterpolator: arcAnimation,
                 transitionSpec: arcAnimationSpec,
-
                 cardStyle: breakpoints.md
                   ? {
                       maxWidth: 800,

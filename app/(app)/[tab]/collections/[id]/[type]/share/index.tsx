@@ -4,15 +4,12 @@ import {
   useCollectionContext,
 } from "@/components/collections/context";
 import { PublishCollection } from "@/components/collections/navbar/PublishCollection";
-import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
-import { Button } from "@/ui/Button";
-import Divider from "@/ui/Divider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -27,8 +24,6 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { BlurView } from "expo-blur";
-import { setStringAsync } from "expo-clipboard";
 import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
 import {
@@ -431,209 +426,6 @@ const CollectionShareLink = ({ isReadOnly, navigation }) => {
   );
 };
 
-const Link = ({ collection, navigation }) => {
-  const theme = useColorTheme();
-  const { session } = useSession();
-  const [isLoading, setIsLoading] = useState(false);
-  const [defaultView, setDefaultView] = useState(
-    collection?.data?.defaultView || "kanban"
-  );
-  const { data, mutate, error } = useSWR([
-    "space/collections/collection/link",
-    { id: collection?.data?.id },
-  ]);
-
-  const params = new URLSearchParams({
-    type: defaultView,
-    // ...(defaultView !== collection?.data?.defaultView && { type: defaultView }),
-  });
-  const url = `${
-    process.env.NODE_ENV === "production"
-      ? "https://app.dysperse.com"
-      : "http://localhost:8081"
-  }/c/${data?.id}${params.toString() ? `?${params}` : ""}`;
-
-  return (
-    <>
-      {data ? (
-        <ScrollView
-          style={{
-            padding: 20,
-            paddingTop: 0,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: theme[3],
-              padding: 10,
-              borderRadius: 20,
-              marginBottom: 20,
-              flexDirection: "row",
-              alignItems: "center",
-              height: 60,
-              justifyContent: "center",
-            }}
-          >
-            {isLoading ? (
-              <Spinner />
-            ) : data.disabled ? (
-              <Text variant="eyebrow">Link disabled</Text>
-            ) : (
-              <>
-                <TextField
-                  value={url}
-                  style={{ flex: 1 }}
-                  variant="filled"
-                  editable={false}
-                />
-                <IconButton
-                  onPress={async () => {
-                    await setStringAsync(
-                      `<iframe src="${url}" width="800px" height="400px" style="border: 2px solid #aaa;border-radius: 25px"></iframe>`
-                    );
-                    Toast.show({
-                      type: "success",
-                      text1: "Embed code copied!",
-                    });
-                  }}
-                  icon="code"
-                  size={40}
-                />
-                <IconButton
-                  onPress={async () => {
-                    await setStringAsync(url);
-                    Toast.show({ type: "success", text1: "Link copied!" });
-                  }}
-                  icon="content_copy"
-                  variant="outlined"
-                  size={40}
-                />
-              </>
-            )}
-          </View>
-          <Text variant="eyebrow">Preferences</Text>
-          <ListItemButton disabled>
-            <ListItemText
-              primary="Default view"
-              secondary="People will see this when this link is opened. They can still toggle between other views as well."
-            />
-            <MenuPopover
-              trigger={
-                <Button
-                  text={capitalizeFirstLetter(defaultView)}
-                  icon={COLLECTION_VIEWS[defaultView].icon}
-                  variant="filled"
-                />
-              }
-              options={Object.keys(COLLECTION_VIEWS).map((view) => ({
-                text: capitalizeFirstLetter(view),
-                icon: COLLECTION_VIEWS[view].icon,
-                selected: defaultView === view,
-                callback: () => setDefaultView(view),
-              }))}
-            />
-          </ListItemButton>
-          <Text variant="eyebrow" style={{ marginTop: 20 }}>
-            Permissions
-          </Text>
-          {[
-            {
-              key: "NO_ACCESS",
-              text: "No access",
-              description: "Nobody can see your collection",
-            },
-            {
-              key: "READ_ONLY",
-              text: "Read only",
-              description:
-                "Anyone with the link can view this collection, even those who don't have an account.",
-            },
-          ].map((access) => (
-            <ListItemButton
-              key={access.key}
-              onPress={async () => {
-                setIsLoading(true);
-                const res = await sendApiRequest(
-                  session,
-                  "PUT",
-                  "space/collections/collection/link",
-                  {},
-                  {
-                    body: JSON.stringify({
-                      id: collection.data.id,
-                      access:
-                        access.key === "NO_ACCESS" ? undefined : access.key,
-                      disabled: access.key === "NO_ACCESS",
-                    }),
-                  }
-                );
-                if (res.error) return Toast.show({ type: "error" });
-                mutate(
-                  {
-                    ...data,
-                    access: access.key,
-                    disabled: access.key === "NO_ACCESS",
-                  },
-                  { revalidate: false }
-                );
-                setIsLoading(false);
-                Toast.show({ type: "success", text1: "Access updated!" });
-              }}
-            >
-              <ListItemText
-                primary={access.text}
-                secondary={access.description}
-              />
-              {(access.key === "NO_ACCESS"
-                ? data.disabled
-                : data.access === access.key && !data.disabled) && (
-                <Icon>check</Icon>
-              )}
-            </ListItemButton>
-          ))}
-
-          <Divider style={{ marginVertical: 20, marginTop: 5, height: 1 }} />
-          <ListItemButton
-            variant="outlined"
-            onPress={async () => {
-              setIsLoading(true);
-              await sendApiRequest(
-                session,
-                "PUT",
-                "space/collections/collection/link",
-                {},
-                {
-                  body: JSON.stringify({
-                    id: collection.data.id,
-                    refreshId: true,
-                  }),
-                }
-              );
-              await mutate();
-              setIsLoading(false);
-            }}
-          >
-            <ListItemText
-              primary="Refresh link"
-              secondary="This will generate a new link for your collection. The old link will no longer work."
-            />
-          </ListItemButton>
-        </ScrollView>
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {error ? <ErrorAlert /> : <Spinner />}
-        </View>
-      )}
-    </>
-  );
-};
-
 const CollectionMembers = ({ collection, mutateList, navigation }) => {
   const { session } = useSession();
   const { data, access } = collection || {};
@@ -732,7 +524,7 @@ function Share({ handleClose }) {
   useHotkeys("esc", () => router.back());
 
   return (
-    <BlurView intensity={30} style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <IconButton
         size={55}
         icon="close"
@@ -783,7 +575,7 @@ function Share({ handleClose }) {
           </View>
         </View>
       </ScrollView>
-    </BlurView>
+    </View>
   );
 }
 

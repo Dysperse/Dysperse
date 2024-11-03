@@ -20,7 +20,6 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { BlurView } from "expo-blur";
 import { setStringAsync } from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -237,7 +236,7 @@ function Share({ handleClose }) {
   useHotkeys("esc", () => router.back());
 
   return (
-    <BlurView intensity={30} style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <IconButton
         size={55}
         icon="close"
@@ -288,7 +287,7 @@ function Share({ handleClose }) {
           </View>
         </View>
       </ScrollView>
-    </BlurView>
+    </View>
   );
 }
 
