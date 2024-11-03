@@ -683,6 +683,7 @@ const Sidebar = ({
                 width: SIDEBAR_WIDTH,
                 flexDirection: "column",
                 borderRightWidth: 2,
+                marginRight: -8,
                 borderRightColor: "transparent",
                 backgroundColor: theme[2],
                 ...(Platform.OS === "web" &&
@@ -723,3 +724,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+

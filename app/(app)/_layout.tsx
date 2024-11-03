@@ -7,6 +7,7 @@ import TabFriendModal from "@/components/layout/TabFriendModal";
 import { JsStack } from "@/components/layout/_stack";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SessionLoadingScreen } from "@/components/layout/loading";
+import { planAnimation } from "@/components/layout/plan";
 import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
@@ -273,9 +274,11 @@ export default function AppLayout() {
             options={{
               presentation: "modal",
               detachPreviousScreen: false,
+              freezeOnBlur: true,
               animationEnabled: true,
               gestureEnabled: false,
               ...TransitionPresets.ModalPresentationIOS,
+              cardStyleInterpolator: planAnimation,
               cardStyle: breakpoints.md
                 ? {
                     maxWidth: 500,
@@ -283,12 +286,9 @@ export default function AppLayout() {
                     marginHorizontal: "auto",
                     marginVertical: 30,
                     borderRadius: 25,
-                    shadowRadius: 20,
-                    shadowColor: "rgba(0,0,0,0.1)",
-                    shadowOffset: {
-                      width: 0,
-                      height: 10,
-                    },
+                    borderWidth: 2,
+                    borderColor: theme[5],
+                    transform: breakpoints.md ? [{ scale: 1.03 }] : undefined,
                   }
                 : undefined,
             }}
