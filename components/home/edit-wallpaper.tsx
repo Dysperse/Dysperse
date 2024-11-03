@@ -50,10 +50,7 @@ export function EditWallpaper() {
   );
 
   return (
-    <ScrollView
-      style={{ height: "100%", width: "100%" }}
-      showsVerticalScrollIndicator={false}
-    >
+    <ScrollView showsVerticalScrollIndicator={false}>
       <Text style={{ fontSize: 40, marginVertical: 20 }} weight={800}>
         Customize
       </Text>
