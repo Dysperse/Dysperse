@@ -132,61 +132,62 @@ export const ImageViewer = ({ children, image }) => {
                 </View>
               )}
             </View>
-            <LinearGradient
-              colors={[theme[1], "transparent"]}
-              style={{
-                padding: 20,
-                gap: 5,
-                flexDirection: "row",
-                position: "absolute",
-                top: 0,
-                right: 0,
-                width: "100%",
-                height: 200 + insets.top,
-                zIndex: -1,
-              }}
+          </View>
+
+          <LinearGradient
+            colors={[theme[1], "transparent"]}
+            style={{
+              padding: 20,
+              gap: 5,
+              flexDirection: "row",
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: "100%",
+              height: 200 + insets.top,
+              zIndex: -1,
+            }}
+          />
+          <View
+            style={{
+              padding: 20,
+              paddingTop: insets.top + 20,
+              gap: 5,
+              flexDirection: "row",
+              position: "absolute",
+              top: 0,
+              right: 0,
+              height: 90,
+              width: "100%",
+              ...(Platform.OS === "web" &&
+                ({ marginTop: "env(titlebar-area-height,0)" } as any)),
+            }}
+          >
+            <IconButton
+              size={50}
+              variant="outlined"
+              style={{ borderWidth: 2 }}
+              onPress={handleClose}
+              icon="close"
             />
-            <View
-              style={{
-                padding: 20,
-                paddingTop: insets.top + 20,
-                gap: 5,
-                flexDirection: "row",
-                position: "absolute",
-                top: 0,
-                right: 0,
-                height: 90,
-                width: "100%",
-                ...(Platform.OS === "web" &&
-                  ({ marginTop: "env(titlebar-area-height,0)" } as any)),
+            <View style={{ flex: 1 }} />
+            <IconButton
+              size={50}
+              variant="outlined"
+              style={{ borderWidth: 2 }}
+              onPress={() => Linking.openURL(image)}
+              icon="open_in_new"
+            />
+            <IconButton
+              size={50}
+              variant="outlined"
+              style={{ borderWidth: 2 }}
+              onPress={() => {
+                // Save image to gallery
+                saveImageToCameraRoll(image);
               }}
-            >
-              <IconButton
-                size={50}
-                variant="outlined"
-                style={{ borderWidth: 2 }}
-                onPress={handleClose}
-                icon="close"
-              />
-              <View style={{ flex: 1 }} />
-              <IconButton
-                size={50}
-                variant="outlined"
-                style={{ borderWidth: 2 }}
-                onPress={() => Linking.openURL(image)}
-                icon="open_in_new"
-              />
-              <IconButton
-                size={50}
-                variant="outlined"
-                style={{ borderWidth: 2 }}
-                onPress={() => {
-                  // Save image to gallery
-                  saveImageToCameraRoll(image);
-                }}
-                icon="download"
-              />
-            </View>
+              icon="download"
+            />
           </View>
         </BottomSheet>
       )}

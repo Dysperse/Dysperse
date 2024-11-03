@@ -11,7 +11,13 @@ import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { BlurView } from "expo-blur";
 import { memo, useCallback, useMemo, useState } from "react";
-import { TextStyle, View, ViewStyle, useWindowDimensions } from "react-native";
+import {
+  Platform,
+  TextStyle,
+  View,
+  ViewStyle,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -257,7 +263,6 @@ const SelectionNavbar = memo(function SelectionNavbar() {
         ]}
       >
         <BlurView
-          experimentalBlurMethod="dimezisBlurView"
           intensity={40}
           tint={isDark ? "dark" : "prominent"}
           style={{ height: breakpoints.md ? 64 : 140 }}
@@ -265,7 +270,10 @@ const SelectionNavbar = memo(function SelectionNavbar() {
           <View
             style={[
               {
-                backgroundColor: addHslAlpha(blue[4], 0.5),
+                backgroundColor: addHslAlpha(
+                  blue[4],
+                  Platform.OS === "android" ? 1 : 0.5
+                ),
                 flexDirection: "row",
                 gap: 10,
                 paddingHorizontal: 10,
@@ -295,3 +303,4 @@ const SelectionNavbar = memo(function SelectionNavbar() {
 });
 
 export default SelectionNavbar;
+

@@ -3,7 +3,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
 import React, { useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
   empty: {
@@ -61,7 +61,10 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     <View
       style={[
         styles.empty,
-        { pointerEvents: "none" },
+        {
+          pointerEvents: "none",
+          paddingTop: Platform.OS === "android" ? 70 : undefined,
+        },
         row && { flexDirection: "row", alignItems: "center", gap: 20 },
         list && { paddingVertical: 70 },
       ]}
