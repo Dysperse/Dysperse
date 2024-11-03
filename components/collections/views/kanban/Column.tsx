@@ -16,7 +16,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
@@ -153,6 +153,10 @@ export function Column(props: ColumnProps) {
               flex: 1,
               minWidth: 5,
               minHeight: 5,
+              maxHeight:
+                Platform.OS === "web" && !breakpoints.md
+                  ? ("calc(100vh - 60px)" as any)
+                  : undefined,
             },
       ]}
     >

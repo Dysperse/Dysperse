@@ -51,6 +51,10 @@ export function Column({
           flex: 1,
           minWidth: 5,
           minHeight: 5,
+          maxHeight:
+            Platform.OS === "web" && !breakpoints.md
+              ? ("calc(100vh - 60px)" as any)
+              : undefined,
         },
       ]}
     >
@@ -154,10 +158,7 @@ export function Column({
             dateRange={item.recurrenceDay}
             isReadOnly={isReadOnly}
             item={item}
-            onTaskUpdate={mutations.timeBased.update(
-              mutate,
-              item.recurrenceDay
-            )}
+            onTaskUpdate={mutations.timeBased.update(mutate)}
           />
         )}
         keyExtractor={(i: any, d) => `${i.id}-${d}`}

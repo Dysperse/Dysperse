@@ -271,23 +271,18 @@ const Task = memo(function Task({
               onPress: handleSelect,
             })}
             pressableStyle={{
-              paddingTop: breakpoints.md ? 13 : 18,
-              paddingLeft: breakpoints.md ? 13 : 18,
-              paddingRight: breakpoints.md ? 13 : 18,
-              paddingBottom: breakpoints.md ? 8 : 18,
+              paddingTop: breakpoints.md ? 13 : 10,
+              paddingLeft: breakpoints.md ? 13 : 13,
+              paddingRight: breakpoints.md ? 13 : 13,
+              paddingBottom: breakpoints.md ? 8 : 10,
               ...(isSelected && { backgroundColor: blue[4] }),
             }}
             style={[
               {
                 flexShrink: 0,
                 borderRadius: 25,
+                marginTop: breakpoints.md ? 0 : 10,
                 borderColor: "transparent",
-                ...(!breakpoints.md && {
-                  borderWidth: 1,
-                  borderColor: theme[4],
-                  marginTop: breakpoints.md ? 0 : 5,
-                  marginBottom: 8,
-                }),
                 ...(planMode && {
                   borderWidth: 1,
                   borderColor: theme[5],
