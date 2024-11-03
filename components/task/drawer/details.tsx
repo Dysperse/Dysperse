@@ -710,23 +710,24 @@ function SubtaskList({ backgroundColors }) {
         </CreateTask>
       </ListItemButton>
       <View style={{ marginHorizontal: -15 }}>
-        {Object.values(task.subtasks).map((t) => (
-          <Entity
-            isReadOnly={isReadOnly}
-            item={t}
-            onTaskUpdate={(newTask) => {
-              updateTask(
-                "subtasks",
-                {
-                  ...task.subtasks,
-                  [t.id]: newTask,
-                },
-                false
-              );
-            }}
-            key={t.id}
-          />
-        ))}
+        {task.subtasks &&
+          Object.values(task.subtasks).map((t) => (
+            <Entity
+              isReadOnly={isReadOnly}
+              item={t}
+              onTaskUpdate={(newTask) => {
+                updateTask(
+                  "subtasks",
+                  {
+                    ...task.subtasks,
+                    [t.id]: newTask,
+                  },
+                  false
+                );
+              }}
+              key={t.id}
+            />
+          ))}
       </View>
     </>
   );
