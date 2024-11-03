@@ -41,6 +41,16 @@ function Agenda() {
       stiffness: 300,
     }),
   }));
+  const animatedBottomRadiusStyle = useAnimatedStyle(() => ({
+    borderBottomLeftRadius: withSpring(state.value === 1 ? 0 : 20, {
+      damping: 27,
+      stiffness: 300,
+    }),
+    borderBottomRightRadius: withSpring(state.value === 1 ? 0 : 20, {
+      damping: 27,
+      stiffness: 300,
+    }),
+  }));
 
   const { data, mutate, error } = useSWR([
     "space/collections/collection/planner",
@@ -128,15 +138,16 @@ function Agenda() {
             flex: 1,
           }}
         >
-          <View
-            style={{
-              backgroundColor: theme[3],
-              borderBottomLeftRadius: 20,
-              borderBottomRightRadius: 20,
-              borderTopColor: theme[5],
-              borderTopWidth: 1,
-              overflow: "hidden",
-            }}
+          <Animated.View
+            style={[
+              animatedBottomRadiusStyle,
+              {
+                backgroundColor: theme[3],
+                borderTopColor: theme[5],
+                borderTopWidth: 1,
+                overflow: "hidden",
+              },
+            ]}
           >
             <Animated.View
               style={[
@@ -159,7 +170,7 @@ function Agenda() {
               <AgendaButtons handleMenuOpen={() => (state.value = 0)} />
               <AgendaSelector data={data} />
             </Animated.View>
-          </View>
+          </Animated.View>
 
           {column && <Column mutate={mutate} column={column} />}
         </View>

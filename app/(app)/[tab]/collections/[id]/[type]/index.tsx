@@ -14,6 +14,7 @@ import Skyline from "@/components/collections/views/skyline";
 import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -51,16 +52,21 @@ const Loading = ({ error }) => (
 export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
   const sheetRef = useRef(null);
+  const breakpoints = useResponsiveBreakpoints();
   const t = useGlobalSearchParams();
 
-  const swrKey = id
-    ? [
-        "space/collections/collection",
-        id === "all"
-          ? { all: "true", id: "??" }
-          : { id, isPublic: isPublic ? "true" : "false" },
-      ]
-    : null;
+  const swrKey = useMemo(
+    () =>
+      id
+        ? [
+            "space/collections/collection",
+            id === "all"
+              ? { all: "true", id: "??" }
+              : { id, isPublic: isPublic ? "true" : "false" },
+          ]
+        : null,
+    [id, isPublic]
+  );
   const { data, mutate, error } = useSWR(swrKey);
 
   const [editOrderMode, setEditOrderMode] = useState(false);
@@ -132,7 +138,9 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
             editOrderMode={editOrderMode}
             setEditOrderMode={setEditOrderMode}
           />
-          <FadeOnRender key={JSON.stringify(t)}>{content}</FadeOnRender>
+          <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
+            {content}
+          </FadeOnRender>
         </>
       ) : (
         <Loading error={error || data?.error} />

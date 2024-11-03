@@ -164,8 +164,8 @@ export function AgendaSelector({ data }) {
             key={index}
             itemStart={item?.start}
             items={
-              item?.tasks &&
-              Object.values(item.tasks).filter(
+              item?.entities &&
+              Object.values(item.entities).filter(
                 (task) => !getTaskCompletionStatus(task, task?.recurrenceDay)
               )
             }
