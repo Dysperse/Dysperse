@@ -281,8 +281,10 @@ export default function AppLayout() {
               animationEnabled: true,
               gestureEnabled: false,
               ...TransitionPresets.ModalPresentationIOS,
-              cardStyleInterpolator: arcAnimation,
-              transitionSpec: arcAnimationSpec,
+              ...(breakpoints.md && {
+                cardStyleInterpolator: arcAnimation,
+                transitionSpec: arcAnimationSpec,
+              }),
               cardStyle: breakpoints.md
                 ? {
                     maxWidth: 500,

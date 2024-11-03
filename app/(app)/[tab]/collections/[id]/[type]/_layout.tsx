@@ -61,8 +61,10 @@ export default function Layout() {
               key={t}
               options={{
                 ...TransitionPresets.ModalPresentationIOS,
-                cardStyleInterpolator: arcAnimation,
-                transitionSpec: arcAnimationSpec,
+                ...(breakpoints.md && {
+                  cardStyleInterpolator: arcAnimation,
+                  transitionSpec: arcAnimationSpec,
+                }),
                 cardStyle: breakpoints.md
                   ? {
                       maxWidth: 800,
