@@ -135,7 +135,12 @@ export function FriendActivity() {
                 </Avatar>
                 <View style={styles.allFriends}>
                   <Text
-                    style={{ opacity: 0.6, fontSize: 13 }}
+                    style={{
+                      opacity: 0.6,
+                      fontSize: 13,
+                      marginTop: 3,
+                      marginBottom: -2,
+                    }}
                     numberOfLines={1}
                   >
                     All friends
