@@ -91,7 +91,6 @@
     "react-native-controlled-mentions": "^2.2.5",
     "react-native-countdown-circle-timer": "^3.2.1",
     "react-native-draggable-grid": "^2.2.1",
-    "react-native-drawer-layout": "^3.3.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-image-colors": "^2.4.0",
     "react-native-markdown-display": "^7.0.2",
@@ -131,3 +130,4 @@
   },
   "private": true
 }
+

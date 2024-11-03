@@ -36,7 +36,7 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { styles } from ".";
-import { getTaskCompletionStatus } from "../../helpers/getTaskCompletionStatus";
+import { getTaskCompletionStatus } from "../../../helpers/getTaskCompletionStatus";
 
 const SubmitButton = ({ text = "Done", icon = "check", onPress, disabled }) => {
   const theme = useColorTheme();

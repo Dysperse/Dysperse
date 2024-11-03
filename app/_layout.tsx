@@ -22,7 +22,6 @@ import {
   Jost_800ExtraBold,
   Jost_900Black,
 } from "@expo-google-fonts/jost";
-import { TransitionPresets } from "@react-navigation/stack";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
@@ -178,42 +177,7 @@ function Root() {
                       freezeOnBlur: true,
                     }}
                     initialRouteName="(app)/index"
-                  >
-                    <JsStack.Screen
-                      name="open"
-                      options={{
-                        presentation: "modal",
-                        animationEnabled: true,
-                        gestureEnabled: false,
-                        ...TransitionPresets.ModalPresentationIOS,
-                      }}
-                    />
-                    <JsStack.Screen
-                      name="plan"
-                      options={{
-                        presentation: "modal",
-                        detachPreviousScreen: false,
-                        animationEnabled: true,
-                        gestureEnabled: false,
-                        ...TransitionPresets.ModalPresentationIOS,
-                        cardStyle: breakpoints.md
-                          ? {
-                              maxWidth: 500,
-                              width: "100%",
-                              marginHorizontal: "auto",
-                              marginVertical: 30,
-                              borderRadius: 25,
-                              shadowRadius: 20,
-                              shadowColor: "rgba(0,0,0,0.1)",
-                              shadowOffset: {
-                                width: 0,
-                                height: 10,
-                              },
-                            }
-                          : undefined,
-                      }}
-                    />
-                  </JsStack>
+                  />
                 </SWRWrapper>
               </SidebarContext.Provider>
             </ColorThemeProvider>
@@ -227,3 +191,4 @@ function Root() {
 export default process.env.NODE_ENV === "development"
   ? Root
   : Sentry.wrap(Root);
+

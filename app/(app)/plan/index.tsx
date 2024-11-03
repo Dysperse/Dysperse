@@ -7,7 +7,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StatusBar, StyleSheet, View } from "react-native";
-import { getGreeting } from "../../components/home/getGreeting";
+import { getGreeting } from "../../../components/home/getGreeting";
 
 export const styles = StyleSheet.create({
   container: {

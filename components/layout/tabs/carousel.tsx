@@ -1,6 +1,7 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -11,13 +12,20 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import { Platform, Pressable, StyleSheet, View } from "react-native";
+import {
+  InteractionManager,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
 import ReleaseModal from "../ReleaseModal";
+import { useSidebarContext } from "../sidebar/context";
 import Tab from "./tab";
 
 const SpaceStorageAlert = memo(function SpaceStorageAlert() {
@@ -72,11 +80,18 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
 
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
+  const { sidebarRef } = useSidebarContext();
+  const breakpoints = useResponsiveBreakpoints();
   const { handleOpen } = useCommandPaletteContext();
+
+  const onOpen = () => {
+    if (!breakpoints.md) sidebarRef.current?.closeDrawer();
+    InteractionManager.runAfterInteractions(handleOpen);
+  };
 
   useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
     e.preventDefault();
-    handleOpen();
+    onOpen();
   });
 
   useHotkeys(["ctrl+/"], (e) => {
@@ -93,7 +108,7 @@ const JumpToButton = memo(function JumpToButton() {
           pressed: theme[5],
         }}
         height={50}
-        onPress={handleOpen as any}
+        onPress={onOpen as any}
         style={{
           justifyContent: "flex-start",
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
@@ -348,3 +363,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+

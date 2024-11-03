@@ -1,7 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
 import { PlanContextProvider } from "@/context/planContext";
-import { SelectionContextProvider } from "@/context/SelectionContext";
-import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColor } from "@/ui/color";
@@ -9,7 +7,6 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import IconButton from "@/ui/IconButton";
 import { toastConfig } from "@/ui/toast.config";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import {
   StackNavigationProp,
   TransitionPresets,
@@ -17,7 +14,6 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, router } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 
 const styles = StyleSheet.create({
@@ -108,30 +104,24 @@ export default function Layout() {
   if (!session || session?.error) return <Redirect href="/auth" />;
 
   return (
-    <SelectionContextProvider>
-      <StorageContextProvider>
-        <MenuProvider skipInstanceCheck>
-          <BottomSheetModalProvider>
-            <PlanContextProvider>
-              <ColorThemeProvider theme={theme}>
-                <JsStack
-                  screenOptions={{
-                    ...TransitionPresets.SlideFromRightIOS,
-                    header: ({ navigation, route }) => (
-                      <PlanNavbar navigation={navigation} route={route} />
-                    ),
-                    headerMode: "float",
-                    detachPreviousScreen: false,
-                    cardStyle: { backgroundColor: theme[1], display: "flex" },
-                  }}
-                />
-              </ColorThemeProvider>
-            </PlanContextProvider>
-          </BottomSheetModalProvider>
-        </MenuProvider>
-        <Toast config={toastConfig(theme)} />
-      </StorageContextProvider>
-    </SelectionContextProvider>
+    <>
+      <PlanContextProvider>
+        <ColorThemeProvider theme={theme}>
+          <JsStack
+            screenOptions={{
+              ...TransitionPresets.SlideFromRightIOS,
+              header: ({ navigation, route }) => (
+                <PlanNavbar navigation={navigation} route={route} />
+              ),
+              headerMode: "float",
+              detachPreviousScreen: false,
+              cardStyle: { backgroundColor: theme[1], display: "flex" },
+            }}
+          />
+        </ColorThemeProvider>
+      </PlanContextProvider>
+      <Toast config={toastConfig(theme)} />
+    </>
   );
 }
 

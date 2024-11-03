@@ -251,12 +251,46 @@ export default function AppLayout() {
             )
           )}
           <JsStack.Screen
+            name="open"
+            options={{
+              presentation: "modal",
+              animationEnabled: true,
+              gestureEnabled: false,
+              ...TransitionPresets.ModalPresentationIOS,
+            }}
+          />
+          <JsStack.Screen
             name="friends"
             options={{
               detachPreviousScreen: true,
               cardOverlayEnabled: !breakpoints.md,
               ...TransitionPresets.SlideFromRightIOS,
               cardStyleInterpolator: forHorizontalIOS,
+            }}
+          />
+          <JsStack.Screen
+            name="plan"
+            options={{
+              presentation: "modal",
+              detachPreviousScreen: false,
+              animationEnabled: true,
+              gestureEnabled: false,
+              ...TransitionPresets.ModalPresentationIOS,
+              cardStyle: breakpoints.md
+                ? {
+                    maxWidth: 500,
+                    width: "100%",
+                    marginHorizontal: "auto",
+                    marginVertical: 30,
+                    borderRadius: 25,
+                    shadowRadius: 20,
+                    shadowColor: "rgba(0,0,0,0.1)",
+                    shadowOffset: {
+                      width: 0,
+                      height: 10,
+                    },
+                  }
+                : undefined,
             }}
           />
           <JsStack.Screen
@@ -341,6 +375,20 @@ export default function AppLayout() {
                                 <DrawerLayout
                                   ref={sidebarRef}
                                   useNativeAnimations={false}
+                                  drawerLockMode={
+                                    pathname.includes(
+                                      "everything/collections/"
+                                    ) ||
+                                    pathname.includes("everything/labels/") ||
+                                    pathname.includes("/plan") ||
+                                    pathname.includes("open") ||
+                                    (pathname.includes("collections") &&
+                                      (pathname.includes("/search") ||
+                                        pathname.includes("/customize") ||
+                                        pathname.includes("/share")))
+                                      ? "locked-closed"
+                                      : "unlocked"
+                                  }
                                   drawerPosition="left"
                                   drawerType="back"
                                   overlayColor="transparent"
