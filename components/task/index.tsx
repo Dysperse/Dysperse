@@ -371,9 +371,11 @@ const Task = memo(function Task({
         </TaskDrawer>
       </Animated.View>
       {task.subtasks &&
-        Object.values(task.subtasks)?.map((subtask) => (
-          <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
-        ))}
+        Object.values(task.subtasks)
+          ?.filter((e) => !e.trash)
+          ?.map((subtask) => (
+            <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
+          ))}
     </>
   );
 });

@@ -191,8 +191,6 @@ function Footer({
             }}
           />
         )}
-
-        {/* <TaskSuggestions /> */}
       </ScrollView>
     </View>
   );
@@ -433,15 +431,17 @@ function LabelNlpProcessor({
 }
 
 const TimeSuggestion = forwardRef(
-  (
-    {
-      value,
-      hintRef,
-      watch,
-      isDirty,
-    }: { value: any; hintRef: any; watch; isDirty },
-    ref
-  ) => {
+  ({
+    value,
+    hintRef,
+    watch,
+    isDirty,
+  }: {
+    value: any;
+    hintRef: any;
+    watch;
+    isDirty;
+  }) => {
     const hasTypedRef = useRef(false);
     const date = watch("date");
     const label = watch("label");
