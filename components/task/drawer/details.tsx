@@ -25,6 +25,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   Easing,
   Linking,
+  Platform,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -32,6 +33,7 @@ import {
   ViewStyle,
 } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
+import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import CreateTask from "../create";
 import TaskDatePicker from "../create/TaskDatePicker";
@@ -697,6 +699,16 @@ function SubtaskList({ backgroundColors }) {
               { ...task.subtasks, [newTask.id]: newTask },
               false
             );
+          }}
+          onPress={() => {
+            if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
+              Toast.show({
+                type: "info",
+                text1: "Pro tip",
+                text2: "Double click on a task to open this popup",
+                visibilityTime: 5000,
+              });
+            }
           }}
           defaultValues={{ parentTask: task }}
         >
