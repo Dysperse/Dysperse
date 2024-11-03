@@ -574,7 +574,10 @@ export default function Page() {
   ]);
 
   const todaysTasks = Array.isArray(data)
-    ? data?.find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))?.tasks
+    ? Object.values(
+        data?.find((d) => dayjs().isBetween(dayjs(d.start), dayjs(d.end)))
+          ?.entities
+      )
     : [];
 
   const [createdTasks, setCreatedTasks] = useState([]);

@@ -69,7 +69,7 @@ const TaskInput = ({ control }) => {
               alignItems: "center",
               height: 50,
               gap: 10,
-              paddingRight: 20,
+              paddingRight: 30,
             },
           ]}
         >
