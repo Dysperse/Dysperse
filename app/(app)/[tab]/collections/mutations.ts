@@ -149,7 +149,10 @@ export const mutations = {
                   },
                 },
               };
-            } else if (!newTask.parentTaskId) {
+            } else if (
+              !newTask.parentTaskId &&
+              oldColumn.entities[newTask.id]
+            ) {
               // Add new task directly if there is no parentTaskId
               return {
                 ...oldColumn,
