@@ -114,7 +114,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
       onPress={(e) => e.stopPropagation()}
       style={[
         {
-          flex: 1,
+          flex: Platform.OS === "web" ? 1 : undefined,
           borderWidth: 1,
           borderColor: addHslAlpha(
             theme[6],
@@ -207,7 +207,6 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
   }: TaskDrawerProps,
   ref
 ) {
-  const { height } = useWindowDimensions();
   const contentRef = useRef(null);
   const sheetRef = useRef(null);
 

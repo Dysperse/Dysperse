@@ -547,10 +547,6 @@ function ComplexityTrigger({ backgroundColors }) {
         paddingVertical: 15,
         paddingHorizontal: 20,
       }}
-      pressableStyle={{
-        flexDirection: breakpoints.md ? "row" : "column",
-        alignItems: breakpoints.md ? undefined : "flex-start",
-      }}
     >
       <View
         style={{
@@ -571,26 +567,13 @@ function ComplexityTrigger({ backgroundColors }) {
         />
       </View>
       {!isReadOnly && (
-        <View
-          style={[
-            {
-              flexDirection: "row",
-              gap: 3,
-            },
-            !breakpoints.md && { width: "100%", flex: 1 },
-          ]}
-        >
+        <View style={{ flexDirection: "row", gap: 10 }}>
           {task.storyPoints && (
             <IconButton
               onPress={() => updateTask("storyPoints", null)}
               size={35}
-              variant={breakpoints.md ? undefined : "outlined"}
               animationConfigs={breakpoints.md && { duration: 0.0001 }}
-              style={[
-                breakpoints.md
-                  ? { borderRadius: 10 }
-                  : { width: undefined, flex: 1 },
-              ]}
+              style={[breakpoints.md && { borderRadius: 10 }]}
             >
               <Icon style={{ color: theme[11] }}>close</Icon>
             </IconButton>

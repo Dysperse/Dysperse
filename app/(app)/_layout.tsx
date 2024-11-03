@@ -308,8 +308,8 @@ export default function AppLayout() {
                   },
                 }}
               >
-                <GlobalTaskContextProvider>
-                  <PortalProvider>
+                <PortalProvider>
+                  <GlobalTaskContextProvider>
                     <View
                       style={[
                         {
@@ -356,8 +356,8 @@ export default function AppLayout() {
                         </ThemeProvider>
                       </CommandPaletteProvider>
                     </View>
-                  </PortalProvider>
-                </GlobalTaskContextProvider>
+                  </GlobalTaskContextProvider>
+                </PortalProvider>
               </MenuProvider>
               <Toast config={toastConfig(theme)} />
             </BottomSheetModalProvider>
