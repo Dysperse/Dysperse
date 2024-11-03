@@ -281,7 +281,7 @@ const Task = memo(function Task({
               {
                 flexShrink: 0,
                 borderRadius: 25,
-                marginTop: breakpoints.md ? 0 : 10,
+                marginTop: breakpoints.md ? 0 : 3,
                 borderColor: "transparent",
                 ...(planMode && {
                   borderWidth: 1,

@@ -209,6 +209,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
 ) {
   const contentRef = useRef(null);
   const sheetRef = useRef(null);
+  const { height } = useWindowDimensions();
 
   // callbacks
   const handleOpen = useCallback(() => sheetRef.current.present(), []);
@@ -264,6 +265,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
         innerStyles={{
           backgroundColor:
             Platform.OS === "android" ? undefined : "transparent",
+          maxHeight: breakpoints.md ? undefined : height - 140,
         }}
         maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
       >
