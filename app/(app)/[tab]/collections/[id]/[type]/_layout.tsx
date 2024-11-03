@@ -57,6 +57,8 @@ export default function Layout() {
               key={t}
               options={{
                 presentation: breakpoints.md ? "transparentModal" : "modal",
+                gestureEnabled: true,
+                gestureResponseDistance: 100,
                 ...(!breakpoints.md && TransitionPresets.ModalPresentationIOS),
                 cardStyle: {
                   backgroundColor: breakpoints.md ? "transparent" : undefined,

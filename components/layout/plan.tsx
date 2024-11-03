@@ -38,13 +38,13 @@ export function planAnimation({
     current.progress.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
-      extrapolate: "clamp",
+      // extrapolate: "clamp",
     }),
     next
       ? next.progress.interpolate({
           inputRange: [0, 1],
           outputRange: [0, 1],
-          extrapolate: "clamp",
+          // extrapolate: "clamp",
         })
       : 0
   );
@@ -59,7 +59,7 @@ export function planAnimation({
     current.progress.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
-      extrapolate: "clamp",
+      // extrapolate: "clamp",
     }),
     progress.interpolate({
       inputRange: [0, 1, 2],
