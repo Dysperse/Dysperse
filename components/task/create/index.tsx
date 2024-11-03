@@ -310,6 +310,9 @@ function NlpProcessor({
   const dateValue = watch("date");
 
   useEffect(() => {
+    if (value.includes("\n")) {
+      onChange(value.replaceAll("\n", ""));
+    }
     const replacementString = Platform.OS === "web" ? "@" : "/";
     suggestions.forEach((suggestion) => {
       if (
@@ -674,10 +677,8 @@ function TaskNameInput({
                 }),
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
                   if (e.key === "Enter" || e.nativeEvent.key === "Enter") {
-                    e?.preventDefault?.();
                     if (value.replaceAll("\n", "").trim())
                       handleSubmitButtonClick();
-                    else setValue("name", value.replaceAll("\n", ""));
                   }
                   if (e.key === "@") {
                     e.preventDefault();
