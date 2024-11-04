@@ -348,18 +348,18 @@ export default function AppLayout() {
                 }}
               >
                 <PortalProvider>
-                  <GlobalTaskContextProvider>
-                    <View
-                      style={[
-                        {
-                          flexDirection: "row",
-                          flex: 1,
-                          backgroundColor: theme[2],
-                        },
-                        Platform.OS === "web" &&
-                          ({ WebkitAppRegion: "drag" } as any),
-                      ]}
-                    >
+                  <View
+                    style={[
+                      {
+                        flexDirection: "row",
+                        flex: 1,
+                        backgroundColor: theme[2],
+                      },
+                      Platform.OS === "web" &&
+                        ({ WebkitAppRegion: "drag" } as any),
+                    ]}
+                  >
+                    <GlobalTaskContextProvider>
                       <CommandPaletteProvider>
                         <ThemeProvider value={routerTheme}>
                           <FocusPanelProvider>
@@ -409,8 +409,8 @@ export default function AppLayout() {
                           </FocusPanelProvider>
                         </ThemeProvider>
                       </CommandPaletteProvider>
-                    </View>
-                  </GlobalTaskContextProvider>
+                    </GlobalTaskContextProvider>
+                  </View>
                 </PortalProvider>
               </MenuProvider>
               <Toast config={toastConfig(theme)} />

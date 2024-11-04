@@ -1,5 +1,5 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import {
   Keyboard,
   Platform,
@@ -17,9 +17,7 @@ interface DTextAreaProps extends TextInputProps {
   bottomSheet?: boolean;
 }
 
-export default function AutoSizeTextArea(props: DTextAreaProps) {
-  const ref: any = useRef();
-
+const AutoSizeTextArea = forwardRef((props: DTextAreaProps, ref: any) => {
   const [layoutHeight, setLayoutHeight] = useState(0);
 
   useEffect(() => {
@@ -33,9 +31,9 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
   return (
     <SafeTextInput
       ref={ref}
-      {...props}
       defaultValue={props.inputDefaultValue}
       multiline
+      {...props}
       style={[
         {
           height: layoutHeight,
@@ -59,5 +57,6 @@ export default function AutoSizeTextArea(props: DTextAreaProps) {
       }}
     />
   );
-}
+});
 
+export default AutoSizeTextArea;
