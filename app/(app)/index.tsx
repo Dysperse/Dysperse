@@ -10,7 +10,7 @@ export default function Page() {
         ? lastViewedRoute === "/"
           ? "/home"
           : lastViewedRoute
-        : "/"
+        : "/home"
     );
   }, []);
 
