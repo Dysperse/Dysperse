@@ -17,7 +17,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import useSWR from "swr";
-import { getProfileLastActiveRelativeTime } from "../../app/(app)";
+import { getProfileLastActiveRelativeTime } from "../../app/(app)/home";
 import { ProfileModal } from "../ProfileModal";
 
 const styles = StyleSheet.create({
@@ -223,4 +223,3 @@ export function FriendActivity() {
     </View>
   );
 }
-

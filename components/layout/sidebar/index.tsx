@@ -73,14 +73,14 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
 
   const handleHome = useCallback(() => {
-    router.replace("/");
+    router.replace("/home");
     InteractionManager.runAfterInteractions(() => {
       if (!breakpoints.md) sidebarRef.current.closeDrawer();
     });
   }, [sidebarRef, breakpoints]);
 
   const theme = useColorTheme();
-  useHotkeys("ctrl+0", () => router.replace("/"));
+  useHotkeys("ctrl+0", () => router.replace("/home"));
 
   return (
     <IconButton
@@ -490,7 +490,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
 });
 
 const Header = memo(function Header() {
-  const isHome = usePathname() === "/";
+  const isHome = usePathname() === "/home";
 
   return (
     <View
