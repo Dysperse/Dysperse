@@ -1084,18 +1084,6 @@ function SubTaskInformation({ watch, setValue }) {
               {parentTask?.name}
             </Text>
           </View>
-          <IconButton
-            variant="filled"
-            icon="close"
-            backgroundColors={{
-              default: addHslAlpha(theme[9], 0.05),
-              hovered: addHslAlpha(theme[9], 0.15),
-              pressed: addHslAlpha(theme[9], 0.25),
-            }}
-            onPress={() => {
-              setValue("parentTask", null);
-            }}
-          />
         </View>
       </Collapsible>
     </View>
@@ -1452,4 +1440,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-
