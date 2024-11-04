@@ -170,10 +170,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
     !isAll &&
       session && {
         icon: "edit",
-        text: "Edit",
+        text: "Edit collection",
         callback: () => router.push(pathname + "/customize"),
       },
-    !isAll && session && { divider: true },
     !isAll &&
       session && {
         icon: "label",
@@ -194,23 +193,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
         text: "Reorder",
         callback: () => setEditOrderMode(true),
       },
-    !isAll &&
-      session && {
-        divider: true,
-      },
-
-    Platform.OS === "web" &&
-      !fullscreen &&
-      breakpoints.md && {
-        icon: "pin_invoke",
-        text: "Pop out",
-        callback: openPopOut,
-      },
-    // {
-    //   icon: "fluorescent",
-    //   text: "Customize task chips",
-    //   callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
-    // },
     session && {
       renderer: () => (
         <ConfirmationModal
@@ -241,6 +223,17 @@ const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
+    !isAll &&
+      session && {
+        divider: true,
+      },
+    Platform.OS === "web" &&
+      !fullscreen &&
+      breakpoints.md && {
+        icon: "pin_invoke",
+        text: "Pop out",
+        callback: openPopOut,
+      },
   ]
     .flat()
     .filter((e) => e);

@@ -23,6 +23,7 @@ import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
 import dayjs from "dayjs";
@@ -43,7 +44,7 @@ import {
   useGlobalSearchParams,
   usePathname,
 } from "expo-router";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Animated,
   InteractionManager,
@@ -116,6 +117,24 @@ const WebAnimationComponent = ({ children }) => {
     );
   } else return children;
 };
+
+function LastStateRestore() {
+  const pathname = usePathname();
+  const setCurrentPage = useCallback(async () => {
+    const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
+    if (
+      lastViewedRoute &&
+      lastViewedRoute !== "/" &&
+      pathname !== lastViewedRoute
+    )
+      router.replace(lastViewedRoute);
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage();
+  }, []);
+  return null;
+}
 
 export default function AppLayout() {
   const { session, isLoading, signOut } = useSession();
@@ -215,6 +234,7 @@ export default function AppLayout() {
       }}
     >
       <AppContainer progressValue={progressValue}>
+        <LastStateRestore />
         <JsStack
           screenOptions={{
             header: () => null,

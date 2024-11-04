@@ -16,6 +16,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, {
   memo,
@@ -402,6 +403,10 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     }
   }, [id, pathname]);
 
+  useEffect(() => {
+    if (pathname !== "/") AsyncStorage.setItem("lastViewedRoute", pathname);
+  }, [pathname]);
+
   useHotkeys(["ctrl+shift+n"], (e) => {
     e.preventDefault();
     router.push("/collections/create");
@@ -724,4 +729,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-
