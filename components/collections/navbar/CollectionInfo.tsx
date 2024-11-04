@@ -17,7 +17,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
 const collectionCategories = [
@@ -74,7 +73,7 @@ export const CollectionInfo = ({ navigation, collection }) => {
   };
 
   return data ? (
-    <ScrollView contentContainerStyle={{ padding: 30 }}>
+    <View>
       {collection.public && (
         <Alert
           title="Heads up!"
@@ -236,9 +235,8 @@ export const CollectionInfo = ({ navigation, collection }) => {
           </Icon>
         </ListItemButton>
       </View>
-    </ScrollView>
+    </View>
   ) : (
     <Spinner />
   );
 };
-

@@ -3,17 +3,22 @@ import {
   useCollectionContext,
 } from "@/components/collections/context";
 import { CollectionInfo } from "@/components/collections/navbar/CollectionInfo";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { Button } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useLocalSearchParams } from "expo-router";
 import { Platform, ScrollView, View } from "react-native";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 function Share({ handleClose }) {
   const theme = useColorTheme();
+  const { session } = useSession();
   const collection = useCollectionContext();
   useHotkeys("esc", () => router.back());
 
@@ -59,13 +64,34 @@ function Share({ handleClose }) {
                 textAlign: "center",
                 fontFamily: "serifText800",
                 fontSize: 40,
-                marginTop: 30,
-                marginBottom: 20,
+                marginVertical: 40,
               }}
             >
               Customize
             </Text>
             <CollectionInfo collection={collection} navigation={{}} />
+
+            <ConfirmationModal
+              height={450}
+              onSuccess={async () => {
+                await sendApiRequest(session, "DELETE", "space/collections", {
+                  id: collection.data.id,
+                });
+                router.replace("/");
+                await mutate(() => true);
+              }}
+              title="Delete collection?"
+              secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
+            >
+              <Button
+                variant="filled"
+                height={60}
+                bold
+                containerStyle={{ marginBottom: 40 }}
+                icon="delete"
+                text="Delete collection"
+              />
+            </ConfirmationModal>
           </View>
         </View>
       </ScrollView>
@@ -103,4 +129,3 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
-
