@@ -498,6 +498,11 @@ const TimeSuggestion = forwardRef(
                 text: 'Type "!!" to mark as important',
                 icon: "emoji_objects",
               }
+            : !localStorage.getItem("noteSuggestion")
+            ? {
+                text: "Hit shift+enter to add a note",
+                icon: "emoji_objects",
+              }
             : !localStorage.getItem("tagSuggestion")
             ? {
                 text: "Type # to add a tag",
@@ -692,6 +697,8 @@ function TaskNameInput({
                   ) {
                     e.preventDefault();
                     descriptionRef.current.show();
+                    if (Platform.OS === "web")
+                      localStorage.setItem("noteSuggestion", "true");
                   }
                   if (e.key === "@") {
                     e.preventDefault();
