@@ -325,7 +325,7 @@ export default function Page() {
       } else {
         Toast.show({ type: "success", text1: "Password changed!" });
         signIn(data.id);
-        router.replace("/");
+        router.replace("/home");
       }
     }
   };
@@ -375,4 +375,3 @@ export default function Page() {
     </PasswordContext.Provider>
   );
 }
-

@@ -82,7 +82,7 @@ function Tab({
             pathname: lastTab.slug,
           });
         } else {
-          router.replace("/");
+          router.replace("/home");
         }
         mutate((oldData) => oldData.filter((oldTab: any) => oldTab.id !== id), {
           revalidate: false,
@@ -289,4 +289,3 @@ function Tab({
 }
 
 export default React.memo(Tab);
-

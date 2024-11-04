@@ -18,7 +18,7 @@ export function Header({ scrollRef }) {
 
   const handleBack = (e) => {
     e.stopPropagation();
-    if (breakpoints.md) router.replace("/");
+    if (breakpoints.md) router.replace("/home");
     else sidebarRef.current.openDrawer();
   };
 
@@ -59,4 +59,3 @@ export function Header({ scrollRef }) {
     </Pressable>
   );
 }
-

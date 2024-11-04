@@ -77,7 +77,7 @@ function Share({ handleClose }) {
                 await sendApiRequest(session, "DELETE", "space/collections", {
                   id: collection.data.id,
                 });
-                router.replace("/");
+                router.replace("/home");
                 await mutate(() => true);
               }}
               title="Delete collection?"

@@ -19,7 +19,7 @@ export function RouteDialogWrapper({ children }) {
   if (!session || session?.error) return <Redirect href="/auth" />;
 
   const handleClose = () =>
-    router.canGoBack() ? router.back() : router.replace("/");
+    router.canGoBack() ? router.back() : router.replace("/home");
 
   return (
     <ColorThemeProvider theme={theme}>

@@ -14,7 +14,7 @@ import { styles } from ".";
 const SubmitButton = () => {
   const theme = useColorTheme();
 
-  const handleNext = () => router.replace("/");
+  const handleNext = () => router.replace("/home");
 
   return (
     <Button
@@ -49,7 +49,7 @@ const PlannerButton = () => {
       icon: "transition_slide",
       params: { type: "planner", id: "all" },
     });
-    router.replace("/");
+    router.replace("/home");
   };
 
   return (
@@ -122,4 +122,3 @@ export default function Page() {
     </LinearGradient>
   );
 }
-

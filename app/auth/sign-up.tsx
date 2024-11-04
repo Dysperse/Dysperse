@@ -275,7 +275,7 @@ const LoadingPage = ({ form }: { form: UseFormReturn<any> }) => {
       if (data.error) throw new Error(data.error);
       setSuccess(true);
       signIn(data.id);
-      router.replace("/");
+      router.replace("/home");
     } catch (e) {
       setError(true);
     }
@@ -573,4 +573,3 @@ export default function Page() {
     </ColorThemeProvider>
   );
 }
-
