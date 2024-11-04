@@ -290,11 +290,10 @@ export default function AppLayout() {
                     maxWidth: 500,
                     width: "100%",
                     marginHorizontal: "auto",
-                    marginVertical: 30,
+                    marginVertical: 10,
                     borderRadius: 25,
                     borderWidth: 2,
                     borderColor: theme[5],
-                    transform: breakpoints.md ? [{ scale: 1.03 }] : undefined,
                   }
                 : undefined,
             }}
@@ -422,4 +421,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-

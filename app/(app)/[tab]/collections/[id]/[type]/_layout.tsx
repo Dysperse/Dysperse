@@ -67,14 +67,12 @@ export default function Layout() {
                 }),
                 cardStyle: breakpoints.md
                   ? {
-                      maxWidth: 800,
+                      maxWidth: 600,
                       width: "100%",
                       marginHorizontal: "auto",
-                      marginVertical: 30,
                       borderRadius: 25,
                       borderWidth: 2,
                       borderColor: theme[5],
-                      transform: breakpoints.md ? [{ scale: 1.03 }] : undefined,
                     }
                   : undefined,
               }}
@@ -85,4 +83,3 @@ export default function Layout() {
     </>
   );
 }
-
