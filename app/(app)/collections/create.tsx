@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 const Header = memo(() => {
   const handleBack = () => {
     if (router.canGoBack()) router.back();
-    else router.replace("/");
+    else router.replace("/home");
   };
 
   return (
@@ -383,7 +383,7 @@ export default function Page() {
   const { isReached } = useStorageContext();
 
   useEffect(() => {
-    if (isReached) router.replace("/");
+    if (isReached) router.replace("/home");
   }, []);
 
   return (

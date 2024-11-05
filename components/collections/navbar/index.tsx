@@ -103,7 +103,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     await openBrowserAsync(t.toString(), {
       windowFeatures: { width: 800, height: 600 },
     });
-    router.replace("/");
+    router.replace("/home");
   };
 
   useHotkeys(["ctrl+d"], (e) => {
@@ -169,45 +169,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
       : []),
     !isAll &&
       session && {
-        renderer: () => (
-          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
-            Collection
-          </Text>
-        ),
-      },
-    !isAll &&
-      session && {
         icon: "edit",
-        text: "Edit",
+        text: "Edit collection",
         callback: () => router.push(pathname + "/customize"),
       },
-    !isAll &&
-      session && {
-        icon: "remove_selection",
-        text: "Delete",
-        renderer: () => (
-          <ConfirmationModal
-            height={450}
-            onSuccess={async () => {
-              await sendApiRequest(session, "DELETE", "space/collections", {
-                id: data.id,
-              });
-              router.replace("/");
-              await mutate();
-            }}
-            title="Delete collection?"
-            secondary="This won't delete any labels or its contents. Any opened views with this collection will be closed"
-          >
-            <MenuItem>
-              <Icon>delete</Icon>
-              <Text variant="menuItem" weight={300}>
-                Delete
-              </Text>
-            </MenuItem>
-          </ConfirmationModal>
-        ),
-      },
-    !isAll && session && { divider: true },
     !isAll &&
       session && {
         icon: "label",
@@ -228,23 +193,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
         text: "Reorder",
         callback: () => setEditOrderMode(true),
       },
-    !isAll &&
-      session && {
-        divider: true,
-      },
-
-    Platform.OS === "web" &&
-      !fullscreen &&
-      breakpoints.md && {
-        icon: "pin_invoke",
-        text: "Pop out",
-        callback: openPopOut,
-      },
-    // {
-    //   icon: "fluorescent",
-    //   text: "Customize task chips",
-    //   callback: () => Toast.show({ type: "info", text1: "Coming soon" }),
-    // },
     session && {
       renderer: () => (
         <ConfirmationModal
@@ -275,6 +223,17 @@ const CollectionNavbar = memo(function CollectionNavbar({
         </ConfirmationModal>
       ),
     },
+    !isAll &&
+      session && {
+        divider: true,
+      },
+    Platform.OS === "web" &&
+      !fullscreen &&
+      breakpoints.md && {
+        icon: "pin_invoke",
+        text: "Pop out",
+        callback: openPopOut,
+      },
   ]
     .flat()
     .filter((e) => e);
@@ -370,7 +329,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     }}
                     trigger={
                       <IconButton
-                        icon="pending"
+                        icon="settings"
                         size={40}
                         style={breakpoints.md && !isAll && { marginRight: 10 }}
                       />
@@ -392,4 +351,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-

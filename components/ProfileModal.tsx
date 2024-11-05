@@ -1,4 +1,4 @@
-import { getProfileLastActiveRelativeTime } from "@/app/(app)";
+import { getProfileLastActiveRelativeTime } from "@/app/(app)/home";
 import { ProfilePicture } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
@@ -173,4 +173,3 @@ export function ProfileModal({ children, email }) {
     </>
   );
 }
-

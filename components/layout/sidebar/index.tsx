@@ -16,6 +16,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, {
   memo,
@@ -72,14 +73,14 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
 
   const handleHome = useCallback(() => {
-    router.replace("/");
+    router.replace("/home");
     InteractionManager.runAfterInteractions(() => {
       if (!breakpoints.md) sidebarRef.current.closeDrawer();
     });
   }, [sidebarRef, breakpoints]);
 
   const theme = useColorTheme();
-  useHotkeys("ctrl+0", () => router.replace("/"));
+  useHotkeys("ctrl+0", () => router.replace("/home"));
 
   return (
     <IconButton
@@ -402,6 +403,10 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     }
   }, [id, pathname]);
 
+  useEffect(() => {
+    if (pathname !== "/") AsyncStorage.setItem("lastViewedRoute", pathname);
+  }, [pathname]);
+
   useHotkeys(["ctrl+shift+n"], (e) => {
     e.preventDefault();
     router.push("/collections/create");
@@ -485,7 +490,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
 });
 
 const Header = memo(function Header() {
-  const isHome = usePathname() === "/";
+  const isHome = usePathname() === "/home";
 
   return (
     <View
@@ -724,4 +729,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-

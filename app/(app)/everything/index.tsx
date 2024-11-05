@@ -739,7 +739,7 @@ export default function Page() {
 
   const handleBack = () => {
     if (router.canGoBack()) return router.back();
-    router.replace("/");
+    router.replace("/home");
   };
 
   return (
@@ -812,4 +812,3 @@ export default function Page() {
     </ContentWrapper>
   );
 }
-

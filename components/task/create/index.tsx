@@ -6,6 +6,7 @@ import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
 import { DatePicker } from "@/ui/DatePicker";
@@ -497,6 +498,11 @@ const TimeSuggestion = forwardRef(
                 text: 'Type "!!" to mark as important',
                 icon: "emoji_objects",
               }
+            : !localStorage.getItem("noteSuggestion")
+            ? {
+                text: "Hit shift+enter to add a note",
+                icon: "emoji_objects",
+              }
             : !localStorage.getItem("tagSuggestion")
             ? {
                 text: "Type # to add a tag",
@@ -525,6 +531,7 @@ function TaskNameInput({
   reset,
   submitRef,
   hintRef,
+  descriptionRef,
 }: {
   control: any;
   handleSubmitButtonClick: any;
@@ -535,10 +542,12 @@ function TaskNameInput({
   reset;
   submitRef;
   hintRef;
+  descriptionRef;
 }) {
   const attachments = watch("attachments");
   const { forceClose } = useBottomSheet();
   const { data: labelData } = useSWR(["space/labels"]);
+  const note = watch("note");
 
   const suggestions = useMemo(
     () => [
@@ -676,9 +685,20 @@ function TaskNameInput({
                   },
                 }),
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
-                  if (e.key === "Enter" || e.nativeEvent.key === "Enter") {
+                  if (
+                    !e.shiftKey &&
+                    (e.key === "Enter" || e.nativeEvent.key === "Enter")
+                  ) {
                     if (value.replaceAll("\n", "").trim())
                       handleSubmitButtonClick();
+                  } else if (
+                    e.shiftKey &&
+                    (e.key === "Enter" || e.nativeEvent.key === "Enter")
+                  ) {
+                    e.preventDefault();
+                    descriptionRef.current.show();
+                    if (Platform.OS === "web")
+                      localStorage.setItem("noteSuggestion", "true");
                   }
                   if (e.key === "@") {
                     e.preventDefault();
@@ -711,7 +731,6 @@ function TaskNameInput({
                   }
                 },
               }}
-              height={95}
               inputRef={nameRef}
               suggestions={[
                 {
@@ -1084,23 +1103,56 @@ function SubTaskInformation({ watch, setValue }) {
               {parentTask?.name}
             </Text>
           </View>
-          <IconButton
-            variant="filled"
-            icon="close"
-            backgroundColors={{
-              default: addHslAlpha(theme[9], 0.05),
-              hovered: addHslAlpha(theme[9], 0.15),
-              pressed: addHslAlpha(theme[9], 0.25),
-            }}
-            onPress={() => {
-              setValue("parentTask", null);
-            }}
-          />
         </View>
       </Collapsible>
     </View>
   );
 }
+
+const TaskDescriptionInput = forwardRef(
+  ({ watch, control }: { watch; control }, ref) => {
+    const theme = useColorTheme();
+    const [open, setOpen] = useState(false);
+    const noteRef = useRef(null);
+    const note = watch("note");
+
+    useImperativeHandle(ref, () => ({
+      show: () => {
+        setOpen(true);
+        noteRef.current.focus();
+      },
+    }));
+
+    return (
+      <Collapsible collapsed={!open && !note}>
+        <Controller
+          control={control}
+          name="note"
+          render={({ field: { onChange, value } }) => (
+            <AutoSizeTextArea
+              multiline
+              placeholder="Enter a description..."
+              ref={noteRef}
+              value={value}
+              onChange={onChange}
+              fontSize={17}
+              style={{
+                fontSize: 17,
+                paddingHorizontal: 3,
+                opacity: 0.5,
+                fontFamily: "body_300",
+                color: theme[11],
+              }}
+              onBlur={() => {
+                if (!value) setOpen(false);
+              }}
+            />
+          )}
+        />
+      </Collapsible>
+    );
+  }
+);
 
 const BottomSheetContent = forwardRef(
   (
@@ -1124,6 +1176,7 @@ const BottomSheetContent = forwardRef(
     const submitRef = useRef(null);
     const menuRef = useRef<BottomSheetModal>(null);
     const labelMenuRef = useRef<BottomSheetModal>(null);
+    const descriptionRef = useRef(null);
     const theme = useColorTheme();
     const { control, handleSubmit, reset, watch, setValue } = useForm({
       defaultValues: {
@@ -1229,6 +1282,7 @@ const BottomSheetContent = forwardRef(
               flex: 1,
               flexDirection: "column",
               zIndex: 0,
+              minHeight: 100,
             }}
           >
             <Footer
@@ -1241,6 +1295,7 @@ const BottomSheetContent = forwardRef(
               control={control}
             />
             <TaskNameInput
+              descriptionRef={descriptionRef}
               hintRef={hintRef}
               submitRef={submitRef}
               reset={reset}
@@ -1250,6 +1305,11 @@ const BottomSheetContent = forwardRef(
               handleSubmitButtonClick={handleSubmitButtonClick}
               nameRef={nameRef}
               setValue={setValue}
+            />
+            <TaskDescriptionInput
+              control={control}
+              watch={watch}
+              ref={descriptionRef}
             />
           </View>
           <TaskAttachments watch={watch} setValue={setValue} />
@@ -1452,4 +1512,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

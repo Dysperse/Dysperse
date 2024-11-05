@@ -102,15 +102,7 @@ export const mutations = {
             )
           );
 
-          if (dateIndex === -1)
-            return [
-              ...oldData,
-              {
-                start: dayjs(newTask.start).startOf("day").toISOString(),
-                end: dayjs(newTask.start).endOf("day").toISOString(),
-                entities: { [newTask.id]: newTask },
-              },
-            ];
+          if (dateIndex === -1) return;
 
           return oldData.map((oldColumn, index) => {
             if (index === dateIndex)

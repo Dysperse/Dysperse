@@ -95,7 +95,7 @@ function EscapeSettings() {
 
   const handleBack = () => {
     if (router.canGoBack()) return router.back();
-    router.replace("/");
+    router.replace("/home");
   };
 
   useHotkeys("esc", handleBack, {
@@ -318,4 +318,3 @@ export default function Layout() {
     </BlurView>
   );
 }
-

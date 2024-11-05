@@ -63,7 +63,7 @@ export function arcAnimation({
     }),
     progress.interpolate({
       inputRange: [0, 1, 2],
-      outputRange: [0, 1, 0.92],
+      outputRange: [0, 1, 0.97],
     })
   );
 
@@ -93,4 +93,3 @@ export const arcAnimationSpec = {
     },
   },
 } as any;
-

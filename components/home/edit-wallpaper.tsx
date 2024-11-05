@@ -10,7 +10,7 @@ import { router } from "expo-router";
 import { useCallback } from "react";
 import { ImageBackground, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { HOME_PATTERNS } from "../../app/(app)";
+import { HOME_PATTERNS } from "../../app/(app)/home";
 
 export function EditWallpaper() {
   const theme = useColorTheme();
@@ -150,4 +150,3 @@ export function EditWallpaper() {
     </ScrollView>
   );
 }
-
