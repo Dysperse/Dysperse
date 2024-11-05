@@ -241,7 +241,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
             >
               {!isLoading &&
                 COLLECTION_VIEWS[type].type === "Category Based" && (
-                  <CategoryLabelButtons />
+                  <CategoryLabelButtons setEditOrderMode={setEditOrderMode} />
                 )}
               <CollectionContext.Provider value={contextValue}>
                 {session && <CollectionSearch />}

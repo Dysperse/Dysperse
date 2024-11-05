@@ -183,6 +183,7 @@ function Footer({
         )}
         {(label || collectionId) && !parentTask && (
           <CreateTaskLabelInput
+            setValue={setValue}
             watch={watch}
             collectionId={collectionId}
             control={control}
@@ -202,6 +203,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   labelMenuRef,
   onLabelPickerClose,
   watch,
+  setValue,
 }: any) {
   const theme = useColorTheme();
   const colors = useLabelColors();
@@ -271,6 +273,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                       <Spinner />
                     )
                   }
+                  onDismiss={() => setValue("collectionId", null)}
                   style={({ pressed, hovered }) => ({
                     borderWidth: 1,
                     borderColor: addHslAlpha(
