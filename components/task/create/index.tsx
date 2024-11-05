@@ -450,8 +450,9 @@ const TimeSuggestion = forwardRef(
     const date = watch("date");
     const label = watch("label");
     const parentTask = watch("parentTask");
+    const collectionId = watch("collectionId");
     const pathname = usePathname();
-    const { type } = useGlobalSearchParams();
+    const { type, id } = useGlobalSearchParams();
 
     useEffect(() => {
       if (Platform.OS === "web") {
@@ -481,9 +482,15 @@ const TimeSuggestion = forwardRef(
               ) &&
               !label &&
               !parentTask &&
-              type !== "list"
+              type !== "list" &&
+              collectionId
             ? {
                 text: `Since this task doesn't have a label, it'll appear in a special "Unlabeled" category`,
+                icon: "info",
+              }
+            : !label && id !== "all" && !collectionId
+            ? {
+                text: 'This task will appear in your "All tasks" view since it isn\'t part of any collection',
                 icon: "info",
               }
             : isDirty && !value
