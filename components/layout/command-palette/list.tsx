@@ -56,8 +56,8 @@ export const paletteItems = (
 ): { title: string; icon: string; items: any[] }[] => {
   return [
     {
-      title: "Everything",
-      icon: "all_inclusive",
+      title: "All tasks",
+      icon: "filter_drama",
       items: Object.keys(COLLECTION_VIEWS).map((key) => ({
         label: capitalizeFirstLetter(key),
         key,
@@ -69,7 +69,7 @@ export const paletteItems = (
     },
     {
       title: "Collections",
-      icon: "grid_view",
+      icon: "layers",
       items: [
         ...(collections && Array.isArray(collections)
           ? collections.map((collection) => ({
@@ -97,18 +97,6 @@ export const paletteItems = (
       ],
     },
     {
-      title: "Other",
-      icon: "pending",
-      items: [
-        {
-          key: "onboarding",
-          label: "Reset onboarding",
-          icon: "kid_star",
-          slug: "/[tab]/welcome",
-        },
-      ],
-    },
-    {
       title: "Shared with me",
       icon: "group",
       items:
@@ -124,6 +112,18 @@ export const paletteItems = (
               params: { id: access.collection.id, type: "planner" },
             }))
           : [],
+    },
+    {
+      title: "Other",
+      icon: "more_horiz",
+      items: [
+        {
+          key: "onboarding",
+          label: "Reset onboarding",
+          icon: "kid_star",
+          slug: "/[tab]/welcome",
+        },
+      ],
     },
   ];
 };

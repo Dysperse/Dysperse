@@ -119,12 +119,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
     ...(type === "calendar"
       ? [
           {
-            icon: "calendar_view_day",
-            text: "Schedule view",
-            id: "schedule",
-            callback: () => router.setParams({ mode: "schedule" }),
-          },
-          {
             icon: "view_week",
             text: "3-day view",
             id: "3days",
@@ -185,7 +179,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
           {menu}
           <View
             style={{
-              maxWidth: breakpoints.md ? 220 : "100%",
+              maxWidth: brea < kpoints.md ? 220 : "100%",
               flexDirection: "row",
               alignItems: "center",
               gap: 13,
@@ -253,7 +247,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     menuRef={menuRef}
                     closeOnSelect
                     {...(isReadOnly && { menuProps: { opened: false } })}
-                    containerStyle={{ width: 240 }}
+                    containerStyle={{ width: 175, marginLeft: isAll ? -10 : 0 }}
                     menuProps={{
                       rendererProps: { placement: "bottom" },
                     }}
