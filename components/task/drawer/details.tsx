@@ -710,7 +710,7 @@ function SubtaskList({ backgroundColors }) {
         </CreateTask>
       </ListItemButton>
       <View style={{ marginHorizontal: -15 }}>
-        {task.subtasks &&
+        {typeof task.subtasks === "object" &&
           Object.values(task.subtasks).map((t) => (
             <Entity
               isReadOnly={isReadOnly}
