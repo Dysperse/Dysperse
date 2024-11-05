@@ -151,4 +151,3 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </ContentWrapper>
   );
 }
-

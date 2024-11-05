@@ -32,7 +32,7 @@ const Link = ({ collection, navigation }) => {
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [defaultView, setDefaultView] = useState(
-    collection?.data?.defaultView || "kanban"
+    collection?.data?.defaultView || "list"
   );
   const { data, mutate, error } = useSWR([
     "space/collections/collection/link",
@@ -321,4 +321,3 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
-
