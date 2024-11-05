@@ -231,7 +231,11 @@ function MenuPopover({
                                 }}
                                 {...props}
                               >
-                                {icon && <Icon>{icon}</Icon>}
+                                {icon && typeof icon === "string" ? (
+                                  <Icon>{icon}</Icon>
+                                ) : (
+                                  icon
+                                )}
                                 <Text
                                   weight={300}
                                   style={{ color: theme[11], fontSize: 16 }}

@@ -237,7 +237,7 @@ export const LogoButton = memo(function LogoButton({
           },
         }}
         menuRef={menuRef}
-        containerStyle={{ width: 190, marginLeft: 10, marginTop: 5 }}
+        containerStyle={{ width: 190, marginLeft: 10, marginTop: -5 }}
         trigger={
           <View style={{ borderRadius: 20, overflow: "hidden" }}>
             <Pressable

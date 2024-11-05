@@ -13,7 +13,7 @@ const toastStyles = (theme): StyleProp<ViewStyle> => ({
   width: "auto",
   maxWidth: 300,
   height: "auto",
-  padding: 2,
+  padding: 10,
   shadowOffset: { height: 20, width: 0 },
   shadowRadius: 50,
   shadowOpacity: 0.2,
@@ -27,8 +27,18 @@ const toastContainerStyles: StyleProp<ViewStyle> = {
 const text1Props = (theme) => ({
   style: {
     color: theme[11],
-    fontFamily: getFontName("jost", 400),
+    fontFamily: getFontName("jost", 600),
     fontSize: 15,
+  },
+});
+
+const text2Props = (theme) => ({
+  style: {
+    color: theme[11],
+    fontFamily: getFontName("jost", 400),
+    lineHeight: 15,
+    fontSize: 13,
+    opacity: 0.6,
   },
 });
 
@@ -50,7 +60,7 @@ export const toastConfig = (theme) => ({
             check_circle
           </Icon>
         )}
-        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
+        text2Props={text2Props(theme)}
         renderTrailingIcon={props.props?.renderTrailingIcon}
       />
     </View>
@@ -79,7 +89,7 @@ export const toastConfig = (theme) => ({
             </Icon>
           )
         }
-        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
+        text2Props={text2Props(theme)}
       />
     </View>
   ),
@@ -92,7 +102,7 @@ export const toastConfig = (theme) => ({
         text1NumberOfLines={null}
         text2NumberOfLines={null}
         text1Props={text1Props(theme)}
-        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
+        text2Props={text2Props(theme)}
       />
     </View>
   ),
@@ -105,7 +115,7 @@ export const toastConfig = (theme) => ({
         text1={props.text1 || "Something went wrong. Please try again later"}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
-        text2Style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}
+        text2Props={text2Props(theme)}
         text1Props={text1Props(theme)}
         renderLeadingIcon={() => (
           <Icon

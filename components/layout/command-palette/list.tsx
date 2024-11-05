@@ -28,7 +28,6 @@ export const COLLECTION_VIEWS = {
     description: "View all your tasks day by day",
     type: "Time Based",
   },
-
   stream: {
     icon: "whatshot",
     description: "View all missed, upcoming, and completed tasks",
@@ -42,12 +41,12 @@ export const COLLECTION_VIEWS = {
   workload: {
     icon: "exercise",
     description: "Organize your tasks by an estimate of energy consumption",
-    category: "Priority Based",
+    type: "Priority Based",
   },
   matrix: {
     icon: "target",
     description: "View all your tasks by priority",
-    category: "Priority Based",
+    type: "Priority Based",
   },
 };
 

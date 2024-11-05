@@ -2,23 +2,19 @@ import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar"
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
-import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import ConfirmationModal from "@/ui/ConfirmationModal";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
-import Text from "@/ui/Text";
+import MenuPopover from "@/ui/MenuPopover";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
+import { CategoryLabelButtons } from "./CategoryLabelButtons";
 import { CollectionSearch } from "./CollectionSearch";
 import { CollectionShareMenu } from "./CollectionShareMenu";
 import { NavbarEyebrow } from "./NavbarEyebrow";
@@ -76,19 +72,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
-
-  const toggleShowCompleted = async () => {
-    const showCompleted = !data.showCompleted;
-    await sendApiRequest(
-      session,
-      "PUT",
-      "space/collections",
-      {},
-      { body: JSON.stringify({ id: data.id, showCompleted }) }
-    );
-    await ctx.mutate();
-  };
-
   const { mutate } = useSWR(["user/tabs"]);
 
   const handleRefresh = async (e) => {
@@ -159,9 +142,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
             id: "month",
             callback: () => router.setParams({ mode: "month" }),
           },
-          {
-            divider: true,
-          },
         ].map((e) => ({
           ...e,
           selected: e.text && e.id === mode,
@@ -172,60 +152,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
         icon: "edit",
         text: "Edit collection",
         callback: () => router.push(pathname + "/customize"),
-      },
-    !isAll &&
-      session && {
-        icon: "label",
-        renderer: () => (
-          <MenuItem onPress={openLabelPicker}>
-            <Icon>label</Icon>
-            <Text variant="menuItem">
-              Showing {data.labels.length} label
-              {data.labels.length !== 1 && "s"}
-            </Text>
-          </MenuItem>
-        ),
-      },
-    !isAll &&
-      session &&
-      (type === "grid" || type === "kanban") && {
-        icon: "swipe",
-        text: "Reorder",
-        callback: () => setEditOrderMode(true),
-      },
-    session && {
-      renderer: () => (
-        <ConfirmationModal
-          height={430}
-          onSuccess={toggleShowCompleted}
-          title={
-            data.showCompleted
-              ? "Hide completed tasks?"
-              : "Show completed tasks?"
-          }
-          disabled={!data.name}
-          secondary="This will affect all views in this collection"
-        >
-          <MenuItem
-            onPress={() => {
-              if (!data.name)
-                Toast.show({ type: "info", text1: "Coming soon" });
-            }}
-          >
-            <Icon>check_circle</Icon>
-            <Text variant="menuItem" weight={300}>
-              {data.showCompleted ? "Show" : "Hide"} completed
-            </Text>
-            {data.showCompleted && (
-              <Icon style={{ marginLeft: "auto" }}>check</Icon>
-            )}
-          </MenuItem>
-        </ConfirmationModal>
-      ),
-    },
-    !isAll &&
-      session && {
-        divider: true,
       },
     Platform.OS === "web" &&
       !fullscreen &&
@@ -313,6 +239,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
                 justifyContent: "flex-end",
               }}
             >
+              {!isLoading &&
+                COLLECTION_VIEWS[type].type === "Category Based" && (
+                  <CategoryLabelButtons />
+                )}
               <CollectionContext.Provider value={contextValue}>
                 {session && <CollectionSearch />}
                 {!breakpoints.md && session && !isReadOnly && (
