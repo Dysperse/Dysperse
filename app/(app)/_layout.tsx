@@ -5,10 +5,7 @@ import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
 import TabFriendModal from "@/components/layout/TabFriendModal";
 import { JsStack } from "@/components/layout/_stack";
-import {
-  arcAnimation,
-  arcAnimationSpec,
-} from "@/components/layout/arcAnimations";
+import { arcCard } from "@/components/layout/arcAnimations";
 import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SessionLoadingScreen } from "@/components/layout/loading";
 import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
@@ -219,31 +216,6 @@ export default function AppLayout() {
     );
   };
 
-  const arcCard = ({ maxWidth }) =>
-    ({
-      presentation: "modal",
-      detachPreviousScreen: false,
-      freezeOnBlur: true,
-      animationEnabled: true,
-      gestureEnabled: false,
-      ...TransitionPresets.ModalPresentationIOS,
-      ...(breakpoints.md && {
-        cardStyleInterpolator: arcAnimation,
-        transitionSpec: arcAnimationSpec,
-      }),
-      cardStyle: breakpoints.md
-        ? {
-            maxWidth,
-            width: "100%",
-            marginHorizontal: "auto",
-            marginVertical: 10,
-            borderRadius: 25,
-            borderWidth: 2,
-            borderColor: theme[5],
-          }
-        : undefined,
-    } as any);
-
   const content = (
     <ThemeProvider
       value={{
@@ -310,36 +282,11 @@ export default function AppLayout() {
           />
           <JsStack.Screen
             name="friends"
-            options={{
-              cardOverlayEnabled: !breakpoints.md,
-              ...arcCard({ maxWidth: 500 }),
-            }}
+            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
           />
           <JsStack.Screen
             name="plan"
-            options={{
-              presentation: "modal",
-              detachPreviousScreen: false,
-              freezeOnBlur: true,
-              animationEnabled: true,
-              gestureEnabled: false,
-              ...TransitionPresets.ModalPresentationIOS,
-              ...(breakpoints.md && {
-                cardStyleInterpolator: arcAnimation,
-                transitionSpec: arcAnimationSpec,
-              }),
-              cardStyle: breakpoints.md
-                ? {
-                    maxWidth: 500,
-                    width: "100%",
-                    marginHorizontal: "auto",
-                    marginVertical: 10,
-                    borderRadius: 25,
-                    borderWidth: 2,
-                    borderColor: theme[5],
-                  }
-                : undefined,
-            }}
+            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
           />
           <JsStack.Screen
             name="collections/create"

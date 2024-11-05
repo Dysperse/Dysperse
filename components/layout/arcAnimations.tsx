@@ -1,6 +1,7 @@
 import {
   StackCardInterpolatedStyle,
   StackCardInterpolationProps,
+  TransitionPresets,
 } from "@react-navigation/stack";
 import { Animated } from "react-native";
 
@@ -93,3 +94,28 @@ export const arcAnimationSpec = {
     },
   },
 } as any;
+
+export const arcCard = ({ theme, breakpoints, maxWidth }) =>
+  ({
+    presentation: "modal",
+    detachPreviousScreen: false,
+    freezeOnBlur: true,
+    animationEnabled: true,
+    gestureEnabled: false,
+    ...TransitionPresets.ModalPresentationIOS,
+    ...(breakpoints.md && {
+      cardStyleInterpolator: arcAnimation,
+      transitionSpec: arcAnimationSpec,
+    }),
+    cardStyle: breakpoints.md
+      ? {
+          maxWidth,
+          width: "100%",
+          marginHorizontal: "auto",
+          marginVertical: 10,
+          borderRadius: 25,
+          borderWidth: 2,
+          borderColor: theme[5],
+        }
+      : undefined,
+  } as any);

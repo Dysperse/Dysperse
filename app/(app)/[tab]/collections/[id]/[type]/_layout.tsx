@@ -1,13 +1,9 @@
 import { JsStack } from "@/components/layout/_stack";
-import {
-  arcAnimation,
-  arcAnimationSpec,
-} from "@/components/layout/arcAnimations";
+import { arcCard } from "@/components/layout/arcAnimations";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ThemeProvider } from "@react-navigation/native";
-import { TransitionPresets } from "@react-navigation/stack";
 import { usePathname } from "expo-router";
 import { StatusBar } from "react-native";
 
@@ -59,23 +55,7 @@ export default function Layout() {
             <JsStack.Screen
               name={t}
               key={t}
-              options={{
-                ...TransitionPresets.ModalPresentationIOS,
-                ...(breakpoints.md && {
-                  cardStyleInterpolator: arcAnimation,
-                  transitionSpec: arcAnimationSpec,
-                }),
-                cardStyle: breakpoints.md
-                  ? {
-                      maxWidth: 600,
-                      width: "100%",
-                      marginHorizontal: "auto",
-                      borderRadius: 25,
-                      borderWidth: 2,
-                      borderColor: theme[5],
-                    }
-                  : undefined,
-              }}
+              options={arcCard({ theme, breakpoints, maxWidth: 600 })}
             />
           ))}
         </JsStack>
