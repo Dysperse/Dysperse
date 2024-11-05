@@ -2,6 +2,22 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 
 export const COLLECTION_VIEWS = {
+  list: {
+    icon: "view_agenda",
+    description: "View all your tasks in a traditional to-do list format",
+    type: "Category Based",
+  },
+  kanban: {
+    icon: "view_kanban",
+    description: "Organize all your tasks by category",
+    type: "Category Based",
+  },
+  grid: {
+    icon: "view_cozy",
+    description:
+      "Organize all your tasks by category, displayed in a neat grid view",
+    type: "Category Based",
+  },
   skyline: {
     icon: "blur_linear",
     description: "Vision tasks in flexible time frames",
@@ -12,41 +28,26 @@ export const COLLECTION_VIEWS = {
     description: "View all your tasks day by day",
     type: "Time Based",
   },
-  kanban: {
-    icon: "view_kanban",
-    description: "Organize all your tasks by category",
-    type: "Category Based",
-  },
+
   stream: {
     icon: "whatshot",
     description: "View all missed, upcoming, and completed tasks",
     type: "Time Based",
   },
-  grid: {
-    icon: "view_cozy",
-    description:
-      "Organize all your tasks by category, displayed in a neat grid view",
-    type: "Category Based",
+  calendar: {
+    icon: "calendar_today",
+    description: "View all your tasks in a traditional calendar view",
+    type: "Time Based",
   },
   workload: {
     icon: "exercise",
     description: "Organize your tasks by an estimate of energy consumption",
     category: "Priority Based",
   },
-  list: {
-    icon: "view_agenda",
-    description: "View all your tasks in a traditional to-do list format",
-    type: "Category Based",
-  },
   matrix: {
     icon: "target",
     description: "View all your tasks by priority",
     category: "Priority Based",
-  },
-  calendar: {
-    icon: "calendar_today",
-    description: "View all your tasks in a traditional calendar view",
-    type: "Time Based",
   },
 };
 
@@ -127,4 +128,3 @@ export const paletteItems = (
     },
   ];
 };
-
