@@ -219,6 +219,31 @@ export default function AppLayout() {
     );
   };
 
+  const arcCard = ({ maxWidth }) =>
+    ({
+      presentation: "modal",
+      detachPreviousScreen: false,
+      freezeOnBlur: true,
+      animationEnabled: true,
+      gestureEnabled: false,
+      ...TransitionPresets.ModalPresentationIOS,
+      ...(breakpoints.md && {
+        cardStyleInterpolator: arcAnimation,
+        transitionSpec: arcAnimationSpec,
+      }),
+      cardStyle: breakpoints.md
+        ? {
+            maxWidth,
+            width: "100%",
+            marginHorizontal: "auto",
+            marginVertical: 10,
+            borderRadius: 25,
+            borderWidth: 2,
+            borderColor: theme[5],
+          }
+        : undefined,
+    } as any);
+
   const content = (
     <ThemeProvider
       value={{
@@ -286,10 +311,8 @@ export default function AppLayout() {
           <JsStack.Screen
             name="friends"
             options={{
-              detachPreviousScreen: true,
               cardOverlayEnabled: !breakpoints.md,
-              ...TransitionPresets.SlideFromRightIOS,
-              cardStyleInterpolator: forHorizontalIOS,
+              ...arcCard({ maxWidth: 500 }),
             }}
           />
           <JsStack.Screen

@@ -1,6 +1,5 @@
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import { ProfileModal } from "@/components/ProfileModal";
-import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -473,7 +472,7 @@ export default function Page() {
   );
 
   return (
-    <ContentWrapper noPaddingTop>
+    <View style={{ backgroundColor: theme[1], flex: 1 }}>
       {view !== "search" && (
         <IconButton
           onPress={handleBack}
@@ -606,7 +605,6 @@ export default function Page() {
           />
         )}
       </View>
-    </ContentWrapper>
+    </View>
   );
 }
-
