@@ -95,7 +95,7 @@ export const arcAnimationSpec = {
   },
 } as any;
 
-export const arcCard = ({ theme, breakpoints, maxWidth }) =>
+export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
   ({
     presentation: "modal",
     detachPreviousScreen: false,
@@ -112,7 +112,7 @@ export const arcCard = ({ theme, breakpoints, maxWidth }) =>
           maxWidth,
           width: "100%",
           marginHorizontal: "auto",
-          marginVertical: 10,
+          marginVertical: padding,
           borderRadius: 25,
           borderWidth: 2,
           borderColor: theme[5],

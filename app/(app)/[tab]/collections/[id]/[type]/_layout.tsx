@@ -55,7 +55,12 @@ export default function Layout() {
             <JsStack.Screen
               name={t}
               key={t}
-              options={arcCard({ theme, breakpoints, maxWidth: 600 })}
+              options={arcCard({
+                theme,
+                breakpoints,
+                maxWidth: 600,
+                padding: 0,
+              })}
             />
           ))}
         </JsStack>
