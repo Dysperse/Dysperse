@@ -118,13 +118,15 @@ const WebAnimationComponent = ({ children }) => {
 function LastStateRestore() {
   const pathname = usePathname();
   const setCurrentPage = useCallback(async () => {
-    const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
-    if (
-      lastViewedRoute &&
-      lastViewedRoute !== "/" &&
-      pathname !== lastViewedRoute
-    )
-      router.replace(lastViewedRoute);
+    if (!pathname.includes("chrome-extentension")) {
+      const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
+      if (
+        lastViewedRoute &&
+        lastViewedRoute !== "/" &&
+        pathname !== lastViewedRoute
+      )
+        router.replace(lastViewedRoute);
+    }
   }, []);
 
   useEffect(() => {
