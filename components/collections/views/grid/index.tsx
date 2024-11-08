@@ -11,10 +11,9 @@ import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { Column } from "../kanban/Column";
-import { ReorderingGrid } from "./ReorderingGrid";
 import { GridContext, GridContextSelectedColumn } from "./context";
 
-export default function Grid({ editOrderMode }) {
+export default function Grid({ editOrderMode }: any) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const { data, mutate, openLabelPicker, access, isPublic } =
@@ -45,9 +44,9 @@ export default function Grid({ editOrderMode }) {
       })
     );
 
-  if (editOrderMode) {
-    return <ReorderingGrid labels={displayLabels} />;
-  }
+  // if (editOrderMode) {
+  //   return <ReorderingGrid labels={displayLabels} />;
+  // }
 
   const rowCount = 2;
   const itemsPerRow = displayLabels.length / rowCount;

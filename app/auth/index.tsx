@@ -50,9 +50,7 @@ export default function Page() {
       <StatusBar barStyle="light-content" />
       <ImageBackground
         source={require("@/assets/login.png")}
-        style={{
-          flex: 1,
-        }}
+        style={{ flex: 1 }}
         imageStyle={{
           resizeMode: "cover",
           width,
@@ -174,4 +172,3 @@ export default function Page() {
     </View>
   );
 }
-

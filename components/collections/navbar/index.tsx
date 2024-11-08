@@ -17,16 +17,11 @@ import { AgendaButtons } from "./AgendaButtons";
 import { CategoryLabelButtons } from "./CategoryLabelButtons";
 import { CollectionSearch } from "./CollectionSearch";
 import { CollectionShareMenu } from "./CollectionShareMenu";
-import { NavbarEyebrow } from "./NavbarEyebrow";
 import { NavbarGradient } from "./NavbarGradient";
-import { NavbarIcon } from "./NavbarIcon";
-import { NavbarTitle } from "./NavbarTitle";
 import { ViewPicker } from "./ViewPicker";
 
 interface CollectionNavbarProps {
   isLoading?: boolean;
-  editOrderMode: boolean;
-  setEditOrderMode: (value: boolean) => void;
 }
 
 const LoadingIndicator = () => {
@@ -57,8 +52,6 @@ export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
 
 const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
-  editOrderMode,
-  setEditOrderMode,
 }: CollectionNavbarProps) {
   const { session } = useSession();
   const { data, access, type, swrKey, openLabelPicker, ...ctx } =
@@ -174,102 +167,66 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
   return (
     <>
-      {editOrderMode ? (
+      <>
         <NavbarGradient>
           {menu}
           <View
             style={{
-              maxWidth: brea < kpoints.md ? 220 : "100%",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 13,
-              paddingLeft: 10,
+              marginRight: "auto",
+              maxWidth: "100%",
+              width: breakpoints.md ? 220 : undefined,
               minWidth: 0,
+              flex: breakpoints.md ? undefined : 1,
             }}
           >
-            <NavbarIcon
-              isAll={isAll}
-              emoji={data.emoji}
-              isLoading={isLoading}
-            />
-            <View>
-              <NavbarEyebrow name="Reorder labels" />
-              <NavbarTitle name={data.name} />
-            </View>
+            <ViewPicker isLoading={isLoading} />
           </View>
-          <IconButton
-            icon="check"
-            variant="filled"
-            size={40}
-            style={{ marginLeft: "auto" }}
-            onPress={() => setEditOrderMode(false)}
-          />
+          {!isLoading &&
+            (type === "planner" || type === "skyline" || type === "calendar") &&
+            breakpoints.md && <AgendaButtons weekMode={type === "planner"} />}
+          <View
+            style={{
+              width: breakpoints.md ? 220 : undefined,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+          >
+            {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
+              <CategoryLabelButtons />
+            )}
+            <CollectionContext.Provider value={contextValue}>
+              {session && <CollectionSearch />}
+              {!breakpoints.md && session && !isReadOnly && (
+                <CollectionShareMenu ref={shareMenuRef} />
+              )}
+              {!isLoading && !isReadOnly && (
+                <MenuPopover
+                  menuRef={menuRef}
+                  closeOnSelect
+                  {...(isReadOnly && { menuProps: { opened: false } })}
+                  containerStyle={{ width: 175, marginLeft: isAll ? -10 : 0 }}
+                  menuProps={{
+                    rendererProps: { placement: "bottom" },
+                  }}
+                  trigger={
+                    <IconButton
+                      icon="settings"
+                      size={40}
+                      style={breakpoints.md && !isAll && { marginRight: 10 }}
+                    />
+                  }
+                  options={(isReadOnly ? [] : collectionMenuOptions) as any}
+                />
+              )}
+              {breakpoints.md && session && !isReadOnly && (
+                <CollectionShareMenu ref={shareMenuRef} />
+              )}
+            </CollectionContext.Provider>
+          </View>
         </NavbarGradient>
-      ) : (
-        <>
-          <NavbarGradient>
-            {menu}
-            <View
-              style={{
-                marginRight: "auto",
-                maxWidth: "100%",
-                width: breakpoints.md ? 220 : undefined,
-                minWidth: 0,
-                flex: breakpoints.md ? undefined : 1,
-              }}
-            >
-              <ViewPicker isLoading={isLoading} />
-            </View>
-            {!isLoading &&
-              (type === "planner" ||
-                type === "skyline" ||
-                type === "calendar") &&
-              breakpoints.md && <AgendaButtons weekMode={type === "planner"} />}
-            <View
-              style={{
-                width: breakpoints.md ? 220 : undefined,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-end",
-              }}
-            >
-              {!isLoading &&
-                COLLECTION_VIEWS[type].type === "Category Based" && (
-                  <CategoryLabelButtons setEditOrderMode={setEditOrderMode} />
-                )}
-              <CollectionContext.Provider value={contextValue}>
-                {session && <CollectionSearch />}
-                {!breakpoints.md && session && !isReadOnly && (
-                  <CollectionShareMenu ref={shareMenuRef} />
-                )}
-                {!isLoading && !isReadOnly && (
-                  <MenuPopover
-                    menuRef={menuRef}
-                    closeOnSelect
-                    {...(isReadOnly && { menuProps: { opened: false } })}
-                    containerStyle={{ width: 175, marginLeft: isAll ? -10 : 0 }}
-                    menuProps={{
-                      rendererProps: { placement: "bottom" },
-                    }}
-                    trigger={
-                      <IconButton
-                        icon="settings"
-                        size={40}
-                        style={breakpoints.md && !isAll && { marginRight: 10 }}
-                      />
-                    }
-                    options={(isReadOnly ? [] : collectionMenuOptions) as any}
-                  />
-                )}
-                {breakpoints.md && session && !isReadOnly && (
-                  <CollectionShareMenu ref={shareMenuRef} />
-                )}
-              </CollectionContext.Provider>
-            </View>
-          </NavbarGradient>
-          <LoadingIndicator />
-        </>
-      )}
+        <LoadingIndicator />
+      </>
     </>
   );
 });

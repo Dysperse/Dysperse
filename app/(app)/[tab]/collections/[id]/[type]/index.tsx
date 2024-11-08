@@ -24,7 +24,7 @@ import {
   useGlobalSearchParams,
   useLocalSearchParams,
 } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import useSWR from "swr";
 
@@ -39,11 +39,7 @@ export const styles = StyleSheet.create({
 
 const Loading = ({ error }) => (
   <>
-    <CollectionNavbar
-      isLoading
-      editOrderMode={false}
-      setEditOrderMode={() => {}}
-    />
+    <CollectionNavbar isLoading />
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {error ? <ErrorAlert /> : <Spinner />}
     </View>
@@ -70,8 +66,6 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   );
   const { data, mutate, error } = useSWR(swrKey);
 
-  const [editOrderMode, setEditOrderMode] = useState(false);
-
   useEffect(() => {
     if (!type && isPublic) {
       InteractionManager.runAfterInteractions(() => {
@@ -86,13 +80,13 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       content = <Planner />;
       break;
     case "kanban":
-      content = <Kanban editOrderMode={editOrderMode} />;
+      content = <Kanban />;
       break;
     case "stream":
       content = <Stream />;
       break;
     case "grid":
-      content = <Grid editOrderMode={editOrderMode} />;
+      content = <Grid />;
       break;
     case "workload":
       content = <Workload />;
@@ -136,10 +130,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
         </CollectionLabelMenu>
         {data && !data?.error ? (
           <>
-            <CollectionNavbar
-              editOrderMode={editOrderMode}
-              setEditOrderMode={setEditOrderMode}
-            />
+            <CollectionNavbar />
             <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
               {content}
             </FadeOnRender>
