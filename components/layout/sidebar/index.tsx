@@ -404,7 +404,8 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   }, [id, pathname]);
 
   useEffect(() => {
-    if (pathname !== "/") AsyncStorage.setItem("lastViewedRoute", pathname);
+    if (pathname !== "/" && !pathname.includes("/reorder"))
+      AsyncStorage.setItem("lastViewedRoute", pathname);
   }, [pathname]);
 
   useHotkeys(["ctrl+shift+n"], (e) => {
