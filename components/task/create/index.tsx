@@ -157,7 +157,6 @@ function Footer({
         keyboardShouldPersistTaps="handled"
       >
         <SpeechRecognition
-          watch={watch}
           handleSubmitButtonClick={handleSubmitButtonClick}
           setValue={setValue}
           hintRef={hintRef}
@@ -1176,15 +1175,9 @@ const TaskDescriptionInput = forwardRef(
   }
 );
 
-function SpeechRecognition({
-  setValue,
-  hintRef,
-  watch,
-  handleSubmitButtonClick,
-}) {
+function SpeechRecognition({ setValue, hintRef, handleSubmitButtonClick }) {
   const theme = useColorTheme();
   const red = useColor("red");
-  const name = watch("name");
   const [recognizing, setRecognizing] = useState(false);
 
   useSpeechRecognitionEvent("start", () => {
@@ -1196,7 +1189,7 @@ function SpeechRecognition({
   });
   useSpeechRecognitionEvent("end", () => {
     setRecognizing(false);
-    if (name) handleSubmitButtonClick();
+    handleSubmitButtonClick();
   });
   useSpeechRecognitionEvent("result", (event) => {
     setValue("name", event.results[0]?.transcript);
