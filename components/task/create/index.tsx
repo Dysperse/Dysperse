@@ -1462,7 +1462,7 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
   const isDark = useDarkMode();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<null | { icon: any; text: any }>(null);
 
   useImperativeHandle(ref, () => ({
     message,
