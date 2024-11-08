@@ -8,6 +8,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -150,8 +151,13 @@ export default function Kanban({ editOrderMode }) {
 
   const [currentColumn, setCurrentColumn] = useState(0);
 
+  const { hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
+  const hiddenLabels = rawHiddenLabels?.split(",") || [];
+
   const columns = data.kanbanOrder
-    ? data.kanbanOrder.map((id) => data.labels.find((l) => l.id === id))
+    ? data.kanbanOrder
+        .map((id) => data.labels.find((l) => l.id === id))
+        .filter((c) => !hiddenLabels.includes(c.id))
     : [];
 
   const isReadOnly = access?.access === "READ_ONLY" || isPublic;

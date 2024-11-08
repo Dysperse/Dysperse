@@ -1,23 +1,30 @@
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { memo, useRef } from "react";
+import { Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useCollectionContext } from "../context";
 
 export const CategoryLabelButtons = memo(
   ({ setEditOrderMode }: { setEditOrderMode }) => {
     const { data, openLabelPicker, mutate } = useCollectionContext();
-    const { id, type } = useLocalSearchParams();
+    const { id, type, hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
     const menuRef = useRef(null);
+    const theme = useColorTheme();
     const { session } = useSession();
+
+    const hiddenLabels = rawHiddenLabels
+      ? rawHiddenLabels?.split(",") || []
+      : [];
 
     const isAll = id === "all";
     const isCategoryBased =
@@ -39,7 +46,46 @@ export const CategoryLabelButtons = memo(
       <MenuPopover
         menuRef={menuRef}
         containerStyle={{ width: 250 }}
-        trigger={<IconButton icon="filter_alt" size={40} />}
+        trigger={
+          <Pressable style={{ position: "relative" }}>
+            <IconButton
+              icon="filter_alt"
+              disabled
+              size={40}
+              style={{ opacity: 1 }}
+              iconProps={{ filled: hiddenLabels.length > 0 }}
+            />
+            {hiddenLabels.length > 0 && (
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  width: 12,
+                  margin: 5,
+                  height: 12,
+                  backgroundColor: theme[11],
+                  borderRadius: 10,
+                  padding: 2,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme[2],
+                    fontSize: 8,
+                    lineHeight: 8,
+                    textAlign: "center",
+                  }}
+                  weight={900}
+                >
+                  {hiddenLabels.length}
+                </Text>
+              </View>
+            )}
+          </Pressable>
+        }
         options={[
           {
             renderer: () => (
@@ -88,13 +134,12 @@ export const CategoryLabelButtons = memo(
           ...data.labels.map((label) => ({
             icon: <Emoji emoji={label.emoji} />,
             text: label.name,
-            selected: true,
+            selected: !hiddenLabels.includes(label.id),
             callback: () =>
-              Toast.show({
-                type: "info",
-                text1: "Coming soon!",
-                text2:
-                  "Soon, you'll be able to temporarily show/hide labels in a collection",
+              router.setParams({
+                hiddenLabels: hiddenLabels.includes(label.id)
+                  ? hiddenLabels.filter((l) => l !== label.id).join(",")
+                  : [...hiddenLabels, label.id].join(","),
               }),
           })),
           !isAll &&
@@ -118,3 +163,4 @@ export const CategoryLabelButtons = memo(
     );
   }
 );
+
