@@ -48,8 +48,8 @@ export const CategoryLabelButtons = memo(() => {
         <Pressable style={{ position: "relative" }}>
           <IconButton
             icon="filter_alt"
-            disabled
             size={40}
+            onPress={() => menuRef.current.open()}
             style={{ opacity: 1 }}
             iconProps={{ filled: hiddenLabels.length > 0 }}
           />
