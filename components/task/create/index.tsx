@@ -1482,9 +1482,8 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
   }));
 
   useEffect(() => {
-    if (message) {
-      animation.value = 1;
-    }
+    if (message) animation.value = 1;
+
     return () => {
       animation.value = 0;
     };
