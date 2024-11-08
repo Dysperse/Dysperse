@@ -13,7 +13,6 @@ import type {
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
 import { TransitionPresets } from "@react-navigation/stack";
-import { BlurView } from "expo-blur";
 import { router, usePathname } from "expo-router";
 import {
   Animated,
@@ -201,8 +200,7 @@ export default function Layout() {
   const { height, width } = useWindowDimensions();
 
   return (
-    <BlurView
-      intensity={breakpoints.md ? 10 : 0}
+    <View
       style={{
         ...(Platform.OS === "web" &&
           ({
@@ -315,6 +313,6 @@ export default function Layout() {
           </View>
         </View>
       </View>
-    </BlurView>
+    </View>
   );
 }
