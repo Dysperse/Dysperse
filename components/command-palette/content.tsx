@@ -506,9 +506,10 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
 
   const [filter, setFilter] = useState<null | string>(defaultFilter || null);
   const { data: collections } = useSWR(["space/collections"]);
+  const { data: labels } = useSWR(["space/labels"]);
   const { data: sharedCollections } = useSWR(["user/collectionAccess"]);
 
-  const sections = paletteItems(collections, sharedCollections);
+  const sections = paletteItems(collections, sharedCollections, labels);
   const filters = sections
     .map(({ title, icon }) => ({ name: title, icon }))
     .filter((i) => i.name !== "All");

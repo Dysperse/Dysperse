@@ -10,12 +10,10 @@ import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { hslToHex } from "@/helpers/hslToHex";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import dayjs from "dayjs";
-import { router } from "expo-router";
 import { memo, useState } from "react";
 import { ImageBackground, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -120,7 +118,6 @@ function Page() {
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
-        <Button onPress={() => router.push("/test")}>Test</Button>
         {Platform.OS === "web" && (
           <CustomizeButton view={view} setView={setView} />
         )}
@@ -170,4 +167,3 @@ function Page() {
 }
 
 export default memo(Page);
-

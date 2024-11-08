@@ -52,7 +52,8 @@ export const COLLECTION_VIEWS = {
 
 export const paletteItems = (
   collections,
-  sharedCollections
+  sharedCollections,
+  labels
 ): { title: string; icon: string; items: any[] }[] => {
   return [
     {
@@ -109,6 +110,23 @@ export const paletteItems = (
               emoji: access.collection.emoji,
               data: access.collection,
               slug: `/[tab]/collections/[id]/[type]`,
+              params: { id: access.collection.id, type: "planner" },
+            }))
+          : [],
+    },
+    {
+      title: "Labels",
+      icon: "label",
+      items:
+        labels && Array.isArray(labels)
+          ? sharedCollections.map((access) => ({
+              hasSeen: access.hasSeen,
+              label: access.collection.name,
+              key: access.collection.id,
+              icon: "grid_view",
+              emoji: access.collection.emoji,
+              data: access.collection,
+              slug: `/[tab]/labels/[id]`,
               params: { id: access.collection.id, type: "planner" },
             }))
           : [],
