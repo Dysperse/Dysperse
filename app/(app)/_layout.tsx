@@ -383,6 +383,7 @@ export default function AppLayout() {
                                     (pathname.includes("collections") &&
                                       (pathname.includes("/search") ||
                                         pathname.includes("/customize") ||
+                                        pathname.includes("/reorder") ||
                                         pathname.includes("/share")))
                                       ? "locked-closed"
                                       : "unlocked"
