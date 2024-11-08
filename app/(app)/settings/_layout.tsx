@@ -290,7 +290,6 @@ export default function Layout() {
                       headerTitle: d !== "settings/index" && "Settings",
                       animationEnabled: true,
                       detachPreviousScreen: true,
-
                       ...(breakpoints.md
                         ? {
                             gestureDirection: "horizontal",
