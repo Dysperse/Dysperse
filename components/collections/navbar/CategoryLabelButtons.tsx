@@ -80,7 +80,7 @@ export const CategoryLabelButtons = memo(
                   }}
                   weight={900}
                 >
-                  {hiddenLabels.length}
+                  1
                 </Text>
               </View>
             )}

@@ -196,7 +196,7 @@ const Task = memo(function Task({
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
   const { selection, setSelection } = useSelectionContext();
-  const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext();
+  const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext() || {};
 
   const handleSelect = () => {
     if (isReadOnly) return;
