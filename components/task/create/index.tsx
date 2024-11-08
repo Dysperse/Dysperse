@@ -25,6 +25,10 @@ import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
 import { useGlobalSearchParams, usePathname } from "expo-router";
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from "expo-speech-recognition";
 import React, {
   cloneElement,
   forwardRef,
@@ -115,6 +119,8 @@ function Footer({
   control,
   dateRef,
   recurrenceRef,
+  handleSubmitButtonClick,
+  hintRef,
 }: {
   nameRef: any;
   labelMenuRef: React.MutableRefObject<BottomSheetModal>;
@@ -123,6 +129,8 @@ function Footer({
   control: any;
   dateRef: React.MutableRefObject<BottomSheetModal>;
   recurrenceRef: React.MutableRefObject<BottomSheetModal>;
+  handleSubmitButtonClick;
+  hintRef;
 }) {
   const theme = useColorTheme();
   const recurrenceRule = watch("recurrenceRule");
@@ -136,8 +144,6 @@ function Footer({
     <View
       style={{
         paddingBottom: 10,
-        display:
-          !date && !label && !recurrenceRule && !collectionId ? "none" : "flex",
       }}
     >
       <ScrollView
@@ -150,6 +156,12 @@ function Footer({
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <SpeechRecognition
+          watch={watch}
+          handleSubmitButtonClick={handleSubmitButtonClick}
+          setValue={setValue}
+          hintRef={hintRef}
+        />
         {(date || recurrenceRule) && !parentTask && (
           <Chip
             outlined
@@ -1164,6 +1176,78 @@ const TaskDescriptionInput = forwardRef(
   }
 );
 
+function SpeechRecognition({
+  setValue,
+  hintRef,
+  watch,
+  handleSubmitButtonClick,
+}) {
+  const theme = useColorTheme();
+  const red = useColor("red");
+  const name = watch("name");
+  const [recognizing, setRecognizing] = useState(false);
+
+  useSpeechRecognitionEvent("start", () => {
+    hintRef.current.setMessage({
+      text: "Listening...",
+      icon: "mic",
+    });
+    setRecognizing(true);
+  });
+  useSpeechRecognitionEvent("end", () => {
+    setRecognizing(false);
+    if (name) handleSubmitButtonClick();
+  });
+  useSpeechRecognitionEvent("result", (event) => {
+    setValue("name", event.results[0]?.transcript);
+  });
+  useSpeechRecognitionEvent("error", (event) => {
+    console.log("error code:", event.error, "error messsage:", event.message);
+  });
+
+  const handleStart = async () => {
+    const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+    if (!result.granted) {
+      return;
+    }
+    // Start speech recognition
+    ExpoSpeechRecognitionModule.start({
+      lang: "en-US",
+      interimResults: true,
+      maxAlternatives: 1,
+      continuous: false,
+      requiresOnDeviceRecognition: false,
+      addsPunctuation: false,
+      volumeChangeEventOptions: {
+        enabled: true,
+        intervalMillis: 300,
+      },
+      contextualStrings: ["Dysperse"],
+    });
+  };
+
+  return (
+    <Chip
+      icon={
+        <Icon filled={recognizing} style={recognizing && { color: red[2] }}>
+          mic
+        </Icon>
+      }
+      outlined
+      style={({ pressed, hovered }) => ({
+        borderWidth: 1,
+        marginRight: "auto",
+        borderColor: addHslAlpha(
+          recognizing ? red[9] : theme[9],
+          pressed ? 0.3 : hovered ? 0.2 : 0.1
+        ),
+        backgroundColor: recognizing ? red[9] : undefined,
+      })}
+      onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
+    />
+  );
+}
+
 const BottomSheetContent = forwardRef(
   (
     {
@@ -1292,10 +1376,12 @@ const BottomSheetContent = forwardRef(
               flex: 1,
               flexDirection: "column",
               zIndex: 0,
-              minHeight: 100,
+              minHeight: 130,
             }}
           >
             <Footer
+              hintRef={hintRef}
+              handleSubmitButtonClick={handleSubmitButtonClick}
               dateRef={dateRef}
               recurrenceRef={recurrenceRef}
               setValue={setValue}
@@ -1522,3 +1608,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+
