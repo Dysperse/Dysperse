@@ -133,6 +133,7 @@ function PasswordPrompt({ mutate }) {
         </Text>
         <OtpInput
           ref={ref}
+          secureTextEntry
           numberOfDigits={6}
           containerGap={5}
           onTextChange={setCode}
