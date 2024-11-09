@@ -172,7 +172,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
           }
         );
 
-        Toast.show({ type: "success", message: "Collection locked!" });
+        Toast.show({ type: "success", text1: "Collection locked!" });
       },
     },
   ]

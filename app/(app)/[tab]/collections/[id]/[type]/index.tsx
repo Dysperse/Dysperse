@@ -85,10 +85,7 @@ function PasswordPrompt({ mutate }) {
       if (t.error) {
         throw new Error(t.error);
       }
-      mutate((o) => ({
-        ...o,
-        pinAuthorizationExpiresAt: t.expiresAt,
-      }));
+      await mutate();
     } catch (e) {
       setLoading(false);
       ref.current?.clear();
