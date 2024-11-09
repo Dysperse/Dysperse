@@ -1,3 +1,4 @@
+import { ImageViewer } from "@/components/ImageViewer";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Entity } from "@/components/collections/entity";
 import { STORY_POINT_SCALE } from "@/constants/workload";
@@ -20,7 +21,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
-import React, { useCallback, useRef, useState } from "react";
+import React, { Fragment, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Easing,
@@ -363,7 +364,7 @@ export const handleLocationPress = (
   }
 };
 
-function TaskAttachmentPreview({ item, index }: { item: any; index: number }) {
+function TaskAttachmentPreview({ item }: { item: any; index: number }) {
   const theme = useColorTheme();
   const { session } = useUser();
 
@@ -374,27 +375,31 @@ function TaskAttachmentPreview({ item, index }: { item: any; index: number }) {
     } else {
       handleLocationPress(session, item);
     }
-  }, [item.data]);
+  }, [item, session]);
+
+  const SafeImageViewer = item.type === "IMAGE" ? ImageViewer : Fragment;
 
   return (
-    <Button
-      onPress={handleOpenPress}
-      backgroundColors={attachmentButtonStyles(theme)}
-      borderColors={attachmentButtonStyles(theme)}
-      dense
-    >
-      {item.type === "IMAGE" ? (
-        <Image
-          source={{ uri: item.data }}
-          contentFit="contain"
-          contentPosition="center"
-          style={{ borderRadius: 20, width: 24, height: 24 }}
-        />
-      ) : (
-        <Icon>{icon || "attachment"}</Icon>
-      )}
-      <ButtonText>{item.name || name}</ButtonText>
-    </Button>
+    <SafeImageViewer image={item.data}>
+      <Button
+        onPress={handleOpenPress}
+        backgroundColors={attachmentButtonStyles(theme)}
+        borderColors={attachmentButtonStyles(theme)}
+        dense
+      >
+        {item.type === "IMAGE" ? (
+          <Image
+            source={{ uri: item.data }}
+            contentFit="contain"
+            contentPosition="center"
+            style={{ borderRadius: 20, width: 24, height: 24 }}
+          />
+        ) : (
+          <Icon>{icon || "attachment"}</Icon>
+        )}
+        <ButtonText>{item.name || name}</ButtonText>
+      </Button>
+    </SafeImageViewer>
   );
 }
 
@@ -1013,3 +1018,4 @@ export function TaskDetails() {
     </>
   );
 }
+
