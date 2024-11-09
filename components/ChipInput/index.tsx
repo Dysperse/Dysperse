@@ -154,6 +154,8 @@ export default function ChipInput({
             border: "none",
             boxShadow: "none",
             height,
+            flex: 1,
+            minHeight: 130,
             ...inputStyles,
             overflow: "auto",
             color: theme[11],
@@ -273,3 +275,4 @@ export default function ChipInput({
     />
   );
 }
+

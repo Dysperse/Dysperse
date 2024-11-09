@@ -626,6 +626,7 @@ function TaskNameInput({
               hintRef={hintRef}
             />
             <ChipInput
+              // height={150}
               placeholder="What's on your mind?"
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
