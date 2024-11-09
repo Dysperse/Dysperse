@@ -28,7 +28,7 @@ function Content() {
         {
           body: JSON.stringify({
             id: data.id,
-            pinCode: typeof r === "boolean" ? r : code,
+            pinCode: typeof r === "boolean" || r ? r : code,
           }),
         }
       );
