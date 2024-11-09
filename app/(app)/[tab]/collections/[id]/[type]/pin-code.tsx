@@ -17,7 +17,7 @@ function Content() {
   const [code, setCode] = useState(data.pinCode || "");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (o) => {
+  const handleSubmit = async (r) => {
     setLoading(true);
     try {
       await sendApiRequest(
@@ -28,11 +28,14 @@ function Content() {
         {
           body: JSON.stringify({
             id: data.id,
-            pinCode: typeof o === "boolean" ? o : code,
+            pinCode: typeof r === "boolean" ? r : code,
           }),
         }
       );
-      Toast.show({ type: "success", text1: "PIN code set" });
+      Toast.show({
+        type: "success",
+        text1: "PIN code " + (r ? "removed" : "set"),
+      });
     } catch (e) {
       Toast.show({ type: "error" });
       console.log(e);
