@@ -66,7 +66,7 @@ function PasswordPrompt({ mutate }) {
     ref.current?.focus();
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (defaultCode) => {
     setLoading(true);
     try {
       const t = await sendApiRequest(
@@ -77,7 +77,7 @@ function PasswordPrompt({ mutate }) {
         {
           body: JSON.stringify({
             id: data.id,
-            pinCode: code,
+            pinCode: defaultCode || code,
           }),
         }
       );
@@ -136,7 +136,7 @@ function PasswordPrompt({ mutate }) {
           numberOfDigits={6}
           containerGap={5}
           onTextChange={setCode}
-          onFilled={handleSubmit}
+          onFilled={(t) => handleSubmit(t)}
         />
         <Button
           isLoading={loading}
