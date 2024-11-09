@@ -70,7 +70,11 @@ function Content() {
             Users whom you share this collection with will also need to enter
             the password.
           </Text>
-          <OtpInput type="numeric" onTextChange={(text) => setCode(text)} />
+          <OtpInput
+            type="numeric"
+            onTextChange={(text) => setCode(text)}
+            onFilled={(text) => handleSubmit(text)}
+          />
 
           <Button
             isLoading={loading}
