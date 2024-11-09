@@ -153,7 +153,7 @@ function PasswordPrompt({ mutate }) {
         />
         <Button
           text="Forgot PIN?"
-          onPress={() => {}}
+          onPress={() => Toast.show({ type: "info", text1: "Coming soon!" })}
           containerStyle={{ width: "100%", marginTop: 5 }}
         />
       </View>
