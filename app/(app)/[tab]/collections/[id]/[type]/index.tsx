@@ -106,22 +106,21 @@ function PasswordPrompt({ mutate }) {
         style={{
           maxWidth: 400,
           width: "100%",
-          alignItems: "center",
           padding: 20,
           borderRadius: 20,
-          backgroundColor: theme[2],
         }}
       >
         <View
           style={{
             flexDirection: "column",
-            alignItems: "center",
             gap: 10,
             marginBottom: 5,
           }}
         >
           <Emoji emoji={data?.emoji} size={40} />
-          <Text variant="eyebrow">{data?.name}</Text>
+          <Text style={{ fontSize: 30, fontFamily: "serifText800" }}>
+            {data?.name}
+          </Text>
         </View>
         <Text
           style={{
