@@ -24,7 +24,6 @@ export const CategoryLabelButtons = memo(() => {
 
   const hiddenLabels = rawHiddenLabels ? rawHiddenLabels?.split(",") || [] : [];
 
-  const isAll = id === "all";
   const isCategoryBased =
     COLLECTION_VIEWS[type.toString()]?.type === "Category Based";
 
@@ -39,6 +38,10 @@ export const CategoryLabelButtons = memo(() => {
     );
     await mutate();
   };
+
+  const labels = data.labels.sort(
+    (a, b) => data.listOrder.indexOf(a.id) - data.listOrder.indexOf(b.id)
+  );
 
   return (
     <MenuPopover
@@ -129,34 +132,61 @@ export const CategoryLabelButtons = memo(() => {
             </Text>
           ),
         },
-        ...data.labels.map((label) => ({
-          icon: <Emoji emoji={label.emoji} />,
-          text: label.name,
-          selected: !hiddenLabels.includes(label.id),
-          callback: () =>
-            router.setParams({
-              hiddenLabels: hiddenLabels.includes(label.id)
-                ? hiddenLabels.filter((l) => l !== label.id).join(",")
-                : [...hiddenLabels, label.id].join(","),
-            }),
+        ...labels.map((label) => ({
+          renderer: () => (
+            <MenuItem
+              onPress={() =>
+                router.setParams({
+                  hiddenLabels: hiddenLabels.includes(label.id)
+                    ? hiddenLabels.filter((l) => l !== label.id).join(",")
+                    : [...hiddenLabels, label.id].join(","),
+                })
+              }
+            >
+              <Emoji emoji={label.emoji} />
+              <Text variant="menuItem" weight={300} numberOfLines={1}>
+                {label.name}
+              </Text>
+              {!hiddenLabels.includes(label.id) && (
+                <Icon style={{ marginLeft: "auto" }}>check</Icon>
+              )}
+            </MenuItem>
+          ),
         })),
-        !isAll &&
-          session && {
-            icon: "edit",
-            text: "Edit",
-            callback: () => {
-              openLabelPicker();
-              menuRef.current.close();
-            },
-          },
-        !isAll &&
-          session &&
-          isCategoryBased && {
-            icon: "swipe",
-            text: "Reorder",
-            callback: () => router.push(pathname + "/reorder"),
-          },
+        {
+          renderer: () => (
+            <View style={{ flexDirection: "row" }}>
+              <MenuItem
+                style={{ flex: 1 }}
+                onPress={() => {
+                  openLabelPicker();
+                  menuRef.current.close();
+                }}
+              >
+                <Icon>draw</Icon>
+                <Text variant="menuItem" weight={300}>
+                  Edit
+                </Text>
+              </MenuItem>
+              {isCategoryBased && (
+                <MenuItem
+                  style={{ flex: 1 }}
+                  onPress={() => {
+                    router.push(pathname + "/reorder");
+                    menuRef.current.close();
+                  }}
+                >
+                  <Icon>swipe</Icon>
+                  <Text variant="menuItem" weight={300}>
+                    Reorder
+                  </Text>
+                </MenuItem>
+              )}
+            </View>
+          ),
+        },
       ].filter((e) => e)}
     />
   );
 });
+

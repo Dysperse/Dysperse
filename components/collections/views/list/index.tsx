@@ -155,9 +155,13 @@ export default function List() {
     (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
   );
 
+  const labels = data.labels.sort(
+    (a, b) => data.listOrder.indexOf(a.id) - data.listOrder.indexOf(b.id)
+  );
+
   const d = [
     { create: true },
-    ...(shownEntities.length > 0 && data.labels.length > 0
+    ...(shownEntities.length > 0 && labels.length > 0
       ? [
           {
             header: true,
@@ -166,7 +170,7 @@ export default function List() {
         ]
       : []),
     ...(shownEntities || []),
-    ...data.labels.reduce((acc, curr) => {
+    ...labels.reduce((acc, curr) => {
       acc.push({ header: true, ...omit(["entities"], curr) });
       const t = Object.values(curr.entities)
         .filter(
