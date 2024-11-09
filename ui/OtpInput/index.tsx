@@ -25,10 +25,19 @@ const OtpInput = forwardRef(
           pinCodeContainerStyle: {
             borderWidth: 2,
             borderColor: theme[3],
+            borderRadius: 99,
+            minHeight: "auto",
+            height: "auto",
+            aspectRatio: 1,
             flex: 1,
           },
           containerStyle: { gap: props.containerGap || 20 },
-          pinCodeTextStyle: { fontFamily: "body_500", color: theme[11] },
+          pinCodeTextStyle: {
+            fontFamily: "body_500",
+            color: theme[11],
+            fontSize: 50,
+            lineHeight: 50,
+          },
         }}
         {...props}
       />

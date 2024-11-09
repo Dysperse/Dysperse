@@ -21,7 +21,6 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
@@ -77,8 +76,12 @@ function PasswordPrompt({ mutate }) {
   const { session } = useSession();
 
   useEffect(() => {
-    ref.current?.focus();
-  }, []);
+    if (!breakpoints.md)
+      InteractionManager.runAfterInteractions(() => {
+        ref.current?.focus();
+      });
+    else ref.current?.focus();
+  }, [breakpoints]);
 
   const handleSubmit = async (defaultCode) => {
     setLoading(true);
@@ -146,26 +149,25 @@ function PasswordPrompt({ mutate }) {
         }}
       >
         <FadeOnRender animateUp>
-          <View
+          <Text
             style={{
-              flexDirection: "column",
-              gap: 10,
+              fontSize: 35,
+              fontFamily: "serifText800",
+              textAlign: "center",
               marginBottom: 5,
             }}
           >
-            <Emoji emoji={data?.emoji} size={40} />
-            <Text style={{ fontSize: 30, fontFamily: "serifText800" }}>
-              {data?.name}
-            </Text>
-          </View>
+            Password required
+          </Text>
           <Text
             style={{
               fontSize: 18,
-              marginBottom: 10,
+              textAlign: "center",
+              marginBottom: 15,
             }}
             weight={300}
           >
-            Enter the PIN code to open this collection
+            Enter the PIN code to unlock this collection
           </Text>
           <Animated.View style={errorAnimationStyle}>
             <OtpInput
@@ -179,20 +181,28 @@ function PasswordPrompt({ mutate }) {
               onFilled={(t) => handleSubmit(t)}
             />
           </Animated.View>
-          <Button
-            isLoading={loading}
-            text="Unlock"
-            variant="filled"
-            large
-            bold
-            onPress={handleSubmit}
-            containerStyle={{ width: "100%", marginTop: 10 }}
-          />
-          <Button
-            text="Forgot PIN?"
-            onPress={() => Toast.show({ type: "info", text1: "Coming soon!" })}
-            containerStyle={{ width: "100%", marginTop: 5 }}
-          />
+          <View style={{ flexDirection: "row", marginTop: 10, gap: 10 }}>
+            <Button
+              large
+              variant="outlined"
+              text="Forgot?"
+              onPress={() =>
+                Toast.show({ type: "info", text1: "Coming soon!" })
+              }
+              containerStyle={{ flex: 1 }}
+            />
+            <Button
+              isLoading={loading}
+              text="Unlock"
+              variant="filled"
+              large
+              iconPosition="end"
+              icon="arrow_forward_ios"
+              bold
+              onPress={handleSubmit}
+              containerStyle={{ flex: 1 }}
+            />
+          </View>
         </FadeOnRender>
       </KeyboardAvoidingView>
     </SafeAreaView>
