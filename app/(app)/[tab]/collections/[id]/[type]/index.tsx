@@ -1,3 +1,4 @@
+import { MenuButton } from "@/app/(app)/home";
 import {
   CollectionContext,
   CollectionType,
@@ -20,7 +21,6 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import OtpInput from "@/ui/OtpInput";
@@ -56,7 +56,7 @@ const Loading = ({ error }) => (
 );
 
 function PasswordPrompt({ mutate }) {
-  const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { data } = useCollectionContext();
   const ref = useRef(null);
   const [loading, setLoading] = useState(false);
@@ -102,6 +102,7 @@ function PasswordPrompt({ mutate }) {
         justifyContent: "center",
       }}
     >
+      {!breakpoints.md && <MenuButton />}
       <View
         style={{
           maxWidth: 400,

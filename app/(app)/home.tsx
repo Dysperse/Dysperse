@@ -64,7 +64,7 @@ const CustomizeButton = ({ view, setView }) => {
   );
 };
 
-const MenuButton = () => {
+export const MenuButton = () => {
   const { sidebarRef } = useSidebarContext();
 
   return (
@@ -167,3 +167,4 @@ function Page() {
 }
 
 export default memo(Page);
+
