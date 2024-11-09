@@ -237,8 +237,9 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
           <Pressable />
         </CollectionLabelMenu>
         {(data ? (
-          !data.pinAuthorizationExpiresAt ||
-          dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs()) ? (
+          data.pinCode &&
+          (!data.pinAuthorizationExpiresAt ||
+            dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
             <PasswordPrompt mutate={mutate} />
           ) : !data?.error ? (
             <>
