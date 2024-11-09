@@ -34,7 +34,7 @@ function Content() {
       );
       Toast.show({
         type: "success",
-        text1: "PIN code " + (r ? "removed" : "set"),
+        text1: "PIN code " + (typeof r === "boolean" ? "removed" : "set"),
       });
     } catch (e) {
       Toast.show({ type: "error" });
