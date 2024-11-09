@@ -80,24 +80,29 @@ function EditKanbanOrder() {
     </View>
   );
 }
-const ReorderColumn = ({ label, index, handleColumnReorder }) => {
+const ReorderColumn = ({
+  list,
+  label,
+  index,
+  handleColumnReorder,
+}: {
+  list?: boolean;
+  label: any;
+  index: number;
+  handleColumnReorder: (id: any, newIndex: any) => void;
+}) => {
   const theme = useColorTheme();
   const { data } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
 
-  const handleNext = () => {
-    handleColumnReorder(label.id, index - 1);
-  };
-
-  const handlePrev = () => {
-    handleColumnReorder(label.id, index + 1);
-  };
+  const handleNext = () => handleColumnReorder(label.id, index - 1);
+  const handlePrev = () => handleColumnReorder(label.id, index + 1);
 
   return (
     <View
       style={{
-        width: 320,
-        height: "100%",
+        width: list ? undefined : 320,
+        height: list ? undefined : "100%",
         borderRadius: 20,
         backgroundColor: theme[3],
         ...(breakpoints.md && {
@@ -114,27 +119,42 @@ const ReorderColumn = ({ label, index, handleColumnReorder }) => {
       key={label.id}
     >
       <IconButton
-        icon="arrow_back_ios_new"
+        icon={list ? "arrow_upward" : "arrow_back_ios_new"}
         disabled={index === 0}
         onPress={handleNext}
       />
-
-      <View style={{ gap: 10, flex: 1, alignItems: "center" }}>
-        <Emoji emoji={label.emoji} size={40} />
+      <View
+        style={{
+          gap: list && breakpoints.md ? 20 : 10,
+          flex: 1,
+          alignItems: "center",
+          flexDirection: list && breakpoints.md ? "row" : "col",
+        }}
+      >
+        <Emoji emoji={label.emoji} size={list && breakpoints.md ? 24 : 40} />
         <Text
-          style={{ fontSize: 20, marginTop: 5 }}
+          style={{
+            fontSize: list && breakpoints.md ? 17 : 20,
+            marginTop: list && breakpoints.md ? 0 : 5,
+          }}
           weight={900}
           numberOfLines={1}
         >
           {label.name}
         </Text>
-        <Text style={{ fontSize: 17, opacity: 0.6, marginTop: -5 }}>
+        <Text
+          style={{
+            fontSize: 17,
+            opacity: 0.6,
+            marginTop: list && breakpoints.md ? 0 : -5,
+          }}
+        >
           {Object.keys(label.entities)?.length} item
           {Object.keys(label.entities)?.length !== 1 && "s"}
         </Text>
       </View>
       <IconButton
-        icon="arrow_forward_ios"
+        icon={list ? "arrow_downward" : "arrow_forward_ios"}
         disabled={index === data.labels.length - 1}
         onPress={handlePrev}
       />
@@ -142,8 +162,72 @@ const ReorderColumn = ({ label, index, handleColumnReorder }) => {
   );
 };
 
+function EditListView() {
+  const { session } = useSession();
+  const { data, mutate } = useCollectionContext();
+
+  const updatedListOrder = data
+    ? [
+        ...(data.listOrder || []).filter((id) =>
+          data.labels.some((label) => label.id === id)
+        ),
+        ...data.labels
+          .filter((label) => !(data.listOrder || []).includes(label.id))
+          .map((label) => label.id),
+      ]
+    : [];
+
+  const handleColumnReorder = (id, newIndex) => {
+    const currentIndex = updatedListOrder.indexOf(id);
+    const newOrder = [...updatedListOrder];
+    newOrder.splice(currentIndex, 1);
+    newOrder.splice(newIndex, 0, id);
+
+    sendApiRequest(
+      session,
+      "PUT",
+      "space/collections",
+      {},
+      { body: JSON.stringify({ id: data.id, listOrder: newOrder }) }
+    );
+
+    mutate(
+      (data) => ({
+        ...data,
+        listOrder: newOrder,
+      }),
+      {
+        revalidate: false,
+      }
+    );
+  };
+
+  return data ? (
+    <ScrollView contentContainerStyle={{ gap: 20, padding: 20, paddingTop: 0 }}>
+      {updatedListOrder.map((label, index) => {
+        const t = data.labels.find((i) => i.id === label);
+        if (t)
+          return (
+            <ReorderColumn
+              list
+              index={index}
+              label={t}
+              key={label}
+              handleColumnReorder={handleColumnReorder}
+            />
+          );
+      })}
+    </ScrollView>
+  ) : (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Spinner />
+    </View>
+  );
+}
+
 function Reorder({ handleClose }) {
   const theme = useColorTheme();
+  const { type: view } = useLocalSearchParams();
   useHotkeys("esc", () => router.back());
 
   return (
@@ -191,10 +275,10 @@ function Reorder({ handleClose }) {
               opacity: 0.6,
             }}
           >
-            Changes only apply to Kanban view
+            Changes only apply to {view} view
           </Text>
         </View>
-        <EditKanbanOrder />
+        {view === "kanban" ? <EditKanbanOrder /> : <EditListView />}
       </View>
     </View>
   );
@@ -230,3 +314,4 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
+
