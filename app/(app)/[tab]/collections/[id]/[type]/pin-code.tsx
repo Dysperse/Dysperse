@@ -17,7 +17,7 @@ function Content() {
   const [code, setCode] = useState(data.pinCode || "");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (o) => {
     setLoading(true);
     try {
       await sendApiRequest(
@@ -25,7 +25,12 @@ function Content() {
         "PUT",
         "space/collections",
         {},
-        { body: JSON.stringify({ id: data.id, pinCode: code }) }
+        {
+          body: JSON.stringify({
+            id: data.id,
+            pinCode: typeof o === "boolean" ? o : code,
+          }),
+        }
       );
       Toast.show({ type: "success", text1: "PIN code set" });
     } catch (e) {
@@ -38,7 +43,17 @@ function Content() {
   return (
     <>
       {data.pinCode ? (
-        <>asdf</>
+        <Button
+          icon="lock"
+          text="Remove password"
+          variant="filled"
+          onPress={() => handleSubmit(false)}
+          bold
+          large
+          containerStyle={{
+            marginTop: 20,
+          }}
+        />
       ) : (
         <>
           <Text
