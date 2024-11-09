@@ -1,5 +1,6 @@
 import { CollectionContext } from "@/components/collections/context";
 import IconButton from "@/ui/IconButton";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -35,7 +36,7 @@ export function CollectionMenuLayout({ title, children }) {
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      {data && (
+      {data ? (
         <View style={{ flex: 1 }}>
           <IconButton
             size={55}
@@ -87,6 +88,16 @@ export function CollectionMenuLayout({ title, children }) {
               </View>
             </View>
           </ScrollView>
+        </View>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Spinner />
         </View>
       )}
     </CollectionContext.Provider>

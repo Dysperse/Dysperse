@@ -68,6 +68,17 @@ function Content() {
               opacity: code.toString().length < 6 ? 0.5 : 1,
             }}
           />
+
+          <Text
+            style={{
+              textAlign: "center",
+              marginBottom: 20,
+            }}
+            weight={300}
+          >
+            Heads up! Tasks can still be viewed if labels in this collection
+            exist in other ones. Unlabeled ones will still be hidden.
+          </Text>
         </>
       )}
     </>
