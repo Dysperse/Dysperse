@@ -13,6 +13,7 @@ import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
@@ -153,6 +154,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
       icon: "lock",
       text: "Lock now",
       callback: async () => {
+        ctx.mutate((o) => ({
+          ...o,
+          pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
+        }));
+
         await sendApiRequest(
           session,
           "PUT",
@@ -165,10 +171,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
             }),
           }
         );
-        await ctx.mutate((o) => ({
-          ...o,
-          pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
-        }));
+
+        Toast.show({ type: "success", message: "Collection locked!" });
       },
     },
   ]

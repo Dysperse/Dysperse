@@ -26,6 +26,7 @@ import ErrorAlert from "@/ui/Error";
 import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import dayjs from "dayjs";
 import {
   router,
   useGlobalSearchParams,
@@ -84,7 +85,10 @@ function PasswordPrompt({ mutate }) {
       if (t.error) {
         throw new Error(t.error);
       }
-      await mutate();
+      mutate((o) => ({
+        ...o,
+        pinAuthorizationExpiresAt: t.expiresAt,
+      }));
     } catch (e) {
       setLoading(false);
       ref.current?.clear();
@@ -236,7 +240,8 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
           <Pressable />
         </CollectionLabelMenu>
         {(data ? (
-          data?.pinAuthorizationExpiresAt ? (
+          !data.pinAuthorizationExpiresAt ||
+          dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs()) ? (
             <PasswordPrompt mutate={mutate} />
           ) : !data?.error ? (
             <>
