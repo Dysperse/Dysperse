@@ -25,7 +25,7 @@ function Content() {
         "PUT",
         "space/collections",
         {},
-        { body: JSON.stringify({ id: data.id, pinCode: parseInt(code) }) }
+        { body: JSON.stringify({ id: data.id, pinCode: code }) }
       );
       Toast.show({ type: "success", text1: "PIN code set" });
     } catch (e) {

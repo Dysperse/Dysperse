@@ -77,7 +77,7 @@ function PasswordPrompt({ mutate }) {
         {
           body: JSON.stringify({
             id: data.id,
-            pinCode: parseInt(code),
+            pinCode: code,
           }),
         }
       );
