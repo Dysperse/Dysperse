@@ -150,7 +150,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
         callback: openPopOut,
       },
 
-    data.pinCode && {
+    data?.pinCode && {
       icon: "lock",
       text: "Lock now",
       callback: async () => {
