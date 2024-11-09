@@ -90,7 +90,7 @@ function Content() {
           <Text
             style={{
               textAlign: "center",
-              marginBottom: 20,
+              marginTop: 20,
             }}
             weight={300}
           >
