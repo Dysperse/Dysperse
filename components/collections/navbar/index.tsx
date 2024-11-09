@@ -7,6 +7,7 @@ import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
+import dayjs from "dayjs";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
@@ -164,7 +165,10 @@ const CollectionNavbar = memo(function CollectionNavbar({
             }),
           }
         );
-        await ctx.mutate();
+        await ctx.mutate((o) => ({
+          ...o,
+          pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
+        }));
       },
     },
   ]

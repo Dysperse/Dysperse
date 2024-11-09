@@ -69,7 +69,7 @@ function PasswordPrompt({ mutate }) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await sendApiRequest(
+      const t = await sendApiRequest(
         session,
         "POST",
         "space/collections/collection/unlock",
@@ -81,8 +81,13 @@ function PasswordPrompt({ mutate }) {
           }),
         }
       );
+      if (t.error) {
+        throw new Error(t.error);
+      }
       await mutate();
     } catch (e) {
+      setLoading(false);
+      ref.current?.clear();
       Toast.show({ type: "error" });
       console.log(e);
     }
@@ -131,6 +136,7 @@ function PasswordPrompt({ mutate }) {
           numberOfDigits={6}
           containerGap={5}
           onTextChange={setCode}
+          onFilled={handleSubmit}
         />
         <Button
           isLoading={loading}
@@ -229,18 +235,22 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
         <CollectionLabelMenu sheetRef={sheetRef}>
           <Pressable />
         </CollectionLabelMenu>
-        {data && !data?.error ? (
-          <>
-            <CollectionNavbar />
-            <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
-              {content}
-            </FadeOnRender>
-          </>
-        ) : data?.error && data?.pinCodeError ? (
-          <PasswordPrompt mutate={mutate} />
+        {(data ? (
+          data?.pinAuthorizationExpiresAt ? (
+            <PasswordPrompt mutate={mutate} />
+          ) : !data?.error ? (
+            <>
+              <CollectionNavbar />
+              <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
+                {content}
+              </FadeOnRender>
+            </>
+          ) : (
+            false
+          )
         ) : (
-          <Loading error={error || data?.error} />
-        )}
+          false
+        )) || <Loading error={error || data?.error} />}
       </CollectionContext.Provider>
     </ContentWrapper>
   );
