@@ -36,7 +36,7 @@ export function CollectionMenuLayout({ title, children }) {
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      {data ? (
+      {data && !data?.error ? (
         <View style={{ flex: 1 }}>
           <IconButton
             size={55}

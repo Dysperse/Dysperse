@@ -33,7 +33,20 @@ import {
   useLocalSearchParams,
 } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
+import {
+  InteractionManager,
+  KeyboardAvoidingView,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -89,13 +102,32 @@ function PasswordPrompt({ mutate }) {
     } catch (e) {
       setLoading(false);
       ref.current?.clear();
+      shake();
+      ref.current?.focus();
       Toast.show({ type: "error" });
       console.log(e);
     }
   };
 
+  const errorAnimation = useSharedValue(0);
+  // ios shake animation
+
+  const shake = () => {
+    errorAnimation.value = withSequence(
+      withTiming(-10, { duration: 100 }),
+      withTiming(10, { duration: 100 }),
+      withTiming(-10, { duration: 100 }),
+      withTiming(10, { duration: 100 }),
+      withTiming(0, { duration: 100 })
+    );
+  };
+
+  const errorAnimationStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: errorAnimation.value }],
+  }));
+
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         alignItems: "center",
@@ -103,7 +135,9 @@ function PasswordPrompt({ mutate }) {
       }}
     >
       {!breakpoints.md && <MenuButton />}
-      <View
+
+      <KeyboardAvoidingView
+        behavior="padding"
         style={{
           maxWidth: 400,
           width: "100%",
@@ -111,54 +145,57 @@ function PasswordPrompt({ mutate }) {
           borderRadius: 20,
         }}
       >
-        <View
-          style={{
-            flexDirection: "column",
-            gap: 10,
-            marginBottom: 5,
-          }}
-        >
-          <Emoji emoji={data?.emoji} size={40} />
-          <Text style={{ fontSize: 30, fontFamily: "serifText800" }}>
-            {data?.name}
+        <FadeOnRender animateUp>
+          <View
+            style={{
+              flexDirection: "column",
+              gap: 10,
+              marginBottom: 5,
+            }}
+          >
+            <Emoji emoji={data?.emoji} size={40} />
+            <Text style={{ fontSize: 30, fontFamily: "serifText800" }}>
+              {data?.name}
+            </Text>
+          </View>
+          <Text
+            style={{
+              fontSize: 18,
+              marginBottom: 10,
+            }}
+            weight={300}
+          >
+            Enter the PIN code to open this collection
           </Text>
-        </View>
-        <Text
-          style={{
-            fontSize: 18,
-            marginBottom: 10,
-          }}
-          weight={300}
-        >
-          Enter the PIN code to open this collection
-        </Text>
-        <OtpInput
-          ref={ref}
-          secureTextEntry
-          numberOfDigits={6}
-          blurOnFilled
-          containerGap={5}
-          onTextChange={setCode}
-          onFilled={(t) => handleSubmit(t)}
-        />
-        <Button
-          isLoading={loading}
-          text="Unlock"
-          icon="arrow_forward"
-          iconPosition="end"
-          variant="filled"
-          large
-          bold
-          onPress={handleSubmit}
-          containerStyle={{ width: "100%", marginTop: 10 }}
-        />
-        <Button
-          text="Forgot PIN?"
-          onPress={() => Toast.show({ type: "info", text1: "Coming soon!" })}
-          containerStyle={{ width: "100%", marginTop: 5 }}
-        />
-      </View>
-    </View>
+          <Animated.View style={errorAnimationStyle}>
+            <OtpInput
+              ref={ref}
+              textInputProps={{ autoComplete: "off" }}
+              secureTextEntry
+              numberOfDigits={6}
+              blurOnFilled
+              containerGap={5}
+              onTextChange={setCode}
+              onFilled={(t) => handleSubmit(t)}
+            />
+          </Animated.View>
+          <Button
+            isLoading={loading}
+            text="Unlock"
+            variant="filled"
+            large
+            bold
+            onPress={handleSubmit}
+            containerStyle={{ width: "100%", marginTop: 10 }}
+          />
+          <Button
+            text="Forgot PIN?"
+            onPress={() => Toast.show({ type: "info", text1: "Coming soon!" })}
+            containerStyle={{ width: "100%", marginTop: 5 }}
+          />
+        </FadeOnRender>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

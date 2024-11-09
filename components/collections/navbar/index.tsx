@@ -13,7 +13,6 @@ import { openBrowserAsync } from "expo-web-browser";
 import { memo, useMemo, useRef } from "react";
 import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { AgendaButtons } from "./AgendaButtons";
@@ -105,8 +104,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
         }),
       }
     );
-
-    Toast.show({ type: "success", text1: "Collection locked!" });
   };
 
   useHotkeys(["ctrl+d"], (e) => {
@@ -170,7 +167,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     !isAll &&
       session && {
         icon: "edit",
-        text: "Edit collection",
+        text: "Edit",
         callback: () => router.push(pathname + "/customize"),
       },
     Platform.OS === "web" &&
@@ -179,6 +176,13 @@ const CollectionNavbar = memo(function CollectionNavbar({
         icon: "pin_invoke",
         text: "Pop out",
         callback: openPopOut,
+      },
+
+    !isAll &&
+      !breakpoints.md && {
+        icon: "ios_share",
+        text: "Share",
+        callback: () => router.push(pathname + "/share"),
       },
 
     data?.pinCode && {
@@ -236,9 +240,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
             )}
             <CollectionContext.Provider value={contextValue}>
               {session && <CollectionSearch />}
-              {!breakpoints.md && session && !isReadOnly && (
-                <CollectionShareMenu ref={shareMenuRef} />
-              )}
               {!isLoading && !isReadOnly && !(!breakpoints.md && isAll) && (
                 <MenuPopover
                   menuRef={menuRef}
