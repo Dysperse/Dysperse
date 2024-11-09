@@ -60,7 +60,6 @@ export const styles = StyleSheet.create({
 
 const Loading = ({ error }) => (
   <>
-    <CollectionNavbar isLoading />
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {error ? <ErrorAlert /> : <Spinner />}
     </View>
