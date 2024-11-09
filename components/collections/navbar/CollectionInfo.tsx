@@ -16,6 +16,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { LinearGradient } from "expo-linear-gradient";
+import { router, usePathname } from "expo-router";
 import { Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -52,6 +53,7 @@ export const CollectionInfo = ({ navigation, collection }) => {
   const { session } = useSession();
   const { data, mutate } = collection;
   const theme = useColorTheme();
+  const pathname = usePathname();
 
   const updateCollection = async (key, value) => {
     try {
@@ -234,9 +236,17 @@ export const CollectionInfo = ({ navigation, collection }) => {
             toggle_{data.keepProfileAnonymous ? "on" : "off"}
           </Icon>
         </ListItemButton>
+
+        <ListItemButton
+          onPress={() => router.push(pathname.replace("customize", "pin-code"))}
+        >
+          <ListItemText primary="Password protection" />
+          <Icon>arrow_forward_ios</Icon>
+        </ListItemButton>
       </View>
     </View>
   ) : (
     <Spinner />
   );
 };
+

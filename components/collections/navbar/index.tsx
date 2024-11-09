@@ -2,6 +2,7 @@ import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar"
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import IconButton from "@/ui/IconButton";
@@ -65,7 +66,6 @@ const CollectionNavbar = memo(function CollectionNavbar({
 
   const isAll = id === "all";
   const contextValue = { data, swrKey, type, ...ctx, access: null };
-  const { mutate } = useSWR(["user/tabs"]);
 
   const handleRefresh = async (e) => {
     e?.preventDefault?.();
@@ -147,6 +147,26 @@ const CollectionNavbar = memo(function CollectionNavbar({
         text: "Pop out",
         callback: openPopOut,
       },
+
+    data.pinCode && {
+      icon: "lock",
+      text: "Lock now",
+      callback: async () => {
+        await sendApiRequest(
+          session,
+          "PUT",
+          "space/collections",
+          {},
+          {
+            body: JSON.stringify({
+              id: data.id,
+              pinAuthorizationExpiresAt: true,
+            }),
+          }
+        );
+        await ctx.mutate();
+      },
+    },
   ]
     .flat()
     .filter((e) => e);

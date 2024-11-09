@@ -1,6 +1,7 @@
 import {
   CollectionContext,
   CollectionType,
+  useCollectionContext,
 } from "@/components/collections/context";
 import CollectionNavbar from "@/components/collections/navbar";
 import { CollectionLabelMenu } from "@/components/collections/navbar/CollectionLabelMenu";
@@ -15,8 +16,14 @@ import Stream from "@/components/collections/views/stream";
 import Workload from "@/components/collections/views/workload";
 import ContentWrapper from "@/components/layout/content";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
+import { useSession } from "@/context/AuthProvider";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
+import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import {
@@ -24,8 +31,9 @@ import {
   useGlobalSearchParams,
   useLocalSearchParams,
 } from "expo-router";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 export const styles = StyleSheet.create({
@@ -45,6 +53,99 @@ const Loading = ({ error }) => (
     </View>
   </>
 );
+
+function PasswordPrompt({ mutate }) {
+  const theme = useColorTheme();
+  const { data } = useCollectionContext();
+  const ref = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState("");
+  const { session } = useSession();
+
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      await sendApiRequest(
+        session,
+        "POST",
+        "space/collections/collection/unlock",
+        {},
+        {
+          body: JSON.stringify({
+            id: data.id,
+            pinCode: parseInt(code),
+          }),
+        }
+      );
+      await mutate();
+    } catch (e) {
+      Toast.show({ type: "error" });
+      console.log(e);
+    }
+  };
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <View
+        style={{
+          maxWidth: 400,
+          width: "100%",
+          alignItems: "center",
+          padding: 20,
+          borderRadius: 20,
+          backgroundColor: theme[2],
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            marginBottom: 5,
+          }}
+        >
+          <Emoji emoji={data?.emoji} size={40} />
+          <Text variant="eyebrow">{data?.name}</Text>
+        </View>
+        <Text
+          style={{
+            fontSize: 18,
+            marginBottom: 10,
+          }}
+          weight={300}
+        >
+          Enter the PIN code to open this collection
+        </Text>
+        <OtpInput
+          ref={ref}
+          numberOfDigits={6}
+          containerGap={5}
+          onTextChange={setCode}
+        />
+        <Button
+          isLoading={loading}
+          text="Unlock"
+          icon="key"
+          variant="filled"
+          large
+          bold
+          onPress={handleSubmit}
+          containerStyle={{ width: "100%", marginTop: 10 }}
+        />
+      </View>
+    </View>
+  );
+}
 
 export default function Page({ isPublic }: { isPublic: boolean }) {
   const { id, type }: any = useLocalSearchParams();
@@ -135,6 +236,8 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               {content}
             </FadeOnRender>
           </>
+        ) : data?.error && data?.pinCodeError ? (
+          <PasswordPrompt mutate={mutate} />
         ) : (
           <Loading error={error || data?.error} />
         )}
@@ -142,3 +245,4 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </ContentWrapper>
   );
 }
+

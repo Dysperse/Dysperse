@@ -51,22 +51,28 @@ export default function Layout() {
           }}
         >
           <JsStack.Screen name="index" options={{ animationEnabled: false }} />
-          {["search", "customize", "share/index", "share/link", "reorder"].map(
-            (t) => (
-              <JsStack.Screen
-                name={t}
-                key={t}
-                options={arcCard({
-                  theme,
-                  breakpoints,
-                  maxWidth: 600,
-                  padding: 0,
-                })}
-              />
-            )
-          )}
+          {[
+            "search",
+            "customize",
+            "share/index",
+            "share/link",
+            "reorder",
+            "pin-code",
+          ].map((t) => (
+            <JsStack.Screen
+              name={t}
+              key={t}
+              options={arcCard({
+                theme,
+                breakpoints,
+                maxWidth: 600,
+                padding: 0,
+              })}
+            />
+          ))}
         </JsStack>
       </ThemeProvider>
     </>
   );
 }
+
