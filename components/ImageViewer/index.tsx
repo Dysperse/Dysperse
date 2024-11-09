@@ -9,7 +9,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import * as MediaLibrary from "expo-media-library";
 import React, { cloneElement, useCallback, useRef, useState } from "react";
-import { Linking, Platform, View } from "react-native";
+import { Linking, Platform, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -57,6 +57,7 @@ export const ImageViewer = ({ children, image }) => {
   const ref = useRef<BottomSheetModal>();
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
+  const { width, height } = useWindowDimensions();
   const [state, setState] = useState<"loading" | "error" | "success">(
     "loading"
   );
@@ -115,7 +116,7 @@ export const ImageViewer = ({ children, image }) => {
                 contentFit="contain"
                 contentPosition="center"
                 source={{ uri: image }}
-                style={{ flex: 1, width: "100%" }}
+                style={{ flex: 1, width, height }}
               />
               {state === "loading" && (
                 <View
