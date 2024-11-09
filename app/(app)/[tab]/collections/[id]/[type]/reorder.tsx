@@ -2,6 +2,7 @@ import {
   CollectionContext,
   useCollectionContext,
 } from "@/components/collections/context";
+import { ReorderingGrid } from "@/components/collections/views/grid/ReorderingGrid";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -278,7 +279,13 @@ function Reorder({ handleClose }: any) {
             Changes only apply to {view} view
           </Text>
         </View>
-        {view === "kanban" ? <EditKanbanOrder /> : <EditListView />}
+        {
+          {
+            kanban: <EditKanbanOrder />,
+            list: <EditListView />,
+            grid: <ReorderingGrid />,
+          }[view as string]
+        }
       </View>
     </View>
   );
