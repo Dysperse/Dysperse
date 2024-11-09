@@ -135,6 +135,7 @@ function PasswordPrompt({ mutate }) {
           ref={ref}
           secureTextEntry
           numberOfDigits={6}
+          blurOnFilled
           containerGap={5}
           onTextChange={setCode}
           onFilled={(t) => handleSubmit(t)}
