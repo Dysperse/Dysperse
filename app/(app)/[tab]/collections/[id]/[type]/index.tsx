@@ -141,12 +141,18 @@ function PasswordPrompt({ mutate }) {
         <Button
           isLoading={loading}
           text="Unlock"
-          icon="key"
+          icon="arrow_forward"
+          iconPosition="end"
           variant="filled"
           large
           bold
           onPress={handleSubmit}
           containerStyle={{ width: "100%", marginTop: 10 }}
+        />
+        <Button
+          text="Forgot PIN?"
+          onPress={() => {}}
+          containerStyle={{ width: "100%", marginTop: 5 }}
         />
       </View>
     </View>
