@@ -84,6 +84,28 @@ const CollectionNavbar = memo(function CollectionNavbar({
     router.replace("/home");
   };
 
+  const handleLock = async () => {
+    ctx.mutate((o) => ({
+      ...o,
+      pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
+    }));
+
+    await sendApiRequest(
+      session,
+      "PUT",
+      "space/collections",
+      {},
+      {
+        body: JSON.stringify({
+          id: data.id,
+          pinAuthorizationExpiresAt: true,
+        }),
+      }
+    );
+
+    Toast.show({ type: "success", text1: "Collection locked!" });
+  };
+
   useHotkeys(["ctrl+d"], (e) => {
     if (id === "all") return;
     e.preventDefault();
@@ -91,6 +113,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
       pathname: "[tab]/collections/[id]/[view]/customize",
       params: { id, tab, view: type },
     });
+  });
+  useHotkeys(["ctrl+l"], (e) => {
+    if (id === "all") return;
+    e.preventDefault();
+    handleLock();
   });
   useHotkeys(["ctrl+r"], handleRefresh);
   useHotkeys(["o"], openPopOut);
@@ -153,27 +180,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
     data?.pinCode && {
       icon: "lock",
       text: "Lock now",
-      callback: async () => {
-        ctx.mutate((o) => ({
-          ...o,
-          pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
-        }));
-
-        await sendApiRequest(
-          session,
-          "PUT",
-          "space/collections",
-          {},
-          {
-            body: JSON.stringify({
-              id: data.id,
-              pinAuthorizationExpiresAt: true,
-            }),
-          }
-        );
-
-        Toast.show({ type: "success", text1: "Collection locked!" });
-      },
+      callback: handleLock,
     },
   ]
     .flat()
