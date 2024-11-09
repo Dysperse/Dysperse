@@ -59,6 +59,10 @@ export default function Page() {
           action: "Open collection details",
         },
         {
+          keys: "ctrl+l",
+          action: "Lock collection",
+        },
+        {
           keys: "ctrl+⬅",
           action: "Previous planner view",
         },

@@ -117,6 +117,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   useHotkeys(["ctrl+l"], (e) => {
     if (id === "all") return;
     e.preventDefault();
+    if (!data?.pinCode) return;
     handleLock();
   });
   useHotkeys(["ctrl+r"], handleRefresh);
