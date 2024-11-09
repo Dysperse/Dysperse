@@ -85,10 +85,13 @@ const CollectionNavbar = memo(function CollectionNavbar({
   };
 
   const handleLock = async () => {
-    ctx.mutate((o) => ({
-      ...o,
-      pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
-    }));
+    ctx.mutate(
+      (o) => ({
+        ...o,
+        pinAuthorizationExpiresAt: dayjs().subtract(1, "year").toISOString(),
+      }),
+      { revalidate: false }
+    );
 
     await sendApiRequest(
       session,
