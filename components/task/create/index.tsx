@@ -1192,7 +1192,12 @@ function SpeechRecognition({ setValue, hintRef, handleSubmitButtonClick }) {
     handleSubmitButtonClick();
   });
   useSpeechRecognitionEvent("result", (event) => {
-    setValue("name", event.results[0]?.transcript);
+    setValue(
+      "name",
+      event.results[0]?.transcript?.endsWith(".")
+        ? event.results[0]?.transcript.slice(0, -1).trim()
+        : event.results[0]?.transcript?.trim()
+    );
   });
   useSpeechRecognitionEvent("error", (event) => {
     console.log("error code:", event.error, "error messsage:", event.message);

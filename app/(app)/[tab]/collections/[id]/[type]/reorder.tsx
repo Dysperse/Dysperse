@@ -225,7 +225,7 @@ function EditListView() {
   );
 }
 
-function Reorder({ handleClose }) {
+function Reorder({ handleClose }: any) {
   const theme = useColorTheme();
   const { type: view } = useLocalSearchParams();
   useHotkeys("esc", () => router.back());
