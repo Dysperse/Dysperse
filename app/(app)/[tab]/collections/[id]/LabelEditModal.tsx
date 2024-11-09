@@ -115,6 +115,9 @@ export const LabelEditModal = memo(function LabelEditModal({
                     textAlign: "center",
                     width: "100%",
                   }}
+                  onKeyPress={(e) => {
+                    if (e.key === "Escape") menuRef.current?.close?.();
+                  }}
                   placeholder="Label name"
                   inputRef={nameRef}
                   onBlur={onBlur}
@@ -179,3 +182,4 @@ export const LabelEditModal = memo(function LabelEditModal({
     </>
   );
 });
+

@@ -200,7 +200,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
               {!breakpoints.md && session && !isReadOnly && (
                 <CollectionShareMenu ref={shareMenuRef} />
               )}
-              {!isLoading && !isReadOnly && (
+              {!isLoading && !isReadOnly && !(!breakpoints.md && isAll) && (
                 <MenuPopover
                   menuRef={menuRef}
                   closeOnSelect
@@ -232,3 +232,4 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
+
