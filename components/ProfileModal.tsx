@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -51,7 +51,12 @@ function ProfileModalContent({ email }) {
           }}
         >
           <ProfilePicture
-            style={{ top: 80, left: 20, position: "absolute" }}
+            style={{
+              top: 80,
+              left: 20,
+              position: "absolute",
+              backgroundColor: theme[6],
+            }}
             name={data.profile?.name || "--"}
             image={data.profile?.picture}
             size={90}
@@ -116,6 +121,7 @@ function ProfileModalContent({ email }) {
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
+        minHeight: 500,
       }}
     >
       {error ? (
@@ -137,6 +143,7 @@ function ProfileModalContent({ email }) {
 
 export function ProfileModal({ children, email }) {
   const ref = useRef<BottomSheetModal>(null);
+  const { height } = useWindowDimensions();
   const handleOpen = useCallback(() => ref.current?.present(), []);
   const handleClose = useCallback(() => ref.current?.forceClose(), []);
   const trigger = cloneElement(children, { onPress: handleOpen });
@@ -146,11 +153,13 @@ export function ProfileModal({ children, email }) {
       {trigger}
       <Modal
         animation="SCALE"
+        transformCenter
         sheetRef={ref}
         onClose={handleClose}
         handleComponent={() => null}
         maxWidth={450}
-        height={600}
+        height="auto"
+        innerStyles={{ maxHeight: height - 100 }}
         maxBackdropOpacity={0.2}
         style={{ borderRadius: 20, overflow: "hidden" }}
       >
