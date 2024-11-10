@@ -15,9 +15,10 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Platform, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useDidUpdate } from "../../../../utils/useDidUpdate";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 
 export type ColumnProps =
@@ -31,17 +32,6 @@ export type ColumnProps =
       entities?: any[];
       grid?: boolean;
     };
-function useDidUpdate(callback, deps) {
-  const hasMount = useRef(false);
-
-  useEffect(() => {
-    if (hasMount.current) {
-      callback();
-    } else {
-      hasMount.current = true;
-    }
-  }, deps);
-}
 
 export const ColumnFinishedComponent = () => {
   const theme = useColorTheme();

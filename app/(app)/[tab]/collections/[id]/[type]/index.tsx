@@ -25,11 +25,13 @@ import ErrorAlert from "@/ui/Error";
 import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useDidUpdate } from "@/utils/useDidUpdate";
 import dayjs from "dayjs";
 import {
   router,
   useGlobalSearchParams,
   useLocalSearchParams,
+  usePathname,
 } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -283,6 +285,11 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     }),
     [data, mutate, error, type, isPublic, swrKey]
   );
+
+  const pathname = usePathname();
+  useDidUpdate(() => {
+    mutate();
+  }, [pathname]);
 
   return (
     <ContentWrapper noPaddingTop>
