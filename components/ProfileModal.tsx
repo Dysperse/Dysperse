@@ -41,73 +41,70 @@ function ProfileModalContent({ email }) {
       <BottomSheetScrollView
         showsVerticalScrollIndicator={false}
         aria-label="Scrollbar-Hidden"
+        contentContainerStyle={{ backgroundColor: theme[2], flex: 1 }}
       >
-        <View style={{ backgroundColor: theme[1], flex: 1 }}>
-          <LinearGradient
-            colors={[theme[9], theme[5]]}
+        <LinearGradient
+          colors={[theme[9], theme[5]]}
+          style={{
+            padding: 30,
+            height: 140,
+          }}
+        >
+          <ProfilePicture
+            style={{ top: 80, left: 20, position: "absolute" }}
+            name={data.profile?.name || "--"}
+            image={data.profile?.picture}
+            size={90}
+          />
+        </LinearGradient>
+        <View style={{ padding: 35, marginTop: 10, gap: 15 }}>
+          <Text
             style={{
-              padding: 30,
-              height: 140,
+              fontSize: 35,
+              fontFamily: "serifText800",
+              marginBottom: -10,
             }}
           >
-            <ProfilePicture
-              style={{ top: 80, left: 20, position: "absolute" }}
-              name={data.profile?.name || "--"}
-              image={data.profile?.picture}
-              size={90}
-            />
-          </LinearGradient>
-          <View style={{ padding: 35, marginTop: 10, gap: 15 }}>
-            <Text
-              style={{
-                fontSize: 35,
-                fontFamily: "serifText800",
-                marginBottom: -10,
+            {data.profile.name}
+          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Chip
+              onPress={() => {
+                setStringAsync(data.email);
+                Toast.show({ type: "success", text1: "Copied to clipboard" });
               }}
-            >
-              {data.profile.name}
-            </Text>
-            <View style={{ flexDirection: "row" }}>
-              <Chip
-                onPress={() => {
-                  setStringAsync(data.email);
-                  Toast.show({ type: "success", text1: "Copied to clipboard" });
-                }}
-                icon={<Icon>alternate_email</Icon>}
-                label={data.username || data.email}
+              icon={<Icon>alternate_email</Icon>}
+              label={data.username || data.email}
+            />
+          </View>
+          <View style={{ gap: 10 }}>
+            <ListItemButton variant="filled">
+              <Icon>location_on</Icon>
+              <ListItemText
+                primary={dayjs().tz(data.timeZone).format("h:mm A")}
+                secondary="Local time"
               />
-            </View>
-            <View style={{ gap: 10 }}>
+            </ListItemButton>
+            <ListItemButton variant="filled">
+              <Icon>schedule</Icon>
+              <ListItemText
+                primary={dayjs(data.profile.lastActive).fromNow() || "Unknown"}
+                secondary="Last active"
+              />
+            </ListItemButton>
+            <ListItemButton variant="filled">
+              <Icon>cake</Icon>
+              <ListItemText
+                primary={dayjs(data.profile.birthday).format("MMM Do")}
+                secondary="Birthday"
+              />
+            </ListItemButton>
+            {data.profile.bio && (
               <ListItemButton variant="filled">
-                <Icon>location_on</Icon>
-                <ListItemText
-                  primary={dayjs().tz(data.timeZone).format("h:mm A")}
-                  secondary="Local time"
-                />
+                <Icon>sticky_note_2</Icon>
+                <ListItemText primary={data.profile.bio} secondary="About" />
               </ListItemButton>
-              <ListItemButton variant="filled">
-                <Icon>schedule</Icon>
-                <ListItemText
-                  primary={
-                    dayjs(data.profile.lastActive).fromNow() || "Unknown"
-                  }
-                  secondary="Last active"
-                />
-              </ListItemButton>
-              <ListItemButton variant="filled">
-                <Icon>cake</Icon>
-                <ListItemText
-                  primary={dayjs(data.profile.birthday).format("MMM Do")}
-                  secondary="Birthday"
-                />
-              </ListItemButton>
-              {data.profile.bio && (
-                <ListItemButton variant="filled">
-                  <Icon>sticky_note_2</Icon>
-                  <ListItemText primary={data.profile.bio} secondary="About" />
-                </ListItemButton>
-              )}
-            </View>
+            )}
           </View>
         </View>
       </BottomSheetScrollView>
