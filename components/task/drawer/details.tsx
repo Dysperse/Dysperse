@@ -3,6 +3,7 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Entity } from "@/components/collections/entity";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
@@ -674,6 +675,45 @@ function AISubtask() {
   const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
   const [selectedSubtasks, setSelectedSubtasks] = useState([]);
 
+  const { task, updateTask } = useTaskDrawerContext();
+  const { sessionToken } = useUser();
+
+  const handleAddSubtasks = () => {
+    const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
+    updateTask(
+      "subtasks",
+      {
+        ...task.subtasks,
+        ...subtasks.reduce((acc, subtask) => {
+          acc[subtask.id] = subtask;
+          return acc;
+        }, {}),
+      },
+      false
+    );
+
+    for (const i of selectedSubtasks) {
+      sendApiRequest(
+        sessionToken,
+        "POST",
+        "space/entity",
+        {},
+        {
+          body: JSON.stringify({
+            name: generatedSubtasks[i].title,
+            type: "TASK",
+            parentTask: task,
+            parentId: task.id,
+            note: generatedSubtasks[i].description,
+            collectionId: task.collectionId,
+          }),
+        }
+      );
+    }
+
+    modalRef.current?.close();
+  };
+
   return (
     <>
       <Button
@@ -697,7 +737,7 @@ function AISubtask() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                message: "Write a blog post about the new feature",
+                message: task.name,
               }),
             })
               .then((res) => res.json())
@@ -718,7 +758,7 @@ function AISubtask() {
       <Modal
         maxWidth={400}
         height="auto"
-        innerStyles={{ minHeight: 500 }}
+        innerStyles={{ minHeight: 400 }}
         animation="SCALE"
         transformCenter
         sheetRef={modalRef}
@@ -779,6 +819,7 @@ function AISubtask() {
 
               <View style={{ padding: 5 }}>
                 <Button
+                  onPress={handleAddSubtasks}
                   variant="filled"
                   large
                   bold
