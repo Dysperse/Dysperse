@@ -1,8 +1,9 @@
-import { getProfileLastActiveRelativeTime } from "@/app/(app)/home";
 import { ProfilePicture } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -56,8 +57,14 @@ function ProfileModalContent({ email }) {
               size={90}
             />
           </LinearGradient>
-          <View style={{ padding: 35, marginTop: 10 }}>
-            <Text weight={700} style={{ fontSize: 50 }}>
+          <View style={{ padding: 35, marginTop: 10, gap: 15 }}>
+            <Text
+              style={{
+                fontSize: 35,
+                fontFamily: "serifText800",
+                marginBottom: -10,
+              }}
+            >
               {data.profile.name}
             </Text>
             <View style={{ flexDirection: "row" }}>
@@ -70,55 +77,37 @@ function ProfileModalContent({ email }) {
                 label={data.username || data.email}
               />
             </View>
-            <View style={styles.gridRow}>
-              <View style={[styles.gridItem, { borderColor: theme[6] }]}>
-                <Icon size={40} style={styles.icon}>
-                  access_time
-                </Icon>
-                <Text style={styles.gridHeading}>
-                  {dayjs().tz(data.timeZone).format("hh:mm A") ||
-                    "Timezone not set"}
-                </Text>
-                <Text variant="eyebrow">Local time</Text>
-              </View>
-              <View style={[styles.gridItem, { borderColor: theme[6] }]}>
-                <Icon size={40} style={styles.icon}>
-                  web_traffic
-                </Icon>
-                <Text style={styles.gridHeading}>
-                  {getProfileLastActiveRelativeTime(data.profile.lastActive) ===
-                  "NOW"
-                    ? "Online"
-                    : getProfileLastActiveRelativeTime(
-                        data.profile.lastActive
-                      ) || "Unknown"}
-                </Text>
-                <Text variant="eyebrow">Last active</Text>
-              </View>
+            <View style={{ gap: 10 }}>
+              <ListItemButton variant="filled">
+                <Icon>location_on</Icon>
+                <ListItemText
+                  primary={dayjs().tz(data.timeZone).format("h:mm A")}
+                  secondary="Local time"
+                />
+              </ListItemButton>
+              <ListItemButton variant="filled">
+                <Icon>schedule</Icon>
+                <ListItemText
+                  primary={
+                    dayjs(data.profile.lastActive).fromNow() || "Unknown"
+                  }
+                  secondary="Last active"
+                />
+              </ListItemButton>
+              <ListItemButton variant="filled">
+                <Icon>cake</Icon>
+                <ListItemText
+                  primary={dayjs(data.profile.birthday).format("MMM Do")}
+                  secondary="Birthday"
+                />
+              </ListItemButton>
+              {data.profile.bio && (
+                <ListItemButton variant="filled">
+                  <Icon>sticky_note_2</Icon>
+                  <ListItemText primary={data.profile.bio} secondary="About" />
+                </ListItemButton>
+              )}
             </View>
-            <View style={styles.gridRow}>
-              <View style={[styles.gridItem, { borderColor: theme[6] }]}>
-                <Icon size={40} style={styles.icon}>
-                  cake
-                </Icon>
-                <Text style={styles.gridHeading}>
-                  {dayjs(data.profile.birthday).format("MMM Do") ||
-                    "Timezone not set"}
-                </Text>
-                <Text variant="eyebrow">Birthday</Text>
-              </View>
-            </View>
-            {data.profile.bio && (
-              <View style={styles.gridRow}>
-                <View style={[styles.gridItem, { borderColor: theme[6] }]}>
-                  <Icon size={40} style={styles.icon}>
-                    sticky_note_2
-                  </Icon>
-                  <Text style={styles.gridHeading}>{data.profile.bio}</Text>
-                  <Text variant="eyebrow">About</Text>
-                </View>
-              </View>
-            )}
           </View>
         </View>
       </BottomSheetScrollView>
@@ -173,3 +162,4 @@ export function ProfileModal({ children, email }) {
     </>
   );
 }
+
