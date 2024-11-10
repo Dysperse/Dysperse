@@ -581,7 +581,6 @@ function TaskNameInput({
   const attachments = watch("attachments");
   const { forceClose } = useBottomSheet();
   const { data: labelData } = useSWR(["space/labels"]);
-  const note = watch("note");
 
   const suggestions = useMemo(
     () => [
@@ -1391,7 +1390,7 @@ const BottomSheetContent = forwardRef(
               flex: 1,
               flexDirection: "column",
               zIndex: 0,
-              minHeight: 155,
+              minHeight: 100,
             }}
           >
             <Footer
@@ -1427,7 +1426,6 @@ const BottomSheetContent = forwardRef(
           <View
             style={{
               gap: 7,
-              zIndex: Platform.OS === "web" ? -2 : undefined,
               flexDirection: "row",
               alignItems: "center",
             }}
