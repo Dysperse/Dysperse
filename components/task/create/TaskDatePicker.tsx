@@ -30,8 +30,8 @@ function TaskDatePicker({
   const dateOnly = watch("dateOnly");
 
   const handleOpen = useCallback(() => {
-    if (dueDate || dueDateOnly) dateRef.current?.present();
-    else if (recurrenceRule) recurrenceRef.current?.present();
+    if (recurrenceRule) recurrenceRef.current?.present();
+    else if (dueDate || dueDateOnly) dateRef.current?.present();
   }, [dueDate, dueDateOnly, recurrenceRule]);
 
   const trigger = cloneElement(children || <Pressable />, {

@@ -8,7 +8,7 @@ import {
 import convertTime from "convert-time";
 import dayjs, { Dayjs } from "dayjs";
 import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, StyleProp, TextStyle, View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -21,16 +21,18 @@ import Modal from "../Modal";
 import Text from "../Text";
 import TextField from "../TextArea";
 
-const TimeInput = forwardRef(
+export const TimeInput = forwardRef(
   (
     {
       value: defaultValue,
       setValue: setDefaultValue,
       valueKey = "date",
+      style,
     }: {
       value: Dayjs;
       setValue: (key: string, value: Dayjs) => void;
       valueKey?: "date" | "end";
+      style?: StyleProp<TextStyle>;
     },
     ref: RefObject<TextInput>
   ) => {
@@ -65,11 +67,14 @@ const TimeInput = forwardRef(
         }}
         inputRef={ref}
         variant="filled+outlined"
-        style={{
-          flex: 1,
-          textAlign: "center",
-          height: 35,
-        }}
+        style={[
+          {
+            flex: 1,
+            textAlign: "center",
+            height: 35,
+          },
+          style,
+        ]}
         placeholder="12:00"
         value={value}
         onChangeText={(e) => setValue(e)}
