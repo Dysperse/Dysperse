@@ -138,29 +138,42 @@ function Footer({
   const date = watch("date");
   const dateOnly = watch("dateOnly");
   const label = watch("label");
+  const name = watch("name");
   const parentTask = watch("parentTask");
 
   return (
     <View
       style={{
-        paddingBottom: 10,
+        paddingBottom:
+          (date || recurrenceRule || label || collectionId) && !parentTask
+            ? 10
+            : 0,
       }}
     >
-      <ScrollView
-        horizontal
-        contentContainerStyle={{
-          alignItems: "center",
-          flexDirection: "row",
-          gap: 5,
-        }}
-        showsHorizontalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
+      {!name && (
         <SpeechRecognition
           handleSubmitButtonClick={handleSubmitButtonClick}
           setValue={setValue}
           hintRef={hintRef}
         />
+      )}
+      <ScrollView
+        horizontal
+        style={{
+          marginRight: name ? 0 : 50,
+        }}
+        contentContainerStyle={{
+          alignItems: "center",
+          flexDirection: "row",
+          gap: 5,
+          display:
+            (date || recurrenceRule || label || collectionId) && !parentTask
+              ? "flex"
+              : "none",
+        }}
+        showsHorizontalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {(date || recurrenceRule) && !parentTask && (
           <Chip
             outlined
@@ -1240,6 +1253,10 @@ function SpeechRecognition({ setValue, hintRef, handleSubmitButtonClick }) {
           pressed ? 0.3 : hovered ? 0.2 : 0.1
         ),
         backgroundColor: recognizing ? red[9] : undefined,
+        position: "absolute",
+        right: 0,
+        top: 0,
+        zIndex: 1,
       })}
       onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
     />
