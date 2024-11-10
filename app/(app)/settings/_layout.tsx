@@ -3,7 +3,6 @@ import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SettingsSidebar } from "@/components/settings/sidebar";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
@@ -217,9 +216,7 @@ export default function Layout() {
       <View
         style={{
           height: "100%",
-          backgroundColor: breakpoints.md
-            ? addHslAlpha(theme[2], Platform.OS === "web" ? 0.9 : 1)
-            : theme[1],
+          backgroundColor: theme[breakpoints.md ? 2 : 1],
         }}
       >
         <EscapeSettings />
@@ -315,3 +312,4 @@ export default function Layout() {
     </View>
   );
 }
+
