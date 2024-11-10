@@ -668,50 +668,58 @@ function ComplexityTrigger({ backgroundColors }) {
 }
 
 function AISubtask() {
-  const theme = useColorTheme();
   const modalRef = useRef();
+  const theme = useColorTheme();
+  const { sessionToken } = useUser();
   const alreadyGeneratedRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
-  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
-
   const { task, updateTask } = useTaskDrawerContext();
-  const { sessionToken } = useUser();
 
-  const handleAddSubtasks = () => {
-    const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
-    updateTask(
-      "subtasks",
-      {
-        ...task.subtasks,
-        ...subtasks.reduce((acc, subtask) => {
-          acc[subtask.id] = subtask;
-          return acc;
-        }, {}),
-      },
-      false
-    );
+  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
+  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
+  const [isCreationLoading, setIsCreationLoading] = useState(false);
 
-    for (const i of selectedSubtasks) {
-      sendApiRequest(
+  const handleAddSubtasks = async () => {
+    setIsCreationLoading(true);
+    try {
+      const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
+
+      const t = await sendApiRequest(
         sessionToken,
-        "POST",
+        "PATCH",
         "space/entity",
         {},
         {
           body: JSON.stringify({
-            name: generatedSubtasks[i].title,
-            type: "TASK",
-            parentTask: task,
-            parentId: task.id,
-            note: generatedSubtasks[i].description,
-            collectionId: task.collectionId,
+            entities: subtasks.map((subtask) => ({
+              name: subtask.title,
+              type: "TASK",
+              parentTask: task,
+              parentId: task.id,
+              note: subtask.description,
+              collectionId: task.collectionId,
+            })),
           }),
         }
       );
+      console.log(t);
+      updateTask(
+        "subtasks",
+        {
+          ...task.subtasks,
+          ...t.reduce((acc, curr) => {
+            acc[curr.id] = curr;
+            return acc;
+          }, {}),
+        },
+        false
+      );
+      modalRef.current?.close();
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setIsCreationLoading(false);
     }
-
-    modalRef.current?.close();
   };
 
   return (
@@ -727,8 +735,9 @@ function AISubtask() {
         dense
         onPress={() => {
           setIsLoading(true);
+          modalRef.current?.present();
+
           if (!alreadyGeneratedRef.current) {
-            modalRef.current?.present();
             alreadyGeneratedRef.current = true;
 
             fetch("https://dysperse.koyeb.app/subtasks", {
@@ -819,6 +828,7 @@ function AISubtask() {
 
               <View style={{ padding: 5 }}>
                 <Button
+                  isLoading={isCreationLoading}
                   onPress={handleAddSubtasks}
                   variant="filled"
                   large

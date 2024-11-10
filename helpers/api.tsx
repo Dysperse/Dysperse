@@ -2,7 +2,7 @@ import { Platform } from "react-native";
 
 export function sendApiRequest(
   session,
-  method: "GET" | "POST" | "PUT" | "DELETE",
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   path,
   params = {},
   options = {},
@@ -28,3 +28,4 @@ export function sendApiRequest(
     .then((r) => r.json())
     .catch((e) => console.error(e));
 }
+
