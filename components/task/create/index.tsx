@@ -626,7 +626,6 @@ function TaskNameInput({
               hintRef={hintRef}
             />
             <ChipInput
-              // height={150}
               placeholder="What's on your mind?"
               onSubmitEditing={() => handleSubmitButtonClick()}
               inputProps={{
@@ -1375,7 +1374,7 @@ const BottomSheetContent = forwardRef(
               flex: 1,
               flexDirection: "column",
               zIndex: 0,
-              minHeight: 130,
+              minHeight: 155,
             }}
           >
             <Footer
