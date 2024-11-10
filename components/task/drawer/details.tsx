@@ -671,7 +671,6 @@ function AISubtask() {
   const modalRef = useRef();
   const theme = useColorTheme();
   const { sessionToken } = useUser();
-  const alreadyGeneratedRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const { task, updateTask } = useTaskDrawerContext();
 
@@ -737,31 +736,27 @@ function AISubtask() {
           setIsLoading(true);
           modalRef.current?.present();
 
-          if (!alreadyGeneratedRef.current) {
-            alreadyGeneratedRef.current = true;
-
-            fetch("https://dysperse.koyeb.app/subtasks", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                message: task.name,
-              }),
+          fetch("https://dysperse.koyeb.app/subtasks", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: task.name,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (!Array.isArray(data?.response))
+                throw new Error("No response");
+              setGeneratedSubtasks(data.response);
+              setSelectedSubtasks(data.response.map((_, i) => i));
+              setIsLoading(false);
             })
-              .then((res) => res.json())
-              .then((data) => {
-                if (!Array.isArray(data?.response))
-                  throw new Error("No response");
-                setGeneratedSubtasks(data.response);
-                setSelectedSubtasks(data.response.map((_, i) => i));
-                setIsLoading(false);
-              })
-              .catch((e) => {
-                setIsLoading(false);
-                Toast.show({ type: "error" });
-              });
-          }
+            .catch((e) => {
+              setIsLoading(false);
+              Toast.show({ type: "error" });
+            });
         }}
       />
       <Modal
