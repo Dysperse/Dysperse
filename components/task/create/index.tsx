@@ -1390,7 +1390,6 @@ const BottomSheetContent = forwardRef(
               flex: 1,
               flexDirection: "column",
               zIndex: 0,
-              minHeight: 100,
             }}
           >
             <Footer
@@ -1404,23 +1403,25 @@ const BottomSheetContent = forwardRef(
               labelMenuRef={labelMenuRef}
               control={control}
             />
-            <TaskNameInput
-              descriptionRef={descriptionRef}
-              hintRef={hintRef}
-              submitRef={submitRef}
-              reset={reset}
-              watch={watch}
-              control={control}
-              menuRef={menuRef}
-              handleSubmitButtonClick={handleSubmitButtonClick}
-              nameRef={nameRef}
-              setValue={setValue}
-            />
-            <TaskDescriptionInput
-              control={control}
-              watch={watch}
-              ref={descriptionRef}
-            />
+            <View style={{ minHeight: 100 }}>
+              <TaskNameInput
+                descriptionRef={descriptionRef}
+                hintRef={hintRef}
+                submitRef={submitRef}
+                reset={reset}
+                watch={watch}
+                control={control}
+                menuRef={menuRef}
+                handleSubmitButtonClick={handleSubmitButtonClick}
+                nameRef={nameRef}
+                setValue={setValue}
+              />
+              <TaskDescriptionInput
+                control={control}
+                watch={watch}
+                ref={descriptionRef}
+              />
+            </View>
           </View>
           <TaskAttachments watch={watch} setValue={setValue} />
           <View
