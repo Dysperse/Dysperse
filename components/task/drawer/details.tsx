@@ -13,7 +13,9 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
@@ -664,6 +666,145 @@ function ComplexityTrigger({ backgroundColors }) {
   );
 }
 
+function AISubtask() {
+  const theme = useColorTheme();
+  const modalRef = useRef();
+  const alreadyGeneratedRef = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
+  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
+
+  return (
+    <>
+      <Button
+        icon="magic_button"
+        text="Generate"
+        backgroundColors={{
+          default: addHslAlpha(theme[11], 0.05),
+          pressed: addHslAlpha(theme[11], 0.1),
+          hovered: addHslAlpha(theme[11], 0.2),
+        }}
+        dense
+        onPress={() => {
+          setIsLoading(true);
+          if (!alreadyGeneratedRef.current) {
+            modalRef.current?.present();
+            alreadyGeneratedRef.current = true;
+
+            fetch("https://dysperse.koyeb.app/subtasks", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                message: "Write a blog post about the new feature",
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (!Array.isArray(data?.response))
+                  throw new Error("No response");
+                setGeneratedSubtasks(data.response);
+                setSelectedSubtasks(data.response.map((_, i) => i));
+                setIsLoading(false);
+              })
+              .catch((e) => {
+                setIsLoading(false);
+                Toast.show({ type: "error" });
+              });
+          }
+        }}
+      />
+      <Modal
+        maxWidth={400}
+        height="auto"
+        innerStyles={{ minHeight: 500 }}
+        animation="SCALE"
+        transformCenter
+        sheetRef={modalRef}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 20 }} weight={900}>
+              AI subtasks
+            </Text>
+            <Text style={{ opacity: 0.6, fontSize: 13 }}>Experimental</Text>
+          </View>
+          <IconButton
+            icon="close"
+            onPress={() => modalRef.current?.close()}
+            variant="filled"
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          {!isLoading ? (
+            <View style={{ padding: 10, paddingTop: 0, marginTop: -10 }}>
+              {generatedSubtasks.map((subtask, i) => (
+                <ListItemButton
+                  key={i}
+                  onPress={() => {
+                    setSelectedSubtasks((prev) =>
+                      prev.includes(i)
+                        ? prev.filter((t) => t !== i)
+                        : [...prev, i]
+                    );
+                  }}
+                  style={{
+                    paddingVertical: 15,
+                    paddingHorizontal: 20,
+                  }}
+                  pressableStyle={{
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Icon
+                    filled={selectedSubtasks.includes(i)}
+                    style={{ marginTop: 2 }}
+                    size={30}
+                  >
+                    {selectedSubtasks.includes(i) ? "check_circle" : "circle"}
+                  </Icon>
+                  <ListItemText
+                    primary={subtask.title}
+                    secondary={subtask.description}
+                  />
+                </ListItemButton>
+              ))}
+
+              <View style={{ padding: 5 }}>
+                <Button
+                  variant="filled"
+                  large
+                  bold
+                  text={`Add ${selectedSubtasks.length} subtasks`}
+                  icon="add"
+                />
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </View>
+      </Modal>
+    </>
+  );
+}
+
 function SubtaskList({ backgroundColors }) {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
@@ -680,39 +821,39 @@ function SubtaskList({ backgroundColors }) {
           primary="Subtasks"
           secondary={`${Object.keys(task.subtasks).length}`}
         />
-        <CreateTask
-          mutate={(newTask) => {
-            updateTask(
-              "subtasks",
-              { ...task.subtasks, [newTask.id]: newTask },
-              false
-            );
-          }}
-          onPress={() => {
-            if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
-              localStorage.setItem("subtaskTip", "true");
-              Toast.show({
-                type: "info",
-                text1: "Pro tip",
-                text2: "Tap twice on a task to open this popup",
-                visibilityTime: 5000,
-              });
-            }
-          }}
-          defaultValues={{ parentTask: task }}
-        >
-          <Button
-            icon="add"
-            text="New"
-            iconPosition="end"
-            backgroundColors={{
-              default: addHslAlpha(theme[11], 0.05),
-              pressed: addHslAlpha(theme[11], 0.1),
-              hovered: addHslAlpha(theme[11], 0.2),
+        <View style={{ gap: 5, flexDirection: "row" }}>
+          <AISubtask />
+          <CreateTask
+            mutate={(newTask) => {}}
+            onPress={() => {
+              if (
+                Platform.OS === "web" &&
+                !localStorage.getItem("subtaskTip")
+              ) {
+                localStorage.setItem("subtaskTip", "true");
+                Toast.show({
+                  type: "info",
+                  text1: "Pro tip",
+                  text2: "Tap twice on a task to open this popup",
+                  visibilityTime: 5000,
+                });
+              }
             }}
-            dense
-          />
-        </CreateTask>
+            defaultValues={{ parentTask: task }}
+          >
+            <Button
+              icon="add"
+              text="New"
+              iconPosition="end"
+              backgroundColors={{
+                default: addHslAlpha(theme[11], 0.05),
+                pressed: addHslAlpha(theme[11], 0.1),
+                hovered: addHslAlpha(theme[11], 0.2),
+              }}
+              dense
+            />
+          </CreateTask>
+        </View>
       </ListItemButton>
       <View style={{ marginHorizontal: -15 }}>
         {typeof task.subtasks === "object" &&
