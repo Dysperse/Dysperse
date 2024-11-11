@@ -107,13 +107,13 @@ function On({ value, setValue, handleEdit }) {
         { value: 12, text: "Dec" },
       ]
     : [
-        { value: 0, text: "S" },
-        { value: 1, text: "M" },
-        { value: 2, text: "T" },
-        { value: 3, text: "W" },
-        { value: 4, text: "T" },
-        { value: 5, text: "F" },
         { value: 6, text: "S" },
+        { value: 0, text: "M" },
+        { value: 1, text: "T" },
+        { value: 2, text: "W" },
+        { value: 3, text: "T" },
+        { value: 4, text: "F" },
+        { value: 5, text: "S" },
       ];
 
   return (
