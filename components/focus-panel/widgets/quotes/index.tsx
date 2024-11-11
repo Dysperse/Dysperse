@@ -16,13 +16,7 @@ import { widgetStyles } from "../../widgetStyles";
 
 export default function Quotes({ widget, menuActions }) {
   const { data, mutate, error } = useSWR(
-    [
-      ``,
-      {
-        tags: "famous-quotes|success|failure|ethics|health|honor|leadership|power-quotes|work",
-      },
-      "https://api.quotable.io/random",
-    ],
+    [``, {}, "https://quotes-api-self.vercel.app/quote"],
     null,
     {
       refreshInterval: 1000 * 60 * 60,
@@ -78,11 +72,11 @@ export default function Quotes({ widget, menuActions }) {
           <>
             <Text
               style={{
-                fontSize: data.content.length > 100 ? 23 : 28,
+                fontSize: data.quote?.length > 100 ? 23 : 28,
                 fontFamily: getFontName("crimsonPro", 800),
               }}
             >
-              &ldquo;{data?.content}&rdquo;
+              &ldquo;{data?.quote}&rdquo;
             </Text>
             <Text style={{ marginTop: 10, opacity: 0.6 }} weight={400}>
               &mdash; {data?.author}
@@ -97,3 +91,4 @@ export default function Quotes({ widget, menuActions }) {
     </View>
   );
 }
+
