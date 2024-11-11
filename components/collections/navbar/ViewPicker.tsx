@@ -34,8 +34,11 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     .map(([_type, views]) => [
       {
         renderer: () => (
-          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
-            {capitalizeFirstLetter(_type)}
+          <Text
+            variant="eyebrow"
+            style={{ padding: 10, paddingBottom: 3, color: theme[12] }}
+          >
+            {_type}
           </Text>
         ),
       },
