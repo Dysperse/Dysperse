@@ -404,7 +404,11 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   }, [id, pathname]);
 
   useEffect(() => {
-    if (pathname !== "/" && !pathname.includes("/reorder"))
+    if (
+      pathname !== "/" &&
+      !pathname.includes("/reorder") &&
+      !pathname.includes("/chrome-extension")
+    )
       AsyncStorage.setItem("lastViewedRoute", pathname);
   }, [pathname]);
 
@@ -730,3 +734,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+

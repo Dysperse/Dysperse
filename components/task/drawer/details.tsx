@@ -701,7 +701,6 @@ function AISubtask() {
           }),
         }
       );
-      console.log(t);
       updateTask(
         "subtasks",
         {
