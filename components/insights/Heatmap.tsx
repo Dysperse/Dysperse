@@ -30,10 +30,16 @@ export const Heatmap = ({ data }) => {
   const theme = useColorTheme();
 
   const commitsData = [
-    ...new Array(dayjs().diff(dayjs().subtract(1, "year"), "days")),
+    ...new Array(
+      dayjs().diff(dayjs().subtract(1, "year").startOf("month"), "days")
+    ),
   ]
     .map((_, i) => ({
-      date: dayjs().subtract(1, "year").add(i, "day").format("YYYY-MM-DD"),
+      date: dayjs()
+        .subtract(1, "year")
+        .startOf("month")
+        .add(i, "day")
+        .format("YYYY-MM-DD"),
       count: 0,
     }))
     .map((day) => ({
@@ -46,9 +52,12 @@ export const Heatmap = ({ data }) => {
         ).length || 0,
     }))
     .reduce((acc, item) => {
-      const index = dayjs(item.date).diff(dayjs().subtract(1, "year"), "month");
-      acc[index] = acc[index] || [];
-      acc[index].push(item);
+      const monthIndex = dayjs(item.date).diff(
+        dayjs().subtract(1, "year").startOf("month"),
+        "month"
+      );
+      acc[monthIndex] = acc[monthIndex] || [];
+      acc[monthIndex].push(item);
       return acc;
     }, []);
 

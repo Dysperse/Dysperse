@@ -6,7 +6,9 @@ export const cardStyles = StyleSheet.create({
     borderRadius: 25,
     flex: 1,
     padding: 30,
+    paddingTop: 10,
     gap: 10,
   },
-  title: { fontSize: 30 },
+  title: { fontSize: 30, marginBottom: 10 },
 });
+

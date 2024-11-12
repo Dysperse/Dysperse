@@ -7,17 +7,12 @@ import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text, { getFontName } from "@/ui/Text";
-import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
-import { ColorThemeProvider } from "@/ui/color/theme-provider";
-import { BlurView } from "expo-blur";
-import { memo, useCallback, useMemo, useState } from "react";
-import {
-  Platform,
-  TextStyle,
-  View,
-  ViewStyle,
-  useWindowDimensions,
-} from "react-native";
+import { useColor } from "@/ui/color";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { LinearGradient } from "expo-linear-gradient";
+import { useGlobalSearchParams } from "expo-router";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { TextStyle, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -28,6 +23,7 @@ import { useSWRConfig } from "swr";
 import TaskDatePicker from "../task/create/TaskDatePicker";
 
 function NavbarHeader({ isLoading }) {
+  const theme = useColorTheme();
   const { selection, setSelection } = useSelectionContext();
   const clearSelection = useCallback(() => setSelection([]), [setSelection]);
 
@@ -36,11 +32,13 @@ function NavbarHeader({ isLoading }) {
       style={{
         flexDirection: "row",
         alignItems: "center",
+        paddingHorizontal: 10,
+        gap: 10,
       }}
     >
-      <IconButton icon="close" size={45} onPress={clearSelection} />
+      <IconButton icon="close" onPress={clearSelection} />
       <View style={{ flexGrow: 1, marginLeft: 5 }}>
-        <Text weight={900} style={{ fontSize: 20 }}>
+        <Text weight={900} style={{ fontSize: 20, color: theme[11] }}>
           {selection.length} selected
         </Text>
         {isLoading && (
@@ -83,6 +81,7 @@ function Actions({ setIsLoading }) {
   const { isLoading } = useSelectionContext();
   const blue = useColor("blue");
   const { mutate } = useSWRConfig();
+  const { tab } = useGlobalSearchParams();
 
   const itemStyle: ViewStyle = useMemo(
     () =>
@@ -106,6 +105,10 @@ function Actions({ setIsLoading }) {
     [blue]
   );
 
+  useEffect(() => {
+    setSelection([]);
+  }, [tab]);
+
   const handleSelect = useCallback(
     async (t, shouldClear = false) => {
       try {
@@ -128,7 +131,7 @@ function Actions({ setIsLoading }) {
         setIsLoading(false);
       }
     },
-    [selection, setSelection, session, setIsLoading]
+    [selection, setSelection, session, setIsLoading, mutate]
   );
 
   return (
@@ -210,18 +213,11 @@ function Actions({ setIsLoading }) {
 }
 
 const SelectionNavbar = memo(function SelectionNavbar() {
-  const isDark = useDarkMode();
   const blue = useColor("blue");
-  const { width } = useWindowDimensions();
   const { selection } = useSelectionContext();
   const breakpoints = useResponsiveBreakpoints();
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const barWidth = useMemo(
-    () => (breakpoints.md ? 440 : width),
-    [breakpoints, width]
-  );
 
   const marginStyle = useAnimatedStyle(() => ({
     transform: [
@@ -237,7 +233,7 @@ const SelectionNavbar = memo(function SelectionNavbar() {
     ],
   }));
 
-  return selection.length > 0 ? (
+  return (
     <ColorThemeProvider theme={blue}>
       <Animated.View
         style={[
@@ -246,12 +242,10 @@ const SelectionNavbar = memo(function SelectionNavbar() {
             zIndex: 1,
             height: breakpoints.md ? 64 : 140,
             overflow: "hidden",
-            borderRadius: 25,
-            width: barWidth,
+            width: "100%",
             position: "absolute",
             top: 0,
-            left: (width - barWidth) / 2,
-            marginTop: breakpoints.md ? 20 : 0,
+            left: 0,
           },
           !breakpoints.md && {
             bottom: 0,
@@ -262,44 +256,36 @@ const SelectionNavbar = memo(function SelectionNavbar() {
           },
         ]}
       >
-        <BlurView
-          intensity={40}
-          tint={isDark ? "dark" : "prominent"}
-          style={{ height: breakpoints.md ? 64 : 140 }}
+        <LinearGradient
+          colors={[blue[3], blue[5]]}
+          style={[
+            {
+              flexDirection: "row",
+              gap: 10,
+              paddingHorizontal: 10,
+              paddingRight: 15,
+              height: "100%",
+              alignItems: "center",
+            },
+            !breakpoints.md && {
+              height: 140,
+              paddingTop: 10,
+              gap: 0,
+              flexDirection: "column",
+              paddingHorizontal: 0,
+              paddingRight: 0,
+              alignItems: "flex-start",
+              justifyContent: "center",
+            },
+          ]}
         >
-          <View
-            style={[
-              {
-                backgroundColor: addHslAlpha(
-                  blue[4],
-                  Platform.OS === "android" ? 1 : 0.5
-                ),
-                flexDirection: "row",
-                gap: 10,
-                paddingHorizontal: 10,
-                paddingRight: 15,
-                height: "100%",
-                alignItems: "center",
-              },
-              !breakpoints.md && {
-                height: 140,
-                paddingTop: 10,
-                gap: 0,
-                flexDirection: "column",
-                paddingHorizontal: 0,
-                paddingRight: 0,
-                alignItems: "flex-start",
-                justifyContent: "center",
-              },
-            ]}
-          >
-            <NavbarHeader isLoading={isLoading} />
-            <Actions setIsLoading={setIsLoading} />
-          </View>
-        </BlurView>
+          <NavbarHeader isLoading={isLoading} />
+          <Actions setIsLoading={setIsLoading} />
+        </LinearGradient>
       </Animated.View>
     </ColorThemeProvider>
-  ) : null;
+  );
 });
 
 export default SelectionNavbar;
+

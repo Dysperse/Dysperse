@@ -1,7 +1,6 @@
 import { cardStyles } from "@/components/insights/cardStyles";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Emoji from "@/ui/Emoji";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
@@ -87,28 +86,15 @@ export function MemberSince() {
       <Text
         style={{
           fontSize: 30,
-          color: theme[11],
           textAlign: breakpoints.md ? "right" : "center",
         }}
-        weight={200}
+        weight={700}
       >
         {capitalizeFirstLetter(session?.user?.profile?.name?.split(" ")?.[0])},
-        you've been a member since{" "}
-        {dayjs(session.user.createdAt).format("MMMM YYYY")} &mdash; thank you{" "}
-        <Text
-          style={{
-            verticalAlign: "top",
-          }}
-        >
-          <Emoji
-            emoji="1F499"
-            size={25}
-            style={{
-              transform: [{ translateY: -5 }],
-            }}
-          />
-        </Text>
+        you've been a user since{" "}
+        {dayjs(session.user.createdAt).format("MMMM YYYY")} &mdash; thank you!
       </Text>
     </View>
   );
 }
+

@@ -1,5 +1,6 @@
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
+import SelectionNavbar from "@/components/layout/SelectionNavbar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
@@ -211,6 +212,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
   return (
     <>
       <>
+        <SelectionNavbar />
         <NavbarGradient>
           {menu}
           <View

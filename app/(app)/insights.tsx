@@ -7,7 +7,6 @@ import { LabelChart } from "@/components/insights/LabelChart";
 import { MemberSince } from "@/components/insights/MemberSince";
 import { TasksCreated } from "@/components/insights/TasksCreated";
 import ContentWrapper from "@/components/layout/content";
-import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
@@ -19,7 +18,6 @@ import useSWR from "swr";
 
 export default function Page() {
   const { data, error } = useSWR(["user/insights"]);
-  const { session } = useUser();
   const breakpoints = useResponsiveBreakpoints();
   const ref = useRef<ScrollView>(null);
 

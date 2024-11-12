@@ -61,7 +61,6 @@ import { MenuProvider } from "react-native-popup-menu";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import LoadingErrors from "../../components/layout/LoadingErrors";
-import SelectionNavbar from "../../components/layout/SelectionNavbar";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(timezone);
@@ -363,7 +362,6 @@ export default function AppLayout() {
                               ]}
                             >
                               <LoadingErrors />
-                              <SelectionNavbar />
                               <NotificationsModal />
                               <TabFriendModal />
                               {breakpoints.md ? (
@@ -414,3 +412,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+
