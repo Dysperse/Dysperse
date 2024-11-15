@@ -4,11 +4,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import {
-  addBatteryStateListener,
-  getBatteryStateAsync,
-  useBatteryLevel,
-} from "expo-battery";
+import { getBatteryLevelAsync } from "expo-battery";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
@@ -19,21 +15,22 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
   const theme = useColorTheme();
   const { panelState } = useFocusPanelContext();
   const isDark = useDarkMode();
-  const batteryLevel = useBatteryLevel();
+  const [batteryLevel, setBatteryLevel] = useState(-1);
 
   const [isCharging, setIsCharging] = useState(false);
 
   useEffect(() => {
-    getBatteryStateAsync().then((state) => {
-      setIsCharging(state === 2);
-    });
-    const t = addBatteryStateListener((state) => {
-      setIsCharging(state.batteryState === 2);
-    });
+    getBatteryLevelAsync().then((t) => setBatteryLevel(t));
+    // getBatteryStateAsync().then((state) => {
+    //   setIsCharging(state === 2);
+    // });
+    // const t = addBatteryStateListener((state) => {
+    //   setIsCharging(state.batteryState === 2);
+    // });
 
-    return () => {
-      t.remove();
-    };
+    // return () => {
+    //   t.remove();
+    // };
   });
 
   return (
@@ -133,3 +130,4 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
     )
   );
 }
+

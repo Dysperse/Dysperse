@@ -55,7 +55,6 @@ if (Platform.OS === "android") {
   NavigationBar.setBorderColorAsync("transparent");
 }
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn: "https://3d99ad48c3c8f5ff2642deae447e4a82@o4503985635655680.ingest.sentry.io/4506520845746176",
@@ -73,7 +72,9 @@ if (process.env.NODE_ENV === "production") {
         maskAllImages: false,
         maskAllVectors: false,
       }),
-      new Sentry.ReactNativeTracing({ routingInstrumentation }),
+      Sentry.reactNativeNavigationIntegration({
+        navigation: JsStack,
+      }),
     ],
   });
 }
@@ -176,7 +177,6 @@ function Root() {
                       cardShadowEnabled: false,
                       freezeOnBlur: true,
                     }}
-                    initialRouteName="(app)/index"
                   />
                 </SWRWrapper>
               </SidebarContext.Provider>
@@ -191,3 +191,4 @@ function Root() {
 export default process.env.NODE_ENV === "development"
   ? Root
   : Sentry.wrap(Root);
+

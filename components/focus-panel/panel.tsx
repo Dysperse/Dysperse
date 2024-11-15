@@ -13,6 +13,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import {
   NavigationContainer,
   NavigationContainerRef,
+  NavigationIndependentTree,
 } from "@react-navigation/native";
 import {
   createStackNavigator,
@@ -497,68 +498,70 @@ function PanelContent() {
           ]}
         />
         {process.env.NODE_ENV !== "development" && <WakeLock />}
-        <NavigationContainer
-          ref={r}
-          documentTitle={{ enabled: false }}
-          independent={true}
-          onStateChange={(state) => {
-            const currentRouteName = state.routes[state.index].name;
-            if (
-              currentRouteName === "New" ||
-              currentRouteName === "Focus" ||
-              currentRouteName === "Word of the day" ||
-              currentRouteName === "Stocks"
-            ) {
-              opacity.value = breakpoints.md ? 1 : 0;
-            } else {
-              opacity.value = 0;
-            }
-          }}
-          theme={{
-            colors: {
-              background: theme[panelState === "COLLAPSED" ? 2 : 1],
-              card: theme[panelState === "COLLAPSED" ? 2 : 1],
-              primary: theme[1],
-              border: theme[6],
-              text: theme[11],
-              notification: theme[9],
-            },
-            dark: true,
-          }}
-        >
-          <Stack.Navigator screenOptions={screenOptions}>
-            <Stack.Screen
-              name="Focus"
-              options={{
-                cardStyle: {
-                  paddingHorizontal: 2,
-                  width: breakpoints.md
-                    ? panelState === "COLLAPSED"
-                      ? 85
-                      : 340
-                    : "100%",
-                },
-              }}
-              component={FocusPanelHome}
-            />
-            <Stack.Screen
-              name="Weather"
-              component={FocusPanelWeather}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Spotify"
-              component={FocusPanelSpotify}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Word of the day"
-              component={WordOfTheDayScreen}
-            />
-            <Stack.Screen name="Stocks" component={TopStocksScreen} />
-            <Stack.Screen name="New" component={NewWidget} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <NavigationIndependentTree>
+          <NavigationContainer
+            ref={r}
+            documentTitle={{ enabled: false }}
+            independent={true}
+            onStateChange={(state) => {
+              const currentRouteName = state.routes[state.index].name;
+              if (
+                currentRouteName === "New" ||
+                currentRouteName === "Focus" ||
+                currentRouteName === "Word of the day" ||
+                currentRouteName === "Stocks"
+              ) {
+                opacity.value = breakpoints.md ? 1 : 0;
+              } else {
+                opacity.value = 0;
+              }
+            }}
+            theme={{
+              colors: {
+                background: theme[panelState === "COLLAPSED" ? 2 : 1],
+                card: theme[panelState === "COLLAPSED" ? 2 : 1],
+                primary: theme[1],
+                border: theme[6],
+                text: theme[11],
+                notification: theme[9],
+              },
+              dark: true,
+            }}
+          >
+            <Stack.Navigator screenOptions={screenOptions}>
+              <Stack.Screen
+                name="Focus"
+                options={{
+                  cardStyle: {
+                    paddingHorizontal: 2,
+                    width: breakpoints.md
+                      ? panelState === "COLLAPSED"
+                        ? 85
+                        : 340
+                      : "100%",
+                  },
+                }}
+                component={FocusPanelHome}
+              />
+              <Stack.Screen
+                name="Weather"
+                component={FocusPanelWeather}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Spotify"
+                component={FocusPanelSpotify}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Word of the day"
+                component={WordOfTheDayScreen}
+              />
+              <Stack.Screen name="Stocks" component={TopStocksScreen} />
+              <Stack.Screen name="New" component={NewWidget} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </Animated.View>
     </>
   );
@@ -797,3 +800,4 @@ const FocusPanel = memo(function FocusPanel() {
 });
 
 export default FocusPanel;
+
