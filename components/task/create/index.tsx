@@ -795,7 +795,6 @@ function TaskNameInput({
 const TaskAttachments = ({ watch, setValue }: any) => {
   const theme = useColorTheme();
   const attachments = watch("attachments");
-  const note = watch("note");
 
   return (
     attachments?.length > 0 && (
@@ -810,33 +809,6 @@ const TaskAttachments = ({ watch, setValue }: any) => {
         contentContainerStyle={{ alignItems: "center", gap: 15 }}
         showsHorizontalScrollIndicator={false}
       >
-        {note && (
-          <View
-            style={[
-              {
-                backgroundColor: theme[3],
-                borderRadius: 20,
-                flexDirection: "row",
-                gap: 10,
-                padding: 10,
-                position: "relative",
-              },
-            ]}
-          >
-            <Avatar icon="sticky_note_2" />
-            <View style={{ flex: 1, flexDirection: "column" }}>
-              <Text variant="eyebrow">Note</Text>
-              <Text numberOfLines={1}>{note}</Text>
-            </View>
-            <IconButton
-              icon="close"
-              size={30}
-              variant="filled"
-              onPress={() => setValue("note", "")}
-              style={{ borderColor: theme[2], alignSelf: "center" }}
-            />
-          </View>
-        )}
         {attachments.map((attachment, i) => (
           <View
             key={i}
