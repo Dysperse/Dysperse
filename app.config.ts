@@ -133,8 +133,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "@sentry/react-native/expo",
       {
-        organization: "dysperse",
+        url: "https://sentry.io/",
         project: "new-dashboard",
+        organization: "dysperse",
       },
     ],
     "expo-router",
