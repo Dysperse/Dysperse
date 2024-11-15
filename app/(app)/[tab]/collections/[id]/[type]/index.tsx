@@ -18,6 +18,7 @@ import Workload from "@/components/collections/views/workload";
 import ContentWrapper from "@/components/layout/content";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
 import { useSession } from "@/context/AuthProvider";
+import { SelectionContextProvider } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
@@ -294,31 +295,33 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
   }, [pathname]);
 
   return (
-    <ContentWrapper noPaddingTop>
-      <CollectionContext.Provider value={collectionContextValue}>
-        <CollectionLabelMenu sheetRef={sheetRef}>
-          <Pressable />
-        </CollectionLabelMenu>
-        {(data ? (
-          (data.pinCode || data.pinCodeError) &&
-          (!data.pinAuthorizationExpiresAt ||
-            dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
-            <PasswordPrompt mutate={mutate} />
-          ) : !data?.error ? (
-            <>
-              <CollectionNavbar />
-              <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
-                {content}
-              </FadeOnRender>
-            </>
+    <SelectionContextProvider>
+      <ContentWrapper noPaddingTop>
+        <CollectionContext.Provider value={collectionContextValue}>
+          <CollectionLabelMenu sheetRef={sheetRef}>
+            <Pressable />
+          </CollectionLabelMenu>
+          {(data ? (
+            (data.pinCode || data.pinCodeError) &&
+            (!data.pinAuthorizationExpiresAt ||
+              dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
+              <PasswordPrompt mutate={mutate} />
+            ) : !data?.error ? (
+              <>
+                <CollectionNavbar />
+                <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
+                  {content}
+                </FadeOnRender>
+              </>
+            ) : (
+              false
+            )
           ) : (
             false
-          )
-        ) : (
-          false
-        )) || <Loading error={error || data?.error} />}
-      </CollectionContext.Provider>
-    </ContentWrapper>
+          )) || <Loading error={error || data?.error} />}
+        </CollectionContext.Provider>
+      </ContentWrapper>
+    </SelectionContextProvider>
   );
 }
 

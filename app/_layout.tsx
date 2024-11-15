@@ -3,7 +3,6 @@ import { SWRWrapper } from "@/components/layout/SWRWrapper";
 import { WorkboxInitializer } from "@/components/layout/WorkboxInitializer";
 import { JsStack } from "@/components/layout/_stack";
 import { SidebarContext } from "@/components/layout/sidebar/context";
-import { SelectionContextProvider } from "@/context/SelectionContext";
 import { ModalStackProvider } from "@/context/modal-stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { mint, mintDark } from "@/themes";
@@ -165,25 +164,23 @@ function Root() {
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
       <SessionProvider>
-        <SelectionContextProvider>
-          <ModalStackProvider>
-            <ColorThemeProvider theme={theme}>
-              <SidebarContext.Provider value={sidebarContextValue}>
-                <SWRWrapper>
-                  {Platform.OS === "web" && <WorkboxInitializer />}
-                  <JsStack
-                    id={undefined}
-                    screenOptions={{
-                      header: () => null,
-                      cardShadowEnabled: false,
-                      freezeOnBlur: true,
-                    }}
-                  />
-                </SWRWrapper>
-              </SidebarContext.Provider>
-            </ColorThemeProvider>
-          </ModalStackProvider>
-        </SelectionContextProvider>
+        <ModalStackProvider>
+          <ColorThemeProvider theme={theme}>
+            <SidebarContext.Provider value={sidebarContextValue}>
+              <SWRWrapper>
+                {Platform.OS === "web" && <WorkboxInitializer />}
+                <JsStack
+                  id={undefined}
+                  screenOptions={{
+                    header: () => null,
+                    cardShadowEnabled: false,
+                    freezeOnBlur: true,
+                  }}
+                />
+              </SWRWrapper>
+            </SidebarContext.Provider>
+          </ColorThemeProvider>
+        </ModalStackProvider>
       </SessionProvider>
     </ErrorBoundary>
   );

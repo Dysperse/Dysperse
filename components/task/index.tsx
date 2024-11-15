@@ -195,11 +195,11 @@ const Task = memo(function Task({
 
   const breakpoints = useResponsiveBreakpoints();
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
-  const { selection, setSelection } = useSelectionContext();
+  const { selection, setSelection } = useSelectionContext() || {};
   const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext() || {};
 
   const handleSelect = () => {
-    if (isReadOnly) return;
+    if (isReadOnly || !setSelection) return;
     setSelection((prev) =>
       prev.includes(task.id)
         ? prev.filter((e) => e !== task.id)
@@ -208,7 +208,7 @@ const Task = memo(function Task({
   };
 
   const isSelected = useMemo(
-    () => selection.includes(task.id),
+    () => selection?.includes(task.id),
     [selection, task?.id]
   );
 
@@ -261,13 +261,13 @@ const Task = memo(function Task({
           mutateList={onTaskUpdate}
           dateRange={dateRange}
           isReadOnly={isReadOnly}
-          disabled={selection.length > 0}
+          disabled={selection?.length > 0}
         >
           <ListItemButton
             onLongPress={handleSelect}
             {...(Platform.OS === "web" &&
               breakpoints.md && { onContextMenu: handleSelect })}
-            {...(selection.length > 0 && {
+            {...(selection?.length > 0 && {
               onPress: handleSelect,
             })}
             pressableStyle={{
