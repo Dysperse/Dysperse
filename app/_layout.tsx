@@ -118,10 +118,10 @@ function Root() {
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const ref = useNavigationContainerRef();
 
-  useEffect(() => {
-    if (ref && process.env.NODE_ENV === "production")
-      routingInstrumentation.registerNavigationContainer(ref);
-  }, [ref]);
+  // useEffect(() => {
+  //   if (ref && process.env.NODE_ENV === "production")
+  //     routingInstrumentation.registerNavigationContainer(ref);
+  // }, [ref]);
 
   useWebDevtoolsWarning();
 
