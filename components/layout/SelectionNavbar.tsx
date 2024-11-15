@@ -10,8 +10,7 @@ import Text, { getFontName } from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
-import { useGlobalSearchParams } from "expo-router";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { TextStyle, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -81,7 +80,6 @@ function Actions({ setIsLoading }) {
   const { isLoading } = useSelectionContext();
   const blue = useColor("blue");
   const { mutate } = useSWRConfig();
-  const { tab } = useGlobalSearchParams();
 
   const itemStyle: ViewStyle = useMemo(
     () =>
@@ -104,10 +102,6 @@ function Actions({ setIsLoading }) {
     }),
     [blue]
   );
-
-  useEffect(() => {
-    setSelection([]);
-  }, [tab]);
 
   const handleSelect = useCallback(
     async (t, shouldClear = false) => {
