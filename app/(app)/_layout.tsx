@@ -126,7 +126,7 @@ function LastStateRestore() {
       )
         router.replace(lastViewedRoute);
     }
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     setCurrentPage();
