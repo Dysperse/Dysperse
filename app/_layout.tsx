@@ -72,9 +72,9 @@ if (process.env.NODE_ENV === "production") {
         maskAllImages: false,
         maskAllVectors: false,
       }),
-      Sentry.reactNativeNavigationIntegration({
-        navigation: JsStack,
-      }),
+      // Sentry.reactNativeNavigationIntegration({
+      //   navigation: JsStack,
+      // }),
     ],
   });
 }
