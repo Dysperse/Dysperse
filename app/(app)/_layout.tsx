@@ -117,7 +117,7 @@ const WebAnimationComponent = ({ children }) => {
 function LastStateRestore() {
   const pathname = usePathname();
   const setCurrentPage = useCallback(async () => {
-    if (!pathname.includes("chrome-extentension")) {
+    if (!pathname.includes("chrome-extension")) {
       const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
       if (
         lastViewedRoute &&
