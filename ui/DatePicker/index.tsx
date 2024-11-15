@@ -197,35 +197,33 @@ function CalendarPreview({ value, setValue, view }) {
 function AllDaySwitch({ view, value, setValue }) {
   const ref = useRef(null);
 
-  return (
-    <Collapsible collapsed={!value?.date}>
-      <Button
-        onPress={() => {
-          setValue("dateOnly", !value.dateOnly);
-          if (value.dateOnly) {
-            setTimeout(() => {
-              ref.current.focus();
-            }, 1);
-          }
-        }}
-        containerStyle={{ flex: 1, borderRadius: 0 }}
-        style={{ padding: 0 }}
-      >
-        {value.dateOnly ? (
-          <ButtonText>All day</ButtonText>
-        ) : (
-          <Pressable onPress={(e) => e.stopPropagation()} style={{ flex: 1 }}>
-            <TimeInput
-              ref={ref}
-              value={view === "start" ? value?.date : value?.end}
-              setValue={setValue}
-              valueKey={view === "start" ? "date" : "end"}
-            />
-          </Pressable>
-        )}
-        <Icon>toggle_{value.dateOnly ? "on" : "off"}</Icon>
-      </Button>
-    </Collapsible>
+  return !value?.date ? null : (
+    <Button
+      onPress={() => {
+        setValue("dateOnly", !value.dateOnly);
+        if (value.dateOnly) {
+          setTimeout(() => {
+            ref.current.focus();
+          }, 1);
+        }
+      }}
+      containerStyle={{ flex: 1, borderRadius: 0 }}
+      style={{ padding: 0 }}
+    >
+      {value.dateOnly ? (
+        <ButtonText>All day</ButtonText>
+      ) : (
+        <Pressable onPress={(e) => e.stopPropagation()} style={{ flex: 1 }}>
+          <TimeInput
+            ref={ref}
+            value={view === "start" ? value?.date : value?.end}
+            setValue={setValue}
+            valueKey={view === "start" ? "date" : "end"}
+          />
+        </Pressable>
+      )}
+      <Icon>toggle_{value.dateOnly ? "on" : "off"}</Icon>
+    </Button>
   );
 }
 
@@ -237,12 +235,12 @@ export const DatePicker = forwardRef(
       if (view === "end" && !value?.date) {
         setView("start");
       }
-      if (view === "end" && !value?.end) {
-        setValue("end", dayjs(value?.date).add(1, "hour"));
-      }
-      if (value?.end && !dayjs(value?.end).isValid()) {
-        setValue("end", null);
-      }
+      // if (view === "end" && !value?.end) {
+      //   setValue("end", dayjs(value?.date).add(1, "hour"));
+      // }
+      // if (value?.end && !dayjs(value?.end).isValid()) {
+      //   setValue("end", null);
+      // }
     }, [view, setValue, value]);
 
     const secondary = value?.end
@@ -300,7 +298,7 @@ export const DatePicker = forwardRef(
             />
           </View>
           <View style={{ paddingTop: 10, gap: 10 }}>
-            <Collapsible collapsed={Boolean(!value?.date)}>
+            {value.date && (
               <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
                 <Button
                   bold={view === "start"}
@@ -318,10 +316,14 @@ export const DatePicker = forwardRef(
                   iconPosition="end"
                   variant={view === "end" ? "filled" : "outlined"}
                   containerStyle={{ flex: 1 }}
-                  onPress={() => setView("end")}
+                  onPress={() => {
+                    setView("end");
+                    if (!value?.end || !dayjs(value?.end).isValid())
+                      setValue("end", dayjs(value?.date).add(1, "hour"));
+                  }}
                 />
               </View>
-            </Collapsible>
+            )}
             <CalendarPreview value={value} setValue={setValue} view={view} />
             <AllDaySwitch value={value} setValue={setValue} view={view} />
           </View>
