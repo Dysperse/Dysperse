@@ -21,6 +21,7 @@ import {
   StackNavigationProp,
   TransitionPresets,
 } from "@react-navigation/stack";
+import { ErrorBoundary } from "@sentry/react-native";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
 import { LexoRank } from "lexorank";
@@ -470,9 +471,12 @@ function PanelContent() {
     [panelState, breakpoints]
   );
 
+  const [panelKey, setPanelKey] = useState(0);
+
   return (
     <>
       <Animated.View
+        key={panelKey}
         style={[
           {
             borderRadius: breakpoints.md ? 20 : 0,
@@ -498,70 +502,95 @@ function PanelContent() {
           ]}
         />
         {process.env.NODE_ENV !== "development" && <WakeLock />}
-        <NavigationIndependentTree>
-          <NavigationContainer
-            ref={r}
-            documentTitle={{ enabled: false }}
-            independent={true}
-            onStateChange={(state) => {
-              const currentRouteName = state.routes[state.index].name;
-              if (
-                currentRouteName === "New" ||
-                currentRouteName === "Focus" ||
-                currentRouteName === "Word of the day" ||
-                currentRouteName === "Stocks"
-              ) {
-                opacity.value = breakpoints.md ? 1 : 0;
-              } else {
-                opacity.value = 0;
-              }
-            }}
-            theme={{
-              colors: {
-                background: theme[panelState === "COLLAPSED" ? 2 : 1],
-                card: theme[panelState === "COLLAPSED" ? 2 : 1],
-                primary: theme[1],
-                border: theme[6],
-                text: theme[11],
-                notification: theme[9],
-              },
-              dark: true,
-            }}
-          >
-            <Stack.Navigator screenOptions={screenOptions}>
-              <Stack.Screen
-                name="Focus"
-                options={{
-                  cardStyle: {
-                    paddingHorizontal: 2,
-                    width: breakpoints.md
-                      ? panelState === "COLLAPSED"
-                        ? 85
-                        : 340
-                      : "100%",
-                  },
-                }}
-                component={FocusPanelHome}
+        <ErrorBoundary
+          showDialog
+          fallback={
+            <View
+              style={{
+                alignItems: "center",
+                gap: 10,
+                flex: 1,
+                justifyContent: "center",
+              }}
+            >
+              <Icon size={40}>heart_broken</Icon>
+              <Text weight={900} style={{ color: theme[11] }}>
+                Looks like the focus panel crashed, and our team has been
+                notified.
+              </Text>
+              <IconButton
+                onPress={() => setPanelKey((t) => t + 1)}
+                icon="refresh"
+                variant="filled"
               />
-              <Stack.Screen
-                name="Weather"
-                component={FocusPanelWeather}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Spotify"
-                component={FocusPanelSpotify}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Word of the day"
-                component={WordOfTheDayScreen}
-              />
-              <Stack.Screen name="Stocks" component={TopStocksScreen} />
-              <Stack.Screen name="New" component={NewWidget} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </NavigationIndependentTree>
+            </View>
+          }
+        >
+          <NavigationIndependentTree>
+            <NavigationContainer
+              ref={r}
+              documentTitle={{ enabled: false }}
+              independent={true}
+              onStateChange={(state) => {
+                const currentRouteName = state.routes[state.index].name;
+                if (
+                  currentRouteName === "New" ||
+                  currentRouteName === "Focus" ||
+                  currentRouteName === "Word of the day" ||
+                  currentRouteName === "Stocks"
+                ) {
+                  opacity.value = breakpoints.md ? 1 : 0;
+                } else {
+                  opacity.value = 0;
+                }
+              }}
+              theme={{
+                colors: {
+                  background: theme[panelState === "COLLAPSED" ? 2 : 1],
+                  card: theme[panelState === "COLLAPSED" ? 2 : 1],
+                  primary: theme[1],
+                  border: theme[6],
+                  text: theme[11],
+                  notification: theme[9],
+                },
+                dark: true,
+              }}
+            >
+              <Stack.Navigator screenOptions={screenOptions}>
+                <Stack.Screen
+                  name="Focus"
+                  options={{
+                    cardStyle: {
+                      paddingHorizontal: 2,
+                      width: breakpoints.md
+                        ? panelState === "COLLAPSED"
+                          ? 85
+                          : 340
+                        : "100%",
+                    },
+                  }}
+                  component={FocusPanelHome}
+                />
+                <Stack.Screen
+                  name="Weather"
+                  component={FocusPanelWeather}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Spotify"
+                  component={FocusPanelSpotify}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Word of the day"
+                  component={WordOfTheDayScreen}
+                />
+                <Stack.Screen name="Stocks" component={TopStocksScreen} />
+                <Stack.Screen name="New" component={NewWidget} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </NavigationIndependentTree>
+        </ErrorBoundary>
       </Animated.View>
     </>
   );
