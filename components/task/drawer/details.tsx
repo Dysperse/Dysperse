@@ -2,6 +2,7 @@ import { ImageViewer } from "@/components/ImageViewer";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Entity } from "@/components/collections/entity";
 import { STORY_POINT_SCALE } from "@/constants/workload";
+import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -852,6 +853,7 @@ function AISubtask() {
 
 function SubtaskList({ backgroundColors }) {
   const theme = useColorTheme();
+  const { session } = useSession();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   return (
@@ -867,7 +869,7 @@ function SubtaskList({ backgroundColors }) {
           secondary={`${Object.keys(task?.subtasks || {}).length}`}
         />
         <View style={{ gap: 5, flexDirection: "row" }}>
-          <AISubtask />
+          {session && <AISubtask />}
           <CreateTask
             mutate={(newTask) => {}}
             onPress={() => {
