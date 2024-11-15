@@ -172,6 +172,7 @@ function Root() {
                 <SWRWrapper>
                   {Platform.OS === "web" && <WorkboxInitializer />}
                   <JsStack
+                    id={undefined}
                     screenOptions={{
                       header: () => null,
                       cardShadowEnabled: false,
