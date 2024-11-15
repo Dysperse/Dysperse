@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -9,9 +10,11 @@ import Animated, {
 export function FadeOnRender({
   children,
   animateUp,
+  style,
 }: {
   children: React.ReactNode;
   animateUp?: boolean;
+  style?: StyleProp<ViewStyle>;
 }) {
   const opacity = useSharedValue(0);
 
@@ -42,6 +45,8 @@ export function FadeOnRender({
     setTimeout(() => (opacity.value = 1), 200);
   }, [opacity]);
 
-  return <Animated.View style={opacityStyle}>{children}</Animated.View>;
+  return (
+    <Animated.View style={[opacityStyle, style]}>{children}</Animated.View>
+  );
 }
 

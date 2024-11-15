@@ -140,15 +140,18 @@ function PasswordPrompt({ mutate }) {
     >
       {!breakpoints.md && <MenuButton />}
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior="height"
         style={{
           maxWidth: 400,
           width: "100%",
           padding: 20,
           borderRadius: 20,
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <FadeOnRender animateUp>
+        <FadeOnRender animateUp style={{ justifyContent: "center" }}>
           <Text
             style={{
               fontSize: 35,
