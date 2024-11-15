@@ -864,7 +864,7 @@ function SubtaskList({ backgroundColors }) {
         <ListItemText
           style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
           primary="Subtasks"
-          secondary={`${Object.keys(task.subtasks).length}`}
+          secondary={`${Object.keys(task?.subtasks || {}).length}`}
         />
         <View style={{ gap: 5, flexDirection: "row" }}>
           <AISubtask />
