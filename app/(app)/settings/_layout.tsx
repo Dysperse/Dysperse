@@ -250,6 +250,8 @@ export default function Layout() {
               }}
             >
               <JsStack
+                initialRouteName={breakpoints.md ? "account/index" : "index"}
+                id={undefined}
                 screenOptions={{
                   header: () => (breakpoints.md ? null : <SettingsHeader />),
                   animationEnabled: !breakpoints.md,
@@ -264,7 +266,7 @@ export default function Layout() {
                   "login/scan",
                   "login/account/index",
                   "login/account/two-factor-authentication",
-                  "login/account/passkeys",
+                  "account/passkeys",
                   "login/devices",
                   "index",
                   "tasks",
@@ -274,8 +276,7 @@ export default function Layout() {
                   "account/index",
                   "other/apps",
                   "account/integrations/index",
-                  "account/integrations/[name]/index",
-                  "account/integrations/[name]/[id]",
+                  "account/integrations/[name]",
                 ].map((d) => (
                   <JsStack.Screen
                     name={d}

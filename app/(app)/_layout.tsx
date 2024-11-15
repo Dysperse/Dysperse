@@ -130,7 +130,8 @@ function LastStateRestore() {
     if (pathname !== "/" && !pathname.includes("chrome-extension")) {
       setCurrentPage();
     }
-  }, [pathname]);
+  }, []);
+
   return null;
 }
 
