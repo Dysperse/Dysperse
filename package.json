@@ -29,7 +29,7 @@
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/slider": "4.5.5",
     "@react-native-google-signin/google-signin": "^12.2.1",
-    "@react-navigation/native": "^7.0.0",
+    "@react-navigation/native": "^7.0.2",
     "@react-navigation/stack": "^7.0.2",
     "@sentry/react-native": "~6.1.0",
     "@shopify/flash-list": "1.7.1",
@@ -67,6 +67,7 @@
     "expo-secure-store": "~14.0.0",
     "expo-sharing": "~13.0.0",
     "expo-speech-recognition": "^0.2.24",
+    "expo-splash-screen": "~0.29.10",
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.3",
     "expo-updates": "~0.26.7",
@@ -114,8 +115,7 @@
     "use-debounce": "^10.0.4",
     "victory-native": "^41.9.0",
     "workbox-build": "^7.3.0",
-    "workbox-window": "^7.3.0",
-    "expo-splash-screen": "~0.29.10"
+    "workbox-window": "^7.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
@@ -131,4 +131,3 @@
   },
   "private": true
 }
-
