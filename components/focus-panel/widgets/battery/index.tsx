@@ -4,7 +4,7 @@ import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { getBatteryLevelAsync } from "expo-battery";
+import { getBatteryLevelAsync, getBatteryStateAsync } from "expo-battery";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
@@ -21,9 +21,9 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
 
   useEffect(() => {
     getBatteryLevelAsync().then((t) => setBatteryLevel(t));
-    // getBatteryStateAsync().then((state) => {
-    //   setIsCharging(state === 2);
-    // });
+    getBatteryStateAsync().then((state) => {
+      setIsCharging(state === 2);
+    });
     // const t = addBatteryStateListener((state) => {
     //   setIsCharging(state.batteryState === 2);
     // });
