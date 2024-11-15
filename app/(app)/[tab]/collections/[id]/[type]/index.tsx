@@ -79,7 +79,7 @@ function PasswordPrompt({ mutate }) {
   useEffect(() => {
     if (!breakpoints.md)
       InteractionManager.runAfterInteractions(() => {
-        ref.current?.focus();
+        setTimeout(() => ref.current?.focus(), 100);
       });
     else ref.current?.focus();
   }, [breakpoints]);
@@ -139,7 +139,6 @@ function PasswordPrompt({ mutate }) {
       }}
     >
       {!breakpoints.md && <MenuButton />}
-
       <KeyboardAvoidingView
         behavior="padding"
         style={{

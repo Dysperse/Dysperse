@@ -407,7 +407,8 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     if (
       pathname !== "/" &&
       !pathname.includes("/reorder") &&
-      !pathname.includes("/chrome-extension")
+      !pathname.includes("/chrome-extension") &&
+      !pathname.includes("/settings")
     )
       AsyncStorage.setItem("lastViewedRoute", pathname);
   }, [pathname]);
