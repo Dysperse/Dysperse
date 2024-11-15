@@ -511,10 +511,14 @@ function PanelContent() {
                 gap: 10,
                 flex: 1,
                 justifyContent: "center",
+                padding: 10,
               }}
             >
               <Icon size={40}>heart_broken</Icon>
-              <Text weight={900} style={{ color: theme[11] }}>
+              <Text
+                weight={900}
+                style={{ color: theme[11], textAlign: "center" }}
+              >
                 Looks like the focus panel crashed, and our team has been
                 notified.
               </Text>
