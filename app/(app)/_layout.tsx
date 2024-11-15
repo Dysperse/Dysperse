@@ -127,8 +127,7 @@ function LastStateRestore() {
   }, []);
 
   useEffect(() => {
-    alert(pathname);
-    if (pathname && !pathname.includes("chrome-extension")) {
+    if (pathname !== "/" && !pathname.includes("chrome-extension")) {
       setCurrentPage();
     }
   }, [pathname]);
