@@ -198,7 +198,7 @@ export default function AppLayout() {
   }
 
   InteractionManager.runAfterInteractions(() => {
-    SplashScreen.hideAsync();
+    SplashScreen.hide();
     if (Platform.OS === "android") {
       NavigationBar.setPositionAsync("absolute");
       NavigationBar.setButtonStyleAsync(isDark ? "light" : "dark");
