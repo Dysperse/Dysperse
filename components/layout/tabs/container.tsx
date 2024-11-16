@@ -1,9 +1,5 @@
-import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
-import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
@@ -12,20 +8,13 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, { memo, useEffect, useState } from "react";
-import {
-  InteractionManager,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import PWAInstallerPrompt from "../PWAInstaller";
 import ReleaseModal from "../ReleaseModal";
-import { useSidebarContext } from "../sidebar/context";
 import Tab from "./tab";
 
 const SpaceStorageAlert = memo(function SpaceStorageAlert() {
@@ -76,50 +65,6 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
       </Pressable>
     );
   }
-});
-
-const JumpToButton = memo(function JumpToButton() {
-  const theme = useColorTheme();
-  const { sidebarRef } = useSidebarContext();
-  const breakpoints = useResponsiveBreakpoints();
-  const { handleOpen } = useCommandPaletteContext();
-
-  const onOpen = () => {
-    if (!breakpoints.md) sidebarRef.current?.closeDrawer();
-    InteractionManager.runAfterInteractions(handleOpen);
-  };
-
-  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
-    e.preventDefault();
-    onOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/settings/shortcuts");
-  });
-
-  return (
-    <View style={{ borderRadius: 15, overflow: "hidden", flex: 1 }}>
-      <Button
-        backgroundColors={{
-          default: theme[2],
-          hovered: theme[4],
-          pressed: theme[5],
-        }}
-        height={50}
-        onPress={onOpen as any}
-        style={{
-          justifyContent: "flex-start",
-          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        }}
-        android_ripple={{ color: theme[7] }}
-        icon="add"
-        bold
-        text="New tab"
-      />
-    </View>
-  );
 });
 
 const pwaPromptStyles = StyleSheet.create({
@@ -313,50 +258,7 @@ function OpenTabsList() {
           {footer}
         </>
       ) : (
-        <View
-          style={{
-            justifyContent: "center",
-            flex: 1,
-            width: "100%",
-          }}
-        >
-          {error ? (
-            <ErrorAlert />
-          ) : data && data.length === 0 ? (
-            <>
-              <View
-                style={{
-                  alignItems: "center",
-                  padding: 20,
-                  justifyContent: "center",
-                  marginBottom: 10,
-                  flex: 1,
-                }}
-              >
-                <Text
-                  variant="eyebrow"
-                  style={{ marginTop: 10, fontSize: 13.5 }}
-                >
-                  It's quiet here...
-                </Text>
-                <Text
-                  style={{
-                    color: theme[11],
-                    opacity: 0.5,
-                    textAlign: "center",
-                    fontSize: 13,
-                    marginTop: 5,
-                  }}
-                >
-                  Try opening a view or one of your collections
-                </Text>
-              </View>
-              {footer}
-            </>
-          ) : (
-            <Spinner style={{ marginHorizontal: "auto" }} />
-          )}
-        </View>
+        ""
       )}
     </View>
   );

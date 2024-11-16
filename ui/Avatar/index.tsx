@@ -1,4 +1,5 @@
 import { useUser } from "@/context/useUser";
+import { hslToHex } from "@/helpers/hslToHex";
 import { Image } from "expo-image";
 import {
   Pressable,
@@ -11,6 +12,7 @@ import {
 import Icon, { DIconProps } from "../Icon";
 import Text from "../Text";
 import { useColor } from "../color";
+import { useColorTheme } from "../color/theme-provider";
 
 interface DAvatarProps extends PressableProps {
   image?: string;
@@ -96,12 +98,31 @@ export const ProfilePicture = function ProfilePicture({
   onPress?: () => void;
   disabled?: boolean;
 }) {
+  const theme = useColorTheme();
+
   return (
     <Avatar
       image={
         image
           ? image
-          : `https://source.boringavatars.com/beam/120/${name}?colors=264653,2a9d8f,e9c46a,f4a261,e76f51`
+          : `https://hostedboringavatars.vercel.app/api/beam/?${new URLSearchParams(
+              {
+                name,
+                colors: [theme[5], theme[11]]
+                  .map((t) =>
+                    hslToHex(
+                      ...(t
+                        .replace("hsl", "")
+                        .replace("(", "")
+                        .replace(")", "")
+                        .replaceAll("%", "")
+                        .split(",")
+                        .map(Number) as [number, number, number])
+                    )
+                  )
+                  .join(","),
+              }
+            )}`
       }
       size={size}
       style={style}
@@ -115,3 +136,4 @@ export const ProfilePicture = function ProfilePicture({
     </Avatar>
   );
 };
+

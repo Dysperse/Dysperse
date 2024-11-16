@@ -262,23 +262,12 @@ function Tab({
         style={({ pressed, hovered }) => [
           styles.button,
           {
-            paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
+            paddingHorizontal: breakpoints.md ? 10 : 10,
             paddingRight: selected ? 30 : undefined,
             borderRadius: 15,
             height: breakpoints.md ? 50 : 50,
             backgroundColor:
               selected || pressed ? theme[4] : hovered ? theme[3] : undefined,
-            ...(Platform.OS === "web" &&
-              selected && {
-                shadowColor: theme[1],
-                shadowOffset: {
-                  width: 0,
-                  height: 1,
-                },
-                shadowRadius: 1,
-                shadowOpacity: 1,
-                zIndex: 199,
-              }),
           },
         ]}
       >
@@ -289,3 +278,4 @@ function Tab({
 }
 
 export default React.memo(Tab);
+
