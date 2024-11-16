@@ -595,7 +595,7 @@ const JumpToButton = memo(function JumpToButton() {
     InteractionManager.runAfterInteractions(handleOpen);
   };
 
-  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
+  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t", "ctrl+p"], (e) => {
     e.preventDefault();
     onOpen();
   });
@@ -676,6 +676,61 @@ function TabContainer() {
       }
     },
     [mutate, data, sessionToken]
+  );
+
+  useHotkeys(["ctrl+shift+w", "ctrl+w"], (e) => {
+    e.preventDefault();
+    if (data) {
+      const i = data.findIndex((i) => i.id === currentTab);
+      let d = i - 1;
+      if (i === 0) d = data.length - 1;
+      handleCloseTab(data[d].id)();
+    }
+  });
+
+  const handleSnapToIndex = (index: number) => {
+    if (error)
+      Toast.show({
+        type: "error",
+        text1: "Something went wrong. Please try again later.",
+      });
+    if (!data) return;
+    const _tab = data[index];
+    if (currentTab === _tab.id) return;
+    router.replace({
+      pathname: _tab.slug,
+      params: {
+        tab: _tab.id,
+        ...(typeof _tab.params === "object" && _tab.params),
+      },
+    });
+  };
+  useHotkeys(["ctrl+tab", "alt+ArrowDown"], (e) => {
+    e.preventDefault();
+    const i = data.findIndex((i) => i.id === currentTab);
+    let d = i + 1;
+    if (d >= data.length || i === -1) d = 0;
+    handleSnapToIndex(d);
+  });
+
+  useHotkeys(["ctrl+shift+tab", "alt+ArrowUp"], (e) => {
+    e.preventDefault();
+    const i = data.findIndex((i) => i.id === currentTab);
+    let d = i - 1;
+    if (i === 0) d = data.length - 1;
+    handleSnapToIndex(d);
+  });
+
+  useHotkeys(
+    Array(9)
+      .fill(0)
+      .map((_, index) => "ctrl+" + (index + 1)),
+    (keyboardEvent, hotKeysEvent) => {
+      keyboardEvent.preventDefault();
+      const i = hotKeysEvent.keys[0];
+      if (i == "9") return handleSnapToIndex(data.length - 1);
+      if (data[parseInt(i) - 1]) handleSnapToIndex(parseInt(i) - 1);
+    }
   );
 
   return (
