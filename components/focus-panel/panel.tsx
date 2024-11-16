@@ -560,7 +560,7 @@ function PanelContent() {
                 dark: true,
               }}
             >
-              <Stack.Navigator screenOptions={screenOptions}>
+              <Stack.Navigator id={undefined} screenOptions={screenOptions}>
                 <Stack.Screen
                   name="Focus"
                   options={{

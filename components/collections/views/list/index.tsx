@@ -16,7 +16,7 @@ import { Entity } from "../../entity";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
 
-function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
+function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
 
@@ -77,13 +77,16 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate }) {
           large
           variant="filled"
           height={70}
+          containerStyle={{ marginBottom: 20 }}
         />
       </CreateTask>
     );
   } else if (item.header) {
     return (
       <>
-        <View style={{ paddingTop: 20, backgroundColor: theme[1] }} />
+        {index !== 1 && (
+          <View style={{ paddingTop: 20, backgroundColor: theme[1] }} />
+        )}
         <LinearGradient colors={[theme[1], "transparent"]}>
           <Pressable
             onPress={() => {
@@ -206,7 +209,7 @@ export default function List() {
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
           contentContainerStyle={{ paddingVertical: 30 }}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View
               style={{
                 width: 600,
@@ -216,6 +219,7 @@ export default function List() {
               }}
             >
               <ListItem
+                index={index}
                 d={d}
                 data={data}
                 onTaskUpdate={mutations.categoryBased.update(mutate)}
