@@ -32,13 +32,7 @@ import {
 } from "./list.helpers";
 import { useTabMetadata } from "./useTabMetadata";
 
-export function SortableItem({
-  handleCloseTab,
-  theme,
-  currentTab,
-  breakpoints,
-  tab,
-}) {
+function SortableItem({ handleCloseTab, theme, currentTab, breakpoints, tab }) {
   const {
     attributes,
     listeners,
@@ -202,7 +196,7 @@ const dropAnimationConfig: DropAnimation = {
   }),
 };
 
-export function SortableOverlay({ children }: PropsWithChildren) {
+function SortableOverlay({ children }: PropsWithChildren) {
   return (
     <DragOverlay dropAnimation={dropAnimationConfig}>{children}</DragOverlay>
   );

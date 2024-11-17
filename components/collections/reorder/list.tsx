@@ -25,7 +25,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import React, { PropsWithChildren, useMemo, useState } from "react";
 
-export function SortableItem({ theme, breakpoints, data }) {
+function SortableItem({ theme, breakpoints, data }) {
   const {
     attributes,
     listeners,
@@ -108,7 +108,7 @@ const dropAnimationConfig: DropAnimation = {
   }),
 };
 
-export function SortableOverlay({ children }: PropsWithChildren) {
+function SortableOverlay({ children }: PropsWithChildren) {
   return (
     <DragOverlay dropAnimation={dropAnimationConfig}>{children}</DragOverlay>
   );
