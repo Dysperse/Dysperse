@@ -56,6 +56,7 @@ export function SortableItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    WebkitAppRegion: "drag",
   };
 
   const tabName = capitalizeFirstLetter(
