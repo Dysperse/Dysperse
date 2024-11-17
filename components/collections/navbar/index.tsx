@@ -237,11 +237,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
               justifyContent: "flex-end",
             }}
           >
-            {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
-              <CategoryLabelButtons />
-            )}
             <CollectionContext.Provider value={contextValue}>
               {session && <CollectionSearch />}
+              {!isLoading &&
+                COLLECTION_VIEWS[type].type === "Category Based" && (
+                  <CategoryLabelButtons />
+                )}
               {!isLoading && !isReadOnly && !(!breakpoints.md && isAll) && (
                 <MenuPopover
                   menuRef={menuRef}
