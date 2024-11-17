@@ -853,6 +853,7 @@ function AISubtask() {
 
 function SubtaskList({ backgroundColors }) {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { session } = useSession();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
@@ -871,7 +872,7 @@ function SubtaskList({ backgroundColors }) {
         <View style={{ gap: 5, flexDirection: "row" }}>
           {session && <AISubtask />}
           <CreateTask
-            mutate={(newTask) => {}}
+            mutate={() => {}}
             onPress={() => {
               if (
                 Platform.OS === "web" &&
@@ -890,7 +891,7 @@ function SubtaskList({ backgroundColors }) {
           >
             <Button
               icon="add"
-              text="New"
+              text={breakpoints.md && "New"}
               iconPosition="end"
               backgroundColors={{
                 default: addHslAlpha(theme[11], 0.05),
