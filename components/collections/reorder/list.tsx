@@ -52,6 +52,8 @@ export function SortableItem({ theme, breakpoints, data }) {
           paddingLeft: breakpoints.md ? 50 : 10,
           paddingRight: breakpoints.md ? 50 : 10,
         }}
+        {...attributes}
+        {...listeners}
       >
         <div
           style={{
@@ -77,7 +79,7 @@ export function SortableItem({ theme, breakpoints, data }) {
               {Object.keys(data.entities || {}).length} items
             </span>
           </div>
-          <div {...attributes} {...listeners}>
+          <div>
             <span
               style={{
                 color: theme[11],
