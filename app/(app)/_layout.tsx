@@ -254,7 +254,6 @@ export default function AppLayout() {
             },
             // change opacity of the previous screen when swipe
             cardOverlayEnabled: true,
-            animationEnabled: false,
             gestureVelocityImpact: 0.5,
           }}
         >
@@ -267,7 +266,6 @@ export default function AppLayout() {
                 options={{
                   detachPreviousScreen: breakpoints.md,
                   presentation: "modal",
-                  animationEnabled: true,
                   ...TransitionPresets.ModalPresentationIOS,
                 }}
               />
@@ -277,7 +275,6 @@ export default function AppLayout() {
             name="open"
             options={{
               presentation: "modal",
-              animationEnabled: true,
               gestureEnabled: false,
               ...TransitionPresets.ModalPresentationIOS,
             }}
