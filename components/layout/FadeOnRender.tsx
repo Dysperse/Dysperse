@@ -43,9 +43,6 @@ export function FadeOnRender({
 
   useEffect(() => {
     setTimeout(() => (opacity.value = 1), 200);
-    return () => {
-      opacity.value = 1;
-    };
   }, [opacity]);
 
   return (

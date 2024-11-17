@@ -165,11 +165,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
           selected: e.text && e.id === mode,
         }))
       : []),
-    session && {
-      icon: "edit",
-      text: "Edit",
-      callback: () => router.push(pathname + "/customize"),
-    },
+    !isAll &&
+      session && {
+        icon: "edit",
+        text: "Edit",
+        callback: () => router.push(pathname + "/customize"),
+      },
     Platform.OS === "web" &&
       !fullscreen &&
       breakpoints.md && {
@@ -178,11 +179,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
         callback: openPopOut,
       },
 
-    !breakpoints.md && {
-      icon: "ios_share",
-      text: "Share",
-      callback: () => router.push(pathname + "/share"),
-    },
+    !isAll &&
+      !breakpoints.md && {
+        icon: "ios_share",
+        text: "Share",
+        callback: () => router.push(pathname + "/share"),
+      },
 
     data?.pinCode && {
       icon: "lock",
@@ -235,13 +237,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
               justifyContent: "flex-end",
             }}
           >
+            {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
+              <CategoryLabelButtons />
+            )}
             <CollectionContext.Provider value={contextValue}>
               {session && <CollectionSearch />}
-              {!isLoading &&
-                COLLECTION_VIEWS[type].type === "Category Based" && (
-                  <CategoryLabelButtons />
-                )}
-              {!isLoading && !isReadOnly && !isAll && (
+              {!isLoading && !isReadOnly && !(!breakpoints.md && isAll) && (
                 <MenuPopover
                   menuRef={menuRef}
                   closeOnSelect
@@ -254,7 +255,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                     <IconButton
                       icon="settings"
                       size={40}
-                      style={breakpoints.md && { marginRight: 10 }}
+                      style={breakpoints.md && !isAll && { marginRight: 10 }}
                     />
                   }
                   options={(isReadOnly ? [] : collectionMenuOptions) as any}

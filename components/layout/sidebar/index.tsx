@@ -1,4 +1,3 @@
-import { useCommandPaletteContext } from "@/components/command-palette/context";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
@@ -9,16 +8,14 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
-import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, {
@@ -46,8 +43,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import useSWR, { useSWRConfig } from "swr";
-import SortableList from "../tabs/list";
+import { useSWRConfig } from "swr";
+import OpenTabsList from "../tabs/carousel";
 
 const styles = StyleSheet.create({
   header: {
@@ -107,9 +104,22 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const [isLoading, setIsLoading] = useState(false);
   const { width: windowWidth } = useWindowDimensions();
 
+  const barWidth = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  const width = useAnimatedStyle(() => ({
+    width: barWidth.value,
+    opacity: withSpring(opacity.value),
+  }));
   const { mutate } = useSWRConfig();
   const handleSync = useCallback(async () => {
     setIsLoading(true);
+    opacity.value = 1;
+    barWidth.value = withSpring(windowWidth - 20, {
+      stiffness: 50,
+      damping: 9000,
+      mass: 200,
+    });
     try {
       await sendApiRequest(session, "POST", "space/integrations/sync", {});
       await mutate(() => true);
@@ -120,9 +130,16 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
+      barWidth.value = withSpring(windowWidth, { overshootClamping: true });
+      setTimeout(() => {
+        opacity.value = 0;
+      }, 500);
+      setTimeout(() => {
+        barWidth.value = 0;
+      }, 1000);
       setIsLoading(false);
     }
-  }, [windowWidth, session, mutate]);
+  }, [barWidth, windowWidth, opacity, session, mutate]);
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -139,27 +156,32 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   }));
 
   return (
-    isLoading && (
-      <View
-        style={{
-          position: "absolute",
-          bottom: 6,
-          width: 20,
-          pointerEvents: "none",
-          height: 20,
-          right: 25,
-          borderRadius: 99,
-          backgroundColor: theme[3],
-          zIndex: 1,
-          gap: 3,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+    <>
+      <Portal>
+        <Animated.View
+          style={[
+            width,
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: 2,
+              backgroundColor: theme[11],
+              shadowColor: theme[11],
+              shadowRadius: 10,
+            },
+          ]}
+        />
+      </Portal>
+      {/* <MenuItem
+        onPress={handleSync}
+        disabled={isLoading}
+        style={isLoading && { opacity: 0.6 }}
       >
-        <Spinner size={12} />
-      </View>
-    )
+        <Icon>sync</Icon>
+        <Text variant="menuItem">Sync now</Text>
+      </MenuItem> */}
+    </>
   );
 });
 
@@ -206,6 +228,7 @@ export const LogoButton = memo(function LogoButton({
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
+      <SyncButton syncRef={syncRef} />
       <MenuPopover
         menuProps={{
           rendererProps: {
@@ -234,13 +257,12 @@ export const LogoButton = memo(function LogoButton({
               <Logo size={40} />
               <Icon style={{ color: theme[11] }}>expand_more</Icon>
             </Pressable>
-            <SyncButton syncRef={syncRef} />
           </View>
         }
         options={[
           session?.space?.space?._count?.integrations > 0 && {
             icon: "sync",
-            text: isLoading ? "Syncing..." : "Sync now",
+            text: "Sync now",
             disabled: isLoading,
             callback: async () => {
               setLoading(true);
@@ -368,7 +390,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const { sidebarRef } = useSidebarContext();
 
   const [defaultValues, setDefaultValues] = useState<any>({});
-  const { id, fullscreen } = useGlobalSearchParams();
+  const { id } = useGlobalSearchParams();
   const pathname = usePathname();
   useHotkeys(["ctrl+n", "shift+n", "space"], (e) => {
     e.preventDefault();
@@ -386,8 +408,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
       pathname !== "/" &&
       !pathname.includes("/reorder") &&
       !pathname.includes("/chrome-extension") &&
-      !pathname.includes("/settings") &&
-      !fullscreen
+      !pathname.includes("/settings")
     )
       AsyncStorage.setItem("lastViewedRoute", pathname);
   }, [pathname]);
@@ -559,248 +580,6 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
   );
 };
 
-const JumpToButton = memo(function JumpToButton() {
-  const theme = useColorTheme();
-  const { sidebarRef } = useSidebarContext();
-  const breakpoints = useResponsiveBreakpoints();
-  const { handleOpen } = useCommandPaletteContext();
-
-  const onOpen = () => {
-    if (!breakpoints.md) sidebarRef.current?.closeDrawer();
-    InteractionManager.runAfterInteractions(handleOpen);
-  };
-
-  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t", "ctrl+p"], (e) => {
-    e.preventDefault();
-    onOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/settings/shortcuts");
-  });
-
-  return (
-    <View style={{ borderRadius: 15, overflow: "hidden", flex: 1 }}>
-      <Button
-        backgroundColors={{
-          default: theme[2],
-          hovered: theme[4],
-          pressed: theme[5],
-        }}
-        height={50}
-        onPress={onOpen as any}
-        style={{
-          justifyContent: "flex-start",
-          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        }}
-        android_ripple={{ color: theme[7] }}
-        icon="add"
-        bold
-        text="New tab"
-      />
-    </View>
-  );
-});
-
-function TabContainer() {
-  const { data, error, mutate } = useSWR(["user/tabs"]);
-  const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
-  const breakpoints = useResponsiveBreakpoints();
-  const { tab: currentTab } = useGlobalSearchParams();
-  const { sessionToken } = useUser();
-  const path = usePathname();
-
-  const handleCloseTab = useCallback(
-    (id: string) => async () => {
-      try {
-        if (!data) {
-          return Toast.show({
-            type: "error",
-            text1: "Couldn't load tabs. Please try again later.",
-          });
-        }
-        const tab = data.findIndex((tab: any) => tab.id === id);
-        const lastTab = data[tab - 1] || data[tab + 1];
-        if (lastTab) {
-          setTimeout(() => {
-            router.replace({
-              params: {
-                tab: lastTab.id,
-                ...(typeof lastTab.params === "object" && lastTab.params),
-              },
-              pathname: lastTab.slug,
-            });
-          }, 0);
-        } else {
-          setTimeout(() => {
-            router.replace("/home");
-          }, 0);
-        }
-        mutate((oldData) => oldData.filter((oldTab: any) => oldTab.id !== id), {
-          revalidate: false,
-        });
-        sendApiRequest(sessionToken, "DELETE", "user/tabs", { id });
-      } catch (err) {
-        Toast.show({
-          type: "error",
-          text1: "Something went wrong. Please try again later.",
-        });
-        console.log(err);
-      }
-    },
-    [mutate, data, sessionToken]
-  );
-
-  useHotkeys(["ctrl+shift+w", "ctrl+w"], (e) => {
-    e.preventDefault();
-    if (data) {
-      const i = data.findIndex((i) => i.id === currentTab);
-      let d = i - 1;
-      if (i === 0) d = data.length - 1;
-      handleCloseTab(data[d].id)();
-    }
-  });
-
-  const handleSnapToIndex = (index: number) => {
-    if (error)
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong. Please try again later.",
-      });
-    if (!data) return;
-    const _tab = data[index];
-    if (currentTab === _tab.id) return;
-    router.replace({
-      pathname: _tab.slug,
-      params: {
-        tab: _tab.id,
-        ...(typeof _tab.params === "object" && _tab.params),
-      },
-    });
-  };
-  useHotkeys(["ctrl+tab", "alt+ArrowDown"], (e) => {
-    e.preventDefault();
-    const i = data.findIndex((i) => i.id === currentTab);
-    let d = i + 1;
-    if (d >= data.length || i === -1) d = 0;
-    handleSnapToIndex(d);
-  });
-
-  useHotkeys(["ctrl+shift+tab", "alt+ArrowUp"], (e) => {
-    e.preventDefault();
-    const i = data.findIndex((i) => i.id === currentTab);
-    let d = i - 1;
-    if (i === 0) d = data.length - 1;
-    handleSnapToIndex(d);
-  });
-
-  useHotkeys(
-    Array(9)
-      .fill(0)
-      .map((_, index) => "ctrl+" + (index + 1)),
-    (keyboardEvent, hotKeysEvent) => {
-      keyboardEvent.preventDefault();
-      const i = hotKeysEvent.keys[0];
-      if (i == "9") return handleSnapToIndex(data.length - 1);
-      if (data[parseInt(i) - 1]) handleSnapToIndex(parseInt(i) - 1);
-    }
-  );
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        paddingHorizontal: 15,
-        width: "100%",
-        marginBottom: insets.bottom + 10,
-        height: "100%",
-      }}
-    >
-      {data && data.length > 0 ? (
-        <SortableList
-          sendServerRequest={(t) => {
-            sendApiRequest(
-              sessionToken,
-              "PUT",
-              "user/tabs",
-              {},
-              {
-                body: JSON.stringify(t),
-              }
-            );
-          }}
-          handleCloseTab={handleCloseTab}
-          mutate={mutate}
-          theme={theme}
-          currentTab={currentTab}
-          breakpoints={breakpoints}
-          data={data}
-        />
-      ) : (
-        <View
-          style={{
-            justifyContent: "center",
-            flex: 1,
-            width: "100%",
-          }}
-        >
-          {error ? (
-            <ErrorAlert />
-          ) : data && data.length === 0 ? (
-            <>
-              <View
-                style={{
-                  alignItems: "center",
-                  padding: 20,
-                  justifyContent: "center",
-                  marginBottom: 10,
-                  flex: 1,
-                }}
-              >
-                <Text
-                  variant="eyebrow"
-                  style={{ marginTop: 10, fontSize: 13.5 }}
-                >
-                  It's quiet here...
-                </Text>
-                <Text
-                  style={{
-                    color: theme[11],
-                    opacity: 0.5,
-                    textAlign: "center",
-                    fontSize: 13,
-                    marginTop: 5,
-                  }}
-                >
-                  Try opening a view or one of your collections
-                </Text>
-              </View>
-            </>
-          ) : (
-            <Spinner style={{ marginHorizontal: "auto" }} />
-          )}
-        </View>
-      )}
-
-      <View style={{ marginBottom: 5, flexDirection: "row" }}>
-        <JumpToButton />
-        <IconButton
-          size={50}
-          style={{
-            ...(Platform.OS === "web" &&
-              ({ WebkitAppRegion: "no-drag" } as any)),
-          }}
-          onPress={() => router.push("/everything")}
-          variant={path === "/everything" ? "filled" : undefined}
-        >
-          <Icon bold>home_storage</Icon>
-        </IconButton>
-      </View>
-    </View>
-  );
-}
 const Sidebar = ({
   progressValue,
 }: {
@@ -947,8 +726,7 @@ const Sidebar = ({
               <LogoButton toggleHidden={toggleHidden} />
               <Header />
             </View>
-            {/* <OpenTabsList /> */}
-            <TabContainer />
+            <OpenTabsList />
           </NativeAnimated.View>
         </Animated.View>
       </SafeView>

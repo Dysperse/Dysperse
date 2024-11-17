@@ -115,7 +115,6 @@ const WebAnimationComponent = ({ children }) => {
 };
 
 function LastStateRestore() {
-  const { fullscreen } = useGlobalSearchParams();
   const pathname = usePathname();
   const setCurrentPage = useCallback(async () => {
     const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
@@ -128,11 +127,7 @@ function LastStateRestore() {
   }, []);
 
   useEffect(() => {
-    if (
-      pathname !== "/" &&
-      !pathname.includes("chrome-extension") &&
-      !fullscreen
-    ) {
+    if (pathname !== "/" && !pathname.includes("chrome-extension")) {
       setCurrentPage();
     }
   }, []);
@@ -259,6 +254,7 @@ export default function AppLayout() {
             },
             // change opacity of the previous screen when swipe
             cardOverlayEnabled: true,
+            animationEnabled: false,
             gestureVelocityImpact: 0.5,
           }}
         >
@@ -271,6 +267,7 @@ export default function AppLayout() {
                 options={{
                   detachPreviousScreen: breakpoints.md,
                   presentation: "modal",
+                  animationEnabled: true,
                   ...TransitionPresets.ModalPresentationIOS,
                 }}
               />
@@ -280,6 +277,7 @@ export default function AppLayout() {
             name="open"
             options={{
               presentation: "modal",
+              animationEnabled: true,
               gestureEnabled: false,
               ...TransitionPresets.ModalPresentationIOS,
             }}
