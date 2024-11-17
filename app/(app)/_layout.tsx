@@ -115,6 +115,7 @@ const WebAnimationComponent = ({ children }) => {
 };
 
 function LastStateRestore() {
+  const { fullscreen } = useGlobalSearchParams();
   const pathname = usePathname();
   const setCurrentPage = useCallback(async () => {
     const lastViewedRoute = await AsyncStorage.getItem("lastViewedRoute");
@@ -127,7 +128,11 @@ function LastStateRestore() {
   }, []);
 
   useEffect(() => {
-    if (pathname !== "/" && !pathname.includes("chrome-extension")) {
+    if (
+      pathname !== "/" &&
+      !pathname.includes("chrome-extension") &&
+      !fullscreen
+    ) {
       setCurrentPage();
     }
   }, []);

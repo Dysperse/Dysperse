@@ -368,7 +368,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const { sidebarRef } = useSidebarContext();
 
   const [defaultValues, setDefaultValues] = useState<any>({});
-  const { id } = useGlobalSearchParams();
+  const { id, fullscreen } = useGlobalSearchParams();
   const pathname = usePathname();
   useHotkeys(["ctrl+n", "shift+n", "space"], (e) => {
     e.preventDefault();
@@ -386,7 +386,8 @@ const QuickCreateButton = memo(function QuickCreateButton() {
       pathname !== "/" &&
       !pathname.includes("/reorder") &&
       !pathname.includes("/chrome-extension") &&
-      !pathname.includes("/settings")
+      !pathname.includes("/settings") &&
+      !fullscreen
     )
       AsyncStorage.setItem("lastViewedRoute", pathname);
   }, [pathname]);
