@@ -165,12 +165,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
           selected: e.text && e.id === mode,
         }))
       : []),
-    !isAll &&
-      session && {
-        icon: "edit",
-        text: "Edit",
-        callback: () => router.push(pathname + "/customize"),
-      },
+    session && {
+      icon: "edit",
+      text: "Edit",
+      callback: () => router.push(pathname + "/customize"),
+    },
     Platform.OS === "web" &&
       !fullscreen &&
       breakpoints.md && {
@@ -179,12 +178,11 @@ const CollectionNavbar = memo(function CollectionNavbar({
         callback: openPopOut,
       },
 
-    !isAll &&
-      !breakpoints.md && {
-        icon: "ios_share",
-        text: "Share",
-        callback: () => router.push(pathname + "/share"),
-      },
+    !breakpoints.md && {
+      icon: "ios_share",
+      text: "Share",
+      callback: () => router.push(pathname + "/share"),
+    },
 
     data?.pinCode && {
       icon: "lock",
@@ -242,7 +240,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
             )}
             <CollectionContext.Provider value={contextValue}>
               {session && <CollectionSearch />}
-              {!isLoading && !isReadOnly && !(!breakpoints.md && isAll) && (
+              {!isLoading && !isReadOnly && !isAll && (
                 <MenuPopover
                   menuRef={menuRef}
                   closeOnSelect
