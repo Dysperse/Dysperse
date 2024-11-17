@@ -16,12 +16,15 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useLocalSearchParams } from "expo-router";
-import { Platform, ScrollView, View } from "react-native";
+import { useRef } from "react";
+import { Platform, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import useSWR from "swr";
 
 function EditKanbanOrder() {
   const { session } = useSession();
   const { data, mutate } = useCollectionContext();
+  const listRef = useRef(null);
 
   const updatedKanbanOrder = data
     ? [
@@ -57,14 +60,20 @@ function EditKanbanOrder() {
         revalidate: false,
       }
     );
+
+    setTimeout(() => {
+      listRef.current.scrollToIndex({ index: newIndex, viewPosition: 0.5 });
+    }, 10);
   };
 
   return data.kanbanOrder ? (
-    <ScrollView
+    <FlatList
+      ref={listRef}
       horizontal
+      data={updatedKanbanOrder}
+      keyExtractor={(label) => label}
       contentContainerStyle={{ gap: 20, padding: 20, paddingTop: 0 }}
-    >
-      {updatedKanbanOrder.map((label, index) => {
+      renderItem={({ item: label, index }) => {
         const t = data.labels.find((i) => i.id === label);
         if (t)
           return (
@@ -75,8 +84,8 @@ function EditKanbanOrder() {
               handleColumnReorder={handleColumnReorder}
             />
           );
-      })}
-    </ScrollView>
+      }}
+    />
   ) : (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Spinner />
