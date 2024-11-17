@@ -8,6 +8,7 @@ const Logo = ({ size, color }: { size: number; color?: string }) => {
   const theme = useColor(
     color || session?.session?.user?.profile?.theme || "mint"
   );
+
   const memoizedSvg = useMemo(() => {
     return (
       <Svg
