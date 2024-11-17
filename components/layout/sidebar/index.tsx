@@ -19,7 +19,6 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, {
@@ -108,22 +107,9 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const [isLoading, setIsLoading] = useState(false);
   const { width: windowWidth } = useWindowDimensions();
 
-  const barWidth = useSharedValue(0);
-  const opacity = useSharedValue(0);
-
-  const width = useAnimatedStyle(() => ({
-    width: barWidth.value,
-    opacity: withSpring(opacity.value),
-  }));
   const { mutate } = useSWRConfig();
   const handleSync = useCallback(async () => {
     setIsLoading(true);
-    opacity.value = 1;
-    barWidth.value = withSpring(windowWidth - 20, {
-      stiffness: 50,
-      damping: 9000,
-      mass: 200,
-    });
     try {
       await sendApiRequest(session, "POST", "space/integrations/sync", {});
       await mutate(() => true);
@@ -134,16 +120,9 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
-      barWidth.value = withSpring(windowWidth, { overshootClamping: true });
-      setTimeout(() => {
-        opacity.value = 0;
-      }, 500);
-      setTimeout(() => {
-        barWidth.value = 0;
-      }, 1000);
       setIsLoading(false);
     }
-  }, [barWidth, windowWidth, opacity, session, mutate]);
+  }, [windowWidth, session, mutate]);
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -160,32 +139,27 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   }));
 
   return (
-    <>
-      <Portal>
-        <Animated.View
-          style={[
-            width,
-            {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height: 2,
-              backgroundColor: theme[11],
-              shadowColor: theme[11],
-              shadowRadius: 10,
-            },
-          ]}
-        />
-      </Portal>
-      {/* <MenuItem
-        onPress={handleSync}
-        disabled={isLoading}
-        style={isLoading && { opacity: 0.6 }}
+    isLoading && (
+      <View
+        style={{
+          position: "absolute",
+          bottom: 6,
+          width: 20,
+          pointerEvents: "none",
+          height: 20,
+          right: 25,
+          borderRadius: 99,
+          backgroundColor: theme[3],
+          zIndex: 1,
+          gap: 3,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        <Icon>sync</Icon>
-        <Text variant="menuItem">Sync now</Text>
-      </MenuItem> */}
-    </>
+        <Spinner size={12} />
+      </View>
+    )
   );
 });
 
@@ -232,7 +206,6 @@ export const LogoButton = memo(function LogoButton({
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
-      <SyncButton syncRef={syncRef} />
       <MenuPopover
         menuProps={{
           rendererProps: {
@@ -261,12 +234,13 @@ export const LogoButton = memo(function LogoButton({
               <Logo size={40} />
               <Icon style={{ color: theme[11] }}>expand_more</Icon>
             </Pressable>
+            <SyncButton syncRef={syncRef} />
           </View>
         }
         options={[
           session?.space?.space?._count?.integrations > 0 && {
             icon: "sync",
-            text: "Sync now",
+            text: isLoading ? "Syncing..." : "Sync now",
             disabled: isLoading,
             callback: async () => {
               setLoading(true);
