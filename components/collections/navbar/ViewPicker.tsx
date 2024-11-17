@@ -34,10 +34,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     .map(([_type, views]) => [
       {
         renderer: () => (
-          <Text
-            variant="eyebrow"
-            style={{ padding: 10, paddingBottom: 3, color: theme[12] }}
-          >
+          <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
             By {_type.replaceAll("Based", "")}
           </Text>
         ),
@@ -163,6 +160,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
                 textAlign: "center",
                 fontFamily: "serifText800",
                 fontSize: 30,
+                color: theme[11],
                 marginVertical: 20,
               }}
             >
@@ -187,6 +185,13 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
                   >
                     <Icon>{r.icon}</Icon>
                     <ListItemText
+                      primaryProps={{
+                        style: { color: theme[11] },
+                        weight: 800,
+                      }}
+                      secondaryProps={{
+                        style: { color: theme[11], opacity: 0.5 },
+                      }}
                       primary={r.text}
                       secondary={r.selected && r.secondary}
                     />

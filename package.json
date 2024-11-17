@@ -28,6 +28,7 @@
     "@gorhom/bottom-sheet": "^5.0.5",
     "@gorhom/portal": "^1.0.14",
     "@hexagon/base64": "^1.1.28",
+    "@howljs/calendar-kit": "^2.2.1",
     "@marceloterreiro/flash-calendar": "^1.2.0",
     "@radix-ui/colors": "^3.0.0",
     "@react-native-async-storage/async-storage": "1.23.1",
