@@ -144,7 +144,15 @@ export default function EditListViewOrder({
         overflowX: "hidden",
         position: "relative",
       }}
+      className="dragger"
     >
+      <style>
+        {`
+          .dragger * {
+            cursor: default!important;
+          }
+        `}
+      </style>
       <DndContext
         collisionDetection={closestCenter}
         onDragEnd={(event) => {
