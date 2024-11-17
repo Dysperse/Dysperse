@@ -28,7 +28,7 @@ export const Co2 = ({ data }) => {
         <Text variant="eyebrow" weight={900}>
           By using #dysperse, you've saved
         </Text>
-        <Text style={{ fontSize: breakpoints.md ? 45 : 35 }} weight={700}>
+        <Text style={{ fontSize: breakpoints.md ? 45 : 30 }} weight={300}>
           {(data?.co2 || 0).toFixed(2)} grams of CO
           <Text style={{ fontSize: 18 }} weight={300}>
             2
@@ -47,7 +47,7 @@ export const Co2 = ({ data }) => {
         </Text>
         <Text
           style={{ fontSize: 20, opacity: 0.5, marginTop: -3 }}
-          weight={500}
+          weight={200}
         >
           from being polluted into the atmosphere
         </Text>
@@ -55,3 +55,4 @@ export const Co2 = ({ data }) => {
     </View>
   );
 };
+
