@@ -2,8 +2,10 @@ import {
   CollectionContext,
   useCollectionContext,
 } from "@/components/collections/context";
+import EditListViewOrder from "@/components/collections/reorder/list";
 import { ReorderingGrid } from "@/components/collections/views/grid/ReorderingGrid";
 import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -163,71 +165,74 @@ const ReorderColumn = ({
   );
 };
 
-function EditListView() {
-  const { session } = useSession();
-  const { data, mutate } = useCollectionContext();
+// function EditListView() {
+//   const { session } = useSession();
+//   const { data, mutate } = useCollectionContext();
 
-  const updatedListOrder = data
-    ? [
-        ...(data.listOrder || []).filter((id) =>
-          data.labels.some((label) => label.id === id)
-        ),
-        ...data.labels
-          .filter((label) => !(data.listOrder || []).includes(label.id))
-          .map((label) => label.id),
-      ]
-    : [];
+//   const updatedListOrder = data
+//     ? [
+//         ...(data.listOrder || []).filter((id) =>
+//           data.labels.some((label) => label.id === id)
+//         ),
+//         ...data.labels
+//           .filter((label) => !(data.listOrder || []).includes(label.id))
+//           .map((label) => label.id),
+//       ]
+//     : [];
 
-  const handleColumnReorder = (id, newIndex) => {
-    const currentIndex = updatedListOrder.indexOf(id);
-    const newOrder = [...updatedListOrder];
-    newOrder.splice(currentIndex, 1);
-    newOrder.splice(newIndex, 0, id);
+//   const handleColumnReorder = (id, newIndex) => {
+//     const currentIndex = updatedListOrder.indexOf(id);
+//     const newOrder = [...updatedListOrder];
+//     newOrder.splice(currentIndex, 1);
+//     newOrder.splice(newIndex, 0, id);
 
-    sendApiRequest(
-      session,
-      "PUT",
-      "space/collections",
-      {},
-      { body: JSON.stringify({ id: data.id, listOrder: newOrder }) }
-    );
+//     sendApiRequest(
+//       session,
+//       "PUT",
+//       "space/collections",
+//       {},
+//       { body: JSON.stringify({ id: data.id, listOrder: newOrder }) }
+//     );
 
-    mutate(
-      (data) => ({
-        ...data,
-        listOrder: newOrder,
-      }),
-      {
-        revalidate: false,
-      }
-    );
-  };
+//     mutate(
+//       (data) => ({
+//         ...data,
+//         listOrder: newOrder,
+//       }),
+//       {
+//         revalidate: false,
+//       }
+//     );
+//   };
 
-  return data ? (
-    <ScrollView contentContainerStyle={{ gap: 20, padding: 20, paddingTop: 0 }}>
-      {updatedListOrder.map((label, index) => {
-        const t = data.labels.find((i) => i.id === label);
-        if (t)
-          return (
-            <ReorderColumn
-              list
-              index={index}
-              label={t}
-              key={label}
-              handleColumnReorder={handleColumnReorder}
-            />
-          );
-      })}
-    </ScrollView>
-  ) : (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Spinner />
-    </View>
-  );
-}
+//   return data ? (
+//     <ScrollView contentContainerStyle={{ gap: 20, padding: 20, paddingTop: 0 }}>
+//       {updatedListOrder.map((label, index) => {
+//         const t = data.labels.find((i) => i.id === label);
+//         if (t)
+//           return (
+//             <ReorderColumn
+//               list
+//               index={index}
+//               label={t}
+//               key={label}
+//               handleColumnReorder={handleColumnReorder}
+//             />
+//           );
+//       })}
+//     </ScrollView>
+//   ) : (
+//     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+//       <Spinner />
+//     </View>
+//   );
+// }
 
 function Reorder({ handleClose }: any) {
   const theme = useColorTheme();
+  const { sessionToken } = useUser();
+  const collection = useCollectionContext();
+  const breakpoints = useResponsiveBreakpoints();
   const { type: view } = useLocalSearchParams();
   useHotkeys("esc", () => router.back());
 
@@ -282,7 +287,37 @@ function Reorder({ handleClose }: any) {
         {
           {
             kanban: <EditKanbanOrder />,
-            list: <EditListView />,
+            list: (
+              <EditListViewOrder
+                breakpoints={breakpoints}
+                theme={theme}
+                data={collection.data}
+                onUpdate={(newOrder) => {
+                  sendApiRequest(
+                    sessionToken,
+                    "PUT",
+                    "space/collections",
+                    {},
+                    {
+                      body: JSON.stringify({
+                        id: collection.data.id,
+                        listOrder: newOrder,
+                      }),
+                    }
+                  );
+
+                  collection.mutate(
+                    (data) => ({
+                      ...data,
+                      listOrder: newOrder,
+                    }),
+                    {
+                      revalidate: false,
+                    }
+                  );
+                }}
+              />
+            ),
             grid: <ReorderingGrid />,
           }[view as string]
         }
