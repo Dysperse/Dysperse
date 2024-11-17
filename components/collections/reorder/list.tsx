@@ -69,7 +69,7 @@ export function SortableItem({ theme, breakpoints, data }) {
         >
           <img
             src={`https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${data.emoji}.png`}
-            style={{ height: 23, width: 23 }}
+            style={{ height: 30, width: 30 }}
           />
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
             <span style={{ fontFamily: "body_800" }}>{data.name}</span>
