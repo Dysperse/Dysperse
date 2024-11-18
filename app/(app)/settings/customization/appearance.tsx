@@ -9,7 +9,7 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
-import { ColorTheme, useColor } from "@/ui/color";
+import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
@@ -53,6 +53,7 @@ function ThemedSlide({
   const { sessionToken, mutate, session } = useUser();
   const breapoints = useResponsiveBreakpoints();
   const colors = useColor(theme);
+  const isDark = useDarkMode();
 
   const handleSelect = async () => {
     try {
@@ -135,7 +136,9 @@ function ThemedSlide({
           <Image
             style={{ width: 100, height: 100 }}
             source={{
-              uri: `https://assets.dysperse.com/themes/${theme}.svg?`,
+              uri: `https://assets.dysperse.com/themes/${
+                isDark ? "dark/" : ""
+              }${theme}.svg?`,
             }}
           />
           <Text
