@@ -374,6 +374,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const [defaultValues, setDefaultValues] = useState<any>({});
   const { id, fullscreen } = useGlobalSearchParams();
   const pathname = usePathname();
+
   useHotkeys(["ctrl+n", "shift+n", "space"], (e) => {
     e.preventDefault();
     itemRef.current?.present();
