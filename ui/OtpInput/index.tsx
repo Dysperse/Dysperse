@@ -27,8 +27,8 @@ const OtpInput = forwardRef(
             borderColor: theme[3],
             borderRadius: 99,
             minHeight: "auto",
-            height: "auto",
-            aspectRatio: 1,
+            height: 50,
+            width: 50,
             flex: 1,
           },
           containerStyle: { gap: props.containerGap || 20 },
@@ -36,6 +36,8 @@ const OtpInput = forwardRef(
             fontFamily: "body_500",
             color: theme[11],
             fontSize: 50,
+            marginTop: 10,
+            height: 50,
             lineHeight: 50,
           },
         }}
@@ -46,3 +48,4 @@ const OtpInput = forwardRef(
 );
 
 export default OtpInput;
+
