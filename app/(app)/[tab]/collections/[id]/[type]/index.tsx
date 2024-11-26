@@ -74,9 +74,10 @@ const Loading = ({ error }: any) => (
 
 function ResetPinButton({ children }: any) {
   const { session } = useSession();
-  const { data } = useCollectionContext();
+  const { data, mutate } = useCollectionContext();
   const ref = useRef<BottomSheetModal>(null);
   const inputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const handleClose = () =>
     ref.current?.forceClose({
@@ -93,10 +94,11 @@ function ResetPinButton({ children }: any) {
   });
 
   const handleSubmit = async () => {
-    const password = inputRef.current?.value;
-    if (!password) return;
+    setLoading(true);
     try {
-      await sendApiRequest(
+      const password = inputRef.current?.value;
+      if (!password) return;
+      const t = await sendApiRequest(
         session,
         "POST",
         "space/collections/collection/reset-pin",
@@ -108,9 +110,14 @@ function ResetPinButton({ children }: any) {
           }),
         }
       );
+      if (t?.error) {
+        Toast.show({ type: "error" });
+        throw new Error(t.error);
+      }
+      await mutate();
       handleClose();
-    } catch (e) {
-      console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,6 +157,7 @@ function ResetPinButton({ children }: any) {
               paddingHorizontal: 25,
               marginBottom: 10,
             }}
+            editable={!loading}
             weight={700}
             onKeyPress={({ nativeEvent }) => {
               if (nativeEvent.key === "Escape") handleClose();
@@ -177,6 +185,8 @@ function ResetPinButton({ children }: any) {
               containerStyle={{ flex: 1 }}
               bold
               height={60}
+              isLoading={loading}
+              onPress={handleSubmit}
             />
           </View>
         </View>
@@ -218,7 +228,7 @@ function PasswordPrompt({ mutate }) {
         }
       );
       if (t.error) {
-        throw new Error(t.error);
+        throw new Error("invalid");
       }
       await mutate();
     } catch (e) {
@@ -226,7 +236,7 @@ function PasswordPrompt({ mutate }) {
       ref.current?.clear();
       shake();
       ref.current?.focus();
-      Toast.show({ type: "error" });
+      if (e.message !== "invalid") Toast.show({ type: "error" });
       console.log(e);
     }
   };

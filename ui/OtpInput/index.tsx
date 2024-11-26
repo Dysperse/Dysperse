@@ -35,8 +35,8 @@ const OtpInput = forwardRef(
           pinCodeTextStyle: {
             fontFamily: "body_500",
             color: theme[11],
-            fontSize: 50,
-            marginTop: 10,
+            fontSize: props.secureTextEntry ? 50 : undefined,
+            marginTop: props.secureTextEntry ? 10 : undefined,
             height: 50,
             lineHeight: 50,
           },

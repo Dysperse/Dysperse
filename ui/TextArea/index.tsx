@@ -25,6 +25,11 @@ export default function TextField(props: DTextInputProps) {
       {...props}
       ref={props.inputRef}
       style={[
+        props.editable === false && {
+          opacity: 0.7,
+          boxShadow: "none",
+          pointerEvents: "none",
+        },
         props.multiline && {
           verticalAlign: "top",
         },
@@ -50,3 +55,4 @@ export default function TextField(props: DTextInputProps) {
     />
   );
 }
+
