@@ -501,7 +501,6 @@ function TaskNote({ backgroundColors }) {
         backgroundColors={backgroundColors}
         style={{ paddingVertical: 15, paddingHorizontal: 20 }}
       >
-        <Icon>sticky_note_2</Icon>
         <View style={{ flex: 1 }}>
           <MarkdownRenderer>
             {task.note?.replaceAll("] (http", "](http")?.trim()}
