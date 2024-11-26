@@ -23,10 +23,13 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
+import Modal from "@/ui/Modal";
 import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { useDidUpdate } from "@/utils/useDidUpdate";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import {
   router,
@@ -34,7 +37,7 @@ import {
   useLocalSearchParams,
   usePathname,
 } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
 import {
   InteractionManager,
   KeyboardAvoidingView,
@@ -61,13 +64,127 @@ export const styles = StyleSheet.create({
   },
 });
 
-const Loading = ({ error }) => (
+const Loading = ({ error }: any) => (
   <>
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {error ? <ErrorAlert /> : <Spinner />}
     </View>
   </>
 );
+
+function ResetPinButton({ children }: any) {
+  const { session } = useSession();
+  const { data } = useCollectionContext();
+  const ref = useRef<BottomSheetModal>(null);
+  const inputRef = useRef(null);
+
+  const handleClose = () =>
+    ref.current?.forceClose({
+      damping: 400,
+      stiffness: 900,
+      overshootClamping: true,
+    });
+
+  const trigger = cloneElement(children, {
+    onPress: () => {
+      ref.current?.present();
+      setTimeout(() => inputRef.current?.focus(), 500);
+    },
+  });
+
+  const handleSubmit = async () => {
+    const password = inputRef.current?.value;
+    if (!password) return;
+    try {
+      await sendApiRequest(
+        session,
+        "POST",
+        "space/collections/collection/reset-pin",
+        {},
+        {
+          body: JSON.stringify({
+            id: data.id,
+            password,
+          }),
+        }
+      );
+      handleClose();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  return (
+    <>
+      <Modal animation="SLIDE" maxWidth={500} sheetRef={ref}>
+        <View style={{ padding: 30, gap: 10 }}>
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              textAlign: "center",
+              fontSize: 35,
+            }}
+          >
+            Forgot code?
+          </Text>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 18,
+              opacity: 0.7,
+              marginBottom: 10,
+            }}
+            weight={300}
+          >
+            Unlock this collection with your account password
+          </Text>
+          <TextField
+            variant="filled+outlined"
+            placeholder="Password"
+            secureTextEntry
+            inputRef={inputRef}
+            style={{
+              height: 60,
+              borderRadius: 999,
+              fontSize: 20,
+              paddingHorizontal: 25,
+              marginBottom: 10,
+            }}
+            weight={700}
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === "Escape") handleClose();
+            }}
+            onSubmitEditing={handleSubmit}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Button
+              text="Cancel"
+              variant="outlined"
+              large
+              height={60}
+              containerStyle={{ flex: 1 }}
+              onPress={handleClose}
+            />
+            <Button
+              text="Unlock"
+              variant="filled"
+              large
+              containerStyle={{ flex: 1 }}
+              bold
+              height={60}
+            />
+          </View>
+        </View>
+      </Modal>
+      {trigger}
+    </>
+  );
+}
 
 function PasswordPrompt({ mutate }) {
   const breakpoints = useResponsiveBreakpoints();
@@ -186,15 +303,14 @@ function PasswordPrompt({ mutate }) {
             />
           </Animated.View>
           <View style={{ flexDirection: "row", marginTop: 10, gap: 10 }}>
-            <Button
-              large
-              variant="outlined"
-              text="Forgot?"
-              onPress={() =>
-                Toast.show({ type: "info", text1: "Coming soon!" })
-              }
-              containerStyle={{ flex: 1 }}
-            />
+            <ResetPinButton>
+              <Button
+                large
+                variant="outlined"
+                text="Forgot?"
+                containerStyle={{ flex: 1 }}
+              />
+            </ResetPinButton>
             <Button
               isLoading={loading}
               text="Unlock"
