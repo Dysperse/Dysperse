@@ -102,31 +102,27 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
   const theme = useColorTheme();
   const { session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const { width: windowWidth } = useWindowDimensions();
+  const checkOpacity = useSharedValue(0);
 
-  const barWidth = useSharedValue(0);
-  const opacity = useSharedValue(0);
-
-  const width = useAnimatedStyle(() => ({
-    width: barWidth.value,
-    opacity: withSpring(opacity.value),
-  }));
   const { mutate } = useSWRConfig();
   const handleSync = useCallback(async () => {
     setIsLoading(true);
     try {
       await sendApiRequest(session, "POST", "space/integrations/sync", {});
       await mutate(() => true);
-      Toast.show({ type: "success", text1: "Integrations are up to date!" });
       if (Platform.OS === "web") {
         localStorage.setItem("lastSyncedTimestamp", Date.now().toString());
       }
+      checkOpacity.value = 1;
+      setTimeout(() => {
+        checkOpacity.value = 0;
+      }, 3000);
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
       setIsLoading(false);
     }
-  }, [windowWidth, session, mutate]);
+  }, [session, mutate, checkOpacity]);
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -142,28 +138,59 @@ const SyncButton = memo(function SyncButton({ syncRef }: any) {
     sync: handleSync,
   }));
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: withSpring(checkOpacity.value),
+    transform: [{ scale: withSpring(checkOpacity.value) }],
+  }));
+
   return (
-    isLoading && (
-      <View
-        style={{
-          position: "absolute",
-          bottom: 6,
-          width: 20,
-          pointerEvents: "none",
-          height: 20,
-          right: 25,
-          borderRadius: 99,
-          backgroundColor: theme[3],
-          zIndex: 1,
-          gap: 3,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+    <>
+      {isLoading && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 6,
+            width: 20,
+            pointerEvents: "none",
+            height: 20,
+            right: 25,
+            borderRadius: 99,
+            backgroundColor: theme[3],
+            zIndex: 1,
+            gap: 3,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Spinner size={12} />
+        </View>
+      )}
+      <Animated.View
+        style={[
+          animatedStyle,
+          {
+            position: "absolute",
+            bottom: 6,
+            width: 20,
+            pointerEvents: "none",
+            height: 20,
+            right: 25,
+            borderRadius: 99,
+            backgroundColor: theme[6],
+            zIndex: 1,
+            gap: 3,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          },
+        ]}
       >
-        <Spinner size={12} />
-      </View>
-    )
+        <Icon size={15} bold style={{ marginTop: -2, color: theme[11] }}>
+          cloud_done
+        </Icon>
+      </Animated.View>
+    </>
   );
 });
 
