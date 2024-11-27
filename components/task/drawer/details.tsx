@@ -1,5 +1,4 @@
 import { ImageViewer } from "@/components/ImageViewer";
-import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Entity } from "@/components/collections/entity";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useSession } from "@/context/AuthProvider";
@@ -42,6 +41,7 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import CreateTask from "../create";
 import TaskDatePicker from "../create/TaskDatePicker";
+import TaskNoteEditor from "./TaskNoteEditor";
 import { TaskAttachmentButton } from "./attachment/button";
 import { useTaskDrawerContext } from "./context";
 
@@ -486,6 +486,7 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
 }
 
 function TaskNote({ backgroundColors }) {
+  const theme = useColorTheme();
   const { task, updateTask } = useTaskDrawerContext();
 
   return (
@@ -502,9 +503,10 @@ function TaskNote({ backgroundColors }) {
         style={{ paddingVertical: 15, paddingHorizontal: 20 }}
       >
         <View style={{ flex: 1 }}>
-          <MarkdownRenderer>
-            {task.note?.replaceAll("] (http", "](http")?.trim()}
-          </MarkdownRenderer>
+          <TaskNoteEditor
+            theme={theme}
+            content={task.note?.replaceAll("] (http", "](http")?.trim()}
+          />
         </View>
       </ListItemButton>
     </TaskAttachmentButton>
@@ -1088,24 +1090,7 @@ export function TaskDetails() {
           },
           task.note && {
             trigger: () => <TaskNote backgroundColors={backgroundColors} />,
-            content: !isReadOnly && (
-              <View style={collapsibleMenuStyles}>
-                <TaskCollapsibleAction
-                  icon="close"
-                  text="Remove"
-                  onPress={() => updateTask("note", null)}
-                />
-                <TaskAttachmentButton
-                  defaultView="Note"
-                  menuRef={noteMenuRef}
-                  lockView
-                  task={task}
-                  updateTask={updateTask}
-                >
-                  <TaskCollapsibleAction icon="edit" text="Edit" />
-                </TaskAttachmentButton>
-              </View>
-            ),
+            content: <></>,
           },
           !task.parentTaskId && {
             trigger: () => (

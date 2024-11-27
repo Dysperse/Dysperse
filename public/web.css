@@ -67,7 +67,7 @@ input {
 input:focus,
 select:focus,
 textarea:focus,
-div:focus-visible {
+div:not(.tiptap):focus-visible {
   box-shadow: 0 0 0 2px var(--theme-7);
 }
 
