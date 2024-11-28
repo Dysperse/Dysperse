@@ -43,8 +43,8 @@ export function TaskShareButton() {
   return isReadOnly ? null : (
     <>
       <IconButton
-        variant="outlined"
-        size={50}
+        // variant="outlined"
+        size={40}
         icon="ios_share"
         onPress={handleOpen}
       />

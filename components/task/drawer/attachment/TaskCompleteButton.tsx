@@ -84,18 +84,12 @@ export function TaskCompleteButton() {
             borderWidth: 1,
             opacity: disabled ? undefined : 1,
           }}
-          variant="outlined"
-          borderColors={{
-            default: isCompleted ? green[9] : theme[6],
-            hovered: isCompleted ? green[10] : theme[7],
-            pressed: isCompleted ? green[11] : theme[8],
-          }}
           backgroundColors={{
-            default: isCompleted ? green[9] : theme[2],
-            hovered: isCompleted ? green[10] : theme[3],
-            pressed: isCompleted ? green[11] : theme[4],
+            default: isCompleted ? green[9] : theme[3],
+            hovered: isCompleted ? green[10] : theme[4],
+            pressed: isCompleted ? green[11] : theme[5],
           }}
-          size={50}
+          size={40}
           onPress={handlePress}
         >
           <Icon

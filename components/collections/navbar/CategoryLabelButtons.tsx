@@ -17,7 +17,7 @@ import { useCollectionContext } from "../context";
 export const CategoryLabelButtons = memo(() => {
   const pathname = usePathname();
   const { data, openLabelPicker, mutate } = useCollectionContext();
-  const { id, type, hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
+  const { type, hiddenLabels: rawHiddenLabels } = useLocalSearchParams();
   const menuRef = useRef(null);
   const theme = useColorTheme();
   const { session } = useSession();

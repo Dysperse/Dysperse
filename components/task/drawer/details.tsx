@@ -1,46 +1,30 @@
 import { ImageViewer } from "@/components/ImageViewer";
 import { Entity } from "@/components/collections/entity";
-import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
-import { DatePicker } from "@/ui/DatePicker";
-import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
-import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { Fragment, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Easing,
-  Linking,
-  Platform,
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
-import Accordion from "react-native-collapsible/Accordion";
+import { Linking, Platform, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import CreateTask from "../create";
-import TaskDatePicker from "../create/TaskDatePicker";
 import TaskNoteEditor from "./TaskNoteEditor";
 import { TaskAttachmentButton } from "./attachment/button";
 import { useTaskDrawerContext } from "./context";
@@ -485,7 +469,7 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
   );
 }
 
-function TaskNote({ backgroundColors }) {
+function TaskNote() {
   const theme = useColorTheme();
   const { task, updateTask } = useTaskDrawerContext();
 
@@ -496,19 +480,12 @@ function TaskNote({ backgroundColors }) {
       task={task}
       updateTask={updateTask}
     >
-      <ListItemButton
-        variant="filled"
-        disabled
-        backgroundColors={backgroundColors}
-        style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-      >
-        <View style={{ flex: 1 }}>
-          <TaskNoteEditor
-            theme={theme}
-            content={task.note?.replaceAll("] (http", "](http")?.trim()}
-          />
-        </View>
-      </ListItemButton>
+      <View style={{ flex: 1 }}>
+        <TaskNoteEditor
+          theme={theme}
+          content={task.note?.replaceAll("] (http", "](http")?.trim()}
+        />
+      </View>
     </TaskAttachmentButton>
   );
 }
@@ -541,133 +518,133 @@ const TaskCollapsibleAction = ({
   );
 };
 
-function ComplexityTrigger({ backgroundColors }) {
-  const ref = useRef(null);
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+// function ComplexityTrigger({ backgroundColors }) {
+//   const ref = useRef(null);
+//   const theme = useColorTheme();
+//   const breakpoints = useResponsiveBreakpoints();
+//   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
-  const complexityScale = [2, 4, 8, 16, 32];
+//   const complexityScale = [2, 4, 8, 16, 32];
 
-  return (
-    <ListItemButton
-      backgroundColors={backgroundColors}
-      disabled
-      style={{
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          flex: 1,
-          gap: 20,
-        }}
-      >
-        <Icon>exercise</Icon>
-        <ListItemText
-          primary="Complexity"
-          secondary={
-            STORY_POINT_SCALE[
-              complexityScale.findIndex((i) => i === task.storyPoints)
-            ] || "How difficult is this task?"
-          }
-        />
-      </View>
-      {!isReadOnly && (
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          {task.storyPoints && (
-            <IconButton
-              onPress={() => updateTask("storyPoints", null)}
-              size={35}
-              animationConfigs={breakpoints.md && { duration: 0.0001 }}
-              style={[breakpoints.md && { borderRadius: 10 }]}
-            >
-              <Icon style={{ color: theme[11] }}>close</Icon>
-            </IconButton>
-          )}
-          <MenuPopover
-            menuRef={ref}
-            containerStyle={{ width: 200 }}
-            trigger={
-              task.storyPoints ? (
-                <Pressable
-                  style={({ pressed, hovered }) => ({
-                    paddingLeft: 5,
-                    gap: 5,
-                    width: 60,
-                    height: 35,
-                    backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
-                    borderRadius: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                  })}
-                >
-                  <Text
-                    style={{
-                      fontFamily: "mono",
-                      color: theme[1],
-                    }}
-                  >
-                    {String(task.storyPoints).padStart(2, "0")}
-                  </Text>
-                  <Icon style={{ color: theme[1] }}>expand_more</Icon>
-                </Pressable>
-              ) : (
-                <IconButton size={35} variant="outlined" icon="add" />
-              )
-            }
-            options={
-              complexityScale.map((n) => ({
-                renderer: () => (
-                  <MenuItem
-                    onPress={() => {
-                      updateTask("storyPoints", n);
-                      ref.current?.close();
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 30,
-                        height: 30,
-                        backgroundColor: addHslAlpha(
-                          theme[11],
-                          n === task.storyPoints ? 1 : 0.1
-                        ),
-                        borderRadius: 10,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontFamily: "mono",
-                          color: theme[n === task.storyPoints ? 1 : 11],
-                        }}
-                      >
-                        {String(n).padStart(2, "0")}
-                      </Text>
-                    </View>
-                    <Text variant="menuItem">
-                      {
-                        STORY_POINT_SCALE[
-                          complexityScale.findIndex((i) => i === n)
-                        ]
-                      }
-                    </Text>
-                  </MenuItem>
-                ),
-              })) as any
-            }
-          />
-        </View>
-      )}
-    </ListItemButton>
-  );
-}
+//   return (
+//     <ListItemButton
+//       backgroundColors={backgroundColors}
+//       disabled
+//       style={{
+//         paddingVertical: 15,
+//         paddingHorizontal: 20,
+//       }}
+//     >
+//       <View
+//         style={{
+//           flexDirection: "row",
+//           alignItems: "center",
+//           flex: 1,
+//           gap: 20,
+//         }}
+//       >
+//         <Icon>exercise</Icon>
+//         <ListItemText
+//           primary="Complexity"
+//           secondary={
+//             STORY_POINT_SCALE[
+//               complexityScale.findIndex((i) => i === task.storyPoints)
+//             ] || "How difficult is this task?"
+//           }
+//         />
+//       </View>
+//       {!isReadOnly && (
+//         <View style={{ flexDirection: "row", gap: 10 }}>
+//           {task.storyPoints && (
+//             <IconButton
+//               onPress={() => updateTask("storyPoints", null)}
+//               size={35}
+//               animationConfigs={breakpoints.md && { duration: 0.0001 }}
+//               style={[breakpoints.md && { borderRadius: 10 }]}
+//             >
+//               <Icon style={{ color: theme[11] }}>close</Icon>
+//             </IconButton>
+//           )}
+//           <MenuPopover
+//             menuRef={ref}
+//             containerStyle={{ width: 200 }}
+//             trigger={
+//               task.storyPoints ? (
+//                 <Pressable
+//                   style={({ pressed, hovered }) => ({
+//                     paddingLeft: 5,
+//                     gap: 5,
+//                     width: 60,
+//                     height: 35,
+//                     backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
+//                     borderRadius: 10,
+//                     alignItems: "center",
+//                     justifyContent: "center",
+//                     flexDirection: "row",
+//                   })}
+//                 >
+//                   <Text
+//                     style={{
+//                       fontFamily: "mono",
+//                       color: theme[1],
+//                     }}
+//                   >
+//                     {String(task.storyPoints).padStart(2, "0")}
+//                   </Text>
+//                   <Icon style={{ color: theme[1] }}>expand_more</Icon>
+//                 </Pressable>
+//               ) : (
+//                 <IconButton size={35} variant="outlined" icon="add" />
+//               )
+//             }
+//             options={
+//               complexityScale.map((n) => ({
+//                 renderer: () => (
+//                   <MenuItem
+//                     onPress={() => {
+//                       updateTask("storyPoints", n);
+//                       ref.current?.close();
+//                     }}
+//                   >
+//                     <View
+//                       style={{
+//                         width: 30,
+//                         height: 30,
+//                         backgroundColor: addHslAlpha(
+//                           theme[11],
+//                           n === task.storyPoints ? 1 : 0.1
+//                         ),
+//                         borderRadius: 10,
+//                         alignItems: "center",
+//                         justifyContent: "center",
+//                       }}
+//                     >
+//                       <Text
+//                         style={{
+//                           fontFamily: "mono",
+//                           color: theme[n === task.storyPoints ? 1 : 11],
+//                         }}
+//                       >
+//                         {String(n).padStart(2, "0")}
+//                       </Text>
+//                     </View>
+//                     <Text variant="menuItem">
+//                       {
+//                         STORY_POINT_SCALE[
+//                           complexityScale.findIndex((i) => i === n)
+//                         ]
+//                       }
+//                     </Text>
+//                   </MenuItem>
+//                 ),
+//               })) as any
+//             }
+//           />
+//         </View>
+//       )}
+//     </ListItemButton>
+//   );
+// }
 
 function AISubtask() {
   const modalRef = useRef();
@@ -852,7 +829,7 @@ function AISubtask() {
   );
 }
 
-function SubtaskList({ backgroundColors }) {
+function SubtaskList() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { session } = useSession();
@@ -860,49 +837,34 @@ function SubtaskList({ backgroundColors }) {
 
   return (
     <>
-      <ListItemButton
-        backgroundColors={backgroundColors}
-        style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-      >
-        <Icon>list</Icon>
-        <ListItemText
-          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-          primary="Subtasks"
-          secondary={`${Object.keys(task?.subtasks || {}).length}`}
-        />
-        <View style={{ gap: 5, flexDirection: "row" }}>
-          {session && <AISubtask />}
-          <CreateTask
-            mutate={() => {}}
-            onPress={() => {
-              if (
-                Platform.OS === "web" &&
-                !localStorage.getItem("subtaskTip")
-              ) {
-                localStorage.setItem("subtaskTip", "true");
-                Toast.show({
-                  type: "info",
-                  text1: "Pro tip",
-                  text2: "Tap twice on a task to open this popup",
-                  visibilityTime: 5000,
-                });
-              }
-            }}
-            defaultValues={{ parentTask: task }}
-          >
-            <Button
-              icon="add"
-              text={breakpoints.md && "New"}
-              iconPosition="end"
-              backgroundColors={{
-                default: addHslAlpha(theme[11], 0.05),
-                pressed: addHslAlpha(theme[11], 0.1),
-                hovered: addHslAlpha(theme[11], 0.2),
-              }}
-              dense
-            />
-          </CreateTask>
-        </View>
+      <ListItemButton pressableStyle={{ paddingVertical: 0 }} disabled>
+        <CreateTask
+          mutate={() => {}}
+          onPress={() => {
+            if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
+              localStorage.setItem("subtaskTip", "true");
+              Toast.show({
+                type: "info",
+                text1: "Pro tip",
+                text2: "Tap twice on a task to open this popup",
+                visibilityTime: 5000,
+              });
+            }
+          }}
+          defaultValues={{ parentTask: task }}
+        >
+          <Button
+            icon="add"
+            style={{ gap: 10, opacity: 0.6 }}
+            containerStyle={{ marginLeft: -10, marginTop: 5 }}
+            dense
+            text={
+              Object.keys(task.subtasks || {}).length === 0
+                ? "New subtask"
+                : `${Object.keys(task.subtasks || {}).length} subtasks`
+            }
+          />
+        </CreateTask>
       </ListItemButton>
       <View style={{ marginHorizontal: -15 }}>
         {typeof task.subtasks === "object" &&
@@ -932,16 +894,6 @@ export function TaskDetails() {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
-  const [activeSections, setActiveSections] = useState([]);
-
-  const collapsibleMenuStyles = {
-    padding: 10,
-    flexDirection: "row",
-    paddingVertical: 10,
-  } as StyleProp<ViewStyle>;
-
-  const noteMenuRef = useRef<BottomSheetModal>(null);
-
   const recurrenceRule =
     task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
 
@@ -959,235 +911,46 @@ export function TaskDetails() {
 
   const addRecurrenceRef = useRef(null);
   const addDateRef = useRef(null);
-  const backgroundColors = {
-    default: "transparent",
-    active: "transparent",
-    hover: "transparent",
-  };
 
   return (
     <>
-      <Accordion
-        activeSections={activeSections}
-        sectionContainerStyle={{
-          backgroundColor: addHslAlpha(theme[5], 0.3),
-          borderRadius: 20,
-          overflow: "hidden",
-          marginTop: 15,
-        }}
-        underlayColor="transparent"
-        touchableComponent={Pressable as any}
-        easing={Easing.bezier(0.17, 0.67, 0.32, 1)}
-        sections={[
-          isReadOnly && task.attachments?.length === 0
-            ? null
-            : {
-                trigger: () => (
-                  <ListItemButton
-                    disabled
-                    backgroundColors={backgroundColors}
-                    style={{
-                      paddingVertical: 15,
-                      paddingHorizontal: 20,
-                    }}
-                  >
-                    <Icon
-                      style={{
-                        transform: [{ rotate: "-45deg" }],
-                      }}
-                    >
-                      attachment
-                    </Icon>
-                    <ListItemText
-                      primary={
-                        task.attachments?.length > 0
-                          ? `${task.attachments?.length} attachment${
-                              task.attachments?.length > 1 ? "s" : ""
-                            }`
-                          : `Attachments`
-                      }
-                      secondaryProps={{ style: { opacity: 1 } }}
-                      secondary={
-                        <View
-                          style={{
-                            flexWrap: "wrap",
-                            gap: 5,
-                            flexDirection: "row",
-                          }}
-                        >
-                          {!isReadOnly && (
-                            <TaskAttachmentButton
-                              task={task}
-                              updateTask={updateTask}
-                            >
-                              <Button
-                                icon="add"
-                                text="New"
-                                variant="filled"
-                                backgroundColors={attachmentButtonStyles(theme)}
-                                borderColors={attachmentButtonStyles(theme)}
-                                dense
-                              />
-                            </TaskAttachmentButton>
-                          )}
-                          {task.attachments?.map((i, index) => (
-                            <TaskAttachmentPreview
-                              item={i}
-                              index={index}
-                              key={index}
-                            />
-                          ))}
-                        </View>
-                      }
-                    />
-                    {!isReadOnly && task.attachments?.length > 0 && (
-                      <IconButton
-                        style={{ opacity: 1 }}
-                        variant="outlined"
-                        icon="expand_more"
-                        disabled
-                      />
-                    )}
-                  </ListItemButton>
-                ),
-                content: !isReadOnly && (
-                  <View
-                    style={{
-                      display: task.attachments?.length > 0 ? "flex" : "none",
-                    }}
-                  >
-                    <Divider />
-                    {task.attachments?.map((i, index) => (
-                      <React.Fragment key={index}>
-                        <TaskAttachmentCard
-                          item={i}
-                          index={index}
-                          key={index}
-                        />
-                        {index !== task.attachments.length - 1 && (
-                          <Divider style={{ height: 1 }} />
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </View>
-                ),
-              },
-          task.integrationParams && {
-            trigger: () => (
-              <ListItemButton
-                backgroundColors={backgroundColors}
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>{task?.integrationParams?.icon || "sync_alt"}</Icon>
-                <ListItemText
-                  primary={`From ${
-                    task?.integrationParams?.from || "integration"
-                  }`}
-                />
-              </ListItemButton>
-            ),
-            content: <></>,
-          },
-          task.note && {
-            trigger: () => <TaskNote backgroundColors={backgroundColors} />,
-            content: <></>,
-          },
-          !task.parentTaskId && {
-            trigger: () => (
-              <ListItemButton
-                disabled
-                backgroundColors={backgroundColors}
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>
-                  {task.start
-                    ? "calendar_today"
-                    : task.recurrenceRule
-                    ? "loop"
-                    : "calendar_add_on"}
-                </Icon>
-                <ListItemText primary={dateName[0]} secondary={dateName[1]} />
-                <View style={{ flexDirection: "row" }}>
-                  {!isReadOnly && (task.start || task.recurrenceRule) && (
-                    <TaskNotificationsButton />
-                  )}
-                  {!isReadOnly && !task.recurrenceRule && task.start && (
-                    <TaskRescheduleButton />
-                  )}
-                </View>
-              </ListItemButton>
-            ),
-            content: isReadOnly ? null : task.start || task.recurrenceRule ? (
-              <View style={collapsibleMenuStyles}>
-                <TaskCollapsibleAction
-                  icon="close"
-                  text="Remove"
-                  onPress={() => {
-                    updateTask("recurrenceRule", null);
-                    updateTask("start", null);
-                  }}
-                />
-                <TaskDatePicker
-                  setValue={(name, value) =>
-                    updateTask(name === "date" ? "start" : name, value)
-                  }
-                  watch={(inputName) => {
-                    return {
-                      date: task.start ? dayjs(task.start) : null,
-                      dateOnly: task.dateOnly,
-                      recurrenceRule: recurrenceRule?.options,
-                    }[inputName];
-                  }}
-                >
-                  <TaskCollapsibleAction icon="edit" text="Edit" />
-                </TaskDatePicker>
-              </View>
-            ) : (
-              <View style={[collapsibleMenuStyles, { height: 100 }]}>
-                <RecurrencePicker
-                  value={recurrenceRule?.options}
-                  setValue={(value) => updateTask("recurrenceRule", value)}
-                  ref={addRecurrenceRef}
-                />
-                <DatePicker
-                  value={{ date: null, dateOnly: true, end: null }}
-                  setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
-                  ref={addDateRef}
-                />
-                <TaskCollapsibleAction
-                  icon="loop"
-                  text="Add recurrence"
-                  onPress={() => addRecurrenceRef.current?.present()}
-                />
-                <TaskCollapsibleAction
-                  icon="today"
-                  text="Set due date"
-                  onPress={() => addDateRef.current?.present()}
-                />
-              </View>
-            ),
-          },
-
-          isReadOnly && !task.storyPoints
-            ? null
-            : {
-                trigger: () => (
-                  <ComplexityTrigger backgroundColors={backgroundColors} />
-                ),
-                content: <></>,
-              },
-          (isReadOnly && task.subtasks?.length === 0) || task.parentTaskId
-            ? null
-            : {
-                trigger: () => (
-                  <SubtaskList backgroundColors={backgroundColors} />
-                ),
-              },
-        ].filter((e) => e)}
-        renderHeader={(section) => section.trigger()}
-        renderContent={(section) => section.content}
-        onChange={setActiveSections}
-      />
+      <ListItemButton
+        style={{ marginTop: -7, opacity: 0.6 }}
+        pressableStyle={{ gap: 10 }}
+      >
+        <Icon size={20} style={{ marginTop: -3 }}>
+          {task.start
+            ? "calendar_today"
+            : task.recurrenceRule
+            ? "loop"
+            : "calendar_add_on"}
+        </Icon>
+        <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
+        {/* <View style={{ flexDirection: "row" }}>
+          {!isReadOnly && (task.start || task.recurrenceRule) && (
+            <TaskNotificationsButton />
+          )}
+          {!isReadOnly && !task.recurrenceRule && task.start && (
+            <TaskRescheduleButton />
+          )}
+        </View> */}
+      </ListItemButton>
+      <ListItemButton
+        style={{ marginTop: -7, opacity: 0.6 }}
+        pressableStyle={{ gap: 10 }}
+      >
+        <Icon size={20} style={{ marginTop: -3 }}>
+          filter_drama
+        </Icon>
+        <Text style={{ color: theme[11] }}>{`Synced with ${
+          task?.integrationParams?.from || "integration"
+        }`}</Text>
+      </ListItemButton>
+      <TaskNote />
+      {(isReadOnly && task.subtasks?.length === 0) ||
+      task.parentTaskId ? null : (
+        <SubtaskList />
+      )}
     </>
   );
 }

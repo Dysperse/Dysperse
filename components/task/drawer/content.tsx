@@ -60,10 +60,8 @@ function TaskNameInput({ bottomSheet }) {
           {
             fontFamily: "serifText800",
             color: theme[12],
-            padding: 20,
+            padding: 12,
             paddingVertical: 10,
-            marginBottom: 5,
-            textAlign: "center",
             borderRadius: 20,
             borderWidth: 2,
             shadowRadius: 0,
@@ -74,7 +72,7 @@ function TaskNameInput({ bottomSheet }) {
             borderColor: addHslAlpha(theme[8], 0.5),
           },
         ]}
-        fontSize={breakpoints.md ? 40 : 30}
+        fontSize={breakpoints.md ? 35 : 30}
       />
     </>
   );
@@ -189,16 +187,14 @@ export function TaskDrawerContent({
                     : { overshootClamping: true, stiffness: 400 }
                 );
               }}
-              variant="outlined"
-              size={50}
-              icon="close"
+              size={40}
+              icon="arrow_back_ios_new"
             />
           )}
           <View style={{ flex: 1 }} />
           {!isReadOnly && (
             <IconButton
-              variant="outlined"
-              size={50}
+              size={40}
               onPress={handleDelete}
               icon={task.trash ? "restore_from_trash" : "delete"}
             />
@@ -212,13 +208,14 @@ export function TaskDrawerContent({
         style={{ height: 40, width: "100%", marginBottom: -40, zIndex: 1 }}
       />
       <SafeScrollView showsHorizontalScrollIndicator={false}>
-        <View style={{ paddingBottom: 30, paddingHorizontal: 20 }}>
+        <View
+          style={{ paddingBottom: 20, paddingTop: 25, paddingHorizontal: 10 }}
+        >
           <View
             style={{
               gap: 10,
-              marginTop: 50,
               flexDirection: "row",
-              justifyContent: "center",
+              paddingHorizontal: 15,
             }}
           >
             <Chip
@@ -237,11 +234,10 @@ export function TaskDrawerContent({
                 </Animated.View>
               }
               style={{
+                borderRadius: 10,
                 backgroundColor: task.pinned
                   ? labelColors.orange[11]
-                  : "transparent",
-                borderWidth: 1,
-                borderColor: task.pinned ? labelColors.orange[3] : theme[6],
+                  : addHslAlpha(theme[11], 0.05),
               }}
             />
             {task && !task.parentTaskId && (
@@ -253,37 +249,33 @@ export function TaskDrawerContent({
                 }}
                 onClose={() => {}}
                 defaultCollection={collectionId as any}
-                // disabled={Boolean(task.label?.integrationParams)}
               >
                 <Chip
                   disabled={isReadOnly}
                   icon={
                     task?.collection?.emoji ? (
-                      <Emoji emoji={task?.collection?.emoji} />
+                      <Emoji emoji={task?.collection?.emoji} size={20} />
                     ) : (
                       <Icon>new_label</Icon>
                     )
                   }
                   label={task?.collection?.name || "Add label"}
                   style={{
-                    borderWidth: 1,
-                    borderColor: theme[6],
+                    borderRadius: 10,
+                    backgroundColor: task.label
+                      ? addHslAlpha(labelColors[task.label.color][11], 0.05)
+                      : addHslAlpha(theme[11], 0.05),
                   }}
                   {...(task.label && {
-                    icon: <Emoji emoji={task.label.emoji} />,
+                    icon: <Emoji emoji={task.label.emoji} size={20} />,
                     label: (
                       <Text
+                        weight={600}
                         style={{ color: labelColors[task.label.color][11] }}
                       >
                         {task.label.name}
                       </Text>
                     ),
-                    style: {
-                      backgroundColor: addHslAlpha(
-                        labelColors[task.label.color][11],
-                        0.15
-                      ),
-                    },
                   })}
                 />
               </LabelPicker>

@@ -15,6 +15,7 @@ const LIMIT = 3000;
 const extensions = [
   StarterKit.configure({
     bold: { HTMLAttributes: { style: "font-family: body_700" } },
+    paragraph: { HTMLAttributes: { style: "margin: 5px 0 " } },
   }),
   Underline,
   Gapcursor,
@@ -181,6 +182,7 @@ function CharacterCounter({ theme }) {
         display: "flex",
         overflow: "hidden",
         maxHeight: isEditorFocused ? 20 : 0,
+        paddingLeft: 15,
         opacity: isEditorFocused ? 1 : 0,
         gap: 10,
       }}
@@ -256,7 +258,7 @@ export default function TaskNoteEditor({ theme, content }) {
         editorContainerProps={{
           style: {
             color: theme[12],
-            paddingLeft: 30,
+            paddingLeft: 15,
             paddingRight: 30,
             fontFamily: "body_400",
           },
@@ -269,3 +271,4 @@ export default function TaskNoteEditor({ theme, content }) {
     </div>
   );
 }
+
