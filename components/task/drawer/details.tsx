@@ -15,7 +15,6 @@ import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
@@ -560,12 +559,8 @@ function AISubtask() {
       <Button
         icon="magic_button"
         text="Generate"
-        backgroundColors={{
-          default: addHslAlpha(theme[11], 0.05),
-          pressed: addHslAlpha(theme[11], 0.1),
-          hovered: addHslAlpha(theme[11], 0.2),
-        }}
         dense
+        style={{ gap: 10, opacity: 0.6, marginBottom: -3, marginLeft: "auto" }}
         onPress={() => {
           setIsLoading(true);
           modalRef.current?.present();
@@ -721,6 +716,7 @@ function SubtaskList() {
             }
           />
         </CreateTask>
+        <AISubtask />
       </ListItemButton>
       <View style={{ marginHorizontal: -15 }}>
         {typeof task.subtasks === "object" &&
