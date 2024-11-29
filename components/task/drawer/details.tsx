@@ -470,7 +470,7 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
 
 function TaskNote() {
   const theme = useColorTheme();
-  const { task, updateTask } = useTaskDrawerContext();
+  const { task } = useTaskDrawerContext();
   const [hasClicked, setHasClicked] = useState(false);
   const shouldShow = Boolean(task.note) || hasClicked;
 
