@@ -1,4 +1,5 @@
 import LabelPicker from "@/components/labels/picker";
+import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
@@ -6,13 +7,14 @@ import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -75,6 +77,73 @@ function TaskNameInput({ bottomSheet }) {
         fontSize={breakpoints.md ? 35 : 30}
       />
     </>
+  );
+}
+
+function WorkloadChip() {
+  const theme = useColorTheme();
+  const { task, isReadOnly, updateTask } = useTaskDrawerContext();
+  const complexityScale = [2, 4, 8, 16, 32];
+  const menuRef = useRef(null);
+
+  return (
+    <MenuPopover
+      menuRef={menuRef}
+      containerStyle={{ width: 200 }}
+      options={
+        complexityScale.map((n) => ({
+          renderer: () => (
+            <MenuItem
+              onPress={() => {
+                updateTask("storyPoints", n);
+                menuRef.current?.close();
+              }}
+            >
+              <View
+                style={{
+                  width: 30,
+                  height: 30,
+                  backgroundColor: addHslAlpha(
+                    theme[11],
+                    n === task.storyPoints ? 1 : 0.1
+                  ),
+                  borderRadius: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "mono",
+                    color: theme[n === task.storyPoints ? 1 : 11],
+                  }}
+                >
+                  {String(n).padStart(2, "0")}
+                </Text>
+              </View>
+              <Text variant="menuItem">
+                {STORY_POINT_SCALE[complexityScale.findIndex((i) => i === n)]}
+              </Text>
+            </MenuItem>
+          ),
+        })) as any
+      }
+      trigger={
+        <Chip
+          disabled={isReadOnly}
+          icon="exercise"
+          label={
+            STORY_POINT_SCALE[
+              complexityScale.findIndex((i) => i === task.storyPoints)
+            ]
+          }
+          style={{
+            borderRadius: 10,
+            backgroundColor: addHslAlpha(theme[11], 0.05),
+          }}
+        />
+      }
+    />
   );
 }
 
@@ -280,6 +349,7 @@ export function TaskDrawerContent({
                 />
               </LabelPicker>
             )}
+            <WorkloadChip />
           </View>
           <TaskNameInput bottomSheet={Boolean(forceClose)} />
           <TaskDetails />
