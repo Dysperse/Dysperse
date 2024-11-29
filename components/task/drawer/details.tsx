@@ -26,7 +26,6 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import CreateTask from "../create";
 import TaskNoteEditor from "./TaskNoteEditor";
-import { TaskAttachmentButton } from "./attachment/button";
 import { useTaskDrawerContext } from "./context";
 
 const drawerStyles = StyleSheet.create({
@@ -472,21 +471,25 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
 function TaskNote() {
   const theme = useColorTheme();
   const { task, updateTask } = useTaskDrawerContext();
+  const [hasClicked, setHasClicked] = useState(false);
+  const shouldShow = Boolean(task.note) || hasClicked;
 
-  return (
-    <TaskAttachmentButton
-      defaultView="Note"
-      lockView
-      task={task}
-      updateTask={updateTask}
+  return !shouldShow ? (
+    <ListItemButton
+      style={{ marginTop: -5, opacity: 0.6, marginBottom: -7 }}
+      pressableStyle={{ gap: 10 }}
+      onPress={() => setHasClicked(true)}
     >
-      <View style={{ flex: 1 }}>
-        <TaskNoteEditor
-          theme={theme}
-          content={task.note?.replaceAll("] (http", "](http")?.trim()}
-        />
-      </View>
-    </TaskAttachmentButton>
+      <Icon size={20} style={{ marginTop: -3 }}>
+        sticky_note_2
+      </Icon>
+      <Text style={{ color: theme[11] }}>Tap to add note</Text>
+    </ListItemButton>
+  ) : (
+    <TaskNoteEditor
+      theme={theme}
+      content={task.note?.replaceAll("] (http", "](http")?.trim()}
+    />
   );
 }
 
@@ -856,7 +859,7 @@ function SubtaskList() {
           <Button
             icon="add"
             style={{ gap: 10, opacity: 0.6 }}
-            containerStyle={{ marginLeft: -10, marginTop: 5 }}
+            containerStyle={{ marginLeft: -13, marginTop: 5 }}
             dense
             text={
               Object.keys(task.subtasks || {}).length === 0
