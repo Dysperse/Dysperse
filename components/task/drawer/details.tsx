@@ -471,7 +471,7 @@ function TaskNote() {
 
   return !shouldShow ? (
     <ListItemButton
-      style={{ marginTop: -5, opacity: 0.6, marginBottom: -7 }}
+      style={{ marginTop: -7, opacity: 0.6, marginBottom: -7 }}
       pressableStyle={{ gap: 10 }}
       onPress={() => setHasClicked(true)}
     >
