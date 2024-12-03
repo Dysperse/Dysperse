@@ -3,6 +3,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
@@ -83,13 +84,23 @@ export function TaskCompleteButton() {
           style={{
             borderWidth: 1,
             opacity: disabled ? undefined : 1,
+            marginLeft: 5,
+            width: "auto",
+            borderRadius: 16,
+            width: 140,
+          }}
+          pressableStyle={{
+            flexDirection: "row",
+            gap: 10,
+            paddingHorizontal: 10,
+            paddingRight: 14,
           }}
           backgroundColors={{
             default: isCompleted ? green[9] : theme[3],
             hovered: isCompleted ? green[10] : theme[4],
             pressed: isCompleted ? green[11] : theme[5],
           }}
-          size={40}
+          size={45}
           onPress={handlePress}
         >
           <Icon
@@ -99,11 +110,17 @@ export function TaskCompleteButton() {
               color: isCompleted ? green[1] : theme[11],
             }}
           >
-            done_outline
+            check
           </Icon>
+          <Text
+            style={{
+              color: isCompleted ? green[1] : theme[11],
+            }}
+          >
+            {isCompleted ? "Complete!" : "Mark done"}
+          </Text>
         </IconButton>
       </>
     )
   );
 }
-

@@ -1,13 +1,20 @@
 import LabelPicker from "@/components/labels/picker";
 import { STORY_POINT_SCALE } from "@/constants/workload";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
+import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Modal from "@/ui/Modal";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -29,19 +36,193 @@ import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
 
+function AISubtask({ task, updateTask }) {
+  const modalRef = useRef();
+  const { sessionToken } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
+  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
+  const [isCreationLoading, setIsCreationLoading] = useState(false);
+
+  const handleAddSubtasks = async () => {
+    setIsCreationLoading(true);
+    try {
+      const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
+
+      const t = await sendApiRequest(
+        sessionToken,
+        "PATCH",
+        "space/entity",
+        {},
+        {
+          body: JSON.stringify({
+            entities: subtasks.map((subtask) => ({
+              name: subtask.title,
+              type: "TASK",
+              parentTask: task,
+              parentId: task.id,
+              note: subtask.description,
+              collectionId: task.collectionId,
+            })),
+          }),
+        }
+      );
+      updateTask(
+        "subtasks",
+        {
+          ...task.subtasks,
+          ...t.reduce((acc, curr) => {
+            acc[curr.id] = curr;
+            return acc;
+          }, {}),
+        },
+        false
+      );
+      modalRef.current?.close();
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setIsCreationLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <MenuItem
+        onPress={() => {
+          setIsLoading(true);
+          modalRef.current?.present();
+
+          fetch("https://dysperse.koyeb.app/subtasks", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: task.name,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (!Array.isArray(data?.response))
+                throw new Error("No response");
+              setGeneratedSubtasks(data.response);
+              setSelectedSubtasks(data.response.map((_, i) => i));
+              setIsLoading(false);
+            })
+            .catch((e) => {
+              setIsLoading(false);
+              Toast.show({ type: "error" });
+            });
+        }}
+      >
+        <Icon>magic_button</Icon>
+        <Text variant="menuItem">Generate subtasks</Text>
+      </MenuItem>
+      <Modal
+        maxWidth={400}
+        height="auto"
+        innerStyles={{ minHeight: 400 }}
+        animation="SCALE"
+        transformCenter
+        sheetRef={modalRef}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 20 }} weight={900}>
+              AI subtasks
+            </Text>
+            <Text style={{ opacity: 0.6, fontSize: 13 }}>Experimental</Text>
+          </View>
+          <IconButton
+            icon="close"
+            onPress={() => modalRef.current?.close()}
+            variant="filled"
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          {!isLoading ? (
+            <View style={{ padding: 10, paddingTop: 0, marginTop: -10 }}>
+              {generatedSubtasks.map((subtask, i) => (
+                <ListItemButton
+                  key={i}
+                  onPress={() => {
+                    setSelectedSubtasks((prev) =>
+                      prev.includes(i)
+                        ? prev.filter((t) => t !== i)
+                        : [...prev, i]
+                    );
+                  }}
+                  style={{
+                    paddingVertical: 15,
+                    paddingHorizontal: 20,
+                  }}
+                  pressableStyle={{
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Icon
+                    filled={selectedSubtasks.includes(i)}
+                    style={{ marginTop: 2 }}
+                    size={30}
+                  >
+                    {selectedSubtasks.includes(i) ? "check_circle" : "circle"}
+                  </Icon>
+                  <ListItemText
+                    primary={subtask.title}
+                    secondary={subtask.description}
+                  />
+                </ListItemButton>
+              ))}
+
+              <View style={{ padding: 5 }}>
+                <Button
+                  isLoading={isCreationLoading}
+                  onPress={handleAddSubtasks}
+                  variant="filled"
+                  large
+                  bold
+                  text={`Add ${selectedSubtasks.length} subtasks`}
+                  icon="add"
+                />
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </View>
+      </Modal>
+    </>
+  );
+}
+
 function TaskNameInput({ bottomSheet }) {
   const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
-  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <>
       <AutoSizeTextArea
         bottomSheet={bottomSheet}
         onBlur={() => {
-          setIsFocused(false);
           if (name === task.name) return;
           setName(name.replaceAll("\n", ""));
           updateTask("name", name.replaceAll("\n", ""));
@@ -57,7 +238,6 @@ function TaskNameInput({ bottomSheet }) {
           }
         }}
         disabled={isReadOnly}
-        onFocus={() => setIsFocused(true)}
         style={[
           {
             fontFamily: "serifText800",
@@ -68,10 +248,6 @@ function TaskNameInput({ bottomSheet }) {
             borderWidth: 2,
             shadowRadius: 0,
             borderColor: "transparent",
-          },
-          isFocused && {
-            backgroundColor: addHslAlpha(theme[8], 0.1),
-            borderColor: addHslAlpha(theme[8], 0.5),
           },
         ]}
         fontSize={breakpoints.md ? 35 : 30}
@@ -139,11 +315,55 @@ function WorkloadChip() {
           }
           style={{
             borderRadius: 10,
-            backgroundColor: addHslAlpha(theme[11], 0.05),
+            // backgroundColor: addHslAlpha(theme[11], 0.05),
+            borderColor: theme[4],
+            borderWidth: 1,
           }}
+          outlined
         />
       }
     />
+  );
+}
+
+function TaskMoreMenu({ handleDelete }) {
+  const theme = useColorTheme();
+  const { task, updateTask } = useTaskDrawerContext();
+
+  return (
+    <>
+      <MenuPopover
+        containerStyle={{ width: 230 }}
+        options={[
+          {
+            renderer: () => <AISubtask task={task} updateTask={updateTask} />,
+          },
+          {
+            icon: task.trash ? "restore_from_trash" : "delete",
+            text: task.trash ? "Restore from trash" : "Move to trash",
+            callback: handleDelete,
+          },
+          task?.integrationParams && {
+            renderer: () => (
+              <Text
+                style={{
+                  opacity: 0.6,
+                  fontSize: 12,
+                  textAlign: "center",
+                  marginVertical: 5,
+                  color: theme[11],
+                }}
+              >
+                {`Synced with ${
+                  task?.integrationParams?.from || "integration"
+                }`}
+              </Text>
+            ),
+          },
+        ]}
+        trigger={<IconButton icon="pending" size={45} />}
+      />
+    </>
   );
 }
 
@@ -256,25 +476,26 @@ export function TaskDrawerContent({
                     : { overshootClamping: true, stiffness: 400 }
                 );
               }}
-              size={40}
-              icon="arrow_back_ios_new"
+              size={45}
+              icon="close"
             />
           )}
-          <View style={{ flex: 1 }} />
-          {!isReadOnly && (
-            <IconButton
-              size={40}
-              onPress={handleDelete}
-              icon={task.trash ? "restore_from_trash" : "delete"}
-            />
-          )}
-          {!task.parentTaskId && <TaskShareButton />}
-          {!isReadOnly && <TaskCompleteButton />}
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+            }}
+          >
+            <TaskMoreMenu handleDelete={handleDelete} />
+            {!task.parentTaskId && <TaskShareButton />}
+            {!isReadOnly && <TaskCompleteButton />}
+          </View>
         </View>
       </View>
       <LinearGradient
         colors={[theme[2], "transparent"]}
-        style={{ height: 40, width: "100%", marginBottom: -40, zIndex: 1 }}
+        style={{ height: 40, width: "100%", marginBottom: -28, zIndex: 1 }}
       />
       <SafeScrollView showsHorizontalScrollIndicator={false}>
         <View
@@ -302,11 +523,14 @@ export function TaskDrawerContent({
                   </Icon>
                 </Animated.View>
               }
+              outlined
               style={{
                 borderRadius: 10,
+                borderWidth: 1,
+                borderColor: task.pinned ? labelColors.orange[11] : theme[4],
                 backgroundColor: task.pinned
                   ? labelColors.orange[11]
-                  : addHslAlpha(theme[11], 0.05),
+                  : "transparent",
               }}
             />
             {task && !task.parentTaskId && (
@@ -329,11 +553,11 @@ export function TaskDrawerContent({
                     )
                   }
                   label={task?.collection?.name || "Add label"}
+                  outlined
                   style={{
                     borderRadius: 10,
-                    backgroundColor: task.label
-                      ? addHslAlpha(labelColors[task.label.color][11], 0.05)
-                      : addHslAlpha(theme[11], 0.05),
+                    borderWidth: 1,
+                    borderColor: theme[4],
                   }}
                   {...(task.label && {
                     icon: <Emoji emoji={task.label.emoji} size={20} />,
@@ -358,4 +582,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-

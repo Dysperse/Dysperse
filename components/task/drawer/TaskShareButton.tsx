@@ -44,7 +44,7 @@ export function TaskShareButton() {
     <>
       <IconButton
         // variant="outlined"
-        size={40}
+        size={45}
         icon="ios_share"
         onPress={handleOpen}
       />
@@ -87,4 +87,3 @@ export function TaskShareButton() {
     </>
   );
 }
-

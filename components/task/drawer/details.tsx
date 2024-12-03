@@ -2,17 +2,13 @@ import { ImageViewer } from "@/components/ImageViewer";
 import { Entity } from "@/components/collections/entity";
 import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
-import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
-import Modal from "@/ui/Modal";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -500,186 +496,6 @@ export const normalizeRecurrenceRuleObject = (rule) => {
     ...(rule.dtstart && { dtstart: dayjs(rule.dtstart).toDate() }),
   });
 };
-
-function AISubtask() {
-  const modalRef = useRef();
-  const theme = useColorTheme();
-  const { sessionToken } = useUser();
-  const [isLoading, setIsLoading] = useState(false);
-  const { task, updateTask } = useTaskDrawerContext();
-
-  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
-  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
-  const [isCreationLoading, setIsCreationLoading] = useState(false);
-
-  const handleAddSubtasks = async () => {
-    setIsCreationLoading(true);
-    try {
-      const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
-
-      const t = await sendApiRequest(
-        sessionToken,
-        "PATCH",
-        "space/entity",
-        {},
-        {
-          body: JSON.stringify({
-            entities: subtasks.map((subtask) => ({
-              name: subtask.title,
-              type: "TASK",
-              parentTask: task,
-              parentId: task.id,
-              note: subtask.description,
-              collectionId: task.collectionId,
-            })),
-          }),
-        }
-      );
-      updateTask(
-        "subtasks",
-        {
-          ...task.subtasks,
-          ...t.reduce((acc, curr) => {
-            acc[curr.id] = curr;
-            return acc;
-          }, {}),
-        },
-        false
-      );
-      modalRef.current?.close();
-    } catch (e) {
-      Toast.show({ type: "error" });
-    } finally {
-      setIsCreationLoading(false);
-    }
-  };
-
-  return (
-    <>
-      <Button
-        icon="magic_button"
-        text="Generate"
-        dense
-        style={{ gap: 10, opacity: 0.6, marginBottom: -3, marginLeft: "auto" }}
-        onPress={() => {
-          setIsLoading(true);
-          modalRef.current?.present();
-
-          fetch("https://dysperse.koyeb.app/subtasks", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              message: task.name,
-            }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (!Array.isArray(data?.response))
-                throw new Error("No response");
-              setGeneratedSubtasks(data.response);
-              setSelectedSubtasks(data.response.map((_, i) => i));
-              setIsLoading(false);
-            })
-            .catch((e) => {
-              setIsLoading(false);
-              Toast.show({ type: "error" });
-            });
-        }}
-      />
-      <Modal
-        maxWidth={400}
-        height="auto"
-        innerStyles={{ minHeight: 400 }}
-        animation="SCALE"
-        transformCenter
-        sheetRef={modalRef}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            padding: 20,
-          }}
-        >
-          <View>
-            <Text style={{ fontSize: 20 }} weight={900}>
-              AI subtasks
-            </Text>
-            <Text style={{ opacity: 0.6, fontSize: 13 }}>Experimental</Text>
-          </View>
-          <IconButton
-            icon="close"
-            onPress={() => modalRef.current?.close()}
-            variant="filled"
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          {!isLoading ? (
-            <View style={{ padding: 10, paddingTop: 0, marginTop: -10 }}>
-              {generatedSubtasks.map((subtask, i) => (
-                <ListItemButton
-                  key={i}
-                  onPress={() => {
-                    setSelectedSubtasks((prev) =>
-                      prev.includes(i)
-                        ? prev.filter((t) => t !== i)
-                        : [...prev, i]
-                    );
-                  }}
-                  style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 20,
-                  }}
-                  pressableStyle={{
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Icon
-                    filled={selectedSubtasks.includes(i)}
-                    style={{ marginTop: 2 }}
-                    size={30}
-                  >
-                    {selectedSubtasks.includes(i) ? "check_circle" : "circle"}
-                  </Icon>
-                  <ListItemText
-                    primary={subtask.title}
-                    secondary={subtask.description}
-                  />
-                </ListItemButton>
-              ))}
-
-              <View style={{ padding: 5 }}>
-                <Button
-                  isLoading={isCreationLoading}
-                  onPress={handleAddSubtasks}
-                  variant="filled"
-                  large
-                  bold
-                  text={`Add ${selectedSubtasks.length} subtasks`}
-                  icon="add"
-                />
-              </View>
-            </View>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Spinner />
-            </View>
-          )}
-        </View>
-      </Modal>
-    </>
-  );
-}
-
 function SubtaskList() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
@@ -716,7 +532,6 @@ function SubtaskList() {
             }
           />
         </CreateTask>
-        <AISubtask />
       </ListItemButton>
       <View style={{ marginHorizontal: -15 }}>
         {typeof task.subtasks === "object" &&
@@ -787,17 +602,6 @@ export function TaskDetails() {
           )}
         </View> */}
       </ListItemButton>
-      <ListItemButton
-        style={{ marginTop: -7, opacity: 0.6 }}
-        pressableStyle={{ gap: 10 }}
-      >
-        <Icon size={20} style={{ marginTop: -3 }}>
-          filter_drama
-        </Icon>
-        <Text style={{ color: theme[11] }}>{`Synced with ${
-          task?.integrationParams?.from || "integration"
-        }`}</Text>
-      </ListItemButton>
       <TaskNote />
       {(isReadOnly && task.subtasks?.length === 0) ||
       task.parentTaskId ? null : (
@@ -806,4 +610,3 @@ export function TaskDetails() {
     </>
   );
 }
-

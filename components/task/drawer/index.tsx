@@ -241,6 +241,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
       {trigger}
       <Modal
         animation="BOTH"
+        disablePan={breakpoints.md}
         sheetRef={sheetRef}
         maxWidth={smallWidth ? 400 : 500}
         height="auto"
@@ -276,4 +277,3 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
-

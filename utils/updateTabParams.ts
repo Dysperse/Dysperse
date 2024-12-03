@@ -27,4 +27,3 @@ export const updateTabParams = async ({
   await mutateTabList();
   return res;
 };
-
