@@ -521,7 +521,8 @@ function SubtaskList() {
           defaultValues={{ parentTask: task }}
         >
           <Button
-            icon="add"
+            icon="keyboard_return"
+            iconStyle={{ transform: [{ scaleX: -1 }] }}
             style={{ gap: 10, opacity: 0.6 }}
             containerStyle={{ marginLeft: -13, marginTop: 5 }}
             dense
