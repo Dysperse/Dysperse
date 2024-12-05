@@ -193,7 +193,10 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
         ]}
       >
         {props.isLoading ? (
-          <Spinner color={props.spinnerColor} />
+          <Spinner
+            size={props.dense ? 16 : undefined}
+            color={props.spinnerColor}
+          />
         ) : (
           props.children ?? (
             <>

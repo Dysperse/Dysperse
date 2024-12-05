@@ -54,6 +54,21 @@ export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
   {}
 );
 
+function CollectionSidekick() {
+  return (
+    <MenuPopover
+      containerStyle={{ width: 200 }}
+      trigger={<IconButton icon="raven" />}
+      menuProps={{ rendererProps: { placement: "bottom" } }}
+      options={[
+        { text: "Categorize tasks", icon: "category" },
+        { text: "Balance workload", icon: "balance" },
+        { text: "Help me prioritize", icon: "priority" },
+      ]}
+    />
+  );
+}
+
 const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
 }: CollectionNavbarProps) {
@@ -239,8 +254,8 @@ const CollectionNavbar = memo(function CollectionNavbar({
             {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
               <CategoryLabelButtons />
             )}
-            {/* <IconButton icon="raven" /> */}
             <CollectionContext.Provider value={contextValue}>
+              {process.env.NODE_ENV === "development" && <CollectionSidekick />}
               {session && <CollectionSearch />}
               {!isLoading && !isReadOnly && !isAll && (
                 <MenuPopover
