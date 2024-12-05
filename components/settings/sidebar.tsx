@@ -113,9 +113,9 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           keywords: [],
         },
         {
-          name: "Catalyst",
-          icon: "local_fire_department",
-          href: "/settings/catalyst",
+          name: "Sidekick",
+          icon: "raven",
+          href: "/settings/sidekick",
           keywords: ["ai", "artificial", "intelligence", "machine", "dysperse"],
         },
         {
@@ -410,4 +410,3 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
-

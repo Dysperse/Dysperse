@@ -671,15 +671,14 @@ function SubtaskList() {
         defaultValues={{ parentTask: task }}
       >
         <Button
-          icon="keyboard_return"
-          iconStyle={{ transform: [{ scaleX: -1 }] }}
+          icon="prompt_suggestion"
           dense
           containerStyle={{
             marginRight: "auto",
             opacity: 0.6,
             marginLeft: 5,
           }}
-          style={{ gap: 7 }}
+          style={{ gap: 10 }}
           text={
             Object.keys(task.subtasks || {}).length === 0
               ? "Create subtask"
@@ -840,4 +839,3 @@ export function TaskDetails() {
     </>
   );
 }
-

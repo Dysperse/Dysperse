@@ -120,6 +120,10 @@ function AISubtask({ task, updateTask }) {
         <Icon>magic_button</Icon>
         <Text variant="menuItem">Generate subtasks</Text>
       </MenuItem>
+      <MenuItem>
+        <Icon>magic_button</Icon>
+        <Text variant="menuItem">Describe this task</Text>
+      </MenuItem>
       <Modal
         maxWidth={400}
         height="auto"
@@ -601,4 +605,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-
