@@ -239,7 +239,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
             {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
               <CategoryLabelButtons />
             )}
-            <IconButton icon="raven" />
+            {/* <IconButton icon="raven" /> */}
             <CollectionContext.Provider value={contextValue}>
               {session && <CollectionSearch />}
               {!isLoading && !isReadOnly && !isAll && (
