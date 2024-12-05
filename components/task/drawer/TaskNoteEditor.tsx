@@ -189,27 +189,6 @@ function Focuser({ setFocused }) {
     }
   }, [editor]);
 
-  useEffect(() => {
-    const t = () => {
-      setFocused(false);
-    };
-    editor.on("blur", t);
-
-    return () => {
-      editor.off("blur", t);
-    };
-  }, [editor, setFocused]);
-
-  useEffect(() => {
-    const t = () => {
-      setFocused(true);
-    };
-    editor.on("focus", t);
-
-    return () => {
-      editor.off("focus", t);
-    };
-  }, [editor, setFocused]);
   return null;
 }
 
@@ -237,9 +216,28 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     []
   );
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef) {
+      const element = containerRef.current;
+
+      element.addEventListener("focusout", (event) => {
+        if (!element.matches(":focus-within")) {
+          setFocused(false);
+        }
+      });
+
+      element.addEventListener("focusin", () => {
+        setFocused(true);
+      });
+    }
+  }, []);
+
   return (
     <div
       className="prose"
+      ref={containerRef}
       tabIndex={0}
       style={{
         position: "relative",

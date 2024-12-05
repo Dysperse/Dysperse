@@ -82,7 +82,7 @@ SplashScreen.preventAutoHideAsync();
 
 const useWebDevtoolsWarning = () => {
   useEffect(() => {
-    if (Platform.OS === "web") {
+    if (Platform.OS === "web" && process.env.NODE_ENV === "production") {
       setInterval(
         () =>
           (function () {
