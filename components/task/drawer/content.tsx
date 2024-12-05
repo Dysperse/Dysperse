@@ -21,8 +21,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
-import React, { useCallback, useRef, useState } from "react";
-import { View } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Keyboard, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -217,10 +217,25 @@ function TaskNameInput({ bottomSheet }) {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    // on keyboard close, blur the input
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        inputRef.current?.blur();
+      }
+    );
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   return (
     <>
       <AutoSizeTextArea
+        ref={inputRef}
         bottomSheet={bottomSheet}
         onBlur={() => {
           if (name === task.name) return;
@@ -229,7 +244,6 @@ function TaskNameInput({ bottomSheet }) {
         }}
         onChangeText={(text) => setName(text)}
         enterKeyHint="done"
-        textAlign="center"
         value={name}
         onKeyPress={(e) => {
           if (e.nativeEvent.key === "Enter" || e.nativeEvent.key === "Escape") {
@@ -582,3 +596,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+

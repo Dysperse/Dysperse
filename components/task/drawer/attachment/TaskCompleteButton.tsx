@@ -1,6 +1,7 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
@@ -19,6 +20,7 @@ export function TaskCompleteButton() {
     useTaskDrawerContext();
   const green = useColor("green");
   const { animatedIndex } = useBottomSheet();
+  const breakpoints = useResponsiveBreakpoints();
 
   const isCompleted = getTaskCompletionStatus(task, dateRange);
 
@@ -87,13 +89,13 @@ export function TaskCompleteButton() {
             marginLeft: 5,
             width: "auto",
             borderRadius: 16,
-            width: 140,
+            width: breakpoints.md ? 140 : 45,
           }}
           pressableStyle={{
             flexDirection: "row",
             gap: 10,
             paddingHorizontal: 10,
-            paddingRight: 14,
+            paddingRight: breakpoints.md ? 14 : undefined,
           }}
           backgroundColors={{
             default: isCompleted ? green[9] : theme[3],
@@ -112,15 +114,18 @@ export function TaskCompleteButton() {
           >
             check
           </Icon>
-          <Text
-            style={{
-              color: isCompleted ? green[1] : theme[11],
-            }}
-          >
-            {isCompleted ? "Complete!" : "Mark done"}
-          </Text>
+          {breakpoints.md && (
+            <Text
+              style={{
+                color: isCompleted ? green[1] : theme[11],
+              }}
+            >
+              {isCompleted ? "Complete!" : "Mark done"}
+            </Text>
+          )}
         </IconButton>
       </>
     )
   );
 }
+

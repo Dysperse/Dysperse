@@ -728,15 +728,18 @@ export function TaskDetails() {
 
   const addRecurrenceRef = useRef(null);
   const addDateRef = useRef(null);
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <>
       <MenuPopover
         menuProps={{
-          rendererProps: { placement: "bottom" },
           style: { marginRight: "auto" },
         }}
-        containerStyle={{ marginTop: -10, width: 190 }}
+        containerStyle={{
+          [breakpoints.md ? "marginTop" : "marginBottom"]: -10,
+          width: 190,
+        }}
         trigger={
           <Button
             containerStyle={{
