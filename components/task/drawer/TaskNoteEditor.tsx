@@ -184,6 +184,12 @@ function Focuser({ setFocused }) {
   const { editor } = useCurrentEditor();
 
   useEffect(() => {
+    if (editor.isEmpty) {
+      editor.commands.focus();
+    }
+  }, [editor]);
+
+  useEffect(() => {
     const t = () => {
       setFocused(false);
     };
@@ -260,6 +266,9 @@ export default forwardRef<any, object>(function TaskNoteEditor(
           onKeyDown: (e) => {
             if (e.key === "Escape") {
               e.target.blur();
+
+              const selection = window.getSelection();
+              selection?.removeAllRanges();
             }
           },
         }}

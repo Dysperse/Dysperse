@@ -5,6 +5,7 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
+import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -563,7 +564,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
             icon: "code",
             text: "Code block",
             callback: () =>
-              editorRef.current.editor.chain().focus().toggleCode().run(),
+              editorRef.current.editor.chain().focus().toggleCodeBlock().run(),
           },
           {
             icon: "horizontal_rule",
@@ -720,10 +721,20 @@ export function TaskDetails() {
   return (
     <>
       <MenuPopover
+        menuProps={{
+          rendererProps: { placement: "bottom" },
+          style: { marginRight: "auto" },
+        }}
+        containerStyle={{ marginTop: -10 }}
         trigger={
-          <ListItemButton
-            style={{ marginTop: -7, opacity: 0.6 }}
-            pressableStyle={{ gap: 10 }}
+          <Button
+            containerStyle={{
+              marginTop: -7,
+              marginLeft: 5,
+              opacity: 0.6,
+              marginRight: "auto",
+              backgroundColor: "red",
+            }}
           >
             <Icon size={20} style={{ marginTop: -3 }}>
               {task.start
@@ -733,9 +744,16 @@ export function TaskDetails() {
                 : "calendar_add_on"}
             </Icon>
             <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
-          </ListItemButton>
+          </Button>
         }
         options={[
+          {
+            icon: "edit",
+            text: "Edit",
+            callback: () => {
+              addDateRef.current.present();
+            },
+          },
           !isReadOnly &&
             (task.start || task.recurrenceRule) && {
               renderer: () => (
@@ -756,6 +774,12 @@ export function TaskDetails() {
       task.parentTaskId ? null : (
         <SubtaskList />
       )}
+
+      <DatePicker
+        ref={addDateRef}
+        value={task.start}
+        setValue={(date) => updateTask("start", date)}
+      />
     </>
   );
 }
