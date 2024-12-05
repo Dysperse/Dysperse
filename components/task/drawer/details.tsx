@@ -602,16 +602,21 @@ function TaskNote() {
   }));
 
   return !shouldShow ? (
-    <ListItemButton
-      style={{ marginTop: -7, opacity: 0.6, marginBottom: -7 }}
-      pressableStyle={{ gap: 10 }}
+    <Button
+      dense
       onPress={() => setHasClicked(true)}
+      containerStyle={{
+        marginRight: "auto",
+        opacity: 0.6,
+        marginLeft: 5,
+      }}
+      style={{ gap: 10 }}
     >
       <Icon size={20} style={{ marginTop: -3 }}>
         sticky_note_2
       </Icon>
       <Text style={{ color: theme[11] }}>Tap to add note</Text>
-    </ListItemButton>
+    </Button>
   ) : (
     <Animated.View style={focusedStyles}>
       <NoteInsertMenu isFocused={isFocused} editorRef={noteRef} />
@@ -642,36 +647,38 @@ function SubtaskList() {
 
   return (
     <>
-      <ListItemButton pressableStyle={{ paddingVertical: 0 }} disabled>
-        <CreateTask
-          mutate={() => {}}
-          onPress={() => {
-            if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
-              localStorage.setItem("subtaskTip", "true");
-              Toast.show({
-                type: "info",
-                text1: "Pro tip",
-                text2: "Tap twice on a task to open this popup",
-                visibilityTime: 5000,
-              });
-            }
+      <CreateTask
+        mutate={() => {}}
+        onPress={() => {
+          if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
+            localStorage.setItem("subtaskTip", "true");
+            Toast.show({
+              type: "info",
+              text1: "Pro tip",
+              text2: "Tap twice on a task to open this popup",
+              visibilityTime: 5000,
+            });
+          }
+        }}
+        defaultValues={{ parentTask: task }}
+      >
+        <Button
+          icon="keyboard_return"
+          iconStyle={{ transform: [{ scaleX: -1 }] }}
+          dense
+          containerStyle={{
+            marginRight: "auto",
+            opacity: 0.6,
+            marginLeft: 5,
           }}
-          defaultValues={{ parentTask: task }}
-        >
-          <Button
-            icon="keyboard_return"
-            iconStyle={{ transform: [{ scaleX: -1 }] }}
-            style={{ gap: 10, opacity: 0.6 }}
-            containerStyle={{ marginLeft: -13, marginTop: 5 }}
-            dense
-            text={
-              Object.keys(task.subtasks || {}).length === 0
-                ? "New subtask"
-                : `${Object.keys(task.subtasks || {}).length} subtasks`
-            }
-          />
-        </CreateTask>
-      </ListItemButton>
+          style={{ gap: 10 }}
+          text={
+            Object.keys(task.subtasks || {}).length === 0
+              ? "New subtask"
+              : `${Object.keys(task.subtasks || {}).length} subtasks`
+          }
+        />
+      </CreateTask>
       <View style={{ marginHorizontal: -15 }}>
         {typeof task.subtasks === "object" &&
           Object.values(task.subtasks).map((t) => (
@@ -729,12 +736,12 @@ export function TaskDetails() {
         trigger={
           <Button
             containerStyle={{
-              marginTop: -7,
-              marginLeft: 5,
-              opacity: 0.6,
               marginRight: "auto",
-              backgroundColor: "red",
+              opacity: 0.6,
+              marginLeft: 5,
             }}
+            style={{ gap: 10 }}
+            dense
           >
             <Icon size={20} style={{ marginTop: -3 }}>
               {task.start
