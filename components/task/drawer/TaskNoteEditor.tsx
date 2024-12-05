@@ -244,7 +244,9 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       style={{
         position: "relative",
         borderRadius: 10,
-        overflow: "hidden",
+        height: 500,
+        width: 500,
+        background: "red",
       }}
       onMouseDown={() => editorRef.current.editor.commands.focus()}
       onClick={() => editorRef.current.editor.commands.focus()}

@@ -1,6 +1,5 @@
 import { ImageViewer } from "@/components/ImageViewer";
 import { Entity } from "@/components/collections/entity";
-import { useSession } from "@/context/AuthProvider";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
@@ -597,7 +596,7 @@ function TaskNote() {
     backgroundColor: interpolateColor(
       isFocused.value,
       [0, 1],
-      [addHslAlpha(theme[5], 0), addHslAlpha(theme[5], 0.3)]
+      ["transparent", theme[3]]
     ),
   }));
 
@@ -640,9 +639,6 @@ export const normalizeRecurrenceRuleObject = (rule) => {
   });
 };
 function SubtaskList() {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { session } = useSession();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   return (
@@ -784,7 +780,7 @@ export function TaskDetails() {
 
       <DatePicker
         ref={addDateRef}
-        value={task.start}
+        value={task?.start || undefined}
         setValue={(date) => updateTask("start", date)}
       />
     </>
