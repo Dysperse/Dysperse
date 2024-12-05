@@ -11,12 +11,19 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import React, { Fragment, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Linking, Platform, StyleSheet, View } from "react-native";
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import CreateTask from "../create";
@@ -467,11 +474,131 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
   );
 }
 
+function NoteInsertMenu({ isFocused, editorRef }) {
+  const theme = useColorTheme();
+  const insertMenuStyles = useAnimatedStyle(() => ({
+    opacity: isFocused.value,
+    top: 0,
+    right: 0,
+    margin: 5,
+    zIndex: 9999,
+    position: "absolute",
+  }));
+
+  return (
+    <Animated.View style={insertMenuStyles}>
+      <MenuPopover
+        trigger={
+          <Button
+            onPress={() => {
+              editorRef.current.editor.commands.focus();
+            }}
+            {...(Platform.OS === "web"
+              ? {
+                  onMouseDown: () => editorRef.current.editor.commands.focus(),
+                }
+              : {})}
+            backgroundColors={{
+              default: addHslAlpha(theme[5], 0.7),
+              hovered: addHslAlpha(theme[5], 0.8),
+              pressed: addHslAlpha(theme[5], 0.9),
+            }}
+            icon="add"
+            text="Insert"
+            variant="filled"
+            dense
+          />
+        }
+        closeOnSelect
+        menuProps={{
+          onOpen: () => editorRef.current.editor.commands.focus(),
+          onClose: () => editorRef.current.editor.commands.focus(),
+        }}
+        options={[
+          {
+            renderer: () => (
+              <View style={{ flexDirection: "row" }}>
+                <MenuItem
+                  onPress={() =>
+                    editorRef.current.editor
+                      .chain()
+                      .focus()
+                      .toggleHeading({ level: 1 })
+                      .run()
+                  }
+                >
+                  <Icon>format_h1</Icon>
+                </MenuItem>
+                <MenuItem
+                  onPress={() =>
+                    editorRef.current.editor
+                      .chain()
+                      .focus()
+                      .toggleHeading({ level: 2 })
+                      .run()
+                  }
+                >
+                  <Icon>format_h2</Icon>
+                </MenuItem>
+                <MenuItem
+                  onPress={() =>
+                    editorRef.current.editor
+                      .chain()
+                      .focus()
+                      .toggleHeading({ level: 3 })
+                      .run()
+                  }
+                >
+                  <Icon>format_h3</Icon>
+                </MenuItem>
+              </View>
+            ),
+          },
+          { icon: "link", text: "Link", callback: () => {} },
+          { icon: "image", text: "Image", callback: () => {} },
+          { icon: "location_on", text: "Location", callback: () => {} },
+
+          { icon: "format_list_bulleted", text: "Bullets", callback: () => {} },
+          {
+            icon: "code",
+            text: "Code block",
+            callback: () =>
+              editorRef.current.editor.chain().focus().toggleCode().run(),
+          },
+          {
+            icon: "horizontal_rule",
+            text: "Divider",
+            callback: () =>
+              editorRef.current.editor
+                .chain()
+                .focus()
+                .setHorizontalRule()
+                .run(),
+          },
+        ]}
+      />
+    </Animated.View>
+  );
+}
+
 function TaskNote() {
   const theme = useColorTheme();
+  const noteRef = useRef(null);
   const { task } = useTaskDrawerContext();
   const [hasClicked, setHasClicked] = useState(false);
   const shouldShow = Boolean(task.note) || hasClicked;
+
+  const isFocused = useSharedValue(0);
+
+  const focusedStyles = useAnimatedStyle(() => ({
+    borderRadius: 10,
+    position: "relative",
+    backgroundColor: interpolateColor(
+      isFocused.value,
+      [0, 1],
+      [addHslAlpha(theme[5], 0), addHslAlpha(theme[5], 0.3)]
+    ),
+  }));
 
   return !shouldShow ? (
     <ListItemButton
@@ -485,11 +612,16 @@ function TaskNote() {
       <Text style={{ color: theme[11] }}>Tap to add note</Text>
     </ListItemButton>
   ) : (
-    <TaskNoteEditor
-      onEmptyBlur={() => setHasClicked(false)}
-      theme={theme}
-      content={task.note?.replaceAll("] (http", "](http")?.trim()}
-    />
+    <Animated.View style={focusedStyles}>
+      <NoteInsertMenu isFocused={isFocused} editorRef={noteRef} />
+      <TaskNoteEditor
+        ref={noteRef}
+        theme={theme}
+        dom={{ matchContents: true }}
+        setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
+        content={task.note?.replaceAll("] (http", "](http")?.trim()}
+      />
+    </Animated.View>
   );
 }
 
@@ -627,3 +759,4 @@ export function TaskDetails() {
     </>
   );
 }
+

@@ -37,8 +37,11 @@ body,
   }
 }
 
-*:not(.tiptap, .tiptap *) {
+*:not(.tiptap, .tiptap *, input, textarea) {
   cursor: default !important;
+}
+div[contenteditable="true"] {
+  cursor: text !important;
 }
 
 [role="button"],
@@ -216,3 +219,4 @@ input::-webkit-scrollbar {
     filter: blur(0px);
   }
 }
+
