@@ -596,7 +596,7 @@ function TaskNote() {
     backgroundColor: interpolateColor(
       isFocused.value,
       [0, 1],
-      ["transparent", theme[3]]
+      [addHslAlpha(theme[5], 0), addHslAlpha(theme[5], 0.3)]
     ),
   }));
 
