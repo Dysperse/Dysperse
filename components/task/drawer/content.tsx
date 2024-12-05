@@ -446,7 +446,7 @@ export function TaskDrawerContent({
         });
       }
     },
-    [updateTask, task]
+    [updateTask, task, theme]
   );
 
   useHotkeys(["delete", "backspace"], () => handleDelete(true));
