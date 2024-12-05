@@ -14,6 +14,7 @@ export default function Page() {
         alignItems: "center",
         justifyContent: "center",
         marginVertical: 50,
+        marginBottom: 20,
         overflow: "hidden",
         backgroundColor: theme[3],
       }}
@@ -24,14 +25,14 @@ export default function Page() {
       <Text
         weight={900}
         style={{
-          color: theme[11],
+          color: theme[12],
           fontSize: 50,
         }}
       >
         sidekick
       </Text>
       <Text
-        style={{ opacity: 0.6, fontSize: 20, marginTop: 5, color: theme[11] }}
+        style={{ opacity: 0.6, fontSize: 20, marginTop: 5, color: theme[12] }}
       >
         arriving 2025
       </Text>
