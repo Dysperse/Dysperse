@@ -8,7 +8,9 @@ import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -36,67 +38,71 @@ const drawerStyles = StyleSheet.create({
 });
 
 function TaskRescheduleButton({ task, updateTask }) {
-  const breakpoints = useResponsiveBreakpoints();
+  const sheetRef = useRef(null);
   const handleSelect = (t, n) => {
     updateTask("start", dayjs(task.start).add(n, t).toISOString());
   };
   const isSameDay = task.start && dayjs().isSame(dayjs(task.start), "day");
 
   return (
-    <MenuPopover
-      trigger={
-        <MenuItem>
-          <Icon>dark_mode</Icon>
-          <Text variant="menuItem">Snooze</Text>
-        </MenuItem>
-      }
-      menuProps={{
-        rendererProps: { placement: breakpoints.md ? "right" : "left" },
-      }}
-      options={[
-        {
-          renderer: () => (
-            <Text
-              variant="eyebrow"
-              style={{
-                textAlign: "center",
-                margin: 10,
-              }}
-            >
-              Snooze
-            </Text>
-          ),
-        },
-        {
-          text: isSameDay ? "Tomorrow" : "1 day",
-          callback: () => handleSelect("day", 1),
-        },
-        {
-          text: isSameDay ? "In 2 days" : "2 days",
-          callback: () => handleSelect("day", 2),
-        },
-        {
-          text: isSameDay ? "In 3 days" : "3 days",
-          callback: () => handleSelect("day", 3),
-        },
-        {
-          text: isSameDay ? "In 4 days" : "4 days",
-          callback: () => handleSelect("day", 5),
-        },
-        {
-          text: dayjs().isSame(dayjs(task.start), "week")
-            ? "Next week"
-            : "1 week",
-          callback: () => handleSelect("week", 1),
-        },
-        {
-          text: dayjs().isSame(dayjs(task.start), "month")
-            ? "Next month"
-            : "1 month",
-          callback: () => handleSelect("month", 1),
-        },
-      ]}
-    />
+    <>
+      <MenuItem onPress={() => sheetRef.current.present()}>
+        <Icon>dark_mode</Icon>
+        <Text variant="menuItem">Snooze</Text>
+      </MenuItem>
+      <Modal
+        animation="SCALE"
+        sheetRef={sheetRef}
+        innerStyles={{ padding: 20 }}
+        maxWidth={300}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            fontFamily: "serifText800",
+            fontSize: 35,
+            marginBottom: 20,
+            margin: 10,
+          }}
+        >
+          Snooze
+        </Text>
+        {[
+          {
+            text: isSameDay ? "Tomorrow" : "1 day",
+            callback: () => handleSelect("day", 1),
+          },
+          {
+            text: isSameDay ? "In 2 days" : "2 days",
+            callback: () => handleSelect("day", 2),
+          },
+          {
+            text: isSameDay ? "In 3 days" : "3 days",
+            callback: () => handleSelect("day", 3),
+          },
+          {
+            text: isSameDay ? "In 4 days" : "4 days",
+            callback: () => handleSelect("day", 5),
+          },
+          {
+            text: dayjs().isSame(dayjs(task.start), "week")
+              ? "Next week"
+              : "1 week",
+            callback: () => handleSelect("week", 1),
+          },
+          {
+            text: dayjs().isSame(dayjs(task.start), "month")
+              ? "Next month"
+              : "1 month",
+            callback: () => handleSelect("month", 1),
+          },
+        ].map(({ text, callback }) => (
+          <ListItemButton key={text} onPress={callback}>
+            <ListItemText primary={text} />
+          </ListItemButton>
+        ))}
+      </Modal>
+    </>
   );
 }
 
@@ -114,58 +120,63 @@ export const notificationScaleText = [
 ];
 
 function TaskNotificationsButton({ task, updateTask }) {
-  const breakpoints = useResponsiveBreakpoints();
+  const sheetRef = useRef(null);
 
   return (
-    <MenuPopover
-      trigger={
-        <MenuItem>
-          <Icon filled={task.notifications.length > 0}>
-            {task.notifications.length > 0
-              ? "notifications_active"
-              : "notifications_off"}
-          </Icon>
-          <Text variant="menuItem">
-            {task.notifications.length} notification
-            {task.notifications.length !== 1 && "s"}
-          </Text>
-        </MenuItem>
-      }
-      closeOnSelect={false}
-      menuProps={{
-        rendererProps: { placement: breakpoints.md ? "right" : "left" },
-      }}
-      options={[
-        {
-          renderer: () => (
-            <Text
-              variant="eyebrow"
-              style={{
-                textAlign: "center",
-                margin: 10,
-              }}
-            >
-              Remind me in
-            </Text>
-          ),
-        },
-        ...notificationScale.map((n, i) => ({
-          text: notificationScaleText[i]
-            .replace("m", " minutes")
-            .replace("h", " hours")
-            .replace("d", " day"),
-          selected: task.notifications.includes(n),
-          callback: () =>
-            updateTask(
-              "notifications",
-              (task.notifications.includes(n)
-                ? task.notifications.filter((i) => i !== n)
-                : [...task.notifications, n]
-              ).sort()
-            ),
-        })),
-      ]}
-    />
+    <>
+      <MenuItem onPress={() => sheetRef.current.present()}>
+        <Icon filled={task.notifications.length > 0}>
+          {task.notifications.length > 0
+            ? "notifications_active"
+            : "notifications_off"}
+        </Icon>
+        <Text variant="menuItem">
+          {task.notifications.length} notification
+          {task.notifications.length !== 1 && "s"}
+        </Text>
+      </MenuItem>
+      <Modal
+        animation="SCALE"
+        sheetRef={sheetRef}
+        innerStyles={{ padding: 20 }}
+        maxWidth={300}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            fontFamily: "serifText800",
+            fontSize: 35,
+            marginBottom: 20,
+            margin: 10,
+          }}
+        >
+          Remind me...
+        </Text>
+        {notificationScale
+          .map((n, i) => ({
+            text: notificationScaleText[i]
+              .replace("m", " minutes")
+              .replace("h", " hours")
+              .replace("d", " day"),
+            selected: task.notifications.includes(n),
+            callback: () =>
+              updateTask(
+                "notifications",
+                (task.notifications.includes(n)
+                  ? task.notifications.filter((i) => i !== n)
+                  : [...task.notifications, n]
+                ).sort()
+              ),
+          }))
+          .map(({ text, selected, callback }) => (
+            <ListItemButton key={text} onPress={callback}>
+              <Icon filled={selected}>notifications</Icon>
+              <ListItemText primary={`${text} before`} />
+              {selected && <Icon>check</Icon>}
+            </ListItemButton>
+          ))}
+      </Modal>
+    </>
   );
 }
 
