@@ -31,7 +31,7 @@ export default function Page() {
           gap: 5,
         }}
       >
-        <Icon size={60} style={{ color: theme[12] }}>
+        <Icon size={70} style={{ color: theme[12] }}>
           raven
         </Icon>
         <Text
