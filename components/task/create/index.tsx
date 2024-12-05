@@ -1077,39 +1077,32 @@ function SubTaskInformation({ watch, setValue }) {
         marginHorizontal: -25,
       }}
     >
-      <Collapsible
-        collapsed={!parentTask}
-        duration={200}
+      <View
         style={{
-          backgroundColor: addHslAlpha(theme[9], 0.15),
+          gap: 20,
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          backgroundColor: addHslAlpha(theme[9], 0.05),
+          paddingVertical: 10,
         }}
       >
-        <View
-          style={{
-            gap: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-          }}
-        >
-          <Icon bold style={{ color: theme[11] }}>
-            subdirectory_arrow_right
-          </Icon>
-          <View style={{ flex: 1, minWidth: 0 }}>
-            <Text weight={900} style={{ color: theme[11], fontSize: 16 }}>
-              Creating subtask
-            </Text>
-            <Text
-              style={{ opacity: 0.7, fontSize: 13, color: theme[11] }}
-              weight={300}
-              numberOfLines={1}
-            >
-              {parentTask?.name}
-            </Text>
-          </View>
+        <Icon bold style={{ color: theme[11] }}>
+          subdirectory_arrow_right
+        </Icon>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text weight={900} style={{ color: theme[11], fontSize: 16 }}>
+            Creating subtask
+          </Text>
+          <Text
+            style={{ opacity: 0.7, fontSize: 13, color: theme[11] }}
+            weight={300}
+            numberOfLines={1}
+          >
+            {parentTask?.name}
+          </Text>
         </View>
-      </Collapsible>
+      </View>
     </View>
   );
 }
