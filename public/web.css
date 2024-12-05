@@ -37,7 +37,7 @@ body,
   }
 }
 
-* {
+*:not(.tiptap, .tiptap *) {
   cursor: default !important;
 }
 
@@ -216,4 +216,3 @@ input::-webkit-scrollbar {
     filter: blur(0px);
   }
 }
-

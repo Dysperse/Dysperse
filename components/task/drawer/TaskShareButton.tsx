@@ -1,10 +1,6 @@
-import { Avatar } from "@/ui/Avatar";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
+import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
-import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { setStringAsync } from "expo-clipboard";
 import React, { useCallback, useRef } from "react";
@@ -42,11 +38,21 @@ export function TaskShareButton() {
 
   return isReadOnly ? null : (
     <>
-      <IconButton
-        // variant="outlined"
-        size={45}
-        icon="ios_share"
-        onPress={handleOpen}
+      <MenuPopover
+        trigger={<IconButton size={45} icon="ios_share" onPress={handleOpen} />}
+        containerStyle={{ width: 180 }}
+        options={[
+          {
+            icon: `toggle_${task.published ? "on" : "off"}`,
+            text: `Sharing ${task.published ? "enabled" : "disabled"}`,
+            callback: handleShare,
+          },
+          {
+            icon: "content_copy",
+            text: "Copy link",
+            callback: handleCopy,
+          },
+        ]}
       />
       <Modal
         animation="SCALE"
@@ -54,35 +60,7 @@ export function TaskShareButton() {
         snapPoints={[250]}
         sheetRef={menuRef}
       >
-        <View style={{ padding: 20 }}>
-          <Text
-            style={{ fontSize: 30, marginBottom: 10, marginLeft: 10 }}
-            weight={900}
-          >
-            Share
-          </Text>
-          <ListItemButton onPress={handleShare}>
-            <Avatar size={40} icon="ios_share" disabled />
-            <ListItemText
-              primary={`Sharing ${task.published ? "enabled" : "disabled"}`}
-              secondary={
-                task.published
-                  ? "Anyone with the link can view this task"
-                  : "Only you can view this task"
-              }
-            />
-            <Icon
-              size={35}
-              style={{ marginRight: 10, opacity: task.published ? 1 : 0.7 }}
-            >
-              {task.published ? "toggle_on" : "toggle_off"}
-            </Icon>
-          </ListItemButton>
-          <ListItemButton onPress={() => handleCopy()}>
-            <Avatar size={40} icon="link" disabled />
-            <ListItemText primary="Copy link" />
-          </ListItemButton>
-        </View>
+        <View style={{ padding: 20 }}></View>
       </Modal>
     </>
   );

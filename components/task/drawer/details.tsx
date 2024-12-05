@@ -8,7 +8,7 @@ import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
-import MenuPopover from "@/ui/MenuPopover";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -27,9 +27,8 @@ const drawerStyles = StyleSheet.create({
   collapsibleMenuItem: { gap: 5, flex: 1, alignItems: "center" },
 });
 
-function TaskRescheduleButton() {
+function TaskRescheduleButton({ task, updateTask }) {
   const breakpoints = useResponsiveBreakpoints();
-  const { task, updateTask } = useTaskDrawerContext();
   const handleSelect = (t, n) => {
     updateTask("start", dayjs(task.start).add(n, t).toISOString());
   };
@@ -37,7 +36,12 @@ function TaskRescheduleButton() {
 
   return (
     <MenuPopover
-      trigger={<IconButton size={40} icon="dark_mode" />}
+      trigger={
+        <MenuItem>
+          <Icon>dark_mode</Icon>
+          <Text variant="menuItem">Snooze</Text>
+        </MenuItem>
+      }
       menuProps={{
         rendererProps: { placement: breakpoints.md ? "right" : "left" },
       }}
@@ -101,23 +105,23 @@ export const notificationScaleText = [
   "1d",
 ];
 
-function TaskNotificationsButton() {
+function TaskNotificationsButton({ task, updateTask }) {
   const breakpoints = useResponsiveBreakpoints();
-  const { task, updateTask } = useTaskDrawerContext();
 
   return (
     <MenuPopover
       trigger={
-        <IconButton
-          size={40}
-          icon={
-            <Icon filled={task.notifications.length > 0}>
-              {task.notifications.length > 0
-                ? "notifications_active"
-                : "notifications_off"}
-            </Icon>
-          }
-        />
+        <MenuItem>
+          <Icon filled={task.notifications.length > 0}>
+            {task.notifications.length > 0
+              ? "notifications_active"
+              : "notifications_off"}
+          </Icon>
+          <Text variant="menuItem">
+            {task.notifications.length} notification
+            {task.notifications.length !== 1 && "s"}
+          </Text>
+        </MenuItem>
       }
       closeOnSelect={false}
       menuProps={{
@@ -482,6 +486,7 @@ function TaskNote() {
     </ListItemButton>
   ) : (
     <TaskNoteEditor
+      onEmptyBlur={() => setHasClicked(false)}
       theme={theme}
       content={task.note?.replaceAll("] (http", "](http")?.trim()}
     />
@@ -582,27 +587,38 @@ export function TaskDetails() {
 
   return (
     <>
-      <ListItemButton
-        style={{ marginTop: -7, opacity: 0.6 }}
-        pressableStyle={{ gap: 10 }}
-      >
-        <Icon size={20} style={{ marginTop: -3 }}>
-          {task.start
-            ? "calendar_today"
-            : task.recurrenceRule
-            ? "loop"
-            : "calendar_add_on"}
-        </Icon>
-        <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
-        {/* <View style={{ flexDirection: "row" }}>
-          {!isReadOnly && (task.start || task.recurrenceRule) && (
-            <TaskNotificationsButton />
-          )}
-          {!isReadOnly && !task.recurrenceRule && task.start && (
-            <TaskRescheduleButton />
-          )}
-        </View> */}
-      </ListItemButton>
+      <MenuPopover
+        trigger={
+          <ListItemButton
+            style={{ marginTop: -7, opacity: 0.6 }}
+            pressableStyle={{ gap: 10 }}
+          >
+            <Icon size={20} style={{ marginTop: -3 }}>
+              {task.start
+                ? "calendar_today"
+                : task.recurrenceRule
+                ? "loop"
+                : "calendar_add_on"}
+            </Icon>
+            <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
+          </ListItemButton>
+        }
+        options={[
+          !isReadOnly &&
+            (task.start || task.recurrenceRule) && {
+              renderer: () => (
+                <TaskNotificationsButton task={task} updateTask={updateTask} />
+              ),
+            },
+          !isReadOnly &&
+            !task.recurrenceRule &&
+            task.start && {
+              renderer: () => (
+                <TaskRescheduleButton task={task} updateTask={updateTask} />
+              ),
+            },
+        ]}
+      />
       <TaskNote />
       {(isReadOnly && task.subtasks?.length === 0) ||
       task.parentTaskId ? null : (
