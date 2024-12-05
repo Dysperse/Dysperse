@@ -117,12 +117,7 @@ function AISubtask({ task, updateTask }) {
             });
         }}
       >
-        <Icon>magic_button</Icon>
         <Text variant="menuItem">Generate subtasks</Text>
-      </MenuItem>
-      <MenuItem>
-        <Icon>magic_button</Icon>
-        <Text variant="menuItem">Describe this task</Text>
       </MenuItem>
       <Modal
         maxWidth={400}
@@ -354,8 +349,28 @@ function TaskMoreMenu({ handleDelete }) {
         containerStyle={{ width: 230 }}
         options={[
           {
+            renderer: () => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  padding: 5,
+                  paddingTop: 10,
+                  paddingHorizontal: 10,
+                  gap: 10,
+                }}
+              >
+                <Icon style={{ color: theme[11], opacity: 0.6 }}>raven</Icon>
+                <Text variant="eyebrow">Sidekick</Text>
+              </View>
+            ),
+          },
+          {
+            text: "Describe this task",
+          },
+          {
             renderer: () => <AISubtask task={task} updateTask={updateTask} />,
           },
+          { divider: true },
           {
             icon: task.trash ? "restore_from_trash" : "delete",
             text: task.trash ? "Restore from trash" : "Move to trash",
