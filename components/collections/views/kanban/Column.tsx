@@ -7,7 +7,6 @@ import { useSession } from "@/context/AuthProvider";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
@@ -40,15 +39,16 @@ export const ColumnFinishedComponent = () => {
     <View
       style={{
         marginVertical: 20,
+        marginTop: 10,
         backgroundColor: theme[3],
         alignItems: "center",
         padding: 20,
         gap: 15,
         borderRadius: 20,
-        paddingVertical: 50,
+        paddingVertical: 30,
       }}
     >
-      <Emoji emoji="1f389" size={40} />
+      <Icon size={40}>{Math.random() > 0.5 ? "cheer" : "celebration"}</Icon>
       <View>
         <Text
           style={{
@@ -56,7 +56,7 @@ export const ColumnFinishedComponent = () => {
             color: theme[11],
             textAlign: "center",
           }}
-          weight={600}
+          weight={500}
         >
           You finished everything!
         </Text>

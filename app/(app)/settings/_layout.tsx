@@ -270,6 +270,7 @@ export default function Layout() {
                   "login/devices",
                   "index",
                   "tasks",
+                  "catalyst",
                   "storage",
                   "shortcuts",
                   "personal-information",

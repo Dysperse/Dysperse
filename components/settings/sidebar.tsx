@@ -113,6 +113,12 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           keywords: [],
         },
         {
+          name: "Catalyst",
+          icon: "local_fire_department",
+          href: "/settings/catalyst",
+          keywords: ["ai", "artificial", "intelligence", "machine", "dysperse"],
+        },
+        {
           name: "Integrations",
           icon: "interests",
           href: "/settings/account/integrations",
