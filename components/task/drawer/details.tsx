@@ -615,7 +615,7 @@ function TaskNote() {
       <Icon size={20} style={{ marginTop: -3 }}>
         sticky_note_2
       </Icon>
-      <Text style={{ color: theme[11] }}>Tap to add note</Text>
+      <Text style={{ color: theme[11] }}>Add note</Text>
     </Button>
   ) : (
     <Animated.View style={focusedStyles}>
@@ -668,10 +668,10 @@ function SubtaskList() {
             opacity: 0.6,
             marginLeft: 5,
           }}
-          style={{ gap: 10 }}
+          style={{ gap: 7 }}
           text={
             Object.keys(task.subtasks || {}).length === 0
-              ? "New subtask"
+              ? "Create subtask"
               : `${Object.keys(task.subtasks || {}).length} subtasks`
           }
         />
@@ -717,7 +717,7 @@ export function TaskDetails() {
           )}`,
       ]
     : [
-        task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "No date set",
+        task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "Set due date",
         task.end &&
         !(task.dateOnly && dayjs(task.start).isSame(dayjs(task.end), "day"))
           ? `to ${dayjs(task.end).format("MMM Do, YYYY")}`
@@ -736,7 +736,7 @@ export function TaskDetails() {
           rendererProps: { placement: "bottom" },
           style: { marginRight: "auto" },
         }}
-        containerStyle={{ marginTop: -10 }}
+        containerStyle={{ marginTop: -10, width: 190 }}
         trigger={
           <Button
             containerStyle={{
@@ -752,33 +752,58 @@ export function TaskDetails() {
                 ? "calendar_today"
                 : task.recurrenceRule
                 ? "loop"
-                : "calendar_add_on"}
+                : "calendar_today"}
             </Icon>
             <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
           </Button>
         }
-        options={[
-          {
-            icon: "edit",
-            text: "Edit",
-            callback: () => {
-              addDateRef.current.present();
-            },
-          },
-          !isReadOnly &&
-            (task.start || task.recurrenceRule) && {
-              renderer: () => (
-                <TaskNotificationsButton task={task} updateTask={updateTask} />
-              ),
-            },
-          !isReadOnly &&
-            !task.recurrenceRule &&
-            task.start && {
-              renderer: () => (
-                <TaskRescheduleButton task={task} updateTask={updateTask} />
-              ),
-            },
-        ]}
+        options={
+          isReadOnly
+            ? []
+            : [
+                ...(((task.start || task.recurrenceRule) && [
+                  {
+                    icon: "edit",
+                    text: "Edit",
+                    callback: () => {
+                      addDateRef.current.present();
+                    },
+                  },
+                  {
+                    renderer: () => (
+                      <TaskNotificationsButton
+                        task={task}
+                        updateTask={updateTask}
+                      />
+                    ),
+                  },
+                ]) ||
+                  []),
+                ...((!task.recurrenceRule &&
+                  !task.start && [
+                    {
+                      icon: "calendar_today",
+                      text: "Add date",
+                      callback: () => addDateRef.current.present(),
+                    },
+                    {
+                      icon: "loop",
+                      text: "Add recurrence",
+                      callback: () => addRecurrenceRef.current.present(),
+                    },
+                  ]) ||
+                  []),
+                !task.recurrenceRule &&
+                  task.start && {
+                    renderer: () => (
+                      <TaskRescheduleButton
+                        task={task}
+                        updateTask={updateTask}
+                      />
+                    ),
+                  },
+              ]
+        }
       />
       <TaskNote />
       {(isReadOnly && task.subtasks?.length === 0) ||
