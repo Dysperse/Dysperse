@@ -450,7 +450,7 @@ export function TaskDrawerContent({
   );
 
   useHotkeys(["delete", "backspace"], () => handleDelete(true));
-  useHotkeys(["!"], () => handlePriorityChange());
+  useHotkeys(["shift+1"], () => handlePriorityChange());
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {

@@ -1071,39 +1071,41 @@ function SubTaskInformation({ watch, setValue }) {
   const theme = useColorTheme();
 
   return (
-    <View
-      style={{
-        marginTop: -25,
-        marginHorizontal: -25,
-      }}
-    >
+    parentTask && (
       <View
         style={{
-          gap: 20,
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          backgroundColor: addHslAlpha(theme[9], 0.05),
-          paddingVertical: 10,
+          marginTop: -25,
+          marginHorizontal: -25,
         }}
       >
-        <Icon bold style={{ color: theme[11] }}>
-          subdirectory_arrow_right
-        </Icon>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text weight={900} style={{ color: theme[11], fontSize: 16 }}>
-            Creating subtask
-          </Text>
-          <Text
-            style={{ opacity: 0.7, fontSize: 13, color: theme[11] }}
-            weight={300}
-            numberOfLines={1}
-          >
-            {parentTask?.name}
-          </Text>
+        <View
+          style={{
+            gap: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            backgroundColor: addHslAlpha(theme[9], 0.05),
+            paddingVertical: 10,
+          }}
+        >
+          <Icon bold style={{ color: theme[11] }}>
+            subdirectory_arrow_right
+          </Icon>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text weight={900} style={{ color: theme[11], fontSize: 16 }}>
+              Creating subtask
+            </Text>
+            <Text
+              style={{ opacity: 0.7, fontSize: 13, color: theme[11] }}
+              weight={300}
+              numberOfLines={1}
+            >
+              {parentTask?.name}
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+    )
   );
 }
 
