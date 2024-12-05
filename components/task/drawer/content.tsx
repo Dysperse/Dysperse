@@ -355,11 +355,13 @@ function TaskMoreMenu({ handleDelete }) {
                   flexDirection: "row",
                   padding: 5,
                   paddingTop: 10,
-                  paddingHorizontal: 10,
-                  gap: 10,
+                  paddingHorizontal: 13,
+                  gap: 7,
                 }}
               >
-                <Icon style={{ color: theme[11], opacity: 0.6 }}>raven</Icon>
+                <Icon bold size={20} style={{ color: theme[11], opacity: 0.6 }}>
+                  raven
+                </Icon>
                 <Text variant="eyebrow">Sidekick</Text>
               </View>
             ),
@@ -370,7 +372,7 @@ function TaskMoreMenu({ handleDelete }) {
           {
             renderer: () => <AISubtask task={task} updateTask={updateTask} />,
           },
-          { divider: true },
+          { divider: true, key: "1" },
           {
             icon: task.trash ? "restore_from_trash" : "delete",
             text: task.trash ? "Restore from trash" : "Move to trash",
