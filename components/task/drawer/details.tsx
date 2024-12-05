@@ -9,6 +9,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
@@ -707,7 +708,14 @@ export function TaskDetails() {
     task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
 
   const dateName = recurrenceRule
-    ? [`Repeats ${recurrenceRule.toText()}`]
+    ? [
+        `Repeats ${recurrenceRule
+          .toText()
+          .replace(
+            "every week on Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+            "day"
+          )}`,
+      ]
     : [
         task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "No date set",
         task.end &&
@@ -739,7 +747,7 @@ export function TaskDetails() {
             style={{ gap: 10 }}
             dense
           >
-            <Icon size={20} style={{ marginTop: -3 }}>
+            <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
               {task.start
                 ? "calendar_today"
                 : task.recurrenceRule
@@ -780,8 +788,13 @@ export function TaskDetails() {
 
       <DatePicker
         ref={addDateRef}
-        value={task?.start || undefined}
+        value={dayjs(task?.start)}
         setValue={(date) => updateTask("start", date)}
+      />
+      <RecurrencePicker
+        setValue={(rule) => updateTask("recurrenceRule", rule)}
+        value={recurrenceRule}
+        ref={addRecurrenceRef}
       />
     </>
   );
