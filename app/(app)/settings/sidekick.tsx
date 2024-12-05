@@ -24,13 +24,15 @@ export default function Page() {
       <Text
         weight={900}
         style={{
-          color: theme[12],
+          color: theme[11],
           fontSize: 50,
         }}
       >
         sidekick
       </Text>
-      <Text style={{ opacity: 0.6, fontSize: 20, marginTop: 5, color: "#000" }}>
+      <Text
+        style={{ opacity: 0.6, fontSize: 20, marginTop: 5, color: theme[11] }}
+      >
         arriving 2025
       </Text>
     </ImageBackground>
