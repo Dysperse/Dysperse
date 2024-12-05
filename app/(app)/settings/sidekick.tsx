@@ -35,16 +35,17 @@ export default function Page() {
           raven
         </Icon>
         <Text
-          weight={900}
+          weight={300}
           style={{
             color: theme[12],
-            fontSize: 50,
+            fontSize: 60,
           }}
         >
           sidekick
         </Text>
       </View>
       <Text
+        weight={900}
         style={{ opacity: 0.6, fontSize: 20, marginTop: 5, color: theme[12] }}
       >
         arriving 2025
