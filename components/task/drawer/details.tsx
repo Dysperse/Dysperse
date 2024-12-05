@@ -724,7 +724,7 @@ export function TaskDetails() {
           .toText()
           .replace(
             "every week on Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
-            "day"
+            "every day"
           )}`,
       ]
     : [
@@ -780,7 +780,9 @@ export function TaskDetails() {
                     icon: "edit",
                     text: "Edit",
                     callback: () => {
-                      addDateRef.current.present();
+                      if (task.recurrenceRule)
+                        addRecurrenceRef.current.present();
+                      else addDateRef.current.present();
                     },
                   },
                   {
@@ -826,13 +828,13 @@ export function TaskDetails() {
       )}
 
       <DatePicker
+        value={{ date: null, dateOnly: true, end: null }}
+        setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
         ref={addDateRef}
-        value={dayjs(task?.start)}
-        setValue={(date) => updateTask("start", date)}
       />
       <RecurrencePicker
-        setValue={(rule) => updateTask("recurrenceRule", rule)}
-        value={recurrenceRule}
+        value={recurrenceRule?.options}
+        setValue={(value) => updateTask("recurrenceRule", value)}
         ref={addRecurrenceRef}
       />
     </>
