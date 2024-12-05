@@ -394,7 +394,7 @@ export function TaskDrawerContent({
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
-
+  const labelPickerRef = useRef(null);
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const handlePriorityChange = useCallback(() => {
@@ -451,6 +451,7 @@ export function TaskDrawerContent({
 
   useHotkeys(["delete", "backspace"], () => handleDelete(true));
   useHotkeys(["shift+1"], () => handlePriorityChange());
+  useHotkeys(["shift+3"], () => labelPickerRef.current?.present());
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {
@@ -556,6 +557,9 @@ export function TaskDrawerContent({
                   updateTask("label", e, false);
                 }}
                 onClose={() => {}}
+                sheetProps={{
+                  sheetRef: labelPickerRef,
+                }}
                 defaultCollection={collectionId as any}
               >
                 <Chip
