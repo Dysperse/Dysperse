@@ -491,7 +491,7 @@ export function TaskDrawerContent({
                 );
               }}
               size={45}
-              icon="close"
+              icon={breakpoints.md ? "close" : "west"}
             />
           )}
           <View

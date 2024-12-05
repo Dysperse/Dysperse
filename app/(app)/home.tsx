@@ -7,6 +7,7 @@ import { styles } from "@/components/home/styles";
 import { TodayText } from "@/components/home/today";
 import ContentWrapper from "@/components/layout/content";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
+import MenuIcon from "@/components/menuIcon";
 import { useUser } from "@/context/useUser";
 import { hslToHex } from "@/helpers/hslToHex";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -70,7 +71,7 @@ export const MenuButton = () => {
   return (
     <IconButton
       style={styles.menuButton}
-      icon="menu"
+      icon={<MenuIcon />}
       size={55}
       variant="outlined"
       onPress={() => sidebarRef.current.openDrawer()}

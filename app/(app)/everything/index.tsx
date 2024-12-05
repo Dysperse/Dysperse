@@ -2,6 +2,7 @@ import { Entity } from "@/components/collections/entity";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
+import MenuIcon from "@/components/menuIcon";
 import { useSession } from "@/context/AuthProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { sendApiRequest } from "@/helpers/api";
@@ -759,7 +760,7 @@ export default function Page() {
               style={{ alignItems: "center", flexDirection: "row", gap: 15 }}
             >
               <Icon style={{ opacity: 0.6 }}>
-                {breakpoints.md ? "arrow_back_ios_new" : "menu"}
+                {breakpoints.md ? "arrow_back_ios_new" : <MenuIcon />}
               </Icon>
             </View>
           }
@@ -812,3 +813,4 @@ export default function Page() {
     </ContentWrapper>
   );
 }
+

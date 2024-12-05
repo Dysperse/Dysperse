@@ -1,6 +1,7 @@
 import Content from "@/components/layout/content";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import MenuIcon from "@/components/menuIcon";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -20,7 +21,7 @@ export const MenuButton = () => {
 
   return (
     <IconButton
-      icon="menu"
+      icon={<MenuIcon />}
       size={55}
       variant="outlined"
       style={{

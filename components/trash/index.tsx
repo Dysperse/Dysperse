@@ -18,6 +18,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import MenuIcon from "../menuIcon";
 
 const DeleteAllButton = ({ handleDelete }) => {
   const breakpoints = useResponsiveBreakpoints();
@@ -77,7 +78,7 @@ export function Trash() {
             marginTop: insets.top,
             zIndex: 1,
           }}
-          icon="menu"
+          icon={<MenuIcon />}
           size={55}
           variant="outlined"
           onPress={() => sidebarRef.current.openDrawer()}
@@ -169,3 +170,4 @@ export function Trash() {
     </ContentWrapper>
   );
 }
+
