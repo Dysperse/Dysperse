@@ -369,7 +369,7 @@ function TaskMoreMenu({ handleDelete }) {
           process.env.NODE_ENV !== "production" && {
             text: "Describe this task",
           },
-          process.env.NODE_ENV !== "production" && {
+          {
             renderer: () => <AISubtask task={task} updateTask={updateTask} />,
           },
           process.env.NODE_ENV !== "production" && { divider: true, key: "1" },
