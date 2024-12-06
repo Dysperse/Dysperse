@@ -366,9 +366,14 @@ function TaskMoreMenu({ handleDelete }) {
           },
           process.env.NODE_ENV !== "production" && {
             text: "Describe this task",
+            callback: () => Toast.show({ text1: "Coming soon", type: "info" }),
           },
           {
             renderer: () => <AISubtask task={task} updateTask={updateTask} />,
+          },
+          process.env.NODE_ENV !== "production" && {
+            text: "Categorize this task",
+            callback: () => Toast.show({ text1: "Coming soon", type: "info" }),
           },
           process.env.NODE_ENV !== "production" && { divider: true, key: "1" },
           {
