@@ -17,7 +17,7 @@ import Accordion from "react-native-collapsible/Accordion";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-function AiIntegration({ sections, section, mutate }) {
+function AiIntegration({ sections, data, section, mutate }) {
   const apiKeyRef = useRef(null);
   const theme = useColorTheme();
   const { sessionToken } = useUser();
@@ -31,7 +31,7 @@ function AiIntegration({ sections, section, mutate }) {
         token: apiKeyRef?.current.value,
       });
       await mutate();
-      Toast.show({ type: "success" });
+      Toast.show({ type: "success", text1: "AI integration successful!" });
     } catch {
       apiKeyRef.current.focus();
       Toast.show({ type: "error" });
@@ -59,7 +59,8 @@ function AiIntegration({ sections, section, mutate }) {
         onSubmitEditing={handleSubmit}
         variant="filled+outlined"
         placeholder="API key"
-        style={{ flex: 1 }}
+        style={{ flex: 1, fontFamily: "mono" }}
+        defaultValue={data?.type === section.id ? data?.token : ""}
         inputRef={apiKeyRef}
       />
       <Button
@@ -84,7 +85,7 @@ export default function Page() {
   const theme = useColorTheme();
   const [activeSections, setActiveSections] = useState([]);
 
-  const { data, error } = useSWR(["ai"]);
+  const { data, mutate, error } = useSWR(["ai"]);
 
   if (process.env.NODE_ENV === "production")
     return (
@@ -193,9 +194,21 @@ export default function Page() {
               primary={section.header.primary}
               secondary={section.header.secondary}
             />
+            {data?.type === section.id && (
+              <Icon filled size={30}>
+                check_circle
+              </Icon>
+            )}
           </ListItemButton>
         )}
-        renderContent={(t) => <AiIntegration sections={sections} section={t} />}
+        renderContent={(t) => (
+          <AiIntegration
+            data={data}
+            mutate={mutate}
+            sections={sections}
+            section={t}
+          />
+        )}
         onChange={setActiveSections}
       />
     </SettingsScrollView>
