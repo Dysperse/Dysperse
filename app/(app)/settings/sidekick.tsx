@@ -154,21 +154,22 @@ export default function Page() {
   ];
 
   return (
-    <SettingsScrollView>
+    <SettingsScrollView contentContainerStyle={{ gap: 20 }}>
       <Text style={settingStyles.title}>Sidekick</Text>
       <Text style={{ marginBottom: 20 }}>
         Let Sidekick do the heavy lifting for you. Connect your AI accounts with
         Dysperse to get started.
       </Text>
 
-      {error && <ErrorAlert style={{ marginBottom: 20 }} />}
+      {error && <ErrorAlert />}
 
+      <Text style={settingStyles.heading}>Model</Text>
       <Accordion
         activeSections={activeSections}
         align="bottom"
         sections={sections}
         sectionContainerStyle={{ backgroundColor: "transparent" }}
-        containerStyle={{ gap: 10 }}
+        containerStyle={{ gap: 10, marginVertical: 5 }}
         renderHeader={(section) => (
           <ListItemButton
             variant="filled"
@@ -211,7 +212,17 @@ export default function Page() {
         )}
         onChange={setActiveSections}
       />
+
+      <Text style={settingStyles.heading}>About you</Text>
+      <Text>
+        Tell us about yourself to experience a more personalized Dysperse
+        Sidekick
+      </Text>
+
+      <ListItemButton variant="filled" style={{ marginTop: 10 }}>
+        <ListItemText primary="I am a student" />
+        <Icon>square</Icon>
+      </ListItemButton>
     </SettingsScrollView>
   );
 }
-

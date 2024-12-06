@@ -1,3 +1,4 @@
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 import LabelPicker from "@/components/labels/picker";
 import { STORY_POINT_SCALE } from "@/constants/workload";
 import { useUser } from "@/context/useUser";
@@ -38,7 +39,6 @@ import { TaskDetails } from "./details";
 
 function AISubtask({ task, updateTask }) {
   const modalRef = useRef(null);
-  const theme = useColorTheme();
   const { sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -191,6 +191,99 @@ function AISubtask({ task, updateTask }) {
                 />
               </View>
             </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </View>
+      </Modal>
+    </>
+  );
+}
+
+function AiExplanation({ task, updateTask }) {
+  const modalRef = useRef(null);
+  const { sessionToken } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const [generation, setGeneration] = useState([]);
+  const [isCreationLoading, setIsCreationLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsCreationLoading(true);
+    try {
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setIsCreationLoading(false);
+    }
+  };
+  return (
+    <>
+      <MenuItem
+        onPress={async () => {
+          setIsLoading(true);
+          modalRef.current?.present();
+
+          await sendApiRequest(
+            sessionToken,
+            "POST",
+            "ai/generate-explanation",
+            {},
+            { body: JSON.stringify({ task }) }
+          )
+            .then((data) => {
+              setGeneration(data);
+              setIsLoading(false);
+            })
+            .catch(() => {
+              setIsLoading(false);
+              Toast.show({ type: "error" });
+            });
+        }}
+      >
+        <Text variant="menuItem">Describe this task</Text>
+      </MenuItem>
+      <Modal
+        maxWidth={400}
+        height="auto"
+        innerStyles={{ minHeight: 400, flex: 1 }}
+        animation="SCALE"
+        transformCenter
+        sheetRef={modalRef}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 20 }} weight={900}>
+              AI Explanation
+            </Text>
+          </View>
+          <IconButton
+            icon="close"
+            onPress={() => modalRef.current?.close()}
+            variant="filled"
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          {!isLoading ? (
+            <ScrollView
+              style={{ flex: 1, padding: 20, paddingTop: 0, marginTop: -10 }}
+            >
+              <MarkdownRenderer>{generation}</MarkdownRenderer>
+            </ScrollView>
           ) : (
             <View
               style={{
@@ -365,8 +458,9 @@ function TaskMoreMenu({ handleDelete }) {
             ),
           },
           process.env.NODE_ENV !== "production" && {
-            text: "Describe this task",
-            callback: () => Toast.show({ text1: "Coming soon", type: "info" }),
+            renderer: () => (
+              <AiExplanation task={task} updateTask={updateTask} />
+            ),
           },
           {
             renderer: () => <AISubtask task={task} updateTask={updateTask} />,
@@ -625,4 +719,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-

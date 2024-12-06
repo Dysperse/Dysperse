@@ -18,7 +18,13 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
-import React, { Fragment, useCallback, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  Fragment,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Linking, Platform, StyleSheet, View } from "react-native";
 import Animated, {
@@ -486,6 +492,82 @@ function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
   );
 }
 
+function LinkModal({ children, onSubmit }) {
+  const modalRef = useRef(null);
+  const urlRef = useRef(null);
+  const nameRef = useRef(null);
+
+  const trigger = cloneElement(children, {
+    onPress: () => {
+      modalRef.current.present();
+      setTimeout(() => {
+        urlRef.current.focus();
+      }, 400);
+    },
+  });
+
+  const handleSubmit = () => {
+    try {
+      onSubmit({
+        name: nameRef.current.value || null,
+        url: new URL(urlRef.current.value),
+      });
+      modalRef.current.close();
+    } catch (e) {
+      Toast.show({ type: "error", text1: "Please insert a valid URL" });
+      setTimeout(() => {
+        urlRef.current.focus();
+      }, 400);
+    }
+  };
+
+  return (
+    <>
+      {trigger}
+      <Modal
+        sheetRef={modalRef}
+        maxWidth={350}
+        animation="SCALE"
+        innerStyles={{ padding: 20, gap: 10 }}
+      >
+        <View
+          style={{
+            marginBottom: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text weight={900} style={{ fontSize: 20 }}>
+            Insert link
+          </Text>
+          <IconButton icon="close" variant="filled" />
+        </View>
+        <TextField
+          onSubmitEditing={handleSubmit}
+          inputRef={urlRef}
+          variant="filled+outlined"
+          placeholder="URL"
+        />
+        <TextField
+          onSubmitEditing={handleSubmit}
+          inputRef={nameRef}
+          variant="filled+outlined"
+          placeholder="Display name (optional)"
+        />
+        <Button
+          variant="filled"
+          onPress={handleSubmit}
+          bold
+          large
+          text="Insert"
+          icon="add"
+        />
+      </Modal>
+    </>
+  );
+}
+
 function NoteInsertMenu({ isFocused, editorRef }) {
   const theme = useColorTheme();
   const insertMenuStyles = useAnimatedStyle(() => ({
@@ -566,7 +648,20 @@ function NoteInsertMenu({ isFocused, editorRef }) {
               </View>
             ),
           },
-          { icon: "link", text: "Link", callback: () => {} },
+          {
+            renderer: () => (
+              <LinkModal
+                onSubmit={(link) => {
+                  alert(JSON.stringify(link));
+                }}
+              >
+                <MenuItem>
+                  <Icon>link</Icon>
+                  <Text variant="menuItem">Link</Text>
+                </MenuItem>
+              </LinkModal>
+            ),
+          },
           { icon: "image", text: "Image", callback: () => {} },
           { icon: "location_on", text: "Location", callback: () => {} },
 
@@ -596,7 +691,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
 function TaskNote() {
   const theme = useColorTheme();
   const noteRef = useRef(null);
-  const { task } = useTaskDrawerContext();
+  const { task, updateTask } = useTaskDrawerContext();
   const [hasClicked, setHasClicked] = useState(false);
   const shouldShow = Boolean(task.note) || hasClicked;
 
@@ -633,6 +728,7 @@ function TaskNote() {
       <NoteInsertMenu isFocused={isFocused} editorRef={noteRef} />
       <TaskNoteEditor
         ref={noteRef}
+        updateTask={updateTask as any}
         theme={theme}
         dom={{ matchContents: true }}
         setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}

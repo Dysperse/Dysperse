@@ -203,7 +203,7 @@ const EditorRef = forwardRef((props, ref) => {
 });
 
 export default forwardRef<any, object>(function TaskNoteEditor(
-  { theme, content, setFocused }: any,
+  { theme, content, setFocused, updateTask }: any,
   ref
 ) {
   const editorRef = useRef<any>(null);
@@ -277,4 +277,3 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     </div>
   );
 });
-
