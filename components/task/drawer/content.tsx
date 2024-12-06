@@ -37,7 +37,8 @@ import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
 
 function AISubtask({ task, updateTask }) {
-  const modalRef = useRef();
+  const modalRef = useRef(null);
+  const theme = useColorTheme();
   const { sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,28 +91,24 @@ function AISubtask({ task, updateTask }) {
   return (
     <>
       <MenuItem
-        onPress={() => {
+        onPress={async () => {
           setIsLoading(true);
           modalRef.current?.present();
 
-          fetch("https://dysperse.koyeb.app/subtasks", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              message: task.name,
-            }),
-          })
-            .then((res) => res.json())
+          await sendApiRequest(
+            sessionToken,
+            "POST",
+            "ai/generate-subtasks",
+            {},
+            { body: JSON.stringify({ task }) }
+          )
             .then((data) => {
-              if (!Array.isArray(data?.response))
-                throw new Error("No response");
-              setGeneratedSubtasks(data.response);
-              setSelectedSubtasks(data.response.map((_, i) => i));
+              if (!Array.isArray(data)) throw new Error("No response");
+              setGeneratedSubtasks(data);
+              setSelectedSubtasks(data.map((_, i) => i));
               setIsLoading(false);
             })
-            .catch((e) => {
+            .catch(() => {
               setIsLoading(false);
               Toast.show({ type: "error" });
             });
@@ -122,7 +119,7 @@ function AISubtask({ task, updateTask }) {
       <Modal
         maxWidth={400}
         height="auto"
-        innerStyles={{ minHeight: 400 }}
+        innerStyles={{ minHeight: 400, flex: 1 }}
         animation="SCALE"
         transformCenter
         sheetRef={modalRef}
@@ -138,7 +135,6 @@ function AISubtask({ task, updateTask }) {
             <Text style={{ fontSize: 20 }} weight={900}>
               AI subtasks
             </Text>
-            <Text style={{ opacity: 0.6, fontSize: 13 }}>Experimental</Text>
           </View>
           <IconButton
             icon="close"
@@ -148,7 +144,9 @@ function AISubtask({ task, updateTask }) {
         </View>
         <View style={{ flex: 1 }}>
           {!isLoading ? (
-            <View style={{ padding: 10, paddingTop: 0, marginTop: -10 }}>
+            <View
+              style={{ flex: 1, padding: 10, paddingTop: 0, marginTop: -10 }}
+            >
               {generatedSubtasks.map((subtask, i) => (
                 <ListItemButton
                   key={i}
@@ -181,7 +179,7 @@ function AISubtask({ task, updateTask }) {
                 </ListItemButton>
               ))}
 
-              <View style={{ padding: 5 }}>
+              <View style={{ padding: 5, marginTop: "auto" }}>
                 <Button
                   isLoading={isCreationLoading}
                   onPress={handleAddSubtasks}
