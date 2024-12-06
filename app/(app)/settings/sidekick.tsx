@@ -31,7 +31,7 @@ function AiIntegration({ sections, data, section, mutate }) {
         token: apiKeyRef?.current.value,
       });
       await mutate();
-      Toast.show({ type: "success", text1: "AI integration successful!" });
+      Toast.show({ type: "success", text1: "Saved!" });
     } catch {
       apiKeyRef.current.focus();
       Toast.show({ type: "error" });
