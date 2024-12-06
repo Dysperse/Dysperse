@@ -348,7 +348,7 @@ function TaskMoreMenu({ handleDelete }) {
       <MenuPopover
         containerStyle={{ width: 230 }}
         options={[
-          {
+          process.env.NODE_ENV !== "production" && {
             renderer: () => (
               <View
                 style={{
@@ -366,13 +366,13 @@ function TaskMoreMenu({ handleDelete }) {
               </View>
             ),
           },
-          {
+          process.env.NODE_ENV !== "production" && {
             text: "Describe this task",
           },
-          {
+          process.env.NODE_ENV !== "production" && {
             renderer: () => <AISubtask task={task} updateTask={updateTask} />,
           },
-          { divider: true, key: "1" },
+          process.env.NODE_ENV !== "production" && { divider: true, key: "1" },
           {
             icon: task.trash ? "restore_from_trash" : "delete",
             text: task.trash ? "Restore from trash" : "Move to trash",
@@ -622,3 +622,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+
