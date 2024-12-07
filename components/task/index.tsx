@@ -171,6 +171,17 @@ export const TaskLabelChip = ({
   );
 };
 
+function getPreviewText(htmlString) {
+  // Use a regular expression to remove all tags and their contents (e.g., <img>)
+  const strippedString = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
+
+  // Trim the string to a desired length for a preview, e.g., 150 characters
+  const previewLength = 150;
+  return strippedString.length > previewLength
+    ? strippedString.substring(0, previewLength) + "..."
+    : strippedString;
+}
+
 const Task = memo(function Task({
   task,
   onTaskUpdate,
@@ -180,6 +191,7 @@ const Task = memo(function Task({
   isReadOnly,
   dateRange,
   planMode,
+  dense,
 }: {
   task: any;
   onTaskUpdate: (newData) => void;
@@ -189,6 +201,7 @@ const Task = memo(function Task({
   isReadOnly?: boolean;
   dateRange?: string;
   planMode?: boolean;
+  dense?: boolean;
 }) {
   const theme = useColorTheme();
   const blue = useColor("blue");
@@ -271,10 +284,10 @@ const Task = memo(function Task({
               onPress: handleSelect,
             })}
             pressableStyle={{
-              paddingTop: breakpoints.md ? 13 : 10,
-              paddingLeft: breakpoints.md ? 13 : 13,
-              paddingRight: breakpoints.md ? 13 : 13,
-              paddingBottom: breakpoints.md ? 8 : 10,
+              paddingTop: breakpoints.md ? (dense ? 8 : 13) : 10,
+              paddingLeft: 13,
+              paddingRight: 13,
+              paddingBottom: breakpoints.md ? (dense ? 3 : 8) : 10,
               ...(isSelected && { backgroundColor: blue[4] }),
             }}
             style={[
@@ -315,7 +328,7 @@ const Task = memo(function Task({
                 </Text>
                 {task.note ? (
                   <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
-                    {task.note.substring(0, 100).replaceAll("\n", " ")}
+                    {getPreviewText(task.note).substring(0, 100)}
                   </Text>
                 ) : null}
               </View>

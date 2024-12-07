@@ -1,9 +1,6 @@
-import { ImageViewer } from "@/components/ImageViewer";
 import { Entity } from "@/components/collections/entity";
-import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar } from "@/ui/Avatar";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -17,15 +14,8 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
-import React, {
-  cloneElement,
-  Fragment,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import React, { cloneElement, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Linking, Platform, StyleSheet, View } from "react-native";
 import Animated, {
@@ -376,122 +366,122 @@ export const handleLocationPress = (
   }
 };
 
-function TaskAttachmentPreview({ item }: { item: any; index: number }) {
-  const theme = useColorTheme();
-  const { session } = useUser();
+// function TaskAttachmentPreview({ item }: { item: any; index: number }) {
+//   const theme = useColorTheme();
+//   const { session } = useUser();
 
-  const { icon, name } = getAttachmentPreview(item);
-  const handleOpenPress = useCallback(() => {
-    if (isValidHttpUrl(item.data)) {
-      Linking.openURL(item.data?.val || item.data);
-    } else {
-      handleLocationPress(session, item);
-    }
-  }, [item, session]);
+//   const { icon, name } = getAttachmentPreview(item);
+//   const handleOpenPress = useCallback(() => {
+//     if (isValidHttpUrl(item.data)) {
+//       Linking.openURL(item.data?.val || item.data);
+//     } else {
+//       handleLocationPress(session, item);
+//     }
+//   }, [item, session]);
 
-  const SafeImageViewer = item.type === "IMAGE" ? ImageViewer : Fragment;
+//   const SafeImageViewer = item.type === "IMAGE" ? ImageViewer : Fragment;
 
-  return (
-    <SafeImageViewer image={item.data}>
-      <Button
-        onPress={handleOpenPress}
-        backgroundColors={attachmentButtonStyles(theme)}
-        borderColors={attachmentButtonStyles(theme)}
-        dense
-      >
-        {item.type === "IMAGE" ? (
-          <Image
-            source={{ uri: item.data }}
-            contentFit="contain"
-            contentPosition="center"
-            style={{ borderRadius: 20, width: 24, height: 24 }}
-          />
-        ) : (
-          <Icon>{icon || "attachment"}</Icon>
-        )}
-        <ButtonText>{item.name || name}</ButtonText>
-      </Button>
-    </SafeImageViewer>
-  );
-}
+//   return (
+//     <SafeImageViewer image={item.data}>
+//       <Button
+//         onPress={handleOpenPress}
+//         backgroundColors={attachmentButtonStyles(theme)}
+//         borderColors={attachmentButtonStyles(theme)}
+//         dense
+//       >
+//         {item.type === "IMAGE" ? (
+//           <Image
+//             source={{ uri: item.data }}
+//             contentFit="contain"
+//             contentPosition="center"
+//             style={{ borderRadius: 20, width: 24, height: 24 }}
+//           />
+//         ) : (
+//           <Icon>{icon || "attachment"}</Icon>
+//         )}
+//         <ButtonText>{item.name || name}</ButtonText>
+//       </Button>
+//     </SafeImageViewer>
+//   );
+// }
 
-function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-  const { icon } = getAttachmentPreview(item);
+// function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
+//   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+//   const { icon } = getAttachmentPreview(item);
 
-  const editable =
-    !isReadOnly && !(item.type === "LOCATION" && item?.data?.rich);
+//   const editable =
+//     !isReadOnly && !(item.type === "LOCATION" && item?.data?.rich);
 
-  const handleDeletePress = useCallback(() => {
-    updateTask(
-      "attachments",
-      task.attachments.filter((_, i) => i !== index)
-    );
-  }, [updateTask, task, index]);
+//   const handleDeletePress = useCallback(() => {
+//     updateTask(
+//       "attachments",
+//       task.attachments.filter((_, i) => i !== index)
+//     );
+//   }, [updateTask, task, index]);
 
-  return (
-    <ListItemButton style={{ paddingLeft: 40 }} disabled>
-      <Avatar icon={icon} style={{ borderRadius: 7 }} />
-      <View style={{ flex: 1, gap: 5 }}>
-        {!(item.type === "LOCATION" && !item?.data?.rich) && (
-          <TextField
-            variant="filled+outlined"
-            editable={editable}
-            defaultValue={item?.data?.name || item.name}
-            placeholder="(Optional) Friendly name…"
-            style={{
-              paddingVertical: 3,
-              paddingHorizontal: 10,
-              borderRadius: 5,
-            }}
-            onBlur={(e) => {
-              if (!e.nativeEvent.text.trim()) return;
-              if (!editable) return;
-              updateTask(
-                "attachments",
-                task.attachments.map((attachment, i) =>
-                  i === index
-                    ? { ...attachment, name: e.nativeEvent.text }
-                    : attachment
-                )
-              );
-            }}
-          />
-        )}
-        <TextField
-          variant="filled+outlined"
-          editable={editable}
-          defaultValue={item?.data?.full_name || item.data?.val || item.data}
-          placeholder={item.type === "LINK" ? "Link…" : "Location…"}
-          style={{
-            paddingVertical: 3,
-            paddingHorizontal: 10,
-            borderRadius: 5,
-          }}
-          onBlur={(e) => {
-            if (!editable) return;
-            updateTask(
-              "attachments",
-              task.attachments.map((attachment, i) =>
-                i === index
-                  ? { ...attachment, data: e.nativeEvent.text }
-                  : attachment
-              )
-            );
-          }}
-        />
-      </View>
-      {item.type === "IMAGE" && (
-        <Image
-          source={{ uri: item.data }}
-          style={{ borderRadius: 20 }}
-          transition={100}
-        />
-      )}
-      <IconButton icon="remove_circle" onPress={handleDeletePress} />
-    </ListItemButton>
-  );
-}
+//   return (
+//     <ListItemButton style={{ paddingLeft: 40 }} disabled>
+//       <Avatar icon={icon} style={{ borderRadius: 7 }} />
+//       <View style={{ flex: 1, gap: 5 }}>
+//         {!(item.type === "LOCATION" && !item?.data?.rich) && (
+//           <TextField
+//             variant="filled+outlined"
+//             editable={editable}
+//             defaultValue={item?.data?.name || item.name}
+//             placeholder="(Optional) Friendly name…"
+//             style={{
+//               paddingVertical: 3,
+//               paddingHorizontal: 10,
+//               borderRadius: 5,
+//             }}
+//             onBlur={(e) => {
+//               if (!e.nativeEvent.text.trim()) return;
+//               if (!editable) return;
+//               updateTask(
+//                 "attachments",
+//                 task.attachments.map((attachment, i) =>
+//                   i === index
+//                     ? { ...attachment, name: e.nativeEvent.text }
+//                     : attachment
+//                 )
+//               );
+//             }}
+//           />
+//         )}
+//         <TextField
+//           variant="filled+outlined"
+//           editable={editable}
+//           defaultValue={item?.data?.full_name || item.data?.val || item.data}
+//           placeholder={item.type === "LINK" ? "Link…" : "Location…"}
+//           style={{
+//             paddingVertical: 3,
+//             paddingHorizontal: 10,
+//             borderRadius: 5,
+//           }}
+//           onBlur={(e) => {
+//             if (!editable) return;
+//             updateTask(
+//               "attachments",
+//               task.attachments.map((attachment, i) =>
+//                 i === index
+//                   ? { ...attachment, data: e.nativeEvent.text }
+//                   : attachment
+//               )
+//             );
+//           }}
+//         />
+//       </View>
+//       {item.type === "IMAGE" && (
+//         <Image
+//           source={{ uri: item.data }}
+//           style={{ borderRadius: 20 }}
+//           transition={100}
+//         />
+//       )}
+//       <IconButton icon="remove_circle" onPress={handleDeletePress} />
+//     </ListItemButton>
+//   );
+// }
 
 function LinkModal({ children, onSubmit }) {
   const modalRef = useRef(null);
@@ -726,9 +716,18 @@ function NoteInsertMenu({ isFocused, editorRef }) {
             ),
           },
           { icon: "image", text: "Image", callback: pickImageAsync },
-          { icon: "location_on", text: "Location", callback: () => {} },
+          {
+            icon: "location_on",
+            text: "Location",
+            callback: () => Toast.show({ type: "info", text1: "Coming soon!" }),
+          },
 
-          { icon: "format_list_bulleted", text: "Bullets", callback: () => {} },
+          {
+            icon: "format_list_bulleted",
+            text: "Bullets",
+            callback: () =>
+              editorRef.current.editor.chain().focus().toggleBulletList().run(),
+          },
           {
             icon: "code",
             text: "Code block",
@@ -845,10 +844,15 @@ function SubtaskList() {
           }
         />
       </CreateTask>
-      <View style={{ marginHorizontal: -15 }}>
+      <View
+        style={{
+          marginBottom: Object.keys(task.subtasks || {}).length === 0 ? 0 : 10,
+        }}
+      >
         {typeof task.subtasks === "object" &&
           Object.values(task.subtasks).map((t) => (
             <Entity
+              dense
               isReadOnly={isReadOnly}
               item={t}
               onTaskUpdate={(newTask) => {
@@ -869,7 +873,7 @@ function SubtaskList() {
   );
 }
 
-export function TaskDetails() {
+function TaskDateMenu() {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
@@ -901,6 +905,26 @@ export function TaskDetails() {
 
   return (
     <>
+      <DatePicker
+        value={{ date: null, dateOnly: true, end: null }}
+        setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
+        ref={addDateRef}
+      />
+      <RecurrencePicker
+        value={recurrenceRule?.options}
+        setValue={(value) => updateTask("recurrenceRule", value)}
+        ref={addRecurrenceRef}
+      />
+      <DatePicker
+        value={{ date: null, dateOnly: true, end: null }}
+        setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
+        ref={addDateRef}
+      />
+      <RecurrencePicker
+        value={recurrenceRule?.options}
+        setValue={(value) => updateTask("recurrenceRule", value)}
+        ref={addRecurrenceRef}
+      />
       <MenuPopover
         menuProps={{
           style: { marginRight: "auto" },
@@ -979,6 +1003,22 @@ export function TaskDetails() {
               ]
         }
       />
+    </>
+  );
+}
+
+export function TaskDetails() {
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+
+  const recurrenceRule =
+    task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
+
+  const addRecurrenceRef = useRef(null);
+  const addDateRef = useRef(null);
+
+  return (
+    <>
+      {!task.parentTaskId && <TaskDateMenu />}
       {(isReadOnly && task.subtasks?.length === 0) ||
       task.parentTaskId ? null : (
         <SubtaskList />
