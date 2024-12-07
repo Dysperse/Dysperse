@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
 import React, { cloneElement, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Linking, Platform, StyleSheet, View } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
@@ -29,10 +29,6 @@ import { RRule } from "rrule";
 import CreateTask from "../create";
 import TaskNoteEditor from "./TaskNoteEditor";
 import { useTaskDrawerContext } from "./context";
-
-const drawerStyles = StyleSheet.create({
-  collapsibleMenuItem: { gap: 5, flex: 1, alignItems: "center" },
-});
 
 function TaskRescheduleButton({ task, updateTask }) {
   const sheetRef = useRef(null);

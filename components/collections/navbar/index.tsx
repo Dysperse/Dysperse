@@ -5,6 +5,7 @@ import SelectionNavbar from "@/components/layout/SelectionNavbar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import MenuIcon from "@/components/menuIcon";
 import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -56,13 +57,19 @@ export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
 );
 
 function CollectionSidekick() {
+  const { session } = useUser();
+
   return (
     <MenuPopover
       containerStyle={{ width: 200 }}
       trigger={
-        <SidekickComingSoonModal>
+        session.user?.betaTester ? (
           <IconButton icon="raven" />
-        </SidekickComingSoonModal>
+        ) : (
+          <SidekickComingSoonModal>
+            <IconButton icon="raven" />
+          </SidekickComingSoonModal>
+        )
       }
       menuProps={{ rendererProps: { placement: "bottom" } }}
       options={[

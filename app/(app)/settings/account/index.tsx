@@ -499,12 +499,12 @@ function DeleteAccountSection() {
 }
 
 function BetaTesterSection() {
-  const { session, mutate } = useUser();
+  const { session, sessionToken, mutate } = useUser();
   const isBetaTester = session?.user?.betaTester;
 
   const handleSave = () => {
     sendApiRequest(
-      session?.token,
+      sessionToken,
       "PUT",
       "user/account",
       {},
