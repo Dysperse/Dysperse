@@ -281,6 +281,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       const element = containerRef.current;
 
       element.addEventListener("focusout", (event) => {
+        element.spellcheck = false;
         if (!element.matches(":focus-within")) {
           setFocused(false);
           const selection = window.getSelection();
@@ -289,6 +290,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       });
 
       element.addEventListener("focusin", () => {
+        element.spellcheck = true;
         setFocused(true);
       });
     }
@@ -297,6 +299,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
   return (
     <div
       className="prose"
+      spellCheck={false}
       ref={containerRef}
       tabIndex={0}
       style={{
