@@ -23,7 +23,7 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Keyboard, View } from "react-native";
+import { Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -119,8 +119,11 @@ function AISubtask({ task, updateTask }) {
       <Modal
         maxWidth={400}
         height="auto"
-        innerStyles={{ minHeight: 400, flex: 1 }}
-        animation="SCALE"
+        innerStyles={{
+          minHeight: 400,
+          flex: Platform.OS === "web" ? 1 : undefined,
+        }}
+        animation="BOTH"
         transformCenter
         sheetRef={modalRef}
       >
@@ -254,8 +257,11 @@ function AiExplanation({ task, updateTask }) {
       <Modal
         maxWidth={400}
         height="auto"
-        innerStyles={{ minHeight: 400, flex: 1 }}
-        animation="SCALE"
+        innerStyles={{
+          minHeight: 400,
+          flex: Platform.OS === "web" ? 1 : undefined,
+        }}
+        animation="BOTH"
         transformCenter
         sheetRef={modalRef}
       >
@@ -637,7 +643,7 @@ export function TaskDrawerContent({
                 );
               }}
               size={45}
-              variant="outlined"
+              variant={breakpoints.md ? "outlined" : "text"}
               icon={breakpoints.md ? "close" : "west"}
             />
           )}
@@ -693,7 +699,7 @@ export function TaskDrawerContent({
               style={{
                 borderRadius: 10,
                 borderWidth: 1,
-                borderColor: task.pinned ? labelColors.orange[11] : undefined,
+                ...(task.pinned && { borderColor: labelColors.orange[11] }),
                 backgroundColor: task.pinned
                   ? labelColors.orange[11]
                   : undefined,

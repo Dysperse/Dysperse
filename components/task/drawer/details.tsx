@@ -15,7 +15,12 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
-import React, { cloneElement, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Linking, Platform, View } from "react-native";
 import Animated, {
@@ -605,11 +610,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
       //   ...(task?.attachments || []),
       //   { type: "IMAGE", data: res.data.display_url },
       // ]);
-      editorRef.current.editor
-        .chain()
-        .focus()
-        .insertContent(`<img src="${res.data.display_url}" />`)
-        .run();
+      editorRef.current.insertImage("res.data.display_url");
       Toast.hide();
       Toast.show({ type: "success", text1: "Image attached!" });
     } else {
@@ -622,16 +623,11 @@ function NoteInsertMenu({ isFocused, editorRef }) {
       <MenuPopover
         trigger={
           <Button
-            onPress={() => {
-              editorRef.current.editor.commands.focus();
-            }}
+            onPress={() => editorRef.current.focus()}
             {...(Platform.OS === "web"
               ? {
                   onMouseDown: () =>
-                    setTimeout(
-                      () => editorRef.current.editor.commands.focus(),
-                      0
-                    ),
+                    setTimeout(() => editorRef.current.focus(), 0),
                 }
               : {})}
             backgroundColors={{
@@ -647,44 +643,20 @@ function NoteInsertMenu({ isFocused, editorRef }) {
         }
         closeOnSelect
         menuProps={{
-          onOpen: () => editorRef.current.editor.commands.focus(),
-          onClose: () => editorRef.current.editor.commands.focus(),
+          onOpen: () => editorRef.current.focus(),
+          onClose: () => editorRef.current.focus(),
         }}
         options={[
           {
             renderer: () => (
               <View style={{ flexDirection: "row" }}>
-                <MenuItem
-                  onPress={() =>
-                    editorRef.current.editor
-                      .chain()
-                      .focus()
-                      .toggleHeading({ level: 1 })
-                      .run()
-                  }
-                >
+                <MenuItem onPress={() => editorRef.current.insertHeading(1)}>
                   <Icon>format_h1</Icon>
                 </MenuItem>
-                <MenuItem
-                  onPress={() =>
-                    editorRef.current.editor
-                      .chain()
-                      .focus()
-                      .toggleHeading({ level: 2 })
-                      .run()
-                  }
-                >
+                <MenuItem onPress={() => editorRef.current.insertHeading(2)}>
                   <Icon>format_h2</Icon>
                 </MenuItem>
-                <MenuItem
-                  onPress={() =>
-                    editorRef.current.editor
-                      .chain()
-                      .focus()
-                      .toggleHeading({ level: 3 })
-                      .run()
-                  }
-                >
+                <MenuItem onPress={() => editorRef.current.insertHeading(3)}>
                   <Icon>format_h3</Icon>
                 </MenuItem>
               </View>
@@ -693,17 +665,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
           {
             renderer: () => (
               <LinkModal
-                onSubmit={(link) => {
-                  editorRef.current.editor
-                    .chain()
-                    .focus()
-                    .insertContent(
-                      `<a href="${link.url}" target="_blank">${
-                        link.name || link.url
-                      }</a>`
-                    )
-                    .run();
-                }}
+                onSubmit={(link) => editorRef.current.insertLink(link)}
               >
                 <MenuItem>
                   <Icon>link</Icon>
@@ -722,24 +684,17 @@ function NoteInsertMenu({ isFocused, editorRef }) {
           {
             icon: "format_list_bulleted",
             text: "Bullets",
-            callback: () =>
-              editorRef.current.editor.chain().focus().toggleBulletList().run(),
+            callback: () => editorRef.current.toggleBulletList(),
           },
           {
             icon: "code",
             text: "Code block",
-            callback: () =>
-              editorRef.current.editor.chain().focus().toggleCodeBlock().run(),
+            callback: () => editorRef.current.toggleCodeBlock(),
           },
           {
             icon: "horizontal_rule",
             text: "Divider",
-            callback: () =>
-              editorRef.current.editor
-                .chain()
-                .focus()
-                .setHorizontalRule()
-                .run(),
+            callback: () => editorRef.current.setHorizontalRule(),
           },
         ]}
       />
@@ -747,9 +702,86 @@ function NoteInsertMenu({ isFocused, editorRef }) {
   );
 }
 
+function NoteFormatMenu({ isFocused, editorRef, formatMenuRef }) {
+  const theme = useColorTheme();
+
+  const formatMenuStyles = useAnimatedStyle(() => ({
+    opacity: isFocused.value,
+    marginTop: withSpring(isFocused.value ? 0 : -40, {
+      damping: 30,
+      stiffness: 400,
+    }),
+  }));
+
+  const [selectionState, setSelectionState] = useState({
+    bold: false,
+    italic: false,
+    underline: false,
+  });
+
+  useImperativeHandle(formatMenuRef, () => ({
+    setSelectionState,
+  }));
+
+  return (
+    <Animated.View
+      style={[
+        formatMenuStyles,
+        {
+          flexDirection: "row",
+          height: 40,
+          borderBottomWidth: 1,
+          paddingHorizontal: 5,
+          borderBottomColor: addHslAlpha(theme[5], 0.6),
+        },
+      ]}
+    >
+      {[
+        {
+          id: "bold",
+          icon: "format_bold",
+          text: "Bold",
+          callback: () => editorRef.current.toggleBold(),
+        },
+        {
+          id: "italic",
+          icon: "format_italic",
+          text: "Italic",
+          callback: () => editorRef.current.toggleItalic(),
+        },
+        {
+          id: "underline",
+          icon: "format_underlined",
+          text: "Underline",
+          callback: () => editorRef.current.toggleUnderline(),
+        },
+      ].map(({ id, icon, text, callback }) => (
+        <IconButton
+          key={text}
+          icon={icon}
+          onPress={() => {
+            editorRef.current.focus();
+            callback();
+          }}
+          iconProps={{ bold: selectionState[id] }}
+          onPressIn={() => {
+            editorRef.current.focus();
+          }}
+          {...(Platform.OS === "web" && {
+            onMouseDown: () => setTimeout(() => editorRef.current.focus(), 0),
+          })}
+        />
+      ))}
+
+      <NoteInsertMenu isFocused={isFocused} editorRef={editorRef} />
+    </Animated.View>
+  );
+}
+
 function TaskNote() {
   const theme = useColorTheme();
   const noteRef = useRef(null);
+  const formatMenuRef = useRef(null);
   const { task, updateTask } = useTaskDrawerContext();
   const [hasClicked, setHasClicked] = useState(false);
   const shouldShow = Boolean(getPreviewText(task.note)) || hasClicked;
@@ -762,7 +794,10 @@ function TaskNote() {
     backgroundColor: interpolateColor(
       isFocused.value,
       [0, 1],
-      [addHslAlpha(theme[5], 0), addHslAlpha(theme[5], 0.3)]
+      [
+        theme[5].replace(")", `, ${0})`).replace("hsl", "hsla"),
+        theme[5].replace(")", `, ${0.3})`).replace("hsl", "hsla"),
+      ]
     ),
   }));
 
@@ -784,12 +819,19 @@ function TaskNote() {
     </Button>
   ) : (
     <Animated.View style={focusedStyles}>
-      <NoteInsertMenu isFocused={isFocused} editorRef={noteRef} />
+      <NoteFormatMenu
+        formatMenuRef={formatMenuRef}
+        isFocused={isFocused}
+        editorRef={noteRef}
+      />
       <TaskNoteEditor
         ref={noteRef}
+        setSelectionState={(state) =>
+          formatMenuRef.current.setSelectionState(state)
+        }
         updateTask={updateTask as any}
         theme={theme}
-        dom={{ matchContents: true }}
+        dom={{ matchContents: true, scrollEnabled: false }}
         setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
         content={task.note?.replaceAll("] (http", "](http")?.trim()}
       />
