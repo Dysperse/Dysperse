@@ -43,7 +43,7 @@ body,
 div[contenteditable="true"] {
   cursor: text !important;
 }
-
+.tiptap a,
 [role="button"],
 [role="button"] * {
   cursor: pointer !important;

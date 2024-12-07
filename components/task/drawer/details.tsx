@@ -18,6 +18,7 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import React, {
   cloneElement,
   Fragment,
@@ -506,11 +507,15 @@ function LinkModal({ children, onSubmit }) {
     },
   });
 
+  const removeTrailingSlash = (site) => {
+    return site.replace(/\/$/, "");
+  };
+
   const handleSubmit = () => {
     try {
       onSubmit({
         name: nameRef.current.value || null,
-        url: new URL(urlRef.current.value),
+        url: removeTrailingSlash(new URL(urlRef.current.value).toString()),
       });
       modalRef.current.close();
     } catch (e) {
@@ -579,6 +584,52 @@ function NoteInsertMenu({ isFocused, editorRef }) {
     position: "absolute",
   }));
 
+  const pickImageAsync = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
+    });
+
+    if (!result.canceled) {
+      Toast.show({
+        type: "info",
+        props: { loading: true },
+        text1: "Uploading image...",
+        swipeable: false,
+        visibilityTime: 1e9,
+      });
+      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
+      const file = new File([blob], result.assets[0].fileName, {
+        type: blob.type,
+      });
+      const form = new FormData();
+      form.append("image", file);
+
+      const res = await fetch(
+        "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
+        {
+          method: "POST",
+          body: form,
+        }
+      ).then((res) => res.json());
+      // updateTask("attachments", [
+      //   ...(task?.attachments || []),
+      //   { type: "IMAGE", data: res.data.display_url },
+      // ]);
+      editorRef.current.editor
+        .chain()
+        .focus()
+        .insertContent(`<img src="${res.data.display_url}" />`)
+        .run();
+      Toast.hide();
+      Toast.show({ type: "success", text1: "Image attached!" });
+    } else {
+      alert("You did not select any image.");
+    }
+  };
+
   return (
     <Animated.View style={insertMenuStyles}>
       <MenuPopover
@@ -589,7 +640,11 @@ function NoteInsertMenu({ isFocused, editorRef }) {
             }}
             {...(Platform.OS === "web"
               ? {
-                  onMouseDown: () => editorRef.current.editor.commands.focus(),
+                  onMouseDown: () =>
+                    setTimeout(
+                      () => editorRef.current.editor.commands.focus(),
+                      0
+                    ),
                 }
               : {})}
             backgroundColors={{
@@ -652,7 +707,15 @@ function NoteInsertMenu({ isFocused, editorRef }) {
             renderer: () => (
               <LinkModal
                 onSubmit={(link) => {
-                  alert(JSON.stringify(link));
+                  editorRef.current.editor
+                    .chain()
+                    .focus()
+                    .insertContent(
+                      `<a href="${link.url}" target="_blank">${
+                        link.name || link.url
+                      }</a>`
+                    )
+                    .run();
                 }}
               >
                 <MenuItem>
@@ -662,7 +725,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
               </LinkModal>
             ),
           },
-          { icon: "image", text: "Image", callback: () => {} },
+          { icon: "image", text: "Image", callback: pickImageAsync },
           { icon: "location_on", text: "Location", callback: () => {} },
 
           { icon: "format_list_bulleted", text: "Bullets", callback: () => {} },
@@ -916,12 +979,12 @@ export function TaskDetails() {
               ]
         }
       />
-      <TaskNote />
       {(isReadOnly && task.subtasks?.length === 0) ||
       task.parentTaskId ? null : (
         <SubtaskList />
       )}
 
+      <TaskNote />
       <DatePicker
         value={{ date: null, dateOnly: true, end: null }}
         setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
@@ -935,3 +998,4 @@ export function TaskDetails() {
     </>
   );
 }
+
