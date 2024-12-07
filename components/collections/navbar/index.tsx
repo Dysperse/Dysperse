@@ -1,3 +1,4 @@
+import { SidekickComingSoonModal } from "@/app/(app)/settings/sidekick";
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import SelectionNavbar from "@/components/layout/SelectionNavbar";
@@ -58,7 +59,11 @@ function CollectionSidekick() {
   return (
     <MenuPopover
       containerStyle={{ width: 200 }}
-      trigger={<IconButton icon="raven" />}
+      trigger={
+        <SidekickComingSoonModal>
+          <IconButton icon="raven" />
+        </SidekickComingSoonModal>
+      }
       menuProps={{ rendererProps: { placement: "bottom" } }}
       options={[
         { text: "Categorize tasks", icon: "category" },
