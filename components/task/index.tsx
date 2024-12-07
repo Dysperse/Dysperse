@@ -1,14 +1,33 @@
+import { useSelectionContext } from "@/context/SelectionContext";
+import { useGlobalTaskContext } from "@/context/globalTaskContext";
 import { useUser } from "@/context/useUser";
+import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import React, { memo } from "react";
-import { Linking } from "react-native";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import dayjs from "dayjs";
+import React, { memo, useMemo } from "react";
+import { Linking, Platform, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
+import Toast from "react-native-toast-message";
 import { ImageViewer } from "../ImageViewer";
-import { handleLocationPress, isValidHttpUrl } from "./drawer/details";
+import TaskCheckbox from "./Checkbox";
+import { TaskDrawer } from "./drawer";
+import {
+  handleLocationPress,
+  isValidHttpUrl,
+  normalizeRecurrenceRuleObject,
+} from "./drawer/details";
 
 export const videoChatPlatforms = [
   "zoom.us",
@@ -163,6 +182,217 @@ export function getPreviewText(htmlString) {
     ? strippedString.substring(0, previewLength) + "..."
     : strippedString;
 }
+
+const Task = memo(function Task({
+  task,
+  onTaskUpdate,
+  showLabel,
+  showRelativeTime,
+  showDate,
+  isReadOnly,
+  dateRange,
+  planMode,
+  dense,
+}: {
+  task: any;
+  onTaskUpdate: (newData) => void;
+  showLabel?: boolean;
+  showRelativeTime?: boolean;
+  showDate?: boolean;
+  isReadOnly?: boolean;
+  dateRange?: string;
+  planMode?: boolean;
+  dense?: boolean;
+}) {
+  const theme = useColorTheme();
+  const blue = useColor("blue");
+
+  const breakpoints = useResponsiveBreakpoints();
+  const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
+  const { selection, setSelection } = useSelectionContext() || {};
+  const { globalTaskCreateRef, wrapperRef } = useGlobalTaskContext() || {};
+
+  const handleSelect = () => {
+    if (isReadOnly || !setSelection) return;
+    setSelection((prev) =>
+      prev.includes(task.id)
+        ? prev.filter((e) => e !== task.id)
+        : [...prev, task.id]
+    );
+  };
+
+  const isSelected = useMemo(
+    () => selection?.includes(task.id),
+    [selection, task?.id]
+  );
+
+  const chipExists = useMemo(
+    () =>
+      task.note ||
+      (showRelativeTime && task.start) ||
+      (showDate && task.start) ||
+      task.recurrenceRule ||
+      (showLabel && task.label) ||
+      task.pinned ||
+      !task.dateOnly ||
+      task.attachments?.length > 0,
+    [task, showDate, showLabel, showRelativeTime]
+  );
+
+  const taskStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withSpring(isSelected ? 0.95 : 1, {
+          damping: 50,
+          stiffness: 600,
+        }),
+      },
+    ],
+  }));
+
+  return (
+    <>
+      <Animated.View
+        style={[taskStyle, task.parentTaskId && { marginLeft: 20 }]}
+      >
+        <TaskDrawer
+          smallWidth={task.parentTaskId}
+          onDoublePress={
+            task.parentTaskId
+              ? null
+              : () => {
+                  wrapperRef.current.setDefaultValues({ parentTask: task });
+                  globalTaskCreateRef.current.present();
+                  setTimeout(() => {
+                    globalTaskCreateRef.current.setValue("parentTask", task);
+                    wrapperRef.current.mutateValue((newTask) => {
+                      onTaskUpdate(newTask);
+                    });
+                  }, 100);
+                }
+          }
+          id={task.id}
+          mutateList={onTaskUpdate}
+          dateRange={dateRange}
+          isReadOnly={isReadOnly}
+          disabled={selection?.length > 0}
+        >
+          <ListItemButton
+            onLongPress={handleSelect}
+            {...(Platform.OS === "web" &&
+              breakpoints.md && { onContextMenu: handleSelect })}
+            {...(selection?.length > 0 && {
+              onPress: handleSelect,
+            })}
+            pressableStyle={{
+              paddingTop: breakpoints.md ? (dense ? 8 : 13) : 10,
+              paddingLeft: 13,
+              paddingRight: 13,
+              paddingBottom: breakpoints.md ? (dense ? 3 : 8) : 10,
+              ...(isSelected && { backgroundColor: blue[4] }),
+            }}
+            style={[
+              {
+                flexShrink: 0,
+                borderRadius: 25,
+                marginTop: breakpoints.md ? 0 : 3,
+                borderColor: "transparent",
+                ...(planMode && {
+                  borderWidth: 1,
+                  borderColor: theme[5],
+                  backgroundColor: theme[2],
+                  marginBottom: 10,
+                  borderRadius: 20,
+                }),
+                alignItems: "stretch",
+              },
+            ]}
+          >
+            <TaskCheckbox
+              isReadOnly={isReadOnly}
+              task={task}
+              mutateList={onTaskUpdate}
+            />
+            <View
+              style={[{ gap: 5, flex: 1 }, isCompleted && { opacity: 0.4 }]}
+            >
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    marginTop: chipExists ? -5 : 0,
+                    ...(isCompleted && {
+                      textDecorationLine: "line-through",
+                    }),
+                  }}
+                >
+                  {task.name}
+                </Text>
+                {task.note ? (
+                  <Text numberOfLines={1} weight={300} style={{ opacity: 0.7 }}>
+                    {getPreviewText(task.note).substring(0, 100)}
+                  </Text>
+                ) : null}
+              </View>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 5 }}>
+                {showRelativeTime && task.start && (
+                  <Chip
+                    disabled
+                    dense
+                    label={dayjs(task.start).fromNow()}
+                    icon={<Icon>access_time</Icon>}
+                  />
+                )}
+                {showDate && task.start && (
+                  <Chip
+                    disabled
+                    dense
+                    label={dayjs(task.start).format("MMM Do")}
+                    icon={<Icon>calendar_today</Icon>}
+                  />
+                )}
+                {task.recurrenceRule && (
+                  <Chip
+                    dense
+                    label="Repeats"
+                    icon="loop"
+                    onPress={() => {
+                      Toast.show({
+                        type: "info",
+                        text1: capitalizeFirstLetter(
+                          normalizeRecurrenceRuleObject(
+                            task.recurrenceRule
+                          ).toText()
+                        ),
+                      });
+                    }}
+                  />
+                )}
+                {showLabel && task.label && <TaskLabelChip task={task} />}
+                {task.attachments && (
+                  <TaskAttachmentChips attachments={task.attachments} />
+                )}
+                {task.pinned && <TaskImportantChip />}
+                {!task.dateOnly && (
+                  <Chip
+                    dense
+                    label={dayjs(task.start).format("h:mm A")}
+                    icon={<Icon size={22}>calendar_today</Icon>}
+                  />
+                )}
+              </View>
+            </View>
+          </ListItemButton>
+        </TaskDrawer>
+      </Animated.View>
+      {task.subtasks &&
+        Object.values(task.subtasks)
+          ?.filter((e) => !e.trash)
+          ?.map((subtask) => (
+            <Task key={subtask.id} task={subtask} onTaskUpdate={onTaskUpdate} />
+          ))}
+    </>
+  );
+});
 
 export default React.memo(Task);
 
