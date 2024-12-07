@@ -903,17 +903,11 @@ function TaskDateMenu() {
   return (
     <>
       <DatePicker
-        value={{ date: null, dateOnly: true, end: null }}
-        setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
-        ref={addDateRef}
-      />
-      <RecurrencePicker
-        value={recurrenceRule?.options}
-        setValue={(value) => updateTask("recurrenceRule", value)}
-        ref={addRecurrenceRef}
-      />
-      <DatePicker
-        value={{ date: null, dateOnly: true, end: null }}
+        value={{
+          date: dayjs(task?.start).isValid() ? task?.start : null,
+          dateOnly: true,
+          end: null,
+        }}
         setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
         ref={addDateRef}
       />
@@ -997,6 +991,15 @@ function TaskDateMenu() {
                       />
                     ),
                   },
+
+                {
+                  icon: "close",
+                  text: "Remove",
+                  callback: () => {
+                    updateTask("start", null);
+                    updateTask("recurrenceRule", null);
+                  },
+                },
               ]
         }
       />
