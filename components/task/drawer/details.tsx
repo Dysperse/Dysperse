@@ -704,8 +704,13 @@ function NoteInsertMenu({ isFocused, editorRef }) {
 
 function NoteFormatMenu({ isFocused, editorRef, formatMenuRef }) {
   const theme = useColorTheme();
+
   const formatMenuStyles = useAnimatedStyle(() => ({
     opacity: isFocused.value,
+    marginTop: withSpring(isFocused.value ? 0 : -40, {
+      damping: 30,
+      stiffness: 400,
+    }),
   }));
 
   const [selectionState, setSelectionState] = useState({
@@ -722,7 +727,13 @@ function NoteFormatMenu({ isFocused, editorRef, formatMenuRef }) {
     <Animated.View
       style={[
         formatMenuStyles,
-        { flexDirection: "row", marginHorizontal: -10 },
+        {
+          flexDirection: "row",
+          height: 40,
+          borderBottomWidth: 1,
+          paddingHorizontal: 5,
+          borderBottomColor: addHslAlpha(theme[5], 0.6),
+        },
       ]}
     >
       {[
@@ -779,8 +790,6 @@ function TaskNote() {
 
   const focusedStyles = useAnimatedStyle(() => ({
     borderRadius: 10,
-    padding: 10,
-    paddingHorizontal: 15,
     position: "relative",
     backgroundColor: interpolateColor(
       isFocused.value,

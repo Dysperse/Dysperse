@@ -269,6 +269,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
         position: "relative",
         borderRadius: 10,
         overflow: "hidden",
+        padding: "0 15px",
       }}
       onMouseDown={() => editorRef.current.editor.commands.focus()}
       onClick={() => editorRef.current.editor.commands.focus()}
