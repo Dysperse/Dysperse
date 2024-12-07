@@ -118,7 +118,12 @@ function MenuPopover({
   });
 
   const handleOpen = () => menuPopupRef.current.open();
-  const t = cloneElement(trigger, { onPress: handleOpen });
+  const t = cloneElement(trigger, {
+    onPress: () => {
+      handleOpen();
+      trigger.props?.onPress?.();
+    },
+  });
   const s = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -262,3 +267,4 @@ function MenuPopover({
   );
 }
 export default memo(MenuPopover);
+

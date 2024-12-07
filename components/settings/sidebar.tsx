@@ -113,6 +113,12 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           keywords: [],
         },
         {
+          name: "Sidekick",
+          icon: "raven",
+          href: "/settings/sidekick",
+          keywords: ["ai", "artificial", "intelligence", "machine", "dysperse"],
+        },
+        {
           name: "Integrations",
           icon: "interests",
           href: "/settings/account/integrations",
@@ -404,4 +410,3 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
-

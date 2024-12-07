@@ -1,19 +1,29 @@
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 import LabelPicker from "@/components/labels/picker";
+import { STORY_POINT_SCALE } from "@/constants/workload";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
+import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Modal from "@/ui/Modal";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
-import React, { useCallback, useState } from "react";
-import { View } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Keyboard, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -27,26 +37,303 @@ import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
 
+function AISubtask({ task, updateTask }) {
+  const modalRef = useRef(null);
+  const { sessionToken } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
+  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
+  const [isCreationLoading, setIsCreationLoading] = useState(false);
+
+  const handleAddSubtasks = async () => {
+    setIsCreationLoading(true);
+    try {
+      const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
+
+      const t = await sendApiRequest(
+        sessionToken,
+        "PATCH",
+        "space/entity",
+        {},
+        {
+          body: JSON.stringify({
+            entities: subtasks.map((subtask) => ({
+              name: subtask.title,
+              type: "TASK",
+              parentTask: task,
+              parentId: task.id,
+              note: subtask.description,
+              collectionId: task.collectionId,
+            })),
+          }),
+        }
+      );
+      updateTask(
+        "subtasks",
+        {
+          ...task.subtasks,
+          ...t.reduce((acc, curr) => {
+            acc[curr.id] = curr;
+            return acc;
+          }, {}),
+        },
+        false
+      );
+      modalRef.current?.close();
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setIsCreationLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <MenuItem
+        onPress={async () => {
+          setIsLoading(true);
+          modalRef.current?.present();
+
+          await sendApiRequest(
+            sessionToken,
+            "POST",
+            "ai/generate-subtasks",
+            {},
+            { body: JSON.stringify({ task }) }
+          )
+            .then((data) => {
+              if (!Array.isArray(data)) throw new Error("No response");
+              setGeneratedSubtasks(data);
+              setSelectedSubtasks(data.map((_, i) => i));
+              setIsLoading(false);
+            })
+            .catch(() => {
+              setIsLoading(false);
+              Toast.show({ type: "error" });
+            });
+        }}
+      >
+        <Text variant="menuItem">Generate subtasks</Text>
+      </MenuItem>
+      <Modal
+        maxWidth={400}
+        height="auto"
+        innerStyles={{ minHeight: 400, flex: 1 }}
+        animation="SCALE"
+        transformCenter
+        sheetRef={modalRef}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 20 }} weight={900}>
+              AI subtasks
+            </Text>
+          </View>
+          <IconButton
+            icon="close"
+            onPress={() => modalRef.current?.close()}
+            variant="filled"
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          {!isLoading ? (
+            <View
+              style={{ flex: 1, padding: 10, paddingTop: 0, marginTop: -10 }}
+            >
+              {generatedSubtasks.map((subtask, i) => (
+                <ListItemButton
+                  key={i}
+                  onPress={() => {
+                    setSelectedSubtasks((prev) =>
+                      prev.includes(i)
+                        ? prev.filter((t) => t !== i)
+                        : [...prev, i]
+                    );
+                  }}
+                  style={{
+                    paddingVertical: 15,
+                    paddingHorizontal: 20,
+                  }}
+                  pressableStyle={{
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Icon
+                    filled={selectedSubtasks.includes(i)}
+                    style={{ marginTop: 2 }}
+                    size={30}
+                  >
+                    {selectedSubtasks.includes(i) ? "check_circle" : "circle"}
+                  </Icon>
+                  <ListItemText
+                    primary={subtask.title}
+                    secondary={subtask.description}
+                  />
+                </ListItemButton>
+              ))}
+
+              <View style={{ padding: 5, marginTop: "auto" }}>
+                <Button
+                  isLoading={isCreationLoading}
+                  onPress={handleAddSubtasks}
+                  variant="filled"
+                  large
+                  bold
+                  text={`Add ${selectedSubtasks.length} subtasks`}
+                  icon="add"
+                />
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </View>
+      </Modal>
+    </>
+  );
+}
+
+function AiExplanation({ task, updateTask }) {
+  const modalRef = useRef(null);
+  const { sessionToken } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const [generation, setGeneration] = useState([]);
+  const [isCreationLoading, setIsCreationLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsCreationLoading(true);
+    try {
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setIsCreationLoading(false);
+    }
+  };
+  return (
+    <>
+      <MenuItem
+        onPress={async () => {
+          setIsLoading(true);
+          modalRef.current?.present();
+
+          await sendApiRequest(
+            sessionToken,
+            "POST",
+            "ai/generate-explanation",
+            {},
+            { body: JSON.stringify({ task }) }
+          )
+            .then((data) => {
+              setGeneration(data);
+              setIsLoading(false);
+            })
+            .catch(() => {
+              setIsLoading(false);
+              Toast.show({ type: "error" });
+            });
+        }}
+      >
+        <Text variant="menuItem">Describe this task</Text>
+      </MenuItem>
+      <Modal
+        maxWidth={400}
+        height="auto"
+        innerStyles={{ minHeight: 400, flex: 1 }}
+        animation="SCALE"
+        transformCenter
+        sheetRef={modalRef}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            padding: 20,
+          }}
+        >
+          <View>
+            <Text style={{ fontSize: 20 }} weight={900}>
+              AI Explanation
+            </Text>
+          </View>
+          <IconButton
+            icon="close"
+            onPress={() => modalRef.current?.close()}
+            variant="filled"
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          {!isLoading ? (
+            <ScrollView
+              style={{ flex: 1, padding: 20, paddingTop: 0, marginTop: -10 }}
+            >
+              <MarkdownRenderer>{generation}</MarkdownRenderer>
+            </ScrollView>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </View>
+      </Modal>
+    </>
+  );
+}
+
 function TaskNameInput({ bottomSheet }) {
   const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
   const [name, setName] = useState(task.name);
-  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    // on keyboard close, blur the input
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        inputRef.current?.blur();
+      }
+    );
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   return (
     <>
       <AutoSizeTextArea
+        ref={inputRef}
         bottomSheet={bottomSheet}
         onBlur={() => {
-          setIsFocused(false);
           if (name === task.name) return;
           setName(name.replaceAll("\n", ""));
           updateTask("name", name.replaceAll("\n", ""));
         }}
         onChangeText={(text) => setName(text)}
         enterKeyHint="done"
-        textAlign="center"
         value={name}
         onKeyPress={(e) => {
           if (e.nativeEvent.key === "Enter" || e.nativeEvent.key === "Escape") {
@@ -55,26 +342,184 @@ function TaskNameInput({ bottomSheet }) {
           }
         }}
         disabled={isReadOnly}
-        onFocus={() => setIsFocused(true)}
         style={[
           {
             fontFamily: "serifText800",
             color: theme[12],
-            padding: 20,
+            padding: 12,
             paddingVertical: 10,
-            marginBottom: 5,
-            textAlign: "center",
             borderRadius: 20,
             borderWidth: 2,
             shadowRadius: 0,
             borderColor: "transparent",
           },
-          isFocused && {
-            backgroundColor: addHslAlpha(theme[8], 0.1),
-            borderColor: addHslAlpha(theme[8], 0.5),
+        ]}
+        fontSize={breakpoints.md ? 35 : 30}
+      />
+    </>
+  );
+}
+
+function WorkloadChip() {
+  const theme = useColorTheme();
+  const { task, isReadOnly, updateTask } = useTaskDrawerContext();
+  const complexityScale = [2, 4, 8, 16, 32];
+  const menuRef = useRef(null);
+
+  return (
+    <MenuPopover
+      menuRef={menuRef}
+      containerStyle={{ width: 200 }}
+      options={
+        [
+          ...complexityScale.map((n) => ({
+            renderer: () => (
+              <MenuItem
+                onPress={() => {
+                  updateTask("storyPoints", n);
+                  menuRef.current?.close();
+                }}
+              >
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    backgroundColor: addHslAlpha(
+                      theme[11],
+                      n === task.storyPoints ? 1 : 0.1
+                    ),
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "mono",
+                      color: theme[n === task.storyPoints ? 1 : 11],
+                    }}
+                  >
+                    {String(n).padStart(2, "0")}
+                  </Text>
+                </View>
+                <Text variant="menuItem">
+                  {STORY_POINT_SCALE[complexityScale.findIndex((i) => i === n)]}
+                </Text>
+              </MenuItem>
+            ),
+          })),
+          task.storyPoints && { divider: true },
+          task.storyPoints && {
+            renderer: () => (
+              <MenuItem
+                onPress={() => {
+                  updateTask("storyPoints", null);
+                  menuRef.current?.close();
+                }}
+              >
+                <View
+                  style={{
+                    width: 30,
+                    height: 30,
+                    backgroundColor: addHslAlpha(theme[11], 0.1),
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Icon style={{ color: theme[11] }}>remove</Icon>
+                </View>
+                <Text variant="menuItem">Clear</Text>
+              </MenuItem>
+            ),
+          },
+        ] as any
+      }
+      trigger={
+        <Chip
+          disabled={isReadOnly}
+          icon="exercise"
+          label={
+            STORY_POINT_SCALE[
+              complexityScale.findIndex((i) => i === task.storyPoints)
+            ]
+          }
+          style={{
+            borderRadius: 10,
+            borderWidth: 1,
+          }}
+          outlined
+        />
+      }
+    />
+  );
+}
+
+function TaskMoreMenu({ handleDelete }) {
+  const theme = useColorTheme();
+  const { session } = useUser();
+  const { task, updateTask } = useTaskDrawerContext();
+
+  return (
+    <>
+      <MenuPopover
+        containerStyle={{ width: 230 }}
+        options={[
+          session.user?.betaTester && {
+            renderer: () => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  padding: 5,
+                  paddingTop: 10,
+                  paddingHorizontal: 13,
+                  gap: 7,
+                }}
+              >
+                <Icon bold size={20} style={{ color: theme[11], opacity: 0.6 }}>
+                  raven
+                </Icon>
+                <Text variant="eyebrow">Sidekick</Text>
+              </View>
+            ),
+          },
+          session.user?.betaTester && {
+            renderer: () => (
+              <AiExplanation task={task} updateTask={updateTask} />
+            ),
+          },
+          {
+            renderer: () => <AISubtask task={task} updateTask={updateTask} />,
+          },
+          session.user?.betaTester && {
+            text: "Categorize this task",
+            callback: () => Toast.show({ text1: "Coming soon", type: "info" }),
+          },
+          session.user?.betaTester && { divider: true, key: "1" },
+          {
+            icon: task.trash ? "restore_from_trash" : "delete",
+            text: task.trash ? "Restore from trash" : "Move to trash",
+            callback: handleDelete,
+          },
+          task?.integrationParams && {
+            renderer: () => (
+              <Text
+                style={{
+                  opacity: 0.6,
+                  fontSize: 12,
+                  textAlign: "center",
+                  marginVertical: 5,
+                  color: theme[11],
+                }}
+              >
+                {`Synced with ${
+                  task?.integrationParams?.from || "integration"
+                }`}
+              </Text>
+            ),
           },
         ]}
-        fontSize={breakpoints.md ? 40 : 30}
+        trigger={<IconButton icon="pending" size={45} />}
       />
     </>
   );
@@ -93,7 +538,7 @@ export function TaskDrawerContent({
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { id: collectionId } = useGlobalSearchParams();
   const rotate = useSharedValue(task.pinned ? -35 : 0);
-
+  const labelPickerRef = useRef(null);
   const SafeScrollView = forceClose ? BottomSheetScrollView : ScrollView;
 
   const handlePriorityChange = useCallback(() => {
@@ -145,10 +590,12 @@ export function TaskDrawerContent({
         });
       }
     },
-    [updateTask, task]
+    [updateTask, task, theme]
   );
 
   useHotkeys(["delete", "backspace"], () => handleDelete(true));
+  useHotkeys(["shift+1"], () => handlePriorityChange());
+  useHotkeys(["shift+3"], () => labelPickerRef.current?.present());
 
   // Rotate the pin icon by 45 degrees if the task is pinned using react-native-reanimated
   const rotateStyle = useAnimatedStyle(() => {
@@ -189,36 +636,42 @@ export function TaskDrawerContent({
                     : { overshootClamping: true, stiffness: 400 }
                 );
               }}
+              size={45}
               variant="outlined"
-              size={50}
-              icon="close"
+              icon={breakpoints.md ? "close" : "west"}
             />
           )}
-          <View style={{ flex: 1 }} />
-          {!isReadOnly && (
-            <IconButton
-              variant="outlined"
-              size={50}
-              onPress={handleDelete}
-              icon={task.trash ? "restore_from_trash" : "delete"}
-            />
-          )}
-          {!task.parentTaskId && <TaskShareButton />}
-          {!isReadOnly && <TaskCompleteButton />}
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+            }}
+          >
+            <TaskMoreMenu handleDelete={handleDelete} />
+            {!task.parentTaskId && <TaskShareButton />}
+            {!isReadOnly && <TaskCompleteButton />}
+          </View>
         </View>
       </View>
       <LinearGradient
         colors={[theme[2], "transparent"]}
-        style={{ height: 40, width: "100%", marginBottom: -40, zIndex: 1 }}
+        style={{
+          height: 40,
+          width: "100%",
+          marginBottom: -28,
+          zIndex: 1,
+        }}
       />
       <SafeScrollView showsHorizontalScrollIndicator={false}>
-        <View style={{ paddingBottom: 30, paddingHorizontal: 20 }}>
+        <View
+          style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}
+        >
           <View
             style={{
               gap: 10,
-              marginTop: 50,
               flexDirection: "row",
-              justifyContent: "center",
+              paddingHorizontal: 15,
             }}
           >
             <Chip
@@ -236,12 +689,14 @@ export function TaskDrawerContent({
                   </Icon>
                 </Animated.View>
               }
+              outlined
               style={{
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: task.pinned ? labelColors.orange[11] : undefined,
                 backgroundColor: task.pinned
                   ? labelColors.orange[11]
-                  : "transparent",
-                borderWidth: 1,
-                borderColor: task.pinned ? labelColors.orange[3] : theme[6],
+                  : undefined,
               }}
             />
             {task && !task.parentTaskId && (
@@ -252,42 +707,41 @@ export function TaskDrawerContent({
                   updateTask("label", e, false);
                 }}
                 onClose={() => {}}
+                sheetProps={{
+                  sheetRef: labelPickerRef,
+                }}
                 defaultCollection={collectionId as any}
-                // disabled={Boolean(task.label?.integrationParams)}
               >
                 <Chip
                   disabled={isReadOnly}
                   icon={
                     task?.collection?.emoji ? (
-                      <Emoji emoji={task?.collection?.emoji} />
+                      <Emoji emoji={task?.collection?.emoji} size={20} />
                     ) : (
                       <Icon>new_label</Icon>
                     )
                   }
                   label={task?.collection?.name || "Add label"}
+                  outlined
                   style={{
+                    borderRadius: 10,
                     borderWidth: 1,
-                    borderColor: theme[6],
                   }}
                   {...(task.label && {
-                    icon: <Emoji emoji={task.label.emoji} />,
+                    icon: <Emoji emoji={task.label.emoji} size={20} />,
                     label: (
                       <Text
+                        weight={600}
                         style={{ color: labelColors[task.label.color][11] }}
                       >
                         {task.label.name}
                       </Text>
                     ),
-                    style: {
-                      backgroundColor: addHslAlpha(
-                        labelColors[task.label.color][11],
-                        0.15
-                      ),
-                    },
                   })}
                 />
               </LabelPicker>
             )}
+            {!task.parentTaskId && <WorkloadChip />}
           </View>
           <TaskNameInput bottomSheet={Boolean(forceClose)} />
           <TaskDetails />

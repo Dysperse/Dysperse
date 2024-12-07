@@ -1071,17 +1071,11 @@ function SubTaskInformation({ watch, setValue }) {
   const theme = useColorTheme();
 
   return (
-    <View
-      style={{
-        marginTop: -25,
-        marginHorizontal: -25,
-      }}
-    >
-      <Collapsible
-        collapsed={!parentTask}
-        duration={200}
+    parentTask && (
+      <View
         style={{
-          backgroundColor: addHslAlpha(theme[9], 0.15),
+          marginTop: -25,
+          marginHorizontal: -25,
         }}
       >
         <View
@@ -1090,6 +1084,7 @@ function SubTaskInformation({ watch, setValue }) {
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 20,
+            backgroundColor: addHslAlpha(theme[9], 0.05),
             paddingVertical: 10,
           }}
         >
@@ -1109,8 +1104,8 @@ function SubTaskInformation({ watch, setValue }) {
             </Text>
           </View>
         </View>
-      </Collapsible>
-    </View>
+      </View>
+    )
   );
 }
 

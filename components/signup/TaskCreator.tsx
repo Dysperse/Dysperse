@@ -39,11 +39,6 @@ export const TaskInput = ({ form, index }) => {
     >
       <View style={[taskInputStyles.check, { borderColor: theme[6] }]} />
       <Controller
-        rules={
-          {
-            // validate: (v) => v.find((t) => t.trim().length === 0),
-          }
-        }
         control={form.control}
         name="tasks"
         render={({ field: { onChange, value }, fieldState: { error } }) => (

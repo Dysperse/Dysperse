@@ -455,9 +455,28 @@ const QuickCreateButton = memo(function QuickCreateButton() {
         closeOnSelect
         options={[
           {
-            icon: "add_circle",
-            text: "Task",
-            callback: () => itemRef.current?.present(),
+            renderer: () => (
+              <View style={{ flexDirection: "row" }}>
+                <MenuItem
+                  onPress={() => {
+                    itemRef.current?.present();
+                    menuRef.current.close();
+                  }}
+                  style={{ flex: 1 }}
+                >
+                  <Icon>add_circle</Icon>
+                  <Text variant="menuItem">Task</Text>
+                </MenuItem>
+                <MenuItem
+                  onPress={() => {
+                    menuRef.current.close();
+                    
+                  }}
+                >
+                  <Icon>upload</Icon>
+                </MenuItem>
+              </View>
+            ),
           },
           {
             renderer: () => (
@@ -746,4 +765,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-

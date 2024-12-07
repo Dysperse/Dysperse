@@ -270,6 +270,7 @@ export default function Layout() {
                   "login/devices",
                   "index",
                   "tasks",
+                  "sidekick",
                   "storage",
                   "shortcuts",
                   "personal-information",
@@ -313,4 +314,3 @@ export default function Layout() {
     </View>
   );
 }
-

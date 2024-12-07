@@ -32,7 +32,7 @@
   </head>
 
   <body
-    oncontextmenu="return window.innerWidth < 600"
+    oncontextmenu="return window.innerWidth < 600 || event.target.closest('.tiptap') !== null"
     style="webkit-app-region: drag"
   >
     <noscript>

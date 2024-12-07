@@ -50,6 +50,7 @@ import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useSidebarContext } from "../layout/sidebar/context";
+import MenuIcon from "../menuIcon";
 import PanelSwipeTrigger from "./PanelSwipeTrigger";
 import { useFocusPanelContext } from "./context";
 import { NewWidget } from "./widgets/new";
@@ -402,7 +403,7 @@ export const Navbar = ({
         />
       ) : (
         <IconButton
-          icon="menu"
+          icon={<MenuIcon />}
           variant="outlined"
           onPress={() => sidebarRef.current.openDrawer()}
         />

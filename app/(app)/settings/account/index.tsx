@@ -179,7 +179,7 @@ function EmailSection() {
             )}
           />
           <Button
-            height={60}
+            height={40}
             containerStyle={{ marginTop: 10 }}
             variant="filled"
             isLoading={isLoading}
@@ -251,7 +251,7 @@ function TwoFactorAuthSection() {
         disabled={!isEnabled}
       >
         <Button
-          height={60}
+          height={40}
           containerStyle={
             breakpoints.md ? { marginTop: 30 } : { width: "100%" }
           }
@@ -464,7 +464,7 @@ function PasskeysSection() {
         </Text>
       </View>
       <Button
-        height={60}
+        height={40}
         containerStyle={breakpoints.md ? { marginTop: 30 } : { width: "100%" }}
         variant="filled"
         onPress={handlePress}
@@ -486,7 +486,7 @@ function DeleteAccountSection() {
         </Text>
       </View>
       <Button
-        height={60}
+        height={40}
         onPress={() => router.replace("/settings/account/delete-account")}
         containerStyle={{ marginTop: 30, marginLeft: "auto" }}
         variant="filled"
@@ -498,8 +498,58 @@ function DeleteAccountSection() {
   );
 }
 
-export default function Page() {
+function BetaTesterSection() {
   const { session, sessionToken, mutate } = useUser();
+  const isBetaTester = session?.user?.betaTester;
+
+  const handleSave = () => {
+    sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/account",
+      {},
+      {
+        body: JSON.stringify({
+          betaTester: !isBetaTester,
+        }),
+      }
+    );
+    mutate(
+      (d) => ({
+        ...d,
+        user: {
+          ...d.user,
+          betaTester: !isBetaTester,
+        },
+      }),
+      { revalidate: false }
+    );
+  };
+
+  return (
+    <View style={{ flexDirection: "row" }}>
+      <View>
+        <Text style={settingStyles.heading}>Beta features</Text>
+        <Text style={{ opacity: 0.6 }}>
+          Try out unstable features before they're released to the public
+        </Text>
+      </View>
+
+      <Button
+        height={40}
+        onPress={handleSave}
+        containerStyle={{ marginTop: 30, marginLeft: "auto" }}
+        variant="filled"
+      >
+        <ButtonText>{isBetaTester ? "Leave" : "Join"}</ButtonText>
+        <Icon>{isBetaTester ? "exit_to_app" : "arrow_forward_ios"}</Icon>
+      </Button>
+    </View>
+  );
+}
+
+export default function Page() {
+  const { session } = useUser();
   const { data, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
@@ -516,6 +566,7 @@ export default function Page() {
           <EmailSection />
           <TwoFactorAuthSection />
           <PasskeysSection />
+          <BetaTesterSection />
           <DeleteAccountSection />
         </>
       ) : error ? (

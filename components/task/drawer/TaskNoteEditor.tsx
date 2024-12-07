@@ -1,0 +1,346 @@
+"use dom";
+import { addHslAlpha } from "@/ui/color";
+import CharacterCount from "@tiptap/extension-character-count";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Gapcursor from "@tiptap/extension-gapcursor";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline";
+import { EditorProvider, useCurrentEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { useDOMImperativeHandle } from "expo/dom";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+
+const LIMIT = 3000;
+const extensions = [
+  StarterKit.configure({
+    bold: { HTMLAttributes: { style: "font-family: body_700" } },
+    paragraph: { HTMLAttributes: { style: "margin: 5px 0 " } },
+  }),
+  Underline,
+  Gapcursor,
+  CharacterCount.configure({
+    limit: LIMIT,
+  }),
+  Image,
+  Placeholder.configure({
+    placeholder: "Write something…",
+  }),
+
+  Dropcursor,
+  Link.configure({
+    openOnClick: true,
+    autolink: true,
+    linkOnPaste: true,
+    defaultProtocol: "https",
+    protocols: ["http", "https", "mailto"],
+  }),
+];
+
+const buttonStyles = (selected) => ({
+  color: selected ? "blue" : "inherit",
+  border: 0,
+  height: 40,
+  width: 40,
+  background: "transparent",
+  aspectRatio: "1/1",
+  fontFamily: selected ? "symbols_bold_outlined" : "symbols_outlined",
+});
+
+const iconStyles = (theme) => ({
+  fontSize: "24px",
+  color: theme[11],
+});
+
+const menuStyles = (theme) => ({
+  background: theme[4],
+  borderRadius: 999,
+  boxShadow:
+    "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+  overflow: "hidden",
+});
+
+function CreateMenuBar({ theme }) {
+  const { editor } = useCurrentEditor();
+
+  return (
+    <div
+      style={{
+        ...menuStyles(theme),
+        boxShadow: `0 1px 0 0 ${addHslAlpha(theme[11], 0.1)}`,
+        background: "transparent",
+        borderRadius: 0,
+        height: 41,
+        transition: "all 0.2s",
+        borderColor: theme[3],
+        display: "flex",
+      }}
+      className="create-bar"
+    >
+      <button
+        style={buttonStyles(editor.isActive("bold"))}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        disabled={!editor.can().chain().focus().toggleBold().run()}
+      >
+        <span style={iconStyles(theme)}>format_bold</span>
+      </button>
+      <button
+        style={buttonStyles(editor.isActive("italic"))}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        disabled={!editor.can().chain().focus().toggleItalic().run()}
+      >
+        <span style={iconStyles(theme)}>format_italic</span>
+      </button>
+      <button
+        style={buttonStyles(editor.isActive("underline"))}
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        disabled={!editor.can().chain().focus().toggleUnderline().run()}
+      >
+        <span style={iconStyles(theme)}>format_underlined</span>
+      </button>
+      {/* <button
+        title="Image"
+        style={buttonStyles(editor.isActive("orderedList"))}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <span style={iconStyles(theme)}>photo</span>
+      </button>
+      <button
+        title="Image"
+        style={buttonStyles(editor.isActive("orderedList"))}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <span style={iconStyles(theme)}>location_on</span>
+      </button>
+      <button
+        title="Heading 1"
+        style={buttonStyles(editor.isActive("heading", { level: 1 }))}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+      >
+        <span style={iconStyles(theme)}>format_h1</span>
+      </button>
+      <button
+        title="Heading 2"
+        style={buttonStyles(editor.isActive("heading", { level: 2 }))}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+      >
+        <span style={iconStyles(theme)}>format_h2</span>
+      </button>
+      <button
+        title="Heading 3"
+        style={buttonStyles(editor.isActive("heading", { level: 3 }))}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+      >
+        <span style={iconStyles(theme)}>format_h3</span>
+      </button>
+      <button
+        title="Code block"
+        style={buttonStyles(editor.isActive("code"))}
+        onClick={() => editor.chain().focus().toggleCode().run()}
+        disabled={!editor.can().chain().focus().toggleCode().run()}
+      >
+        <span style={iconStyles(theme)}>code</span>
+      </button>
+      <button
+        title="Horizontal line"
+        style={buttonStyles(false)}
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+      >
+        <span style={iconStyles(theme)}>horizontal_rule</span>
+      </button> */}
+    </div>
+  );
+}
+
+function CharacterCounter({ theme }) {
+  const { editor } = useCurrentEditor();
+  const percentage = editor
+    ? Math.round((100 / LIMIT) * editor.storage.characterCount.characters())
+    : 0;
+
+  const isEditorFocused = editor?.isFocused;
+
+  return (
+    percentage > 75 && (
+      <div
+        style={{
+          transition: "all 0.2s",
+          opacity: isEditorFocused ? 1 : 0,
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          margin: 20,
+          marginBottom: -10,
+        }}
+      >
+        <svg height="20" width="20" viewBox="0 0 20 20">
+          <circle r="10" cx="10" cy="10" fill={theme[6]} />
+          <circle
+            r="5"
+            cx="10"
+            cy="10"
+            fill="transparent"
+            stroke={theme[11]}
+            strokeWidth="10"
+            strokeDasharray={`calc(${percentage} * 31.4 / 100) 31.4`}
+            transform="rotate(-90) translate(-20)"
+          />
+          <circle r="6" cx="10" cy="10" fill={theme[3]} />
+        </svg>
+      </div>
+    )
+  );
+}
+
+function Focuser({ setFocused, containerRef }) {
+  const { editor } = useCurrentEditor();
+
+  useEffect(() => {
+    if (editor.isEmpty) {
+      editor.commands.focus();
+    }
+  }, [editor]);
+
+  useEffect(() => {
+    if (editor.isEmpty) {
+      editor.commands.focus();
+    }
+  }, [editor]);
+
+  useEffect(() => {
+    const t = (event) => {
+      if (event.target.tagName === "A") {
+        event.preventDefault();
+        event.stopPropagation();
+        editor.commands.blur();
+        setTimeout(() => {
+          editor.commands.blur();
+        }, 1);
+      }
+    };
+
+    containerRef.current?.addEventListener("mousedown", t);
+    containerRef.current?.addEventListener("click", t);
+
+    return () => {
+      containerRef.current?.removeEventListener("mousedown", t);
+      containerRef.current?.removeEventListener("click", t);
+    };
+  });
+
+  return null;
+}
+
+const EditorRef = forwardRef((props, ref) => {
+  const { editor } = useCurrentEditor();
+
+  useImperativeHandle(ref, () => ({
+    editor,
+  }));
+
+  return null;
+});
+
+function Saver({ updateTask }) {
+  const { editor } = useCurrentEditor();
+
+  useEffect(() => {
+    const save = async () => {
+      const content = editor.getHTML();
+      updateTask("note", editor.isEmpty ? null : content);
+    };
+
+    editor.on("blur", save);
+
+    return () => {
+      editor.off("blur", save);
+    };
+  }, [editor, updateTask]);
+  return null;
+}
+
+export default forwardRef<any, object>(function TaskNoteEditor(
+  { theme, content, setFocused, updateTask }: any,
+  ref
+) {
+  const editorRef = useRef<any>(null);
+
+  useDOMImperativeHandle(
+    ref,
+    () => ({
+      editor: editorRef.current.editor,
+    }),
+    []
+  );
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef) {
+      const element = containerRef.current;
+
+      element.addEventListener("focusout", (event) => {
+        element.spellcheck = false;
+        if (!element.matches(":focus-within")) {
+          setFocused(false);
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+        }
+      });
+
+      element.addEventListener("focusin", () => {
+        element.spellcheck = true;
+        setFocused(true);
+      });
+    }
+  }, []);
+
+  return (
+    <div
+      className="prose"
+      spellCheck={false}
+      ref={containerRef}
+      tabIndex={0}
+      style={{
+        position: "relative",
+        borderRadius: 10,
+        overflow: "hidden",
+      }}
+      onMouseDown={() => editorRef.current.editor.commands.focus()}
+      onClick={() => editorRef.current.editor.commands.focus()}
+    >
+      <style>
+        {`.prose img{display:block;height:auto;margin:0;margin-bottom:4px;max-width:100%;cursor:default;border-radius:20px}.prose:focus-within img.ProseMirror-selectednode{outline:5px solid ${theme[8]}}code{font-family: 'mono', pre!important}`}
+        {`p.is-editor-empty:first-child::before{color:${theme[6]};content:attr(data-placeholder);float:left;height:0;pointer-events:none}`}
+        {`.prose .create-bar {margin-top:-42px;margin-bottom:3px} .prose:focus-within .create-bar {margin-top:0} .prose .editor-container {transition: all .2s;padding: 0px 15px} .prose:focus-within .editor-container {padding:5px 15px}`}
+        {`.prose{color:var(--tw-prose-body);max-width:65ch;--tw-prose-body:${theme[11]};--tw-prose-headings:${theme[11]};--tw-prose-lead:${theme[6]};--tw-prose-links:${theme[11]};--tw-prose-bold:${theme[11]};--tw-prose-counters:${theme[9]};--tw-prose-bullets:${theme[6]};--tw-prose-hr:${theme[3]};--tw-prose-quotes:${theme[11]};--tw-prose-quote-borders:${theme[3]};--tw-prose-captions:${theme[5]};--tw-prose-kbd:${theme[11]};--tw-prose-kbd-shadows:17 24 39;--tw-prose-code:${theme[11]};--tw-prose-pre-code:${theme[3]};--tw-prose-pre-bg:${theme[10]};--tw-prose-th-borders:${theme[4]};--tw-prose-td-borders:${theme[3]};--tw-prose-invert-body:${theme[4]};--tw-prose-invert-headings:${theme[12]};--tw-prose-invert-lead:${theme[4]};--tw-prose-invert-links:${theme[12]};--tw-prose-invert-bold:${theme[12]};--tw-prose-invert-counters:${theme[4]};--tw-prose-invert-bullets:${theme[6]};--tw-prose-invert-hr:${theme[11]};--tw-prose-invert-quotes:${theme[1]};--tw-prose-invert-quote-borders:${theme[11]};--tw-prose-invert-captions:${theme[4]};--tw-prose-invert-kbd:${theme[12]};--tw-prose-invert-kbd-shadows:255 255 255;--tw-prose-invert-code:${theme[12]};--tw-prose-invert-pre-code:${theme[4]};--tw-prose-invert-pre-bg:rgb(0 0 0 / 50%);--tw-prose-invert-th-borders:${theme[6]};--tw-prose-invert-td-borders:${theme[11]};font-size:1rem;line-height:1.75}.prose :where(p):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:1.25em;margin-bottom:1.25em}.prose :where([class~=lead]):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-lead);font-size:1.25em;line-height:1.6;margin-top:1.2em;margin-bottom:1.2em}.prose :where(a):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-links);text-decoration:underline;font-family: 'body_500', sans-serif}.prose :where(strong):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-bold);font-family: 'body_600', sans-serif}.prose :where(a strong):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(blockquote strong):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(thead th strong):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(ol):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:decimal;margin-top:1.25em;margin-bottom:1.25em;padding-left:1.625em}.prose :where(ol[type="A"]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:upper-alpha}.prose :where(ol[type="a"]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:lower-alpha}.prose :where(ol[type="A" s]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:upper-alpha}.prose :where(ol[type="a" s]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:lower-alpha}.prose :where(ol[type="I"]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:upper-roman}.prose :where(ol[type="i"]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:lower-roman}.prose :where(ol[type="I" s]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:upper-roman}.prose :where(ol[type="i" s]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:lower-roman}.prose :where(ol[type="1"]):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:decimal}.prose :where(ul):not(:where([class~=not-prose],[class~=not-prose] *)){list-style-type:disc;margin-top:1.25em;margin-bottom:1.25em;padding-left:1.625em}.prose :where(ol > li):not(:where([class~=not-prose],[class~=not-prose] *))::marker{font-family: 'body_400', sans-serif;color:var(--tw-prose-counters)}.prose :where(ul > li):not(:where([class~=not-prose],[class~=not-prose] *))::marker{color:var(--tw-prose-bullets)}.prose :where(dt):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-headings);font-family: 'body_600', sans-serif;margin-top:1.25em}.prose :where(hr):not(:where([class~=not-prose],[class~=not-prose] *)){border-color:var(--tw-prose-hr);border-top-width:1px;margin-top:0.5em;margin-bottom:0.5em}.prose :where(blockquote):not(:where([class~=not-prose],[class~=not-prose] *)){font-family: 'body_500', sans-serif;font-style:italic;color:var(--tw-prose-quotes);border-left-width:.25rem;border-left-color:var(--tw-prose-quote-borders);quotes:"\\201C""\\201D""\\2018""\\2019";margin-top:1.6em;margin-bottom:1.6em;padding-left:1em}.prose :where(blockquote p:first-of-type):not(:where([class~=not-prose],[class~=not-prose] *))::before{content:open-quote}.prose :where(blockquote p:last-of-type):not(:where([class~=not-prose],[class~=not-prose] *))::after{content:close-quote}.prose :where(h1):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-headings);font-family: 'body_800', sans-serif;font-size:2.25em;margin-top:0;margin-bottom:.8888889em;line-height:1.1111111}.prose :where(h1 strong):not(:where([class~=not-prose],[class~=not-prose] *)){font-family: 'body_900', sans-serif;color:inherit}.prose :where(h2):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-headings);font-family: 'body_700', sans-serif;font-size:1.5em;margin-top:2em;margin-bottom:1em;line-height:1.3333333}.prose :where(h2 strong):not(:where([class~=not-prose],[class~=not-prose] *)){font-family: 'body_800', sans-serif;color:inherit}.prose :where(h3):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-headings);font-family: 'body_600', sans-serif;font-size:1.25em;margin-top:1.6em;margin-bottom:.6em;line-height:1.6}.prose :where(h3 strong):not(:where([class~=not-prose],[class~=not-prose] *)){font-family: 'body_700', sans-serif;color:inherit}.prose :where(h4):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-headings);font-family: 'body_600', sans-serif;margin-top:1.5em;margin-bottom:.5em;line-height:1.5}.prose :where(h4 strong):not(:where([class~=not-prose],[class~=not-prose] *)){font-family: 'body_700', sans-serif;color:inherit}.prose :where(img):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:2em;margin-bottom:2em}.prose :where(picture):not(:where([class~=not-prose],[class~=not-prose] *)){display:block;margin-top:2em;margin-bottom:2em}.prose :where(kbd):not(:where([class~=not-prose],[class~=not-prose] *)){font-family: 'body_500', sans-serif;font-family:inherit;color:var(--tw-prose-kbd);box-shadow:0 0 0 1px rgb(var(--tw-prose-kbd-shadows) / 10%),0 3px 0 rgb(var(--tw-prose-kbd-shadows) / 10%);font-size:.875em;border-radius:.3125rem;padding:.1875em .375em}.prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-code);font-family: 'body_600', sans-serif;font-size:.875em}.prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *))::before{content:"\`"}.prose :where(code):not(:where([class~=not-prose],[class~=not-prose] *))::after{content:"\`"}.prose :where(a code):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(h1 code):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(h2 code):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit;font-size:.875em}.prose :where(h3 code):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit;font-size:.9em}.prose :where(h4 code):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(blockquote code):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(thead th code):not(:where([class~=not-prose],[class~=not-prose] *)){color:inherit}.prose :where(pre):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-pre-code);background-color:var(--tw-prose-pre-bg);overflow-x:auto;font-family: 'body_400', sans-serif;font-size:.875em;line-height:1.7142857;margin-top:1.7142857em;margin-bottom:1.7142857em;border-radius:.375rem;padding:.8571429em 1.1428571em}.prose :where(pre code):not(:where([class~=not-prose],[class~=not-prose] *)){background-color:transparent;border-width:0;border-radius:0;padding:0;font-weight:inherit;color:inherit;font-size:inherit;font-family:inherit;line-height:inherit}.prose :where(pre code):not(:where([class~=not-prose],[class~=not-prose] *))::before{content:none}.prose :where(pre code):not(:where([class~=not-prose],[class~=not-prose] *))::after{content:none}.prose :where(table):not(:where([class~=not-prose],[class~=not-prose] *)){width:100%;table-layout:auto;text-align:left;margin-top:2em;margin-bottom:2em;font-size:.875em;line-height:1.7142857}.prose :where(thead):not(:where([class~=not-prose],[class~=not-prose] *)){border-bottom-width:1px;border-bottom-color:var(--tw-prose-th-borders)}.prose :where(thead th):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-headings);font-family: 'body_600', sans-serif;vertical-align:bottom;padding-right:.5714286em;padding-bottom:.5714286em;padding-left:.5714286em}.prose :where(tbody tr):not(:where([class~=not-prose],[class~=not-prose] *)){border-bottom-width:1px;border-bottom-color:var(--tw-prose-td-borders)}.prose :where(tbody tr:last-child):not(:where([class~=not-prose],[class~=not-prose] *)){border-bottom-width:0}.prose :where(tbody td):not(:where([class~=not-prose],[class~=not-prose] *)){vertical-align:baseline}.prose :where(tfoot):not(:where([class~=not-prose],[class~=not-prose] *)){border-top-width:1px;border-top-color:var(--tw-prose-th-borders)}.prose :where(tfoot td):not(:where([class~=not-prose],[class~=not-prose] *)){vertical-align:top}.prose :where(figure > *):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:0;margin-bottom:0}.prose :where(figcaption):not(:where([class~=not-prose],[class~=not-prose] *)){color:var(--tw-prose-captions);font-size:.875em;line-height:1.4285714;margin-top:.8571429em}.prose :where(picture > img):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:0;margin-bottom:0}.prose :where(video):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:2em;margin-bottom:2em}.prose :where(li):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:.5em;margin-bottom:.5em}.prose :where(ol > li):not(:where([class~=not-prose],[class~=not-prose] *)){padding-left:.375em}.prose :where(ul > li):not(:where([class~=not-prose],[class~=not-prose] *)){padding-left:.375em}.prose :where(.prose > ul > li p):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:.75em;margin-bottom:.75em}.prose :where(.prose > ul > li > :first-child):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:1.25em}.prose :where(.prose > ul > li > :last-child):not(:where([class~=not-prose],[class~=not-prose] *)){margin-bottom:1.25em}.prose :where(.prose > ol > li > :first-child):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:1.25em}.prose :where(.prose > ol > li > :last-child):not(:where([class~=not-prose],[class~=not-prose] *)){margin-bottom:1.25em}.prose :where(ul ul,ul ol,ol ul,ol ol):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:.75em;margin-bottom:.75em}.prose :where(dl):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:1.25em;margin-bottom:1.25em}.prose :where(dd):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:.5em;padding-left:1.625em}.prose :where(hr + *):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:0}.prose :where(h2 + *):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:0}.prose :where(h3 + *):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:0}.prose :where(h4 + *):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:0}.prose :where(thead th:first-child):not(:where([class~=not-prose],[class~=not-prose] *)){padding-left:0}.prose :where(thead th:last-child):not(:where([class~=not-prose],[class~=not-prose] *)){padding-right:0}.prose :where(tbody td,tfoot td):not(:where([class~=not-prose],[class~=not-prose] *)){padding:.5714286em}.prose :where(tbody td:first-child,tfoot td:first-child):not(:where([class~=not-prose],[class~=not-prose] *)){padding-left:0}.prose :where(tbody td:last-child,tfoot td:last-child):not(:where([class~=not-prose],[class~=not-prose] *)){padding-right:0}.prose :where(figure):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:2em;margin-bottom:2em}.prose :where(.prose > :first-child):not(:where([class~=not-prose],[class~=not-prose] *)){margin-top:0}.prose :where(.prose > :last-child):not(:where([class~=not-prose],[class~=not-prose] *)){margin-bottom:0}`}
+      </style>
+      <EditorProvider
+        extensions={extensions}
+        content={content}
+        slotBefore={<CreateMenuBar theme={theme} />}
+        slotAfter={<CharacterCounter theme={theme} />}
+        editorContainerProps={{
+          style: {
+            fontFamily: "body_400",
+          },
+          className: "editor-container",
+          onKeyDown: (e) => {
+            if (e.key === "Escape") {
+              e.target.blur();
+
+              const selection = window.getSelection();
+              selection?.removeAllRanges();
+            }
+          },
+        }}
+      >
+        <Saver updateTask={updateTask} />
+        <Focuser containerRef={containerRef} setFocused={setFocused} />
+        <EditorRef ref={editorRef} />
+      </EditorProvider>
+    </div>
+  );
+});
+

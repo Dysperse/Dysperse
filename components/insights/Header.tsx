@@ -9,6 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MenuIcon from "../menuIcon";
 
 export function Header({ scrollRef }) {
   const theme = useColorTheme();
@@ -43,7 +44,7 @@ export function Header({ scrollRef }) {
               style={{ alignItems: "center", flexDirection: "row", gap: 15 }}
             >
               <Icon style={{ opacity: 0.6 }}>
-                {breakpoints.md ? "arrow_back_ios_new" : "menu"}
+                {breakpoints.md ? "arrow_back_ios_new" : <MenuIcon />}
               </Icon>
               {breakpoints.md && <Text variant="eyebrow">Home</Text>}
             </View>
@@ -59,3 +60,4 @@ export function Header({ scrollRef }) {
     </Pressable>
   );
 }
+

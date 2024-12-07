@@ -1,8 +1,11 @@
+import { SidekickComingSoonModal } from "@/app/(app)/settings/sidekick";
 import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import SelectionNavbar from "@/components/layout/SelectionNavbar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
+import MenuIcon from "@/components/menuIcon";
 import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -52,6 +55,31 @@ export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
   },
   {}
 );
+
+function CollectionSidekick() {
+  const { session } = useUser();
+
+  return (
+    <MenuPopover
+      containerStyle={{ width: 200 }}
+      trigger={
+        session.user?.betaTester ? (
+          <IconButton icon="raven" />
+        ) : (
+          <SidekickComingSoonModal>
+            <IconButton icon="raven" />
+          </SidekickComingSoonModal>
+        )
+      }
+      menuProps={{ rendererProps: { placement: "bottom" } }}
+      options={[
+        { text: "Categorize tasks", icon: "category" },
+        { text: "Balance workload", icon: "balance" },
+        { text: "Help me prioritize", icon: "priority" },
+      ]}
+    />
+  );
+}
 
 const CollectionNavbar = memo(function CollectionNavbar({
   isLoading,
@@ -201,7 +229,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
         <IconButton
           size={40}
           onPress={() => sidebarRef.current.openDrawer()}
-          icon="menu"
+          icon={<MenuIcon />}
         />
       ),
     [sidebarRef, breakpoints.md]
@@ -239,6 +267,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
               <CategoryLabelButtons />
             )}
             <CollectionContext.Provider value={contextValue}>
+              {process.env.NODE_ENV !== "production" && <CollectionSidekick />}
               {session && <CollectionSearch />}
               {!isLoading && !isReadOnly && !isAll && (
                 <MenuPopover

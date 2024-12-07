@@ -6,7 +6,7 @@ import {
   TextStyle,
   ViewStyle,
 } from "react-native";
-import { useColor } from "../color";
+import { addHslAlpha, useColor } from "../color";
 import { useColorTheme } from "../color/theme-provider";
 import Icon from "../Icon";
 import IconButton from "../IconButton";
@@ -72,12 +72,14 @@ export default function Chip({
           height: dense ? 30 : 35,
           ...(outlined
             ? {
-                backgroundColor: pressed
-                  ? theme[5]
-                  : hovered
-                  ? theme[4]
-                  : undefined,
-                borderColor: theme[pressed ? 5 : hovered ? 4 : 3],
+                backgroundColor: addHslAlpha(
+                  theme[11],
+                  pressed ? 0.1 : hovered ? 0.05 : 0
+                ),
+                borderColor: addHslAlpha(
+                  theme[11],
+                  pressed ? 0.3 : hovered ? 0.2 : 0.1
+                ),
               }
             : {
                 borderColor: "transparent",
@@ -125,3 +127,4 @@ export default function Chip({
     </Pressable>
   );
 }
+

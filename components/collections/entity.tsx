@@ -11,6 +11,7 @@ interface EntityProps {
   isReadOnly: boolean;
   dateRange?: string;
   planMode?: boolean;
+  dense?: boolean;
 }
 
 export const Entity = ({
@@ -22,11 +23,13 @@ export const Entity = ({
   isReadOnly = false,
   dateRange,
   planMode = false,
+  dense = false,
 }: EntityProps) => {
   switch (item.type) {
     case "TASK":
       return (
         <Task
+          dense={dense}
           dateRange={dateRange}
           showLabel={showLabel}
           onTaskUpdate={onTaskUpdate}
@@ -46,3 +49,4 @@ export const Entity = ({
       );
   }
 };
+

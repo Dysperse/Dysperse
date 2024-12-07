@@ -223,3 +223,4 @@ export function FriendActivity() {
     </View>
   );
 }
+

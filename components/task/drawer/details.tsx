@@ -1,15 +1,7 @@
-import { ImageViewer } from "@/components/ImageViewer";
-import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Entity } from "@/components/collections/entity";
-import { STORY_POINT_SCALE } from "@/constants/workload";
-import { useSession } from "@/context/AuthProvider";
-import { useUser } from "@/context/useUser";
-import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Avatar } from "@/ui/Avatar";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import { DatePicker } from "@/ui/DatePicker";
-import Divider from "@/ui/Divider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -17,96 +9,94 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
-import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
-import { Image } from "expo-image";
-import React, { Fragment, useCallback, useRef, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import React, { cloneElement, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Easing,
-  Linking,
-  Platform,
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
-import Accordion from "react-native-collapsible/Accordion";
+import { Linking, Platform, View } from "react-native";
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
+import { getPreviewText } from "..";
 import CreateTask from "../create";
-import TaskDatePicker from "../create/TaskDatePicker";
-import { TaskAttachmentButton } from "./attachment/button";
+import TaskNoteEditor from "./TaskNoteEditor";
 import { useTaskDrawerContext } from "./context";
 
-const drawerStyles = StyleSheet.create({
-  collapsibleMenuItem: { gap: 5, flex: 1, alignItems: "center" },
-});
-
-function TaskRescheduleButton() {
-  const breakpoints = useResponsiveBreakpoints();
-  const { task, updateTask } = useTaskDrawerContext();
+function TaskRescheduleButton({ task, updateTask }) {
+  const sheetRef = useRef(null);
   const handleSelect = (t, n) => {
     updateTask("start", dayjs(task.start).add(n, t).toISOString());
   };
   const isSameDay = task.start && dayjs().isSame(dayjs(task.start), "day");
 
   return (
-    <MenuPopover
-      trigger={<IconButton size={40} icon="dark_mode" />}
-      menuProps={{
-        rendererProps: { placement: breakpoints.md ? "right" : "left" },
-      }}
-      options={[
-        {
-          renderer: () => (
-            <Text
-              variant="eyebrow"
-              style={{
-                textAlign: "center",
-                margin: 10,
-              }}
-            >
-              Snooze
-            </Text>
-          ),
-        },
-        {
-          text: isSameDay ? "Tomorrow" : "1 day",
-          callback: () => handleSelect("day", 1),
-        },
-        {
-          text: isSameDay ? "In 2 days" : "2 days",
-          callback: () => handleSelect("day", 2),
-        },
-        {
-          text: isSameDay ? "In 3 days" : "3 days",
-          callback: () => handleSelect("day", 3),
-        },
-        {
-          text: isSameDay ? "In 4 days" : "4 days",
-          callback: () => handleSelect("day", 5),
-        },
-        {
-          text: dayjs().isSame(dayjs(task.start), "week")
-            ? "Next week"
-            : "1 week",
-          callback: () => handleSelect("week", 1),
-        },
-        {
-          text: dayjs().isSame(dayjs(task.start), "month")
-            ? "Next month"
-            : "1 month",
-          callback: () => handleSelect("month", 1),
-        },
-      ]}
-    />
+    <>
+      <MenuItem onPress={() => sheetRef.current.present()}>
+        <Icon>dark_mode</Icon>
+        <Text variant="menuItem">Snooze</Text>
+      </MenuItem>
+      <Modal
+        animation="SCALE"
+        sheetRef={sheetRef}
+        innerStyles={{ padding: 20 }}
+        maxWidth={300}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            fontFamily: "serifText800",
+            fontSize: 35,
+            marginBottom: 20,
+            margin: 10,
+          }}
+        >
+          Snooze
+        </Text>
+        {[
+          {
+            text: isSameDay ? "Tomorrow" : "1 day",
+            callback: () => handleSelect("day", 1),
+          },
+          {
+            text: isSameDay ? "In 2 days" : "2 days",
+            callback: () => handleSelect("day", 2),
+          },
+          {
+            text: isSameDay ? "In 3 days" : "3 days",
+            callback: () => handleSelect("day", 3),
+          },
+          {
+            text: isSameDay ? "In 4 days" : "4 days",
+            callback: () => handleSelect("day", 5),
+          },
+          {
+            text: dayjs().isSame(dayjs(task.start), "week")
+              ? "Next week"
+              : "1 week",
+            callback: () => handleSelect("week", 1),
+          },
+          {
+            text: dayjs().isSame(dayjs(task.start), "month")
+              ? "Next month"
+              : "1 month",
+            callback: () => handleSelect("month", 1),
+          },
+        ].map(({ text, callback }) => (
+          <ListItemButton key={text} onPress={callback}>
+            <ListItemText primary={text} />
+          </ListItemButton>
+        ))}
+      </Modal>
+    </>
   );
 }
 
@@ -123,59 +113,64 @@ export const notificationScaleText = [
   "1d",
 ];
 
-function TaskNotificationsButton() {
-  const breakpoints = useResponsiveBreakpoints();
-  const { task, updateTask } = useTaskDrawerContext();
+function TaskNotificationsButton({ task, updateTask }) {
+  const sheetRef = useRef(null);
 
   return (
-    <MenuPopover
-      trigger={
-        <IconButton
-          size={40}
-          icon={
-            <Icon filled={task.notifications.length > 0}>
-              {task.notifications.length > 0
-                ? "notifications_active"
-                : "notifications_off"}
-            </Icon>
-          }
-        />
-      }
-      closeOnSelect={false}
-      menuProps={{
-        rendererProps: { placement: breakpoints.md ? "right" : "left" },
-      }}
-      options={[
-        {
-          renderer: () => (
-            <Text
-              variant="eyebrow"
-              style={{
-                textAlign: "center",
-                margin: 10,
-              }}
-            >
-              Remind me in
-            </Text>
-          ),
-        },
-        ...notificationScale.map((n, i) => ({
-          text: notificationScaleText[i]
-            .replace("m", " minutes")
-            .replace("h", " hours")
-            .replace("d", " day"),
-          selected: task.notifications.includes(n),
-          callback: () =>
-            updateTask(
-              "notifications",
-              (task.notifications.includes(n)
-                ? task.notifications.filter((i) => i !== n)
-                : [...task.notifications, n]
-              ).sort()
-            ),
-        })),
-      ]}
-    />
+    <>
+      <MenuItem onPress={() => sheetRef.current.present()}>
+        <Icon filled={task.notifications.length > 0}>
+          {task.notifications.length > 0
+            ? "notifications_active"
+            : "notifications_off"}
+        </Icon>
+        <Text variant="menuItem">
+          {task.notifications.length} notification
+          {task.notifications.length !== 1 && "s"}
+        </Text>
+      </MenuItem>
+      <Modal
+        animation="SCALE"
+        sheetRef={sheetRef}
+        innerStyles={{ padding: 20 }}
+        maxWidth={300}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            fontFamily: "serifText800",
+            fontSize: 35,
+            marginBottom: 20,
+            margin: 10,
+          }}
+        >
+          Remind me...
+        </Text>
+        {notificationScale
+          .map((n, i) => ({
+            text: notificationScaleText[i]
+              .replace("m", " minutes")
+              .replace("h", " hours")
+              .replace("d", " day"),
+            selected: task.notifications.includes(n),
+            callback: () =>
+              updateTask(
+                "notifications",
+                (task.notifications.includes(n)
+                  ? task.notifications.filter((i) => i !== n)
+                  : [...task.notifications, n]
+                ).sort()
+              ),
+          }))
+          .map(({ text, selected, callback }) => (
+            <ListItemButton key={text} onPress={callback}>
+              <Icon filled={selected}>notifications</Icon>
+              <ListItemText primary={`${text} before`} />
+              {selected && <Icon>check</Icon>}
+            </ListItemButton>
+          ))}
+      </Modal>
+    </>
   );
 }
 
@@ -368,146 +363,437 @@ export const handleLocationPress = (
   }
 };
 
-function TaskAttachmentPreview({ item }: { item: any; index: number }) {
-  const theme = useColorTheme();
-  const { session } = useUser();
+// function TaskAttachmentPreview({ item }: { item: any; index: number }) {
+//   const theme = useColorTheme();
+//   const { session } = useUser();
 
-  const { icon, name } = getAttachmentPreview(item);
-  const handleOpenPress = useCallback(() => {
-    if (isValidHttpUrl(item.data)) {
-      Linking.openURL(item.data?.val || item.data);
-    } else {
-      handleLocationPress(session, item);
+//   const { icon, name } = getAttachmentPreview(item);
+//   const handleOpenPress = useCallback(() => {
+//     if (isValidHttpUrl(item.data)) {
+//       Linking.openURL(item.data?.val || item.data);
+//     } else {
+//       handleLocationPress(session, item);
+//     }
+//   }, [item, session]);
+
+//   const SafeImageViewer = item.type === "IMAGE" ? ImageViewer : Fragment;
+
+//   return (
+//     <SafeImageViewer image={item.data}>
+//       <Button
+//         onPress={handleOpenPress}
+//         backgroundColors={attachmentButtonStyles(theme)}
+//         borderColors={attachmentButtonStyles(theme)}
+//         dense
+//       >
+//         {item.type === "IMAGE" ? (
+//           <Image
+//             source={{ uri: item.data }}
+//             contentFit="contain"
+//             contentPosition="center"
+//             style={{ borderRadius: 20, width: 24, height: 24 }}
+//           />
+//         ) : (
+//           <Icon>{icon || "attachment"}</Icon>
+//         )}
+//         <ButtonText>{item.name || name}</ButtonText>
+//       </Button>
+//     </SafeImageViewer>
+//   );
+// }
+
+// function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
+//   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+//   const { icon } = getAttachmentPreview(item);
+
+//   const editable =
+//     !isReadOnly && !(item.type === "LOCATION" && item?.data?.rich);
+
+//   const handleDeletePress = useCallback(() => {
+//     updateTask(
+//       "attachments",
+//       task.attachments.filter((_, i) => i !== index)
+//     );
+//   }, [updateTask, task, index]);
+
+//   return (
+//     <ListItemButton style={{ paddingLeft: 40 }} disabled>
+//       <Avatar icon={icon} style={{ borderRadius: 7 }} />
+//       <View style={{ flex: 1, gap: 5 }}>
+//         {!(item.type === "LOCATION" && !item?.data?.rich) && (
+//           <TextField
+//             variant="filled+outlined"
+//             editable={editable}
+//             defaultValue={item?.data?.name || item.name}
+//             placeholder="(Optional) Friendly name…"
+//             style={{
+//               paddingVertical: 3,
+//               paddingHorizontal: 10,
+//               borderRadius: 5,
+//             }}
+//             onBlur={(e) => {
+//               if (!e.nativeEvent.text.trim()) return;
+//               if (!editable) return;
+//               updateTask(
+//                 "attachments",
+//                 task.attachments.map((attachment, i) =>
+//                   i === index
+//                     ? { ...attachment, name: e.nativeEvent.text }
+//                     : attachment
+//                 )
+//               );
+//             }}
+//           />
+//         )}
+//         <TextField
+//           variant="filled+outlined"
+//           editable={editable}
+//           defaultValue={item?.data?.full_name || item.data?.val || item.data}
+//           placeholder={item.type === "LINK" ? "Link…" : "Location…"}
+//           style={{
+//             paddingVertical: 3,
+//             paddingHorizontal: 10,
+//             borderRadius: 5,
+//           }}
+//           onBlur={(e) => {
+//             if (!editable) return;
+//             updateTask(
+//               "attachments",
+//               task.attachments.map((attachment, i) =>
+//                 i === index
+//                   ? { ...attachment, data: e.nativeEvent.text }
+//                   : attachment
+//               )
+//             );
+//           }}
+//         />
+//       </View>
+//       {item.type === "IMAGE" && (
+//         <Image
+//           source={{ uri: item.data }}
+//           style={{ borderRadius: 20 }}
+//           transition={100}
+//         />
+//       )}
+//       <IconButton icon="remove_circle" onPress={handleDeletePress} />
+//     </ListItemButton>
+//   );
+// }
+
+function LinkModal({ children, onSubmit }) {
+  const modalRef = useRef(null);
+  const urlRef = useRef(null);
+  const nameRef = useRef(null);
+
+  const trigger = cloneElement(children, {
+    onPress: () => {
+      modalRef.current.present();
+      setTimeout(() => {
+        urlRef.current.focus();
+      }, 400);
+    },
+  });
+
+  const removeTrailingSlash = (site) => {
+    return site.replace(/\/$/, "");
+  };
+
+  const handleSubmit = () => {
+    try {
+      onSubmit({
+        name: nameRef.current.value || null,
+        url: removeTrailingSlash(new URL(urlRef.current.value).toString()),
+      });
+      modalRef.current.close();
+    } catch (e) {
+      Toast.show({ type: "error", text1: "Please insert a valid URL" });
+      setTimeout(() => {
+        urlRef.current.focus();
+      }, 400);
     }
-  }, [item, session]);
-
-  const SafeImageViewer = item.type === "IMAGE" ? ImageViewer : Fragment;
+  };
 
   return (
-    <SafeImageViewer image={item.data}>
-      <Button
-        onPress={handleOpenPress}
-        backgroundColors={attachmentButtonStyles(theme)}
-        borderColors={attachmentButtonStyles(theme)}
-        dense
+    <>
+      {trigger}
+      <Modal
+        sheetRef={modalRef}
+        maxWidth={350}
+        animation="SCALE"
+        innerStyles={{ padding: 20, gap: 10 }}
       >
-        {item.type === "IMAGE" ? (
-          <Image
-            source={{ uri: item.data }}
-            contentFit="contain"
-            contentPosition="center"
-            style={{ borderRadius: 20, width: 24, height: 24 }}
-          />
-        ) : (
-          <Icon>{icon || "attachment"}</Icon>
-        )}
-        <ButtonText>{item.name || name}</ButtonText>
-      </Button>
-    </SafeImageViewer>
-  );
-}
-
-function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-  const { icon } = getAttachmentPreview(item);
-
-  const editable =
-    !isReadOnly && !(item.type === "LOCATION" && item?.data?.rich);
-
-  const handleDeletePress = useCallback(() => {
-    updateTask(
-      "attachments",
-      task.attachments.filter((_, i) => i !== index)
-    );
-  }, [updateTask, task, index]);
-
-  return (
-    <ListItemButton style={{ paddingLeft: 40 }} disabled>
-      <Avatar icon={icon} style={{ borderRadius: 7 }} />
-      <View style={{ flex: 1, gap: 5 }}>
-        {!(item.type === "LOCATION" && !item?.data?.rich) && (
-          <TextField
-            variant="filled+outlined"
-            editable={editable}
-            defaultValue={item?.data?.name || item.name}
-            placeholder="(Optional) Friendly name…"
-            style={{
-              paddingVertical: 3,
-              paddingHorizontal: 10,
-              borderRadius: 5,
-            }}
-            onBlur={(e) => {
-              if (!e.nativeEvent.text.trim()) return;
-              if (!editable) return;
-              updateTask(
-                "attachments",
-                task.attachments.map((attachment, i) =>
-                  i === index
-                    ? { ...attachment, name: e.nativeEvent.text }
-                    : attachment
-                )
-              );
-            }}
-          />
-        )}
-        <TextField
-          variant="filled+outlined"
-          editable={editable}
-          defaultValue={item?.data?.full_name || item.data?.val || item.data}
-          placeholder={item.type === "LINK" ? "Link…" : "Location…"}
+        <View
           style={{
-            paddingVertical: 3,
-            paddingHorizontal: 10,
-            borderRadius: 5,
+            marginBottom: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
-          onBlur={(e) => {
-            if (!editable) return;
-            updateTask(
-              "attachments",
-              task.attachments.map((attachment, i) =>
-                i === index
-                  ? { ...attachment, data: e.nativeEvent.text }
-                  : attachment
-              )
-            );
-          }}
+        >
+          <Text weight={900} style={{ fontSize: 20 }}>
+            Insert link
+          </Text>
+          <IconButton icon="close" variant="filled" />
+        </View>
+        <TextField
+          onSubmitEditing={handleSubmit}
+          inputRef={urlRef}
+          variant="filled+outlined"
+          placeholder="URL"
         />
-      </View>
-      {item.type === "IMAGE" && (
-        <Image
-          source={{ uri: item.data }}
-          style={{ borderRadius: 20 }}
-          transition={100}
+        <TextField
+          onSubmitEditing={handleSubmit}
+          inputRef={nameRef}
+          variant="filled+outlined"
+          placeholder="Display name (optional)"
         />
-      )}
-      <IconButton icon="remove_circle" onPress={handleDeletePress} />
-    </ListItemButton>
+        <Button
+          variant="filled"
+          onPress={handleSubmit}
+          bold
+          large
+          text="Insert"
+          icon="add"
+        />
+      </Modal>
+    </>
   );
 }
 
-function TaskNote({ backgroundColors }) {
-  const { task, updateTask } = useTaskDrawerContext();
+function NoteInsertMenu({ isFocused, editorRef }) {
+  const theme = useColorTheme();
+  const insertMenuStyles = useAnimatedStyle(() => ({
+    opacity: isFocused.value,
+    top: 0,
+    right: 0,
+    margin: 5,
+    zIndex: 9999,
+    position: "absolute",
+  }));
+
+  const pickImageAsync = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      presentationStyle: ImagePicker.UIImagePickerPresentationStyle.POPOVER,
+    });
+
+    if (!result.canceled) {
+      Toast.show({
+        type: "info",
+        props: { loading: true },
+        text1: "Uploading image...",
+        swipeable: false,
+        visibilityTime: 1e9,
+      });
+      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
+      const file = new File([blob], result.assets[0].fileName, {
+        type: blob.type,
+      });
+      const form = new FormData();
+      form.append("image", file);
+
+      const res = await fetch(
+        "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
+        {
+          method: "POST",
+          body: form,
+        }
+      ).then((res) => res.json());
+      // updateTask("attachments", [
+      //   ...(task?.attachments || []),
+      //   { type: "IMAGE", data: res.data.display_url },
+      // ]);
+      editorRef.current.editor
+        .chain()
+        .focus()
+        .insertContent(`<img src="${res.data.display_url}" />`)
+        .run();
+      Toast.hide();
+      Toast.show({ type: "success", text1: "Image attached!" });
+    } else {
+      alert("You did not select any image.");
+    }
+  };
 
   return (
-    <TaskAttachmentButton
-      defaultView="Note"
-      lockView
-      task={task}
-      updateTask={updateTask}
+    <Animated.View style={insertMenuStyles}>
+      <MenuPopover
+        trigger={
+          <Button
+            onPress={() => {
+              editorRef.current.editor.commands.focus();
+            }}
+            {...(Platform.OS === "web"
+              ? {
+                  onMouseDown: () =>
+                    setTimeout(
+                      () => editorRef.current.editor.commands.focus(),
+                      0
+                    ),
+                }
+              : {})}
+            backgroundColors={{
+              default: addHslAlpha(theme[5], 0.7),
+              hovered: addHslAlpha(theme[5], 0.8),
+              pressed: addHslAlpha(theme[5], 0.9),
+            }}
+            icon="add"
+            text="Insert"
+            variant="filled"
+            dense
+          />
+        }
+        closeOnSelect
+        menuProps={{
+          onOpen: () => editorRef.current.editor.commands.focus(),
+          onClose: () => editorRef.current.editor.commands.focus(),
+        }}
+        options={[
+          {
+            renderer: () => (
+              <View style={{ flexDirection: "row" }}>
+                <MenuItem
+                  onPress={() =>
+                    editorRef.current.editor
+                      .chain()
+                      .focus()
+                      .toggleHeading({ level: 1 })
+                      .run()
+                  }
+                >
+                  <Icon>format_h1</Icon>
+                </MenuItem>
+                <MenuItem
+                  onPress={() =>
+                    editorRef.current.editor
+                      .chain()
+                      .focus()
+                      .toggleHeading({ level: 2 })
+                      .run()
+                  }
+                >
+                  <Icon>format_h2</Icon>
+                </MenuItem>
+                <MenuItem
+                  onPress={() =>
+                    editorRef.current.editor
+                      .chain()
+                      .focus()
+                      .toggleHeading({ level: 3 })
+                      .run()
+                  }
+                >
+                  <Icon>format_h3</Icon>
+                </MenuItem>
+              </View>
+            ),
+          },
+          {
+            renderer: () => (
+              <LinkModal
+                onSubmit={(link) => {
+                  editorRef.current.editor
+                    .chain()
+                    .focus()
+                    .insertContent(
+                      `<a href="${link.url}" target="_blank">${
+                        link.name || link.url
+                      }</a>`
+                    )
+                    .run();
+                }}
+              >
+                <MenuItem>
+                  <Icon>link</Icon>
+                  <Text variant="menuItem">Link</Text>
+                </MenuItem>
+              </LinkModal>
+            ),
+          },
+          { icon: "image", text: "Image", callback: pickImageAsync },
+          {
+            icon: "location_on",
+            text: "Location",
+            callback: () => Toast.show({ type: "info", text1: "Coming soon!" }),
+          },
+
+          {
+            icon: "format_list_bulleted",
+            text: "Bullets",
+            callback: () =>
+              editorRef.current.editor.chain().focus().toggleBulletList().run(),
+          },
+          {
+            icon: "code",
+            text: "Code block",
+            callback: () =>
+              editorRef.current.editor.chain().focus().toggleCodeBlock().run(),
+          },
+          {
+            icon: "horizontal_rule",
+            text: "Divider",
+            callback: () =>
+              editorRef.current.editor
+                .chain()
+                .focus()
+                .setHorizontalRule()
+                .run(),
+          },
+        ]}
+      />
+    </Animated.View>
+  );
+}
+
+function TaskNote() {
+  const theme = useColorTheme();
+  const noteRef = useRef(null);
+  const { task, updateTask } = useTaskDrawerContext();
+  const [hasClicked, setHasClicked] = useState(false);
+  const shouldShow = Boolean(getPreviewText(task.note)) || hasClicked;
+
+  const isFocused = useSharedValue(0);
+
+  const focusedStyles = useAnimatedStyle(() => ({
+    borderRadius: 10,
+    position: "relative",
+    backgroundColor: interpolateColor(
+      isFocused.value,
+      [0, 1],
+      [addHslAlpha(theme[5], 0), addHslAlpha(theme[5], 0.3)]
+    ),
+  }));
+
+  return !shouldShow ? (
+    <Button
+      dense
+      onPress={() => setHasClicked(true)}
+      containerStyle={{
+        marginRight: "auto",
+        opacity: 0.6,
+        marginLeft: 5,
+      }}
+      style={{ gap: 10 }}
     >
-      <ListItemButton
-        variant="filled"
-        disabled
-        backgroundColors={backgroundColors}
-        style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-      >
-        <View style={{ flex: 1 }}>
-          <MarkdownRenderer>
-            {task.note?.replaceAll("] (http", "](http")?.trim()}
-          </MarkdownRenderer>
-        </View>
-      </ListItemButton>
-    </TaskAttachmentButton>
+      <Icon size={20} style={{ marginTop: -3 }}>
+        sticky_note_2
+      </Icon>
+      <Text style={{ color: theme[11] }}>Add note</Text>
+    </Button>
+  ) : (
+    <Animated.View style={focusedStyles}>
+      <NoteInsertMenu isFocused={isFocused} editorRef={noteRef} />
+      <TaskNoteEditor
+        ref={noteRef}
+        updateTask={updateTask as any}
+        theme={theme}
+        dom={{ matchContents: true }}
+        setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
+        content={task.note?.replaceAll("] (http", "](http")?.trim()}
+      />
+    </Animated.View>
   );
 }
 
@@ -519,393 +805,51 @@ export const normalizeRecurrenceRuleObject = (rule) => {
     ...(rule.dtstart && { dtstart: dayjs(rule.dtstart).toDate() }),
   });
 };
-
-const TaskCollapsibleAction = ({
-  icon,
-  text,
-  onPress,
-}: {
-  icon: string;
-  text: string;
-  onPress?: () => any;
-}) => {
-  return (
-    <Pressable style={drawerStyles.collapsibleMenuItem} onPress={onPress}>
-      <IconButton size={50} disabled style={{ opacity: 1 }} variant="outlined">
-        <Icon>{icon}</Icon>
-      </IconButton>
-      <Text>{text}</Text>
-    </Pressable>
-  );
-};
-
-function ComplexityTrigger({ backgroundColors }) {
-  const ref = useRef(null);
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
+function SubtaskList() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
-  const complexityScale = [2, 4, 8, 16, 32];
-
   return (
-    <ListItemButton
-      backgroundColors={backgroundColors}
-      disabled
-      style={{
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          flex: 1,
-          gap: 20,
+    <>
+      <CreateTask
+        mutate={() => {}}
+        onPress={() => {
+          if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
+            localStorage.setItem("subtaskTip", "true");
+            Toast.show({
+              type: "info",
+              text1: "Pro tip",
+              text2: "Tap twice on a task to open this popup",
+              visibilityTime: 5000,
+            });
+          }
         }}
+        defaultValues={{ parentTask: task }}
       >
-        <Icon>exercise</Icon>
-        <ListItemText
-          primary="Complexity"
-          secondary={
-            STORY_POINT_SCALE[
-              complexityScale.findIndex((i) => i === task.storyPoints)
-            ] || "How difficult is this task?"
+        <Button
+          icon="prompt_suggestion"
+          dense
+          containerStyle={{
+            marginRight: "auto",
+            opacity: 0.6,
+            marginLeft: 5,
+          }}
+          style={{ gap: 10 }}
+          text={
+            Object.keys(task.subtasks || {}).length === 0
+              ? "Create subtask"
+              : `${Object.keys(task.subtasks || {}).length} subtasks`
           }
         />
-      </View>
-      {!isReadOnly && (
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          {task.storyPoints && (
-            <IconButton
-              onPress={() => updateTask("storyPoints", null)}
-              size={35}
-              animationConfigs={breakpoints.md && { duration: 0.0001 }}
-              style={[breakpoints.md && { borderRadius: 10 }]}
-            >
-              <Icon style={{ color: theme[11] }}>close</Icon>
-            </IconButton>
-          )}
-          <MenuPopover
-            menuRef={ref}
-            containerStyle={{ width: 200 }}
-            trigger={
-              task.storyPoints ? (
-                <Pressable
-                  style={({ pressed, hovered }) => ({
-                    paddingLeft: 5,
-                    gap: 5,
-                    width: 60,
-                    height: 35,
-                    backgroundColor: theme[pressed ? 12 : hovered ? 11 : 10],
-                    borderRadius: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                  })}
-                >
-                  <Text
-                    style={{
-                      fontFamily: "mono",
-                      color: theme[1],
-                    }}
-                  >
-                    {String(task.storyPoints).padStart(2, "0")}
-                  </Text>
-                  <Icon style={{ color: theme[1] }}>expand_more</Icon>
-                </Pressable>
-              ) : (
-                <IconButton size={35} variant="outlined" icon="add" />
-              )
-            }
-            options={
-              complexityScale.map((n) => ({
-                renderer: () => (
-                  <MenuItem
-                    onPress={() => {
-                      updateTask("storyPoints", n);
-                      ref.current?.close();
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 30,
-                        height: 30,
-                        backgroundColor: addHslAlpha(
-                          theme[11],
-                          n === task.storyPoints ? 1 : 0.1
-                        ),
-                        borderRadius: 10,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontFamily: "mono",
-                          color: theme[n === task.storyPoints ? 1 : 11],
-                        }}
-                      >
-                        {String(n).padStart(2, "0")}
-                      </Text>
-                    </View>
-                    <Text variant="menuItem">
-                      {
-                        STORY_POINT_SCALE[
-                          complexityScale.findIndex((i) => i === n)
-                        ]
-                      }
-                    </Text>
-                  </MenuItem>
-                ),
-              })) as any
-            }
-          />
-        </View>
-      )}
-    </ListItemButton>
-  );
-}
-
-function AISubtask() {
-  const modalRef = useRef();
-  const theme = useColorTheme();
-  const { sessionToken } = useUser();
-  const [isLoading, setIsLoading] = useState(false);
-  const { task, updateTask } = useTaskDrawerContext();
-
-  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
-  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
-  const [isCreationLoading, setIsCreationLoading] = useState(false);
-
-  const handleAddSubtasks = async () => {
-    setIsCreationLoading(true);
-    try {
-      const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
-
-      const t = await sendApiRequest(
-        sessionToken,
-        "PATCH",
-        "space/entity",
-        {},
-        {
-          body: JSON.stringify({
-            entities: subtasks.map((subtask) => ({
-              name: subtask.title,
-              type: "TASK",
-              parentTask: task,
-              parentId: task.id,
-              note: subtask.description,
-              collectionId: task.collectionId,
-            })),
-          }),
-        }
-      );
-      updateTask(
-        "subtasks",
-        {
-          ...task.subtasks,
-          ...t.reduce((acc, curr) => {
-            acc[curr.id] = curr;
-            return acc;
-          }, {}),
-        },
-        false
-      );
-      modalRef.current?.close();
-    } catch (e) {
-      Toast.show({ type: "error" });
-    } finally {
-      setIsCreationLoading(false);
-    }
-  };
-
-  return (
-    <>
-      <Button
-        icon="magic_button"
-        text="Generate"
-        backgroundColors={{
-          default: addHslAlpha(theme[11], 0.05),
-          pressed: addHslAlpha(theme[11], 0.1),
-          hovered: addHslAlpha(theme[11], 0.2),
+      </CreateTask>
+      <View
+        style={{
+          marginBottom: Object.keys(task.subtasks || {}).length === 0 ? 0 : 10,
         }}
-        dense
-        onPress={() => {
-          setIsLoading(true);
-          modalRef.current?.present();
-
-          fetch("https://dysperse.koyeb.app/subtasks", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              message: task.name,
-            }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (!Array.isArray(data?.response))
-                throw new Error("No response");
-              setGeneratedSubtasks(data.response);
-              setSelectedSubtasks(data.response.map((_, i) => i));
-              setIsLoading(false);
-            })
-            .catch((e) => {
-              setIsLoading(false);
-              Toast.show({ type: "error" });
-            });
-        }}
-      />
-      <Modal
-        maxWidth={400}
-        height="auto"
-        innerStyles={{ minHeight: 400 }}
-        animation="SCALE"
-        transformCenter
-        sheetRef={modalRef}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            padding: 20,
-          }}
-        >
-          <View>
-            <Text style={{ fontSize: 20 }} weight={900}>
-              AI subtasks
-            </Text>
-            <Text style={{ opacity: 0.6, fontSize: 13 }}>Experimental</Text>
-          </View>
-          <IconButton
-            icon="close"
-            onPress={() => modalRef.current?.close()}
-            variant="filled"
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          {!isLoading ? (
-            <View style={{ padding: 10, paddingTop: 0, marginTop: -10 }}>
-              {generatedSubtasks.map((subtask, i) => (
-                <ListItemButton
-                  key={i}
-                  onPress={() => {
-                    setSelectedSubtasks((prev) =>
-                      prev.includes(i)
-                        ? prev.filter((t) => t !== i)
-                        : [...prev, i]
-                    );
-                  }}
-                  style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 20,
-                  }}
-                  pressableStyle={{
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Icon
-                    filled={selectedSubtasks.includes(i)}
-                    style={{ marginTop: 2 }}
-                    size={30}
-                  >
-                    {selectedSubtasks.includes(i) ? "check_circle" : "circle"}
-                  </Icon>
-                  <ListItemText
-                    primary={subtask.title}
-                    secondary={subtask.description}
-                  />
-                </ListItemButton>
-              ))}
-
-              <View style={{ padding: 5 }}>
-                <Button
-                  isLoading={isCreationLoading}
-                  onPress={handleAddSubtasks}
-                  variant="filled"
-                  large
-                  bold
-                  text={`Add ${selectedSubtasks.length} subtasks`}
-                  icon="add"
-                />
-              </View>
-            </View>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Spinner />
-            </View>
-          )}
-        </View>
-      </Modal>
-    </>
-  );
-}
-
-function SubtaskList({ backgroundColors }) {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { session } = useSession();
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-
-  return (
-    <>
-      <ListItemButton
-        backgroundColors={backgroundColors}
-        style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-      >
-        <Icon>list</Icon>
-        <ListItemText
-          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-          primary="Subtasks"
-          secondary={`${Object.keys(task?.subtasks || {}).length}`}
-        />
-        <View style={{ gap: 5, flexDirection: "row" }}>
-          {session && <AISubtask />}
-          <CreateTask
-            mutate={() => {}}
-            onPress={() => {
-              if (
-                Platform.OS === "web" &&
-                !localStorage.getItem("subtaskTip")
-              ) {
-                localStorage.setItem("subtaskTip", "true");
-                Toast.show({
-                  type: "info",
-                  text1: "Pro tip",
-                  text2: "Tap twice on a task to open this popup",
-                  visibilityTime: 5000,
-                });
-              }
-            }}
-            defaultValues={{ parentTask: task }}
-          >
-            <Button
-              icon="add"
-              text={breakpoints.md && "New"}
-              iconPosition="end"
-              backgroundColors={{
-                default: addHslAlpha(theme[11], 0.05),
-                pressed: addHslAlpha(theme[11], 0.1),
-                hovered: addHslAlpha(theme[11], 0.2),
-              }}
-              dense
-            />
-          </CreateTask>
-        </View>
-      </ListItemButton>
-      <View style={{ marginHorizontal: -15 }}>
         {typeof task.subtasks === "object" &&
           Object.values(task.subtasks).map((t) => (
             <Entity
+              dense
               isReadOnly={isReadOnly}
               item={t}
               onTaskUpdate={(newTask) => {
@@ -926,27 +870,24 @@ function SubtaskList({ backgroundColors }) {
   );
 }
 
-export function TaskDetails() {
+function TaskDateMenu() {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-
-  const [activeSections, setActiveSections] = useState([]);
-
-  const collapsibleMenuStyles = {
-    padding: 10,
-    flexDirection: "row",
-    paddingVertical: 10,
-  } as StyleProp<ViewStyle>;
-
-  const noteMenuRef = useRef<BottomSheetModal>(null);
 
   const recurrenceRule =
     task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
 
   const dateName = recurrenceRule
-    ? [`Repeats ${recurrenceRule.toText()}`]
+    ? [
+        `Repeats ${recurrenceRule
+          .toText()
+          .replace(
+            "every week on Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
+            "every day"
+          )}`,
+      ]
     : [
-        task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "No date set",
+        task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "Set due date",
         task.end &&
         !(task.dateOnly && dayjs(task.start).isSame(dayjs(task.end), "day"))
           ? `to ${dayjs(task.end).format("MMM Do, YYYY")}`
@@ -957,253 +898,136 @@ export function TaskDetails() {
 
   const addRecurrenceRef = useRef(null);
   const addDateRef = useRef(null);
-  const backgroundColors = {
-    default: "transparent",
-    active: "transparent",
-    hover: "transparent",
-  };
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <>
-      <Accordion
-        activeSections={activeSections}
-        sectionContainerStyle={{
-          backgroundColor: addHslAlpha(theme[5], 0.3),
-          borderRadius: 20,
-          overflow: "hidden",
-          marginTop: 15,
+      <DatePicker
+        value={{
+          date: dayjs(task?.start).isValid() ? task?.start : null,
+          dateOnly: true,
+          end: null,
         }}
-        underlayColor="transparent"
-        touchableComponent={Pressable as any}
-        easing={Easing.bezier(0.17, 0.67, 0.32, 1)}
-        sections={[
-          isReadOnly && task.attachments?.length === 0
-            ? null
-            : {
-                trigger: () => (
-                  <ListItemButton
-                    disabled
-                    backgroundColors={backgroundColors}
-                    style={{
-                      paddingVertical: 15,
-                      paddingHorizontal: 20,
-                    }}
-                  >
-                    <Icon
-                      style={{
-                        transform: [{ rotate: "-45deg" }],
-                      }}
-                    >
-                      attachment
-                    </Icon>
-                    <ListItemText
-                      primary={
-                        task.attachments?.length > 0
-                          ? `${task.attachments?.length} attachment${
-                              task.attachments?.length > 1 ? "s" : ""
-                            }`
-                          : `Attachments`
-                      }
-                      secondaryProps={{ style: { opacity: 1 } }}
-                      secondary={
-                        <View
-                          style={{
-                            flexWrap: "wrap",
-                            gap: 5,
-                            flexDirection: "row",
-                          }}
-                        >
-                          {!isReadOnly && (
-                            <TaskAttachmentButton
-                              task={task}
-                              updateTask={updateTask}
-                            >
-                              <Button
-                                icon="add"
-                                text="New"
-                                variant="filled"
-                                backgroundColors={attachmentButtonStyles(theme)}
-                                borderColors={attachmentButtonStyles(theme)}
-                                dense
-                              />
-                            </TaskAttachmentButton>
-                          )}
-                          {task.attachments?.map((i, index) => (
-                            <TaskAttachmentPreview
-                              item={i}
-                              index={index}
-                              key={index}
-                            />
-                          ))}
-                        </View>
-                      }
-                    />
-                    {!isReadOnly && task.attachments?.length > 0 && (
-                      <IconButton
-                        style={{ opacity: 1 }}
-                        variant="outlined"
-                        icon="expand_more"
-                        disabled
+        setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
+        ref={addDateRef}
+      />
+      <RecurrencePicker
+        value={recurrenceRule?.options}
+        setValue={(value) => updateTask("recurrenceRule", value)}
+        ref={addRecurrenceRef}
+      />
+      <MenuPopover
+        menuProps={{
+          style: { marginRight: "auto" },
+        }}
+        containerStyle={{
+          [breakpoints.md ? "marginTop" : "marginBottom"]: -10,
+          width: 190,
+        }}
+        trigger={
+          <Button
+            containerStyle={{
+              marginRight: "auto",
+              opacity: 0.6,
+              marginLeft: 5,
+            }}
+            style={{ gap: 10 }}
+            dense
+          >
+            <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
+              {task.start
+                ? "calendar_today"
+                : task.recurrenceRule
+                ? "loop"
+                : "calendar_today"}
+            </Icon>
+            <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
+          </Button>
+        }
+        options={
+          isReadOnly
+            ? []
+            : [
+                ...(((task.start || task.recurrenceRule) && [
+                  {
+                    icon: "edit",
+                    text: "Edit",
+                    callback: () => {
+                      if (task.recurrenceRule)
+                        addRecurrenceRef.current.present();
+                      else addDateRef.current.present();
+                    },
+                  },
+                  {
+                    renderer: () => (
+                      <TaskNotificationsButton
+                        task={task}
+                        updateTask={updateTask}
                       />
-                    )}
-                  </ListItemButton>
-                ),
-                content: !isReadOnly && (
-                  <View
-                    style={{
-                      display: task.attachments?.length > 0 ? "flex" : "none",
-                    }}
-                  >
-                    <Divider />
-                    {task.attachments?.map((i, index) => (
-                      <React.Fragment key={index}>
-                        <TaskAttachmentCard
-                          item={i}
-                          index={index}
-                          key={index}
-                        />
-                        {index !== task.attachments.length - 1 && (
-                          <Divider style={{ height: 1 }} />
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </View>
-                ),
-              },
-          task.integrationParams && {
-            trigger: () => (
-              <ListItemButton
-                backgroundColors={backgroundColors}
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>{task?.integrationParams?.icon || "sync_alt"}</Icon>
-                <ListItemText
-                  primary={`From ${
-                    task?.integrationParams?.from || "integration"
-                  }`}
-                />
-              </ListItemButton>
-            ),
-            content: <></>,
-          },
-          task.note && {
-            trigger: () => <TaskNote backgroundColors={backgroundColors} />,
-            content: !isReadOnly && (
-              <View style={collapsibleMenuStyles}>
-                <TaskCollapsibleAction
-                  icon="close"
-                  text="Remove"
-                  onPress={() => updateTask("note", null)}
-                />
-                <TaskAttachmentButton
-                  defaultView="Note"
-                  menuRef={noteMenuRef}
-                  lockView
-                  task={task}
-                  updateTask={updateTask}
-                >
-                  <TaskCollapsibleAction icon="edit" text="Edit" />
-                </TaskAttachmentButton>
-              </View>
-            ),
-          },
-          !task.parentTaskId && {
-            trigger: () => (
-              <ListItemButton
-                disabled
-                backgroundColors={backgroundColors}
-                style={{ paddingVertical: 15, paddingHorizontal: 20 }}
-              >
-                <Icon>
-                  {task.start
-                    ? "calendar_today"
-                    : task.recurrenceRule
-                    ? "loop"
-                    : "calendar_add_on"}
-                </Icon>
-                <ListItemText primary={dateName[0]} secondary={dateName[1]} />
-                <View style={{ flexDirection: "row" }}>
-                  {!isReadOnly && (task.start || task.recurrenceRule) && (
-                    <TaskNotificationsButton />
-                  )}
-                  {!isReadOnly && !task.recurrenceRule && task.start && (
-                    <TaskRescheduleButton />
-                  )}
-                </View>
-              </ListItemButton>
-            ),
-            content: isReadOnly ? null : task.start || task.recurrenceRule ? (
-              <View style={collapsibleMenuStyles}>
-                <TaskCollapsibleAction
-                  icon="close"
-                  text="Remove"
-                  onPress={() => {
+                    ),
+                  },
+                ]) ||
+                  []),
+                ...((!task.recurrenceRule &&
+                  !task.start && [
+                    {
+                      icon: "calendar_today",
+                      text: "Add date",
+                      callback: () => addDateRef.current.present(),
+                    },
+                    {
+                      icon: "loop",
+                      text: "Add recurrence",
+                      callback: () => addRecurrenceRef.current.present(),
+                    },
+                  ]) ||
+                  []),
+                !task.recurrenceRule &&
+                  task.start && {
+                    renderer: () => (
+                      <TaskRescheduleButton
+                        task={task}
+                        updateTask={updateTask}
+                      />
+                    ),
+                  },
+
+                {
+                  icon: "close",
+                  text: "Remove",
+                  callback: () => {
                     updateTask("recurrenceRule", null);
                     updateTask("start", null);
-                  }}
-                />
-                <TaskDatePicker
-                  setValue={(name, value) =>
-                    updateTask(name === "date" ? "start" : name, value)
-                  }
-                  watch={(inputName) => {
-                    return {
-                      date: task.start ? dayjs(task.start) : null,
-                      dateOnly: task.dateOnly,
-                      recurrenceRule: recurrenceRule?.options,
-                    }[inputName];
-                  }}
-                >
-                  <TaskCollapsibleAction icon="edit" text="Edit" />
-                </TaskDatePicker>
-              </View>
-            ) : (
-              <View style={[collapsibleMenuStyles, { height: 100 }]}>
-                <RecurrencePicker
-                  value={recurrenceRule?.options}
-                  setValue={(value) => updateTask("recurrenceRule", value)}
-                  ref={addRecurrenceRef}
-                />
-                <DatePicker
-                  value={{ date: null, dateOnly: true, end: null }}
-                  setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
-                  ref={addDateRef}
-                />
-                <TaskCollapsibleAction
-                  icon="loop"
-                  text="Add recurrence"
-                  onPress={() => addRecurrenceRef.current?.present()}
-                />
-                <TaskCollapsibleAction
-                  icon="today"
-                  text="Set due date"
-                  onPress={() => addDateRef.current?.present()}
-                />
-              </View>
-            ),
-          },
-
-          isReadOnly && !task.storyPoints
-            ? null
-            : {
-                trigger: () => (
-                  <ComplexityTrigger backgroundColors={backgroundColors} />
-                ),
-                content: <></>,
-              },
-          (isReadOnly && task.subtasks?.length === 0) || task.parentTaskId
-            ? null
-            : {
-                trigger: () => (
-                  <SubtaskList backgroundColors={backgroundColors} />
-                ),
-              },
-        ].filter((e) => e)}
-        renderHeader={(section) => section.trigger()}
-        renderContent={(section) => section.content}
-        onChange={setActiveSections}
+                  },
+                },
+              ]
+        }
       />
     </>
+  );
+}
+
+export function TaskDetails() {
+  const { task, isReadOnly } = useTaskDrawerContext();
+
+  return (
+    <View style={{ gap: 2, marginTop: 5 }}>
+      {!task.parentTaskId && (
+        <View>
+          <TaskDateMenu />
+        </View>
+      )}
+      {(isReadOnly && task.subtasks?.length === 0) ||
+      task.parentTaskId ? null : (
+        <View>
+          <SubtaskList />
+        </View>
+      )}
+
+      <View>
+        <TaskNote />
+      </View>
+    </View>
   );
 }
 
