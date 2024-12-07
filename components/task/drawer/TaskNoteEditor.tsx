@@ -248,7 +248,7 @@ function Saver({ updateTask }) {
   useEffect(() => {
     const save = async () => {
       const content = editor.getHTML();
-      updateTask("note", content);
+      updateTask("note", editor.isEmpty ? null : content);
     };
 
     editor.on("blur", save);
