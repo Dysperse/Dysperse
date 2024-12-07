@@ -37,31 +37,6 @@ const extensions = [
   }),
 ];
 
-const buttonStyles = (selected) => ({
-  color: selected ? "blue" : "inherit",
-  border: 0,
-  height: 40,
-  width: 40,
-  background: "transparent",
-  aspectRatio: "1/1",
-  fontFamily: selected
-    ? "'symbols_bold_outlined', 'Material Symbols Rounded'"
-    : "'symbols_outlined', 'Material Symbols Rounded'",
-});
-
-const iconStyles = (theme) => ({
-  fontSize: "24px",
-  color: theme[11],
-});
-
-const menuStyles = (theme) => ({
-  background: theme[4],
-  borderRadius: 999,
-  boxShadow:
-    "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-  overflow: "hidden",
-});
-
 function CharacterCounter({ theme }) {
   const { editor } = useCurrentEditor();
   const percentage = editor
@@ -274,10 +249,6 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       onMouseDown={() => editorRef.current.editor.commands.focus()}
       onClick={() => editorRef.current.editor.commands.focus()}
     >
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,200,0,0"
-      />
       <link
         href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet"
