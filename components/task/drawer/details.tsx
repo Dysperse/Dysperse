@@ -996,8 +996,8 @@ function TaskDateMenu() {
                   icon: "close",
                   text: "Remove",
                   callback: () => {
-                    updateTask("start", null);
                     updateTask("recurrenceRule", null);
+                    updateTask("start", null);
                   },
                 },
               ]
