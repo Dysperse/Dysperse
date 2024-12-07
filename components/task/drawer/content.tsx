@@ -446,8 +446,6 @@ function WorkloadChip() {
           }
           style={{
             borderRadius: 10,
-            // backgroundColor: addHslAlpha(theme[11], 0.05),
-            borderColor: theme[4],
             borderWidth: 1,
           }}
           outlined
@@ -638,6 +636,7 @@ export function TaskDrawerContent({
                 );
               }}
               size={45}
+              variant="outlined"
               icon={breakpoints.md ? "close" : "west"}
             />
           )}
@@ -656,11 +655,16 @@ export function TaskDrawerContent({
       </View>
       <LinearGradient
         colors={[theme[2], "transparent"]}
-        style={{ height: 40, width: "100%", marginBottom: -28, zIndex: 1 }}
+        style={{
+          height: 40,
+          width: "100%",
+          marginBottom: -28,
+          zIndex: 1,
+        }}
       />
       <SafeScrollView showsHorizontalScrollIndicator={false}>
         <View
-          style={{ paddingBottom: 20, paddingTop: 25, paddingHorizontal: 10 }}
+          style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}
         >
           <View
             style={{
@@ -688,10 +692,10 @@ export function TaskDrawerContent({
               style={{
                 borderRadius: 10,
                 borderWidth: 1,
-                borderColor: task.pinned ? labelColors.orange[11] : theme[4],
+                borderColor: task.pinned ? labelColors.orange[11] : undefined,
                 backgroundColor: task.pinned
                   ? labelColors.orange[11]
-                  : "transparent",
+                  : undefined,
               }}
             />
             {task && !task.parentTaskId && (
@@ -721,7 +725,6 @@ export function TaskDrawerContent({
                   style={{
                     borderRadius: 10,
                     borderWidth: 1,
-                    borderColor: theme[4],
                   }}
                   {...(task.label && {
                     icon: <Emoji emoji={task.label.emoji} size={20} />,

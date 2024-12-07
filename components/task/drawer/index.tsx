@@ -243,7 +243,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
         animation="BOTH"
         disablePan={breakpoints.md}
         sheetRef={sheetRef}
-        maxWidth={smallWidth ? 400 : 500}
+        maxWidth={smallWidth ? 400 : 590}
         height="auto"
         onClose={handleClose}
         transformCenter
@@ -277,3 +277,4 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
+

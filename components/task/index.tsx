@@ -172,6 +172,7 @@ export const TaskLabelChip = ({
 };
 
 function getPreviewText(htmlString) {
+  if (!htmlString) return "";
   // Use a regular expression to remove all tags and their contents (e.g., <img>)
   const strippedString = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
 

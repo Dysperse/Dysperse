@@ -1018,34 +1018,26 @@ function TaskDateMenu() {
 }
 
 export function TaskDetails() {
-  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-
-  const recurrenceRule =
-    task.recurrenceRule && normalizeRecurrenceRuleObject(task.recurrenceRule);
-
-  const addRecurrenceRef = useRef(null);
-  const addDateRef = useRef(null);
+  const { task, isReadOnly } = useTaskDrawerContext();
 
   return (
-    <>
-      {!task.parentTaskId && <TaskDateMenu />}
+    <View style={{ gap: 2, marginTop: 5 }}>
+      {!task.parentTaskId && (
+        <View>
+          <TaskDateMenu />
+        </View>
+      )}
       {(isReadOnly && task.subtasks?.length === 0) ||
       task.parentTaskId ? null : (
-        <SubtaskList />
+        <View>
+          <SubtaskList />
+        </View>
       )}
 
-      <TaskNote />
-      <DatePicker
-        value={{ date: null, dateOnly: true, end: null }}
-        setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
-        ref={addDateRef}
-      />
-      <RecurrencePicker
-        value={recurrenceRule?.options}
-        setValue={(value) => updateTask("recurrenceRule", value)}
-        ref={addRecurrenceRef}
-      />
-    </>
+      <View>
+        <TaskNote />
+      </View>
+    </View>
   );
 }
 
