@@ -750,12 +750,22 @@ function NoteInsertMenu({ isFocused, editorRef }) {
   );
 }
 
+function getPreviewText(htmlString) {
+  // Use a regular expression to remove all tags and their contents (e.g., <img>)
+  const strippedString = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
+
+  // Trim the string to a desired length for a preview, e.g., 150 characters
+  const previewLength = 150;
+  return strippedString.length > previewLength
+    ? strippedString.substring(0, previewLength) + "..."
+    : strippedString;
+}
 function TaskNote() {
   const theme = useColorTheme();
   const noteRef = useRef(null);
   const { task, updateTask } = useTaskDrawerContext();
   const [hasClicked, setHasClicked] = useState(false);
-  const shouldShow = Boolean(task.note) || hasClicked;
+  const shouldShow = Boolean(getPreviewText(task.note)) || hasClicked;
 
   const isFocused = useSharedValue(0);
 

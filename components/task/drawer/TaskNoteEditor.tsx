@@ -203,6 +203,12 @@ function Focuser({ setFocused, containerRef }) {
   }, [editor]);
 
   useEffect(() => {
+    if (editor.isEmpty) {
+      editor.commands.focus();
+    }
+  }, [editor]);
+
+  useEffect(() => {
     const t = (event) => {
       if (event.target.tagName === "A") {
         event.preventDefault();
