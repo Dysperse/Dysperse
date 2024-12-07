@@ -457,6 +457,7 @@ function WorkloadChip() {
 
 function TaskMoreMenu({ handleDelete }) {
   const theme = useColorTheme();
+  const { session } = useUser();
   const { task, updateTask } = useTaskDrawerContext();
 
   return (
@@ -464,7 +465,7 @@ function TaskMoreMenu({ handleDelete }) {
       <MenuPopover
         containerStyle={{ width: 230 }}
         options={[
-          process.env.NODE_ENV !== "production" && {
+          session.user?.betaTester && {
             renderer: () => (
               <View
                 style={{
@@ -482,7 +483,7 @@ function TaskMoreMenu({ handleDelete }) {
               </View>
             ),
           },
-          process.env.NODE_ENV !== "production" && {
+          session.user?.betaTester && {
             renderer: () => (
               <AiExplanation task={task} updateTask={updateTask} />
             ),
@@ -490,11 +491,11 @@ function TaskMoreMenu({ handleDelete }) {
           {
             renderer: () => <AISubtask task={task} updateTask={updateTask} />,
           },
-          process.env.NODE_ENV !== "production" && {
+          session.user?.betaTester && {
             text: "Categorize this task",
             callback: () => Toast.show({ text1: "Coming soon", type: "info" }),
           },
-          process.env.NODE_ENV !== "production" && { divider: true, key: "1" },
+          session.user?.betaTester && { divider: true, key: "1" },
           {
             icon: task.trash ? "restore_from_trash" : "delete",
             text: task.trash ? "Restore from trash" : "Move to trash",
