@@ -25,7 +25,7 @@ const extensions = [
   }),
   Image,
   Placeholder.configure({
-    placeholder: "Write something …",
+    placeholder: "Write something…",
   }),
 
   Dropcursor,
