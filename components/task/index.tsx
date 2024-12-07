@@ -22,6 +22,7 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { ImageViewer } from "../ImageViewer";
 import TaskCheckbox from "./Checkbox";
+import DayTaskModal from "./DayTaskModal";
 import { TaskDrawer } from "./drawer";
 import {
   handleLocationPress,
@@ -343,12 +344,13 @@ const Task = memo(function Task({
                   />
                 )}
                 {showDate && task.start && (
-                  <Chip
-                    disabled
-                    dense
-                    label={dayjs(task.start).format("MMM Do")}
-                    icon={<Icon>calendar_today</Icon>}
-                  />
+                  <DayTaskModal date={task.start} taskId={task.id}>
+                    <Chip
+                      dense
+                      label={dayjs(task.start).format("MMM Do")}
+                      icon={<Icon>calendar_today</Icon>}
+                    />
+                  </DayTaskModal>
                 )}
                 {task.recurrenceRule && (
                   <Chip
