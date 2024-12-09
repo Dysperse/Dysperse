@@ -337,7 +337,7 @@ export default function Page() {
     error,
     access: data?.access,
     openLabelPicker: () => {},
-    swrKey: "space/collections/collection",
+    swrKey: "space/collections/collection" as any,
   };
 
   return (
