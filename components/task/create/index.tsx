@@ -290,13 +290,8 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                     )
                   }
                   onDismiss={() => setValue("collectionId", null)}
-                  style={({ pressed, hovered }) => ({
-                    borderWidth: 1,
-                    borderColor: addHslAlpha(
-                      colors[value?.color]?.[9] || theme[9],
-                      pressed ? 0.3 : hovered ? 0.2 : 0.1
-                    ),
-                  })}
+                  style={{ borderWidth: 1 }}
+                  outlined
                   label={
                     collectionData
                       ? collectionData.find((e) => e.id === collectionId)?.name
