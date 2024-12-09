@@ -149,13 +149,6 @@ function Footer({
             : 0,
       }}
     >
-      {!name && (
-        <SpeechRecognition
-          handleSubmitButtonClick={handleSubmitButtonClick}
-          setValue={setValue}
-          hintRef={hintRef}
-        />
-      )}
       <ScrollView
         horizontal
         style={{
@@ -1132,21 +1125,23 @@ const TaskDescriptionInput = forwardRef(
   }
 );
 
-function SpeechRecognition({ setValue, hintRef, handleSubmitButtonClick }) {
+function SpeechRecognition({ setValue, handleSubmitButtonClick }) {
   const theme = useColorTheme();
   const red = useColor("red");
+  const breakpoints = useResponsiveBreakpoints();
   const [recognizing, setRecognizing] = useState(false);
 
   useSpeechRecognitionEvent("start", () => {
-    hintRef.current.setMessage({
-      text: "Listening...",
-      icon: "mic",
-    });
     setRecognizing(true);
+    Toast.show({
+      type: "info",
+      text1: "Listening...",
+      visibilityTime: 99999999,
+    });
   });
   useSpeechRecognitionEvent("end", () => {
     setRecognizing(false);
-    handleSubmitButtonClick();
+    Toast.hide();
   });
   useSpeechRecognitionEvent("result", (event) => {
     setValue(
@@ -1182,26 +1177,28 @@ function SpeechRecognition({ setValue, hintRef, handleSubmitButtonClick }) {
   };
 
   return (
-    <Chip
-      icon={
-        <Icon filled={recognizing} style={recognizing && { color: red[2] }}>
-          mic
-        </Icon>
-      }
-      outlined
-      style={({ pressed, hovered }) => ({
-        borderWidth: 1,
-        marginRight: "auto",
-        borderColor: addHslAlpha(
+    <IconButton
+      variant="filled"
+      icon="mic"
+      size={breakpoints.md ? 50 : 35}
+      iconProps={{ filled: recognizing }}
+      iconStyle={{
+        color: recognizing ? red[2] : theme[11],
+      }}
+      backgroundColors={{
+        default: addHslAlpha(
           recognizing ? red[9] : theme[9],
-          pressed ? 0.3 : hovered ? 0.2 : 0.1
+          recognizing ? 0.9 : 0.15
         ),
-        backgroundColor: recognizing ? red[9] : undefined,
-        position: "absolute",
-        right: 0,
-        top: 0,
-        zIndex: 1,
-      })}
+        hovered: addHslAlpha(
+          recognizing ? red[9] : theme[9],
+          recognizing ? 0.9 : 0.25
+        ),
+        pressed: addHslAlpha(
+          recognizing ? red[9] : theme[9],
+          recognizing ? 0.9 : 0.35
+        ),
+      }}
       onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
     />
   );
@@ -1377,7 +1374,7 @@ const BottomSheetContent = forwardRef(
             }}
           >
             <CancelButton />
-
+            <SpeechRecognition setValue={setValue} />
             <LabelButton
               watch={watch}
               setValue={setValue}
