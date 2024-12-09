@@ -15,6 +15,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
+import fuzzysort from "fuzzysort";
 import { useEffect, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -78,25 +79,29 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
 
   const handleSearch = (text) => setQuery(text);
 
-  const filtered = [
-    ...Object.values(data.entities),
-    ...data.labels.reduce(
-      (acc, curr) => [...acc, ...Object.values(curr.entities)],
-      []
-    ),
-  ]
+  const filtered = fuzzysort
+    .go(
+      query,
+      query.length > 1
+        ? [
+            ...Object.values(data.entities),
+            ...data.labels.reduce(
+              (acc, curr) => [...acc, ...Object.values(curr.entities)],
+              []
+            ),
+          ]
+        : [],
+      { key: "name", threshold: 0.5 }
+    )
+    .map((t) => t.obj)
     .filter((item) => {
-      const matchesQuery =
-        item.name.toLowerCase().includes(query.toLowerCase()) ||
-        item.note?.toLowerCase()?.includes(query.toLowerCase());
-
       const matchesFilters = activeFilters.length
         ? activeFilters.some((filter) =>
             filters.find((f) => f.label === filter)?.filter(item)
           )
         : true;
 
-      return matchesQuery && matchesFilters;
+      return matchesFilters;
     })
     .sort((a, b) => {
       if (a.completionInstances.length && !b.completionInstances.length)
@@ -162,9 +167,10 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               style={{
                 textAlign: "center",
                 fontFamily: "serifText800",
+                opacity: query.length > 1 ? 1 : 0,
                 fontSize: 40,
-                marginTop: 30,
-                marginBottom: 20,
+                marginTop: query.length > 1 ? 30 : 0,
+                marginBottom: query.length > 1 ? 20 : 0,
               }}
             >
               {filtered.length} result{filtered.length !== 1 && "s"}
@@ -279,13 +285,23 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 )}
                 stickyHeaderHiddenOnScroll
                 ListEmptyComponent={
-                  <View style={styles.empty}>
-                    <Emoji emoji="1f494" size={64} />
-                    <Text style={styles.emptyHeading}>Oh no!</Text>
-                    <Text style={styles.emptySubheading}>
-                      Nothing in this collection matched your search.
-                    </Text>
-                  </View>
+                  query.length > 1 ? (
+                    <View style={styles.empty}>
+                      <Emoji emoji="1f494" size={64} />
+                      <Text style={styles.emptyHeading}>Oh no!</Text>
+                      <Text style={styles.emptySubheading}>
+                        Nothing in this collection matched your search.
+                      </Text>
+                    </View>
+                  ) : (
+                    <View style={styles.empty}>
+                      <Emoji emoji="1F50E" size={64} />
+                      <Text style={styles.emptyHeading}>Find</Text>
+                      <Text style={styles.emptySubheading}>
+                        Type something to start seeing search results
+                      </Text>
+                    </View>
+                  )
                 }
                 centerContent={filtered.length === 0}
               />
@@ -339,4 +355,3 @@ export default function Page() {
     </>
   );
 }
-
