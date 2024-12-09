@@ -295,8 +295,11 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                     </View>
                   ) : (
                     <View style={styles.empty}>
-                      <Emoji emoji="1F50E" size={64} />
-                      <Text style={styles.emptyHeading}>Find</Text>
+                      <Emoji
+                        emoji="1F50E"
+                        size={64}
+                        style={{ marginBottom: 10 }}
+                      />
                       <Text style={styles.emptySubheading}>
                         {query.length !== 0
                           ? `Type ${3 - query.length} more character${
