@@ -10,6 +10,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import * as ImagePicker from "expo-image-picker";
 import React, {
   cloneElement,
+  forwardRef,
   useImperativeHandle,
   useRef,
   useState,
@@ -24,7 +25,6 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { getPreviewText } from "..";
 import TaskNoteEditor from "./TaskNoteEditor";
-import { useTaskDrawerContext } from "./context";
 
 function LinkModal({ children, onSubmit }) {
   const modalRef = useRef(null);
@@ -248,6 +248,7 @@ function NoteFormatMenu({ isFocused, editorRef, formatMenuRef }) {
 
   const formatMenuStyles = useAnimatedStyle(() => ({
     opacity: isFocused.value,
+    pointerEvents: isFocused.value ? "auto" : "none",
     marginTop: withSpring(isFocused.value ? 0 : -40, {
       damping: 30,
       stiffness: 400,
@@ -319,63 +320,71 @@ function NoteFormatMenu({ isFocused, editorRef, formatMenuRef }) {
   );
 }
 
-export function TaskNote() {
-  const theme = useColorTheme();
-  const noteRef = useRef(null);
-  const formatMenuRef = useRef(null);
-  const { task, updateTask } = useTaskDrawerContext();
-  const [hasClicked, setHasClicked] = useState(false);
-  const shouldShow = Boolean(getPreviewText(task.note)) || hasClicked;
+export const TaskNote = forwardRef(
+  (
+    {
+      task,
+      updateTask,
+      showEditorWhenEmpty,
+    }: { task: any; updateTask: any; showEditorWhenEmpty?: any },
+    editorRef: any
+  ) => {
+    const theme = useColorTheme();
+    const formatMenuRef = useRef(null);
+    const [hasClicked, setHasClicked] = useState(showEditorWhenEmpty || false);
+    const shouldShow = Boolean(getPreviewText(task.note)) || hasClicked;
 
-  const isFocused = useSharedValue(0);
+    const isFocused = useSharedValue(0);
 
-  const focusedStyles = useAnimatedStyle(() => ({
-    borderRadius: 10,
-    position: "relative",
-    backgroundColor: interpolateColor(
-      isFocused.value,
-      [0, 1],
-      [
-        theme[5].replace(")", `, ${0})`).replace("hsl", "hsla"),
-        theme[5].replace(")", `, ${0.3})`).replace("hsl", "hsla"),
-      ]
-    ),
-  }));
+    const focusedStyles = useAnimatedStyle(() => ({
+      borderRadius: 10,
+      position: "relative",
+      backgroundColor: interpolateColor(
+        isFocused.value,
+        [0, 1],
+        [
+          theme[5].replace(")", `, ${0})`).replace("hsl", "hsla"),
+          theme[5].replace(")", `, ${0.3})`).replace("hsl", "hsla"),
+        ]
+      ),
+    }));
 
-  return !shouldShow ? (
-    <Button
-      dense
-      onPress={() => setHasClicked(true)}
-      containerStyle={{
-        marginRight: "auto",
-        opacity: 0.6,
-        marginLeft: 5,
-      }}
-      style={{ gap: 10 }}
-    >
-      <Icon size={20} style={{ marginTop: -3 }}>
-        sticky_note_2
-      </Icon>
-      <Text style={{ color: theme[11] }}>Add note</Text>
-    </Button>
-  ) : (
-    <Animated.View style={focusedStyles}>
-      <NoteFormatMenu
-        formatMenuRef={formatMenuRef}
-        isFocused={isFocused}
-        editorRef={noteRef}
-      />
-      <TaskNoteEditor
-        ref={noteRef}
-        setSelectionState={(state) =>
-          formatMenuRef.current.setSelectionState(state)
-        }
-        updateTask={updateTask as any}
-        theme={theme}
-        dom={{ matchContents: true, scrollEnabled: false }}
-        setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
-        content={task.note?.replaceAll("] (http", "](http")?.trim()}
-      />
-    </Animated.View>
-  );
-}
+    return !shouldShow ? (
+      <Button
+        dense
+        onPress={() => setHasClicked(true)}
+        containerStyle={{
+          marginRight: "auto",
+          opacity: 0.6,
+          marginLeft: 5,
+        }}
+        style={{ gap: 10 }}
+      >
+        <Icon size={20} style={{ marginTop: -3 }}>
+          sticky_note_2
+        </Icon>
+        <Text style={{ color: theme[11] }}>Add note</Text>
+      </Button>
+    ) : (
+      <Animated.View style={focusedStyles}>
+        <NoteFormatMenu
+          formatMenuRef={formatMenuRef}
+          isFocused={isFocused}
+          editorRef={editorRef}
+        />
+        <TaskNoteEditor
+          showEditorWhenEmpty={showEditorWhenEmpty}
+          ref={editorRef}
+          setSelectionState={(state) =>
+            formatMenuRef.current.setSelectionState(state)
+          }
+          updateTask={updateTask as any}
+          theme={theme}
+          dom={{ matchContents: true, scrollEnabled: false }}
+          setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
+          content={task.note?.replaceAll("] (http", "](http")?.trim()}
+        />
+      </Animated.View>
+    );
+  }
+);

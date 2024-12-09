@@ -6,9 +6,10 @@ import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
+import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { DatePicker } from "@/ui/DatePicker";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -18,8 +19,6 @@ import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
@@ -43,7 +42,6 @@ import React, {
 } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Platform, Pressable, View } from "react-native";
-import Collapsible from "react-native-collapsible";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -56,6 +54,7 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
+import { TaskNote } from "../drawer/TaskNote";
 
 const PinTask = memo(function PinTask({ watch, control }: any) {
   const orange = useColor("orange");
@@ -1111,45 +1110,24 @@ function SubTaskInformation({ watch, setValue }) {
 
 const TaskDescriptionInput = forwardRef(
   ({ watch, control }: { watch; control }, ref) => {
-    const theme = useColorTheme();
-    const [open, setOpen] = useState(false);
-    const noteRef = useRef(null);
-    const note = watch("note");
+    const note = watch("name");
+    const editorRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
       show: () => {
-        setOpen(true);
-        noteRef.current.focus();
+        editorRef.current.focus();
       },
     }));
 
     return (
-      <Collapsible collapsed={!open && !note}>
-        <Controller
-          control={control}
-          name="note"
-          render={({ field: { onChange, value } }) => (
-            <AutoSizeTextArea
-              multiline
-              placeholder="Enter a description..."
-              ref={noteRef}
-              value={value}
-              onChange={onChange}
-              fontSize={17}
-              style={{
-                fontSize: 17,
-                paddingHorizontal: 3,
-                opacity: 0.5,
-                fontFamily: "body_300",
-                color: theme[11],
-              }}
-              onBlur={() => {
-                if (!value) setOpen(false);
-              }}
-            />
-          )}
+      <View style={{ marginHorizontal: -10 }}>
+        <TaskNote
+          showEditorWhenEmpty
+          ref={editorRef}
+          task={{ note }}
+          updateTask={(...t) => console.log(JSON.stringify(t))}
         />
-      </Collapsible>
+      </View>
     );
   }
 );
@@ -1399,12 +1377,7 @@ const BottomSheetContent = forwardRef(
             }}
           >
             <CancelButton />
-            <Attachment
-              menuRef={menuRef}
-              control={control}
-              nameRef={nameRef}
-              setValue={setValue}
-            />
+
             <LabelButton
               watch={watch}
               setValue={setValue}
@@ -1588,4 +1561,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

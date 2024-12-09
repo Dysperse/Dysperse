@@ -682,7 +682,7 @@ function TaskDateMenu() {
 }
 
 export function TaskDetails() {
-  const { task, isReadOnly } = useTaskDrawerContext();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
 
   return (
     <View style={{ gap: 2, marginTop: 5 }}>
@@ -699,7 +699,7 @@ export function TaskDetails() {
       )}
 
       <View>
-        <TaskNote />
+        <TaskNote task={task} updateTask={updateTask} />
       </View>
     </View>
   );

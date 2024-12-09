@@ -102,17 +102,11 @@ function CharacterCounter({ theme }) {
   );
 }
 
-function Focuser({ setFocused, containerRef }) {
+function Focuser({ setFocused, showEditorWhenEmpty, containerRef }) {
   const { editor } = useCurrentEditor();
 
   useEffect(() => {
-    if (editor.isEmpty) {
-      editor.commands.focus();
-    }
-  }, [editor]);
-
-  useEffect(() => {
-    if (editor.isEmpty) {
+    if (editor.isEmpty && !showEditorWhenEmpty) {
       editor.commands.focus();
     }
   }, [editor]);
@@ -192,7 +186,14 @@ function FormatMenuSetter({ setSelectionState }) {
 }
 
 export default forwardRef<any, object>(function TaskNoteEditor(
-  { theme, content, setFocused, updateTask, setSelectionState }: any,
+  {
+    theme,
+    content,
+    setFocused,
+    updateTask,
+    setSelectionState,
+    showEditorWhenEmpty,
+  }: any,
   ref
 ) {
   const editorRef = useRef<any>(null);
@@ -217,7 +218,9 @@ export default forwardRef<any, object>(function TaskNoteEditor(
           .chain()
           .focus()
           .insertContent(
-            `<a href="${link.url}" target="_blank">${link.name || link.url}</a>`
+            `<a href="${link.url}" target="_blank">${
+              link.name || link.url
+            }</a> `
           )
           .run(),
       toggleBulletList: () =>
@@ -307,11 +310,14 @@ export default forwardRef<any, object>(function TaskNoteEditor(
         }}
       >
         <Saver updateTask={updateTask} />
-        <Focuser containerRef={containerRef} setFocused={setFocused} />
+        <Focuser
+          showEditorWhenEmpty={showEditorWhenEmpty}
+          containerRef={containerRef}
+          setFocused={setFocused}
+        />
         <EditorRef ref={editorRef} />
         <FormatMenuSetter setSelectionState={setSelectionState} />
       </EditorProvider>
     </div>
   );
 });
-
