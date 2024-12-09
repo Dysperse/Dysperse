@@ -717,8 +717,9 @@ function TaskNameInput({
                     if (value.replaceAll("\n", "").trim())
                       handleSubmitButtonClick();
                   } else if (
-                    e.shiftKey &&
-                    (e.key === "Enter" || e.nativeEvent.key === "Enter")
+                    (e.shiftKey &&
+                      (e.key === "Enter" || e.nativeEvent.key === "Enter")) ||
+                    e.key === "Tab"
                   ) {
                     e.preventDefault();
                     descriptionRef.current.show();
@@ -1102,7 +1103,7 @@ function SubTaskInformation({ watch, setValue }) {
 }
 
 const TaskDescriptionInput = forwardRef(
-  ({ watch, control }: { watch; control }, ref) => {
+  ({ watch, control, nameRef }: { watch; control; nameRef }, ref) => {
     const note = watch("name");
     const editorRef = useRef(null);
 
@@ -1115,6 +1116,7 @@ const TaskDescriptionInput = forwardRef(
     return (
       <View style={{ marginHorizontal: -10 }}>
         <TaskNote
+          onContainerFocus={() => nameRef.current.focus()}
           showEditorWhenEmpty
           ref={editorRef}
           task={{ note }}
@@ -1359,6 +1361,7 @@ const BottomSheetContent = forwardRef(
                 setValue={setValue}
               />
               <TaskDescriptionInput
+                nameRef={nameRef}
                 control={control}
                 watch={watch}
                 ref={descriptionRef}

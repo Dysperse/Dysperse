@@ -193,6 +193,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     updateTask,
     setSelectionState,
     showEditorWhenEmpty,
+    onContainerFocus,
   }: any,
   ref
 ) {
@@ -268,6 +269,12 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       spellCheck={false}
       ref={containerRef}
       tabIndex={0}
+      onFocus={(e) => {
+        if (e.target.classList.contains("prose")) {
+          e.target.blur();
+          onContainerFocus();
+        }
+      }}
       style={{
         position: "relative",
         borderRadius: 10,

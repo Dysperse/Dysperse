@@ -326,7 +326,13 @@ export const TaskNote = forwardRef(
       task,
       updateTask,
       showEditorWhenEmpty,
-    }: { task: any; updateTask: any; showEditorWhenEmpty?: any },
+      onContainerFocus,
+    }: {
+      task: any;
+      updateTask: any;
+      showEditorWhenEmpty?: any;
+      onContainerFocus?: any;
+    },
     editorRef: any
   ) => {
     const theme = useColorTheme();
@@ -373,6 +379,7 @@ export const TaskNote = forwardRef(
           editorRef={editorRef}
         />
         <TaskNoteEditor
+          onContainerFocus={onContainerFocus}
           showEditorWhenEmpty={showEditorWhenEmpty}
           ref={editorRef}
           setSelectionState={(state) =>
