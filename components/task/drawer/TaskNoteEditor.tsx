@@ -207,7 +207,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
         editorRef.current.editor
           .chain()
           .focus()
-          .insertContent(`<img src="${url}" />`)
+          .insertContent(`<img src="${url}" /> `)
           .run(),
 
       insertHeading: (level) =>
