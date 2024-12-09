@@ -82,7 +82,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
   const filtered = fuzzysort
     .go(
       query,
-      query.length > 1
+      query.length > 2
         ? [
             ...Object.values(data.entities),
             ...data.labels.reduce(
@@ -91,7 +91,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
             ),
           ]
         : [],
-      { key: "name", threshold: 0.5 }
+      { keys: ["name", "note"] }
     )
     .map((t) => t.obj)
     .filter((item) => {
@@ -167,10 +167,10 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               style={{
                 textAlign: "center",
                 fontFamily: "serifText800",
-                opacity: query.length > 1 ? 1 : 0,
+                opacity: query.length > 2 ? 1 : 0,
                 fontSize: 40,
-                marginTop: query.length > 1 ? 30 : 0,
-                marginBottom: query.length > 1 ? 20 : 0,
+                marginTop: query.length > 2 ? 30 : 0,
+                marginBottom: query.length > 2 ? 20 : 0,
               }}
             >
               {filtered.length} result{filtered.length !== 1 && "s"}
@@ -285,7 +285,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 )}
                 stickyHeaderHiddenOnScroll
                 ListEmptyComponent={
-                  query.length > 1 ? (
+                  query.length > 2 ? (
                     <View style={styles.empty}>
                       <Emoji emoji="1f494" size={64} />
                       <Text style={styles.emptyHeading}>Oh no!</Text>
@@ -298,7 +298,11 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                       <Emoji emoji="1F50E" size={64} />
                       <Text style={styles.emptyHeading}>Find</Text>
                       <Text style={styles.emptySubheading}>
-                        Type something to start seeing search results
+                        {query.length !== 0
+                          ? `Type ${3 - query.length} more character${
+                              query.length == 2 ? "" : "s"
+                            }`
+                          : "Type something to start seeing search results"}
                       </Text>
                     </View>
                   )
