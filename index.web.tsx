@@ -12,7 +12,6 @@ LoadSkiaWeb({
     renderRootComponent(App);
   })
   .catch(() => {
-    // better than nothing tbh
     renderRootComponent(App);
   });
 
