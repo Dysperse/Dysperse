@@ -46,7 +46,7 @@ const LoadingIndicator = () => {
 // Group by type
 export const groupedViews = Object.entries(COLLECTION_VIEWS).reduce(
   (acc, [view, details]) => {
-    const type = details.type || details.category; // Use type or fallback to category
+    const type = details.type || details.category;
     if (!acc[type]) {
       acc[type] = [];
     }
