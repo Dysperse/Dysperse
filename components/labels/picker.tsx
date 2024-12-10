@@ -17,6 +17,7 @@ import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
+import fuzzysort from "fuzzysort";
 import React, {
   cloneElement,
   memo,
@@ -246,10 +247,9 @@ function LabelPickerContent({
         <FlashList
           showsVerticalScrollIndicator={false}
           estimatedItemSize={62}
-          data={data
-            .filter((label) =>
-              label.name.toLowerCase().includes(query.toLowerCase())
-            )
+          data={fuzzysort
+            .go(query, data, { key: "name", all: true })
+            .map((t) => t.obj)
             .sort(
               // sort by selected on top
               (a, b) =>
@@ -462,4 +462,3 @@ export default function LabelPicker({
     </>
   );
 }
-

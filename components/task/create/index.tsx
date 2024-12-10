@@ -6,9 +6,10 @@ import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import { Avatar } from "@/ui/Avatar";
 import Chip from "@/ui/Chip";
+import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { DatePicker } from "@/ui/DatePicker";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
@@ -18,8 +19,6 @@ import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs, { Dayjs } from "dayjs";
@@ -43,7 +42,6 @@ import React, {
 } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Platform, Pressable, View } from "react-native";
-import Collapsible from "react-native-collapsible";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -56,6 +54,7 @@ import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
+import { TaskNote } from "../drawer/TaskNote";
 
 const PinTask = memo(function PinTask({ watch, control }: any) {
   const orange = useColor("orange");
@@ -150,13 +149,6 @@ function Footer({
             : 0,
       }}
     >
-      {!name && (
-        <SpeechRecognition
-          handleSubmitButtonClick={handleSubmitButtonClick}
-          setValue={setValue}
-          hintRef={hintRef}
-        />
-      )}
       <ScrollView
         horizontal
         style={{
@@ -298,13 +290,8 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                     )
                   }
                   onDismiss={() => setValue("collectionId", null)}
-                  style={({ pressed, hovered }) => ({
-                    borderWidth: 1,
-                    borderColor: addHslAlpha(
-                      colors[value?.color]?.[9] || theme[9],
-                      pressed ? 0.3 : hovered ? 0.2 : 0.1
-                    ),
-                  })}
+                  style={{ borderWidth: 1 }}
+                  outlined
                   label={
                     collectionData
                       ? collectionData.find((e) => e.id === collectionId)?.name
@@ -725,8 +712,9 @@ function TaskNameInput({
                     if (value.replaceAll("\n", "").trim())
                       handleSubmitButtonClick();
                   } else if (
-                    e.shiftKey &&
-                    (e.key === "Enter" || e.nativeEvent.key === "Enter")
+                    (e.shiftKey &&
+                      (e.key === "Enter" || e.nativeEvent.key === "Enter")) ||
+                    e.key === "Tab"
                   ) {
                     e.preventDefault();
                     descriptionRef.current.show();
@@ -1110,65 +1098,47 @@ function SubTaskInformation({ watch, setValue }) {
 }
 
 const TaskDescriptionInput = forwardRef(
-  ({ watch, control }: { watch; control }, ref) => {
-    const theme = useColorTheme();
-    const [open, setOpen] = useState(false);
-    const noteRef = useRef(null);
-    const note = watch("note");
+  ({ watch, control, nameRef }: { watch; control; nameRef }, ref) => {
+    const note = watch("name");
+    const editorRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
       show: () => {
-        setOpen(true);
-        noteRef.current.focus();
+        editorRef.current.focus();
       },
     }));
 
     return (
-      <Collapsible collapsed={!open && !note}>
-        <Controller
-          control={control}
-          name="note"
-          render={({ field: { onChange, value } }) => (
-            <AutoSizeTextArea
-              multiline
-              placeholder="Enter a description..."
-              ref={noteRef}
-              value={value}
-              onChange={onChange}
-              fontSize={17}
-              style={{
-                fontSize: 17,
-                paddingHorizontal: 3,
-                opacity: 0.5,
-                fontFamily: "body_300",
-                color: theme[11],
-              }}
-              onBlur={() => {
-                if (!value) setOpen(false);
-              }}
-            />
-          )}
+      <View style={{ marginHorizontal: -10 }}>
+        <TaskNote
+          onContainerFocus={() => nameRef.current.focus()}
+          showEditorWhenEmpty
+          ref={editorRef}
+          task={{ note }}
+          updateTask={(...t) => console.log(JSON.stringify(t))}
         />
-      </Collapsible>
+      </View>
     );
   }
 );
 
-function SpeechRecognition({ setValue, hintRef, handleSubmitButtonClick }) {
+function SpeechRecognition({ setValue, handleSubmitButtonClick }) {
   const theme = useColorTheme();
   const red = useColor("red");
+  const breakpoints = useResponsiveBreakpoints();
   const [recognizing, setRecognizing] = useState(false);
 
   useSpeechRecognitionEvent("start", () => {
-    hintRef.current.setMessage({
-      text: "Listening...",
-      icon: "mic",
-    });
     setRecognizing(true);
+    Toast.show({
+      type: "info",
+      text1: "Listening...",
+      visibilityTime: 99999999,
+    });
   });
   useSpeechRecognitionEvent("end", () => {
     setRecognizing(false);
-    handleSubmitButtonClick();
+    Toast.hide();
   });
   useSpeechRecognitionEvent("result", (event) => {
     setValue(
@@ -1204,26 +1174,28 @@ function SpeechRecognition({ setValue, hintRef, handleSubmitButtonClick }) {
   };
 
   return (
-    <Chip
-      icon={
-        <Icon filled={recognizing} style={recognizing && { color: red[2] }}>
-          mic
-        </Icon>
-      }
-      outlined
-      style={({ pressed, hovered }) => ({
-        borderWidth: 1,
-        marginRight: "auto",
-        borderColor: addHslAlpha(
+    <IconButton
+      variant="filled"
+      icon="mic"
+      size={breakpoints.md ? 50 : 35}
+      iconProps={{ filled: recognizing }}
+      iconStyle={{
+        color: recognizing ? red[2] : theme[11],
+      }}
+      backgroundColors={{
+        default: addHslAlpha(
           recognizing ? red[9] : theme[9],
-          pressed ? 0.3 : hovered ? 0.2 : 0.1
+          recognizing ? 0.9 : 0.15
         ),
-        backgroundColor: recognizing ? red[9] : undefined,
-        position: "absolute",
-        right: 0,
-        top: 0,
-        zIndex: 1,
-      })}
+        hovered: addHslAlpha(
+          recognizing ? red[9] : theme[9],
+          recognizing ? 0.9 : 0.25
+        ),
+        pressed: addHslAlpha(
+          recognizing ? red[9] : theme[9],
+          recognizing ? 0.9 : 0.35
+        ),
+      }}
       onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
     />
   );
@@ -1384,6 +1356,7 @@ const BottomSheetContent = forwardRef(
                 setValue={setValue}
               />
               <TaskDescriptionInput
+                nameRef={nameRef}
                 control={control}
                 watch={watch}
                 ref={descriptionRef}
@@ -1399,12 +1372,7 @@ const BottomSheetContent = forwardRef(
             }}
           >
             <CancelButton />
-            <Attachment
-              menuRef={menuRef}
-              control={control}
-              nameRef={nameRef}
-              setValue={setValue}
-            />
+            <SpeechRecognition setValue={setValue} />
             <LabelButton
               watch={watch}
               setValue={setValue}
@@ -1588,4 +1556,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

@@ -15,6 +15,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -138,6 +139,7 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
 });
 
 function CommandPaletteList({
+  query,
   preview,
   setPreview,
   filtered,
@@ -146,6 +148,7 @@ function CommandPaletteList({
   filters,
   onCreate,
 }: {
+  query: any;
   preview: any;
   setPreview: (e) => void;
   filtered: any[];
@@ -158,6 +161,7 @@ function CommandPaletteList({
   return (
     <View style={{ flex: 1 }}>
       <FlashList
+        key={query}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={() => (
@@ -273,7 +277,7 @@ const PaletteHeader = memo(function PaletteHeader({
         handleClose();
       }
     }
-    if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[1] : null);
+    if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[0] : null);
   };
 
   useEffect(() => {
@@ -281,7 +285,7 @@ const PaletteHeader = memo(function PaletteHeader({
   }, [breakpoints]);
 
   useEffect(() => {
-    if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[1] : null);
+    if (breakpoints.md) setPreview(filtered.length > 0 ? filtered[0] : null);
   }, []);
 
   return (
@@ -314,7 +318,7 @@ const PaletteHeader = memo(function PaletteHeader({
           // on enter key
           onSubmitEditing={() => {
             if (filtered.length > 0) {
-              const item = preview || filtered[1];
+              const item = preview || filtered[0];
               if (item.onPress) {
                 item.onPress();
                 handleClose();
@@ -338,7 +342,6 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
   const insets = useSafeAreaInsets();
 
   const handleClose = useCallback(() => setPreview(null), [setPreview]);
-
   return (
     preview && (
       <ScrollView
@@ -522,22 +525,13 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
       return acc;
     }, []);
 
-  const filtered = flattened.filter((item) => {
-    if (typeof item === "string") {
-      return (
-        sections
-          .find((section) => section.title === item)
-          .items.find((item) =>
-            item.label?.toLowerCase()?.includes(query.toLowerCase())
-          ) !== undefined
-      );
-    } else {
-      return item.label?.toLowerCase()?.includes(query.toLowerCase());
-    }
-  });
+  const filtered = fuzzysort
+    .go(query, flattened, { keys: ["title", "label"], all: true })
+    .map((e) => e.obj);
+
+  const breakpoints = useResponsiveBreakpoints();
 
   const [loading, setLoading] = useState(false);
-  const breakpoints = useResponsiveBreakpoints();
   const { sidebarRef } = useSidebarContext() || {};
 
   const onCreate = useCallback(
@@ -598,6 +592,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
             behavior="height"
           >
             <CommandPaletteList
+              query={query}
               preview={preview}
               setPreview={handlePreviewChange}
               filtered={filtered}
