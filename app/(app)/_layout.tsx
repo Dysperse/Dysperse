@@ -419,4 +419,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-

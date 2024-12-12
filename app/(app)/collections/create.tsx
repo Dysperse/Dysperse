@@ -4,7 +4,6 @@ import { createTab } from "@/components/layout/openTab";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
@@ -12,23 +11,25 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
+import {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+
+import MenuPopover from "@/ui/MenuPopover";
 import TextField from "@/ui/TextArea";
-import { useColor, useDarkMode } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { useDarkMode } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { cloneElement, memo, useEffect, useRef, useState } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  InteractionManager,
-  Linking,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { InteractionManager, StyleSheet, View } from "react-native";
+import Animated from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -56,143 +57,27 @@ const styles = StyleSheet.create({
   },
 });
 
-const Header = memo(() => {
-  const handleBack = () => {
-    if (router.canGoBack()) router.back();
-    else router.replace("/home");
-  };
-
-  return (
-    <View style={styles.headerContainer}>
-      <IconButton size={55} variant="outlined" onPress={handleBack}>
-        <Icon>arrow_back_ios_new</Icon>
-      </IconButton>
-    </View>
-  );
-});
-
 function Templates() {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { data, error } = useSWR(["dysverse", { random: true }]);
+  const { data } = useSWR(["dysverse", { random: true }]);
   const isDark = useDarkMode();
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ width: 300 }}>
+      <SectionLabel text="Choose a template" icon="gesture" />
       <FlashList
-        data={["new", "dysverse", ...(Array.isArray(data) ? data : [])]}
-        contentContainerStyle={{
-          padding: 20,
-          paddingHorizontal: 20,
-          paddingTop: 0,
-        }}
-        ListHeaderComponent={() => (
-          <View style={{}}>
-            <Header />
-            <View
-              style={{
-                padding: 30,
-                paddingHorizontal: breakpoints.md ? 50 : 20,
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <Text variant="eyebrow">New collection</Text>
-              <Text
-                style={{
-                  fontSize: 40,
-                  textAlign: "center",
-                  color: theme[11],
-                }}
-              >
-                Choose a template
-              </Text>
-            </View>
-          </View>
-        )}
-        numColumns={breakpoints.md ? 3 : 1}
+        data={Array.isArray(data) ? data : []}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View
-            style={{
-              padding: 5,
-              flex: 1,
-            }}
-          >
-            <Button
-              onPress={() => {
-                if (item === "new") return;
-                if (item === "dysverse")
-                  return Linking.openURL("https://dysperse.com/templates");
-                Linking.openURL(`https://dysperse.com/templates/${item.id}`);
+          <View style={{ marginBottom: 10 }}>
+            <Image
+              source={{
+                uri: `${item.preview}?isLight=${isDark ? "false" : "true"}`,
               }}
               style={{
-                backgroundColor: isDark ? "hsl(0, 0%, 20%)" : "hsl(0, 0%, 90%)",
                 width: "100%",
-                flexDirection: "column",
-                padding: 0,
-                borderRadius: 15,
-                height: "auto",
-                minHeight: "auto",
-                maxHeight: "auto",
-                justifyContent: "flex-start",
-              }}
-              containerStyle={{
-                flex: 1,
-                height: "auto",
-                minHeight: "auto",
-                maxHeight: "auto",
-                borderRadius: 15,
                 aspectRatio: "1200/630",
               }}
-              variant="filled"
-            >
-              {item === "dysverse" ? (
-                <View
-                  style={{
-                    width: "100%",
-                    aspectRatio: "1200/630",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    gap: 10,
-                  }}
-                >
-                  <Icon filled>category</Icon>
-                  <ButtonText style={{ fontSize: 20 }} weight={900}>
-                    Browse the Dysverse
-                  </ButtonText>
-                </View>
-              ) : item === "new" ? (
-                <Scratch>
-                  <Pressable
-                    style={{
-                      width: "100%",
-                      aspectRatio: "1200/630",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "row",
-                      gap: 10,
-                    }}
-                  >
-                    <Icon filled>add_circle</Icon>
-                    <ButtonText style={{ fontSize: 20 }} weight={900}>
-                      Start from scratch
-                    </ButtonText>
-                  </Pressable>
-                </Scratch>
-              ) : (
-                <Image
-                  source={{
-                    uri: `${item.preview}?isLight=${isDark ? "false" : "true"}`,
-                  }}
-                  style={{
-                    width: "100%",
-                    aspectRatio: "1200/630",
-                  }}
-                />
-              )}
-            </Button>
+            />
           </View>
         )}
       />
@@ -377,9 +262,231 @@ const Scratch = ({ children }) => {
   );
 };
 
+function AiCollectionInput({ input, setInput }) {
+  const theme = useColorTheme();
+  const [placeholder, setPlaceholder] = useState(0);
+  const placeholders = [
+    "a trip for the summer...",
+    "my school assignments...",
+    "a workout routine for this month...",
+    "a checklist for a camping trip",
+    "a plan for my self-care routine",
+    "a roadmap for learning a new language",
+    "a meal prep plan for this week",
+    "a shopping list for the week",
+    "my action plan for career advancement",
+  ];
+
+  const translateY = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: 0.6,
+    transform: [{ translateY: translateY.value }],
+    pointerEvents: "none",
+    padding: 10,
+    paddingLeft: 17,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+  }));
+
+  useEffect(() => {
+    const r = () => {
+      // Animate upwards until it's hidden
+      translateY.value = withTiming(-50, { duration: 300 }, () => {
+        // Reset instantly to the bottom (off-screen)
+        translateY.value = 50; // Move to the bottom immediately
+        runOnJS(() => {
+          setPlaceholder((prevIndex) => (prevIndex + 1) % placeholders.length);
+        })();
+
+        // Animate upwards and fade in again
+        translateY.value = withTiming(0, { duration: 300 });
+      });
+    };
+
+    const intervalId = setInterval(r, 3500);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [placeholders.length, translateY, setPlaceholder]);
+
+  return (
+    <View
+      style={{
+        position: "relative",
+        flex: 1,
+        height: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          padding: 5,
+        }}
+      >
+        <TextField
+          onChangeText={setInput}
+          style={{
+            height: "100%",
+            borderRadius: 10,
+            paddingLeft: 10,
+            fontStyle: input ? undefined : "italic",
+            flex: 1,
+          }}
+        />
+      </View>
+      {!input && (
+        <Animated.View style={animatedStyle}>
+          <Text style={{ color: theme[11] }} weight={600}>
+            {placeholders[placeholder]}
+          </Text>
+        </Animated.View>
+      )}
+    </View>
+  );
+}
+
+function SectionLabel({ text, icon }) {
+  const theme = useColorTheme();
+
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        marginVertical: 10,
+      }}
+    >
+      <Icon bold style={{ opacity: 0.6 }} size={22}>
+        {icon}
+      </Icon>
+      <Text variant="eyebrow">{text}</Text>
+    </View>
+  );
+}
+
+function AiCollection() {
+  const theme = useColorTheme();
+  const [input, setInput] = useState("");
+
+  return (
+    <>
+      <SectionLabel text="Sidekick AI" icon="raven" />
+      <View
+        style={{
+          backgroundColor: theme[3],
+          flexDirection: "row",
+          borderRadius: 10,
+          alignItems: "center",
+        }}
+      >
+        <View style={{ padding: 5, paddingRight: 0 }}>
+          <MenuPopover
+            options={[
+              { text: "Help me organize" },
+              { text: "Help me plan" },
+            ].map((t) => ({
+              ...t,
+              callback: () => Toast.show({ text1: t.text }),
+            }))}
+            trigger={
+              <Button
+                textStyle={{ fontFamily: "body_600" }}
+                icon="expand_more"
+                text="Help me organize"
+                iconPosition="end"
+                buttonStyle={{ gap: 0 }}
+                style={{ marginRight: -5 }}
+              />
+            }
+          />
+        </View>
+        <AiCollectionInput input={input} setInput={setInput} />
+        <View style={{ padding: 5 }}>
+          <IconButton
+            icon="magic_button"
+            backgroundColors={{
+              default: theme[input ? 10 : 4],
+              hovered: theme[input ? 11 : 5],
+              pressed: theme[input ? 12 : 6],
+            }}
+            variant="filled"
+            disabled={!input}
+            style={{ borderRadius: 10 }}
+            iconStyle={input && { color: theme[2] }}
+          />
+        </View>
+      </View>
+    </>
+  );
+}
+
+function StartFromScratch() {
+  return (
+    <View style={{ marginTop: 20 }}>
+      <SectionLabel text="Start from scratch" icon="gesture" />
+    </View>
+  );
+}
+
+function CreateCollection() {
+  const theme = useColorTheme();
+
+  return (
+    <View style={{ flex: 1 }}>
+      <AiCollection />
+      <StartFromScratch />
+    </View>
+  );
+}
+
+function Header() {
+  const theme = useColorTheme();
+  const handleBack = () => {
+    if (router.canGoBack()) router.back();
+    else router.replace("/home");
+  };
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 10,
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: "serifText800",
+          fontSize: 30,
+          color: theme[11],
+        }}
+      >
+        Create a collection
+      </Text>
+      <IconButton
+        icon="close"
+        variant="outlined"
+        size={50}
+        onPress={handleBack}
+      />
+    </View>
+  );
+}
+
 export default function Page() {
-  const theme = useColor("gray");
-  const isDark = useDarkMode();
+  const theme = useColorTheme();
   const { isReached } = useStorageContext();
 
   useEffect(() => {
@@ -387,15 +494,12 @@ export default function Page() {
   }, []);
 
   return (
-    <ColorThemeProvider theme={theme}>
-      <ContentWrapper noPaddingTop>
-        <LinearGradient
-          colors={["transparent", `hsl(0, 0%, ${isDark ? 15 : 95}%)`]}
-          style={{ width: "100%", flex: 1 }}
-        >
-          <Templates />
-        </LinearGradient>
-      </ContentWrapper>
-    </ColorThemeProvider>
+    <ContentWrapper style={{ padding: 40 }}>
+      <Header />
+      <View style={{ flexDirection: "row", gap: 30 }}>
+        <CreateCollection />
+        <Templates />
+      </View>
+    </ContentWrapper>
   );
 }

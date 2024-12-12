@@ -38,19 +38,25 @@ export default function Layout() {
             notification: theme[9],
           },
           dark: true,
+          fonts: {
+            bold: { fontFamily: "body_900", fontWeight: "900" },
+            heavy: { fontFamily: "body_700", fontWeight: "700" },
+            medium: { fontFamily: "body_500", fontWeight: "500" },
+            regular: { fontFamily: "body_400", fontWeight: "400" },
+          },
         }}
       >
         <StatusBarStyling />
         <JsStack
+          id={undefined}
           screenOptions={{
             header: () => null,
-            animationEnabled: true,
             freezeOnBlur: true,
             gestureEnabled: true,
             detachPreviousScreen: false,
           }}
         >
-          <JsStack.Screen name="index" options={{ animationEnabled: false }} />
+          <JsStack.Screen name="index" />
           {[
             "search",
             "customize",
@@ -75,4 +81,3 @@ export default function Layout() {
     </>
   );
 }
-
