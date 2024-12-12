@@ -169,12 +169,12 @@ export function SidekickComingSoonModal({
 }
 
 export default function Page() {
-  const theme = useColorTheme();
+  const { session } = useUser();
   const [activeSections, setActiveSections] = useState([]);
 
   const { data, mutate, error } = useSWR(["ai"]);
 
-  if (process.env.NODE_ENV === "production")
+  if (!session.user.betaTester)
     return (
       <SidekickComingSoon style={{ marginVertical: 50, marginBottom: 20 }} />
     );

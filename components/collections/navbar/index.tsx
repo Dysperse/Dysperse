@@ -267,7 +267,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
               <CategoryLabelButtons />
             )}
             <CollectionContext.Provider value={contextValue}>
-              {process.env.NODE_ENV !== "production" && <CollectionSidekick />}
+              <CollectionSidekick />
               {session && <CollectionSearch />}
               {!isLoading && !isReadOnly && !isAll && (
                 <MenuPopover
