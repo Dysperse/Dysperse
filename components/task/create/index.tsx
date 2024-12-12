@@ -574,6 +574,7 @@ function TaskNameInput({
       { id: "1", name: "tmw", value: ["date", dayjs().add(1, "day")] },
       { id: "2", name: "today", value: ["date", dayjs()] },
       { id: "3", name: "!", value: ["pinned", true] },
+      { id: "3.5", name: "lock in", value: ["pinned", true] },
       { id: "4", name: "tomorrow", value: ["date", dayjs().add(1, "day")] },
       { id: "5", name: "important", value: ["pinned", true] },
       { id: "6", name: "eod", value: ["date", dayjs().endOf("day")] },
@@ -1556,3 +1557,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+
