@@ -110,14 +110,15 @@ function SidekickComingSoon({ style }: { style?: StyleProp<ViewStyle> }) {
           gap: 5,
         }}
       >
-        <Icon size={70} style={{ color: theme[12] }}>
+        <Icon size={80} style={{ color: theme[12] }}>
           raven
         </Icon>
         <Text
           weight={300}
           style={{
+            fontFamily: "serifText800",
             color: theme[12],
-            fontSize: 60,
+            fontSize: 70,
           }}
         >
           sidekick
@@ -125,7 +126,7 @@ function SidekickComingSoon({ style }: { style?: StyleProp<ViewStyle> }) {
       </View>
       <Text
         weight={900}
-        style={{ opacity: 0.6, fontSize: 20, marginTop: 5, color: theme[12] }}
+        style={{ opacity: 0.6, fontSize: 30, marginTop: 5, color: theme[12] }}
       >
         arriving 2025
       </Text>

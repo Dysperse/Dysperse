@@ -8,10 +8,8 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { mint, mintDark } from "@/themes";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
-import { Fraunces_300Light } from "@expo-google-fonts/fraunces";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
 import {
-  Jost_100Thin,
   Jost_200ExtraLight,
   Jost_300Light,
   Jost_400Regular,
@@ -125,7 +123,6 @@ function Root() {
   useWebDevtoolsWarning();
 
   const [fontsLoaded, fontsError] = useFonts({
-    body_100: Jost_100Thin,
     body_200: Jost_200ExtraLight,
     body_300: Jost_300Light,
     body_400: Jost_400Regular,
@@ -134,7 +131,7 @@ function Root() {
     body_700: Jost_700Bold,
     body_800: Jost_800ExtraBold,
     body_900: Jost_900Black,
-    serifText800: Fraunces_300Light,
+    serifText800: require("../assets/fonts/BricolageGrotesque-Light.ttf"),
     mono: JetBrainsMono_500Medium,
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
     symbols_filled: require("../assets/fonts/symbols/filled.ttf"),

@@ -141,7 +141,7 @@ export default function ChipInput({
       style={{
         height,
         control: {
-          fontSize: 30,
+          fontSize: 35,
           flex: 1,
         },
         "&multiLine": {
