@@ -224,12 +224,12 @@ export default function Page() {
                 sections.indexOf(section)
               )
                 ? 0
-                : 10,
+                : 20,
               borderBottomRightRadius: activeSections.includes(
                 sections.indexOf(section)
               )
                 ? 0
-                : 10,
+                : 20,
             }}
             onPress={() => setActiveSections([sections.indexOf(section)])}
           >
