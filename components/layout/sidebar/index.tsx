@@ -1,3 +1,4 @@
+import { CreateCollectionModal } from "@/components/collections/create";
 import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
@@ -426,7 +427,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
 
   useHotkeys(["ctrl+shift+n"], (e) => {
     e.preventDefault();
-    router.push("/collections/create");
+    createCollectionRef.current.present();
   });
 
   useHotkeys(["ctrl+shift+l"], (e) => {
@@ -435,6 +436,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   });
 
   const menuRef = useRef(null);
+  const createCollectionRef = useRef(null);
   const { isReached } = useStorageContext();
 
   return (
@@ -448,6 +450,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             menuRef.current.close();
           }}
         />
+        <CreateCollectionModal ref={createCollectionRef} />
       </View>
 
       <MenuPopover
@@ -470,7 +473,6 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                 <MenuItem
                   onPress={() => {
                     menuRef.current.close();
-                    
                   }}
                 >
                   <Icon>upload</Icon>
@@ -492,12 +494,9 @@ const QuickCreateButton = memo(function QuickCreateButton() {
             ),
           },
           {
-            icon: "layers",
             text: "Collection",
-            callback: () => {
-              router.push("/collections/create");
-              if (!breakpoints.md) sidebarRef.current.closeDrawer();
-            },
+            icon: "folder",
+            callback: () => createCollectionRef.current.present(),
           },
         ]}
         menuProps={{
@@ -765,3 +764,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+
