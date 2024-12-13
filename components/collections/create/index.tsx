@@ -5,6 +5,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
@@ -12,9 +13,10 @@ import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import { cloneElement, forwardRef, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -26,6 +28,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import useSWR from "swr";
 
 const styles = StyleSheet.create({
   headerContainer: { padding: 0 },
@@ -190,7 +193,7 @@ const Scratch = () => {
   );
 };
 
-function AiCollectionInput({ input, setInput }) {
+function AiCollectionInput({ input, setInput, handleSubmit }) {
   const theme = useColorTheme();
   const [placeholder, setPlaceholder] = useState(0);
   const placeholders = [
@@ -273,6 +276,7 @@ function AiCollectionInput({ input, setInput }) {
             fontStyle: input ? undefined : "italic",
             flex: 1,
           }}
+          onSubmitEditing={handleSubmit}
         />
       </View>
       {!input && (
@@ -304,9 +308,16 @@ function SectionLabel({ text, icon }) {
   );
 }
 
-function AiCollection() {
+function AiCollection({ aiPrompt, setSlide }) {
   const theme = useColorTheme();
   const [input, setInput] = useState("");
+
+  const handleSubmit = () => {
+    if (input) {
+      aiPrompt.current = input;
+      setSlide("AI");
+    }
+  };
 
   return (
     <View>
@@ -340,7 +351,11 @@ function AiCollection() {
             }
           />
         </View>
-        <AiCollectionInput input={input} setInput={setInput} />
+        <AiCollectionInput
+          handleSubmit={handleSubmit}
+          input={input}
+          setInput={setInput}
+        />
         <View style={{ padding: 5, paddingRight: 8 }}>
           <IconButton
             icon="magic_button"
@@ -350,6 +365,7 @@ function AiCollection() {
               pressed: theme[input ? 12 : 7],
             }}
             disabled={!input}
+            onPress={handleSubmit}
             variant="filled"
             style={{ borderRadius: 10, opacity: 1 }}
             iconStyle={input && { color: theme[2] }}
@@ -369,7 +385,7 @@ function StartFromScratch() {
   );
 }
 
-function Header() {
+function Header({ title }) {
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
 
@@ -389,7 +405,7 @@ function Header() {
           color: theme[11],
         }}
       >
-        Create a collection
+        {title}
       </Text>
       <IconButton
         icon="close"
@@ -401,10 +417,54 @@ function Header() {
   );
 }
 
+function AiSlide({ aiPrompt, setSlide }) {
+  const theme = useColorTheme();
+  const isDark = useDarkMode();
+  const { data, error, mutate } = useSWR([
+    "ai/collection-template",
+    {},
+    process.env.EXPO_PUBLIC_API_URL,
+    {
+      method: "POST",
+      body: JSON.stringify({ text: aiPrompt.current }),
+    },
+  ]);
+
+  return (
+    <View style={{ padding: 30, paddingTop: 10 }}>
+      {data ? (
+        <View>
+          <Image
+            source={`https://og.dysperse.com/json?${new URLSearchParams({
+              json: JSON.stringify(data),
+              hideLogo: "true",
+              hslBase: theme[9]
+                .replace("hsl(", "")
+                .split(",")
+                .slice(0, 2)
+                .join(""),
+              isLight: isDark ? "false" : "true",
+            })}`}
+            style={{ width: "100%", aspectRatio: 1.91 }}
+          />
+        </View>
+      ) : error ? (
+        <ErrorAlert />
+      ) : (
+        <Spinner />
+      )}
+    </View>
+  );
+}
+
 export const CreateCollectionModal = forwardRef(
   ({ children }: { children?: any }, ref: any) => {
     const { isReached } = useStorageContext();
     const { session } = useUser();
+
+    const aiPrompt = useRef(null);
+    const [slide, setSlide] = useState<"HOME" | "AI">("HOME");
+
     const trigger = cloneElement(children || <Pressable />, {
       onPress: () => ref.current.present(),
     });
@@ -418,13 +478,21 @@ export const CreateCollectionModal = forwardRef(
         {trigger}
         <Modal sheetRef={ref} animation="SCALE" maxWidth={600}>
           <View style={{ padding: 30, paddingBottom: 0 }}>
-            <Header />
+            <Header
+              title={slide === "HOME" ? "Create a collection" : "Sidekick AI"}
+            />
           </View>
-          <View style={{ padding: 30, gap: 25, paddingTop: 15 }}>
-            {session.user.betaTester && <AiCollection />}
-            <StartFromScratch />
-            <Templates />
-          </View>
+          {slide === "AI" ? (
+            <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
+          ) : (
+            <View style={{ padding: 30, gap: 25, paddingTop: 15 }}>
+              {session.user.betaTester && (
+                <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
+              )}
+              <StartFromScratch />
+              <Templates />
+            </View>
+          )}
         </Modal>
       </>
     );

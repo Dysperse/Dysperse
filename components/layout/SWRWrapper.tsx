@@ -152,3 +152,4 @@ export function SWRWrapper({ children }) {
     <SWRConfig value={contextValue}>{children}</SWRConfig>
   ) : null;
 }
+
