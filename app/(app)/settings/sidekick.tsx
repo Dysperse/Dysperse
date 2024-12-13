@@ -14,7 +14,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { Image, ImageBackground } from "expo-image";
 import { cloneElement, ReactElement, useRef, useState } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { Platform, StyleProp, View, ViewStyle } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -230,6 +230,19 @@ export default function Page() {
               )
                 ? 0
                 : 20,
+              ...(Platform.OS === "web" && {
+                transitionProperty: "border-radius",
+                transitionDuration: activeSections.includes(
+                  sections.indexOf(section)
+                )
+                  ? 0
+                  : "0.2s",
+                transitionDelay: activeSections.includes(
+                  sections.indexOf(section)
+                )
+                  ? 0
+                  : ".1s",
+              }),
             }}
             onPress={() => setActiveSections([sections.indexOf(section)])}
           >
