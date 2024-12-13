@@ -426,7 +426,7 @@ function AiSlide({ aiPrompt, setSlide }) {
     process.env.EXPO_PUBLIC_API_URL,
     {
       method: "POST",
-      body: JSON.stringify({ text: aiPrompt.current }),
+      body: JSON.stringify({ text: `Help me organize: ${aiPrompt.current}` }),
     },
   ]);
 
