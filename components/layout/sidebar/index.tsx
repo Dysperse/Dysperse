@@ -392,12 +392,11 @@ export const LogoButton = memo(function LogoButton({
 });
 
 const QuickCreateButton = memo(function QuickCreateButton() {
-  const theme = useColorTheme();
   const { mutate } = useSWRConfig();
+  const { session } = useUser();
+  const theme = useColorTheme();
   const itemRef = useRef<BottomSheetModal>(null);
   const labelRef = useRef<BottomSheetModal>(null);
-  const breakpoints = useResponsiveBreakpoints();
-  const { sidebarRef } = useSidebarContext();
 
   const [defaultValues, setDefaultValues] = useState<any>({});
   const { id, fullscreen } = useGlobalSearchParams();
@@ -470,13 +469,15 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                   <Icon>add_circle</Icon>
                   <Text variant="menuItem">Task</Text>
                 </MenuItem>
-                <MenuItem
-                  onPress={() => {
-                    menuRef.current.close();
-                  }}
-                >
-                  <Icon>upload</Icon>
-                </MenuItem>
+                {session.user.betaTester && (
+                  <MenuItem
+                    onPress={() => {
+                      menuRef.current.close();
+                    }}
+                  >
+                    <Icon>upload</Icon>
+                  </MenuItem>
+                )}
               </View>
             ),
           },
