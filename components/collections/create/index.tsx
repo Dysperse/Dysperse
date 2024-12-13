@@ -1,13 +1,17 @@
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { createTab } from "@/components/layout/openTab";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
+import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
@@ -15,6 +19,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -445,8 +450,79 @@ function AiSlide({ aiPrompt, setSlide }) {
                 .join(""),
               isLight: isDark ? "false" : "true",
             })}`}
-            style={{ width: "100%", aspectRatio: 1.91 }}
+            style={{ width: "100%", aspectRatio: 1.91, marginBottom: 20 }}
           />
+          <Text variant="eyebrow" style={{ marginBottom: 5 }}>
+            Type
+          </Text>
+
+          <ListItemButton
+            variant="filled"
+            style={{ marginBottom: 20 }}
+            disabled
+          >
+            <Icon>{COLLECTION_VIEWS[data.defaultView]?.icon}</Icon>
+            <ListItemText
+              primary={capitalizeFirstLetter(data.defaultView)}
+              secondary={COLLECTION_VIEWS[data.defaultView]?.description}
+            />
+          </ListItemButton>
+
+          <Text variant="eyebrow" style={{ marginBottom: 10 }}>
+            Labels
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 5,
+              flexWrap: "wrap",
+            }}
+          >
+            {data.labels.map((label) => (
+              <Chip
+                dense
+                key={label}
+                label={label.name}
+                icon={<Emoji emoji={label.emoji} size={20} />}
+              />
+            ))}
+          </View>
+
+          <View
+            style={{
+              marginVertical: 10,
+              marginTop: 20,
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <IconButton
+              icon="west"
+              variant="outlined"
+              size={60}
+              onPress={() => setSlide("HOME")}
+            />
+            <Button
+              onPress={() => {
+                Toast.show({ type: "info", text1: "Coming soon!" });
+              }}
+              text="Continue"
+              icon="east"
+              variant="filled"
+              height={60}
+              iconPosition="end"
+              containerStyle={{ flex: 1 }}
+            />
+          </View>
+          <Text
+            style={{
+              textAlign: "center",
+              opacity: 0.6,
+              marginBottom: -10,
+            }}
+          >
+            You can always customize this later
+          </Text>
         </View>
       ) : error ? (
         <ErrorAlert />
