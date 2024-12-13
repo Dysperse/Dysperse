@@ -1542,6 +1542,7 @@ const CreateTask = forwardRef(
           innerStyles={{
             backgroundColor: Platform.OS === "web" ? "transparent" : theme[1],
           }}
+          maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
           outerContent={<CreateTaskOuterContent ref={hintRef} />}
         >
           <BottomSheetContent
