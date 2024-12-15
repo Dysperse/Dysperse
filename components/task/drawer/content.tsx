@@ -713,9 +713,7 @@ export function TaskDrawerContent({
                   updateTask("label", e, false);
                 }}
                 onClose={() => {}}
-                sheetProps={{
-                  sheetRef: labelPickerRef,
-                }}
+                sheetProps={{ sheetRef: labelPickerRef }}
                 defaultCollection={collectionId as any}
               >
                 <Chip
@@ -737,7 +735,6 @@ export function TaskDrawerContent({
                     icon: <Emoji emoji={task.label.emoji} size={20} />,
                     label: (
                       <Text
-                        weight={600}
                         style={{ color: labelColors[task.label.color][11] }}
                       >
                         {task.label.name}
