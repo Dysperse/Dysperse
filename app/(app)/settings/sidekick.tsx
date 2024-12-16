@@ -184,6 +184,14 @@ export default function Page() {
 
   const sections = [
     {
+      id: "NONE",
+      header: {
+        icon: "https://em-content.zobj.net/source/apple/391/flexed-biceps_1f4aa.png",
+        primary: "None",
+        secondary: "Prefer the human touch? So do we.",
+      },
+    },
+    {
       id: "DYSPERSE_AI",
       header: {
         icon: "https://cdn.brandfetch.io/idHe2DCaTM/w/800/h/800/theme/dark/symbol.png?c=1dxbfHSJFAPEGdCLU4o5B",
@@ -212,13 +220,19 @@ export default function Page() {
   return (
     <SettingsScrollView contentContainerStyle={{ gap: 20 }}>
       <Text style={settingStyles.title}>Sidekick</Text>
-      <Text style={{ marginBottom: 20 }}>
+      <Text>
         Let Sidekick do the heavy lifting for you. Connect your AI accounts with
         Dysperse to get started.
       </Text>
 
       {error && <ErrorAlert />}
-
+      <Text style={settingStyles.heading}>Heads up!</Text>
+      <Text style={{ marginBottom: 20 }}>
+        Sidekick is mostly a paid feature. While a free version exists, its
+        functionality isn’t guaranteed. If you have an API token for your own AI
+        model, Dysperse will use it at no extra cost, so you only pay for what
+        you use.
+      </Text>
       <Text style={settingStyles.heading}>Model</Text>
       <Accordion
         activeSections={activeSections}
