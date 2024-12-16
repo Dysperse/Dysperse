@@ -86,10 +86,9 @@ export default function ChromeExtension() {
         {
           body: JSON.stringify({
             name: pageData.title,
-            note: "This task was saved from the #dysperse extension",
+            note: pageData.url,
             start: dayjs().toISOString(),
             type: "TASK",
-            attachments: [{ type: "LINK", data: pageData.url }],
           }),
         }
       );
@@ -202,4 +201,3 @@ export default function ChromeExtension() {
     </Portal>
   );
 }
-
