@@ -45,8 +45,6 @@ export const pickImageAsync = async (setLoading, onChange) => {
         body: form,
       }).then((res) => res.json());
 
-      console.log(res);
-
       onChange(res.image.display_url);
     } else {
       alert("You did not select any image.");
@@ -200,3 +198,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

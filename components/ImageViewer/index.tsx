@@ -1,14 +1,25 @@
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import BottomSheet from "@/ui/BottomSheet";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
+import Text from "@/ui/Text";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import * as MediaLibrary from "expo-media-library";
-import React, { cloneElement, useCallback, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Linking, Platform, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -53,6 +64,97 @@ async function saveImageToCameraRoll(imageUrl) {
   }
 }
 
+async function getImageCaption(sessionToken, fileUrl) {
+  const errorMessage =
+    "Even AI can't describe this image (something went wrong, please try again later)";
+  try {
+    // file URLs are hosted on a CDN. we need to upload the file to the inference API. convert it to a raw binary
+    const file = await fetch(fileUrl);
+    const blob = await file.blob();
+    const data = new FormData();
+    data.append("file", blob);
+
+    const token = await sendApiRequest(
+      sessionToken,
+      "POST",
+      "ai/image-caption"
+    );
+    const response = await fetch(
+      "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: blob,
+      }
+    );
+    const result = await response.json();
+    return result?.[0]?.generated_text || errorMessage;
+  } catch (error) {
+    console.error(error);
+    return errorMessage;
+  }
+}
+
+function ImageCaption({ image }) {
+  const { sessionToken } = useUser();
+  const [caption, setCaption] = useState("");
+  const [loading, setLoading] = useState(true);
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
+
+  useEffect(() => {
+    getImageCaption(sessionToken, image).then((caption) => {
+      setCaption(caption);
+      setLoading(false);
+    });
+  }, [image, sessionToken]);
+
+  return (
+    <View
+      style={{
+        padding: 20,
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        alignItems: "center",
+        zIndex: 9999,
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: theme[2],
+          padding: 10,
+          paddingHorizontal: breakpoints.md ? 10 : 30,
+          borderRadius: 10,
+          flexDirection: "row",
+          shadowColor: theme[12],
+          shadowOffset: {
+            width: 0,
+            height: 20,
+          },
+          shadowRadius: 10,
+          shadowOpacity: 0.1,
+          justifyContent: "center",
+          gap: 10,
+          maxWidth: "100%",
+        }}
+      >
+        <Icon style={{ flexShrink: 0 }}>magic_button</Icon>
+        <View style={{ minWidth: 0, maxWidth: "100%" }}>
+          <Text variant="eyebrow">AI description</Text>
+          <Text style={{ color: theme[11] }}>
+            {loading ? "Loading..." : JSON.stringify(caption)}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 export const ImageViewer = ({ children, image }) => {
   const ref = useRef<BottomSheetModal>();
   const insets = useSafeAreaInsets();
@@ -93,6 +195,7 @@ export const ImageViewer = ({ children, image }) => {
             overshootClamping: true,
           }}
         >
+          <ImageCaption image={image} />
           <View
             style={{
               padding: 20,

@@ -42,7 +42,6 @@ export const videoChatPlatforms = [
   "whereby.com",
   "discord.com",
   "vsee.com",
-  "bluejeans.com",
   "join.me",
   "tokbox.com",
   "talky.io",
@@ -182,6 +181,84 @@ export function getPreviewText(htmlString) {
   return strippedString.length > previewLength
     ? strippedString.substring(0, previewLength) + "..."
     : strippedString;
+}
+
+function extractLinksFromHTML(htmlString) {
+  // Match all <a> tags and extract href and inner text
+  const regex = /<a\s+(?:[^>]*?\s+)?href=["']([^"']*)["'][^>]*>(.*?)<\/a>/gi;
+
+  const links = [];
+  let match;
+
+  while ((match = regex.exec(htmlString)) !== null) {
+    let text: any = match[2].trim();
+    let icon = "link";
+
+    if (text === match[1]) text = new URL(text).hostname;
+    if (videoChatPlatforms.some((platform) => text?.includes?.(platform))) {
+      text = "Join meeting";
+      icon = "call";
+    }
+
+    links.push({
+      href: match[1],
+      icon,
+      text,
+      type: "LINK",
+    });
+  }
+
+  return links;
+}
+
+function extractImagesFromHTML(htmlString) {
+  const regex =
+    /<img\s+(?:[^>]*?\s+)?src=["']([^"']*)["'](?:[^>]*?\s+)?alt=["']([^"']*)["']|<img\s+(?:[^>]*?\s+)?src=["']([^"']*)["'][^>]*>/gi;
+
+  const images = [];
+  let match;
+
+  while ((match = regex.exec(htmlString)) !== null) {
+    images.push({
+      image: match[1] || match[3],
+      text: " Image",
+      type: "IMAGE",
+    });
+  }
+
+  return images;
+}
+
+function TaskNoteChips({ note }) {
+  const chips = useMemo(
+    () => [...extractLinksFromHTML(note), ...extractImagesFromHTML(note)],
+    [note]
+  );
+
+  return (
+    <>
+      {chips.map((link, index) => (
+        <ImageViewer
+          key={link.image + link.type}
+          image={link.type === "IMAGE" && link.image}
+        >
+          <Chip
+            dense
+            key={index}
+            label={link.text}
+            onPress={() => Linking.openURL(link.image)}
+            icon={
+              link.image ? (
+                <Avatar size={22} image={link.image} disabled />
+              ) : (
+                link.icon
+              )
+            }
+          />
+        </ImageViewer>
+      ))}
+    </>
+  );
 }
 
 const Task = memo(function Task({
@@ -370,9 +447,10 @@ const Task = memo(function Task({
                   />
                 )}
                 {showLabel && task.label && <TaskLabelChip task={task} />}
-                {task.attachments && (
+                {/* {task.attachments && (
                   <TaskAttachmentChips attachments={task.attachments} />
-                )}
+                )} */}
+                <TaskNoteChips note={task.note} />
                 {task.pinned && <TaskImportantChip />}
                 {!task.dateOnly && (
                   <Chip

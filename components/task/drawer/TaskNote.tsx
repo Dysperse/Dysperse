@@ -133,25 +133,25 @@ function NoteInsertMenu({ isFocused, editorRef }) {
         swipeable: false,
         visibilityTime: 1e9,
       });
-      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
-      const file = new File([blob], result.assets[0].fileName, {
-        type: blob.type,
-      });
-      const form = new FormData();
-      form.append("image", file);
 
-      const res = await fetch(
-        "https://api.imgbb.com/1/upload?key=9fb5ded732b6b50da7aca563dbe66dec",
-        {
-          method: "POST",
-          body: form,
-        }
-      ).then((res) => res.json());
-      // updateTask("attachments", [
-      //   ...(task?.attachments || []),
-      //   { type: "IMAGE", data: res.data.display_url },
-      // ]);
-      editorRef.current.insertImage("res.data.display_url");
+      // convert to File
+      const blob = await fetch(result.assets[0].uri).then((r) => r.blob());
+      const form = new FormData();
+
+      form.append(
+        "source",
+        new File([blob], "filename", {
+          type: "image/png",
+          lastModified: new Date().getTime(),
+        })
+      );
+
+      const res = await fetch("https://api.dysperse.com/upload", {
+        method: "POST",
+        body: form,
+      }).then((res) => res.json());
+
+      editorRef.current.insertImage(res.image.display_url);
       Toast.hide();
       Toast.show({ type: "success", text1: "Image attached!" });
     } else {
@@ -164,13 +164,13 @@ function NoteInsertMenu({ isFocused, editorRef }) {
       <MenuPopover
         trigger={
           <Button
-            onPress={() => editorRef.current.focus()}
-            {...(Platform.OS === "web"
-              ? {
-                  onMouseDown: () =>
-                    setTimeout(() => editorRef.current.focus(), 0),
-                }
-              : {})}
+            // onPress={() => editorRef.current.focus()}
+            // {...(Platform.OS === "web"
+            //   ? {
+            //       onMouseDown: () =>
+            //         setTimeout(() => editorRef.current.focus(), 0),
+            //     }
+            //   : {})}
             backgroundColors={{
               default: addHslAlpha(theme[5], 0.7),
               hovered: addHslAlpha(theme[5], 0.8),
@@ -184,7 +184,7 @@ function NoteInsertMenu({ isFocused, editorRef }) {
         }
         closeOnSelect
         menuProps={{
-          onOpen: () => editorRef.current.focus(),
+          // onOpen: () => editorRef.current.focus(),
           onClose: () => editorRef.current.focus(),
         }}
         options={[
@@ -395,3 +395,4 @@ export const TaskNote = forwardRef(
     );
   }
 );
+

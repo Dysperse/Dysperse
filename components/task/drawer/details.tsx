@@ -354,123 +354,6 @@ export const handleLocationPress = (
   }
 };
 
-// function TaskAttachmentPreview({ item }: { item: any; index: number }) {
-//   const theme = useColorTheme();
-//   const { session } = useUser();
-
-//   const { icon, name } = getAttachmentPreview(item);
-//   const handleOpenPress = useCallback(() => {
-//     if (isValidHttpUrl(item.data)) {
-//       Linking.openURL(item.data?.val || item.data);
-//     } else {
-//       handleLocationPress(session, item);
-//     }
-//   }, [item, session]);
-
-//   const SafeImageViewer = item.type === "IMAGE" ? ImageViewer : Fragment;
-
-//   return (
-//     <SafeImageViewer image={item.data}>
-//       <Button
-//         onPress={handleOpenPress}
-//         backgroundColors={attachmentButtonStyles(theme)}
-//         borderColors={attachmentButtonStyles(theme)}
-//         dense
-//       >
-//         {item.type === "IMAGE" ? (
-//           <Image
-//             source={{ uri: item.data }}
-//             contentFit="contain"
-//             contentPosition="center"
-//             style={{ borderRadius: 20, width: 24, height: 24 }}
-//           />
-//         ) : (
-//           <Icon>{icon || "attachment"}</Icon>
-//         )}
-//         <ButtonText>{item.name || name}</ButtonText>
-//       </Button>
-//     </SafeImageViewer>
-//   );
-// }
-
-// function TaskAttachmentCard({ item, index }: { item: any; index: number }) {
-//   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
-//   const { icon } = getAttachmentPreview(item);
-
-//   const editable =
-//     !isReadOnly && !(item.type === "LOCATION" && item?.data?.rich);
-
-//   const handleDeletePress = useCallback(() => {
-//     updateTask(
-//       "attachments",
-//       task.attachments.filter((_, i) => i !== index)
-//     );
-//   }, [updateTask, task, index]);
-
-//   return (
-//     <ListItemButton style={{ paddingLeft: 40 }} disabled>
-//       <Avatar icon={icon} style={{ borderRadius: 7 }} />
-//       <View style={{ flex: 1, gap: 5 }}>
-//         {!(item.type === "LOCATION" && !item?.data?.rich) && (
-//           <TextField
-//             variant="filled+outlined"
-//             editable={editable}
-//             defaultValue={item?.data?.name || item.name}
-//             placeholder="(Optional) Friendly name…"
-//             style={{
-//               paddingVertical: 3,
-//               paddingHorizontal: 10,
-//               borderRadius: 5,
-//             }}
-//             onBlur={(e) => {
-//               if (!e.nativeEvent.text.trim()) return;
-//               if (!editable) return;
-//               updateTask(
-//                 "attachments",
-//                 task.attachments.map((attachment, i) =>
-//                   i === index
-//                     ? { ...attachment, name: e.nativeEvent.text }
-//                     : attachment
-//                 )
-//               );
-//             }}
-//           />
-//         )}
-//         <TextField
-//           variant="filled+outlined"
-//           editable={editable}
-//           defaultValue={item?.data?.full_name || item.data?.val || item.data}
-//           placeholder={item.type === "LINK" ? "Link…" : "Location…"}
-//           style={{
-//             paddingVertical: 3,
-//             paddingHorizontal: 10,
-//             borderRadius: 5,
-//           }}
-//           onBlur={(e) => {
-//             if (!editable) return;
-//             updateTask(
-//               "attachments",
-//               task.attachments.map((attachment, i) =>
-//                 i === index
-//                   ? { ...attachment, data: e.nativeEvent.text }
-//                   : attachment
-//               )
-//             );
-//           }}
-//         />
-//       </View>
-//       {item.type === "IMAGE" && (
-//         <Image
-//           source={{ uri: item.data }}
-//           style={{ borderRadius: 20 }}
-//           transition={100}
-//         />
-//       )}
-//       <IconButton icon="remove_circle" onPress={handleDeletePress} />
-//     </ListItemButton>
-//   );
-// }
-
 export const normalizeRecurrenceRuleObject = (rule) => {
   if (!rule) return null;
   return new RRule({
@@ -683,6 +566,7 @@ function TaskDateMenu() {
 
 export function TaskDetails() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+  const editorRef = useRef(null);
 
   return (
     <View style={{ gap: 2, marginTop: 5 }}>
@@ -699,8 +583,9 @@ export function TaskDetails() {
       )}
 
       <View>
-        <TaskNote task={task} updateTask={updateTask} />
+        <TaskNote task={task} ref={editorRef} updateTask={updateTask} />
       </View>
     </View>
   );
 }
+
