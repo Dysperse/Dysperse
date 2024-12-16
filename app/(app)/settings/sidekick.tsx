@@ -56,7 +56,7 @@ function AiIntegration({ sections, data, section, mutate }) {
         flexDirection: "row",
       }}
     >
-      {section.id !== "DYSPERSE_AI" && (
+      {section.id !== "DYSPERSE_AI" && section.id !== "NONE" && (
         <TextField
           editable={!isLoading}
           onSubmitEditing={handleSubmit}
