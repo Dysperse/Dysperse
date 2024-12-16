@@ -153,40 +153,7 @@ export const CategoryLabelButtons = memo(() => {
             </MenuItem>
           ),
         })),
-        {
-          renderer: () => (
-            <View style={{ flexDirection: "row" }}>
-              <MenuItem
-                style={{ flex: 1 }}
-                onPress={() => {
-                  openLabelPicker();
-                  menuRef.current.close();
-                }}
-              >
-                <Icon>draw</Icon>
-                <Text variant="menuItem" weight={300}>
-                  Edit
-                </Text>
-              </MenuItem>
-              {isCategoryBased && (
-                <MenuItem
-                  style={{ flex: 1 }}
-                  onPress={() => {
-                    router.push(pathname + "/reorder");
-                    menuRef.current.close();
-                  }}
-                >
-                  <Icon>swipe</Icon>
-                  <Text variant="menuItem" weight={300}>
-                    Reorder
-                  </Text>
-                </MenuItem>
-              )}
-            </View>
-          ),
-        },
       ].filter((e) => e)}
     />
   );
 });
-

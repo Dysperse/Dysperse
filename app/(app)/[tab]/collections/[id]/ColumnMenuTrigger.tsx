@@ -1,5 +1,9 @@
 import { useCollectionContext } from "@/components/collections/context";
-import { memo, ReactElement } from "react";
+import Icon from "@/ui/Icon";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Text from "@/ui/Text";
+import { router, usePathname } from "expo-router";
+import { memo, ReactElement, useRef } from "react";
 import { LabelEditModal } from "./LabelEditModal";
 
 export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
@@ -9,9 +13,11 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
   label: any;
   children: ReactElement;
 }) {
+  const menuRef = useRef(null);
+  const pathname = usePathname();
   const { mutate, openLabelPicker } = useCollectionContext();
 
-  return (
+  const editButton = (
     <LabelEditModal
       label={label}
       onLabelUpdate={(newLabel) => {
@@ -31,8 +37,31 @@ export const ColumnMenuTrigger = memo(function ColumnMenuTrigger({
           { revalidate: false }
         );
       }}
-      trigger={children}
+      trigger={
+        <MenuItem>
+          <Icon>edit</Icon>
+          <Text variant="menuItem">Edit</Text>
+        </MenuItem>
+      }
     />
   );
+  return (
+    <>
+      <MenuPopover
+        trigger={children}
+        menuRef={menuRef}
+        options={[
+          { renderer: () => editButton },
+          {
+            icon: "swipe",
+            text: "Reorder",
+            callback: () => {
+              menuRef.current.close();
+              router.push(pathname + "/reorder");
+            },
+          },
+        ]}
+      />
+    </>
+  );
 });
-
