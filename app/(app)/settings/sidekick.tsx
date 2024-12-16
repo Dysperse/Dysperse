@@ -215,6 +215,14 @@ export default function Page() {
         secondary: "by OpenAI",
       },
     },
+    // {
+    //   id: "ANTHROPIC",
+    //   header: {
+    //     icon: "https://cdn.brandfetch.io/idmJWF3N06/w/400/h/400/theme/dark/icon.jpeg?c=1bfwsmEH20zzEfSNTed",
+    //     primary: "Claude",
+    //     secondary: "by Anthropic",
+    //   },
+    // },
   ];
 
   return (
