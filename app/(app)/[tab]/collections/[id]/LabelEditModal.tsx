@@ -4,6 +4,7 @@ import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import { EmojiPicker } from "@/ui/EmojiPicker";
+import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
@@ -79,30 +80,50 @@ export const LabelEditModal = memo(function LabelEditModal({
       >
         <View
           style={{
-            padding: 15,
-            paddingVertical: 25,
-            gap: 20,
-            width: "100%",
+            flexDirection: "row",
             alignItems: "center",
+            padding: 20,
+            gap: 20,
           }}
         >
-          <Controller
-            render={({ field: { onChange, value } }) => (
-              <EmojiPicker setEmoji={onChange}>
-                <IconButton
-                  variant="outlined"
-                  size={90}
-                  style={{ borderWidth: 2, borderStyle: "dashed" }}
-                >
-                  <Emoji emoji={value || "1f4ad"} size={50} />
-                </IconButton>
-              </EmojiPicker>
-            )}
-            name="emoji"
-            control={control}
-          />
-          <View style={{ width: "100%", gap: 5 }}>
-            <Text variant="eyebrow">Name</Text>
+          <Text weight={900} style={{ fontSize: 20, flex: 1, paddingLeft: 10 }}>
+            Create label
+          </Text>
+          <IconButton variant="filled" onPress={() => menuRef.current.close()}>
+            <Icon>close</Icon>
+          </IconButton>
+        </View>
+        <View
+          style={{
+            padding: 20,
+            gap: 20,
+            paddingTop: 5,
+            paddingHorizontal: 30,
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              gap: 20,
+              flexDirection: "row",
+              flex: 1,
+            }}
+          >
+            <Controller
+              render={({ field: { onChange, value } }) => (
+                <EmojiPicker setEmoji={onChange}>
+                  <IconButton
+                    variant="outlined"
+                    size={50}
+                    style={{ borderStyle: "dashed" }}
+                  >
+                    <Emoji emoji={value || "1f4ad"} size={50} />
+                  </IconButton>
+                </EmojiPicker>
+              )}
+              name="emoji"
+              control={control}
+            />
             <Controller
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -112,8 +133,8 @@ export const LabelEditModal = memo(function LabelEditModal({
                     height: 60,
                     fontSize: 20,
                     borderRadius: 99,
-                    textAlign: "center",
-                    width: "100%",
+                    flex: 1,
+                    maxWidth: 270,
                   }}
                   onKeyPress={(e) => {
                     if (e.key === "Escape") menuRef.current?.close?.();

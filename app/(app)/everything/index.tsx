@@ -26,6 +26,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import fuzzysort from "fuzzysort";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -520,9 +521,12 @@ const Labels = () => {
               {error && <ErrorAlert />}
               <FlashList
                 estimatedItemSize={60}
-                data={d.filter((l) =>
-                  l.name.toLowerCase().includes(query.toLowerCase())
-                )}
+                data={fuzzysort
+                  .go(query, d, {
+                    keys: ["name"],
+                    all: true,
+                  })
+                  .map((l) => l.obj)}
                 ListEmptyComponent={() => (
                   <View style={containerStyles.leftEmpty}>
                     <Emoji emoji="1f937" size={40} />

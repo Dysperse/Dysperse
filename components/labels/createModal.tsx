@@ -9,7 +9,6 @@ import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import React, {
   ReactElement,
@@ -37,7 +36,7 @@ export function CreateLabelModal({
   onCreate?: (newLabel: any) => void;
   sheetRef?: React.RefObject<BottomSheetModal>;
 }) {
-  const theme = useColorTheme();
+  const inputRef = useRef(null);
   const _ref = useRef<BottomSheetModal>(null);
   const { sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +46,7 @@ export function CreateLabelModal({
   const handleOpen = useCallback(() => {
     Keyboard.dismiss();
     ref.current?.present();
+    setTimeout(() => inputRef.current.focus(), 200);
   }, []);
   const handleClose = useCallback(() => {
     ref.current?.close?.();
@@ -106,29 +106,38 @@ export function CreateLabelModal({
   return isReached ? null : (
     <>
       {trigger}
-      <Modal sheetRef={ref} maxWidth={460} height={500} animation="SCALE">
+      <Modal sheetRef={ref} maxWidth={460} animation="SCALE">
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            padding: 15,
+            padding: 20,
             gap: 20,
           }}
         >
-          <IconButton
-            variant="outlined"
-            size={55}
-            onPress={() => ref.current.close()}
-          >
-            <Icon>close</Icon>
-          </IconButton>
-          <Text weight={700} style={{ fontSize: 23, flex: 1 }}>
+          <Text weight={900} style={{ fontSize: 20, flex: 1, paddingLeft: 10 }}>
             Create label
           </Text>
+          <IconButton variant="filled" onPress={() => ref.current.close()}>
+            <Icon>close</Icon>
+          </IconButton>
         </View>
         <ScrollView>
-          <View style={{ padding: 20, gap: 20 }}>
-            <View style={{ alignItems: "center", paddingVertical: 20 }}>
+          <View
+            style={{
+              padding: 20,
+              gap: 20,
+              paddingTop: 5,
+              paddingHorizontal: 30,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                gap: 20,
+                flexDirection: "row",
+              }}
+            >
               <Controller
                 control={control}
                 rules={{
@@ -143,11 +152,7 @@ export function CreateLabelModal({
                 )}
                 name="emoji"
               />
-            </View>
-            <View>
-              <Text variant="eyebrow" style={{ marginBottom: 5 }}>
-                Name
-              </Text>
+
               <Controller
                 control={control}
                 rules={{
@@ -159,8 +164,17 @@ export function CreateLabelModal({
                     placeholder="Label name"
                     onBlur={onBlur}
                     onChangeText={onChange}
+                    style={{
+                      height: 60,
+                      borderRadius: 99,
+                      flex: 1,
+                      fontSize: 20,
+                      paddingHorizontal: 20,
+                    }}
+                    inputRef={inputRef}
+                    weight={900}
                     value={value}
-                    variant="filled"
+                    variant="filled+outlined"
                   />
                 )}
                 name="name"
@@ -191,9 +205,9 @@ export function CreateLabelModal({
                           width: 30,
                           height: 30,
                           borderRadius: 999,
-                          backgroundColor: colors[color][9],
+                          backgroundColor: colors[color][7],
                           borderWidth: 3,
-                          borderColor: colors[color][color === value ? 7 : 9],
+                          borderColor: colors[color][color === value ? 11 : 7],
                         })}
                       />
                     ))}
@@ -228,3 +242,4 @@ export function CreateLabelModal({
     </>
   );
 }
+
