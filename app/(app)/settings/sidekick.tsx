@@ -56,15 +56,17 @@ function AiIntegration({ sections, data, section, mutate }) {
         flexDirection: "row",
       }}
     >
-      <TextField
-        editable={!isLoading}
-        onSubmitEditing={handleSubmit}
-        variant="filled+outlined"
-        placeholder="API key"
-        style={{ flex: 1, fontFamily: "mono" }}
-        defaultValue={data?.type === section.id ? data?.token : ""}
-        inputRef={apiKeyRef}
-      />
+      {section.id !== "DYSPERSE_AI" && (
+        <TextField
+          editable={!isLoading}
+          onSubmitEditing={handleSubmit}
+          variant="filled+outlined"
+          placeholder="API key"
+          style={{ flex: 1, fontFamily: "mono" }}
+          defaultValue={data?.type === section.id ? data?.token : ""}
+          inputRef={apiKeyRef}
+        />
+      )}
       <Button
         onPress={handleSubmit}
         isLoading={isLoading}
@@ -181,6 +183,14 @@ export default function Page() {
     );
 
   const sections = [
+    {
+      id: "DYSPERSE_AI",
+      header: {
+        icon: "https://cdn.brandfetch.io/idHe2DCaTM/w/800/h/800/theme/dark/symbol.png?c=1dxbfHSJFAPEGdCLU4o5B",
+        primary: "Sidekick Free",
+        secondary: "Free, but uptime won't be guaranteed.",
+      },
+    },
     {
       id: "GEMINI",
       header: {
