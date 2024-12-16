@@ -57,8 +57,8 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         if (
           e.key === "Shift" &&
           document.activeElement?.tagName !== "INPUT" &&
-          document.activeElement?.tagName !== "TEXTAREA" && 
-          !(Platform.OS !== "web" && document.activeElement?.isContentEditable)
+          document.activeElement?.tagName !== "TEXTAREA" &&
+          !(Platform.OS === "web" && document.activeElement?.isContentEditable)
         ) {
           const now = Date.now();
           if (now - lastPress.current < 500) ref.current?.present();
