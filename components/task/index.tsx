@@ -246,7 +246,7 @@ function TaskNoteChips({ note }) {
             dense
             key={index}
             label={link.text}
-            onPress={() => Linking.openURL(link.image)}
+            onPress={() => Linking.openURL(link.image || link.href)}
             icon={
               link.image ? (
                 <Avatar size={22} image={link.image} disabled />
@@ -475,4 +475,3 @@ const Task = memo(function Task({
 });
 
 export default React.memo(Task);
-
