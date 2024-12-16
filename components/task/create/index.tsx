@@ -1100,8 +1100,9 @@ function SubTaskInformation({ watch, setValue }) {
 
 const TaskDescriptionInput = forwardRef(
   ({ watch, control, nameRef }: { watch; control; nameRef }, ref) => {
-    const note = watch("name");
     const editorRef = useRef(null);
+
+    console.log(control);
 
     useImperativeHandle(ref, () => ({
       show: () => {
@@ -1111,12 +1112,18 @@ const TaskDescriptionInput = forwardRef(
 
     return (
       <View style={{ marginHorizontal: -10 }}>
-        <TaskNote
-          onContainerFocus={() => nameRef.current.focus()}
-          showEditorWhenEmpty
-          ref={editorRef}
-          task={{ note }}
-          updateTask={(...t) => console.log(JSON.stringify(t))}
+        <Controller
+          control={control}
+          name="note"
+          render={({ field: { onChange, value } }) => (
+            <TaskNote
+              onContainerFocus={() => nameRef.current.focus()}
+              showEditorWhenEmpty
+              ref={editorRef}
+              task={{ value }}
+              updateTask={(_, t) => onChange(t)}
+            />
+          )}
         />
       </View>
     );
