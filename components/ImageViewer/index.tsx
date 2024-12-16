@@ -65,8 +65,7 @@ async function saveImageToCameraRoll(imageUrl) {
 }
 
 async function getImageCaption(sessionToken, fileUrl) {
-  const errorMessage =
-    "Even AI can't describe this image (something went wrong, please try again later)";
+  const errorMessage = "Even AI failed describe this image. Try again later";
   try {
     // file URLs are hosted on a CDN. we need to upload the file to the inference API. convert it to a raw binary
     const file = await fetch(fileUrl);
@@ -298,4 +297,3 @@ export const ImageViewer = ({ children, image }) => {
     </>
   );
 };
-
