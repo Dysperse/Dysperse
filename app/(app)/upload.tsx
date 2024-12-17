@@ -44,7 +44,12 @@ export default function Page() {
         <TextField
           variant="filled+outlined"
           multiline
-          style={{ flex: 1, fontFamily: "mono" }}
+          style={{
+            flex: 1,
+            fontFamily: "mono",
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+          }}
           placeholder="Paste anything here..."
         />
         <Button
