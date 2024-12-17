@@ -473,6 +473,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                   <MenuItem
                     onPress={() => {
                       menuRef.current.close();
+                      router.push("/upload");
                     }}
                   >
                     <Icon>upload</Icon>
