@@ -53,8 +53,8 @@ export function Header({ start, end }: any) {
               fontSize: 17,
               color: theme[11],
               opacity: isToday ? 1 : 0.7,
+              fontFamily: "serifText700",
             }}
-            weight={700}
           >
             {dayjs(start).format(formats.subheading)}
             {type === "month" && (
@@ -74,3 +74,4 @@ export function Header({ start, end }: any) {
     </View>
   );
 }
+

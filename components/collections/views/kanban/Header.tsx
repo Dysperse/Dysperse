@@ -73,10 +73,13 @@ export const KanbanHeader = memo(function KanbanHeader({
             !list && { flexDirection: "row", gap: 20, alignItems: "center" }),
         }}
       >
-        <Text style={{ fontSize: 20 }} weight={800} numberOfLines={1}>
+        <Text
+          style={{ fontSize: 20, fontFamily: "serifText700" }}
+          numberOfLines={1}
+        >
           {label.name || "Unlabeled"}
         </Text>
-        <Text weight={300} numberOfLines={1}>
+        <Text style={{ opacity: 0.6 }} numberOfLines={1}>
           {grid
             ? label.entitiesLength === 0
               ? ""

@@ -192,6 +192,7 @@ export function Column(props: ColumnProps) {
                   containerStyle={{ flex: 1, zIndex: 99 }}
                   large={!breakpoints.md}
                   bold={!breakpoints.md}
+                  textStyle={breakpoints.md && { fontFamily: "body_400" }}
                   iconPosition="end"
                   text="Create"
                   icon="stylus_note"

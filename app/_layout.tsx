@@ -131,6 +131,7 @@ function Root() {
     body_700: Jost_700Bold,
     body_800: Jost_800ExtraBold,
     body_900: Jost_900Black,
+    serifText700: require("../assets/fonts/BricolageGrotesque-Bold.ttf"),
     serifText800: require("../assets/fonts/BricolageGrotesque-Light.ttf"),
     mono: JetBrainsMono_500Medium,
     symbols_outlined: require("../assets/fonts/symbols/outlined.ttf"),
