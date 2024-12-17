@@ -44,16 +44,30 @@ import { TaskDetails } from "./details";
 function AISubtask({ task, updateTask }) {
   const modalRef = useRef(null);
   const { sessionToken } = useUser();
-  const [isLoading, setIsLoading] = useState(false);
 
+  const [open, setOpen] = useState(false);
   const [selectedSubtasks, setSelectedSubtasks] = useState([]);
-  const [generatedSubtasks, setGeneratedSubtasks] = useState([]);
   const [isCreationLoading, setIsCreationLoading] = useState(false);
+
+  const { data, error } = useSWR(
+    open
+      ? [
+          "ai/generate-subtasks",
+          {},
+          process.env.EXPO_PUBLIC_API_URL,
+          {
+            method: "POST",
+            body: JSON.stringify({ task }),
+          },
+        ]
+      : null,
+    { revalidateOnFocus: false }
+  );
 
   const handleAddSubtasks = async () => {
     setIsCreationLoading(true);
     try {
-      const subtasks = selectedSubtasks.map((i) => generatedSubtasks[i]);
+      const subtasks = selectedSubtasks.map((i) => data[i]);
 
       const t = await sendApiRequest(
         sessionToken,
@@ -96,26 +110,8 @@ function AISubtask({ task, updateTask }) {
     <>
       <MenuItem
         onPress={async () => {
-          setIsLoading(true);
+          setOpen(true);
           modalRef.current?.present();
-
-          await sendApiRequest(
-            sessionToken,
-            "POST",
-            "ai/generate-subtasks",
-            {},
-            { body: JSON.stringify({ task }) }
-          )
-            .then((data) => {
-              if (!Array.isArray(data)) throw new Error("No response");
-              setGeneratedSubtasks(data);
-              setSelectedSubtasks(data.map((_, i) => i));
-              setIsLoading(false);
-            })
-            .catch(() => {
-              setIsLoading(false);
-              Toast.show({ type: "error" });
-            });
         }}
       >
         <Icon>prompt_suggestion</Icon>
@@ -134,11 +130,11 @@ function AISubtask({ task, updateTask }) {
       >
         <ModalHeader title="AI subtasks" />
         <View style={{ flex: 1 }}>
-          {!isLoading ? (
+          {data ? (
             <View
               style={{ flex: 1, padding: 10, paddingTop: 0, marginTop: -10 }}
             >
-              {generatedSubtasks.map((subtask, i) => (
+              {data.map((subtask, i) => (
                 <ListItemButton
                   key={i}
                   onPress={() => {
@@ -191,7 +187,7 @@ function AISubtask({ task, updateTask }) {
                 justifyContent: "center",
               }}
             >
-              <Spinner />
+              {error ? <ErrorAlert /> : <Spinner />}
             </View>
           )}
         </View>
@@ -478,18 +474,25 @@ function TaskMoreMenu({ handleDelete }) {
 
 function AICategorizer({ task, updateTask }) {
   const ref = useRef(null);
-  const handleCreate = () => ref.current.present();
+  const [open, setOpen] = useState(false);
+
+  const handleCreate = () => {
+    setOpen(true);
+    ref.current.present();
+  };
 
   const { data, error } = useSWR(
-    [
-      "ai/categorize-tasks",
-      {},
-      process.env.EXPO_PUBLIC_API_URL,
-      {
-        method: "POST",
-        body: JSON.stringify({ task }),
-      },
-    ],
+    !open
+      ? null
+      : [
+          "ai/categorize-tasks",
+          {},
+          process.env.EXPO_PUBLIC_API_URL,
+          {
+            method: "POST",
+            body: JSON.stringify({ task }),
+          },
+        ],
     { revalidateOnFocus: false }
   );
 

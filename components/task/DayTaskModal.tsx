@@ -65,10 +65,13 @@ export default function DayTaskModal({ children, date, taskId }) {
             paddingTop: 30,
           }}
         >
-          <Text weight={900} style={{ fontSize: 25 }}>
+          <Text style={{ fontSize: 25, fontFamily: "serifText700" }}>
             {dayjs(date).format("dddd, MMMM Do")}
           </Text>
-          <Text weight={300} style={{ fontSize: 20 }}>
+          <Text
+            weight={300}
+            style={{ fontSize: 18, opacity: 0.7, marginTop: 5 }}
+          >
             {data
               ? `${tasksLength} other task${
                   tasksLength === 1 ? "" : "s"
@@ -119,3 +122,4 @@ export default function DayTaskModal({ children, date, taskId }) {
     </>
   );
 }
+
