@@ -1,9 +1,36 @@
+import { useUser } from "@/context/useUser";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
+import Modal from "@/ui/Modal";
+import ModalHeader from "@/ui/ModalHeader";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
+
+function InspireMe() {
+  const ref = useRef(null);
+
+  return (
+    <>
+      <Button
+        containerStyle={{ opacity: 0.6, marginTop: 15, zIndex: 9999 }}
+        text="Inspire me"
+        icon="magic_button"
+        onPress={() => ref.current.present()}
+      />
+
+      <Modal sheetRef={ref} animation="SCALE">
+        <ModalHeader title="AI inspiration" />
+        <View style={{ padding: 20, paddingTop: 0 }}>
+          <Spinner />
+        </View>
+      </Modal>
+    </>
+  );
+}
 
 const styles = StyleSheet.create({
   empty: {
@@ -46,6 +73,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   list?: boolean;
 }) {
   const theme = useColorTheme();
+  const { session } = useUser();
 
   const message = useMemo(
     () => messages[Math.floor(Math.random() * messages.length)],
@@ -62,7 +90,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
       style={[
         styles.empty,
         {
-          pointerEvents: "none",
+          // pointerEvents: "none",
           paddingTop: Platform.OS === "android" ? 70 : undefined,
         },
         row && { flexDirection: "row", alignItems: "center", gap: 20 },
@@ -105,8 +133,9 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
         <Text style={{ opacity: 0.6 }} numberOfLines={1}>
           {message[2]}
         </Text>
+
+        {session.user.betaTester && <InspireMe />}
       </View>
     </View>
   );
 };
-
