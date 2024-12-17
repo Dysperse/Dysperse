@@ -39,7 +39,9 @@ export default function Page() {
           >
             Import tasks
           </Text>
-          <Text>Paste any text here and we'll to convert it into tasks!</Text>
+          <Text style={{ opacity: 0.6 }}>
+            Paste any text here and we'll to convert it into tasks!
+          </Text>
         </View>
 
         <TextField
