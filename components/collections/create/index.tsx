@@ -21,7 +21,7 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { useBottomSheet } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { cloneElement, forwardRef, useEffect, useRef, useState } from "react";
@@ -542,6 +542,7 @@ function AiSlide({ aiPrompt, setSlide }) {
                 Toast.show({ type: "info", text1: "Coming soon!" });
               }}
               text="Continue"
+              bold
               icon="east"
               variant="filled"
               height={60}
@@ -588,25 +589,29 @@ export const CreateCollectionModal = forwardRef(
       <>
         {trigger}
         <Modal sheetRef={ref} animation="SCALE" maxWidth={600}>
-          <View style={{ padding: 30, paddingBottom: 0 }}>
-            <Header
-              title={slide === "HOME" ? "Create a collection" : "Sidekick AI"}
-            />
-          </View>
-          {slide === "AI" ? (
-            <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
-          ) : (
-            <View style={{ padding: 30, gap: 25, paddingTop: 15 }}>
-              {session.user.betaTester && (
-                <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
-              )}
-              <StartFromScratch />
-              <Templates />
+          <BottomSheetScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            <View style={{ padding: 30, paddingBottom: 0 }}>
+              <Header
+                title={slide === "HOME" ? "Create a collection" : "Sidekick AI"}
+              />
             </View>
-          )}
+            {slide === "AI" ? (
+              <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
+            ) : (
+              <View style={{ padding: 30, gap: 25, paddingTop: 15 }}>
+                {session.user.betaTester && (
+                  <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
+                )}
+                <StartFromScratch />
+                <Templates />
+              </View>
+            )}
+          </BottomSheetScrollView>
         </Modal>
       </>
     );
   }
 );
-
