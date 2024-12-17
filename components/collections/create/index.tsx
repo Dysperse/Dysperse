@@ -452,7 +452,13 @@ function AiSlide({ aiPrompt, setSlide }) {
               hideLogo: "true",
               isLight: isDark ? "false" : "true",
             })}`}
-            style={{ width: "100%", aspectRatio: 1.91, marginBottom: 20 }}
+            style={{
+              width: "100%",
+              aspectRatio: 1.91,
+              marginBottom: 20,
+              borderRadius: 10,
+              backgroundColor: theme[5],
+            }}
           />
           <Text variant="eyebrow" style={{ marginBottom: 5 }}>
             Type
