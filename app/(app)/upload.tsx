@@ -73,15 +73,17 @@ const AITasks = ({ input, setSlide }) => {
             }}
           />
           <ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
-            {data.map((task, i) => (
-              <ListItemButton key={i}>
-                <Icon>circle</Icon>
-                <ListItemText
-                  primary={task.name}
-                  secondary={task.description}
-                />
-              </ListItemButton>
-            ))}
+            {Array.isArray(data) &&
+              data.map((task, i) => (
+                <ListItemButton key={i}>
+                  <Icon>circle</Icon>
+                  <ListItemText
+                    primary={task.name}
+                    secondary={task.description}
+                  />
+                </ListItemButton>
+              ))}
+            {JSON.stringify(data)}
           </ScrollView>
           <View
             style={{
