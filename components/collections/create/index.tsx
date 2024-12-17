@@ -3,6 +3,7 @@ import { createTab } from "@/components/layout/openTab";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
@@ -200,7 +201,9 @@ const Scratch = () => {
 
 function AiCollectionInput({ input, setInput, handleSubmit }) {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const [placeholder, setPlaceholder] = useState(0);
+
   const placeholders = [
     "a trip for the summer...",
     "my school assignments...",
@@ -220,7 +223,7 @@ function AiCollectionInput({ input, setInput, handleSubmit }) {
     transform: [{ translateY: translateY.value }],
     pointerEvents: "none",
     padding: 10,
-    paddingLeft: 8,
+    paddingLeft: breakpoints.md ? 8 : 15,
     position: "absolute",
     top: 0,
     left: 0,
@@ -268,7 +271,7 @@ function AiCollectionInput({ input, setInput, handleSubmit }) {
           width: "100%",
           height: "100%",
           padding: 5,
-          paddingLeft: 2,
+          paddingLeft: breakpoints.md ? 2 : 5,
         }}
       >
         <TextField
@@ -276,7 +279,7 @@ function AiCollectionInput({ input, setInput, handleSubmit }) {
           style={{
             height: "100%",
             borderRadius: 10,
-            paddingLeft: 5,
+            paddingLeft: 7,
             boxShadow: "none",
             fontStyle: input ? undefined : "italic",
             flex: 1,
@@ -315,6 +318,7 @@ function SectionLabel({ text, icon }) {
 
 function AiCollection({ aiPrompt, setSlide }) {
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const [input, setInput] = useState("");
 
   const handleSubmit = () => {
@@ -330,12 +334,19 @@ function AiCollection({ aiPrompt, setSlide }) {
       <View
         style={{
           backgroundColor: theme[3],
-          flexDirection: "row",
+          flexDirection: breakpoints.md ? "row" : "column",
           borderRadius: 10,
           alignItems: "center",
         }}
       >
-        <View style={{ padding: 5, paddingRight: 0 }}>
+        <View
+          style={{
+            padding: 5,
+            paddingRight: 0,
+            width: breakpoints.md ? undefined : "100%",
+            alignItems: breakpoints.md ? undefined : "flex-start",
+          }}
+        >
           <MenuPopover
             options={[
               { text: "Help me organize" },
@@ -356,25 +367,38 @@ function AiCollection({ aiPrompt, setSlide }) {
             }
           />
         </View>
-        <AiCollectionInput
-          handleSubmit={handleSubmit}
-          input={input}
-          setInput={setInput}
-        />
-        <View style={{ padding: 5, paddingRight: 8 }}>
-          <IconButton
-            icon="magic_button"
-            backgroundColors={{
-              default: theme[input ? 10 : 5],
-              hovered: theme[input ? 11 : 6],
-              pressed: theme[input ? 12 : 7],
-            }}
-            disabled={!input}
-            onPress={handleSubmit}
-            variant="filled"
-            style={{ borderRadius: 10, opacity: 1 }}
-            iconStyle={input && { color: theme[2] }}
+        <View
+          style={{
+            flexDirection: "row",
+            height: breakpoints.md ? "100%" : undefined,
+            flex: breakpoints.md ? 1 : undefined,
+            alignItems: "center",
+            width: !breakpoints.md ? "100%" : undefined,
+
+            borderTopWidth: breakpoints.md ? 0 : 1,
+            borderTopColor: breakpoints.md ? undefined : theme[5],
+          }}
+        >
+          <AiCollectionInput
+            handleSubmit={handleSubmit}
+            input={input}
+            setInput={setInput}
           />
+          <View style={{ padding: 5, paddingRight: 8 }}>
+            <IconButton
+              icon="magic_button"
+              backgroundColors={{
+                default: theme[input ? 10 : 5],
+                hovered: theme[input ? 11 : 6],
+                pressed: theme[input ? 12 : 7],
+              }}
+              disabled={!input}
+              onPress={handleSubmit}
+              variant="filled"
+              style={{ borderRadius: 10, opacity: 1 }}
+              iconStyle={input && { color: theme[2] }}
+            />
+          </View>
         </View>
       </View>
     </View>
