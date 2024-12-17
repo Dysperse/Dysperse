@@ -3,7 +3,8 @@ import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Modal from "@/ui/Modal";
 import ModalHeader from "@/ui/ModalHeader";
-import Spinner from "@/ui/Spinner";
+import SkeletonContainer from "@/ui/Skeleton/container";
+import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
@@ -25,7 +26,9 @@ function InspireMe() {
       <Modal sheetRef={ref} animation="SCALE">
         <ModalHeader title="AI inspiration" />
         <View style={{ padding: 20, paddingTop: 0 }}>
-          <Spinner />
+          <SkeletonContainer>
+            <LinearSkeletonArray widths={[90, 70, 68, 82]} height={20} />
+          </SkeletonContainer>
         </View>
       </Modal>
     </>

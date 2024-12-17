@@ -18,7 +18,8 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import ModalHeader from "@/ui/ModalHeader";
-import Spinner from "@/ui/Spinner";
+import SkeletonContainer from "@/ui/Skeleton/container";
+import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -181,13 +182,20 @@ function AISubtask({ task, updateTask }) {
           ) : (
             <View
               style={{
-                flex: 1,
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
+                padding: 20,
+                paddingTop: 0,
               }}
             >
-              {error ? <ErrorAlert /> : <Spinner />}
+              {error ? (
+                <ErrorAlert />
+              ) : (
+                <SkeletonContainer>
+                  <LinearSkeletonArray
+                    widths={[90, 70, 68, 82, 71, 62, 83]}
+                    height={33}
+                  />
+                </SkeletonContainer>
+              )}
             </View>
           )}
         </View>
@@ -261,13 +269,16 @@ function AiExplanation({ task, updateTask }) {
           ) : (
             <View
               style={{
-                flex: 1,
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
+                padding: 20,
+                paddingTop: 0,
               }}
             >
-              <Spinner />
+              <SkeletonContainer>
+                <LinearSkeletonArray
+                  widths={[90, 70, 68, 20, 40, 41, 82, 71, 62, 83]}
+                  height={20}
+                />
+              </SkeletonContainer>
             </View>
           )}
         </View>
@@ -543,13 +554,17 @@ function AICategorizer({ task, updateTask }) {
         ) : (
           <View
             style={{
-              minHeight: 200,
-              alignItems: "center",
-              justifyContent: "center",
               padding: 20,
+              paddingTop: 0,
             }}
           >
-            {error ? <ErrorAlert /> : <Spinner />}
+            {error ? (
+              <ErrorAlert />
+            ) : (
+              <SkeletonContainer>
+                <LinearSkeletonArray widths={[90, 70, 68, 82]} height={50} />
+              </SkeletonContainer>
+            )}
           </View>
         )}
       </Modal>
@@ -802,4 +817,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-
