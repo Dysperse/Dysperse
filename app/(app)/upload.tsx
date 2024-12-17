@@ -23,7 +23,7 @@ export default function Page() {
       >
         <View
           style={{
-            height: 240,
+            paddingVertical: 35,
             justifyContent: "center",
             alignItems: "center",
             gap: 5,
