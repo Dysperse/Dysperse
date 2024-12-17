@@ -65,7 +65,7 @@ const Text: ForwardRefRenderFunction<NText, DTextProps> = (props, ref) => {
         {
           fontSize: Platform.OS === "web" ? 15 : 16,
           color: theme[12],
-          fontFamily: getFontName("jost", props.weight || 300),
+          fontFamily: getFontName("jost", props.weight || 400),
           ...(props.variant === "eyebrow" && {
             textTransform: "uppercase",
             fontFamily: getFontName("jost", props.weight || 900),
