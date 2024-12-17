@@ -1,6 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -28,25 +27,36 @@ export function ErrorBoundaryComponent() {
       >
         <View
           style={{
-            width: 450,
+            width: 400,
             maxWidth: width - 40,
             justifyContent: "center",
-            borderWidth: 1,
-            borderColor: theme[6],
             padding: 30,
             borderRadius: 20,
-            flexDirection: breakpoints.md ? "row" : "column",
-            gap: 20,
+            flexDirection: "column",
+            gap: 10,
           }}
         >
-          <Emoji size={50} style={{ marginTop: 10 }} emoji="1F62C" />
+          <Icon size={60}>heart_broken</Icon>
           <View style={{ flex: breakpoints.md ? 1 : undefined }}>
-            <Text style={{ fontSize: 30 }} weight={900}>
-              Well, that's embarrassing...
+            <Text
+              style={{
+                fontSize: 30,
+                color: theme[11],
+                fontFamily: "serifText700",
+                marginBottom: 10,
+              }}
+            >
+              Well that's sad...
             </Text>
-            <Text style={{ fontSize: 20, opacity: 0.6 }}>
-              Dysperse unexpectedly crashed, and our team has been notified. Try
-              reopening the app to see if that fixes the issue.
+            <Text
+              style={{
+                opacity: 0.6,
+                color: theme[11],
+              }}
+              weight={400}
+            >
+              Dysperse unexpectedly crashed and our team has been notified of
+              this issue. For the time being, see if reloading helps.
             </Text>
 
             <Button
@@ -70,12 +80,11 @@ export function ErrorBoundaryComponent() {
                 }
                 Updates.reloadAsync();
               }}
-              variant="outlined"
-              height={60}
+              variant="filled"
               containerStyle={{ marginTop: 10 }}
             >
-              <Icon>loop</Icon>
               <ButtonText>Reload</ButtonText>
+              <Icon>loop</Icon>
             </Button>
           </View>
         </View>
@@ -83,4 +92,3 @@ export function ErrorBoundaryComponent() {
     </ColorThemeProvider>
   );
 }
-
