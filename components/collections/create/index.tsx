@@ -223,7 +223,7 @@ function AiCollectionInput({ input, setInput, handleSubmit }) {
     transform: [{ translateY: translateY.value }],
     pointerEvents: "none",
     padding: 10,
-    paddingLeft: breakpoints.md ? 8 : 15,
+    paddingLeft: breakpoints.md ? 9 : 15,
     position: "absolute",
     top: 0,
     left: 0,
