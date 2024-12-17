@@ -68,7 +68,13 @@ const styles = StyleSheet.create({
 });
 
 export function MenuItem(
-  props: PressableProps & { removeExtraStyles?: boolean }
+  props: PressableProps & {
+    removeExtraStyles?: boolean;
+    text?: string;
+    icon?: string;
+    selected?: boolean;
+    callback?: () => void;
+  }
 ) {
   const theme = useColorTheme();
   return (
@@ -94,7 +100,17 @@ export function MenuItem(
         props.disabled && { opacity: 0.5 },
         props.style as StyleProp<ViewStyle>,
       ]}
-    />
+    >
+      {props.children || (
+        <>
+          {props.icon && <Icon>{props.icon}</Icon>}
+          <Text weight={300} style={{ color: theme[11], fontSize: 16 }}>
+            {props.text}
+          </Text>
+          {props.selected && <Icon style={{ marginLeft: "auto" }}>check</Icon>}
+        </>
+      )}
+    </Pressable>
   );
 }
 

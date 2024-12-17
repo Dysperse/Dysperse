@@ -6,15 +6,18 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
+import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
+import ModalHeader from "@/ui/ModalHeader";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
@@ -31,6 +34,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import useSWR from "swr";
 import { useLabelColors } from "../../labels/useLabelColors";
 import { TaskShareButton } from "./TaskShareButton";
 import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
@@ -114,7 +118,8 @@ function AISubtask({ task, updateTask }) {
             });
         }}
       >
-        <Text variant="menuItem">Generate subtasks</Text>
+        <Icon>prompt_suggestion</Icon>
+        <Text variant="menuItem">Create subtasks</Text>
       </MenuItem>
       <Modal
         maxWidth={400}
@@ -127,24 +132,7 @@ function AISubtask({ task, updateTask }) {
         transformCenter
         sheetRef={modalRef}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            padding: 20,
-          }}
-        >
-          <View>
-            <Text style={{ fontSize: 20 }} weight={900}>
-              AI subtasks
-            </Text>
-          </View>
-          <IconButton
-            icon="close"
-            onPress={() => modalRef.current?.close()}
-            variant="filled"
-          />
-        </View>
+        <ModalHeader title="AI subtasks" />
         <View style={{ flex: 1 }}>
           {!isLoading ? (
             <View
@@ -252,7 +240,8 @@ function AiExplanation({ task, updateTask }) {
             });
         }}
       >
-        <Text variant="menuItem">Describe this task</Text>
+        <Icon>lightbulb</Icon>
+        <Text variant="menuItem">Describe</Text>
       </MenuItem>
       <Modal
         maxWidth={400}
@@ -265,24 +254,7 @@ function AiExplanation({ task, updateTask }) {
         transformCenter
         sheetRef={modalRef}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            padding: 20,
-          }}
-        >
-          <View>
-            <Text style={{ fontSize: 20 }} weight={900}>
-              AI Explanation
-            </Text>
-          </View>
-          <IconButton
-            icon="close"
-            onPress={() => modalRef.current?.close()}
-            variant="filled"
-          />
-        </View>
+        <ModalHeader title="AI Explanation" />
         <View style={{ flex: 1 }}>
           {!isLoading ? (
             <ScrollView
@@ -469,39 +441,12 @@ function TaskMoreMenu({ handleDelete }) {
   return (
     <>
       <MenuPopover
-        containerStyle={{ width: 230 }}
         options={[
-          session.user?.betaTester && {
-            renderer: () => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  padding: 5,
-                  paddingTop: 10,
-                  paddingHorizontal: 13,
-                  gap: 7,
-                }}
-              >
-                <Icon bold size={20} style={{ color: theme[11], opacity: 0.6 }}>
-                  raven
-                </Icon>
-                <Text variant="eyebrow">Sidekick</Text>
-              </View>
-            ),
+          session.user.betaTester && {
+            icon: "content_copy",
+            text: "Duplicate",
+            callback: () => {},
           },
-          session.user?.betaTester && {
-            renderer: () => (
-              <AiExplanation task={task} updateTask={updateTask} />
-            ),
-          },
-          {
-            renderer: () => <AISubtask task={task} updateTask={updateTask} />,
-          },
-          session.user?.betaTester && {
-            text: "Categorize this task",
-            callback: () => Toast.show({ text1: "Coming soon", type: "info" }),
-          },
-          session.user?.betaTester && { divider: true, key: "1" },
           {
             icon: task.trash ? "restore_from_trash" : "delete",
             text: task.trash ? "Restore from trash" : "Move to trash",
@@ -528,6 +473,93 @@ function TaskMoreMenu({ handleDelete }) {
         trigger={<IconButton icon="pending" size={45} />}
       />
     </>
+  );
+}
+
+function AICategorizer({ task, updateTask }) {
+  const ref = useRef(null);
+  const handleCreate = () => ref.current.present();
+
+  const { data, error } = useSWR(
+    [
+      "ai/categorize-tasks",
+      {},
+      process.env.EXPO_PUBLIC_API_URL,
+      {
+        method: "POST",
+        body: JSON.stringify({ task }),
+      },
+    ],
+    { revalidateOnFocus: false }
+  );
+
+  return (
+    <>
+      <MenuItem text="Categorize" icon="category" onPress={handleCreate} />
+      <Modal animation="BOTH" sheetRef={ref} maxWidth={400} height="auto">
+        <ModalHeader title="AI Sorting" />
+        <View
+          style={{
+            padding: 20,
+            paddingHorizontal: 10,
+            paddingTop: 0,
+            marginTop: -10,
+          }}
+        >
+          {error && <ErrorAlert />}
+          <ListItemButton>
+            <Emoji emoji={data.label?.emoji} size={30} />
+            <ListItemText primary="Label" secondary={data.label?.name} />
+          </ListItemButton>
+          <ListItemButton>
+            <Avatar icon="priority_high" />
+            <ListItemText
+              primary="Urgency"
+              secondary={data.pinned ? "Urgent" : "Normal"}
+            />
+          </ListItemButton>
+          <ListItemButton>
+            <Avatar icon="exercise" />
+            <ListItemText
+              primary={`Complexity`}
+              secondary={`${data.storyPoints} - ${data.storyPointReason}`}
+            />
+          </ListItemButton>
+
+          <Button
+            onPress={() => updateTask(data)}
+            text="Apply changes"
+            variant="filled"
+            bold
+            large
+            iconPosition="end"
+            icon="east"
+            containerStyle={{ marginTop: 10, marginHorizontal: 10 }}
+          />
+        </View>
+      </Modal>
+    </>
+  );
+}
+
+function TaskSidekickMenu() {
+  const { task, updateTask } = useTaskDrawerContext();
+  return (
+    <MenuPopover
+      containerStyle={{ width: 200 }}
+      trigger={<IconButton icon="raven" size={45} />}
+      options={[
+        {
+          renderer: () => <AiExplanation task={task} updateTask={updateTask} />,
+        },
+        {
+          renderer: () => <AISubtask task={task} updateTask={updateTask} />,
+        },
+        {
+          renderer: () => <AICategorizer task={task} updateTask={updateTask} />,
+        },
+      ]}
+    />
   );
 }
 
@@ -655,6 +687,7 @@ export function TaskDrawerContent({
             }}
           >
             <TaskMoreMenu handleDelete={handleDelete} />
+            <TaskSidekickMenu />
             {!task.parentTaskId && <TaskShareButton />}
             {!isReadOnly && <TaskCompleteButton />}
           </View>

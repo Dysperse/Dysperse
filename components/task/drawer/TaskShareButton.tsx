@@ -36,7 +36,13 @@ export function TaskShareButton() {
   return isReadOnly ? null : (
     <>
       <MenuPopover
-        trigger={<IconButton size={45} icon="ios_share" />}
+        trigger={
+          <IconButton
+            size={45}
+            icon="ios_share"
+            iconStyle={{ marginTop: -3 }}
+          />
+        }
         containerStyle={{ width: 200 }}
         options={[
           {
