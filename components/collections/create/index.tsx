@@ -425,15 +425,18 @@ function Header({ title }) {
 function AiSlide({ aiPrompt, setSlide }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
-  const { data, error, mutate } = useSWR([
-    "ai/collection-template",
-    {},
-    process.env.EXPO_PUBLIC_API_URL,
-    {
-      method: "POST",
-      body: JSON.stringify({ text: `Help me organize: ${aiPrompt.current}` }),
-    },
-  ]);
+  const { data, error, mutate } = useSWR(
+    [
+      "ai/collection-template",
+      {},
+      process.env.EXPO_PUBLIC_API_URL,
+      {
+        method: "POST",
+        body: JSON.stringify({ text: `Help me organize: ${aiPrompt.current}` }),
+      },
+    ],
+    { revalidateOnFocus: false }
+  );
 
   return (
     <View style={{ padding: 30, paddingTop: 10 }}>
