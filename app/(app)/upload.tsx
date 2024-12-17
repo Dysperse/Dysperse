@@ -26,12 +26,13 @@ export default function Page() {
             height: 240,
             justifyContent: "center",
             alignItems: "center",
-            gap: 10,
+            gap: 5,
           }}
         >
           <Avatar icon="upload" size={60} iconProps={{ size: 40 }} />
           <Text
             style={{
+              marginTop: 8,
               fontFamily: "serifText800",
               fontSize: 30,
             }}
