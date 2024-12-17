@@ -570,6 +570,7 @@ export function TaskDrawerContent({
   handleClose: () => void;
   forceClose?: (config?: any) => void;
 }) {
+  const { session } = useUser();
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const labelColors = useLabelColors();
@@ -687,7 +688,7 @@ export function TaskDrawerContent({
             }}
           >
             <TaskMoreMenu handleDelete={handleDelete} />
-            <TaskSidekickMenu />
+            {session.user.betaTester && <TaskSidekickMenu />}
             {!task.parentTaskId && <TaskShareButton />}
             {!isReadOnly && <TaskCompleteButton />}
           </View>
