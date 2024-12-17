@@ -243,7 +243,7 @@ function AiExplanation({ task, updateTask }) {
         maxWidth={400}
         height="auto"
         innerStyles={{
-          minHeight: 400,
+          minHeight: Platform.OS === "web" ? 200 : 400,
           flex: Platform.OS === "web" ? 1 : undefined,
         }}
         animation="BOTH"
