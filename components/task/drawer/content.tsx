@@ -498,45 +498,57 @@ function AICategorizer({ task, updateTask }) {
       <MenuItem text="Categorize" icon="category" onPress={handleCreate} />
       <Modal animation="BOTH" sheetRef={ref} maxWidth={400} height="auto">
         <ModalHeader title="AI Sorting" />
-        <View
-          style={{
-            padding: 20,
-            paddingHorizontal: 10,
-            paddingTop: 0,
-            marginTop: -10,
-          }}
-        >
-          {error && <ErrorAlert />}
-          <ListItemButton>
-            <Emoji emoji={data.label?.emoji} size={30} />
-            <ListItemText primary="Label" secondary={data.label?.name} />
-          </ListItemButton>
-          <ListItemButton>
-            <Avatar icon="priority_high" />
-            <ListItemText
-              primary="Urgency"
-              secondary={data.pinned ? "Urgent" : "Normal"}
-            />
-          </ListItemButton>
-          <ListItemButton>
-            <Avatar icon="exercise" />
-            <ListItemText
-              primary={`Complexity`}
-              secondary={`${data.storyPoints} - ${data.storyPointReason}`}
-            />
-          </ListItemButton>
+        {data ? (
+          <View
+            style={{
+              padding: 20,
+              paddingHorizontal: 10,
+              paddingTop: 0,
+              marginTop: -10,
+            }}
+          >
+            <ListItemButton>
+              <Emoji emoji={data.label?.emoji} size={30} />
+              <ListItemText primary="Label" secondary={data.label?.name} />
+            </ListItemButton>
+            <ListItemButton>
+              <Avatar icon="priority_high" />
+              <ListItemText
+                primary="Urgency"
+                secondary={data.pinned ? "Urgent" : "Normal"}
+              />
+            </ListItemButton>
+            <ListItemButton>
+              <Avatar icon="exercise" />
+              <ListItemText
+                primary={`Complexity`}
+                secondary={`${data.storyPoints} - ${data.storyPointReason}`}
+              />
+            </ListItemButton>
 
-          <Button
-            onPress={() => updateTask(data)}
-            text="Apply changes"
-            variant="filled"
-            bold
-            large
-            iconPosition="end"
-            icon="east"
-            containerStyle={{ marginTop: 10, marginHorizontal: 10 }}
-          />
-        </View>
+            <Button
+              onPress={() => updateTask(data)}
+              text="Apply changes"
+              variant="filled"
+              bold
+              large
+              iconPosition="end"
+              icon="east"
+              containerStyle={{ marginTop: 10, marginHorizontal: 10 }}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              minHeight: 200,
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 20,
+            }}
+          >
+            {error ? <ErrorAlert /> : <Spinner />}
+          </View>
+        )}
       </Modal>
     </>
   );
