@@ -441,13 +441,15 @@ function AiSlide({ aiPrompt, setSlide }) {
         <View>
           <Image
             source={`https://og.dysperse.com/json?${new URLSearchParams({
-              json: JSON.stringify(data),
+              json: JSON.stringify({
+                ...data,
+                baseColor: theme[9]
+                  .replace("hsl(", "")
+                  .split(",")
+                  .slice(0, 2)
+                  .join(", "),
+              }),
               hideLogo: "true",
-              hslBase: theme[9]
-                .replace("hsl(", "")
-                .split(",")
-                .slice(0, 2)
-                .join(""),
               isLight: isDark ? "false" : "true",
             })}`}
             style={{ width: "100%", aspectRatio: 1.91, marginBottom: 20 }}
