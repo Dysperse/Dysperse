@@ -7,7 +7,8 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import Spinner from "@/ui/Spinner";
+import SkeletonContainer from "@/ui/Skeleton/container";
+import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { LinearGradient } from "expo-linear-gradient";
@@ -83,7 +84,7 @@ const AITasks = ({ input, setSlide }) => {
                   />
                 </ListItemButton>
               ))}
-            {JSON.stringify(data)}
+            {/* {JSON.stringify(data)} */}
           </ScrollView>
           <View
             style={{
@@ -111,7 +112,13 @@ const AITasks = ({ input, setSlide }) => {
       ) : error ? (
         <ErrorAlert />
       ) : (
-        <Spinner />
+        <SkeletonContainer>
+          <LinearSkeletonArray
+            animateWidth
+            widths={[79, 84, 46, 65, 23, 58, 60]}
+            height={50}
+          />
+        </SkeletonContainer>
       )}
     </View>
   );
@@ -169,3 +176,4 @@ export default function Page() {
     </ContentWrapper>
   );
 }
+
