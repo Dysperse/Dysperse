@@ -3,7 +3,7 @@ import { useCollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { KanbanHeader } from "@/components/collections/views/kanban/Header";
 import CreateTask from "@/components/task/create";
-import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
 import { omit } from "@/helpers/omit";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
@@ -68,7 +68,7 @@ export const ColumnFinishedComponent = () => {
 export function Column(props: ColumnProps) {
   const theme = useColorTheme();
   const columnRef = useRef(null);
-  const { session } = useSession();
+  const { session } = useUser();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access, data: collectionData } = useCollectionContext();
@@ -159,6 +159,7 @@ export function Column(props: ColumnProps) {
         }
       >
         <KanbanHeader
+          showInspireMe={data.length === 0}
           grid={props.grid}
           label={{
             ...props.label,
@@ -222,7 +223,7 @@ export function Column(props: ColumnProps) {
         centerContent={centerContent}
         ListEmptyComponent={() =>
           Object.values(props.label?.entities || props.entities).length ===
-            0 && <ColumnEmptyComponent row={props.grid} />
+            0 && <ColumnEmptyComponent row={props.grid} showInspireMe />
         }
         data={data}
         ListHeaderComponent={() => (
@@ -276,4 +277,3 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
-

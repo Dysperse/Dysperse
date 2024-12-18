@@ -17,8 +17,15 @@ function InspireMe() {
   return (
     <>
       <Button
-        containerStyle={{ opacity: 0.6, marginTop: 15, zIndex: 9999 }}
+        containerStyle={{
+          opacity: 0.6,
+          marginTop: 10,
+          marginBottom: -40,
+          zIndex: 9999,
+        }}
+        iconPosition="end"
         text="Inspire me"
+        textStyle={{ fontFamily: "body_600" }}
         icon="magic_button"
         onPress={() => ref.current.present()}
       />
@@ -59,13 +66,11 @@ const shapesLength = Array.from({ length: 7 }, (_, i) => `shape${i + 1}`);
 const messages = [
   ["1f92b", "Shhh!", "It's quiet here!"],
   ["1f60a", "Enjoy the calm!", "Take a breather"],
-  ["1f92b", "Silence is golden!", "Embrace the quiet"],
   ["1f60c", "Pause and relax!", "No plans, no worries"],
-  ["1fab4", "Positive vibes", "Idea: Free time?"],
+  ["1fab4", "Positive vibes", "Idea: Free time!"],
   ["1f4ab", "Energize yourself", "Maybe get some sleep?"],
   ["1fae0", "Peaceful moment!", "Savor the tranquility"],
-  ["26c5", "Own your day!", "Effort = Results"],
-  ["1f44a", "You're unstoppable!", "Quick stretch or snack"],
+  ["1f44a", "It's quiet here", "Quick stretch or snack?"],
   ["1f5ff", "Crushing it!", "No task is too big"],
   ["1f985", "Look at yourself", "You're beautiful."],
 ];
@@ -74,10 +79,12 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   row,
   dense,
   list,
+  showInspireMe,
 }: {
   row?: boolean;
   dense?: boolean;
   list?: boolean;
+  showInspireMe?: boolean;
 }) {
   const theme = useColorTheme();
   const { session } = useUser();
@@ -141,9 +148,8 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           {message[2]}
         </Text>
 
-        {session.user.betaTester && <InspireMe />}
+        {session.user.betaTester && showInspireMe && <InspireMe />}
       </View>
     </View>
   );
 };
-
