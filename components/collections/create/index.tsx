@@ -15,6 +15,8 @@ import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
+import SkeletonContainer from "@/ui/Skeleton/container";
+import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -563,7 +565,13 @@ function AiSlide({ aiPrompt, setSlide }) {
       ) : error ? (
         <ErrorAlert />
       ) : (
-        <Spinner />
+        <SkeletonContainer>
+          <LinearSkeletonArray
+            animateWidth
+            widths={[90, 70, 68, 82, 71, 62, 83]}
+            height={33}
+          />
+        </SkeletonContainer>
       )}
     </View>
   );
@@ -595,7 +603,9 @@ export const CreateCollectionModal = forwardRef(
           >
             <View style={{ padding: 30, paddingBottom: 0 }}>
               <Header
-                title={slide === "HOME" ? "Create a collection" : "Sidekick AI"}
+                title={
+                  slide === "HOME" ? "Create a collection" : "AI collection"
+                }
               />
             </View>
             {slide === "AI" ? (
@@ -615,3 +625,4 @@ export const CreateCollectionModal = forwardRef(
     );
   }
 );
+

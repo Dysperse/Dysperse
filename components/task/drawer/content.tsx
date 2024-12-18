@@ -191,6 +191,7 @@ function AISubtask({ task, updateTask }) {
               ) : (
                 <SkeletonContainer>
                   <LinearSkeletonArray
+                    animateWidth
                     widths={[90, 70, 68, 82, 71, 62, 83]}
                     height={33}
                   />
@@ -275,6 +276,7 @@ function AiExplanation({ task, updateTask }) {
             >
               <SkeletonContainer>
                 <LinearSkeletonArray
+                  animateWidth
                   widths={[90, 70, 68, 20, 40, 41, 82, 71, 62, 83]}
                   height={20}
                 />
@@ -562,7 +564,11 @@ function AICategorizer({ task, updateTask }) {
               <ErrorAlert />
             ) : (
               <SkeletonContainer>
-                <LinearSkeletonArray widths={[90, 70, 68, 82]} height={50} />
+                <LinearSkeletonArray
+                  animateWidth
+                  widths={[90, 70, 68, 82]}
+                  height={50}
+                />
               </SkeletonContainer>
             )}
           </View>
@@ -817,3 +823,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+

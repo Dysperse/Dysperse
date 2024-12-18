@@ -3,7 +3,8 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Modal from "@/ui/Modal";
-import Spinner from "@/ui/Spinner";
+import CircularSkeleton from "@/ui/Skeleton/circular";
+import LinearSkeleton from "@/ui/Skeleton/linear";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
@@ -164,13 +165,40 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
         ) : (
           <View
             style={{
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: height * 0.65,
+              padding: 20,
               ...(Platform.OS === "web" && { flex: 1 }),
             }}
           >
-            {error ? <ErrorAlert /> : <Spinner />}
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <CircularSkeleton size={45} />
+              <View style={{ flex: 1 }} />
+              <LinearSkeleton width={140} height={45} />
+            </View>
+            <View style={{ paddingTop: 40, paddingHorizontal: 20 }}>
+              <View style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}>
+                <LinearSkeleton
+                  width={50}
+                  height={35}
+                  style={{ borderRadius: 10 }}
+                />
+                <LinearSkeleton
+                  width={100}
+                  height={35}
+                  style={{ borderRadius: 10 }}
+                />
+                <LinearSkeleton
+                  width={50}
+                  height={35}
+                  style={{ borderRadius: 10 }}
+                />
+              </View>
+              <View style={{ gap: 10 }}>
+                <LinearSkeleton width={"70%"} height={50} />
+                <LinearSkeleton width={"30%"} height={20} />
+                <LinearSkeleton width={"20%"} height={20} />
+                <LinearSkeleton width={"10%"} height={20} />
+              </View>
+            </View>
           </View>
         )}
       </SafeBlurView>

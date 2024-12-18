@@ -27,7 +27,11 @@ function InspireMe() {
         <ModalHeader title="AI inspiration" />
         <View style={{ padding: 20, paddingTop: 0 }}>
           <SkeletonContainer>
-            <LinearSkeletonArray widths={[90, 70, 68, 82]} height={20} />
+            <LinearSkeletonArray
+              animateWidth
+              widths={[90, 70, 68, 82]}
+              height={20}
+            />
           </SkeletonContainer>
         </View>
       </Modal>
@@ -142,3 +146,4 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     </View>
   );
 };
+
