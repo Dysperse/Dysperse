@@ -38,6 +38,9 @@ function InspireMe({ labelId }) {
         ],
     {
       revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+      revalidateOnMount: false,
     }
   );
 
