@@ -140,18 +140,14 @@ function SettingsHeader() {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: 15,
-        paddingTop: insets.top + 15,
+        padding: 11,
+        paddingTop: insets.top + 20,
+        paddingBottom: 20,
         gap: 15,
         display: path.includes("/integrations/") ? "none" : "flex",
       }}
     >
-      <IconButton
-        icon="arrow_back_ios_new"
-        variant="outlined"
-        size={55}
-        onPress={router.back}
-      />
+      <IconButton icon="west" size={45} onPress={router.back} />
     </View>
   );
 }
@@ -314,3 +310,4 @@ export default function Layout() {
     </View>
   );
 }
+

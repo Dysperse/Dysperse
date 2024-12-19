@@ -13,7 +13,7 @@ export default function CircularSkeleton({ size }) {
           width: size,
           height: size,
           backgroundColor: addHslAlpha(theme[9], 0.1),
-          borderRadius: "100%",
+          borderRadius: 999,
           position: "relative",
           overflow: "hidden",
         },

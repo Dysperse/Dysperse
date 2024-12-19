@@ -40,8 +40,16 @@ export default function MarkdownRenderer(
         ordered_list_icon: {
           color: theme[11],
         },
+        code_inline: {
+          backgroundColor: theme[5],
+          padding: 0,
+          borderColor: theme[7],
+          borderRadius: 4,
+          fontFamily: "mono",
+        },
       }}
       {...props}
     />
   );
 }
+

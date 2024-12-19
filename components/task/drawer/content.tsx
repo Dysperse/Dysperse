@@ -125,7 +125,7 @@ function AISubtask({ task, updateTask }) {
           minHeight: 400,
           flex: Platform.OS === "web" ? 1 : undefined,
         }}
-        animation="BOTH"
+        animation="SCALE"
         transformCenter
         sheetRef={modalRef}
       >
@@ -255,7 +255,7 @@ function AiExplanation({ task, updateTask }) {
           minHeight: Platform.OS === "web" ? 200 : 400,
           flex: Platform.OS === "web" ? 1 : undefined,
         }}
-        animation="BOTH"
+        animation="SCALE"
         transformCenter
         sheetRef={modalRef}
       >
@@ -512,7 +512,7 @@ function AICategorizer({ task, updateTask }) {
   return (
     <>
       <MenuItem text="Categorize" icon="category" onPress={handleCreate} />
-      <Modal animation="BOTH" sheetRef={ref} maxWidth={400} height="auto">
+      <Modal animation="SCALE" sheetRef={ref} maxWidth={400} height="auto">
         <ModalHeader title="AI Sorting" />
         {data ? (
           <View
