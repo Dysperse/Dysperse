@@ -1,7 +1,12 @@
 import { useUser } from "@/context/useUser";
 import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
+import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Modal from "@/ui/Modal";
+import ModalContent from "@/ui/Modal/content";
 import ModalHeader from "@/ui/ModalHeader";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
@@ -10,9 +15,31 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import * as shapes from "@/ui/shapes";
 import React, { useMemo, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import useSWR from "swr";
+import { useCollectionContext } from "./context";
 
-function InspireMe() {
+function InspireMe({ labelId }) {
+  const { data: collection } = useCollectionContext();
   const ref = useRef(null);
+  const [opened, setOpened] = React.useState(false);
+
+  const { data, error } = useSWR(
+    !opened
+      ? null
+      : [
+          "ai/task-inspiration",
+          {},
+          process.env.EXPO_PUBLIC_API_URL,
+          {
+            method: "POST",
+            body: JSON.stringify({ boardId: collection.id, labelId }),
+          },
+        ],
+    {
+      revalidateOnFocus: false,
+    }
+  );
 
   return (
     <>
@@ -27,20 +54,52 @@ function InspireMe() {
         text="Inspire me"
         textStyle={{ fontFamily: "body_600" }}
         icon="magic_button"
-        onPress={() => ref.current.present()}
+        onPress={() => {
+          ref.current.present();
+          setOpened(true);
+        }}
       />
 
       <Modal sheetRef={ref} animation="SCALE">
         <ModalHeader title="AI inspiration" />
-        <View style={{ padding: 20, paddingTop: 0 }}>
-          <SkeletonContainer>
-            <LinearSkeletonArray
-              animateWidth
-              widths={[90, 70, 68, 82]}
-              height={20}
-            />
-          </SkeletonContainer>
-        </View>
+        <ModalContent style={{ flex: 1 }}>
+          {data ? (
+            <View style={{ flex: 1 }}>
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{ paddingBottom: 20 }}
+              >
+                {data.map((task) => (
+                  <ListItemButton key={task.id}>
+                    <Icon>check_circle</Icon>
+                    <ListItemText
+                      primary={task.name}
+                      secondary={task.description}
+                    />
+                  </ListItemButton>
+                ))}
+              </ScrollView>
+              <Button
+                large
+                bold
+                text="Done"
+                icon="done"
+                iconPosition="end"
+                variant="filled"
+              />
+            </View>
+          ) : error ? (
+            <ErrorAlert />
+          ) : (
+            <SkeletonContainer>
+              <LinearSkeletonArray
+                animateWidth
+                widths={[90, 70, 68, 82, 90, 65, 60, 71, 82, 46, 57]}
+                height={46}
+              />
+            </SkeletonContainer>
+          )}
+        </ModalContent>
       </Modal>
     </>
   );
@@ -80,11 +139,13 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
   dense,
   list,
   showInspireMe,
+  labelId,
 }: {
   row?: boolean;
   dense?: boolean;
   list?: boolean;
   showInspireMe?: boolean;
+  labelId?: string;
 }) {
   const theme = useColorTheme();
   const { session } = useUser();
@@ -148,8 +209,11 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           {message[2]}
         </Text>
 
-        {session.user.betaTester && showInspireMe && <InspireMe />}
+        {session.user.betaTester && showInspireMe && labelId && (
+          <InspireMe labelId={labelId} />
+        )}
       </View>
     </View>
   );
 };
+

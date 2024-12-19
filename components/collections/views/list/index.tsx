@@ -23,7 +23,7 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
   if (item.empty) {
     return (
       <View>
-        <ColumnEmptyComponent list />
+        <ColumnEmptyComponent list labelId={item.id} />
       </View>
     );
   } else if (item.create) {

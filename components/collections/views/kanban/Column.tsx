@@ -223,7 +223,13 @@ export function Column(props: ColumnProps) {
         centerContent={centerContent}
         ListEmptyComponent={() =>
           Object.values(props.label?.entities || props.entities).length ===
-            0 && <ColumnEmptyComponent row={props.grid} showInspireMe />
+            0 && (
+            <ColumnEmptyComponent
+              row={props.grid}
+              labelId={props.label?.id}
+              showInspireMe
+            />
+          )
         }
         data={data}
         ListHeaderComponent={() => (
@@ -277,3 +283,4 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
+
