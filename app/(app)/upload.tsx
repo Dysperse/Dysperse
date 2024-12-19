@@ -1,4 +1,5 @@
 import ContentWrapper from "@/components/layout/content";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -13,9 +14,10 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { View } from "react-native";
+import { KeyboardAvoidingView, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
+import { MenuButton } from "./home";
 
 const PasteInput = ({ input, setInput, handleContinue }) => {
   return (
@@ -125,19 +127,23 @@ const AITasks = ({ input, setSlide }) => {
 };
 
 export default function Page() {
+  const breakpoints = useResponsiveBreakpoints();
+
   const [input, setInput] = useState("");
   const [slide, setSlide] = useState(0);
 
   return (
-    <ContentWrapper>
-      <View
+    <ContentWrapper noPaddingTop>
+      {!breakpoints.md && <MenuButton />}
+      <KeyboardAvoidingView
+        behavior="padding"
         style={{
           flex: 1,
           maxWidth: 500,
           marginHorizontal: "auto",
           width: "100%",
           padding: 20,
-          paddingTop: 0,
+          paddingTop: breakpoints.md ? 0 : 40,
         }}
       >
         <View
@@ -172,7 +178,7 @@ export default function Page() {
         ) : (
           <AITasks input={input} setSlide={setSlide} />
         )}
-      </View>
+      </KeyboardAvoidingView>
     </ContentWrapper>
   );
 }

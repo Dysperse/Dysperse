@@ -66,14 +66,14 @@ const CustomizeButton = ({ view, setView }) => {
 };
 
 export const MenuButton = () => {
+  const { top } = useSafeAreaInsets();
   const { sidebarRef } = useSidebarContext();
 
   return (
     <IconButton
-      style={styles.menuButton}
+      style={[styles.menuButton, { top: top + 20 }]}
       icon={<MenuIcon />}
-      size={55}
-      variant="outlined"
+      size={45}
       onPress={() => sidebarRef.current.openDrawer()}
     />
   );

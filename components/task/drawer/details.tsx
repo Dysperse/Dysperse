@@ -549,14 +549,15 @@ function TaskDateMenu() {
                     ),
                   },
 
-                {
-                  icon: "close",
-                  text: "Remove",
-                  callback: () => {
-                    updateTask("recurrenceRule", null);
-                    updateTask("start", null);
+                !task.recurrenceRule &&
+                  task.start && {
+                    icon: "close",
+                    text: "Remove",
+                    callback: () => {
+                      updateTask("recurrenceRule", null);
+                      updateTask("start", null);
+                    },
                   },
-                },
               ]
         }
       />

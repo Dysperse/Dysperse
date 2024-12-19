@@ -268,7 +268,7 @@ function PasswordPrompt({ mutate }) {
     >
       {!breakpoints.md && <MenuButton />}
       <KeyboardAvoidingView
-        behavior="height"
+        behavior="padding"
         style={{
           maxWidth: 400,
           width: "100%",

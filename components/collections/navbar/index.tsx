@@ -71,30 +71,28 @@ function DivideAndConquerModal() {
 
         <ModalContent style={{ gap: 20 }}>
           <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">What do you need to do?</Text>
+            <Text variant="eyebrow">What's your task?</Text>
             <TextField
               placeholder="e.g. Study for my History final"
               variant="filled+outlined"
             />
           </View>
           <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">What's the deadline?</Text>
+            <Text variant="eyebrow">Deadline?</Text>
             <TextField
               placeholder="e.g. next Friday"
               variant="filled+outlined"
             />
           </View>
           <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">Any limitations?</Text>
+            <Text variant="eyebrow">Limitations?</Text>
             <TextField
               placeholder="e.g. I only want to study this weekend"
               variant="filled+outlined"
             />
           </View>
           <View style={{ gap: 5 }}>
-            <Text variant="eyebrow">
-              What parts can this be broken down into?
-            </Text>
+            <Text variant="eyebrow">How can this be broken down?</Text>
             <TextField
               multiline
               numberOfLines={4}
