@@ -14,7 +14,6 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
 import { Platform, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -114,14 +113,6 @@ export function Column(props: ColumnProps) {
     (hasNoCompleteTasks && !showCompleted) ||
     Object.keys(props.label?.entities || props.entities).length === 0;
 
-  const { hiddenLabels: rawHiddenLabels, type } = useLocalSearchParams();
-  const hiddenLabels = rawHiddenLabels ? rawHiddenLabels?.split(",") || [] : [];
-
-  const isHidden =
-    hiddenLabels.includes(props.label?.id) &&
-    type === "kanban" &&
-    Platform.OS === "web";
-
   useDidUpdate(() => {
     setShowCompleted(collectionData.showCompleted);
   }, [collectionData.showCompleted]);
@@ -157,27 +148,17 @@ export function Column(props: ColumnProps) {
                   ? ("calc(100vh - 60px)" as any)
                   : undefined,
             },
-
-        isHidden && {
-          maxWidth: 100,
-        },
       ]}
     >
       <Pressable
-        onPress={() => {
-          // columnRef.current.scrollToOffset({ offset: 0, animated: true });
-          router.setParams({
-            hiddenLabels: hiddenLabels.includes(props.label.id)
-              ? hiddenLabels.filter((l) => l !== props.label.id).join(",")
-              : [...hiddenLabels, props.label.id].join(","),
-          });
-        }}
         style={({ hovered, pressed }) => ({
           opacity: pressed ? 0.6 : hovered ? 0.9 : 1,
         })}
+        onPress={() =>
+          columnRef.current.scrollToOffset({ offset: 0, animated: true })
+        }
       >
         <KanbanHeader
-          vertical={isHidden}
           showInspireMe={data.length === 0}
           grid={props.grid}
           label={{
@@ -188,126 +169,117 @@ export function Column(props: ColumnProps) {
           }}
         />
       </Pressable>
-      {!isHidden && (
+      {props.grid ? undefined : (
         <>
-          {props.grid ? undefined : (
-            <>
-              {!isReadOnly && session && (
-                <View
-                  style={{
-                    padding: 15,
-                    paddingBottom: 0,
-                    height: 65,
-                    zIndex: 9999,
-                  }}
-                >
-                  <CreateTask
-                    mutate={mutations.categoryBased.add(mutate)}
-                    defaultValues={{
-                      label: omit(["entities"], props.label),
-                      collectionId: collectionData.id,
-                      date: null,
-                    }}
-                  >
-                    <Button
-                      variant="filled"
-                      containerStyle={{ flex: 1, zIndex: 99 }}
-                      large={!breakpoints.md}
-                      bold={!breakpoints.md}
-                      textStyle={breakpoints.md && { fontFamily: "body_400" }}
-                      iconPosition="end"
-                      text="Create"
-                      icon="stylus_note"
-                      height={breakpoints.md ? 50 : 55}
-                    />
-                  </CreateTask>
-                </View>
-              )}
-            </>
-          )}
-
-          <LinearGradient
-            style={{
-              width: "100%",
-              height: 30,
-              zIndex: 1,
-              marginBottom: centerContent && !props.grid ? -90 : -30,
-              pointerEvents: "none",
-            }}
-            colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
-          />
-          <FlashList
-            ref={columnRef}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => mutate()}
-              />
-            }
-            centerContent={centerContent}
-            ListEmptyComponent={() =>
-              Object.values(props.label?.entities || props.entities).length ===
-                0 && (
-                <ColumnEmptyComponent
-                  row={props.grid}
-                  labelId={props.label?.id}
-                  showInspireMe
+          {!isReadOnly && session && (
+            <View
+              style={{
+                padding: 15,
+                paddingBottom: 0,
+                height: 65,
+                zIndex: 9999,
+              }}
+            >
+              <CreateTask
+                mutate={mutations.categoryBased.add(mutate)}
+                defaultValues={{
+                  label: omit(["entities"], props.label),
+                  collectionId: collectionData.id,
+                  date: null,
+                }}
+              >
+                <Button
+                  variant="filled"
+                  containerStyle={{ flex: 1, zIndex: 99 }}
+                  large={!breakpoints.md}
+                  bold={!breakpoints.md}
+                  textStyle={breakpoints.md && { fontFamily: "body_400" }}
+                  iconPosition="end"
+                  text="Create"
+                  icon="stylus_note"
+                  height={breakpoints.md ? 50 : 55}
                 />
-              )
-            }
-            data={data}
-            ListHeaderComponent={() => (
-              <View>
-                {hasNoCompleteTasks && !showCompleted && (
-                  <ColumnEmptyComponent row={props.grid} />
-                )}
-              </View>
-            )}
-            estimatedItemSize={300}
-            contentContainerStyle={{
-              padding: 15,
-              paddingTop: 15,
-              paddingBottom: insets.bottom + 15,
-            }}
-            ListFooterComponent={
-              hasNoIncompleteTasks
-                ? null
-                : () =>
-                    collectionData.showCompleted ||
-                    Object.values(props.label?.entities || props.entities)
-                      .length === 0 ? null : (
-                      <Button
-                        onPress={() => setShowCompleted(!showCompleted)}
-                        containerStyle={
-                          hasNoCompleteTasks
-                            ? {
-                                marginBottom: showCompleted ? 10 : -70,
-                              }
-                            : {}
-                        }
-                        height={50}
-                      >
-                        <ButtonText style={{ opacity: 0.7 }} weight={600}>
-                          {showCompleted ? "Hide completed" : "Completed"} tasks
-                        </ButtonText>
-                        <Icon>
-                          {showCompleted ? "expand_less" : "expand_more"}
-                        </Icon>
-                      </Button>
-                    )
-            }
-            renderItem={({ item }) => (
-              <Entity
-                isReadOnly={isReadOnly || !session}
-                item={item}
-                showDate
-                onTaskUpdate={mutations.categoryBased.update(mutate)}
-              />
-            )}
-            keyExtractor={(i: any) => i.id}
-          />
+              </CreateTask>
+            </View>
+          )}
         </>
       )}
+
+      <LinearGradient
+        style={{
+          width: "100%",
+          height: 30,
+          zIndex: 1,
+          marginBottom: centerContent && !props.grid ? -90 : -30,
+          pointerEvents: "none",
+        }}
+        colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
+      />
+      <FlashList
+        ref={columnRef}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
+        }
+        centerContent={centerContent}
+        ListEmptyComponent={() =>
+          Object.values(props.label?.entities || props.entities).length ===
+            0 && (
+            <ColumnEmptyComponent
+              row={props.grid}
+              labelId={props.label?.id}
+              showInspireMe
+            />
+          )
+        }
+        data={data}
+        ListHeaderComponent={() => (
+          <View>
+            {hasNoCompleteTasks && !showCompleted && (
+              <ColumnEmptyComponent row={props.grid} />
+            )}
+          </View>
+        )}
+        estimatedItemSize={300}
+        contentContainerStyle={{
+          padding: 15,
+          paddingTop: 15,
+          paddingBottom: insets.bottom + 15,
+        }}
+        ListFooterComponent={
+          hasNoIncompleteTasks
+            ? null
+            : () =>
+                collectionData.showCompleted ||
+                Object.values(props.label?.entities || props.entities)
+                  .length === 0 ? null : (
+                  <Button
+                    onPress={() => setShowCompleted(!showCompleted)}
+                    containerStyle={
+                      hasNoCompleteTasks
+                        ? {
+                            marginBottom: showCompleted ? 10 : -70,
+                          }
+                        : {}
+                    }
+                    height={50}
+                  >
+                    <ButtonText style={{ opacity: 0.7 }} weight={600}>
+                      {showCompleted ? "Hide completed" : "Completed"} tasks
+                    </ButtonText>
+                    <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
+                  </Button>
+                )
+        }
+        renderItem={({ item }) => (
+          <Entity
+            isReadOnly={isReadOnly || !session}
+            item={item}
+            showDate
+            onTaskUpdate={mutations.categoryBased.update(mutate)}
+          />
+        )}
+        keyExtractor={(i: any) => i.id}
+      />
     </View>
   );
 }

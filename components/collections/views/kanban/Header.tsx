@@ -11,7 +11,7 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import { useGridContext } from "../grid/context";
 import { useKanbanContext } from "./context";
 
@@ -20,7 +20,6 @@ export const KanbanHeader = memo(function KanbanHeader({
   grid,
   list,
   hideNavigation,
-  vertical,
 }: {
   grid?: boolean;
   list?: boolean;
@@ -32,7 +31,6 @@ export const KanbanHeader = memo(function KanbanHeader({
     name: string;
     entitiesLength: number;
   };
-  vertical?: boolean;
 }) {
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access } = useCollectionContext();
@@ -50,9 +48,6 @@ export const KanbanHeader = memo(function KanbanHeader({
         columnStyles.header,
         grid && {
           height: 60,
-        },
-        vertical && {
-          flexDirection: "column",
         },
         breakpoints.md
           ? {
@@ -72,45 +67,19 @@ export const KanbanHeader = memo(function KanbanHeader({
         <Emoji emoji={label.emoji} size={list ? 35 : grid ? 25 : 35} />
       )}
       <View
-        style={[
-          {
-            flex: 1,
-            ...(grid &&
-              !list && { flexDirection: "row", gap: 20, alignItems: "center" }),
-          },
-          vertical &&
-            Platform.OS === "web" && {
-              writingMode: "vertical-rl",
-              textOrientation: "mixed",
-              minHeight: "calc(100% - 200px)",
-              minWidth: 0,
-              transform: [{ rotate: "-180deg" }],
-            },
-        ]}
+        style={{
+          flex: 1,
+          ...(grid &&
+            !list && { flexDirection: "row", gap: 20, alignItems: "center" }),
+        }}
       >
         <Text
-          style={[
-            {
-              fontSize: 20,
-              fontFamily: "serifText700",
-            },
-            vertical && {
-              textAlign: "center",
-            },
-          ]}
+          style={{ fontSize: 20, fontFamily: "serifText700" }}
           numberOfLines={1}
         >
           {label.name || "Unlabeled"}
         </Text>
-        <Text
-          style={[
-            { opacity: 0.6 },
-            vertical && {
-              textAlign: "center",
-            },
-          ]}
-          numberOfLines={1}
-        >
+        <Text style={{ opacity: 0.6 }} numberOfLines={1}>
           {grid
             ? label.entitiesLength === 0
               ? ""
@@ -124,7 +93,7 @@ export const KanbanHeader = memo(function KanbanHeader({
         </Text>
       </View>
       <View style={{ flexDirection: "row", marginRight: -10 }}>
-        {label?.id && !isReadOnly && session && !vertical && (
+        {label?.id && !isReadOnly && session && (
           <ColumnMenuTrigger label={label}>
             <IconButton
               size={40}
