@@ -22,10 +22,10 @@ import { SelectionContextProvider } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import ErrorAlert from "@/ui/Error";
 import Modal from "@/ui/Modal";
 import OtpInput from "@/ui/OtpInput";
-import Spinner from "@/ui/Spinner";
+import CircularSkeleton from "@/ui/Skeleton/circular";
+import LinearSkeleton, { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useDidUpdate } from "@/utils/useDidUpdate";
@@ -64,13 +64,159 @@ export const styles = StyleSheet.create({
   },
 });
 
-const Loading = ({ error }: any) => (
-  <>
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      {error ? <ErrorAlert /> : <Spinner />}
-    </View>
-  </>
-);
+const Loading = ({ error, isPublic }: any) => {
+  let content;
+  const { type } = useLocalSearchParams();
+  switch ((type || (isPublic ? "kanban" : null)) as CollectionType) {
+    case "planner":
+    case "skyline":
+    case "workload":
+    case "kanban":
+      content = (
+        <>
+          {[...new Array(5)].map((_, i) => (
+            <LinearSkeleton width={320} height="100%" key={i} />
+          ))}
+        </>
+      );
+      break;
+
+    case "grid":
+    case "matrix":
+      content = (
+        <>
+          {[...new Array(3)].map((_, i) => (
+            <View style={{ flexDirection: "column", gap: 10 }} key={i}>
+              <View style={{ flex: 1 }}>
+                <LinearSkeleton height="100%" width={500} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <LinearSkeleton height="100%" width={500} />
+              </View>
+            </View>
+          ))}
+        </>
+      );
+      break;
+
+    case "stream":
+      content = (
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View
+            style={{
+              padding: 25,
+              paddingTop: 22,
+              width: 320,
+              gap: 10,
+            }}
+          >
+            <LinearSkeleton width="100%" height={50} />
+            <LinearSkeleton width="100%" height={70} />
+
+            <LinearSkeletonArray
+              height={33}
+              widths={["100%", "100%", "100%", "100%", "100%"]}
+            />
+          </View>
+          <View style={{ flex: 1, gap: 20, paddingTop: 25, maxWidth: 500 }}>
+            <LinearSkeletonArray
+              height={10}
+              animateWidth
+              widths={[20, 39, 51, 42, 63, 79, 41]}
+            />
+          </View>
+        </View>
+      );
+      break;
+    case "list":
+      content = (
+        <View
+          style={{
+            flex: 1,
+            gap: 10,
+            alignItems: "center",
+            paddingTop: 25,
+            marginHorizontal: "auto",
+          }}
+        >
+          <View style={{ gap: 10, maxWidth: 500, width: "100%" }}>
+            <LinearSkeletonArray
+              height={50}
+              widths={["100%", "100%", "100%", "100%", "100%"]}
+            />
+          </View>
+        </View>
+      );
+      break;
+    case "calendar":
+      content = (
+        <View
+          style={{
+            flex: 1,
+            gap: 10,
+            height: "100%",
+          }}
+        >
+          {[...new Array(5)].map((_, i) => (
+            <View style={{ gap: 10, flexDirection: "row", flex: 1 }} key={i}>
+              {["100%", "100%", "100%", "100%", "100%", "100%", "100%"].map(
+                (width, j) => (
+                  <View key={j} style={{ flex: 1 }}>
+                    <LinearSkeleton
+                      width={width}
+                      height={"100%"}
+                      style={{ flex: 1 }}
+                    />
+                  </View>
+                )
+              )}
+            </View>
+          ))}
+        </View>
+      );
+      break;
+    default:
+      content = <Text>404: {type}</Text>;
+      break;
+  }
+
+  return (
+    <>
+      <View style={{ flex: 1, padding: 10 }}>
+        {/* Navbar */}
+        <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
+          <View
+            style={{ paddingLeft: 7, flexDirection: "row", gap: 12, flex: 1 }}
+          >
+            <CircularSkeleton size={34} />
+            <View style={{ gap: 5 }}>
+              <LinearSkeleton width={55} height={10} />
+              <LinearSkeleton width={170} height={17} />
+            </View>
+          </View>
+          <CircularSkeleton size={34} />
+          <CircularSkeleton size={34} />
+          <CircularSkeleton size={34} />
+          <CircularSkeleton size={34} />
+          <LinearSkeleton width={100} height={43} />
+        </View>
+
+        {/* Columns */}
+        <View
+          style={{
+            flexDirection: "row",
+            flex: 1,
+            padding: 5,
+            paddingTop: 25,
+            gap: 10,
+          }}
+        >
+          {content}
+        </View>
+      </View>
+    </>
+  );
+};
 
 function ResetPinButton({ children }: any) {
   const { session } = useSession();
@@ -444,10 +590,9 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
             )
           ) : (
             false
-          )) || <Loading error={error || data?.error} />}
+          )) || <Loading isPublic={isPublic} error={error || data?.error} />}
         </CollectionContext.Provider>
       </ContentWrapper>
     </SelectionContextProvider>
   );
 }
-
