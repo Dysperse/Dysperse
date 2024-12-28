@@ -1,3 +1,4 @@
+import { MenuButton } from "@/app/(app)/home";
 import {
   CollectionContext,
   useCollectionContext,
@@ -233,19 +234,7 @@ function Reorder({ handleClose }: any) {
 
   return (
     <View style={{ flex: 1 }}>
-      <IconButton
-        size={55}
-        icon="close"
-        onPress={handleClose}
-        style={{
-          position: "absolute",
-          top: 30,
-          left: 30,
-          zIndex: 1,
-          borderWidth: 2,
-        }}
-        variant="outlined"
-      />
+      <MenuButton back gradient />
       <View
         style={{
           gap: 10,

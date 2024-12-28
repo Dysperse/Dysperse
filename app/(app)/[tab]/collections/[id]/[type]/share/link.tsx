@@ -1,3 +1,4 @@
+import { MenuButton } from "@/app/(app)/home";
 import {
   CollectionContext,
   useCollectionContext,
@@ -237,19 +238,7 @@ function Share({ handleClose }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <IconButton
-        size={55}
-        icon="close"
-        onPress={handleClose}
-        style={{
-          position: "absolute",
-          top: 30,
-          left: 30,
-          zIndex: 1,
-          borderWidth: 2,
-        }}
-        variant="outlined"
-      />
+      <MenuButton gradient back />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
@@ -321,3 +310,4 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
+

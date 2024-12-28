@@ -1,3 +1,4 @@
+import { MenuButton } from "@/app/(app)/home";
 import { CollectionContext } from "@/components/collections/context";
 import { Entity } from "@/components/collections/entity";
 import { FadeOnRender } from "@/components/layout/FadeOnRender";
@@ -7,7 +8,6 @@ import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
@@ -129,19 +129,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
         overflow: "hidden",
       }}
     >
-      <IconButton
-        size={55}
-        icon="close"
-        onPress={handleClose}
-        style={{
-          position: "absolute",
-          top: 30,
-          left: 30,
-          zIndex: 1,
-          borderWidth: 2,
-        }}
-        variant="outlined"
-      />
+      <MenuButton back gradient />
       <View
         style={{
           gap: 10,
@@ -362,3 +350,4 @@ export default function Page() {
     </>
   );
 }
+

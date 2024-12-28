@@ -99,6 +99,7 @@ export const MenuButton = ({
             zIndex: 10,
             height: 100,
             width: "100%",
+            pointerEvents: "none",
           }}
         >
           {children}
@@ -112,6 +113,7 @@ export const MenuButton = ({
         style={[styles.menuButton, { top: top + 20 }]}
         icon={back ? "arrow_back_ios_new" : <MenuIcon />}
         size={45}
+        pressableStyle={{ pointerEvents: "auto" }}
         onPress={() => {
           if (back) {
             if (router.canGoBack()) router.back();

@@ -305,6 +305,7 @@ export default function Stream() {
       </View>
       <FadeOnRender key={view} animateUp>
         <FlashList
+          key={view}
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={() => mutate()} />
           }
