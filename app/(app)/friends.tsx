@@ -29,6 +29,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
+import { MenuButton } from "./home";
 
 type FriendsPageView = "all" | "requests" | "pending" | "blocked" | "search";
 
@@ -190,76 +191,75 @@ function AddFriend({ friends, mutate, setView }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior="height"
-      style={{
-        gap: 20,
-        flex: 1,
-        padding: 20,
-        paddingTop: insets.top + 20,
-        paddingBottom: insets.bottom + 20,
-      }}
-    >
-      {breakpoints.md && (
-        <Text style={{ fontSize: 30, marginTop: 20 }} weight={900}>
-          Add friends
-        </Text>
-      )}
-      <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-        <IconButton
-          onPress={() => setView("all")}
-          icon="arrow_back_ios_new"
-          style={{}}
-          variant="outlined"
-          size={55}
-        />
-
-        <Controller
-          control={control}
-          name="email"
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextField
-              onKeyPress={(e) => {
-                if (e.nativeEvent.key === "Enter") {
-                  handleSubmit(onSubmit)();
-                }
-                if (e.nativeEvent.key === "Escape") {
-                  // handleClose();
-                }
-              }}
-              variant="filled+outlined"
-              onChangeText={onChange}
-              onBlur={onBlur}
-              value={value}
-              inputRef={(ref) => ref?.focus()}
-              placeholder="Find by email or username…"
-              style={{
-                flex: 1,
-                padding: 20,
-                height: 55,
-                borderRadius: 99,
-                paddingHorizontal: 30,
-                fontSize: 17,
-                shadowRadius: 0,
-              }}
-            />
-          )}
-        />
-      </View>
-      <Suggestions setValue={setValue} watch={watch} />
-      <Button
-        isLoading={loading}
-        height={70}
-        variant="filled"
-        onPress={handleSubmit(onSubmit)}
+    <>
+      <KeyboardAvoidingView
+        behavior="height"
+        style={{
+          gap: 20,
+          flex: 1,
+          padding: 20,
+          paddingTop: insets.top + 20,
+          paddingBottom: insets.bottom + 20,
+        }}
       >
-        <ButtonText weight={900} style={{ fontSize: 20 }}>
-          Send request
-        </ButtonText>
-        <Icon bold>send</Icon>
-      </Button>
-    </KeyboardAvoidingView>
+        <IconButton
+          icon="arrow_back_ios_new"
+          size={45}
+          onPress={() => setView("all")}
+        />
+        {breakpoints.md && (
+          <Text style={{ fontSize: 30, marginTop: 20 }} weight={900}>
+            Add friends
+          </Text>
+        )}
+        <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+          <Controller
+            control={control}
+            name="email"
+            rules={{ required: true }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextField
+                onKeyPress={(e) => {
+                  if (e.nativeEvent.key === "Enter") {
+                    handleSubmit(onSubmit)();
+                  }
+                  if (e.nativeEvent.key === "Escape") {
+                    // handleClose();
+                  }
+                }}
+                variant="filled+outlined"
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                inputRef={(ref) => ref?.focus()}
+                placeholder="Find by email or username…"
+                style={{
+                  flex: 1,
+                  padding: 20,
+                  height: 55,
+                  borderRadius: 99,
+                  paddingHorizontal: 30,
+                  fontSize: 17,
+                  shadowRadius: 0,
+                }}
+              />
+            )}
+          />
+        </View>
+        <Suggestions setValue={setValue} watch={watch} />
+        <Button
+          isLoading={loading}
+          height={70}
+          variant="filled"
+          onPress={handleSubmit(onSubmit)}
+        >
+          <ButtonText weight={900} style={{ fontSize: 20 }}>
+            Send request
+          </ButtonText>
+          <Icon bold>send</Icon>
+        </Button>
+      </KeyboardAvoidingView>
+    </>
   );
 }
 
@@ -426,7 +426,7 @@ export default function Page() {
           gap: 5,
         }}
       >
-        <Text weight={900} style={{ fontSize: 40 }}>
+        <Text style={{ fontFamily: "serifText800", fontSize: 35 }}>
           Friends
         </Text>
         <Button
@@ -473,15 +473,7 @@ export default function Page() {
 
   return (
     <View style={{ backgroundColor: theme[1], flex: 1 }}>
-      {view !== "search" && (
-        <IconButton
-          onPress={handleBack}
-          icon="arrow_back_ios_new"
-          style={{ marginBottom: 20, margin: 20, marginTop: insets.top + 20 }}
-          variant="outlined"
-          size={55}
-        />
-      )}
+      {view !== "search" && <MenuButton back gradient />}
       <View
         style={{
           flex: 1,
@@ -497,7 +489,7 @@ export default function Page() {
         ) : (
           <FlashList
             ListHeaderComponent={Header}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 80 }}
             data={
               data
                 ? data.filter((user) => {
@@ -608,3 +600,4 @@ export default function Page() {
     </View>
   );
 }
+

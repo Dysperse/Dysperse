@@ -18,6 +18,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { Fragment, memo, useState } from "react";
 import { ImageBackground, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -76,7 +77,13 @@ const CustomizeButton = ({ view, setView }) => {
   );
 };
 
-export const MenuButton = ({ gradient }: { gradient?: boolean }) => {
+export const MenuButton = ({
+  gradient,
+  back,
+}: {
+  gradient?: boolean;
+  back?: boolean;
+}) => {
   const theme = useColorTheme();
   const { top } = useSafeAreaInsets();
   const { sidebarRef } = useSidebarContext();
@@ -103,9 +110,16 @@ export const MenuButton = ({ gradient }: { gradient?: boolean }) => {
     <Wrapper>
       <IconButton
         style={[styles.menuButton, { top: top + 20 }]}
-        icon={<MenuIcon />}
+        icon={back ? "arrow_back_ios_new" : <MenuIcon />}
         size={45}
-        onPress={() => sidebarRef.current.openDrawer()}
+        onPress={() => {
+          if (back) {
+            if (router.canGoBack()) router.back();
+            else router.push("/");
+          } else {
+            sidebarRef.current.openDrawer();
+          }
+        }}
       />
     </Wrapper>
   );
