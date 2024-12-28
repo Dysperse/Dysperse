@@ -27,13 +27,16 @@ export default function Page() {
       {data ? (
         <View style={{ flex: 1 }}>
           <ScrollView
-            contentContainerStyle={{ padding: breakpoints.md ? 30 : 20 }}
+            contentContainerStyle={{
+              padding: breakpoints.md ? 30 : 20,
+              paddingTop: 50,
+            }}
             ref={ref}
           >
             <View style={{ marginVertical: 50 }}>
               <Text
                 style={{
-                  fontSize: 50,
+                  fontSize: 40,
                   marginBottom: 10,
                   textAlign: "center",
                   fontFamily: "serifText800",

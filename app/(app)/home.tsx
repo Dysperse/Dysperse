@@ -11,11 +11,14 @@ import MenuIcon from "@/components/menuIcon";
 import { useUser } from "@/context/useUser";
 import { hslToHex } from "@/helpers/hslToHex";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
 import IconButton from "@/ui/IconButton";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import dayjs from "dayjs";
-import { memo, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { Fragment, memo, useState } from "react";
 import { ImageBackground, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -56,26 +59,55 @@ const CustomizeButton = ({ view, setView }) => {
   const insets = useSafeAreaInsets();
 
   return (
-    <IconButton
-      style={[styles.settingsButton, { marginTop: insets.top + 10 }]}
+    <Button
+      variant="outlined"
+      text="Customize"
       icon={view === "edit" ? "check" : "palette"}
-      size={55}
+      backgroundColors={{
+        default: "transparent",
+        pressed: "transparent",
+        hovered: "transparent",
+      }}
+      containerStyle={{
+        marginHorizontal: "auto",
+      }}
       onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
     />
   );
 };
 
-export const MenuButton = () => {
+export const MenuButton = ({ gradient }: { gradient?: boolean }) => {
+  const theme = useColorTheme();
   const { top } = useSafeAreaInsets();
   const { sidebarRef } = useSidebarContext();
 
+  const Wrapper = gradient
+    ? ({ children }) => (
+        <LinearGradient
+          colors={[theme[1], addHslAlpha(theme[1], 0)]}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 10,
+            height: 100,
+            width: "100%",
+          }}
+        >
+          {children}
+        </LinearGradient>
+      )
+    : Fragment;
+
   return (
-    <IconButton
-      style={[styles.menuButton, { top: top + 20 }]}
-      icon={<MenuIcon />}
-      size={45}
-      onPress={() => sidebarRef.current.openDrawer()}
-    />
+    <Wrapper>
+      <IconButton
+        style={[styles.menuButton, { top: top + 20 }]}
+        icon={<MenuIcon />}
+        size={45}
+        onPress={() => sidebarRef.current.openDrawer()}
+      />
+    </Wrapper>
   );
 };
 
@@ -119,9 +151,6 @@ function Page() {
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
-        {Platform.OS === "web" && (
-          <CustomizeButton view={view} setView={setView} />
-        )}
         <ScrollView
           centerContent
           style={{ flex: 1, marginTop: insets.top }}
@@ -159,6 +188,9 @@ function Page() {
               <Actions />
               <StreakGoal />
               <FriendActivity />
+              {Platform.OS === "web" && (
+                <CustomizeButton view={view} setView={setView} />
+              )}
             </>
           )}
         </ScrollView>

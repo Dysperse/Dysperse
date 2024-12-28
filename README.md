@@ -4,6 +4,9 @@
 
 Productivity, reimagined
 
+> [!IMPORTANT]  
+> This repository contains versions from November 26, 2023 onwards, marking our transition to React Native. For access to earlier versions of Dysperse, please refer to the commit history before November 26, 2023 in our original [Dysperse/API](https://github.com/Dysperse/API) repository. Please note that the old repository is now used for server-side version control.
+
 # **Quick links**
 
 - [Homepage](https://dysperse.com)
@@ -109,3 +112,4 @@ Dysperse wouldn't have been able to run without our amazing sponsors! <3
 | [Vercel](https://vercel.com?utm_source=dysperse&utm_campaign=oss)                                                                                              | [Cloudflare](https://cloudflare.com/?utm_source=dysperse)                                            | [Neon](https://neon.tech?utm_source=dysperse)                                             |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | [![image](https://github.com/Dysperse/Dysperse/assets/77016441/a1432962-69f1-4efb-8b5c-6fdbc6e8cc12)](https://vercel.com?utm_source=dysperse&utm_campaign=oss) | [![image](https://dysperse.com/sponsors/cloudflare.png)](https://cloudflare.com?utm_source=dysperse) | [![image](https://dysperse.com/sponsors/neon.png)](https://neon.tech?utm_source=dysperse) |
+
