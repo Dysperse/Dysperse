@@ -4,7 +4,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
 import { router } from "expo-router";
 import { Suspense } from "react";
-import { StatusBar, View } from "react-native";
+import { View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 
 export default function Page() {
   const theme = useColorTheme();
@@ -19,7 +20,7 @@ export default function Page() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" />
+      <SystemBars style="light" />
       <View
         style={{
           backgroundColor: theme[2],

@@ -23,9 +23,10 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, StatusBar, View } from "react-native";
+import { Keyboard, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -423,7 +424,7 @@ export default function Page() {
 
   const Header = () => (
     <>
-      <StatusBar barStyle="light-content" />
+      <SystemBars style="light" />
       <View
         style={{
           paddingBottom: 40,

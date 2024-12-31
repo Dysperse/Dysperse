@@ -6,7 +6,8 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { StatusBar, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { getGreeting } from "../../../components/home/getGreeting";
 
 export const styles = StyleSheet.create({
@@ -46,7 +47,7 @@ export default function Page() {
       colors={[theme[2], theme[3], theme[4], theme[3], theme[2]]}
       style={styles.container}
     >
-      <StatusBar barStyle="light-content" />
+      <SystemBars style="light" />
       <Text
         style={[
           styles.title,

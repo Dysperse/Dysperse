@@ -13,7 +13,8 @@ import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { memo, useRef } from "react";
-import { StatusBar, View } from "react-native";
+import { View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -140,7 +141,7 @@ const LoadingErrors = memo(() => {
             },
           ]}
         >
-          <StatusBar barStyle="dark-content" />
+          <SystemBars style="dark" />
           {(error || storageError) && (
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 10 }}

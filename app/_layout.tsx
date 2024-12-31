@@ -5,7 +5,6 @@ import { JsStack } from "@/components/layout/_stack";
 import { SidebarContext } from "@/components/layout/sidebar/context";
 import { ModalStackProvider } from "@/context/modal-stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { mint, mintDark } from "@/themes";
 import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
@@ -22,20 +21,14 @@ import {
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
-import { useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import * as SystemUI from "expo-system-ui";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Appearance, Platform, useWindowDimensions } from "react-native";
+import { Platform, StatusBar, useWindowDimensions } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
 import { DrawerLayout } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SessionProvider } from "../context/AuthProvider";
-
-const isDark = Appearance.getColorScheme() === "dark";
-
-SystemUI.setBackgroundColorAsync(isDark ? mintDark.mint2 : mint.mint2);
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
@@ -95,12 +88,6 @@ function Root() {
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
-  const ref = useNavigationContainerRef();
-
-  // useEffect(() => {
-  //   if (ref && process.env.NODE_ENV === "production")
-  //     routingInstrumentation.registerNavigationContainer(ref);
-  // }, [ref]);
 
   useWebDevtoolsWarning();
 
@@ -139,16 +126,16 @@ function Root() {
   );
 
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
-
+  StatusBar.setBackgroundColor("transparent");
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-      <KeyboardProvider>
+      <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
         <SessionProvider>
           <ModalStackProvider>
             <ColorThemeProvider theme={theme}>
               <SidebarContext.Provider value={sidebarContextValue}>
                 <SWRWrapper>
-                  <SystemBars style="auto" />
+                  <SystemBars style="dark" />
                   {Platform.OS === "web" && <WorkboxInitializer />}
                   <JsStack
                     id={undefined}

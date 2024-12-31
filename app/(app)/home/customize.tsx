@@ -7,7 +7,8 @@ import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import React, { useCallback } from "react";
-import { Platform, StatusBar, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 import { HOME_PATTERNS, MenuButton } from ".";
 
@@ -91,7 +92,7 @@ export default function Page() {
 
   return (
     <ScrollView>
-      <StatusBar barStyle="light-content" />
+      <SystemBars style="light" />
       <MenuButton gradient back />
       <Text
         style={{

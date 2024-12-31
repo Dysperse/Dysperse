@@ -9,10 +9,10 @@ import {
   ImageBackground,
   Linking,
   Platform,
-  StatusBar,
   useWindowDimensions,
   View,
 } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authStyles } from "../../components/authStyles";
 
@@ -47,7 +47,7 @@ export default function Page() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme[1] }}>
-      <StatusBar barStyle="light-content" />
+      <SystemBars style="light" />
       <ImageBackground
         source={require("@/assets/login.png")}
         style={{ flex: 1 }}

@@ -3,7 +3,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import { router, useLocalSearchParams } from "expo-router";
-import { StatusBar, View } from "react-native";
+import { View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import useSWR from "swr";
 import { CollectionDetails } from "..";
 
@@ -27,7 +28,7 @@ export default function Page() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" />
+      <SystemBars style="light" />
       {data ? (
         <CollectionDetails
           mutateList={(...d) => {
@@ -51,3 +52,4 @@ export default function Page() {
     </>
   );
 }
+

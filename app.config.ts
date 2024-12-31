@@ -15,11 +15,6 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       orientation: "portrait",
       icon: "./assets/icon.png",
       userInterfaceStyle: "automatic",
-      // splash: {
-      //   image: "./assets/splash-screens/light.png",
-      //   resizeMode: "cover",
-      //   backgroundColor: "#effefa",
-      // },
       experiments: {
         tsconfigPaths: true,
       },
@@ -30,16 +25,6 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       assetBundlePatterns: ["**/*"],
       ios: {
         supportsTablet: true,
-        // splash: {
-        //   resizeMode: "cover",
-        //   image: "./assets/splash-screens/light.png",
-        //   backgroundColor: "#effefa",
-        //   dark: {
-        //     resizeMode: "cover",
-        //     image: "./assets/splash-screens/dark.png",
-        //     backgroundColor: "#0a1f1d",
-        //   },
-        // },
       },
       android: {
         googleServicesFile: IS_DEV
@@ -58,16 +43,6 @@ export default ({ config }: ConfigContext): ExpoConfig =>
             ],
           },
         ],
-        // splash: {
-        //   resizeMode: "cover",
-        //   image: "./assets/splash-screens/light.png",
-        //   backgroundColor: "#effefa",
-        //   dark: {
-        //     resizeMode: "cover",
-        //     image: "./assets/splash-screens/dark.png",
-        //     backgroundColor: "#0a1f1d",
-        //   },
-        // },
         icon: "./assets/icon.png",
         adaptiveIcon: {
           backgroundColor: "#156359",
@@ -81,11 +56,6 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         name: "Dysperse",
         lang: "en",
         orientation: "portrait",
-        // splash: {
-        //   image: "./assets/splash-screens/light.png",
-        //   resizeMode: "cover",
-        //   backgroundColor: "#effefa",
-        // },
         themeColor: "#effefa",
         favicon: "./assets/favicon.png",
         bundler: "metro",

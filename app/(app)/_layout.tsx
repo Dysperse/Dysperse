@@ -46,7 +46,6 @@ import {
   InteractionManager,
   Platform,
   Pressable,
-  StatusBar,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -321,7 +320,6 @@ export default function AppLayout() {
   return (
     <WebAnimationComponent>
       <StorageContextProvider>
-        <StatusBar barStyle={!isDark ? "dark-content" : "light-content"} />
         <ColorThemeProvider theme={theme} setHTMLAttributes>
           <GestureHandlerRootView
             style={{
@@ -329,9 +327,7 @@ export default function AppLayout() {
               overflow: "hidden",
               width,
               height,
-              backgroundColor: globalThis.IN_DESKTOP_ENV
-                ? "transparent"
-                : theme[2],
+              backgroundColor: theme[2],
             }}
           >
             <BottomSheetModalProvider>
