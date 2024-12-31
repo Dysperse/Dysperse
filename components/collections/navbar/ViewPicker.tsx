@@ -94,6 +94,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
           padding: 0,
           transformOrigin: breakpoints.md ? "left bottom" : undefined,
           maxWidth: breakpoints.md ? 240 : "100%",
+          borderRadius: 10,
         }}
         style={() => ({
           flexDirection: "row",
@@ -114,7 +115,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
               style={{
                 width: 60,
                 height: 17,
-                borderRadius: 999,
+                borderRadius: 20,
                 backgroundColor: theme[4],
               }}
             />
