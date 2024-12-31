@@ -21,7 +21,7 @@ export function Greeting() {
         color: theme[11],
         fontSize: breakpoints.md ? 45 : 30,
         textAlign: "center",
-        marginBottom: 10,
+        marginVertical: 10,
       }}
       aria-valuetext="web-blur"
     >
@@ -29,3 +29,4 @@ export function Greeting() {
     </Text>
   );
 }
+

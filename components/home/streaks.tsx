@@ -120,10 +120,10 @@ function StreakGoal() {
             }}
           >
             {data ? (
-              !(
-                process.env.NODE_ENV === "development" &&
-                Platform.OS === "android"
-              ) && (
+              process.env.NODE_ENV === "development" &&
+              Platform.OS === "android" ? (
+                <View style={{ height: 40 }} />
+              ) : (
                 <>
                   <GoalIndicator
                     name="Today"
@@ -148,3 +148,4 @@ function StreakGoal() {
 }
 
 export default memo(StreakGoal);
+

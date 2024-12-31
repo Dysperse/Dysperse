@@ -5,6 +5,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import { ButtonGroup } from "@/ui/ButtonGroup";
@@ -24,7 +25,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, KeyboardAvoidingView, View } from "react-native";
+import { Keyboard, KeyboardAvoidingView, StatusBar, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -415,8 +416,14 @@ export default function Page() {
       document.querySelectorAll('[aria-modal="true"]').length > 0,
   });
 
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
+
   const Header = () => (
     <>
+      <StatusBar barStyle="light-content" />
       <View
         style={{
           paddingBottom: 40,

@@ -15,7 +15,7 @@ import { GlobalTaskContextProvider } from "@/context/globalTaskContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
+import { useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -33,7 +33,6 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
-import * as NavigationBar from "expo-navigation-bar";
 import {
   Redirect,
   router,
@@ -205,11 +204,6 @@ export default function AppLayout() {
 
   InteractionManager.runAfterInteractions(() => {
     SplashScreen.hide();
-    if (Platform.OS === "android") {
-      NavigationBar.setPositionAsync("absolute");
-      NavigationBar.setButtonStyleAsync(isDark ? "light" : "dark");
-      NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[2], 0.01));
-    }
   });
 
   if (!session) return <Redirect href="/auth" />;
@@ -258,9 +252,8 @@ export default function AppLayout() {
               ...(Platform.OS === "web" &&
                 ({ marginTop: "env(titlebar-area-height,0)" } as any)),
             },
-            // change opacity of the previous screen when swipe
+            animation: "none",
             cardOverlayEnabled: true,
-            animationEnabled: false,
             gestureVelocityImpact: 0.5,
           }}
         >
@@ -273,7 +266,7 @@ export default function AppLayout() {
                 options={{
                   detachPreviousScreen: breakpoints.md,
                   presentation: "modal",
-                  animationEnabled: true,
+                  animation: "default",
                   ...TransitionPresets.ModalPresentationIOS,
                 }}
               />
@@ -283,13 +276,21 @@ export default function AppLayout() {
             name="open"
             options={{
               presentation: "modal",
-              animationEnabled: true,
+              animation: "default",
               gestureEnabled: false,
               ...TransitionPresets.ModalPresentationIOS,
             }}
           />
           <JsStack.Screen
             name="friends"
+            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
+          />
+          <JsStack.Screen
+            name="insights"
+            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
+          />
+          <JsStack.Screen
+            name="home/customize"
             options={arcCard({ theme, breakpoints, maxWidth: 500 })}
           />
           <JsStack.Screen
@@ -381,13 +382,14 @@ export default function AppLayout() {
                                     pathname.includes(
                                       "everything/collections/"
                                     ) ||
+                                    pathname.includes("/customize") ||
+                                    pathname.includes("insights") ||
                                     pathname.includes("everything/labels/") ||
                                     (pathname.includes("/plan") &&
                                       !pathname.includes("/planner")) ||
                                     pathname.includes("open") ||
                                     (pathname.includes("collections") &&
                                       (pathname.includes("/search") ||
-                                        pathname.includes("/customize") ||
                                         pathname.includes("/reorder") ||
                                         pathname.includes("/share")))
                                       ? "locked-closed"
@@ -419,3 +421,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+

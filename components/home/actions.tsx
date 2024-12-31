@@ -7,7 +7,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import useSWR from "swr";
 
 const actionStyles = StyleSheet.create({
@@ -80,7 +80,7 @@ export function Actions() {
     Array.isArray(sharedWithMe) && sharedWithMe?.filter((c) => !c.hasSeen);
 
   return (
-    <View>
+    <View style={{ marginBottom: Platform.OS === "web" ? 0 : -20 }}>
       <Text variant="eyebrow" style={actionStyles.title}>
         Start
       </Text>

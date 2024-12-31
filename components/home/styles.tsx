@@ -47,8 +47,6 @@ export const styles = StyleSheet.create({
     zIndex: 1,
   },
   patternCard: {
-    width: 100,
-    height: 100,
     borderRadius: 20,
     overflow: "hidden",
     borderWidth: 2,
@@ -61,7 +59,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexWrap: "wrap",
-    gap: 20,
+    gap: 10,
     marginTop: 10,
   },
 });
+

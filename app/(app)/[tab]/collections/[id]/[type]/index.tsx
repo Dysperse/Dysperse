@@ -38,20 +38,15 @@ import {
   usePathname,
 } from "expo-router";
 import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
-import {
-  InteractionManager,
-  KeyboardAvoidingView,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -400,29 +395,27 @@ function PasswordPrompt({ mutate }) {
     );
   };
 
+  const insets = useSafeAreaInsets();
   const errorAnimationStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: errorAnimation.value }],
   }));
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+        marginTop: insets.top,
+        position: "relative",
       }}
     >
-      {!breakpoints.md && <MenuButton />}
+      {!breakpoints.md && <MenuButton gradient />}
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior={"padding"}
         style={{
-          maxWidth: 400,
-          width: "100%",
-          padding: 20,
-          borderRadius: 20,
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
+          padding: 40,
+          maxWidth: 500,
+          marginHorizontal: "auto",
         }}
       >
         <FadeOnRender animateUp style={{ justifyContent: "center" }}>
@@ -481,7 +474,7 @@ function PasswordPrompt({ mutate }) {
           </View>
         </FadeOnRender>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -596,3 +589,4 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </SelectionContextProvider>
   );
 }
+

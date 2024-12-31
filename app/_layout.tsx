@@ -6,7 +6,7 @@ import { SidebarContext } from "@/components/layout/sidebar/context";
 import { ModalStackProvider } from "@/context/modal-stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { mint, mintDark } from "@/themes";
-import { addHslAlpha, useColor } from "@/ui/color";
+import { useColor } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { JetBrainsMono_500Medium } from "@expo-google-fonts/jetbrains-mono";
 import {
@@ -22,35 +22,20 @@ import {
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
-import * as NavigationBar from "expo-navigation-bar";
 import { useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Appearance,
-  Platform,
-  StatusBar,
-  useWindowDimensions,
-} from "react-native";
+import { Appearance, Platform, useWindowDimensions } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
 import { DrawerLayout } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SessionProvider } from "../context/AuthProvider";
 
 const isDark = Appearance.getColorScheme() === "dark";
 
 SystemUI.setBackgroundColorAsync(isDark ? mintDark.mint2 : mint.mint2);
-
-if (Platform.OS === "android") {
-  StatusBar.setBackgroundColor("transparent");
-  StatusBar.setBarStyle(isDark ? "light-content" : "dark-content");
-  NavigationBar.setBorderColorAsync("transparent");
-  NavigationBar.setBackgroundColorAsync(
-    addHslAlpha(isDark ? mintDark.mint2 : mint.mint2, 0.01)
-  );
-  NavigationBar.setButtonStyleAsync(isDark ? "light" : "dark");
-  NavigationBar.setBorderColorAsync("transparent");
-}
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
@@ -69,9 +54,6 @@ if (process.env.NODE_ENV === "production") {
         maskAllImages: false,
         maskAllVectors: false,
       }),
-      // Sentry.reactNativeNavigationIntegration({
-      //   navigation: JsStack,
-      // }),
     ],
   });
 }
@@ -156,30 +138,32 @@ function Root() {
     [desktopCollapsed, SIDEBAR_WIDTH]
   );
 
-  // idk why it crashes the app on web
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
 
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-      <SessionProvider>
-        <ModalStackProvider>
-          <ColorThemeProvider theme={theme}>
-            <SidebarContext.Provider value={sidebarContextValue}>
-              <SWRWrapper>
-                {Platform.OS === "web" && <WorkboxInitializer />}
-                <JsStack
-                  id={undefined}
-                  screenOptions={{
-                    header: () => null,
-                    cardShadowEnabled: false,
-                    freezeOnBlur: true,
-                  }}
-                />
-              </SWRWrapper>
-            </SidebarContext.Provider>
-          </ColorThemeProvider>
-        </ModalStackProvider>
-      </SessionProvider>
+      <KeyboardProvider>
+        <SessionProvider>
+          <ModalStackProvider>
+            <ColorThemeProvider theme={theme}>
+              <SidebarContext.Provider value={sidebarContextValue}>
+                <SWRWrapper>
+                  <SystemBars style="auto" />
+                  {Platform.OS === "web" && <WorkboxInitializer />}
+                  <JsStack
+                    id={undefined}
+                    screenOptions={{
+                      header: () => null,
+                      cardShadowEnabled: false,
+                      freezeOnBlur: true,
+                    }}
+                  />
+                </SWRWrapper>
+              </SidebarContext.Provider>
+            </ColorThemeProvider>
+          </ModalStackProvider>
+        </SessionProvider>
+      </KeyboardProvider>
     </ErrorBoundary>
   );
 }

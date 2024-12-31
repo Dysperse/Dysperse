@@ -2,13 +2,13 @@ import { MenuButton } from "@/app/(app)/home";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "react-native";
 
 export function Header({ scrollRef }) {
   const theme = useColorTheme();
-  const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { sidebarRef } = useSidebarContext();
 
@@ -20,6 +20,16 @@ export function Header({ scrollRef }) {
 
   useHotkeys("esc", handleBack);
 
-  return <MenuButton gradient />;
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
+
+  return (
+    <>
+      <StatusBar barStyle="light-content" />
+      <MenuButton gradient back />
+    </>
+  );
 }
 

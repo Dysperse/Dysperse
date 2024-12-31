@@ -97,6 +97,7 @@ export const arcAnimationSpec = {
 
 export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
   ({
+    animation: "default",
     presentation: "modal",
     detachPreviousScreen: false,
     freezeOnBlur: true,
@@ -119,3 +120,4 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
         }
       : undefined,
   } as any);
+

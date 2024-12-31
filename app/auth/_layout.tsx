@@ -36,7 +36,6 @@ export default function Layout() {
                 },
                 // change opacity of the previous screen when swipe
                 cardOverlayEnabled: true,
-                animationEnabled: false,
                 gestureVelocityImpact: 0.7,
               }}
             >

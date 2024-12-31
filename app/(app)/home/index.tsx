@@ -1,5 +1,4 @@
 import { Actions } from "@/components/home/actions";
-import { EditWallpaper } from "@/components/home/edit-wallpaper";
 import { FriendActivity } from "@/components/home/friend-activity";
 import { Greeting } from "@/components/home/greeting";
 import StreakGoal from "@/components/home/streaks";
@@ -17,10 +16,16 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import dayjs from "dayjs";
+import { ImageBackground as ExpoImageBackground } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { Fragment, memo, useState } from "react";
-import { ImageBackground, Platform, View } from "react-native";
+import { Fragment, memo } from "react";
+import {
+  Dimensions,
+  Platform,
+  ImageBackground as RNImageBackground,
+  View,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -56,23 +61,19 @@ export const HOME_PATTERNS = [
   "plus",
 ];
 
-const CustomizeButton = ({ view, setView }) => {
-  const insets = useSafeAreaInsets();
-
+const CustomizeButton = () => {
   return (
     <Button
       variant="outlined"
+      icon="palette"
       text="Customize"
-      icon={view === "edit" ? "check" : "palette"}
       backgroundColors={{
         default: "transparent",
         pressed: "transparent",
         hovered: "transparent",
       }}
-      containerStyle={{
-        marginHorizontal: "auto",
-      }}
-      onPress={() => setView((d) => (d === "edit" ? "home" : "edit"))}
+      containerStyle={{ marginHorizontal: "auto" }}
+      onPress={() => router.push("/home/customize")}
     />
   );
 };
@@ -99,7 +100,7 @@ export const MenuButton = ({
             zIndex: 10,
             height: 100,
             width: "100%",
-            pointerEvents: "none",
+            pointerEvents: "box-none",
           }}
         >
           {children}
@@ -110,14 +111,14 @@ export const MenuButton = ({
   return (
     <Wrapper>
       <IconButton
-        style={[styles.menuButton, { top: top + 20 }]}
-        icon={back ? "arrow_back_ios_new" : <MenuIcon />}
+        style={[styles.menuButton]}
+        icon={back ? "close" : <MenuIcon />}
         size={45}
         pressableStyle={{ pointerEvents: "auto" }}
         onPress={() => {
           if (back) {
             if (router.canGoBack()) router.back();
-            else router.push("/");
+            else router.push("/home");
           } else {
             sidebarRef.current.openDrawer();
           }
@@ -127,7 +128,7 @@ export const MenuButton = ({
   );
 };
 
-const Wrapper = (props) => {
+const Wrapper = memo((props) => {
   const theme = useColorTheme();
   const { session } = useUser();
   const pattern = session?.user?.profile?.pattern || "none";
@@ -140,29 +141,32 @@ const Wrapper = (props) => {
     .split(",")
     .map(Number) as [number, number, number];
 
-  const uri =
-    Platform.OS === "web" && pattern !== ""
-      ? `${process.env.EXPO_PUBLIC_API_URL}/pattern?color=%23${hslToHex(
-          ...hslValues
-        )}&pattern=${pattern}`
-      : "";
+  const params = new URLSearchParams({
+    color: `#${hslToHex(...hslValues)}`,
+    pattern: pattern,
+    screenWidth: Dimensions.get("window").width.toString(),
+    screenHeight: Dimensions.get("window").height.toString(),
+    ...(Platform.OS !== "web" && { asPng: "true" }),
+  });
 
-  return Platform.OS === "web" ? (
-    <ImageBackground
+  const uri = `${process.env.EXPO_PUBLIC_API_URL}/pattern?${params.toString()}`;
+  const ImageBackgroundComponent =
+    Platform.OS === "web" ? RNImageBackground : ExpoImageBackground;
+
+  return (
+    <ImageBackgroundComponent
       {...props}
       source={{ uri: pattern === "none" ? undefined : uri }}
       style={styles.imageBackground}
+      cachePolicy="memory"
       resizeMode="repeat"
     />
-  ) : (
-    <View {...props} style={styles.imageBackground} />
   );
-};
+});
 
 function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
-  const [view, setView] = useState<"home" | "activity" | "edit">("home");
 
   return (
     <ContentWrapper noPaddingTop>
@@ -173,7 +177,7 @@ function Page() {
           contentContainerStyle={{
             maxWidth: breakpoints.md ? 400 : undefined,
             width: "100%",
-            paddingHorizontal: 20,
+            paddingHorizontal: 30,
             gap: 20,
             ...(Platform.OS === "android"
               ? {
@@ -187,28 +191,21 @@ function Page() {
           }}
         >
           {!breakpoints.md && <MenuButton />}
-          {view === "edit" ? (
-            <EditWallpaper />
-          ) : (
-            <>
-              <View
-                style={{ alignItems: "center", marginBottom: -15 }}
-                aria-valuetext="home-logo"
-              >
-                <Logo size={64} />
-              </View>
-              <View style={{ alignItems: "center" }}>
-                <Greeting />
-                <TodayText />
-              </View>
-              <Actions />
-              <StreakGoal />
-              <FriendActivity />
-              {Platform.OS === "web" && (
-                <CustomizeButton view={view} setView={setView} />
-              )}
-            </>
-          )}
+          <View
+            style={{
+              alignItems: "center",
+              marginTop: Platform.OS === "web" ? 0 : 50,
+            }}
+            aria-valuetext="home-logo"
+          >
+            <Logo size={64} />
+            <Greeting />
+            <TodayText />
+          </View>
+          <Actions />
+          <StreakGoal />
+          <FriendActivity />
+          <CustomizeButton />
         </ScrollView>
       </Wrapper>
     </ContentWrapper>

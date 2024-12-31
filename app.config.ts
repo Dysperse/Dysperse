@@ -93,6 +93,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         display: "standalone",
       },
       plugins: [
+        "react-native-edge-to-edge",
         [
           "expo-splash-screen",
           {

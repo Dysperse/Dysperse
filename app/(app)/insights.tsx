@@ -1,12 +1,8 @@
 import { Co2 } from "@/components/insights/Co2";
-import { DayChart } from "@/components/insights/DayChart";
 import { Header } from "@/components/insights/Header";
 import { Heatmap } from "@/components/insights/Heatmap";
-import { HourChart } from "@/components/insights/HourChart";
-import { LabelChart } from "@/components/insights/LabelChart";
 import { MemberSince } from "@/components/insights/MemberSince";
 import { TasksCreated } from "@/components/insights/TasksCreated";
-import ContentWrapper from "@/components/layout/content";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
@@ -22,7 +18,7 @@ export default function Page() {
   const ref = useRef<ScrollView>(null);
 
   return (
-    <ContentWrapper noPaddingTop>
+    <>
       <Header scrollRef={ref} />
       {data ? (
         <View style={{ flex: 1 }}>
@@ -57,17 +53,6 @@ export default function Page() {
             </View>
             <MemberSince />
             <Heatmap data={data} />
-            <LabelChart data={data} />
-            <View
-              style={{
-                flexDirection: breakpoints.md ? "row" : "column",
-                marginTop: 20,
-                gap: 20,
-              }}
-            >
-              <HourChart data={data} />
-              <DayChart data={data} />
-            </View>
           </ScrollView>
         </View>
       ) : (
@@ -77,7 +62,7 @@ export default function Page() {
           {error ? <ErrorAlert /> : <Spinner />}
         </View>
       )}
-    </ContentWrapper>
+    </>
   );
 }
 
