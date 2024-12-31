@@ -5,7 +5,13 @@ export default function MenuIcon() {
   const theme = useColorTheme();
 
   return (
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill={theme[11]}>
+    <Svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill={theme[11]}
+      style={{ transform: [{ translateY: -2 }] }}
+    >
       <Path
         fillRule="evenodd"
         clipRule="evenodd"

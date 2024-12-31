@@ -34,7 +34,7 @@ export default function Page() {
   });
 
   const uriCreator = (pattern) => {
-    const hslValues = theme[9]
+    const hslValues = theme[10]
       .replace("hsl", "")
       .replace("(", "")
       .replace(")", "")

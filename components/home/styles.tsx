@@ -9,8 +9,8 @@ export const styles = StyleSheet.create({
 
   menuButton: {
     position: "absolute",
-    top: 20,
-    left: 20,
+    top: 17,
+    left: 17,
     zIndex: 1,
   },
   content: {

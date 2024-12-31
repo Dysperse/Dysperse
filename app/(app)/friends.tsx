@@ -25,7 +25,8 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, KeyboardAvoidingView, StatusBar, View } from "react-native";
+import { Keyboard, StatusBar, View } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -199,8 +200,7 @@ function AddFriend({ friends, mutate, setView }) {
           gap: 20,
           flex: 1,
           padding: 20,
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 20,
+          paddingBottom: insets.bottom + 10,
         }}
       >
         <IconButton

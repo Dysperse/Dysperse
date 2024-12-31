@@ -86,7 +86,6 @@ export const MenuButton = ({
   back?: boolean;
 }) => {
   const theme = useColorTheme();
-  const { top } = useSafeAreaInsets();
   const { sidebarRef } = useSidebarContext();
 
   const Wrapper = gradient
@@ -133,7 +132,7 @@ const Wrapper = memo((props) => {
   const { session } = useUser();
   const pattern = session?.user?.profile?.pattern || "none";
 
-  const hslValues = theme[5]
+  const hslValues = theme[3]
     .replace("hsl", "")
     .replace("(", "")
     .replace(")", "")

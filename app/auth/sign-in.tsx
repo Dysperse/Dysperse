@@ -22,13 +22,8 @@ import { Redirect, router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
-import {
-  KeyboardAvoidingView,
-  Linking,
-  Platform,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Linking, Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import * as passkey from "react-native-passkeys";
 import QRCode from "react-native-qrcode-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -195,7 +190,7 @@ function Email({
         size={55}
         onPress={() => setStep(0)}
         variant="outlined"
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: 0, margin: 10 }}
       />
       <View style={{ padding: 20, gap: 10 }}>
         <Emoji emoji="2709" size={60} style={{ alignSelf: "center" }} />

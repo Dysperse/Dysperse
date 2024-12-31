@@ -117,13 +117,7 @@ export default function Page() {
               weight={500}
               style={[authStyles.subtitleText, { color: "#fff" }]}
             >
-              be your
-            </Text>
-            <Text
-              weight={500}
-              style={[authStyles.subtitleText, { color: "#fff" }]}
-            >
-              catalyst.
+              be your catalyst.
             </Text>
           </View>
           <Button
@@ -172,3 +166,4 @@ export default function Page() {
     </View>
   );
 }
+
