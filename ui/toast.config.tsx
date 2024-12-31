@@ -14,6 +14,7 @@ const toastStyles = (theme): StyleProp<ViewStyle> => ({
   maxWidth: 300,
   height: "auto",
   padding: 10,
+  paddingHorizontal: 5,
   shadowOffset: { height: 20, width: 0 },
   shadowRadius: 50,
   shadowOpacity: 0.2,
@@ -47,7 +48,7 @@ export const toastConfig = (theme) => ({
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
-        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 270 }]}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
         text1Props={text1Props(theme)}
@@ -70,7 +71,7 @@ export const toastConfig = (theme) => ({
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
-        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 270 }]}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
         text1Props={text1Props(theme)}
@@ -98,7 +99,7 @@ export const toastConfig = (theme) => ({
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
-        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 270 }]}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
         text1Props={text1Props(theme)}
@@ -111,7 +112,7 @@ export const toastConfig = (theme) => ({
     <View style={toastContainerStyles}>
       <BaseToast
         {...props}
-        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 200 }]}
+        style={[toastStyles(theme), Platform.OS !== "web" && { minWidth: 270 }]}
         text1={props.text1 || "Something went wrong. Please try again later"}
         text1NumberOfLines={null}
         text2NumberOfLines={null}
@@ -130,3 +131,4 @@ export const toastConfig = (theme) => ({
     </View>
   ),
 });
+
