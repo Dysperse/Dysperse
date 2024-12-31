@@ -2,19 +2,16 @@ import { JsStack } from "@/components/layout/_stack";
 import { PlanContextProvider } from "@/context/planContext";
 import { useUser } from "@/context/useUser";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
-import { useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import IconButton from "@/ui/IconButton";
-import { toastConfig } from "@/ui/toast.config";
 import {
   StackNavigationProp,
   TransitionPresets,
 } from "@react-navigation/stack";
 import { LinearGradient } from "expo-linear-gradient";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 const styles = StyleSheet.create({
   navbar: {
@@ -94,33 +91,28 @@ function PlanNavbar({
 
 export default function Layout() {
   const { session } = useUser();
-  const theme = useColor(session?.user?.profile?.theme || "mint");
+  const theme = useColorTheme();
 
   useWebStatusBar({
     active: "#000",
     cleanup: theme[2],
   });
 
-  if (!session || session?.error) return <Redirect href="/auth" />;
-
   return (
     <>
       <PlanContextProvider>
-        <ColorThemeProvider theme={theme}>
-          <JsStack
-            screenOptions={{
-              ...TransitionPresets.SlideFromRightIOS,
-              header: ({ navigation, route }) => (
-                <PlanNavbar navigation={navigation} route={route} />
-              ),
-              headerMode: "float",
-              detachPreviousScreen: false,
-              cardStyle: { backgroundColor: theme[1], display: "flex" },
-            }}
-          />
-        </ColorThemeProvider>
+        <JsStack
+          screenOptions={{
+            ...TransitionPresets.SlideFromRightIOS,
+            header: ({ navigation, route }) => (
+              <PlanNavbar navigation={navigation} route={route} />
+            ),
+            headerMode: "float",
+            detachPreviousScreen: false,
+            cardStyle: { backgroundColor: theme[1], display: "flex" },
+          }}
+        />
       </PlanContextProvider>
-      <Toast config={toastConfig(theme)} />
     </>
   );
 }

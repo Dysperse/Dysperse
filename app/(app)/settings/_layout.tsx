@@ -12,7 +12,7 @@ import type {
   StackCardInterpolationProps,
 } from "@react-navigation/stack";
 import { TransitionPresets } from "@react-navigation/stack";
-import { router, usePathname } from "expo-router";
+import { router } from "expo-router";
 import {
   Animated,
   Easing,
@@ -20,7 +20,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MenuButton } from "../home";
 
 function conditional(condition, main, fallback) {
   return add(
@@ -130,28 +130,6 @@ function EscapeSettings() {
   );
 }
 
-function SettingsHeader() {
-  const insets = useSafeAreaInsets();
-  const path = usePathname();
-
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: 11,
-        paddingTop: insets.top + 20,
-        paddingBottom: 20,
-        gap: 15,
-        display: path.includes("/integrations/") ? "none" : "flex",
-      }}
-    >
-      <IconButton icon="west" size={45} onPress={router.back} />
-    </View>
-  );
-}
-
 /**
  * Simple fade animation for the header elements.
  */
@@ -249,8 +227,10 @@ export default function Layout() {
                 initialRouteName={breakpoints.md ? "account/index" : "index"}
                 id={undefined}
                 screenOptions={{
-                  header: () => (breakpoints.md ? null : <SettingsHeader />),
-                  animationEnabled: !breakpoints.md,
+                  header: () =>
+                    breakpoints.md ? null : (
+                      <MenuButton addInsets icon="west" back gradient />
+                    ),
                   headerMode: "screen",
                   freezeOnBlur: true,
                   gestureResponseDistance: width,

@@ -15,11 +15,13 @@ export default function SettingsScrollView(
       {...props}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
+        marginTop: 100,
         paddingVertical: props.hideBack ? 0 : 50,
         paddingTop: breakpoints.md ? 50 : 20,
-        paddingHorizontal: props.hideBack ? 0 : 20,
+        paddingHorizontal: props.hideBack ? 0 : 30,
       }}
-      style={{ flex: 1, maxHeight: height - insets.top - insets.bottom }}
+      style={{ flex: 1 }}
     />
   );
 }
+

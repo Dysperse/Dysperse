@@ -6,7 +6,6 @@ import NotificationsModal from "@/components/layout/NotificationsModal";
 import TabFriendModal from "@/components/layout/TabFriendModal";
 import { JsStack } from "@/components/layout/_stack";
 import { arcCard } from "@/components/layout/arcAnimations";
-import { forHorizontalIOS } from "@/components/layout/forHorizontalIOS";
 import { SessionLoadingScreen } from "@/components/layout/loading";
 import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
@@ -49,6 +48,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import {
   DrawerLayout,
   Gesture,
@@ -56,6 +56,7 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
 import LoadingErrors from "../../components/layout/LoadingErrors";
@@ -147,6 +148,7 @@ export default function AppLayout() {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
   const progressValue = useRef(null);
+  const insets = useSafeAreaInsets();
 
   const { sidebarRef, SIDEBAR_WIDTH } = useSidebarContext();
 
@@ -233,6 +235,7 @@ export default function AppLayout() {
     >
       <AppContainer progressValue={progressValue}>
         <LastStateRestore />
+        <SystemBars style={!isDark ? "dark" : "light"} />
         <JsStack
           screenOptions={{
             header: () => null,
@@ -295,15 +298,6 @@ export default function AppLayout() {
           <JsStack.Screen
             name="plan"
             options={arcCard({ theme, breakpoints, maxWidth: 500 })}
-          />
-          <JsStack.Screen
-            name="collections/create"
-            options={{
-              detachPreviousScreen: true,
-              cardOverlayEnabled: !breakpoints.md,
-              ...TransitionPresets.SlideFromRightIOS,
-              cardStyleInterpolator: forHorizontalIOS,
-            }}
           />
           <JsStack.Screen
             name="settings"
@@ -409,7 +403,7 @@ export default function AppLayout() {
                   </View>
                 </PortalProvider>
               </MenuProvider>
-              <Toast config={toastConfig(theme)} />
+              <Toast topOffset={insets.top} config={toastConfig(theme)} />
             </BottomSheetModalProvider>
           </GestureHandlerRootView>
         </ColorThemeProvider>

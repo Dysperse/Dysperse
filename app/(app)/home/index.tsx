@@ -81,12 +81,17 @@ const CustomizeButton = () => {
 export const MenuButton = ({
   gradient,
   back,
+  icon,
+  addInsets,
 }: {
   gradient?: boolean;
   back?: boolean;
+  icon?: string;
+  addInsets?: boolean;
 }) => {
   const theme = useColorTheme();
   const { sidebarRef } = useSidebarContext();
+  const insets = useSafeAreaInsets();
 
   const Wrapper = gradient
     ? ({ children }) => (
@@ -110,8 +115,8 @@ export const MenuButton = ({
   return (
     <Wrapper>
       <IconButton
-        style={[styles.menuButton]}
-        icon={back ? "close" : <MenuIcon />}
+        style={[styles.menuButton, addInsets && { marginTop: insets.top }]}
+        icon={icon || (back ? "close" : <MenuIcon />)}
         size={45}
         pressableStyle={{ pointerEvents: "auto" }}
         onPress={() => {

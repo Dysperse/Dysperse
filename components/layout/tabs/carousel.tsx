@@ -6,6 +6,8 @@ import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import CircularSkeleton from "@/ui/Skeleton/circular";
+import LinearSkeleton from "@/ui/Skeleton/linear";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
@@ -354,7 +356,30 @@ function OpenTabsList() {
               {footer}
             </>
           ) : (
-            <Spinner style={{ marginHorizontal: "auto" }} />
+            <View style={{ flex: 1, gap: 25, marginTop: 10, marginLeft: 5 }}>
+              {[...new Array(7)].map((_, i) => (
+                <View
+                  key={i}
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <CircularSkeleton size={35} />
+                  <View style={{ flex: 1, gap: 7 }}>
+                    <LinearSkeleton
+                      height={13}
+                      width={Platform.OS === "web" ? "85%" : "75%"}
+                    />
+                    <LinearSkeleton
+                      height={13}
+                      width={Platform.OS === "web" ? "50%" : "45%"}
+                    />
+                  </View>
+                </View>
+              ))}
+            </View>
           )}
         </View>
       )}

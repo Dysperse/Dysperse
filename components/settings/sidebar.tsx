@@ -282,8 +282,9 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
         maxWidth: breakpoints.md ? 200 : undefined,
       }}
       contentContainerStyle={{
-        paddingVertical: breakpoints.md ? 50 : 0,
+        paddingVertical: breakpoints.md ? 50 : 120,
         paddingBottom: 20 + insets.bottom,
+        paddingHorizontal: 10,
       }}
       showsVerticalScrollIndicator={false}
     >
@@ -410,3 +411,4 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
+

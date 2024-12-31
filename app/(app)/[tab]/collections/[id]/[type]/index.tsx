@@ -404,11 +404,10 @@ function PasswordPrompt({ mutate }) {
     <View
       style={{
         flex: 1,
-        marginTop: insets.top,
         position: "relative",
       }}
     >
-      {!breakpoints.md && <MenuButton gradient />}
+      {!breakpoints.md && <MenuButton addInsets gradient />}
       <KeyboardAvoidingView
         behavior={"padding"}
         style={{
