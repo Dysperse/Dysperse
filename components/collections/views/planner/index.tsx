@@ -167,7 +167,10 @@ function Agenda() {
                 },
               ]}
             >
-              <AgendaButtons handleMenuOpen={() => (state.value = 0)} />
+              <AgendaButtons
+                weekMode
+                handleMenuOpen={() => (state.value = 0)}
+              />
               <AgendaSelector data={data} />
             </Animated.View>
           </Animated.View>
