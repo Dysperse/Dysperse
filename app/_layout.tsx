@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === "production") {
 SplashScreen.preventAutoHideAsync();
 
 if (Platform.OS === "android")
-  NavigationBar.setBackgroundColorAsync("rgba(0, 0, 0, 0.005)");
+  NavigationBar.setBackgroundColorAsync("rgba(0, 0, 0, 0.01)");
 
 const useWebDevtoolsWarning = () => {
   useEffect(() => {

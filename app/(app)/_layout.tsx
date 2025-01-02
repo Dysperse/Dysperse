@@ -162,7 +162,7 @@ export default function AppLayout() {
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
   useEffect(() => {
     if (Platform.OS === "android")
-      NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.005));
+      NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.01));
   }, [theme]);
 
   const routerTheme = {
