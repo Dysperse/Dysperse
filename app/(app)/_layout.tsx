@@ -380,6 +380,7 @@ export default function AppLayout() {
                                       "everything/collections/"
                                     ) ||
                                     pathname.includes("/customize") ||
+                                    pathname.includes("friends") ||
                                     pathname.includes("insights") ||
                                     pathname.includes("everything/labels/") ||
                                     (pathname.includes("/plan") &&
