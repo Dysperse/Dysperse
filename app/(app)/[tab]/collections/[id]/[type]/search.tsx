@@ -134,7 +134,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
         style={{
           gap: 10,
           paddingHorizontal: 20,
-          paddingTop: 60,
+          paddingTop: query.length ? 40 : 20,
           flex: 1,
           backgroundColor: addHslAlpha(
             theme[1],

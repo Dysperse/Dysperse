@@ -14,23 +14,9 @@ import dayjs from "dayjs";
 import { setStringAsync } from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import { cloneElement, useCallback, useRef } from "react";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-
-const styles = StyleSheet.create({
-  gridItem: {
-    flex: 1,
-    borderWidth: 2,
-    padding: 20,
-    borderRadius: 20,
-    position: "relative",
-    paddingTop: 50,
-  },
-  icon: { position: "absolute", top: 10, right: 10 },
-  gridRow: { flexDirection: "row", marginTop: 20, gap: 20 },
-  gridHeading: { fontSize: 30 },
-});
 
 function ProfileModalContent({ email }) {
   const { data, error } = useSWR(["user/profile", { email }]);
@@ -158,7 +144,7 @@ export function ProfileModal({ children, email }) {
         onClose={handleClose}
         handleComponent={() => null}
         maxWidth={450}
-        height="auto"
+        height={500}
         innerStyles={{ maxHeight: height - 100 }}
         maxBackdropOpacity={0.2}
         style={{ borderRadius: 20, overflow: "hidden" }}
