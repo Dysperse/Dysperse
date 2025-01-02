@@ -256,7 +256,7 @@ export default function Page() {
         <Alert
           style={{ marginTop: 20 }}
           emoji="1f6a7"
-          title="Coming soon"
+          title="This feature may be unstable for now"
           subtitle="Soon, you'll be able to connect your account to other services like
       Notion, Google Calendar, and more."
         />

@@ -21,6 +21,7 @@ import {
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
+import * as NavigationBar from "expo-navigation-bar";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, StatusBar, useWindowDimensions } from "react-native";
@@ -52,6 +53,9 @@ if (process.env.NODE_ENV === "production") {
 }
 
 SplashScreen.preventAutoHideAsync();
+
+if (Platform.OS === "android")
+  NavigationBar.setBackgroundColorAsync("rgba(0, 0, 0, 0.005)");
 
 const useWebDevtoolsWarning = () => {
   useEffect(() => {

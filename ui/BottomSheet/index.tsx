@@ -10,6 +10,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { ColorThemeProvider, useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
+import BottomSheetKeyboardAwareScrollView from "./BottomSheetKeyboardAwareScrollView";
 
 export interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: RefObject<BottomSheetModal>;
@@ -103,22 +104,24 @@ function BottomSheet(props: DBottomSheetProps) {
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}
     >
-      <ColorThemeProvider theme={theme}>
-        <View
-          {...(Platform.OS === "web" && { ["aria-modal"]: true })}
-          style={{ flex: 1 }}
-        >
-          {props.disableBackToClose !== true && Platform.OS !== "web" && (
-            <BottomSheetBackHandler />
-          )}
-          {Platform.OS === "web" && props.disableEscapeToClose !== true && (
-            <BottomSheetEscapeHandler
-              animationConfigs={props.animationConfigs}
-            />
-          )}
-          {props.children}
-        </View>
-      </ColorThemeProvider>
+      <BottomSheetKeyboardAwareScrollView>
+        <ColorThemeProvider theme={theme}>
+          <View
+            {...(Platform.OS === "web" && { ["aria-modal"]: true })}
+            style={{ flex: 1 }}
+          >
+            {props.disableBackToClose !== true && Platform.OS !== "web" && (
+              <BottomSheetBackHandler />
+            )}
+            {Platform.OS === "web" && props.disableEscapeToClose !== true && (
+              <BottomSheetEscapeHandler
+                animationConfigs={props.animationConfigs}
+              />
+            )}
+            {props.children}
+          </View>
+        </ColorThemeProvider>
+      </BottomSheetKeyboardAwareScrollView>
     </BottomSheetModal>
   );
 }

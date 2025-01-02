@@ -14,7 +14,7 @@ import { GlobalTaskContextProvider } from "@/context/globalTaskContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { useColor, useDarkMode } from "@/ui/color";
+import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -32,6 +32,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
+import * as NavigationBar from "expo-navigation-bar";
 import {
   Redirect,
   router,
@@ -158,6 +159,10 @@ export default function AppLayout() {
   }, [sidebarRef]);
 
   const theme = useColor(sessionData?.user?.profile?.theme || "mint");
+  useEffect(() => {
+    if (Platform.OS === "android")
+      NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.005));
+  }, [theme]);
 
   const routerTheme = {
     ...DefaultTheme,
