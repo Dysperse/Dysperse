@@ -233,7 +233,7 @@ export default function ChipInput({
       style={{
         fontSize: 25,
         fontFamily: "serifText800",
-        height,
+        height: "100%",
         color: theme[11],
         verticalAlign: "top",
         ...paddingStyles,

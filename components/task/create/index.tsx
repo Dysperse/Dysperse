@@ -21,6 +21,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
 import { useGlobalSearchParams, usePathname } from "expo-router";
@@ -466,11 +467,21 @@ const TimeSuggestion = forwardRef(
     const { type, id } = useGlobalSearchParams();
 
     useEffect(() => {
-      if (Platform.OS === "web") {
+      const setMessage = async () => {
         if (value !== "") hasTypedRef.current = true;
 
         const regex =
           /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
+
+        const attachmentSuggestion = await AsyncStorage.getItem(
+          "attachmentSuggestion"
+        );
+        const importantSuggestion = await AsyncStorage.getItem(
+          "importantSuggestion"
+        );
+        const noteSuggestion = await AsyncStorage.getItem("noteSuggestion");
+        const tagSuggestion = await AsyncStorage.getItem("tagSuggestion");
+        const tmwSuggestion = await AsyncStorage.getItem("tmwSuggestion");
 
         hintRef.current.setMessage(
           value.match(regex) && !value.includes("](time-prediction)") && date
@@ -504,39 +515,41 @@ const TimeSuggestion = forwardRef(
                 text: 'This task will appear in your "All tasks" view since it isn\'t part of any collection',
                 icon: "info",
               }
-            : isDirty && !value
+            : isDirty && !value && Platform.OS === "web"
             ? {
                 text: "Hit [backspace] to reset",
                 icon: "magic_button",
               }
-            : !localStorage.getItem("attachmentSuggestion")
+            : !attachmentSuggestion && Platform.OS === "web"
             ? {
                 text: "Type @ to attach something!",
                 icon: "emoji_objects",
               }
-            : !localStorage.getItem("importantSuggestion")
+            : !importantSuggestion && Platform.OS === "web"
             ? {
                 text: 'Type "!" to mark as important',
                 icon: "emoji_objects",
               }
-            : !localStorage.getItem("noteSuggestion")
+            : !noteSuggestion && Platform.OS === "web"
             ? {
                 text: "Hit shift+enter to add a note",
                 icon: "emoji_objects",
               }
-            : !localStorage.getItem("tagSuggestion")
+            : !tagSuggestion && Platform.OS === "web"
             ? {
                 text: "Type # to add a tag",
                 icon: "emoji_objects",
               }
-            : !localStorage.getItem("tmwSuggestion")
+            : !tmwSuggestion
             ? {
                 text: `Type "tmw" to set a due date for tomorrow`,
                 icon: "emoji_objects",
               }
             : false
         );
-      }
+      };
+
+      setMessage();
     }, [value, hintRef, date, label, pathname, type, isDirty, parentTask]);
     return null;
   }
@@ -618,7 +631,7 @@ function TaskNameInput({
             label={labelData}
             setValue={setValue}
           />
-          <View>
+          <View style={{ flex: 1 }}>
             <TimeSuggestion
               isDirty={isDirty}
               watch={watch}
@@ -706,6 +719,7 @@ function TaskNameInput({
                   },
                 }),
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
+                  console.log(e.key);
                   if (
                     !e.shiftKey &&
                     (e.key === "Enter" || e.nativeEvent.key === "Enter")
@@ -745,10 +759,10 @@ function TaskNameInput({
                       hintRef.current.setMessage(false);
                     }
                     if (value.includes("tmw")) {
-                      localStorage.setItem("tmwSuggestion", "true");
+                      AsyncStorage.setItem("tmwSuggestion", "true");
                     }
                     if (e.key === "#") {
-                      localStorage.setItem("tagSuggestion", "true");
+                      AsyncStorage.setItem("tagSuggestion", "true");
                     }
                   }
                 },
@@ -957,7 +971,7 @@ const CancelButton = memo(() => {
   return (
     <IconButton
       size={breakpoints.md ? 50 : 35}
-      variant="outlined"
+      variant="filled"
       icon="close"
       style={{ marginRight: "auto" }}
       onPress={() => forceClose()}
@@ -1101,8 +1115,6 @@ function SubTaskInformation({ watch, setValue }) {
 const TaskDescriptionInput = forwardRef(
   ({ watch, control, nameRef }: { watch; control; nameRef }, ref) => {
     const editorRef = useRef(null);
-
-    console.log(control);
 
     useImperativeHandle(ref, () => ({
       show: () => {
@@ -1454,8 +1466,7 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
   }, [message, animation]);
 
   return (
-    message &&
-    breakpoints.md && (
+    message && (
       <Animated.View
         style={[
           animatedStyles,
@@ -1471,6 +1482,9 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
       >
         <BlurView
           style={{
+            ...(Platform.OS === "android" && {
+              backgroundColor: theme[2],
+            }),
             flex: 1,
             paddingHorizontal: 15,
             paddingVertical: 7,
@@ -1550,7 +1564,9 @@ const CreateTask = forwardRef(
             backgroundColor: Platform.OS === "web" ? "transparent" : theme[1],
           }}
           maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
-          outerContent={<CreateTaskOuterContent ref={hintRef} />}
+          outerContent={
+            breakpoints.md && <CreateTaskOuterContent ref={hintRef} />
+          }
         >
           <BottomSheetContent
             ref={formRef}
