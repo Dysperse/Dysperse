@@ -44,6 +44,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Animated,
   InteractionManager,
+  Keyboard,
   Platform,
   Pressable,
   useWindowDimensions,
@@ -372,6 +373,7 @@ export default function AppLayout() {
                               ) : (
                                 <DrawerLayout
                                   ref={sidebarRef}
+                                  onDrawerOpen={() => Keyboard.dismiss()}
                                   useNativeAnimations={false}
                                   drawerLockMode={
                                     pathname.includes(
