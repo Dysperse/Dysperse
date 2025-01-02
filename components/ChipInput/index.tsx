@@ -1,7 +1,6 @@
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
-import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
 import { FC, useEffect, useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
 import { Keyboard, Platform, Pressable, View } from "react-native";
@@ -111,7 +110,6 @@ export default function ChipInput({
   inputProps?: any;
 }) {
   const theme = useColorTheme();
-  const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
 
   const paddingStyles = {
     paddingLeft: padding.left || 5,
@@ -119,14 +117,6 @@ export default function ChipInput({
     paddingTop: padding.top || 5,
     paddingBottom: padding.bottom || 5,
   };
-
-  useEffect(() => {
-    shouldHandleKeyboardEvents.value = true;
-    return () => {
-      shouldHandleKeyboardEvents.value = false;
-    };
-  }, [shouldHandleKeyboardEvents]);
-  //#endregion
 
   return Platform.OS === "web" ? (
     <MentionsInput

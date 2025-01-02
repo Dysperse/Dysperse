@@ -97,7 +97,7 @@ export const LabelEditModal = memo(function LabelEditModal({
           style={{
             padding: 20,
             gap: 20,
-            paddingTop: 5,
+            paddingTop: 20,
             paddingHorizontal: 30,
           }}
         >
@@ -114,10 +114,10 @@ export const LabelEditModal = memo(function LabelEditModal({
                 <EmojiPicker setEmoji={onChange}>
                   <IconButton
                     variant="outlined"
-                    size={50}
+                    size={60}
                     style={{ borderStyle: "dashed" }}
                   >
-                    <Emoji emoji={value || "1f4ad"} size={50} />
+                    <Emoji emoji={value || "1f4ad"} size={30} />
                   </IconButton>
                 </EmojiPicker>
               )}
@@ -145,7 +145,6 @@ export const LabelEditModal = memo(function LabelEditModal({
                   weight={900}
                   onChangeText={onChange}
                   value={value}
-                  bottomSheet
                   onSubmitEditing={handleButtonClick}
                 />
               )}
@@ -153,7 +152,7 @@ export const LabelEditModal = memo(function LabelEditModal({
               control={control}
             />
           </View>
-          <View style={{ width: "100%", gap: 10 }}>
+          <View style={{ width: "100%", gap: 10, marginTop: 20 }}>
             <Text variant="eyebrow">Color</Text>
             <Controller
               control={control}

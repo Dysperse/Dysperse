@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { Platform } from "react-native";
 import {
   OtpInput as OriginalOTPInput,
   OtpInputProps,
@@ -36,7 +37,11 @@ const OtpInput = forwardRef(
             fontFamily: "body_500",
             color: theme[11],
             fontSize: props.secureTextEntry ? 50 : undefined,
-            marginTop: props.secureTextEntry ? 10 : undefined,
+            marginTop: props.secureTextEntry
+              ? Platform.OS === "web"
+                ? 10
+                : 30
+              : undefined,
             height: 50,
             lineHeight: 50,
           },

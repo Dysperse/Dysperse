@@ -47,7 +47,6 @@ const Search = ({ query, setQuery, autoFocus }) => {
       enterKeyHint="search"
       value={query}
       onChangeText={setQuery}
-      bottomSheet
       style={{
         backgroundColor: theme[3],
         paddingHorizontal: 20,

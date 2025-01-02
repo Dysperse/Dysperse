@@ -137,7 +137,6 @@ export function EmojiPicker({
                   paddingHorizontal: 20,
                   fontSize: 20,
                 }}
-                bottomSheet
                 variant="filled+outlined"
                 placeholder="Find an emoji…"
                 onChangeText={(e) => setQuery(e.toLowerCase())}

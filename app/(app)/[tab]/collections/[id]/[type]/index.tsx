@@ -417,27 +417,35 @@ function PasswordPrompt({ mutate }) {
           marginHorizontal: "auto",
         }}
       >
-        <FadeOnRender animateUp style={{ justifyContent: "center" }}>
-          <Text
-            style={{
-              fontSize: 35,
-              fontFamily: "serifText800",
-              textAlign: "center",
-              marginBottom: 5,
-            }}
-          >
-            Password required
-          </Text>
-          <Text
-            style={{
-              fontSize: 18,
-              textAlign: "center",
-              marginBottom: 15,
-            }}
-            weight={300}
-          >
-            Enter the PIN code to unlock this collection
-          </Text>
+        <FadeOnRender
+          animateUp
+          style={{
+            justifyContent: "center",
+            gap: breakpoints.md ? 20 : 10,
+          }}
+        >
+          <View>
+            <Text
+              style={{
+                fontSize: breakpoints.md ? 35 : 30,
+                fontFamily: "serifText800",
+                textAlign: "center",
+                marginBottom: 5,
+              }}
+            >
+              Password required
+            </Text>
+            <Text
+              style={{
+                fontSize: breakpoints.md ? 18 : undefined,
+                textAlign: "center",
+                marginBottom: 15,
+              }}
+              weight={300}
+            >
+              Enter the PIN code to unlock this collection
+            </Text>
+          </View>
           <Animated.View style={errorAnimationStyle}>
             <OtpInput
               ref={ref}

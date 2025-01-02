@@ -289,7 +289,7 @@ function AiExplanation({ task, updateTask }) {
   );
 }
 
-function TaskNameInput({ bottomSheet }) {
+function TaskNameInput() {
   const breakpoints = useResponsiveBreakpoints();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const theme = useColorTheme();
@@ -313,7 +313,6 @@ function TaskNameInput({ bottomSheet }) {
     <>
       <AutoSizeTextArea
         ref={inputRef}
-        bottomSheet={bottomSheet}
         onBlur={() => {
           if (name === task.name) return;
           setName(name.replaceAll("\n", ""));
@@ -816,7 +815,7 @@ export function TaskDrawerContent({
             )}
             {!task.parentTaskId && <WorkloadChip />}
           </View>
-          <TaskNameInput bottomSheet={Boolean(forceClose)} />
+          <TaskNameInput />
           <TaskDetails />
         </View>
       </SafeScrollView>

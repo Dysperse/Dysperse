@@ -119,7 +119,6 @@ function LocationPicker({ task, updateTask }: { task: any; updateTask: any }) {
   return (
     <View style={{ gap: 10 }}>
       <TextField
-        bottomSheet
         inputRef={inputRef}
         variant="filled+outlined"
         blurOnSubmit={false}

@@ -88,7 +88,6 @@ export function TaskAttachmentPicker({
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
-            bottomSheet
             inputRef={inputRef}
             placeholder={placeholder}
             variant="filled+outlined"
@@ -123,7 +122,6 @@ export function TaskAttachmentPicker({
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextField
-              bottomSheet
               placeholder="Name (optional)"
               variant="filled+outlined"
               onSubmitEditing={submit}
@@ -175,3 +173,4 @@ export function TaskAttachmentPicker({
     </View>
   );
 }
+

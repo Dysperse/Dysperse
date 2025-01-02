@@ -7,10 +7,10 @@ import {
 } from "@gorhom/bottom-sheet";
 import { RefObject, memo, useEffect } from "react";
 import { Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { ColorThemeProvider, useColorTheme } from "../color/theme-provider";
 import { BottomSheetBackHandler } from "./BottomSheetBackHandler";
 import { BottomSheetBackdropComponent } from "./BottomSheetBackdropComponent";
-import BottomSheetKeyboardAwareScrollView from "./BottomSheetKeyboardAwareScrollView";
 
 export interface DBottomSheetProps extends BottomSheetProps {
   sheetRef: RefObject<BottomSheetModal>;
@@ -79,7 +79,6 @@ function BottomSheet(props: DBottomSheetProps) {
 
   return (
     <BottomSheetModal
-      keyboardBlurBehavior="restore"
       animationConfigs={animationConfigs}
       stackBehavior="push"
       enableDynamicSizing={false}
@@ -104,12 +103,12 @@ function BottomSheet(props: DBottomSheetProps) {
       handleIndicatorStyle={{ backgroundColor: theme[5], width: 50 }}
       {...props}
     >
-      <BottomSheetKeyboardAwareScrollView>
-        <ColorThemeProvider theme={theme}>
-          <View
-            {...(Platform.OS === "web" && { ["aria-modal"]: true })}
-            style={{ flex: 1 }}
-          >
+      <ColorThemeProvider theme={theme}>
+        <View
+          {...(Platform.OS === "web" && { ["aria-modal"]: true })}
+          style={{ flex: 1 }}
+        >
+          <KeyboardAvoidingView behavior="padding">
             {props.disableBackToClose !== true && Platform.OS !== "web" && (
               <BottomSheetBackHandler />
             )}
@@ -119,9 +118,9 @@ function BottomSheet(props: DBottomSheetProps) {
               />
             )}
             {props.children}
-          </View>
-        </ColorThemeProvider>
-      </BottomSheetKeyboardAwareScrollView>
+          </KeyboardAvoidingView>
+        </View>
+      </ColorThemeProvider>
     </BottomSheetModal>
   );
 }

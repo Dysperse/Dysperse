@@ -234,7 +234,6 @@ function EditAttachment({
           rules={{ required: true }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextField
-              bottomSheet
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -260,7 +259,6 @@ function EditAttachment({
             <Controller
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
-                  bottomSheet
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
@@ -476,6 +474,7 @@ function TaskDateMenu() {
       <MenuPopover
         menuProps={{
           style: { marginRight: "auto" },
+          rendererProps: { placement: "top" },
         }}
         containerStyle={{
           [breakpoints.md ? "marginTop" : "marginBottom"]: -10,
@@ -548,16 +547,14 @@ function TaskDateMenu() {
                       />
                     ),
                   },
-
-                !task.recurrenceRule &&
-                  task.start && {
-                    icon: "close",
-                    text: "Remove",
-                    callback: () => {
-                      updateTask("recurrenceRule", null);
-                      updateTask("start", null);
-                    },
+                (task.recurrenceRule || task.start) && {
+                  icon: "close",
+                  text: "Remove",
+                  callback: () => {
+                    updateTask("recurrenceRule", null);
+                    updateTask("start", null);
                   },
+                },
               ]
         }
       />

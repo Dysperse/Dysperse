@@ -160,7 +160,6 @@ export function CreateLabelModal({
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextField
-                    bottomSheet
                     placeholder="Label name"
                     onBlur={onBlur}
                     onChangeText={onChange}
