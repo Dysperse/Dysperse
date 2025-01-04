@@ -129,7 +129,6 @@ export default function ChipInput({
       }}
       {...inputProps}
       style={{
-        height,
         control: {
           fontSize: 35,
           flex: 1,

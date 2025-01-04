@@ -1362,7 +1362,7 @@ const BottomSheetContent = forwardRef(
               labelMenuRef={labelMenuRef}
               control={control}
             />
-            <View style={{ minHeight: 100 }}>
+            <View style={Platform.OS !== "web" && { minHeight: 100 }}>
               <TaskNameInput
                 descriptionRef={descriptionRef}
                 hintRef={hintRef}
