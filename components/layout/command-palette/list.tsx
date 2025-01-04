@@ -97,37 +97,36 @@ export const paletteItems = (
         },
       ],
     },
-    {
-      title: "Shared with me",
-      icon: "group",
-      items:
-        sharedCollections && Array.isArray(sharedCollections)
-          ? sharedCollections.map((access) => ({
-              hasSeen: access.hasSeen,
-              label: access.collection.name,
-              key: access.collection.id,
-              icon: "grid_view",
-              emoji: access.collection.emoji,
-              data: access.collection,
-              slug: `/[tab]/collections/[id]/[type]`,
-              params: { id: access.collection.id, type: "planner" },
-            }))
-          : [],
-    },
+    sharedCollections &&
+      sharedCollections.length > 0 && {
+        title: "Shared with me",
+        icon: "group",
+        items:
+          sharedCollections && Array.isArray(sharedCollections)
+            ? sharedCollections.map((access) => ({
+                hasSeen: access.hasSeen,
+                label: access.collection.name,
+                key: access.collection.id,
+                icon: "grid_view",
+                emoji: access.collection.emoji,
+                data: access.collection,
+                slug: `/[tab]/collections/[id]/[type]`,
+                params: { id: access.collection.id, type: "planner" },
+              }))
+            : [],
+      },
     {
       title: "Labels",
       icon: "label",
       items:
         labels && Array.isArray(labels)
-          ? sharedCollections.map((access) => ({
-              hasSeen: access.hasSeen,
-              label: access.collection.name,
-              key: access.collection.id,
+          ? labels.map((access) => ({
+              label: access.name,
+              key: access.id,
               icon: "grid_view",
-              emoji: access.collection.emoji,
-              data: access.collection,
+              emoji: access.emoji,
               slug: `/[tab]/labels/[id]`,
-              params: { id: access.collection.id, type: "planner" },
+              params: { id: access.id, type: "planner" },
             }))
           : [],
     },
@@ -137,7 +136,7 @@ export const paletteItems = (
       items: [
         {
           key: "onboarding",
-          label: "Reset onboarding",
+          label: "Reset tutorial",
           icon: "kid_star",
           slug: "/[tab]/welcome",
         },
@@ -145,3 +144,4 @@ export const paletteItems = (
     },
   ];
 };
+

@@ -31,8 +31,7 @@ const styles = StyleSheet.create({
     },
   },
   title: {
-    fontSize: 40,
-    lineHeight: 47,
+    fontSize: 35,
     textAlign: "center",
   },
   secondary: {
@@ -135,7 +134,12 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
         innerStyles={styles.container}
         sheetRef={ref}
       >
-        <Text style={[styles.title, { color: theme[11] }]} weight={600}>
+        <Text
+          style={[
+            styles.title,
+            { color: theme[11], fontFamily: "serifText700" },
+          ]}
+        >
           {props.title}
         </Text>
         <Text weight={500} style={[styles.secondary, { color: theme[11] }]}>
@@ -154,3 +158,4 @@ export default function ConfirmationModal(props: ConfirmationModalProps) {
     </>
   );
 }
+

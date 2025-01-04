@@ -59,6 +59,17 @@ const containerStyles = StyleSheet.create({
   },
 });
 
+export const handleLabelDelete = async (session, labelId) => {
+  try {
+    sendApiRequest(session, "DELETE", "space/labels/label", {
+      id: labelId,
+    });
+  } catch (e) {
+    console.log(e);
+    Toast.show({ type: "error" });
+  }
+};
+
 export const LabelDetails = ({
   setSelectedLabel,
   mutateList,
@@ -78,19 +89,17 @@ export const LabelDetails = ({
     { id: label?.id },
   ]);
 
-  const handleLabelDelete = async () => {
+  const handleDelete = async () => {
     try {
-      sendApiRequest(session, "DELETE", "space/labels/label", {
-        id: label.id,
-      });
+      handleLabelDelete(session, label.id);
       mutateList((d) => d.filter((f) => f.id !== label.id), {
         revalidate: false,
       });
       setSelectedLabel(null);
     } catch (e) {
+      mutateList();
       console.log(e);
       Toast.show({ type: "error" });
-      mutateList();
     }
   };
 
@@ -143,7 +152,7 @@ export const LabelDetails = ({
             <ConfirmationModal
               title="Delete label?"
               secondary="Items won't be deleted"
-              onSuccess={handleLabelDelete}
+              onSuccess={handleDelete}
               height={350}
             >
               <IconButton variant="outlined" size={50} icon="delete" />

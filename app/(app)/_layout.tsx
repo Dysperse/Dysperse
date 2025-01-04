@@ -411,7 +411,7 @@ export default function AppLayout() {
                   </View>
                 </PortalProvider>
               </MenuProvider>
-              <Toast topOffset={insets.top} config={toastConfig(theme)} />
+              <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
             </BottomSheetModalProvider>
           </GestureHandlerRootView>
         </ColorThemeProvider>

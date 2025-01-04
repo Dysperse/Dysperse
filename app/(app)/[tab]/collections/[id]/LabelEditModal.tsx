@@ -12,7 +12,7 @@ import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ReactElement, cloneElement, memo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { InteractionManager, Pressable, View } from "react-native";
+import { InteractionManager, Platform, Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export const LabelEditModal = memo(function LabelEditModal({
@@ -97,7 +97,7 @@ export const LabelEditModal = memo(function LabelEditModal({
           style={{
             padding: 20,
             gap: 20,
-            paddingTop: 20,
+            paddingTop: Platform.OS === "web" ? 0 : 20,
             paddingHorizontal: 30,
           }}
         >
@@ -152,7 +152,13 @@ export const LabelEditModal = memo(function LabelEditModal({
               control={control}
             />
           </View>
-          <View style={{ width: "100%", gap: 10, marginTop: 20 }}>
+          <View
+            style={{
+              width: "100%",
+              gap: 10,
+              marginTop: Platform.OS !== "web" && 20,
+            }}
+          >
             <Text variant="eyebrow">Color</Text>
             <Controller
               control={control}
@@ -163,7 +169,7 @@ export const LabelEditModal = memo(function LabelEditModal({
                     flexDirection: "row",
                     alignItems: "center",
                     flexWrap: "wrap",
-                    gap: 10,
+                    gap: 5,
                     width: "100%",
                   }}
                 >
@@ -176,7 +182,7 @@ export const LabelEditModal = memo(function LabelEditModal({
                         aspectRatio: 1,
                         borderRadius: 999,
                         backgroundColor: colors[color][6],
-                        borderWidth: 3,
+                        borderWidth: 2,
                         borderColor: colors[color][color === value ? 11 : 6],
                       })}
                     />

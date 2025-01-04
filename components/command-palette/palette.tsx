@@ -1,7 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useDarkMode } from "@/ui/color";
 import Modal from "@/ui/Modal";
-import { BlurView } from "expo-blur";
 import { memo } from "react";
 import { useWindowDimensions } from "react-native";
 import CommandPaletteContent from "./content";
@@ -21,24 +20,11 @@ const CommandPalette = memo(function CommandPalette() {
       maxBackdropOpacity={isDark ? 0.3 : undefined}
       animationConfigs={{ duration: 0.0001 }}
       maxWidth={breakpoints.md ? 900 : width}
-      innerStyles={{
-        backgroundColor: "transparent",
-      }}
     >
-      <BlurView
-        style={{ flex: 1 }}
-        intensity={60}
-        tint={
-          isDark
-            ? "systemUltraThinMaterialDark"
-            : "systemUltraThinMaterialLight"
-        }
-      >
-        <CommandPaletteContent
-          defaultFilter={defaultFilter}
-          handleClose={handleClose}
-        />
-      </BlurView>
+      <CommandPaletteContent
+        defaultFilter={defaultFilter}
+        handleClose={handleClose}
+      />
     </Modal>
   );
 });

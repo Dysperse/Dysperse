@@ -13,7 +13,6 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -50,11 +49,6 @@ const PaletteItem = memo(
       <ListItemButton
         style={{ paddingHorizontal: 10, marginLeft: -5 }}
         onPress={() => onCreate(item)}
-        backgroundColors={{
-          default: addHslAlpha(theme[9], preview?.key === item.key ? 0.1 : 0),
-          hover: addHslAlpha(theme[9], 0.1),
-          active: addHslAlpha(theme[9], 0.2),
-        }}
         onMouseEnter={() => {
           if (!breakpoints.md) return;
           if (preview?.key !== item.key) {
@@ -85,56 +79,38 @@ const PaletteItem = memo(
 const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
   const theme = useColorTheme();
   return (
-    <ScrollView
-      keyboardShouldPersistTaps="handled"
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{
-        gap: 10,
-        paddingBottom: 10,
-        paddingRight: 20,
-      }}
-      style={{
-        marginRight: -20,
-      }}
-    >
-      {filters.map(({ name, icon }) => (
-        <Chip
-          label={name}
-          icon={icon}
-          key={name}
-          onPress={() => {
-            if (filter === name) {
-              setFilter(null);
-            } else {
-              setFilter(name);
-            }
-          }}
-          outlined={filter !== name}
-          style={({ pressed, hovered }) => ({
-            backgroundColor:
-              filter !== null && filter !== name
-                ? pressed
-                  ? addHslAlpha(theme[9], 0.1)
-                  : hovered
-                  ? addHslAlpha(theme[9], 0.05)
-                  : "transparent"
-                : filter === name
-                ? addHslAlpha(theme[9], 0.1)
-                : pressed
-                ? addHslAlpha(theme[9], 0.1)
-                : hovered
-                ? addHslAlpha(theme[9], 0.05)
-                : "transparent",
-            zIndex: 99,
-            borderColor: addHslAlpha(
-              theme[9],
-              pressed ? 0.2 : hovered ? 0.15 : 0.1
-            ),
-          })}
-        />
-      ))}
-    </ScrollView>
+    <View style={{ height: 55, padding: 20, paddingBottom: 0 }}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          gap: 10,
+          paddingBottom: 10,
+          paddingRight: 20,
+        }}
+      >
+        {filters.map(({ name, icon }) => (
+          <Chip
+            label={name}
+            icon={icon}
+            key={name}
+            onPress={() => {
+              if (filter === name) {
+                setFilter(null);
+              } else {
+                setFilter(name);
+              }
+            }}
+            outlined={filter !== name}
+            style={[
+              { borderWidth: 1 },
+              filter === name && { backgroundColor: theme[5] },
+            ]}
+          />
+        ))}
+      </ScrollView>
+    </View>
   );
 });
 
@@ -147,6 +123,7 @@ function CommandPaletteList({
   filter,
   filters,
   onCreate,
+  setQuery,
 }: {
   query: any;
   preview: any;
@@ -156,10 +133,20 @@ function CommandPaletteList({
   filter: string;
   filters: any[];
   onCreate: any;
+  setQuery: any;
 }) {
   const { height } = useWindowDimensions();
+  const theme = useColorTheme();
+
   return (
     <View style={{ flex: 1 }}>
+      {filtered.length !== 0 && (
+        <PaletteFilters
+          filters={filters}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      )}
       <FlashList
         key={query}
         showsVerticalScrollIndicator={false}
@@ -174,42 +161,42 @@ function CommandPaletteList({
               height: Math.min(600, height / 1.5) - 120,
             }}
           >
-            <Image
-              source={{
-                uri: "https://assets.dysperse.com/thonk.svg",
-              }}
-              style={{ width: 487 / 6, height: 397 / 6 }}
-            />
+            <Icon size={50}>heart_broken</Icon>
             <Text
               style={{
                 textAlign: "center",
-                marginTop: 10,
-                opacity: 0.7,
                 fontSize: 20,
+                color: theme[11],
               }}
-              weight={700}
             >
-              We couldn't find anything matching your search
+              We couldn't find anything{"\n"}matching your search
             </Text>
+            <Button
+              variant="filled"
+              dense
+              containerStyle={{ marginBottom: -20 }}
+              onPress={() => {
+                setFilter(null);
+                setQuery("");
+              }}
+            >
+              <ButtonText>Clear filters</ButtonText>
+            </Button>
           </View>
         )}
         data={filtered}
-        ListHeaderComponent={() =>
-          filtered.length !== 0 && (
-            <PaletteFilters
-              filters={filters}
-              filter={filter}
-              setFilter={setFilter}
-            />
-          )
+        keyExtractor={(item, index) =>
+          (typeof item === "string" ? item : item.key) + index
         }
-        keyExtractor={(item) => (typeof item === "string" ? item : item.key)}
         estimatedItemSize={44}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={{ padding: 20, paddingTop: 0 }}
         renderItem={({ item }) => {
           if (typeof item === "string") {
             return (
-              <Text style={{ marginTop: 10 }} variant="eyebrow">
+              <Text
+                style={{ marginTop: 10, marginBottom: 3, marginLeft: 10 }}
+                variant="eyebrow"
+              >
                 {item}
               </Text>
             );
@@ -296,7 +283,7 @@ const PaletteHeader = memo(function PaletteHeader({
           alignItems: "center",
           paddingHorizontal: breakpoints.md ? 20 : 20,
           borderBottomWidth: 1,
-          borderColor: addHslAlpha(theme[9], 0.2),
+          borderColor: theme[5],
         }}
       >
         <Icon size={breakpoints.md ? 30 : 24}>search</Icon>
@@ -348,7 +335,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
         style={{
           flex: 1,
           borderLeftWidth: breakpoints.md ? 1 : 0,
-          borderColor: addHslAlpha(theme[9], 0.2),
+          borderColor: theme[5],
         }}
         contentContainerStyle={{
           minHeight: "100%",
@@ -519,21 +506,28 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   const { data: sharedCollections } = useSWR(["user/collectionAccess"]);
 
   const sections = paletteItems(collections, sharedCollections, labels);
-  const filters = sections
-    .map(({ title, icon }) => ({ name: title, icon }))
-    .filter((i) => i.name !== "All");
 
-  const flattened = sections
+  const filtered = sections
     .filter((section) => !filter || section.title === filter)
     .reduce((acc, curr) => {
-      acc.push(curr.title);
-      acc.push(...curr.items);
+      const items = fuzzysort
+        .go(query, curr.items, { keys: ["title", "label"], all: true })
+        .map((e) => e.obj);
+      if (items.length > 0) {
+        acc.push(curr.title);
+        acc.push(...items);
+      }
       return acc;
     }, []);
-
-  const filtered = fuzzysort
-    .go(query, flattened, { keys: ["title", "label"], all: true })
-    .map((e) => e.obj);
+  const filters = sections
+    .filter((section) => {
+      const items = fuzzysort
+        .go(query, section.items, { keys: ["title", "label"], all: true })
+        .map((e) => e.obj);
+      return items.length > 0;
+    })
+    .map(({ title, icon }) => ({ name: title, icon }))
+    .filter((i) => i.name !== "All");
 
   const breakpoints = useResponsiveBreakpoints();
 
@@ -599,6 +593,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
           >
             <CommandPaletteList
               query={query}
+              setQuery={setQuery}
               preview={preview}
               setPreview={handlePreviewChange}
               filtered={filtered}
@@ -609,7 +604,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
             />
           </KeyboardAvoidingView>
         )}
-        {(breakpoints.md || preview) && (
+        {(breakpoints.md || preview) && typeof preview !== "string" && (
           <CommandPalettePreview
             setPreview={setPreview}
             onCreate={onCreate}
