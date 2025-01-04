@@ -4,18 +4,17 @@ import { router } from "expo-router";
 export const COLLECTION_VIEWS = {
   list: {
     icon: "view_agenda",
-    description: "View all your tasks in a traditional to-do list format",
+    description: "The good old simple to-do list",
     type: "Category Based",
   },
   kanban: {
     icon: "view_kanban",
-    description: "Organize all your tasks by category",
+    description: "Organize tasks by category",
     type: "Category Based",
   },
   grid: {
     icon: "view_cozy",
-    description:
-      "Organize all your tasks by category, displayed in a neat grid view",
+    description: "Organize tasks in a grid by category",
     type: "Category Based",
   },
   skyline: {
@@ -25,27 +24,27 @@ export const COLLECTION_VIEWS = {
   },
   planner: {
     icon: "transition_slide",
-    description: "View all your tasks day by day",
+    description: "View tasks day by day",
     type: "Time Based",
   },
   stream: {
     icon: "whatshot",
-    description: "View all missed, upcoming, and completed tasks",
+    description: "See missed, upcoming, & completed tasks",
     type: "Time Based",
   },
   calendar: {
     icon: "calendar_today",
-    description: "View all your tasks in a traditional calendar view",
+    description: "The good old traditional calendar view",
     type: "Time Based",
   },
   workload: {
     icon: "exercise",
-    description: "Organize your tasks by an estimate of energy consumption",
+    description: "Sort tasks by an estimated difficulty",
     type: "Priority Based",
   },
   matrix: {
     icon: "target",
-    description: "View all your tasks by priority",
+    description: "Prioritize tasks by urgency and importance",
     type: "Priority Based",
   },
 };
@@ -54,11 +53,11 @@ export const paletteItems = (
   collections,
   sharedCollections,
   labels
-): { title: string; icon: string; items: any[] }[] => {
+): { title: string; icon?: string; items: any[] }[] => {
   return [
     {
       title: "All tasks",
-      icon: "filter_drama",
+      icon: "shapes",
       items: Object.keys(COLLECTION_VIEWS).map((key) => ({
         label: capitalizeFirstLetter(key),
         key,
@@ -70,7 +69,7 @@ export const paletteItems = (
     },
     {
       title: "Collections",
-      icon: "layers",
+      icon: "folder",
       items: [
         ...(collections && Array.isArray(collections)
           ? collections.map((collection) => ({

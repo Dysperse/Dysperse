@@ -50,6 +50,7 @@ const PaletteItem = memo(
       <ListItemButton
         style={{ paddingHorizontal: 10, marginLeft: -5 }}
         onPress={() => onCreate(item)}
+        variant={preview?.key === item.key ? "filled" : "default"}
         onMouseEnter={() => {
           if (!breakpoints.md) return;
           if (preview?.key !== item.key) {
@@ -257,6 +258,7 @@ function CommandPaletteList({
                   pointerEvents: "none",
                   justifyContent: "flex-end",
                   marginBottom: 10,
+                  marginHorizontal: -20,
                 }}
               >
                 <Button
@@ -425,7 +427,8 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
         }}
         contentContainerStyle={{
           minHeight: "100%",
-          paddingBottom: insets.bottom,
+          padding: 30,
+          paddingBottom: insets.bottom + 20,
         }}
         centerContent
       >
@@ -449,11 +452,8 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
               marginTop: "auto",
               flexDirection: "column",
               width: "100%",
-              paddingHorizontal: breakpoints.md ? 30 : 20,
               gap: 20,
-              paddingTop: 55,
             },
-            { alignItems: "center" },
           ]}
         >
           <Avatar
@@ -477,28 +477,18 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
               </Icon>
             )}
           </Avatar>
-          <View
-            style={[{ flex: breakpoints.md ? 1 : 0 }, { alignItems: "center" }]}
-          >
+          <View style={[{ flex: breakpoints.md ? 1 : 0, gap: 10 }]}>
             <Text
               style={{
-                fontSize: 40,
-                fontFamily: "serifText800",
-                lineHeight: 43,
-                textAlign: "center",
+                fontSize: 30,
+                fontFamily: "serifText700",
               }}
               weight={500}
             >
               {preview.label}
             </Text>
             {(preview?.data?.description || preview?.about) && (
-              <Text
-                style={[
-                  { marginTop: 5, fontSize: 20, opacity: 0.6 },
-                  { textAlign: "center" },
-                ]}
-                weight={300}
-              >
+              <Text style={[{ opacity: 0.6 }]}>
                 {preview?.data?.description || preview?.about}
               </Text>
             )}
@@ -509,7 +499,6 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
                   flexDirection: "row",
                   gap: 10,
                   alignItems: "center",
-                  marginTop: 10,
                 }}
               >
                 <ProfilePicture
@@ -521,7 +510,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
               </View>
             )}
 
-            <View style={{ flexDirection: "row", gap: 5, marginTop: 10 }}>
+            <View style={{ flexDirection: "row", gap: 5 }}>
               {preview.data?._count?.labels ? (
                 <Chip
                   style={{ backgroundColor: addHslAlpha(theme[9], 0.1) }}
@@ -550,7 +539,6 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
           style={{
             width: "100%",
             marginTop: "auto",
-            padding: 15,
           }}
         >
           <Button
