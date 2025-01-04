@@ -13,6 +13,7 @@ import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -79,7 +80,14 @@ const PaletteItem = memo(
 const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
   const theme = useColorTheme();
   return (
-    <View style={{ height: 55, padding: 20, paddingBottom: 0 }}>
+    <View
+      style={{
+        height: 55,
+        padding: 20,
+        paddingBottom: 0,
+        flexDirection: "row",
+      }}
+    >
       <ScrollView
         keyboardShouldPersistTaps="handled"
         horizontal
@@ -87,8 +95,9 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
         contentContainerStyle={{
           gap: 10,
           paddingBottom: 10,
-          paddingRight: 20,
+          paddingRight: 60,
         }}
+        style={{ marginRight: -60 }}
       >
         {filters.map(({ name, icon }) => (
           <Chip
@@ -110,6 +119,18 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
           />
         ))}
       </ScrollView>
+      <LinearGradient
+        colors={["transparent", theme[2]]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{
+          height: 35,
+          width: 60,
+          marginRight: -20,
+          pointerEvents: "none",
+          zIndex: 99,
+        }}
+      />
     </View>
   );
 });
@@ -124,6 +145,8 @@ function CommandPaletteList({
   filters,
   onCreate,
   setQuery,
+  showMore,
+  setshowMore,
 }: {
   query: any;
   preview: any;
@@ -134,6 +157,8 @@ function CommandPaletteList({
   filters: any[];
   onCreate: any;
   setQuery: any;
+  showMore: string[];
+  setshowMore: (e) => void;
 }) {
   const { height } = useWindowDimensions();
   const theme = useColorTheme();
@@ -147,9 +172,18 @@ function CommandPaletteList({
           setFilter={setFilter}
         />
       )}
+      <LinearGradient
+        colors={[theme[2], "transparent"]}
+        style={{
+          height: 35,
+          pointerEvents: "none",
+          marginBottom: -35,
+          zIndex: 99,
+          marginTop: 10,
+        }}
+      />
       <FlashList
         key={query}
-        showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={() => (
           <View
@@ -189,16 +223,68 @@ function CommandPaletteList({
           (typeof item === "string" ? item : item.key) + index
         }
         estimatedItemSize={44}
-        contentContainerStyle={{ padding: 20, paddingTop: 0 }}
-        renderItem={({ item }) => {
+        contentContainerStyle={{ padding: 20 }}
+        renderItem={({ item, index }) => {
           if (typeof item === "string") {
             return (
               <Text
-                style={{ marginTop: 10, marginBottom: 3, marginLeft: 10 }}
+                style={{
+                  marginTop: index === 0 ? 0 : 10,
+                  marginBottom: 3,
+                  marginLeft: 10,
+                }}
                 variant="eyebrow"
               >
                 {item}
               </Text>
+            );
+          } else if (item.showMore) {
+            return (
+              <LinearGradient
+                colors={
+                  showMore.includes(item.category)
+                    ? ["transparent", "transparent"]
+                    : [
+                        "transparent",
+                        addHslAlpha(theme[2], 0.65),
+                        addHslAlpha(theme[2], 0.8),
+                        theme[2],
+                      ]
+                }
+                style={{
+                  height: 75,
+                  marginTop: showMore.includes(item.category) ? -30 : -75,
+                  pointerEvents: "none",
+                  justifyContent: "flex-end",
+                  marginBottom: 10,
+                }}
+              >
+                <Button
+                  containerStyle={{ marginHorizontal: "auto" }}
+                  textStyle={{ opacity: 0.8 }}
+                  iconStyle={{ opacity: 0.8 }}
+                  style={{ paddingHorizontal: 20, gap: 10, paddingRight: 15 }}
+                  dense
+                  pointerEvents="auto"
+                  variant="outlined"
+                  text={
+                    showMore.includes(item.category) ? "See less" : "See all"
+                  }
+                  icon={
+                    showMore.includes(item.category)
+                      ? "expand_less"
+                      : "expand_more"
+                  }
+                  iconPosition="end"
+                  onPress={() => {
+                    setshowMore((prev) =>
+                      prev.includes(item.category)
+                        ? prev.filter((e) => e !== item.category)
+                        : [...prev, item.category]
+                    );
+                  }}
+                />
+              </LinearGradient>
             );
           } else {
             return (
@@ -507,6 +593,8 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
 
   const sections = paletteItems(collections, sharedCollections, labels);
 
+  const [showMore, setShowMore] = useState<string[]>([]);
+
   const filtered = sections
     .filter((section) => !filter || section.title === filter)
     .reduce((acc, curr) => {
@@ -515,10 +603,22 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
         .map((e) => e.obj);
       if (items.length > 0) {
         acc.push(curr.title);
-        acc.push(...items);
+        if (query === "" && items.length > 6 && !filter) {
+          acc.push(
+            ...items.slice(0, showMore.includes(curr.title) ? items.length : 6),
+            {
+              showMore: true,
+              category: curr.title,
+              key: curr.title + "more",
+            }
+          );
+        } else {
+          acc.push(...items);
+        }
       }
       return acc;
     }, []);
+
   const filters = sections
     .filter((section) => {
       const items = fuzzysort
@@ -597,6 +697,8 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
               preview={preview}
               setPreview={handlePreviewChange}
               filtered={filtered}
+              showMore={showMore}
+              setshowMore={setShowMore}
               filter={filter}
               setFilter={setFilter}
               filters={filters}

@@ -88,7 +88,9 @@ const JumpToButton = memo(function JumpToButton() {
 
   const onOpen = () => {
     if (!breakpoints.md) sidebarRef.current?.closeDrawer();
-    InteractionManager.runAfterInteractions(handleOpen);
+    if (Platform.OS !== "web")
+      InteractionManager.runAfterInteractions(handleOpen);
+    else handleOpen();
   };
 
   useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
@@ -118,7 +120,7 @@ const JumpToButton = memo(function JumpToButton() {
         android_ripple={{ color: theme[7] }}
         icon="add"
         bold
-        text="Open"
+        text="New tab"
       />
     </View>
   );

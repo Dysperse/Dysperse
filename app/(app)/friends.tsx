@@ -448,9 +448,7 @@ export default function Page() {
       </View>
       <ButtonGroup
         containerStyle={{ backgroundColor: "transparent", borderRadius: 0 }}
-        buttonTextStyle={{
-          color: theme[11],
-        }}
+        buttonTextStyle={{ color: theme[11] }}
         buttonStyle={{
           borderBottomWidth: 0,
         }}
