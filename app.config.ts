@@ -24,6 +24,9 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       },
       assetBundlePatterns: ["**/*"],
       ios: {
+        bundleIdentifier: IS_DEV
+          ? "com.dev.app.dysperse.com"
+          : "com.app.dysperse.com",
         supportsTablet: true,
       },
       android: {

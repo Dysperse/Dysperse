@@ -118,7 +118,7 @@ const JumpToButton = memo(function JumpToButton() {
         android_ripple={{ color: theme[7] }}
         icon="add"
         bold
-        text="New tab"
+        text="Open"
       />
     </View>
   );

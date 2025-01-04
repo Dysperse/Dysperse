@@ -108,7 +108,10 @@ function BottomSheet(props: DBottomSheetProps) {
           {...(Platform.OS === "web" && { ["aria-modal"]: true })}
           style={{ flex: 1 }}
         >
-          <KeyboardAvoidingView behavior="padding">
+          <KeyboardAvoidingView
+            behavior="padding"
+            style={Platform.OS === "web" && { flex: 1 }}
+          >
             {props.disableBackToClose !== true && Platform.OS !== "web" && (
               <BottomSheetBackHandler />
             )}

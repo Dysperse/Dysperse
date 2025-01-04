@@ -17,7 +17,7 @@ export default function Page() {
       shorcuts: [
         {
           keys: "ctrl+t",
-          action: "New tab",
+          action: "Open",
         },
         {
           keys: "ctrl+tab",
