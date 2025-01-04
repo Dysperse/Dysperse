@@ -338,13 +338,15 @@ const PaletteHeader = memo(function PaletteHeader({
             Cancel
           </Text>
         ) : (
-          <Icon bold style={{ transform: [{ translateX: 10 }] }}>
-            close
-          </Icon>
+          !query && (
+            <Icon bold style={{ transform: [{ translateX: 10 }] }}>
+              close
+            </Icon>
+          )
         )}
       </TouchableOpacity>
     ),
-    [handleClose, theme, breakpoints]
+    [handleClose, theme, breakpoints, query]
   );
   const handleKeyPress = (e) => {
     if (Platform.OS === "web") {
@@ -436,11 +438,10 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
           <IconButton
             icon="arrow_back_ios_new"
             onPress={handleClose}
-            size={55}
-            variant="outlined"
+            size={40}
             style={{
               position: "absolute",
-              top: 20,
+              top: 30,
               left: 20,
               zIndex: 100,
             }}
