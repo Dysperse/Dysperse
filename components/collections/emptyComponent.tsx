@@ -25,9 +25,8 @@ function InspireMe({ labelId }) {
   const [opened, setOpened] = React.useState(false);
 
   const { data, error } = useSWR(
-    !opened
-      ? null
-      : [
+    opened
+      ? [
           "ai/task-inspiration",
           {},
           process.env.EXPO_PUBLIC_API_URL,
@@ -35,7 +34,8 @@ function InspireMe({ labelId }) {
             method: "POST",
             body: JSON.stringify({ boardId: collection.id, labelId }),
           },
-        ],
+        ]
+      : null,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -58,8 +58,8 @@ function InspireMe({ labelId }) {
         textStyle={{ fontFamily: "body_600" }}
         icon="magic_button"
         onPress={() => {
-          ref.current.present();
           setOpened(true);
+          ref.current.present();
         }}
       />
 
