@@ -1,16 +1,14 @@
-![https://cloud-qqryb5bew-hack-club-bot.vercel.app/0human__1280_x_800_px_.png](https://cloud-qqryb5bew-hack-club-bot.vercel.app/0human__1280_x_800_px_.png)
+# ✌️ Dysperse
 
-# Dysperse
-
-Productivity, reimagined
+## Master your momentum
 
 > [!IMPORTANT]  
 > This repository contains versions from November 26, 2023 onwards, marking our transition to React Native. For access to earlier versions of Dysperse, please refer to the commit history before November 26, 2023 in our original [Dysperse/API](https://github.com/Dysperse/API) repository. Please note that the old repository is now used for server-side version control.
 
-# **Quick links**
+<!-- # **Quick links**
 
-- [Homepage](https://dysperse.com)
-- [Dysperse dashboard](https://my.dysperse.com)
+- [Home page](https://dysperse.com)
+- [Launch app](https://app.dysperse.com)
 - [Status](https://status.dysperse.com)
 - [Blog](https://blog.dysperse.com)
 
@@ -20,96 +18,107 @@ Productivity, reimagined
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
 
-<br />
+<br /> -->
 
-# **Introduction**
+Your flexible, customizable productivity companion that adapts to your workflow.
 
-Dysperse is a revolutionary all-in-one unified productivity platform designed to enhance your efficiency and streamline your tasks. With a comprehensive suite of features, Dysperse empowers users with an array of tools to boost their productivity, track habits, collaborate seamlessly, and manage their tasks effectively. No matter your background or responsibilities – whether a high school student, college attendee, or working professional – Dysperse caters to your needs with its versatile and highly customizable interface.
+## What is Dysperse? ✨
 
-# **Key features**
+Dysperse is a next-generation productivity app that breaks free from rigid structures. Whether you're a student juggling assignments, a professional managing projects, or someone planning their next adventure, Dysperse molds itself to your unique way of working.
 
-- **Tasks**
+## Key Features 🌟
 
-  - Dysperse's robust task management system allows you to efficiently organize your to-do lists, ensuring nothing falls through the cracks.
-  - Customize tasks with various features, including adding notes, locations, calls, and attachments.
-  - Sort tasks within both the perspectives (agenda) and kanban boards to align with your preferences.
-  - Search tasks effortlessly to quickly find what you need.
+### Task Management Made Simple
 
-- **Agenda**
+- Create tasks naturally through voice or text input
+- Smart labeling system with AI-powered categorization (via Sidekick)
+- Rich task content: add notes, headings, images, code blocks, and more
+- Natural language processing understands inputs like "tmw at 5"
 
-  - Experience unparalleled organization with Dysperse's agenda feature, equipped with three unique "perspectives": days, weeks, and months.
-  - Accompanying the agenda is a color-coded task overview in the sidebar, offering instant insights into your upcoming tasks.
-  - Leverage productivity insights to gain analytics that reveal your most productive periods.
+### Collections That Work Your Way 🎯
 
-- **Kanban boards**
+Transform how you view and organize your tasks with nine unique views:
 
-  - Dysperse offers an extensive array of kanban board templates to tailor your task management process.
-  - Customize board names, descriptions, categories, columns, and their respective names, emojis, and order.
-  - Foster collaboration by inviting others to boards with read-only or member permissions for designated timeframes.
+**Category-focused Views:**
 
-- **Focus mode**
+- _List View_: The good old trusty to-do list
+- _Kanban View_: Organize tasks by category
+- _Grid View_: Organize tasks in a grid by category
 
-  - Elevate your focus and reduce overwhelm with Dysperse's unique focus mode for the agenda.
-  - Blur out tasks from other days to maintain a clear and manageable to-do list.
-  - Enjoy additional widgets such as weather, sticky notes, and a focus timer to enhance your productivity.
+**Time-oriented Views:**
 
-- **Coach**
+- _Planner View_: View tasks day by day
+- _Skyline View_: Vision tasks in flexible time frames
+- _Calendar View_: The good old traditional calendar view
+- _Stream View_: See missed, upcoming, & completed tasks
 
-  - Unlock your potential with Dysperse's coach feature, complete with templates and mood-tracking capabilities.
-  - Engage in daily check-ins to monitor emotions, sleep, and stress levels.
-  - Track your progress over weeks and years to gauge your goal activity.
+**Priority-based Views:**
 
-- **Inventory**
+- _Matrix View_: Prioritize tasks by urgency and importance
+- _Workload View_: Sort tasks by an estimated difficulty
 
-  - Efficiently manage your belongings with the inventory feature, equipped with image recognition for swift creation of shareable lists.
-  - Personalize inventory items with stars, notes, categories, and custom rooms.
-  - Choose from default rooms like kitchen, bedroom, bathroom, or tailor rooms to your living space.
+Use labels across multiple collections - create one collection for all your AP courses (Calculus, English, Physics, APUSH) and another for just history classes (APUSH, World History). Share your collections as templates in the Dysverse, or add pin codes to keep them private.
 
-- **Friends**
+### Smart features 💡
 
-  - Connect with friends on Dysperse to instantly view their statuses – available, busy, away, or offline.
-  - Create profiles and synchronize contacts and Spotify accounts to enhance your social interactions.
-  - Personalize profiles with images, bios, birthdays, names, usernames, locations, hobbies, and working hours.
+- **Clean Home Interface**: Focus on what matters with goals, daily planning, insights, and friend connections
+- **Chrome Extension**: Seamlessly save web pages as tasks
+- **Email Integration**: Forward emails to your todo list with AI-generated actionable summaries
+- **Focus Panel**: Boost productivity with widgets like weather, Spotify, pomodoro timer, and more
+- **Browser-like Navigation**: Switch between collections using familiar tab mechanics
 
-- **Group collaboration**
+### Powerful Customization 🎨
 
-  - Dysperse facilitates collaborative efforts through group functionalities.
-  - Invite members to groups and collaborate on shared planners and inventory lists.
-  - Customize group details including name, color, and type (dorm, apartment, home, study group).
-  - Each group is allocated 500 "credits" of storage space, calculated based on tasks and items.
+- 32 stunning themes to match your style
+- Keyboard shortcuts for power users
+- Flexible collection sharing and collaboration
+- Multiple view options for every type of organization
 
-- **Additional features**
-  - Enjoy a secure experience with two-factor authentication (2FA) and data encryption using AES 256 GCM encryption.
-  - Access Dysperse seamlessly across devices, with a progressive web app compatible with mobile devices.
-  - Choose from over 30 customizable themes, including a dark mode, to tailor the app to your preferences.
-  - Integrate Dysperse with Spotify, Google Calendar, and Canvas to further streamline your workflow.
-  - Benefit from push notifications that remind you of tasks and prompt you to achieve daily goals.
-  - Easily log in on desktop by scanning a QR code displayed on your signed-in phone.
+### Security First 🔒
 
-# **Screenshots**
+- Passkey support
+- Google authentication
+- Two-factor authentication
+- QR code login for desktop
+- Remote device logout
 
-|                                                            |                                                            |
-| ---------------------------------------------------------- | ---------------------------------------------------------- |
-| ![Screenshot 1](https://my.dysperse.com/screenshots/1.png) | ![Screenshot 2](https://my.dysperse.com/screenshots/2.png) |
-| ![Screenshot 3](https://my.dysperse.com/screenshots/3.png) | ![Screenshot 4](https://my.dysperse.com/screenshots/4.png) |
-| ![Screenshot 5](https://my.dysperse.com/screenshots/5.png) | ![Screenshot 6](https://my.dysperse.com/screenshots/6.png) |
-| ![Screenshot 7](https://my.dysperse.com/screenshots/7.png) | ![Screenshot 8](https://my.dysperse.com/screenshots/8.png) |
+### Integrations 🔄
 
-# **Tech stack**
+- Canvas
+- Spotify
+- Apple Calendar
+- Google Calendar
+- Outlook Calendar
 
-- Dysperse is built using Next.js, React, and Material-UI.
-- The platform is deployed on Vercel and Cloudflare to ensure optimal performance.
-- Dysperse offers a range of integration options and features keyboard shortcuts for enhanced desktop usability.
+## Getting Started 🏁
 
-# **Conclusion**
+1. Install Dysperse from the Chrome Web Store
+2. Choose your preferred login method
+3. Create your first task (just hit the space bar!)
+4. Organize tasks into collections
+5. Customize your view and workflow
 
-Dysperse stands as a versatile, minimalistic, and highly customizable productivity app designed to accommodate users from diverse backgrounds and responsibilities. With its intuitive design, robust feature set, and focus on collaboration and personalization, Dysperse is poised to transform how users approach their daily tasks and achieve their goals. Whether you're a student or a professional, Dysperse empowers you to take control of your productivity journey.
+## Perfect For... 📋
 
-# **Sponsors**
+- Students organizing coursework
+- Professionals managing projects
+- Teams collaborating on tasks
+- Event planners coordinating details
+- Anyone who wants a flexible todo system
+
+## Ready to Transform Your Productivity?
+
+Start organizing your life with Dysperse today - where productivity meets flexibility!
+
+---
+
+_Dysperse: Your tasks, your way._ ✨
+
+# Sponsors
 
 Dysperse wouldn't have been able to run without our amazing sponsors! <3
 
-| [Vercel](https://vercel.com?utm_source=dysperse&utm_campaign=oss)                                                                                              | [Cloudflare](https://cloudflare.com/?utm_source=dysperse)                                            | [Neon](https://neon.tech?utm_source=dysperse)                                             |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [![image](https://github.com/Dysperse/Dysperse/assets/77016441/a1432962-69f1-4efb-8b5c-6fdbc6e8cc12)](https://vercel.com?utm_source=dysperse&utm_campaign=oss) | [![image](https://dysperse.com/sponsors/cloudflare.png)](https://cloudflare.com?utm_source=dysperse) | [![image](https://dysperse.com/sponsors/neon.png)](https://neon.tech?utm_source=dysperse) |
+| [Cloudflare](https://cloudflare.com/?utm_source=dysperse)                                            | [Neon](https://neon.tech?utm_source=dysperse)                                             |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [![image](https://dysperse.com/sponsors/cloudflare.png)](https://cloudflare.com?utm_source=dysperse) | [![image](https://dysperse.com/sponsors/neon.png)](https://neon.tech?utm_source=dysperse) |
 
