@@ -568,6 +568,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
 
 export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   const { sessionToken } = useUser();
+  const theme = useColorTheme();
   const { mutate } = useSWR(["user/tabs"]);
 
   const [query, setQuery] = useState("");
@@ -695,13 +696,35 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
             />
           </KeyboardAvoidingView>
         )}
-        {(breakpoints.md || preview) && typeof preview !== "string" && (
+        {(breakpoints.md || preview) && typeof preview !== "string" ? (
           <CommandPalettePreview
             setPreview={setPreview}
             onCreate={onCreate}
             preview={preview}
             loading={loading}
           />
+        ) : (
+          breakpoints.md && (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                borderLeftWidth: 1,
+                borderColor: theme[5],
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: theme[11],
+                  opacity: 0.2,
+                }}
+              >
+                Hover on an item to learn more about it
+              </Text>
+            </View>
+          )
         )}
       </View>
     </View>
