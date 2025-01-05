@@ -3,8 +3,9 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useDarkMode } from "@/ui/color";
+import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
@@ -25,6 +26,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
+    lineHeight: 55,
     marginTop: "auto",
     fontFamily: "serifText700",
   },
@@ -41,6 +43,33 @@ export const styles = StyleSheet.create({
   },
   buttonText: { fontSize: 20 },
 });
+
+function Weather({ weatherCode, isNight, icon, temp }) {
+  const weatherDescription =
+    weatherCodes[weatherCode][isNight ? "night" : "day"];
+  const theme = useColor(weatherDescription.colorTheme);
+
+  return (
+    <Text
+      style={[
+        styles.title,
+        {
+          color: theme[11],
+          fontSize: 40,
+          backgroundColor: theme[6],
+          paddingHorizontal: 5,
+          borderRadius: 10,
+        },
+      ]}
+      numberOfLines={1}
+    >
+      <Icon size={40} style={{ verticalAlign: "middle", color: theme[11] }}>
+        {icon}
+      </Icon>
+      {temp}°
+    </Text>
+  );
+}
 
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
@@ -78,6 +107,9 @@ export default function Page() {
     planData?.device?.continent?.names?.en;
   const temp = planData?.weather?.current?.temperature_2m;
 
+  const orange = useColor("orange");
+  const gray = useColor("gray");
+
   const icon =
     weatherCodes[planData?.weather?.current?.weather_code]?.[
       planData?.weather?.current?.is_day ? "day" : "night"
@@ -89,54 +121,104 @@ export default function Page() {
       style={styles.container}
     >
       <SystemBars style="light" />
+      {!planData ? (
+        <Spinner />
+      ) : (
+        <Text
+          style={[
+            styles.title,
+            {
+              paddingHorizontal: 20,
+              fontSize: 40,
+              color: theme[11],
+            },
+          ]}
+        >
+          {greeting}, {session.user.profile.name.split(" ")[0]}.{"\n"}It's{" "}
+          <Text
+            style={[
+              styles.title,
+              {
+                color: orange[11],
+                fontSize: 40,
+                backgroundColor: orange[6],
+                paddingHorizontal: 5,
+                borderRadius: 10,
+              },
+            ]}
+            numberOfLines={1}
+          >
+            <Icon
+              style={{
+                verticalAlign: "middle",
+                marginRight: 5,
+                color: orange[11],
+              }}
+              size={40}
+            >
+              access_time
+            </Icon>
+            {dayjs().format("h:mm A")}
+          </Text>{" "}
+          and currently{" "}
+          <Weather
+            weatherCode={planData?.weather?.current?.weather_code}
+            isNight={!planData?.weather?.current?.is_day}
+            icon={icon}
+            temp={temp}
+          />{" "}
+          in
+          <Text
+            style={[
+              styles.title,
+              {
+                color: gray[11],
+                fontSize: 40,
+                backgroundColor: gray[6],
+                paddingHorizontal: 5,
+                borderRadius: 10,
+              },
+            ]}
+            numberOfLines={1}
+          >
+            <Text
+              style={{
+                verticalAlign: "top",
+                marginLeft: 10,
+                lineHeight: 1,
+                marginRight: 15,
+              }}
+            >
+              <Image
+                source={{ uri: planData?.device?.preview }}
+                style={{
+                  borderRadius: 10,
+                  width: 30,
+                  height: 30,
+                  ...(Platform.OS === "web" &&
+                    dark && {
+                      filter: "invert(5) brightness(2) contrast(0.8)",
+                    }),
+                  transform: [{ rotate: "-15deg" }, { translateY: 5 }],
+                }}
+              />
+            </Text>
+            {locationName}
+          </Text>
+        </Text>
+      )}
       <Text
         style={[
-          styles.title,
+          styles.subtitle,
           {
-            fontSize: 40,
+            marginRight: "auto",
+            paddingHorizontal: 20,
+            marginTop: 20,
             color: theme[11],
           },
         ]}
       >
-        {greeting}, {session.user.profile.name.split(" ")[0]}.{"\n"}It's{" "}
-        {dayjs().format("h:mm A")} and currently{" "}
-        <Text
-          style={[styles.title, { color: theme[11], fontSize: 40 }]}
-          numberOfLines={1}
-        >
-          <Icon size={40} style={{ verticalAlign: "middle" }}>
-            {icon}
-          </Icon>
-        </Text>
-        {temp}° in
-        <Text
-          style={[styles.title, { color: theme[11], fontSize: 40 }]}
-          numberOfLines={1}
-        >
-          <Text
-            style={{
-              verticalAlign: "top",
-              marginLeft: 10,
-              lineHeight: 1,
-              marginRight: 15,
-            }}
-          >
-            <Image
-              source={{ uri: planData?.device?.preview }}
-              style={{
-                borderRadius: 10,
-                width: 30,
-                height: 30,
-                ...(Platform.OS === "web" &&
-                  dark && {
-                    filter: "invert(5) brightness(2) contrast(0.8)",
-                  }),
-                transform: [{ rotate: "-15deg" }, { translateY: 5 }],
-              }}
-            />
-          </Text>
-          {locationName}.
-        </Text>
+        Let's plan your day out
       </Text>
       <View style={styles.buttonContainer}>
         <Button
