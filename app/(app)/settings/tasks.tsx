@@ -290,9 +290,7 @@ function PrioritySettings({ updateUserSettings }: { updateUserSettings: any }) {
             <Text weight={900} style={{ fontSize: 20, marginBottom: 3 }}>
               Complex
             </Text>
-            <Text style={{ opacity: 0.6 }}>
-              Critical, urgent, normal, and low priority tasks
-            </Text>
+            <Text style={{ opacity: 0.6 }}>Four priority levels</Text>
           </Pressable>
         </View>
       </Section>
