@@ -1,7 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Button, ButtonText } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -11,6 +10,7 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import Turnstile from "@/ui/turnstile";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import dayjs from "dayjs";
@@ -34,7 +34,6 @@ import { rp } from "../(app)/settings/account/passkeys";
 import { authStyles } from "../../components/authStyles";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
-import Turnstile from "../../ui/turnstile";
 
 const styles = StyleSheet.create({
   title: { fontSize: 55, width: "100%", lineHeight: 55 },
@@ -178,32 +177,38 @@ function Email({
 }) {
   const theme = useColorTheme();
   const inputRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const onFinish = () => {
     setTimeout(handleSubmit, 100);
   };
 
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      inputRef.current.setAttribute("name", "email");
+      passwordRef.current.setAttribute("name", "password");
+    }
+  });
+
   return (
     <View style={{ flex: 1 }}>
       <IconButton
-        icon="arrow_back"
+        icon="west"
         size={55}
         onPress={() => setStep(0)}
-        variant="outlined"
         style={{ marginBottom: 0, margin: 10 }}
       />
-      <View style={{ padding: 20, gap: 10 }}>
-        <Emoji emoji="2709" size={60} style={{ alignSelf: "center" }} />
+      <View style={{ padding: 20, gap: 10, flex: 1 }}>
         <Text
           style={{
-            fontFamily: "serifText800",
-            fontSize: 40,
+            fontFamily: "serifText700",
+            fontSize: 30,
             color: theme[11],
-            textAlign: "center",
-            marginBottom: 10,
+            marginTop: "auto",
+            paddingHorizontal: 30,
           }}
         >
-          Enter your email
+          Sign in with email
         </Text>
         <Controller
           control={control}
@@ -214,11 +219,12 @@ function Email({
             <TextField
               style={{
                 height: 60,
-                fontFamily: "body_900",
-                borderRadius: 99,
+                fontFamily: "body_600",
+                borderRadius: 20,
                 fontSize: 20,
                 color: theme[11],
                 paddingHorizontal: 20,
+                marginHorizontal: 30,
               }}
               inputRef={inputRef}
               placeholder="Email or username..."
@@ -241,18 +247,20 @@ function Email({
             <TextField
               style={{
                 height: 60,
-                fontFamily: "body_900",
-                borderRadius: 99,
+                fontFamily: "body_600",
+                borderRadius: 20,
                 fontSize: 20,
                 color: theme[11],
                 paddingHorizontal: 20,
+                marginHorizontal: 30,
               }}
-              placeholder="Password"
+              placeholder="Password..."
               secureTextEntry
               onBlur={onBlur}
               onChangeText={onChange}
               onSubmitEditing={onFinish}
               value={value}
+              inputRef={passwordRef}
               variant="filled+outlined"
             />
           )}
@@ -260,24 +268,25 @@ function Email({
         />
         <Button
           variant="filled"
-          height={70}
+          height={60}
           onPress={onFinish}
           isLoading={false}
           text="Continue"
           icon="east"
           iconPosition="end"
           large
+          containerStyle={{
+            marginHorizontal: 30,
+            borderRadius: 20,
+          }}
           bold
         />
         <Button
-          variant="outlined"
           height={50}
           onPress={() => router.push("/auth/forgot-password")}
           isLoading={false}
-          text="Forgot password?"
-          icon="east"
-          iconPosition="end"
-          large
+          text="Need help?"
+          containerStyle={{ marginBottom: "auto" }}
         />
       </View>
     </View>
@@ -513,9 +522,8 @@ function Credentials({
       }}
     >
       <IconButton
-        variant="outlined"
         size={55}
-        icon={step === 0 ? "close" : "arrow_back"}
+        icon={step === 0 ? "close" : "west"}
         onPress={handleBack}
         style={{
           position: "absolute",
@@ -541,10 +549,10 @@ function Credentials({
             styles.title,
             {
               paddingTop: 10,
-              fontSize: 40,
+              fontSize: 30,
               color: theme[11],
               textAlign: "center",
-              fontFamily: "serifText800",
+              fontFamily: "serifText700",
             },
             !breakpoints.md && { textAlign: "center" },
           ]}
@@ -814,8 +822,11 @@ export default function SignIn() {
                   styles.title,
                   {
                     paddingTop: 10,
+                    fontSize: 35,
                     textAlign: "center",
-                    fontFamily: "serifText800",
+                    fontFamily: "serifText700",
+                    color: theme[11],
+                    marginBottom: -10,
                   },
                 ]}
               >
@@ -824,11 +835,15 @@ export default function SignIn() {
               <Text
                 style={[
                   authStyles.subtitleContainer,
-                  { textAlign: "center", opacity: 0.6 },
+                  {
+                    textAlign: "center",
+                    opacity: 0.6,
+                    color: theme[11],
+                    fontSize: 15,
+                  },
                 ]}
-                weight={800}
               >
-                Are you a human!? {"\n"} Let's find out...
+                Are you human? Let's find out...
               </Text>
               <Turnstile setToken={setToken} />
             </View>

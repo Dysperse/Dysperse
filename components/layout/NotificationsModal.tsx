@@ -49,16 +49,21 @@ export default function NotificationsModal() {
         <Text
           style={{
             textAlign: "center",
-            fontSize: 40,
-            fontFamily: "serifText800",
+            fontSize: 30,
+            fontFamily: "serifText700",
             marginVertical: 10,
+            marginTop: 20,
           }}
         >
-          Never miss a beat.
+          Never miss a beat
         </Text>
         <Text
-          style={{ textAlign: "center", opacity: 0.6, fontSize: 20 }}
-          weight={300}
+          style={{
+            textAlign: "center",
+            opacity: 0.6,
+            fontSize: 16,
+            paddingHorizontal: 20,
+          }}
         >
           Turn on notifications to get reminders about your upcoming events.
         </Text>
@@ -82,3 +87,4 @@ export default function NotificationsModal() {
     </Modal>
   );
 }
+
