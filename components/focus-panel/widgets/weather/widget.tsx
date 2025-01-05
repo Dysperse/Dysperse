@@ -367,8 +367,7 @@ export default function WeatherWidget({
                         opacity: 0.8,
                         marginBottom: 5,
                         color: weatherColor[11],
-                        textAlign:
-                          panelState === "COLLAPSED" ? "center" : "left",
+                        display: panelState === "COLLAPSED" ? "none" : "flex",
                       }}
                       weight={300}
                     >
@@ -434,3 +433,4 @@ export default function WeatherWidget({
     </View>
   );
 }
+
