@@ -54,7 +54,7 @@ export function PlanDayPrompt() {
       onPress={handlePress}
       disabled={isReached}
     >
-      <Icon>rocket_launch</Icon>
+      <Icon>psychiatry</Icon>
       <Text style={{ color: theme[11] }} numberOfLines={1}>
         Plan my day
       </Text>
@@ -88,7 +88,7 @@ export function Actions() {
         style={actionStyles.item}
         onPress={() => router.push("/insights")}
       >
-        <Icon>lightbulb</Icon>
+        <Icon>emoji_objects</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
           My insights
         </Text>

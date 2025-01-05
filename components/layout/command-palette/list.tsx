@@ -4,7 +4,7 @@ import { router } from "expo-router";
 export const COLLECTION_VIEWS = {
   list: {
     icon: "view_agenda",
-    description: "The good old simple to-do list",
+    description: "The good old trusty to-do list",
     type: "Category Based",
   },
   kanban: {

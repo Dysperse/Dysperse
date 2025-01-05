@@ -58,7 +58,9 @@ export const ColumnFinishedComponent = () => {
           }}
           weight={500}
         >
-          You finished everything!
+          {Math.random() > 0.5
+            ? "That's all for now!"
+            : "You finished everything!"}
         </Text>
       </View>
     </View>
@@ -283,3 +285,4 @@ export function Column(props: ColumnProps) {
     </View>
   );
 }
+
