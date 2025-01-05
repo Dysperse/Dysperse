@@ -632,9 +632,7 @@ function Credentials({
             }}
             textStyle={{ fontSize: 13 }}
             iconSize={20}
-            iconPosition="end"
             text="Create an account"
-            icon="celebration"
             large
           />
           {breakpoints.md && (
@@ -646,9 +644,7 @@ function Credentials({
               onPress={() => Linking.openURL("https://dysperse.com")}
               textStyle={{ fontSize: 13 }}
               iconSize={20}
-              iconPosition="end"
               text="What's Dysperse?"
-              icon="info"
               large
             />
           )}
