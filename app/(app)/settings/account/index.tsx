@@ -513,7 +513,7 @@ function BetaTesterSection() {
             : "Try out unstable features before they're released to the public"
         }
       />
-      <Icon size={40}>{isBetaTester ? "toggle_on" : "toggle_ff"}</Icon>
+      <Icon size={40}>{isBetaTester ? "toggle_on" : "toggle_off"}</Icon>
     </ListItemButton>
   );
 }

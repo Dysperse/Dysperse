@@ -580,42 +580,44 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
 
   return (
     <SelectionContextProvider>
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        <CollectionContext.Provider value={collectionContextValue}>
-          <CollectionSidekickContext.Provider
-            value={collectionSidekickContextValue}
-          >
-            <ContentWrapper noPaddingTop>
-              <CollectionLabelMenu sheetRef={sheetRef}>
-                <Pressable />
-              </CollectionLabelMenu>
-              {(data ? (
-                (data.pinCode || data.pinCodeError) &&
-                (!data.pinAuthorizationExpiresAt ||
-                  dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
-                  <PasswordPrompt mutate={mutate} />
-                ) : !data?.error ? (
-                  <>
-                    <CollectionNavbar />
-                    <FadeOnRender
-                      key={breakpoints.md ? JSON.stringify(t) : "none"}
-                    >
-                      {content}
-                    </FadeOnRender>
-                  </>
+      <CollectionContext.Provider value={collectionContextValue}>
+        <CollectionSidekickContext.Provider
+          value={collectionSidekickContextValue}
+        >
+          <ContentWrapper noPaddingTop>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <View style={{ flex: 1 }}>
+                <CollectionLabelMenu sheetRef={sheetRef}>
+                  <Pressable />
+                </CollectionLabelMenu>
+                {(data ? (
+                  (data.pinCode || data.pinCodeError) &&
+                  (!data.pinAuthorizationExpiresAt ||
+                    dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
+                    <PasswordPrompt mutate={mutate} />
+                  ) : !data?.error ? (
+                    <>
+                      <CollectionNavbar />
+                      <FadeOnRender
+                        key={breakpoints.md ? JSON.stringify(t) : "none"}
+                      >
+                        {content}
+                      </FadeOnRender>
+                    </>
+                  ) : (
+                    false
+                  )
                 ) : (
                   false
-                )
-              ) : (
-                false
-              )) || (
-                <Loading isPublic={isPublic} error={error || data?.error} />
-              )}
-            </ContentWrapper>
-            <Sidekick />
-          </CollectionSidekickContext.Provider>
-        </CollectionContext.Provider>
-      </View>
+                )) || (
+                  <Loading isPublic={isPublic} error={error || data?.error} />
+                )}
+              </View>
+              <Sidekick />
+            </View>
+          </ContentWrapper>
+        </CollectionSidekickContext.Provider>
+      </CollectionContext.Provider>
     </SelectionContextProvider>
   );
 }

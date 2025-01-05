@@ -1,6 +1,6 @@
 import { useCollectionContext } from "@/components/collections/context";
+import { NavbarGradient } from "@/components/collections/navbar/NavbarGradient";
 import { useCollectionSidekickContext } from "@/components/collections/sidekickContext";
-import ContentWrapper from "@/components/layout/content";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
@@ -21,31 +21,18 @@ function Header() {
   const { panelRef } = useCollectionSidekickContext();
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 15,
-        paddingLeft: 25,
-        gap: 10,
-      }}
-    >
-      <Icon>raven</Icon>
+    <NavbarGradient>
+      <Icon style={{ marginHorizontal: 5 }}>raven</Icon>
       <Text weight={900} style={{ color: theme[11] }}>
         Sidekick
       </Text>
-      <IconButton
-        icon="close"
-        variant="filled"
-        style={{ marginLeft: "auto" }}
-        onPress={() => panelRef.current.close()}
-      />
-    </View>
+    </NavbarGradient>
   );
 }
 
 function MessageBar({ messageRef }) {
   const theme = useColorTheme();
+  const [value, setValue] = useState("");
   const { panelRef } = useCollectionSidekickContext();
 
   const handleKeyPress = ({ nativeEvent }) => {
@@ -71,7 +58,7 @@ function MessageBar({ messageRef }) {
         <TextField
           multiline
           inputRef={messageRef}
-          placeholder="Type a message"
+          placeholder="Type a message..."
           numberOfLines={1}
           style={{
             padding: 20,
@@ -80,20 +67,24 @@ function MessageBar({ messageRef }) {
             borderRadius: 200,
             shadowRadius: 0,
           }}
+          value={value}
+          onChangeText={setValue}
           onKeyPress={handleKeyPress}
         />
-        <IconButton
-          icon="north"
-          variant="filled"
-          size={35}
-          backgroundColors={{
-            default: theme[10],
-            hovered: theme[11],
-            pressed: theme[12],
-          }}
-          iconProps={{ bold: true, size: 17 }}
-          iconStyle={{ color: theme[1] }}
-        />
+        {value && (
+          <IconButton
+            icon="north"
+            variant="filled"
+            size={35}
+            backgroundColors={{
+              default: theme[10],
+              hovered: theme[11],
+              pressed: theme[12],
+            }}
+            iconProps={{ bold: true, size: 17 }}
+            iconStyle={{ color: theme[1] }}
+          />
+        )}
       </View>
     </View>
   );
@@ -144,22 +135,24 @@ export function Sidekick() {
   const width = useSharedValue(0);
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useCollectionContext();
-
+  const theme = useColorTheme();
   const messageRef = useRef();
 
   const [messages, setMessages] = useState([
     {
       id: "1",
       role: "assistant",
-      content: `Hey there! How can I help you today with your "${data?.name}" collection?`,
+      content: data?.name
+        ? `Hey there! How can I help you today with your "${data?.name}" collection?`
+        : "Hey there! How can I help you today?",
     },
   ]);
 
   const widthStyle = useAnimatedStyle(() => ({
     width: withSpring(width.value, {
       stiffness: 200,
-      damping: 30,
-      overshootClamping: true,
+      damping: width.value === 0 ? 30 : 23,
+      overshootClamping: width.value === 0,
     }),
   }));
 
@@ -187,19 +180,24 @@ export function Sidekick() {
   return (
     breakpoints.md && (
       <Animated.View style={widthStyle}>
-        <ContentWrapper style={{ marginLeft: 10, padding: 0 }}>
-          <View style={{ width: 300 - 4 - 10, flex: 1 }}>
-            <Header />
-            <FlashList
-              contentContainerStyle={{ padding: 10 }}
-              renderItem={({ item }) => <Message message={item} />}
-              style={{ flex: 1 }}
-              data={messages}
-              keyExtractor={(message) => message.id}
-            />
-            <MessageBar messageRef={messageRef} />
-          </View>
-        </ContentWrapper>
+        <View
+          style={{
+            width: 300,
+            flex: 1,
+            borderLeftColor: theme[5],
+            borderLeftWidth: 2,
+          }}
+        >
+          <Header />
+          <FlashList
+            contentContainerStyle={{ padding: 10 }}
+            renderItem={({ item }) => <Message message={item} />}
+            style={{ flex: 1 }}
+            data={messages}
+            keyExtractor={(message) => message.id}
+          />
+          <MessageBar messageRef={messageRef} />
+        </View>
       </Animated.View>
     )
   );
