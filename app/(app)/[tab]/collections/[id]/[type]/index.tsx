@@ -6,6 +6,7 @@ import {
 } from "@/components/collections/context";
 import CollectionNavbar from "@/components/collections/navbar";
 import { CollectionLabelMenu } from "@/components/collections/navbar/CollectionLabelMenu";
+import { CollectionSidekickContext } from "@/components/collections/sidekickContext";
 import Calendar from "@/components/collections/views/calendar";
 import Grid from "@/components/collections/views/grid";
 import Kanban from "@/components/collections/views/kanban";
@@ -55,6 +56,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { Sidekick } from "./Sidekick";
 
 export const styles = StyleSheet.create({
   header: {
@@ -573,33 +575,47 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     mutate();
   }, [pathname]);
 
+  const panelRef = useRef(null);
+  const collectionSidekickContextValue = useMemo(() => ({ panelRef }), []);
+
   return (
     <SelectionContextProvider>
-      <ContentWrapper noPaddingTop>
+      <View style={{ flex: 1, flexDirection: "row" }}>
         <CollectionContext.Provider value={collectionContextValue}>
-          <CollectionLabelMenu sheetRef={sheetRef}>
-            <Pressable />
-          </CollectionLabelMenu>
-          {(data ? (
-            (data.pinCode || data.pinCodeError) &&
-            (!data.pinAuthorizationExpiresAt ||
-              dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
-              <PasswordPrompt mutate={mutate} />
-            ) : !data?.error ? (
-              <>
-                <CollectionNavbar />
-                <FadeOnRender key={breakpoints.md ? JSON.stringify(t) : "none"}>
-                  {content}
-                </FadeOnRender>
-              </>
-            ) : (
-              false
-            )
-          ) : (
-            false
-          )) || <Loading isPublic={isPublic} error={error || data?.error} />}
+          <CollectionSidekickContext.Provider
+            value={collectionSidekickContextValue}
+          >
+            <ContentWrapper noPaddingTop>
+              <CollectionLabelMenu sheetRef={sheetRef}>
+                <Pressable />
+              </CollectionLabelMenu>
+              {(data ? (
+                (data.pinCode || data.pinCodeError) &&
+                (!data.pinAuthorizationExpiresAt ||
+                  dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
+                  <PasswordPrompt mutate={mutate} />
+                ) : !data?.error ? (
+                  <>
+                    <CollectionNavbar />
+                    <FadeOnRender
+                      key={breakpoints.md ? JSON.stringify(t) : "none"}
+                    >
+                      {content}
+                    </FadeOnRender>
+                  </>
+                ) : (
+                  false
+                )
+              ) : (
+                false
+              )) || (
+                <Loading isPublic={isPublic} error={error || data?.error} />
+              )}
+            </ContentWrapper>
+            <Sidekick />
+          </CollectionSidekickContext.Provider>
         </CollectionContext.Provider>
-      </ContentWrapper>
+      </View>
     </SelectionContextProvider>
   );
 }

@@ -25,6 +25,7 @@ import { Platform, View } from "react-native";
 import { Menu } from "react-native-popup-menu";
 import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
+import { useCollectionSidekickContext } from "../sidekickContext";
 import { AgendaButtons } from "./AgendaButtons";
 import { CategoryLabelButtons } from "./CategoryLabelButtons";
 import { CollectionSearch } from "./CollectionSearch";
@@ -125,28 +126,14 @@ function DivideAndConquerModal() {
 
 function CollectionSidekick() {
   const { session } = useUser();
+  const { panelRef } = useCollectionSidekickContext();
 
-  return (
-    <MenuPopover
-      containerStyle={{ width: 200 }}
-      trigger={
-        session.user?.betaTester ? (
-          <IconButton icon="raven" />
-        ) : (
-          <SidekickComingSoonModal>
-            <IconButton icon="raven" />
-          </SidekickComingSoonModal>
-        )
-      }
-      menuProps={{ rendererProps: { placement: "bottom" } }}
-      options={[
-        { renderer: () => <DivideAndConquerModal /> },
-        { text: "Sort tasks", icon: "category" },
-        { text: "Balance workload", icon: "balance" },
-        { text: "Help me prioritize", icon: "priority" },
-        { text: "Help me lock in", icon: "local_fire_department" },
-      ]}
-    />
+  return session.user?.betaTester ? (
+    <IconButton icon="raven" onPress={() => panelRef.current?.toggle()} />
+  ) : (
+    <SidekickComingSoonModal>
+      <IconButton icon="raven" />
+    </SidekickComingSoonModal>
   );
 }
 
