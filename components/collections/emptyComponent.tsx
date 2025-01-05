@@ -25,8 +25,9 @@ function InspireMe({ labelId }) {
   const [opened, setOpened] = React.useState(false);
 
   const { data, error } = useSWR(
-    opened
-      ? [
+    !opened
+      ? null
+      : [
           "ai/task-inspiration",
           {},
           process.env.EXPO_PUBLIC_API_URL,
@@ -34,13 +35,9 @@ function InspireMe({ labelId }) {
             method: "POST",
             body: JSON.stringify({ boardId: collection.id, labelId }),
           },
-        ]
-      : null,
+        ],
     {
       revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-      revalidateOnMount: false,
     }
   );
 

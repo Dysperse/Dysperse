@@ -1,13 +1,20 @@
 import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
+import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import dayjs from "dayjs";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Network from "expo-network";
 import { router } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Platform, StyleSheet, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
+import weatherCodes from "../../../components/focus-panel/widgets/weather/weatherCodes.json";
 import { getGreeting } from "../../../components/home/getGreeting";
 
 export const styles = StyleSheet.create({
@@ -19,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     marginTop: "auto",
-    textAlign: "center",
+    fontFamily: "serifText700",
   },
   subtitle: { textAlign: "center", fontSize: 30, opacity: 0.7 },
   buttonContainer: {
@@ -42,6 +49,40 @@ export default function Page() {
   const greeting = getGreeting();
   const { session } = useUser();
 
+  const getPlan = useCallback(async () => {
+    const ip = await Network.getIpAddressAsync();
+    const device = await sendApiRequest(
+      session,
+      "GET",
+      "user/sessions/device",
+      { ip }
+    );
+    const { latitude, longitude } = device.location;
+    const weather = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,is_day,weather_code&temperature_unit=fahrenheit`
+    ).then((res) => res.json());
+    return { device, weather };
+  }, [session]);
+
+  const [planData, setPlanData] = useState(null);
+
+  useEffect(() => {
+    getPlan().then(setPlanData);
+  }, [getPlan]);
+
+  console.log(planData);
+  const dark = useDarkMode();
+  const locationName =
+    planData?.device?.city?.names?.en ||
+    planData?.device?.country?.names?.en ||
+    planData?.device?.continent?.names?.en;
+  const temp = planData?.weather?.current?.temperature_2m;
+
+  const icon =
+    weatherCodes[planData?.weather?.current?.weather_code]?.[
+      planData?.weather?.current?.is_day ? "day" : "night"
+    ]?.icon;
+
   return (
     <LinearGradient
       colors={[theme[2], theme[3], theme[4], theme[3], theme[2]]}
@@ -52,16 +93,50 @@ export default function Page() {
         style={[
           styles.title,
           {
-            fontSize: breakpoints.md ? 40 : 30,
+            fontSize: 40,
             color: theme[11],
-            fontFamily: "serifText800",
           },
         ]}
       >
-        {greeting}, {session.user.profile.name.split(" ")[0]}
-      </Text>
-      <Text style={[styles.subtitle, { color: theme[9] }]} weight={300}>
-        Let's plan your day!
+        {greeting}, {session.user.profile.name.split(" ")[0]}.{"\n"}It's{" "}
+        {dayjs().format("h:mm A")} and currently{" "}
+        <Text
+          style={[styles.title, { color: theme[11], fontSize: 40 }]}
+          numberOfLines={1}
+        >
+          <Icon size={40} style={{ verticalAlign: "middle" }}>
+            {icon}
+          </Icon>
+        </Text>
+        {temp}° in
+        <Text
+          style={[styles.title, { color: theme[11], fontSize: 40 }]}
+          numberOfLines={1}
+        >
+          <Text
+            style={{
+              verticalAlign: "top",
+              marginLeft: 10,
+              lineHeight: 1,
+              marginRight: 15,
+            }}
+          >
+            <Image
+              source={{ uri: planData?.device?.preview }}
+              style={{
+                borderRadius: 10,
+                width: 30,
+                height: 30,
+                ...(Platform.OS === "web" &&
+                  dark && {
+                    filter: "invert(5) brightness(2) contrast(0.8)",
+                  }),
+                transform: [{ rotate: "-15deg" }, { translateY: 5 }],
+              }}
+            />
+          </Text>
+          {locationName}.
+        </Text>
       </Text>
       <View style={styles.buttonContainer}>
         <Button
