@@ -182,7 +182,7 @@ export default function Page() {
             <Icon>check_circle</Icon>
             <ListItemText
               primary="Delete completed tasks"
-              secondary="Permanently delete all completed tasks, excluding repeating ones"
+              secondary="Move completed items to trash. You can undo this."
             />
             <Text>{data?.storage?.completeTasksCount || 0}</Text>
           </ListItemButton>
@@ -206,3 +206,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+
