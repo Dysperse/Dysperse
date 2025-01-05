@@ -1,6 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
+import { Button } from "@/ui/Button";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { View } from "react-native";
@@ -19,6 +18,7 @@ export const Co2 = ({ data }) => {
         borderColor: theme[5],
         borderRadius: 25,
         padding: 20,
+        paddingVertical: 0,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
@@ -26,24 +26,13 @@ export const Co2 = ({ data }) => {
     >
       <View style={{ flex: 1 }}>
         <Text variant="eyebrow" weight={900}>
-          By using #dysperse, you've saved
+          You've saved
         </Text>
-        <Text style={{ fontSize: breakpoints.md ? 45 : 30 }} weight={300}>
+        <Text style={{ fontSize: 30 }} weight={700}>
           {(data?.co2 || 0).toFixed(2)} grams of CO
-          <Text style={{ fontSize: 18 }} weight={300}>
+          <Text style={{ fontSize: 18 }} weight={700}>
             2
           </Text>
-          <IconButton
-            icon={<Icon style={{ fontSize: 20 }}>info</Icon>}
-            style={{ opacity: 0.5, marginLeft: 10 }}
-            onPress={() =>
-              Toast.show({
-                type: "info",
-                text1:
-                  "CO2 is measured by taking all of your tasks and listing them on traditional notebook paper (1 line per task). The amount of CO2 saved is calculated by the amount of paper you would've used.",
-              })
-            }
-          />
         </Text>
         <Text
           style={{ fontSize: 20, opacity: 0.5, marginTop: -3 }}
@@ -51,6 +40,19 @@ export const Co2 = ({ data }) => {
         >
           from being polluted into the atmosphere
         </Text>
+
+        <Button
+          dense
+          text="How is this calculated?"
+          style={{ opacity: 0.5, marginLeft: -10, marginRight: "auto" }}
+          onPress={() =>
+            Toast.show({
+              type: "info",
+              text1:
+                "CO2 is measured by taking all of your tasks and listing them on traditional notebook paper (1 line per task). The amount of CO2 saved is calculated by the amount of paper you would've used.",
+            })
+          }
+        />
       </View>
     </View>
   );

@@ -25,6 +25,7 @@ export function MemberSince() {
           flexDirection: breakpoints.md ? "row" : "column",
           alignItems: "center",
           gap: 20,
+          paddingVertical: 30,
           padding: 20,
         },
       ]}
@@ -85,7 +86,7 @@ export function MemberSince() {
       </LinearGradient>
       <Text
         style={{
-          fontSize: 30,
+          fontSize: 20,
           textAlign: breakpoints.md ? "right" : "center",
         }}
         weight={700}

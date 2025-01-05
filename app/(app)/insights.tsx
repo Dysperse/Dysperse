@@ -3,7 +3,6 @@ import { Header } from "@/components/insights/Header";
 import { Heatmap } from "@/components/insights/Heatmap";
 import { MemberSince } from "@/components/insights/MemberSince";
 import { TasksCreated } from "@/components/insights/TasksCreated";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -14,7 +13,6 @@ import useSWR from "swr";
 
 export default function Page() {
   const { data, error } = useSWR(["user/insights"]);
-  const breakpoints = useResponsiveBreakpoints();
   const ref = useRef<ScrollView>(null);
 
   return (
@@ -24,7 +22,7 @@ export default function Page() {
         <View style={{ flex: 1 }}>
           <ScrollView
             contentContainerStyle={{
-              padding: breakpoints.md ? 30 : 20,
+              padding: 20,
               paddingTop: 50,
             }}
             ref={ref}
@@ -41,18 +39,12 @@ export default function Page() {
                 Insights
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: breakpoints.md ? "row" : "column",
-                marginBottom: 20,
-                gap: 20,
-              }}
-            >
+            <View style={{ gap: 10 }}>
               <Co2 data={data} />
               <TasksCreated data={data} />
+              <MemberSince />
+              <Heatmap data={data} />
             </View>
-            <MemberSince />
-            <Heatmap data={data} />
           </ScrollView>
         </View>
       ) : (
