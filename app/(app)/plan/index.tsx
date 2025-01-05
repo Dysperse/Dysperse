@@ -218,7 +218,7 @@ export default function Page() {
           },
         ]}
       >
-        Let's plan your day out
+        Let's plan out your day
       </Text>
       <View style={styles.buttonContainer}>
         <Button
