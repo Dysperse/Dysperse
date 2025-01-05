@@ -59,7 +59,6 @@ import TopStocksScreen from "./widgets/top-stocks/screen";
 import { FocusPanelWeather } from "./widgets/weather/modal";
 import { WordOfTheDayScreen } from "./widgets/word-of-the-day/screen";
 
-const Assistant = lazy(() => import("./widgets/Assistant"));
 const Magic8Ball = lazy(() => import("./widgets/magic-8-ball"));
 const Clock = lazy(() => import("./widgets/clock"));
 const Quotes = lazy(() => import("./widgets/quotes"));
@@ -75,7 +74,6 @@ export type Widget =
   | "upcoming"
   | "weather"
   | "clock"
-  | "assistant"
   | "music"
   | "quotes"
   | "word of the day";
@@ -268,10 +266,6 @@ function RenderWidget({ navigation, widget, index }) {
           widget={widget}
           key={index}
         />
-      );
-    case "assistant":
-      return (
-        <Assistant menuActions={menuActions} widget={widget} key={index} />
       );
     case "music":
       return (
@@ -834,3 +828,4 @@ const FocusPanel = memo(function FocusPanel() {
 });
 
 export default FocusPanel;
+

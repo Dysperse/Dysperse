@@ -35,9 +35,12 @@ function MessageBar({ messageRef }) {
   const [value, setValue] = useState("");
   const { panelRef } = useCollectionSidekickContext();
 
+  const { data, error } = useCollectionContext();
+
   const handleKeyPress = ({ nativeEvent }) => {
     if (nativeEvent.key === "Enter" && !nativeEvent.shiftKey) {
       console.log("Send message");
+      alert(JSON.stringify(data));
     }
     if (nativeEvent.key === "Escape") {
       panelRef.current.close();
