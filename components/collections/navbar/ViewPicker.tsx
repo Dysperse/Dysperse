@@ -4,6 +4,7 @@ import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Modal from "@/ui/Modal";
@@ -157,17 +158,36 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
             }}
             showsHorizontalScrollIndicator={false}
           >
-            <Text
+            <View
               style={{
-                textAlign: "center",
-                fontFamily: "serifText800",
-                fontSize: 30,
-                marginVertical: 20,
-                color: theme[11],
+                alignItems: "center",
+                flexDirection: "row",
+                paddingHorizontal: 10,
+                marginVertical: 10,
+                marginBottom: 15,
               }}
             >
-              Select a view
-            </Text>
+              <Text
+                style={{
+                  fontFamily: "serifText700",
+                  fontSize: 25,
+                  color: theme[11],
+                }}
+              >
+                Select a view
+              </Text>
+              <IconButton
+                variant="filled"
+                icon="close"
+                style={{ marginLeft: "auto" }}
+                backgroundColors={{
+                  default: addHslAlpha(theme[8], 0.1),
+                  hovered: addHslAlpha(theme[8], 0.2),
+                  pressed: addHslAlpha(theme[8], 0.3),
+                }}
+                onPress={() => ref.current?.forceClose()}
+              />
+            </View>
             <View style={{ gap: 1 }}>
               {options.map((r, i) =>
                 r.renderer ? (
@@ -177,7 +197,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
                     key={i}
                     onPress={() => {
                       r.callback();
-                      ref.current?.forceClose();
+                      // ref.current?.forceClose();
                     }}
                     backgroundColors={{
                       default: addHslAlpha(theme[8], r.selected ? 0.2 : 0),
