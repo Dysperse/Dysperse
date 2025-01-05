@@ -2,7 +2,6 @@ import { settingStyles } from "@/components/settings/settingsStyles";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { omit } from "@/helpers/omit";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ProfilePicture } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
@@ -10,6 +9,8 @@ import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -44,7 +45,7 @@ function Section({ children }: any) {
   );
 }
 
-function EmailSection() {
+function EmailSection({ editing }) {
   const theme = useColorTheme();
   const { session, mutate, sessionToken } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -116,7 +117,6 @@ function EmailSection() {
 
   return (
     <>
-      <Text style={settingStyles.heading}>Email</Text>
       <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
         <Controller
           name="email"
@@ -131,24 +131,29 @@ function EmailSection() {
           render={({ field }) => (
             <>
               <TextField
-                style={{ flex: 1 }}
+                style={{ flex: 1, marginTop: 3, color: theme[12] }}
                 editable={!isLoading}
                 onSubmitEditing={handleSubmit(onSubmit, () =>
                   Toast.show({ type: "error", text1: "Please enter an email" })
                 )}
-                variant="filled+outlined"
+                variant={editing ? "filled+outlined" : "default"}
                 {...omit(["ref"], field)}
               />
-              <IconButton
-                disabled={session.user.email === field.value}
-                icon={isLoading ? <Spinner size={24} /> : "check"}
-                size={40}
-                variant="filled"
-                onPress={handleSubmit(onSubmit, () =>
-                  Toast.show({ type: "error", text1: "Please enter an email" })
-                )}
-                style={{ borderWidth: 1, borderColor: theme[5] }}
-              />
+              {editing && (
+                <Button
+                  iconPosition="end"
+                  disabled={session.user.email === field.value}
+                  icon={isLoading ? <Spinner size={24} /> : "east"}
+                  text="Update"
+                  variant="outlined"
+                  onPress={handleSubmit(onSubmit, () =>
+                    Toast.show({
+                      type: "error",
+                      text1: "Please enter an email",
+                    })
+                  )}
+                />
+              )}
             </>
           )}
         />
@@ -208,26 +213,20 @@ function AccountMenuTrigger({ text }: any) {
 }
 
 function TwoFactorAuthSection() {
-  const breakpoints = useResponsiveBreakpoints();
   const { session, sessionToken, mutate } = useUser();
   const isEnabled = session.user.twoFactorSecret;
 
   return (
-    <View
-      style={{
-        flexDirection: breakpoints.md ? "row" : "column",
-        alignItems: "center",
-        gap: 20,
-      }}
+    <ListItemButton
+      disabled
+      onPress={() =>
+        router.replace("/settings/account/two-factor-authentication")
+      }
     >
-      <View style={{ flex: 1 }}>
-        <Text style={settingStyles.heading}>Two-Factor Authentication</Text>
-        <Text style={{ opacity: 0.6 }}>
-          Two-factor authentication (2FA) is an extra layer of security for your
-          account. You can choose to receive 2FA codes via SMS or an
-          authenticator app.
-        </Text>
-      </View>
+      <ListItemText
+        primary="Two-factor auth"
+        secondary="Make your account more secure with an authenticator app"
+      />
       <ConfirmationModal
         title="Disable 2FA?"
         secondary="Your account won't be as secure anymore. Are you sure?"
@@ -250,18 +249,12 @@ function TwoFactorAuthSection() {
         }}
         disabled={!isEnabled}
       >
-        <Button
-          height={40}
-          containerStyle={
-            breakpoints.md ? { marginTop: 30 } : { width: "100%" }
-          }
-          variant="filled"
-        >
+        <Button height={40} variant="filled">
           <ButtonText>Enable{isEnabled && "d"}</ButtonText>
           <Icon>{isEnabled ? "check" : "arrow_forward_ios"}</Icon>
         </Button>
       </ConfirmationModal>
-    </View>
+    </ListItemButton>
   );
 }
 
@@ -309,7 +302,8 @@ function ProfileBanner() {
         borderRadius: 20,
         backgroundColor: theme[3],
         overflow: "hidden",
-        marginTop: 20,
+        marginTop: 10,
+        marginBottom: 20,
         paddingBottom: 20,
       }}
     >
@@ -389,27 +383,36 @@ function ProfileBanner() {
             variant={editing ? "filled+outlined" : undefined}
             editable={editing}
             onBlur={(e) => editing && onChange("name", e.nativeEvent.text)}
-            style={{ fontSize: 40, color: theme[12] }}
+            style={{
+              marginVertical: 5,
+              fontSize: 30,
+              opacity: 1,
+              color: theme[12],
+              fontFamily: "serifText800",
+            }}
           />
           {editing && (
             <Text variant="eyebrow" style={eyebrowStyles}>
               Username
             </Text>
           )}
-          <TextField
-            value={
-              session.user.username
-                ? `@${session.user.username}`
-                : session.user.email
-            }
-            variant={editing ? "filled+outlined" : undefined}
-            editable={editing}
-            style={{
-              fontSize: 20,
-              opacity: 0.6,
-              color: theme[12],
-            }}
-          />
+          {(editing || session.user.username) && (
+            <TextField
+              value={session.user.username ? `@${session.user.username}` : ""}
+              variant={editing ? "filled+outlined" : undefined}
+              editable={editing}
+              style={{
+                fontSize: 20,
+                opacity: 0.6,
+                marginBottom: 10,
+                color: theme[12],
+              }}
+            />
+          )}
+          <Text variant="eyebrow" style={eyebrowStyles}>
+            Email
+          </Text>
+          <EmailSection editing={editing} />
           {(editing || session.user.profile.bio) && (
             <>
               <Text variant="eyebrow" style={eyebrowStyles}>
@@ -420,7 +423,7 @@ function ProfileBanner() {
                 multiline
                 onBlur={(e) => onChange("bio", e.nativeEvent.text)}
                 defaultValue={session.user.profile.bio}
-                style={{ marginVertical: 5 }}
+                style={{ marginVertical: 5, color: theme[12] }}
                 numberOfLines={1}
                 placeholder="Tell the world about yourself <3"
               />
@@ -433,7 +436,7 @@ function ProfileBanner() {
               </Text>
               <TextField
                 value={dayjs(session.user.profile.birthday).format("MMMM Do")}
-                style={{ marginVertical: 5 }}
+                style={{ marginVertical: 5, color: theme[12] }}
                 placeholder="What's your birthday?"
               />
             </>
@@ -445,56 +448,30 @@ function ProfileBanner() {
 }
 
 function PasskeysSection() {
-  const breakpoints = useResponsiveBreakpoints();
   const handlePress = () => router.replace("/settings/account/passkeys");
 
   return (
-    <View
-      style={{
-        flexDirection: breakpoints.md ? "row" : "column",
-        alignItems: "center",
-        gap: 20,
-      }}
-    >
-      <View style={{ flex: 1 }}>
-        <Text style={settingStyles.heading}>Passkeys</Text>
-        <Text style={{ opacity: 0.6 }}>
-          Passkeys are a much more faster and secure way to login to your
-          account. Log in with Face ID, Touch ID, or a security key.
-        </Text>
-      </View>
-      <Button
-        height={40}
-        containerStyle={breakpoints.md ? { marginTop: 30 } : { width: "100%" }}
-        variant="filled"
-        onPress={handlePress}
-      >
-        <ButtonText>Edit</ButtonText>
-        <Icon>arrow_forward_ios</Icon>
-      </Button>
-    </View>
+    <ListItemButton onPress={handlePress}>
+      <ListItemText
+        primary="Passkeys"
+        secondary="Log in with your current device's lock screen method"
+      />
+      <Icon>arrow_forward_ios</Icon>
+    </ListItemButton>
   );
 }
 
 function DeleteAccountSection() {
   return (
-    <View style={{ flexDirection: "row" }}>
-      <View>
-        <Text style={settingStyles.heading}>Delete my account</Text>
-        <Text style={{ opacity: 0.6 }}>
-          View options to have your data permanently deleted
-        </Text>
-      </View>
-      <Button
-        height={40}
-        onPress={() => router.replace("/settings/account/delete-account")}
-        containerStyle={{ marginTop: 30, marginLeft: "auto" }}
-        variant="filled"
-      >
-        <ButtonText>Continue</ButtonText>
-        <Icon>arrow_forward_ios</Icon>
-      </Button>
-    </View>
+    <ListItemButton
+      onPress={() => router.replace("/settings/account/delete-account")}
+    >
+      <ListItemText
+        primary="Delete my account"
+        secondary="View options to have your data permanently deleted"
+      />
+      <Icon>arrow_forward_ios</Icon>
+    </ListItemButton>
   );
 }
 
@@ -527,24 +504,17 @@ function BetaTesterSection() {
   };
 
   return (
-    <View style={{ flexDirection: "row" }}>
-      <View>
-        <Text style={settingStyles.heading}>Beta features</Text>
-        <Text style={{ opacity: 0.6 }}>
-          Try out unstable features before they're released to the public
-        </Text>
-      </View>
-
-      <Button
-        height={40}
-        onPress={handleSave}
-        containerStyle={{ marginTop: 30, marginLeft: "auto" }}
-        variant="filled"
-      >
-        <ButtonText>{isBetaTester ? "Leave" : "Join"}</ButtonText>
-        <Icon>{isBetaTester ? "exit_to_app" : "arrow_forward_ios"}</Icon>
-      </Button>
-    </View>
+    <ListItemButton onPress={handleSave}>
+      <ListItemText
+        primary="Beta features"
+        secondary={
+          isBetaTester
+            ? "You're in the beta! Some features might be unstable"
+            : "Try out unstable features before they're released to the public"
+        }
+      />
+      <Icon size={40}>{isBetaTester ? "toggle_on" : "toggle_ff"}</Icon>
+    </ListItemButton>
   );
 }
 
@@ -563,9 +533,8 @@ export default function Page() {
             Profile
           </Text>
           <ProfileBanner />
-          <EmailSection />
-          <TwoFactorAuthSection />
           <PasskeysSection />
+          <TwoFactorAuthSection />
           <BetaTesterSection />
           <DeleteAccountSection />
         </>

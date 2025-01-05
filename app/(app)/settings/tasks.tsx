@@ -202,10 +202,7 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
       </Text>
       <Section>
         <ListItemButton disabled>
-          <ListItemText
-            primary="Daily task goal"
-            secondary="How many tasks you want to complete daily?"
-          />
+          <ListItemText primary="Daily task goal" />
           <MenuPopover
             trigger={AccountMenuTrigger({
               text: `${session.user.dailyStreakGoal} tasks`,
@@ -227,10 +224,7 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
           />
         </ListItemButton>
         <ListItemButton disabled>
-          <ListItemText
-            primary="Weekly task goal"
-            secondary="How many tasks you want to complete weekly?"
-          />
+          <ListItemText primary="Weekly task goal" />
           <MenuPopover
             trigger={AccountMenuTrigger({
               text: `${session.user.weeklyStreakGoal} tasks`,
