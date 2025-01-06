@@ -717,7 +717,10 @@ function SecondarySidebar() {
           ]}
           style={{ flexDirection: "column" }}
           icon="label"
-          onPress={() => router.push("/everything")}
+          onPress={() => {
+            router.push("/everything");
+            sidebarRef.current.closeDrawer();
+          }}
           variant={pathname === "/everything" ? "filled" : "text"}
         />
         <Button
@@ -730,14 +733,20 @@ function SecondarySidebar() {
           ]}
           style={{ flexDirection: "column" }}
           icon="stack"
-          onPress={() => router.push("/everything/collections")}
+          onPress={() => {
+            router.push("/everything/collections");
+            sidebarRef.current.closeDrawer();
+          }}
           variant={pathname === "/everything/collections" ? "filled" : "text"}
         />
         <Button
           bold
           height={100}
           text="Trash"
-          onPress={() => router.push("/everything/trash")}
+          onPress={() => {
+            router.push("/everything/trash");
+            sidebarRef.current.closeDrawer();
+          }}
           containerStyle={[
             { borderRadius: 20 },
             Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
