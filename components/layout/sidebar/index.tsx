@@ -860,13 +860,16 @@ const Sidebar = ({
   }));
 
   useEffect(() => {
-    setTimeout(() => {
-      if (pathname.includes("everything")) {
-        SIDEBAR_WIDTH.value = SECONDARY_SIDEBAR_WIDTH;
-      } else {
-        SIDEBAR_WIDTH.value = ORIGINAL_SIDEBAR_WIDTH;
-      }
-    }, 500);
+    setTimeout(
+      () => {
+        if (pathname.includes("everything")) {
+          SIDEBAR_WIDTH.value = SECONDARY_SIDEBAR_WIDTH;
+        } else {
+          SIDEBAR_WIDTH.value = ORIGINAL_SIDEBAR_WIDTH;
+        }
+      },
+      Platform.OS === "web" ? 400 : 0
+    );
   }, [pathname]);
 
   return (
