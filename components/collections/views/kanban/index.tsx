@@ -68,6 +68,8 @@ export default function Kanban() {
                 minWidth: 5,
                 minHeight: 5,
                 backgroundColor: theme[2],
+                borderWidth: 1,
+                borderColor: theme[5],
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -75,7 +77,7 @@ export default function Kanban() {
             >
               <IconButton
                 icon="add"
-                variant="outlined"
+                variant="filled"
                 size={50}
                 onPress={openLabelPicker}
               />

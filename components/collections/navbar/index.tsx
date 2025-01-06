@@ -27,7 +27,6 @@ import useSWR from "swr";
 import { CollectionContext, useCollectionContext } from "../context";
 import { useCollectionSidekickContext } from "../sidekickContext";
 import { AgendaButtons } from "./AgendaButtons";
-import { CategoryLabelButtons } from "./CategoryLabelButtons";
 import { CollectionSearch } from "./CollectionSearch";
 import { CollectionShareMenu } from "./CollectionShareMenu";
 import { NavbarGradient } from "./NavbarGradient";
@@ -129,7 +128,11 @@ function CollectionSidekick() {
   const { panelRef } = useCollectionSidekickContext();
 
   return session.user?.betaTester ? (
-    <IconButton icon="raven" onPress={() => panelRef.current?.toggle()} />
+    <IconButton
+      icon="raven"
+      size={40}
+      onPress={() => panelRef.current?.toggle()}
+    />
   ) : (
     <SidekickComingSoonModal>
       <IconButton icon="raven" />
@@ -319,9 +322,9 @@ const CollectionNavbar = memo(function CollectionNavbar({
               justifyContent: "flex-end",
             }}
           >
-            {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
+            {/* {!isLoading && COLLECTION_VIEWS[type].type === "Category Based" && (
               <CategoryLabelButtons />
-            )}
+            )} */}
             <CollectionContext.Provider value={contextValue}>
               <CollectionSidekick />
               {session && <CollectionSearch />}
@@ -336,7 +339,7 @@ const CollectionNavbar = memo(function CollectionNavbar({
                   }}
                   trigger={
                     <IconButton
-                      icon="settings"
+                      icon="pending"
                       size={40}
                       style={breakpoints.md && !isAll && { marginRight: 10 }}
                     />
@@ -357,4 +360,3 @@ const CollectionNavbar = memo(function CollectionNavbar({
 });
 
 export default CollectionNavbar;
-
