@@ -312,7 +312,10 @@ export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <ContentWrapper noPaddingTop style={{ paddingTop: insets.top + 70 }}>
+    <ContentWrapper
+      noPaddingTop
+      style={!breakpoints.md && { paddingTop: insets.top + 70 }}
+    >
       {!breakpoints.md && <MenuButton gradient addInsets />}
       <Collections />
     </ContentWrapper>
