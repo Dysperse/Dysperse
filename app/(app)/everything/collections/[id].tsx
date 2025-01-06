@@ -6,7 +6,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import useSWR from "swr";
-import { CollectionDetails } from "..";
+import { CollectionDetails } from ".";
 
 export default function Page() {
   const params = useLocalSearchParams();
