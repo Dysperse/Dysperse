@@ -1,5 +1,4 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
-import PanelSwipeTrigger from "@/components/focus-panel/PanelSwipeTrigger";
 import { FocusPanelProvider } from "@/components/focus-panel/context";
 import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
@@ -53,8 +52,6 @@ import {
 import { SystemBars } from "react-native-edge-to-edge";
 import {
   DrawerLayout,
-  Gesture,
-  GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
@@ -91,7 +88,7 @@ function DesktopLayout({ children }) {
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
       <Sidebar />
-      {breakpoints.md && !desktopCollapsed && (
+      {/* {breakpoints.md && !desktopCollapsed && (
         <GestureDetector
           gesture={Gesture.Tap().onEnd(() => {
             setDesktopCollapsed((t) => !t);
@@ -99,7 +96,7 @@ function DesktopLayout({ children }) {
         >
           <PanelSwipeTrigger side="left" />
         </GestureDetector>
-      )}
+      )} */}
       {children}
     </View>
   );
@@ -152,7 +149,8 @@ export default function AppLayout() {
   const progressValue = useRef(null);
   const insets = useSafeAreaInsets();
 
-  const { sidebarRef, SIDEBAR_WIDTH } = useSidebarContext();
+  const { sidebarRef, ORIGINAL_SIDEBAR_WIDTH, SECONDARY_SIDEBAR_WIDTH } =
+    useSidebarContext();
 
   useEffect(() => {
     if (sessionData?.user?.timeZone)
@@ -396,7 +394,11 @@ export default function AppLayout() {
                                   drawerPosition="left"
                                   drawerType="back"
                                   overlayColor="transparent"
-                                  drawerWidth={SIDEBAR_WIDTH}
+                                  drawerWidth={
+                                    pathname.includes("/everything")
+                                      ? SECONDARY_SIDEBAR_WIDTH
+                                      : ORIGINAL_SIDEBAR_WIDTH
+                                  }
                                   edgeWidth={sidebarWidth}
                                   renderNavigationView={renderNavigationView}
                                 >

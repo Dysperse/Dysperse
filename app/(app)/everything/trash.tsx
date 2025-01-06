@@ -1,28 +1,23 @@
 import { Entity } from "@/components/collections/entity";
 import ContentWrapper from "@/components/layout/content";
-import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import Alert from "@/ui/Alert";
+import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { FlashList } from "@shopify/flash-list";
 import { useCallback } from "react";
 import { View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import MenuIcon from "../menuIcon";
+import { MenuButton } from "../home";
 
 const DeleteAllButton = ({ handleDelete }) => {
-  const breakpoints = useResponsiveBreakpoints();
-
   return (
     <ConfirmationModal
       height={400}
@@ -33,20 +28,17 @@ const DeleteAllButton = ({ handleDelete }) => {
       <Button
         variant="filled"
         large
-        containerStyle={[!breakpoints.md && { width: "100%", marginTop: 20 }]}
-      >
-        <Icon>delete_forever</Icon>
-        <ButtonText>Clear</ButtonText>
-      </Button>
+        bold
+        icon="delete"
+        iconPosition="end"
+        text="Clear"
+      />
     </ConfirmationModal>
   );
 };
 
-export function Trash() {
+export default function Trash() {
   const { session } = useSession();
-  const breakpoints = useResponsiveBreakpoints();
-  const insets = useSafeAreaInsets();
-  const { sidebarRef } = useSidebarContext();
   const { data, mutate, error } = useSWR(["space/trash"]);
 
   const handleDelete = useCallback(async () => {
@@ -67,59 +59,40 @@ export function Trash() {
 
   console.log(data);
 
+  const isEmpty = (data || []).filter((t) => t.trash).length === 0;
+  const insets = useSafeAreaInsets();
+
   return (
-    <ContentWrapper noPaddingTop>
-      {!breakpoints.md && (
-        <IconButton
+    <ContentWrapper noPaddingTop style={{ paddingTop: insets.top + 70 }}>
+      <MenuButton gradient addInsets />
+      <View style={{ flex: 1, maxWidth: 500, marginHorizontal: "auto" }}>
+        <Text
           style={{
-            position: "absolute",
-            top: 20,
-            left: 20,
-            marginTop: insets.top,
-            zIndex: 1,
-          }}
-          icon={<MenuIcon />}
-          size={55}
-          variant="outlined"
-          onPress={() => sidebarRef.current.openDrawer()}
-        />
-      )}
-      <View style={{ paddingHorizontal: 20 }}>
-        <View
-          style={{
-            flexDirection: breakpoints.md ? "row" : "column",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingBottom: 20,
-            paddingHorizontal: 20,
-            paddingTop: breakpoints.md ? 50 : 100 + insets.top,
+            fontSize: 35,
+            marginBottom: 10,
+            marginTop: 40,
+            fontFamily: "serifText800",
           }}
         >
-          <View>
-            <Text style={{ fontSize: 40 }} weight={800}>
-              Trash
-            </Text>
-            <Text
-              style={{
-                opacity: 0.6,
-              }}
-            >
-              Items are permanently deleted on the 1st of every month
-            </Text>
-          </View>
-          <DeleteAllButton handleDelete={handleDelete} />
+          Recently deleted
+        </Text>
+        <View style={{ marginBottom: 20 }}>
+          <Alert
+            emoji="26A0"
+            title="Items are permanently deleted on the 1st of every month"
+            dense
+          />
+          {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
         </View>
         {Array.isArray(data) ? (
-          <FlatList
+          <FlashList
+            showsVerticalScrollIndicator={false}
             data={data.filter((t) => t.trash)}
             style={{
               flex: 1,
               height: "100%",
             }}
-            contentContainerStyle={{
-              paddingHorizontal: 35,
-            }}
-            centerContent={data.filter((t) => t.trash).length === 0}
+            centerContent={isEmpty}
             ListEmptyComponent={() => (
               <View
                 style={{
@@ -140,21 +113,18 @@ export function Trash() {
               </View>
             )}
             renderItem={({ item }) => (
-              <View style={{ maxWidth: 400, width: "100%" }}>
-                <Entity
-                  isReadOnly={false}
-                  showLabel
-                  onTaskUpdate={(newTask) => {
-                    console.log("New task recieved", newTask);
-                    mutate((oldData) =>
-                      oldData.map((t) => (t.id === newTask.id ? newTask : t))
-                    );
-                  }}
-                  item={item}
-                />
-              </View>
+              <Entity
+                isReadOnly={false}
+                showLabel
+                onTaskUpdate={(newTask) => {
+                  console.log("New task recieved", newTask);
+                  mutate((oldData) =>
+                    oldData.map((t) => (t.id === newTask.id ? newTask : t))
+                  );
+                }}
+                item={item}
+              />
             )}
-            //   ={100}
             keyExtractor={(item: any) => item.id}
           />
         ) : error ? (

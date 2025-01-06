@@ -13,7 +13,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import {
   InteractionManager,
   Platform,
@@ -268,6 +268,8 @@ function OpenTabsList() {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
   const path = usePathname();
+  const { SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH, SECONDARY_SIDEBAR_WIDTH } =
+    useSidebarContext();
 
   const footer = (
     <View style={{ marginBottom: 5, flexDirection: "row" }}>
@@ -278,7 +280,6 @@ function OpenTabsList() {
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         }}
         onPress={() => router.push("/everything")}
-        variant={path === "/everything" ? "filled" : undefined}
       >
         <Icon bold>home_storage</Icon>
       </IconButton>

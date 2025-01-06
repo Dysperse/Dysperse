@@ -10,7 +10,6 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import * as Network from "expo-network";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
@@ -79,7 +78,9 @@ export default function Page() {
   const { session } = useUser();
 
   const getPlan = useCallback(async () => {
-    const ip = await Network.getIpAddressAsync();
+    const ip = await fetch("https://api.ipify.org?format=json")
+      .then((res) => res.json())
+      .then((res) => res.ip);
     const device = await sendApiRequest(
       session,
       "GET",

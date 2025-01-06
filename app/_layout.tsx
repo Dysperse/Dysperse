@@ -1,6 +1,5 @@
 import { ErrorBoundaryComponent } from "@/components/layout/ErrorBoundary";
 import { SWRWrapper } from "@/components/layout/SWRWrapper";
-import { WorkboxInitializer } from "@/components/layout/WorkboxInitializer";
 import { JsStack } from "@/components/layout/_stack";
 import { SidebarContext } from "@/components/layout/sidebar/context";
 import { ModalStackProvider } from "@/context/modal-stack";
@@ -29,6 +28,7 @@ import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
 import { DrawerLayout } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { useSharedValue } from "react-native-reanimated";
 import { SessionProvider } from "../context/AuthProvider";
 
 if (process.env.NODE_ENV === "production") {
@@ -114,10 +114,10 @@ function Root() {
 
   const sidebarRef = useRef<DrawerLayout>(null);
 
-  const SIDEBAR_WIDTH = useMemo(
-    () => (breakpoints.md ? 220 : Math.min(280, width - 40)),
-    [breakpoints, width]
-  );
+  const ORIGINAL_SIDEBAR_WIDTH = breakpoints.md
+    ? 220
+    : Math.min(280, width - 40);
+  const SIDEBAR_WIDTH = useSharedValue(ORIGINAL_SIDEBAR_WIDTH);
 
   const sidebarContextValue = useMemo(
     () => ({
@@ -125,8 +125,10 @@ function Root() {
       desktopCollapsed,
       setDesktopCollapsed,
       SIDEBAR_WIDTH,
+      ORIGINAL_SIDEBAR_WIDTH,
+      SECONDARY_SIDEBAR_WIDTH: 130,
     }),
-    [desktopCollapsed, SIDEBAR_WIDTH]
+    [desktopCollapsed, SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH]
   );
 
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
@@ -140,7 +142,6 @@ function Root() {
               <SidebarContext.Provider value={sidebarContextValue}>
                 <SWRWrapper>
                   <SystemBars style="dark" />
-                  {Platform.OS === "web" && <WorkboxInitializer />}
                   <JsStack
                     id={undefined}
                     screenOptions={{

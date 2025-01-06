@@ -12,10 +12,14 @@
     <meta name="theme-color" content="#0f1b1b" />
     <link rel="stylesheet" href="/web.css" />
     <script>
-      "serviceWorker" in navigator &&
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js");
-        });
+      try {
+        "serviceWorker" in navigator &&
+          window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/sw.js");
+          });
+      } catch (e) {
+        console.log(e);
+      }
     </script>
     <script
       async

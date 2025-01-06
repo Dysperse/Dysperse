@@ -9,6 +9,7 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
@@ -417,6 +418,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     if (
       pathname !== "/" &&
       !pathname.includes("/reorder") &&
+      !pathname.includes("/everything") &&
       !pathname.includes("/chrome-extension") &&
       !pathname.includes("/settings") &&
       !fullscreen
@@ -555,7 +557,7 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
   const { fullscreen } = useGlobalSearchParams();
   const { desktopCollapsed, SIDEBAR_WIDTH } = useSidebarContext();
   const [titlebarHidden, setTitlebarHidden] = useState(
-    navigator.windowControlsOverlay?.visible
+    (navigator as any).windowControlsOverlay?.visible
   );
 
   useEffect(() => {
@@ -569,7 +571,7 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
             event.clientX >= window.innerWidth ||
             event.clientY >= window.innerHeight)
         ) {
-          desktopSlide.value = -SIDEBAR_WIDTH;
+          desktopSlide.value = -SIDEBAR_WIDTH.value;
         }
       }
     );
@@ -611,20 +613,18 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
   );
 };
 
-const Sidebar = ({
-  progressValue,
-}: {
-  progressValue?: NativeAnimated.Value;
-}) => {
-  const breakpoints = useResponsiveBreakpoints();
-  const pathname = usePathname();
+function PrimarySidebar({ progressValue }) {
   const insets = useSafeAreaInsets();
-  const { SIDEBAR_WIDTH, desktopCollapsed, setDesktopCollapsed } =
-    useSidebarContext();
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
+  const {
+    SIDEBAR_WIDTH,
+    ORIGINAL_SIDEBAR_WIDTH,
+    desktopCollapsed,
+    setDesktopCollapsed,
+  } = useSidebarContext();
 
-  const desktopSlide = useSharedValue(0);
+  const breakpoints = useResponsiveBreakpoints();
 
   const transform = progressValue?.interpolate?.({
     inputRange: [0, 1],
@@ -632,8 +632,146 @@ const Sidebar = ({
   });
 
   const animatedStyles = [{ transform: [{ translateX: transform }] }];
+
+  const toggleHidden = useCallback(() => {
+    setDesktopCollapsed(!desktopCollapsed);
+    if (Platform.OS === "web") {
+      localStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
+    }
+  }, [desktopCollapsed, setDesktopCollapsed]);
+
+  useHotkeys("`", toggleHidden, {});
+
+  return (
+    <NativeAnimated.View
+      style={[
+        animatedStyles,
+        {
+          width: ORIGINAL_SIDEBAR_WIDTH + 10,
+          flex: 1,
+          flexDirection: "column",
+          borderRightWidth: 2,
+          marginRight: -8,
+          borderRightColor: "transparent",
+          backgroundColor: theme[2],
+          ...(Platform.OS === "web" &&
+            !desktopCollapsed &&
+            ({
+              paddingTop: "env(titlebar-area-height,0)",
+            } as any)),
+        },
+        desktopCollapsed &&
+          breakpoints.md && {
+            position: "absolute",
+            borderRadius: 25,
+            left: -100,
+            width: SIDEBAR_WIDTH.value + 100,
+            paddingLeft: 100,
+            zIndex: 99,
+            shadowOpacity: 0.4,
+            height: height - 50,
+            marginTop: 25,
+            borderWidth: 2,
+            borderColor: theme[5],
+            borderRightWidth: 2,
+            borderRightColor: theme[5],
+          },
+      ]}
+    >
+      <View style={[styles.header, { marginTop: insets.top }]}>
+        <LogoButton toggleHidden={toggleHidden} />
+        <Header />
+      </View>
+      <OpenTabsList />
+    </NativeAnimated.View>
+  );
+}
+
+function SecondarySidebar() {
+  const { SECONDARY_SIDEBAR_WIDTH, sidebarRef } = useSidebarContext();
+  const theme = useColorTheme();
+  const pathname = usePathname();
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        width: SECONDARY_SIDEBAR_WIDTH,
+        padding: 15,
+        paddingRight: 0,
+        paddingBottom: 15 + insets.bottom,
+        backgroundColor: theme[2],
+      }}
+    >
+      <View
+        style={{ flex: 1, width: "100%", justifyContent: "center", gap: 5 }}
+      >
+        <Button
+          bold
+          height={100}
+          text="Labels"
+          containerStyle={{ borderRadius: 20 }}
+          style={{ flexDirection: "column" }}
+          icon="label"
+          onPress={() => router.push("/everything")}
+          variant={pathname === "/everything" ? "filled" : "text"}
+        />
+        <Button
+          bold
+          height={100}
+          text="Collections"
+          containerStyle={{ borderRadius: 20 }}
+          style={{ flexDirection: "column" }}
+          icon="stack"
+          onPress={() => router.push("/everything/collections")}
+          variant={pathname === "/everything/collections" ? "filled" : "text"}
+        />
+        <Button
+          bold
+          height={100}
+          text="Trash"
+          onPress={() => router.push("/everything/trash")}
+          containerStyle={{ borderRadius: 20 }}
+          style={{ flexDirection: "column" }}
+          icon="delete"
+          variant={pathname === "/everything/trash" ? "filled" : "text"}
+        />
+      </View>
+      <IconButton
+        icon="west"
+        onPress={() => {
+          router.replace("/");
+          InteractionManager.runAfterInteractions(() => {
+            sidebarRef.current.openDrawer();
+          });
+        }}
+        style={{ marginLeft: 10 }}
+      />
+    </View>
+  );
+}
+
+const Sidebar = ({
+  progressValue,
+}: {
+  progressValue?: NativeAnimated.Value;
+}) => {
+  const breakpoints = useResponsiveBreakpoints();
+  const pathname = usePathname();
+  const {
+    SIDEBAR_WIDTH,
+    ORIGINAL_SIDEBAR_WIDTH,
+    SECONDARY_SIDEBAR_WIDTH,
+    desktopCollapsed,
+    setDesktopCollapsed,
+  } = useSidebarContext();
+  const theme = useColorTheme();
+  const { height } = useWindowDimensions();
+
+  const desktopSlide = useSharedValue(0);
+
   const desktopStyles = useAnimatedStyle(() => ({
-    // boxShadow: "0 0 0 100vw rgba(0, 0, 0, 0.4)",
     transform: [
       {
         translateX: withSpring(desktopSlide.value, {
@@ -644,14 +782,43 @@ const Sidebar = ({
     ],
   }));
 
-  const toggleHidden = useCallback(() => {
-    setDesktopCollapsed(!desktopCollapsed);
-    if (Platform.OS === "web") {
-      localStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
-    }
-  }, [desktopCollapsed, setDesktopCollapsed]);
+  const primarySidebarStyles = useAnimatedStyle(() => ({
+    pointerEvents:
+      SIDEBAR_WIDTH.value === SECONDARY_SIDEBAR_WIDTH ? "none" : "auto",
+    width: ORIGINAL_SIDEBAR_WIDTH,
+    transform: [
+      {
+        translateX: withSpring(
+          SIDEBAR_WIDTH.value === SECONDARY_SIDEBAR_WIDTH
+            ? -ORIGINAL_SIDEBAR_WIDTH - 20
+            : 0,
+          {
+            stiffness: 200,
+            damping: 40,
+          }
+        ),
+      },
+    ],
+  }));
 
-  useHotkeys("`", toggleHidden, {});
+  const secondarySidebarStyles = useAnimatedStyle(() => ({
+    pointerEvents:
+      SIDEBAR_WIDTH.value === SECONDARY_SIDEBAR_WIDTH ? "auto" : "none",
+    marginLeft: -ORIGINAL_SIDEBAR_WIDTH - 3,
+    transform: [
+      {
+        translateX: withSpring(
+          SIDEBAR_WIDTH.value === ORIGINAL_SIDEBAR_WIDTH
+            ? ORIGINAL_SIDEBAR_WIDTH - 3
+            : 0,
+          {
+            stiffness: 200,
+            damping: 40,
+          }
+        ),
+      },
+    ],
+  }));
   useHotkeys("ctrl+comma", () => {
     if (pathname.includes("settings")) return;
     router.push("/settings");
@@ -665,12 +832,30 @@ const Sidebar = ({
   }, [setDesktopCollapsed]);
 
   useEffect(() => {
-    desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0;
+    desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH.value : 0;
   }, [desktopCollapsed, desktopSlide, SIDEBAR_WIDTH]);
 
   const SafeView = breakpoints.md
     ? (p) => <React.Fragment {...p} />
     : (p) => <View style={{ flex: 1 }} {...p} />;
+
+  const widthStyle = useAnimatedStyle(() => ({
+    width: withSpring(SIDEBAR_WIDTH.value, {
+      stiffness: 200,
+      damping: 40,
+      overshootClamping: true,
+    }),
+  }));
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (pathname.includes("everything")) {
+        SIDEBAR_WIDTH.value = SECONDARY_SIDEBAR_WIDTH;
+      } else {
+        SIDEBAR_WIDTH.value = ORIGINAL_SIDEBAR_WIDTH;
+      }
+    }, 500);
+  }, [pathname]);
 
   return (
     <>
@@ -701,7 +886,9 @@ const Sidebar = ({
           {...(Platform.OS === "web" && {
             onMouseEnter: () => (desktopSlide.value = 1),
             onMouseLeave: () =>
-              (desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH : 0),
+              (desktopSlide.value = desktopCollapsed
+                ? -SIDEBAR_WIDTH.value
+                : 0),
           })}
           style={[
             { flex: breakpoints.md ? undefined : 1 },
@@ -718,47 +905,28 @@ const Sidebar = ({
               },
           ]}
         >
-          <NativeAnimated.View
+          <Animated.View
             style={[
-              animatedStyles,
+              widthStyle,
               {
-                width: SIDEBAR_WIDTH,
-                flexDirection: "column",
-                borderRightWidth: 2,
-                marginRight: -8,
-                borderRightColor: "transparent",
-                backgroundColor: theme[2],
-                ...(Platform.OS === "web" &&
-                  !desktopCollapsed &&
-                  ({
-                    paddingTop: "env(titlebar-area-height,0)",
-                  } as any)),
+                flexDirection: "row",
+                maxWidth: ORIGINAL_SIDEBAR_WIDTH,
+                overflow: "hidden",
               },
-              desktopCollapsed &&
-                breakpoints.md && {
-                  position: "absolute",
-                  borderRadius: 25,
-                  left: -100,
-                  width: SIDEBAR_WIDTH + 100,
-                  paddingLeft: 100,
-                  zIndex: 99,
-                  shadowOpacity: 0.4,
-                  height: height - 50,
-                  marginTop: 25,
-
-                  borderWidth: 2,
-                  borderColor: theme[5],
-                  borderRightWidth: 2,
-                  borderRightColor: theme[5],
-                },
             ]}
           >
-            <View style={[styles.header, { marginTop: insets.top }]}>
-              <LogoButton toggleHidden={toggleHidden} />
-              <Header />
-            </View>
-            <OpenTabsList />
-          </NativeAnimated.View>
+            <Animated.View style={primarySidebarStyles}>
+              <PrimarySidebar progressValue={progressValue} />
+            </Animated.View>
+            <Animated.View
+              style={[
+                secondarySidebarStyles,
+                { height: "100%", width: SECONDARY_SIDEBAR_WIDTH },
+              ]}
+            >
+              <SecondarySidebar />
+            </Animated.View>
+          </Animated.View>
         </Animated.View>
       </SafeView>
     </>
