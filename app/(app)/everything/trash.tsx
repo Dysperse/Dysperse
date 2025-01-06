@@ -2,6 +2,7 @@ import { Entity } from "@/components/collections/entity";
 import ContentWrapper from "@/components/layout/content";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -61,10 +62,11 @@ export default function Trash() {
 
   const isEmpty = (data || []).filter((t) => t.trash).length === 0;
   const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <ContentWrapper noPaddingTop style={{ paddingTop: insets.top + 70 }}>
-      <MenuButton gradient addInsets />
+      {!breakpoints.md && <MenuButton gradient addInsets />}
       <View style={{ flex: 1, maxWidth: 500, marginHorizontal: "auto" }}>
         <Text
           style={{

@@ -309,10 +309,11 @@ const Collections = () => {
 
 export default function Page() {
   const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <ContentWrapper noPaddingTop style={{ paddingTop: insets.top + 70 }}>
-      <MenuButton gradient addInsets />
+      {!breakpoints.md && <MenuButton gradient addInsets />}
       <Collections />
     </ContentWrapper>
   );
