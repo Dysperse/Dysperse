@@ -746,7 +746,10 @@ function SecondarySidebar() {
             sidebarRef.current.openDrawer();
           });
         }}
-        style={{ marginLeft: 10 }}
+        style={[
+          { marginLeft: 10 },
+          Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+        ]}
       />
     </View>
   );
