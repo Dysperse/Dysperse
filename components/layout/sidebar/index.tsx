@@ -711,7 +711,10 @@ function SecondarySidebar() {
           bold
           height={100}
           text="Labels"
-          containerStyle={{ borderRadius: 20 }}
+          containerStyle={[
+            { borderRadius: 20 },
+            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+          ]}
           style={{ flexDirection: "column" }}
           icon="label"
           onPress={() => router.push("/everything")}
@@ -721,7 +724,10 @@ function SecondarySidebar() {
           bold
           height={100}
           text="Collections"
-          containerStyle={{ borderRadius: 20 }}
+          containerStyle={[
+            { borderRadius: 20 },
+            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+          ]}
           style={{ flexDirection: "column" }}
           icon="stack"
           onPress={() => router.push("/everything/collections")}
@@ -732,7 +738,10 @@ function SecondarySidebar() {
           height={100}
           text="Trash"
           onPress={() => router.push("/everything/trash")}
-          containerStyle={{ borderRadius: 20 }}
+          containerStyle={[
+            { borderRadius: 20 },
+            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+          ]}
           style={{ flexDirection: "column" }}
           icon="delete"
           variant={pathname === "/everything/trash" ? "filled" : "text"}
