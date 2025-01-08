@@ -1,19 +1,13 @@
 diff --git a/node_modules/expo-speech-recognition/src/ExpoWebSpeechRecognition.web.ts b/node_modules/expo-speech-recognition/src/ExpoWebSpeechRecognition.web.ts
-index dd03fc5..921e1ed 100644
+index dd03fc5..a3bfe7c 100644
 --- a/node_modules/expo-speech-recognition/src/ExpoWebSpeechRecognition.web.ts
 +++ b/node_modules/expo-speech-recognition/src/ExpoWebSpeechRecognition.web.ts
-@@ -3,9 +3,11 @@ let browserSpeechGrammarList: typeof SpeechGrammarList | null = null;
+@@ -2,7 +2,7 @@ let browserSpeechRecognition: typeof SpeechRecognition | null = null;
+ let browserSpeechGrammarList: typeof SpeechGrammarList | null = null;
  let browserSpeechRecognitionEvent: typeof SpeechRecognitionEvent | null = null;
  
- if (typeof webkitSpeechRecognition !== "undefined") {
--  browserSpeechRecognition = webkitSpeechRecognition;
--  browserSpeechGrammarList = webkitSpeechGrammarList;
--  browserSpeechRecognitionEvent = webkitSpeechRecognitionEvent;
-+  if(webkitSpeechGrammarList) {
-+    browserSpeechRecognition = webkitSpeechRecognition;
-+    browserSpeechGrammarList = webkitSpeechGrammarList;
-+    browserSpeechRecognitionEvent = webkitSpeechRecognitionEvent;
-+  }
- } else if (typeof SpeechRecognition !== "undefined") {
-   browserSpeechRecognition = SpeechRecognition;
-   browserSpeechGrammarList = SpeechGrammarList;
+-if (typeof webkitSpeechRecognition !== "undefined") {
++if (typeof webkitSpeechRecognition !== "undefined" && typeof webkitSpeechGrammarList !== "undefined" && typeof webkitSpeechRecognitionEvent !== "undefined") {
+   browserSpeechRecognition = webkitSpeechRecognition;
+   browserSpeechGrammarList = webkitSpeechGrammarList;
+   browserSpeechRecognitionEvent = webkitSpeechRecognitionEvent;
