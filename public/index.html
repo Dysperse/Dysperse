@@ -12,6 +12,7 @@
     <meta name="theme-color" content="#0f1b1b" />
     <link rel="stylesheet" href="/web.css" />
     <script>
+      window.onerror = (e) => alert(e)
       try {
         "serviceWorker" in navigator &&
           window.addEventListener("load", () => {
