@@ -7,7 +7,7 @@ index d925fbc..3af0480 100644
  let browserSpeechGrammarList = null;
  let browserSpeechRecognitionEvent = null;
 -if (typeof webkitSpeechRecognition !== "undefined") {
-+if (typeof webkitSpeechRecognition !== "undefined" && typeof browserSpeechGrammarList !== "undefined") {
++if (typeof webkitSpeechRecognition !== "undefined" && typeof webkitSpeechGrammarList !== "undefined") {
      browserSpeechRecognition = webkitSpeechRecognition;
      browserSpeechGrammarList = webkitSpeechGrammarList;
      browserSpeechRecognitionEvent = webkitSpeechRecognitionEvent;
