@@ -1,12 +1,12 @@
 {
   "name": "dysperse",
   "version": "1.0.0",
-  "main": "index",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "start-tunnel": "expo start --tunnel",
     "lint": "eslint ./",
-    "postinstall": "patch-package && setup-skia-web",
+    "postinstall": "patch-package",
     "build:dev": "eas build --profile development --platform android",
     "build:prod": "npm i -g eas-cli && eas build --profile production --platform android",
     "build:prod:ios": "npm i -g eas-cli && eas build --profile production --platform ios",
@@ -35,7 +35,6 @@
     "@react-navigation/stack": "^7.0.2",
     "@sentry/react-native": "~6.3.0",
     "@shopify/flash-list": "1.7.1",
-    "@shopify/react-native-skia": "1.5.0",
     "@simplewebauthn/typescript-types": "^8.3.4",
     "@tiptap-pro/extension-drag-handle": "^2.16.1",
     "@tiptap-pro/extension-node-range": "^2.16.1",
@@ -153,4 +152,3 @@
   },
   "private": true
 }
-

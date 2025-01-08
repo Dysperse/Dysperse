@@ -145,9 +145,7 @@ export function Sidekick() {
     {
       id: "1",
       role: "assistant",
-      content: data?.name
-        ? `Hey there! How can I help you today with your "${data?.name}" collection?`
-        : "Hey there! How can I help you today?",
+      // content: ,
     },
   ]);
 
