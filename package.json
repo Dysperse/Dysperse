@@ -80,7 +80,7 @@
     "expo-router": "~4.0.11",
     "expo-secure-store": "~14.0.0",
     "expo-sharing": "~13.0.0",
-    "expo-speech-recognition": "^0.2.24",
+    "expo-speech-recognition": "^1.1.0",
     "expo-splash-screen": "~0.29.16",
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.5",
