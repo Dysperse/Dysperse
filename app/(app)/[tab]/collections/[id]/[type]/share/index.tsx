@@ -10,7 +10,6 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
-import BottomSheet from "@/ui/BottomSheet";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -18,6 +17,7 @@ import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
+import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -150,7 +150,7 @@ const FriendUser = ({ friend, selected, setSelected }) => {
       style={({ pressed, hovered }) => [
         friendModalStyles.user,
         {
-          width: breakpoints.md ? "20%" : "33.333%",
+          width: "33.333%",
           paddingHorizontal: breakpoints.md ? 20 : 10,
           backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
         },
@@ -235,11 +235,10 @@ const FriendModal = ({ children, onComplete }) => {
   return (
     <>
       {trigger}
-      <BottomSheet
+      <Modal
+        animation="SCALE"
         onClose={() => ref.current?.close()}
         sheetRef={ref}
-        snapPoints={["70%"]}
-        maxWidth={900}
       >
         <View style={{ padding: 20, paddingBottom: 0 }}>
           <View style={friendModalStyles.header}>
@@ -314,7 +313,7 @@ const FriendModal = ({ children, onComplete }) => {
                 />
               ))}
         </ScrollView>
-      </BottomSheet>
+      </Modal>
     </>
   );
 };
@@ -598,4 +597,3 @@ export default function Page() {
     </CollectionContext.Provider>
   );
 }
-
