@@ -212,7 +212,7 @@ export default function WeatherWidget({
                   {
                     borderColor: weatherColor[6],
                   },
-                  panelState === "COLLAPSED" && { padding: 15 },
+                  panelState === "COLLAPSED" && { padding: 13 },
                 ]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
