@@ -391,4 +391,3 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
-

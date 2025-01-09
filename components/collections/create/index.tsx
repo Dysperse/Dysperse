@@ -68,7 +68,7 @@ function Templates() {
       <SectionLabel text="Choose a template" icon="web_stories" />
       <Button
         variant="outlined"
-        text="Explore the #dysverse"
+        text="Explore the Dysverse"
         icon="north_east"
         iconPosition="end"
         height={50}
@@ -611,7 +611,7 @@ export const CreateCollectionModal = forwardRef(
             {slide === "AI" ? (
               <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
             ) : (
-              <View style={{ padding: 30, gap: 25, paddingTop: 15 }}>
+              <View style={{ padding: 30, gap: 40, paddingTop: 0 }}>
                 {session.user.betaTester && (
                   <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
                 )}
@@ -625,4 +625,3 @@ export const CreateCollectionModal = forwardRef(
     );
   }
 );
-

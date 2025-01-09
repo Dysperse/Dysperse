@@ -529,6 +529,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
 });
 
 const Header = memo(function Header() {
+  const { session } = useUser();
   const isHome = usePathname() === "/home";
 
   return (
@@ -617,6 +618,7 @@ function PrimarySidebar({ progressValue }) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
   const { width, height } = useWindowDimensions();
+
   const {
     SIDEBAR_WIDTH,
     ORIGINAL_SIDEBAR_WIDTH,
@@ -958,4 +960,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-

@@ -1,5 +1,4 @@
 import { useCollectionContext } from "@/components/collections/context";
-import { NavbarGradient } from "@/components/collections/navbar/NavbarGradient";
 import { useCollectionSidekickContext } from "@/components/collections/sidekickContext";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -15,20 +14,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-
-function Header() {
-  const theme = useColorTheme();
-  const { panelRef } = useCollectionSidekickContext();
-
-  return (
-    <NavbarGradient>
-      <Icon style={{ marginHorizontal: 5 }}>raven</Icon>
-      <Text weight={900} style={{ color: theme[11] }}>
-        Sidekick
-      </Text>
-    </NavbarGradient>
-  );
-}
 
 function MessageBar({ messageRef }) {
   const theme = useColorTheme();
@@ -189,7 +174,6 @@ export function Sidekick() {
             borderLeftWidth: 2,
           }}
         >
-          <Header />
           <FlashList
             contentContainerStyle={{ padding: 10 }}
             renderItem={({ item }) => <Message message={item} />}

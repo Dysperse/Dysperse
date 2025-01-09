@@ -585,40 +585,37 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
           value={collectionSidekickContextValue}
         >
           <ContentWrapper noPaddingTop>
-            <View style={{ flex: 1, flexDirection: "row" }}>
-              <View style={{ flex: 1 }}>
-                <CollectionLabelMenu sheetRef={sheetRef}>
-                  <Pressable />
-                </CollectionLabelMenu>
-                {(data ? (
-                  (data.pinCode || data.pinCodeError) &&
-                  (!data.pinAuthorizationExpiresAt ||
-                    dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
-                    <PasswordPrompt mutate={mutate} />
-                  ) : !data?.error ? (
-                    <>
-                      <CollectionNavbar />
+            <CollectionLabelMenu sheetRef={sheetRef}>
+              <Pressable />
+            </CollectionLabelMenu>
+            {(data ? (
+              (data.pinCode || data.pinCodeError) &&
+              (!data.pinAuthorizationExpiresAt ||
+                dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
+                <PasswordPrompt mutate={mutate} />
+              ) : !data?.error ? (
+                <>
+                  <CollectionNavbar />
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <View style={{ flex: 1 }}>
                       <FadeOnRender
                         key={breakpoints.md ? JSON.stringify(t) : "none"}
                       >
                         {content}
                       </FadeOnRender>
-                    </>
-                  ) : (
-                    false
-                  )
-                ) : (
-                  false
-                )) || (
-                  <Loading isPublic={isPublic} error={error || data?.error} />
-                )}
-              </View>
-              <Sidekick />
-            </View>
+                    </View>
+                    <Sidekick />
+                  </View>
+                </>
+              ) : (
+                false
+              )
+            ) : (
+              false
+            )) || <Loading isPublic={isPublic} error={error || data?.error} />}
           </ContentWrapper>
         </CollectionSidekickContext.Provider>
       </CollectionContext.Provider>
     </SelectionContextProvider>
   );
 }
-
