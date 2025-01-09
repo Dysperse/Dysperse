@@ -73,6 +73,7 @@ dayjs.extend(isToday);
 function DesktopLayout({ children }) {
   const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
+  const pathname = usePathname();
   const { fullscreen } = useGlobalSearchParams();
 
   if (fullscreen)
@@ -87,7 +88,7 @@ function DesktopLayout({ children }) {
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
-      <Sidebar />
+      {!(pathname.includes("settings") && breakpoints.md) && <Sidebar />}
       {/* {breakpoints.md && !desktopCollapsed && (
         <GestureDetector
           gesture={Gesture.Tap().onEnd(() => {
@@ -421,4 +422,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-

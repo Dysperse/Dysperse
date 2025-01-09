@@ -925,10 +925,6 @@ const Sidebar = ({
               backgroundColor: theme[2],
             },
             pathname.includes("chrome-extension") && { display: "none" },
-            pathname.includes("settings") &&
-              breakpoints.md && {
-                zIndex: -999,
-              },
           ]}
         >
           <Animated.View
