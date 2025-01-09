@@ -430,10 +430,11 @@ function PanelContent() {
   const theme = useColorTheme();
   const r = useRef<NavigationContainerRef<any>>(null);
   const breakpoints = useResponsiveBreakpoints();
-  const { panelState, collapseOnBack, setPanelState } = useFocusPanelContext();
+  const { panelState } = useFocusPanelContext();
   const { width } = useWindowDimensions();
 
   const opacity = useSharedValue(breakpoints.md ? 2 : 0);
+
   const opacityStyle = useAnimatedStyle(() => ({
     opacity: withSpring(opacity.value, { overshootClamping: true }),
   }));
@@ -478,7 +479,7 @@ function PanelContent() {
             flex: 1,
             overflow: "hidden",
           },
-          !breakpoints.md && { width: width },
+          !breakpoints.md && { width },
         ]}
       >
         <Animated.View
@@ -489,7 +490,7 @@ function PanelContent() {
               width: "100%",
               height: "100%",
               borderWidth: 2,
-              borderColor: theme[panelState === "COLLAPSED" ? 2 : 5],
+              borderColor: theme[panelState === "OPEN" ? 5 : 2],
               zIndex: 99,
               borderRadius: 20,
               pointerEvents: "none",
@@ -545,8 +546,8 @@ function PanelContent() {
               }}
               theme={{
                 colors: {
-                  background: theme[panelState === "COLLAPSED" ? 2 : 1],
-                  card: theme[panelState === "COLLAPSED" ? 2 : 1],
+                  background: theme[panelState === "OPEN" ? 1 : 2],
+                  card: theme[panelState === "OPEN" ? 1 : 2],
                   primary: theme[1],
                   border: theme[6],
                   text: theme[11],
@@ -562,9 +563,9 @@ function PanelContent() {
                     cardStyle: {
                       paddingHorizontal: 2,
                       width: breakpoints.md
-                        ? panelState === "COLLAPSED"
-                          ? 85
-                          : 340
+                        ? panelState === "OPEN"
+                          ? 340
+                          : 85
                         : "100%",
                     },
                   }}
@@ -740,10 +741,10 @@ function FocusPanelHome({
 const FocusPanel = memo(function FocusPanel() {
   const { panelState, setPanelState } = useFocusPanelContext();
   const marginRight = useSharedValue(panelState === "CLOSED" ? -350 : 0);
-  const width = useSharedValue(panelState === "COLLAPSED" ? 100 : 350);
+  const width = useSharedValue(panelState === "OPEN" ? 350 : 100);
 
   useHotkeys("\\", () =>
-    setPanelState(panelState === "OPEN" ? "CLOSED" : "OPEN")
+    setPanelState(panelState === "COLLAPSED" ? "CLOSED" : "COLLAPSED")
   );
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -775,11 +776,11 @@ const FocusPanel = memo(function FocusPanel() {
     })
     .onEnd(({ velocityX }) => {
       marginRight.value = velocityX > 0 ? -350 : 0;
-      setPanelState(velocityX > 0 ? "OPEN" : "CLOSED");
+      setPanelState(velocityX > 0 ? "COLLAPSED" : "CLOSED");
     });
 
   const tap = Gesture.Tap().onEnd(() =>
-    setPanelState((t) => (t === "OPEN" ? "CLOSED" : "OPEN"))
+    setPanelState((t) => (t === "COLLAPSED" ? "CLOSED" : "COLLAPSED"))
   );
 
   const pathname = usePathname();
@@ -828,4 +829,3 @@ const FocusPanel = memo(function FocusPanel() {
 });
 
 export default FocusPanel;
-

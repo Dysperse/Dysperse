@@ -170,30 +170,6 @@ const TimeZone = ({
           </View>
         </Pressable>
       </ConfirmationModal>
-      <Text
-        style={
-          panelState === "COLLAPSED"
-            ? { display: "none" }
-            : timeZone
-            ? {
-                color: theme[11],
-                textAlign: "center",
-                fontSize: 12,
-                marginTop: 3,
-              }
-            : {
-                fontSize: 20,
-                color: theme[11],
-                opacity: 0.6,
-                textAlign: "center",
-                marginTop: 5,
-              }
-        }
-        weight={timeZone ? 500 : 500}
-        numberOfLines={1}
-      >
-        {timeZone ? `${timeZone.split("/")[1]}` : "Local time"}
-      </Text>
     </View>
   );
 };

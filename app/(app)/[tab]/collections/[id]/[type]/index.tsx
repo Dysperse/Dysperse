@@ -584,36 +584,36 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
         <CollectionSidekickContext.Provider
           value={collectionSidekickContextValue}
         >
-          <ContentWrapper noPaddingTop>
-            <CollectionLabelMenu sheetRef={sheetRef}>
-              <Pressable />
-            </CollectionLabelMenu>
-            {(data ? (
-              (data.pinCode || data.pinCodeError) &&
-              (!data.pinAuthorizationExpiresAt ||
-                dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
-                <PasswordPrompt mutate={mutate} />
-              ) : !data?.error ? (
-                <>
-                  <CollectionNavbar />
-                  <View style={{ flex: 1, flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}>
-                      <FadeOnRender
-                        key={breakpoints.md ? JSON.stringify(t) : "none"}
-                      >
-                        {content}
-                      </FadeOnRender>
-                    </View>
-                    <Sidekick />
-                  </View>
-                </>
+          <View style={{ flex: 1, flexDirection: "row" }}>
+            <ContentWrapper noPaddingTop>
+              <CollectionLabelMenu sheetRef={sheetRef}>
+                <Pressable />
+              </CollectionLabelMenu>
+              {(data ? (
+                (data.pinCode || data.pinCodeError) &&
+                (!data.pinAuthorizationExpiresAt ||
+                  dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
+                  <PasswordPrompt mutate={mutate} />
+                ) : !data?.error ? (
+                  <>
+                    <CollectionNavbar />
+                    <FadeOnRender
+                      key={breakpoints.md ? JSON.stringify(t) : "none"}
+                    >
+                      {content}
+                    </FadeOnRender>
+                  </>
+                ) : (
+                  false
+                )
               ) : (
                 false
-              )
-            ) : (
-              false
-            )) || <Loading isPublic={isPublic} error={error || data?.error} />}
-          </ContentWrapper>
+              )) || (
+                <Loading isPublic={isPublic} error={error || data?.error} />
+              )}
+            </ContentWrapper>
+            <Sidekick />
+          </View>
         </CollectionSidekickContext.Provider>
       </CollectionContext.Provider>
     </SelectionContextProvider>

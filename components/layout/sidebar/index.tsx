@@ -341,40 +341,15 @@ export const LogoButton = memo(function LogoButton({
                 callback: toggleHidden,
                 selected: !desktopCollapsed,
               },
-              {
-                renderer: () => (
-                  <Text
-                    style={{ padding: 10, paddingBottom: 0 }}
-                    variant="eyebrow"
-                  >
-                    FOCUS PANEL
-                  </Text>
-                ),
-              },
 
               {
-                icon:
-                  panelState === "OPEN"
-                    ? "radio_button_checked"
-                    : "radio_button_unchecked",
-                text: "Full",
-                callback: () => setPanelState("OPEN"),
-              },
-              {
-                icon:
-                  panelState === "COLLAPSED"
-                    ? "radio_button_checked"
-                    : "radio_button_unchecked",
-                text: "Collapsed",
-                callback: () => setPanelState("COLLAPSED"),
-              },
-              {
-                icon:
-                  panelState === "CLOSED"
-                    ? "radio_button_checked"
-                    : "radio_button_unchecked",
-                text: "Closed",
-                callback: () => setPanelState("CLOSED"),
+                icon: "psychiatry",
+                text: "Focus panel",
+                callback: () =>
+                  setPanelState((t) =>
+                    t === "COLLAPSED" ? "CLOSED" : "COLLAPSED"
+                  ),
+                selected: panelState !== "CLOSED",
               },
             ]}
           />

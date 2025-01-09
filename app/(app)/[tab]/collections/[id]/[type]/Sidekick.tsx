@@ -1,12 +1,13 @@
 import { useCollectionContext } from "@/components/collections/context";
 import { useCollectionSidekickContext } from "@/components/collections/sidekickContext";
+import ContentWrapper from "@/components/layout/content";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { FlashList } from "@shopify/flash-list";
 import { useImperativeHandle, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -33,7 +34,44 @@ function MessageBar({ messageRef }) {
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20, gap: 10, justifyContent: "center", flex: 1 }}>
+      <View
+        style={{
+          alignItems: "center",
+          gap: 10,
+          marginBottom: 20,
+          opacity: 0.5,
+        }}
+      >
+        <Icon size={40}>raven</Icon>
+        <Text
+          style={{ color: theme[11], fontSize: 20, textAlign: "center" }}
+          weight={300}
+        >
+          {data?.name ? `How can I help\nwith "${data?.name}"?` : "Sidekick"}
+        </Text>
+      </View>
+      <Button
+        height={50}
+        large
+        icon="low_priority"
+        text="Help me prioritize"
+        variant="outlined"
+      />
+      <Button
+        height={50}
+        large
+        icon="sports_martial_arts"
+        text="Divide & conquer"
+        variant="outlined"
+      />
+      <Button
+        height={50}
+        large
+        icon="kid_star"
+        text="Simplify tasks"
+        variant="outlined"
+      />
       <View
         style={{
           alignItems: "center",
@@ -59,61 +97,19 @@ function MessageBar({ messageRef }) {
           onChangeText={setValue}
           onKeyPress={handleKeyPress}
         />
-        {value && (
-          <IconButton
-            icon="north"
-            variant="filled"
-            size={35}
-            backgroundColors={{
-              default: theme[10],
-              hovered: theme[11],
-              pressed: theme[12],
-            }}
-            iconProps={{ bold: true, size: 17 }}
-            iconStyle={{ color: theme[1] }}
-          />
-        )}
-      </View>
-    </View>
-  );
-}
-
-function Message({ message }) {
-  const theme = useColorTheme();
-
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        margin: 5,
-        marginBottom: 0,
-        marginLeft: 0,
-        justifyContent:
-          message.role === "assistant" ? "flex-start" : "flex-end",
-      }}
-    >
-      <View
-        style={{
-          padding: 8,
-          backgroundColor: theme[message.role === "assistant" ? 3 : 11],
-          borderRadius: 10,
-          maxWidth: message.role === "assistant" ? "100%" : 300,
-          overflow: "hidden",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 13,
-            color: theme[message.role === "assistant" ? 11 : 3],
+        <IconButton
+          icon="east"
+          variant="filled"
+          size={35}
+          backgroundColors={{
+            default: theme[10],
+            hovered: theme[11],
+            pressed: theme[12],
           }}
-        >
-          {message.content}
-        </Text>
+          iconProps={{ bold: true, size: 17 }}
+          iconStyle={{ color: theme[1] }}
+        />
       </View>
-      {message.role !== "assistant" && (
-        <Icon name="profile" size={30} style={{ marginLeft: 10 }} />
-      )}
     </View>
   );
 }
@@ -125,14 +121,6 @@ export function Sidekick() {
   const { data } = useCollectionContext();
   const theme = useColorTheme();
   const messageRef = useRef();
-
-  const [messages, setMessages] = useState([
-    {
-      id: "1",
-      role: "assistant",
-      // content: ,
-    },
-  ]);
 
   const widthStyle = useAnimatedStyle(() => ({
     width: withSpring(width.value, {
@@ -166,23 +154,15 @@ export function Sidekick() {
   return (
     breakpoints.md && (
       <Animated.View style={widthStyle}>
-        <View
+        <ContentWrapper
           style={{
-            width: 300,
+            marginLeft: 10,
+            width: 290,
             flex: 1,
-            borderLeftColor: theme[5],
-            borderLeftWidth: 2,
           }}
         >
-          <FlashList
-            contentContainerStyle={{ padding: 10 }}
-            renderItem={({ item }) => <Message message={item} />}
-            style={{ flex: 1 }}
-            data={messages}
-            keyExtractor={(message) => message.id}
-          />
           <MessageBar messageRef={messageRef} />
-        </View>
+        </ContentWrapper>
       </Animated.View>
     )
   );
