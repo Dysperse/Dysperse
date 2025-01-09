@@ -145,12 +145,16 @@ const Wrapper = memo((props) => {
     .split(",")
     .map(Number) as [number, number, number];
 
+  const isSafari =
+    Platform.OS === "web" &&
+    /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   const params = new URLSearchParams({
     color: `#${hslToHex(...hslValues)}`,
     pattern: pattern,
     screenWidth: Dimensions.get("window").width.toString(),
     screenHeight: Dimensions.get("window").height.toString(),
-    ...(Platform.OS !== "web" && { asPng: "true" }),
+    ...((Platform.OS !== "web" || isSafari) && { asPng: "true" }),
   });
 
   const uri = `${process.env.EXPO_PUBLIC_API_URL}/pattern?${params.toString()}`;
@@ -217,4 +221,3 @@ function Page() {
 }
 
 export default memo(Page);
-
