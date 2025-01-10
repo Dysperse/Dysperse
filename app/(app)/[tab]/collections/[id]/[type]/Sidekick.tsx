@@ -59,9 +59,9 @@ function MessageBar({
   };
 
   return (
-    <View style={{ flexDirection: "row", gap: 10 }}>
-      {typeof onRetry !== "undefined" && (
-        <IconButton onPress={onRetry} variant="filled" size={60} icon="loop" />
+    <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+      {typeof onRetry !== "undefined" && !value && (
+        <IconButton onPress={onRetry} variant="filled" icon="loop" />
       )}
       <View
         style={{
@@ -99,7 +99,10 @@ function MessageBar({
             hovered: theme[value ? 11 : 6],
             pressed: theme[value ? 12 : 6],
           }}
-          onPress={() => setMessage(value)}
+          onPress={() => {
+            setMessage(value);
+            setValue("");
+          }}
           iconProps={{ bold: true, size: 17 }}
           iconStyle={value && { color: theme[1] }}
         />
@@ -189,8 +192,8 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
     <View style={{ flex: 1 }}>
       <View style={{ padding: 20, paddingBottom: 0, zIndex: 999 }}>
         <IconButton
-          variant="filled"
-          icon="close"
+          variant={breakpoints.md ? "filled" : undefined}
+          icon={breakpoints.md ? "close" : "arrow_back_ios_new"}
           onPress={() => messageState[1]("")}
         />
         <LinearGradient
@@ -204,7 +207,7 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
         />
       </View>
       <ScrollView style={{ flex: 1, padding: 20 }}>
-        <View style={{ paddingHorizontal: 5 }}>
+        <View style={{ paddingHorizontal: breakpoints.md ? 5 : 10 }}>
           <Text
             style={{
               fontFamily: "serifText800",
