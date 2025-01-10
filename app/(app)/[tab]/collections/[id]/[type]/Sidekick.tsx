@@ -47,6 +47,7 @@ function MessageBar({
   const [value, setValue] = useState("");
   const { panelRef } = useCollectionSidekickContext();
   const [message, setMessage] = messageState;
+  const breakpoints = useResponsiveBreakpoints();
 
   const handleKeyPress = ({ nativeEvent }) => {
     if (nativeEvent.key === "Enter" && !nativeEvent.shiftKey) {
@@ -59,7 +60,12 @@ function MessageBar({
   };
 
   return (
-    <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        gap: 10,
+      }}
+    >
       {typeof onRetry !== "undefined" && !value && (
         <IconButton onPress={onRetry} variant="filled" icon="loop" />
       )}
@@ -90,8 +96,7 @@ function MessageBar({
           onKeyPress={handleKeyPress}
         />
         <IconButton
-          icon="north"
-          variant={"filled"}
+          icon={breakpoints.md ? "east" : "north"}
           disabled={!value}
           size={35}
           backgroundColors={{
@@ -117,7 +122,9 @@ function MessageHeader() {
   const { data } = useCollectionContext();
 
   return (
-    <View style={{ alignItems: "center", gap: 10 }}>
+    <View
+      style={{ alignItems: breakpoints?.md ? undefined : "center", gap: 10 }}
+    >
       <View
         style={{
           alignItems: "center",
@@ -324,15 +331,19 @@ export function Sidekick() {
         icon="close"
         style={{
           position: "absolute",
-          top: 5,
-          right: 20,
+          top: breakpoints.md ? 15 : 5,
+          right: breakpoints.md ? 15 : 20,
         }}
-        onPress={() => mobileRef.current.close()}
+        onPress={() => panelRef.current.close()}
       />
       <View style={{ marginTop: "auto", gap: 10 }}>
         <MessageHeader />
       </View>
-      <View style={!breakpoints.md && { marginTop: "auto" }}>
+      <View
+        style={
+          !breakpoints.md ? { marginTop: "auto" } : { marginBottom: "auto" }
+        }
+      >
         <MessageBar
           messageState={[message, setMessage]}
           messageRef={messageRef}
