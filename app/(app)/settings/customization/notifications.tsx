@@ -281,10 +281,9 @@ export function SubscribeButton({
       );
     } else if (Platform.OS === "web") {
       const webTokens = await registerForWebPushNotificationsAsync();
-
       setTokenExists(
         data?.subscriptions?.find?.(
-          ({ tokens }) => tokens?.endpoint === webTokens?.endpoint
+          ({ tokens }) => webTokens && tokens?.endpoint === webTokens?.endpoint
         )
       );
     } else {
@@ -364,26 +363,29 @@ export function SubscribeButton({
   };
 
   return (
-    <Button
-      isLoading={isLoading || !data}
-      disabled={Boolean(tokenExists)}
-      onPress={handlePress}
-      variant={tokenExists ? "outlined" : "filled"}
-      bold={!settings}
-      large
-      height={60}
-      containerStyle={[settings && [{ flex: 1 }]]}
-      text={
-        text ||
-        (tokenExists
-          ? "Notifications enabled"
-          : `Enable${settings ? "" : " notifications"} on this device`)
-      }
-      icon={
-        settings ? (tokenExists ? "check_circle" : "add_circle") : undefined
-      }
-      iconPosition="end"
-    ></Button>
+    <>
+      <Button
+        isLoading={isLoading || !data}
+        disabled={Boolean(tokenExists)}
+        onPress={handlePress}
+        variant={tokenExists ? "outlined" : "filled"}
+        bold={!settings}
+        large
+        height={60}
+        containerStyle={[settings && [{ flex: 1 }]]}
+        text={
+          text ||
+          (tokenExists
+            ? "Notifications enabled"
+            : `Enable${settings ? "" : " notifications"} on this device`)
+        }
+        icon={
+          settings ? (tokenExists ? "check_circle" : "add_circle") : undefined
+        }
+        iconPosition="end"
+      />
+      <Text>{JSON.stringify(tokenExists)}</Text>
+    </>
   );
 }
 
