@@ -172,6 +172,29 @@ function MessageHeader() {
   );
 }
 
+function FilterChips({ filters }) {
+  const theme = useColorTheme();
+
+  return (
+    <View
+      style={{
+        gap: 5,
+        marginBottom: 15,
+        marginTop: 5,
+      }}
+    >
+      {filters.map((filter) => (
+        <View key={filter} style={{ flexDirection: "row", gap: 5 }}>
+          <Icon size={17} style={{ flexShrink: 0 }}>
+            {filter.icon}
+          </Icon>
+          <Text style={{ color: theme[11], fontSize: 13 }}>{filter.text}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function CollectionQuestionAnser({ message, messageRef, messageState }) {
   const { data: collectionData } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
@@ -238,6 +261,9 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
             <Text>Couldn't generate text. Did you hit your limit?</Text>
           ) : data ? (
             <>
+              {data.addedFilters.length > 0 && (
+                <FilterChips filters={data.addedFilters} />
+              )}
               <MarkdownRenderer>{data.generated}</MarkdownRenderer>
               <Text style={{ opacity: 0.5, marginTop: 5, fontSize: 12 }}>
                 AI can make mistakes. Check important info
