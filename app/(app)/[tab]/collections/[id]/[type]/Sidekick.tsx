@@ -9,6 +9,7 @@ import {
 import ContentWrapper from "@/components/layout/content";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -18,7 +19,6 @@ import IconButton from "@/ui/IconButton";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
-import TextField from "@/ui/TextArea";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useImperativeHandle, useRef, useState } from "react";
@@ -66,30 +66,32 @@ function MessageBar({
         gap: 10,
       }}
     >
-      {typeof onRetry !== "undefined" && !value && (
-        <IconButton onPress={onRetry} variant="filled" icon="loop" />
-      )}
       <View
         style={{
           alignItems: "center",
           paddingRight: 10,
-          borderRadius: 200,
+          borderRadius: 35,
           flexDirection: "row",
           flex: 1,
+          paddingHorizontal: onRetry && !value ? 10 : 20,
+          gap: 10,
           backgroundColor: theme[3],
         }}
       >
-        <TextField
+        {typeof onRetry !== "undefined" && !value && (
+          <IconButton onPress={onRetry} variant="filled" icon="loop" />
+        )}
+        <AutoSizeTextArea
           multiline
-          inputRef={messageRef}
+          ref={messageRef}
           placeholder="Type a message..."
           numberOfLines={1}
           style={{
-            padding: 20,
             flex: 1,
             paddingVertical: 20,
-            borderRadius: 200,
             shadowRadius: 0,
+            color: theme[11],
+            fontFamily: "body_400",
           }}
           value={value}
           onChangeText={setValue}
@@ -185,7 +187,7 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
           {
             method: "POST",
             body: JSON.stringify({
-              id: collectionData.id,
+              id: collectionData?.id,
               prompt: message,
             }),
           },
@@ -232,10 +234,15 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
                 widths={[40, 61, 75, 85, 83, 81, 37, 61, 53, 48]}
               />
             </SkeletonContainer>
-          ) : data.error ? (
+          ) : data?.error ? (
             <Text>Couldn't generate text. Did you hit your limit?</Text>
           ) : data ? (
-            <MarkdownRenderer>{data.generated}</MarkdownRenderer>
+            <>
+              <MarkdownRenderer>{data.generated}</MarkdownRenderer>
+              <Text style={{ opacity: 0.5, marginTop: 5, fontSize: 12 }}>
+                AI can make mistakes. Check important info
+              </Text>
+            </>
           ) : (
             <ErrorAlert />
           )}
@@ -309,7 +316,16 @@ export function Sidekick() {
     },
   }));
 
-  const content = message ? (
+  const { type } = collectionContextValue;
+  const sidekickEnabled = collectionContextValue.data?.id || type === "planner";
+
+  const content = !sidekickEnabled ? (
+    <View style={{ padding: 20, flex: 1 }}>
+      <Text style={{ fontSize: 20, fontFamily: "serifText700" }}>
+        Navigate to a collection or open planner view to enable Sidekick
+      </Text>
+    </View>
+  ) : message ? (
     <CollectionQuestionAnser
       messageRef={messageRef}
       messageState={[message, setMessage]}
@@ -389,3 +405,4 @@ export function Sidekick() {
     </View>
   );
 }
+
