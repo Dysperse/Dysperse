@@ -111,6 +111,8 @@ async function registerForWebPushNotificationsAsync() {
     "serviceWorker" in navigator &&
     window.workbox !== undefined
   ) {
+    await Notification.requestPermission();
+
     const reg = await navigator.serviceWorker.ready;
 
     await reg.pushManager.subscribe({
@@ -128,11 +130,10 @@ async function registerForWebPushNotificationsAsync() {
     ) {
       return sub;
     }
-
-    return null; // Return null if no valid subscription found
+    return null;
   }
 
-  return null; // Return null if service worker or workbox is not supported
+  return null;
 }
 
 const notificationSettings = [
@@ -144,16 +145,6 @@ const notificationSettings = [
         name: "Invite",
         description: "Notify me when I'm invited to a collection",
       },
-      // {
-      //   key: "COLLECTION_ITEM_CREATE",
-      //   name: "Create",
-      //   description: "Notify me when a new entity is created in a collection",
-      // },
-      // {
-      //   key: "COLLECTION_ITEM_UPDATE",
-      //   name: "Edit",
-      //   description: "Notify me when labels are edited in a collection",
-      // },
     ],
   },
   {
