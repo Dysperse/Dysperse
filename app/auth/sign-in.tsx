@@ -17,7 +17,6 @@ import dayjs from "dayjs";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import { createURL } from "expo-linking";
-import * as Network from "expo-network";
 import { Redirect, router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
@@ -693,7 +692,10 @@ export default function SignIn() {
           setStep(1);
         } else {
           setStep(step === 3 ? 4 : 2);
-          const ip = await Network.getIpAddressAsync();
+          const ip = await fetch("https://api.ipify.org?format=json")
+            .then((res) => res.json())
+            .then((res) => res.ip);
+
           const sessionRequest = await sendApiRequest(
             false,
             "POST",
