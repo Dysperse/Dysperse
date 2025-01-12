@@ -739,6 +739,7 @@ export default function SignIn() {
         }
       } catch (e) {
         console.error(e);
+        alert(e);
         Toast.show({ type: "error" });
         setToken("");
         setStep(0);
