@@ -375,7 +375,7 @@ export function SubscribeButton({
         }
         iconPosition="end"
       />
-      <Text>{JSON.stringify(tokenExists)}</Text>
+      {/* <Text>{JSON.stringify(tokenExists)}</Text> */}
     </>
   );
 }
