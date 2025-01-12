@@ -1,6 +1,5 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
@@ -71,7 +70,6 @@ function Weather({ weatherCode, isNight, icon, temp }) {
 }
 
 export default function Page() {
-  const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const handleNext = () => router.push("/plan/1");
   const greeting = getGreeting();
