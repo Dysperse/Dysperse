@@ -318,7 +318,7 @@ export function SubscribeButton({
         {
           body: JSON.stringify({
             type: "WEB",
-            tokens: sub.toJSON(),
+            tokens: sub?.toJSON?.(),
             deviceType: Device.deviceType || 0,
             deviceName:
               navigator.userAgent.split("(")[1].split(";")[0] ||
