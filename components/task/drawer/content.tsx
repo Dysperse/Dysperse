@@ -450,7 +450,7 @@ function TaskMoreMenu({ handleDelete }) {
     <>
       <MenuPopover
         options={[
-          session.user.betaTester && {
+          session?.user?.betaTester && {
             icon: "content_copy",
             text: "Duplicate",
             callback: () => {},
@@ -723,7 +723,7 @@ export function TaskDrawerContent({
             }}
           >
             <TaskMoreMenu handleDelete={handleDelete} />
-            {session.user.betaTester && <TaskSidekickMenu />}
+            {session?.user?.betaTester && <TaskSidekickMenu />}
             {!task.parentTaskId && <TaskShareButton />}
             {!isReadOnly && <TaskCompleteButton />}
           </View>

@@ -209,7 +209,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           {message[2]}
         </Text>
 
-        {session.user.betaTester && showInspireMe && labelId && (
+        {session?.user?.betaTester && showInspireMe && labelId && (
           <InspireMe labelId={labelId} />
         )}
       </View>

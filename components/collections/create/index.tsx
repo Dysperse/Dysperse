@@ -612,7 +612,7 @@ export const CreateCollectionModal = forwardRef(
               <AiSlide aiPrompt={aiPrompt} setSlide={setSlide} />
             ) : (
               <View style={{ padding: 30, gap: 40, paddingTop: 0 }}>
-                {session.user.betaTester && (
+                {session?.user?.betaTester && (
                   <AiCollection aiPrompt={aiPrompt} setSlide={setSlide} />
                 )}
                 <StartFromScratch />
@@ -625,3 +625,4 @@ export const CreateCollectionModal = forwardRef(
     );
   }
 );
+

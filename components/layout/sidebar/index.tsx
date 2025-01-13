@@ -446,7 +446,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                   <Icon>add_circle</Icon>
                   <Text variant="menuItem">Task</Text>
                 </MenuItem>
-                {session.user.betaTester && (
+                {session?.user?.betaTester && (
                   <MenuItem
                     onPress={() => {
                       menuRef.current.close();
@@ -931,3 +931,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+

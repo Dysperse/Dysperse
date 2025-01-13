@@ -339,7 +339,7 @@ export default function Page() {
       {data ? (
         <>
           <GoalsSettings updateUserSettings={updateUserSettings} />
-          {session.user.betaTester && (
+          {session?.user?.betaTester && (
             <PrioritySettings updateUserSettings={updateUserSettings} />
           )}
           <TasksSettings data={data} updateUserSettings={updateUserSettings} />
