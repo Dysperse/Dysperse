@@ -19,7 +19,7 @@ import * as Application from "expo-application";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Platform, View } from "react-native";
-import * as passkey from "react-native-passkeys";
+// import * as passkey from "react-native-passkeys";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -286,4 +286,3 @@ export default function App() {
     </SettingsScrollView>
   );
 }
-

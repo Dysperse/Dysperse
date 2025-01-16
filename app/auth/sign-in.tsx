@@ -12,7 +12,7 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import Turnstile from "@/ui/turnstile";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+// import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import dayjs from "dayjs";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,8 +22,8 @@ import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import { Linking, Platform, StyleSheet, View } from "react-native";
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
-import * as passkey from "react-native-passkeys";
+// import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+// import * as passkey from "react-native-passkeys";
 import QRCode from "react-native-qrcode-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
@@ -512,8 +512,7 @@ function Credentials({
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
+    <View
       style={{
         flex: 1,
         alignItems: "center",
@@ -560,7 +559,7 @@ function Credentials({
         </Text>
 
         <View style={{ maxWidth: 350, width: "100%", gap: 10, marginTop: 20 }}>
-          <GoogleAuth
+          {/* <GoogleAuth
             onNewAccount={(d) => {
               Toast.show({
                 type: "success",
@@ -586,7 +585,7 @@ function Credentials({
                 },
               });
             }}
-          />
+          /> */}
           <Button
             height={60}
             variant="filled"
@@ -607,7 +606,7 @@ function Credentials({
             large
           />
           {/* </EmailModal> */}
-          <PasskeyModal setStep={setStep} />
+          {/* <PasskeyModal setStep={setStep} /> */}
           <QrModal>
             <Button
               height={60}
@@ -657,7 +656,7 @@ function Credentials({
           )}
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -931,4 +930,3 @@ export default function SignIn() {
     </>
   );
 }
-

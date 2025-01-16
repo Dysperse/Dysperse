@@ -25,10 +25,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
 import { useGlobalSearchParams, usePathname } from "expo-router";
-import {
-  ExpoSpeechRecognitionModule,
-  useSpeechRecognitionEvent,
-} from "expo-speech-recognition";
+// import {
+//   ExpoSpeechRecognitionModule,
+//   useSpeechRecognitionEvent,
+// } from "expo-speech-recognition";
 import React, {
   cloneElement,
   forwardRef,
@@ -1392,7 +1392,7 @@ const BottomSheetContent = forwardRef(
             }}
           >
             <CancelButton />
-            <SpeechRecognition setValue={setValue} />
+            {/* {<SpeechRecognition setValue={setValue} />} */}
             <LabelButton
               watch={watch}
               setValue={setValue}
@@ -1581,4 +1581,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-

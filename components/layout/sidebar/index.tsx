@@ -603,12 +603,12 @@ function PrimarySidebar({ progressValue }) {
 
   const breakpoints = useResponsiveBreakpoints();
 
-  const transform = progressValue?.interpolate?.({
-    inputRange: [0, 1],
-    outputRange: [-(width / 10), 0],
-  });
+  // const transform = progressValue?.interpolate?.({
+  //   inputRange: [0, 1],
+  //   outputRange: [-(width / 10), 0],
+  // });
 
-  const animatedStyles = [{ transform: [{ translateX: transform }] }];
+  // const animatedStyles = [{ transform: [{ translateX: transform }] }];
 
   const toggleHidden = useCallback(() => {
     setDesktopCollapsed(!desktopCollapsed);
@@ -620,9 +620,8 @@ function PrimarySidebar({ progressValue }) {
   useHotkeys("`", toggleHidden, {});
 
   return (
-    <NativeAnimated.View
+    <View
       style={[
-        animatedStyles,
         {
           width: ORIGINAL_SIDEBAR_WIDTH + 10,
           flex: 1,
@@ -660,7 +659,7 @@ function PrimarySidebar({ progressValue }) {
         <Header />
       </View>
       <OpenTabsList />
-    </NativeAnimated.View>
+    </View>
   );
 }
 
@@ -931,4 +930,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-

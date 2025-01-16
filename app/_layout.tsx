@@ -27,7 +27,6 @@ import { Platform, StatusBar, useWindowDimensions } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
 import { DrawerLayout } from "react-native-gesture-handler";
-import { KeyboardProvider } from "react-native-keyboard-controller";
 import { useSharedValue } from "react-native-reanimated";
 import { SessionProvider } from "../context/AuthProvider";
 
@@ -135,7 +134,7 @@ function Root() {
   StatusBar.setBackgroundColor("transparent");
   return (
     <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-      <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
+      {/* <KeyboardProvider navigationBarTranslucent statusBarTranslucent> */}
         <SessionProvider>
           <ModalStackProvider>
             <ColorThemeProvider theme={theme}>
@@ -155,7 +154,7 @@ function Root() {
             </ColorThemeProvider>
           </ModalStackProvider>
         </SessionProvider>
-      </KeyboardProvider>
+      {/* </KeyboardProvider> */}
     </ErrorBoundary>
   );
 }

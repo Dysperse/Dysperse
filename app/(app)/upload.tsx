@@ -16,7 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+// import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -191,4 +191,3 @@ export default function Page() {
     </SafeAreaView>
   );
 }
-
