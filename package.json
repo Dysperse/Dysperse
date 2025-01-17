@@ -101,6 +101,7 @@
     "react-hotkeys-hook": "^4.6.1",
     "react-mentions": "^4.4.10",
     "react-native": "0.76.3",
+    "react-native-autogrow-textinput": "^5.4.0",
     "react-native-big-calendar": "^4.15.2",
     "react-native-chart-kit": "^6.12.0",
     "react-native-circular-progress": "^1.4.1",
@@ -153,4 +154,3 @@
   },
   "private": true
 }
-

@@ -29,10 +29,16 @@ const SafeBlurView = (props) => {
     <React.Fragment {...props} />
   ) : (
     <BlurView
-      style={{ flex: 1 }}
+      // style={{ flex: 1 }}
       intensity={50}
       tint={
-        isDark ? "systemUltraThinMaterialDark" : "systemUltraThinMaterialLight"
+        Platform.OS === "ios"
+          ? isDark
+            ? "dark"
+            : "light"
+          : isDark
+          ? "systemUltraThinMaterialDark"
+          : "systemUltraThinMaterialLight"
       }
       {...props}
     />
@@ -55,7 +61,6 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   },
   ref
 ) {
-  const { height } = useWindowDimensions();
   const { sessionToken } = useUser();
 
   const pathname = usePathname();
@@ -121,8 +126,8 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
             Platform.OS === "android" ? 1 : 0.5
           ),
           marginTop: "auto",
-          overflow: "hidden",
-          maxHeight: "100%",
+          // overflow: "hidden",
+          // maxHeight: "100%",
           borderRadius: 25,
         },
       ]}
@@ -269,7 +274,7 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
       {trigger}
       <Modal
         animation="BOTH"
-        disablePan={breakpoints.md}
+        // disablePan={breakpoints.md}
         sheetRef={sheetRef}
         maxWidth={smallWidth ? 400 : 590}
         height="auto"

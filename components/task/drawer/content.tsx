@@ -28,6 +28,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Keyboard, Platform, View } from "react-native";
+import { AutoGrowingTextInput } from "react-native-autogrow-textinput";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -309,9 +310,12 @@ function TaskNameInput() {
     };
   }, []);
 
+  const GrowingTextInput =
+    Platform.OS === "web" ? AutoSizeTextArea : AutoGrowingTextInput;
+
   return (
     <>
-      <AutoSizeTextArea
+      <GrowingTextInput
         ref={inputRef}
         onBlur={() => {
           if (name === task.name) return;

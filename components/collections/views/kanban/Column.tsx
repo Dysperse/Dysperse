@@ -215,7 +215,10 @@ export function Column(props: ColumnProps) {
           marginBottom: centerContent && !props.grid ? -90 : -30,
           pointerEvents: "none",
         }}
-        colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
+        colors={[
+          theme[breakpoints.md ? 2 : 1],
+          addHslAlpha(theme[breakpoints.md ? 2 : 1], 0),
+        ]}
       />
       <FlashList
         ref={columnRef}
