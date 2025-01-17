@@ -1338,7 +1338,11 @@ const BottomSheetContent = forwardRef(
           style={{ flex: 1, padding: 25, gap: 20, flexDirection: "column" }}
           intensity={Platform.OS === "android" ? 0 : 50}
           tint={
-            isDark
+            Platform.OS === "ios"
+              ? isDark
+                ? "dark"
+                : "light"
+              : isDark
               ? "systemUltraThinMaterialDark"
               : "systemUltraThinMaterialLight"
           }
@@ -1561,7 +1565,8 @@ const CreateTask = forwardRef(
           transformCenter
           animation={breakpoints.md ? "SCALE" : "SLIDE"}
           innerStyles={{
-            backgroundColor: Platform.OS === "web" ? "transparent" : theme[1],
+            backgroundColor:
+              Platform.OS !== "android" ? "transparent" : theme[1],
           }}
           maxBackdropOpacity={breakpoints.md ? 0.05 : 0.1}
           outerContent={

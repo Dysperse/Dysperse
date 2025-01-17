@@ -1,15 +1,14 @@
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { FlashList } from "@shopify/flash-list";
+import { BottomSheetFlashList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
-  ReactElement,
   cloneElement,
   memo,
+  ReactElement,
   useCallback,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import useSWR from "swr";
 import BottomSheet from "../BottomSheet";
 import Emoji from "../Emoji";
@@ -24,7 +23,7 @@ const emojiPickerStyles = StyleSheet.create({
   container: {
     padding: 5,
     paddingTop: 5,
-    flex: 1,
+    height: "100%",
   },
   searchContainer: {
     flexDirection: "row",
@@ -109,22 +108,31 @@ export function EmojiPicker({
     </Pressable>
   ));
 
+  const { width } = useWindowDimensions();
+
   return (
     <>
       {trigger}
       <BottomSheet
         sheetRef={ref}
         snapPoints={["80%"]}
-        enableContentPanningGesture={false}
         onClose={handleClose}
         stackBehavior="push"
+        containerStyle={
+          width > 500
+            ? {
+                marginLeft: (width - 500) / 2,
+                marginRight: (width - 500) / 2,
+              }
+            : undefined
+        }
       >
         {data ? (
           <View style={emojiPickerStyles.container}>
             <IconButton
               size={55}
               variant="outlined"
-              style={emojiPickerStyles.closeButton}
+              style={[emojiPickerStyles.closeButton, { marginTop: 10 }]}
               onPress={handleClose}
             >
               <Icon>close</Icon>
@@ -142,8 +150,12 @@ export function EmojiPicker({
                 onChangeText={(e) => setQuery(e.toLowerCase())}
               />
             </View>
-            <View style={{ flex: 1 }}>
-              <FlashList
+            <View
+              style={{
+                height: "100%",
+              }}
+            >
+              <BottomSheetFlashList
                 keyboardShouldPersistTaps="handled"
                 data={filteredData}
                 estimatedItemSize={117.5}

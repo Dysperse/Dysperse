@@ -316,6 +316,7 @@ function TaskNameInput() {
   return (
     <>
       <GrowingTextInput
+        selectionColor={theme[11]}
         ref={inputRef}
         onBlur={() => {
           if (name === task.name) return;
