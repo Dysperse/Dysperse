@@ -8,7 +8,6 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import MenuPopover from "@/ui/MenuPopover";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
@@ -25,7 +24,6 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import timezones from "timezones-list";
 import { useFocusPanelContext } from "../context";
-import { widgetMenuStyles } from "../widgetMenuStyles";
 import { widgetStyles } from "../widgetStyles";
 
 const TimeZone = ({
@@ -52,7 +50,7 @@ const TimeZone = ({
     <View
       style={{
         padding: timeZone ? 10 : 0,
-        width: timeZone ? "33.3333%" : undefined,
+        width: timeZone ? "33.3333%" : "100%",
       }}
     >
       <ConfirmationModal
@@ -97,15 +95,15 @@ const TimeZone = ({
               }
             >
               <Text
-                weight={timeZone ? 900 : 800}
+                weight={timeZone ? 900 : 400}
                 style={
                   panelState === "COLLAPSED"
                     ? {
-                        marginTop: 10,
+                        marginTop: 20,
                         fontSize: 35,
                         lineHeight: 40,
-                        fontFamily: getFontName("jetBrainsMono", 500),
                         color: theme[11],
+                        textAlign: "center",
                       }
                     : timeZone
                     ? {
@@ -136,36 +134,6 @@ const TimeZone = ({
                   ? time.format("hh:mm").split(":").join("\n")
                   : time.format(timeZone ? "hh:mm" : "hh:mm A")}
               </Text>
-              {timeZone && (
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: theme[11],
-                    opacity: 0.7,
-                  }}
-                  weight={600}
-                >
-                  {time.format("A")}
-                </Text>
-              )}
-              {!timeZone && panelState !== "COLLAPSED" && (
-                <Text
-                  weight={800}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    fontSize: 35,
-                    fontFamily: getFontName("jetBrainsMono", 500),
-                    textAlign: "center",
-                    color: theme[10],
-                    opacity: 0.2,
-                  }}
-                  numberOfLines={1}
-                >
-                  00:00 AM
-                </Text>
-              )}
             </View>
           </View>
         </Pressable>
@@ -175,8 +143,6 @@ const TimeZone = ({
 };
 
 function Time({ setParam, params }) {
-  const theme = useColor("orange");
-
   return (
     <View style={{ gap: 10 }}>
       <TimeZone />
@@ -739,7 +705,7 @@ export default function Clock({ widget, menuActions, setParam }) {
 
   return (
     <View>
-      {panelState !== "COLLAPSED" && (
+      {/* {panelState !== "COLLAPSED" && (
         <MenuPopover
           options={[
             ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
@@ -770,7 +736,7 @@ export default function Clock({ widget, menuActions, setParam }) {
             </Button>
           }
         />
-      )}
+      )} */}
       <View
         style={
           panelState === "COLLAPSED"
@@ -814,3 +780,4 @@ export default function Clock({ widget, menuActions, setParam }) {
     </View>
   );
 }
+

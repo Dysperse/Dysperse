@@ -1,7 +1,6 @@
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -12,7 +11,6 @@ import { Linking, Pressable, View } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
-import { widgetMenuStyles } from "../../widgetMenuStyles";
 
 function formatNumber(num, d) {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -123,7 +121,9 @@ export function StockItem({
               {stock.name}
             </ButtonText>
           )}
-          <ButtonText>{stock.ticker}</ButtonText>
+          <ButtonText style={{ width: "100%", height: 20 }}>
+            {stock.ticker}
+          </ButtonText>
         </View>
         {panelState !== "COLLAPSED" && (
           <ButtonText
@@ -222,7 +222,7 @@ export default function Widget({ navigation, menuActions, widget }) {
 
   return (
     <View>
-      {panelState !== "COLLAPSED" && (
+      {/* {panelState !== "COLLAPSED" && (
         <MenuPopover
           options={menuActions}
           trigger={
@@ -234,7 +234,7 @@ export default function Widget({ navigation, menuActions, widget }) {
             </Button>
           }
         />
-      )}
+      )} */}
       <Pressable
         style={{
           backgroundColor: theme[3],
@@ -286,3 +286,4 @@ export default function Widget({ navigation, menuActions, widget }) {
     </View>
   );
 }
+
