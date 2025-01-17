@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 export const dysperseCalendarTheme = (theme) =>
   ({
@@ -106,7 +106,7 @@ export function AgendaCalendarMenu({
     <>
       <View
         style={{
-          paddingTop: 0,
+          paddingTop: Platform.OS === "ios" && 0,
           padding: typeof handleMenuClose === "undefined" ? 10 : 20,
           gap: 20,
           flexDirection:

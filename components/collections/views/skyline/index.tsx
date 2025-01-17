@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams } from "expo-router";
 import { createContext, useMemo, useState } from "react";
-import { View, ViewStyle } from "react-native";
+import { Platform, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { useCollectionContext } from "../../context";
@@ -145,7 +145,7 @@ function Header({
           height: 30,
           zIndex: 1,
           marginBottom: -30,
-          marginTop: 50,
+          marginTop: Platform.OS !== "web" && 50,
           pointerEvents: "none",
         }}
         colors={[

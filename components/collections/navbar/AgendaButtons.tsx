@@ -202,7 +202,11 @@ export function AgendaButtons({
             size={45}
           />
           {typeof handleMenuOpen === "undefined" ? (
-            <MenuPopover trigger={trigger} containerStyle={{ width: 300 }}>
+            <MenuPopover
+              trigger={trigger}
+              scrollViewProps={{ bounces: false }}
+              containerStyle={{ width: 300 }}
+            >
               <AgendaCalendarMenu weekMode={weekMode} />
             </MenuPopover>
           ) : (

@@ -5,6 +5,7 @@ import {
   Platform,
   Pressable,
   PressableProps,
+  ScrollViewProps,
   StyleProp,
   StyleSheet,
   View,
@@ -51,6 +52,7 @@ export type MenuProps =
       menuRef?: React.MutableRefObject<Menu>;
       closeOnSelect?: boolean;
       scrollViewStyle?: StyleProp<ViewStyle>;
+      scrollViewProps?: ScrollViewProps;
     }
   | {
       trigger: ReactElement;
@@ -61,6 +63,7 @@ export type MenuProps =
       menuRef?: React.MutableRefObject<Menu>;
       closeOnSelect?: boolean;
       scrollViewStyle?: StyleProp<ViewStyle>;
+      scrollViewProps?: ScrollViewProps;
     };
 
 const styles = StyleSheet.create({
@@ -123,6 +126,7 @@ function MenuPopover({
   menuRef,
   closeOnSelect = true,
   scrollViewStyle,
+  scrollViewProps,
 }: MenuProps) {
   const _menuRef = useRef<Menu>(null);
   const isDark = useDarkMode();
@@ -218,6 +222,7 @@ function MenuPopover({
               intensity={Platform.OS === "android" ? 0 : undefined}
             >
               <ScrollView
+                {...scrollViewProps}
                 style={scrollViewStyle}
                 showsVerticalScrollIndicator={false}
               >
