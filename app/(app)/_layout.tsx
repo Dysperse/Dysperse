@@ -71,10 +71,10 @@ dayjs.extend(weekday);
 dayjs.extend(isToday);
 
 function DesktopLayout({ children }) {
-  const { desktopCollapsed, setDesktopCollapsed } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
   const { fullscreen } = useGlobalSearchParams();
+  const insets = useSafeAreaInsets();
 
   if (fullscreen)
     return (
@@ -87,17 +87,16 @@ function DesktopLayout({ children }) {
     );
 
   return (
-    <View style={{ flex: 1, flexDirection: "row" }}>
+    <View
+      style={[
+        { flex: 1, flexDirection: "row" },
+        breakpoints.md && {
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+        },
+      ]}
+    >
       {!(pathname.includes("settings") && breakpoints.md) && <Sidebar />}
-      {/* {breakpoints.md && !desktopCollapsed && (
-        <GestureDetector
-          gesture={Gesture.Tap().onEnd(() => {
-            setDesktopCollapsed((t) => !t);
-          })}
-        >
-          <PanelSwipeTrigger side="left" />
-        </GestureDetector>
-      )} */}
       {children}
     </View>
   );
@@ -256,6 +255,7 @@ export default function AppLayout() {
                 ? "transparent"
                 : theme[breakpoints.sm ? 2 : 1],
               padding: breakpoints.md ? 10 : 0,
+              paddingBottom: Platform.OS === "ios" ? 0 : undefined,
               ...(Platform.OS === "web" &&
                 ({ marginTop: "env(titlebar-area-height,0)" } as any)),
             },
@@ -422,3 +422,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+

@@ -54,6 +54,7 @@ export default function Layout() {
             freezeOnBlur: true,
             gestureEnabled: true,
             detachPreviousScreen: false,
+            animation: "none",
           }}
         >
           <JsStack.Screen name="index" />

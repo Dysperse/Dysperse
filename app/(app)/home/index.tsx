@@ -195,7 +195,7 @@ function Page() {
               : {
                   paddingVertical: 100,
                 }),
-            marginHorizontal: "auto",
+            marginHorizontal: Platform.OS === "ios" ? undefined : "auto",
           }}
         >
           {!breakpoints.md && <MenuButton />}
@@ -221,3 +221,4 @@ function Page() {
 }
 
 export default memo(Page);
+

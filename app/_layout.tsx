@@ -148,6 +148,7 @@ function Root() {
                       header: () => null,
                       cardShadowEnabled: false,
                       freezeOnBlur: true,
+                      animation: "none",
                     }}
                   />
                 </SWRWrapper>

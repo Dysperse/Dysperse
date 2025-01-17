@@ -655,7 +655,9 @@ function PrimarySidebar({ progressValue }) {
           },
       ]}
     >
-      <View style={[styles.header, { marginTop: insets.top }]}>
+      <View
+        style={[styles.header, !breakpoints.md && { marginTop: insets.top }]}
+      >
         <LogoButton toggleHidden={toggleHidden} />
         <Header />
       </View>

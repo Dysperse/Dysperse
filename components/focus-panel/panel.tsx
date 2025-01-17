@@ -46,6 +46,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -786,6 +787,7 @@ const FocusPanel = memo(function FocusPanel() {
   const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
   const { height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     width.value = panelState === "COLLAPSED" ? 100 : 350;
@@ -814,6 +816,7 @@ const FocusPanel = memo(function FocusPanel() {
             paddingLeft: 0,
             height,
             ...(!breakpoints.md && { width }),
+            ...(breakpoints.md && { paddingTop: insets.top + 10 }),
             ...(Platform.OS === "web" &&
               ({
                 marginTop: "env(titlebar-area-height,0)",
@@ -829,3 +832,4 @@ const FocusPanel = memo(function FocusPanel() {
 });
 
 export default FocusPanel;
+

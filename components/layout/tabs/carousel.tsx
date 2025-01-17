@@ -12,7 +12,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { router, useGlobalSearchParams, usePathname } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useState } from "react";
 import {
   InteractionManager,
@@ -267,9 +267,7 @@ function OpenTabsList() {
 
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const path = usePathname();
-  const { SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH, SECONDARY_SIDEBAR_WIDTH } =
-    useSidebarContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const footer = (
     <View style={{ marginBottom: 5, flexDirection: "row" }}>
@@ -292,7 +290,8 @@ function OpenTabsList() {
         flex: 1,
         paddingHorizontal: 15,
         width: "100%",
-        marginBottom: insets.bottom + 10,
+        marginBottom:
+          (!breakpoints.md || Platform.OS === "web") && insets.bottom + 10,
         height: "100%",
       }}
     >
@@ -391,3 +390,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+

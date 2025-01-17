@@ -70,6 +70,7 @@ export const styles = StyleSheet.create({
 const Loading = ({ error, isPublic }: any) => {
   let content;
   const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
   const { type } = useLocalSearchParams();
   switch ((type || (isPublic ? "kanban" : null)) as CollectionType) {
     case "planner":
@@ -186,7 +187,13 @@ const Loading = ({ error, isPublic }: any) => {
 
   return (
     <>
-      <View style={{ flex: 1, padding: 10, paddingTop: insets.top + 10 }}>
+      <View
+        style={{
+          flex: 1,
+          padding: 10,
+          paddingTop: breakpoints.md ? 10 : insets.top + 10,
+        }}
+      >
         {/* Navbar */}
         <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
           <View
@@ -619,3 +626,4 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </SelectionContextProvider>
   );
 }
+
