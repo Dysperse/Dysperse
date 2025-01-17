@@ -608,7 +608,7 @@ function PrimarySidebar({ progressValue }) {
     outputRange: [-(width / 10), 0],
   });
 
-  const animatedStyles = [{ transform: [{ translateX: transform }] }];
+  const animatedStyles = [{ transform: [{ translateX: transform || 0 }] }];
 
   const toggleHidden = useCallback(() => {
     setDesktopCollapsed(!desktopCollapsed);

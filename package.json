@@ -8,6 +8,7 @@
     "lint": "eslint ./",
     "postinstall": "patch-package",
     "build:dev": "eas build --profile development --platform android",
+    "build:dev:ios": "eas build --profile development --platform ios",
     "build:prod": "npm i -g eas-cli && eas build --profile production --platform android",
     "build:prod:ios": "npm i -g eas-cli && eas build --profile production --platform ios",
     "build:web": "node ./minify-web.js && expo export -p web && npm install workbox-cli --global && workbox injectManifest workbox-config.js",
@@ -152,3 +153,4 @@
   },
   "private": true
 }
+

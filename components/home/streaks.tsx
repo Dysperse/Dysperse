@@ -121,7 +121,7 @@ function StreakGoal() {
           >
             {data ? (
               process.env.NODE_ENV === "development" &&
-              Platform.OS === "android" ? (
+              Platform.OS !== "web" ? (
                 <View style={{ height: 40 }} />
               ) : (
                 <>
