@@ -361,10 +361,10 @@ export function Sidekick() {
   ) : (
     <View
       style={{
+        height: "100%",
         padding: 20,
         paddingRight: 20,
         justifyContent: "center",
-        flex: 1,
         gap: breakpoints.md ? 10 : 0,
         position: "relative",
       }}
