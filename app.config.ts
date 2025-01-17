@@ -28,6 +28,14 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           ? "com.dev.app.dysperse.com"
           : "com.app.dysperse.com",
         supportsTablet: true,
+        splash: {
+          dark: {
+            backgroundColor: "#0a1f1d",
+            image: "./assets/splash-screens/dark.png",
+          },
+          image: "./assets/splash-screens/light.png",
+          backgroundColor: "#effefa",
+        },
       },
       android: {
         googleServicesFile: IS_DEV
