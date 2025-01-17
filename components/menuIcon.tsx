@@ -1,4 +1,5 @@
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { Platform } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 export default function MenuIcon() {
@@ -10,7 +11,7 @@ export default function MenuIcon() {
       height="24"
       viewBox="0 0 24 24"
       fill={theme[11]}
-      style={{ transform: [{ translateY: -2 }] }}
+      style={{ transform: [{ translateY: Platform.OS === "ios" ? 2 : -2 }] }}
     >
       <Path
         fillRule="evenodd"
