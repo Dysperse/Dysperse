@@ -730,7 +730,7 @@ export function TaskDrawerContent({
         </View>
       </View>
       <LinearGradient
-        colors={[theme[2], "transparent"]}
+        colors={[theme[2], addHslAlpha(theme[2], 0)]}
         style={{
           height: 40,
           width: "100%",

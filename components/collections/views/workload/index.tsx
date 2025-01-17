@@ -270,20 +270,13 @@ const StoryPoint = ({
 };
 
 export default function Workload() {
-  const { mutate } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
   const [selectedScale, setSelectedScale] = useState(0);
 
   const scale = [2, 4, 8, 16, 32];
 
   return breakpoints.md ? (
-    <ScrollView
-      horizontal
-      contentContainerStyle={{ padding: 15, gap: 15 }}
-      refreshControl={
-        <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-      }
-    >
+    <ScrollView horizontal contentContainerStyle={{ padding: 15, gap: 15 }}>
       {scale.map((s, i) => (
         <StoryPoint
           key={s}

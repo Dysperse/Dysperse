@@ -27,7 +27,11 @@ export function AnimatedLinearGradient() {
         style={{ height: "100%", width: 100 }}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        colors={["transparent", addHslAlpha(theme[9], 0.1), "transparent"]}
+        colors={[
+          addHslAlpha(theme[9], 0),
+          addHslAlpha(theme[9], 0.1),
+          addHslAlpha(theme[9], 0),
+        ]}
       />
     </Animated.View>
   );

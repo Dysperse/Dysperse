@@ -36,14 +36,12 @@ function NavbarHeader({ isLoading }) {
       }}
     >
       <IconButton icon="close" onPress={clearSelection} />
-      <View style={{ flexGrow: 1, marginLeft: 5 }}>
-        <Text weight={900} style={{ fontSize: 20, color: theme[11] }}>
-          {selection.length} selected
-        </Text>
-        {isLoading && (
-          <Text style={{ opacity: 0.6, fontSize: 12 }}>Processing...</Text>
-        )}
-      </View>
+      <Text weight={900} style={{ fontSize: 20, color: theme[11] }}>
+        {selection.length} selected
+      </Text>
+      {isLoading && (
+        <Text style={{ opacity: 0.6, fontSize: 12 }}>Processing...</Text>
+      )}
     </View>
   );
 }

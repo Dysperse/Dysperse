@@ -112,10 +112,13 @@ export function Column({
           height: 30,
           zIndex: 1,
           marginBottom: -30,
-          marginTop: Platform.OS === "android" ? 55 : undefined,
+          marginTop: Platform.OS !== "web" ? 55 : undefined,
           pointerEvents: "none",
         }}
-        colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
+        colors={[
+          theme[breakpoints.md ? 2 : 1],
+          addHslAlpha(theme[breakpoints.md ? 2 : 1], 0),
+        ]}
       />
       <FlashList
         ref={columnRef}

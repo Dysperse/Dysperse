@@ -121,7 +121,7 @@ const PaletteFilters = memo(({ filters, filter, setFilter }: any) => {
         ))}
       </ScrollView>
       <LinearGradient
-        colors={["transparent", theme[2]]}
+        colors={[addHslAlpha(theme[2], 0), theme[2]]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{
@@ -174,7 +174,7 @@ function CommandPaletteList({
         />
       )}
       <LinearGradient
-        colors={[theme[2], "transparent"]}
+        colors={[theme[2], addHslAlpha(theme[2], 0)]}
         style={{
           height: 35,
           pointerEvents: "none",
@@ -244,9 +244,9 @@ function CommandPaletteList({
               <LinearGradient
                 colors={
                   showMore.includes(item.category)
-                    ? ["transparent", "transparent"]
+                    ? [addHslAlpha(theme[2], 0), addHslAlpha(theme[2], 0)]
                     : [
-                        "transparent",
+                        addHslAlpha(theme[2], 0),
                         addHslAlpha(theme[2], 0.65),
                         addHslAlpha(theme[2], 0.8),
                         theme[2],

@@ -397,6 +397,7 @@ export function Sidekick() {
   return breakpoints.md ? (
     <Animated.View style={widthStyle}>
       <ContentWrapper
+        noPaddingTop
         style={{
           marginLeft: 10,
           width: 290,

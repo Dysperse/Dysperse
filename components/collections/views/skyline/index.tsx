@@ -3,6 +3,7 @@ import CreateTask from "@/components/task/create";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
@@ -144,9 +145,13 @@ function Header({
           height: 30,
           zIndex: 1,
           marginBottom: -30,
+          marginTop: 50,
           pointerEvents: "none",
         }}
-        colors={[theme[breakpoints.md ? 2 : 1], "transparent"]}
+        colors={[
+          theme[breakpoints.md ? 2 : 1],
+          addHslAlpha(theme[breakpoints.md ? 2 : 1], 0),
+        ]}
       />
     </>
   );
@@ -214,7 +219,6 @@ function Content({ data, mutate }) {
   return breakpoints.md ? (
     <ScrollView
       contentContainerStyle={{
-        flex: 1,
         padding: 15,
         gap: 15,
       }}
