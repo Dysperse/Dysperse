@@ -1327,7 +1327,7 @@ const BottomSheetContent = forwardRef(
     return (
       <Pressable
         style={{
-          minHeight: Platform.OS === "android" ? 280 : undefined,
+          minHeight: Platform.OS !== "web" ? 280 : undefined,
           backgroundColor: addHslAlpha(
             theme[2],
             Platform.OS === "android" ? 1 : 0.5
@@ -1437,7 +1437,6 @@ export interface CreateTaskDrawerProps {
 const CreateTaskOuterContent = forwardRef((props, ref) => {
   const isDark = useDarkMode();
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
   const [message, setMessage] = useState<null | { icon: any; text: any }>(null);
 
   useImperativeHandle(ref, () => ({
@@ -1487,6 +1486,7 @@ const CreateTaskOuterContent = forwardRef((props, ref) => {
             }),
             flex: 1,
             paddingHorizontal: 15,
+            overflow: "hidden",
             paddingVertical: 7,
             borderRadius: 20,
             alignItems: "center",

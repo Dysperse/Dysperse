@@ -302,11 +302,11 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
         <TextField
           variant="filled+outlined"
           style={{
-            paddingVertical: breakpoints.md ? undefined : 15,
-            paddingHorizontal: breakpoints.md ? undefined : 25,
+            paddingVertical: 10,
+            paddingHorizontal: 15,
             marginTop: 0,
             fontSize: breakpoints.md ? 15 : 20,
-            borderRadius: breakpoints.md ? undefined : 9999,
+            borderRadius: breakpoints.md ? 15 : 999,
           }}
           inputRef={inputRef}
           weight={700}
