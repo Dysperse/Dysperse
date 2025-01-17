@@ -97,7 +97,7 @@ function StreakGoal() {
               alignItems: "center",
               justifyContent: "space-between",
               marginBottom: 10,
-              marginTop: breakpoints.md ? 0 : 20,
+              marginTop: breakpoints.md && Platform.OS !== "ios" ? 0 : 20,
             }}
           >
             <Text variant="eyebrow">Goals</Text>

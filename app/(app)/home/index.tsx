@@ -22,6 +22,7 @@ import { router } from "expo-router";
 import { Fragment, memo } from "react";
 import {
   Dimensions,
+  Keyboard,
   Platform,
   ImageBackground as RNImageBackground,
   View,
@@ -181,6 +182,7 @@ function Page() {
       <Wrapper>
         <ScrollView
           centerContent
+          onScrollBeginDrag={Keyboard.dismiss}
           style={{ flex: 1, marginTop: insets.top }}
           contentContainerStyle={{
             maxWidth: breakpoints.md ? 400 : undefined,
