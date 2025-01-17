@@ -335,12 +335,12 @@ export const LogoButton = memo(function LogoButton({
               />
             }
             options={[
-              {
-                icon: "dock_to_right",
-                text: "Sidebar",
-                callback: toggleHidden,
-                selected: !desktopCollapsed,
-              },
+              // {
+              //   icon: "dock_to_right",
+              //   text: "Sidebar",
+              //   callback: toggleHidden,
+              //   selected: !desktopCollapsed,
+              // },
 
               {
                 icon: "psychiatry",
