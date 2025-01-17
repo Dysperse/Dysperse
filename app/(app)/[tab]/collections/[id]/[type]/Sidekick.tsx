@@ -89,6 +89,7 @@ function MessageBar({
           style={{
             flex: 1,
             paddingVertical: 20,
+            height: "100%",
             shadowRadius: 0,
             color: theme[11],
             fontFamily: "body_400",
