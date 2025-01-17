@@ -36,11 +36,7 @@ import {
 } from "react";
 import { Freeze } from "react-freeze";
 import { AppState, Platform, useWindowDimensions, View } from "react-native";
-import {
-  Gesture,
-  GestureDetector,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -52,7 +48,6 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useSidebarContext } from "../layout/sidebar/context";
 import MenuIcon from "../menuIcon";
-import PanelSwipeTrigger from "./PanelSwipeTrigger";
 import { useFocusPanelContext } from "./context";
 import { NewWidget } from "./widgets/new";
 import { FocusPanelSpotify } from "./widgets/spotify/FocusPanelSpotify";
@@ -767,23 +762,6 @@ const FocusPanel = memo(function FocusPanel() {
     marginRight.value = panelState === "CLOSED" ? -350 : 0;
   }, [panelState, marginRight]);
 
-  const pan = Gesture.Pan()
-    .onChange(({ changeX }) => {
-      const maxMargin = 350;
-      marginRight.value = Math.max(
-        -maxMargin,
-        Math.min(marginRight.value - changeX, 0)
-      );
-    })
-    .onEnd(({ velocityX }) => {
-      marginRight.value = velocityX > 0 ? -350 : 0;
-      setPanelState(velocityX > 0 ? "COLLAPSED" : "CLOSED");
-    });
-
-  const tap = Gesture.Tap().onEnd(() =>
-    setPanelState((t) => (t === "COLLAPSED" ? "CLOSED" : "COLLAPSED"))
-  );
-
   const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
   const { height } = useWindowDimensions();
@@ -801,13 +779,6 @@ const FocusPanel = memo(function FocusPanel() {
         ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
       }}
     >
-      {breakpoints.md && (
-        <GestureDetector gesture={pan}>
-          <GestureDetector gesture={tap}>
-            <PanelSwipeTrigger />
-          </GestureDetector>
-        </GestureDetector>
-      )}
       <Animated.View
         style={[
           animatedStyle,

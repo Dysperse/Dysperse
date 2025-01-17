@@ -671,6 +671,7 @@ function SecondarySidebar() {
   const theme = useColorTheme();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
@@ -679,7 +680,7 @@ function SecondarySidebar() {
         width: SECONDARY_SIDEBAR_WIDTH,
         padding: 15,
         paddingRight: 0,
-        paddingBottom: 15 + insets.bottom,
+        paddingBottom: breakpoints.md ? undefined : 15 + insets.bottom,
         backgroundColor: theme[2],
       }}
     >
@@ -698,7 +699,7 @@ function SecondarySidebar() {
           icon="label"
           onPress={() => {
             router.push("/everything");
-            sidebarRef.current.closeDrawer();
+            sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything" ? "filled" : "text"}
         />
@@ -714,7 +715,7 @@ function SecondarySidebar() {
           icon="stack"
           onPress={() => {
             router.push("/everything/collections");
-            sidebarRef.current.closeDrawer();
+            sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything/collections" ? "filled" : "text"}
         />
@@ -724,7 +725,7 @@ function SecondarySidebar() {
           text="Trash"
           onPress={() => {
             router.push("/everything/trash");
-            sidebarRef.current.closeDrawer();
+            sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
             { borderRadius: 20 },
@@ -740,7 +741,7 @@ function SecondarySidebar() {
         onPress={() => {
           router.replace("/");
           InteractionManager.runAfterInteractions(() => {
-            sidebarRef.current.openDrawer();
+            sidebarRef?.current?.openDrawer?.();
           });
         }}
         style={[

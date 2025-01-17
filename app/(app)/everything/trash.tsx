@@ -8,6 +8,7 @@ import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
+import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
@@ -40,7 +41,7 @@ const DeleteAllButton = ({ handleDelete }) => {
 
 export default function Trash() {
   const { session } = useSession();
-  const { data, mutate, error } = useSWR(["space/trash"]);
+  const { data, mutate, error, isValidating } = useSWR(["space/trash"]);
 
   const handleDelete = useCallback(async () => {
     try {
@@ -70,24 +71,31 @@ export default function Trash() {
       style={!breakpoints.md && { paddingTop: insets.top + 70 }}
     >
       {!breakpoints.md && <MenuButton gradient addInsets />}
-      <View style={{ flex: 1, maxWidth: 500, marginHorizontal: "auto" }}>
-        <Text
-          style={{
-            fontSize: 35,
-            marginBottom: 10,
-            marginTop: 40,
-            fontFamily: "serifText800",
-          }}
-        >
-          Recently deleted
-        </Text>
-        <View style={{ marginBottom: 20 }}>
-          <Alert
-            emoji="26A0"
-            title="Items are permanently deleted on the 1st of every month"
-            dense
-          />
-          {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: breakpoints.md ? "row" : "column",
+          padding: breakpoints.md ? 40 : 20,
+        }}
+      >
+        <View>
+          <Text
+            style={{
+              fontSize: 35,
+              marginBottom: 10,
+              fontFamily: "serifText800",
+            }}
+          >
+            Recently deleted
+          </Text>
+          <View style={{ marginBottom: 20 }}>
+            <Alert
+              emoji="26A0"
+              title="Items are permanently deleted on the 1st of every month"
+              dense
+            />
+            {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
+          </View>
         </View>
         {Array.isArray(data) ? (
           <FlashList
@@ -97,6 +105,16 @@ export default function Trash() {
               flex: 1,
               height: "100%",
             }}
+            contentContainerStyle={{
+              padding: breakpoints.md ? 20 : 0,
+              paddingTop: 0,
+            }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isValidating}
+                onRefresh={() => mutate()}
+              />
+            }
             centerContent={isEmpty}
             ListEmptyComponent={() => (
               <View

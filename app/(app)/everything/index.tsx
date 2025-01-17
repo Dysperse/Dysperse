@@ -14,6 +14,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -25,8 +26,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Keyboard, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR, { KeyedMutator } from "swr";
@@ -103,6 +104,7 @@ export const LabelDetails = ({
   return (
     label && (
       <ScrollView
+        bounces={false}
         style={{ flex: 2 }}
         showsVerticalScrollIndicator={Boolean(data?.entities)}
         contentContainerStyle={{ backgroundColor: labelTheme[1] }}
@@ -338,7 +340,7 @@ const Labels = () => {
   const [selectedLabel, setSelectedLabel] = useState<number | null>(null);
   const theme = useColorTheme();
   const [query, setQuery] = useState("");
-  const { data, mutate, error } = useSWR(["space/labels"]);
+  const { data, mutate, error, isValidating } = useSWR(["space/labels"]);
   const breakpoints = useResponsiveBreakpoints();
 
   useHotkeys("esc", () => setSelectedLabel(null), {
@@ -403,6 +405,13 @@ const Labels = () => {
               </CreateLabelModal>
               {error && <ErrorAlert />}
               <FlashList
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isValidating}
+                    onRefresh={() => mutate()}
+                  />
+                }
+                onScrollBeginDrag={Keyboard.dismiss}
                 estimatedItemSize={60}
                 data={fuzzysort
                   .go(query, d, {
@@ -460,11 +469,14 @@ const Labels = () => {
             />
           ) : (
             breakpoints.md && (
-              <View style={containerStyles.rightEmpty}>
+              <Pressable
+                onPress={() => Keyboard.dismiss()}
+                style={containerStyles.rightEmpty}
+              >
                 <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
                   No label selected
                 </Text>
-              </View>
+              </Pressable>
             )
           )}
         </>

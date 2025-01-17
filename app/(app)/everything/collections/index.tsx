@@ -13,6 +13,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -21,7 +22,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -180,7 +181,7 @@ const Collections = () => {
   const { isReached } = useStorageContext();
   const theme = useColorTheme();
   const [query, setQuery] = useState("");
-  const { data, mutate, error } = useSWR(["space/collections"]);
+  const { data, mutate, error, isValidating } = useSWR(["space/collections"]);
 
   useHotkeys("esc", () => setSelectedCollection(null), {
     ignoreEventWhen: () =>
@@ -228,12 +229,22 @@ const Collections = () => {
                 </Button>
               )}
               <FlashList
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isValidating}
+                    onRefresh={() => mutate()}
+                  />
+                }
+                onScrollBeginDrag={Keyboard.dismiss}
                 estimatedItemSize={60}
                 data={d.filter((l) =>
                   l.name.toLowerCase().includes(query.toLowerCase())
                 )}
                 ListEmptyComponent={() => (
-                  <View style={containerStyles.leftEmpty}>
+                  <Pressable
+                    onPress={Keyboard.dismiss}
+                    style={containerStyles.leftEmpty}
+                  >
                     <Emoji emoji="1f937" size={40} />
                     <Text
                       style={{ color: theme[9], fontSize: 20 }}
@@ -241,7 +252,7 @@ const Collections = () => {
                     >
                       No collections found
                     </Text>
-                  </View>
+                  </Pressable>
                 )}
                 contentContainerStyle={{ paddingVertical: 20 }}
                 showsVerticalScrollIndicator={false}
@@ -282,11 +293,14 @@ const Collections = () => {
             />
           ) : (
             breakpoints.md && (
-              <View style={containerStyles.rightEmpty}>
+              <Pressable
+                onPress={Keyboard.dismiss}
+                style={containerStyles.rightEmpty}
+              >
                 <Text style={{ color: theme[7], fontSize: 20 }} weight={600}>
                   No collection selected
                 </Text>
-              </View>
+              </Pressable>
             )
           )}
         </>
