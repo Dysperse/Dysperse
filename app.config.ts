@@ -24,9 +24,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       },
       assetBundlePatterns: ["**/*"],
       ios: {
-        bundleIdentifier: IS_DEV
-          ? "com.dev.app.dysperse.com"
-          : "com.app.dysperse.com",
+        bundleIdentifier: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
         supportsTablet: true,
         splash: {
           dark: {
@@ -61,7 +59,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           monochromeImage: "./assets/android-icons/monochrome.png",
         },
         softwareKeyboardLayoutMode: "pan",
-        package: IS_DEV ? "com.dev.app.dysperse.com" : "com.app.dysperse.com",
+        package: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
       },
       web: {
         name: "Dysperse",
