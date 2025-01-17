@@ -106,7 +106,7 @@ export function AgendaCalendarMenu({
     <>
       <View
         style={{
-          paddingTop: Platform.OS === "ios" && 0,
+          paddingTop: Platform.OS === "ios" ? undefined : 0,
           padding: typeof handleMenuClose === "undefined" ? 10 : 20,
           gap: 20,
           flexDirection:
