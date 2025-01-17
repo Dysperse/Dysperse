@@ -64,7 +64,7 @@ export function SWRWrapper({ children }) {
       if (Platform.OS !== "web") fileSystemProvider(cacheData.current);
     },
     // delay in ms
-    1000
+    10000
   );
 
   useEffect(() => {
