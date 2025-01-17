@@ -181,7 +181,7 @@ const Collections = () => {
   const { isReached } = useStorageContext();
   const theme = useColorTheme();
   const [query, setQuery] = useState("");
-  const { data, mutate, error, isValidating } = useSWR(["space/collections"]);
+  const { data, mutate, error } = useSWR(["space/collections"]);
 
   useHotkeys("esc", () => setSelectedCollection(null), {
     ignoreEventWhen: () =>
@@ -231,7 +231,7 @@ const Collections = () => {
               <FlashList
                 refreshControl={
                   <RefreshControl
-                    refreshing={isValidating}
+                    refreshing={!data}
                     onRefresh={() => mutate()}
                   />
                 }

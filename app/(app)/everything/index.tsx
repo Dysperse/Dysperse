@@ -340,7 +340,7 @@ const Labels = () => {
   const [selectedLabel, setSelectedLabel] = useState<number | null>(null);
   const theme = useColorTheme();
   const [query, setQuery] = useState("");
-  const { data, mutate, error, isValidating } = useSWR(["space/labels"]);
+  const { data, mutate, error } = useSWR(["space/labels"]);
   const breakpoints = useResponsiveBreakpoints();
 
   useHotkeys("esc", () => setSelectedLabel(null), {
@@ -407,7 +407,7 @@ const Labels = () => {
               <FlashList
                 refreshControl={
                   <RefreshControl
-                    refreshing={isValidating}
+                    refreshing={!data}
                     onRefresh={() => mutate()}
                   />
                 }

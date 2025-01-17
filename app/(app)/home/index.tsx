@@ -193,7 +193,7 @@ function Page() {
                   justifyContent: "center",
                 }
               : {
-                  paddingVertical: 100,
+                  paddingVertical: Platform.OS === "ios" ? 40 : 100,
                 }),
             marginHorizontal: Platform.OS === "ios" ? undefined : "auto",
           }}

@@ -6,6 +6,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
@@ -286,7 +287,7 @@ function Preview({ tasks, onPress }) {
         </ScrollView>
         {tasks.length !== 0 && (
           <LinearGradient
-            colors={["transparent", theme[2]]}
+            colors={[addHslAlpha(theme[2], 0), theme[2]]}
             style={{
               height: 40,
               marginTop: -40,
