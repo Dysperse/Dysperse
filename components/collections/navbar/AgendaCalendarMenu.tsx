@@ -149,7 +149,7 @@ export function AgendaCalendarMenu({
         />
         {typeof handleMenuClose !== "undefined" && (
           <LinearGradient
-            colors={["transparent", theme[3]]}
+            colors={[addHslAlpha(theme[3], 0), theme[3]]}
             style={{
               height: 50,
               width: "100%",
