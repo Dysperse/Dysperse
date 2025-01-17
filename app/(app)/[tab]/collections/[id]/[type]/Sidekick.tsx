@@ -12,6 +12,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AutoSizeTextArea from "@/ui/AutoSizeTextArea";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
@@ -19,11 +20,10 @@ import IconButton from "@/ui/IconButton";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -222,7 +222,7 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ height: "100%" }}>
       <View style={{ padding: 20, paddingBottom: 0, zIndex: 999 }}>
         <IconButton
           variant={breakpoints.md ? "filled" : undefined}
@@ -230,7 +230,10 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
           onPress={() => messageState[1]("")}
         />
         <LinearGradient
-          colors={[theme[breakpoints.md ? 1 : 2], "transparent"]}
+          colors={[
+            theme[breakpoints.md ? 1 : 2],
+            addHslAlpha(theme[breakpoints.md ? 1 : 2], 0),
+          ]}
           style={{
             height: 20,
             marginTop: 10,
@@ -239,7 +242,7 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
           }}
         />
       </View>
-      <ScrollView style={{ flex: 1, padding: 20 }}>
+      <BottomSheetScrollView style={{ flex: 1, padding: 20 }}>
         <View style={{ paddingHorizontal: breakpoints.md ? 5 : 10 }}>
           <Text
             style={{
@@ -274,11 +277,14 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
             <ErrorAlert />
           )}
         </View>
-      </ScrollView>
+      </BottomSheetScrollView>
 
       <View style={{ padding: 20, paddingTop: 0 }}>
         <LinearGradient
-          colors={["transparent", theme[breakpoints.md ? 1 : 2]]}
+          colors={[
+            addHslAlpha(theme[breakpoints.md ? 1 : 2], 0),
+            theme[breakpoints.md ? 1 : 2],
+          ]}
           style={{ height: 20, marginTop: -20, width: "100%" }}
         />
         <MessageBar
