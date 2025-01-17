@@ -23,7 +23,8 @@ import Text from "@/ui/Text";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useImperativeHandle, useRef, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { Platform, useWindowDimensions, View } from "react-native";
+import { AutoGrowingTextInput } from "react-native-autogrow-textinput";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -58,6 +59,8 @@ function MessageBar({
       panelRef.current.close();
     }
   };
+  const GrowingTextInput =
+    Platform.OS === "web" ? AutoSizeTextArea : AutoGrowingTextInput;
 
   return (
     <View
@@ -81,10 +84,12 @@ function MessageBar({
         {typeof onRetry !== "undefined" && !value && (
           <IconButton onPress={onRetry} variant="filled" icon="loop" />
         )}
-        <AutoSizeTextArea
+        <GrowingTextInput
           multiline
           ref={messageRef}
           placeholder="Type a message..."
+          selectionColor={theme[11]}
+          placeholderTextColor={theme[7]}
           numberOfLines={1}
           style={{
             flex: 1,

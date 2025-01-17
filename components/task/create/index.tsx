@@ -604,7 +604,7 @@ function TaskNameInput({
 
   useEffect(() => {
     Keyboard.addListener("keyboardWillHide", () => {
-      setTimeout(() => nameRef.current.focusInputWithKeyboard(), 0);
+      setTimeout(() => nameRef?.current?.focusInputWithKeyboard?.(), 0);
     });
   }, [nameRef]);
 
