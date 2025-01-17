@@ -20,7 +20,6 @@ export function ErrorBoundaryComponent() {
       <View
         style={{
           backgroundColor: theme[1],
-          justifyContent: "center",
           alignItems: "center",
           flex: 1,
         }}
@@ -34,10 +33,15 @@ export function ErrorBoundaryComponent() {
             borderRadius: 20,
             flexDirection: "column",
             gap: 10,
+            marginVertical: "auto",
           }}
         >
           <Icon size={60}>heart_broken</Icon>
-          <View style={{ flex: breakpoints.md ? 1 : undefined }}>
+          <View
+            style={{
+              flex: breakpoints.md && Platform.OS === "web" ? 1 : undefined,
+            }}
+          >
             <Text
               style={{
                 fontSize: 30,
@@ -92,3 +96,4 @@ export function ErrorBoundaryComponent() {
     </ColorThemeProvider>
   );
 }
+

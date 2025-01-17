@@ -23,15 +23,17 @@ const AppContainer = memo(
         right: 0,
         bottom: 0,
         zIndex: 99,
-        opacity: progressValue?.current?.interpolate?.({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-        }),
+        opacity:
+          progressValue?.current?.interpolate?.({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+          }) || 0,
         borderWidth: 2,
-        borderRadius: progressValue?.current?.interpolate?.({
-          inputRange: [0, 1],
-          outputRange: [!breakpoints.md ? 0 : 20, 30],
-        }),
+        borderRadius:
+          progressValue?.current?.interpolate?.({
+            inputRange: [0, 1],
+            outputRange: [!breakpoints.md ? 0 : 20, 30],
+          }) || 0,
         borderColor: theme[5],
       }),
       [theme, breakpoints, progressValue]
@@ -46,26 +48,30 @@ const AppContainer = memo(
               width: "100%",
               height: "100%",
 
-              borderRadius: progressValue?.current?.interpolate?.({
-                inputRange: [0, 1],
-                outputRange: [!breakpoints.md ? 0 : 20, 30],
-              }),
+              borderRadius:
+                progressValue?.current?.interpolate?.({
+                  inputRange: [0, 1],
+                  outputRange: [!breakpoints.md ? 0 : 20, 30],
+                }) || 0,
               overflow: "hidden",
-              marginTop: progressValue?.current?.interpolate?.({
-                inputRange: [0, 1],
-                outputRange: [0, insets.top],
-              }),
-              marginBottom: progressValue?.current?.interpolate?.({
-                inputRange: [0, 1],
-                outputRange: [0, insets.bottom],
-              }),
+              marginTop:
+                progressValue?.current?.interpolate?.({
+                  inputRange: [0, 1],
+                  outputRange: [0, insets.top],
+                }) || 0,
+              marginBottom:
+                progressValue?.current?.interpolate?.({
+                  inputRange: [0, 1],
+                  outputRange: [0, insets.bottom],
+                }) || 0,
 
               transform: [
                 {
-                  scale: progressValue?.current?.interpolate?.({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0.95],
-                  }),
+                  scale:
+                    progressValue?.current?.interpolate?.({
+                      inputRange: [0, 1],
+                      outputRange: [1, 0.95],
+                    }) || 0,
                 },
               ],
             },
