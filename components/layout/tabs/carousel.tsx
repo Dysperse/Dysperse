@@ -51,17 +51,21 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
   if (isLoading || (!isVisible && !isReached)) return null;
   if (isReached || isWarning) {
     return (
-      <Pressable
+      <Button
         onPress={() => router.push("/settings/storage")}
-        style={({ pressed, hovered }) => ({
-          backgroundColor: alertTheme[pressed ? 7 : hovered ? 6 : 5],
-          padding: 15,
-          borderRadius: 20,
-          marginBottom: 5,
+        backgroundColors={{
+          default: alertTheme[5],
+          hovered: alertTheme[6],
+          pressed: alertTheme[7],
+        }}
+        style={{
+          padding: 0,
           flexDirection: "row",
           gap: 5,
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        })}
+        }}
+        containerStyle={{ borderRadius: 20, marginBottom: 5, padding: 15 }}
+        height={100}
       >
         <View style={{ flex: 1 }}>
           <Text
@@ -75,7 +79,7 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
           </Text>
         </View>
         <Icon style={{ color: alertTheme[11] }}>north_east</Icon>
-      </Pressable>
+      </Button>
     );
   }
 });

@@ -92,7 +92,7 @@ const Cell = ({
         }
       >
         <LinearGradient
-          colors={breakpoints.md ? [theme[2]] : [theme[3], theme[2]]}
+          colors={[theme[3], theme[2]]}
           style={[
             {
               padding: breakpoints.md ? 5 : 10,

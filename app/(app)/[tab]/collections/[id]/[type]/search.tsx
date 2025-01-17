@@ -6,7 +6,6 @@ import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -134,7 +133,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
         style={{
           gap: 10,
           paddingHorizontal: 20,
-          paddingTop: query.length ? 40 : 20,
+          paddingTop: query.length > 2 ? 50 : 40,
           flex: 1,
           backgroundColor: addHslAlpha(
             theme[1],
@@ -275,20 +274,27 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                 ListEmptyComponent={
                   query.length > 2 ? (
                     <View style={styles.empty}>
-                      <Emoji emoji="1f494" size={64} />
-                      <Text style={styles.emptyHeading}>Oh no!</Text>
-                      <Text style={styles.emptySubheading}>
+                      <Icon size={64}>heart_broken</Icon>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          marginTop: 10,
+                          color: theme[11],
+                        }}
+                      >
                         Nothing in this collection matched your search.
                       </Text>
                     </View>
                   ) : (
                     <View style={styles.empty}>
-                      <Emoji
-                        emoji="1F50E"
-                        size={64}
-                        style={{ marginBottom: 10 }}
-                      />
-                      <Text style={styles.emptySubheading}>
+                      <Icon size={64}>search</Icon>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          marginTop: 10,
+                          color: theme[11],
+                        }}
+                      >
                         {query.length !== 0
                           ? `Type ${3 - query.length} more character${
                               query.length == 2 ? "" : "s"

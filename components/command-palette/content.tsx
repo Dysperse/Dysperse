@@ -18,6 +18,7 @@ import { router } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
@@ -184,6 +185,7 @@ function CommandPaletteList({
         }}
       />
       <FlashList
+        onScrollBeginDrag={() => Keyboard.dismiss()}
         key={query}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={() => (
@@ -254,11 +256,15 @@ function CommandPaletteList({
                 }
                 style={{
                   height: 75,
-                  marginTop: showMore.includes(item.category) ? -30 : -75,
-                  pointerEvents: "none",
+                  marginTop: showMore.includes(item.category)
+                    ? -30
+                    : Platform.OS === "ios"
+                    ? -50
+                    : -75,
                   justifyContent: "flex-end",
                   marginBottom: 10,
                   marginHorizontal: -20,
+                  zIndex: 9999,
                 }}
               >
                 <Button
@@ -422,6 +428,7 @@ function CommandPalettePreview({ loading, setPreview, preview, onCreate }) {
   return (
     preview && (
       <ScrollView
+        keyboardShouldPersistTaps="always"
         style={{
           flex: 1,
           borderLeftWidth: breakpoints.md ? 1 : 0,
@@ -627,7 +634,11 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   const onCreate = useCallback(
     async (tab) => {
       try {
-        if (!breakpoints.md && !preview) {
+        Keyboard.dismiss();
+        if (
+          (!preview || typeof preview === "string") &&
+          Platform.OS !== "web"
+        ) {
           setPreview(tab);
           return;
         }
@@ -721,7 +732,8 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
                   opacity: 0.2,
                 }}
               >
-                Hover on an item to learn more about it
+                {Platform.OS === "ios" ? "Tap" : "Hover"} on an item to learn
+                more about it
               </Text>
             </View>
           )

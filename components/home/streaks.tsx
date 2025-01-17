@@ -101,7 +101,7 @@ function StreakGoal() {
             }}
           >
             <Text variant="eyebrow">Goals</Text>
-            <TouchableOpacity onPress={() => router.push("/settings/account")}>
+            <TouchableOpacity onPress={() => router.push("/settings/tasks")}>
               <Icon style={{ opacity: 0.6, marginRight: 10 }} size={20}>
                 stylus
               </Icon>
