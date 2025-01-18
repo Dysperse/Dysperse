@@ -40,9 +40,8 @@
   "submit": {
     "production": {
       "ios": {
-        "ascAppId": "6740692041"
+        "bundleIdentifier": "com.dysperse.app"
       }
     }
   }
 }
-
