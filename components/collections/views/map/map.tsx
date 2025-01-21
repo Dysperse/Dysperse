@@ -29,16 +29,29 @@ export default function DomMapView() {
       )}
       <Map
         height={"100%" as any}
-        defaultCenter={[40.7128, -74.006]}
-        defaultZoom={11}
+        defaultZoom={2}
         attribution={<>Leaflet</>}
         twoFingerDrag
         provider={(x, y, z) => {
           const s = String.fromCharCode(97 + ((x + y + z) % 3));
           return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/${z}/${x}/${y}.png`;
         }}
+        metaWheelZoom
+        metaWheelZoomWarning="Use ctrl + scroll to zoom"
+        animate
+        animateMaxScreens={5}
       >
-        <Marker width={50} anchor={[40.7128, -74.006]} />
+        {[
+          [34.0522, -118.2437], // North America
+          [-34.6037, -58.3816], // South America
+          [51.5074, -0.1278], // Europe
+          [-33.9249, 18.4241], // Africa
+          [35.6895, 139.6917], // Asia
+          [-33.8688, 151.2093], // Australia
+          [-75.250973, -0.071389], // Antarctica
+        ].map((location, index) => (
+          <Marker key={index} width={50} anchor={location} />
+        ))}
       </Map>
     </div>
   );
