@@ -200,7 +200,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
                     key={i}
                     onPress={() => {
                       r.callback();
-                      // ref.current?.forceClose();
+                      ref.current?.forceClose();
                     }}
                     backgroundColors={{
                       default: addHslAlpha(theme[8], r.selected ? 0.2 : 0),

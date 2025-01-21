@@ -1,4 +1,5 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useGlobalSearchParams } from "expo-router";
 import {
   createContext,
@@ -24,23 +25,29 @@ export const useFocusPanelContext = () => useContext(FocusPanelContext);
 
 export const FocusPanelProvider = ({ children }) => {
   const states = ["OPEN", "CLOSED", "COLLAPSED"];
-  const t = Platform.OS === "web" ? localStorage.getItem("panelState") : null;
-
   const { fullscreen } = useGlobalSearchParams();
-
-  const [panelState, setPanelState] = useState(
-    Platform.OS === "web"
-      ? t && states.includes(t)
-        ? (t as PanelState)
-        : "CLOSED"
-      : "COLLAPSED"
-  );
+  const [panelState, setPanelState] = useState<PanelState>("COLLAPSED");
   const collapseOnBack = useRef(panelState === "COLLAPSED");
 
   useEffect(() => {
-    if (Platform.OS === "web") {
-      localStorage.setItem("panelState", panelState);
-    }
+    const getPanelState = async () => {
+      const t = await AsyncStorage.getItem("panelState");
+      if (t && states.includes(t)) {
+        setPanelState(t as PanelState);
+      } else {
+        setPanelState("CLOSED");
+      }
+    };
+    getPanelState();
+  }, [states]);
+
+  useEffect(() => {
+    const savePanelState = async () => {
+      if (Platform.OS === "web") {
+        await AsyncStorage.setItem("panelState", panelState);
+      }
+    };
+    savePanelState();
   }, [panelState]);
 
   const breakpoints = useResponsiveBreakpoints();
@@ -57,3 +64,4 @@ export const FocusPanelProvider = ({ children }) => {
     </FocusPanelContext.Provider>
   );
 };
+

@@ -23,7 +23,7 @@ import Text from "@/ui/Text";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useImperativeHandle, useRef, useState } from "react";
-import { Platform, useWindowDimensions, View } from "react-native";
+import { Keyboard, Platform, useWindowDimensions, View } from "react-native";
 import { AutoGrowingTextInput } from "react-native-autogrow-textinput";
 import Animated, {
   useAnimatedStyle,
@@ -379,6 +379,7 @@ export function Sidekick() {
         gap: breakpoints.md ? 10 : 0,
         position: "relative",
       }}
+      onTouchStart={Keyboard.dismiss}
     >
       <IconButton
         variant="filled"

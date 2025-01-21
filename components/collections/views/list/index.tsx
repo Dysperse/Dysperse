@@ -77,7 +77,9 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
           large
           variant="filled"
           height={70}
-          containerStyle={{ marginBottom: 20 }}
+          {...(!d.find((e) => e.header) && {
+            containerStyle: { marginBottom: 10 },
+          })}
         />
       </CreateTask>
     );
@@ -106,7 +108,15 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
           >
             <BlurView
               intensity={Platform.OS === "android" ? 0 : 20}
-              tint={!isDark ? "prominent" : "systemMaterialDark"}
+              tint={
+                Platform.OS === "ios"
+                  ? isDark
+                    ? "dark"
+                    : "light"
+                  : !isDark
+                  ? "prominent"
+                  : "systemMaterialDark"
+              }
               style={{
                 borderRadius: 99,
                 height: 80,
@@ -187,6 +197,10 @@ export default function List() {
       return acc;
     }, []),
   ];
+
+  if (d.length === 1) {
+    d.push({ empty: true });
+  }
 
   const ref = useRef(null);
   const { width } = useWindowDimensions();

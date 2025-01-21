@@ -216,12 +216,12 @@ function MenuPopover({
             }}
           >
             <BlurView
-              experimentalBlurMethod="dimezisBlurView"
-              tint={isDark ? "dark" : "prominent"}
+              tint={isDark ? "dark" : "light"}
               style={[styles.container]}
               intensity={Platform.OS === "android" ? 0 : undefined}
             >
               <ScrollView
+                bounces={false}
                 {...scrollViewProps}
                 style={scrollViewStyle}
                 showsVerticalScrollIndicator={false}
