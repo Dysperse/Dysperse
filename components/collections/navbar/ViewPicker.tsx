@@ -1,7 +1,7 @@
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -29,6 +29,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
   const breakpoints = useResponsiveBreakpoints();
   const ref = useRef(null);
   const isAll = id === "all";
+  const isDark = useDarkMode();
 
   // Convert grouped object to array of arrays
   const options = Object.entries(groupedViews)
@@ -136,11 +137,12 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         maxWidth={400}
         innerStyles={{
           backgroundColor: "transparent",
-          height: "100%",
           justifyContent: "center",
         }}
+        maxBackdropOpacity={0.05}
       >
         <BlurView
+          tint={!isDark ? "extraLight" : "dark"}
           style={{
             borderRadius: 25,
             maxHeight: "100%",
@@ -148,6 +150,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
           }}
         >
           <BottomSheetScrollView
+            bounces={false}
             style={{
               height: "auto",
               padding: 10,

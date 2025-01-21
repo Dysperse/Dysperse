@@ -14,6 +14,7 @@ import { router, usePathname } from "expo-router";
 import * as Updates from "expo-updates";
 import { useEffect, useRef, useState } from "react";
 import {
+  Keyboard,
   Linking,
   Platform,
   StyleSheet,
@@ -273,6 +274,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
 
   return !breakpoints.md && !forceShow ? null : (
     <ScrollView
+      onScrollBeginDrag={Keyboard.dismiss}
       style={{
         maxHeight: breakpoints.md
           ? "100%"

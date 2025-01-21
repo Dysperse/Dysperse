@@ -84,10 +84,8 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
   } else if (item.header) {
     return (
       <>
-        {index !== 1 && (
-          <View style={{ paddingTop: 20, backgroundColor: theme[1] }} />
-        )}
-        <LinearGradient colors={[theme[1], "transparent"]}>
+        <View style={{ paddingTop: 20, backgroundColor: theme[1] }} />
+        <LinearGradient colors={[theme[1], addHslAlpha(theme[1], 0)]}>
           <Pressable
             onPress={() => {
               listRef.current?.scrollToIndex({
