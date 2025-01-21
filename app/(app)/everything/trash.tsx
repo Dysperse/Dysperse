@@ -107,11 +107,11 @@ export default function Trash() {
       style={!breakpoints.md && { paddingTop: insets.top + 70 }}
     >
       {!breakpoints.md && <MenuButton gradient addInsets />}
-      <View style={containerStyles.root}>
+      <View style={breakpoints.md ? containerStyles.root : { flex: 1 }}>
         <View
           style={[
-            containerStyles.left,
-            {
+            breakpoints.md && containerStyles.left,
+            breakpoints.md && {
               borderRightColor: theme[5],
             },
           ]}
@@ -121,7 +121,12 @@ export default function Trash() {
               <RefreshControl refreshing={!data} onRefresh={() => mutate()} />
             }
             onScrollBeginDrag={Keyboard.dismiss}
-            style={{ flex: 1 }}
+            bounces={breakpoints.md}
+            style={
+              breakpoints.md
+                ? { flex: 1 }
+                : { paddingHorizontal: 20, paddingTop: 20 }
+            }
           >
             <TextField
               value={query}
@@ -140,7 +145,12 @@ export default function Trash() {
             {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
           </ScrollView>
         </View>
-        <View style={{ flex: 2 }}>
+        <View
+          style={[
+            { flex: 2 },
+            !breakpoints.md && { paddingHorizontal: 20, paddingTop: 20 },
+          ]}
+        >
           {Array.isArray(filteredData) ? (
             isEmpty ? (
               <View
@@ -170,6 +180,7 @@ export default function Trash() {
                   padding: breakpoints.md ? 20 : 0,
                   paddingTop: 0,
                 }}
+                style={{ flex: 1, backgroundColor: "red", height: "100%" }}
                 refreshControl={
                   <RefreshControl
                     refreshing={isValidating}

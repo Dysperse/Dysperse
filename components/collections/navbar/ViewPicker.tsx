@@ -37,7 +37,9 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
       {
         renderer: () => (
           <Text variant="eyebrow" style={{ padding: 10, paddingBottom: 3 }}>
-            By {_type.replaceAll("Based", "")}
+            {_type === "Other"
+              ? "Other"
+              : `By ${_type.replaceAll("Based", "")}`}
           </Text>
         ),
       },

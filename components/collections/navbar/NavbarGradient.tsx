@@ -16,6 +16,7 @@ export const NavbarGradient = ({ children }) => {
         height: breakpoints.md ? 60 : 60 + insets.top,
         paddingTop: breakpoints.md ? undefined : insets.top,
         paddingHorizontal: 10,
+        zIndex: 9,
         flexDirection: "row",
         // borderBottomWidth: breakpoints.md ? 2 : 0,
         // borderBottomColor: theme[5],

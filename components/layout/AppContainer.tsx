@@ -47,7 +47,6 @@ const AppContainer = memo(
               flex: 1,
               width: "100%",
               height: "100%",
-
               borderRadius:
                 progressValue?.current?.interpolate?.({
                   inputRange: [0, 1],

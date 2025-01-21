@@ -47,6 +47,12 @@ export const COLLECTION_VIEWS = {
     description: "Prioritize tasks by urgency and importance",
     type: "Priority Based",
   },
+
+  map: {
+    icon: "map",
+    description: "View tasks on a map",
+    type: "Other",
+  },
 };
 
 export const paletteItems = (

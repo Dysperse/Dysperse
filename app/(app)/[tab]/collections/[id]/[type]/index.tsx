@@ -11,6 +11,7 @@ import Calendar from "@/components/collections/views/calendar";
 import Grid from "@/components/collections/views/grid";
 import Kanban from "@/components/collections/views/kanban";
 import List from "@/components/collections/views/list";
+import MapView from "@/components/collections/views/map";
 import Matrix from "@/components/collections/views/matrix";
 import Planner from "@/components/collections/views/planner";
 import Skyline from "@/components/collections/views/skyline";
@@ -557,6 +558,10 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
       break;
     case "skyline":
       content = <Skyline />;
+      break;
+
+    case "map":
+      content = <MapView />;
       break;
     default:
       content = <Text>404: {type}</Text>;

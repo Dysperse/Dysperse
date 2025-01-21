@@ -1,0 +1,84 @@
+diff --git a/node_modules/react-native-leaflet-view/lib/module/LeafletView/index.js b/node_modules/react-native-leaflet-view/lib/module/LeafletView/index.js
+index 5a04755..8cc3351 100644
+--- a/node_modules/react-native-leaflet-view/lib/module/LeafletView/index.js
++++ b/node_modules/react-native-leaflet-view/lib/module/LeafletView/index.js
+@@ -1,10 +1,10 @@
+ import React, { useCallback, useEffect, useRef, useState } from 'react';
+-import { WebView } from 'react-native-webview';
+-import { WebViewLeafletEvents, OWN_POSTION_MARKER_ID } from './types';
+ import { Platform, StyleSheet } from 'react-native';
++import { WebView } from 'react-native-webview';
+ import LoadingIndicator from '../LoadingIndicator';
++import { OWN_POSTION_MARKER_ID, WebViewLeafletEvents } from './types';
+ const LEAFLET_HTML_SOURCE = Platform.select({
+-  ios: require('../../android/src/main/assets/leaflet.html'),
++  ios: require('../../../android/src/main/assets/leaflet.html'),
+   android: {
+     uri: 'file:///android_asset/leaflet.html'
+   }
+@@ -65,7 +65,8 @@ const LeafletView = ({
+     }
+ 
+     if (ownPositionMarker) {
+-      startupMessage.ownPositionMarker = { ...ownPositionMarker,
++      startupMessage.ownPositionMarker = {
++        ...ownPositionMarker,
+         id: OWN_POSTION_MARKER_ID
+       };
+     }
+diff --git a/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx b/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx
+index da878e3..e1de4fa 100644
+--- a/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx
++++ b/node_modules/react-native-leaflet-view/src/LeafletView/index.tsx
+@@ -1,22 +1,22 @@
+ import React, { useCallback, useEffect, useRef, useState } from 'react';
+-import { WebView } from 'react-native-webview';
+-import {
+-  MapMarker,
+-  WebviewLeafletMessage,
+-  MapMessage,
+-  WebViewLeafletEvents,
+-  MapLayer,
+-  MapShape,
+-  OwnPositionMarker,
+-  OWN_POSTION_MARKER_ID,
+-} from './types';
+ import { LatLng } from 'react-leaflet';
+ import { NativeSyntheticEvent, Platform, StyleSheet } from 'react-native';
++import { WebView } from 'react-native-webview';
+ import {
+   WebViewError,
+   WebViewMessageEvent,
+ } from 'react-native-webview/lib/WebViewTypes';
+ import LoadingIndicator from '../LoadingIndicator';
++import {
++  MapLayer,
++  MapMarker,
++  MapMessage,
++  MapShape,
++  OWN_POSTION_MARKER_ID,
++  OwnPositionMarker,
++  WebViewLeafletEvents,
++  WebviewLeafletMessage,
++} from './types';
+ 
+ const LEAFLET_HTML_SOURCE = Platform.select({
+   ios: require('../../android/src/main/assets/leaflet.html'),
+@@ -48,7 +48,7 @@ export type LeafletViewProps = {
+   ownPositionMarker?: OwnPositionMarker;
+   zoom?: number;
+   doDebug?: boolean;
+-  androidHardwareAccelerationDisabled?: boolean;
++  androidHardwareAccelerationDisabled?: string;
+ };
+ 
+ const LeafletView: React.FC<LeafletViewProps> = ({
+@@ -215,7 +215,7 @@ const LeafletView: React.FC<LeafletViewProps> = ({
+       allowFileAccess={true}
+       allowUniversalAccessFromFileURLs={true}
+       allowFileAccessFromFileURLs={true}
+-      androidHardwareAccelerationDisabled={androidHardwareAccelerationDisabled}
++      injectedJavaScript={androidHardwareAccelerationDisabled as any}
+     />
+   );
+ };

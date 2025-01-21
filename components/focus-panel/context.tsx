@@ -26,7 +26,7 @@ export const useFocusPanelContext = () => useContext(FocusPanelContext);
 export const FocusPanelProvider = ({ children }) => {
   const states = ["OPEN", "CLOSED", "COLLAPSED"];
   const { fullscreen } = useGlobalSearchParams();
-  const [panelState, setPanelState] = useState<PanelState>("COLLAPSED");
+  const [panelState, setPanelState] = useState<PanelState>("CLOSED");
   const collapseOnBack = useRef(panelState === "COLLAPSED");
 
   useEffect(() => {
@@ -34,6 +34,8 @@ export const FocusPanelProvider = ({ children }) => {
       const t = await AsyncStorage.getItem("panelState");
       if (t && states.includes(t)) {
         setPanelState(t as PanelState);
+      } else if (typeof t === "undefined") {
+        setPanelState("COLLAPSED");
       } else {
         setPanelState("CLOSED");
       }
