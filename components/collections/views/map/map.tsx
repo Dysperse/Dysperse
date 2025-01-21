@@ -36,8 +36,6 @@ export default function DomMapView() {
           const s = String.fromCharCode(97 + ((x + y + z) % 3));
           return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/${z}/${x}/${y}.png`;
         }}
-        metaWheelZoom
-        metaWheelZoomWarning="Use ctrl + scroll to zoom"
         animate
         animateMaxScreens={5}
       >
