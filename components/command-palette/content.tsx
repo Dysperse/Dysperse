@@ -596,7 +596,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
     .filter((section) => !filter || section.title === filter)
     .reduce((acc, curr) => {
       const items = fuzzysort
-        .go(query, curr.items, { keys: ["title", "label"], all: true })
+        .go(query, curr.items || [], { keys: ["title", "label"], all: true })
         .map((e) => e.obj);
       if (items.length > 0) {
         acc.push(curr.title);
@@ -619,7 +619,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
   const filters = sections
     .filter((section) => {
       const items = fuzzysort
-        .go(query, section.items, { keys: ["title", "label"], all: true })
+        .go(query, section.items || [], { keys: ["title", "label"], all: true })
         .map((e) => e.obj);
       return items.length > 0;
     })
