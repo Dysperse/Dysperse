@@ -5,19 +5,46 @@ import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Alert from "@/ui/Alert";
 import { Button } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import RefreshControl from "@/ui/RefreshControl";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import TextField from "@/ui/TextArea";
 import { FlashList } from "@shopify/flash-list";
-import { useCallback } from "react";
-import { View } from "react-native";
+import fuzzysort from "fuzzysort";
+import { useCallback, useState } from "react";
+import { Keyboard, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { MenuButton } from "../home";
+
+const containerStyles = StyleSheet.create({
+  root: { flexDirection: "row", flex: 1 },
+  left: {
+    flex: 1,
+    borderRightWidth: 1,
+    padding: 20,
+    paddingBottom: 0,
+  },
+  rightEmpty: {
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  leftEmpty: {
+    flex: 1,
+    height: "100%",
+    minHeight: 500,
+    gap: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 const DeleteAllButton = ({ handleDelete }) => {
   return (
@@ -42,6 +69,14 @@ const DeleteAllButton = ({ handleDelete }) => {
 export default function Trash() {
   const { session } = useSession();
   const { data, mutate, error, isValidating } = useSWR(["space/trash"]);
+  const [query, setQuery] = useState("");
+
+  const filteredData = fuzzysort
+    .go(query, data || [], {
+      keys: ["name", "note"],
+      all: true,
+    })
+    .map((t) => t.obj);
 
   const handleDelete = useCallback(async () => {
     try {
@@ -61,8 +96,9 @@ export default function Trash() {
 
   console.log(data);
 
-  const isEmpty = (data || []).filter((t) => t.trash).length === 0;
+  const isEmpty = (filteredData || []).filter((t) => t.trash).length === 0;
   const insets = useSafeAreaInsets();
+  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -71,55 +107,47 @@ export default function Trash() {
       style={!breakpoints.md && { paddingTop: insets.top + 70 }}
     >
       {!breakpoints.md && <MenuButton gradient addInsets />}
-      <View
-        style={{
-          flex: 1,
-          flexDirection: breakpoints.md ? "row" : "column",
-          padding: breakpoints.md ? 40 : 20,
-        }}
-      >
-        <View>
-          <Text
-            style={{
-              fontSize: 35,
-              marginBottom: 10,
-              fontFamily: "serifText800",
-            }}
+      <View style={containerStyles.root}>
+        <View
+          style={[
+            containerStyles.left,
+            {
+              borderRightColor: theme[5],
+            },
+          ]}
+        >
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={!data} onRefresh={() => mutate()} />
+            }
+            onScrollBeginDrag={Keyboard.dismiss}
+            style={{ flex: 1 }}
           >
-            Recently deleted
-          </Text>
-          <View style={{ marginBottom: 20 }}>
+            <TextField
+              value={query}
+              onChangeText={setQuery}
+              variant="filled+outlined"
+              style={{ height: 50, fontSize: 20, marginBottom: 20 }}
+              weight={900}
+              placeholder="Search trash"
+              autoFocus={breakpoints.md}
+            />
             <Alert
               emoji="26A0"
               title="Items are permanently deleted on the 1st of every month"
               dense
             />
             {!isEmpty && <DeleteAllButton handleDelete={handleDelete} />}
-          </View>
+          </ScrollView>
         </View>
-        {Array.isArray(data) ? (
-          <FlashList
-            showsVerticalScrollIndicator={false}
-            data={data.filter((t) => t.trash)}
-            style={{
-              flex: 1,
-              height: "100%",
-            }}
-            contentContainerStyle={{
-              padding: breakpoints.md ? 20 : 0,
-              paddingTop: 0,
-            }}
-            refreshControl={
-              <RefreshControl
-                refreshing={isValidating}
-                onRefresh={() => mutate()}
-              />
-            }
-            centerContent={isEmpty}
-            ListEmptyComponent={() => (
+        <View style={{ flex: 2 }}>
+          {Array.isArray(filteredData) ? (
+            isEmpty ? (
               <View
                 style={{
                   alignItems: "center",
+                  flex: 1,
+                  justifyContent: "center",
                 }}
               >
                 <Emoji size={50} emoji="1f389" />
@@ -134,31 +162,50 @@ export default function Trash() {
                   Nothing to see here!
                 </Text>
               </View>
-            )}
-            renderItem={({ item }) => (
-              <Entity
-                isReadOnly={false}
-                showLabel
-                onTaskUpdate={(newTask) => {
-                  console.log("New task recieved", newTask);
-                  mutate((oldData) =>
-                    oldData.map((t) => (t.id === newTask.id ? newTask : t))
-                  );
+            ) : (
+              <FlashList
+                showsVerticalScrollIndicator={false}
+                data={filteredData.filter((t) => t.trash)}
+                contentContainerStyle={{
+                  padding: breakpoints.md ? 20 : 0,
+                  paddingTop: 0,
                 }}
-                item={item}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isValidating}
+                    onRefresh={() => mutate()}
+                  />
+                }
+                renderItem={({ item }) => (
+                  <Entity
+                    isReadOnly={false}
+                    showLabel
+                    onTaskUpdate={(newTask) => {
+                      console.log("New task recieved", newTask);
+                      mutate((oldData) =>
+                        oldData.map((t) => (t.id === newTask.id ? newTask : t))
+                      );
+                    }}
+                    item={item}
+                  />
+                )}
+                keyExtractor={(item: any) => item.id}
               />
-            )}
-            keyExtractor={(item: any) => item.id}
-          />
-        ) : error ? (
-          <ErrorAlert />
-        ) : (
-          <View
-            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
-          >
-            <Spinner />
-          </View>
-        )}
+            )
+          ) : error ? (
+            <ErrorAlert />
+          ) : (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+              }}
+            >
+              <Spinner />
+            </View>
+          )}
+        </View>
       </View>
     </ContentWrapper>
   );
