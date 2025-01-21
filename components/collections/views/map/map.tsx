@@ -29,7 +29,7 @@ export default function DomMapView() {
       )}
       <Map
         height={"100%" as any}
-        defaultCenter={[50.879, 4.6997]}
+        defaultCenter={[40.7128, -74.006]}
         defaultZoom={11}
         attribution={<>Leaflet</>}
         twoFingerDrag
@@ -38,7 +38,7 @@ export default function DomMapView() {
           return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/${z}/${x}/${y}.png`;
         }}
       >
-        <Marker width={50} anchor={[50.879, 4.6997]} />
+        <Marker width={50} anchor={[40.7128, -74.006]} />
       </Map>
     </div>
   );

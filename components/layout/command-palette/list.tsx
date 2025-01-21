@@ -49,7 +49,7 @@ export const COLLECTION_VIEWS = {
   },
 
   map: {
-    icon: "map",
+    icon: "location_on",
     description: "View tasks on a map",
     type: "Other",
   },
