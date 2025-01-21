@@ -1,3 +1,4 @@
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
@@ -69,7 +70,11 @@ export const IndeterminateProgressBar = ({ height }: { height?: number }) => {
       <View style={[styles.progressBar, { height }]}>
         <Animated.View style={[styles.indicator, animatedStyle]}>
           <LinearGradient
-            colors={["transparent", theme[7], "transparent"]}
+            colors={[
+              addHslAlpha(theme[7], 0),
+              theme[7],
+              addHslAlpha(theme[7], 0),
+            ]}
             style={{ flex: 1 }}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -79,3 +84,4 @@ export const IndeterminateProgressBar = ({ height }: { height?: number }) => {
     </View>
   );
 };
+
