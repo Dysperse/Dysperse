@@ -18,8 +18,8 @@ export default function DomMapView() {
       {isDark && (
         <style
           dangerouslySetInnerHTML={{
-            __html: `.leaflet-container {
-                background: ${theme[3]};
+            __html: `.container {
+                background: ${theme[isDark ? 12 : 3]};
             }
             .t{
                 filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
@@ -40,6 +40,7 @@ export default function DomMapView() {
         limitBounds="edge"
         animate
         animateMaxScreens={5}
+        boxClassname="container"
       >
         {[
           [34.0522, -118.2437], // North America
