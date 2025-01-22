@@ -311,7 +311,7 @@ function TaskNameInput() {
   }, []);
 
   const GrowingTextInput =
-    Platform.OS === "web" ? AutoSizeTextArea : AutoGrowingTextInput;
+    Platform.OS === "ios" ? AutoGrowingTextInput : AutoSizeTextArea;
 
   return (
     <>
