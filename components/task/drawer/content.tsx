@@ -28,7 +28,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Keyboard, Platform, View } from "react-native";
-import { AutoGrowingTextInput } from "react-native-autogrow-textinput";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -42,6 +41,15 @@ import { TaskShareButton } from "./TaskShareButton";
 import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
 import { useTaskDrawerContext } from "./context";
 import { TaskDetails } from "./details";
+
+let AutoGrowingTextInput;
+
+if (Platform.OS !== "ios") {
+  AutoGrowingTextInput = () => null; // Provide a fallback or use a working alternative.
+} else {
+  AutoGrowingTextInput =
+    require("react-native-autogrow-textinput").AutoGrowingTextInput;
+}
 
 function AISubtask({ task, updateTask }) {
   const modalRef = useRef(null);
