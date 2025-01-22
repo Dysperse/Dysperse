@@ -11,7 +11,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       description: "The new standard for productivity",
       slug: "Dysperse",
       scheme: "dysperse",
-      version: "1.0.0",
+      // version: "1.0.0",
       orientation: "portrait",
       icon: "./assets/icon.png",
       userInterfaceStyle: "automatic",
@@ -175,4 +175,3 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       organization: "dysperse",
     }
   );
-
