@@ -70,9 +70,9 @@ export const TaskAttachmentChips = memo(
     const isVideoChatPlatform = (t) =>
       videoChatPlatforms.some((platform) => t?.includes?.(platform));
 
-    return attachments.map((attachment) => (
+    return attachments.map((attachment, i) => (
       <ImageViewer
-        key={attachment.data + attachment.type}
+        key={i + attachment.type}
         image={attachment.type === "IMAGE" && attachment.data}
       >
         <Chip
@@ -239,7 +239,7 @@ function TaskNoteChips({ note }) {
     <>
       {chips.map((link, index) => (
         <ImageViewer
-          key={link.image + link.type}
+          key={index + link.type}
           image={link.type === "IMAGE" && link.image}
         >
           <Chip

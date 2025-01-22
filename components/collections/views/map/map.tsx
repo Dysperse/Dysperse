@@ -30,7 +30,7 @@ export default function DomMapView() {
       <Map
         height={"100%" as any}
         defaultZoom={2}
-        attribution={<>Leaflet</>}
+        attribution={<></>}
         twoFingerDrag
         provider={(x, y, z) => {
           const s = String.fromCharCode(97 + ((x + y + z) % 3));
