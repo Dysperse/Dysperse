@@ -24,7 +24,6 @@ import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useImperativeHandle, useRef, useState } from "react";
 import { Keyboard, Platform, useWindowDimensions, View } from "react-native";
-import { AutoGrowingTextInput } from "react-native-autogrow-textinput";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -32,6 +31,15 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useSWR from "swr";
+
+let AutoGrowingTextInput;
+
+if (Platform.OS !== "ios") {
+  AutoGrowingTextInput = () => null; // Provide a fallback or use a working alternative.
+} else {
+  AutoGrowingTextInput =
+    require("react-native-autogrow-textinput").AutoGrowingTextInput;
+}
 
 function MessageBar({
   onRetry,
