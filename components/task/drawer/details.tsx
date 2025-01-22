@@ -2,9 +2,10 @@ import { Entity } from "@/components/collections/entity";
 import { LocationPickerModal } from "@/components/collections/views/map";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
 import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
@@ -12,11 +13,13 @@ import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import React, { useRef } from "react";
 import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
+import useSWR from "swr";
 import CreateTask from "../create";
 import { TaskNote } from "./TaskNote";
 import { useTaskDrawerContext } from "./context";
@@ -415,7 +418,57 @@ function TaskLocationMenu() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { session } = useUser();
 
-  const trigger = (
+  const { data, error } = useSWR(
+    task.location
+      ? `https://nominatim.openstreetmap.org/details?place_id=${task.location.placeId}&format=json`
+      : null,
+    (t) => fetch(t).then((r) => r.json())
+  );
+
+  const trigger = data ? (
+    <Button
+      containerStyle={{
+        opacity: 0.6,
+        marginLeft: 14,
+        marginTop: 5,
+        borderRadius: 0,
+      }}
+      style={{
+        gap: 10,
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        paddingHorizontal: 0,
+      }}
+      height={"auto" as any}
+      dense
+    >
+      <Icon style={{ flexShrink: 0, transform: [{ scale: 1.1 }] }}>
+        near_me
+      </Icon>
+      <View>
+        <ButtonText numberOfLines={undefined}>{data.names?.name}</ButtonText>
+        <ButtonText numberOfLines={undefined} weight={300}>
+          {[
+            `${data.addresstags?.housenumber || ""} ${
+              data.addresstags?.street || ""
+            }`.trim(),
+            data.addresstags?.city,
+            data.addresstags?.state,
+          ]
+            .filter((t) => t)
+            .join(", ") || capitalizeFirstLetter(data.type)}
+        </ButtonText>
+        {/* <ButtonText numberOfLines={undefined}>
+          {JSON.stringify(data, null, 2)}
+        </ButtonText> */}
+      </View>
+      <View style={{ marginLeft: "auto", flexDirection: "row" }}>
+        {data.extratags?.phone && <IconButton icon="phone" />}
+        {data.extratags?.website && <IconButton icon="language" />}
+        <IconButton icon="open_in_new" />
+      </View>
+    </Button>
+  ) : (
     <Button
       containerStyle={{
         opacity: 0.6,
@@ -442,7 +495,7 @@ function TaskLocationMenu() {
   return task.location ? (
     <MenuPopover
       menuProps={{
-        style: { marginRight: "auto" },
+        style: { maxWidth: "100%" },
         rendererProps: { placement: "top" },
       }}
       containerStyle={{ marginBottom: -10, width: 190 }}
@@ -487,7 +540,7 @@ export function TaskDetails() {
   return (
     <View style={{ gap: 2, marginTop: 5 }}>
       {!task.parentTaskId && (
-        <View>
+        <View style={{ flex: 1 }}>
           <TaskDateMenu />
           <TaskLocationMenu />
         </View>

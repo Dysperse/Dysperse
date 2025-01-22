@@ -27,7 +27,7 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Keyboard, Platform, View } from "react-native";
+import { Dimensions, Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -751,7 +751,10 @@ export function TaskDrawerContent({
           zIndex: 1,
         }}
       />
-      <SafeScrollView showsHorizontalScrollIndicator={false}>
+      <SafeScrollView
+        showsHorizontalScrollIndicator={false}
+        style={{ maxHeight: Dimensions.get("window").height - 120 }}
+      >
         <View
           style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}
         >
@@ -835,4 +838,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-
