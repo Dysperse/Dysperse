@@ -35,8 +35,8 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           backgroundColor: "#effefa",
         },
         googleServicesFile: IS_DEV
-          ? process.env.GOOGLE_SERVIVE_PLIST_DEV
-          : process.env.GOOGLE_SERVIVE_PLIST,
+          ? process.env.GOOGLE_SERVICE_PLIST_DEV
+          : process.env.GOOGLE_SERVICE_PLIST,
       },
       android: {
         googleServicesFile: IS_DEV
