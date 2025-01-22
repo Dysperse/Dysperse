@@ -22,7 +22,7 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
         androidHardwareAccelerationDisabled={`
           const style = document.createElement('style');
           style.innerHTML = \`
-         .leaflet-container {
+         .leaflet-container, body {
               background: ${theme[3]};
           }
           * {
@@ -67,11 +67,6 @@ export default function NativeMapView({ tasks, onLocationSelect }) {
 
           \`;
           document.head.appendChild(style);
-
-          // Get the map instance
-          const map = document.querySelector('.leaflet-container');
-          // Set min zoom
-          map.setMinZoom(18);
         `}
         mapLayers={[
           {
