@@ -10,10 +10,7 @@ export default function NativeMapView() {
   return (
     <LeafletView
       key={isDark ? "dark" : "light"}
-      androidHardwareAccelerationDisabled={
-        !isDark
-          ? undefined
-          : `
+      androidHardwareAccelerationDisabled={`
           const style = document.createElement('style');
           style.innerHTML = \`
          .leaflet-container {
@@ -28,16 +25,21 @@ export default function NativeMapView() {
             )}!important; backdrop-filter: blur(10px)!important;}
             .leaflet-control-attribution a {display: none !important;}
             .leaflet-control-attribution::after {content:"Carto";color:${addHslAlpha(
-              theme[9],
+              theme[11],
               0.5
             )};font-size:12px;}
-         .leaflet-layer{
+        ${
+          isDark
+            ? `
+           .leaflet-layer{
             filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-          }
+          }`
+            : ""
+        }
           .leaflet-control-zoom-in,
           .leaflet-control-zoom-out  {
             background: ${addHslAlpha(theme[9], 0.1)}!important;
-            color: ${theme[9]}!important;
+            color: ${theme[11]}!important;
             border-color: ${addHslAlpha(theme[9], 0.1)}!important;
             backdrop-filter: blur(10px)!important;
           }
@@ -58,8 +60,7 @@ export default function NativeMapView() {
           const map = document.querySelector('.leaflet-container');
           // Set min zoom
           map.setMinZoom(18);
-        `
-      }
+        `}
       mapLayers={[
         {
           baseLayerIsChecked: true,
@@ -138,6 +139,26 @@ export default function NativeMapView() {
         [46.7319, -117.1542],
         // KU campus
         [38.9586, -95.2479],
+        // Mizzou campus
+        [38.9404, -92.3277],
+        // OU campus
+        [35.2058, -97.4453],
+        // OSU campus
+        [40.0076, -83.0158],
+        // UMich campus
+        [42.278, -83.7382],
+        // MSU campus
+        [42.7018, -84.4822],
+        // Purdue campus
+        [40.4237, -86.9212],
+        // IU Bloomington campus
+        [39.1663, -86.5264],
+        // Notre Dame campus
+        [41.7034, -86.2396],
+        // UVA campus
+        [38.0336, -78.5079],
+        // VT campus
+        [37.2296, -80.4139],
       ].map((t) => ({
         icon: `https://cdn.jsdelivr.net/gh/dysperse/assets/pin.png`,
         iconAnchor: [8, 29.5],
