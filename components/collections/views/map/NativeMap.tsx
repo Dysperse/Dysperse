@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Spinner from "@/ui/Spinner";
@@ -6,6 +7,7 @@ import { LeafletView } from "react-native-leaflet-view";
 export default function NativeMapView() {
   const isDark = useDarkMode();
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <LeafletView
@@ -19,15 +21,18 @@ export default function NativeMapView() {
           * {
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
             }
-            .leaflet-control-attribution {margin:10px!important;border-radius:10px!important;background:${addHslAlpha(
+            .leaflet-control-attribution {margin:5px!important;border-radius:10px!important;background:${addHslAlpha(
               theme[9],
               0.1
-            )}!important; backdrop-filter: blur(10px)!important;}
+            )}!important; 
+            transform:scale(${breakpoints.md ? 0.9 : 0.65});
+            backdrop-filter: blur(10px)!important;}
             .leaflet-control-attribution a {display: none !important;}
             .leaflet-control-attribution::after {content:"Carto";color:${addHslAlpha(
               theme[11],
               0.5
-            )};font-size:12px;}
+            )};
+            }
         ${
           isDark
             ? `
