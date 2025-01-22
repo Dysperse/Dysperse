@@ -35,6 +35,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDebounce } from "use-debounce";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -268,6 +269,7 @@ function TaskList({ tasks }) {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
+  const insets = useSafeAreaInsets();
   const { mode } = useLocalSearchParams();
 
   return (
@@ -345,7 +347,10 @@ function TaskList({ tasks }) {
               <ColumnEmptyComponent />
             </View>
           )}
-          contentContainerStyle={{ paddingTop: 20 }}
+          contentContainerStyle={{
+            paddingTop: 20,
+            paddingBottom: insets.bottom + 10,
+          }}
           renderItem={({ item }) => (
             <Entity
               onTaskUpdate={mutations.categoryBased.update(mutate)}
