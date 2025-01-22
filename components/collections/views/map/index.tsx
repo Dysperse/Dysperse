@@ -41,8 +41,7 @@ import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 import { taskSortAlgorithm } from "../skyline";
-import DomMapView from "./map";
-import NativeMapView from "./NativeMap";
+import MapPreview from "./MapView";
 
 const icons = {
   dojo: "sports_mma",
@@ -488,16 +487,11 @@ export default function MapView() {
           />
         )}
         <MapTaskDrawer mutate={mutate} ref={mapTaskDrawerRef} />
-        {Platform.OS === "web" ? (
-          <DomMapView />
-        ) : (
-          <NativeMapView
-            tasks={tasksWithLocation}
-            onLocationSelect={(task) => mapTaskDrawerRef.current.open(task)}
-          />
-        )}
+        <MapPreview
+          tasks={tasksWithLocation}
+          onLocationSelect={(task) => mapTaskDrawerRef.current.open(task)}
+        />
       </Animated.View>
     </View>
   );
 }
-

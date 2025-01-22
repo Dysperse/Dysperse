@@ -1,10 +1,11 @@
 "use dom";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+// @ts-ignore
 import { Map, Marker } from "pigeon-maps";
 import React from "react";
 
-export default function DomMapView() {
+export default function MapView({ tasks, onLocationSelect }) {
   const isDark = useDarkMode();
   const theme = useColorTheme();
 
@@ -42,17 +43,22 @@ export default function DomMapView() {
         animateMaxScreens={5}
         boxClassname="container"
       >
-        {[
-          [34.0522, -118.2437], // North America
-          [-34.6037, -58.3816], // South America
-          [51.5074, -0.1278], // Europe
-          [-33.9249, 18.4241], // Africa
-          [35.6895, 139.6917], // Asia
-          [-33.8688, 151.2093], // Australia
-          [-75.250973, -0.071389], // Antarctica
-        ].map((location, index) => (
-          <Marker key={index} width={50} anchor={location} />
+        {tasks.map((task) => (
+          <Marker
+            key={task.id}
+            width={50}
+            anchor={task.location.coordinates.map((t) => parseInt(t))}
+            onClick={() => onLocationSelect(task.id)}
+          />
         ))}
+
+        {/* tasks.map((t) => ({
+          icon: `https://cdn.jsdelivr.net/gh/dysperse/assets/pin.png`,
+          iconAnchor: [8, 29.5],
+          size: [16, 29.5],
+          position: t.location.coordinates,
+          id: t.id,
+        })) */}
       </Map>
     </div>
   );
