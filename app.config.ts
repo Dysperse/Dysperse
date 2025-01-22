@@ -34,6 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
           image: "./assets/splash-screens/light.png",
           backgroundColor: "#effefa",
         },
+        googleServicesFile: "./GoogleService-Info.plist",
       },
       android: {
         googleServicesFile: IS_DEV
