@@ -1,5 +1,6 @@
 import { Entity } from "@/components/collections/entity";
 import { LocationPickerModal } from "@/components/collections/views/map";
+import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { DatePicker } from "@/ui/DatePicker";
@@ -324,32 +325,20 @@ export const handleLocationPress = (
   },
   item
 ) => {
-  if (item.type === "LOCATION" && item?.data?.rich) {
-    if (session.user?.mapsProvider === "APPLE") {
-      Linking.openURL(
-        `https://beta.maps.apple.com/?${new URLSearchParams({
-          q: item.data.full_name,
-          ll: `${item.data.lat},${item.data.lon}`,
-          spn: "0.008983152841206987,0.011316585492991749",
-        })}`
-      );
-    } else {
-      Linking.openURL(
-        `https://maps.google.com/?${new URLSearchParams({
-          q: `${item.data.lat},${item.data.lon}`,
-        })}`
-      );
-    }
+  if (session.user?.mapsProvider === "APPLE") {
+    Linking.openURL(
+      `https://beta.maps.apple.com/?${new URLSearchParams({
+        q: item.name,
+        ll: `${item.coordinates[0]},${item.coordinates[1]}`,
+        spn: "0.008983152841206987,0.011316585492991749",
+      })}`
+    );
   } else {
-    if (session.user?.mapsProvider === "APPLE") {
-      Linking.openURL(
-        `https://beta.maps.apple.com/?${new URLSearchParams({
-          q: item.data,
-        })}`
-      );
-    } else {
-      Linking.openURL(`https://maps.google.com/?q=${item.data}`);
-    }
+    Linking.openURL(
+      `https://maps.google.com/?${new URLSearchParams({
+        q: `${item.coordinates[0]},${item.coordinates[1]}`,
+      })}`
+    );
   }
 };
 
@@ -567,6 +556,7 @@ function TaskDateMenu() {
 function TaskLocationMenu() {
   const theme = useColorTheme();
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+  const { session } = useUser();
 
   const trigger = (
     <Button
@@ -581,12 +571,12 @@ function TaskLocationMenu() {
         alignItems: "flex-start",
         justifyContent: "flex-start",
         paddingHorizontal: 0,
-        paddingRight: 20,
+        paddingRight: 50,
       }}
       dense
       height={"auto" as any}
       icon="near_me"
-      iconStyle={{ transform: [{ scale: 1.1 }] }}
+      iconStyle={{ transform: [{ scale: 1.1 }], flexShrink: 0 }}
       text={task.location ? task.location.name : "Add location"}
       textProps={{ numberOfLines: undefined }}
     />
@@ -608,12 +598,17 @@ function TaskLocationMenu() {
             updateTask("location", null);
           },
         },
+        {
+          icon: "open_in_new",
+          text: "Open in maps",
+          callback: () => handleLocationPress(session, task.location),
+        },
       ]}
     />
   ) : (
     <LocationPickerModal
       hideSkip
-      defaultQuery={task.name}
+      defaultQuery={task.name.trim()}
       closeOnSelect
       onLocationSelect={(location) =>
         updateTask("location", {
