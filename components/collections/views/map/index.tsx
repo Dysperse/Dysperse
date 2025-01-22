@@ -1,9 +1,14 @@
 import { mutations } from "@/app/(app)/[tab]/collections/mutations";
+import { IndeterminateProgressBar } from "@/components/IndeterminateProgressBar";
+import CreateTask from "@/components/task/create";
+import { TaskDrawer } from "@/components/task/drawer";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -15,7 +20,15 @@ import TextField from "@/ui/TextArea";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { cloneElement, useEffect, useRef, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import {
+  cloneElement,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Platform, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -26,10 +39,77 @@ import { useDebounce } from "use-debounce";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
+import { taskSortAlgorithm } from "../skyline";
 import DomMapView from "./map";
 import NativeMapView from "./NativeMap";
 
-function LocationPickerModal({ children, onLocationSelect }) {
+const icons = {
+  dojo: "sports_mma",
+  accountant: "account_balance",
+  bank: "account_balance",
+  house: "home",
+  building: "home",
+  office: "corporate_fare",
+  shop: "shopping_bag",
+  bakery: "cake",
+  boundary: "outdoor_garden",
+  waterway: "kayaking",
+  construction: "construction",
+  leisure: "nature_people",
+  landuse: "landscape",
+  natural: "forest",
+  tourism: "tour",
+  highway: "directions",
+  railway: "train",
+  bar: "local_bar",
+  restaurant: "restaurant",
+  university: "school",
+  newspaper: "article",
+  financial_advisor: "account_balance",
+  travel_agency: "travel_explore",
+  bicycle: "two_wheeler",
+  school: "school",
+  neighbourhood: "location_city",
+  retail: "store",
+  industrial: "engineering",
+  fuel: "local_gas_station",
+  hamlet: "location_city",
+  village: "location_city",
+  department_store: "store",
+  cafe: "local_cafe",
+  administrative: "location_city",
+  commercial: "business",
+  water: "water_drop",
+  farmland: "agriculture",
+  mall: "store",
+  living_street: "directions",
+  attraction: "tour",
+  tertiary: "location_city",
+  supermarket: "grocery",
+  dam: "water_damage",
+  parking: "local_parking",
+  company: "business",
+  pharmacy: "local_pharmacy",
+  fabric: "local_laundry_service",
+  hardware: "hardware",
+  hostel: "hotel",
+  furniture: "home",
+  clinic: "local_hospital",
+};
+
+export function LocationPickerModal({
+  children,
+  onLocationSelect,
+  hideSkip,
+  closeOnSelect,
+  defaultQuery,
+}: {
+  children: any;
+  onLocationSelect: any;
+  hideSkip?: boolean;
+  closeOnSelect?: boolean;
+  defaultQuery?: string;
+}) {
   const modalRef = useRef(null);
   const trigger = cloneElement(children, {
     onPress: () => modalRef.current.present(),
@@ -66,13 +146,19 @@ function LocationPickerModal({ children, onLocationSelect }) {
     }
   }, [debouncedValue]);
 
+  useEffect(() => {
+    if (defaultQuery) {
+      handleSearch(defaultQuery);
+    }
+  }, [defaultQuery]);
+
   return (
     <>
       {trigger}
       <Modal
         sheetRef={modalRef}
         animation="SCALE"
-        innerStyles={{ padding: 20, gap: 15 }}
+        innerStyles={{ padding: 20, gap: 15, paddingBottom: 0 }}
       >
         <View style={{ flexDirection: "row" }}>
           <Button
@@ -80,6 +166,15 @@ function LocationPickerModal({ children, onLocationSelect }) {
             onPress={() => modalRef.current.forceClose()}
             dense
           />
+
+          {!hideSkip && (
+            <Button
+              containerStyle={{ marginLeft: "auto" }}
+              text="Skip location"
+              onPress={() => onLocationSelect(null)}
+              dense
+            />
+          )}
         </View>
         <TextField
           placeholder="Find a location..."
@@ -88,14 +183,38 @@ function LocationPickerModal({ children, onLocationSelect }) {
           weight={900}
           onChangeText={onChange}
         />
-        <View style={{ height: 300 }}>
+        <View style={{ height: 350, marginTop: -15, position: "relative" }}>
+          {loading && (
+            <View
+              style={{
+                position: "absolute",
+                top: 10,
+                width: "100%",
+                height: 4,
+                paddingHorizontal: 20,
+              }}
+            >
+              <IndeterminateProgressBar height={4} />
+            </View>
+          )}
+          {error && <ErrorAlert />}
           <BottomSheetFlashList
+            contentContainerStyle={{ paddingTop: 10 }}
             data={data}
-            renderItem={({ item }) => (
-              <ListItemButton>
+            renderItem={({ item }: any) => (
+              <ListItemButton
+                onPress={() => {
+                  onLocationSelect(item);
+                  if (closeOnSelect) modalRef.current.forceClose();
+                }}
+              >
+                <Avatar icon={icons[item.type] || "location_on"} />
                 <ListItemText
-                  primary={item.display_name || item.name}
-                  secondary={item.type || item.class}
+                  primary={item.name || item.display_name}
+                  secondary={
+                    item.name &&
+                    item.display_name.split(", ").slice(2).join(", ")
+                  }
                 />
               </ListItemButton>
             )}
@@ -109,33 +228,47 @@ function LocationPickerModal({ children, onLocationSelect }) {
 function CreateTaskButton({ mutate }) {
   const breakpoints = useResponsiveBreakpoints();
   const ref = useRef(null);
-  const locationRef = useRef(null);
+  const createTaskRef = useRef(null);
 
   return (
-    <LocationPickerModal onLocationSelect={(location) => {}}>
-      <Button
-        variant="filled"
-        containerStyle={{ flex: 1, zIndex: 99 }}
-        large={!breakpoints.md}
-        bold={!breakpoints.md}
-        textStyle={breakpoints.md && { fontFamily: "body_400" }}
-        iconPosition="end"
-        text="Create"
-        icon="stylus_note"
-        height={breakpoints.md ? 50 : 55}
-      />
-    </LocationPickerModal>
+    <>
+      <LocationPickerModal
+        onLocationSelect={(location) => {
+          createTaskRef.current.present();
+
+          setTimeout(() => {
+            if (location)
+              createTaskRef.current.setValue("location", {
+                placeId: location.place_id,
+                name: location.display_name,
+                coordinates: [location.lat, location.lon],
+              });
+          }, 100);
+        }}
+      >
+        <Button
+          variant="filled"
+          containerStyle={{ flex: 1, zIndex: 99 }}
+          large={!breakpoints.md}
+          bold={!breakpoints.md}
+          textStyle={breakpoints.md && { fontFamily: "body_400" }}
+          iconPosition="end"
+          text="Create"
+          icon="stylus_note"
+          height={breakpoints.md ? 50 : 55}
+        />
+      </LocationPickerModal>
+      <CreateTask ref={createTaskRef} mutate={mutate} />
+    </>
   );
 }
 
-function TaskList() {
+function TaskList({ tasks }) {
   const { data, mutate } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
 
-  const tasks = (data || []).labels.reduce((acc, label) => {
-    return [...acc, ...Object.values(label.entities || [])];
-  }, []);
+  const { mode } = useLocalSearchParams();
 
   return (
     <>
@@ -153,29 +286,38 @@ function TaskList() {
             <Button
               icon="expand_more"
               iconPosition="end"
-              text="Tasks with location"
-              variant="filled"
-              containerStyle={{ padding: 10 }}
+              text={
+                mode === "location"
+                  ? "Tasks with location"
+                  : mode === "no-location"
+                  ? "Tasks without location"
+                  : "All tasks"
+              }
+              variant="outlined"
             />
           }
           options={[
-            { icon: "done_all", text: "All", callback: () => {} },
+            {
+              icon: "done_all",
+              text: "All",
+              callback: () => router.setParams({ mode: null }),
+            },
             {
               icon: "location_on",
               text: "With location",
-              callback: () => {},
+              callback: () => router.setParams({ mode: "location" }),
             },
             {
               icon: "location_off",
               text: "Without location",
-              callback: () => {},
+              callback: () => router.setParams({ mode: "no-location" }),
             },
           ]}
         />
         <View style={{ flex: 1 }} />
       </View>
       <View style={{ paddingHorizontal: 10, zIndex: 999 }}>
-        <CreateTaskButton mutate={mutate} />
+        <CreateTaskButton mutate={mutations.categoryBased.add(mutate)} />
       </View>
       <View
         style={[
@@ -198,7 +340,12 @@ function TaskList() {
           refreshControl={
             <RefreshControl refreshing={!data} onRefresh={() => mutate()} />
           }
-          ListEmptyComponent={() => <ColumnEmptyComponent />}
+          ListEmptyComponent={() => (
+            <View style={{ paddingTop: 100 }}>
+              <ColumnEmptyComponent />
+            </View>
+          )}
+          contentContainerStyle={{ paddingTop: 20 }}
           renderItem={({ item }) => (
             <Entity
               onTaskUpdate={mutations.categoryBased.update(mutate)}
@@ -213,10 +360,32 @@ function TaskList() {
   );
 }
 
+const MapTaskDrawer = forwardRef((props: { mutate: any }, ref) => {
+  const sheetRef = useRef(null);
+
+  const [id, setId] = useState(null);
+
+  useImperativeHandle(ref, () => ({
+    open: (task) => {
+      setId(task);
+      setTimeout(() => sheetRef.current.show(), 200);
+    },
+  }));
+
+  return (
+    <TaskDrawer
+      ref={sheetRef}
+      mutateList={mutations.categoryBased.update(props.mutate)}
+      id={id}
+    />
+  );
+});
+
 export default function MapView() {
   const theme = useColorTheme();
   const { session } = useUser();
   const breakpoints = useResponsiveBreakpoints();
+  const { data, mutate } = useCollectionContext();
 
   const flex = useSharedValue(breakpoints.md ? 2 : 0.3);
 
@@ -228,6 +397,34 @@ export default function MapView() {
       overshootClamping: false,
     }),
   }));
+
+  const { mode } = useLocalSearchParams();
+
+  const tasksWithLocation = (data?.labels || [])
+    .flatMap((label) =>
+      Object.values(label.entities || []).filter((task: any) => !!task.location)
+    )
+    .concat(
+      Object.values(data?.entities || []).filter((task: any) => !!task.location)
+    );
+
+  const tasksWithoutLocation = (data?.labels || [])
+    .flatMap((label) =>
+      Object.values(label.entities || []).filter((task: any) => !task.location)
+    )
+    .concat(
+      Object.values(data?.entities || []).filter((task: any) => !task.location)
+    );
+
+  const tasks = taskSortAlgorithm(
+    mode === "location"
+      ? tasksWithLocation
+      : mode === "no-location"
+      ? tasksWithoutLocation
+      : tasksWithLocation.concat(tasksWithoutLocation)
+  );
+
+  const mapTaskDrawerRef = useRef(null);
 
   return (
     <View
@@ -257,7 +454,7 @@ export default function MapView() {
             </Text>
           </>
         ) : (
-          <TaskList />
+          <TaskList tasks={tasks} />
         )}
       </View>
       <Animated.View
@@ -271,19 +468,29 @@ export default function MapView() {
           },
         ]}
       >
-        <IconButton
-          style={{ position: "absolute", top: 10, right: 10, zIndex: 999 }}
-          icon="fullscreen"
-          onPress={() =>
-            (flex.value =
-              flex.value === (breakpoints.md ? 2 : 5)
-                ? 0.3
-                : breakpoints.md
-                ? 2
-                : 5)
-          }
-        />
-        {Platform.OS === "web" ? <DomMapView /> : <NativeMapView />}
+        {!breakpoints.md && (
+          <IconButton
+            style={{ position: "absolute", top: 10, right: 10, zIndex: 999 }}
+            icon="fullscreen"
+            onPress={() =>
+              (flex.value =
+                flex.value === (breakpoints.md ? 2 : 5)
+                  ? 0.3
+                  : breakpoints.md
+                  ? 2
+                  : 5)
+            }
+          />
+        )}
+        <MapTaskDrawer mutate={mutate} ref={mapTaskDrawerRef} />
+        {Platform.OS === "web" ? (
+          <DomMapView />
+        ) : (
+          <NativeMapView
+            tasks={tasksWithLocation}
+            onLocationSelect={(task) => mapTaskDrawerRef.current.open(task)}
+          />
+        )}
       </Animated.View>
     </View>
   );

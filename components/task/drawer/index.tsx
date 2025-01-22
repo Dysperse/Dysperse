@@ -158,6 +158,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
               isReadOnly,
             }}
           >
+            {/* <Text>{JSON.stringify(data.location)}</Text> */}
             <TaskDrawerContent
               forceClose={forceClose}
               handleClose={handleClose}

@@ -28,6 +28,7 @@ interface DButtonProps extends PressableProps {
   large?: boolean;
   textStyle?: StyleProp<TextStyle>;
   iconStyle?: StyleProp<TextStyle>;
+  textProps?: DTextProps;
   text?: string;
   icon?: string;
   iconSize?: number;
@@ -213,6 +214,7 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
               <ButtonText
                 style={[props.large && { fontSize: 17 }, props.textStyle]}
                 weight={props.bold ? 900 : undefined}
+                {...props.textProps}
               >
                 {props.text}
               </ButtonText>
@@ -228,3 +230,4 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
     </Animated.View>
   );
 });
+

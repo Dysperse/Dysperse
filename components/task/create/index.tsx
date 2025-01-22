@@ -139,13 +139,17 @@ function Footer({
   const dateOnly = watch("dateOnly");
   const label = watch("label");
   const name = watch("name");
+  const location = watch("location");
   const parentTask = watch("parentTask");
+
+  console.log("Footer -> parentTask", location);
 
   return (
     <View
       style={{
         paddingBottom:
-          (date || recurrenceRule || label || collectionId) && !parentTask
+          (date || recurrenceRule || label || location || collectionId) &&
+          !parentTask
             ? 10
             : 0,
       }}
@@ -160,13 +164,38 @@ function Footer({
           flexDirection: "row",
           gap: 5,
           display:
-            (date || recurrenceRule || label || collectionId) && !parentTask
+            (date || recurrenceRule || label || collectionId || location) &&
+            !parentTask
               ? "flex"
               : "none",
         }}
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {location && (
+          <Chip
+            outlined
+            icon="location_on"
+            onDismiss={() => {
+              setValue("location", null);
+            }}
+            style={({ pressed, hovered }) => ({
+              borderWidth: 1,
+              borderColor: addHslAlpha(
+                theme[9],
+                pressed ? 0.3 : hovered ? 0.2 : 0.1
+              ),
+            })}
+            label={
+              <Text
+                style={{ color: theme[11], maxWidth: 100 }}
+                numberOfLines={1}
+              >
+                {location.name}
+              </Text>
+            }
+          />
+        )}
         {(date || recurrenceRule) && !parentTask && (
           <Chip
             outlined
@@ -1259,6 +1288,7 @@ const BottomSheetContent = forwardRef(
         storyPoints: defaultValues.storyPoints,
         collectionId: defaultValues.collectionId,
         attachments: [],
+        location: null,
         note: "",
       },
     });

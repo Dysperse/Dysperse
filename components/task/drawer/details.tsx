@@ -1,4 +1,5 @@
 import { Entity } from "@/components/collections/entity";
+import { LocationPickerModal } from "@/components/collections/views/map";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { DatePicker } from "@/ui/DatePicker";
@@ -387,6 +388,7 @@ function SubtaskList() {
             marginRight: "auto",
             opacity: 0.6,
             marginLeft: 5,
+            marginTop: 2,
           }}
           style={{ gap: 10 }}
           text={
@@ -485,9 +487,9 @@ function TaskDateMenu() {
             containerStyle={{
               marginRight: "auto",
               opacity: 0.6,
-              marginLeft: 5,
+              marginLeft: 6,
             }}
-            style={{ gap: 10 }}
+            style={{ gap: 12 }}
             dense
           >
             <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
@@ -562,6 +564,70 @@ function TaskDateMenu() {
   );
 }
 
+function TaskLocationMenu() {
+  const theme = useColorTheme();
+  const { task, updateTask, isReadOnly } = useTaskDrawerContext();
+
+  const trigger = (
+    <Button
+      containerStyle={{
+        opacity: 0.6,
+        marginLeft: 14,
+        marginTop: 3,
+        borderRadius: 0,
+      }}
+      style={{
+        gap: 10,
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        paddingHorizontal: 0,
+        paddingRight: 20,
+      }}
+      dense
+      height={"auto" as any}
+      icon="near_me"
+      iconStyle={{ transform: [{ scale: 1.1 }] }}
+      text={task.location ? task.location.name : "Add location"}
+      textProps={{ numberOfLines: undefined }}
+    />
+  );
+
+  return task.location ? (
+    <MenuPopover
+      menuProps={{
+        style: { marginRight: "auto" },
+        rendererProps: { placement: "top" },
+      }}
+      containerStyle={{ marginBottom: -10, width: 190 }}
+      trigger={trigger}
+      options={[
+        {
+          icon: "remove_circle",
+          text: "Remove",
+          callback: () => {
+            updateTask("location", null);
+          },
+        },
+      ]}
+    />
+  ) : (
+    <LocationPickerModal
+      hideSkip
+      defaultQuery={task.name}
+      closeOnSelect
+      onLocationSelect={(location) =>
+        updateTask("location", {
+          placeId: location.place_id,
+          name: location.display_name,
+          coordinates: [location.lat, location.lon],
+        })
+      }
+    >
+      {trigger}
+    </LocationPickerModal>
+  );
+}
+
 export function TaskDetails() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const editorRef = useRef(null);
@@ -571,6 +637,7 @@ export function TaskDetails() {
       {!task.parentTaskId && (
         <View>
           <TaskDateMenu />
+          <TaskLocationMenu />
         </View>
       )}
       {(isReadOnly && task.subtasks?.length === 0) ||
