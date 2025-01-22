@@ -420,7 +420,7 @@ function TaskLocationMenu() {
       containerStyle={{
         opacity: 0.6,
         marginLeft: 14,
-        marginTop: 3,
+        marginTop: 5,
         borderRadius: 0,
       }}
       style={{
@@ -505,4 +505,3 @@ export function TaskDetails() {
     </View>
   );
 }
-

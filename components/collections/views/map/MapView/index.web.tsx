@@ -24,20 +24,26 @@ export default function MapView({ tasks, onLocationSelect }) {
             }
             .t{
                 filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-            }`,
+            }
+            // .t .marker {
+            //   filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+            // }
+            `,
           }}
         />
       )}
       <Map
         height={"100%" as any}
-        defaultZoom={2}
+        defaultZoom={1.44}
+        attributionPrefix={<>Carto</>}
         attribution={<></>}
         twoFingerDrag
+        // zoomSnap={false}
         provider={(x, y, z) => {
           const s = String.fromCharCode(97 + ((x + y + z) % 3));
           return `https://${s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/${z}/${x}/${y}.png`;
         }}
-        minZoom={2}
+        minZoom={1.44}
         limitBounds="edge"
         animate
         animateMaxScreens={5}
@@ -46,8 +52,9 @@ export default function MapView({ tasks, onLocationSelect }) {
         {tasks.map((task) => (
           <Marker
             key={task.id}
-            width={50}
-            anchor={task.location.coordinates.map((t) => parseInt(t))}
+            width={30}
+            anchor={task.location.coordinates.map((t) => parseFloat(t))}
+            className="marker"
             onClick={() => onLocationSelect(task.id)}
           />
         ))}
