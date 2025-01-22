@@ -1,0 +1,15 @@
+diff --git a/node_modules/react-native-autogrow-textinput/android/build.gradle b/node_modules/react-native-autogrow-textinput/android/build.gradle
+index 5b1c2b9..9f698af 100644
+--- a/node_modules/react-native-autogrow-textinput/android/build.gradle
++++ b/node_modules/react-native-autogrow-textinput/android/build.gradle
+@@ -4,8 +4,8 @@ android {
+     compileSdkVersion 28
+     buildToolsVersion "28.0.3"
+     defaultConfig {
+-        minSdkVersion 16
+-        targetSdkVersion 28
++        minSdkVersion 27
++        targetSdkVersion 30
+         versionCode 1
+         versionName "1.0"
+     }

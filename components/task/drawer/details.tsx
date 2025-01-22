@@ -5,18 +5,15 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { DatePicker } from "@/ui/DatePicker";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import Text from "@/ui/Text";
-import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import React, { useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
@@ -178,146 +175,6 @@ export function isValidHttpUrl(string) {
 
   return url.protocol === "http:" || url.protocol === "https:";
 }
-
-function EditAttachment({
-  task,
-  updateTask,
-  item,
-  handleCancel,
-}: {
-  task: any;
-  updateTask: any;
-  item: any;
-  handleCancel: any;
-}) {
-  const { control, handleSubmit } = useForm({
-    defaultValues: { data: item.data, name: item.name },
-  });
-
-  const onSubmit = (data) => {
-    updateTask(
-      "attachments",
-      task.attachments.map((attachment, i) =>
-        i === task.attachments.indexOf(item)
-          ? { ...attachment, ...data }
-          : attachment
-      )
-    );
-    setTimeout(handleCancel, 0);
-  };
-
-  return (
-    <>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 20,
-          paddingHorizontal: 20,
-          alignItems: "center",
-        }}
-      >
-        <IconButton
-          onPress={handleCancel}
-          icon="close"
-          variant="outlined"
-          size={55}
-        />
-        <Text style={{ marginHorizontal: "auto", fontSize: 20 }}>Edit</Text>
-        <IconButton
-          onPress={handleSubmit(onSubmit)}
-          icon="check"
-          variant="outlined"
-          size={55}
-        />
-      </View>
-      <View style={{ paddingHorizontal: 20, flex: 1, paddingTop: 20 }}>
-        <Text variant="eyebrow">{item.type}</Text>
-        <Controller
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextField
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              variant="filled+outlined"
-              placeholder="Edit attachment…"
-              style={{
-                fontSize: 20,
-                marginTop: 5,
-                paddingHorizontal: 20,
-                paddingVertical: 20,
-              }}
-            />
-          )}
-          name="data"
-          control={control}
-          defaultValue={item.data}
-        />
-        {item.type === "LINK" && (
-          <>
-            <Text variant="eyebrow" style={{ marginTop: 10 }}>
-              Name
-            </Text>
-            <Controller
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextField
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  variant="filled+outlined"
-                  placeholder="Display name (optional)"
-                  style={{
-                    backgroundColor: "transparent",
-                    fontSize: 20,
-                    marginTop: 5,
-                    paddingHorizontal: 20,
-                    paddingVertical: 20,
-                  }}
-                />
-              )}
-              name="name"
-              control={control}
-              defaultValue={item.name}
-            />
-          </>
-        )}
-      </View>
-    </>
-  );
-}
-
-const getAttachmentPreview = (item) => {
-  let icon = "";
-  let name = item.data.val ? item.data.val : item.data;
-  switch (item.type) {
-    case "LINK":
-      icon = "link";
-      if (isValidHttpUrl(name)) name = new URL(name).hostname;
-      break;
-    case "LOCATION":
-      icon = isValidHttpUrl(item.data) ? "link" : "map";
-      if (isValidHttpUrl(name)) name = new URL(item.data).hostname;
-
-      if (item?.data?.rich) {
-        name = name.name;
-      }
-      break;
-    case "IMAGE":
-      icon = "image";
-      if (isValidHttpUrl(name))
-        name =
-          new URL(item.data).pathname.split("/")?.[2] ||
-          new URL(item.data).pathname;
-      break;
-  }
-  return { icon, name };
-};
-
-const attachmentButtonStyles = (theme) => ({
-  default: theme[5],
-  pressed: theme[6],
-  hovered: theme[7],
-});
 
 export const handleLocationPress = (
   session = {
