@@ -382,6 +382,8 @@ export default function AppLayout() {
                                     pathname.includes("friends") ||
                                     pathname.includes("insights") ||
                                     pathname.includes("everything/labels/") ||
+                                    (pathname.includes("/map") &&
+                                      Platform.OS !== "ios") ||
                                     (pathname.includes("/plan") &&
                                       !pathname.includes("/planner")) ||
                                     pathname.includes("open") ||
