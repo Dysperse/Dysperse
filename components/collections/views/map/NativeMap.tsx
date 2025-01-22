@@ -70,20 +70,80 @@ export default function NativeMapView() {
         },
       ]}
       mapMarkers={[
-        [34.0522, -118.2437], // North America
-        [-34.6037, -58.3816], // South America
-        [51.5074, -0.1278], // Europe
-        [-33.9249, 18.4241], // Africa
-        [35.6895, 139.6917], // Asia
-        [-33.8688, 151.2093], // Australia
-        [-75.250973, -0.071389], // Antarctica
+        // MIT campus
+        [42.3601, -71.0942],
+        // Harvard campus
+        [42.3736, -71.1097],
+        // Stanford campus
+        [37.4275, -122.1697],
+        // UC Berkeley campus
+        [37.8719, -122.2585],
+        // Caltech campus
+        [34.1379, -118.1253],
+        // Duke campus
+        [36.0014, -78.9382],
+        // Brown campus
+        [41.8262, -71.4032],
+        // Yale campus
+        [41.3163, -72.9223],
+        // Princeton campus
+        [40.3461, -74.6552],
+        // Columbia campus
+        [40.8075, -73.9626],
+        // Cornell campus
+        [42.4534, -76.4735],
+        // Penn campus
+        [39.9526, -75.1652],
+        // UChicago campus
+        [41.7886, -87.5987],
+        // Northwestern campus
+        [42.0565, -87.6752],
+        // Michigan campus
+        [42.278, -83.7382],
+        // UW Madison campus
+        [43.076, -89.4125],
+        // UMN Twin Cities campus
+        [44.9727, -93.2354],
+        // UT Austin campus
+        [30.2849, -97.7341],
+        // Rice campus
+        [29.7174, -95.4018],
+        // UCLA campus
+        [34.0689, -118.4452],
+        // USC campus
+        [34.0224, -118.2851],
+        // UCSD campus
+        [32.8801, -117.234],
+        // UCSB campus
+        [34.4133, -119.8489],
+        // UCSC campus
+        [36.9914, -122.058],
+        // UCI campus
+        [33.6469, -117.8422],
+        // UC Davis campus
+        [38.5382, -121.7617],
+        // UC Riverside campus
+        [33.9738, -117.3281],
+        // UT Dallas campus
+        [32.9856, -96.7501],
+        // ASU campus
+        [33.4241, -111.928],
+        // UW Seattle campus
+        [47.6553, -122.3035],
+        // UO campus
+        [44.0448, -123.0726],
+        // OSU campus
+        [44.5672, -123.2792],
+        // WSU campus
+        [46.7319, -117.1542],
+        // KU campus
+        [38.9586, -95.2479],
       ].map((t) => ({
-        icon: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        iconAnchor: [12, 41],
-        size: [25, 41],
+        icon: `https://cdn.jsdelivr.net/gh/dysperse/assets/pin.png`,
+        iconAnchor: [8, 29.5],
+        size: [16, 29.5],
         position: t,
         id: "well, hello there",
-        onClick: () => alert("Marker clicked"),
       }))}
       zoom={1.5}
       mapCenterPosition={[0, 0]}

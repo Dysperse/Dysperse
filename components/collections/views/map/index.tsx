@@ -3,11 +3,13 @@ import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import MenuPopover from "@/ui/MenuPopover";
 import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { FlashList } from "@shopify/flash-list";
+import { LinearGradient } from "expo-linear-gradient";
 import { Platform, View } from "react-native";
 import { useCollectionContext } from "../../context";
 import { ColumnEmptyComponent } from "../../emptyComponent";
@@ -18,13 +20,14 @@ import NativeMapView from "./NativeMap";
 function TaskList() {
   const { data, mutate } = useCollectionContext();
   const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
 
   const tasks = (data || []).labels.reduce((acc, label) => {
     return [...acc, ...Object.values(label.entities || [])];
   }, []);
 
   return (
-    <View style={{ height: "100%" }}>
+    <>
       <View style={{ padding: 10, flexDirection: "row" }}>
         <MenuPopover
           trigger={
@@ -70,7 +73,16 @@ function TaskList() {
           />
         </CreateTask>
       </View>
-      <View style={{ flex: 1, marginTop: 50 }}>
+      <View style={{ flex: 1 }}>
+        <LinearGradient
+          colors={[theme[1], addHslAlpha(theme[1], 0)]}
+          style={{
+            height: 50,
+            marginBottom: -50,
+            zIndex: 999,
+            marginTop: Platform.OS === "web" ? 0 : 50,
+          }}
+        />
         <FlashList
           style={{ flex: 1 }}
           data={tasks}
@@ -88,7 +100,7 @@ function TaskList() {
           )}
         />
       </View>
-    </View>
+    </>
   );
 }
 
@@ -98,7 +110,13 @@ export default function MapView() {
 
   return (
     <View style={{ flex: 1, flexDirection: "row", padding: 10, gap: 10 }}>
-      <View style={{ flex: 1, justifyContent: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: session.user.betaTester ? "flex-start" : "center",
+          height: "100%",
+        }}
+      >
         {!session.user.betaTester ? (
           <>
             <Text style={{ fontFamily: "serifText800", fontSize: 37 }}>
@@ -110,9 +128,7 @@ export default function MapView() {
             </Text>
           </>
         ) : (
-          <View>
-            <TaskList />
-          </View>
+          <TaskList />
         )}
       </View>
       <View
@@ -128,3 +144,4 @@ export default function MapView() {
     </View>
   );
 }
+
