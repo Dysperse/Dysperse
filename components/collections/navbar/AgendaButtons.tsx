@@ -88,15 +88,7 @@ export function AgendaButtons({
   );
   const breakpoints = useResponsiveBreakpoints();
 
-  const titleFormat = weekMode
-    ? {
-        week: "[Week #]W • MMM YYYY",
-        month: "MMMM YYYY",
-        year: "YYYY",
-        schedule: "MMMM YYYY",
-        "3days": "[Week #]W • MMM YYYY",
-      }[((agendaView || mode) as any) || "week"]
-    : "MMM Do [& after]";
+  const titleFormat = weekMode ? "[Week #]W • MMM YYYY" : "MMM Do [& after]";
 
   const trigger = (
     <Button
@@ -218,4 +210,3 @@ export function AgendaButtons({
     </SafeView>
   );
 }
-

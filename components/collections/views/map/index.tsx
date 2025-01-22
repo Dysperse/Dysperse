@@ -269,7 +269,7 @@ function TaskList({ tasks }) {
   const theme = useColorTheme();
 
   const insets = useSafeAreaInsets();
-  const { mode } = useLocalSearchParams();
+  const { locationMode } = useLocalSearchParams();
 
   return (
     <>
@@ -288,9 +288,9 @@ function TaskList({ tasks }) {
               icon="expand_more"
               iconPosition="end"
               text={
-                mode === "location"
+                locationMode === "location"
                   ? "Tasks with location"
-                  : mode === "no-location"
+                  : locationMode === "no-location"
                   ? "Tasks without location"
                   : "All tasks"
               }
@@ -301,17 +301,17 @@ function TaskList({ tasks }) {
             {
               icon: "done_all",
               text: "All",
-              callback: () => router.setParams({ mode: null }),
+              callback: () => router.setParams({ locationMode: null }),
             },
             {
               icon: "location_on",
               text: "With location",
-              callback: () => router.setParams({ mode: "location" }),
+              callback: () => router.setParams({ locationMode: "location" }),
             },
             {
               icon: "location_off",
               text: "Without location",
-              callback: () => router.setParams({ mode: "no-location" }),
+              callback: () => router.setParams({ locationMode: "no-location" }),
             },
           ]}
         />
