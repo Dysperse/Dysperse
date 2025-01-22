@@ -6,7 +6,7 @@
     "start": "expo start",
     "start-tunnel": "expo start --tunnel",
     "lint": "eslint ./",
-    "postinstall": "patch-package",
+    "postinstall": "if [ \"$EAS_BUILD_PLATFORM\" = \"android\" ]; then npm uninstall react-native-autogrow-textinput && npx patch-package; fi",
     "build:android:dev": "eas build --profile development --platform android",
     "build:android:prev": "eas build --profile preview --platform android",
     "build:android:prod": "npm i -g eas-cli && eas build --profile production --platform android",
