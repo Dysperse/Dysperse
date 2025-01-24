@@ -208,9 +208,9 @@ const Loading = ({ error, isPublic }: any) => {
           </View>
           <CircularSkeleton size={34} />
           <CircularSkeleton size={34} />
-          <CircularSkeleton size={34} />
-          <CircularSkeleton size={34} />
-          <LinearSkeleton width={100} height={43} />
+          {breakpoints.md && <CircularSkeleton size={34} />}
+          {breakpoints.md && <CircularSkeleton size={34} />}
+          {breakpoints.md && <LinearSkeleton width={100} height={43} />}
         </View>
 
         {/* Columns */}
@@ -631,4 +631,3 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
     </SelectionContextProvider>
   );
 }
-

@@ -200,6 +200,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
               <View style={{ gap: 10 }}>
                 <LinearSkeleton width={"70%"} height={50} />
                 <LinearSkeleton width={"30%"} height={20} />
+                <LinearSkeleton width={"40%"} height={20} />
                 <LinearSkeleton width={"20%"} height={20} />
                 <LinearSkeleton width={"10%"} height={20} />
               </View>
@@ -310,4 +311,3 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
-
