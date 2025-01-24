@@ -1241,20 +1241,31 @@ function SpeechRecognition({ setValue, handleSubmitButtonClick }) {
 function LocationButton({ watch, setValue }) {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+  const location = watch("location");
 
   return (
-    <LocationPickerModal>
-      <IconButton
-        variant="filled"
-        backgroundColors={{
-          default: addHslAlpha(theme[9], 0.15),
-          hovered: addHslAlpha(theme[9], 0.25),
-          pressed: addHslAlpha(theme[9], 0.35),
-        }}
-        icon="add_location_alt"
-        size={breakpoints.md ? 50 : 35}
-      />
-    </LocationPickerModal>
+    !location && (
+      <LocationPickerModal
+        onLocationSelect={(location) =>
+          setValue("location", {
+            placeId: location.place_id,
+            name: location.display_name,
+            coordinates: [location.lat, location.lon],
+          })
+        }
+      >
+        <IconButton
+          variant="filled"
+          backgroundColors={{
+            default: addHslAlpha(theme[9], 0.15),
+            hovered: addHslAlpha(theme[9], 0.25),
+            pressed: addHslAlpha(theme[9], 0.35),
+          }}
+          icon="add_location_alt"
+          size={breakpoints.md ? 50 : 35}
+        />
+      </LocationPickerModal>
+    )
   );
 }
 
