@@ -201,22 +201,22 @@ const Scratch = () => {
   );
 };
 
+const placeholders = [
+  "a trip for the summer...",
+  "my school assignments...",
+  "a workout routine for this month...",
+  "a checklist for a camping trip...",
+  "a plan for my self-care routine...",
+  "a roadmap for learning a new language...",
+  "a meal prep plan for this week...",
+  "a shopping list for the week...",
+  "my action plan for career advancement...",
+];
+
 function AiCollectionInput({ input, setInput, handleSubmit }) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const [placeholder, setPlaceholder] = useState(0);
-
-  const placeholders = [
-    "a trip for the summer...",
-    "my school assignments...",
-    "a workout routine for this month...",
-    "a checklist for a camping trip...",
-    "a plan for my self-care routine...",
-    "a roadmap for learning a new language...",
-    "a meal prep plan for this week...",
-    "a shopping list for the week...",
-    "my action plan for career advancement...",
-  ];
 
   const translateY = useSharedValue(0);
 
@@ -234,17 +234,16 @@ function AiCollectionInput({ input, setInput, handleSubmit }) {
     justifyContent: "center",
   }));
 
+  function setRandomPlaceholder() {
+    setPlaceholder((prevIndex) => (prevIndex + 1) % placeholders.length);
+  }
+
   useEffect(() => {
     const r = () => {
-      // Animate upwards until it's hidden
       translateY.value = withTiming(-50, { duration: 300 }, () => {
-        // Reset instantly to the bottom (off-screen)
-        translateY.value = 50; // Move to the bottom immediately
-        runOnJS(() => {
-          setPlaceholder((prevIndex) => (prevIndex + 1) % placeholders.length);
-        })();
+        translateY.value = 50;
+        runOnJS(setRandomPlaceholder)();
 
-        // Animate upwards and fade in again
         translateY.value = withTiming(0, { duration: 300 });
       });
     };
@@ -625,4 +624,3 @@ export const CreateCollectionModal = forwardRef(
     );
   }
 );
-
