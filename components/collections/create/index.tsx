@@ -117,7 +117,7 @@ const Scratch = () => {
 
       await createTab(sessionToken, {
         slug: `/[tab]/collections/[id]/[type]`,
-        params: { type: "kanban", id },
+        params: { type: "list", id },
       });
       forceClose({ duration: 1 });
     } catch (err) {
