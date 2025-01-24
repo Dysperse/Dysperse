@@ -322,7 +322,7 @@ function TaskList({ tasks }) {
       </View>
       <View
         style={[
-          { flex: 1 },
+          { flex: 1, marginBottom: -10 },
           !breakpoints.md && { padding: 10, paddingBottom: 0 },
         ]}
       >
@@ -495,3 +495,4 @@ export default function MapView() {
     </View>
   );
 }
+
