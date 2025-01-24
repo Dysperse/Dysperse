@@ -76,7 +76,6 @@ export const KanbanHeader = memo(function KanbanHeader({
         <Text
           style={[
             { fontSize: 20, fontFamily: "serifText700" },
-
             label.entitiesLength === 0 && { marginVertical: 11 },
           ]}
           numberOfLines={1}
