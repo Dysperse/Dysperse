@@ -4,6 +4,7 @@ import { CollectionInfo } from "@/components/collections/navbar/CollectionInfo";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import { router } from "expo-router";
@@ -13,6 +14,7 @@ import { mutate } from "swr";
 function Content() {
   const { session } = useSession();
   const collection = useCollectionContext();
+  const breakpoints = useResponsiveBreakpoints();
   useHotkeys("esc", () => router.back());
 
   return (
@@ -36,7 +38,10 @@ function Content() {
               variant="filled"
               height={60}
               bold
-              containerStyle={{ marginBottom: 40, marginTop: 20 }}
+              containerStyle={{
+                marginBottom: breakpoints.md ? 40 : 100,
+                marginTop: 20,
+              }}
               icon="delete"
               text="Delete collection"
             />
@@ -54,4 +59,3 @@ export default function Page() {
     </CollectionMenuLayout>
   );
 }
-
