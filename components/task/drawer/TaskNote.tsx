@@ -355,7 +355,7 @@ export const TaskNote = forwardRef(
         ]
       ),
     }));
-    const { isReadOnly } = useTaskDrawerContext();
+    const { isReadOnly } = useTaskDrawerContext() || {};
 
     return !shouldShow ? (
       !isReadOnly && (
