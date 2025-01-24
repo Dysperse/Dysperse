@@ -24,6 +24,7 @@ import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { useImperativeHandle, useRef, useState } from "react";
 import { Keyboard, Platform, useWindowDimensions, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -234,6 +235,8 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
     }
   );
 
+  const SafeScrollView = breakpoints.md ? ScrollView : BottomSheetScrollView;
+
   return (
     <View style={{ height: "100%" }}>
       <View style={{ padding: 20, paddingBottom: 0, zIndex: 999 }}>
@@ -255,7 +258,7 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
           }}
         />
       </View>
-      <BottomSheetScrollView style={{ flex: 1, padding: 20 }}>
+      <SafeScrollView style={{ flex: 1, padding: 20 }}>
         <View style={{ paddingHorizontal: breakpoints.md ? 5 : 10 }}>
           <Text
             style={{
@@ -278,10 +281,10 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
             <Text>Couldn't generate text. Did you hit your limit?</Text>
           ) : data ? (
             <>
-              {data.addedFilters.length > 0 && (
+              {data?.addedFilters?.length > 0 && (
                 <FilterChips filters={data.addedFilters} />
               )}
-              <MarkdownRenderer>{data.generated}</MarkdownRenderer>
+              <MarkdownRenderer>{data?.generated}</MarkdownRenderer>
               <Text style={{ opacity: 0.5, marginTop: 5, fontSize: 12 }}>
                 AI can make mistakes. Check important info
               </Text>
@@ -290,7 +293,7 @@ function CollectionQuestionAnser({ message, messageRef, messageState }) {
             <ErrorAlert />
           )}
         </View>
-      </BottomSheetScrollView>
+      </SafeScrollView>
 
       <View style={{ padding: 20, paddingTop: 0 }}>
         <LinearGradient
@@ -347,7 +350,7 @@ export function Sidekick() {
     },
     close: () => {
       width.value = 0;
-      messageBarHandling();
+      if (breakpoints.md) messageBarHandling();
 
       mobileRef.current?.close();
     },
@@ -453,4 +456,3 @@ export function Sidekick() {
     </View>
   );
 }
-

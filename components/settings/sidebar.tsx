@@ -63,6 +63,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     if (
       inputRef.current &&
       breakpoints.md &&
+      Platform.OS === "web" &&
       pathname === "/settings/account"
     ) {
       inputRef.current.focus();
@@ -413,4 +414,3 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
-
