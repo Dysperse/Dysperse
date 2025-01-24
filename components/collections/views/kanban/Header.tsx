@@ -74,23 +74,29 @@ export const KanbanHeader = memo(function KanbanHeader({
         }}
       >
         <Text
-          style={{ fontSize: 20, fontFamily: "serifText700" }}
+          style={[
+            { fontSize: 20, fontFamily: "serifText700" },
+
+            label.entitiesLength === 0 && { marginVertical: 11 },
+          ]}
           numberOfLines={1}
         >
           {label.name || "Unlabeled"}
         </Text>
-        <Text style={{ opacity: 0.6 }} numberOfLines={1}>
-          {grid
-            ? label.entitiesLength === 0
+        {label.entitiesLength !== 0 && (
+          <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+            {grid
+              ? label.entitiesLength === 0
+                ? ""
+                : label.entitiesLength
+              : label.entitiesLength}
+            {grid && label.entitiesLength === 0
               ? ""
-              : label.entitiesLength
-            : label.entitiesLength}
-          {grid && label.entitiesLength === 0
-            ? ""
-            : typeof label.entitiesLength === "number"
-            ? ` item${label.entitiesLength !== 1 ? "s" : ""}`
-            : ""}
-        </Text>
+              : typeof label.entitiesLength === "number"
+              ? ` item${label.entitiesLength !== 1 ? "s" : ""}`
+              : ""}
+          </Text>
+        )}
       </View>
       <View style={{ flexDirection: "row", marginRight: -10 }}>
         {label?.id && !isReadOnly && session && (

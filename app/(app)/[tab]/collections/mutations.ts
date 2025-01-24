@@ -9,6 +9,7 @@ export const mutations = {
       mutate(
         (oldData) => {
           if (
+            !newTask?.label ||
             oldData.labels.findIndex((l) => l.id === newTask?.label?.id) === -1
           )
             return {
@@ -164,4 +165,3 @@ export const mutations = {
     },
   },
 };
-

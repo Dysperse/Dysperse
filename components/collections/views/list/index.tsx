@@ -31,7 +31,7 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
     return (
       <CreateTask
         defaultValues={{ collectionId: data.id }}
-        mutate={(t) => mutations.categoryBased.add(t)}
+        mutate={mutations.categoryBased.update(mutate)}
       >
         <Button
           icon="stylus_note"
