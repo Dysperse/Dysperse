@@ -25,6 +25,7 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { getPreviewText } from "..";
 import TaskNoteEditor from "./TaskNoteEditor";
+import { useTaskDrawerContext } from "./context";
 
 function LinkModal({ children, onSubmit }) {
   const modalRef = useRef(null);
@@ -354,23 +355,26 @@ export const TaskNote = forwardRef(
         ]
       ),
     }));
+    const { isReadOnly } = useTaskDrawerContext();
 
     return !shouldShow ? (
-      <Button
-        dense
-        onPress={() => setHasClicked(true)}
-        containerStyle={{
-          marginRight: "auto",
-          opacity: 0.6,
-          marginLeft: 5,
-        }}
-        style={{ gap: 10 }}
-      >
-        <Icon size={20} style={{ marginTop: -3 }}>
-          sticky_note_2
-        </Icon>
-        <Text style={{ color: theme[11] }}>Add note</Text>
-      </Button>
+      !isReadOnly && (
+        <Button
+          dense
+          onPress={() => setHasClicked(true)}
+          containerStyle={{
+            marginRight: "auto",
+            opacity: 0.6,
+            marginLeft: 5,
+          }}
+          style={{ gap: 10 }}
+        >
+          <Icon size={20} style={{ marginTop: -3 }}>
+            sticky_note_2
+          </Icon>
+          <Text style={{ color: theme[11] }}>Add note</Text>
+        </Button>
+      )
     ) : (
       <Animated.View style={focusedStyles}>
         <NoteFormatMenu
@@ -395,4 +399,3 @@ export const TaskNote = forwardRef(
     );
   }
 );
-

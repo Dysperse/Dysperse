@@ -708,7 +708,7 @@ export function TaskDrawerContent({
       >
         <View
           style={{
-            paddingTop: breakpoints.md ? 20 : 10,
+            paddingTop: isReadOnly ? 10 : breakpoints.md ? 20 : 10,
             flexDirection: "row",
             gap: 10,
             width: "100%",
@@ -736,8 +736,8 @@ export function TaskDrawerContent({
               justifyContent: "flex-end",
             }}
           >
-            <TaskMoreMenu handleDelete={handleDelete} />
-            {session?.user?.betaTester && <TaskSidekickMenu />}
+            {!isReadOnly && <TaskMoreMenu handleDelete={handleDelete} />}
+            {session?.user?.betaTester && !isReadOnly && <TaskSidekickMenu />}
             {!task.parentTaskId && <TaskShareButton />}
             {!isReadOnly && <TaskCompleteButton />}
           </View>
@@ -840,4 +840,3 @@ export function TaskDrawerContent({
     </>
   );
 }
-

@@ -214,38 +214,40 @@ function SubtaskList() {
 
   return (
     <>
-      <CreateTask
-        mutate={() => {}}
-        onPress={() => {
-          if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
-            localStorage.setItem("subtaskTip", "true");
-            Toast.show({
-              type: "info",
-              text1: "Pro tip",
-              text2: "Tap twice on a task to open this popup",
-              visibilityTime: 5000,
-            });
-          }
-        }}
-        defaultValues={{ parentTask: task }}
-      >
-        <Button
-          icon="prompt_suggestion"
-          dense
-          containerStyle={{
-            marginRight: "auto",
-            opacity: 0.6,
-            marginLeft: 5,
-            marginTop: 2,
+      {!isReadOnly && (
+        <CreateTask
+          mutate={() => {}}
+          onPress={() => {
+            if (Platform.OS === "web" && !localStorage.getItem("subtaskTip")) {
+              localStorage.setItem("subtaskTip", "true");
+              Toast.show({
+                type: "info",
+                text1: "Pro tip",
+                text2: "Tap twice on a task to open this popup",
+                visibilityTime: 5000,
+              });
+            }
           }}
-          style={{ gap: 10 }}
-          text={
-            Object.keys(task.subtasks || {}).length === 0
-              ? "Create subtask"
-              : `${Object.keys(task.subtasks || {}).length} subtasks`
-          }
-        />
-      </CreateTask>
+          defaultValues={{ parentTask: task }}
+        >
+          <Button
+            icon="prompt_suggestion"
+            dense
+            containerStyle={{
+              marginRight: "auto",
+              opacity: 0.6,
+              marginLeft: 5,
+              marginTop: 2,
+            }}
+            style={{ gap: 10 }}
+            text={
+              Object.keys(task.subtasks || {}).length === 0
+                ? "Create subtask"
+                : `${Object.keys(task.subtasks || {}).length} subtasks`
+            }
+          />
+        </CreateTask>
+      )}
       <View
         style={{
           marginBottom: Object.keys(task.subtasks || {}).length === 0 ? 0 : 10,
@@ -306,114 +308,116 @@ function TaskDateMenu() {
   const breakpoints = useResponsiveBreakpoints();
 
   return (
-    <>
-      <DatePicker
-        value={{
-          date: dayjs(task?.start).isValid() ? task?.start : null,
-          dateOnly: true,
-          end: null,
-        }}
-        setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
-        ref={addDateRef}
-      />
-      <RecurrencePicker
-        value={recurrenceRule?.options}
-        setValue={(value) => updateTask("recurrenceRule", value)}
-        ref={addRecurrenceRef}
-      />
-      <MenuPopover
-        menuProps={{
-          style: { marginRight: "auto" },
-          rendererProps: { placement: "top" },
-        }}
-        containerStyle={{
-          [breakpoints.md ? "marginTop" : "marginBottom"]: -10,
-          width: 190,
-        }}
-        trigger={
-          <Button
-            containerStyle={{
-              marginRight: "auto",
-              opacity: 0.6,
-              marginLeft: 6,
-            }}
-            style={{ gap: 12 }}
-            dense
-          >
-            <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
-              {task.start
-                ? "calendar_today"
-                : task.recurrenceRule
-                ? "loop"
-                : "calendar_today"}
-            </Icon>
-            <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
-          </Button>
-        }
-        options={
-          isReadOnly
-            ? []
-            : [
-                ...(((task.start || task.recurrenceRule) && [
-                  {
-                    renderer: () => (
-                      <View style={{ flexDirection: "row", gap: 10 }}>
-                        <MenuItem
-                          onPress={() => {
-                            if (task.recurrenceRule)
-                              addRecurrenceRef.current.present();
-                            else addDateRef.current.present();
-                          }}
-                          style={{ flex: 1 }}
-                        >
-                          <Icon>edit</Icon>
-                          <Text variant="menuItem">Edit</Text>
-                        </MenuItem>
-                        {
-                          <TaskRescheduleButton
-                            task={task}
-                            updateTask={updateTask}
-                          />
-                        }
-                      </View>
-                    ),
-                  },
-                  {
-                    renderer: () => (
-                      <TaskNotificationsButton
-                        task={task}
-                        updateTask={updateTask}
-                      />
-                    ),
-                  },
-                ]) ||
-                  []),
-                ...((!task.recurrenceRule &&
-                  !task.start && [
+    !(isReadOnly && !(task.start || task.recurrenceRule)) && (
+      <>
+        <DatePicker
+          value={{
+            date: dayjs(task?.start).isValid() ? task?.start : null,
+            dateOnly: true,
+            end: null,
+          }}
+          setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
+          ref={addDateRef}
+        />
+        <RecurrencePicker
+          value={recurrenceRule?.options}
+          setValue={(value) => updateTask("recurrenceRule", value)}
+          ref={addRecurrenceRef}
+        />
+        <MenuPopover
+          menuProps={{
+            style: { marginRight: "auto" },
+            rendererProps: { placement: "top" },
+          }}
+          containerStyle={{
+            [breakpoints.md ? "marginTop" : "marginBottom"]: -10,
+            width: 190,
+          }}
+          trigger={
+            <Button
+              containerStyle={{
+                marginRight: "auto",
+                opacity: 0.6,
+                marginLeft: 6,
+              }}
+              style={{ gap: 12 }}
+              dense
+            >
+              <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
+                {task.start
+                  ? "calendar_today"
+                  : task.recurrenceRule
+                  ? "loop"
+                  : "calendar_today"}
+              </Icon>
+              <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
+            </Button>
+          }
+          options={
+            isReadOnly
+              ? []
+              : [
+                  ...(((task.start || task.recurrenceRule) && [
                     {
-                      icon: "calendar_today",
-                      text: "Add date",
-                      callback: () => addDateRef.current.present(),
+                      renderer: () => (
+                        <View style={{ flexDirection: "row", gap: 10 }}>
+                          <MenuItem
+                            onPress={() => {
+                              if (task.recurrenceRule)
+                                addRecurrenceRef.current.present();
+                              else addDateRef.current.present();
+                            }}
+                            style={{ flex: 1 }}
+                          >
+                            <Icon>edit</Icon>
+                            <Text variant="menuItem">Edit</Text>
+                          </MenuItem>
+                          {
+                            <TaskRescheduleButton
+                              task={task}
+                              updateTask={updateTask}
+                            />
+                          }
+                        </View>
+                      ),
                     },
                     {
-                      icon: "loop",
-                      text: "Add recurrence",
-                      callback: () => addRecurrenceRef.current.present(),
+                      renderer: () => (
+                        <TaskNotificationsButton
+                          task={task}
+                          updateTask={updateTask}
+                        />
+                      ),
                     },
                   ]) ||
-                  []),
-                (task.recurrenceRule || task.start) && {
-                  icon: "remove_circle",
-                  text: "Remove",
-                  callback: () => {
-                    updateTask("recurrenceRule", null);
-                    updateTask("start", null);
+                    []),
+                  ...((!task.recurrenceRule &&
+                    !task.start && [
+                      {
+                        icon: "calendar_today",
+                        text: "Add date",
+                        callback: () => addDateRef.current.present(),
+                      },
+                      {
+                        icon: "loop",
+                        text: "Add recurrence",
+                        callback: () => addRecurrenceRef.current.present(),
+                      },
+                    ]) ||
+                    []),
+                  (task.recurrenceRule || task.start) && {
+                    icon: "remove_circle",
+                    text: "Remove",
+                    callback: () => {
+                      updateTask("recurrenceRule", null);
+                      updateTask("start", null);
+                    },
                   },
-                },
-              ]
-        }
-      />
-    </>
+                ]
+          }
+        />
+      </>
+    )
   );
 }
 
@@ -422,7 +426,7 @@ function TaskLocationMenu() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const { session } = useUser();
 
-  const { data, error } = useSWR(
+  const { data } = useSWR(
     task.location
       ? `https://nominatim.openstreetmap.org/details?place_id=${task.location.placeId}&format=json`
       : null,
@@ -520,20 +524,22 @@ function TaskLocationMenu() {
       ]}
     />
   ) : (
-    <LocationPickerModal
-      hideSkip
-      defaultQuery={task.name.trim()}
-      closeOnSelect
-      onLocationSelect={(location) =>
-        updateTask("location", {
-          placeId: location.place_id,
-          name: location.display_name,
-          coordinates: [location.lat, location.lon],
-        })
-      }
-    >
-      {trigger}
-    </LocationPickerModal>
+    !isReadOnly && (
+      <LocationPickerModal
+        hideSkip
+        defaultQuery={task.name.trim()}
+        closeOnSelect
+        onLocationSelect={(location) =>
+          updateTask("location", {
+            placeId: location.place_id,
+            name: location.display_name,
+            coordinates: [location.lat, location.lon],
+          })
+        }
+      >
+        {trigger}
+      </LocationPickerModal>
+    )
   );
 }
 
@@ -562,4 +568,3 @@ export function TaskDetails() {
     </View>
   );
 }
-
