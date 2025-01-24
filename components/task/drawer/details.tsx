@@ -35,7 +35,6 @@ function TaskRescheduleButton({ task, updateTask }) {
     <>
       <MenuItem onPress={() => sheetRef.current.present()}>
         <Icon>dark_mode</Icon>
-        <Text variant="menuItem">Snooze</Text>
       </MenuItem>
       <Modal
         animation="SCALE"
@@ -357,13 +356,27 @@ function TaskDateMenu() {
             : [
                 ...(((task.start || task.recurrenceRule) && [
                   {
-                    icon: "edit",
-                    text: "Edit",
-                    callback: () => {
-                      if (task.recurrenceRule)
-                        addRecurrenceRef.current.present();
-                      else addDateRef.current.present();
-                    },
+                    renderer: () => (
+                      <View style={{ flexDirection: "row", gap: 10 }}>
+                        <MenuItem
+                          onPress={() => {
+                            if (task.recurrenceRule)
+                              addRecurrenceRef.current.present();
+                            else addDateRef.current.present();
+                          }}
+                          style={{ flex: 1 }}
+                        >
+                          <Icon>edit</Icon>
+                          <Text variant="menuItem">Edit</Text>
+                        </MenuItem>
+                        {
+                          <TaskRescheduleButton
+                            task={task}
+                            updateTask={updateTask}
+                          />
+                        }
+                      </View>
+                    ),
                   },
                   {
                     renderer: () => (
@@ -389,17 +402,8 @@ function TaskDateMenu() {
                     },
                   ]) ||
                   []),
-                !task.recurrenceRule &&
-                  task.start && {
-                    renderer: () => (
-                      <TaskRescheduleButton
-                        task={task}
-                        updateTask={updateTask}
-                      />
-                    ),
-                  },
                 (task.recurrenceRule || task.start) && {
-                  icon: "close",
+                  icon: "remove_circle",
                   text: "Remove",
                   callback: () => {
                     updateTask("recurrenceRule", null);
@@ -558,3 +562,4 @@ export function TaskDetails() {
     </View>
   );
 }
+

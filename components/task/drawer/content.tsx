@@ -334,6 +334,7 @@ function TaskNameInput() {
         onChangeText={(text) => setName(text)}
         enterKeyHint="done"
         value={name}
+        bounces={false}
         onKeyPress={(e) => {
           if (e.nativeEvent.key === "Enter" || e.nativeEvent.key === "Escape") {
             e.preventDefault();
@@ -754,6 +755,7 @@ export function TaskDrawerContent({
       <SafeScrollView
         showsHorizontalScrollIndicator={false}
         style={{ maxHeight: Dimensions.get("window").height - 120 }}
+        onScrollBeginDrag={Keyboard.dismiss}
       >
         <View
           style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}

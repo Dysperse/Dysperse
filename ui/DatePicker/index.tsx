@@ -203,12 +203,13 @@ function AllDaySwitch({ view, value, setValue }) {
         setValue("dateOnly", !value.dateOnly);
         if (value.dateOnly) {
           setTimeout(() => {
-            ref.current.focus();
+            // ref.current.focus();
           }, 1);
         }
       }}
-      containerStyle={{ flex: 1, borderRadius: 0 }}
+      containerStyle={{ flex: 1 }}
       style={{ padding: 0 }}
+      variant="outlined"
     >
       {value.dateOnly ? (
         <ButtonText>All day</ButtonText>
@@ -297,7 +298,7 @@ export const DatePicker = forwardRef(
               onPress={() => ref.current.close()}
             />
           </View>
-          <View style={{ paddingTop: 10, gap: 10 }}>
+          <View style={{ paddingTop: 10, gap: 10, minHeight: 410 }}>
             {value.date && (
               <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
                 <Button
