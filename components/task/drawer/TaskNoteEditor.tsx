@@ -10,6 +10,7 @@ import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useDOMImperativeHandle } from "expo/dom";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { useDebounce } from "use-debounce";
 
 const LIMIT = 3000;
 const extensions = [
@@ -122,6 +123,10 @@ const EditorRef = forwardRef((props, ref) => {
 
 function Saver({ updateTask }) {
   const { editor } = useCurrentEditor();
+  const [debouncedSave] = useDebounce(async () => {
+    const content = editor.getHTML();
+    updateTask("note", editor.isEmpty ? null : content);
+  }, 5000);
 
   useEffect(() => {
     const save = async () => {
@@ -129,12 +134,17 @@ function Saver({ updateTask }) {
       updateTask("note", editor.isEmpty ? null : content);
     };
 
+    window.addEventListener("blur", () => editor.commands.blur());
+
     editor.on("blur", save);
+    editor.on("update", debouncedSave);
 
     return () => {
       editor.off("blur", save);
+      editor.off("update", debouncedSave);
     };
-  }, [editor, updateTask]);
+  }, [editor, updateTask, debouncedSave]);
+
   return null;
 }
 
@@ -247,7 +257,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       onFocus={(e) => {
         if (e.target.classList.contains("prose")) {
           e.target.blur();
-          onContainerFocus();
+          onContainerFocus?.();
         }
       }}
       style={{
