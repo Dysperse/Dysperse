@@ -125,8 +125,10 @@ export default function List() {
   const { data, mutate } = useCollectionContext();
   const [showCompleted, setShowCompleted] = useState(data.showCompleted);
 
-  const shownEntities = Object.values(data.entities).filter(
-    (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
+  const shownEntities = taskSortAlgorithm(
+    Object.values(data.entities).filter(
+      (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
+    )
   );
 
   const labels = data.labels.sort(

@@ -184,9 +184,9 @@ function Actions({ setIsLoading }) {
       <View style={itemStyle}>
         <ConfirmationModal
           onSuccess={() => handleSelect({ trash: true }, true)}
-          title={`Move ${selection.length} item${
+          title={`Trash ${selection.length} item${
             selection.length === 1 ? "" : "s"
-          } to trash?`}
+          }?`}
           height={400}
           skipLoading
           secondary="You can undo this later"
