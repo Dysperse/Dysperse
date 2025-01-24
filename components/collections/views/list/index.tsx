@@ -15,6 +15,7 @@ import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 import { CollectionEmpty } from "../CollectionEmpty";
 import { KanbanHeader } from "../kanban/Header";
+import { taskSortAlgorithm } from "../skyline";
 
 function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
   const theme = useColorTheme();
@@ -30,45 +31,7 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
     return (
       <CreateTask
         defaultValues={{ collectionId: data.id }}
-        mutate={(newTask) => {
-          // if the new task's labelId is not null, then add it to the label if it exists in the data.
-          // if the label does not exist, then add it to the entities array
-
-          if (newTask.labelId) {
-            mutate(
-              (oldData) => {
-                const newLabels = oldData.labels.map((label: any) => {
-                  if (label.id === newTask.labelId) {
-                    return {
-                      ...label,
-                      entities: [newTask, ...label.entities],
-                    };
-                  }
-                  return label;
-                });
-                return {
-                  ...oldData,
-                  labels: newLabels,
-                };
-              },
-              {
-                revalidate: false,
-              }
-            );
-          } else {
-            mutate(
-              (oldData) => {
-                return {
-                  ...oldData,
-                  entities: [newTask, ...oldData.entities],
-                };
-              },
-              {
-                revalidate: false,
-              }
-            );
-          }
-        }}
+        mutate={(t) => mutations.categoryBased.add(t)}
       >
         <Button
           icon="stylus_note"
@@ -183,14 +146,11 @@ export default function List() {
     ...(shownEntities || []),
     ...labels.reduce((acc, curr) => {
       acc.push({ header: true, ...omit(["entities"], curr) });
-      const t = Object.values(curr.entities)
-        .filter(
+      const t = taskSortAlgorithm(
+        Object.values(curr.entities).filter(
           (e) => !e.trash && (incompleteEntitiesFilter(e) || showCompleted)
         )
-        .sort(
-          (a, b) =>
-            a.completionInstances?.length - b.completionInstances?.length
-        );
+      );
 
       acc.push(...t);
       if (t.length === 0) acc.push({ empty: true });
@@ -251,4 +211,3 @@ export default function List() {
     </View>
   );
 }
-

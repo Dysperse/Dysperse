@@ -1,5 +1,6 @@
 import { useUser } from "@/context/useUser";
 import {
+  Platform,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -66,6 +67,9 @@ export default function Chip({
       disabled={disabled}
       style={({ hovered, pressed }: any) => [
         styles.container,
+        Platform.OS === "web" && {
+          transition: "background-color .3s, border-color .3s",
+        },
         {
           paddingHorizontal: dense ? 5 : 10,
           ...(icon && { paddingRight: dense ? 7 : 12 }),
@@ -127,4 +131,3 @@ export default function Chip({
     </Pressable>
   );
 }
-

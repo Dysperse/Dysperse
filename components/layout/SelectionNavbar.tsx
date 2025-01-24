@@ -231,7 +231,7 @@ const SelectionNavbar = memo(function SelectionNavbar() {
         style={[
           marginStyle,
           {
-            zIndex: 1,
+            zIndex: 999999,
             height: breakpoints.md ? 64 : 140,
             overflow: "hidden",
             width: "100%",
@@ -280,4 +280,3 @@ const SelectionNavbar = memo(function SelectionNavbar() {
 });
 
 export default SelectionNavbar;
-
