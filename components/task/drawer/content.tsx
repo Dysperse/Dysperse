@@ -367,91 +367,97 @@ function WorkloadChip() {
   const menuRef = useRef(null);
 
   return (
-    <MenuPopover
-      menuRef={menuRef}
-      containerStyle={{ width: 200 }}
-      options={
-        [
-          ...complexityScale.map((n) => ({
-            renderer: () => (
-              <MenuItem
-                onPress={() => {
-                  updateTask("storyPoints", n);
-                  menuRef.current?.close();
-                }}
-              >
-                <View
-                  style={{
-                    width: 30,
-                    height: 30,
-                    backgroundColor: addHslAlpha(
-                      theme[11],
-                      n === task.storyPoints ? 1 : 0.1
-                    ),
-                    borderRadius: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
+    !(isReadOnly && !task.storyPoints) && (
+      <MenuPopover
+        menuRef={menuRef}
+        containerStyle={{ width: 200 }}
+        options={
+          [
+            ...complexityScale.map((n) => ({
+              renderer: () => (
+                <MenuItem
+                  onPress={() => {
+                    updateTask("storyPoints", n);
+                    menuRef.current?.close();
                   }}
                 >
-                  <Text
+                  <View
                     style={{
-                      fontFamily: "mono",
-                      color: theme[n === task.storyPoints ? 1 : 11],
+                      width: 30,
+                      height: 30,
+                      backgroundColor: addHslAlpha(
+                        theme[11],
+                        n === task.storyPoints ? 1 : 0.1
+                      ),
+                      borderRadius: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    {String(n).padStart(2, "0")}
+                    <Text
+                      style={{
+                        fontFamily: "mono",
+                        color: theme[n === task.storyPoints ? 1 : 11],
+                      }}
+                    >
+                      {String(n).padStart(2, "0")}
+                    </Text>
+                  </View>
+                  <Text variant="menuItem">
+                    {
+                      STORY_POINT_SCALE[
+                        complexityScale.findIndex((i) => i === n)
+                      ]
+                    }
                   </Text>
-                </View>
-                <Text variant="menuItem">
-                  {STORY_POINT_SCALE[complexityScale.findIndex((i) => i === n)]}
-                </Text>
-              </MenuItem>
-            ),
-          })),
-          task.storyPoints && { divider: true },
-          task.storyPoints && {
-            renderer: () => (
-              <MenuItem
-                onPress={() => {
-                  updateTask("storyPoints", null);
-                  menuRef.current?.close();
-                }}
-              >
-                <View
-                  style={{
-                    width: 30,
-                    height: 30,
-                    backgroundColor: addHslAlpha(theme[11], 0.1),
-                    borderRadius: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
+                </MenuItem>
+              ),
+            })),
+            task.storyPoints && { divider: true },
+            task.storyPoints && {
+              renderer: () => (
+                <MenuItem
+                  onPress={() => {
+                    updateTask("storyPoints", null);
+                    menuRef.current?.close();
                   }}
                 >
-                  <Icon style={{ color: theme[11] }}>remove</Icon>
-                </View>
-                <Text variant="menuItem">Clear</Text>
-              </MenuItem>
-            ),
-          },
-        ] as any
-      }
-      trigger={
-        <Chip
-          disabled={isReadOnly}
-          icon="exercise"
-          label={
-            STORY_POINT_SCALE[
-              complexityScale.findIndex((i) => i === task.storyPoints)
-            ]
-          }
-          style={{
-            borderRadius: 10,
-            borderWidth: 1,
-          }}
-          outlined
-        />
-      }
-    />
+                  <View
+                    style={{
+                      width: 30,
+                      height: 30,
+                      backgroundColor: addHslAlpha(theme[11], 0.1),
+                      borderRadius: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Icon style={{ color: theme[11] }}>remove</Icon>
+                  </View>
+                  <Text variant="menuItem">Clear</Text>
+                </MenuItem>
+              ),
+            },
+          ] as any
+        }
+        trigger={
+          <Chip
+            disabled={isReadOnly}
+            icon="exercise"
+            label={
+              STORY_POINT_SCALE[
+                complexityScale.findIndex((i) => i === task.storyPoints)
+              ]
+            }
+            style={{
+              borderRadius: 10,
+              borderWidth: 1,
+            }}
+            outlined
+          />
+        }
+      />
+    )
   );
 }
 
