@@ -1,5 +1,4 @@
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { router } from "expo-router";
 
 export const COLLECTION_VIEWS = {
   list: {
@@ -91,15 +90,6 @@ export const paletteItems = (
               },
             }))
           : [{}]),
-        {
-          key: "create-collection",
-          label: "Create",
-          icon: "add",
-          slug: "",
-          onPress: () => {
-            router.push("/collections/create");
-          },
-        },
       ],
     },
     sharedCollections &&

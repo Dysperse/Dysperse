@@ -13,13 +13,9 @@ export const useTabMetadata = (slug: string, tab: any) => {
           tab.collection ? undefined : "All tasks",
         ].filter(Boolean),
     },
-    "/[tab]/spaces/": {
-      icon: "tag",
-      name: () => ["Space"],
-    },
-    "/[tab]/labels/[id]": {
+    "/[tab]/labels/": {
+      name: (params) => [tab.collection ? "-" : undefined, tab].filter(Boolean),
       icon: "label",
-      name: () => [],
     },
     "/[tab]/welcome": {
       icon: "kid_star",

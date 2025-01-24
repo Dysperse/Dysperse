@@ -1,3 +1,4 @@
+import { CreateCollectionModal } from "@/components/collections/create";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
 import { useSession } from "@/context/AuthProvider";
@@ -218,15 +219,16 @@ const Collections = () => {
                 autoFocus={breakpoints.md}
               />
               {!isReached && (
-                <Button
-                  variant="filled"
-                  large
-                  containerStyle={{ marginTop: 10 }}
-                  onPress={() => router.push("/collections/create")}
-                >
-                  <Icon bold>add</Icon>
-                  <ButtonText weight={900}>New</ButtonText>
-                </Button>
+                <CreateCollectionModal>
+                  <Button
+                    variant="filled"
+                    large
+                    containerStyle={{ marginTop: 10 }}
+                  >
+                    <Icon bold>add</Icon>
+                    <ButtonText weight={900}>New</ButtonText>
+                  </Button>
+                </CreateCollectionModal>
               )}
               <FlashList
                 refreshControl={

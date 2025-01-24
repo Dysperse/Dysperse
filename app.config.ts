@@ -1,5 +1,8 @@
 import { withSentry } from "@sentry/react-native/expo";
+import themes from "components/themes.json";
 import { ConfigContext, ExpoConfig } from "expo/config";
+import * as themeColors from "themes";
+import { hslToHex } from "./helpers/hslToHex";
 
 const IS_DEV = process.env.APP_VARIANT === "development";
 
@@ -75,6 +78,44 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         display: "standalone",
       },
       plugins: [
+        [
+          "expo-alternate-app-icons",
+          [
+            ...Object.entries(themes).map(([key, value]) => ({
+              name: `${value.name}Dark`,
+              ios: `./assets/icons/${key}Dark.png`,
+              android: {
+                foregroundImage: `./assets/icons/${key}Dark.png`,
+                backgroundColor: hslToHex(
+                  ...(themeColors[`${key}Dark`][`${key}8`]
+                    .replace("hsl", "")
+                    .replace("(", "")
+                    .replace(")", "")
+                    .replaceAll("%", "")
+                    .split(",")
+                    .map(Number) as [number, number, number])
+                ),
+              },
+            })),
+
+            ...Object.entries(themes).map(([key, value]) => ({
+              name: `${value.name}Light`,
+              ios: `./assets/icons/${key}Light.png`,
+              android: {
+                foregroundImage: `./assets/icons/${key}Light.png`,
+                backgroundColor: hslToHex(
+                  ...(themeColors[key][`${key}8`]
+                    .replace("hsl", "")
+                    .replace("(", "")
+                    .replace(")", "")
+                    .replaceAll("%", "")
+                    .split(",")
+                    .map(Number) as [number, number, number])
+                ),
+              },
+            })),
+          ],
+        ],
         "react-native-edge-to-edge",
         [
           "expo-splash-screen",
@@ -175,3 +216,4 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       organization: "dysperse",
     }
   );
+

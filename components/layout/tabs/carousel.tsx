@@ -6,6 +6,7 @@ import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import RefreshControl from "@/ui/RefreshControl";
 import CircularSkeleton from "@/ui/Skeleton/circular";
 import LinearSkeleton from "@/ui/Skeleton/linear";
 import Spinner from "@/ui/Spinner";
@@ -300,10 +301,14 @@ function OpenTabsList() {
       }}
     >
       {data && Array.isArray(data) && data.length > 0 ? (
-        <>
+        <View style={{ flex: 1 }}>
           <FlatList
             aria-label="Sidebar"
+            refreshControl={
+              <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+            }
             data={data}
+            getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
             renderItem={({ item }) => (
               <View style={{ padding: 1 }}>
                 <Tab
@@ -319,7 +324,7 @@ function OpenTabsList() {
           {Platform.OS === "web" && <WebPWAInstallButton />}
           <SpaceStorageAlert />
           {footer}
-        </>
+        </View>
       ) : (
         <View
           style={{

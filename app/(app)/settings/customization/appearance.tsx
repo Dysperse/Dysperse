@@ -11,37 +11,10 @@ import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
+import { setAlternateAppIcon } from "expo-alternate-app-icons";
 import { Image } from "expo-image";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Toast from "react-native-toast-message";
-
-const styles = StyleSheet.create({
-  card: {
-    padding: 20,
-    borderRadius: 20,
-    borderWidth: 1,
-    marginBottom: 20,
-  },
-  button: { height: 80 },
-  themeCardIcon: { textAlign: "center" },
-  cardTitle: { fontSize: 30 },
-  cardDescription: { opacity: 0.5 },
-});
-
-const themePickerStyles = StyleSheet.create({
-  title: { textAlign: "center", fontSize: 50, lineHeight: 55, marginBottom: 5 },
-  description: { opacity: 0.6, textAlign: "center" },
-  container: { alignItems: "center", height: "100%" },
-  icon: { marginTop: "auto" },
-  button: { height: 80, width: "100%" },
-  hexagonList: { marginTop: "auto" },
-  buttonText: { fontSize: 20 },
-  hexagonButton: {
-    alignItems: "center",
-    paddingHorizontal: 10,
-    justifyContent: "center",
-  },
-});
 
 function ThemedSlide({
   theme,
@@ -57,6 +30,7 @@ function ThemedSlide({
 
   const handleSelect = async () => {
     try {
+      setAlternateAppIcon(`${theme}${isDark ? "Dark" : "Light"}`);
       sendApiRequest(
         sessionToken,
         "PUT",

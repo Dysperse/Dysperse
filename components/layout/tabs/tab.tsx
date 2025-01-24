@@ -4,21 +4,17 @@ import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
-import {
-  InteractionManager,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { InteractionManager, Platform, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useTabMetadata } from "./useTabMetadata";
 
@@ -245,8 +241,7 @@ function Tab({
         Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
       ]}
     >
-      <Pressable
-        android_ripple={{ color: theme[6] }}
+      <Button
         {...(Platform.OS === "web" && {
           onAuxClick: (e) => {
             if (e.button === 1) {
@@ -257,35 +252,36 @@ function Tab({
         })}
         onLongPress={onLongPress}
         disabled={disabled}
-        // onMouseDown={handlePress}
+        variant={selected ? "filled" : "text"}
         onPress={handlePress}
-        style={({ pressed, hovered }) => [
+        height={50}
+        backgroundColors={
+          selected
+            ? {
+                default: theme[3],
+                pressed: theme[4],
+                hovered: theme[5],
+              }
+            : {
+                default: addHslAlpha(theme[3], 0),
+                pressed: theme[3],
+                hovered: theme[4],
+              }
+        }
+        style={[
           styles.button,
           {
             paddingHorizontal: isList ? 13 : breakpoints.md ? 10 : 10,
             paddingRight: selected ? 30 : undefined,
-            borderRadius: 15,
-            height: breakpoints.md ? 50 : 50,
-            backgroundColor:
-              selected || pressed ? theme[4] : hovered ? theme[3] : undefined,
-            ...(Platform.OS === "web" &&
-              selected && {
-                shadowColor: theme[1],
-                shadowOffset: {
-                  width: 0,
-                  height: 1,
-                },
-                shadowRadius: 1,
-                shadowOpacity: 1,
-                zIndex: 199,
-              }),
           },
         ]}
+        containerStyle={{ borderRadius: 15 }}
       >
         {tabContent}
-      </Pressable>
+      </Button>
     </View>
   );
 }
 
 export default React.memo(Tab);
+
