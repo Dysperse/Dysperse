@@ -1,4 +1,5 @@
 import ChipInput from "@/components/ChipInput";
+import { LocationPickerModal } from "@/components/collections/views/map";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
@@ -1224,29 +1225,36 @@ function SpeechRecognition({ setValue, handleSubmitButtonClick }) {
 
   return (
     <IconButton
-      variant="filled"
+      variant="outlined"
       icon="mic"
       size={breakpoints.md ? 50 : 35}
       iconProps={{ filled: recognizing }}
       iconStyle={{
         color: recognizing ? red[2] : theme[11],
       }}
-      backgroundColors={{
-        default: addHslAlpha(
-          recognizing ? red[9] : theme[9],
-          recognizing ? 0.9 : 0.15
-        ),
-        hovered: addHslAlpha(
-          recognizing ? red[9] : theme[9],
-          recognizing ? 0.9 : 0.25
-        ),
-        pressed: addHslAlpha(
-          recognizing ? red[9] : theme[9],
-          recognizing ? 0.9 : 0.35
-        ),
-      }}
+      style={{ marginRight: "auto" }}
       onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
     />
+  );
+}
+
+function LocationButton({ watch, setValue }) {
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
+
+  return (
+    <LocationPickerModal>
+      <IconButton
+        variant="filled"
+        backgroundColors={{
+          default: addHslAlpha(theme[9], 0.15),
+          hovered: addHslAlpha(theme[9], 0.25),
+          pressed: addHslAlpha(theme[9], 0.35),
+        }}
+        icon="add_location_alt"
+        size={breakpoints.md ? 50 : 35}
+      />
+    </LocationPickerModal>
   );
 }
 
@@ -1425,9 +1433,15 @@ const BottomSheetContent = forwardRef(
               alignItems: "center",
             }}
           >
-            <CancelButton />
+            {/* <CancelButton /> */}
             <SpeechRecognition setValue={setValue} />
             <LabelButton
+              watch={watch}
+              setValue={setValue}
+              defaultValues={defaultValues}
+              colors={colors}
+            />
+            <LocationButton
               watch={watch}
               setValue={setValue}
               defaultValues={defaultValues}
@@ -1616,4 +1630,3 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
-
