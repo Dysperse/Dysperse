@@ -1,6 +1,6 @@
 import { withSentry } from "@sentry/react-native/expo";
 import { ConfigContext, ExpoConfig } from "expo/config";
-import * as themeColors from "./themes.js";
+// import * as themeColors from "./themes.js";
 
 export function hslToHex(h, s, l) {
   l /= 100;
@@ -131,15 +131,16 @@ export default ({ config }: ConfigContext): ExpoConfig =>
               ios: `./assets/icons/${key}Dark.png`,
               android: {
                 foregroundImage: `./assets/icons/${key}Dark.png`,
-                backgroundColor: hslToHex(
-                  ...(themeColors[`${key}Dark`][`${key}8`]
-                    .replace("hsl", "")
-                    .replace("(", "")
-                    .replace(")", "")
-                    .replaceAll("%", "")
-                    .split(",")
-                    .map(Number) as [number, number, number])
-                ),
+                // backgroundColor: hslToHex(
+                //   ...(themeColors[`${key}Dark`][`${key}8`]
+                //     .replace("hsl", "")
+                //     .replace("(", "")
+                //     .replace(")", "")
+                //     .replaceAll("%", "")
+                //     .split(",")
+                //     .map(Number) as [number, number, number])
+                // ),
+                backgroundColor: "#fff",
               },
             })),
 
@@ -148,15 +149,16 @@ export default ({ config }: ConfigContext): ExpoConfig =>
               ios: `./assets/icons/${key}Light.png`,
               android: {
                 foregroundImage: `./assets/icons/${key}Light.png`,
-                backgroundColor: hslToHex(
-                  ...(themeColors[key][`${key}8`]
-                    .replace("hsl", "")
-                    .replace("(", "")
-                    .replace(")", "")
-                    .replaceAll("%", "")
-                    .split(",")
-                    .map(Number) as [number, number, number])
-                ),
+                // backgroundColor: hslToHex(
+                //   ...(themeColors[key][`${key}8`]
+                //     .replace("hsl", "")
+                //     .replace("(", "")
+                //     .replace(")", "")
+                //     .replaceAll("%", "")
+                //     .split(",")
+                //     .map(Number) as [number, number, number])
+                // ),
+                backgroundColor: "#fff",
               },
             })),
           ],
