@@ -266,7 +266,8 @@ function PrioritySettings({ updateUserSettings }: { updateUserSettings: any }) {
       borderWidth: 1,
       borderColor: theme[5],
       backgroundColor: theme[pressed || selected ? 4 : hovered ? 3 : 2],
-      padding: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 15,
       borderRadius: 20,
       flex: 1,
     });
@@ -277,7 +278,7 @@ function PrioritySettings({ updateUserSettings }: { updateUserSettings: any }) {
         Priorities
       </Text>
       <Section>
-        <View style={{ flexDirection: "row", gap: 10, padding: 5 }}>
+        <View style={{ flexDirection: "row", gap: 10, padding: 2 }}>
           <Pressable style={cardStyle(state === "SIMPLE")}>
             <Text weight={900} style={{ fontSize: 20, marginBottom: 3 }}>
               Simple
