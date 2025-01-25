@@ -20,6 +20,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MenuButton } from "../home";
 
 function conditional(condition, main, fallback) {
@@ -170,12 +171,13 @@ export function forFade({ current, next }) {
 export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const insets = useSafeAreaInsets();
   const { height, width } = useWindowDimensions();
 
   return (
     <View
-      style={{
-        ...(Platform.OS === "web" &&
+      style={[
+        Platform.OS === "web" &&
           ({
             WebkitAppRegion: "no-drag",
             position: "fixed",
@@ -184,14 +186,16 @@ export default function Layout() {
             zIndex: 999999,
             width: "100%",
             height: "100%",
-          } as any)),
-      }}
+          } as any),
+      ]}
     >
       <View
-        style={{
-          height: "100%",
-          backgroundColor: theme[breakpoints.md ? 2 : 1],
-        }}
+        style={[
+          {
+            height: "100%",
+            backgroundColor: theme[breakpoints.md ? 2 : 1],
+          },
+        ]}
       >
         <EscapeSettings />
         <View
