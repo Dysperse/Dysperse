@@ -22,7 +22,7 @@ export function TaskShareButton() {
 
   const handleShare = useCallback(async () => {
     try {
-      updateTask("published", !task.published);
+      updateTask({ published: !task.published });
       if (!task.published) handleCopy();
       else Toast.show({ type: "success", text1: "Task sharing disabled" });
     } catch (e) {

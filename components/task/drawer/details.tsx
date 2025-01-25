@@ -26,9 +26,9 @@ import { useTaskDrawerContext } from "./context";
 
 function TaskRescheduleButton({ task, updateTask }) {
   const sheetRef = useRef(null);
-  const handleSelect = (t, n) => {
-    updateTask("start", dayjs(task.start).add(n, t).toISOString());
-  };
+  const handleSelect = (t, n) =>
+    updateTask({ start: dayjs(task.start).add(n, t).toISOString() });
+
   const isSameDay = task.start && dayjs().isSame(dayjs(task.start), "day");
 
   return (
@@ -146,13 +146,12 @@ function TaskNotificationsButton({ task, updateTask }) {
               .replace("d", " day"),
             selected: task.notifications.includes(n),
             callback: () =>
-              updateTask(
-                "notifications",
-                (task.notifications.includes(n)
+              updateTask({
+                notifications: (task.notifications.includes(n)
                   ? task.notifications.filter((i) => i !== n)
                   : [...task.notifications, n]
-                ).sort()
-              ),
+                ).sort(),
+              }),
           }))
           .map(({ text, selected, callback }) => (
             <ListItemButton key={text} onPress={callback}>
@@ -261,10 +260,11 @@ function SubtaskList() {
               item={t}
               onTaskUpdate={(newTask) => {
                 updateTask(
-                  "subtasks",
                   {
-                    ...task.subtasks,
-                    [t.id]: newTask,
+                    subtasks: {
+                      ...task.subtasks,
+                      [t.id]: newTask,
+                    },
                   },
                   false
                 );
@@ -305,6 +305,7 @@ function TaskDateMenu() {
 
   const addRecurrenceRef = useRef(null);
   const addDateRef = useRef(null);
+  const menuRef = useRef(null);
   const breakpoints = useResponsiveBreakpoints();
 
   return (
@@ -313,15 +314,20 @@ function TaskDateMenu() {
         <DatePicker
           value={{
             date: dayjs(task?.start).isValid() ? task?.start : null,
-            dateOnly: true,
-            end: null,
+            dateOnly: task?.dateOnly,
+            end: dayjs(task?.end).isValid() ? task?.end : null,
           }}
-          setValue={(k, v) => updateTask(k === "date" ? "start" : k, v)}
+          setValue={(t) =>
+            updateTask({
+              ...t,
+              ...(t.date && { start: t.date.toISOString() }),
+            })
+          }
           ref={addDateRef}
         />
         <RecurrencePicker
           value={recurrenceRule?.options}
-          setValue={(value) => updateTask("recurrenceRule", value)}
+          setValue={(value) => updateTask({ recurrenceRule: value })}
           ref={addRecurrenceRef}
         />
         <MenuPopover
@@ -353,6 +359,8 @@ function TaskDateMenu() {
               <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
             </Button>
           }
+          closeOnSelect
+          menuRef={menuRef}
           options={
             isReadOnly
               ? []
@@ -394,14 +402,14 @@ function TaskDateMenu() {
                   ...((!task.recurrenceRule &&
                     !task.start && [
                       {
-                        icon: "calendar_today",
-                        text: "Add date",
-                        callback: () => addDateRef.current.present(),
-                      },
-                      {
                         icon: "loop",
                         text: "Add recurrence",
                         callback: () => addRecurrenceRef.current.present(),
+                      },
+                      {
+                        icon: "calendar_today",
+                        text: "Add date",
+                        callback: () => addDateRef.current.present(),
                       },
                     ]) ||
                     []),
@@ -409,8 +417,7 @@ function TaskDateMenu() {
                     icon: "remove_circle",
                     text: "Remove",
                     callback: () => {
-                      updateTask("recurrenceRule", null);
-                      updateTask("start", null);
+                      updateTask({ recurrenceRule: null, start: null });
                     },
                   },
                 ]
@@ -526,7 +533,7 @@ function TaskLocationMenu() {
           icon: "remove_circle",
           text: "Remove",
           callback: () => {
-            updateTask("location", null);
+            updateTask({ location: null });
           },
         },
       ]}
@@ -538,10 +545,12 @@ function TaskLocationMenu() {
         defaultQuery={task.name.trim()}
         closeOnSelect
         onLocationSelect={(location) =>
-          updateTask("location", {
-            placeId: location.place_id,
-            name: location.display_name,
-            coordinates: [location.lat, location.lon],
+          updateTask({
+            location: {
+              placeId: location.place_id,
+              name: location.display_name,
+              coordinates: [location.lat, location.lon],
+            },
           })
         }
       >

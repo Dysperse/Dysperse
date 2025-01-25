@@ -82,11 +82,11 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
   const { forceClose } = useBottomSheet();
 
   const updateTask = useCallback(
-    async (key, value, sendRequest = true) => {
+    async (payload, sendRequest = true) => {
       const oldData = data;
       const newData = {
         ...data,
-        [key]: value,
+        ...payload,
       };
       mutate(newData, {
         revalidate: false,
@@ -101,7 +101,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
         {
           body: JSON.stringify({
             id,
-            [key]: value,
+            ...payload,
           }),
         }
       ).catch(() => {
@@ -311,3 +311,4 @@ export const TaskDrawer = forwardRef(function TaskDrawer(
     </>
   );
 });
+

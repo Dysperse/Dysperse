@@ -8,7 +8,7 @@ import {
 import convertTime from "convert-time";
 import dayjs, { Dayjs } from "dayjs";
 import { forwardRef, RefObject, useEffect, useRef, useState } from "react";
-import { Pressable, StyleProp, TextStyle, View } from "react-native";
+import { Platform, Pressable, StyleProp, TextStyle, View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -45,12 +45,11 @@ export const TimeInput = forwardRef(
           const n = e.nativeEvent.text.toLowerCase();
           if (convertTime(n)) {
             const [hours, minutes] = convertTime(n).split(":");
-            setDefaultValue(
-              valueKey,
-              dayjs(defaultValue)
+            setDefaultValue({
+              [valueKey]: dayjs(defaultValue)
                 .hour(parseInt(hours))
-                .minute(parseInt(minutes))
-            );
+                .minute(parseInt(minutes)),
+            });
             setValue(
               dayjs(defaultValue)
                 .hour(parseInt(hours))
@@ -95,10 +94,9 @@ function CalendarPreview({ value, setValue, view }) {
   }, [value]);
 
   const onCalendarDayPress = (date) =>
-    setValue(
-      view === "end" ? "end" : "date",
-      dayjs(fromDateId(date).toISOString())
-    );
+    setValue({
+      [view === "end" ? "end" : "date"]: dayjs(fromDateId(date).toISOString()),
+    });
 
   return (
     <View
@@ -200,7 +198,7 @@ function AllDaySwitch({ view, value, setValue }) {
   return !value?.date ? null : (
     <Button
       onPress={() => {
-        setValue("dateOnly", !value.dateOnly);
+        setValue({ dateOnly: !value.dateOnly });
         if (value.dateOnly) {
           setTimeout(() => {
             // ref.current.focus();
@@ -267,9 +265,12 @@ export const DatePicker = forwardRef(
                 opacity: !value?.date && !value?.end && value?.dateOnly ? 0 : 1,
               }}
               onPress={() => {
-                setValue("end", null);
-                setValue("date", null);
-                setValue("dateOnly", true);
+                setValue({
+                  date: null,
+                  end: null,
+                  dateOnly: true,
+                });
+                ref.current.forceClose();
               }}
             >
               <ButtonText>Clear</ButtonText>
@@ -298,7 +299,13 @@ export const DatePicker = forwardRef(
               onPress={() => ref.current.close()}
             />
           </View>
-          <View style={{ paddingTop: 10, gap: 10, minHeight: 410 }}>
+          <View
+            style={{
+              paddingTop: 10,
+              gap: 10,
+              minHeight: Platform.OS === "web" ? undefined : 410,
+            }}
+          >
             {value.date && (
               <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
                 <Button
@@ -320,7 +327,7 @@ export const DatePicker = forwardRef(
                   onPress={() => {
                     setView("end");
                     if (!value?.end || !dayjs(value?.end).isValid())
-                      setValue("end", dayjs(value?.date).add(1, "hour"));
+                      setValue({ end: dayjs(value?.date).add(1, "hour") });
                   }}
                 />
               </View>

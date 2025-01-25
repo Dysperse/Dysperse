@@ -125,13 +125,13 @@ function Saver({ updateTask }) {
   const { editor } = useCurrentEditor();
   const [debouncedSave] = useDebounce(async () => {
     const content = editor.getHTML();
-    updateTask("note", editor.isEmpty ? null : content);
+    updateTask({ note: editor.isEmpty ? null : content });
   }, 5000);
 
   useEffect(() => {
     const save = async () => {
       const content = editor.getHTML();
-      updateTask("note", editor.isEmpty ? null : content);
+      updateTask({ note: editor.isEmpty ? null : content });
     };
 
     window.addEventListener("blur", () => editor.commands.blur());

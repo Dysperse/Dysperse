@@ -45,7 +45,7 @@ export function TaskCompleteButton() {
               },
             ];
       }
-      updateTask("completionInstances", newArr, false);
+      updateTask({ completionInstances: newArr }, false);
 
       sendApiRequest(
         sessionToken,

@@ -1,6 +1,6 @@
 import { dysperseCalendarTheme } from "@/components/collections/navbar/AgendaCalendarMenu";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
 import dayjs from "dayjs";
 import { forwardRef, useEffect, useRef, useState } from "react";
@@ -397,6 +397,23 @@ function AtTime({ value, setValue, handleEdit }) {
   );
 }
 
+function Cancel({ setValue, style }) {
+  const { forceClose } = useBottomSheet();
+
+  return (
+    <Button
+      style={style}
+      dense
+      onPress={() => {
+        forceClose();
+        setTimeout(() => setValue(null), 100);
+      }}
+    >
+      <ButtonText>Cancel</ButtonText>
+    </Button>
+  );
+}
+
 export const RecurrencePicker = forwardRef(
   ({ value, setValue }: { value: any; setValue: any }, ref: any) => {
     const handleEdit = (key, newValue) => {
@@ -416,17 +433,12 @@ export const RecurrencePicker = forwardRef(
                 alignItems: "center",
               }}
             >
-              <Button
-                dense
+              <Cancel
                 style={{
                   opacity: value ? 1 : 0,
                 }}
-                onPress={() => {
-                  setValue(null);
-                }}
-              >
-                <ButtonText>Clear</ButtonText>
-              </Button>
+                setValue={setValue}
+              />
               <View style={{ flex: 1, justifyContent: "center" }}>
                 <Text
                   weight={800}

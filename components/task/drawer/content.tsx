@@ -98,13 +98,14 @@ function AISubtask({ task, updateTask }) {
         }
       );
       updateTask(
-        "subtasks",
         {
-          ...task.subtasks,
-          ...t.reduce((acc, curr) => {
-            acc[curr.id] = curr;
-            return acc;
-          }, {}),
+          subtasks: {
+            ...task.subtasks,
+            ...t.reduce((acc, curr) => {
+              acc[curr.id] = curr;
+              return acc;
+            }, {}),
+          },
         },
         false
       );
@@ -329,7 +330,7 @@ function TaskNameInput() {
         onBlur={() => {
           if (name === task.name) return;
           setName(name.replaceAll("\n", ""));
-          updateTask("name", name.replaceAll("\n", ""));
+          updateTask({ name: name.replaceAll("\n", "") });
         }}
         onChangeText={(text) => setName(text)}
         enterKeyHint="done"
@@ -377,7 +378,7 @@ function WorkloadChip() {
               renderer: () => (
                 <MenuItem
                   onPress={() => {
-                    updateTask("storyPoints", n);
+                    updateTask({ storyPoints: n });
                     menuRef.current?.close();
                   }}
                 >
@@ -418,7 +419,7 @@ function WorkloadChip() {
               renderer: () => (
                 <MenuItem
                   onPress={() => {
-                    updateTask("storyPoints", null);
+                    updateTask({ storyPoints: null });
                     menuRef.current?.close();
                   }}
                 >
@@ -562,7 +563,14 @@ function AICategorizer({ task, updateTask }) {
             </ListItemButton>
 
             <Button
-              onPress={() => updateTask(data)}
+              onPress={() =>
+                updateTask({
+                  label: data.label,
+                  pinned: data.pinned,
+                  storyPoints: data.storyPoints,
+                  storyPointReason: data.storyPointReason,
+                })
+              }
               text="Apply changes"
               variant="filled"
               bold
@@ -644,14 +652,14 @@ export function TaskDrawerContent({
       restDisplacementThreshold: 0.01,
       restSpeedThreshold: 2,
     });
-    updateTask("pinned", !task.pinned);
+    updateTask({ pinned: !task.pinned });
   }, [task.pinned, updateTask, rotate]);
 
   const handleDelete = useCallback(
     async (d) => {
       try {
         const t = typeof d === "boolean" ? d : !task.trash;
-        updateTask("trash", t);
+        updateTask({ trash: t });
         Toast.show({
           type: "success",
           text1: t ? "Task deleted!" : "Task restored!",
@@ -801,9 +809,14 @@ export function TaskDrawerContent({
             {task && !task.parentTaskId && (
               <LabelPicker
                 label={task.label}
-                setLabel={(e) => {
-                  updateTask("labelId", (e as any).id);
-                  updateTask("label", e, false);
+                setLabel={(e: any) => {
+                  updateTask(
+                    {
+                      labelId: e.id,
+                      label: e,
+                    },
+                    false
+                  );
                 }}
                 onClose={() => {}}
                 sheetProps={{ sheetRef: labelPickerRef }}
@@ -846,3 +859,4 @@ export function TaskDrawerContent({
     </>
   );
 }
+
