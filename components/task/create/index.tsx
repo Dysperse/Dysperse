@@ -143,11 +143,16 @@ function Footer({
   const location = watch("location");
   const parentTask = watch("parentTask");
 
+  const breakpoints = useResponsiveBreakpoints();
+  const { forceClose } = useBottomSheet();
   console.log("Footer -> parentTask", location);
 
   return (
     <View
       style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-end",
         paddingBottom:
           (date || recurrenceRule || label || location || collectionId) &&
           !parentTask
@@ -294,7 +299,7 @@ const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
                   value?.emoji ? (
                     <Emoji emoji={value?.emoji} />
                   ) : (
-                    <Icon>new_label</Icon>
+                    <Icon>tag</Icon>
                   )
                 }
                 style={({ pressed, hovered }) => ({
@@ -1090,7 +1095,7 @@ function LabelButton({ watch, colors, defaultValues, setValue }: any) {
       >
         <IconButton
           backgroundColors={colors}
-          icon="new_label"
+          icon="tag"
           size={breakpoints.md ? 50 : 35}
           variant="filled"
         />
@@ -1261,7 +1266,8 @@ function LocationButton({ watch, setValue }) {
             hovered: addHslAlpha(theme[9], 0.25),
             pressed: addHslAlpha(theme[9], 0.35),
           }}
-          icon="add_location_alt"
+          icon="near_me"
+          iconStyle={{ transform: [{ scale: 1.1 }] }}
           size={breakpoints.md ? 50 : 35}
         />
       </LocationPickerModal>
@@ -1444,7 +1450,6 @@ const BottomSheetContent = forwardRef(
               alignItems: "center",
             }}
           >
-            {/* <CancelButton /> */}
             <SpeechRecognition setValue={setValue} />
             <LabelButton
               watch={watch}
@@ -1641,3 +1646,4 @@ const CreateTask = forwardRef(
 );
 
 export default CreateTask;
+

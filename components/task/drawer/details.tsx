@@ -471,9 +471,22 @@ function TaskLocationMenu() {
         </ButtonText> */}
       </View>
       <View style={{ marginLeft: "auto", flexDirection: "row" }}>
-        {data.extratags?.phone && <IconButton icon="phone" />}
-        {data.extratags?.website && <IconButton icon="language" />}
-        <IconButton icon="open_in_new" />
+        {data.extratags?.phone && (
+          <IconButton
+            icon="phone"
+            onPress={() => Linking.openURL(`tel:${data.extratags?.phone}`)}
+          />
+        )}
+        {data.extratags?.website && (
+          <IconButton
+            icon="language"
+            onPress={() => Linking.openURL(data.extratags?.website)}
+          />
+        )}
+        <IconButton
+          icon="open_in_new"
+          onPress={() => handleLocationPress(session, task.location)}
+        />
       </View>
     </Button>
   ) : (
@@ -515,11 +528,6 @@ function TaskLocationMenu() {
           callback: () => {
             updateTask("location", null);
           },
-        },
-        {
-          icon: "open_in_new",
-          text: "Open in maps",
-          callback: () => handleLocationPress(session, task.location),
         },
       ]}
     />
@@ -568,3 +576,4 @@ export function TaskDetails() {
     </View>
   );
 }
+

@@ -112,7 +112,7 @@ export const paletteItems = (
       },
     {
       title: "Labels",
-      icon: "label",
+      icon: "tag",
       items:
         labels && Array.isArray(labels)
           ? labels.map((access) => ({

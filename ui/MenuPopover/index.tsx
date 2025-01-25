@@ -70,6 +70,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 5, borderRadius: 20, overflow: "hidden" },
 });
 
+const isFirefox =
+  Platform.OS === "web" && navigator.userAgent.includes("Firefox");
+
 export function MenuItem(
   props: PressableProps & {
     removeExtraStyles?: boolean;
@@ -208,8 +211,8 @@ function MenuPopover({
           <View
             style={{
               backgroundColor: addHslAlpha(
-                theme[Platform.OS === "android" ? 4 : 6],
-                Platform.OS === "android" ? 1 : 0.4
+                theme[Platform.OS === "android" || isFirefox ? 4 : 6],
+                Platform.OS === "android" || isFirefox ? 1 : 0.4
               ),
               borderRadius: 25,
               overflow: "hidden",
@@ -218,7 +221,7 @@ function MenuPopover({
             <BlurView
               tint={isDark ? "dark" : "light"}
               style={[styles.container]}
-              intensity={Platform.OS === "android" ? 0 : undefined}
+              intensity={Platform.OS === "android" || isFirefox ? 0 : undefined}
             >
               <ScrollView
                 bounces={false}
