@@ -9,6 +9,7 @@ import { SessionLoadingScreen } from "@/components/layout/loading";
 import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
+import { BadgingProvider } from "@/context/BadgingProvider";
 import { GlobalTaskContextProvider } from "@/context/globalTaskContext";
 import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
@@ -32,7 +33,6 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
 import * as NavigationBar from "expo-navigation-bar";
-import { setBadgeCountAsync } from "expo-notifications";
 import {
   Redirect,
   router,
@@ -59,7 +59,6 @@ import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
-import useSWR from "swr";
 import LoadingErrors from "../../components/layout/LoadingErrors";
 
 dayjs.extend(customParseFormat);
@@ -137,16 +136,6 @@ function LastStateRestore() {
       setCurrentPage();
     }
   }, []);
-
-  return null;
-}
-
-function BadgingService() {
-  const { data, mutate } = useSWR(["user/notifications/badge"]);
-
-  useEffect(() => {
-    if (data?.count) setBadgeCountAsync(data.count);
-  }, [data]);
 
   return null;
 }
@@ -369,59 +358,60 @@ export default function AppLayout() {
                       <CommandPaletteProvider>
                         <ThemeProvider value={routerTheme}>
                           <FocusPanelProvider>
-                            <View
-                              style={[
-                                breakpoints.md
-                                  ? { flex: 1, height }
-                                  : { width: "100%" },
-                              ]}
-                            >
-                              <LoadingErrors />
-                              <NotificationsModal />
-                              <BadgingService />
-                              <TabFriendModal />
-                              {breakpoints.md ? (
-                                <DesktopLayout>{content}</DesktopLayout>
-                              ) : (
-                                <DrawerLayout
-                                  ref={sidebarRef}
-                                  onDrawerOpen={() => Keyboard.dismiss()}
-                                  useNativeAnimations={false}
-                                  drawerLockMode={
-                                    pathname.includes(
-                                      "everything/collections/"
-                                    ) ||
-                                    pathname.includes("/customize") ||
-                                    pathname.includes("friends") ||
-                                    pathname.includes("insights") ||
-                                    pathname.includes("everything/labels/") ||
-                                    (pathname.includes("/map") &&
-                                      Platform.OS !== "ios") ||
-                                    (pathname.includes("/plan") &&
-                                      !pathname.includes("/planner")) ||
-                                    pathname.includes("open") ||
-                                    (pathname.includes("collections") &&
-                                      (pathname.includes("/search") ||
-                                        pathname.includes("/reorder") ||
-                                        pathname.includes("/share")))
-                                      ? "locked-closed"
-                                      : "unlocked"
-                                  }
-                                  drawerPosition="left"
-                                  drawerType="back"
-                                  overlayColor="transparent"
-                                  drawerWidth={
-                                    pathname.includes("/everything")
-                                      ? SECONDARY_SIDEBAR_WIDTH
-                                      : ORIGINAL_SIDEBAR_WIDTH
-                                  }
-                                  edgeWidth={sidebarWidth}
-                                  renderNavigationView={renderNavigationView}
-                                >
-                                  {content}
-                                </DrawerLayout>
-                              )}
-                            </View>
+                            <BadgingProvider>
+                              <View
+                                style={[
+                                  breakpoints.md
+                                    ? { flex: 1, height }
+                                    : { width: "100%" },
+                                ]}
+                              >
+                                <LoadingErrors />
+                                <NotificationsModal />
+                                <TabFriendModal />
+                                {breakpoints.md ? (
+                                  <DesktopLayout>{content}</DesktopLayout>
+                                ) : (
+                                  <DrawerLayout
+                                    ref={sidebarRef}
+                                    onDrawerOpen={() => Keyboard.dismiss()}
+                                    useNativeAnimations={false}
+                                    drawerLockMode={
+                                      pathname.includes(
+                                        "everything/collections/"
+                                      ) ||
+                                      pathname.includes("/customize") ||
+                                      pathname.includes("friends") ||
+                                      pathname.includes("insights") ||
+                                      pathname.includes("everything/labels/") ||
+                                      (pathname.includes("/map") &&
+                                        Platform.OS !== "ios") ||
+                                      (pathname.includes("/plan") &&
+                                        !pathname.includes("/planner")) ||
+                                      pathname.includes("open") ||
+                                      (pathname.includes("collections") &&
+                                        (pathname.includes("/search") ||
+                                          pathname.includes("/reorder") ||
+                                          pathname.includes("/share")))
+                                        ? "locked-closed"
+                                        : "unlocked"
+                                    }
+                                    drawerPosition="left"
+                                    drawerType="back"
+                                    overlayColor="transparent"
+                                    drawerWidth={
+                                      pathname.includes("/everything")
+                                        ? SECONDARY_SIDEBAR_WIDTH
+                                        : ORIGINAL_SIDEBAR_WIDTH
+                                    }
+                                    edgeWidth={sidebarWidth}
+                                    renderNavigationView={renderNavigationView}
+                                  >
+                                    {content}
+                                  </DrawerLayout>
+                                )}
+                              </View>
+                            </BadgingProvider>
                           </FocusPanelProvider>
                         </ThemeProvider>
                       </CommandPaletteProvider>

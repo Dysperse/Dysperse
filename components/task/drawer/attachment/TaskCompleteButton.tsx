@@ -1,3 +1,4 @@
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
@@ -23,6 +24,7 @@ export function TaskCompleteButton() {
   const breakpoints = useResponsiveBreakpoints();
 
   const isCompleted = getTaskCompletionStatus(task, dateRange);
+  const badgingService = useBadgingService();
 
   const handlePress = async () => {
     try {
@@ -60,6 +62,7 @@ export function TaskCompleteButton() {
           }),
         }
       );
+      badgingService.mutate();
 
       if (animatedIndex.value === -1) {
         mutateList({

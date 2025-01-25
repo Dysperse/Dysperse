@@ -1,4 +1,5 @@
 import { useSession } from "@/context/AuthProvider";
+import { useBadgingService } from "@/context/BadgingProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import Icon from "@/ui/Icon";
@@ -30,6 +31,7 @@ function TaskCheckbox({
   const { session } = useSession();
 
   const isActive = useSharedValue(0);
+  const badgingService = useBadgingService();
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -118,6 +120,7 @@ function TaskCheckbox({
         }),
       }
     );
+    badgingService.current.mutate();
   };
 
   const disabled =
