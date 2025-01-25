@@ -303,10 +303,10 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           </Text>
         )}
         <TextField
-          variant="filled+outlined"
+          variant="filled"
           style={{
-            paddingVertical: 10,
-            paddingHorizontal: 15,
+            paddingVertical: 15,
+            paddingHorizontal: 20,
             marginTop: 0,
             fontSize: breakpoints.md ? 15 : 20,
             borderRadius: breakpoints.md ? 15 : 999,
@@ -414,3 +414,4 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
     </ScrollView>
   );
 }
+

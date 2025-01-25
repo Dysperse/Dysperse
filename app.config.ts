@@ -72,6 +72,7 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       },
       assetBundlePatterns: ["**/*"],
       ios: {
+        associatedDomains: ["webcredentials:app.dysperse.com"],
         bundleIdentifier: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
         supportsTablet: true,
         splash: {
@@ -185,6 +186,9 @@ export default ({ config }: ConfigContext): ExpoConfig =>
         [
           "expo-build-properties",
           {
+            ios: {
+              deploymentTarget: "15.1",
+            },
             android: {
               compileSdkVersion: 35,
             },

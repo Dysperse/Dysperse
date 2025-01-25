@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "QQ57RJ5UTD.com.dysperse.app",
+        "paths": [
+          "/*"
+        ]
+      }
+    ]
+  },
+  "activitycontinuation": {
+    "apps": [
+      "P6PV2R9443.com.dysperse.app"
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "P6PV2R9443.com.dysperse.app"
+    ]
+  }
+}
