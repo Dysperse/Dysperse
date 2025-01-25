@@ -32,6 +32,7 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import weekday from "dayjs/plugin/weekday";
 import * as NavigationBar from "expo-navigation-bar";
+import { setBadgeCountAsync } from "expo-notifications";
 import {
   Redirect,
   router,
@@ -58,6 +59,7 @@ import { MenuProvider } from "react-native-popup-menu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import "react-native-url-polyfill/auto";
+import useSWR from "swr";
 import LoadingErrors from "../../components/layout/LoadingErrors";
 
 dayjs.extend(customParseFormat);
@@ -135,6 +137,16 @@ function LastStateRestore() {
       setCurrentPage();
     }
   }, []);
+
+  return null;
+}
+
+function BadgingService() {
+  const { data, mutate } = useSWR(["user/notifications/badge"]);
+
+  useEffect(() => {
+    if (data?.count) setBadgeCountAsync(data.count);
+  }, [data]);
 
   return null;
 }
@@ -366,6 +378,7 @@ export default function AppLayout() {
                             >
                               <LoadingErrors />
                               <NotificationsModal />
+                              <BadgingService />
                               <TabFriendModal />
                               {breakpoints.md ? (
                                 <DesktopLayout>{content}</DesktopLayout>
