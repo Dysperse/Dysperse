@@ -129,13 +129,27 @@ function ThemedSlide({
 
 function AppIconSection() {
   const { session, mutate } = useUser();
+  console.log(Object.keys(themes));
 
   return (
     <>
       <Text style={settingStyles.heading}>App icon</Text>
+      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+        {Object.keys(themes).map((theme) => {
+          return (
+            <Image
+              key={theme}
+              style={{ width: 50, height: 50 }}
+              source={{
+                uri: `https://app.dysperse.com/icons/${theme}Light.png`,
+              }}
+            />
+          );
+        })}
+      </View>
       <ListItemButton
         onPress={() => {
-          setAlternateAppIcon("Testflight");
+          setAlternateAppIcon("testflight");
           mutate(
             (oldData) => ({
               ...oldData,
