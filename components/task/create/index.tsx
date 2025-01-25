@@ -756,13 +756,15 @@ function TaskNameInput({
                 [Platform.OS === "web" ? "onKeyDown" : "onKeyPress"]: (e) => {
                   console.log(e.key);
                   if (
+                    Platform.OS === "web" &&
                     !e.shiftKey &&
                     (e.key === "Enter" || e.nativeEvent.key === "Enter")
                   ) {
                     if (value.replaceAll("\n", "").trim())
                       handleSubmitButtonClick();
                   } else if (
-                    (e.shiftKey &&
+                    (Platform.OS === "web" &&
+                      e.shiftKey &&
                       (e.key === "Enter" || e.nativeEvent.key === "Enter")) ||
                     e.key === "Tab"
                   ) {
