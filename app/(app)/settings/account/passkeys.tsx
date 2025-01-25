@@ -16,7 +16,6 @@ import base64 from "@hexagon/base64";
 import { Base64URLString } from "@simplewebauthn/typescript-types";
 import dayjs from "dayjs";
 import * as Application from "expo-application";
-import { router } from "expo-router";
 import React, { useState } from "react";
 import { Platform, View } from "react-native";
 import * as passkey from "react-native-passkeys";
@@ -175,21 +174,13 @@ export default function App() {
 
   return (
     <SettingsScrollView>
-      <View style={{ flexDirection: "row", marginBottom: 20 }}>
-        <Button
-          variant="outlined"
-          text="Login security"
-          icon="arrow_back_ios"
-          onPress={() => router.replace("/settings/account")}
-          containerStyle={{ margin: breakpoints.md ? 0 : 20 }}
-        />
-      </View>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: breakpoints.md ? "row" : "column",
           justifyContent: "space-between",
           marginBottom: 20,
-          alignItems: "center",
+          alignItems: breakpoints.md ? "center" : "flex-start",
+          gap: 20,
         }}
       >
         <View>
@@ -219,7 +210,12 @@ export default function App() {
         )}
         {data ? (
           data.map((item) => (
-            <ListItemButton disabled variant="filled" key={item.id}>
+            <ListItemButton
+              disabled
+              variant="filled"
+              key={item.id}
+              style={{ marginBottom: 10 }}
+            >
               <ListItemText
                 primary={
                   <TextField
