@@ -1,5 +1,6 @@
 import { CreateEntityTrigger } from "@/components/collections/views/CreateEntityTrigger";
 import LabelPicker from "@/components/labels/picker";
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { ProfilePicture } from "@/ui/Avatar";
@@ -68,6 +69,7 @@ export default function ChromeExtension() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
   const [loading, setLoading] = useState(false);
+  const badgingService = useBadgingService();
 
   if (!params.pageData) {
     return <View style={{ flex: 1, backgroundColor: theme[1] }} />;
@@ -92,6 +94,7 @@ export default function ChromeExtension() {
           }),
         }
       );
+      badgingService.current.mutate();
       Toast.show({
         type: "success",
         text1: "Saved webpage!",
@@ -201,3 +204,4 @@ export default function ChromeExtension() {
     </Portal>
   );
 }
+

@@ -1,4 +1,5 @@
 import { taskInputStyles } from "@/components/signup/TaskCreator";
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -94,6 +95,8 @@ const TaskInput = ({ control }) => {
 const SubmitButton = ({ watch, handleSubmit }) => {
   const { sessionToken } = useUser();
   const name = watch("name");
+  const badgingService = useBadgingService();
+
   const onSubmit = (values) => {
     sendApiRequest(
       sessionToken,
@@ -110,7 +113,9 @@ const SubmitButton = ({ watch, handleSubmit }) => {
           collectionId: null,
         }),
       }
-    );
+    ).then(() => {
+      badgingService.current.mutate();
+    });
     router.push("/plan/2");
   };
   const theme = useColorTheme();

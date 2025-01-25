@@ -61,8 +61,9 @@ export function TaskCompleteButton() {
             ...(task.recurrenceRule && { iteration: dateRange }),
           }),
         }
-      );
-      badgingService.mutate();
+      ).then(() => {
+        badgingService.mutate();
+      });
 
       if (animatedIndex.value === -1) {
         mutateList({

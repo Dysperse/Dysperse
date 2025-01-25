@@ -3,6 +3,7 @@ import { LocationPickerModal } from "@/components/collections/views/map";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
@@ -1299,6 +1300,8 @@ const BottomSheetContent = forwardRef(
     const submitRef = useRef(null);
     const menuRef = useRef<BottomSheetModal>(null);
     const labelMenuRef = useRef<BottomSheetModal>(null);
+    const badgingService = useBadgingService();
+
     const descriptionRef = useRef(null);
     const theme = useColorTheme();
     const { control, handleSubmit, reset, watch, setValue } = useForm({
@@ -1349,7 +1352,8 @@ const BottomSheetContent = forwardRef(
           }
         )
           .then((e) => mutateList(e))
-          .then((e) => console.log(e));
+          .then(() => badgingService.current.mutate());
+
         reset(defaultValues);
 
         Toast.show({
