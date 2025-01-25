@@ -419,10 +419,9 @@ function NotificationPreferences({ data, mutate }) {
     </ListItemButton>
   );
 }
-function AppBadging({ settings }) {
+function AppBadging({ notificationData, mutateSettings }) {
   const { session } = useSession();
-  const { data, mutate, error } = useSWR(["space/collections"]);
-
+  const { data, error } = useSWR(["space/collections"]);
   return error ? (
     <ErrorAlert />
   ) : (
@@ -435,22 +434,29 @@ function AppBadging({ settings }) {
             onPress={() => {
               sendApiRequest(session, "PATCH", "user/notifications", {
                 collectionId: collection.id,
-                operation: settings.badgedCollections?.includes(collection.id)
-                  ? "remove"
-                  : "add",
+                operation:
+                  notificationData.settings.badgedCollections?.includes(
+                    collection.id
+                  )
+                    ? "remove"
+                    : "add",
               });
-              mutate(
+              mutateSettings(
                 (oldData) => ({
                   ...oldData,
                   settings: {
                     ...oldData.settings,
-                    badgedCollections: settings.badgedCollections?.includes(
-                      collection.id
-                    )
-                      ? oldData.settings.badgedCollections.filter(
-                          (id) => id !== collection.id
-                        )
-                      : [...oldData.settings.badgedCollections, collection.id],
+                    badgedCollections:
+                      notificationData.settings.badgedCollections?.includes(
+                        collection.id
+                      )
+                        ? oldData.settings.badgedCollections.filter(
+                            (id) => id !== collection.id
+                          )
+                        : [
+                            ...oldData.settings.badgedCollections,
+                            collection.id,
+                          ],
                   },
                 }),
                 { revalidate: false }
@@ -459,11 +465,22 @@ function AppBadging({ settings }) {
           >
             <Emoji emoji={collection.emoji} />
             <ListItemText primary={collection.name} />
-            <Icon>
-              toggle_
-              {settings.badgedCollections?.includes(collection.id)
-                ? "on"
-                : "off"}
+            <Icon
+              size={50}
+              style={{
+                marginVertical: -10,
+                opacity: notificationData.settings.badgedCollections?.includes(
+                  collection.id
+                )
+                  ? 1
+                  : 0.4,
+              }}
+            >
+              {notificationData.settings.badgedCollections?.includes(
+                collection.id
+              )
+                ? "toggle_on"
+                : "toggle_off"}
             </Icon>
           </ListItemButton>
         ))}
@@ -583,7 +600,7 @@ export default function Page() {
           ))}
         </View>
       ))}
-      <AppBadging settings={data} />
+      <AppBadging notificationData={data} mutateSettings={mutate} />
       <View style={{ height: 80 }} />
     </SettingsScrollView>
   );
