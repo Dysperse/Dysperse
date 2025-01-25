@@ -106,8 +106,8 @@ export default function ChromeExtension() {
               onOpen={() => Toast.hide()}
               defaultCollection={task.collectionId}
               disabled={Boolean(task.label?.integrationParams)}
-              setLabel={(label) => {
-                sendApiRequest(
+              setLabel={async (label) => {
+                await sendApiRequest(
                   sessionToken,
                   "PUT",
                   "space/entity",
@@ -119,6 +119,7 @@ export default function ChromeExtension() {
                     }),
                   }
                 );
+                badgingService.current.mutate();
               }}
             >
               <IconButton

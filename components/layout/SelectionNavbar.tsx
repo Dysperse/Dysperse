@@ -1,5 +1,6 @@
 import LabelPicker from "@/components/labels/picker";
 import { useSession } from "@/context/AuthProvider";
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useSelectionContext } from "@/context/SelectionContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -100,6 +101,7 @@ function Actions({ setIsLoading }) {
     }),
     [blue]
   );
+  const badgingService = useBadgingService();
 
   const handleSelect = useCallback(
     async (t, shouldClear = false) => {
@@ -114,6 +116,7 @@ function Actions({ setIsLoading }) {
             body: JSON.stringify({ id: selection, ...t }),
           }
         );
+        badgingService.current.mutate();
         await mutate(() => true);
         if (shouldClear) setSelection([]);
       } catch (e) {
@@ -280,3 +283,4 @@ const SelectionNavbar = memo(function SelectionNavbar() {
 });
 
 export default SelectionNavbar;
+

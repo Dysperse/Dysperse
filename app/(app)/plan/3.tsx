@@ -8,6 +8,7 @@ import TaskDatePicker from "@/components/task/create/TaskDatePicker";
 import { TaskDrawer } from "@/components/task/drawer";
 import { normalizeRecurrenceRuleObject } from "@/components/task/drawer/details";
 import { STORY_POINT_SCALE } from "@/constants/workload";
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -100,6 +101,7 @@ function CurrentTaskFooter({
 }) {
   const { sessionToken } = useUser();
   const theme = useColorTheme();
+  const badgingService = useBadgingService();
 
   const handleEdit = async (key, value) => {
     onTaskUpdate({ ...task, [key]: value });
@@ -122,6 +124,7 @@ function CurrentTaskFooter({
         text1: "Something went wrong. Please try again later.",
       });
     });
+    badgingService.current.mutate();
   };
 
   const handleNext = () => {
