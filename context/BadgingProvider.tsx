@@ -1,5 +1,6 @@
 import { setBadgeCountAsync } from "expo-notifications";
 import React, { createContext, useContext, useEffect, useRef } from "react";
+import { Platform } from "react-native";
 import useSWR from "swr";
 
 const BadgingContext = createContext(null);
@@ -13,7 +14,10 @@ export const BadgingProvider = ({
   const { data, mutate } = useSWR(["user/notifications/badge"]);
 
   useEffect(() => {
-    if (data?.count) setBadgeCountAsync(data.count);
+    if (data?.count) {
+      if (Platform.OS === "web") (Navigator as any).setAppBadge(data.count);
+      else setBadgeCountAsync(data.count);
+    }
   }, [data]);
 
   const badgingRef = useRef({
