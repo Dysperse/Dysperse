@@ -1,3 +1,4 @@
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -80,6 +81,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
 
   const theme = useColorTheme();
   const { forceClose } = useBottomSheet();
+  const badgingService = useBadgingService();
 
   const updateTask = useCallback(
     async (payload, sendRequest = true) => {
@@ -92,6 +94,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
         revalidate: false,
         populateCache: newData,
       });
+
       if (!sendRequest) return;
       await sendApiRequest(
         sessionToken,
@@ -105,6 +108,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
           }),
         }
       ).catch(() => {
+        badgingService.current.mutate();
         mutate(oldData, false);
         Toast.show({
           type: "error",
@@ -112,7 +116,7 @@ const TaskDrawerWrapper = forwardRef(function TaskDrawerWrapper(
         });
       });
     },
-    [data, mutate, id, sessionToken]
+    [data, mutate, id, sessionToken, badgingService]
   );
 
   return (
