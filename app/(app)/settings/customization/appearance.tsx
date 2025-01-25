@@ -121,12 +121,6 @@ function ThemedSlide({
           >
             {themeData.name}
           </Text>
-          <Text
-            style={{ fontSize: 13, textAlign: "center", opacity: 0.5 }}
-            weight={500}
-          >
-            {themeData.description}
-          </Text>
         </Button>
       </ColorThemeProvider>
     </View>

@@ -314,43 +314,42 @@ function ProfileBanner() {
           height: 140,
           marginBottom: 20,
         }}
-      >
-        <View style={{ top: 80, position: "absolute", left: 30 }}>
-          <ProfilePicture
-            name={session?.user?.profile?.name || "--"}
-            image={session?.user?.profile?.picture}
-            size={90}
-          />
-          {editing && (
-            <View
-              style={{
-                backgroundColor: addHslAlpha(theme[12], 0.8),
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                borderRadius: 99,
-                alignItems: "center",
-                justifyContent: "center",
-                bottom: 0,
-              }}
-            >
-              {loading ? (
-                <Spinner color={theme[1]} />
-              ) : (
-                <IconButton
-                  onPress={() =>
-                    pickImageAsync(setLoading, (e) => onChange("picture", e))
-                  }
-                  icon="upload"
-                  iconStyle={{ color: theme[1] }}
-                  iconProps={{ bold: true }}
-                />
-              )}
-            </View>
-          )}
-        </View>
-      </LinearGradient>
+      ></LinearGradient>
+      <View style={{ top: 80, position: "absolute", left: 30, zIndex: 99 }}>
+        <ProfilePicture
+          name={session?.user?.profile?.name || "--"}
+          image={session?.user?.profile?.picture}
+          size={90}
+        />
+        {editing && (
+          <View
+            style={{
+              backgroundColor: addHslAlpha(theme[12], 0.8),
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              borderRadius: 99,
+              alignItems: "center",
+              justifyContent: "center",
+              bottom: 0,
+            }}
+          >
+            {loading ? (
+              <Spinner color={theme[1]} />
+            ) : (
+              <IconButton
+                onPress={() =>
+                  pickImageAsync(setLoading, (e) => onChange("picture", e))
+                }
+                icon="upload"
+                iconStyle={{ color: theme[1] }}
+                iconProps={{ bold: true }}
+              />
+            )}
+          </View>
+        )}
+      </View>
       <View
         style={{
           paddingHorizontal: 30,
