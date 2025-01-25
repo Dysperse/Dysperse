@@ -3,6 +3,7 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
+import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -18,6 +19,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { Section } from "../tasks";
 
 const type = ["Unknown", "Phone", "Tablet", "Desktop", "TV"];
 const icons = [
@@ -417,7 +419,58 @@ function NotificationPreferences({ data, mutate }) {
     </ListItemButton>
   );
 }
+function AppBadging({ settings }) {
+  const { session } = useSession();
+  const { data, mutate, error } = useSWR(["space/collections"]);
 
+  return error ? (
+    <ErrorAlert />
+  ) : (
+    <>
+      <Text style={settingStyles.heading}>App badging</Text>
+      <Section>
+        {data.map((collection) => (
+          <ListItemButton
+            key={collection.id}
+            onPress={() => {
+              sendApiRequest(session, "PATCH", "user/notifications", {
+                collectionId: collection.id,
+                operation: settings.badgedCollections?.includes(collection.id)
+                  ? "remove"
+                  : "add",
+              });
+              mutate(
+                (oldData) => ({
+                  ...oldData,
+                  settings: {
+                    ...oldData.settings,
+                    badgedCollections: settings.badgedCollections?.includes(
+                      collection.id
+                    )
+                      ? oldData.settings.badgedCollections.filter(
+                          (id) => id !== collection.id
+                        )
+                      : [...oldData.settings.badgedCollections, collection.id],
+                  },
+                }),
+                { revalidate: false }
+              );
+            }}
+          >
+            <Emoji emoji={collection.emoji} />
+            <ListItemText primary={collection.name} />
+            <Icon>
+              toggle_
+              {settings.badgedCollections?.includes(collection.id)
+                ? "on"
+                : "off"}
+            </Icon>
+          </ListItemButton>
+        ))}
+      </Section>
+    </>
+  );
+}
 export default function Page() {
   const { session } = useSession();
   const breakpoints = useResponsiveBreakpoints();
@@ -530,6 +583,8 @@ export default function Page() {
           ))}
         </View>
       ))}
+      <AppBadging settings={data} />
+      <View style={{ height: 80 }} />
     </SettingsScrollView>
   );
 }

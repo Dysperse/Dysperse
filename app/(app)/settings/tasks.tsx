@@ -20,7 +20,7 @@ import { Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
-function Section({ children }: any) {
+export function Section({ children }: any) {
   const theme = useColorTheme();
   return (
     <View
