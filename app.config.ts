@@ -162,6 +162,15 @@ export default ({ config }: ConfigContext): ExpoConfig =>
                 backgroundColor: "#fff",
               },
             })),
+
+            {
+              name: "testflight",
+              ios: "./assets/icons/testflight.png",
+              android: {
+                foregroundImage: "./assets/icons/testflight.png",
+                backgroundColor: "#fff",
+              },
+            },
           ],
         ],
         "react-native-edge-to-edge",

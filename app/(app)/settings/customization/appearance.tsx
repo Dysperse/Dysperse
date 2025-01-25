@@ -127,6 +127,38 @@ function ThemedSlide({
   );
 }
 
+function AppIconSection() {
+  const { session, mutate } = useUser();
+
+  return (
+    <>
+      <Text style={settingStyles.heading}>App icon</Text>
+      <ListItemButton
+        onPress={() => {
+          setAlternateAppIcon("Testflight");
+          mutate(
+            (oldData) => ({
+              ...oldData,
+              user: {
+                ...oldData.user,
+                profile: { ...oldData.user.profile, theme: null },
+              },
+            }),
+            {
+              revalidate: false,
+            }
+          );
+        }}
+        variant="outlined"
+        style={{ marginBottom: 7 }}
+      >
+        <ListItemText primary="Default" />
+        <Icon filled={!session?.user?.profile?.theme}>check_circle</Icon>
+      </ListItemButton>
+    </>
+  );
+}
+
 export default function Page() {
   const theme = useColorTheme();
   const { session, mutate, sessionToken } = useUser();
@@ -206,6 +238,7 @@ export default function Page() {
           <ThemedSlide key={theme} theme={theme} themeData={themes[theme]} />
         ))}
       </View>
+      <AppIconSection />
     </SettingsScrollView>
   );
 }
