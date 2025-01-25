@@ -15,8 +15,11 @@ export const BadgingProvider = ({
 
   useEffect(() => {
     if (data?.count) {
-      if (Platform.OS === "web") (Navigator as any).setAppBadge(data.count);
-      else setBadgeCountAsync(data.count);
+      if (Platform.OS === "web" && "setAppBadge" in Navigator) {
+        (Navigator as any).setAppBadge(data.count);
+      } else if (Platform.OS !== "web") {
+        setBadgeCountAsync(data.count);
+      }
     }
   }, [data]);
 
