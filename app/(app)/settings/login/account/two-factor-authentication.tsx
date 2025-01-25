@@ -84,15 +84,6 @@ export default function Page() {
 
   return (
     <SettingsScrollView>
-      <View style={{ flexDirection: "row" }}>
-        <Button
-          variant="outlined"
-          text="Login security"
-          icon="arrow_back_ios"
-          onPress={() => router.replace("/settings/account")}
-          containerStyle={{ margin: breakpoints.md ? 0 : 20 }}
-        />
-      </View>
       {!data ? (
         <View
           style={{
@@ -173,6 +164,7 @@ export default function Page() {
               style={{
                 flexDirection: "column",
                 gap: 10,
+                width: breakpoints.md ? undefined : "100%",
               }}
             >
               <Controller
@@ -206,6 +198,7 @@ export default function Page() {
                   gap: 20,
                   borderRadius: 20,
                   borderWidth: 1,
+                  width: "100%",
                   borderColor: theme[5],
                 }}
               >
