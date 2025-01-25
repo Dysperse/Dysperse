@@ -24,7 +24,7 @@ import CreateTask from "../create";
 import { TaskNote } from "./TaskNote";
 import { useTaskDrawerContext } from "./context";
 
-function TaskRescheduleButton({ task, updateTask }) {
+function TaskRescheduleButton({ task, updateTask, menuRef }) {
   const sheetRef = useRef(null);
   const handleSelect = (t, n) =>
     updateTask({ start: dayjs(task.start).add(n, t).toISOString() });
@@ -33,7 +33,12 @@ function TaskRescheduleButton({ task, updateTask }) {
 
   return (
     <>
-      <MenuItem onPress={() => sheetRef.current.present()}>
+      <MenuItem
+        onPress={() => {
+          sheetRef.current.present();
+          menuRef.current.close();
+        }}
+      >
         <Icon>dark_mode</Icon>
       </MenuItem>
       <Modal
@@ -371,6 +376,7 @@ function TaskDateMenu() {
                         <View style={{ flexDirection: "row", gap: 10 }}>
                           <MenuItem
                             onPress={() => {
+                              menuRef.current.close();
                               if (task.recurrenceRule)
                                 addRecurrenceRef.current.present();
                               else addDateRef.current.present();
@@ -380,12 +386,11 @@ function TaskDateMenu() {
                             <Icon>edit</Icon>
                             <Text variant="menuItem">Edit</Text>
                           </MenuItem>
-                          {
-                            <TaskRescheduleButton
-                              task={task}
-                              updateTask={updateTask}
-                            />
-                          }
+                          <TaskRescheduleButton
+                            menuRef={menuRef}
+                            task={task}
+                            updateTask={updateTask}
+                          />
                         </View>
                       ),
                     },
