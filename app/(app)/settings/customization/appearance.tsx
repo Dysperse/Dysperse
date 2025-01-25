@@ -129,27 +129,29 @@ function ThemedSlide({
 
 function AppIconSection() {
   const { session, mutate } = useUser();
-  console.log(Object.keys(themes));
 
   return (
     <>
       <Text style={settingStyles.heading}>App icon</Text>
-      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        {Object.keys(themes).map((theme) => {
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+        {[
+          ...Object.keys(themes).map((t) => `${t}Light`),
+          ...Object.keys(themes).map((t) => `${t}Dark`),
+          "testflight",
+        ].map((theme) => {
           return (
             <Image
+              onPress={() => setAlternateAppIcon(theme)}
               key={theme}
-              style={{ width: 50, height: 50 }}
-              source={{
-                uri: `https://app.dysperse.com/icons/${theme}Light.png`,
-              }}
+              style={{ width: 50, height: 50, borderRadius: 10 }}
+              source={{ uri: `https://assets.dysperse.com/icons/${theme}.png` }}
             />
           );
         })}
       </View>
       <ListItemButton
         onPress={() => {
-          setAlternateAppIcon("testflight");
+          setAlternateAppIcon(null);
           mutate(
             (oldData) => ({
               ...oldData,
@@ -166,7 +168,7 @@ function AppIconSection() {
         variant="outlined"
         style={{ marginBottom: 7 }}
       >
-        <ListItemText primary="Default" />
+        <ListItemText primary="Reset" />
         <Icon filled={!session?.user?.profile?.theme}>check_circle</Icon>
       </ListItemButton>
     </>
