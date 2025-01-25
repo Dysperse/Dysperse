@@ -305,8 +305,8 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
         <TextField
           variant="filled"
           style={{
-            paddingVertical: 15,
-            paddingHorizontal: 20,
+            paddingVertical: breakpoints.md ? 10 : 15,
+            paddingHorizontal: breakpoints.md ? 15 : 20,
             marginTop: 0,
             fontSize: breakpoints.md ? 15 : 20,
             borderRadius: breakpoints.md ? 15 : 999,
