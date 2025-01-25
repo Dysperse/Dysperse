@@ -314,7 +314,7 @@ function ProfileBanner() {
           height: 140,
           marginBottom: 20,
         }}
-      ></LinearGradient>
+      />
       <View style={{ top: 80, position: "absolute", left: 30, zIndex: 99 }}>
         <ProfilePicture
           name={session?.user?.profile?.name || "--"}
