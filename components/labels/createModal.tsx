@@ -29,12 +29,14 @@ export function CreateLabelModal({
   onClose = () => null,
   onCreate = () => null,
   sheetRef = null,
+  collectionId,
 }: {
   children: ReactElement;
   mutate: any;
   onClose?: () => void;
   onCreate?: (newLabel: any) => void;
   sheetRef?: React.RefObject<BottomSheetModal>;
+  collectionId?: string;
 }) {
   const inputRef = useRef(null);
   const _ref = useRef<BottomSheetModal>(null);
@@ -64,6 +66,7 @@ export function CreateLabelModal({
       name: "",
       color: "red",
       emoji: "1f600",
+      collectionId,
     },
   });
 

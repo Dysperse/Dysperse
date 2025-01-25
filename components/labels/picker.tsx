@@ -168,16 +168,18 @@ function LabelPickerContent({
 
   const { data, mutate, error } = useSWR(["space/labels"]);
 
-  const [selectedCollection, setSelectedCollection] = useState(
-    defaultCollection === "all" ? null : defaultCollection
-  );
-
   const collections = Array.isArray(data)
     ? data
         ?.map((l) => l.collections.map((c) => c))
         ?.flat()
         ?.filter((c, i, arr) => arr.findIndex((a) => a.id === c.id) === i) || []
     : [];
+
+  const [selectedCollection, setSelectedCollection] = useState(() => {
+    if (defaultCollection === "all") return null;
+    const hasLabels = collections.some((c) => c.id === defaultCollection);
+    return hasLabels ? defaultCollection : null;
+  });
 
   return (
     <View
@@ -222,6 +224,7 @@ function LabelPickerContent({
         )}
         <Search query={query} setQuery={setQuery} autoFocus={autoFocus} />
         <CreateLabelModal
+          collectionId={selectedCollection}
           mutate={mutate}
           onClose={() => searchRef.current?.focus()}
           onCreate={(item) => {
@@ -294,7 +297,7 @@ function LabelPickerContent({
           ListEmptyComponent={
             <View
               style={{
-                height: "100%",
+                // height: "100%",
                 justifyContent: "center",
                 alignItems: "center",
                 paddingVertical: 70,
@@ -302,8 +305,7 @@ function LabelPickerContent({
                 gap: 5,
               }}
             >
-              <Emoji emoji={query ? "1f914" : "1f62d"} size={50} />
-              <Text style={{ fontSize: 35, marginTop: 10 }}>
+              <Text style={{ fontSize: 30, marginTop: 10 }}>
                 {query ? "No labels found" : "No labels yet"}
               </Text>
               <Text style={{ opacity: 0.6, textAlign: "center" }}>
