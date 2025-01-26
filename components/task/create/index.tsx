@@ -576,7 +576,7 @@ const TimeSuggestion = forwardRef(
                 text: "Type # to add a tag",
                 icon: "emoji_objects",
               }
-            : !tmwSuggestion
+            : !tmwSuggestion && Platform.OS === "web"
             ? {
                 text: `Type "tmw" to set a due date for tomorrow`,
                 icon: "emoji_objects",
@@ -1240,6 +1240,20 @@ function SpeechRecognition({ setValue, handleSubmitButtonClick }) {
       iconStyle={{
         color: recognizing ? red[2] : theme[11],
       }}
+      backgroundColors={
+        recognizing
+          ? { default: red[9], hovered: red[10], pressed: red[11] }
+          : {}
+      }
+      borderColors={
+        recognizing
+          ? {
+              default: red[9],
+              hovered: red[10],
+              pressed: red[11],
+            }
+          : {}
+      }
       style={{ marginRight: "auto" }}
       onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
     />

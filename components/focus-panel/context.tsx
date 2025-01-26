@@ -41,7 +41,7 @@ export const FocusPanelProvider = ({ children }) => {
       }
     };
     getPanelState();
-  }, [states]);
+  }, []);
 
   useEffect(() => {
     const savePanelState = async () => {

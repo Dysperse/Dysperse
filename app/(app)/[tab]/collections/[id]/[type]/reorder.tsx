@@ -16,7 +16,6 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useLocalSearchParams } from "expo-router";
 import { Platform, ScrollView, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
 import useSWR from "swr";
 
 function EditKanbanOrder() {
@@ -307,7 +306,6 @@ export default function Page() {
 
   return (
     <CollectionContext.Provider value={contextValue}>
-      <SystemBars style="light" />
       {data && <Reorder handleClose={handleClose} />}
     </CollectionContext.Provider>
   );

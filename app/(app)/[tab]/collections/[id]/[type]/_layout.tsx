@@ -10,7 +10,7 @@ import { SystemBars } from "react-native-edge-to-edge";
 function StatusBarStyling() {
   const theme = useColorTheme();
   const pathname = usePathname();
-  const t = ["customize", "search", "share"];
+  const t = ["customize", "search", "share", "reorder"];
   const isModal = t.find((p) => pathname.includes(p));
 
   useWebStatusBar({
@@ -46,7 +46,7 @@ export default function Layout() {
           },
         }}
       >
-        <StatusBarStyling />
+        {!breakpoints.md && <StatusBarStyling />}
         <JsStack
           id={undefined}
           screenOptions={{

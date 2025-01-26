@@ -1,6 +1,7 @@
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
+import { Portal } from "@gorhom/portal";
 import { FC, useEffect, useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
 import { Keyboard, Platform, Pressable, View } from "react-native";
@@ -43,46 +44,48 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
   }
 
   return (
-    <View
-      style={{
-        width: 250,
-        borderRadius: 25,
-        overflow: "hidden",
-        position: "absolute",
-        zIndex: 999,
-        top: 50,
-        backgroundColor: theme[5],
-      }}
-    >
-      <ScrollView
-        keyboardShouldPersistTaps="always"
+    <Portal>
+      <View
         style={{
-          borderRadius: 10,
-          maxHeight: isKeyboardVisible ? 200 : 300,
+          width: 250,
+          borderRadius: 25,
+          overflow: "hidden",
+          position: "absolute",
+          zIndex: 999,
+          top: 50,
+          backgroundColor: theme[5],
         }}
       >
-        {suggestions
-          .filter((one) =>
-            one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
-          )
-          .map((one) => (
-            <Pressable
-              android_ripple={{ color: addHslAlpha(theme[9], 0.5) }}
-              key={one.id}
-              onPress={() => onSuggestionPress(one)}
-              style={{
-                padding: 12,
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
-              {one.icon && one.icon}
-              <Text variant="menuItem">{one.name}</Text>
-            </Pressable>
-          ))}
-      </ScrollView>
-    </View>
+        <ScrollView
+          keyboardShouldPersistTaps="always"
+          style={{
+            borderRadius: 10,
+            maxHeight: isKeyboardVisible ? 200 : 300,
+          }}
+        >
+          {suggestions
+            .filter((one) =>
+              one.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
+            )
+            .map((one) => (
+              <Pressable
+                android_ripple={{ color: addHslAlpha(theme[9], 0.5) }}
+                key={one.id}
+                onPress={() => onSuggestionPress(one)}
+                style={{
+                  padding: 12,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                {one.icon && one.icon}
+                <Text variant="menuItem">{one.name}</Text>
+              </Pressable>
+            ))}
+        </ScrollView>
+      </View>
+    </Portal>
   );
 };
 

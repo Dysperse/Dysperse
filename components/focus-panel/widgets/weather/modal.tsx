@@ -340,9 +340,18 @@ export function FocusPanelWeather({ navigation }) {
             isNight={isNight()}
           />
         ) : (
-          <Spinner />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Spinner />
+          </View>
         )}
       </LinearGradient>
     </ColorThemeProvider>
   );
 }
+

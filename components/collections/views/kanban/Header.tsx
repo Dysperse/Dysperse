@@ -11,7 +11,7 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useGridContext } from "../grid/context";
 import { useKanbanContext } from "./context";
 
@@ -76,7 +76,9 @@ export const KanbanHeader = memo(function KanbanHeader({
         <Text
           style={[
             { fontSize: 20, fontFamily: "serifText700" },
-            label.entitiesLength === 0 && { marginVertical: 11 },
+            label.entitiesLength === 0 && {
+              marginVertical: Platform.OS === "web" ? 11 : 7,
+            },
           ]}
           numberOfLines={1}
         >
@@ -168,3 +170,4 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
+

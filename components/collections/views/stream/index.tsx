@@ -175,7 +175,8 @@ export default function Stream() {
         dayjs(t.start).isAfter(dayjs().startOf("day")) &&
         !t.completionInstances.length
       );
-    else if (view === "completed") return t.completionInstances.length;
+    else if (view === "completed")
+      return t.completionInstances.length && !t.recurrenceRule;
     else if (view === "unscheduled")
       return (
         !t.start && !t.recurrenceRule && t.completionInstances.length === 0

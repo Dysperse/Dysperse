@@ -440,6 +440,7 @@ function PanelContent() {
       ...TransitionPresets.ScaleFromCenterAndroid,
       detachPreviousScreen: false,
       headerShown: true,
+      animation: "none",
       freezeOnBlur: true,
       gestureEnabled: false,
       headerMode: "screen",
