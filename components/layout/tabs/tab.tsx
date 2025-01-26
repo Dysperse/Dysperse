@@ -42,6 +42,7 @@ function Tab({
   onLongPress = () => {},
   tabs,
   mutate,
+  badgeData,
 }: {
   tab: any;
   disabled?: boolean;
@@ -50,6 +51,7 @@ function Tab({
   onLongPress?: () => void;
   tabs: any;
   mutate: any;
+  badgeData: any;
 }) {
   const theme = useColorTheme();
   const tabData = useTabMetadata(tab.slug, tab);
@@ -202,10 +204,23 @@ function Tab({
             </Text>
           )}
         </View>
+        {badgeData &&
+          !selected &&
+          badgeData.collections.find((t) => t.id === tab.collectionId) && (
+            <View
+              style={{
+                width: 10,
+                height: 10,
+                marginRight: 5,
+                borderRadius: 5,
+                backgroundColor: theme[9],
+              }}
+            />
+          )}
         {closeIcon}
       </>
     ),
-    [tab, tabData, theme, tabName, tabIcon, closeIcon]
+    [tab, tabData, theme, tabName, tabIcon, closeIcon, badgeData, selected]
   );
 
   const handlePress = useCallback(() => {

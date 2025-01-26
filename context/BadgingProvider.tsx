@@ -25,6 +25,7 @@ export const BadgingProvider = ({
 
   const badgingRef = useRef({
     mutate: () => mutate(),
+    data: data,
   });
 
   return (

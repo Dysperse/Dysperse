@@ -1,4 +1,5 @@
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useBadgingService } from "@/context/BadgingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -14,7 +15,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useGlobalSearchParams } from "expo-router";
-import { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   InteractionManager,
   Platform,
@@ -274,6 +275,9 @@ function OpenTabsList() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
 
+  const badgingRef = useBadgingService();
+  const [badgeData, setBadgeData] = useState(badgingRef.current.data);
+
   const footer = (
     <View style={{ marginBottom: 5, flexDirection: "row" }}>
       <JumpToButton />
@@ -305,7 +309,13 @@ function OpenTabsList() {
           <FlatList
             aria-label="Sidebar"
             refreshControl={
-              <RefreshControl refreshing={false} onRefresh={() => mutate()} />
+              <RefreshControl
+                refreshing={false}
+                onRefresh={() => {
+                  setBadgeData(badgingRef.current.data);
+                  mutate();
+                }}
+              />
             }
             data={data}
             getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
@@ -316,6 +326,7 @@ function OpenTabsList() {
                   tabs={data}
                   mutate={mutate}
                   selected={tab === item.id}
+                  badgeData={badgeData}
                 />
               </View>
             )}
