@@ -13,7 +13,7 @@ import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { setAlternateAppIcon } from "expo-alternate-app-icons";
 import { Image } from "expo-image";
-import { Platform, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function ThemedSlide({
@@ -140,12 +140,14 @@ function AppIconSection() {
           "testflight",
         ].map((theme) => {
           return (
-            <Image
-              onPress={() => setAlternateAppIcon(theme)}
-              key={theme}
-              style={{ width: 50, height: 50, borderRadius: 10 }}
-              source={{ uri: `https://assets.dysperse.com/icons/${theme}.png` }}
-            />
+            <Pressable key={theme} onPress={() => setAlternateAppIcon(theme)}>
+              <Image
+                style={{ width: 50, height: 50, borderRadius: 10 }}
+                source={{
+                  uri: `https://assets.dysperse.com/icons/${theme}.png`,
+                }}
+              />
+            </Pressable>
           );
         })}
       </View>
