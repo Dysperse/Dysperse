@@ -615,7 +615,7 @@ function PrimarySidebar({ progressValue }) {
 
   const transform = progressValue?.interpolate?.({
     inputRange: [0, 1],
-    outputRange: breakpoints.md ? [0.95, 1] : [-(width / 10), 0],
+    outputRange: breakpoints.md ? [0.85, 1] : [-(width / 10), 0],
   });
 
   const opacity = progressValue?.interpolate?.({

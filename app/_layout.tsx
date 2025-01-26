@@ -18,6 +18,7 @@ import {
   Jost_900Black,
 } from "@expo-google-fonts/jost";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ThemeProvider } from "@react-navigation/native";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
@@ -144,42 +145,57 @@ function Root() {
   const sidebarContextValue = useMemo(
     () => ({
       sidebarRef: sidebarRef,
-      desktopCollapsed,
+      desktopCollapsed: breakpoints.md ? desktopCollapsed : false,
       setDesktopCollapsed,
       SIDEBAR_WIDTH,
       ORIGINAL_SIDEBAR_WIDTH,
       SECONDARY_SIDEBAR_WIDTH: 130,
     }),
-    [desktopCollapsed, SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH]
+    [desktopCollapsed, SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH, breakpoints]
   );
 
   if (Platform.OS !== "web" && !fontsLoaded && !fontsError) return null;
   StatusBar.setBackgroundColor("transparent");
+
   return (
-    <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
-      <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
-        <SessionProvider>
-          <ModalStackProvider>
-            <ColorThemeProvider theme={theme}>
-              <SidebarContext.Provider value={sidebarContextValue}>
-                <SWRWrapper>
-                  <SystemBars style="dark" />
-                  <JsStack
-                    id={undefined}
-                    screenOptions={{
-                      header: () => null,
-                      cardShadowEnabled: false,
-                      freezeOnBlur: true,
-                      animation: "none",
-                    }}
-                  />
-                </SWRWrapper>
-              </SidebarContext.Provider>
-            </ColorThemeProvider>
-          </ModalStackProvider>
-        </SessionProvider>
-      </KeyboardProvider>
-    </ErrorBoundary>
+    <ThemeProvider
+      value={{
+        colors: {
+          background: "transparent",
+          card: theme[2],
+          primary: theme[2],
+          border: theme[6],
+          text: theme[11],
+          notification: theme[9],
+        },
+        dark: true,
+      }}
+    >
+      <ErrorBoundary showDialog fallback={<ErrorBoundaryComponent />}>
+        <KeyboardProvider navigationBarTranslucent statusBarTranslucent>
+          <SessionProvider>
+            <ModalStackProvider>
+              <ColorThemeProvider theme={theme}>
+                <SidebarContext.Provider value={sidebarContextValue}>
+                  <SWRWrapper>
+                    <SystemBars style="dark" />
+                    <JsStack
+                      id={undefined}
+                      screenOptions={{
+                        header: () => null,
+                        cardShadowEnabled: false,
+                        freezeOnBlur: true,
+                        animation: "none",
+                      }}
+                    />
+                  </SWRWrapper>
+                </SidebarContext.Provider>
+              </ColorThemeProvider>
+            </ModalStackProvider>
+          </SessionProvider>
+        </KeyboardProvider>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

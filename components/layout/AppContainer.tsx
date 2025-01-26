@@ -72,17 +72,17 @@ const AppContainer = memo(
                     outputRange: [1, 0.6],
                   }) || 0,
                 marginBottom: 0,
-                paddingRight:
-                  progressValue?.current?.interpolate?.({
-                    inputRange: [0, 1],
-                    outputRange: [0, SIDEBAR_WIDTH.value],
-                  }) || 0,
+                // paddingRight:
+                //   progressValue?.current?.interpolate?.({
+                //     inputRange: [0, 1],
+                //     outputRange: [0, SIDEBAR_WIDTH.value],
+                //   }) || 0,
                 transform: [
                   {
                     scale:
                       progressValue?.current?.interpolate?.({
                         inputRange: [0, 1],
-                        outputRange: [1, 0.98],
+                        outputRange: [1, 0.96],
                       }) || 0,
                   },
                 ],

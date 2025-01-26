@@ -398,7 +398,11 @@ export default function AppLayout() {
                                       ? SECONDARY_SIDEBAR_WIDTH
                                       : ORIGINAL_SIDEBAR_WIDTH
                                   }
-                                  edgeWidth={sidebarWidth}
+                                  edgeWidth={
+                                    breakpoints.md
+                                      ? ORIGINAL_SIDEBAR_WIDTH
+                                      : sidebarWidth
+                                  }
                                   renderNavigationView={renderNavigationView}
                                 >
                                   {content}

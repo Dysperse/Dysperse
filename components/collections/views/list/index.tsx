@@ -10,7 +10,7 @@ import { FlashList } from "@shopify/flash-list";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef, useState } from "react";
-import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import { ColumnEmptyComponent } from "../../emptyComponent";
 import { Entity } from "../../entity";
 import { CollectionEmpty } from "../CollectionEmpty";
@@ -165,7 +165,6 @@ export default function List() {
   }
 
   const ref = useRef(null);
-  const { width } = useWindowDimensions();
 
   return (
     <View style={{ flex: 1 }}>
@@ -187,8 +186,8 @@ export default function List() {
             <View
               style={{
                 width: 600,
+                paddingHorizontal: 20,
                 marginHorizontal: "auto",
-                maxWidth: width - 40,
                 marginBottom: item.header ? 10 : 0,
               }}
             >
@@ -213,3 +212,4 @@ export default function List() {
     </View>
   );
 }
+
