@@ -266,13 +266,13 @@ export function Column(props: ColumnProps) {
                           }
                         : {}
                     }
-                    height={50}
-                  >
-                    <ButtonText style={{ opacity: 0.7 }} weight={600}>
-                      {showCompleted ? "Hide completed" : "Completed"} tasks
-                    </ButtonText>
-                    <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
-                  </Button>
+                height={50}
+              >
+                <ButtonText style={{ opacity: 0.7 }} weight={600}>
+                  {showCompleted ? "Hide completed" : "Completed"} tasks
+                </ButtonText>
+                <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
+              </Button>
                 )
         }
         renderItem={({ item }) => (
