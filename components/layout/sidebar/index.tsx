@@ -345,13 +345,12 @@ export const LogoButton = memo(function LogoButton({
               />
             }
             options={[
-              {
+              breakpoints.md && {
                 icon: "dock_to_right",
                 text: "Sidebar",
                 callback: toggleHidden,
                 selected: !desktopCollapsed,
               },
-
               {
                 icon: "psychiatry",
                 text: "Focus panel",
