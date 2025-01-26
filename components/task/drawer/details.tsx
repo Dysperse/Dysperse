@@ -303,7 +303,7 @@ function TaskDateMenu() {
           ? `to ${dayjs(task.end).format("MMM Do, YYYY")}`
           : task.dateOnly
           ? "All day"
-          : dayjs(task.start).format("[@] h:mm A"),
+          : dayjs(task.start).format("[at] h:mm A"),
       ];
 
   const addRecurrenceRef = useRef(null);
@@ -351,6 +351,7 @@ function TaskDateMenu() {
               }}
               style={{ gap: 12 }}
               dense
+              height={"auto" as any}
             >
               <Icon size={20} style={{ marginTop: -3, flexShrink: 0 }}>
                 {task.start
@@ -359,7 +360,20 @@ function TaskDateMenu() {
                   ? "loop"
                   : "calendar_today"}
               </Icon>
-              <Text style={{ color: theme[11] }}>{dateName[0]}</Text>
+              <View style={{ flexDirection: "column" }}>
+                <Text style={{ color: theme[11] }}>
+                  {dateName[0]}
+                  <Text
+                    style={{
+                      color: theme[11],
+                      opacity: 0.6,
+                    }}
+                  >
+                    {" "}
+                    {dateName[1]}
+                  </Text>
+                </Text>
+              </View>
             </Button>
           }
           closeOnSelect
@@ -504,7 +518,7 @@ function TaskLocationMenu() {
       containerStyle={{
         opacity: 0.6,
         marginLeft: 14,
-        marginTop: 5,
+        marginTop: 7,
         borderRadius: 0,
       }}
       style={{
