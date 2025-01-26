@@ -40,6 +40,7 @@ import {
   useGlobalSearchParams,
   usePathname,
 } from "expo-router";
+import * as SystemUI from "expo-system-ui";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Animated,
@@ -137,6 +138,7 @@ export default function AppLayout() {
   useEffect(() => {
     if (Platform.OS === "android")
       NavigationBar.setBackgroundColorAsync(addHslAlpha(theme[1], 0.01));
+    else if (Platform.OS === "ios") SystemUI.setBackgroundColorAsync(theme[2]);
   }, [theme]);
 
   const routerTheme = {
