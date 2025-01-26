@@ -158,6 +158,12 @@ const notificationSettings = [
         description: "Notify me when a task is due",
       },
       {
+        key: "EMAIL_FORWARDING",
+        name: "Email forwarding",
+        description:
+          "Get a confirmation when Dysperse processes an email you forwarded",
+      },
+      {
         key: "PLAN_DAY",
         name: "Plan my day",
         description: "Remind me to plan my day every morning",
