@@ -180,7 +180,9 @@ function Page() {
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
-        {(!breakpoints.md || desktopCollapsed) && <MenuButton />}
+        {(!breakpoints.md || desktopCollapsed) && (
+          <MenuButton addInsets={!breakpoints.md} />
+        )}
         <ScrollView
           centerContent
           onScrollBeginDrag={Keyboard.dismiss}

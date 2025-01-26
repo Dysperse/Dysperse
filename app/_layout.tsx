@@ -99,7 +99,9 @@ function Root() {
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const [desktopCollapsed, setDesktopCollapsed] = useState(
-    Platform.OS === "web" ? localStorage.getItem("desktopCollapsed") : false
+    Platform.OS === "web"
+      ? localStorage.getItem("desktopCollapsed") === "true"
+      : false
   );
 
   const setCollapsed = useCallback(() => {

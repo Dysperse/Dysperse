@@ -381,6 +381,7 @@ export default function AppLayout() {
                                 <DrawerLayout
                                   // @ts-expect-error this is patched with patch-package
                                   defaultDrawerOpen={!desktopCollapsed}
+                                  key={breakpoints.md ? "desktop" : "mobile"}
                                   ref={sidebarRef}
                                   onDrawerOpen={() => Keyboard.dismiss()}
                                   useNativeAnimations={false}

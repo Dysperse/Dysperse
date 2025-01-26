@@ -746,16 +746,8 @@ const FocusPanel = memo(function FocusPanel() {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      marginRight: withSpring(marginRight.value, {
-        stiffness: 200,
-        damping: 30,
-        overshootClamping: true,
-      }),
-      width: withSpring(width.value, {
-        stiffness: 200,
-        damping: 30,
-        overshootClamping: true,
-      }),
+      marginRight: marginRight.value,
+      width: width.value,
     };
   });
 
