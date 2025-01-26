@@ -19,7 +19,7 @@ import Spinner from "../Spinner";
 import Text, { DTextProps } from "../Text";
 import { useColorTheme } from "../color/theme-provider";
 
-interface DButtonProps extends PressableProps {
+export interface DButtonProps extends PressableProps {
   buttonClassName?: string;
   variant?: "filled" | "outlined" | "text";
   buttonStyle?: StyleProp<ViewStyle>;
@@ -230,3 +230,4 @@ export const Button = forwardRef<PressableProps, DButtonProps>((props, ref) => {
     </Animated.View>
   );
 });
+

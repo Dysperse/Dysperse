@@ -34,10 +34,8 @@ function TaskRescheduleButton({ task, updateTask, menuRef }) {
   return (
     <>
       <MenuItem
-        onPress={() => {
-          sheetRef.current.present();
-          menuRef.current.close();
-        }}
+        onPress={() => sheetRef.current.present()}
+        containerStyle={{ minWidth: 0 }}
       >
         <Icon>dark_mode</Icon>
       </MenuItem>
@@ -381,7 +379,7 @@ function TaskDateMenu() {
                                 addRecurrenceRef.current.present();
                               else addDateRef.current.present();
                             }}
-                            style={{ flex: 1 }}
+                            containerStyle={{ flex: 1 }}
                           >
                             <Icon>edit</Icon>
                             <Text variant="menuItem">Edit</Text>

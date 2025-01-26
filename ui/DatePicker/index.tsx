@@ -303,7 +303,8 @@ export const DatePicker = forwardRef(
             style={{
               paddingTop: 10,
               gap: 10,
-              minHeight: Platform.OS === "web" ? undefined : 410,
+              minHeight:
+                Platform.OS === "web" ? undefined : value.date ? 410 : 310,
             }}
           >
             {value.date && (

@@ -3,7 +3,6 @@ import { BlurView } from "expo-blur";
 import React, { ReactElement, cloneElement, memo, useRef } from "react";
 import {
   Platform,
-  PressableProps,
   ScrollViewProps,
   StyleProp,
   StyleSheet,
@@ -24,7 +23,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { Button } from "../Button";
+import { Button, DButtonProps } from "../Button";
 import Divider from "../Divider";
 import Icon from "../Icon";
 import Text from "../Text";
@@ -74,8 +73,7 @@ const isFirefox =
   Platform.OS === "web" && navigator.userAgent.includes("Firefox");
 
 export function MenuItem(
-  props: PressableProps & {
-    removeExtraStyles?: boolean;
+  props: DButtonProps & {
     text?: string;
     icon?: string;
     selected?: boolean;
@@ -92,13 +90,11 @@ export function MenuItem(
         hovered: addHslAlpha(theme[9], 0.2),
       }}
       height={45}
-      containerStyle={{ borderRadius: 20 }}
+      containerStyle={[{ borderRadius: 20 }, props.containerStyle]}
       style={[
         {
           zIndex: 2,
           justifyContent: "flex-start",
-        },
-        !props.removeExtraStyles && {
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 15,
