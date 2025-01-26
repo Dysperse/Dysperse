@@ -250,24 +250,32 @@ export const LogoButton = memo(function LogoButton({
         containerStyle={{ width: 190, marginLeft: 10, marginTop: -5 }}
         trigger={
           <View style={{ borderRadius: 20, overflow: "hidden" }}>
-            <Pressable
+            <Button
               onPress={() => menuRef.current.open()}
               android_ripple={{ color: theme[4] }}
-              style={({ pressed, hovered }) => [
+              height={60}
+              style={[
                 {
-                  backgroundColor: theme[pressed ? 4 : hovered ? 3 : 2],
                   flexDirection: "row",
                   alignItems: "center",
                   paddingLeft: 3,
+                  gap: 0,
                   paddingVertical: 10,
                 },
-                Platform.OS === "web" && { WebkitAppRegion: "no-drag" },
+                Platform.OS === "web" &&
+                  ({ WebkitAppRegion: "no-drag" } as any),
               ]}
+              containerStyle={{ borderRadius: 20 }}
+              backgroundColors={{
+                default: theme[2],
+                pressed: theme[3],
+                hovered: theme[4],
+              }}
             >
               <Logo size={40} />
               <SyncButton syncRef={syncRef} />
               <Icon style={{ color: theme[11] }}>expand_more</Icon>
-            </Pressable>
+            </Button>
           </View>
         }
         options={[

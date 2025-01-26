@@ -65,7 +65,6 @@ export const HOME_PATTERNS = [
 const CustomizeButton = () => {
   return (
     <Button
-      variant="outlined"
       icon="palette"
       text="Customize"
       backgroundColors={{
@@ -73,7 +72,7 @@ const CustomizeButton = () => {
         pressed: "transparent",
         hovered: "transparent",
       }}
-      containerStyle={{ marginHorizontal: "auto" }}
+      containerStyle={{ marginHorizontal: "auto", opacity: 0.5 }}
       onPress={() => router.push("/home/customize")}
     />
   );
@@ -183,19 +182,20 @@ function Page() {
         <ScrollView
           centerContent
           onScrollBeginDrag={Keyboard.dismiss}
-          style={{ flex: 1, marginTop: insets.top }}
+          style={{ flex: 1 }}
           contentContainerStyle={{
             maxWidth: breakpoints.md ? 400 : undefined,
             width: "100%",
             paddingHorizontal: 30,
             gap: 20,
+            paddingTop: insets.top,
             ...(Platform.OS === "android"
               ? {
                   height: "100%",
                   justifyContent: "center",
                 }
               : {
-                  paddingVertical: Platform.OS === "ios" ? 40 : 100,
+                  // paddingVertical: Platform.OS === "ios" ? 40 : 100,
                 }),
             marginHorizontal: Platform.OS === "ios" ? undefined : "auto",
           }}

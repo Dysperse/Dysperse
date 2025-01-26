@@ -226,16 +226,6 @@ export function Column(props: ColumnProps) {
           <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
         }
         centerContent={centerContent}
-        ListEmptyComponent={() =>
-          Object.values(props.label?.entities || props.entities).length ===
-            0 && (
-            <ColumnEmptyComponent
-              row={props.grid}
-              labelId={props.label?.id}
-              showInspireMe
-            />
-          )
-        }
         data={data}
         ListHeaderComponent={() => (
           <View>
@@ -250,31 +240,37 @@ export function Column(props: ColumnProps) {
           paddingTop: 15,
           paddingBottom: insets.bottom + 15,
         }}
-        ListFooterComponent={
-          hasNoIncompleteTasks
-            ? null
-            : () =>
-                collectionData.showCompleted ||
-                Object.values(props.label?.entities || props.entities)
-                  .length === 0 ? null : (
-                  <Button
-                    onPress={() => setShowCompleted(!showCompleted)}
-                    containerStyle={
-                      hasNoCompleteTasks
-                        ? {
-                            marginBottom: showCompleted ? 10 : -70,
-                          }
-                        : {}
-                    }
+        ListFooterComponentStyle={[
+          hasNoCompleteTasks && {
+            marginBottom: showCompleted ? 10 : -70,
+          },
+        ]}
+        ListFooterComponent={() => (
+          <>
+            {hasNoIncompleteTasks ? null : showCompleted ||
+              collectionData.showCompleted ||
+              Object.values(props.label?.entities || props.entities).length ===
+                0 ? null : (
+              <Button
+                onPress={() => setShowCompleted(!showCompleted)}
                 height={50}
               >
                 <ButtonText style={{ opacity: 0.7 }} weight={600}>
-                  {showCompleted ? "Hide completed" : "Completed"} tasks
+                  {showCompleted ? "Hide completed" : "See completed"}
                 </ButtonText>
                 <Icon>{showCompleted ? "expand_less" : "expand_more"}</Icon>
               </Button>
-                )
-        }
+            )}
+            {Object.values(props.label?.entities || props.entities).length ===
+              0 && (
+              <ColumnEmptyComponent
+                row={props.grid}
+                labelId={props.label?.id}
+                showInspireMe
+              />
+            )}
+          </>
+        )}
         renderItem={({ item }) => (
           <Entity
             isReadOnly={isReadOnly || !session}

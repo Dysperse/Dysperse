@@ -3,7 +3,6 @@ import { BlurView } from "expo-blur";
 import React, { ReactElement, cloneElement, memo, useRef } from "react";
 import {
   Platform,
-  Pressable,
   PressableProps,
   ScrollViewProps,
   StyleProp,
@@ -25,6 +24,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { Button } from "../Button";
 import Divider from "../Divider";
 import Icon from "../Icon";
 import Text from "../Text";
@@ -84,17 +84,19 @@ export function MenuItem(
 ) {
   const theme = useColorTheme();
   return (
-    <Pressable
+    <Button
       {...props}
-      style={({ pressed, hovered }) => [
+      backgroundColors={{
+        default: addHslAlpha(theme[9], 0),
+        pressed: addHslAlpha(theme[9], 0.1),
+        hovered: addHslAlpha(theme[9], 0.2),
+      }}
+      height={45}
+      containerStyle={{ borderRadius: 20 }}
+      style={[
         {
-          backgroundColor: pressed
-            ? addHslAlpha(theme[8], 0.4)
-            : hovered
-            ? addHslAlpha(theme[7], 0.4)
-            : undefined,
-          borderRadius: 20,
           zIndex: 2,
+          justifyContent: "flex-start",
         },
         !props.removeExtraStyles && {
           flexDirection: "row",
@@ -116,7 +118,7 @@ export function MenuItem(
           {props.selected && <Icon style={{ marginLeft: "auto" }}>check</Icon>}
         </>
       )}
-    </Pressable>
+    </Button>
   );
 }
 
