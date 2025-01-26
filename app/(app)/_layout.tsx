@@ -379,6 +379,8 @@ export default function AppLayout() {
                                 <NotificationsModal />
                                 <TabFriendModal />
                                 <DrawerLayout
+                                  // @ts-expect-error this is patched with patch-package
+                                  defaultDrawerOpen={!desktopCollapsed}
                                   ref={sidebarRef}
                                   onDrawerOpen={() => Keyboard.dismiss()}
                                   useNativeAnimations={false}

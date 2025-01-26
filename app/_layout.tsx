@@ -17,12 +17,19 @@ import {
   Jost_800ExtraBold,
   Jost_900Black,
 } from "@expo-google-fonts/jost";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Sentry from "@sentry/react-native";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useFonts } from "expo-font";
 import * as NavigationBar from "expo-navigation-bar";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Platform, StatusBar, useWindowDimensions } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
@@ -91,7 +98,20 @@ function Root() {
   const theme = useColor("mint");
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
-  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
+  const [desktopCollapsed, setDesktopCollapsed] = useState(
+    Platform.OS === "web" ? localStorage.getItem("desktopCollapsed") : false
+  );
+
+  const setCollapsed = useCallback(() => {
+    async () => {
+      const _desktopCollapsed = await AsyncStorage.getItem("desktopCollapsed");
+      setDesktopCollapsed(_desktopCollapsed === "true");
+    };
+  }, []);
+
+  useEffect(() => {
+    setCollapsed();
+  }, [setCollapsed]);
 
   useWebDevtoolsWarning();
 
