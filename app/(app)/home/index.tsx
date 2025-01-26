@@ -188,7 +188,7 @@ function Page() {
             width: "100%",
             paddingHorizontal: 30,
             gap: 20,
-            paddingTop: insets.top,
+            paddingTop: Platform.OS === "web" ? 90 : insets.top,
             ...(Platform.OS === "android"
               ? {
                   height: "100%",
