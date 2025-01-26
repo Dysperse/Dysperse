@@ -6,7 +6,7 @@ import TabFriendModal from "@/components/layout/TabFriendModal";
 import { JsStack } from "@/components/layout/_stack";
 import { arcCard } from "@/components/layout/arcAnimations";
 import { SessionLoadingScreen } from "@/components/layout/loading";
-import Sidebar, { MiniLogo } from "@/components/layout/sidebar";
+import Sidebar from "@/components/layout/sidebar";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { BadgingProvider } from "@/context/BadgingProvider";
@@ -70,38 +70,6 @@ dayjs.extend(advancedFormat);
 dayjs.extend(isoWeek);
 dayjs.extend(weekday);
 dayjs.extend(isToday);
-
-function DesktopLayout({ children }) {
-  const breakpoints = useResponsiveBreakpoints();
-  const pathname = usePathname();
-  const { fullscreen } = useGlobalSearchParams();
-  const insets = useSafeAreaInsets();
-
-  if (fullscreen)
-    return (
-      <>
-        {Platform.OS === "web" && (
-          <MiniLogo desktopSlide={{ value: 0 }} onHoverIn={() => {}} />
-        )}
-        {children}
-      </>
-    );
-
-  return (
-    <View
-      style={[
-        { flex: 1, flexDirection: "row" },
-        breakpoints.md && {
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
-        },
-      ]}
-    >
-      {!(pathname.includes("settings") && breakpoints.md) && <Sidebar />}
-      {children}
-    </View>
-  );
-}
 
 const WebAnimationComponent = ({ children }) => {
   if (Platform.OS === "web") {
