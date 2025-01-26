@@ -1,5 +1,6 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { usePathname } from "expo-router";
 import { RefObject, memo, useEffect, useMemo } from "react";
 import { Animated, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,6 +17,7 @@ const AppContainer = memo(
     const theme = useColorTheme();
     const breakpoints = useResponsiveBreakpoints();
     const insets = useSafeAreaInsets();
+    const pathname = usePathname();
     const { desktopCollapsed, SIDEBAR_WIDTH, sidebarRef } = useSidebarContext();
 
     useEffect(() => {
@@ -89,7 +91,9 @@ const AppContainer = memo(
               }
             : {
                 flex: 1,
-                marginLeft: SIDEBAR_WIDTH.value,
+                marginLeft: pathname.includes("settings")
+                  ? 0
+                  : SIDEBAR_WIDTH.value,
                 zIndex: 99999999,
                 marginBottom: 0,
               }
@@ -114,7 +118,14 @@ const AppContainer = memo(
               ],
             },
       ],
-      [breakpoints, insets, progressValue, desktopCollapsed, SIDEBAR_WIDTH]
+      [
+        breakpoints,
+        insets,
+        progressValue,
+        desktopCollapsed,
+        SIDEBAR_WIDTH,
+        pathname,
+      ]
     );
 
     const marginTopStyle = useMemo(
