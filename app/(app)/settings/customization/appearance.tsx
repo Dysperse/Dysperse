@@ -13,7 +13,7 @@ import { ColorTheme, useColor, useDarkMode } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { setAlternateAppIcon } from "expo-alternate-app-icons";
 import { Image } from "expo-image";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function ThemedSlide({
@@ -254,7 +254,7 @@ export default function Page() {
           <ThemedSlide key={theme} theme={theme} themeData={themes[theme]} />
         ))}
       </View>
-      <AppIconSection />
+      {Platform.OS === "ios" && <AppIconSection />}
     </SettingsScrollView>
   );
 }

@@ -49,7 +49,7 @@ export default function Page() {
     <View style={{ flex: 1, backgroundColor: theme[1] }}>
       <SystemBars style="light" />
       <ImageBackground
-        source={require("@/assets/login.png")}
+        source={{ uri: "https://assets.dysperse.com/app/login.png" }}
         style={{ flex: 1 }}
         imageStyle={{
           resizeMode: "cover",
