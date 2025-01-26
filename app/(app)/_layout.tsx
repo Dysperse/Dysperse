@@ -15,7 +15,7 @@ import { StorageContextProvider } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { addHslAlpha, useColor, useDarkMode } from "@/ui/color";
-import { ColorThemeProvider } from "@/ui/color/theme-provider";
+import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
@@ -72,10 +72,13 @@ dayjs.extend(weekday);
 dayjs.extend(isToday);
 
 const WebAnimationComponent = ({ children }) => {
+  const theme = useColorTheme();
   if (Platform.OS === "web") {
     return (
-      <View aria-valuetext="web-app-animation" style={{ flex: 1 }}>
-        {children}
+      <View style={{ backgroundColor: theme[2], flex: 1 }}>
+        <View aria-valuetext="web-app-animation" style={{ flex: 1 }}>
+          {children}
+        </View>
       </View>
     );
   } else return children;
