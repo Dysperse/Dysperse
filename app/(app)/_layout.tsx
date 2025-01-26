@@ -194,11 +194,12 @@ export default function AppLayout() {
   const renderNavigationView = (v: Animated.Value) => {
     progressValue.current = v;
 
-    return (
+    return !breakpoints.md ||
+      (!pathname.includes("settings/") && !pathname.includes("create")) ? (
       <Pressable style={{ flex: 1 }}>
         <Sidebar progressValue={v} />
       </Pressable>
-    );
+    ) : null;
   };
 
   const content = (
