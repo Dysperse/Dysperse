@@ -65,14 +65,13 @@ export const HOME_PATTERNS = [
 const CustomizeButton = () => {
   return (
     <Button
-      icon="palette"
-      text="Customize"
+      text="Edit"
       backgroundColors={{
         default: "transparent",
         pressed: "transparent",
         hovered: "transparent",
       }}
-      containerStyle={{ marginHorizontal: "auto", opacity: 0.5 }}
+      containerStyle={{ marginHorizontal: "auto", opacity: 0.3 }}
       onPress={() => router.push("/home/customize")}
     />
   );
