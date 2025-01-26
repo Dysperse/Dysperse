@@ -8,7 +8,6 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Avatar, ProfilePicture } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
-import { ButtonGroup } from "@/ui/ButtonGroup";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
@@ -446,34 +445,32 @@ export default function Page() {
           <ButtonText>Add</ButtonText>
         </Button>
       </View>
-      <ButtonGroup
-        containerStyle={{ backgroundColor: "transparent", borderRadius: 0 }}
-        buttonTextStyle={{ color: theme[11] }}
-        buttonStyle={{
-          borderBottomWidth: 0,
-        }}
-        activeComponent={
-          <View
-            style={{
-              width: 20,
-              height: 5,
-              marginLeft: "auto",
-              marginRight: "auto",
-              borderRadius: 99,
-              backgroundColor: theme[11],
-            }}
-          />
-        }
-        selectedButtonStyle={{}}
-        scrollContainerStyle={{ minWidth: "100%" }}
-        options={[
-          { label: "All", value: "all" },
-          { label: "Requests", value: "requests" },
-          { label: "Pending", value: "pending" },
-          // { label: "Blocked", value: "blocked" },
-        ]}
-        state={[view, setView]}
-      />
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 5 }}>
+        <Button
+          variant={view === "all" ? "filled" : undefined}
+          onPress={() => setView("all")}
+          containerStyle={{ minWidth: 0 }}
+          style={{ paddingHorizontal: 15 }}
+        >
+          <ButtonText>All</ButtonText>
+        </Button>
+        <Button
+          variant={view === "requests" ? "filled" : undefined}
+          onPress={() => setView("requests")}
+          containerStyle={{ minWidth: 0 }}
+          style={{ paddingHorizontal: 15 }}
+        >
+          <ButtonText>Requests</ButtonText>
+        </Button>
+        <Button
+          variant={view === "pending" ? "filled" : undefined}
+          onPress={() => setView("pending")}
+          containerStyle={{ minWidth: 0 }}
+          style={{ paddingHorizontal: 15 }}
+        >
+          <ButtonText>Pending</ButtonText>
+        </Button>
+      </View>
     </>
   );
 

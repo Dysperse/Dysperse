@@ -40,6 +40,7 @@ export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const { session, mutate, sessionToken } = useUser();
+  const { desktopCollapsed } = useSidebarContext();
 
   const { data, error } = useSWR("releases", {
     fetcher: () =>
@@ -84,7 +85,7 @@ export default function Page() {
 
   return (
     <Content noPaddingTop>
-      {!breakpoints.md && <MenuButton />}
+      {!(breakpoints.md || desktopCollapsed) && <MenuButton />}
       <ScrollView
         contentContainerStyle={{
           width: "100%",

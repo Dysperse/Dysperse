@@ -88,12 +88,12 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
 
 const JumpToButton = memo(function JumpToButton() {
   const theme = useColorTheme();
-  const { sidebarRef } = useSidebarContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
   const { handleOpen } = useCommandPaletteContext();
 
   const onOpen = () => {
-    if (!breakpoints.md) sidebarRef.current?.closeDrawer();
+    if (!breakpoints.md || desktopCollapsed) sidebarRef.current?.closeDrawer();
     if (Platform.OS !== "web")
       InteractionManager.runAfterInteractions(handleOpen);
     else handleOpen();

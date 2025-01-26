@@ -1,4 +1,5 @@
 import ContentWrapper from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
@@ -134,6 +135,7 @@ const AITasks = ({ input, setSlide }) => {
 export default function Page() {
   const breakpoints = useResponsiveBreakpoints();
   const insets = useSafeAreaInsets();
+  const { desktopCollapsed } = useSidebarContext();
 
   const [input, setInput] = useState("");
   const [slide, setSlide] = useState(0);
@@ -141,7 +143,7 @@ export default function Page() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ContentWrapper noPaddingTop>
-        {!breakpoints.md && <MenuButton />}
+        {(!breakpoints.md || desktopCollapsed) && <MenuButton />}
         <KeyboardAvoidingView
           behavior="height"
           style={{

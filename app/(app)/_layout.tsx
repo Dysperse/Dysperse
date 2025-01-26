@@ -150,8 +150,12 @@ export default function AppLayout() {
   const progressValue = useRef(null);
   const insets = useSafeAreaInsets();
 
-  const { sidebarRef, ORIGINAL_SIDEBAR_WIDTH, SECONDARY_SIDEBAR_WIDTH } =
-    useSidebarContext();
+  const {
+    sidebarRef,
+    ORIGINAL_SIDEBAR_WIDTH,
+    SECONDARY_SIDEBAR_WIDTH,
+    desktopCollapsed,
+  } = useSidebarContext();
 
   useEffect(() => {
     if (sessionData?.user?.timeZone)
@@ -362,54 +366,66 @@ export default function AppLayout() {
                               <View
                                 style={[
                                   breakpoints.md
-                                    ? { flex: 1, height }
+                                    ? {
+                                        flex: 1,
+                                        height,
+                                        paddingTop: insets.top,
+                                        paddingBottom: insets.bottom,
+                                      }
                                     : { width: "100%" },
                                 ]}
                               >
                                 <LoadingErrors />
                                 <NotificationsModal />
                                 <TabFriendModal />
-                                {breakpoints.md ? (
-                                  <DesktopLayout>{content}</DesktopLayout>
-                                ) : (
-                                  <DrawerLayout
-                                    ref={sidebarRef}
-                                    onDrawerOpen={() => Keyboard.dismiss()}
-                                    useNativeAnimations={false}
-                                    drawerLockMode={
-                                      pathname.includes(
-                                        "everything/collections/"
-                                      ) ||
-                                      pathname.includes("/customize") ||
-                                      pathname.includes("friends") ||
-                                      pathname.includes("insights") ||
-                                      pathname.includes("everything/labels/") ||
-                                      (pathname.includes("/map") &&
-                                        Platform.OS !== "ios") ||
-                                      (pathname.includes("/plan") &&
-                                        !pathname.includes("/planner")) ||
-                                      pathname.includes("open") ||
-                                      (pathname.includes("collections") &&
-                                        (pathname.includes("/search") ||
-                                          pathname.includes("/reorder") ||
-                                          pathname.includes("/share")))
-                                        ? "locked-closed"
-                                        : "unlocked"
-                                    }
-                                    drawerPosition="left"
-                                    drawerType="back"
-                                    overlayColor="transparent"
-                                    drawerWidth={
-                                      pathname.includes("/everything")
-                                        ? SECONDARY_SIDEBAR_WIDTH
-                                        : ORIGINAL_SIDEBAR_WIDTH
-                                    }
-                                    edgeWidth={sidebarWidth}
-                                    renderNavigationView={renderNavigationView}
-                                  >
-                                    {content}
-                                  </DrawerLayout>
-                                )}
+                                <DrawerLayout
+                                  ref={sidebarRef}
+                                  onDrawerOpen={() => Keyboard.dismiss()}
+                                  useNativeAnimations={false}
+                                  keyboardDismissMode="on-drag"
+                                  drawerLockMode={
+                                    !desktopCollapsed && breakpoints.md
+                                      ? "locked-open"
+                                      : pathname.includes(
+                                          "everything/collections/"
+                                        ) ||
+                                        pathname.includes("/customize") ||
+                                        pathname.includes("friends") ||
+                                        pathname.includes("insights") ||
+                                        pathname.includes(
+                                          "everything/labels/"
+                                        ) ||
+                                        (pathname.includes("/map") &&
+                                          Platform.OS !== "ios") ||
+                                        (pathname.includes("/plan") &&
+                                          !pathname.includes("/planner")) ||
+                                        pathname.includes("open") ||
+                                        (pathname.includes("collections") &&
+                                          (pathname.includes("/search") ||
+                                            pathname.includes("/reorder") ||
+                                            pathname.includes("/share")))
+                                      ? "locked-closed"
+                                      : "unlocked"
+                                  }
+                                  drawerPosition="left"
+                                  drawerType={
+                                    breakpoints.md
+                                      ? desktopCollapsed
+                                        ? "slide"
+                                        : "front"
+                                      : "back"
+                                  }
+                                  overlayColor="transparent"
+                                  drawerWidth={
+                                    pathname.includes("/everything")
+                                      ? SECONDARY_SIDEBAR_WIDTH
+                                      : ORIGINAL_SIDEBAR_WIDTH
+                                  }
+                                  edgeWidth={sidebarWidth}
+                                  renderNavigationView={renderNavigationView}
+                                >
+                                  {content}
+                                </DrawerLayout>
                               </View>
                             </BadgingProvider>
                           </FocusPanelProvider>

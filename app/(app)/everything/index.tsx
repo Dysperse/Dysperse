@@ -1,6 +1,7 @@
 import { Entity } from "@/components/collections/entity";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import ContentWrapper from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
@@ -498,13 +499,16 @@ const Labels = () => {
 export default function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
+  const { desktopCollapsed } = useSidebarContext();
 
   return (
     <ContentWrapper
       noPaddingTop
       style={!breakpoints.md && { paddingTop: insets.top + 70 }}
     >
-      {!breakpoints.md && <MenuButton gradient addInsets />}
+      {(!breakpoints.md || desktopCollapsed) && (
+        <MenuButton gradient addInsets />
+      )}
       <Labels />
     </ContentWrapper>
   );

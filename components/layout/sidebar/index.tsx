@@ -71,13 +71,13 @@ const styles = StyleSheet.create({
 });
 
 const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
-  const { sidebarRef } = useSidebarContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
 
   const handleHome = useCallback(() => {
     router.replace("/home");
     InteractionManager.runAfterInteractions(() => {
-      if (!breakpoints.md) sidebarRef.current.closeDrawer();
+      if (!breakpoints.md || desktopCollapsed) sidebarRef.current.closeDrawer();
     });
   }, [sidebarRef, breakpoints]);
 
@@ -206,7 +206,8 @@ export const LogoButton = memo(function LogoButton({
   const { session, sessionToken } = useUser();
   const breakpoints = useResponsiveBreakpoints();
   const { panelState, setPanelState } = useFocusPanelContext();
-  const { sidebarRef, desktopCollapsed } = useSidebarContext();
+  const { sidebarRef, setDesktopCollapsed, desktopCollapsed } =
+    useSidebarContext();
 
   const openSupport = useCallback((e) => {
     e?.preventDefault();
@@ -295,7 +296,8 @@ export const LogoButton = memo(function LogoButton({
             callback: () => {
               router.push("/settings");
               setTimeout(() => {
-                if (!breakpoints.md) sidebarRef.current.closeDrawer();
+                if (!breakpoints.md || desktopCollapsed)
+                  sidebarRef.current.closeDrawer();
               }, 300);
             },
           },
@@ -343,12 +345,12 @@ export const LogoButton = memo(function LogoButton({
               />
             }
             options={[
-              // {
-              //   icon: "dock_to_right",
-              //   text: "Sidebar",
-              //   callback: toggleHidden,
-              //   selected: !desktopCollapsed,
-              // },
+              {
+                icon: "dock_to_right",
+                text: "Sidebar",
+                callback: toggleHidden,
+                selected: !desktopCollapsed,
+              },
 
               {
                 icon: "psychiatry",
@@ -603,9 +605,9 @@ function PrimarySidebar({ progressValue }) {
   const { width, height } = useWindowDimensions();
 
   const {
-    SIDEBAR_WIDTH,
     ORIGINAL_SIDEBAR_WIDTH,
     desktopCollapsed,
+    sidebarRef,
     setDesktopCollapsed,
   } = useSidebarContext();
 
@@ -613,17 +615,32 @@ function PrimarySidebar({ progressValue }) {
 
   const transform = progressValue?.interpolate?.({
     inputRange: [0, 1],
-    outputRange: [-(width / 10), 0],
+    outputRange: breakpoints.md ? [0.95, 1] : [-(width / 10), 0],
   });
 
-  const animatedStyles = [{ transform: [{ translateX: transform || 0 }] }];
+  const opacity = progressValue?.interpolate?.({
+    inputRange: [0, 1],
+    outputRange: [0.5, 1],
+  });
+
+  const animatedStyles = [
+    breakpoints.md && { opacity },
+    {
+      transform: [
+        { [breakpoints.md ? "scale" : "translateX"]: transform || 0 },
+      ],
+    },
+  ];
 
   const toggleHidden = useCallback(() => {
     setDesktopCollapsed(!desktopCollapsed);
-    if (Platform.OS === "web") {
-      localStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
+    if (desktopCollapsed) {
+      sidebarRef.current.openDrawer();
+    } else {
+      sidebarRef.current.closeDrawer();
     }
-  }, [desktopCollapsed, setDesktopCollapsed]);
+    AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
+  }, [desktopCollapsed, setDesktopCollapsed, sidebarRef]);
 
   useHotkeys("`", toggleHidden, {});
 
@@ -645,22 +662,6 @@ function PrimarySidebar({ progressValue }) {
               paddingTop: "env(titlebar-area-height,0)",
             } as any)),
         },
-        desktopCollapsed &&
-          breakpoints.md && {
-            position: "absolute",
-            borderRadius: 25,
-            left: -100,
-            width: SIDEBAR_WIDTH.value + 100,
-            paddingLeft: 100,
-            zIndex: 99,
-            shadowOpacity: 0.4,
-            height: height - 50,
-            marginTop: 25,
-            borderWidth: 2,
-            borderColor: theme[5],
-            borderRightWidth: 2,
-            borderRightColor: theme[5],
-          },
       ]}
     >
       <View
@@ -768,28 +769,12 @@ const Sidebar = ({
 }) => {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
-  const {
-    SIDEBAR_WIDTH,
-    ORIGINAL_SIDEBAR_WIDTH,
-    SECONDARY_SIDEBAR_WIDTH,
-    desktopCollapsed,
-    setDesktopCollapsed,
-  } = useSidebarContext();
+  const { SIDEBAR_WIDTH, ORIGINAL_SIDEBAR_WIDTH, SECONDARY_SIDEBAR_WIDTH } =
+    useSidebarContext();
   const theme = useColorTheme();
   const { height } = useWindowDimensions();
 
   const desktopSlide = useSharedValue(0);
-
-  const desktopStyles = useAnimatedStyle(() => ({
-    transform: [
-      {
-        translateX: withSpring(desktopSlide.value, {
-          stiffness: 200,
-          damping: 40,
-        }),
-      },
-    ],
-  }));
 
   const primarySidebarStyles = useAnimatedStyle(() => ({
     pointerEvents:
@@ -833,17 +818,6 @@ const Sidebar = ({
     router.push("/settings");
   });
 
-  useEffect(() => {
-    if (Platform.OS === "web") {
-      if (localStorage.getItem("desktopCollapsed") === "true")
-        setDesktopCollapsed(true);
-    }
-  }, [setDesktopCollapsed]);
-
-  useEffect(() => {
-    desktopSlide.value = desktopCollapsed ? -SIDEBAR_WIDTH.value : 0;
-  }, [desktopCollapsed, desktopSlide, SIDEBAR_WIDTH]);
-
   const SafeView = breakpoints.md
     ? (p) => <React.Fragment {...p} />
     : (p) => <View style={{ flex: 1 }} {...p} />;
@@ -868,25 +842,10 @@ const Sidebar = ({
       Platform.OS === "web" ? 400 : 0
     );
   }, [pathname]);
+  const insets = useSafeAreaInsets();
 
   return (
     <>
-      {desktopCollapsed && (
-        <Pressable
-          style={[
-            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-            {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height,
-              width: 10,
-              zIndex: 9999,
-            },
-          ]}
-          onHoverIn={() => (desktopSlide.value = 0)}
-        />
-      )}
       <SafeView>
         {Platform.OS === "web" && (
           <MiniLogo
@@ -895,17 +854,10 @@ const Sidebar = ({
           />
         )}
         <Animated.View
-          {...(Platform.OS === "web" && {
-            onMouseEnter: () => (desktopSlide.value = 1),
-            onMouseLeave: () =>
-              (desktopSlide.value = desktopCollapsed
-                ? -SIDEBAR_WIDTH.value
-                : 0),
-          })}
           style={[
             { flex: breakpoints.md ? undefined : 1 },
-            desktopCollapsed && desktopStyles,
             {
+              height: height - insets.top - insets.bottom,
               zIndex: breakpoints.md ? 1 : 0,
               flexDirection: "row",
               backgroundColor: theme[2],

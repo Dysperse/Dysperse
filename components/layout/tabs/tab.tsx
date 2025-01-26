@@ -56,7 +56,7 @@ function Tab({
   const theme = useColorTheme();
   const tabData = useTabMetadata(tab.slug, tab);
   const { sessionToken } = useUser();
-  const { sidebarRef } = useSidebarContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -232,7 +232,8 @@ function Tab({
       },
     });
     InteractionManager.runAfterInteractions(() => {
-      if (!breakpoints.md) sidebarRef?.current?.closeDrawer?.();
+      if (!breakpoints.md || desktopCollapsed)
+        sidebarRef?.current?.closeDrawer?.();
     });
   }, [breakpoints, sidebarRef, tab]);
 

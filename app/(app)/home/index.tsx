@@ -175,10 +175,12 @@ const Wrapper = memo((props) => {
 function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
+  const { desktopCollapsed } = useSidebarContext();
 
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
+        {(!breakpoints.md || desktopCollapsed) && <MenuButton />}
         <ScrollView
           centerContent
           onScrollBeginDrag={Keyboard.dismiss}
@@ -201,7 +203,6 @@ function Page() {
             marginHorizontal: Platform.OS === "ios" ? undefined : "auto",
           }}
         >
-          {!breakpoints.md && <MenuButton />}
           <View
             style={{
               alignItems: "center",

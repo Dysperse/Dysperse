@@ -1,6 +1,7 @@
 import { CreateLabelModal } from "@/components/labels/createModal";
 import Content from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -97,6 +98,7 @@ function Footer() {
 export default function Page() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
+  const { desktopCollapsed } = useSidebarContext();
 
   const { sessionToken } = useUser();
   const handleCreateTab = () => {
@@ -123,7 +125,7 @@ export default function Page() {
           }}
           style={{ flex: 1 }}
         >
-          {!breakpoints.md && <MenuButton />}
+          {(!breakpoints.md || desktopCollapsed) && <MenuButton />}
           <View style={{ flexShrink: 0 }}>
             <View
               style={{ alignItems: "center", marginBottom: 15 }}

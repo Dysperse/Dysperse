@@ -20,7 +20,6 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MenuButton } from "../home";
 
 function conditional(condition, main, fallback) {
@@ -171,7 +170,6 @@ export function forFade({ current, next }) {
 export default function Layout() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const insets = useSafeAreaInsets();
   const { height, width } = useWindowDimensions();
 
   return (

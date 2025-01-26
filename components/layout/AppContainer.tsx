@@ -1,8 +1,9 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { RefObject, memo, useMemo } from "react";
-import { Animated } from "react-native";
+import { RefObject, memo, useEffect, useMemo } from "react";
+import { Animated, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSidebarContext } from "./sidebar/context";
 
 const AppContainer = memo(
   ({
@@ -15,6 +16,13 @@ const AppContainer = memo(
     const theme = useColorTheme();
     const breakpoints = useResponsiveBreakpoints();
     const insets = useSafeAreaInsets();
+    const { desktopCollapsed, SIDEBAR_WIDTH, sidebarRef } = useSidebarContext();
+
+    useEffect(() => {
+      if (Platform.OS === "web") {
+        sidebarRef.current?.openDrawer?.();
+      }
+    }, []);
 
     const borderStyle = useMemo(
       () => ({
@@ -40,9 +48,51 @@ const AppContainer = memo(
     );
 
     const animatedStyle = useMemo(
-      () =>
+      () => [
+        {
+          marginTop:
+            progressValue?.current?.interpolate?.({
+              inputRange: [0, 1],
+              outputRange: [0, insets.top],
+            }) || 0,
+          marginBottom:
+            progressValue?.current?.interpolate?.({
+              inputRange: [0, 1],
+              outputRange: [0, insets.bottom],
+            }) || 0,
+        },
         breakpoints.md
-          ? { flex: 1 }
+          ? desktopCollapsed
+            ? {
+                flex: 1,
+                width: "100%",
+                opacity:
+                  progressValue?.current?.interpolate?.({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.6],
+                  }) || 0,
+                marginBottom: 0,
+                paddingRight:
+                  progressValue?.current?.interpolate?.({
+                    inputRange: [0, 1],
+                    outputRange: [0, SIDEBAR_WIDTH.value],
+                  }) || 0,
+                transform: [
+                  {
+                    scale:
+                      progressValue?.current?.interpolate?.({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.98],
+                      }) || 0,
+                  },
+                ],
+              }
+            : {
+                flex: 1,
+                marginLeft: SIDEBAR_WIDTH.value,
+                zIndex: 99999999,
+                marginBottom: 0,
+              }
           : {
               flex: 1,
               width: "100%",
@@ -53,17 +103,6 @@ const AppContainer = memo(
                   outputRange: [!breakpoints.md ? 0 : 20, 30],
                 }) || 0,
               overflow: "hidden",
-              marginTop:
-                progressValue?.current?.interpolate?.({
-                  inputRange: [0, 1],
-                  outputRange: [0, insets.top],
-                }) || 0,
-              marginBottom:
-                progressValue?.current?.interpolate?.({
-                  inputRange: [0, 1],
-                  outputRange: [0, insets.bottom],
-                }) || 0,
-
               transform: [
                 {
                   scale:
@@ -74,7 +113,8 @@ const AppContainer = memo(
                 },
               ],
             },
-      [breakpoints, insets, progressValue]
+      ],
+      [breakpoints, insets, progressValue, desktopCollapsed, SIDEBAR_WIDTH]
     );
 
     const marginTopStyle = useMemo(

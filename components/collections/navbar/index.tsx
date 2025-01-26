@@ -280,18 +280,19 @@ const CollectionNavbar = memo(function CollectionNavbar({
     .flat()
     .filter((e) => e);
 
-  const { sidebarRef } = useSidebarContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
   const menu = useMemo(
     () =>
-      !breakpoints.md && (
+      !breakpoints.md ||
+      (desktopCollapsed && (
         <IconButton
           size={40}
           onPress={() => sidebarRef.current.openDrawer()}
           icon={<MenuIcon />}
         />
-      ),
-    [sidebarRef, breakpoints.md]
+      )),
+    [sidebarRef, breakpoints.md, desktopCollapsed]
   );
 
   return (

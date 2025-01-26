@@ -1,6 +1,7 @@
 import { CreateCollectionModal } from "@/components/collections/create";
 import ContentWrapper from "@/components/layout/content";
 import { createTab } from "@/components/layout/openTab";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useSession } from "@/context/AuthProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { sendApiRequest } from "@/helpers/api";
@@ -326,13 +327,16 @@ const Collections = () => {
 export default function Page() {
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
+  const { desktopCollapsed } = useSidebarContext();
 
   return (
     <ContentWrapper
       noPaddingTop
       style={!breakpoints.md && { paddingTop: insets.top + 70 }}
     >
-      {!breakpoints.md && <MenuButton gradient addInsets />}
+      {(!breakpoints.md || desktopCollapsed) && (
+        <MenuButton gradient addInsets />
+      )}
       <Collections />
     </ContentWrapper>
   );
