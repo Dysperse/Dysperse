@@ -18,7 +18,12 @@ const AppContainer = memo(
     const breakpoints = useResponsiveBreakpoints();
     const insets = useSafeAreaInsets();
     const pathname = usePathname();
-    const { desktopCollapsed, SIDEBAR_WIDTH, sidebarRef } = useSidebarContext();
+    const {
+      desktopCollapsed,
+      ORIGINAL_SIDEBAR_WIDTH,
+      SECONDARY_SIDEBAR_WIDTH,
+      sidebarRef,
+    } = useSidebarContext();
 
     useEffect(() => {
       if (Platform.OS === "web" && !desktopCollapsed) {
@@ -84,7 +89,7 @@ const AppContainer = memo(
                     scale:
                       progressValue?.current?.interpolate?.({
                         inputRange: [0, 1],
-                        outputRange: [1, 0.96],
+                        outputRange: [1, 0.98],
                       }) || 0,
                   },
                 ],
@@ -93,7 +98,9 @@ const AppContainer = memo(
                 flex: 1,
                 marginLeft: pathname.includes("settings")
                   ? 0
-                  : SIDEBAR_WIDTH.value,
+                  : pathname.includes("/everything")
+                  ? SECONDARY_SIDEBAR_WIDTH
+                  : ORIGINAL_SIDEBAR_WIDTH,
                 zIndex: 99999999,
                 marginBottom: 0,
               }
@@ -123,8 +130,9 @@ const AppContainer = memo(
         insets,
         progressValue,
         desktopCollapsed,
-        SIDEBAR_WIDTH,
         pathname,
+        ORIGINAL_SIDEBAR_WIDTH,
+        SECONDARY_SIDEBAR_WIDTH,
       ]
     );
 

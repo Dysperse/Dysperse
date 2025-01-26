@@ -212,8 +212,9 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
               horizontal
               contentContainerStyle={{
                 gap: 10,
+                paddingHorizontal: 20,
               }}
-              style={{ marginTop: 20, marginBottom: 5 }}
+              style={{ marginTop: 20, marginBottom: 5, marginHorizontal: -20 }}
               showsHorizontalScrollIndicator={false}
             >
               {filters.map((filter) => (
@@ -293,6 +294,7 @@ function SearchList({ collection, inputRef, listRef, handleClose }) {
                           fontSize: 20,
                           marginTop: 10,
                           color: theme[11],
+                          textAlign: "center",
                         }}
                       >
                         {query.length !== 0

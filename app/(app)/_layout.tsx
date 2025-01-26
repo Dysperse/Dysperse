@@ -355,7 +355,9 @@ export default function AppLayout() {
                                 <TabFriendModal />
                                 <DrawerLayout
                                   // @ts-expect-error this is patched with patch-package
-                                  defaultDrawerOpen={!desktopCollapsed}
+                                  defaultDrawerOpen={
+                                    !desktopCollapsed && breakpoints.md
+                                  }
                                   ref={sidebarRef}
                                   onDrawerOpen={() => Keyboard.dismiss()}
                                   useNativeAnimations={false}
@@ -400,7 +402,9 @@ export default function AppLayout() {
                                   }
                                   edgeWidth={
                                     breakpoints.md
-                                      ? ORIGINAL_SIDEBAR_WIDTH
+                                      ? pathname.startsWith("/settings")
+                                        ? 0
+                                        : ORIGINAL_SIDEBAR_WIDTH
                                       : sidebarWidth
                                   }
                                   renderNavigationView={renderNavigationView}

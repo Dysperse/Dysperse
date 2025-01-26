@@ -615,7 +615,7 @@ function PrimarySidebar({ progressValue }) {
 
   const transform = progressValue?.interpolate?.({
     inputRange: [0, 1],
-    outputRange: breakpoints.md ? [0.85, 1] : [-(width / 10), 0],
+    outputRange: breakpoints.md ? [0.9, 1] : [-(width / 10), 0],
   });
 
   const opacity = progressValue?.interpolate?.({
@@ -705,10 +705,10 @@ function SecondarySidebar() {
             Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
           ]}
           style={{ flexDirection: "column" }}
-          icon="label"
+          icon="tag"
           onPress={() => {
             router.push("/everything");
-            sidebarRef.current?.closeDrawer?.();
+            if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything" ? "filled" : "text"}
         />
@@ -724,7 +724,7 @@ function SecondarySidebar() {
           icon="stack"
           onPress={() => {
             router.push("/everything/collections");
-            sidebarRef.current?.closeDrawer?.();
+            if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           variant={pathname === "/everything/collections" ? "filled" : "text"}
         />
@@ -734,7 +734,7 @@ function SecondarySidebar() {
           text="Trash"
           onPress={() => {
             router.push("/everything/trash");
-            sidebarRef.current?.closeDrawer?.();
+            if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
             { borderRadius: 20 },
