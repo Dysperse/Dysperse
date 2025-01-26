@@ -1,8 +1,7 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RefObject, memo, useCallback, useEffect, useMemo } from "react";
-import { Animated } from "react-native";
+import { RefObject, memo, useEffect, useMemo } from "react";
+import { Animated, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSidebarContext } from "./sidebar/context";
 
@@ -19,18 +18,11 @@ const AppContainer = memo(
     const insets = useSafeAreaInsets();
     const { desktopCollapsed, SIDEBAR_WIDTH, sidebarRef } = useSidebarContext();
 
-    const setSidebarState = useCallback(async () => {
-      const t = await AsyncStorage.getItem("desktopCollapsed");
-      if (t === "true") {
-        sidebarRef.current.closeDrawer();
-      } else {
+    useEffect(() => {
+      if (Platform.OS === "web" && !desktopCollapsed) {
         sidebarRef.current.openDrawer();
       }
-    }, [sidebarRef]);
-
-    useEffect(() => {
-      // setSidebarState();
-    }, [setSidebarState]);
+    }, [desktopCollapsed, sidebarRef]);
 
     const borderStyle = useMemo(
       () => ({
