@@ -627,6 +627,7 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
     .filter((i) => i.name !== "All");
 
   const breakpoints = useResponsiveBreakpoints();
+  const { desktopCollapsed } = useSidebarContext() || {};
 
   const [loading, setLoading] = useState(false);
   const { sidebarRef } = useSidebarContext() || {};
@@ -659,7 +660,8 @@ export default function CommandPaletteContent({ handleClose, defaultFilter }) {
             ...tab.params,
           },
         });
-        sidebarRef?.current?.closeDrawer?.();
+        if (!breakpoints.md || desktopCollapsed)
+          sidebarRef?.current?.closeDrawer?.();
       } catch (e) {
         Toast.show({ type: "error" });
       } finally {
