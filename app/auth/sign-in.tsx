@@ -692,9 +692,14 @@ export default function SignIn() {
           setStep(1);
         } else {
           setStep(step === 3 ? 4 : 2);
-          const ip = await fetch("https://api.ipify.org?format=json")
+          let ip = "";
+
+          await fetch("https://api.ipify.org?format=json")
             .then((res) => res.json())
-            .then((res) => res.ip);
+            .then((res) => (ip = res.ip))
+            .catch(() => {
+              ip = "";
+            });
 
           const sessionRequest = await sendApiRequest(
             false,
