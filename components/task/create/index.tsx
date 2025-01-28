@@ -509,9 +509,6 @@ const TimeSuggestion = forwardRef(
         const regex =
           /(?:at|from|during|after|before|by)\s((1[0-2]|0?[1-9])(?::([0-5][0-9]))?(am|pm)?)/i;
 
-        const attachmentSuggestion = await AsyncStorage.getItem(
-          "attachmentSuggestion"
-        );
         const importantSuggestion = await AsyncStorage.getItem(
           "importantSuggestion"
         );
@@ -555,11 +552,6 @@ const TimeSuggestion = forwardRef(
             ? {
                 text: "Hit [backspace] to reset",
                 icon: "magic_button",
-              }
-            : !attachmentSuggestion && Platform.OS === "web"
-            ? {
-                text: "Type @ to attach something!",
-                icon: "emoji_objects",
               }
             : !importantSuggestion && Platform.OS === "web"
             ? {
@@ -774,14 +766,6 @@ function TaskNameInput({
                     if (Platform.OS === "web")
                       localStorage.setItem("noteSuggestion", "true");
                   }
-                  if (e.key === "@") {
-                    e.preventDefault();
-                    if (Platform.OS === "web")
-                      localStorage.setItem("attachmentSuggestion", "true");
-                    nameRef.current?.blur();
-                    menuRef.current?.present();
-                  }
-
                   if (e.key === "Escape") {
                     if (value) return onChange("");
                     forceClose();

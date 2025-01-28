@@ -2,7 +2,6 @@ import { useCollectionContext } from "@/components/collections/context";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Emoji from "@/ui/Emoji";
 import IconButton from "@/ui/IconButton";
-import RefreshControl from "@/ui/RefreshControl";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -200,9 +199,6 @@ export default function Grid({ editOrderMode }: any) {
       ) : (
         <ScrollView
           onLayout={(e) => setContentWidth(e.nativeEvent.layout.width)}
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={() => mutate()} />
-          }
           horizontal
           ref={scrollRef}
           contentContainerStyle={[
@@ -250,3 +246,4 @@ export default function Grid({ editOrderMode }: any) {
     </GridContext.Provider>
   );
 }
+
