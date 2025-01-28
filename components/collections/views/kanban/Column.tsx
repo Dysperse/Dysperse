@@ -223,7 +223,12 @@ export function Column(props: ColumnProps) {
       <FlashList
         ref={columnRef}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => mutate()} />
+          !centerContent && (
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => mutate()}
+            />
+          )
         }
         centerContent={centerContent}
         data={data}
