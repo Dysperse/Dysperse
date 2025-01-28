@@ -297,13 +297,21 @@ function TaskDateMenu() {
           )}`,
       ]
     : [
-        task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "Set due date",
+        task.start
+          ? dayjs(task.start).format(
+              dayjs(task.start).isSame(dayjs(), "year")
+                ? "MMMM Do"
+                : "MMM Do, YYYY"
+            )
+          : "Set due date",
         task.end &&
-        !(task.dateOnly && dayjs(task.start).isSame(dayjs(task.end), "day"))
-          ? dayjs(task.end).format("MMM Do, YYYY")
-          : task.dateOnly
-          ? "All day"
-          : dayjs(task.start).format("[at] h:mm A"),
+          (task.dateOnly
+            ? dayjs(task.start).isSame(dayjs(task.end), "day")
+              ? "All day"
+              : dayjs(task.end).format("MMM Do h:mm A")
+            : dayjs(task.start).isSame(dayjs(task.end), "day")
+            ? dayjs(task.start).format("[until] h:mm A")
+            : dayjs(task.end).format("MMM Do h:mm A")),
       ];
 
   const addRecurrenceRef = useRef(null);
@@ -363,15 +371,17 @@ function TaskDateMenu() {
               <View style={{ flexDirection: "column" }}>
                 <Text style={{ color: theme[11] }}>
                   {dateName[0]}
-                  <Text
-                    style={{
-                      color: theme[11],
-                      opacity: 0.6,
-                    }}
-                  >
-                    {" — "}
-                    {dateName[1]}
-                  </Text>
+                  {dateName[1] && (
+                    <Text
+                      style={{
+                        color: theme[11],
+                        opacity: 0.6,
+                      }}
+                    >
+                      {" — "}
+                      {dateName[1]}
+                    </Text>
+                  )}
                 </Text>
               </View>
             </Button>
@@ -385,7 +395,7 @@ function TaskDateMenu() {
                   ...(((task.start || task.recurrenceRule) && [
                     {
                       renderer: () => (
-                        <View style={{ flexDirection: "row", gap: 10 }}>
+                        <View style={{ flexDirection: "row" }}>
                           <MenuItem
                             onPress={() => {
                               menuRef.current.close();

@@ -450,7 +450,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                     itemRef.current?.present();
                     menuRef.current.close();
                   }}
-                  style={{ flex: 1 }}
+                  containerStyle={{ flex: 1 }}
                 >
                   <Icon>add_circle</Icon>
                   <Text variant="menuItem">Task</Text>
@@ -461,6 +461,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                       menuRef.current.close();
                       router.push("/upload");
                     }}
+                    containerStyle={{ minWidth: 0 }}
                   >
                     <Icon>upload</Icon>
                   </MenuItem>
