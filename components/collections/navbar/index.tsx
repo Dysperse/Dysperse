@@ -257,6 +257,12 @@ const CollectionNavbar = memo(function CollectionNavbar({
       text: "Edit",
       callback: () => router.push(pathname + "/customize"),
     },
+    session &&
+      !isReadOnly && {
+        icon: "tag",
+        text: "Manage labels",
+        callback: openLabelPicker,
+      },
     Platform.OS === "web" &&
       !fullscreen &&
       breakpoints.md && {
