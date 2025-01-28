@@ -376,6 +376,8 @@ export default function AppLayout() {
                                         ) ||
                                         (pathname.includes("/map") &&
                                           Platform.OS !== "ios") ||
+                                        (pathname.includes("/grid") &&
+                                          Platform.OS !== "ios") ||
                                         (pathname.includes("/plan") &&
                                           !pathname.includes("/planner")) ||
                                         pathname.includes("open") ||
