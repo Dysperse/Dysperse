@@ -346,7 +346,7 @@ function AISimplification({ id, updateTask }) {
         }
       );
 
-      updateTask({ note: res.note, hasSimplifiedNote: true });
+      updateTask({ note: res, hasSimplifiedNote: true });
     } catch (e) {
       Toast.show({ type: "error" });
     } finally {
@@ -361,6 +361,7 @@ function AISimplification({ id, updateTask }) {
         paddingHorizontal: 20,
         backgroundColor: addHslAlpha(theme[9], 0.05),
         borderRadius: 50,
+        marginBottom: 10,
         marginTop: 10,
         flexDirection: "row",
         alignItems: "center",
@@ -432,50 +433,58 @@ export const TaskNote = forwardRef(
     }));
     const { isReadOnly } = useTaskDrawerContext() || {};
 
-    return !shouldShow ? (
-      !isReadOnly && (
-        <Button
-          dense
-          onPress={() => setHasClicked(true)}
-          containerStyle={{
-            marginRight: "auto",
-            opacity: 0.6,
-            marginLeft: 5,
-          }}
-          style={{ gap: 10 }}
-        >
-          <Icon size={20} style={{ marginTop: -3 }}>
-            sticky_note_2
-          </Icon>
-          <Text style={{ color: theme[11] }}>Add note</Text>
-        </Button>
-      )
-    ) : (
-      <Animated.View style={focusedStyles}>
-        <NoteFormatMenu
-          formatMenuRef={formatMenuRef}
-          isFocused={isFocused}
-          editorRef={editorRef}
-        />
+    return (
+      <>
         {countWords(task.note) > 100 &&
           !task.hasSimplifiedNote &&
           session.user.betaTester && (
             <AISimplification id={task.id} updateTask={updateTask} />
           )}
-        <TaskNoteEditor
-          onContainerFocus={onContainerFocus}
-          showEditorWhenEmpty={showEditorWhenEmpty}
-          ref={editorRef}
-          setSelectionState={(state) =>
-            formatMenuRef.current.setSelectionState(state)
-          }
-          updateTask={updateTask as any}
-          theme={theme}
-          dom={{ matchContents: true, scrollEnabled: false }}
-          setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
-          content={task.note?.replaceAll("] (http", "](http")?.trim()}
-        />
-      </Animated.View>
+        {!shouldShow ? (
+          !isReadOnly && (
+            <Button
+              dense
+              onPress={() => setHasClicked(true)}
+              containerStyle={{
+                marginRight: "auto",
+                opacity: 0.6,
+                marginLeft: 5,
+              }}
+              style={{ gap: 10 }}
+            >
+              <Icon size={20} style={{ marginTop: -3 }}>
+                sticky_note_2
+              </Icon>
+              <Text style={{ color: theme[11] }}>Add note</Text>
+            </Button>
+          )
+        ) : (
+          <Animated.View
+            style={focusedStyles}
+            key={task.hasSimplifiedNote ? "simplified" : "normal"}
+          >
+            <NoteFormatMenu
+              formatMenuRef={formatMenuRef}
+              isFocused={isFocused}
+              editorRef={editorRef}
+            />
+
+            <TaskNoteEditor
+              onContainerFocus={onContainerFocus}
+              showEditorWhenEmpty={showEditorWhenEmpty}
+              ref={editorRef}
+              setSelectionState={(state) =>
+                formatMenuRef.current.setSelectionState(state)
+              }
+              updateTask={updateTask as any}
+              theme={theme}
+              dom={{ matchContents: true, scrollEnabled: false }}
+              setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
+              content={task.note?.replaceAll("] (http", "](http")?.trim()}
+            />
+          </Animated.View>
+        )}
+      </>
     );
   }
 );
