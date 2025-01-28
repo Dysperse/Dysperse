@@ -1,3 +1,6 @@
+import { useSession } from "@/context/AuthProvider";
+import { useUser } from "@/context/useUser";
+import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -105,6 +108,10 @@ function LinkModal({ children, onSubmit }) {
       </Modal>
     </>
   );
+}
+
+function countWords(str) {
+  return str.trim().split(/\s+/).length;
 }
 
 function NoteInsertMenu({ isFocused, editorRef }) {
@@ -321,6 +328,73 @@ function NoteFormatMenu({ isFocused, editorRef, formatMenuRef }) {
   );
 }
 
+function AISimplification({ id, updateTask }) {
+  const theme = useColorTheme();
+  const { session } = useSession();
+  const [loading, setLoading] = useState(false);
+
+  const handleSimplify = async () => {
+    try {
+      setLoading(true);
+      const res = await sendApiRequest(
+        session,
+        "POST",
+        "ai/rewrite",
+        {},
+        {
+          body: JSON.stringify({ id }),
+        }
+      );
+
+      updateTask({ note: res.note, hasSimplifiedNote: true });
+    } catch (e) {
+      Toast.show({ type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <View
+      style={{
+        padding: 10,
+        paddingHorizontal: 20,
+        backgroundColor: addHslAlpha(theme[9], 0.05),
+        borderRadius: 50,
+        marginTop: 10,
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          color: theme[11],
+          opacity: 0.8,
+        }}
+        weight={700}
+      >
+        A simplified version of this task's note is available.
+      </Text>
+      <Button
+        variant="filled"
+        backgroundColors={{
+          default: addHslAlpha(theme[9], 0.1),
+          hovered: addHslAlpha(theme[9], 0.2),
+          pressed: addHslAlpha(theme[9], 0.3),
+        }}
+        text="View"
+        icon="east"
+        iconStyle={{ lineHeight: 25, marginLeft: 5 }}
+        iconPosition="end"
+        dense
+        containerStyle={{ marginLeft: "auto" }}
+        onPress={handleSimplify}
+        isLoading={loading}
+      />
+    </View>
+  );
+}
+
 export const TaskNote = forwardRef(
   (
     {
@@ -337,6 +411,7 @@ export const TaskNote = forwardRef(
     editorRef: any
   ) => {
     const theme = useColorTheme();
+    const { session } = useUser();
     const formatMenuRef = useRef(null);
     const [hasClicked, setHasClicked] = useState(showEditorWhenEmpty || false);
     const shouldShow = Boolean(getPreviewText(task.note)) || hasClicked;
@@ -382,6 +457,11 @@ export const TaskNote = forwardRef(
           isFocused={isFocused}
           editorRef={editorRef}
         />
+        {countWords(task.note) > 100 &&
+          !task.hasSimplifiedNote &&
+          session.user.betaTester && (
+            <AISimplification id={task.id} updateTask={updateTask} />
+          )}
         <TaskNoteEditor
           onContainerFocus={onContainerFocus}
           showEditorWhenEmpty={showEditorWhenEmpty}
@@ -399,3 +479,4 @@ export const TaskNote = forwardRef(
     );
   }
 );
+
