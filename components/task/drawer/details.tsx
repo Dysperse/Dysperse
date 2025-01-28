@@ -300,7 +300,7 @@ function TaskDateMenu() {
         task.start ? dayjs(task.start).format("MMMM Do, YYYY") : "Set due date",
         task.end &&
         !(task.dateOnly && dayjs(task.start).isSame(dayjs(task.end), "day"))
-          ? `to ${dayjs(task.end).format("MMM Do, YYYY")}`
+          ? dayjs(task.end).format("MMM Do, YYYY")
           : task.dateOnly
           ? "All day"
           : dayjs(task.start).format("[at] h:mm A"),
@@ -369,7 +369,7 @@ function TaskDateMenu() {
                       opacity: 0.6,
                     }}
                   >
-                    {" "}
+                    {" — "}
                     {dateName[1]}
                   </Text>
                 </Text>
