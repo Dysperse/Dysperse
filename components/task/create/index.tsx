@@ -3,6 +3,7 @@ import { LocationPickerModal } from "@/components/collections/views/map";
 import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
+import { useSession } from "@/context/AuthProvider";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useUser } from "@/context/useUser";
@@ -56,6 +57,7 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { RRule } from "rrule";
 import useSWR from "swr";
+import { useDebouncedCallback } from "use-debounce";
 import { TaskAttachmentButton } from "../drawer/attachment/button";
 import { TaskNote } from "../drawer/TaskNote";
 
@@ -170,11 +172,11 @@ function Footer({
           alignItems: "center",
           flexDirection: "row",
           gap: 5,
-          display:
-            (date || recurrenceRule || label || collectionId || location) &&
-            !parentTask
-              ? "flex"
-              : "none",
+          // display:
+          //   (date || recurrenceRule || label || collectionId || location) &&
+          //   !parentTask
+          //     ? "flex"
+          //     : "none",
         }}
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -246,10 +248,59 @@ function Footer({
             }}
           />
         )}
+        <AiLabelSuggestion
+          nameRef={nameRef}
+          setValue={setValue}
+          watch={watch}
+        />
       </ScrollView>
     </View>
   );
 }
+
+const AiLabelSuggestion = ({ watch, setValue, nameRef }: any) => {
+  const name = watch("name");
+  const label = watch("label");
+  const [result, setResult] = useState(null);
+  const { session } = useSession();
+  const { id } = useGlobalSearchParams();
+
+  // Debounce a fetch request to the AI model
+  const fetchSuggestions = useDebouncedCallback(async (t) => {
+    const data = await sendApiRequest(
+      session,
+      "POST",
+      "ai/categorize-tasks/quick",
+      {},
+      {
+        body: JSON.stringify({ name: t, collectionId: id }),
+      }
+    );
+
+    setResult(data);
+  }, 500);
+
+  useEffect(() => {
+    if (name && !label) fetchSuggestions(name);
+  }, [name, label, fetchSuggestions]);
+
+  return (
+    result?.id &&
+    !label && (
+      <Chip
+        label={result?.name}
+        outlined
+        icon="add"
+        onPress={() => {
+          setValue("label", result);
+          nameRef.current.focus();
+        }}
+        style={{ borderStyle: "dashed", borderWidth: 1 }}
+      />
+    )
+  );
+};
+
 const CreateTaskLabelInput = memo(function CreateTaskLabelInput({
   control,
   collectionId,
