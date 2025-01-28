@@ -186,6 +186,7 @@ export default function List() {
             <View
               style={{
                 width: 600,
+                maxWidth: "100%",
                 paddingHorizontal: 20,
                 marginHorizontal: "auto",
                 marginBottom: item.header ? 10 : 0,
