@@ -435,7 +435,8 @@ export const TaskNote = forwardRef(
 
     return (
       <>
-        {countWords(task.note) > 100 &&
+        {task.note &&
+          countWords(task.note) > 100 &&
           !task.hasSimplifiedNote &&
           session.user.betaTester && (
             <AISimplification id={task.id} updateTask={updateTask} />
