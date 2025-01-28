@@ -168,8 +168,9 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           // pointerEvents: "none",
           paddingTop: Platform.OS === "android" ? 70 : undefined,
         },
-        row && { flexDirection: "row", alignItems: "center", gap: 20 },
+        // row && { flexDirection: "row", alignItems: "center", gap: 20 },
         list && { paddingVertical: 70 },
+        row && { marginTop: -40 },
       ]}
     >
       <View
@@ -195,9 +196,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
           <Emoji emoji={message[0]} size={50} />
         </View>
       </View>
-      <View
-        style={[row ? { marginTop: -30, flex: 1 } : { alignItems: "center" }]}
-      >
+      <View style={[{ alignItems: "center" }]}>
         <Text
           weight={dense ? 900 : 300}
           style={{ fontSize: dense ? 20 : 30 }}

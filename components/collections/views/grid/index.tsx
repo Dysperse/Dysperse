@@ -156,11 +156,7 @@ export default function Grid({ editOrderMode }: any) {
                       flex: 1,
                       backgroundColor: theme[2],
                       borderRadius: 25,
-                      width: breakpoints.md
-                        ? displayLabels.length <= 4
-                          ? (contentWidth - 40) / 2
-                          : 500
-                        : "100%",
+                      width: 400,
                     },
                     label.empty && {
                       borderWidth: 1,

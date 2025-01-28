@@ -92,13 +92,13 @@ const Loading = ({ error, isPublic }: any) => {
     case "matrix":
       content = (
         <>
-          {[...new Array(3)].map((_, i) => (
+          {[...new Array(5)].map((_, i) => (
             <View style={{ flexDirection: "column", gap: 10 }} key={i}>
               <View style={{ flex: 1 }}>
-                <LinearSkeleton height="100%" width={500} />
+                <LinearSkeleton height="100%" width={400} />
               </View>
               <View style={{ flex: 1 }}>
-                <LinearSkeleton height="100%" width={500} />
+                <LinearSkeleton height="100%" width={400} />
               </View>
             </View>
           ))}
