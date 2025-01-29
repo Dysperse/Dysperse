@@ -2,9 +2,9 @@ import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import { Portal } from "@gorhom/portal";
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
-import { Keyboard, Platform, Pressable, View } from "react-native";
+import { Dimensions, Keyboard, Platform, Pressable, View } from "react-native";
 import {
   MentionInput,
   MentionSuggestionsProps,
@@ -43,24 +43,30 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
     return null;
   }
 
+  const keyboardHeight = isKeyboardVisible
+    ? Keyboard.metrics()?.height ?? 0
+    : 0;
+
   return (
     <Portal>
       <View
         style={{
-          width: 250,
+          width: Dimensions.get("window").width,
           borderRadius: 25,
           overflow: "hidden",
           position: "absolute",
           zIndex: 999,
-          top: 50,
+          bottom: keyboardHeight,
           backgroundColor: theme[5],
+          height: 80,
         }}
       >
         <ScrollView
+          horizontal
           keyboardShouldPersistTaps="always"
           style={{
             borderRadius: 10,
-            maxHeight: isKeyboardVisible ? 200 : 300,
+            height: 80,
           }}
         >
           {suggestions
@@ -74,6 +80,7 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
                 onPress={() => onSuggestionPress(one)}
                 style={{
                   padding: 12,
+                  display: "inline-flex",
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 10,
