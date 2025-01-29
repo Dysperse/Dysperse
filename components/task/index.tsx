@@ -176,11 +176,14 @@ export function getPreviewText(htmlString) {
   // Use a regular expression to remove all tags and their contents (e.g., <img>)
   const strippedString = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
 
+  // Remove content from <a> tags
+  const withoutLinks = strippedString.replace(/<a[^>]*>(.*?)<\/a>/g, "");
+
   // Trim the string to a desired length for a preview, e.g., 150 characters
   const previewLength = 150;
-  return strippedString.length > previewLength
-    ? strippedString.substring(0, previewLength) + "..."
-    : strippedString;
+  return withoutLinks.length > previewLength
+    ? withoutLinks.substring(0, previewLength) + "..."
+    : withoutLinks;
 }
 
 function extractLinksFromHTML(htmlString) {
