@@ -173,22 +173,16 @@ export const TaskLabelChip = ({
 
 export function getPreviewText(htmlString) {
   if (!htmlString) return "";
+  // Use a regular expression to remove all tags and their contents (e.g., <img>)
+  const strippedString = htmlString
+    .replace(/<\/?[^>]+(>|$)/g, "")
+    .replace("View assignment", "");
 
   // Trim the string to a desired length for a preview, e.g., 150 characters
-  const previewLength = 200;
-
-  const trimmedString =
-    htmlString.length > previewLength
-      ? htmlString.substring(0, previewLength) + "..."
-      : htmlString;
-
-  // Use a regular expression to remove all tags and their contents (e.g., <img>)
-  const strippedString = trimmedString.replace(/<\/?[^>]+(>|$)/g, "");
-
-  // Remove content from <a> tags
-  const withoutLinks = strippedString.replace(/<a[^>]*>(.*?)<\/a>/g, "");
-
-  return withoutLinks;
+  const previewLength = 150;
+  return strippedString.length > previewLength
+    ? strippedString.substring(0, previewLength) + "..."
+    : strippedString;
 }
 
 function extractLinksFromHTML(htmlString) {
