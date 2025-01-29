@@ -167,12 +167,12 @@ export default function Grid({ editOrderMode }: any) {
                   ]}
                 >
                   {label.empty ? (
-                    isReadOnly && (
+                    !isReadOnly && (
                       <IconButton
                         onPress={openLabelPicker}
-                        size={55}
+                        size={40}
                         icon="add"
-                        variant="outlined"
+                        variant="filled"
                       />
                     )
                   ) : label.other ? (
