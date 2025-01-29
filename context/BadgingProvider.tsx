@@ -21,7 +21,16 @@ export const BadgingProvider = ({
         setBadgeCountAsync(data.count);
       }
     }
-  }, [data]);
+
+    // Refresh badge every 20 mins
+    const interval = setInterval(() => {
+      mutate();
+    }, 20 * 60 * 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [data, mutate]);
 
   const badgingRef = useRef({
     mutate: () => mutate(),
