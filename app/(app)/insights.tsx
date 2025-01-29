@@ -160,6 +160,7 @@ function Insights({ year }) {
                   justifyContent: "center",
                   overflow: "hidden",
                   alignItems: "center",
+                  minWidth: 30,
                 }}
               >
                 <Icon
