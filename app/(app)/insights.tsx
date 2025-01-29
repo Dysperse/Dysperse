@@ -158,6 +158,7 @@ function Insights({ year }) {
                   borderRadius: 15,
                   height: 50,
                   justifyContent: "center",
+                  overflow: "hidden",
                   alignItems: "center",
                 }}
               >
