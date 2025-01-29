@@ -286,6 +286,7 @@ const AiLabelSuggestion = ({ watch, setValue, nameRef }: any) => {
 
   return (
     result?.id &&
+    name &&
     !label && (
       <Chip
         label={result?.name}
