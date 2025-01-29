@@ -163,10 +163,7 @@ function Insights({ year }) {
                   minWidth: 30,
                 }}
               >
-                <Icon
-                  bold
-                  style={{ color: theme[11], marginTop: -3, marginLeft: -3 }}
-                >
+                <Icon bold style={{ color: theme[11], marginTop: -3 }}>
                   {COLLECTION_VIEWS[key].icon}
                 </Icon>
               </View>
