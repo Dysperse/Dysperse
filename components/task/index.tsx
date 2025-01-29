@@ -175,8 +175,8 @@ export function getPreviewText(htmlString) {
   if (!htmlString) return "";
   // Use a regular expression to remove all tags and their contents (e.g., <img>)
   const strippedString = htmlString
-    .replace(/<\/?[^>]+(>|$)/g, "")
-    .replace("View assignment", "");
+    .replace(/<a\b[^>]*>(.*?)<\/a>/gi, "")
+    .replace(/<\/?[^>]+(>|$)/g, "");
 
   // Trim the string to a desired length for a preview, e.g., 150 characters
   const previewLength = 150;
