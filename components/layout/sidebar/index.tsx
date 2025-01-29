@@ -870,7 +870,9 @@ const Sidebar = ({
               widthStyle,
               {
                 flexDirection: "row",
-                maxWidth: ORIGINAL_SIDEBAR_WIDTH,
+                maxWidth: pathname.includes("everything")
+                  ? SECONDARY_SIDEBAR_WIDTH
+                  : ORIGINAL_SIDEBAR_WIDTH,
                 overflow: "hidden",
               },
             ]}
