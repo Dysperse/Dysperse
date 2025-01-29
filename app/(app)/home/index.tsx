@@ -179,20 +179,12 @@ function Page() {
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
-        {(!breakpoints.md || desktopCollapsed) && (
-          <MenuButton addInsets={!breakpoints.md} />
-        )}
         <ScrollView
           centerContent
           onScrollBeginDrag={Keyboard.dismiss}
           style={{ flex: 1 }}
           contentContainerStyle={{
-            maxWidth: breakpoints.md ? 400 : undefined,
-            width: "100%",
-            paddingHorizontal: 30,
-            gap: 20,
-            paddingTop:
-              Platform.OS === "web" && breakpoints.md ? 90 : insets.top,
+            paddingTop: Platform.OS === "web" ? 90 : insets.top,
             ...(Platform.OS === "android"
               ? {
                   height: "100%",
@@ -201,24 +193,36 @@ function Page() {
               : {
                   // paddingVertical: Platform.OS === "ios" ? 40 : 100,
                 }),
-            marginHorizontal: Platform.OS === "ios" ? undefined : "auto",
           }}
         >
+          {(!breakpoints.md || desktopCollapsed) && (
+            <MenuButton addInsets={!breakpoints.md} />
+          )}
           <View
             style={{
-              alignItems: "center",
-              marginTop: Platform.OS === "web" ? 0 : 50,
+              maxWidth: breakpoints.md ? 400 : undefined,
+              width: "100%",
+              paddingHorizontal: 30,
+              gap: 20,
+              marginHorizontal: Platform.OS === "ios" ? undefined : "auto",
             }}
-            aria-valuetext="home-logo"
           >
-            <Logo size={64} />
-            <Greeting />
-            <TodayText />
+            <View
+              style={{
+                alignItems: "center",
+                marginTop: Platform.OS === "web" ? 0 : 50,
+              }}
+              aria-valuetext="home-logo"
+            >
+              <Logo size={64} />
+              <Greeting />
+              <TodayText />
+            </View>
+            <Actions />
+            <StreakGoal />
+            <FriendActivity />
+            <CustomizeButton />
           </View>
-          <Actions />
-          <StreakGoal />
-          <FriendActivity />
-          <CustomizeButton />
         </ScrollView>
       </Wrapper>
     </ContentWrapper>
