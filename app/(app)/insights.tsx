@@ -1,5 +1,11 @@
+import { MemberSince } from "@/components/insights/MemberSince";
+import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
+import { useUser } from "@/context/useUser";
 import { Button } from "@/ui/Button";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
+import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
@@ -23,10 +29,250 @@ function YearSelector({ years, year, setYear }) {
 }
 
 function Insights({ year }) {
+  const theme = useColorTheme();
+  const { session } = useUser();
   const { data, error } = useSWR(["user/insights", { year }]);
 
+  const cardStyles = {
+    backgroundColor: theme[4],
+    flex: 1,
+    padding: 15,
+    borderRadius: 20,
+  };
+
+  const textStyles = {
+    fontFamily: "serifText700",
+    fontSize: 30,
+    color: theme[11],
+  };
+
+  const labelStyles = {
+    opacity: 0.6,
+    fontSize: 17,
+    color: theme[11],
+    fontFamily: "body_700",
+  };
+
   return data ? (
-    <Text>{JSON.stringify(data, null, 2)}</Text>
+    <View style={{ padding: 20, paddingTop: 0, gap: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 10,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text variant="eyebrow">Climate impact</Text>
+
+        <MenuPopover
+          trigger={<Button dense text="About" />}
+          options={[
+            {
+              renderer: () => (
+                <View style={{ padding: 10 }}>
+                  <Text style={{ color: theme[11] }}>
+                    This data is calculated based on the number of tasks &
+                    collections you've created so far. It's an estimate of how
+                    much impact you would make if you were to use regular
+                    notebook instead of Dysperse!
+                  </Text>
+                </View>
+              ),
+            },
+          ]}
+        />
+      </View>
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <View style={cardStyles}>
+          <Text style={textStyles}>
+            {Math.round(data.treesSaved * 100) / 100}
+          </Text>
+          <Text style={labelStyles}>Trees saved</Text>
+        </View>
+
+        <View style={cardStyles}>
+          <Text style={[textStyles]}>{~~data.co2} grams</Text>
+          <Text style={labelStyles}>of CO2 saved</Text>
+        </View>
+      </View>
+
+      <Text variant="eyebrow" style={{ marginTop: 10 }}>
+        Summary
+      </Text>
+
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <View style={cardStyles}>
+          <Text style={textStyles}>{data.insights.tasksCreated}</Text>
+          <Text style={labelStyles}>Tasks created</Text>
+        </View>
+
+        <View style={cardStyles}>
+          <Text style={textStyles}>{data.insights.tasksCompleted}</Text>
+          <Text style={labelStyles}>Tasks completed</Text>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <View style={cardStyles}>
+          <Text style={textStyles}>{data.insights.tasksRescheduled}</Text>
+          <Text style={labelStyles}>Tasks rescheduled</Text>
+        </View>
+
+        <View style={cardStyles}>
+          <Text style={textStyles}>{data.insights.tasksDeleted}</Text>
+          <Text style={labelStyles}>Tasks deleted</Text>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <View style={cardStyles}>
+          <Text style={textStyles}>{data.insights.aiFeaturesUsed}</Text>
+          <Text style={labelStyles}>AI features used</Text>
+        </View>
+
+        <View style={cardStyles}>
+          <Text style={textStyles}>{data.insights.tabsCreated}</Text>
+          <Text style={labelStyles}>Tabs created</Text>
+        </View>
+      </View>
+
+      <View style={cardStyles}>
+        <Text style={labelStyles}>Top views</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 5,
+            marginTop: 5,
+          }}
+        >
+          {Object.entries(data.insights.viewCount)
+            .sort((a, b) => b[1] - a[1])
+            .map(([key, value]) => (
+              <View
+                key={key}
+                style={{
+                  flexDirection: "column",
+                  flex: value as number,
+                  backgroundColor: addHslAlpha(theme[6], 0.7),
+                  borderRadius: 15,
+                  height: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Icon
+                  bold
+                  style={{ color: theme[11], marginTop: -3, marginLeft: -3 }}
+                >
+                  {COLLECTION_VIEWS[key].icon}
+                </Icon>
+              </View>
+            ))}
+        </View>
+      </View>
+
+      <View>
+        <View style={cardStyles}>
+          <Text style={labelStyles}>By day</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              height: 200,
+              gap: 20,
+              marginTop: 10,
+            }}
+          >
+            {data.byDay.map((day, index) => (
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                }}
+              >
+                <View style={{ flex: 1 }} />
+                <View
+                  style={{
+                    height: `${(day / Math.max(...data.byDay)) * 100}%`,
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: addHslAlpha(theme[6], 0.7),
+                      borderRadius: 15,
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      padding: 5,
+                      flex: 1,
+                    }}
+                  >
+                    <Text variant="eyebrow">
+                      {day === 0 ? "" : day.toString()}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text
+                      variant="eyebrow"
+                      style={{
+                        textAlign: "center",
+                        marginTop: 5,
+                        marginBottom: -5,
+                      }}
+                    >
+                      {["S", "M", "T", "W", "T", "F", "S"][index]}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
+      <View>
+        <View style={cardStyles}>
+          <Text style={labelStyles}>By hour</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              height: 200,
+              gap: 5,
+              marginTop: 10,
+            }}
+          >
+            {data.byHour.map((day, index) => (
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                }}
+              >
+                <View style={{ flex: 1 }} />
+                <View
+                  style={{
+                    minHeight: 15,
+                    height: `${(day / Math.max(...data.byHour)) * 100}%`,
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: addHslAlpha(theme[6], 0.7),
+                      borderRadius: 15,
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      padding: 5,
+                      flex: 1,
+                    }}
+                  ></View>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
+      <MemberSince />
+    </View>
   ) : (
     <View>{error ? <ErrorAlert /> : <Spinner />}</View>
   );
@@ -37,7 +283,7 @@ export default function Page() {
   const [year, setYear] = useState(new Date().getFullYear());
 
   return data ? (
-    <ScrollView contentContainerStyle={{ paddingVertical: 50 }}>
+    <ScrollView contentContainerStyle={{ paddingTop: 50 }}>
       <MenuButton gradient addInsets back />
       <Text
         style={{
@@ -52,7 +298,6 @@ export default function Page() {
       {data.years.length > 0 && (
         <YearSelector years={data.years} year={year} setYear={setYear} />
       )}
-
       <Insights year={year} />
     </ScrollView>
   ) : (

@@ -1,4 +1,3 @@
-import { cardStyles } from "@/components/insights/cardStyles";
 import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Text from "@/ui/Text";
@@ -17,15 +16,14 @@ export function MemberSince() {
   return (
     <View
       style={[
-        cardStyles.container,
         {
-          backgroundColor: theme[3],
+          backgroundColor: theme[4],
           borderColor: theme[5],
+          borderRadius: 20,
           marginBottom: 20,
           flexDirection: breakpoints.md ? "row" : "column",
           alignItems: "center",
           gap: 20,
-          paddingVertical: 30,
           padding: 20,
         },
       ]}
@@ -33,7 +31,6 @@ export function MemberSince() {
       <LinearGradient
         colors={[theme[2], theme[1]]}
         style={{
-          borderWidth: 2,
           borderColor: theme[9],
           shadowColor: theme[11],
           shadowOffset: { width: 5, height: 5 },
@@ -87,7 +84,8 @@ export function MemberSince() {
       <Text
         style={{
           fontSize: 20,
-          textAlign: breakpoints.md ? "right" : "center",
+          color: theme[11],
+          textAlign: breakpoints.md ? "left" : "center",
         }}
         weight={700}
       >
