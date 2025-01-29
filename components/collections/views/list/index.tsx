@@ -20,6 +20,7 @@ import { taskSortAlgorithm } from "../skyline";
 function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
+  const { openLabelPicker } = useCollectionContext();
 
   if (item.empty) {
     return (
@@ -106,6 +107,12 @@ function ListItem({ d, data, item, listRef, mutate, onTaskUpdate, index }) {
         </LinearGradient>
       </>
     );
+  } else if (item.labelPicker) {
+    return (
+      <View style={{ paddingVertical: 20 }}>
+        <Button text="Edit labels" icon="tag" onPress={openLabelPicker} />
+      </View>
+    );
   } else {
     return (
       <Entity
@@ -158,6 +165,8 @@ export default function List() {
       if (t.length === 0) acc.push({ empty: true });
       return acc;
     }, []),
+
+    { labelPicker: true },
   ];
 
   if (d.length === 1) {
