@@ -179,6 +179,9 @@ function Page() {
   return (
     <ContentWrapper noPaddingTop>
       <Wrapper>
+        {(!breakpoints.md || desktopCollapsed) && (
+          <MenuButton addInsets={!breakpoints.md} />
+        )}
         <ScrollView
           centerContent
           onScrollBeginDrag={Keyboard.dismiss}
@@ -195,16 +198,13 @@ function Page() {
                 }),
           }}
         >
-          {(!breakpoints.md || desktopCollapsed) && (
-            <MenuButton addInsets={!breakpoints.md} />
-          )}
           <View
             style={{
               maxWidth: breakpoints.md ? 400 : undefined,
               width: "100%",
               paddingHorizontal: 30,
               gap: 20,
-              marginHorizontal: Platform.OS === "ios" ? undefined : "auto",
+              marginHorizontal: "auto",
             }}
           >
             <View

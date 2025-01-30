@@ -31,13 +31,15 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Platform, StatusBar, useWindowDimensions } from "react-native";
+import { LogBox, Platform, StatusBar, useWindowDimensions } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import "react-native-gesture-handler";
 import { DrawerLayout } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { useSharedValue } from "react-native-reanimated";
 import { SessionProvider } from "../context/AuthProvider";
+
+LogBox.ignoreAllLogs();
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
