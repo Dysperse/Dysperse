@@ -160,12 +160,17 @@ function LabelPickerContent({
   autoFocus,
   hideBack,
   disableIntegratedItems,
+  disabledLabels,
 }) {
   const theme = useColorTheme();
   const colors = useLabelColors();
 
   const [query, setQuery] = useState("");
   const searchRef = useRef(null);
+
+  const disabled = (item) =>
+    disabledLabels.includes(item.id) ||
+    (disableIntegratedItems && item.integrationId);
 
   const { data, mutate, error } = useSWR(["space/labels"]);
 
@@ -331,7 +336,7 @@ function LabelPickerContent({
 
             return (
               <ListItemButton
-                disabled={disableIntegratedItems && item.integrationParams}
+                disabled={disabled(item)}
                 onPress={() => {
                   if (multiple && Array.isArray(label)) {
                     if (label.includes(item.id) && typeof label === "object") {
@@ -346,8 +351,7 @@ function LabelPickerContent({
                 }}
                 style={[
                   { paddingVertical: 0, marginBottom: 5 },
-                  disableIntegratedItems &&
-                    item.integrationParams && { opacity: 0.5 },
+                  disabled(item) && item.integrationId && { opacity: 0.5 },
                 ]}
                 variant={isSelected ? "filled" : undefined}
               >
@@ -364,8 +368,10 @@ function LabelPickerContent({
                 <ListItemText
                   primary={item.name}
                   secondary={
-                    disableIntegratedItems && item.integrationParams
-                      ? `Already connected with another integration`
+                    disabled(item)
+                      ? item.integrationId
+                        ? `Already connected with another integration`
+                        : `Already selected`
                       : `${item._count.entities} item${
                           item._count.entities !== 1 ? "s" : ""
                         }`
@@ -416,6 +422,7 @@ export default function LabelPicker({
   disabled = false,
   defaultCollection,
   disableIntegratedItems = false,
+  disabledLabels,
 }: {
   children?: React.ReactElement;
   label?: string | any[] | { id: string; name: string; emoji: string };
@@ -430,6 +437,7 @@ export default function LabelPicker({
   disabled?: boolean;
   defaultCollection?: string;
   disableIntegratedItems?: boolean;
+  disabledLabels?: string[];
 }) {
   const _ref = useRef<BottomSheetModal>(null);
   const ref = sheetProps.sheetRef || _ref;
@@ -462,6 +470,7 @@ export default function LabelPicker({
         {...sheetProps}
       >
         <LabelPickerContent
+          disabledLabels={disabledLabels}
           disableIntegratedItems={disableIntegratedItems}
           defaultCollection={defaultCollection}
           label={label}
