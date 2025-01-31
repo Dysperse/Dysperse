@@ -624,7 +624,10 @@ function CanvasLiveInfo() {
         <Icon>image</Icon>
         <ListItemText
           primary="Submission type"
-          secondary={data.submission_types.join(", ")}
+          secondaryProps={{
+            style: { textTransform: "capitalize", opacity: 0.6, fontSize: 13 },
+          }}
+          secondary={data.submission_types.join(", ").replace("_", " ")}
         />
       </ListItemButton>
 
@@ -673,7 +676,6 @@ function CanvasLiveInfo() {
           />
         </ListItemButton>
       )}
-      <Text>{JSON.stringify(data, null, 2)}</Text>
     </SkeletonContainer>
   ) : (
     <SkeletonContainer style={{ marginTop: 10 }}>
