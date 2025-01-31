@@ -11,6 +11,8 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import { RecurrencePicker } from "@/ui/RecurrencePicker";
+import SkeletonContainer from "@/ui/Skeleton/container";
+import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
@@ -587,6 +589,42 @@ function TaskLocationMenu() {
   );
 }
 
+function CanvasLiveInfo() {
+  const { task } = useTaskDrawerContext();
+  const { data, error } = useSWR([
+    "space/integrations/canvas-live-widget",
+    { id: task.id },
+  ]);
+
+  return data ? (
+    <SkeletonContainer style={{ marginTop: 10 }}>
+      <Text>Assignment Details</Text>
+      <Text>Submission Types: {data?.submission_types.join(", ")}</Text>
+      <Text>Points Possible: {data?.points_possible}</Text>
+      <Text>Grading Type: {data?.grading_type}</Text>
+
+      {data?.submission && (
+        <>
+          <Text>Submission Status: {data.submission.status}</Text>
+          <Text>
+            Submitted At:{" "}
+            {dayjs(data.submission.submitted_at).format("MMMM D, YYYY h:mm A")}
+          </Text>
+          <Text>Grade: {data.submission.grade}</Text>
+          <Text>Feedback: {data.submission.feedback}</Text>
+        </>
+      )}
+    </SkeletonContainer>
+  ) : (
+    <SkeletonContainer style={{ marginTop: 10 }}>
+      <LinearSkeletonArray
+        widths={["80%", "60%", "70%", "40%", "90%"]}
+        height={30}
+      />
+    </SkeletonContainer>
+  );
+}
+
 export function TaskDetails() {
   const { task, updateTask, isReadOnly } = useTaskDrawerContext();
   const editorRef = useRef(null);
@@ -606,6 +644,7 @@ export function TaskDetails() {
         </View>
       )}
 
+      {task.integration?.type === "NEW_CANVAS_LMS" && <CanvasLiveInfo />}
       <View>
         <TaskNote task={task} ref={editorRef} updateTask={updateTask} />
       </View>
