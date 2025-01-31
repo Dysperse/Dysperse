@@ -92,8 +92,8 @@ function EscapeSettings() {
   const breakpoints = useResponsiveBreakpoints();
 
   const handleBack = () => {
-    if (router.canGoBack()) return router.back();
-    router.replace("/home");
+    // if (router.canGoBack()) return router.back();
+    router.replace("/");
   };
 
   useHotkeys("esc", handleBack, {

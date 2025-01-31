@@ -597,7 +597,14 @@ function CanvasLiveInfo() {
   ]);
 
   return data ? (
-    <SkeletonContainer style={{ marginTop: 10, gap: 10, paddingHorizontal: 5 }}>
+    <SkeletonContainer
+      style={{
+        marginTop: 10,
+        gap: 10,
+        paddingHorizontal: 5,
+        position: "relative",
+      }}
+    >
       <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
         <Icon>classroom</Icon>
         <ListItemText
@@ -619,7 +626,7 @@ function CanvasLiveInfo() {
       <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
         <Icon>image</Icon>
         <ListItemText
-          primary="Submission type"
+          primary="Submission"
           secondaryProps={{
             style: { textTransform: "capitalize", opacity: 0.6, fontSize: 13 },
           }}
