@@ -597,23 +597,83 @@ function CanvasLiveInfo() {
   ]);
 
   return data ? (
-    <SkeletonContainer style={{ marginTop: 10 }}>
-      <Text>Assignment Details</Text>
-      <Text>Submission Types: {data?.submission_types.join(", ")}</Text>
-      <Text>Points Possible: {data?.points_possible}</Text>
-      <Text>Grading Type: {data?.grading_type}</Text>
+    <SkeletonContainer style={{ marginTop: 10, gap: 10, paddingHorizontal: 5 }}>
+      <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+        <Icon>
+          {data.submission?.workflow_state === "submitted"
+            ? "check_circle"
+            : "circle"}
+        </Icon>
+        <ListItemText
+          primary="Grading"
+          secondary={`${data.points_possible} ${data.grading_type}`}
+        />
+      </ListItemButton>
 
-      {data?.submission && (
-        <>
-          <Text>Submission Status: {data.submission.status}</Text>
-          <Text>
-            Submitted At:{" "}
-            {dayjs(data.submission.submitted_at).format("MMMM D, YYYY h:mm A")}
-          </Text>
-          <Text>Grade: {data.submission.grade}</Text>
-          <Text>Feedback: {data.submission.feedback}</Text>
-        </>
+      <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+        <Icon>timer</Icon>
+        <ListItemText
+          primary="Attempts"
+          secondary={
+            data.allowed_attempts === -1 ? "Unlimited" : data.allowed_attempts
+          }
+        />
+      </ListItemButton>
+
+      <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+        <Icon>image</Icon>
+        <ListItemText
+          primary="Submission type"
+          secondary={data.submission_types.join(", ")}
+        />
+      </ListItemButton>
+
+      {data.unlock_at && (
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>lock</Icon>
+          <ListItemText
+            primary={dayjs(data.unlock_at).format("MMM Do, h:mm A")}
+            secondary={dayjs(data.unlock_at).fromNow()}
+          />
+        </ListItemButton>
       )}
+
+      {data.lock_at && (
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>lock</Icon>
+          <ListItemText
+            primary={dayjs(data.lock_at).format("MMM Do, h:mm A")}
+            secondary={dayjs(data.lock_at).fromNow()}
+          />
+        </ListItemButton>
+      )}
+
+      {data.omit_from_final_grade && (
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>close</Icon>
+          <ListItemText primary="Omitted from final grade" />
+        </ListItemButton>
+      )}
+
+      {data.is_quiz_assignment && (
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>question_answer</Icon>
+          <ListItemText primary="Quiz" />
+        </ListItemButton>
+      )}
+
+      {data.peer_reviews && (
+        <ListItemButton disabled>
+          <Icon>people</Icon>
+          <ListItemText
+            primary="Peer reviews"
+            secondary={
+              data.anonymous_peer_reviews ? "Anonymous" : "Not anonymous"
+            }
+          />
+        </ListItemButton>
+      )}
+      <Text>{JSON.stringify(data, null, 2)}</Text>
     </SkeletonContainer>
   ) : (
     <SkeletonContainer style={{ marginTop: 10 }}>
