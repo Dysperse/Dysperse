@@ -599,11 +599,7 @@ function CanvasLiveInfo() {
   return data ? (
     <SkeletonContainer style={{ marginTop: 10, gap: 10, paddingHorizontal: 5 }}>
       <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
-        <Icon>
-          {data.submission?.workflow_state === "submitted"
-            ? "check_circle"
-            : "circle"}
-        </Icon>
+        <Icon>classroom</Icon>
         <ListItemText
           primary="Grading"
           secondary={`${data.points_possible} ${data.grading_type}`}
