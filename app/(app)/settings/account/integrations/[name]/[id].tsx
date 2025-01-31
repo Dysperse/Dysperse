@@ -2,6 +2,7 @@ import LabelPicker from "@/components/labels/picker";
 import { useLabelColors } from "@/components/labels/useLabelColors";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import Alert from "@/ui/Alert";
 import { Avatar } from "@/ui/Avatar";
 import { Button, ButtonText } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -169,9 +170,11 @@ const CalendarPicker = () => {
 const CanvasCalendarCourseLabelPicker = ({
   integrationId,
   calendarUrl,
+  type,
 }: {
   integrationId?: string;
   calendarUrl?: string;
+  type: string;
 }) => {
   const theme = useColorTheme();
   const { data } = useSWR([
@@ -263,6 +266,24 @@ const CanvasCalendarCourseLabelPicker = ({
     <Spinner />
   ) : (
     <>
+      {type === "NEW_CANVAS_LMS" && (
+        <>
+          {/* <Text
+            style={{
+              opacity: 0.6,
+              fontSize: 20,
+              marginTop: 20,
+            }}
+          >
+            Storage
+          </Text> */}
+          <Alert
+            title="Heads up!"
+            subtitle="To save storage space, Dysperse will only add upcoming assignments."
+            emoji="26A0"
+          />
+        </>
+      )}
       <Text
         style={{
           opacity: 0.6,
@@ -436,6 +457,7 @@ export default function Page() {
           {(integrationMetadata.id === "CANVAS_LMS" ||
             integrationMetadata.id === "NEW_CANVAS_LMS") && (
             <CanvasCalendarCourseLabelPicker
+              type={integrationMetadata.id}
               integrationId={integration.id}
               calendarUrl={integration.params?.calendarUrl}
             />

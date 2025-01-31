@@ -15,8 +15,7 @@ import SettingsScrollView from "@/ui/SettingsScrollView";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
@@ -253,52 +252,6 @@ function GoalsSettings({ updateUserSettings }: { updateUserSettings: any }) {
   );
 }
 
-function PrioritySettings({ updateUserSettings }: { updateUserSettings: any }) {
-  const { session } = useUser();
-  const theme = useColorTheme();
-  const [state, setState] = useState<"SIMPLE" | "COMPLEX">(
-    session.user.priorityScale || "SIMPLE"
-  );
-
-  const cardStyle =
-    (selected) =>
-    ({ pressed, hovered }) => ({
-      borderWidth: 1,
-      borderColor: theme[5],
-      backgroundColor: theme[pressed || selected ? 4 : hovered ? 3 : 2],
-      paddingVertical: 10,
-      paddingHorizontal: 15,
-      borderRadius: 20,
-      flex: 1,
-    });
-
-  return (
-    <>
-      <Text style={settingStyles.heading} weight={700}>
-        Priorities
-      </Text>
-      <Section>
-        <View style={{ flexDirection: "row", gap: 10, padding: 2 }}>
-          <Pressable style={cardStyle(state === "SIMPLE")}>
-            <Text weight={900} style={{ fontSize: 20, marginBottom: 3 }}>
-              Simple
-            </Text>
-            <Text style={{ opacity: 0.6 }}>
-              Urgent and normal priority tasks
-            </Text>
-          </Pressable>
-          <Pressable style={cardStyle(state === "COMPLEX")}>
-            <Text weight={900} style={{ fontSize: 20, marginBottom: 3 }}>
-              Complex
-            </Text>
-            <Text style={{ opacity: 0.6 }}>Four priority levels</Text>
-          </Pressable>
-        </View>
-      </Section>
-    </>
-  );
-}
-
 export default function Page() {
   const { session, sessionToken, mutate } = useUser();
   const { data, error } = useSWR(
@@ -340,9 +293,6 @@ export default function Page() {
       {data ? (
         <>
           <GoalsSettings updateUserSettings={updateUserSettings} />
-          {session?.user?.betaTester && (
-            <PrioritySettings updateUserSettings={updateUserSettings} />
-          )}
           <TasksSettings data={data} updateUserSettings={updateUserSettings} />
         </>
       ) : error ? (

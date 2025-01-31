@@ -169,8 +169,9 @@ function LabelPickerContent({
   const searchRef = useRef(null);
 
   const disabled = (item) =>
-    disabledLabels.includes(item.id) ||
-    (disableIntegratedItems && item.integrationId);
+    Array.isArray(disabledLabels) &&
+    (disabledLabels.includes(item.id) ||
+      (disableIntegratedItems && item.integrationId));
 
   const { data, mutate, error } = useSWR(["space/labels"]);
 
