@@ -166,11 +166,19 @@ const CalendarPicker = () => {
   );
 };
 
-const CourseLabelPicker = ({ calendarUrl }) => {
+const CanvasCalendarCourseLabelPicker = ({
+  integrationId,
+  calendarUrl,
+}: {
+  integrationId?: string;
+  calendarUrl?: string;
+}) => {
   const theme = useColorTheme();
   const { data } = useSWR([
-    "space/integrations/canvas-lms-labels",
-    { calendarUrl },
+    calendarUrl
+      ? "space/integrations/canvas-lms-labels"
+      : "space/integrations/new-canvas-lms-labels",
+    { calendarUrl, integrationId },
   ]);
 
   const { control } = useFormContext();
@@ -201,8 +209,14 @@ const CourseLabelPicker = ({ calendarUrl }) => {
         <Emoji emoji={item.emoji} />
         <View style={{ flex: 1 }}>
           <Text weight={500}>{item.name}</Text>
+          {item.formalName && (
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>
+              {item.formalName}
+            </Text>
+          )}
         </View>
         <LabelPicker
+          disableIntegratedItems
           setLabel={(newLabel: any) => {
             onChange({
               ...value,
@@ -300,7 +314,7 @@ const CourseLabelPicker = ({ calendarUrl }) => {
 };
 
 export default function Page() {
-  const { session, sessionToken } = useUser();
+  const { sessionToken } = useUser();
   const { id, name } = useLocalSearchParams();
   const { data: metadata } = useSWR(
     `${
@@ -418,8 +432,12 @@ export default function Page() {
             </View>
           </View>
           {integrationMetadata.id === "GOOGLE_CALENDAR" && <CalendarPicker />}
-          {integrationMetadata.id === "CANVAS_LMS" && (
-            <CourseLabelPicker calendarUrl={integration.params?.calendarUrl} />
+          {(integrationMetadata.id === "CANVAS_LMS" ||
+            integrationMetadata.id === "NEW_CANVAS_LMS") && (
+            <CanvasCalendarCourseLabelPicker
+              integrationId={integration.id}
+              calendarUrl={integration.params?.calendarUrl}
+            />
           )}
           <View
             style={{

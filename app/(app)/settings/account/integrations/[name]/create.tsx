@@ -347,6 +347,7 @@ const ParamSlide = ({ slide, currentSlide }) => {
         rules={{ required: slide.required }}
         control={control}
         name={`params.${slide.id}`}
+        key={slide.id}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             value={value}

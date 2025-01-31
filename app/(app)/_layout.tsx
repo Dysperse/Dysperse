@@ -398,7 +398,10 @@ export default function AppLayout() {
                                   }
                                   overlayColor="transparent"
                                   drawerWidth={
-                                    pathname.includes("/everything")
+                                    breakpoints.md &&
+                                    pathname.startsWith("/settings")
+                                      ? 0
+                                      : pathname.includes("/everything")
                                       ? SECONDARY_SIDEBAR_WIDTH
                                       : ORIGINAL_SIDEBAR_WIDTH
                                   }

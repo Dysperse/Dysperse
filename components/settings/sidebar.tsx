@@ -282,6 +282,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           : Platform.OS === "web"
           ? height - 85
           : undefined,
+        zIndex: 99999999999,
         maxWidth: breakpoints.md ? 200 : undefined,
       }}
       contentContainerStyle={{

@@ -67,6 +67,38 @@
     }
   },
   {
+    "name": "Canvas LMS",
+    "id": "NEW_CANVAS_LMS",
+    "description": "Import assignments and quizzes from Canvas",
+    "icon": "https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png",
+    "slug": "new-canvas-lms",
+    "availableOptions": {},
+    "authorization": {
+      "type": "params",
+      "params": [
+        {
+          "id": "instanceUrl",
+          "name": "e.g. something.instructure.com",
+          "helper": ["Enter the domain of your Canvas website"],
+          "type": "string",
+          "required": true
+        },
+        {
+          "id": "accessToken",
+          "name": "Access token",
+          "helper": [
+            "Navigate to your Canvas settings (Account > Settings)",
+            "Scroll down to the \"Approved Integrations\" section",
+            "Click on the \"+ New Access Token\" button",
+            "Enter a name (e.g. \"Dysperse\")",
+            "IMPORTANT: Do not set an expiration date, as this could break the integration in the future",
+            "Click on the \"Generate Token\" button, and copy the token"
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "Outlook Calendar",
     "id": "OUTLOOK_CALENDAR",
     "description": "Sync your calendar events with collections",
@@ -76,9 +108,9 @@
     "availableOptions": {}
   },
   {
-    "name": "Canvas LMS",
+    "name": "Canvas calendar",
     "id": "CANVAS_LMS",
-    "description": "Automatically sync assignments and quizzes to collections",
+    "description": "Displays items your Canvas calendar. Not needed if you've already connected Canvas LMS",
     "icon": "https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png",
     "slug": "canvas-lms",
     "availableOptions": {},

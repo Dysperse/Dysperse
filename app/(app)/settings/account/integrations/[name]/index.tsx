@@ -63,6 +63,7 @@ function IntegrationList({ integrations, about }) {
       contentContainerStyle={{ padding: breakpoints.md ? 40 : 20 }}
       renderItem={({ item, index }) => (
         <ListItemButton
+          style={{ marginBottom: 5 }}
           variant="filled"
           onPress={() =>
             router.push(
@@ -115,6 +116,8 @@ export default function Page() {
     <View
       style={{
         flex: 1,
+        width: "100%",
+        height: "100%",
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -123,10 +126,11 @@ export default function Page() {
     </View>
   ) : existingIntegrations.length > 0 ? (
     <IntegrationList
-      about={existingIntegrations[0].about}
+      about={existingIntegrations[0].about || {}}
       integrations={existingIntegrations}
     />
   ) : (
     <Redirect href={`/settings/account/integrations/${name}/create`} />
   );
 }
+
