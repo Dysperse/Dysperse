@@ -111,7 +111,6 @@ function Tab({
     () =>
       tab.collection?.name ||
       tab.label?.name ||
-      tab.profile?.name ||
       capitalizeFirstLetter(tabData.name(tab.params, tab.slug)[0]) ||
       "",
     [tab, tabData]
