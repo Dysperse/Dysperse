@@ -15,7 +15,6 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import RefreshControl from "@/ui/RefreshControl";
-import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
@@ -443,23 +442,11 @@ export default function MapView() {
       <View
         style={{
           flex: 1,
-          justifyContent: session.user.betaTester ? "flex-start" : "center",
+          justifyContent: "flex-start",
           height: "100%",
         }}
       >
-        {!session.user.betaTester ? (
-          <>
-            <Text style={{ fontFamily: "serifText800", fontSize: 37 }}>
-              Coming soon!
-            </Text>
-            <Text style={{ opacity: 0.8, marginTop: 10, fontSize: 17 }}>
-              Soon, you'll be able to view your {"\n"}collection on a map. Stay
-              tuned!
-            </Text>
-          </>
-        ) : (
-          <TaskList tasks={tasks} />
-        )}
+        <TaskList tasks={tasks} />
       </View>
       <Animated.View
         style={[
