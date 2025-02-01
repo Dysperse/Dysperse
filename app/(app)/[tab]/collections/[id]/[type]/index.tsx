@@ -629,7 +629,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               <CollectionLabelMenu sheetRef={sheetRef}>
                 <Pressable />
               </CollectionLabelMenu>
-              {!(data ? (
+              {(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||
                   dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
