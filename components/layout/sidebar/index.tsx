@@ -749,7 +749,7 @@ function SecondarySidebar() {
           height={100}
           text="Storage"
           onPress={() => {
-            router.push("/everything/trash");
+            router.push("/everything/storage");
             if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
           }}
           containerStyle={[
@@ -758,7 +758,7 @@ function SecondarySidebar() {
           ]}
           style={{ flexDirection: "column" }}
           icon="filter_drama"
-          variant={pathname === "/everything/trash" ? "filled" : "text"}
+          variant={pathname === "/everything/storage" ? "filled" : "text"}
         />
       </View>
       <IconButton

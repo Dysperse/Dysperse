@@ -211,7 +211,7 @@ export default function Page() {
       id: "OPENAI",
       header: {
         icon: "https://cdn.brandfetch.io/idR3duQxYl/theme/dark/symbol.svg?c=1dxbfHSJFAPEGdCLU4o5B",
-        primary: "GPT 4.0",
+        primary: "GPT 3.5",
         secondary: "by OpenAI",
       },
     },

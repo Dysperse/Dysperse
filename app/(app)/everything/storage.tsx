@@ -1,26 +1,41 @@
-import { settingStyles } from "@/components/settings/settingsStyles";
+import ContentWrapper from "@/components/layout/content";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
-import SettingsScrollView from "@/ui/SettingsScrollView";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { View } from "react-native";
-import Animated, { BounceInLeft } from "react-native-reanimated";
+import { ScrollView } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 
 function SpaceStorage({ data }: { data: any }) {
   const theme = useColorTheme();
+
+  const width = useSharedValue(0);
+
+  useEffect(() => {
+    width.value = -~((data.storage?.used / data.storage?.limit) * 100);
+  }, [data.storage?.used, data.storage?.limit]);
+
+  const widthStyle = useAnimatedStyle(() => ({
+    width: withSpring(`${width.value}%`, { stiffness: 400, damping: 30 }),
+  }));
 
   return (
     <View
@@ -29,7 +44,6 @@ function SpaceStorage({ data }: { data: any }) {
         borderRadius: 20,
         borderColor: theme[5],
         backgroundColor: addHslAlpha(theme[5], 0.1),
-        marginTop: 20,
       }}
     >
       <ListItemButton disabled style={{ backgroundColor: "transparent" }}>
@@ -54,22 +68,21 @@ function SpaceStorage({ data }: { data: any }) {
       <View
         style={{
           width: "100%",
-          height: 5,
-          borderRadius: 99,
+          height: 10,
           backgroundColor: theme[4],
           overflow: "hidden",
         }}
       >
         <Animated.View
-          entering={BounceInLeft.duration(700).overshootClamping(0)}
-          style={{
-            width: `${-~((data.storage?.used / data.storage?.limit) * 100)}%`,
-            height: "100%",
-            marginLeft: -15,
-            backgroundColor: theme[9],
-            borderRadius: 99,
-            overflow: "hidden",
-          }}
+          style={[
+            widthStyle,
+            {
+              height: "100%",
+              marginLeft: -15,
+              backgroundColor: theme[9],
+              overflow: "hidden",
+            },
+          ]}
         >
           {data.storage?.inTrash > 0 && (
             <View
@@ -123,6 +136,8 @@ function SpaceStorage({ data }: { data: any }) {
 
 export default function Page() {
   const { session, sessionToken } = useUser();
+  const breakpoints = useResponsiveBreakpoints();
+  const theme = useColorTheme();
   const { data, mutate, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
   );
@@ -150,60 +165,88 @@ export default function Page() {
   }, [sessionToken, mutate]);
 
   return (
-    <SettingsScrollView>
-      <Text style={settingStyles.title}>Usage</Text>
-      <Text style={{ fontSize: 17, opacity: 0.6 }} weight={300}>
-        #dysperse is free. That being said, we need to enforce some limits to
-        keep the service running smoothly for everyone (and to prevent abuse!)
-        After you reach your limits, you won't be able to create anything until
-        you free up some space.
-      </Text>
-
-      {data ? (
-        <SpaceStorage data={data} />
-      ) : error ? (
-        <ErrorAlert />
-      ) : (
-        <Spinner />
-      )}
-
-      <Text style={settingStyles.heading}>Suggestions</Text>
-      <Text style={{ marginBottom: 10 }}>
-        Running out of space? Here's what you can do...
-      </Text>
-      <View style={{ marginTop: 10, gap: 10 }}>
-        <ConfirmationModal
-          height={400}
-          title="Move completed items to trash?"
-          secondary="You'll be able to undo this in case you change your mind."
-          onSuccess={deleteCompletedTasks}
+    <ContentWrapper>
+      <ScrollView contentContainerStyle={{ padding: 50 }}>
+        <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>Usage</Text>
+        <Text
+          style={{ marginTop: 10, opacity: 0.6, marginBottom: 20 }}
+          weight={300}
         >
-          <ListItemButton variant="outlined">
-            <Icon>check_circle</Icon>
-            <ListItemText
-              primary="Delete completed tasks"
-              secondary="Move completed items to trash. You can undo this."
-            />
-            <Text>{data?.storage?.completeTasksCount || 0}</Text>
-          </ListItemButton>
-        </ConfirmationModal>
-        <ConfirmationModal
-          height={400}
-          title="Permanently delete trash?"
-          secondary="Careful! You can't undo this."
-          onSuccess={handleTrashDelete}
+          Dysperse is free, but we have limits to ensure smooth service and
+          prevent abuse.{"\n"}Once you reach your limit, you must free up space
+          to create more.
+        </Text>
+        <View
+          style={{
+            flexDirection: !breakpoints.md ? "column" : "row",
+            gap: 10,
+          }}
         >
-          <ListItemButton variant="outlined">
-            <Icon>delete</Icon>
-            <ListItemText
-              primary="Empty trash"
-              secondary="Permanently delete all items in the trash"
-            />
-            <Text>{data?.storage?.entitiesInTrash || 0}</Text>
-          </ListItemButton>
-        </ConfirmationModal>
-      </View>
-    </SettingsScrollView>
+          <View style={{ flex: 1 }}>
+            {data ? (
+              <SpaceStorage data={data} />
+            ) : error ? (
+              <ErrorAlert />
+            ) : (
+              <Spinner />
+            )}
+          </View>
+          <View
+            style={{
+              flex: 1,
+              borderWidth: 1,
+              borderRadius: 20,
+              borderColor: theme[5],
+              backgroundColor: addHslAlpha(theme[5], 0.1),
+              padding: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "serifText800",
+                fontSize: 20,
+                marginTop: 10,
+                textAlign: "center",
+              }}
+            >
+              Suggestions
+            </Text>
+            <View style={{ marginTop: 10 }}>
+              <ConfirmationModal
+                height={400}
+                title="Move completed items to trash?"
+                secondary="You'll be able to undo this in case you change your mind."
+                onSuccess={deleteCompletedTasks}
+              >
+                <ListItemButton>
+                  <Icon>check_circle</Icon>
+                  <ListItemText
+                    primary="Delete completed tasks"
+                    secondary="Move completed items to trash. You can undo this."
+                  />
+                  <Text>{data?.storage?.completeTasksCount || 0}</Text>
+                </ListItemButton>
+              </ConfirmationModal>
+              <ConfirmationModal
+                height={400}
+                title="Permanently delete trash?"
+                secondary="Careful! You can't undo this."
+                onSuccess={handleTrashDelete}
+              >
+                <ListItemButton>
+                  <Icon>delete</Icon>
+                  <ListItemText
+                    primary="Empty trash"
+                    secondary="Permanently delete all items in the trash"
+                  />
+                  <Text>{data?.storage?.entitiesInTrash || 0}</Text>
+                </ListItemButton>
+              </ConfirmationModal>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </ContentWrapper>
   );
 }
 

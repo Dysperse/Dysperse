@@ -109,12 +109,6 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           keywords: [],
         },
         {
-          name: "Storage",
-          icon: "cloud",
-          href: "/settings/storage",
-          keywords: [],
-        },
-        {
           name: "Sidekick",
           icon: "raven",
           href: "/settings/sidekick",
@@ -189,13 +183,14 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           href: "/settings/other/apps",
         },
         {
+          show: breakpoints.md,
           name: "Keybinds",
           keywords: ["keybinds", "shortcuts", "keyboard"],
           icon: "keyboard_command_key",
           href: "/settings/shortcuts",
         },
         {
-          name: "Show release notes",
+          name: "Updates",
           icon: "campaign",
           href: "/release",
         },
@@ -232,7 +227,7 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
           callback: () => Linking.openURL("https://dysperse.com"),
         },
         {
-          name: "Terms of Service",
+          name: "Terms",
           icon: "info",
           callback: () =>
             Linking.openURL("https://blog.dysperse.com/terms-of-service"),
@@ -354,58 +349,60 @@ export function SettingsSidebar({ forceShow }: { forceShow?: boolean }) {
               }
             }
           >
-            {section.settings.map((button: any) => (
-              <ConfirmationModal
-                disabled={!button.confirm}
-                key={button.name}
-                {...button.confirm}
-              >
-                <ListItemButton
-                  variant={
-                    breakpoints.md &&
-                    (pathname === button.href ||
-                      (pathname.includes("integrations") &&
-                        button.href?.includes("integrations")))
-                      ? "filled"
-                      : "default"
-                  }
-                  pressableStyle={[
-                    styles.sectionItem,
-                    !breakpoints.md && {
-                      paddingVertical: 15,
-                      borderRadius: 0,
-                    },
-                  ]}
+            {section.settings
+              .filter((button) => button.show !== false)
+              .map((button: any) => (
+                <ConfirmationModal
+                  disabled={!button.confirm}
                   key={button.name}
-                  onPress={() =>
-                    router[breakpoints.md ? "replace" : "navigate"](
-                      button.href ||
-                        `/settings/${button.name
-                          .toLowerCase()
-                          .replaceAll(" ", "-")}`
-                    )
-                  }
-                  {...(button.callback && { onPress: button.callback })}
+                  {...button.confirm}
                 >
-                  <Icon
-                    filled={
+                  <ListItemButton
+                    variant={
                       breakpoints.md &&
                       (pathname === button.href ||
                         (pathname.includes("integrations") &&
                           button.href?.includes("integrations")))
+                        ? "filled"
+                        : "default"
                     }
-                    style={{ color: theme[11] }}
-                    size={!breakpoints.md ? 30 : 24}
+                    pressableStyle={[
+                      styles.sectionItem,
+                      !breakpoints.md && {
+                        paddingVertical: 15,
+                        borderRadius: 0,
+                      },
+                    ]}
+                    key={button.name}
+                    onPress={() =>
+                      router[breakpoints.md ? "replace" : "navigate"](
+                        button.href ||
+                          `/settings/${button.name
+                            .toLowerCase()
+                            .replaceAll(" ", "-")}`
+                      )
+                    }
+                    {...(button.callback && { onPress: button.callback })}
                   >
-                    {button.icon}
-                  </Icon>
-                  <ListItemText
-                    primary={button.name}
-                    primaryProps={{ style: { color: theme[11] } }}
-                  />
-                </ListItemButton>
-              </ConfirmationModal>
-            ))}
+                    <Icon
+                      filled={
+                        breakpoints.md &&
+                        (pathname === button.href ||
+                          (pathname.includes("integrations") &&
+                            button.href?.includes("integrations")))
+                      }
+                      style={{ color: theme[11] }}
+                      size={!breakpoints.md ? 30 : 24}
+                    >
+                      {button.icon}
+                    </Icon>
+                    <ListItemText
+                      primary={button.name}
+                      primaryProps={{ style: { color: theme[11] } }}
+                    />
+                  </ListItemButton>
+                </ConfirmationModal>
+              ))}
           </View>
           {index !== settingsOptions.length - 1 && breakpoints.md && (
             <Divider style={{ width: "90%", marginTop: 10 }} />

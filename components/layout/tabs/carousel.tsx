@@ -54,7 +54,7 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
   if (isReached || isWarning) {
     return (
       <Button
-        onPress={() => router.push("/settings/storage")}
+        onPress={() => router.push("/everything/storage")}
         backgroundColors={{
           default: alertTheme[5],
           hovered: alertTheme[6],

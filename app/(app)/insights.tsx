@@ -294,12 +294,14 @@ function Insights({ year }) {
 export default function Page() {
   const { data, error } = useSWR(["user/insights/years"]);
   const [year, setYear] = useState(new Date().getFullYear());
-
+  const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
   return data ? (
-    <ScrollView contentContainerStyle={{ paddingTop: 50 }}>
-      <MenuButton gradient addInsets={!breakpoints.md} back />
+    <ScrollView
+      contentContainerStyle={{ paddingTop: 50, backgroundColor: theme[2] }}
+    >
+      <MenuButton gradient={!breakpoints.md} addInsets={!breakpoints.md} back />
       <Text
         style={{
           fontFamily: "serifText700",
