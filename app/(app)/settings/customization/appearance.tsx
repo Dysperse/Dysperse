@@ -168,7 +168,7 @@ function AppIconSection() {
           );
         }}
         variant="outlined"
-        style={{ marginBottom: 7 }}
+        style={{ marginTop: 17 }}
       >
         <ListItemText primary="Reset" />
         <Icon filled={!session?.user?.profile?.theme}>check_circle</Icon>

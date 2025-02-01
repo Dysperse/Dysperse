@@ -413,7 +413,7 @@ function NotificationPreferences({ data, mutate }) {
       <ListItemText
         primary="Group notifications?"
         secondary={
-          "When you have many notifications, we'll group them together in a single notification. \nTurn this off if you like getting spammed."
+          "When you have many notifications, we'll group them together in a single one."
         }
       />
       <Icon
