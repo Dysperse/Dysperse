@@ -6,12 +6,11 @@ import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import Chip from "@/ui/Chip";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -368,42 +367,46 @@ const Labels = () => {
                 },
               ]}
             >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>
+                  Labels
+                </Text>
+                <CreateLabelModal
+                  mutate={(newLabel) => {
+                    mutate(
+                      () => [
+                        {
+                          ...newLabel,
+                          _count: { entities: 0 },
+                          entities: [],
+                          collections: [],
+                        },
+                        ...d,
+                      ],
+                      {
+                        revalidate: false,
+                      }
+                    );
+                  }}
+                >
+                  <Button variant="filled" icon="add" text="New" />
+                </CreateLabelModal>
+              </View>
               <TextField
                 value={query}
                 onChangeText={setQuery}
                 variant="filled+outlined"
-                style={{ height: 50, fontSize: 20 }}
-                weight={900}
-                placeholder="Search labels…"
+                weight={800}
+                placeholder="Search…"
                 autoFocus={breakpoints.md}
               />
-              <CreateLabelModal
-                mutate={(newLabel) => {
-                  mutate(
-                    () => [
-                      {
-                        ...newLabel,
-                        _count: { entities: 0 },
-                        entities: [],
-                        collections: [],
-                      },
-                      ...d,
-                    ],
-                    {
-                      revalidate: false,
-                    }
-                  );
-                }}
-              >
-                <Button
-                  variant="filled"
-                  large
-                  containerStyle={{ marginTop: 10 }}
-                >
-                  <Icon bold>add</Icon>
-                  <ButtonText weight={900}>New</ButtonText>
-                </Button>
-              </CreateLabelModal>
               {error && <ErrorAlert />}
               <FlashList
                 refreshControl={

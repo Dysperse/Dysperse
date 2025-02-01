@@ -7,11 +7,10 @@ import { useStorageContext } from "@/context/storageContext";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
+import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
@@ -210,6 +209,23 @@ const Collections = () => {
                 },
               ]}
             >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>
+                  Collections
+                </Text>
+                {!isReached && (
+                  <CreateCollectionModal>
+                    <Button variant="filled" icon="add" text="New" />
+                  </CreateCollectionModal>
+                )}
+              </View>
               <TextField
                 value={query}
                 onChangeText={setQuery}
@@ -219,18 +235,7 @@ const Collections = () => {
                 placeholder="Search collections…"
                 autoFocus={breakpoints.md}
               />
-              {!isReached && (
-                <CreateCollectionModal>
-                  <Button
-                    variant="filled"
-                    large
-                    containerStyle={{ marginTop: 10 }}
-                  >
-                    <Icon bold>add</Icon>
-                    <ButtonText weight={900}>New</ButtonText>
-                  </Button>
-                </CreateCollectionModal>
-              )}
+
               <FlashList
                 refreshControl={
                   <RefreshControl
