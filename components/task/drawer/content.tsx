@@ -807,7 +807,7 @@ export function TaskDrawerContent({
                   : undefined,
               }}
             />
-            {task && !task.parentTaskId && task.collectionId && (
+            {task && !task.parentTaskId && (
               <LabelPicker
                 label={task.label}
                 setLabel={(e: any) => {
