@@ -93,22 +93,30 @@ export default function Page() {
   };
 
   return (
-    <SettingsScrollView>
+    <View
+      style={{
+        flex: 1,
+        borderRadius: 20,
+        overflow: "hidden",
+      }}
+    >
       <View style={{ flex: 1, position: "relative" }}>
         <CameraView
           style={styles.camera}
           facing="back"
-          barcodeScannerSettings={{
-            barcodeTypes: ["qr"],
-          }}
+          barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
           onBarcodeScanned={handleBarCodeScanned}
         />
         <View
           style={{
             alignItems: "center",
             justifyContent: "center",
-            height: "100%",
             gap: 10,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
           }}
         >
           <View
@@ -129,7 +137,7 @@ export default function Page() {
           </View>
         </View>
       </View>
-    </SettingsScrollView>
+    </View>
   );
 }
 
@@ -165,3 +173,4 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
+

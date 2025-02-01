@@ -769,7 +769,7 @@ export function TaskDrawerContent({
       />
       <SafeScrollView
         showsHorizontalScrollIndicator={false}
-        style={{ maxHeight: Dimensions.get("window").height - 120 }}
+        style={{ maxHeight: Dimensions.get("window").height - 200 }}
         onScrollBeginDrag={Keyboard.dismiss}
       >
         <View

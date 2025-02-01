@@ -203,8 +203,8 @@ export default function Page() {
               <ConfirmationModal
                 onSuccess={handleSignOutAllDevices}
                 height={430}
-                title="Sign out all devices?"
-                secondary="You won't be logged out of this device."
+                title="Sign out from all devices?"
+                secondary="We won't log you out of this one"
               >
                 <Button
                   variant="outlined"
@@ -233,3 +233,4 @@ export default function Page() {
     </SettingsScrollView>
   );
 }
+

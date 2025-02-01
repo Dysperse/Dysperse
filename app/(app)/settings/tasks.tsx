@@ -160,15 +160,6 @@ function TasksSettings({ updateUserSettings }: any) {
             toggle_{session.user.vanishMode ? "on" : "off"}
           </Icon>
         </ListItemButton>
-        <ListItemButton onPress={showComingSoon}>
-          <ListItemText
-            primary="Enable working hours"
-            secondary="Set the hours you're available during the day."
-          />
-          <Icon style={{ opacity: 0.6 }} size={40}>
-            toggle_off
-          </Icon>
-        </ListItemButton>
         <ListItemButton
           onPress={() =>
             updateUserSettings("privateTasks", !session.user.privateTasks)
