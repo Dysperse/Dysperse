@@ -853,7 +853,7 @@ export function TaskDrawerContent({
             )}
             {!task.parentTaskId && <WorkloadChip />}
 
-            {task && !task.label && (
+            {task && !task.label && task.collectionId && (
               <AiLabelSuggestion
                 watch={(key) => task[key]}
                 setValue={(key, value) => {
