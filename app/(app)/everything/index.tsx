@@ -26,7 +26,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import fuzzysort from "fuzzysort";
 import { useState } from "react";
-import { Keyboard, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -405,7 +405,7 @@ const Labels = () => {
                 variant="filled+outlined"
                 weight={800}
                 placeholder="Search…"
-                autoFocus={breakpoints.md}
+                autoFocus={breakpoints.md && Platform.OS !== "ios"}
               />
               {error && <ErrorAlert />}
               <FlashList

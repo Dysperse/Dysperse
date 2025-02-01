@@ -744,6 +744,22 @@ function SecondarySidebar() {
           icon="delete"
           variant={pathname === "/everything/trash" ? "filled" : "text"}
         />
+        <Button
+          bold
+          height={100}
+          text="Storage"
+          onPress={() => {
+            router.push("/everything/trash");
+            if (!breakpoints.md) sidebarRef.current?.closeDrawer?.();
+          }}
+          containerStyle={[
+            { borderRadius: 20 },
+            Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+          ]}
+          style={{ flexDirection: "column" }}
+          icon="filter_drama"
+          variant={pathname === "/everything/trash" ? "filled" : "text"}
+        />
       </View>
       <IconButton
         icon="west"
@@ -753,8 +769,8 @@ function SecondarySidebar() {
             sidebarRef?.current?.openDrawer?.();
           });
         }}
+        size={50}
         style={[
-          { marginLeft: 10 },
           Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
         ]}
       />

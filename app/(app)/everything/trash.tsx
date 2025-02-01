@@ -17,7 +17,7 @@ import TextField from "@/ui/TextArea";
 import { FlashList } from "@shopify/flash-list";
 import fuzzysort from "fuzzysort";
 import { useCallback, useState } from "react";
-import { Keyboard, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -132,14 +132,27 @@ export default function Trash() {
                 : { paddingHorizontal: 20, paddingTop: 20 }
             }
           >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10,
+                marginTop: 5,
+              }}
+            >
+              <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>
+                Trash
+              </Text>
+            </View>
             <TextField
               value={query}
               onChangeText={setQuery}
               variant="filled+outlined"
-              style={{ height: 50, fontSize: 20, marginBottom: 20 }}
-              weight={900}
-              placeholder="Search trash"
-              autoFocus={breakpoints.md}
+              weight={800}
+              placeholder="Search…"
+              autoFocus={breakpoints.md && Platform.OS !== "ios"}
+              style={{ marginBottom: 10, marginTop: 3 }}
             />
             <Alert
               emoji="26A0"

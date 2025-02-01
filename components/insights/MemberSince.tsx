@@ -86,6 +86,7 @@ export function MemberSince() {
           fontSize: 20,
           color: theme[11],
           textAlign: breakpoints.md ? "left" : "center",
+          maxWidth: 280,
         }}
         weight={700}
       >

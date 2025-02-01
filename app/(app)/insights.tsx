@@ -1,6 +1,7 @@
 import { MemberSince } from "@/components/insights/MemberSince";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -150,20 +151,33 @@ function Insights({ year }) {
             .sort((a, b) => b[1] - a[1])
             .map(([key, value]) => (
               <View
-                key={key}
                 style={{
-                  flexDirection: "column",
-                  flex: value as number,
-                  backgroundColor: addHslAlpha(theme[6], 0.7),
-                  borderRadius: 15,
-                  height: 50,
-                  justifyContent: "center",
-                  overflow: "hidden",
-                  alignItems: "center",
-                  minWidth: 30,
+                  height: 200,
+                  flex: 1,
+                  justifyContent: "flex-end",
                 }}
+                key={key}
               >
-                <Icon bold style={{ color: theme[11], marginTop: -3 }}>
+                <View
+                  style={{
+                    flexDirection: "column",
+                    backgroundColor: addHslAlpha(theme[6], 0.7),
+                    borderRadius: 15,
+                    height: `${Math.max(
+                      1,
+                      (value /
+                        Math.max(...Object.values(data.insights.viewCount))) *
+                        100 -
+                        15
+                    )}%`,
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                />
+                <Icon
+                  bold
+                  style={{ color: theme[11], marginLeft: 7, marginTop: 5 }}
+                >
                   {COLLECTION_VIEWS[key].icon}
                 </Icon>
               </View>
@@ -281,9 +295,11 @@ export default function Page() {
   const { data, error } = useSWR(["user/insights/years"]);
   const [year, setYear] = useState(new Date().getFullYear());
 
+  const breakpoints = useResponsiveBreakpoints();
+
   return data ? (
     <ScrollView contentContainerStyle={{ paddingTop: 50 }}>
-      <MenuButton gradient addInsets back />
+      <MenuButton gradient addInsets={!breakpoints.md} back />
       <Text
         style={{
           fontFamily: "serifText700",

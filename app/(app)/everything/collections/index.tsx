@@ -23,7 +23,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Keyboard, Pressable, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -230,10 +230,9 @@ const Collections = () => {
                 value={query}
                 onChangeText={setQuery}
                 variant="filled+outlined"
-                style={{ height: 50, fontSize: 20 }}
-                weight={900}
-                placeholder="Search collections…"
-                autoFocus={breakpoints.md}
+                weight={800}
+                placeholder="Search…"
+                autoFocus={breakpoints.md && Platform.OS !== "ios"}
               />
 
               <FlashList
