@@ -4,6 +4,7 @@ import {
   Pressable,
   StyleProp,
   StyleSheet,
+  TextProps,
   TextStyle,
   ViewStyle,
 } from "react-native";
@@ -24,6 +25,7 @@ interface ChipProps {
   disabled?: boolean;
   color?: string;
   textStyle?: StyleProp<TextStyle>;
+  textProps?: TextProps;
   colorTheme?: string;
   textWeight?: number;
   onDismiss?: () => void;
@@ -52,6 +54,7 @@ export default function Chip({
   colorTheme,
   textWeight = 400,
   onDismiss,
+  textProps = {},
 }: ChipProps) {
   const { session } = useUser();
   const colorScheme = useColorTheme();
@@ -107,6 +110,7 @@ export default function Chip({
             textStyle,
           ]}
           weight={textWeight as any}
+          {...textProps}
         >
           {label}
         </Text>
@@ -131,3 +135,4 @@ export default function Chip({
     </Pressable>
   );
 }
+

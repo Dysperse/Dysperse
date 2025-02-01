@@ -1,6 +1,5 @@
 import { useSelectionContext } from "@/context/SelectionContext";
 import { useGlobalTaskContext } from "@/context/globalTaskContext";
-import { useUser } from "@/context/useUser";
 import { getTaskCompletionStatus } from "@/helpers/getTaskCompletionStatus";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
@@ -24,11 +23,7 @@ import { ImageViewer } from "../ImageViewer";
 import TaskCheckbox from "./Checkbox";
 import DayTaskModal from "./DayTaskModal";
 import { TaskDrawer } from "./drawer";
-import {
-  handleLocationPress,
-  isValidHttpUrl,
-  normalizeRecurrenceRuleObject,
-} from "./drawer/details";
+import { normalizeRecurrenceRuleObject } from "./drawer/details";
 
 export const videoChatPlatforms = [
   "zoom.us",
@@ -48,69 +43,6 @@ export const videoChatPlatforms = [
   "amazonchime.com",
   "viber.com",
 ];
-
-interface AttachmentChipProps {
-  attachments: any[];
-  large?: boolean;
-  published?: boolean;
-}
-
-export const TaskAttachmentChips = memo(
-  ({ attachments, large, published }: AttachmentChipProps) => {
-    const theme = useColorTheme();
-
-    const getAttachmentIcon = (t) =>
-      ({
-        LINK: "link",
-        FILE: "attachment",
-        LOCATION: "location_on",
-      }[t]);
-
-    const { session } = useUser();
-    const isVideoChatPlatform = (t) =>
-      videoChatPlatforms.some((platform) => t?.includes?.(platform));
-
-    return attachments.map((attachment, i) => (
-      <ImageViewer
-        key={i + attachment.type}
-        image={attachment.type === "IMAGE" && attachment.data}
-      >
-        <Chip
-          dense={!large}
-          label={
-            attachment.name ||
-            (attachment.type === "LINK"
-              ? isVideoChatPlatform(attachment.data)
-                ? "Join meeting"
-                : isValidHttpUrl(attachment.data?.val || attachment.data)
-                ? new URL(attachment.data?.val || attachment.data).hostname
-                : "Link"
-              : attachment.type === "LOCATION"
-              ? "Maps"
-              : "File")
-          }
-          onPress={() => {
-            if (attachment.type === "LINK") {
-              Linking.openURL(attachment.data);
-            } else if (attachment.type === "LOCATION") {
-              handleLocationPress(session, attachment);
-            }
-          }}
-          icon={
-            attachment.type === "IMAGE" ? (
-              <Avatar size={22} image={attachment.data} disabled />
-            ) : isVideoChatPlatform(attachment.data) ? (
-              "call"
-            ) : (
-              getAttachmentIcon(attachment.type)
-            )
-          }
-          style={[{ padding: 5 }, published && { backgroundColor: theme[5] }]}
-        />
-      </ImageViewer>
-    ));
-  }
-);
 
 export const TaskImportantChip = ({
   large,
@@ -248,6 +180,8 @@ function TaskNoteChips({ note }) {
             dense
             key={index}
             label={link.text}
+            textStyle={{ maxWidth: 100 }}
+            textProps={{ numberOfLines: 1 }}
             onPress={() => Linking.openURL(link.image || link.href)}
             icon={
               link.image ? (
@@ -367,6 +301,7 @@ const Task = memo(function Task({
             pressableStyle={{
               paddingTop: breakpoints.md ? (dense ? 8 : 13) : 10,
               paddingLeft: 13,
+              alignItems: "flex-start",
               paddingRight: 13,
               paddingBottom: breakpoints.md ? (dense ? 3 : 8) : 10,
               ...(isSelected && { backgroundColor: blue[4] }),
@@ -426,7 +361,13 @@ const Task = memo(function Task({
                   <DayTaskModal date={task.start} taskId={task.id}>
                     <Chip
                       dense
-                      label={dayjs(task.start).format("MMM Do")}
+                      label={dayjs(task.start).format(
+                        task.dateOnly
+                          ? "MMM Do"
+                          : dayjs(task.start).minute() === 0
+                          ? "MMM Do [@] h a"
+                          : "MMM Do [@] h:mm a"
+                      )}
                       icon={<Icon>calendar_today</Icon>}
                     />
                   </DayTaskModal>
@@ -449,18 +390,8 @@ const Task = memo(function Task({
                   />
                 )}
                 {showLabel && task.label && <TaskLabelChip task={task} />}
-                {/* {task.attachments && (
-                  <TaskAttachmentChips attachments={task.attachments} />
-                )} */}
                 <TaskNoteChips note={task.note} />
                 {task.pinned && <TaskImportantChip />}
-                {!task.dateOnly && (
-                  <Chip
-                    dense
-                    label={dayjs(task.start).format("h:mm A")}
-                    icon={<Icon size={22}>calendar_today</Icon>}
-                  />
-                )}
               </View>
             </View>
           </ListItemButton>

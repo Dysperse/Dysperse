@@ -138,6 +138,7 @@ function TaskCheckbox({
         style={() => ({
           padding: 10,
           margin: -10,
+          marginTop: -11,
           opacity: disabled ? 0.5 : 1,
         })}
         onTouchStart={() => (isActive.value = 1)}

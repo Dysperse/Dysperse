@@ -109,13 +109,11 @@ function Tab({
   );
   const tabName = useMemo(
     () =>
-      capitalizeFirstLetter(
-        tab.collection?.name ||
-          tab.label?.name ||
-          tab.profile?.name ||
-          tabData.name(tab.params, tab.slug)[0] ||
-          ""
-      ),
+      tab.collection?.name ||
+      tab.label?.name ||
+      tab.profile?.name ||
+      tabData.name(tab.params, tab.slug)[0] ||
+      "",
     [tab, tabData]
   );
 
