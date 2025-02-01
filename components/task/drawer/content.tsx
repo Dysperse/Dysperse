@@ -37,6 +37,7 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useLabelColors } from "../../labels/useLabelColors";
+import { AiLabelSuggestion } from "../create";
 import { TaskShareButton } from "./TaskShareButton";
 import { TaskCompleteButton } from "./attachment/TaskCompleteButton";
 import { useTaskDrawerContext } from "./context";
@@ -806,7 +807,7 @@ export function TaskDrawerContent({
                   : undefined,
               }}
             />
-            {task && !task.parentTaskId && (
+            {task && !task.parentTaskId && task.collectionId && (
               <LabelPicker
                 label={task.label}
                 setLabel={(e: any) => {
@@ -851,6 +852,23 @@ export function TaskDrawerContent({
               </LabelPicker>
             )}
             {!task.parentTaskId && <WorkloadChip />}
+
+            {task && !task.label && (
+              <AiLabelSuggestion
+                watch={(key) => task[key]}
+                setValue={(key, value) => {
+                  if (key === "label")
+                    updateTask({ label: value, labelId: value.id });
+                }}
+                style={{
+                  borderColor: addHslAlpha(theme[11], 0.2),
+                  borderWidth: 2,
+                  margin: -0.5,
+                  marginLeft: 1,
+                  borderRadius: 10,
+                }}
+              />
+            )}
           </View>
           <TaskNameInput />
           <TaskDetails />

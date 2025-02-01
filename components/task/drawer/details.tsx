@@ -531,11 +531,10 @@ function TaskLocationMenu() {
         opacity: 0.6,
         marginLeft: 14,
         marginTop: 7,
-        borderRadius: 0,
       }}
       style={{
         gap: 10,
-        alignItems: "flex-start",
+        alignItems: task.location ? "flex-start" : undefined,
         justifyContent: "flex-start",
         paddingHorizontal: 0,
         paddingRight: 50,
@@ -543,7 +542,7 @@ function TaskLocationMenu() {
       dense
       height={"auto" as any}
       icon="near_me"
-      iconStyle={{ transform: [{ scale: 1.1 }], flexShrink: 0 }}
+      iconStyle={{ transform: [{ scale: 1.15 }], flexShrink: 0 }}
       text={task.location ? task.location.name : "Add location"}
       textProps={{ numberOfLines: undefined }}
     />

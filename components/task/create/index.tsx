@@ -258,7 +258,7 @@ function Footer({
   );
 }
 
-const AiLabelSuggestion = ({ watch, setValue, nameRef }: any) => {
+export const AiLabelSuggestion = ({ watch, setValue, nameRef, style }: any) => {
   const name = watch("name");
   const label = watch("label");
   const [result, setResult] = useState(null);
@@ -276,6 +276,8 @@ const AiLabelSuggestion = ({ watch, setValue, nameRef }: any) => {
         body: JSON.stringify({ name: t, collectionId: id }),
       }
     );
+
+    console.log("fetchSuggestions -> data", data);
 
     setResult(data);
   }, 500);
@@ -296,7 +298,7 @@ const AiLabelSuggestion = ({ watch, setValue, nameRef }: any) => {
           setValue("label", result);
           nameRef.current.focus();
         }}
-        style={{ borderStyle: "dashed", borderWidth: 1 }}
+        style={[{ borderStyle: "dashed", borderWidth: 1 }, style]}
       />
     )
   );
