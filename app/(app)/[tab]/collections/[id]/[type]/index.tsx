@@ -182,6 +182,30 @@ const Loading = ({ error, isPublic }: any) => {
         </View>
       );
       break;
+    case "map":
+      content = (
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flex: 1,
+              gap: 10,
+              height: "100%",
+              flexDirection: "row",
+            }}
+          >
+            <View style={{ gap: 10, flex: 2 }}>
+              <LinearSkeletonArray
+                height={50}
+                widths={["75%", "70%", "80%", "48%", "20%", "84%", "68%"]}
+              />
+            </View>
+            <View style={{ flex: 3 }}>
+              <LinearSkeleton height={"100%"} width={"100%"} />
+            </View>
+          </View>
+        </View>
+      );
+      break;
     default:
       content = <Text>404: {type}</Text>;
       break;
@@ -605,7 +629,7 @@ export default function Page({ isPublic }: { isPublic: boolean }) {
               <CollectionLabelMenu sheetRef={sheetRef}>
                 <Pressable />
               </CollectionLabelMenu>
-              {(data ? (
+              {!(data ? (
                 (data.pinCode || data.pinCodeError) &&
                 (!data.pinAuthorizationExpiresAt ||
                   dayjs(data.pinAuthorizationExpiresAt).isBefore(dayjs())) ? (
