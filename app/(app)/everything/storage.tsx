@@ -1,4 +1,5 @@
 import ContentWrapper from "@/components/layout/content";
+import { useSidebarContext } from "@/components/layout/sidebar/context";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
@@ -21,8 +22,10 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
+import { MenuButton } from "../home";
 
 function SpaceStorage({ data }: { data: any }) {
   const theme = useColorTheme();
@@ -137,6 +140,9 @@ function SpaceStorage({ data }: { data: any }) {
 export default function Page() {
   const { session, sessionToken } = useUser();
   const breakpoints = useResponsiveBreakpoints();
+  const { desktopCollapsed } = useSidebarContext();
+  const insets = useSafeAreaInsets();
+
   const theme = useColorTheme();
   const { data, mutate, error } = useSWR(
     session?.space ? ["space", { spaceId: session?.space?.space?.id }] : null
@@ -165,7 +171,13 @@ export default function Page() {
   }, [sessionToken, mutate]);
 
   return (
-    <ContentWrapper>
+    <ContentWrapper
+      noPaddingTop
+      style={!breakpoints.md && { paddingTop: insets.top + 70 }}
+    >
+      {(!breakpoints.md || desktopCollapsed) && (
+        <MenuButton gradient addInsets />
+      )}
       <ScrollView contentContainerStyle={{ padding: 50 }}>
         <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>Usage</Text>
         <Text

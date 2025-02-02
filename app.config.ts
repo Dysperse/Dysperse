@@ -72,17 +72,12 @@ export default ({ config }: ConfigContext): ExpoConfig =>
       },
       assetBundlePatterns: ["**/*"],
       ios: {
+        config: {
+          usesNonExemptEncryption: false,
+        },
         associatedDomains: ["webcredentials:app.dysperse.com"],
         bundleIdentifier: IS_DEV ? "com.dysperse.dev" : "com.dysperse.app",
         supportsTablet: true,
-        splash: {
-          dark: {
-            backgroundColor: "#0a1f1d",
-            image: "./assets/splash-screens/dark.png",
-          },
-          image: "./assets/splash-screens/light.png",
-          backgroundColor: "#effefa",
-        },
         googleServicesFile: IS_DEV
           ? process.env.GOOGLE_SERVICE_PLIST_DEV
           : process.env.GOOGLE_SERVICE_PLIST,
