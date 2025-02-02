@@ -45,7 +45,6 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useFocusPanelContext } from "./context";
@@ -309,7 +308,7 @@ export const Navbar = ({
   backgroundColor?: string;
   foregroundColor?: string;
 }) => {
-  const { setPanelState, panelState, collapseOnBack } = useFocusPanelContext();
+  const { setPanelState, panelState } = useFocusPanelContext();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const isDark = useDarkMode();
@@ -328,8 +327,7 @@ export const Navbar = ({
     >
       <IconButton
         onPress={() => {
-          if (collapseOnBack.current && title !== "Focus")
-            setPanelState("COLLAPSED");
+          if (title !== "Focus") setPanelState("COLLAPSED");
           if (title === "Focus") {
             navigation.push("New");
           } else {
@@ -368,31 +366,14 @@ export const Navbar = ({
   );
 };
 
-export const UpcomingSvg = () => {
-  const theme = useColorTheme();
-  return (
-    <Svg
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1}
-      width={24}
-      height={24}
-      stroke={theme[11]}
-    >
-      <Path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122"
-      />
-    </Svg>
-  );
-};
+export const UpcomingSvg = () => {};
 
 function PanelContent() {
   const theme = useColorTheme();
   const r = useRef<NavigationContainerRef<any>>(null);
   const breakpoints = useResponsiveBreakpoints();
   const { panelState } = useFocusPanelContext();
+  const insets = useSafeAreaInsets();
 
   const screenOptions = useMemo<StackNavigationOptions>(
     () => ({
@@ -407,7 +388,8 @@ function PanelContent() {
         height: "100%",
         width: panelState === "COLLAPSED" ? 85 : 290,
         borderRadius: 20,
-        marginVertical: 20,
+        marginTop: insets.top + 20,
+        marginBottom: insets.bottom + 20,
       },
       header: ({ navigation, route }) =>
         route.name === "Focus" ? null : (
@@ -516,6 +498,8 @@ function FocusPanelHome({
 }) {
   const theme = useColorTheme();
   const { setPanelState } = useFocusPanelContext();
+  const insets = useSafeAreaInsets();
+  const breakpoints = useResponsiveBreakpoints();
   const { data } = useSWR(["user/focus-panel"], null);
 
   const [shouldSuspendRendering, setShouldSuspendRendering] = useState(false);
@@ -616,7 +600,7 @@ function FocusPanelHome({
                 style={{ flex: 1 }}
                 contentContainerStyle={{
                   gap: 10,
-                  paddingVertical: 18,
+                  paddingVertical: 18 + (breakpoints.md ? 0 : insets.bottom),
                   minHeight: "100%",
                 }}
                 showsVerticalScrollIndicator={false}
@@ -683,8 +667,9 @@ const FocusPanel = memo(function FocusPanel({
       style={[
         {
           flexDirection: "row",
-          height: height + 40,
-          marginTop: -20,
+          height:
+            height + 40 + (breakpoints.md ? 0 : insets.top + insets.bottom),
+          marginTop: -(20 + insets.top),
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         },
         {
@@ -698,9 +683,10 @@ const FocusPanel = memo(function FocusPanel({
             padding: breakpoints.md ? 10 : 0,
             paddingLeft: 0,
             width: "100%",
-            height,
+            height: "100%",
+            // backgroundColor: "red",
             ...(!breakpoints.md && { width: 300 }),
-            ...{ paddingVertical: insets.top + 20 },
+            ...{ paddingVertical: (breakpoints.md ? 15 : insets.top) + 20 },
             ...(Platform.OS === "web" &&
               ({
                 marginTop: "env(titlebar-area-height,0)",

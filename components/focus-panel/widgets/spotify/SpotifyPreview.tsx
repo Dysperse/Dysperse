@@ -14,7 +14,7 @@ import { useImageColors } from "./useImageColors";
 
 export const SpotifyPreview = ({ data, navigation, mutate }) => {
   const theme = useColorTheme();
-  const { panelState, setPanelState, collapseOnBack } = useFocusPanelContext();
+  const { panelState, setPanelState } = useFocusPanelContext();
   const progress = useSharedValue(data.progress_ms / data.item.duration_ms);
   const colors = useImageColors(data.item.album.images[0].url);
 
@@ -52,7 +52,6 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
       onPress={() => {
         navigation.push("Spotify");
         setPanelState("OPEN");
-        if (panelState === "COLLAPSED") collapseOnBack.current = true;
       }}
     >
       {({ pressed, hovered }) => (
@@ -129,3 +128,4 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
     </Pressable>
   );
 };
+

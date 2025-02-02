@@ -66,15 +66,17 @@ const AppContainer = memo(
     const animatedStyle = useMemo(
       () => [
         {
-          marginTop:
-            combinedValues?.interpolate?.({
-              inputRange: [0, 1],
-              outputRange: [0, insets.top],
-            }) || 0,
           marginBottom:
             combinedValues?.interpolate?.({
               inputRange: [0, 1],
               outputRange: [0, insets.bottom],
+            }) || 0,
+        },
+        !breakpoints.md && {
+          marginTop:
+            combinedValues?.interpolate?.({
+              inputRange: [0, 1],
+              outputRange: [0, insets.top],
             }) || 0,
         },
         breakpoints.md
@@ -109,9 +111,9 @@ const AppContainer = memo(
                 marginRight:
                   panelState === "CLOSED"
                     ? 0
-                    : panelState === "COLLAPSED"
-                    ? 100
-                    : 300,
+                    : panelState === "OPEN"
+                    ? 300
+                    : 100,
                 marginBottom: 0,
               }
           : {

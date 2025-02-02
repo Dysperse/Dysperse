@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createContext,
@@ -6,7 +7,6 @@ import {
   SetStateAction,
   useContext,
   useEffect,
-  useRef,
 } from "react";
 import { Platform } from "react-native";
 import { DrawerLayout } from "react-native-gesture-handler";
@@ -15,7 +15,6 @@ export type PanelState = "OPEN" | "CLOSED" | "COLLAPSED";
 interface FocusPanelContext {
   panelState: PanelState;
   setPanelState: Dispatch<SetStateAction<PanelState>>;
-  collapseOnBack: React.MutableRefObject<boolean>;
   drawerRef: RefObject<DrawerLayout>;
 }
 
@@ -28,8 +27,8 @@ export const FocusPanelProvider = ({
   setPanelState,
   drawerRef,
 }) => {
+  const breakpoints = useResponsiveBreakpoints();
   const states = ["OPEN", "CLOSED", "COLLAPSED"];
-  const collapseOnBack = useRef(panelState === "COLLAPSED");
 
   useEffect(() => {
     const getPanelState = async () => {
@@ -39,17 +38,19 @@ export const FocusPanelProvider = ({
       } else if (typeof t === "undefined") {
         setPanelState("COLLAPSED");
       } else {
-        setPanelState("CLOSED");
+        setPanelState("COLLAPSED");
       }
     };
     getPanelState();
   }, []);
 
   useEffect(() => {
-    if (panelState !== "CLOSED") {
-      drawerRef?.current?.openDrawer?.();
-    } else {
-      drawerRef?.current?.closeDrawer?.();
+    if (breakpoints.md) {
+      if (panelState !== "CLOSED") {
+        drawerRef?.current?.openDrawer?.();
+      } else {
+        drawerRef?.current?.closeDrawer?.();
+      }
     }
   }, [panelState, drawerRef]);
 
@@ -67,7 +68,6 @@ export const FocusPanelProvider = ({
       value={{
         panelState,
         setPanelState,
-        collapseOnBack,
         drawerRef,
       }}
     >

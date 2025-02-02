@@ -227,6 +227,7 @@ export const LogoButton = memo(function LogoButton({
   useHotkeys("F1", openSupport);
 
   const syncRef = useRef(null);
+  const { drawerRef } = useFocusPanelContext();
   const [isLoading, setLoading] = useState(false);
 
   return (
@@ -368,7 +369,13 @@ export const LogoButton = memo(function LogoButton({
             icon="psychiatry"
             variant="outlined"
             style={{ opacity: 0.9 }}
-            onPress={() => router.push("/focus")}
+            onPress={() => {
+              sidebarRef.current?.closeDrawer();
+              drawerRef.current?.openDrawer();
+              InteractionManager.runAfterInteractions(() => {
+                setPanelState("COLLAPSED");
+              });
+            }}
           />
         )}
       </View>
@@ -780,8 +787,10 @@ function SecondarySidebar() {
 
 const Sidebar = ({
   progressValue,
+  focusPanelRef,
 }: {
   progressValue?: NativeAnimated.Value;
+  focusPanelRef?: NativeAnimated.Value;
 }) => {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
@@ -858,7 +867,13 @@ const Sidebar = ({
       Platform.OS === "web" ? 400 : 0
     );
   }, [pathname]);
+
   const insets = useSafeAreaInsets();
+
+  const opacity = focusPanelRef?.current?.interpolate?.({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
 
   return (
     <>
@@ -869,8 +884,9 @@ const Sidebar = ({
             onHoverIn={() => (desktopSlide.value = 0)}
           />
         )}
-        <Animated.View
+        <NativeAnimated.View
           style={[
+            !breakpoints.md && { opacity },
             { flex: breakpoints.md ? undefined : 1 },
             {
               height: height - insets.top - insets.bottom,
@@ -905,7 +921,7 @@ const Sidebar = ({
               <SecondarySidebar />
             </Animated.View>
           </Animated.View>
-        </Animated.View>
+        </NativeAnimated.View>
       </SafeView>
     </>
   );

@@ -1,12 +1,8 @@
 import IconButton from "@/ui/IconButton";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
 
 export default function WordOfTheDay({ navigation, menuActions, params }) {
-  const theme = useColorTheme();
-  const { panelState, setPanelState, collapseOnBack } = useFocusPanelContext();
-  const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
+  const { setPanelState } = useFocusPanelContext();
 
   return (
     <IconButton
@@ -15,7 +11,6 @@ export default function WordOfTheDay({ navigation, menuActions, params }) {
       onPress={() => {
         navigation.navigate("Word of the day");
         setPanelState("OPEN");
-        if (panelState === "COLLAPSED") collapseOnBack.current = true;
       }}
       variant="filled"
       style={{ borderRadius: 20 }}

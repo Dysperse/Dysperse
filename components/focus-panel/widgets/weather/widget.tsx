@@ -9,36 +9,11 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { InteractionManager, Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
 import weatherCodes from "./weatherCodes.json";
-
-const gridStyles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginTop: 10,
-  },
-  avatar: {
-    borderRadius: 10,
-  },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    flex: 1,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  subtitle: {
-    fontSize: 12,
-    opacity: 0.7,
-  },
-});
 
 export default function WeatherWidget({
   widget,
@@ -49,7 +24,7 @@ export default function WeatherWidget({
   navigation: StackNavigationProp<any>;
   menuActions: any[];
 }) {
-  const { setPanelState, collapseOnBack } = useFocusPanelContext();
+  const { setPanelState, drawerRef } = useFocusPanelContext();
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
@@ -198,7 +173,10 @@ export default function WeatherWidget({
             onPress={() => {
               navigation.push("Weather");
               setPanelState("OPEN");
-              if (panelState === "COLLAPSED") collapseOnBack.current = true;
+              drawerRef.current?.openDrawer();
+              InteractionManager.runAfterInteractions(() => {
+                drawerRef.current?.openDrawer();
+              });
             }}
           >
             {({ pressed, hovered }) => (
@@ -286,3 +264,4 @@ export default function WeatherWidget({
     </View>
   );
 }
+

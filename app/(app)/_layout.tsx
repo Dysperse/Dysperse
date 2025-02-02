@@ -204,13 +204,12 @@ export default function AppLayout() {
     return !breakpoints.md ||
       (!pathname.includes("settings/") && !pathname.includes("create")) ? (
       <Pressable style={{ flex: 1 }}>
-        <Sidebar progressValue={v} />
+        <Sidebar focusPanelRef={focusPanelProgressValue} progressValue={v} />
       </Pressable>
     ) : null;
   };
 
   const renderFocusPanel = (v: Animated.Value) => {
-    // restrict focusPanelProgressValue to 0, infinity
     focusPanelProgressValue.current = v;
 
     return <FocusPanel progressValue={v} />;
@@ -438,9 +437,12 @@ export default function AppLayout() {
                                   {/* For focus panel */}
                                   <View
                                     style={{
-                                      zIndex: desktopCollapsed
-                                        ? undefined
-                                        : 999999,
+                                      zIndex:
+                                        desktopCollapsed && breakpoints.md
+                                          ? undefined
+                                          : breakpoints.md
+                                          ? 999999
+                                          : -1,
                                       flex: 1,
                                     }}
                                   >

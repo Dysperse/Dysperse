@@ -66,7 +66,7 @@ export function StockItem({
   navigation;
 }) {
   const theme = useColorTheme();
-  const { panelState, setPanelState, collapseOnBack } = useFocusPanelContext();
+  const { panelState, setPanelState } = useFocusPanelContext();
 
   return (
     <Pressable
@@ -93,7 +93,6 @@ export function StockItem({
         if (panelState === "COLLAPSED") {
           navigation.push("Stocks");
           setPanelState("OPEN");
-          if (panelState === "COLLAPSED") collapseOnBack.current = true;
         } else {
           Linking.openURL(
             `https://www.google.com/search?q=${stock.ticker}+stock`

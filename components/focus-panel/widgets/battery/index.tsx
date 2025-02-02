@@ -1,6 +1,4 @@
-import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
-import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -9,7 +7,6 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useFocusPanelContext } from "../../context";
-import { widgetMenuStyles } from "../../widgetMenuStyles";
 
 export default function BatteryWidget({ navigation, widget, menuActions }) {
   const theme = useColorTheme();
@@ -36,7 +33,7 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
   return (
     batteryLevel !== -1 && (
       <View>
-        {panelState !== "COLLAPSED" && (
+        {/* {panelState !== "COLLAPSED" && (
           <MenuPopover
             options={menuActions}
             trigger={
@@ -48,7 +45,7 @@ export default function BatteryWidget({ navigation, widget, menuActions }) {
               </Button>
             }
           />
-        )}
+        )} */}
         <View
           style={{
             backgroundColor: theme[3],
