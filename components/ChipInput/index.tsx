@@ -1,7 +1,8 @@
-import { addHslAlpha } from "@/ui/color";
+import { addHslAlpha, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import { Portal } from "@gorhom/portal";
+import { BlurView } from "expo-blur";
 import React, { FC, useEffect, useState } from "react";
 import { Mention, MentionsInput } from "react-mentions";
 import { Dimensions, Keyboard, Platform, Pressable, View } from "react-native";
@@ -17,6 +18,7 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
   onSuggestionPress,
 }) => {
   const theme = useColorTheme();
+  const isDark = useDarkMode();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
@@ -49,16 +51,19 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
 
   return (
     <Portal>
-      <View
+      <BlurView
+        intensity={50}
+        tint={isDark ? "dark" : "light"}
         style={{
-          width: Dimensions.get("window").width,
-          borderRadius: 25,
+          width: Dimensions.get("window").width - 10,
           overflow: "hidden",
           position: "absolute",
           zIndex: 999,
           bottom: keyboardHeight,
-          backgroundColor: theme[5],
-          height: 80,
+          backgroundColor: addHslAlpha(theme[11], 0.1),
+          height: 50,
+          margin: 5,
+          borderRadius: 10,
         }}
       >
         <ScrollView
@@ -66,7 +71,8 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
           keyboardShouldPersistTaps="always"
           style={{
             borderRadius: 10,
-            height: 80,
+            height: 50,
+            paddingHorizontal: 10,
           }}
         >
           {suggestions
@@ -91,7 +97,7 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
               </Pressable>
             ))}
         </ScrollView>
-      </View>
+      </BlurView>
     </Portal>
   );
 };

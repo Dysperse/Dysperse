@@ -434,7 +434,7 @@ export const TaskNote = forwardRef(
       ),
     }));
     const [hasLoaded, setHasLoaded] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(Platform.OS !== "web");
     const { isReadOnly } = useTaskDrawerContext() || {};
 
     return (
