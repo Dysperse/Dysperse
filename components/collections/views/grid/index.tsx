@@ -15,12 +15,10 @@ import { GridContext, GridContextSelectedColumn } from "./context";
 export default function Grid({ editOrderMode }: any) {
   const theme = useColorTheme();
   const insets = useSafeAreaInsets();
-  const { data, mutate, openLabelPicker, access, isPublic } =
-    useCollectionContext();
+  const { data, openLabelPicker, access, isPublic } = useCollectionContext();
   const { width } = useWindowDimensions();
   const breakpoints = useResponsiveBreakpoints();
   const scrollRef = useRef<ScrollView>(null);
-  const [contentWidth, setContentWidth] = useState(width - 200);
 
   const isReadOnly = access?.access === "READ_ONLY" || isPublic;
 
@@ -199,7 +197,7 @@ export default function Grid({ editOrderMode }: any) {
         <CollectionEmpty />
       ) : (
         <ScrollView
-          onLayout={(e) => setContentWidth(e.nativeEvent.layout.width)}
+          bounces={currentColumn === "HOME"}
           horizontal
           ref={scrollRef}
           contentContainerStyle={[
