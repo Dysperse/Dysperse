@@ -436,7 +436,14 @@ export default function AppLayout() {
                                   renderNavigationView={renderNavigationView}
                                 >
                                   {/* For focus panel */}
-                                  <View style={{ zIndex: 999999, flex: 1 }}>
+                                  <View
+                                    style={{
+                                      zIndex: desktopCollapsed
+                                        ? undefined
+                                        : 999999,
+                                      flex: 1,
+                                    }}
+                                  >
                                     <DrawerLayout
                                       // @ts-expect-error this is patched with patch-package
                                       defaultDrawerOpen={breakpoints.md}
@@ -482,7 +489,7 @@ export default function AppLayout() {
                                       drawerWidth={
                                         panelState === "COLLAPSED" ? 100 : 300
                                       }
-                                      edgeWidth={width}
+                                      edgeWidth={desktopCollapsed ? 100 : width}
                                       renderNavigationView={renderFocusPanel}
                                     >
                                       {content}
