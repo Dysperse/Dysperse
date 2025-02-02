@@ -66,7 +66,7 @@ export default function Grid({ editOrderMode }: any) {
           }}
         >
           {row
-            .filter((e) => e)
+            ?.filter((e) => e)
             .map(
               (label, i) =>
                 !label.empty && (
@@ -86,9 +86,9 @@ export default function Grid({ editOrderMode }: any) {
                       }}
                       style={({ pressed }: any) => ({
                         flex: 1,
-                        width: width - 150,
-                        minWidth: width - 150,
-                        maxWidth: 200,
+                        width: 300,
+                        minWidth: 300,
+                        maxWidth: 300,
                         minHeight: 5,
                         borderWidth: 2,
                         borderColor: theme[pressed ? 7 : 6],
@@ -110,19 +110,24 @@ export default function Grid({ editOrderMode }: any) {
                       >
                         {label.name || "Other"}
                       </Text>
-                      <Text weight={300} style={{ marginTop: 2, opacity: 0.7 }}>
-                        {
-                          (label.entities || []).filter(
+                      {label.entities && (
+                        <Text
+                          weight={300}
+                          style={{ marginTop: 2, opacity: 0.7 }}
+                        >
+                          {
+                            Object.values(label.entities)?.filter?.(
+                              (e) => e.completionInstances.length === 0
+                            )?.length
+                          }
+                          {" item"}
+                          {Object.values(label.entities)?.filter?.(
                             (e) => e.completionInstances.length === 0
-                          ).length
-                        }
-                        {" item"}
-                        {(label.entities || []).filter(
-                          (e) => e.completionInstances.length === 0
-                        ).length !== 1
-                          ? "s"
-                          : ""}
-                      </Text>
+                          )?.length !== 1
+                            ? "s"
+                            : ""}
+                        </Text>
+                      )}
                     </Pressable>
                   </View>
                 )
@@ -140,7 +145,7 @@ export default function Grid({ editOrderMode }: any) {
           }}
         >
           {row
-            .filter((e) => e)
+            ?.filter((e) => e)
             .map((label, i) => (
               <View
                 key={label.id || i}
@@ -176,7 +181,7 @@ export default function Grid({ editOrderMode }: any) {
                       />
                     )
                   ) : label.other ? (
-                    <Column grid entities={data.entities} />
+                    <Column grid entities={data.entities || []} />
                   ) : (
                     <Column key={label.id} grid label={label} />
                   )}
@@ -190,7 +195,7 @@ export default function Grid({ editOrderMode }: any) {
 
   return (
     <GridContext.Provider value={{ currentColumn, setCurrentColumn }}>
-      {displayLabels.filter((t) => !t?.empty).length === 0 ? (
+      {displayLabels?.filter((t) => !t?.empty).length === 0 ? (
         <CollectionEmpty />
       ) : (
         <ScrollView
