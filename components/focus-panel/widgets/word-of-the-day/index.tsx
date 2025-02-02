@@ -20,7 +20,7 @@ export default function WordOfTheDay({ navigation, menuActions, params }) {
 
   return panelState === "COLLAPSED" ? (
     <IconButton
-      size={80}
+      size={85}
       icon="book"
       onPress={() => {
         navigation.navigate("Word of the day");
@@ -80,3 +80,4 @@ export default function WordOfTheDay({ navigation, menuActions, params }) {
     </View>
   );
 }
+
