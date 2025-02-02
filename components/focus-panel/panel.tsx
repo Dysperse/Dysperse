@@ -35,19 +35,19 @@ import {
   useState,
 } from "react";
 import { Freeze } from "react-freeze";
-import { AppState, Platform, useWindowDimensions, View } from "react-native";
+import {
+  AppState,
+  Animated as NativeAnimated,
+  Platform,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { useSidebarContext } from "../layout/sidebar/context";
-import MenuIcon from "../menuIcon";
 import { useFocusPanelContext } from "./context";
 import { NewWidget } from "./widgets/new";
 import { FocusPanelSpotify } from "./widgets/spotify/FocusPanelSpotify";
@@ -310,7 +310,6 @@ export const Navbar = ({
   foregroundColor?: string;
 }) => {
   const { setPanelState, panelState, collapseOnBack } = useFocusPanelContext();
-  const { sidebarRef } = useSidebarContext();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const isDark = useDarkMode();
@@ -346,58 +345,25 @@ export const Navbar = ({
                 hovered: isDark ? "rgba(255,255,255,.2)" : "rgba(0, 0, 0, 0.2)",
               }
         }
-        size={!breakpoints.md ? 50 : 40}
         variant={
           title === "Focus" ? (breakpoints.md ? "filled" : "text") : "text"
         }
-        icon={
-          <Icon
-            style={{
-              color: foregroundColor || theme[11],
-            }}
-          >
-            {title === "Focus" ? "add" : "arrow_back_ios_new"}
-          </Icon>
-        }
+        icon="arrow_back_ios_new"
         style={{
           opacity: navigation.canGoBack() || title === "Focus" ? 1 : 0,
         }}
       />
       <Text
         style={{
-          fontSize: 20,
           opacity: title === "Focus" ? 0 : 1,
           color: foregroundColor || theme[11],
+          marginHorizontal: "auto",
+          paddingRight: 30,
         }}
         weight={800}
       >
         {title}
       </Text>
-      {breakpoints.md ? (
-        <IconButton
-          onPress={() => {
-            setPanelState((t) => {
-              const d = t === "COLLAPSED" ? "OPEN" : "COLLAPSED";
-              collapseOnBack.current = d === "COLLAPSED";
-              return d;
-            });
-          }}
-          icon="collapse_content"
-          size={!breakpoints.md ? 50 : 40}
-          style={{
-            padding: 10,
-            marginBottom: 0,
-            opacity: title === "Focus" ? 1 : 0,
-            marginRight: 0,
-          }}
-        />
-      ) : (
-        <IconButton
-          icon={<MenuIcon />}
-          variant="outlined"
-          onPress={() => sidebarRef.current.openDrawer()}
-        />
-      )}
     </View>
   );
 };
@@ -427,13 +393,6 @@ function PanelContent() {
   const r = useRef<NavigationContainerRef<any>>(null);
   const breakpoints = useResponsiveBreakpoints();
   const { panelState } = useFocusPanelContext();
-  const { width } = useWindowDimensions();
-
-  const opacity = useSharedValue(breakpoints.md ? 2 : 0);
-
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(opacity.value, { overshootClamping: true }),
-  }));
 
   const screenOptions = useMemo<StackNavigationOptions>(
     () => ({
@@ -446,22 +405,16 @@ function PanelContent() {
       headerMode: "screen",
       cardStyle: {
         height: "100%",
-        width: breakpoints.md
-          ? panelState === "COLLAPSED"
-            ? 85
-            : 340
-          : "100%",
-        borderRadius: breakpoints.md ? 18 : 0,
-        display: panelState === "CLOSED" ? "none" : "flex",
+        width: panelState === "COLLAPSED" ? 85 : 290,
+        borderRadius: 20,
+        marginVertical: 20,
       },
-      header:
-        panelState === "COLLAPSED"
-          ? () => null
-          : ({ navigation, route }) => (
-              <Navbar title={route.name} navigation={navigation} />
-            ),
+      header: ({ navigation, route }) =>
+        route.name === "Focus" ? null : (
+          <Navbar navigation={navigation} title={route.name} />
+        ),
     }),
-    [panelState, breakpoints]
+    [panelState]
   );
 
   const [panelKey, setPanelKey] = useState(0);
@@ -475,25 +428,10 @@ function PanelContent() {
             borderRadius: breakpoints.md ? 20 : 0,
             flex: 1,
             overflow: "hidden",
+            backgroundColor: theme[2],
           },
-          !breakpoints.md && { width },
         ]}
       >
-        <Animated.View
-          style={[
-            opacityStyle,
-            {
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              borderWidth: 2,
-              borderColor: theme[panelState === "OPEN" ? 5 : 2],
-              zIndex: 99,
-              borderRadius: 20,
-              pointerEvents: "none",
-            },
-          ]}
-        />
         {process.env.NODE_ENV !== "development" && <WakeLock />}
         <ErrorBoundary
           showDialog
@@ -528,23 +466,10 @@ function PanelContent() {
               ref={r}
               documentTitle={{ enabled: false }}
               independent={true}
-              onStateChange={(state) => {
-                const currentRouteName = state.routes[state.index].name;
-                if (
-                  currentRouteName === "New" ||
-                  currentRouteName === "Focus" ||
-                  currentRouteName === "Word of the day" ||
-                  currentRouteName === "Stocks"
-                ) {
-                  opacity.value = breakpoints.md ? 1 : 0;
-                } else {
-                  opacity.value = 0;
-                }
-              }}
               theme={{
                 colors: {
-                  background: theme[panelState === "OPEN" ? 1 : 2],
-                  card: theme[panelState === "OPEN" ? 1 : 2],
+                  background: "transparent",
+                  card: theme[2],
                   primary: theme[1],
                   border: theme[6],
                   text: theme[11],
@@ -556,16 +481,7 @@ function PanelContent() {
               <Stack.Navigator id={undefined} screenOptions={screenOptions}>
                 <Stack.Screen
                   name="Focus"
-                  options={{
-                    cardStyle: {
-                      paddingHorizontal: 2,
-                      width: breakpoints.md
-                        ? panelState === "OPEN"
-                          ? 340
-                          : 85
-                        : "100%",
-                    },
-                  }}
+                  options={{ cardStyle: { width: 86 } }}
                   component={FocusPanelHome}
                 />
                 <Stack.Screen
@@ -599,8 +515,8 @@ function FocusPanelHome({
   navigation: StackNavigationProp<any>;
 }) {
   const theme = useColorTheme();
+  const { setPanelState } = useFocusPanelContext();
   const { data } = useSWR(["user/focus-panel"], null);
-  const { panelState, setPanelState } = useFocusPanelContext();
 
   const [shouldSuspendRendering, setShouldSuspendRendering] = useState(false);
 
@@ -644,7 +560,7 @@ function FocusPanelHome({
           style={[
             {
               flex: 1,
-              padding: panelState === "COLLAPSED" ? 0 : 20,
+              padding: 0,
               paddingTop: 2,
             },
           ]}
@@ -668,7 +584,7 @@ function FocusPanelHome({
               <Text
                 style={{
                   textAlign: "center",
-                  fontSize: panelState === "COLLAPSED" ? 13 : undefined,
+                  fontSize: 13,
                 }}
                 variant="eyebrow"
               >
@@ -679,38 +595,34 @@ function FocusPanelHome({
                   textAlign: "center",
                   color: theme[11],
                   opacity: 0.45,
-                  fontSize: panelState === "COLLAPSED" ? 12 : undefined,
+                  fontSize: 12,
                 }}
               >
                 Add widgets to {"\n"}customize your experience
               </Text>
 
-              {panelState === "COLLAPSED" && (
-                <IconButton
-                  variant="filled"
-                  onPress={() => {
-                    navigation.push("New");
-                    setPanelState("OPEN");
-                  }}
-                  icon="add"
-                />
-              )}
+              <IconButton
+                variant="filled"
+                onPress={() => {
+                  navigation.push("New");
+                  setPanelState("OPEN");
+                }}
+                icon="add"
+              />
             </View>
           ) : (
             Array.isArray(data) && (
               <ScrollView
                 style={{ flex: 1 }}
                 contentContainerStyle={{
-                  gap: panelState === "COLLAPSED" ? 10 : 20,
+                  gap: 10,
+                  paddingVertical: 18,
                   minHeight: "100%",
-                  paddingBottom: panelState === "COLLAPSED" ? 0 : 20,
                 }}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
-                <Freeze
-                  freeze={shouldSuspendRendering || panelState === "CLOSED"}
-                >
+                <Freeze freeze={shouldSuspendRendering}>
                   {data
                     .sort(function (a, b) {
                       if (a.order < b.order) return -1;
@@ -725,6 +637,16 @@ function FocusPanelHome({
                         widget={widget}
                       />
                     ))}
+                  <IconButton
+                    variant="filled"
+                    onPress={() => {
+                      navigation.push("New");
+                      setPanelState("OPEN");
+                    }}
+                    size="100%"
+                    style={{ height: 40 }}
+                    icon="add"
+                  />
                 </Freeze>
               </ScrollView>
             )
@@ -735,52 +657,50 @@ function FocusPanelHome({
   );
 }
 
-const FocusPanel = memo(function FocusPanel() {
+const FocusPanel = memo(function FocusPanel({
+  progressValue,
+}: {
+  progressValue: any;
+}) {
   const { panelState, setPanelState } = useFocusPanelContext();
-  const marginRight = useSharedValue(panelState === "CLOSED" ? -350 : 0);
-  const width = useSharedValue(panelState === "OPEN" ? 350 : 100);
 
   useHotkeys("\\", () =>
     setPanelState(panelState === "COLLAPSED" ? "CLOSED" : "COLLAPSED")
   );
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      marginRight: marginRight.value,
-      width: width.value,
-    };
-  });
-
-  useEffect(() => {
-    marginRight.value = panelState === "CLOSED" ? -350 : 0;
-  }, [panelState, marginRight]);
-
   const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
-  const { height } = useWindowDimensions();
+  const { height, width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    width.value = panelState === "COLLAPSED" ? 100 : 350;
-  }, [panelState, width]);
+  const transform = progressValue?.interpolate?.({
+    inputRange: [0, 1],
+    outputRange: breakpoints.md ? [0.9, 1] : [windowWidth / 10, 0],
+  });
 
   return pathname.includes("settings") ? null : (
-    <View
-      style={{
-        flexDirection: "row",
-        height,
-        ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-      }}
+    <NativeAnimated.View
+      style={[
+        {
+          flexDirection: "row",
+          height: height + 40,
+          marginTop: -20,
+          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
+        },
+        {
+          transform: [{ translateX: transform }],
+        },
+      ]}
     >
       <Animated.View
         style={[
-          animatedStyle,
           {
             padding: breakpoints.md ? 10 : 0,
             paddingLeft: 0,
+            width: "100%",
             height,
-            ...(!breakpoints.md && { width }),
-            ...(breakpoints.md && { paddingTop: insets.top + 10 }),
+            ...(!breakpoints.md && { width: 300 }),
+            ...{ paddingVertical: insets.top + 20 },
             ...(Platform.OS === "web" &&
               ({
                 marginTop: "env(titlebar-area-height,0)",
@@ -791,7 +711,7 @@ const FocusPanel = memo(function FocusPanel() {
       >
         <PanelContent />
       </Animated.View>
-    </View>
+    </NativeAnimated.View>
   );
 });
 

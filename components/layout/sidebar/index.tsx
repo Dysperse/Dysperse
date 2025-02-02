@@ -356,7 +356,7 @@ export const LogoButton = memo(function LogoButton({
                 text: "Focus panel",
                 callback: () =>
                   setPanelState((t) =>
-                    t === "COLLAPSED" ? "CLOSED" : "COLLAPSED"
+                    t === "CLOSED" ? "COLLAPSED" : "CLOSED"
                   ),
                 selected: panelState !== "CLOSED",
               },

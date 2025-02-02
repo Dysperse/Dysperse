@@ -9,6 +9,7 @@ import { DrawerLayout } from "react-native-gesture-handler";
 
 export const SidebarContext = createContext<{
   sidebarRef: RefObject<DrawerLayout>;
+  focusPanelRef?: RefObject<DrawerLayout>;
 
   desktopCollapsed: boolean;
   setDesktopCollapsed: Dispatch<SetStateAction<boolean>>;

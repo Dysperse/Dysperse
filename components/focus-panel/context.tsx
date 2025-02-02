@@ -1,32 +1,34 @@
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useGlobalSearchParams } from "expo-router";
 import {
   createContext,
   Dispatch,
+  RefObject,
   SetStateAction,
   useContext,
   useEffect,
   useRef,
-  useState,
 } from "react";
 import { Platform } from "react-native";
-import FocusPanel from "./panel";
+import { DrawerLayout } from "react-native-gesture-handler";
 
-type PanelState = "OPEN" | "CLOSED" | "COLLAPSED";
+export type PanelState = "OPEN" | "CLOSED" | "COLLAPSED";
 interface FocusPanelContext {
   panelState: PanelState;
   setPanelState: Dispatch<SetStateAction<PanelState>>;
   collapseOnBack: React.MutableRefObject<boolean>;
+  drawerRef: RefObject<DrawerLayout>;
 }
 
 const FocusPanelContext = createContext<FocusPanelContext>(null);
 export const useFocusPanelContext = () => useContext(FocusPanelContext);
 
-export const FocusPanelProvider = ({ children }) => {
+export const FocusPanelProvider = ({
+  children,
+  panelState,
+  setPanelState,
+  drawerRef,
+}) => {
   const states = ["OPEN", "CLOSED", "COLLAPSED"];
-  const { fullscreen } = useGlobalSearchParams();
-  const [panelState, setPanelState] = useState<PanelState>("CLOSED");
   const collapseOnBack = useRef(panelState === "COLLAPSED");
 
   useEffect(() => {
@@ -44,6 +46,14 @@ export const FocusPanelProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (panelState !== "CLOSED") {
+      drawerRef?.current?.openDrawer?.();
+    } else {
+      drawerRef?.current?.closeDrawer?.();
+    }
+  }, [panelState, drawerRef]);
+
+  useEffect(() => {
     const savePanelState = async () => {
       if (Platform.OS === "web") {
         await AsyncStorage.setItem("panelState", panelState);
@@ -52,17 +62,16 @@ export const FocusPanelProvider = ({ children }) => {
     savePanelState();
   }, [panelState]);
 
-  const breakpoints = useResponsiveBreakpoints();
   return (
     <FocusPanelContext.Provider
       value={{
-        panelState: breakpoints.md ? panelState : "OPEN",
+        panelState,
         setPanelState,
         collapseOnBack,
+        drawerRef,
       }}
     >
       {children}
-      {breakpoints.md && !fullscreen && <FocusPanel />}
     </FocusPanelContext.Provider>
   );
 };

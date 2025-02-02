@@ -4,18 +4,22 @@ import { usePathname } from "expo-router";
 import { RefObject, memo, useEffect, useMemo } from "react";
 import { Animated, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useFocusPanelContext } from "../focus-panel/context";
 import { useSidebarContext } from "./sidebar/context";
 
 const AppContainer = memo(
   ({
     progressValue,
+    focusPanelProgressValue,
     children,
   }: {
     progressValue: RefObject<Animated.Value>;
+    focusPanelProgressValue: RefObject<Animated.Value>;
     children: React.ReactNode;
   }) => {
     const theme = useColorTheme();
     const breakpoints = useResponsiveBreakpoints();
+    const { panelState } = useFocusPanelContext();
     const insets = useSafeAreaInsets();
     const pathname = usePathname();
     const {
@@ -31,6 +35,11 @@ const AppContainer = memo(
       }
     }, [desktopCollapsed, sidebarRef]);
 
+    const combinedValues = Animated.add(
+      progressValue.current,
+      focusPanelProgressValue.current
+    );
+
     const borderStyle = useMemo(
       () => ({
         top: 0,
@@ -39,31 +48,31 @@ const AppContainer = memo(
         bottom: 0,
         zIndex: 99,
         opacity:
-          progressValue?.current?.interpolate?.({
+          combinedValues?.interpolate?.({
             inputRange: [0, 1],
             outputRange: [0, 1],
           }) || 0,
         borderWidth: 2,
         borderRadius:
-          progressValue?.current?.interpolate?.({
+          combinedValues?.interpolate?.({
             inputRange: [0, 1],
             outputRange: [!breakpoints.md ? 0 : 20, 30],
           }) || 0,
         borderColor: theme[5],
       }),
-      [theme, breakpoints, progressValue]
+      [theme, breakpoints, combinedValues]
     );
 
     const animatedStyle = useMemo(
       () => [
         {
           marginTop:
-            progressValue?.current?.interpolate?.({
+            combinedValues?.interpolate?.({
               inputRange: [0, 1],
               outputRange: [0, insets.top],
             }) || 0,
           marginBottom:
-            progressValue?.current?.interpolate?.({
+            combinedValues?.interpolate?.({
               inputRange: [0, 1],
               outputRange: [0, insets.bottom],
             }) || 0,
@@ -74,20 +83,15 @@ const AppContainer = memo(
                 flex: 1,
                 width: "100%",
                 opacity:
-                  progressValue?.current?.interpolate?.({
+                  combinedValues?.interpolate?.({
                     inputRange: [0, 1],
                     outputRange: [1, 0.6],
                   }) || 0,
                 marginBottom: 0,
-                // paddingRight:
-                //   progressValue?.current?.interpolate?.({
-                //     inputRange: [0, 1],
-                //     outputRange: [0, SIDEBAR_WIDTH.value],
-                //   }) || 0,
                 transform: [
                   {
                     scale:
-                      progressValue?.current?.interpolate?.({
+                      combinedValues?.interpolate?.({
                         inputRange: [0, 1],
                         outputRange: [1, 0.98],
                       }) || 0,
@@ -102,6 +106,12 @@ const AppContainer = memo(
                   ? SECONDARY_SIDEBAR_WIDTH
                   : ORIGINAL_SIDEBAR_WIDTH,
                 zIndex: 99999999,
+                marginRight:
+                  panelState === "CLOSED"
+                    ? 0
+                    : panelState === "COLLAPSED"
+                    ? 100
+                    : 300,
                 marginBottom: 0,
               }
           : {
@@ -109,7 +119,7 @@ const AppContainer = memo(
               width: "100%",
               height: "100%",
               borderRadius:
-                progressValue?.current?.interpolate?.({
+                combinedValues?.interpolate?.({
                   inputRange: [0, 1],
                   outputRange: [!breakpoints.md ? 0 : 20, 30],
                 }) || 0,
@@ -117,7 +127,14 @@ const AppContainer = memo(
               transform: [
                 {
                   scale:
-                    progressValue?.current?.interpolate?.({
+                    combinedValues?.interpolate?.({
+                      inputRange: [0, 1],
+                      outputRange: [1, 0.95],
+                    }) || 0,
+                },
+                {
+                  translateY:
+                    combinedValues?.interpolate?.({
                       inputRange: [0, 1],
                       outputRange: [1, 0.95],
                     }) || 0,
@@ -128,7 +145,7 @@ const AppContainer = memo(
       [
         breakpoints,
         insets,
-        progressValue,
+        combinedValues,
         desktopCollapsed,
         pathname,
         ORIGINAL_SIDEBAR_WIDTH,
@@ -138,12 +155,12 @@ const AppContainer = memo(
 
     const marginTopStyle = useMemo(
       () => ({
-        marginTop: progressValue?.current?.interpolate?.({
+        marginTop: combinedValues?.current?.interpolate?.({
           inputRange: [0, 1],
           outputRange: [0, -insets.top],
         }),
       }),
-      [insets, progressValue]
+      [insets, combinedValues]
     );
 
     return (

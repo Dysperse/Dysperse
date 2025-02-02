@@ -1,5 +1,9 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
-import { FocusPanelProvider } from "@/components/focus-panel/context";
+import {
+  FocusPanelProvider,
+  PanelState,
+} from "@/components/focus-panel/context";
+import FocusPanel from "@/components/focus-panel/panel";
 import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
 import TabFriendModal from "@/components/layout/TabFriendModal";
@@ -41,7 +45,7 @@ import {
   usePathname,
 } from "expo-router";
 import * as SystemUI from "expo-system-ui";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   InteractionManager,
@@ -119,8 +123,14 @@ export default function AppLayout() {
   const isDark = useDarkMode();
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
+
   const progressValue = useRef(null);
+  const focusPanelProgressValue = useRef(null);
+
+  const [panelState, setPanelState] = useState<PanelState>("CLOSED");
+
   const insets = useSafeAreaInsets();
+  const focusPanelRef = useRef(null);
 
   const {
     sidebarRef,
@@ -185,10 +195,7 @@ export default function AppLayout() {
     );
   }
 
-  InteractionManager.runAfterInteractions(() => {
-    SplashScreen.hide();
-  });
-
+  InteractionManager.runAfterInteractions(() => SplashScreen.hide());
   if (!session) return <Redirect href="/auth" />;
 
   const renderNavigationView = (v: Animated.Value) => {
@@ -200,6 +207,13 @@ export default function AppLayout() {
         <Sidebar progressValue={v} />
       </Pressable>
     ) : null;
+  };
+
+  const renderFocusPanel = (v: Animated.Value) => {
+    // restrict focusPanelProgressValue to 0, infinity
+    focusPanelProgressValue.current = v;
+
+    return <FocusPanel progressValue={v} />;
   };
 
   const content = (
@@ -216,7 +230,10 @@ export default function AppLayout() {
         dark: true,
       }}
     >
-      <AppContainer progressValue={progressValue}>
+      <AppContainer
+        progressValue={progressValue}
+        focusPanelProgressValue={focusPanelProgressValue}
+      >
         <LastStateRestore />
         <SystemBars style={!isDark ? "dark" : "light"} />
         <JsStack
@@ -336,7 +353,11 @@ export default function AppLayout() {
                     <GlobalTaskContextProvider>
                       <CommandPaletteProvider>
                         <ThemeProvider value={routerTheme}>
-                          <FocusPanelProvider>
+                          <FocusPanelProvider
+                            panelState={panelState}
+                            setPanelState={setPanelState}
+                            drawerRef={focusPanelRef}
+                          >
                             <BadgingProvider>
                               <View
                                 style={[
@@ -414,7 +435,59 @@ export default function AppLayout() {
                                   }
                                   renderNavigationView={renderNavigationView}
                                 >
-                                  {content}
+                                  {/* For focus panel */}
+                                  <View style={{ zIndex: 999999, flex: 1 }}>
+                                    <DrawerLayout
+                                      // @ts-expect-error this is patched with patch-package
+                                      defaultDrawerOpen={breakpoints.md}
+                                      onDrawerOpen={() => Keyboard.dismiss()}
+                                      useNativeAnimations={false}
+                                      ref={focusPanelRef}
+                                      keyboardDismissMode="on-drag"
+                                      drawerLockMode={
+                                        !desktopCollapsed && breakpoints.md
+                                          ? "locked-open"
+                                          : pathname.includes(
+                                              "everything/collections/"
+                                            ) ||
+                                            pathname.includes("/customize") ||
+                                            pathname.includes("friends") ||
+                                            pathname.includes("insights") ||
+                                            pathname.includes(
+                                              "everything/labels/"
+                                            ) ||
+                                            (pathname.includes("/map") &&
+                                              Platform.OS !== "ios") ||
+                                            (pathname.includes("/grid") &&
+                                              Platform.OS !== "ios") ||
+                                            (pathname.includes("/plan") &&
+                                              !pathname.includes("/planner")) ||
+                                            pathname.includes("open") ||
+                                            (pathname.includes("collections") &&
+                                              (pathname.includes("/search") ||
+                                                pathname.includes("/reorder") ||
+                                                pathname.includes("/share")))
+                                          ? "locked-closed"
+                                          : "unlocked"
+                                      }
+                                      drawerPosition="right"
+                                      drawerType={
+                                        breakpoints.md
+                                          ? desktopCollapsed
+                                            ? "slide"
+                                            : "front"
+                                          : "back"
+                                      }
+                                      overlayColor="transparent"
+                                      drawerWidth={
+                                        panelState === "COLLAPSED" ? 100 : 300
+                                      }
+                                      edgeWidth={width}
+                                      renderNavigationView={renderFocusPanel}
+                                    >
+                                      {content}
+                                    </DrawerLayout>
+                                  </View>
                                 </DrawerLayout>
                               </View>
                             </BadgingProvider>
