@@ -301,7 +301,7 @@ const Task = memo(function Task({
             pressableStyle={{
               paddingTop: breakpoints.md ? (dense ? 8 : 13) : 10,
               paddingLeft: 13,
-              alignItems: "flex-start",
+              alignItems: Platform.OS !== "web" ? "center" : "flex-start",
               paddingRight: 13,
               paddingBottom: breakpoints.md ? (dense ? 3 : 8) : 10,
               ...(isSelected && { backgroundColor: blue[4] }),
