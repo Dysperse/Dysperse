@@ -1,4 +1,4 @@
-import { Button, ButtonText } from "@/ui/Button";
+import { ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import Text from "@/ui/Text";
@@ -262,26 +262,6 @@ export default function Widget({ navigation, menuActions, widget }) {
             </Animated.View>
           ))}
         </View>
-        {panelState !== "COLLAPSED" && (
-          <View
-            style={{
-              padding: 10,
-              paddingTop: 0,
-            }}
-          >
-            <Button
-              style={{ borderRadius: 0 }}
-              variant="outlined"
-              height={40}
-              onPress={() => {
-                navigation.navigate("Stocks");
-              }}
-            >
-              <ButtonText>View more</ButtonText>
-              <Icon>arrow_forward_ios</Icon>
-            </Button>
-          </View>
-        )}
       </Pressable>
     </View>
   );
