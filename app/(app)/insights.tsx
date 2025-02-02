@@ -1,7 +1,6 @@
 import { MemberSince } from "@/components/insights/MemberSince";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
 import { useUser } from "@/context/useUser";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -295,13 +294,12 @@ export default function Page() {
   const { data, error } = useSWR(["user/insights/years"]);
   const [year, setYear] = useState(new Date().getFullYear());
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
 
   return data ? (
     <ScrollView
       contentContainerStyle={{ paddingTop: 50, backgroundColor: theme[2] }}
     >
-      <MenuButton gradient={!breakpoints.md} addInsets={!breakpoints.md} back />
+      <MenuButton back />
       <Text
         style={{
           fontFamily: "serifText700",
