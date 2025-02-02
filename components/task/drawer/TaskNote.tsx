@@ -6,6 +6,8 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
+import SkeletonContainer from "@/ui/Skeleton/container";
+import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { addHslAlpha } from "@/ui/color";
@@ -18,7 +20,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Platform, View } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
@@ -431,6 +433,8 @@ export const TaskNote = forwardRef(
         ]
       ),
     }));
+    const [hasLoaded, setHasLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const { isReadOnly } = useTaskDrawerContext() || {};
 
     return (
@@ -469,8 +473,29 @@ export const TaskNote = forwardRef(
               isFocused={isFocused}
               editorRef={editorRef}
             />
-
+            {isLoading && (
+              <SkeletonContainer style={{ marginTop: 10 }}>
+                <LinearSkeletonArray
+                  widths={[
+                    "100%",
+                    "96%",
+                    "58%",
+                    "72%",
+                    "84%",
+                    "90%",
+                    "42%",
+                    "38%",
+                    "64%",
+                    "80%",
+                    "90%",
+                    "100%",
+                  ]}
+                  height={20}
+                />
+              </SkeletonContainer>
+            )}
             <TaskNoteEditor
+              openLink={(href) => Linking.openURL(href)}
               onContainerFocus={onContainerFocus}
               showEditorWhenEmpty={showEditorWhenEmpty}
               ref={editorRef}
@@ -479,7 +504,22 @@ export const TaskNote = forwardRef(
               }
               updateTask={updateTask as any}
               theme={theme}
-              dom={{ matchContents: true, scrollEnabled: false }}
+              dom={{
+                matchContents: true,
+                scrollEnabled: false,
+
+                // Set isLoaded to true after the webview has loaded
+                onLoadEnd: () => setIsLoading(false),
+
+                // prevent navigating to another web page within the webview
+                onShouldStartLoadWithRequest: () => {
+                  if (hasLoaded) {
+                    return false;
+                  }
+                  setHasLoaded(true);
+                  return true;
+                },
+              }}
               setFocused={(t) => (isFocused.value = withSpring(t ? 1 : 0))}
               content={task.note?.replaceAll("] (http", "](http")?.trim()}
             />

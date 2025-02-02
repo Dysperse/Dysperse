@@ -310,10 +310,10 @@ function TaskDateMenu() {
           (task.dateOnly
             ? dayjs(task.start).isSame(dayjs(task.end), "day")
               ? "All day"
-              : dayjs(task.end).format("MMM Do h:mm A")
+              : dayjs(task.end).format("MMM Do h:mm a").replace(":00", "")
             : dayjs(task.start).isSame(dayjs(task.end), "day")
-            ? dayjs(task.start).format("[until] h:mm A")
-            : dayjs(task.end).format("MMM Do h:mm A")),
+            ? dayjs(task.start).format("[until] h:mm a").replace(":00", "")
+            : dayjs(task.end).format("MMM Do h:mm a").replace(":00", "")),
       ];
 
   const addRecurrenceRef = useRef(null);

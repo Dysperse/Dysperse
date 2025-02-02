@@ -45,7 +45,7 @@ import React, {
   useState,
 } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Keyboard, Platform, Pressable, View } from "react-native";
+import { Keyboard, Linking, Platform, Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -1205,6 +1205,7 @@ const TaskDescriptionInput = forwardRef(
           name="note"
           render={({ field: { onChange, value } }) => (
             <TaskNote
+              openLink={(url) => Linking.openURL(url)}
               onContainerFocus={() => nameRef.current.focus()}
               showEditorWhenEmpty
               ref={editorRef}

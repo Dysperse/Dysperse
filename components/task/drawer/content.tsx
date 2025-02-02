@@ -29,6 +29,7 @@ import { useGlobalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, Keyboard, Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -767,113 +768,117 @@ export function TaskDrawerContent({
           zIndex: 1,
         }}
       />
-      <SafeScrollView
-        showsHorizontalScrollIndicator={false}
-        style={{ maxHeight: Dimensions.get("window").height - 200 }}
-        onScrollBeginDrag={Keyboard.dismiss}
-      >
-        <View
-          style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}
+      <KeyboardAvoidingView behavior="height">
+        <SafeScrollView
+          showsHorizontalScrollIndicator={false}
+          style={{ maxHeight: Dimensions.get("window").height - 200 }}
+          onScrollBeginDrag={Keyboard.dismiss}
         >
           <View
-            style={{
-              gap: 10,
-              flexDirection: "row",
-              paddingHorizontal: 15,
-            }}
+            style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}
           >
-            <Chip
-              disabled={isReadOnly}
-              onPress={handlePriorityChange}
-              icon={
-                <Animated.View style={rotateStyle}>
-                  <Icon
-                    filled={task.pinned}
-                    style={{
-                      ...(task.pinned ? { color: labelColors.orange[3] } : {}),
-                    }}
-                  >
-                    push_pin
-                  </Icon>
-                </Animated.View>
-              }
-              outlined
+            <View
               style={{
-                borderRadius: 10,
-                borderWidth: 1,
-                ...(task.pinned && { borderColor: labelColors.orange[11] }),
-                backgroundColor: task.pinned
-                  ? labelColors.orange[11]
-                  : undefined,
+                gap: 10,
+                flexDirection: "row",
+                paddingHorizontal: 15,
               }}
-            />
-            {task && !task.parentTaskId && (
-              <LabelPicker
-                label={task.label}
-                setLabel={(e: any) => {
-                  updateTask(
-                    {
-                      labelId: e.id,
-                      label: e,
-                    },
-                    false
-                  );
-                }}
-                onClose={() => {}}
-                sheetProps={{ sheetRef: labelPickerRef }}
-                defaultCollection={collectionId as any}
-              >
-                <Chip
-                  disabled={isReadOnly}
-                  icon={
-                    task?.collection?.emoji ? (
-                      <Emoji emoji={task?.collection?.emoji} size={20} />
-                    ) : (
-                      <Icon>new_label</Icon>
-                    )
-                  }
-                  label={task?.collection?.name || "Add label"}
-                  outlined
-                  style={{
-                    borderRadius: 10,
-                    borderWidth: 1,
-                  }}
-                  {...(task.label && {
-                    icon: <Emoji emoji={task.label.emoji} size={20} />,
-                    label: (
-                      <Text
-                        style={{ color: labelColors[task.label.color][11] }}
-                      >
-                        {task.label.name}
-                      </Text>
-                    ),
-                  })}
-                />
-              </LabelPicker>
-            )}
-            {!task.parentTaskId && <WorkloadChip />}
-
-            {task && !task.label && task.collectionId && (
-              <AiLabelSuggestion
-                watch={(key) => task[key]}
-                setValue={(key, value) => {
-                  if (key === "label")
-                    updateTask({ label: value, labelId: value.id });
-                }}
+            >
+              <Chip
+                disabled={isReadOnly}
+                onPress={handlePriorityChange}
+                icon={
+                  <Animated.View style={rotateStyle}>
+                    <Icon
+                      filled={task.pinned}
+                      style={{
+                        ...(task.pinned
+                          ? { color: labelColors.orange[3] }
+                          : {}),
+                      }}
+                    >
+                      push_pin
+                    </Icon>
+                  </Animated.View>
+                }
+                outlined
                 style={{
-                  borderColor: addHslAlpha(theme[11], 0.2),
-                  borderWidth: 2,
-                  margin: -0.5,
-                  marginLeft: 1,
                   borderRadius: 10,
+                  borderWidth: 1,
+                  ...(task.pinned && { borderColor: labelColors.orange[11] }),
+                  backgroundColor: task.pinned
+                    ? labelColors.orange[11]
+                    : undefined,
                 }}
               />
-            )}
+              {task && !task.parentTaskId && (
+                <LabelPicker
+                  label={task.label}
+                  setLabel={(e: any) => {
+                    updateTask(
+                      {
+                        labelId: e.id,
+                        label: e,
+                      },
+                      false
+                    );
+                  }}
+                  onClose={() => {}}
+                  sheetProps={{ sheetRef: labelPickerRef }}
+                  defaultCollection={collectionId as any}
+                >
+                  <Chip
+                    disabled={isReadOnly}
+                    icon={
+                      task?.collection?.emoji ? (
+                        <Emoji emoji={task?.collection?.emoji} size={20} />
+                      ) : (
+                        <Icon>new_label</Icon>
+                      )
+                    }
+                    label={task?.collection?.name || "Add label"}
+                    outlined
+                    style={{
+                      borderRadius: 10,
+                      borderWidth: 1,
+                    }}
+                    {...(task.label && {
+                      icon: <Emoji emoji={task.label.emoji} size={20} />,
+                      label: (
+                        <Text
+                          style={{ color: labelColors[task.label.color][11] }}
+                        >
+                          {task.label.name}
+                        </Text>
+                      ),
+                    })}
+                  />
+                </LabelPicker>
+              )}
+              {!task.parentTaskId && <WorkloadChip />}
+
+              {task && !task.label && task.collectionId && (
+                <AiLabelSuggestion
+                  watch={(key) => task[key]}
+                  setValue={(key, value) => {
+                    if (key === "label")
+                      updateTask({ label: value, labelId: value.id });
+                  }}
+                  style={{
+                    borderColor: addHslAlpha(theme[11], 0.2),
+                    borderWidth: 2,
+                    margin: -0.5,
+                    marginLeft: 1,
+                    borderRadius: 10,
+                  }}
+                />
+              )}
+            </View>
+            <TaskNameInput />
+            <TaskDetails />
           </View>
-          <TaskNameInput />
-          <TaskDetails />
-        </View>
-      </SafeScrollView>
+        </SafeScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 }

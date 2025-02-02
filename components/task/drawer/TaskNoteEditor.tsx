@@ -13,6 +13,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { useDebounce } from "use-debounce";
 
 const LIMIT = 3000;
+
 const extensions = [
   StarterKit.configure({
     bold: { HTMLAttributes: { style: "font-family: body_700" } },
@@ -78,7 +79,7 @@ function CharacterCounter({ theme }) {
   );
 }
 
-function Focuser({ setFocused, showEditorWhenEmpty, containerRef }) {
+function Focuser({ setFocused, showEditorWhenEmpty, containerRef, openLink }) {
   const { editor } = useCurrentEditor();
 
   useEffect(() => {
@@ -93,6 +94,7 @@ function Focuser({ setFocused, showEditorWhenEmpty, containerRef }) {
         event.preventDefault();
         event.stopPropagation();
         editor.commands.blur();
+        openLink(event.target.href);
         setTimeout(() => {
           editor.commands.blur();
         }, 1);
@@ -179,6 +181,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
     setSelectionState,
     showEditorWhenEmpty,
     onContainerFocus,
+    openLink,
   }: any,
   ref
 ) {
@@ -274,6 +277,9 @@ export default forwardRef<any, object>(function TaskNoteEditor(
         rel="stylesheet"
       />
       <style>
+        {/* @ts-expect-error yeah */}
+        {typeof ReactNativeWebView !== "undefined" &&
+          `* {font-family: 'Jost', sans-serif!important;}`}
         {`.prose img{display:block;height:auto;margin:0;margin-bottom:4px;max-width:100%;cursor:default;border-radius:20px}.prose:focus-within img.ProseMirror-selectednode{outline:5px solid ${theme[8]}}code{font-family: 'mono', pre!important}.tiptap{outline:none}`}
         {`.prose h2 { margin: 10px 0}`}
         {`p.is-editor-empty:first-child::before{color:${theme[6]};content:attr(data-placeholder);font-family:body_300;float:left;height:0;pointer-events:none}`}
@@ -300,6 +306,7 @@ export default forwardRef<any, object>(function TaskNoteEditor(
       >
         <Saver updateTask={updateTask} />
         <Focuser
+          openLink={openLink}
           showEditorWhenEmpty={showEditorWhenEmpty}
           containerRef={containerRef}
           setFocused={setFocused}
