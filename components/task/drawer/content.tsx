@@ -777,12 +777,14 @@ export function TaskDrawerContent({
           <View
             style={{ paddingBottom: 30, paddingTop: 30, paddingHorizontal: 30 }}
           >
-            <View
-              style={{
+            <ScrollView
+              horizontal
+              contentContainerStyle={{
                 gap: 10,
-                flexDirection: "row",
-                paddingHorizontal: 15,
+                paddingHorizontal: 45,
               }}
+              style={{ marginHorizontal: -30 }}
+              showsHorizontalScrollIndicator={false}
             >
               <Chip
                 disabled={isReadOnly}
@@ -873,7 +875,7 @@ export function TaskDrawerContent({
                   }}
                 />
               )}
-            </View>
+            </ScrollView>
             <TaskNameInput />
             <TaskDetails />
           </View>
