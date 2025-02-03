@@ -605,15 +605,20 @@ function PrimarySidebar({ progressValue }) {
   ];
 
   const toggleHidden = useCallback(() => {
-    setDesktopCollapsed(!desktopCollapsed);
-    if (desktopCollapsed) {
-      sidebarRef.current.openDrawer();
-      drawerRef.current.openDrawer();
+    if (breakpoints.md) {
+      setDesktopCollapsed(!desktopCollapsed);
+      if (desktopCollapsed) {
+        sidebarRef.current.openDrawer();
+        drawerRef.current.openDrawer();
+      } else {
+        sidebarRef.current.closeDrawer();
+        drawerRef.current.closeDrawer();
+      }
+      AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
     } else {
       sidebarRef.current.closeDrawer();
-      drawerRef.current.closeDrawer();
+      drawerRef.current.openDrawer();
     }
-    AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
   }, [desktopCollapsed, setDesktopCollapsed, sidebarRef]);
 
   useHotkeys("`", toggleHidden, {});
