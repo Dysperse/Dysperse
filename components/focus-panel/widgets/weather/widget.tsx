@@ -189,8 +189,8 @@ export default function WeatherWidget({
                   widgetStyles.card,
                   {
                     borderColor: weatherColor[6],
+                    padding: 13,
                   },
-                  panelState === "COLLAPSED" && { padding: 13 },
                 ]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -198,8 +198,7 @@ export default function WeatherWidget({
                 <View
                   style={{
                     flexDirection: "column",
-                    alignItems:
-                      panelState === "COLLAPSED" ? "center" : "flex-start",
+                    alignItems: "center",
                     justifyContent: "space-between",
                   }}
                 >
@@ -227,7 +226,6 @@ export default function WeatherWidget({
                         weight={600}
                       >
                         {Math.round(data.current_weather.temperature)}&deg;
-                        {panelState === "COLLAPSED" ? "" : "F"}
                       </Text>
                     </View>
                     <Text
@@ -264,4 +262,3 @@ export default function WeatherWidget({
     </View>
   );
 }
-

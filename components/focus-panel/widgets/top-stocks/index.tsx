@@ -73,7 +73,7 @@ export function StockItem({
       key={stock.ticker}
       style={[
         {
-          flexDirection: large || panelState === "COLLAPSED" ? "column" : "row",
+          flexDirection: "column",
           padding: 10,
           flex: 1,
           gap: 10,
@@ -90,7 +90,7 @@ export function StockItem({
         },
       ]}
       onPress={() => {
-        if (panelState === "COLLAPSED") {
+        if (panelState !== "OPEN") {
           navigation.push("Stocks");
           setPanelState("OPEN");
         } else {
@@ -103,7 +103,7 @@ export function StockItem({
       <View
         style={{ flexDirection: "row", alignItems: "center", gap: 20, flex: 1 }}
       >
-        {panelState !== "COLLAPSED" && (
+        {panelState === "OPEN" && (
           <Image
             source={{
               uri: `https://companiesmarketcap.com/img/company-logos/64/${stock.ticker.replace(
@@ -124,7 +124,7 @@ export function StockItem({
             {stock.ticker}
           </ButtonText>
         </View>
-        {panelState !== "COLLAPSED" && (
+        {panelState === "OPEN" && (
           <ButtonText
             style={{ marginLeft: "auto", opacity: 0.6, flexShrink: 0 }}
           >
@@ -242,7 +242,7 @@ export default function Widget({ navigation, menuActions, widget }) {
       >
         <View
           style={{
-            height: panelState === "COLLAPSED" ? 120 : 100,
+            height: 120,
             overflow: "hidden",
           }}
         >
@@ -265,4 +265,3 @@ export default function Widget({ navigation, menuActions, widget }) {
     </View>
   );
 }
-

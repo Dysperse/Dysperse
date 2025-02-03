@@ -93,7 +93,9 @@ function WeatherModal({
   return (
     <>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        <View style={{ paddingHorizontal: 15, paddingVertical: 20 }}>
+        <View
+          style={{ paddingHorizontal: 15, paddingVertical: 20, paddingTop: 10 }}
+        >
           <View style={{ alignItems: "center" }}>
             <Icon size={70} style={{ color, marginTop: 40 }}>
               {
@@ -103,7 +105,12 @@ function WeatherModal({
               }
             </Icon>
           </View>
-          <Text weight={900} style={[weatherStyles.temperature, { color }]}>
+          <Text
+            style={[
+              weatherStyles.temperature,
+              { color, fontFamily: "serifText700", marginBottom: 10 },
+            ]}
+          >
             {Math.round(weather.current_weather.temperature)}&deg;
           </Text>
           <Text style={[weatherStyles.description, { color }]} weight={500}>
@@ -354,4 +361,3 @@ export function FocusPanelWeather({ navigation }) {
     </ColorThemeProvider>
   );
 }
-

@@ -489,7 +489,7 @@ export default function AppLayout() {
                                       }
                                       overlayColor="transparent"
                                       drawerWidth={
-                                        panelState === "COLLAPSED" ? 100 : 300
+                                        panelState === "OPEN" ? 300 : 100
                                       }
                                       edgeWidth={desktopCollapsed ? 100 : width}
                                       renderNavigationView={renderFocusPanel}

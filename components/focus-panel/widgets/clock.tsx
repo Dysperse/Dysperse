@@ -24,7 +24,6 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import timezones from "timezones-list";
 import { useFocusPanelContext } from "../context";
-import { widgetStyles } from "../widgetStyles";
 
 const TimeZone = ({
   timeZone,
@@ -36,7 +35,6 @@ const TimeZone = ({
   params?: any;
 }) => {
   const theme = useColor("orange");
-  const { panelState } = useFocusPanelContext();
 
   const [time, setTime] = useState(dayjs().tz(timeZone));
   useEffect(() => {
@@ -88,51 +86,21 @@ const TimeZone = ({
                   ? undefined
                   : {
                       position: "relative",
-                      height: panelState === "COLLAPSED" ? undefined : 40,
-                      width: panelState === "COLLAPSED" ? undefined : 170,
                       marginHorizontal: "auto",
                     }
               }
             >
               <Text
                 weight={timeZone ? 900 : 400}
-                style={
-                  panelState === "COLLAPSED"
-                    ? {
-                        marginTop: 20,
-                        fontSize: 35,
-                        lineHeight: 40,
-                        color: theme[11],
-                        textAlign: "center",
-                      }
-                    : timeZone
-                    ? {
-                        color: theme[11],
-                        fontSize: 17,
-                        width: "100%",
-                        textAlign: "center",
-                      }
-                    : {
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        fontSize: 35,
-                        lineHeight: 40,
-                        fontFamily: getFontName("jetBrainsMono", 500),
-                        color: theme[11],
-                      }
-                }
-                numberOfLines={
-                  panelState === "COLLAPSED"
-                    ? undefined
-                    : timeZone
-                    ? undefined
-                    : 1
-                }
+                style={{
+                  marginTop: 10,
+                  fontSize: 35,
+                  lineHeight: 40,
+                  color: theme[11],
+                  textAlign: "center",
+                }}
               >
-                {panelState === "COLLAPSED"
-                  ? time.format("hh:mm").split(":").join("\n")
-                  : time.format(timeZone ? "hh:mm" : "hh:mm A")}
+                {time.format("hh:mm").split(":").join("\n")}
               </Text>
             </View>
           </View>
@@ -698,9 +666,7 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
 
 export default function Clock({ widget, menuActions, setParam }) {
   const theme = useColor("orange");
-  const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");
-  const { panelState } = useFocusPanelContext();
   const timeZoneModalRef = useRef<BottomSheetModal>(null);
 
   return (
@@ -738,26 +704,17 @@ export default function Clock({ widget, menuActions, setParam }) {
         />
       )} */}
       <View
-        style={
-          panelState === "COLLAPSED"
-            ? {
-                backgroundColor: theme[3],
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 20,
-              }
-            : [
-                widgetStyles.card,
-                {
-                  backgroundColor: theme[3],
-                  paddingVertical: 30,
-                  paddingBottom: 15,
-                },
-                view === "Timer" && {
-                  paddingHorizontal: 0,
-                },
-              ]
-        }
+        style={[
+          {
+            backgroundColor: theme[3],
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 20,
+          },
+          view === "Timer" && {
+            paddingHorizontal: 0,
+          },
+        ]}
       >
         <ColorThemeProvider theme={theme}>
           {view === "Clock" && (
@@ -780,4 +737,3 @@ export default function Clock({ widget, menuActions, setParam }) {
     </View>
   );
 }
-

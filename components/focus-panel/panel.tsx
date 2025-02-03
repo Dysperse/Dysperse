@@ -321,8 +321,7 @@ export const Navbar = ({
         alignItems: "center",
         justifyContent: "space-between",
         padding: 15,
-        backgroundColor:
-          backgroundColor || theme[panelState === "COLLAPSED" ? 2 : 1],
+        backgroundColor: backgroundColor || theme[2],
       }}
     >
       <IconButton
@@ -388,8 +387,8 @@ function PanelContent() {
         height: "100%",
         width: panelState === "COLLAPSED" ? 85 : 290,
         borderRadius: 20,
-        marginTop: insets.top + 20,
-        marginBottom: insets.bottom + 20,
+        marginTop: insets.top + (Platform.OS === "web" ? 15 : 20),
+        marginBottom: insets.bottom + (Platform.OS === "web" ? 15 : 20),
       },
       header: ({ navigation, route }) =>
         route.name === "Focus" ? null : (
@@ -407,7 +406,6 @@ function PanelContent() {
         key={panelKey}
         style={[
           {
-            borderRadius: breakpoints.md ? 20 : 0,
             flex: 1,
             overflow: "hidden",
             backgroundColor: theme[2],
@@ -480,7 +478,17 @@ function PanelContent() {
                   name="Word of the day"
                   component={WordOfTheDayScreen}
                 />
-                <Stack.Screen name="Stocks" component={TopStocksScreen} />
+                <Stack.Screen
+                  name="Stocks"
+                  options={{
+                    cardStyle: {
+                      ...(screenOptions.cardStyle as any),
+                      borderColor: theme[5],
+                      borderWidth: 2,
+                    },
+                  }}
+                  component={TopStocksScreen}
+                />
                 <Stack.Screen name="New" component={NewWidget} />
               </Stack.Navigator>
             </NavigationContainer>
@@ -668,8 +676,10 @@ const FocusPanel = memo(function FocusPanel({
         {
           flexDirection: "row",
           height:
-            height + 40 + (breakpoints.md ? 0 : insets.top + insets.bottom),
-          marginTop: -(20 + insets.top),
+            height +
+            (Platform.OS === "web" ? 80 : 40) +
+            (breakpoints.md ? 0 : insets.top + insets.bottom),
+          marginTop: -((Platform.OS === "web" ? 40 : 20) + insets.top),
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         },
         {
@@ -702,4 +712,3 @@ const FocusPanel = memo(function FocusPanel({
 });
 
 export default FocusPanel;
-
