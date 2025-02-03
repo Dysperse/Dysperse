@@ -127,7 +127,7 @@ export default function AppLayout() {
   const progressValue = useRef(null);
   const focusPanelProgressValue = useRef(null);
 
-  const [panelState, setPanelState] = useState<PanelState>("CLOSED");
+  const [panelState, setPanelState] = useState<PanelState>("COLLAPSED");
 
   const insets = useSafeAreaInsets();
   const focusPanelRef = useRef(null);
@@ -515,4 +515,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-
