@@ -52,7 +52,7 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
   return (
     <Portal>
       <BlurView
-        intensity={50}
+        intensity={Platform.OS === "android" ? 0 : 50}
         tint={isDark ? "dark" : "light"}
         style={{
           width: Dimensions.get("window").width - 10,
@@ -60,7 +60,10 @@ const RenderSuggestions: FC<MentionSuggestionsProps & { suggestions: any }> = ({
           position: "absolute",
           zIndex: 999,
           bottom: keyboardHeight,
-          backgroundColor: addHslAlpha(theme[11], 0.1),
+          backgroundColor: addHslAlpha(
+            theme[11],
+            Platform.OS === "android" ? 1 : 0.1
+          ),
           height: 50,
           margin: 5,
           borderRadius: 10,
@@ -280,4 +283,3 @@ export default function ChipInput({
     />
   );
 }
-
