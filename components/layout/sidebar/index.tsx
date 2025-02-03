@@ -931,6 +931,7 @@ const Sidebar = ({
               zIndex: breakpoints.md ? 1 : 0,
               flexDirection: "row",
               backgroundColor: theme[2],
+              ["WebkitAppRegion" as any]: "no-drag",
             },
             pathname.includes("chrome-extension") && { display: "none" },
           ]}
