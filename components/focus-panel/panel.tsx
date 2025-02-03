@@ -370,7 +370,6 @@ export const UpcomingSvg = () => {};
 function PanelContent() {
   const theme = useColorTheme();
   const r = useRef<NavigationContainerRef<any>>(null);
-  const breakpoints = useResponsiveBreakpoints();
   const { panelState } = useFocusPanelContext();
   const insets = useSafeAreaInsets();
 
@@ -397,6 +396,14 @@ function PanelContent() {
     }),
     [panelState]
   );
+
+  const borderedCardStyle = {
+    cardStyle: {
+      ...(screenOptions.cardStyle as any),
+      borderColor: theme[5],
+      borderWidth: 2,
+    },
+  };
 
   const [panelKey, setPanelKey] = useState(0);
 
@@ -476,20 +483,19 @@ function PanelContent() {
                 />
                 <Stack.Screen
                   name="Word of the day"
+                  options={borderedCardStyle}
                   component={WordOfTheDayScreen}
                 />
                 <Stack.Screen
                   name="Stocks"
-                  options={{
-                    cardStyle: {
-                      ...(screenOptions.cardStyle as any),
-                      borderColor: theme[5],
-                      borderWidth: 2,
-                    },
-                  }}
+                  options={borderedCardStyle}
                   component={TopStocksScreen}
                 />
-                <Stack.Screen name="New" component={NewWidget} />
+                <Stack.Screen
+                  name="New"
+                  options={borderedCardStyle}
+                  component={NewWidget}
+                />
               </Stack.Navigator>
             </NavigationContainer>
           </NavigationIndependentTree>
@@ -633,6 +639,7 @@ function FocusPanelHome({
                     variant="filled"
                     onPress={() => {
                       navigation.push("New");
+                      drawerRef.current.openDrawer();
                       setPanelState("OPEN");
                     }}
                     size="100%"
