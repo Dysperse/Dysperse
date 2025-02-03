@@ -330,7 +330,13 @@ export const LogoButton = memo(function LogoButton({
       >
         <IconButton
           size={40}
-          icon={desktopCollapsed ? "close_fullscreen" : "open_in_full"}
+          icon={
+            breakpoints.md
+              ? desktopCollapsed
+                ? "close_fullscreen"
+                : "open_in_full"
+              : "dock_to_left"
+          }
           // variant="outlined"
           style={{ opacity: 0.9 }}
           onPress={toggleHidden}
