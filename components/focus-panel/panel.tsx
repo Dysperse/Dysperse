@@ -385,7 +385,7 @@ function PanelContent() {
       cardStyle: {
         height: "100%",
         width: panelState === "COLLAPSED" ? 85 : 290,
-        borderRadius: 20,
+        borderRadius: 25,
         marginTop: insets.top + (Platform.OS === "web" ? 15 : 20),
         marginBottom: insets.bottom + (Platform.OS === "web" ? 15 : 20),
       },
@@ -402,6 +402,7 @@ function PanelContent() {
       ...(screenOptions.cardStyle as any),
       borderColor: theme[5],
       borderWidth: 2,
+      marginTop: screenOptions.cardStyle["marginTop" as any] + 2,
     },
   };
 
