@@ -746,20 +746,55 @@ function SecondarySidebar() {
   );
 }
 
-function FocusPanelFullscreenTrigger() {
+function FocusPanelFullscreenTrigger({ sidebarProgressValue, focusPanelRef }) {
   const { desktopCollapsed } = useSidebarContext();
   const { drawerRef } = useFocusPanelContext();
+  const { sidebarRef } = useSidebarContext();
 
   const handleOpen = () => {
+    if (sidebarRef.current.state.drawerOpened) sidebarRef.current.closeDrawer();
     drawerRef.current[
       drawerRef.current.state.drawerOpened ? "closeDrawer" : "openDrawer"
+    ]();
+  };
+
+  const handleSidebarOpen = () => {
+    if (drawerRef.current.state.drawerOpened) drawerRef.current.closeDrawer();
+    sidebarRef.current[
+      sidebarRef.current.state.drawerOpened ? "closeDrawer" : "openDrawer"
     ]();
   };
 
   return (
     desktopCollapsed && (
       <Portal>
-        <View
+        <Pressable
+          onPress={handleSidebarOpen}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            justifyContent: "center",
+            zIndex: 999,
+            marginLeft: -7,
+          }}
+        >
+          <NativeAnimated.View
+            style={{
+              opacity: sidebarProgressValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0],
+              }),
+            }}
+          >
+            <Icon style={{ opacity: 0.6 }} bold>
+              more_vert
+            </Icon>
+          </NativeAnimated.View>
+        </Pressable>
+        <Pressable
+          onPress={handleOpen}
           style={{
             position: "absolute",
             top: 0,
@@ -767,15 +802,22 @@ function FocusPanelFullscreenTrigger() {
             height: "100%",
             justifyContent: "center",
             zIndex: 999,
-            marginRight: -12,
+            marginRight: -7,
           }}
         >
-          <IconButton
-            onPress={handleOpen}
-            icon="more_vert"
-            iconProps={{ bold: true, style: { opacity: 0.6 } }}
-          />
-        </View>
+          <NativeAnimated.View
+            style={{
+              opacity: focusPanelRef.current.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0],
+              }),
+            }}
+          >
+            <Icon style={{ opacity: 0.6 }} bold>
+              more_vert
+            </Icon>
+          </NativeAnimated.View>
+        </Pressable>
       </Portal>
     )
   );
@@ -920,7 +962,10 @@ const Sidebar = ({
         </NativeAnimated.View>
       </SafeView>
 
-      <FocusPanelFullscreenTrigger />
+      <FocusPanelFullscreenTrigger
+        sidebarProgressValue={progressValue}
+        focusPanelRef={focusPanelRef}
+      />
     </>
   );
 };

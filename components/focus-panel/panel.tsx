@@ -679,7 +679,7 @@ const FocusPanel = memo(function FocusPanel({
             height +
             (Platform.OS === "web" ? 80 : 40) +
             (breakpoints.md ? 0 : insets.top + insets.bottom),
-          marginTop: -((Platform.OS === "web" ? 40 : 20) + insets.top),
+          marginTop: -((Platform.OS === "web" ? 45 : 20) + insets.top),
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         },
         {
