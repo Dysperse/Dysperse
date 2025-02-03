@@ -220,6 +220,7 @@ function RenderWidget({ navigation, widget, index }) {
     case "clock":
       return (
         <Clock
+          navigation={navigation}
           setParam={setParam}
           menuActions={menuActions}
           widget={widget}
@@ -385,9 +386,8 @@ function PanelContent() {
       cardStyle: {
         height: "100%",
         width: panelState === "COLLAPSED" ? 85 : 290,
+        marginVertical: 10,
         borderRadius: 25,
-        marginTop: insets.top + (Platform.OS === "web" ? 15 : 20),
-        marginBottom: insets.bottom + (Platform.OS === "web" ? 15 : 20),
       },
       header: ({ navigation, route }) =>
         route.name === "Focus" ? null : (
@@ -402,7 +402,6 @@ function PanelContent() {
       ...(screenOptions.cardStyle as any),
       borderColor: theme[5],
       borderWidth: 2,
-      marginTop: screenOptions.cardStyle["marginTop" as any] + 2,
     },
   };
 
@@ -489,6 +488,11 @@ function PanelContent() {
                 />
                 <Stack.Screen
                   name="Stocks"
+                  options={borderedCardStyle}
+                  component={TopStocksScreen}
+                />
+                <Stack.Screen
+                  name="Clock"
                   options={borderedCardStyle}
                   component={TopStocksScreen}
                 />
@@ -615,7 +619,7 @@ function FocusPanelHome({
                 style={{ flex: 1 }}
                 contentContainerStyle={{
                   gap: 10,
-                  paddingVertical: 18 + (breakpoints.md ? 0 : insets.bottom),
+                  paddingVertical: 8 + (breakpoints.md ? 0 : insets.bottom),
                   minHeight: "100%",
                 }}
                 showsVerticalScrollIndicator={false}
@@ -693,13 +697,7 @@ const FocusPanel = memo(function FocusPanel({
       style={[
         {
           flexDirection: "row",
-          height:
-            height +
-            (Platform.OS === "web" && breakpoints.md ? 80 : 40) +
-            (breakpoints.md ? 0 : insets.top + insets.bottom),
-          marginTop: -(
-            (Platform.OS === "web" && breakpoints.md ? 45 : 20) + insets.top
-          ),
+          flex: 1,
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         },
         {
@@ -710,13 +708,9 @@ const FocusPanel = memo(function FocusPanel({
       <Animated.View
         style={[
           {
-            padding: breakpoints.md ? 10 : 0,
             paddingLeft: 0,
             width: "100%",
             height: "100%",
-            // backgroundColor: "red",
-            ...(!breakpoints.md && { width: 300 }),
-            ...{ paddingVertical: (breakpoints.md ? 15 : insets.top) + 20 },
             ...(Platform.OS === "web" &&
               ({
                 marginTop: "env(titlebar-area-height,0)",

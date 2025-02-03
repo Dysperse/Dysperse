@@ -157,7 +157,7 @@ const AppContainer = memo(
 
     const marginTopStyle = useMemo(
       () => ({
-        marginTop: combinedValues?.current?.interpolate?.({
+        marginTop: combinedValues?.interpolate?.({
           inputRange: [0, 1],
           outputRange: [0, -insets.top],
         }),
@@ -183,4 +183,3 @@ const AppContainer = memo(
 );
 
 export default AppContainer;
-
