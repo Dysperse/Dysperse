@@ -505,7 +505,7 @@ function FocusPanelHome({
   navigation: StackNavigationProp<any>;
 }) {
   const theme = useColorTheme();
-  const { setPanelState } = useFocusPanelContext();
+  const { setPanelState, drawerRef } = useFocusPanelContext();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useSWR(["user/focus-panel"], null);
@@ -638,6 +638,16 @@ function FocusPanelHome({
                     size="100%"
                     style={{ height: 40 }}
                     icon="add"
+                  />
+                  <IconButton
+                    variant="filled"
+                    onPress={() => {
+                      drawerRef.current.closeDrawer();
+                      setPanelState("CLOSED");
+                    }}
+                    size="100%"
+                    style={{ height: 40 }}
+                    icon="dock_to_left"
                   />
                 </Freeze>
               </ScrollView>
