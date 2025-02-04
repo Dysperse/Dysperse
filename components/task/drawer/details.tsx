@@ -630,7 +630,10 @@ function CanvasLiveInfo() {
               : " on time!"
             : data.submission?.workflow_state === "unsubmitted" ||
               (data.submission?.workflow_state === "graded" && !data.score)
-            ? ` ${dayjs(data.updated_at || data.created_at).fromNow()}`
+            ? ` ${dayjs(data.updated_at || data.created_at)
+                .fromNow()
+                .replace("ago", "")
+                .replace(/\b(\d+)\s+([a-zA-Z])\w*\b/g, "$1$2")}ago`
             : ""}
         </Text>
         <Button
