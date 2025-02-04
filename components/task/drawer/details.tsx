@@ -669,7 +669,10 @@ function CanvasLiveInfo() {
           { filled: data.submission?.graded_at && data.submission?.score },
         ].map((_, i) => (
           <LinearGradient
-            colors={[theme[_.filled ? 7 : 5], theme[_.filled ? 9 : 5]]}
+            colors={[
+              addHslAlpha(theme[_.filled ? 7 : 5], 0.7),
+              addHslAlpha(theme[_.filled ? 10 : 5], 0.7),
+            ]}
             key={i}
             style={{
               height: 5,
