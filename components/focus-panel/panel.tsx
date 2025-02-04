@@ -220,6 +220,7 @@ function RenderWidget({ navigation, widget, index }) {
     case "clock":
       return (
         <Clock
+          navigation={navigation}
           setParam={setParam}
           menuActions={menuActions}
           widget={widget}
@@ -321,8 +322,7 @@ export const Navbar = ({
         alignItems: "center",
         justifyContent: "space-between",
         padding: 15,
-        backgroundColor:
-          backgroundColor || theme[panelState === "COLLAPSED" ? 2 : 1],
+        backgroundColor: backgroundColor || theme[2],
       }}
     >
       <IconButton
@@ -371,7 +371,6 @@ export const UpcomingSvg = () => {};
 function PanelContent() {
   const theme = useColorTheme();
   const r = useRef<NavigationContainerRef<any>>(null);
-  const breakpoints = useResponsiveBreakpoints();
   const { panelState } = useFocusPanelContext();
   const insets = useSafeAreaInsets();
 
@@ -387,9 +386,8 @@ function PanelContent() {
       cardStyle: {
         height: "100%",
         width: panelState === "COLLAPSED" ? 85 : 290,
-        borderRadius: 20,
-        marginTop: insets.top + 20,
-        marginBottom: insets.bottom + 20,
+        marginVertical: 10,
+        borderRadius: 25,
       },
       header: ({ navigation, route }) =>
         route.name === "Focus" ? null : (
@@ -399,6 +397,14 @@ function PanelContent() {
     [panelState]
   );
 
+  const borderedCardStyle = {
+    cardStyle: {
+      ...(screenOptions.cardStyle as any),
+      borderColor: theme[5],
+      borderWidth: 2,
+    },
+  };
+
   const [panelKey, setPanelKey] = useState(0);
 
   return (
@@ -407,7 +413,6 @@ function PanelContent() {
         key={panelKey}
         style={[
           {
-            borderRadius: breakpoints.md ? 20 : 0,
             flex: 1,
             overflow: "hidden",
             backgroundColor: theme[2],
@@ -478,10 +483,24 @@ function PanelContent() {
                 />
                 <Stack.Screen
                   name="Word of the day"
+                  options={borderedCardStyle}
                   component={WordOfTheDayScreen}
                 />
-                <Stack.Screen name="Stocks" component={TopStocksScreen} />
-                <Stack.Screen name="New" component={NewWidget} />
+                <Stack.Screen
+                  name="Stocks"
+                  options={borderedCardStyle}
+                  component={TopStocksScreen}
+                />
+                <Stack.Screen
+                  name="Clock"
+                  options={borderedCardStyle}
+                  component={TopStocksScreen}
+                />
+                <Stack.Screen
+                  name="New"
+                  options={borderedCardStyle}
+                  component={NewWidget}
+                />
               </Stack.Navigator>
             </NavigationContainer>
           </NavigationIndependentTree>
@@ -497,7 +516,7 @@ function FocusPanelHome({
   navigation: StackNavigationProp<any>;
 }) {
   const theme = useColorTheme();
-  const { setPanelState } = useFocusPanelContext();
+  const { setPanelState, drawerRef } = useFocusPanelContext();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useSWR(["user/focus-panel"], null);
@@ -600,7 +619,7 @@ function FocusPanelHome({
                 style={{ flex: 1 }}
                 contentContainerStyle={{
                   gap: 10,
-                  paddingVertical: 18 + (breakpoints.md ? 0 : insets.bottom),
+                  paddingVertical: 8 + (breakpoints.md ? 0 : insets.bottom),
                   minHeight: "100%",
                 }}
                 showsVerticalScrollIndicator={false}
@@ -625,11 +644,22 @@ function FocusPanelHome({
                     variant="filled"
                     onPress={() => {
                       navigation.push("New");
+                      drawerRef.current.openDrawer();
                       setPanelState("OPEN");
                     }}
                     size="100%"
                     style={{ height: 40 }}
                     icon="add"
+                  />
+                  <IconButton
+                    variant="filled"
+                    onPress={() => {
+                      drawerRef.current.closeDrawer();
+                      setPanelState("CLOSED");
+                    }}
+                    size="100%"
+                    style={{ height: 40 }}
+                    icon="dock_to_left"
                   />
                 </Freeze>
               </ScrollView>
@@ -667,9 +697,7 @@ const FocusPanel = memo(function FocusPanel({
       style={[
         {
           flexDirection: "row",
-          height:
-            height + 40 + (breakpoints.md ? 0 : insets.top + insets.bottom),
-          marginTop: -(20 + insets.top),
+          flex: 1,
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         },
         {
@@ -680,13 +708,9 @@ const FocusPanel = memo(function FocusPanel({
       <Animated.View
         style={[
           {
-            padding: breakpoints.md ? 10 : 0,
             paddingLeft: 0,
             width: "100%",
             height: "100%",
-            // backgroundColor: "red",
-            ...(!breakpoints.md && { width: 300 }),
-            ...{ paddingVertical: (breakpoints.md ? 15 : insets.top) + 20 },
             ...(Platform.OS === "web" &&
               ({
                 marginTop: "env(titlebar-area-height,0)",
@@ -702,4 +726,3 @@ const FocusPanel = memo(function FocusPanel({
 });
 
 export default FocusPanel;
-

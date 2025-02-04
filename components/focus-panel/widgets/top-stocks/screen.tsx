@@ -1,4 +1,5 @@
 import { Button, ButtonText } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
@@ -11,6 +12,7 @@ import useSWR from "swr";
 import { StockItem } from ".";
 
 export default function TopStocksScreen() {
+  const theme = useColorTheme();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("volume");
   const { data, error } = useSWR(

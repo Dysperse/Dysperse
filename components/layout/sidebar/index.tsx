@@ -18,6 +18,7 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, {
@@ -205,9 +206,7 @@ export const LogoButton = memo(function LogoButton({
   const menuRef = useRef(null);
   const { session, sessionToken } = useUser();
   const breakpoints = useResponsiveBreakpoints();
-  const { panelState, setPanelState } = useFocusPanelContext();
-  const { sidebarRef, setDesktopCollapsed, desktopCollapsed } =
-    useSidebarContext();
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
 
   const openSupport = useCallback((e) => {
     e?.preventDefault();
@@ -329,55 +328,19 @@ export const LogoButton = memo(function LogoButton({
           gap: 0.5,
         }}
       >
-        {breakpoints.md ? (
-          <MenuPopover
-            menuProps={{
-              rendererProps: {
-                placement: breakpoints.md ? "right" : "bottom",
-                anchorStyle: { opacity: 0 },
-              },
-            }}
-            containerStyle={{ marginTop: 10, width: 200 }}
-            trigger={
-              <IconButton
-                size={40}
-                icon="dock_to_right"
-                style={{ opacity: 0.9 }}
-              />
-            }
-            options={[
-              breakpoints.md && {
-                icon: "dock_to_right",
-                text: "Sidebar",
-                callback: toggleHidden,
-                selected: !desktopCollapsed,
-              },
-              {
-                icon: "psychiatry",
-                text: "Focus panel",
-                callback: () =>
-                  setPanelState((t) =>
-                    t === "CLOSED" ? "COLLAPSED" : "CLOSED"
-                  ),
-                selected: panelState !== "CLOSED",
-              },
-            ]}
-          />
-        ) : (
-          <IconButton
-            size={40}
-            icon="psychiatry"
-            variant="outlined"
-            style={{ opacity: 0.9 }}
-            onPress={() => {
-              sidebarRef.current?.closeDrawer();
-              drawerRef.current?.openDrawer();
-              InteractionManager.runAfterInteractions(() => {
-                setPanelState("COLLAPSED");
-              });
-            }}
-          />
-        )}
+        <IconButton
+          size={40}
+          icon={
+            breakpoints.md
+              ? desktopCollapsed
+                ? "close_fullscreen"
+                : "open_in_full"
+              : "dock_to_left"
+          }
+          // variant="outlined"
+          style={{ opacity: 0.9 }}
+          onPress={toggleHidden}
+        />
       </View>
     </View>
   );
@@ -609,7 +572,7 @@ export const MiniLogo = ({ desktopSlide, onHoverIn }) => {
 function PrimarySidebar({ progressValue }) {
   const insets = useSafeAreaInsets();
   const theme = useColorTheme();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const {
     ORIGINAL_SIDEBAR_WIDTH,
@@ -617,6 +580,8 @@ function PrimarySidebar({ progressValue }) {
     sidebarRef,
     setDesktopCollapsed,
   } = useSidebarContext();
+
+  const { drawerRef } = useFocusPanelContext();
 
   const breakpoints = useResponsiveBreakpoints();
 
@@ -640,13 +605,20 @@ function PrimarySidebar({ progressValue }) {
   ];
 
   const toggleHidden = useCallback(() => {
-    setDesktopCollapsed(!desktopCollapsed);
-    if (desktopCollapsed) {
-      sidebarRef.current.openDrawer();
+    if (breakpoints.md) {
+      setDesktopCollapsed(!desktopCollapsed);
+      if (desktopCollapsed) {
+        sidebarRef.current.openDrawer();
+        drawerRef.current.openDrawer();
+      } else {
+        sidebarRef.current.closeDrawer();
+        drawerRef.current.closeDrawer();
+      }
+      AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
     } else {
       sidebarRef.current.closeDrawer();
+      drawerRef.current.openDrawer();
     }
-    AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
   }, [desktopCollapsed, setDesktopCollapsed, sidebarRef]);
 
   useHotkeys("`", toggleHidden, {});
@@ -785,6 +757,83 @@ function SecondarySidebar() {
   );
 }
 
+function FocusPanelFullscreenTrigger({ sidebarProgressValue, focusPanelRef }) {
+  const { desktopCollapsed } = useSidebarContext();
+  const { drawerRef } = useFocusPanelContext();
+  const { sidebarRef } = useSidebarContext();
+
+  const handleOpen = () => {
+    if (sidebarRef.current.state.drawerOpened) sidebarRef.current.closeDrawer();
+    drawerRef.current[
+      drawerRef.current.state.drawerOpened ? "closeDrawer" : "openDrawer"
+    ]();
+  };
+
+  const handleSidebarOpen = () => {
+    if (drawerRef.current.state.drawerOpened) drawerRef.current.closeDrawer();
+    sidebarRef.current[
+      sidebarRef.current.state.drawerOpened ? "closeDrawer" : "openDrawer"
+    ]();
+  };
+
+  return (
+    desktopCollapsed && (
+      <Portal>
+        <Pressable
+          onPress={handleSidebarOpen}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            justifyContent: "center",
+            zIndex: 999,
+            marginLeft: -7,
+          }}
+        >
+          <NativeAnimated.View
+            style={{
+              opacity: sidebarProgressValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0],
+              }),
+            }}
+          >
+            <Icon style={{ opacity: 0.6 }} bold>
+              more_vert
+            </Icon>
+          </NativeAnimated.View>
+        </Pressable>
+        <Pressable
+          onPress={handleOpen}
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            height: "100%",
+            justifyContent: "center",
+            zIndex: 999,
+            marginRight: -7,
+          }}
+        >
+          <NativeAnimated.View
+            style={{
+              opacity: focusPanelRef.current.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0],
+              }),
+            }}
+          >
+            <Icon style={{ opacity: 0.6 }} bold>
+              more_vert
+            </Icon>
+          </NativeAnimated.View>
+        </Pressable>
+      </Portal>
+    )
+  );
+}
+
 const Sidebar = ({
   progressValue,
   focusPanelRef,
@@ -893,6 +942,7 @@ const Sidebar = ({
               zIndex: breakpoints.md ? 1 : 0,
               flexDirection: "row",
               backgroundColor: theme[2],
+              ["WebkitAppRegion" as any]: "no-drag",
             },
             pathname.includes("chrome-extension") && { display: "none" },
           ]}
@@ -923,9 +973,13 @@ const Sidebar = ({
           </Animated.View>
         </NativeAnimated.View>
       </SafeView>
+
+      <FocusPanelFullscreenTrigger
+        sidebarProgressValue={progressValue}
+        focusPanelRef={focusPanelRef}
+      />
     </>
   );
 };
 
 export default memo(Sidebar);
-

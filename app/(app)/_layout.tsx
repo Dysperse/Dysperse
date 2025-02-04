@@ -127,7 +127,7 @@ export default function AppLayout() {
   const progressValue = useRef(null);
   const focusPanelProgressValue = useRef(null);
 
-  const [panelState, setPanelState] = useState<PanelState>("CLOSED");
+  const [panelState, setPanelState] = useState<PanelState>("COLLAPSED");
 
   const insets = useSafeAreaInsets();
   const focusPanelRef = useRef(null);
@@ -489,7 +489,7 @@ export default function AppLayout() {
                                       }
                                       overlayColor="transparent"
                                       drawerWidth={
-                                        panelState === "COLLAPSED" ? 100 : 300
+                                        panelState === "OPEN" ? 300 : 100
                                       }
                                       edgeWidth={desktopCollapsed ? 100 : width}
                                       renderNavigationView={renderFocusPanel}
@@ -515,4 +515,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-

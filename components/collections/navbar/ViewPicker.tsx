@@ -144,6 +144,7 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
         maxBackdropOpacity={0.05}
       >
         <BlurView
+          intensity={Platform.OS === "android" ? 0 : undefined}
           tint={!isDark ? "extraLight" : "dark"}
           style={{
             borderRadius: 25,
@@ -229,4 +230,3 @@ export const ViewPicker = memo(({ isLoading }: { isLoading: any }) => {
     </>
   );
 });
-

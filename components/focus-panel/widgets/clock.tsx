@@ -2,7 +2,6 @@ import { hslToHex } from "@/helpers/hslToHex";
 import { Avatar } from "@/ui/Avatar";
 import BottomSheet from "@/ui/BottomSheet";
 import { Button, ButtonText } from "@/ui/Button";
-import ConfirmationModal from "@/ui/ConfirmationModal";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -24,10 +23,8 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import timezones from "timezones-list";
 import { useFocusPanelContext } from "../context";
-import { widgetStyles } from "../widgetStyles";
 
-const TimeZone = ({
-  timeZone,
+const Time = ({
   setParam,
   params,
 }: {
@@ -36,136 +33,40 @@ const TimeZone = ({
   params?: any;
 }) => {
   const theme = useColor("orange");
-  const { panelState } = useFocusPanelContext();
 
-  const [time, setTime] = useState(dayjs().tz(timeZone));
+  const [time, setTime] = useState(dayjs());
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(dayjs().tz(timeZone));
-    }, 1000);
+    const interval = setInterval(() => setTime(dayjs()), 1000);
     return () => clearInterval(interval);
-  }, [timeZone]);
+  }, []);
 
   return (
-    <View
-      style={{
-        padding: timeZone ? 10 : 0,
-        width: timeZone ? "33.3333%" : "100%",
-      }}
-    >
-      <ConfirmationModal
-        height={400}
-        disabled={!timeZone}
-        title="Remove timezone?"
-        secondary="You can always add it back later"
-        onSuccess={() => {
-          if (!timeZone) return;
-          setParam(
-            "timeZones",
-            params.timeZones
-              ? params.timeZones.filter((t) => t !== timeZone)
-              : []
-          );
-        }}
-      >
-        <Pressable
-          style={({ pressed, hovered }) => ({
-            width: "100%",
-            aspectRatio: timeZone ? "1/1" : undefined,
-            flexDirection: "row",
-            alignItems: "center",
-            ...(timeZone && {
-              backgroundColor: theme[pressed ? 6 : hovered ? 5 : 4],
-              borderRadius: 20,
-            }),
-          })}
-          {...(timeZone && {})}
+    <View>
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            position: "relative",
+            marginHorizontal: "auto",
+          }}
         >
-          <View style={{ flex: 1 }}>
-            <View
-              style={
-                timeZone
-                  ? undefined
-                  : {
-                      position: "relative",
-                      height: panelState === "COLLAPSED" ? undefined : 40,
-                      width: panelState === "COLLAPSED" ? undefined : 170,
-                      marginHorizontal: "auto",
-                    }
-              }
-            >
-              <Text
-                weight={timeZone ? 900 : 400}
-                style={
-                  panelState === "COLLAPSED"
-                    ? {
-                        marginTop: 20,
-                        fontSize: 35,
-                        lineHeight: 40,
-                        color: theme[11],
-                        textAlign: "center",
-                      }
-                    : timeZone
-                    ? {
-                        color: theme[11],
-                        fontSize: 17,
-                        width: "100%",
-                        textAlign: "center",
-                      }
-                    : {
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        fontSize: 35,
-                        lineHeight: 40,
-                        fontFamily: getFontName("jetBrainsMono", 500),
-                        color: theme[11],
-                      }
-                }
-                numberOfLines={
-                  panelState === "COLLAPSED"
-                    ? undefined
-                    : timeZone
-                    ? undefined
-                    : 1
-                }
-              >
-                {panelState === "COLLAPSED"
-                  ? time.format("hh:mm").split(":").join("\n")
-                  : time.format(timeZone ? "hh:mm" : "hh:mm A")}
-              </Text>
-            </View>
-          </View>
-        </Pressable>
-      </ConfirmationModal>
-    </View>
-  );
-};
-
-function Time({ setParam, params }) {
-  return (
-    <View style={{ gap: 10 }}>
-      <TimeZone />
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          marginHorizontal: -10,
-        }}
-      >
-        {params.timeZones?.map?.((timeZone) => (
-          <TimeZone
-            setParam={setParam}
-            params={params}
-            timeZone={timeZone}
-            key={timeZone}
-          />
-        ))}
+          <Text
+            style={{
+              marginTop: 10,
+              fontSize: 45,
+              lineHeight: 40,
+              color: theme[11],
+              textAlign: "center",
+            }}
+            weight={300}
+          >
+            {time.format("hh:mm").split(":").join("\n")}
+          </Text>
+        </View>
       </View>
     </View>
   );
-}
+};
 
 const Stopwatch = ({ params, setParam }) => {
   const theme = useColor("orange");
@@ -696,11 +597,9 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
   );
 }
 
-export default function Clock({ widget, menuActions, setParam }) {
+export default function Clock({ widget, menuActions, navigation, setParam }) {
   const theme = useColor("orange");
-  const userTheme = useColorTheme();
   const [view, setView] = useState<ClockViewType>("Clock");
-  const { panelState } = useFocusPanelContext();
   const timeZoneModalRef = useRef<BottomSheetModal>(null);
 
   return (
@@ -737,31 +636,27 @@ export default function Clock({ widget, menuActions, setParam }) {
           }
         />
       )} */}
-      <View
-        style={
-          panelState === "COLLAPSED"
-            ? {
-                backgroundColor: theme[3],
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 20,
-              }
-            : [
-                widgetStyles.card,
-                {
-                  backgroundColor: theme[3],
-                  paddingVertical: 30,
-                  paddingBottom: 15,
-                },
-                view === "Timer" && {
-                  paddingHorizontal: 0,
-                },
-              ]
-        }
+      <Pressable
+        style={({ pressed, hovered }) => [
+          {
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 20,
+            paddingBottom: 10,
+            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+          },
+          view === "Timer" && {
+            paddingHorizontal: 0,
+          },
+        ]}
       >
         <ColorThemeProvider theme={theme}>
           {view === "Clock" && (
-            <Time setParam={setParam} params={widget.params} />
+            <Time
+              navigation={navigation}
+              setParam={setParam}
+              params={widget.params}
+            />
           )}
           {view === "Stopwatch" && (
             <Stopwatch setParam={setParam} params={widget.params} />
@@ -776,8 +671,7 @@ export default function Clock({ widget, menuActions, setParam }) {
             timeZoneModalRef={timeZoneModalRef}
           />
         )}
-      </View>
+      </Pressable>
     </View>
   );
 }
-
