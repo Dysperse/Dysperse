@@ -4,6 +4,7 @@ import { useUser } from "@/context/useUser";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { DatePicker } from "@/ui/DatePicker";
+import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -14,9 +15,11 @@ import { RecurrencePicker } from "@/ui/RecurrencePicker";
 import SkeletonContainer from "@/ui/Skeleton/container";
 import { LinearSkeletonArray } from "@/ui/Skeleton/linear";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef } from "react";
 import { Linking, Platform, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -590,12 +593,15 @@ function TaskLocationMenu() {
 
 function CanvasLiveInfo() {
   const { task } = useTaskDrawerContext();
+  const theme = useColorTheme();
   const { data, error } = useSWR([
     "space/integrations/canvas-live-widget",
     { id: task.id },
   ]);
 
-  return data ? (
+  return error ? (
+    <ErrorAlert message="Couldn't get assignment information - try again later" />
+  ) : data ? (
     <SkeletonContainer
       style={{
         marginTop: 10,
@@ -604,69 +610,159 @@ function CanvasLiveInfo() {
         position: "relative",
       }}
     >
-      <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
-        <Icon>classroom</Icon>
-        <ListItemText
-          primary="Grading"
-          secondary={`${data.points_possible} ${data.grading_type}`}
-        />
-      </ListItemButton>
-
-      <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
-        <Icon>timer</Icon>
-        <ListItemText
-          primary="Attempts"
-          secondary={
-            data.allowed_attempts === -1 ? "Unlimited" : data.allowed_attempts
-          }
-        />
-      </ListItemButton>
-
-      <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
-        <Icon>image</Icon>
-        <ListItemText
-          primary="Submission"
-          secondaryProps={{
-            style: { textTransform: "capitalize", opacity: 0.6, fontSize: 13 },
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: -3,
+          marginTop: -3,
+        }}
+      >
+        <Text style={{ paddingHorizontal: 10 }} variant="eyebrow" weight={700}>
+          {data.submission?.workflow_state === "graded" && !data.score
+            ? "Assigned"
+            : data.submission?.workflow_state
+                ?.replace("unsubmitted", "Assigned")
+                .replace("_", " ")}
+          {data.submission?.workflow_state === "submitted"
+            ? data.submission.late
+              ? " late :("
+              : " on time!"
+            : data.submission?.workflow_state === "unsubmitted" ||
+              (data.submission?.workflow_state === "graded" && !data.score)
+            ? ` ${dayjs(data.updated_at || data.created_at).fromNow()}`
+            : ""}
+        </Text>
+        <Button
+          onPress={() => Linking.openURL(data.html_url)}
+          dense
+          text="Open"
+          iconPosition="end"
+          icon="north_east"
+          containerStyle={{ marginLeft: "auto", marginRight: 10 }}
+          backgroundColors={{
+            default: addHslAlpha(theme[9], 0.1),
+            hovered: addHslAlpha(theme[9], 0.2),
+            pressed: addHslAlpha(theme[9], 0.3),
           }}
-          secondary={data.submission_types.join(", ").replace("_", " ")}
         />
-      </ListItemButton>
-
+      </View>
+      <Text
+        style={{
+          fontSize: 35,
+          paddingHorizontal: 10,
+          marginTop: -10,
+        }}
+        weight={700}
+      >
+        {data.score
+          ? `${data.score} / ${data.points_possible}`
+          : `${data.points_possible} points`}
+      </Text>
+      <View style={{ flexDirection: "row", gap: 5, paddingHorizontal: 10 }}>
+        {[
+          { filled: true },
+          { filled: data.submission?.submitted_at },
+          { filled: data.submission?.graded_at && data.submission?.score },
+        ].map((_, i) => (
+          <LinearGradient
+            colors={[theme[_.filled ? 7 : 5], theme[_.filled ? 9 : 5]]}
+            key={i}
+            style={{
+              height: 5,
+              flex: 1,
+              borderRadius: 5,
+            }}
+          />
+        ))}
+      </View>
+      <View style={{ gap: 10, marginTop: 5 }}>
+        {data.score_statistics && (
+          <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+            <Icon>area_chart</Icon>
+            <ListItemText
+              primary="Score statistics"
+              secondary={`Low: ${data.score_statistics.min}  •  High: ${data.score_statistics.max}  •  Mean: ${data.score_statistics.mean}`}
+            />
+          </ListItemButton>
+        )}
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>assignment</Icon>
+          <ListItemText
+            primary="Attempts"
+            secondary={
+              data.allowed_attempts === -1 ? "Unlimited" : data.allowed_attempts
+            }
+          />
+        </ListItemButton>
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>assignment</Icon>
+          <ListItemText
+            primary="Submission"
+            secondary={capitalizeFirstLetter(
+              data.submission_types.join(", ").replace("_", " ")
+            )}
+            secondaryProps={{
+              style: {
+                opacity: 0.6,
+                fontSize: 13,
+              },
+            }}
+          />
+        </ListItemButton>
+      </View>
       {data.unlock_at && (
         <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
           <Icon>lock</Icon>
           <ListItemText
-            primary={dayjs(data.unlock_at).format("MMM Do, h:mm A")}
+            primary={`Unlocks on ${dayjs(data.unlock_at).format(
+              "MMM Do, h:mm A"
+            )}`}
             secondary={dayjs(data.unlock_at).fromNow()}
           />
         </ListItemButton>
       )}
-
+      {data.submission?.points_deducted && (
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>change_history</Icon>
+          <ListItemText
+            primary={`${data.submission.points_deducted} points deducted`}
+          />
+        </ListItemButton>
+      )}
+      {!data.has_submitted_submissions && (
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>info</Icon>
+          <ListItemText primary="Nobody else has submitted this yet" />
+        </ListItemButton>
+      )}
       {data.lock_at && (
         <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
           <Icon>lock</Icon>
           <ListItemText
-            primary={dayjs(data.lock_at).format("MMM Do, h:mm A")}
+            primary={`Locks on ${dayjs(data.lock_at).format("MMM Do, h:mm A")}`}
             secondary={dayjs(data.lock_at).fromNow()}
           />
         </ListItemButton>
       )}
-
+      {data.require_lockdown_browser && (
+        <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
+          <Icon>vpn</Icon>
+          <ListItemText primary="Requires lockdown browser" />
+        </ListItemButton>
+      )}
       {data.omit_from_final_grade && (
         <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
           <Icon>close</Icon>
           <ListItemText primary="Omitted from final grade" />
         </ListItemButton>
       )}
-
       {data.is_quiz_assignment && (
         <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
           <Icon>question_answer</Icon>
           <ListItemText primary="Quiz" />
         </ListItemButton>
       )}
-
       {data.peer_reviews && (
         <ListItemButton disabled>
           <Icon>people</Icon>
