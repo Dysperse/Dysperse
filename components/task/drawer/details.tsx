@@ -664,6 +664,7 @@ function CanvasLiveInfo() {
             <Text weight={700} style={{ fontSize: 20, opacity: 0.6 }}>
               {" "}
               out of {data.points_possible}{" "}
+              {data.submission?.score === data.points_possible && "🎉"}
             </Text>
           </>
         ) : (
