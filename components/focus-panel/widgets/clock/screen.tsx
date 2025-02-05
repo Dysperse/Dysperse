@@ -21,19 +21,21 @@ export default function ClockScreen() {
     <ColorThemeProvider theme={theme}>
       <View style={{ backgroundColor: theme[2], flex: 1 }}>
         <Navbar
+          bgcolors={undefined}
           title="Clock"
           widgetId={params.id}
           options={[
             { text: "Pomodoro", icon: "psychiatry" },
-            { text: "Timer", icon: "alarm" },
-            { text: "Stopwatch", icon: "stop" },
+            { text: "Timer", icon: "timer" },
+            { text: "Stopwatch", icon: "avg_pace" },
+            { divider: true, key: "" },
           ]}
         />
         <Text
           style={{
             marginTop: 40,
-            fontSize: 55,
-            lineHeight: 55,
+            fontSize: 50,
+            lineHeight: 50,
             color: theme[11],
             textAlign: "center",
             fontFamily: "serifText700",
@@ -43,11 +45,12 @@ export default function ClockScreen() {
         </Text>
         <Text
           style={{
-            marginTop: 10,
-            fontSize: 20,
+            marginTop: 5,
+            fontSize: 25,
             color: theme[11],
             textAlign: "center",
           }}
+          weight={300}
         >
           {time.format("MMM Do, YYYY")}
         </Text>

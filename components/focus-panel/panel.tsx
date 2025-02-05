@@ -306,12 +306,14 @@ export const Navbar = ({
   foregroundColor,
   widgetId,
   options = [],
+  bgcolors,
 }: {
   title: string;
   backgroundColor?: string;
   foregroundColor?: string;
   widgetId?: string;
   options?: MenuOption[];
+  bgcolors?: any;
 }) => {
   const navigation = useNavigation();
   const { setPanelState } = useFocusPanelContext();
@@ -320,7 +322,9 @@ export const Navbar = ({
   const isDark = useDarkMode();
 
   const backgroundColors =
-    title === "Focus"
+    typeof bgcolors === "undefined"
+      ? bgcolors
+      : title === "Focus"
       ? undefined
       : {
           default: "transparent",
@@ -393,7 +397,6 @@ function PanelContent() {
   const theme = useColorTheme();
   const r = useRef<NavigationContainerRef<any>>(null);
   const { panelState } = useFocusPanelContext();
-  const insets = useSafeAreaInsets();
 
   const screenOptions = useMemo<StackNavigationOptions>(
     () => ({

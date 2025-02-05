@@ -38,8 +38,6 @@ export default function WeatherWidget({
     }
   }, []);
 
-  const { panelState } = useFocusPanelContext();
-
   const requestLocationPermission = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status === "granted") {
@@ -171,7 +169,7 @@ export default function WeatherWidget({
         <ColorThemeProvider theme={weatherColor}>
           <Pressable
             onPress={() => {
-              navigation.push("Weather");
+              navigation.push("Weather", { id: widget.id });
               setPanelState("OPEN");
               drawerRef.current?.openDrawer();
               InteractionManager.runAfterInteractions(() => {

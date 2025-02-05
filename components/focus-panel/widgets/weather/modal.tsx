@@ -4,13 +4,13 @@ import { ColorThemeProvider } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Navbar } from "../../panel";
 import airQuality from "./airQuality.json";
@@ -236,32 +236,19 @@ function WeatherModal({
   );
 }
 
-export function FocusPanelWeather({ navigation }) {
+export function FocusPanelWeather() {
   const [location, setLocation] = useState(null);
-  const [permissionStatus, setPermissionStatus] =
-    useState<Location.PermissionStatus>(null);
+  const { params } = useRoute();
+  // const [permissionStatus, setPermissionStatus] =
+  //   useState<Location.PermissionStatus>(null);
 
   const checkLocationPermission = useCallback(async () => {
     const { status } = await Location.getForegroundPermissionsAsync();
-    setPermissionStatus(status);
     if (status === "granted") {
       const location = await Location.getCurrentPositionAsync({});
       setLocation(location);
     }
   }, []);
-
-  const requestLocationPermission = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status === "granted") {
-      const location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
-    }
-  };
 
   useEffect(() => {
     checkLocationPermission();
@@ -334,9 +321,9 @@ export function FocusPanelWeather({ navigation }) {
     <ColorThemeProvider theme={theme}>
       <Navbar
         title="Weather"
-        navigation={navigation}
         backgroundColor={theme[3]}
         foregroundColor={theme[11]}
+        widgetId={params.id}
       />
       <LinearGradient colors={[theme[3], theme[5]]} style={{ flex: 1 }}>
         {data && airQualityData ? (
