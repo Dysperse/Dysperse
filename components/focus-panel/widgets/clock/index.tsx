@@ -22,15 +22,16 @@ import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import timezones from "timezones-list";
-import { useFocusPanelContext } from "../context";
+import { useFocusPanelContext } from "../../context";
 
 const Time = ({
   setParam,
   params,
+  navigation,
 }: {
-  timeZone?: string;
   setParam?: any;
   params?: any;
+  navigation?: any;
 }) => {
   const theme = useColor("orange");
 
@@ -599,6 +600,7 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
 
 export default function Clock({ widget, menuActions, navigation, setParam }) {
   const theme = useColor("orange");
+  const { setPanelState } = useFocusPanelContext();
   const [view, setView] = useState<ClockViewType>("Clock");
   const timeZoneModalRef = useRef<BottomSheetModal>(null);
 
@@ -649,6 +651,10 @@ export default function Clock({ widget, menuActions, navigation, setParam }) {
             paddingHorizontal: 0,
           },
         ]}
+        onPress={() => {
+          navigation.push("Clock", { id: "test" });
+          setPanelState("OPEN");
+        }}
       >
         <ColorThemeProvider theme={theme}>
           {view === "Clock" && (

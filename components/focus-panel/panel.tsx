@@ -5,7 +5,7 @@ import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { MenuOption } from "@/ui/MenuPopover";
+import MenuPopover, { MenuOption } from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor, useDarkMode } from "@/ui/color";
@@ -14,6 +14,7 @@ import {
   NavigationContainer,
   NavigationContainerRef,
   NavigationIndependentTree,
+  useNavigation,
 } from "@react-navigation/native";
 import {
   createStackNavigator,
@@ -48,6 +49,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useFocusPanelContext } from "./context";
+import ClockScreen from "./widgets/clock/screen";
 import { NewWidget } from "./widgets/new";
 import { FocusPanelSpotify } from "./widgets/spotify/FocusPanelSpotify";
 import TopStocksScreen from "./widgets/top-stocks/screen";
@@ -300,19 +302,31 @@ const Stack = createStackNavigator();
 
 export const Navbar = ({
   title,
-  navigation,
   backgroundColor,
   foregroundColor,
+  widgetId,
+  options = [],
 }: {
   title: string;
-  navigation: StackNavigationProp<any>;
   backgroundColor?: string;
   foregroundColor?: string;
+  widgetId?: string;
+  options?: MenuOption[];
 }) => {
-  const { setPanelState, panelState } = useFocusPanelContext();
+  const navigation = useNavigation();
+  const { setPanelState } = useFocusPanelContext();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const isDark = useDarkMode();
+
+  const backgroundColors =
+    title === "Focus"
+      ? undefined
+      : {
+          default: "transparent",
+          pressed: isDark ? "rgba(255,255,255,.1)" : "rgba(0, 0, 0, 0.1)",
+          hovered: isDark ? "rgba(255,255,255,.2)" : "rgba(0, 0, 0, 0.2)",
+        };
 
   return (
     <View
@@ -334,34 +348,41 @@ export const Navbar = ({
             navigation.goBack();
           }
         }}
-        backgroundColors={
-          title === "Focus"
-            ? undefined
-            : {
-                default: "transparent",
-                pressed: isDark ? "rgba(255,255,255,.1)" : "rgba(0, 0, 0, 0.1)",
-                hovered: isDark ? "rgba(255,255,255,.2)" : "rgba(0, 0, 0, 0.2)",
-              }
-        }
+        backgroundColors={backgroundColors}
         variant={
           title === "Focus" ? (breakpoints.md ? "filled" : "text") : "text"
         }
-        icon="arrow_back_ios_new"
-        style={{
-          opacity: navigation.canGoBack() || title === "Focus" ? 1 : 0,
-        }}
+        iconProps={{ bold: true }}
+        icon="west"
       />
       <Text
         style={{
           opacity: title === "Focus" ? 0 : 1,
           color: foregroundColor || theme[11],
           marginHorizontal: "auto",
-          paddingRight: 30,
+          paddingRight: widgetId ? null : 30,
         }}
         weight={800}
       >
         {title}
       </Text>
+      {widgetId && (
+        <MenuPopover
+          menuProps={{ rendererProps: { placement: "bottom" } }}
+          containerStyle={{ marginLeft: -10 }}
+          trigger={
+            <IconButton
+              backgroundColors={backgroundColors}
+              icon="more_horiz"
+              iconProps={{ bold: true }}
+            />
+          }
+          options={[
+            ...options,
+            { text: "Remove widget", icon: "remove_circle" },
+          ]}
+        />
+      )}
     </View>
   );
 };
@@ -389,10 +410,7 @@ function PanelContent() {
         marginVertical: 10,
         borderRadius: 25,
       },
-      header: ({ navigation, route }) =>
-        route.name === "Focus" ? null : (
-          <Navbar navigation={navigation} title={route.name} />
-        ),
+      header: ({ navigation, route }) => null,
     }),
     [panelState]
   );
@@ -494,7 +512,7 @@ function PanelContent() {
                 <Stack.Screen
                   name="Clock"
                   options={borderedCardStyle}
-                  component={TopStocksScreen}
+                  component={ClockScreen}
                 />
                 <Stack.Screen
                   name="New"
