@@ -658,9 +658,17 @@ function CanvasLiveInfo() {
         }}
         weight={700}
       >
-        {data.score
-          ? `${data.score} / ${data.points_possible}`
-          : `${data.points_possible} points`}
+        {data.submission?.score ? (
+          <>
+            {data.submission?.score} points
+            <Text weight={700} style={{ fontSize: 20, opacity: 0.6 }}>
+              {" "}
+              out of {data.points_possible}{" "}
+            </Text>
+          </>
+        ) : (
+          `${data.points_possible} points`
+        )}
       </Text>
       <View style={{ flexDirection: "row", gap: 5, paddingHorizontal: 10 }}>
         {[
@@ -817,4 +825,3 @@ export function TaskDetails() {
     </View>
   );
 }
-
