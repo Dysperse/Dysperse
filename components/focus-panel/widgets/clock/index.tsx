@@ -16,7 +16,7 @@ import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
@@ -55,6 +55,7 @@ const Time = ({
           lineHeight: 20,
           color: theme[11],
           fontFamily: "mono",
+          paddingTop: Platform.OS === "ios" ? 1 : 0,
         }}
       >
         {time.format("hh:mm")}
@@ -63,6 +64,7 @@ const Time = ({
         style={{
           marginTop: 5,
           fontSize: 15,
+          paddingTop: Platform.OS === "ios" ? 1 : 0,
           lineHeight: 15,
           color: theme[11],
           opacity: 0.6,

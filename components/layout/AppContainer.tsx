@@ -167,7 +167,7 @@ const AppContainer = memo(
 
     return (
       <Animated.View style={animatedStyle as any}>
-        <Animated.View style={marginTopStyle} />
+        {!breakpoints.md && <Animated.View style={marginTopStyle} />}
         {!breakpoints.md && (
           <Animated.View
             style={[
@@ -183,3 +183,4 @@ const AppContainer = memo(
 );
 
 export default AppContainer;
+

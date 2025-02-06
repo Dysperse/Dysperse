@@ -4,7 +4,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import useSWR from "swr";
 
 const UpNext = ({ widget, menuActions }) => {
@@ -73,6 +73,7 @@ const UpNext = ({ widget, menuActions }) => {
           pressed: theme[5],
           hovered: theme[6],
         }}
+        size={"auto"}
         pressableStyle={{
           alignItems: "flex-start",
           padding: 10,
@@ -96,6 +97,7 @@ const UpNext = ({ widget, menuActions }) => {
               fontSize: 15,
               lineHeight: 17,
               color: theme[11],
+              paddingTop: Platform.OS === "ios" ? 1 : 0,
             },
             incomplete.length === 0 && { textAlign: "center" },
           ]}
