@@ -14,7 +14,6 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import React, { memo, useMemo } from "react";
 import { Linking, Platform, View } from "react-native";
-import { DOMParser } from "react-native-html-parser";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -119,39 +118,32 @@ export function getPreviewText(htmlString) {
 }
 
 function extractLinksFromHTML(htmlString) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, "text/html");
-  const linkElements = doc.getElementsByTagName("a");
+  // Regular expression to match all <a> tags and extract href and inner text
+  const regex = /<a\s+(?:[^>]*?\s+)?href=["']([^"']*)["'][^>]*>(.*?)<\/a>/gi;
+
   const links = [];
+  let match;
 
-  for (let i = 0; i < linkElements.length; i++) {
-    const element = linkElements[i];
-    const href = element.getAttribute("href");
-    let text = "";
+  while ((match = regex.exec(htmlString)) !== null) {
+    const innerHTML = match[2].trim();
+    let text = innerHTML.replace(/<[^>]+>/g, ""); // Remove any HTML tags within the link text
+    let icon = "link";
 
-    // Recursively extract text content, stripping any nested HTML tags
-    function extractText(node) {
-      if (node.childNodes && node.childNodes.length > 0) {
-        for (let j = 0; j < node.childNodes.length; j++) {
-          extractText(node.childNodes[j]);
-        }
-      } else if (node.nodeValue) {
-        text += node.nodeValue.trim() + " ";
+    if (text === match[1]) {
+      try {
+        text = new URL(text).hostname;
+      } catch (e) {
+        // If the URL is invalid, keep the original text
       }
     }
 
-    extractText(element);
-    text = text.trim();
-
-    let icon = "link";
-    if (text === href) text = new URL(href).hostname;
     if (videoChatPlatforms.some((platform) => text.includes(platform))) {
       text = "Join meeting";
       icon = "call";
     }
 
     links.push({
-      href,
+      href: match[1],
       icon,
       text,
       type: "LINK",
