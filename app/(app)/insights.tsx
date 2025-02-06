@@ -262,7 +262,7 @@ function Insights({ year }) {
                 <View style={{ flex: 1 }} />
                 <View
                   style={{
-                    minHeight: 15,
+                    minHeight: 23,
                     height: `${(day / Math.max(...data.byHour)) * 100}%`,
                   }}
                 >
