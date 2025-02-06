@@ -55,20 +55,20 @@ export default function Spotify({ menuActions, params, navigation }) {
       ) : (
         <View
           style={{
-            padding: 20,
+            padding: 17,
+            paddingVertical: 13,
             backgroundColor: theme[3],
             borderRadius: 20,
             justifyContent: "center",
             alignItems: "center",
-            aspectRatio: panelState === "COLLAPSED" ? 1 : undefined,
           }}
         >
-          <Image
-            style={{ width: 24, height: 24 }}
-            source={{
-              uri: "https://cdn.brandfetch.io/id20mQyGeY/theme/dark/symbol.svg?k=bfHSJFAPEG",
-            }}
-          />
+          <Text
+            style={{ fontSize: 17, lineHeight: 18, opacity: 0.6 }}
+            weight={300}
+          >
+            No music playing
+          </Text>
         </View>
       )}
     </Pressable>

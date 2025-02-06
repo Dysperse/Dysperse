@@ -15,13 +15,13 @@
   },
   "1": {
     "day": {
-      "description": "Mainly Sunny",
+      "description": "Sunny",
       "image": "http://openweathermap.org/img/wn/01d@2x.png",
       "icon": "light_mode",
       "colorTheme": "amber"
     },
     "night": {
-      "description": "Mainly Clear",
+      "description": "Clear",
       "image": "http://openweathermap.org/img/wn/01n@2x.png",
       "icon": "light_mode",
       "colorTheme": "indigo"
@@ -392,3 +392,4 @@
     }
   }
 }
+

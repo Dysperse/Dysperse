@@ -1,4 +1,3 @@
-import ListItemText from "@/ui/ListItemText";
 import { useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
@@ -82,23 +81,6 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
               width: panelState === "COLLAPSED" ? 60 : undefined,
             }}
           >
-            {panelState !== "COLLAPSED" && (
-              <ListItemText
-                primary={data.item.name}
-                secondary={data.item.artists[0].name}
-                primaryProps={{
-                  weight: 900,
-                  style: { color: isDark ? "#fff" : "#000" },
-                }}
-                secondaryProps={{
-                  style: {
-                    marginTop: -3,
-                    color: isDark ? "#fff" : "#000",
-                    opacity: 0.6,
-                  },
-                }}
-              />
-            )}
             <View
               style={{
                 overflow: "hidden",

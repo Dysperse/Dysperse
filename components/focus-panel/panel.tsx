@@ -540,6 +540,45 @@ function PanelContent() {
   );
 }
 
+const PanelActions = ({}) => {
+  const { setPanelState, drawerRef } = useFocusPanelContext();
+  const navigation = useNavigation();
+
+  const [open, setOpen] = useState(false);
+
+  return open ? (
+    <View style={{ flexDirection: "row", opacity: 0.5 }}>
+      <IconButton
+        onPress={() => {
+          navigation.push("New");
+          drawerRef.current.openDrawer();
+          setPanelState("OPEN");
+        }}
+        size="auto"
+        style={{ height: 40, flex: 1 }}
+        icon="add"
+      />
+      <IconButton
+        onPress={() => {
+          drawerRef.current.closeDrawer();
+          setPanelState("CLOSED");
+        }}
+        size="auto"
+        style={{ height: 40, flex: 1 }}
+        icon="close"
+      />
+    </View>
+  ) : (
+    <View>
+      <IconButton
+        onPress={() => setOpen(true)}
+        size="100%"
+        style={{ height: 40, flex: 1 }}
+        icon="more_horiz"
+      />
+    </View>
+  );
+};
 function FocusPanelHome({
   navigation,
 }: {
@@ -597,7 +636,7 @@ function FocusPanelHome({
               paddingTop: 2,
             },
           ]}
-          centerContent={data?.length === 0 || !data}
+          centerContent
         >
           {!data ? (
             <View style={{ marginHorizontal: "auto" }}>
@@ -606,12 +645,12 @@ function FocusPanelHome({
           ) : data?.length === 0 ? (
             <View
               style={{
-                flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
                 maxWidth: 250,
                 marginHorizontal: "auto",
                 gap: 5,
+                flex: 1,
               }}
             >
               <Text
@@ -652,6 +691,7 @@ function FocusPanelHome({
                   paddingVertical: 8 + (breakpoints.md ? 0 : insets.bottom),
                   minHeight: "100%",
                 }}
+                centerContent
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
@@ -670,27 +710,8 @@ function FocusPanelHome({
                         widget={widget}
                       />
                     ))}
-                  <IconButton
-                    variant="filled"
-                    onPress={() => {
-                      navigation.push("New");
-                      drawerRef.current.openDrawer();
-                      setPanelState("OPEN");
-                    }}
-                    size="100%"
-                    style={{ height: 40 }}
-                    icon="add"
-                  />
-                  <IconButton
-                    variant="filled"
-                    onPress={() => {
-                      drawerRef.current.closeDrawer();
-                      setPanelState("CLOSED");
-                    }}
-                    size="100%"
-                    style={{ height: 40 }}
-                    icon="dock_to_left"
-                  />
+
+                  <PanelActions />
                 </Freeze>
               </ScrollView>
             )

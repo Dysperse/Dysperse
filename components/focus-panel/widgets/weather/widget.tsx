@@ -203,7 +203,7 @@ export default function WeatherWidget({
                   <View>
                     <View
                       style={{
-                        flexDirection: "row",
+                        flexDirection: "row-reverse",
                         alignItems: "center",
                         gap: 7,
                       }}
@@ -229,12 +229,12 @@ export default function WeatherWidget({
                     <Text
                       style={{
                         color: weatherColor[11],
-                        fontSize: 18,
+                        fontSize: 16,
                         lineHeight: 18,
                         marginTop: 3,
-                        textTransform: "lowercase",
+                        opacity: 0.6,
                       }}
-                      weight={800}
+                      weight={400}
                     >
                       {
                         weatherCodes[data.current_weather.weathercode][
