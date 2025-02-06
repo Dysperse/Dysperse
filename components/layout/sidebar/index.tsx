@@ -777,7 +777,8 @@ function FocusPanelFullscreenTrigger({ sidebarProgressValue, focusPanelRef }) {
   };
 
   return (
-    desktopCollapsed && (
+    desktopCollapsed &&
+    Platform.OS === "web" && (
       <Portal>
         <Pressable
           onPress={handleSidebarOpen}
@@ -983,3 +984,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+
