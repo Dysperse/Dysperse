@@ -287,7 +287,14 @@ function Insights({ year }) {
                       {/* hour of day */}
                       {index % 12 === 0 ? 12 : index % 12}
                       {"\n"}
-                      <Text style={{ fontSize: 7, fontFamily: "mono" }}>
+                      <Text
+                        style={{
+                          fontSize: 7,
+                          fontFamily: "mono",
+                          opacity: 0.8,
+                          color: theme[11],
+                        }}
+                      >
                         {index < 12 ? "AM" : "PM"}
                       </Text>
                     </Text>
