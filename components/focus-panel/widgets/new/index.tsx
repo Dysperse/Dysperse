@@ -14,7 +14,8 @@ import { InteractionManager, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { UpcomingSvg, Widget } from "../../panel";
+import { useFocusPanelContext } from "../../context";
+import { Navbar, UpcomingSvg, Widget } from "../../panel";
 
 export function NewWidget({
   navigation,
@@ -23,6 +24,7 @@ export function NewWidget({
 }) {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
+  const { setPanelState } = useFocusPanelContext();
   const { data, mutate } = useSWR(["user/focus-panel"]);
   const [loading, setLoading] = useState<string | boolean>(false);
   const [search, setSearch] = useState<string>("");
@@ -127,6 +129,7 @@ export function NewWidget({
 
   return (
     <>
+      <Navbar title="Add widget" />
       <View style={{ paddingHorizontal: 15, marginTop: 3 }}>
         <TextField
           variant="filled+outlined"
@@ -170,6 +173,8 @@ export function NewWidget({
                   });
                 }
                 handleWidgetToggle((item.key || item.text) as Widget);
+                navigation.goBack();
+                setPanelState("COLLAPSED");
               }}
             >
               <Avatar

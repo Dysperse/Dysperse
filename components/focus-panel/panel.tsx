@@ -319,6 +319,8 @@ export const Navbar = ({
       sendApiRequest(sessionToken, "DELETE", "user/focus-panel", {
         id: widgetId,
       });
+      navigation.goBack();
+      setPanelState("COLLAPSED");
     } catch (e) {
       Toast.show({ type: "error" });
     }
@@ -754,3 +756,4 @@ const FocusPanel = memo(function FocusPanel({
 });
 
 export default FocusPanel;
+

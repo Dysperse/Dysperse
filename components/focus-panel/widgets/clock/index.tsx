@@ -652,7 +652,7 @@ export default function Clock({ widget, menuActions, navigation, setParam }) {
           },
         ]}
         onPress={() => {
-          navigation.push("Clock", { id: "test" });
+          navigation.push("Clock", { id: widget.id });
           setPanelState("OPEN");
         }}
       >
@@ -681,3 +681,4 @@ export default function Clock({ widget, menuActions, navigation, setParam }) {
     </View>
   );
 }
+
