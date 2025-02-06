@@ -43,28 +43,34 @@ const Time = ({
   }, []);
 
   return (
-    <View>
-      <View style={{ flex: 1 }}>
-        <View
-          style={{
-            position: "relative",
-            marginHorizontal: "auto",
-          }}
-        >
-          <Text
-            style={{
-              marginTop: 10,
-              fontSize: 45,
-              lineHeight: 40,
-              color: theme[11],
-              textAlign: "center",
-            }}
-            weight={300}
-          >
-            {time.format("hh:mm").split(":").join("\n")}
-          </Text>
-        </View>
-      </View>
+    <View
+      style={{
+        position: "relative",
+      }}
+    >
+      <Text
+        style={{
+          marginTop: 10,
+          fontSize: 20,
+          lineHeight: 20,
+          color: theme[11],
+          fontFamily: "mono",
+        }}
+      >
+        {time.format("hh:mm")}
+      </Text>
+      <Text
+        style={{
+          marginTop: 5,
+          fontSize: 15,
+          lineHeight: 15,
+          color: theme[11],
+          opacity: 0.6,
+        }}
+        weight={500}
+      >
+        {time.format("MMM Do")}
+      </Text>
     </View>
   );
 };

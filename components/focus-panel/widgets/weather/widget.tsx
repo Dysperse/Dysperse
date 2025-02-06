@@ -205,10 +205,10 @@ export default function WeatherWidget({
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        gap: 5,
+                        gap: 7,
                       }}
                     >
-                      <Icon bold>
+                      <Icon bold size={20}>
                         {
                           weatherCodes[data.current_weather.weathercode][
                             isNight() ? "night" : "day"
@@ -217,7 +217,7 @@ export default function WeatherWidget({
                       </Icon>
                       <Text
                         style={{
-                          fontSize: 22,
+                          fontSize: 20,
                           color: weatherColor[11],
                           textAlign: "center",
                         }}
@@ -228,11 +228,13 @@ export default function WeatherWidget({
                     </View>
                     <Text
                       style={{
-                        opacity: 0.8,
                         color: weatherColor[11],
-                        textAlign: "center",
+                        fontSize: 18,
+                        lineHeight: 18,
+                        marginTop: 3,
+                        textTransform: "lowercase",
                       }}
-                      weight={300}
+                      weight={800}
                     >
                       {
                         weatherCodes[data.current_weather.weathercode][
@@ -260,3 +262,4 @@ export default function WeatherWidget({
     </View>
   );
 }
+
