@@ -60,10 +60,12 @@ export function StockItem({
   large,
   stock,
   navigation,
+  widget,
 }: {
   large?: boolean;
   stock: any;
   navigation;
+  widget: any;
 }) {
   const theme = useColorTheme();
   const { panelState, setPanelState } = useFocusPanelContext();
@@ -91,7 +93,7 @@ export function StockItem({
       ]}
       onPress={() => {
         if (panelState !== "OPEN") {
-          navigation.push("Stocks");
+          navigation.push("Stocks", { id: widget.id });
           setPanelState("OPEN");
         } else {
           Linking.openURL(
@@ -254,6 +256,7 @@ export default function Widget({ navigation, menuActions, widget }) {
               style={{ flex: 1 }}
             >
               <StockItem
+                widget={widget}
                 key={stock.ticker}
                 stock={stock}
                 navigation={navigation}

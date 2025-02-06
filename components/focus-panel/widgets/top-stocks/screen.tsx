@@ -1,18 +1,19 @@
 import { Button, ButtonText } from "@/ui/Button";
-import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
 import MenuPopover from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
+import { useRoute } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { useState } from "react";
 import { View } from "react-native";
 import useSWR from "swr";
 import { StockItem } from ".";
+import { Navbar } from "../../panel";
 
 export default function TopStocksScreen() {
-  const theme = useColorTheme();
+  const { params } = useRoute();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("volume");
   const { data, error } = useSWR(
@@ -49,6 +50,7 @@ export default function TopStocksScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <Navbar title="Stocks" widgetId={params.id} />
       {error && <ErrorAlert />}
 
       <View

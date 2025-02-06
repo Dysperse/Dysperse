@@ -11,6 +11,7 @@ import * as Location from "expo-location";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { Navbar } from "../../panel";
 import airQuality from "./airQuality.json";
@@ -171,7 +172,11 @@ function WeatherModal({
             icon="eco"
             heading="Air Quality"
             onPress={() =>
-              alert(getAirQualityInfo(airQuality.current.pm2_5)?.meaning || "")
+              Toast.show({
+                type: "info",
+                text1:
+                  getAirQualityInfo(airQuality.current.pm2_5)?.meaning || "",
+              })
             }
             subheading={`${
               getAirQualityInfo(airQuality?.current?.pm2_5)?.category

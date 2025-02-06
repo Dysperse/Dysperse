@@ -163,17 +163,6 @@ function RenderWidget({ navigation, widget, index }) {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      mutate((oldData) => oldData.filter((w) => w.id !== widget.id));
-      sendApiRequest(sessionToken, "DELETE", "user/focus-panel", {
-        id: widget.id,
-      });
-    } catch (e) {
-      Toast.show({ type: "error" });
-    }
-  };
-
   const menuActions = [
     {
       icon: "move_up",
@@ -207,11 +196,11 @@ function RenderWidget({ navigation, widget, index }) {
                 .toString()
         ),
     },
-    {
-      icon: "remove_circle",
-      text: "Remove",
-      callback: handleDelete,
-    },
+    // {
+    //   icon: "remove_circle",
+    //   text: "Remove",
+    //   callback: handleDelete,
+    // },
   ] as MenuOption[];
 
   switch (widget.type) {
@@ -279,7 +268,7 @@ function RenderWidget({ navigation, widget, index }) {
         <WordOfTheDay
           navigation={navigation}
           menuActions={menuActions}
-          params={widget}
+          widget={widget}
           key={index}
         />
       );
@@ -320,6 +309,20 @@ export const Navbar = ({
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const isDark = useDarkMode();
+
+  const { mutate } = useSWR(["user/focus-panel"], null);
+  const { sessionToken } = useUser();
+
+  const handleDelete = async () => {
+    try {
+      mutate((oldData) => oldData.filter((w) => w.id !== widgetId));
+      sendApiRequest(sessionToken, "DELETE", "user/focus-panel", {
+        id: widgetId,
+      });
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
+  };
 
   const backgroundColors =
     typeof bgcolors === "undefined"
@@ -383,7 +386,11 @@ export const Navbar = ({
           }
           options={[
             ...options,
-            { text: "Remove widget", icon: "remove_circle" },
+            {
+              icon: "remove_circle",
+              text: "Remove widget",
+              callback: handleDelete,
+            },
           ]}
         />
       )}

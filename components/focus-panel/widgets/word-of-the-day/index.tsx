@@ -1,7 +1,7 @@
 import IconButton from "@/ui/IconButton";
 import { useFocusPanelContext } from "../../context";
 
-export default function WordOfTheDay({ navigation, menuActions, params }) {
+export default function WordOfTheDay({ navigation, menuActions, widget }) {
   const { setPanelState } = useFocusPanelContext();
 
   return (
@@ -9,7 +9,7 @@ export default function WordOfTheDay({ navigation, menuActions, params }) {
       size={85}
       icon="book"
       onPress={() => {
-        navigation.navigate("Word of the day");
+        navigation.navigate("Word of the day", { id: widget.id });
         setPanelState("OPEN");
       }}
       variant="filled"
@@ -66,4 +66,3 @@ export default function WordOfTheDay({ navigation, menuActions, params }) {
   //   </View>
   // );
 }
-
