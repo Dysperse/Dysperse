@@ -751,6 +751,10 @@ const FocusPanel = memo(function FocusPanel({
           flex: 1,
           ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
         },
+        !breakpoints.md && {
+          marginTop: insets.top,
+          marginBottom: insets.bottom,
+        },
         {
           transform: [{ translateX: transform }],
         },
