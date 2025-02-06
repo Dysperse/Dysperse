@@ -14,6 +14,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import dayjs from "dayjs";
 import React, { memo, useMemo } from "react";
 import { Linking, Platform, View } from "react-native";
+import { DOMParser } from "react-native-html-parser";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -118,24 +119,39 @@ export function getPreviewText(htmlString) {
 }
 
 function extractLinksFromHTML(htmlString) {
-  // Match all <a> tags and extract href and inner text
-  const regex = /<a\s+(?:[^>]*?\s+)?href=["']([^"']*)["'][^>]*>(.*?)<\/a>/gi;
-
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+  const linkElements = doc.getElementsByTagName("a");
   const links = [];
-  let match;
 
-  while ((match = regex.exec(htmlString)) !== null) {
-    let text: any = match[2].trim();
+  for (let i = 0; i < linkElements.length; i++) {
+    const element = linkElements[i];
+    const href = element.getAttribute("href");
+    let text = "";
+
+    // Recursively extract text content, stripping any nested HTML tags
+    function extractText(node) {
+      if (node.childNodes && node.childNodes.length > 0) {
+        for (let j = 0; j < node.childNodes.length; j++) {
+          extractText(node.childNodes[j]);
+        }
+      } else if (node.nodeValue) {
+        text += node.nodeValue.trim() + " ";
+      }
+    }
+
+    extractText(element);
+    text = text.trim();
+
     let icon = "link";
-
-    if (text === match[1]) text = new URL(text).hostname;
-    if (videoChatPlatforms.some((platform) => text?.includes?.(platform))) {
+    if (text === href) text = new URL(href).hostname;
+    if (videoChatPlatforms.some((platform) => text.includes(platform))) {
       text = "Join meeting";
       icon = "call";
     }
 
     links.push({
-      href: match[1],
+      href,
       icon,
       text,
       type: "LINK",
@@ -171,28 +187,30 @@ function TaskNoteChips({ note }) {
 
   return (
     <>
-      {chips.map((link, index) => (
-        <ImageViewer
-          key={index + link.type}
-          image={link.type === "IMAGE" && link.image}
-        >
-          <Chip
-            dense
-            key={index}
-            label={link.text}
-            textStyle={{ maxWidth: 100 }}
-            textProps={{ numberOfLines: 1 }}
-            onPress={() => Linking.openURL(link.image || link.href)}
-            icon={
-              link.image ? (
-                <Avatar size={22} image={link.image} disabled />
-              ) : (
-                link.icon
-              )
-            }
-          />
-        </ImageViewer>
-      ))}
+      {chips
+        .filter((link) => link.text?.trim())
+        .map((link, index) => (
+          <ImageViewer
+            key={index + link.type}
+            image={link.type === "IMAGE" && link.image}
+          >
+            <Chip
+              dense
+              key={index}
+              label={link.text}
+              textStyle={{ maxWidth: 100 }}
+              textProps={{ numberOfLines: 1 }}
+              onPress={() => Linking.openURL(link.image || link.href)}
+              icon={
+                link.image ? (
+                  <Avatar size={22} image={link.image} disabled />
+                ) : (
+                  link.icon
+                )
+              }
+            />
+          </ImageViewer>
+        ))}
     </>
   );
 }
