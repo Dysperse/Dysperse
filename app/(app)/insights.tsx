@@ -272,10 +272,26 @@ function Insights({ year }) {
                       borderRadius: 15,
                       alignItems: "center",
                       justifyContent: "flex-end",
-                      padding: 5,
                       flex: 1,
+                      overflow: "visible",
                     }}
-                  ></View>
+                  >
+                    <Text
+                      variant="eyebrow"
+                      style={{
+                        fontSize: 10,
+                        fontFamily: "mono",
+                        textAlign: "center",
+                      }}
+                    >
+                      {/* hour of day */}
+                      {index % 12 === 0 ? 12 : index % 12}
+                      {"\n"}
+                      <Text style={{ fontSize: 7, fontFamily: "mono" }}>
+                        {index < 12 ? "AM" : "PM"}
+                      </Text>
+                    </Text>
+                  </View>
                 </View>
               </View>
             ))}
