@@ -594,6 +594,7 @@ function TaskLocationMenu() {
 function CanvasLiveInfo() {
   const { task } = useTaskDrawerContext();
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
   const { data, error } = useSWR([
     "space/integrations/canvas-live-widget",
     { id: task.id },
@@ -639,8 +640,9 @@ function CanvasLiveInfo() {
         <Button
           onPress={() => Linking.openURL(data.html_url)}
           dense
-          text="Open"
+          text={breakpoints.md ? "Open" : ""}
           iconPosition="end"
+          textStyle={!breakpoints.md && { marginLeft: -5 }}
           icon="north_east"
           containerStyle={{ marginLeft: "auto", marginRight: 10 }}
           backgroundColors={{
@@ -652,7 +654,7 @@ function CanvasLiveInfo() {
       </View>
       <Text
         style={{
-          fontSize: 35,
+          fontSize: breakpoints.md ? 35 : 30,
           paddingHorizontal: 10,
           marginTop: -10,
         }}
@@ -730,7 +732,7 @@ function CanvasLiveInfo() {
         <ListItemButton disabled pressableStyle={{ paddingVertical: 0 }}>
           <Icon>lock</Icon>
           <ListItemText
-            primary={`Unlocks on ${dayjs(data.unlock_at).format(
+            primary={`Unlocks ${dayjs(data.unlock_at).format(
               "MMM Do, h:mm A"
             )}`}
             secondary={dayjs(data.unlock_at).fromNow()}
@@ -826,3 +828,4 @@ export function TaskDetails() {
     </View>
   );
 }
+
