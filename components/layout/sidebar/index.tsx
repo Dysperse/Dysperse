@@ -519,9 +519,13 @@ const TimeZoneModal = () => {
         onPress={() => ref.current.present()}
         icon="travel"
         height={45}
-        text={`${hours} hour${Math.abs(hours) !== 1 ? "s" : ""} ${
-          hours < 0 ? "ahead" : "behind"
-        }`}
+        text={
+          hours === 0
+            ? "Travel mode"
+            : `${hours} hour${Math.abs(hours) !== 1 ? "s" : ""} ${
+                hours < 0 ? "ahead" : "behind"
+              }`
+        }
         bold
         textProps={{ weight: 700 }}
       />
