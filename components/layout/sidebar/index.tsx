@@ -550,16 +550,17 @@ const TimeZoneModal = () => {
             Times shown in app will reflect{"\n"}your current time zone.
           </Text>
 
-          <View style={{ gap: 5, marginTop: 7, width: "100%" }}>
-            <Button
-              onPress={() => {
-                if (process.env.NODE_ENV === "development")
-                  return alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
-                Toast.show({ type: "info", text1: "Coming soon!" });
-              }}
-              text={`Make ${dayjs.tz.guess()} my default`}
-            />
-          </View>
+          <Button
+            variant="filled"
+            style={{ paddingHorizontal: 30 }}
+            onPress={() => {
+              handleChangeDefault();
+              if (process.env.NODE_ENV === "development")
+                return alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
+              Toast.show({ type: "info", text1: "Coming soon!" });
+            }}
+            text={`Make ${dayjs.tz.guess()} my default`}
+          />
         </View>
       </Modal>
     </>
