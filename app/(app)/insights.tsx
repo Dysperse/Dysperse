@@ -1,6 +1,6 @@
 import { MemberSince } from "@/components/insights/MemberSince";
 import { COLLECTION_VIEWS } from "@/components/layout/command-palette/list";
-import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -30,7 +30,7 @@ function YearSelector({ years, year, setYear }) {
 
 function Insights({ year }) {
   const theme = useColorTheme();
-  const { session } = useUser();
+  const breakpoints = useResponsiveBreakpoints();
   const { data, error } = useSWR(["user/insights", { year }]);
 
   const cardStyles = {
@@ -67,6 +67,7 @@ function Insights({ year }) {
 
         <MenuPopover
           trigger={<Button dense text="About" />}
+          containerStyle={{ width: 250 }}
           options={[
             {
               renderer: () => (
@@ -75,7 +76,7 @@ function Insights({ year }) {
                     This data is calculated based on the number of tasks &
                     collections you've created so far. It's an estimate of how
                     much impact you would make if you were to use regular
-                    notebook instead of Dysperse!
+                    notebook instead of Dysperse.
                   </Text>
                 </View>
               ),
@@ -92,7 +93,10 @@ function Insights({ year }) {
         </View>
 
         <View style={cardStyles}>
-          <Text style={[textStyles]}>{~~data.co2} grams</Text>
+          <Text style={[textStyles]}>
+            {~~data.co2}
+            {breakpoints.md ? " grams" : "g"}
+          </Text>
           <Text style={labelStyles}>of CO2 saved</Text>
         </View>
       </View>
@@ -354,4 +358,3 @@ export default function Page() {
     </View>
   );
 }
-
