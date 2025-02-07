@@ -101,7 +101,7 @@ export const ProfilePicture = function ProfilePicture({
       image={
         image
           ? image
-          : `https://source.boringavatars.com/beam/120/${name}?colors=264653,2a9d8f,e9c46a,f4a261,e76f51`
+          : `https://api.dicebear.com/9.x/notionists/svg?seed=${name}`
       }
       size={size}
       style={style}
@@ -115,3 +115,4 @@ export const ProfilePicture = function ProfilePicture({
     </Avatar>
   );
 };
+
