@@ -63,13 +63,11 @@ export default function Kanban() {
           {breakpoints.md && !isReadOnly && (
             <View
               style={{
-                width: 300,
+                width: 320,
+                maxWidth: 100,
                 flex: 1,
                 minWidth: 5,
                 minHeight: 5,
-                backgroundColor: theme[2],
-                borderWidth: 1,
-                borderColor: theme[5],
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -77,31 +75,15 @@ export default function Kanban() {
             >
               <IconButton
                 icon="add"
-                variant="filled"
-                size={50}
+                variant="outlined"
+                size={40}
                 onPress={openLabelPicker}
               />
             </View>
           )}
-          {columns?.length <= 4 &&
-            breakpoints.md &&
-            [...new Array(4 - columns?.length)].map((_, i) => (
-              <View
-                key={i}
-                style={{
-                  width: 300,
-                  flex: 1,
-                  minWidth: 5,
-                  minHeight: 5,
-                  backgroundColor: theme[2],
-                  borderRadius: 20,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              />
-            ))}
         </ScrollView>
       )}
     </KanbanContext.Provider>
   );
 }
+

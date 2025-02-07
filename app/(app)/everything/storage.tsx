@@ -178,7 +178,7 @@ export default function Page() {
       {(!breakpoints.md || desktopCollapsed) && (
         <MenuButton gradient addInsets />
       )}
-      <ScrollView contentContainerStyle={{ padding: 50 }}>
+      <ScrollView contentContainerStyle={{ padding: breakpoints.md ? 50 : 20 }}>
         <Text style={{ fontFamily: "serifText700", fontSize: 27 }}>Usage</Text>
         <Text
           style={{ marginTop: 10, opacity: 0.6, marginBottom: 20 }}

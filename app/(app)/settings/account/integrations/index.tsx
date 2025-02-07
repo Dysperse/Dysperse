@@ -250,7 +250,7 @@ export default function Page() {
     <SettingsScrollView>
       <Text style={settingStyles.title}>Integrations</Text>
       <Text style={{ fontSize: 17, opacity: 0.7 }}>
-        Connect calendars with Dysperse for a seamless experience
+        Connect your apps with Dysperse for a seamless experience
       </Text>
       {process.env.NODE_ENV !== "development" && (
         <Alert

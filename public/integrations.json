@@ -108,6 +108,15 @@
     "availableOptions": {}
   },
   {
+    "name": "GitHub",
+    "id": "GITHUB",
+    "description": "See open pull requests and issues assigned to you",
+    "icon": "https://cdn.brandfetch.io/idZAyF9rlg/theme/dark/symbol.svg?c=1dxbfHSJFAPEGdCLU4o5B",
+    "slug": "github",
+    "comingSoon": true,
+    "availableOptions": {}
+  },
+  {
     "name": "Canvas calendar",
     "id": "CANVAS_LMS",
     "description": "Displays items your Canvas calendar. Not needed if you've already connected Canvas LMS",

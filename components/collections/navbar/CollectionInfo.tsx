@@ -238,6 +238,15 @@ export const CollectionInfo = ({ navigation, collection }) => {
         </ListItemButton>
 
         <ListItemButton
+          onPress={() => updateCollection("showCompleted", !data.showCompleted)}
+        >
+          <ListItemText primary="Show completed tasks?" />
+          <Icon size={40} style={{ opacity: data.showCompleted ? 1 : 0.4 }}>
+            toggle_{data.showCompleted ? "on" : "off"}
+          </Icon>
+        </ListItemButton>
+
+        <ListItemButton
           onPress={() => router.push(pathname.replace("customize", "pin-code"))}
         >
           <ListItemText primary="Password protection" />
