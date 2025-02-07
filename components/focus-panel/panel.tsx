@@ -31,6 +31,7 @@ import {
   memo,
   Suspense,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -402,7 +403,7 @@ export const Navbar = ({
 
 export const UpcomingSvg = () => {};
 
-function PanelContent() {
+function PanelContent({ focusPanelFreezerRef }) {
   const theme = useColorTheme();
   const r = useRef<NavigationContainerRef<any>>(null);
   const { panelState } = useFocusPanelContext();
@@ -499,7 +500,12 @@ function PanelContent() {
                 <Stack.Screen
                   name="Focus"
                   options={{ cardStyle: { width: 86 } }}
-                  component={FocusPanelHome}
+                  component={(props) => (
+                    <FocusPanelHome
+                      {...props}
+                      focusPanelFreezerRef={focusPanelFreezerRef}
+                    />
+                  )}
                 />
                 <Stack.Screen
                   name="Weather"
@@ -581,11 +587,13 @@ const PanelActions = ({}) => {
 };
 function FocusPanelHome({
   navigation,
+  focusPanelFreezerRef,
 }: {
   navigation: StackNavigationProp<any>;
+  focusPanelFreezerRef: any;
 }) {
   const theme = useColorTheme();
-  const { setPanelState, drawerRef } = useFocusPanelContext();
+  const { setPanelState } = useFocusPanelContext();
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useSWR(["user/focus-panel"], null);
@@ -610,6 +618,10 @@ function FocusPanelHome({
       s.remove();
     };
   }, []);
+
+  useImperativeHandle(focusPanelFreezerRef, () => ({
+    setFreeze: (t) => setShouldSuspendRendering(t),
+  }));
 
   return (
     <>
@@ -724,8 +736,10 @@ function FocusPanelHome({
 
 const FocusPanel = memo(function FocusPanel({
   progressValue,
+  focusPanelFreezerRef,
 }: {
   progressValue: any;
+  focusPanelFreezerRef: any;
 }) {
   const { panelState, setPanelState } = useFocusPanelContext();
 
@@ -735,7 +749,7 @@ const FocusPanel = memo(function FocusPanel({
 
   const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
-  const { height, width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
   const transform = progressValue?.interpolate?.({
@@ -774,7 +788,7 @@ const FocusPanel = memo(function FocusPanel({
           },
         ]}
       >
-        <PanelContent />
+        <PanelContent focusPanelFreezerRef={focusPanelFreezerRef} />
       </Animated.View>
     </NativeAnimated.View>
   );

@@ -124,9 +124,9 @@ export default function AppLayout() {
   const breakpoints = useResponsiveBreakpoints();
   const pathname = usePathname();
 
+  const focusPanelFreezerRef = useRef(null);
   const progressValue = useRef(null);
   const focusPanelProgressValue = useRef(null);
-
   const [panelState, setPanelState] = useState<PanelState>("COLLAPSED");
 
   const insets = useSafeAreaInsets();
@@ -211,8 +211,12 @@ export default function AppLayout() {
 
   const renderFocusPanel = (v: Animated.Value) => {
     focusPanelProgressValue.current = v;
-
-    return <FocusPanel progressValue={v} />;
+    return (
+      <FocusPanel
+        focusPanelFreezerRef={focusPanelFreezerRef}
+        progressValue={v}
+      />
+    );
   };
 
   const content = (
@@ -449,7 +453,17 @@ export default function AppLayout() {
                                     <DrawerLayout
                                       // @ts-expect-error this is patched with patch-package
                                       defaultDrawerOpen={breakpoints.md}
-                                      onDrawerOpen={() => Keyboard.dismiss()}
+                                      onDrawerOpen={() => {
+                                        Keyboard.dismiss();
+                                        focusPanelFreezerRef.current?.setFreeze(
+                                          false
+                                        );
+                                      }}
+                                      onDrawerClose={() => {
+                                        focusPanelFreezerRef.current?.setFreeze(
+                                          true
+                                        );
+                                      }}
                                       useNativeAnimations={false}
                                       ref={focusPanelRef}
                                       keyboardDismissMode="on-drag"
@@ -515,3 +529,4 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
+

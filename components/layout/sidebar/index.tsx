@@ -226,7 +226,6 @@ export const LogoButton = memo(function LogoButton({
   useHotkeys("F1", openSupport);
 
   const syncRef = useRef(null);
-  const { drawerRef } = useFocusPanelContext();
   const [isLoading, setLoading] = useState(false);
 
   return (
@@ -581,8 +580,7 @@ function PrimarySidebar({ progressValue }) {
     setDesktopCollapsed,
   } = useSidebarContext();
 
-  const { drawerRef } = useFocusPanelContext();
-
+  const { drawerRef, setPanelState } = useFocusPanelContext();
   const breakpoints = useResponsiveBreakpoints();
 
   const transform = progressValue?.interpolate?.({
@@ -607,9 +605,11 @@ function PrimarySidebar({ progressValue }) {
   const toggleHidden = useCallback(() => {
     if (breakpoints.md) {
       setDesktopCollapsed(!desktopCollapsed);
+      sidebarRef.current.closeDrawer();
       if (desktopCollapsed) {
         sidebarRef.current.openDrawer();
         drawerRef.current.openDrawer();
+        setPanelState("COLLAPSED");
       } else {
         sidebarRef.current.closeDrawer();
         drawerRef.current.closeDrawer();
@@ -619,7 +619,13 @@ function PrimarySidebar({ progressValue }) {
       sidebarRef.current.closeDrawer();
       drawerRef.current.openDrawer();
     }
-  }, [desktopCollapsed, setDesktopCollapsed, sidebarRef]);
+  }, [
+    desktopCollapsed,
+    setDesktopCollapsed,
+    sidebarRef,
+    drawerRef,
+    breakpoints,
+  ]);
 
   useHotkeys("`", toggleHidden, {});
 
