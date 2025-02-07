@@ -488,10 +488,31 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   );
 });
 const TimeZoneModal = () => {
-  const theme = useColorTheme();
-  const { session } = useUser();
+  const { session, sessionToken, mutate } = useUser();
 
   const ref = useRef(null);
+
+  const handleChangeDefault = async () => {
+    await sendApiRequest(
+      sessionToken,
+      "PUT",
+      "user/account",
+      {},
+      {
+        body: JSON.stringify({
+          timeZone: dayjs.tz.guess(),
+        }),
+      }
+    );
+
+    mutate((t) => ({ ...t, user: { ...t.user, timeZone: dayjs.tz.guess() } }), {
+      revalidate: false,
+    });
+  };
+
+  const hours =
+    dayjs.tz(dayjs(), session?.user?.timeZone).get("hour") -
+    dayjs().get("hour");
 
   return (
     <>
@@ -501,7 +522,9 @@ const TimeZoneModal = () => {
         onPress={() => ref.current.present()}
         icon="travel"
         height={45}
-        text="Travel mode"
+        text={`${hours} hour${Math.abs(hours) !== 1 ? "s" : ""} ${
+          hours > 0 ? "ahead" : "behind"
+        }`}
         bold
         textProps={{ weight: 700 }}
       />
@@ -519,18 +542,17 @@ const TimeZoneModal = () => {
             Hey there,{"\n"} time traveller.
           </Text>
           <Text
-            style={{ textAlign: "center", opacity: 0.6, fontSize: 20 }}
+            style={{
+              textAlign: "center",
+              opacity: 0.6,
+              fontSize: 20,
+              marginBottom: 10,
+            }}
             weight={300}
           >
-            It looks like you're outside of {"\n"}your usual timezone.
+            Times shown in app will reflect{"\n"}your current time zone.
           </Text>
 
-          <Text
-            variant="eyebrow"
-            style={{ textAlign: "center", marginTop: 20 }}
-          >
-            Times shown in app will reflect...
-          </Text>
           <View style={{ gap: 5, marginTop: 7, width: "100%" }}>
             <ListItemButton
               variant="filled"
@@ -562,9 +584,7 @@ const TimeZoneModal = () => {
 
           <Divider style={{ marginTop: 10, marginBottom: 5 }} />
 
-          <Button
-            onPress={() => Toast.show({ type: "info", text1: "Coming soon!" })}
-          >
+          <Button onPress={handleChangeDefault}>
             <ButtonText>Make {dayjs.tz.guess()} my default</ButtonText>
           </Button>
         </View>
