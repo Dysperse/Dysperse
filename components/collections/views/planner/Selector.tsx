@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   innerText: {
+    fontFamily: "serifText700",
     fontSize: 17,
   },
 });
@@ -113,7 +114,6 @@ const SelectionButton = memo(function SelectionButton({
           ]}
         >
           <Text
-            weight={500}
             style={[styles.innerText, { color: theme[isSelected ? 1 : 12] }]}
           >
             {dayjs(itemStart).format(buttonTextFormats(type).big)}
@@ -176,4 +176,3 @@ export function AgendaSelector({ data }) {
     </View>
   );
 }
-
