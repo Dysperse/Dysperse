@@ -9,13 +9,10 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
-import Divider from "@/ui/Divider";
+import { Button } from "@/ui/Button";
 import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
-import { ListItemButton } from "@/ui/ListItemButton";
-import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
@@ -554,39 +551,15 @@ const TimeZoneModal = () => {
           </Text>
 
           <View style={{ gap: 5, marginTop: 7, width: "100%" }}>
-            <ListItemButton
-              variant="filled"
+            <Button
               onPress={() => {
                 if (process.env.NODE_ENV === "development")
                   return alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
                 Toast.show({ type: "info", text1: "Coming soon!" });
               }}
-            >
-              <ListItemText
-                primary={dayjs.tz.guess()}
-                secondary="Your current time zone"
-              />
-              <Icon>check</Icon>
-            </ListItemButton>
-            <ListItemButton
-              onPress={() => {
-                if (process.env.NODE_ENV === "development")
-                  return dayjs.tz.setDefault(session?.user?.timeZone);
-                Toast.show({ type: "info", text1: "Coming soon!" });
-              }}
-            >
-              <ListItemText
-                primary={session?.user?.timeZone}
-                secondary="Your usual time zone"
-              />
-            </ListItemButton>
+              text={`Make ${dayjs.tz.guess()} my default`}
+            />
           </View>
-
-          <Divider style={{ marginTop: 10, marginBottom: 5 }} />
-
-          <Button onPress={handleChangeDefault}>
-            <ButtonText>Make {dayjs.tz.guess()} my default</ButtonText>
-          </Button>
         </View>
       </Modal>
     </>
