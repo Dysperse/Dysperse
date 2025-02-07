@@ -9,10 +9,15 @@ import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button } from "@/ui/Button";
+import { Button, ButtonText } from "@/ui/Button";
+import Divider from "@/ui/Divider";
+import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
+import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -20,6 +25,7 @@ import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import dayjs from "dayjs";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
 import React, {
   memo,
@@ -481,10 +487,97 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     </>
   );
 });
+const TimeZoneModal = () => {
+  const theme = useColorTheme();
+  const { session } = useUser();
+
+  const ref = useRef(null);
+
+  return (
+    <>
+      <Button
+        variant="outlined"
+        containerStyle={{ marginRight: -10, borderRadius: 10 }}
+        onPress={() => ref.current.present()}
+        icon="travel"
+        height={45}
+        text="Travel mode"
+        bold
+        textProps={{ weight: 700 }}
+      />
+      <Modal animation="SCALE" sheetRef={ref} maxWidth={380}>
+        <View style={{ padding: 20, alignItems: "center" }}>
+          <Emoji emoji="1F9ED" size={50} style={{ marginVertical: 10 }} />
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 40,
+              fontFamily: "serifText800",
+              marginVertical: 10,
+            }}
+          >
+            Hey there,{"\n"} time traveller.
+          </Text>
+          <Text
+            style={{ textAlign: "center", opacity: 0.6, fontSize: 20 }}
+            weight={300}
+          >
+            It looks like you're outside of {"\n"}your usual timezone.
+          </Text>
+
+          <Text
+            variant="eyebrow"
+            style={{ textAlign: "center", marginTop: 20 }}
+          >
+            Times shown in app will reflect...
+          </Text>
+          <View style={{ gap: 5, marginTop: 7, width: "100%" }}>
+            <ListItemButton
+              variant="filled"
+              onPress={() => {
+                if (process.env.NODE_ENV === "development")
+                  return alert(dayjs.tz().format("dddd, MMMM D, YYYY h:mm A"));
+                Toast.show({ type: "info", text1: "Coming soon!" });
+              }}
+            >
+              <ListItemText
+                primary={dayjs.tz.guess()}
+                secondary="Your current time zone"
+              />
+              <Icon>check</Icon>
+            </ListItemButton>
+            <ListItemButton
+              onPress={() => {
+                if (process.env.NODE_ENV === "development")
+                  return dayjs.tz.setDefault(session?.user?.timeZone);
+                Toast.show({ type: "info", text1: "Coming soon!" });
+              }}
+            >
+              <ListItemText
+                primary={session?.user?.timeZone}
+                secondary="Your usual time zone"
+              />
+            </ListItemButton>
+          </View>
+
+          <Divider style={{ marginTop: 10, marginBottom: 5 }} />
+
+          <Button
+            onPress={() => Toast.show({ type: "info", text1: "Coming soon!" })}
+          >
+            <ButtonText>Make {dayjs.tz.guess()} my default</ButtonText>
+          </Button>
+        </View>
+      </Modal>
+    </>
+  );
+};
 
 const Header = memo(function Header() {
   const { session } = useUser();
   const isHome = usePathname() === "/home";
+
+  const isTimeZoneDifference = session?.user?.timeZone !== dayjs.tz.guess();
 
   return (
     <View
@@ -495,6 +588,7 @@ const Header = memo(function Header() {
         ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
       }}
     >
+      {isTimeZoneDifference && <TimeZoneModal />}
       <View
         style={{
           flexDirection: "row",
@@ -990,4 +1084,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-
