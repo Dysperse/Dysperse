@@ -11,7 +11,7 @@ import { Redirect, router } from "expo-router";
 import { useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
-import { inIframe } from "..";
+import { inIframe } from "../(sign-in)/_layout";
 import { authStyles } from "../../../components/authStyles";
 
 const styles = StyleSheet.create({

@@ -33,11 +33,11 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
-import { inIframe } from ".";
 import { authStyles } from "../../components/authStyles";
 import { Intro } from "../../components/signup/Intro";
 import { Profile } from "../../components/signup/Profile";
 import { TaskCreator } from "../../components/signup/TaskCreator";
+import { inIframe } from "./(sign-in)/_layout";
 
 const SignupContext = createContext(null);
 export const useSignupContext = () => useContext(SignupContext);
@@ -573,3 +573,4 @@ export default function Page() {
     </ColorThemeProvider>
   );
 }
+

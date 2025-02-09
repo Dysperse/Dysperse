@@ -9,7 +9,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
-import { inIframe } from "../auth";
+import { inIframe } from "../auth/(sign-in)/_layout";
 
 export default function Page() {
   const { width, height } = useWindowDimensions();
