@@ -1,20 +1,8 @@
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
-import { Button, ButtonText } from "@/ui/Button";
-import Chip from "@/ui/Chip";
-import Icon from "@/ui/Icon";
-import Text, { getFontName } from "@/ui/Text";
-import { useColorTheme } from "@/ui/color/theme-provider";
-import { Redirect, router } from "expo-router";
-import {
-  ImageBackground,
-  Linking,
-  Platform,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import Logo from "@/ui/logo";
+import { Image } from "expo-image";
+import { Platform, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { authStyles } from "../../components/authStyles";
+import { SignIn } from "./SignIn";
 
 export function inIframe() {
   if (Platform.OS !== "web") return false;
@@ -26,143 +14,50 @@ export function inIframe() {
 }
 
 export default function Page() {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { width, height } = useWindowDimensions();
-  const handleLoginPress = () => {
-    if (Platform.OS === "web" && inIframe())
-      window.open("/auth/sign-in", "_blank");
-    else router.push("/auth/sign-in");
-  };
-  const handleSignUpPress = () => {
-    if (Platform.OS === "web" && inIframe())
-      window.open("/auth/sign-up", "_blank");
-    else router.push("/auth/sign-up");
-  };
-  const openHomePage = () =>
-    Linking.openURL("https://dysperse.com?utm_source=app");
-
-  const insets = useSafeAreaInsets();
-  if (breakpoints.md) return <Redirect href="/auth/sign-in" />;
-
   return (
-    <View style={{ flex: 1, backgroundColor: theme[1] }}>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
       <SystemBars style="light" />
-      <ImageBackground
-        source={{ uri: "https://assets.dysperse.com/app/login.png" }}
-        style={{ flex: 1 }}
-        imageStyle={{
-          resizeMode: "cover",
-          width,
-          height: height + insets.top + insets.bottom,
+      <View style={{ position: "absolute", top: 0, right: 0, padding: 50 }}>
+        <Logo size={45} />
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          flex: 1,
+          maxWidth: 1000,
+          marginHorizontal: "auto",
+          gap: 50,
+          width: "100%",
         }}
       >
         <View
-          style={[
-            authStyles.container,
-            breakpoints.md && authStyles.containerDesktop,
-            breakpoints.md && {
-              borderColor: theme[6],
-            },
-            {
-              backgroundColor: `rgba(0, 0, 0, 0.5)`,
-              padding: 20,
-              paddingBottom: insets.bottom + 10,
-            },
-          ]}
+          style={{
+            flex: 1,
+            height: "100%",
+          }}
         >
-          <Text
+          <Image
             style={{
-              fontSize: 45,
-              fontFamily: "serifText800",
-              color: "#fff",
-              marginBottom: -5,
-              // prevent wrapping
+              height: "100%",
+              width: "100%",
+              objectFit: "contain",
+              objectPosition: "bottom",
             }}
-          >
-            Productivity is {"\n"}your domain.
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-              flexWrap: "wrap",
-              marginBottom: 5,
+            contentPosition="bottom"
+            contentFit="contain"
+            source={{
+              uri: `https://raw.githubusercontent.com/Dysperse/Assets/0056596a1b906148b3cc0f53e26efdabc98f2673/app/mockuuups-iphone-15-pro-mockup-on-textured-stone-with-dramatic-shadow.png`,
             }}
-          >
-            <Text
-              weight={500}
-              style={[authStyles.subtitleText, { color: "#fff" }]}
-            >
-              Let
-            </Text>
-            <Chip
-              onPress={openHomePage}
-              label="#dysperse"
-              style={({ pressed, hovered }) => ({
-                backgroundColor: `rgba(255,255,255,${
-                  pressed ? 0.3 : hovered ? 0.25 : 0.2
-                })`,
-              })}
-              textStyle={{
-                color: "#fff",
-                fontFamily: getFontName("jetBrainsMono", 500),
-                fontSize: 20,
-              }}
-              icon={<Icon style={{ color: "#fff" }}>north_east</Icon>}
-              iconPosition="after"
-            />
-            <Text
-              weight={500}
-              style={[authStyles.subtitleText, { color: "#fff" }]}
-            >
-              be your catalyst.
-            </Text>
-          </View>
-          <Button
-            variant="filled"
-            height={70}
-            backgroundColors={{
-              default: "rgba(255, 255, 255, 0.1)",
-              hovered: "rgba(255, 255, 255, 0.15)",
-              pressed: "rgba(255, 255, 255, 0.2)",
-            }}
-            android_ripple={{ color: "rgba(255, 255, 255, 0.2)" }}
-            onPress={handleLoginPress}
-          >
-            <ButtonText
-              style={[authStyles.buttonText, { color: "#fff" }]}
-              weight={900}
-            >
-              Sign in
-            </ButtonText>
-          </Button>
-          <Button
-            variant="outlined"
-            borderColors={{
-              default: "rgba(255, 255, 255, 0.1)",
-              hovered: "rgba(255, 255, 255, 0.15)",
-              pressed: "rgba(255, 255, 255, 0.2)",
-            }}
-            backgroundColors={{
-              default: "rgba(255, 255, 255, 0.0)",
-              hovered: "rgba(255, 255, 255, 0.1)",
-              pressed: "rgba(255, 255, 255, 0.2)",
-            }}
-            height={70}
-            android_ripple={{ color: "rgba(255, 255, 255, 0.2)" }}
-            onPress={handleSignUpPress}
-          >
-            <ButtonText
-              style={[authStyles.buttonText, { color: "#fff" }]}
-              weight={900}
-            >
-              Create an account
-            </ButtonText>
-          </Button>
+          />
         </View>
-      </ImageBackground>
+        <View style={{ flex: 1, padding: 20 }}>
+          <SignIn />
+        </View>
+      </View>
     </View>
   );
 }

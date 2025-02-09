@@ -31,8 +31,7 @@ export default function Layout() {
                 gestureResponseDistance: width,
                 gestureEnabled: true,
                 cardStyle: {
-                  backgroundColor: theme[breakpoints.sm ? 2 : 1],
-                  padding: breakpoints.md ? 10 : 0,
+                  backgroundColor: theme[1],
                 },
                 // change opacity of the previous screen when swipe
                 cardOverlayEnabled: true,
