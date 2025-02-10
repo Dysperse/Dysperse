@@ -127,7 +127,7 @@ function Customization() {
                 icon={method.icon}
                 size={40}
                 style={{
-                  backgroundColor: theme[value.includes(method.key) ? 7 : 4],
+                  backgroundColor: theme[4],
                 }}
               />
               <ListItemText

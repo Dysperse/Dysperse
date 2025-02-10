@@ -35,6 +35,7 @@ function Weather({ weatherCode, isNight, icon, temp }) {
           flexDirection: "row",
           alignItems: "center",
           gap: 5,
+          verticalAlign: "middle",
         },
       ]}
     >
@@ -110,7 +111,9 @@ function Content() {
   const temp = planData?.weather?.current?.temperature_2m;
 
   return !planData ? (
-    <Spinner size={30} />
+    <View style={{ alignItems: "center", gap: 5 }}>
+      <Spinner size={30} />
+    </View>
   ) : (
     <View
       style={{
@@ -191,6 +194,7 @@ function Content() {
                   paddingHorizontal: 10,
                   borderRadius: 10,
                   alignItems: "center",
+                  verticalAlign: "middle",
                   flexDirection: "row",
                   gap: 10,
                 },
@@ -249,7 +253,7 @@ function Content() {
             style={{
               flex: 1,
               borderRadius: 20,
-              backgroundColor: theme[2],
+              backgroundColor: theme[3],
               borderColor: theme[6],
               flexDirection: "row",
               alignItems: "center",
@@ -261,13 +265,12 @@ function Content() {
                 height: 20,
                 margin: 20,
                 borderRadius: 999,
-                borderColor: theme[6],
+                borderColor: theme[11],
                 borderWidth: 1,
               }}
             />
             <TextField
               style={{ flex: 1, height: "100%" }}
-              placeholderTextColor={theme[6]}
               placeholder={
                 ["Drink water", "Go for a walk", "Call a friend"][index]
               }
