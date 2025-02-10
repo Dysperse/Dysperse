@@ -2,7 +2,6 @@ import { JsStack } from "@/components/layout/_stack";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { TransitionPresets } from "@react-navigation/stack";
-import dayjs from "dayjs";
 import { createContext, useContext, useRef } from "react";
 
 const LoginContext = createContext(null);
@@ -13,20 +12,9 @@ export default function Layout() {
 
   const theme = useColorTheme();
   const signupData = useRef({
-    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
-    captchaToken: "",
-    timeZone: dayjs.tz.guess(),
-    theme: "mint",
-    allowMarketingEmails: true,
-    isGoogle: false,
-    methods: [],
-    tasks: ["", "", ""],
-    bio: "",
-    // picture:
-    // birthday:
+    twoFactorCode: "",
   });
 
   return (
@@ -35,6 +23,7 @@ export default function Layout() {
         screenOptions={{
           header: () => null,
           gestureResponseDistance: 10000,
+          detachPreviousScreen: true,
           cardStyle: {
             backgroundColor: theme[1],
             paddingHorizontal: breakpoints.md ? 40 : 10,

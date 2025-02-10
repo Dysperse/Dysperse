@@ -1,7 +1,6 @@
 import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
-import Emoji from "@/ui/Emoji";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
@@ -51,34 +50,23 @@ const Email = ({ form }: any) => {
 
   return (
     <>
-      <Emoji
-        emoji="1f62d"
-        size={60}
-        style={{
-          marginTop: "auto",
-          marginBottom: 10,
-        }}
-      />
       <Text
         style={[
           styles.title,
           {
+            marginTop: "auto",
             paddingTop: 10,
-            fontFamily: "serifText800",
-            textAlign: "center",
+            fontFamily: "serifText700",
           },
         ]}
       >
         Forgot password?
       </Text>
       <Text
-        style={[
-          authStyles.subtitleContainer,
-          { textAlign: "center", opacity: 0.6 },
-        ]}
+        style={[authStyles.subtitleContainer, { opacity: 0.6 }]}
         weight={300}
       >
-        Enter your email and we'll send you a link to reset your password.
+        Enter your email and we'll send{"\n"}you a link to reset your password.
       </Text>
       <Controller
         control={form.control}
@@ -342,28 +330,17 @@ export default function Page() {
         setStep,
       }}
     >
-      <View
-        style={[
-          authStyles.container,
-          { backgroundColor: theme[1] },
-          breakpoints.md && authStyles.containerDesktop,
-          breakpoints.md && {
-            borderColor: theme[6],
-          },
-        ]}
-      >
+      <View style={[authStyles.container, { paddingHorizontal: 0 }]}>
         <IconButton
-          variant="outlined"
-          size={55}
-          icon="close"
+          size={45}
+          icon="arrow_back_ios_new"
+          style={{ marginLeft: -20 }}
           onPress={handleBack}
         />
         <View
           style={{
-            alignItems: "center",
             justifyContent: "center",
             flex: 1,
-            padding: 30,
             width: "100%",
           }}
         >

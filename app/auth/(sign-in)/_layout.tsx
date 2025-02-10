@@ -7,10 +7,12 @@ import { TransitionPresets } from "@react-navigation/stack";
 import { Image, ImageBackground } from "expo-image";
 import { Platform, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Layout() {
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
+  const insets = useSafeAreaInsets();
 
   function inIframe() {
     if (Platform.OS !== "web") return false;
@@ -58,6 +60,8 @@ export default function Layout() {
           flexDirection: breakpoints.md ? "row" : "column-reverse",
           flex: 1,
           padding: breakpoints.md ? 20 : 0,
+          paddingTop: breakpoints.md ? insets.top + 20 : insets.top,
+          paddingBottom: breakpoints.md ? insets.bottom + 20 : insets.bottom,
         }}
       >
         {breakpoints.md && (

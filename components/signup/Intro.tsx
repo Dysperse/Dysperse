@@ -1,4 +1,4 @@
-import { GoogleAuth } from "@/app/auth/sign-in";
+import { GoogleAuth } from "@/app/auth/(sign-in)/(login)/sign-in";
 import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
