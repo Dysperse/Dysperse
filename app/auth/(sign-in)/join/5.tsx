@@ -29,6 +29,7 @@ function Content() {
     <View
       style={{
         padding: 20,
+        paddingTop: 80,
         flex: 1,
         justifyContent: "center",
       }}
@@ -135,7 +136,7 @@ function Content() {
           </Text>{" "}
           which nobody ever reads.{" "}
           {hasReadTerms
-            ? "\n\n Quite surprising that you actually read it. Good job!"
+            ? "\n\n Wow, you actually read them? You're a legend."
             : ""}
         </Text>
       </Animated.View>
