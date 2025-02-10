@@ -73,6 +73,7 @@ export default function Layout() {
               borderRadius: 20,
               paddingHorizontal: 30,
               overflow: "hidden",
+              ...(Platform.OS === "web" && { WebkitAppRegion: "drag" }),
             }}
             source={{
               uri:
