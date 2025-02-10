@@ -3,14 +3,16 @@ import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useSignupContext } from "./_layout";
 
 const methods = [
   {
@@ -53,8 +55,9 @@ const methods = [
 
 function Customization() {
   const theme = useColorTheme();
-  const params = useLocalSearchParams();
-  const [value, onChange] = useState([]);
+  const store = useSignupContext();
+
+  const [value, setValue] = useState(store.methods);
 
   return (
     <View
@@ -105,11 +108,13 @@ function Customization() {
               variant="filled"
               key={method.key}
               onPress={() => {
-                // if (value.includes(method.key)) {
-                //   onChange(value.filter((v) => v !== method.key));
-                // } else {
-                //   onChange([...value, method.key]);
-                // }
+                if (value.includes(method.key)) {
+                  setValue(value.filter((v) => v !== method.key));
+                } else {
+                  setValue([...value, method.key]);
+                }
+
+                store.methods = value;
               }}
               backgroundColors={{
                 default: addHslAlpha(theme[4], 0.3),
@@ -142,21 +147,26 @@ function Customization() {
           </Animated.View>
         ))}
       </Animated.View>
-      <Animated.View entering={FadeIn.delay(900 + methods.length * 100)}>
+      <Animated.View
+        entering={FadeIn.delay(900 + methods.length * 100)}
+        style={{ flexDirection: "row", gap: 10 }}
+      >
+        <IconButton
+          size={65}
+          icon="arrow_back_ios_new"
+          variant="outlined"
+          onPress={() => router.push("/auth/join/2")}
+        />
         <Button
           height={65}
           variant="filled"
           style={{ margin: 20 }}
-          text="Next"
-          icon="east"
+          text={value.length ? "Next" : "Skip"}
+          icon={value.length ? "east" : ""}
           iconPosition="end"
+          containerStyle={{ flex: 1 }}
           bold
-          onPress={() => {
-            router.push({
-              pathname: "/auth/join/4",
-              params: { ...params, methods: value },
-            });
-          }}
+          onPress={() => router.push("/auth/join/4")}
         />
       </Animated.View>
     </View>

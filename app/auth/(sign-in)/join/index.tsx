@@ -3,14 +3,20 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useSignupContext } from "./_layout";
 
 function Intro() {
   const theme = useColorTheme();
   const [name, setName] = useState("");
+  const store = useSignupContext();
+
+  useEffect(() => {
+    store.name = name;
+  }, [store, name]);
 
   return (
     <View
@@ -58,6 +64,7 @@ function Intro() {
             marginBottom: 20,
           }}
           onChangeText={setName}
+          defaultValue={store.name}
         />
       </Animated.View>
       <Animated.View entering={FadeIn.delay(1200)}>
@@ -71,12 +78,7 @@ function Intro() {
           iconPosition="end"
           bold
           disabled={!name.trim()}
-          onPress={() => {
-            router.push({
-              pathname: "/auth/join/2",
-              params: { name },
-            });
-          }}
+          onPress={() => router.push("/auth/join/2")}
         />
       </Animated.View>
     </View>

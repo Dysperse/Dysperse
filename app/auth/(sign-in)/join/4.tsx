@@ -2,24 +2,29 @@ import themeDescriptions from "@/components/themes.json";
 import { Button } from "@/ui/Button";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useSignupContext } from "./_layout";
 
 function Color() {
   const theme = useColorTheme();
   const isDark = useDarkMode();
-  const params = useLocalSearchParams();
-
-  const [selected, setSelected] = useState("");
+  const store = useSignupContext();
+  const [selected, setSelected] = useState(store.theme);
 
   const ruby = useColor("ruby");
   const grass = useColor("grass");
   const gold = useColor("gold");
+
+  useEffect(() => {
+    store.theme = selected;
+  }, [store, selected]);
 
   return (
     <View
@@ -117,23 +122,27 @@ function Color() {
           </Animated.View>
         ))}
       </Animated.View>
-      <Animated.View entering={FadeIn.delay(1200)}>
+      <Animated.View
+        entering={FadeIn.delay(1200)}
+        style={{ flexDirection: "row", gap: 10, marginTop: 10 }}
+      >
+        <IconButton
+          size={65}
+          icon="arrow_back_ios_new"
+          variant="outlined"
+          onPress={() => router.push("/auth/join/3")}
+        />
         <Button
           height={65}
           variant="filled"
           style={{ margin: 20 }}
           text="Next"
-          containerStyle={!selected.trim() && { opacity: 0.6 }}
+          containerStyle={[!selected.trim() && { opacity: 0.6 }, { flex: 1 }]}
           icon="east"
           iconPosition="end"
           bold
           disabled={!selected.trim()}
-          onPress={() => {
-            router.push({
-              pathname: "/auth/join/5",
-              params: { ...params, theme: selected },
-            });
-          }}
+          onPress={() => router.push("/auth/join/5")}
         />
       </Animated.View>
     </View>

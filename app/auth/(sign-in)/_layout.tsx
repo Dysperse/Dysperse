@@ -1,6 +1,7 @@
 import { JsStack } from "@/components/layout/_stack";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
+import { TransitionPresets } from "@react-navigation/stack";
 import { Image, ImageBackground } from "expo-image";
 import { Platform, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
@@ -70,32 +71,27 @@ export default function Layout() {
             }}
           />
         </ImageBackground>
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
+        <View style={{ flex: 1 }}>
           <JsStack
             screenOptions={{
               header: () => null,
               gestureResponseDistance: 10000,
+              animation: "default",
               cardStyle: {
                 backgroundColor: theme[1],
                 paddingHorizontal: 40,
                 paddingLeft: 60,
               },
+              ...TransitionPresets.SlideFromRightIOS,
             }}
           >
             <JsStack.Screen
-              name="join/7"
+              name="join"
               options={{
-                gestureEnabled: false,
-              }}
-            />
-            <JsStack.Screen
-              name="join/6"
-              options={{
-                gestureEnabled: false,
+                cardStyle: {
+                  paddingHorizontal: 0,
+                  paddingLeft: 0,
+                },
               }}
             />
           </JsStack>

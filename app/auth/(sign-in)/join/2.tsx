@@ -6,6 +6,7 @@ import { Button } from "@/ui/Button";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -16,6 +17,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useSignupContext } from "./_layout";
 
 function Weather({ weatherCode, isNight, icon, temp }) {
   const weatherDescription =
@@ -57,6 +59,9 @@ function Content() {
   const theme = useColorTheme();
   const params = useLocalSearchParams() as { name: string };
   const greeting = getGreeting();
+  const store = useSignupContext();
+
+  const [hasTouched, setHasTouched] = useState(false);
 
   // const [selected, setSelected] = useState("");
 
@@ -129,7 +134,7 @@ function Content() {
             },
           ]}
         >
-          {greeting}, {params.name.split(" ")[0]}.{"\n"}
+          {greeting}, {store.name.split(" ")[0]}.{"\n"}
           {`It's${
             !planData.weather || !planData.device ? " currently" : ""
           }`}{" "}
@@ -266,31 +271,32 @@ function Content() {
               placeholder={
                 ["Drink water", "Go for a walk", "Call a friend"][index]
               }
+              defaultValue={store.tasks[index]}
+              onChangeText={(text) => {
+                store.tasks[index] = text;
+                setHasTouched(true);
+              }}
             />
           </Animated.View>
         ))}
       </Animated.View>
       <Animated.View
         entering={FadeIn.delay(1200 + 3 * 100)}
-        style={{ flexDirection: "row", marginTop: 10, gap: 20 }}
+        style={{ marginTop: 10, flexDirection: "row", gap: 10 }}
       >
-        <Button
-          height={65}
-          text="Skip"
-          onPress={() => {
-            router.push({
-              pathname: "/auth/join/3",
-              params: { ...params },
-            });
-          }}
+        <IconButton
+          size={65}
+          icon="arrow_back_ios_new"
+          variant="outlined"
+          onPress={() => router.push("/auth/join/1")}
         />
         <Button
           height={65}
           variant="filled"
-          text="Next"
+          text={hasTouched ? "Next" : "Skip"}
           // containerStyle={!selected.trim() && { opacity: 0.6 }}
           containerStyle={{ flex: 1 }}
-          icon="east"
+          icon={hasTouched ? "east" : ""}
           iconPosition="end"
           bold
           // disabled={!selected.trim()}

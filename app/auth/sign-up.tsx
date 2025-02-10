@@ -35,7 +35,6 @@ import Animated, {
 import Toast from "react-native-toast-message";
 import { authStyles } from "../../components/authStyles";
 import { Intro } from "../../components/signup/Intro";
-import { Profile } from "../../components/signup/Profile";
 import { TaskCreator } from "../../components/signup/TaskCreator";
 
 export function inIframe() {
@@ -221,14 +220,6 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
       </Button>
     </View>
   );
-};
-
-export const validateEmail = (email) => {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
 };
 
 export const useDebouncedValue = (inputValue, delay) => {
@@ -498,7 +489,7 @@ export default function Page() {
   const steps = [
     <Intro form={form} key="1" />,
     <Customization form={form} key="2" />,
-    <Profile form={form} key="3" />,
+    // <Profile form={form} key="3" />,
     <TaskCreator form={form} key="4" />,
     <ColorPicker form={form} key="5" />,
     <Password form={form} key="6" />,
