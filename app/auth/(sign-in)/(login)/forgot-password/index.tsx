@@ -1,5 +1,4 @@
 import { useSession } from "@/context/AuthProvider";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
@@ -19,6 +18,7 @@ import {
 } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Toast from "react-native-toast-message";
 import { authStyles } from "../../../../../components/authStyles";
 
@@ -109,7 +109,17 @@ const Captcha = ({ form }: any) => {
       <Text weight={800} style={[styles.title, { color: theme[11] }]}>
         Verifying...
       </Text>
-      <Text style={[styles.subtitle, { color: theme[11] }]}>
+      <Text
+        style={[
+          {
+            paddingHorizontal: 0,
+            fontSize: 20,
+            marginBottom: 10,
+            color: theme[11],
+            opacity: 0.6,
+          },
+        ]}
+      >
         Hang tight while we contemplate whether you're a human or not...
       </Text>
       <Turnstile
@@ -169,10 +179,19 @@ const Token = ({ form }: any) => {
     <Spinner />
   ) : (
     <>
-      <Text weight={800} style={[styles.title, { color: theme[11] }]}>
+      <Text
+        weight={800}
+        style={[
+          styles.title,
+          {
+            fontFamily: "serifText700",
+            color: theme[11],
+          },
+        ]}
+      >
         We sent you a code
       </Text>
-      <Text style={[styles.subtitle, { color: theme[11] }]}>
+      <Text style={[styles.subtitle, { textAlign: "left", color: theme[11] }]}>
         Check your email for a code and enter it here.
       </Text>
       <Controller
@@ -211,10 +230,19 @@ const Password = ({ form }: any) => {
 
   return (
     <>
-      <Text weight={800} style={[styles.title, { color: theme[11] }]}>
+      <Text
+        weight={800}
+        style={[
+          styles.title,
+          {
+            fontFamily: "serifText700",
+            color: theme[11],
+          },
+        ]}
+      >
         Reset your password
       </Text>
-      <Text style={[styles.subtitle, { color: theme[11] }]}>
+      <Text style={[styles.subtitle, { color: theme[11], textAlign: "left" }]}>
         Enter your new password and confirm it. Make sure it's at least 8
         characters long.
       </Text>
@@ -252,9 +280,6 @@ const Password = ({ form }: any) => {
 };
 
 export default function Page() {
-  const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-
   const [step, setStep] = useState(0);
 
   const form = useForm({
@@ -330,7 +355,14 @@ export default function Page() {
         setStep,
       }}
     >
-      <View style={[authStyles.container, { paddingHorizontal: 0 }]}>
+      <KeyboardAwareScrollView
+        style={[{ paddingHorizontal: 0 }]}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: "center",
+          padding: 20,
+        }}
+      >
         <IconButton
           size={45}
           icon="arrow_back_ios_new"
@@ -346,7 +378,7 @@ export default function Page() {
         >
           {steps[step]}
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     </PasswordContext.Provider>
   );
 }
