@@ -24,11 +24,19 @@ import { rp } from "../(app)/settings/account/passkeys";
 import { authStyles } from "../../components/authStyles";
 import { useSession } from "../../context/AuthProvider";
 import { sendApiRequest } from "../../helpers/api";
-import { inIframe } from "./(sign-in)/_layout";
 
 const styles = StyleSheet.create({
   title: { fontSize: 55, width: "100%", lineHeight: 55 },
 });
+
+function inIframe() {
+  if (Platform.OS !== "web") return false;
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+}
 
 const isIUSDChromebook =
   Platform.OS === "web" &&

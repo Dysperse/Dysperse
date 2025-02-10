@@ -10,10 +10,10 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import { cloneElement, useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
+import QRCode from "react-native-qrcode-svg";
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { GoogleAuth, PasskeyModal } from "../sign-in";
-import QRCode from "react-native-qrcode-svg";
 
 function QrLogin() {
   const theme = useColorTheme();
@@ -150,8 +150,8 @@ export default function SignIn() {
 
   const handleSignUpPress = () => {
     if (Platform.OS === "web" && inIframe())
-      window.open("/auth/sign-up", "_blank");
-    else router.push("/auth/sign-up");
+      window.open("/auth/join", "_blank");
+    else router.push("/auth/join");
   };
 
   return (
@@ -221,6 +221,7 @@ export default function SignIn() {
               </Svg>
             }
             text="Google"
+            iconStyle={{ marginBottom: -5 }}
             style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
             onPress={handleSignUpPress}
             textStyle={{ color: theme[3] }}

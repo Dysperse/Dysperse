@@ -11,8 +11,16 @@ import { Redirect, router } from "expo-router";
 import { useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
-import { inIframe } from "../(sign-in)/_layout";
 import { authStyles } from "../../../components/authStyles";
+
+export function inIframe() {
+  if (Platform.OS !== "web") return false;
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+}
 
 const styles = StyleSheet.create({
   title: {

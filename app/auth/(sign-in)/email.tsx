@@ -1,22 +1,20 @@
 import { Button } from "@/ui/Button";
-import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { Platform, useWindowDimensions } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Email() {
   const theme = useColorTheme();
   const inputRef = useRef(null);
   const passwordRef = useRef(null);
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
@@ -34,24 +32,39 @@ export default function Email() {
     }
   });
 
+  const { height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={{ flex: 1 }}>
-      <IconButton
-        icon="west"
-        size={55}
-        onPress={() =>
-          router.canGoBack() ? router.back() : router.push("/auth")
-        }
-        style={{ marginBottom: 0 }}
-      />
-      <View style={{ gap: 10, flex: 1 }}>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          gap: 10,
+          height: height - 40 - insets.top - insets.bottom,
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          dense
+          onPress={() =>
+            router.canGoBack() ? router.back() : router.push("/auth")
+          }
+          text="Back"
+          bold
+          icon="west"
+          style={{ gap: 10 }}
+          iconStyle={{ marginTop: -3 }}
+          containerStyle={{ marginTop: "auto", marginRight: "auto" }}
+        />
         <Text
           style={{
             fontFamily: "serifText700",
-            fontSize: 30,
+            fontSize: 45,
+            marginTop: 10,
+            marginBottom: 10,
+            paddingHorizontal: 10,
             color: theme[11],
-            marginTop: "auto",
-            paddingHorizontal: 30,
           }}
         >
           Sign in with email
@@ -67,8 +80,8 @@ export default function Email() {
                 borderRadius: 20,
                 fontSize: 20,
                 color: theme[11],
+                marginHorizontal: 10,
                 paddingHorizontal: 20,
-                marginHorizontal: 30,
               }}
               inputRef={inputRef}
               placeholder="Email or username..."
@@ -94,9 +107,9 @@ export default function Email() {
                 fontFamily: "body_600",
                 borderRadius: 20,
                 fontSize: 20,
+                marginHorizontal: 10,
                 color: theme[11],
                 paddingHorizontal: 20,
-                marginHorizontal: 30,
               }}
               placeholder="Password..."
               secureTextEntry
@@ -119,10 +132,7 @@ export default function Email() {
           icon="east"
           iconPosition="end"
           large
-          containerStyle={{
-            marginHorizontal: 30,
-            borderRadius: 20,
-          }}
+          containerStyle={{ borderRadius: 20, marginHorizontal: 10 }}
           bold
         />
         <Button
@@ -132,7 +142,7 @@ export default function Email() {
           text="Need help?"
           containerStyle={{ marginBottom: "auto" }}
         />
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

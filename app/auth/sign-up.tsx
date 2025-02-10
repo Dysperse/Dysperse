@@ -25,7 +25,7 @@ import Turnstile from "@/ui/turnstile";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
-import { Pressable, useWindowDimensions, View } from "react-native";
+import { Platform, Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -37,8 +37,15 @@ import { authStyles } from "../../components/authStyles";
 import { Intro } from "../../components/signup/Intro";
 import { Profile } from "../../components/signup/Profile";
 import { TaskCreator } from "../../components/signup/TaskCreator";
-import { inIframe } from "./(sign-in)/_layout";
 
+export function inIframe() {
+  if (Platform.OS !== "web") return false;
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+}
 const SignupContext = createContext(null);
 export const useSignupContext = () => useContext(SignupContext);
 
