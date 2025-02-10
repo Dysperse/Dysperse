@@ -1,3 +1,4 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import { addHslAlpha } from "@/ui/color";
@@ -56,6 +57,7 @@ const methods = [
 function Customization() {
   const theme = useColorTheme();
   const store = useSignupContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const [value, setValue] = useState(store.methods);
 
@@ -73,7 +75,7 @@ function Customization() {
         <Text
           style={{
             fontFamily: "serifText700",
-            fontSize: 45,
+            fontSize: breakpoints.md ? 40 : 30,
             marginTop: 10,
             color: theme[11],
           }}
@@ -85,7 +87,7 @@ function Customization() {
         <Text
           style={{
             opacity: 0.4,
-            fontSize: 25,
+            fontSize: breakpoints.md ? 25 : 20,
             marginTop: 5,
             marginBottom: 15,
             color: theme[11],
@@ -155,7 +157,9 @@ function Customization() {
           size={65}
           icon="arrow_back_ios_new"
           variant="outlined"
-          onPress={() => router.push("/auth/join/2")}
+          onPress={() =>
+            router.canGoBack() ? router.back() : router.push("/auth")
+          }
         />
         <Button
           height={65}

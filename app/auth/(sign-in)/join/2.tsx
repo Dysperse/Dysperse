@@ -2,6 +2,7 @@ import { styles } from "@/app/(app)/plan";
 import weatherCodes from "@/components/focus-panel/widgets/weather/weatherCodes.json";
 import { getGreeting } from "@/components/home/getGreeting";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -23,6 +24,7 @@ function Weather({ weatherCode, isNight, icon, temp }) {
   const weatherDescription =
     weatherCodes[weatherCode][isNight ? "night" : "day"];
   const theme = useColor(weatherDescription.colorTheme);
+  const breakpoints = useResponsiveBreakpoints();
 
   return (
     <View
@@ -32,23 +34,28 @@ function Weather({ weatherCode, isNight, icon, temp }) {
           backgroundColor: theme[6],
           paddingHorizontal: 5,
           borderRadius: 10,
+          height: breakpoints.md ? undefined : 40,
           flexDirection: "row",
           alignItems: "center",
           gap: 5,
-          verticalAlign: "middle",
+          verticalAlign: breakpoints.md ? "middle" : undefined,
         },
       ]}
     >
       <Icon
         bold
-        size={40}
+        size={breakpoints.md ? 40 : 24}
         style={{ marginRight: 5, verticalAlign: "middle", color: theme[11] }}
       >
         {icon}
       </Icon>
       <Text
         numberOfLines={1}
-        style={{ color: theme[11], fontSize: 40, fontFamily: "serifText700" }}
+        style={{
+          color: theme[11],
+          fontSize: breakpoints.md ? 40 : 30,
+          fontFamily: "serifText700",
+        }}
       >
         {temp}°
       </Text>
@@ -61,6 +68,7 @@ function Content() {
   const params = useLocalSearchParams() as { name: string };
   const greeting = getGreeting();
   const store = useSignupContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const [hasTouched, setHasTouched] = useState(false);
 
@@ -132,7 +140,8 @@ function Content() {
               marginTop: 15,
               marginBottom: 5,
               marginLeft: -3,
-              fontSize: 40,
+              fontSize: breakpoints.md ? 40 : 30,
+              lineHeight: breakpoints.md ? 55 : 45,
               color: theme[11],
             },
           ]}
@@ -145,6 +154,7 @@ function Content() {
             style={[
               styles.title,
               {
+                height: breakpoints.md ? undefined : 40,
                 backgroundColor: orange[6],
                 paddingHorizontal: 5,
                 flexDirection: "row",
@@ -159,7 +169,7 @@ function Content() {
                 marginRight: 5,
                 color: orange[11],
               }}
-              size={40}
+              size={breakpoints.md ? 40 : 24}
               bold
             >
               access_time
@@ -167,7 +177,7 @@ function Content() {
             <Text
               style={{
                 color: orange[11],
-                fontSize: 40,
+                fontSize: breakpoints.md ? 40 : 30,
                 fontFamily: "serifText700",
               }}
               numberOfLines={1}
@@ -192,6 +202,7 @@ function Content() {
                 {
                   backgroundColor: gray[6],
                   paddingHorizontal: 10,
+                  height: breakpoints.md ? undefined : 40,
                   borderRadius: 10,
                   alignItems: "center",
                   verticalAlign: "middle",
@@ -216,7 +227,7 @@ function Content() {
               <Text
                 style={{
                   color: gray[11],
-                  fontSize: 40,
+                  fontSize: breakpoints.md ? 40 : 30,
                   fontFamily: "serifText700",
                 }}
                 numberOfLines={1}
@@ -231,7 +242,7 @@ function Content() {
         <Text
           style={{
             opacity: 0.4,
-            fontSize: 25,
+            fontSize: breakpoints.md ? 25 : 17,
             marginTop: 15,
             marginBottom: 15,
             color: theme[11],
@@ -274,7 +285,6 @@ function Content() {
               placeholder={
                 ["Drink water", "Go for a walk", "Call a friend"][index]
               }
-              defaultValue={store.tasks[index]}
               onChangeText={(text) => {
                 store.tasks[index] = text;
                 setHasTouched(true);
@@ -291,7 +301,9 @@ function Content() {
           size={65}
           icon="arrow_back_ios_new"
           variant="outlined"
-          onPress={() => router.push("/auth/join/1")}
+          onPress={() =>
+            router.canGoBack() ? router.back() : router.push("/auth")
+          }
         />
         <Button
           height={65}

@@ -12,7 +12,7 @@ import dayjs from "dayjs";
 import * as Device from "expo-device";
 import { LinearGradient } from "expo-linear-gradient";
 import { createURL } from "expo-linking";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -28,15 +28,6 @@ import { sendApiRequest } from "../../helpers/api";
 const styles = StyleSheet.create({
   title: { fontSize: 55, width: "100%", lineHeight: 55 },
 });
-
-function inIframe() {
-  if (Platform.OS !== "web") return false;
-  try {
-    return window.self !== window.top;
-  } catch (e) {
-    return true;
-  }
-}
 
 const isIUSDChromebook =
   Platform.OS === "web" &&
@@ -352,8 +343,6 @@ export default function SignIn() {
   }, []);
 
   const breakpoints = useResponsiveBreakpoints();
-
-  if (inIframe()) return <Redirect href="/auth" />;
 
   return (
     <>

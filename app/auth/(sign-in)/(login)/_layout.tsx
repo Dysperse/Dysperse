@@ -5,8 +5,8 @@ import { TransitionPresets } from "@react-navigation/stack";
 import dayjs from "dayjs";
 import { createContext, useContext, useRef } from "react";
 
-const SignupContext = createContext(null);
-export const useSignupContext = () => useContext(SignupContext);
+const LoginContext = createContext(null);
+export const useLoginContext = () => useContext(LoginContext);
 
 export default function Layout() {
   const breakpoints = useResponsiveBreakpoints();
@@ -30,7 +30,7 @@ export default function Layout() {
   });
 
   return (
-    <SignupContext.Provider value={signupData.current}>
+    <LoginContext.Provider value={signupData.current}>
       <JsStack
         screenOptions={{
           header: () => null,
@@ -43,6 +43,6 @@ export default function Layout() {
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />
-    </SignupContext.Provider>
+    </LoginContext.Provider>
   );
 }

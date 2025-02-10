@@ -1,5 +1,7 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { router } from "expo-router";
@@ -13,6 +15,7 @@ function Intro() {
   const theme = useColorTheme();
   const [name, setName] = useState("");
   const store = useSignupContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   useEffect(() => {
     store.name = name;
@@ -31,7 +34,7 @@ function Intro() {
         <Text
           style={{
             fontFamily: "serifText700",
-            fontSize: 45,
+            fontSize: breakpoints.md ? 40 : 30,
             marginTop: 10,
             color: theme[11],
           }}
@@ -43,7 +46,7 @@ function Intro() {
         <Text
           style={{
             opacity: 0.4,
-            fontSize: 25,
+            fontSize: breakpoints.md ? 25 : 20,
             marginBottom: 15,
             color: theme[11],
           }}
@@ -64,16 +67,27 @@ function Intro() {
             marginBottom: 20,
           }}
           onChangeText={setName}
-          defaultValue={store.name}
+          autoComplete="name"
         />
       </Animated.View>
-      <Animated.View entering={FadeIn.delay(1200)}>
+      <Animated.View
+        entering={FadeIn.delay(1200)}
+        style={{ flexDirection: "row", gap: 10 }}
+      >
+        <IconButton
+          size={65}
+          icon="arrow_back_ios_new"
+          variant="outlined"
+          onPress={() =>
+            router.canGoBack() ? router.back() : router.push("/auth")
+          }
+        />
         <Button
           height={65}
           variant="filled"
           style={{ margin: 20 }}
           text="Next"
-          containerStyle={!name.trim() && { opacity: 0.6 }}
+          containerStyle={[!name.trim() && { opacity: 0.6 }, { flex: 1 }]}
           icon="east"
           iconPosition="end"
           bold

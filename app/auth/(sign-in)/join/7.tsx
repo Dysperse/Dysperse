@@ -1,4 +1,5 @@
 import { useSession } from "@/context/AuthProvider";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ErrorAlert from "@/ui/Error";
 import Spinner from "@/ui/Spinner";
@@ -15,6 +16,7 @@ export default function Page() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const { signIn } = useSession();
+  const breakpoints = useResponsiveBreakpoints();
 
   const handleSignup = useCallback(async () => {
     try {
@@ -60,7 +62,7 @@ export default function Page() {
       <Text
         style={{
           fontFamily: "serifText700",
-          fontSize: 45,
+          fontSize: breakpoints.md ? 45 : 35,
           marginTop: 10,
           color: theme[11],
         }}
@@ -70,7 +72,7 @@ export default function Page() {
       <Text
         style={{
           opacity: 0.4,
-          fontSize: 25,
+          fontSize: breakpoints.md ? 25 : 20,
           marginTop: 5,
           marginBottom: 15,
           color: theme[11],

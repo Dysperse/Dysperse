@@ -1,4 +1,5 @@
 import themeDescriptions from "@/components/themes.json";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -16,6 +17,7 @@ function Color() {
   const theme = useColorTheme();
   const isDark = useDarkMode();
   const store = useSignupContext();
+  const breakpoints = useResponsiveBreakpoints();
   const [selected, setSelected] = useState(store.theme);
 
   const ruby = useColor("ruby");
@@ -39,7 +41,7 @@ function Color() {
         <Text
           style={{
             fontFamily: "serifText700",
-            fontSize: 45,
+            fontSize: breakpoints.md ? 40 : 30,
             marginTop: 10,
             color: theme[11],
           }}
@@ -51,7 +53,7 @@ function Color() {
         <Text
           style={{
             opacity: 0.4,
-            fontSize: 25,
+            fontSize: breakpoints.md ? 25 : 17,
             marginTop: 5,
             marginBottom: 15,
             color: theme[11],
@@ -63,7 +65,11 @@ function Color() {
       </Animated.View>
       <Animated.View
         entering={FadeIn.delay(900)}
-        style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}
+        style={{
+          flexDirection: breakpoints.md ? "row" : "column",
+          gap: 10,
+          marginBottom: 10,
+        }}
       >
         {[
           { color: ruby, name: "crimson" },
@@ -75,9 +81,8 @@ function Color() {
             key={theme.name}
             style={{
               flex: 1,
-              height: 200,
+              height: "auto",
               borderRadius: 20,
-              padding: 20,
               backgroundColor: theme.color[4],
               justifyContent: "center",
               borderWidth: 2,
@@ -88,15 +93,16 @@ function Color() {
             <Button
               onPress={() => setSelected(theme.name)}
               key={theme.name}
-              height={190}
+              height={breakpoints.md ? 220 : 100}
               containerStyle={{ borderRadius: 20 }}
               style={{
                 flex: 1,
-                paddingHorizontal: 0,
+                paddingHorizontal: breakpoints.md ? 0 : 20,
+                paddingVertical: 0,
                 borderRadius: 20,
-                flexDirection: "column",
+                flexDirection: !breakpoints.md ? "row" : "column",
                 backgroundColor: theme.color[4],
-                justifyContent: "center",
+                justifyContent: breakpoints.md ? "center" : "flex-start",
               }}
             >
               <Image
@@ -105,15 +111,18 @@ function Color() {
                     isDark ? "dark/" : ""
                   }${theme.name}.svg?`,
                 }}
-                style={{ width: 100, height: 100 }}
+                style={{
+                  width: breakpoints.md ? 100 : 80,
+                  height: breakpoints.md ? 100 : 80,
+                }}
               />
               <Text
                 style={{
                   color: theme.color[11],
                   fontFamily: "serifText700",
                   fontSize: 20,
-                  textAlign: "center",
-                  marginTop: 10,
+                  textAlign: breakpoints.md ? "center" : "left",
+                  marginTop: breakpoints.md ? 10 : 0,
                 }}
               >
                 {themeDescriptions[theme.name].name.split(" ").join("\n")}

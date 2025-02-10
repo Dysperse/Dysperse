@@ -1,4 +1,5 @@
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { DatePicker } from "@/ui/DatePicker";
@@ -15,7 +16,6 @@ import { useEffect, useRef, useState } from "react";
 import { Linking, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { useDebouncedValue } from "../../sign-up";
 import { useSignupContext } from "./_layout";
 
 export const validateEmail = (email) => {
@@ -26,11 +26,28 @@ export const validateEmail = (email) => {
     );
 };
 
+const useDebouncedValue = (inputValue, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(inputValue);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputValue, delay]);
+
+  return debouncedValue;
+};
+
 function Content() {
   const theme = useColorTheme();
   const [hasReadTerms, setHasReadTerms] = useState(false);
   const params = useLocalSearchParams();
   const store = useSignupContext();
+  const breakpoints = useResponsiveBreakpoints();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -94,7 +111,7 @@ function Content() {
         <Text
           style={{
             fontFamily: "serifText700",
-            fontSize: 45,
+            fontSize: breakpoints.md ? 40 : 30,
             marginTop: 10,
             color: theme[11],
           }}
@@ -106,7 +123,7 @@ function Content() {
         <Text
           style={{
             opacity: 0.4,
-            fontSize: 25,
+            fontSize: breakpoints.md ? 25 : 20,
             marginTop: 5,
             marginBottom: 15,
             color: theme[11],
@@ -126,6 +143,7 @@ function Content() {
           variant="filled"
           placeholder="barackobama@gmail.com"
           onChangeText={setEmail}
+          autoComplete="email"
         />
         {email !== "" && profileExists !== "empty" && (
           <View
@@ -177,12 +195,14 @@ function Content() {
           variant="filled"
           placeholder="Pick something strong"
           onChangeText={setPassword}
+          autoComplete="new-password"
         />
         <TextField
           secureTextEntry
           variant="filled"
           placeholder="Retype what you just entered above"
           onChangeText={setPasswordConfirm}
+          autoComplete="new-password"
         />
       </Animated.View>
       <Animated.View

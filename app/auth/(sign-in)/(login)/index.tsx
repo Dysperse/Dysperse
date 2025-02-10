@@ -2,6 +2,7 @@ import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import ErrorAlert from "@/ui/Error";
 import IconButton from "@/ui/IconButton";
 import Modal from "@/ui/Modal";
 import Spinner from "@/ui/Spinner";
@@ -13,7 +14,7 @@ import { Platform, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import Svg, { Path } from "react-native-svg";
 import Toast from "react-native-toast-message";
-import { GoogleAuth, PasskeyModal } from "../sign-in";
+import { GoogleAuth, PasskeyModal } from "../../sign-in";
 
 function QrLogin() {
   const theme = useColorTheme();
@@ -139,19 +140,8 @@ export default function SignIn() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
 
-  function inIframe() {
-    if (Platform.OS !== "web") return false;
-    try {
-      return window.self !== window.top;
-    } catch (e) {
-      return true;
-    }
-  }
-
   const handleSignUpPress = () => {
-    if (Platform.OS === "web" && inIframe())
-      window.open("/auth/join", "_blank");
-    else router.push("/auth/join");
+    router.push("/auth/join");
   };
 
   return (
@@ -159,12 +149,14 @@ export default function SignIn() {
       style={{
         flex: 1,
         justifyContent: "center",
+        padding: !breakpoints.md ? 40 : 0,
+        paddingBottom: 0,
       }}
     >
       <Text
         style={{
           fontFamily: "serifText700",
-          fontSize: 45,
+          fontSize: breakpoints.md ? 45 : 35,
           color: theme[11],
           paddingTop: 60,
           marginTop: "auto",
@@ -175,7 +167,7 @@ export default function SignIn() {
       <Text
         style={{
           opacity: 0.4,
-          fontSize: 25,
+          fontSize: breakpoints.md ? 25 : 20,
           marginTop: 5,
           marginBottom: 20,
           color: theme[11],
@@ -184,7 +176,9 @@ export default function SignIn() {
       >
         Pick a method to sign in
       </Text>
-      <View style={{ flexDirection: "row", gap: 10 }}>
+      <View
+        style={{ flexDirection: breakpoints.md ? "row" : "column", gap: 10 }}
+      >
         <GoogleAuth
           onNewAccount={(d) => {
             Toast.show({
@@ -216,16 +210,23 @@ export default function SignIn() {
             large
             bold
             icon={
-              <Svg fill={theme[3]} width={24} height={24} viewBox="0 0 512 512">
-                <Path d="M473.16,221.48l-2.26-9.59H262.46v88.22H387c-12.93,61.4-72.93,93.72-121.94,93.72-35.66,0-73.25-15-98.13-39.11a140.08,140.08,0,0,1-41.8-98.88c0-37.16,16.7-74.33,41-98.78s61-38.13,97.49-38.13c41.79,0,71.74,22.19,82.94,32.31l62.69-62.36C390.86,72.72,340.34,32,261.6,32h0c-60.75,0-119,23.27-161.58,65.71C58,139.5,36.25,199.93,36.25,256S56.83,369.48,97.55,411.6C141.06,456.52,202.68,480,266.13,480c57.73,0,112.45-22.62,151.45-63.66,38.34-40.4,58.17-96.3,58.17-154.9C475.75,236.77,473.27,222.12,473.16,221.48Z" />
-              </Svg>
+              (
+                <Svg
+                  fill={theme[3]}
+                  width={24}
+                  height={24}
+                  viewBox="0 0 512 512"
+                >
+                  <Path d="M473.16,221.48l-2.26-9.59H262.46v88.22H387c-12.93,61.4-72.93,93.72-121.94,93.72-35.66,0-73.25-15-98.13-39.11a140.08,140.08,0,0,1-41.8-98.88c0-37.16,16.7-74.33,41-98.78s61-38.13,97.49-38.13c41.79,0,71.74,22.19,82.94,32.31l62.69-62.36C390.86,72.72,340.34,32,261.6,32h0c-60.75,0-119,23.27-161.58,65.71C58,139.5,36.25,199.93,36.25,256S56.83,369.48,97.55,411.6C141.06,456.52,202.68,480,266.13,480c57.73,0,112.45-22.62,151.45-63.66,38.34-40.4,58.17-96.3,58.17-154.9C475.75,236.77,473.27,222.12,473.16,221.48Z" />
+                </Svg>
+              ) as any
             }
             text="Google"
-            iconStyle={{ marginBottom: -5 }}
+            iconStyle={{ marginBottom: Platform.OS === "web" ? 0 : -5 }}
             style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
             onPress={handleSignUpPress}
             textStyle={{ color: theme[3] }}
-            containerStyle={{ flex: 1 }}
+            containerStyle={breakpoints.md && { flex: 1 }}
             backgroundColors={{
               default: theme[11],
               hovered: theme[11],
@@ -240,11 +241,17 @@ export default function SignIn() {
           text="Email"
           onPress={() => router.push("/auth/email")}
           style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
-          containerStyle={{ flex: 1 }}
+          containerStyle={breakpoints.md && { flex: 1 }}
           variant="filled"
         />
       </View>
-      <View style={{ flexDirection: "row", gap: 10, marginVertical: 10 }}>
+      <View
+        style={{
+          flexDirection: breakpoints.md ? "row" : "column",
+          gap: 10,
+          marginVertical: 10,
+        }}
+      >
         <PasskeyModal>
           <Button
             large
@@ -254,7 +261,7 @@ export default function SignIn() {
             variant="filled"
             onPress={handleSignUpPress}
             style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
-            containerStyle={{ flex: 1 }}
+            containerStyle={breakpoints.md && { flex: 1 }}
           />
         </PasskeyModal>
         <QrModal>
@@ -266,7 +273,7 @@ export default function SignIn() {
             onPress={handleSignUpPress}
             variant="filled"
             style={{ justifyContent: "flex-start", paddingLeft: 25, gap: 15 }}
-            containerStyle={{ flex: 1 }}
+            containerStyle={breakpoints.md && { flex: 1 }}
           />
         </QrModal>
       </View>

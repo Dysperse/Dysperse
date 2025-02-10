@@ -43,7 +43,7 @@ export default function Page() {
         <Turnstile
           setToken={(token) =>
             router.replace({
-              pathname: "/auth/join/7",
+              pathname: "/auth/sign-in/7",
               params: { ...params, token },
             })
           }

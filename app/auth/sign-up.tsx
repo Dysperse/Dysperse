@@ -8,7 +8,7 @@ import { addHslAlpha, useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { Portal } from "@gorhom/portal";
 import { LinearGradient } from "expo-linear-gradient";
-import { Redirect, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   createContext,
   useCallback,
@@ -25,7 +25,7 @@ import Turnstile from "@/ui/turnstile";
 import dayjs from "dayjs";
 import { Image } from "expo-image";
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
-import { Platform, Pressable, useWindowDimensions, View } from "react-native";
+import { Pressable, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -37,14 +37,6 @@ import { authStyles } from "../../components/authStyles";
 import { Intro } from "../../components/signup/Intro";
 import { TaskCreator } from "../../components/signup/TaskCreator";
 
-export function inIframe() {
-  if (Platform.OS !== "web") return false;
-  try {
-    return window.self !== window.top;
-  } catch (e) {
-    return true;
-  }
-}
 const SignupContext = createContext(null);
 export const useSignupContext = () => useContext(SignupContext);
 
@@ -157,8 +149,6 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
     cleanup: theme[2],
   });
 
-  if (inIframe()) return <Redirect href="/auth" />;
-
   return (
     <View style={{ flex: 1, padding: 20 }}>
       <Portal>
@@ -220,22 +210,6 @@ const ColorPicker = ({ form }: { form: UseFormReturn<any> }) => {
       </Button>
     </View>
   );
-};
-
-export const useDebouncedValue = (inputValue, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(inputValue);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(inputValue);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [inputValue, delay]);
-
-  return debouncedValue;
 };
 
 const LoadingPage = ({ form }: { form: UseFormReturn<any> }) => {
