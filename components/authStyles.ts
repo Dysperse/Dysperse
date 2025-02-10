@@ -4,20 +4,11 @@ export const authStyles = StyleSheet.create({
   container: {
     flex: 1,
     gap: 15,
-    padding: 10,
     justifyContent: "flex-end",
   },
-  containerDesktop: {
-    maxWidth: 500,
-    marginHorizontal: "auto",
-    borderRadius: 20,
-    overflow: "hidden",
-    borderWidth: 1,
-    width: "100%",
-    marginVertical: 20,
-  },
+  containerDesktop: {},
   title: {
-    fontSize: 60,
+    fontSize: 30,
   },
   subtitleContainer: {
     flexDirection: "row",
@@ -44,3 +35,4 @@ export const authStyles = StyleSheet.create({
     color: "#fff",
   },
 });
+

@@ -1,7 +1,8 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
-import { Button, ButtonText } from "@/ui/Button";
-import Icon from "@/ui/Icon";
+import { Button } from "@/ui/Button";
+import IconButton from "@/ui/IconButton";
+import OtpInput from "@/ui/OtpInput";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
@@ -10,14 +11,15 @@ import Turnstile from "@/ui/turnstile";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import dayjs from "dayjs";
 import * as Device from "expo-device";
-import { LinearGradient } from "expo-linear-gradient";
 import { createURL } from "expo-linking";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { cloneElement, useCallback, useEffect, useState } from "react";
+import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as passkey from "react-native-passkeys";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Path, Svg } from "react-native-svg";
 import Toast from "react-native-toast-message";
 import { rp } from "../../../(app)/settings/account/passkeys";
@@ -230,9 +232,144 @@ export function PasskeyModal({ children }: { children: any }) {
   return trigger;
 }
 
+function Email({
+  control,
+  setStep,
+  handleSubmit,
+}: {
+  control: any;
+  setStep: any;
+  handleSubmit;
+}) {
+  const theme = useColorTheme();
+  const inputRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  const onFinish = () => {
+    setTimeout(handleSubmit, 100);
+  };
+
+  useEffect(() => {
+    if (Platform.OS === "web") {
+      inputRef.current.setAttribute("name", "email");
+      passwordRef.current.setAttribute("name", "password");
+    }
+  });
+
+  const insets = useSafeAreaInsets();
+
+  return (
+    <KeyboardAwareScrollView
+      style={{ flex: 1, paddingTop: insets.top + 20 }}
+      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+    >
+      <View style={{ gap: 10 }}>
+        <Text
+          style={{
+            fontFamily: "serifText700",
+            fontSize: 35,
+            color: theme[11],
+            marginTop: "auto",
+          }}
+        >
+          Sign in with email
+        </Text>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              style={{
+                height: 60,
+                fontFamily: "body_600",
+                borderRadius: 20,
+                fontSize: 20,
+                color: theme[11],
+                paddingHorizontal: 20,
+              }}
+              inputRef={inputRef}
+              placeholder="Email or username..."
+              onBlur={onBlur}
+              onChangeText={onChange}
+              autoFocus
+              onSubmitEditing={onFinish}
+              variant="filled+outlined"
+            />
+          )}
+          name="email"
+        />
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              style={{
+                height: 60,
+                fontFamily: "body_600",
+                borderRadius: 20,
+                fontSize: 20,
+                color: theme[11],
+                paddingHorizontal: 20,
+              }}
+              placeholder="Password..."
+              secureTextEntry
+              onBlur={onBlur}
+              onChangeText={onChange}
+              onSubmitEditing={onFinish}
+              inputRef={passwordRef}
+              variant="filled+outlined"
+            />
+          )}
+          name="password"
+        />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            gap: 10,
+          }}
+        >
+          <IconButton
+            size={60}
+            variant="outlined"
+            icon="arrow_back_ios_new"
+            onPress={() =>
+              router.canGoBack() ? router.back() : router.replace("/auth")
+            }
+          />
+          <Button
+            variant="filled"
+            height={60}
+            onPress={onFinish}
+            isLoading={false}
+            text="Continue"
+            icon="east"
+            iconPosition="end"
+            large
+            containerStyle={{ flex: 1 }}
+            bold
+          />
+        </View>
+        <Button
+          height={50}
+          onPress={() => router.push("/auth/forgot-password")}
+          isLoading={false}
+          text="Need help?"
+          containerStyle={{ marginBottom: "auto" }}
+        />
+      </View>
+    </KeyboardAwareScrollView>
+  );
+}
+
 export default function SignIn() {
   const { signIn, session } = useSession();
   const [step, setStep] = useState(0);
+  const breakpoints = useResponsiveBreakpoints();
   const [token, setToken] = useState("");
 
   const theme = useColorTheme();
@@ -342,20 +479,9 @@ export default function SignIn() {
     else router.push("/");
   }, []);
 
-  const breakpoints = useResponsiveBreakpoints();
-
   return (
     <>
-      <LinearGradient
-        colors={[theme[2], theme[1]]}
-        style={[
-          authStyles.container,
-          breakpoints.md && authStyles.containerDesktop,
-          breakpoints.md && {
-            borderColor: theme[6],
-          },
-        ]}
-      >
+      <View style={{ flex: 1 }}>
         {step === 4 || step === 2 ? (
           <View
             style={{
@@ -367,20 +493,11 @@ export default function SignIn() {
           >
             <Spinner />
           </View>
-        ) : step === "email" ? (
+        ) : step === 0 ? (
           <Email
             setStep={setStep}
             control={control}
             handleSubmit={handleSubmit(onSubmit)}
-          />
-        ) : step === 0 ? (
-          <Credentials
-            control={control}
-            errors={errors}
-            handleSubmit={handleSubmit}
-            onSubmit={onSubmit}
-            step={step}
-            setStep={setStep}
           />
         ) : step === 1 ? (
           <View style={authStyles.container}>
@@ -424,31 +541,25 @@ export default function SignIn() {
             </View>
           </View>
         ) : (
-          <View style={authStyles.container}>
+          <KeyboardAwareScrollView
+            contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+          >
             <View style={{ marginVertical: "auto", gap: 10 }}>
               <Text
-                weight={600}
                 style={[
-                  styles.title,
-                  { color: theme[11], fontFamily: "serifText800" },
+                  {
+                    color: theme[11],
+                    fontFamily: "serifText700",
+                    fontSize: 40,
+                  },
                 ]}
               >
-                Are you{" "}
-                <Text
-                  style={[
-                    styles.title,
-                    {
-                      color: theme[11],
-                      fontStyle: "italic",
-                      fontFamily: "serifText800",
-                    },
-                  ]}
-                >
-                  you
-                </Text>
-                ?
+                Two factor auth
               </Text>
-              <Text style={authStyles.subtitleContainer}>
+              <Text
+                weight={700}
+                style={{ color: theme[11], fontSize: 20, opacity: 0.6 }}
+              >
                 Enter the code from your authenticator app
               </Text>
 
@@ -457,49 +568,25 @@ export default function SignIn() {
                 rules={{
                   required: true,
                 }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextField
-                    onSubmitEditing={handleSubmit(onSubmit)}
-                    keyboardType="number-pad"
-                    variant="filled+outlined"
-                    style={{
-                      paddingHorizontal: 30,
-                      paddingVertical: 20,
-                      fontSize: 20,
-                      borderColor: errors.email ? "red" : theme[6],
-                      ...(Platform.OS === "web" && { outline: "none" }),
+                render={({ field: { onChange } }) => (
+                  <OtpInput
+                    onFilled={(t) => {
+                      onChange(t);
+                      handleSubmit(onSubmit)();
                     }}
+                    containerGap={breakpoints.md ? undefined : 5}
                     autoFocus
-                    placeholder="2fa code"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
+                    blurOnFilled
+                    inputHeight={70}
+                    fontSize={26}
                   />
                 )}
                 name="twoFactorCode"
               />
-              <Button
-                variant="filled"
-                height={70}
-                onPress={handleSubmit(onSubmit)}
-                isLoading={step === 4}
-              >
-                <ButtonText
-                  weight={900}
-                  style={{
-                    ...authStyles.buttonText,
-                    flex: undefined,
-                    margin: undefined,
-                  }}
-                >
-                  Continue
-                </ButtonText>
-                <Icon>east</Icon>
-              </Button>
             </View>
-          </View>
+          </KeyboardAwareScrollView>
         )}
-      </LinearGradient>
+      </View>
     </>
   );
 }
