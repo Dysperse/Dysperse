@@ -15,7 +15,7 @@ export function ErrorBoundaryComponent() {
   const theme = useColor("mint");
   const breakpoints = useResponsiveBreakpoints();
   const { width } = useWindowDimensions();
-  const { signOut } = useSession();
+  const { signOut } = useSession() || {};
 
   return (
     <ColorThemeProvider theme={theme}>
