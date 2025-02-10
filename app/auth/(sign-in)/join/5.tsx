@@ -13,6 +13,7 @@ import Animated, { FadeIn } from "react-native-reanimated";
 
 function Content() {
   const theme = useColorTheme();
+  const [hasReadTerms, setHasReadTerms] = useState(false);
   const params = useLocalSearchParams();
 
   const [selected, setSelected] = useState("");
@@ -115,22 +116,27 @@ function Content() {
           By creating an account, you're 13+ and also agree with our{" "}
           <Text
             style={{ color: "#007AFF", textDecorationLine: "underline" }}
-            onPress={() =>
-              Linking.openURL("https://blog.dysperse.com/terms-of-service")
-            }
+            onPress={() => {
+              Linking.openURL("https://blog.dysperse.com/terms-of-service");
+              setHasReadTerms(true);
+            }}
           >
             Terms of Service
           </Text>{" "}
           and{" "}
           <Text
             style={{ color: "#007AFF", textDecorationLine: "underline" }}
-            onPress={() =>
-              Linking.openURL("https://blog.dysperse.com/privacy-policy")
-            }
+            onPress={() => {
+              Linking.openURL("https://blog.dysperse.com/privacy-policy");
+              setHasReadTerms(true);
+            }}
           >
             Privacy Policy
           </Text>{" "}
-          which nobody ever reads
+          which nobody ever reads.{" "}
+          {hasReadTerms
+            ? "\n\n Quite surprising that you actually read it. Good job!"
+            : ""}
         </Text>
       </Animated.View>
     </View>
