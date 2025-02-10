@@ -7,12 +7,10 @@ import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Turnstile from "@/ui/turnstile";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, StyleSheet, View } from "react-native";
-import { inIframe } from "..";
-import { authStyles } from "../../../components/authStyles";
 
 const styles = StyleSheet.create({
   title: {
@@ -54,18 +52,8 @@ export default function Page() {
     }
   }, []);
 
-  if (inIframe()) return <Redirect href="/auth" />;
   return (
-    <View
-      style={[
-        authStyles.container,
-        { backgroundColor: theme[1] },
-        breakpoints.md && authStyles.containerDesktop,
-        breakpoints.md && {
-          borderColor: theme[6],
-        },
-      ]}
-    >
+    <View>
       <IconButton
         variant="outlined"
         size={55}

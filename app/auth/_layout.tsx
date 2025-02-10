@@ -5,7 +5,6 @@ import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
-import { TransitionPresets } from "@react-navigation/stack";
 import { Redirect } from "expo-router";
 import { View, useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
@@ -31,33 +30,13 @@ export default function Layout() {
                 gestureResponseDistance: width,
                 gestureEnabled: true,
                 cardStyle: {
-                  backgroundColor: theme[breakpoints.sm ? 2 : 1],
-                  padding: breakpoints.md ? 10 : 0,
+                  backgroundColor: theme[1],
                 },
                 // change opacity of the previous screen when swipe
                 cardOverlayEnabled: true,
                 gestureVelocityImpact: 0.7,
               }}
-            >
-              {[
-                "sign-in",
-                "sign-up",
-                "forgot-password/[id]",
-                "forgot-password/index",
-              ].map((screen) => (
-                <JsStack.Screen
-                  name={screen}
-                  options={{
-                    header: () => null,
-                    animationEnabled: true,
-                    presentation: "modal",
-                    ...TransitionPresets.ModalPresentationIOS,
-                    gestureResponseDistance: height,
-                  }}
-                  key={screen}
-                />
-              ))}
-            </JsStack>
+            />
             <Toast config={toastConfig(theme)} />
           </PortalProvider>
         </ColorThemeProvider>

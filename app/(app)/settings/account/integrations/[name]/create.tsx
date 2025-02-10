@@ -1,4 +1,4 @@
-import { GoogleAuth } from "@/app/auth/sign-in";
+import { GoogleAuth } from "@/app/auth/(sign-in)/(login)/email";
 import { useSession } from "@/context/AuthProvider";
 import { sendApiRequest } from "@/helpers/api";
 import { Button } from "@/ui/Button";

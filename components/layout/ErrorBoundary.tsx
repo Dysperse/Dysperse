@@ -1,3 +1,4 @@
+import { useSession } from "@/context/AuthProvider";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
@@ -14,6 +15,7 @@ export function ErrorBoundaryComponent() {
   const theme = useColor("mint");
   const breakpoints = useResponsiveBreakpoints();
   const { width } = useWindowDimensions();
+  const { signOut } = useSession();
 
   return (
     <ColorThemeProvider theme={theme}>
@@ -89,6 +91,16 @@ export function ErrorBoundaryComponent() {
             >
               <ButtonText>Reload</ButtonText>
               <Icon>loop</Icon>
+            </Button>
+            <Button
+              onPress={() => {
+                signOut();
+              }}
+              variant="filled"
+              containerStyle={{ marginTop: 10 }}
+            >
+              <ButtonText>Sign out</ButtonText>
+              <Icon>logout</Icon>
             </Button>
           </View>
         </View>

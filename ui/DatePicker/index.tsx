@@ -82,7 +82,17 @@ export const TimeInput = forwardRef(
   }
 );
 
-function CalendarPreview({ value, setValue, view }) {
+function CalendarPreview({
+  value,
+  setValue,
+  view,
+  ignoreYear,
+}: {
+  value: any;
+  setValue: any;
+  view: string;
+  ignoreYear?: boolean;
+}) {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
   const [calendarMonthId, setCalendarMonthId] = useState(
@@ -154,6 +164,9 @@ function CalendarPreview({ value, setValue, view }) {
       </View>
       <Calendar
         calendarMonthId={calendarMonthId}
+        getCalendarMonthFormat={(date) =>
+          dayjs(date).format(ignoreYear ? "MMMM" : "MMMM YYYY")
+        }
         theme={{
           ...dysperseCalendarTheme(theme),
           rowMonth: {
@@ -199,11 +212,6 @@ function AllDaySwitch({ view, value, setValue }) {
     <Button
       onPress={() => {
         setValue({ dateOnly: !value.dateOnly });
-        if (value.dateOnly) {
-          setTimeout(() => {
-            // ref.current.focus();
-          }, 1);
-        }
       }}
       containerStyle={{ flex: 1 }}
       style={{ padding: 0 }}
@@ -227,7 +235,15 @@ function AllDaySwitch({ view, value, setValue }) {
 }
 
 export const DatePicker = forwardRef(
-  ({ value, setValue }: { value: any; setValue: any }, ref: any) => {
+  (
+    {
+      value,
+      setValue,
+      ignoreYear,
+      ignoreTime,
+    }: { value: any; setValue: any; ignoreYear?: any; ignoreTime?: any },
+    ref: any
+  ) => {
     const [view, setView] = useState("start");
 
     useEffect(() => {
@@ -285,11 +301,13 @@ export const DatePicker = forwardRef(
                     )
                   : "Select a date"}
               </Text>
-              <Collapsible collapsed={!secondary}>
-                <Text style={{ opacity: 0.5, textAlign: "center" }}>
-                  {secondary}
-                </Text>
-              </Collapsible>
+              {!ignoreTime && (
+                <Collapsible collapsed={!secondary}>
+                  <Text style={{ opacity: 0.5, textAlign: "center" }}>
+                    {secondary}
+                  </Text>
+                </Collapsible>
+              )}
             </View>
             <IconButton
               icon="check"
@@ -307,7 +325,7 @@ export const DatePicker = forwardRef(
                 Platform.OS === "web" ? undefined : value.date ? 410 : 310,
             }}
           >
-            {value.date && (
+            {value.date && !ignoreTime && (
               <View style={{ flexDirection: "row", gap: 10, paddingTop: 5 }}>
                 <Button
                   bold={view === "start"}
@@ -333,8 +351,15 @@ export const DatePicker = forwardRef(
                 />
               </View>
             )}
-            <CalendarPreview value={value} setValue={setValue} view={view} />
-            <AllDaySwitch value={value} setValue={setValue} view={view} />
+            <CalendarPreview
+              ignoreYear={ignoreYear}
+              value={value}
+              setValue={setValue}
+              view={view}
+            />
+            {!ignoreTime && (
+              <AllDaySwitch value={value} setValue={setValue} view={view} />
+            )}
           </View>
         </View>
       </Modal>

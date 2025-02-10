@@ -7,9 +7,23 @@ import Logo from "@/ui/logo";
 import Text from "@/ui/Text";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
-import { Linking, Pressable, useWindowDimensions, View } from "react-native";
+import {
+  Linking,
+  Platform,
+  Pressable,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
-import { inIframe } from "../auth";
+
+function inIframe() {
+  if (Platform.OS !== "web") return false;
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+}
 
 export default function Page() {
   const { width, height } = useWindowDimensions();

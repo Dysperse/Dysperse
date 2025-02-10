@@ -26,24 +26,24 @@ const OtpInput = forwardRef(
           pinCodeContainerStyle: {
             borderWidth: 2,
             borderColor: theme[3],
-            borderRadius: 99,
+            borderRadius: 20,
             minHeight: "auto",
             height: 50,
             width: 50,
+            height: props.inputHeight || 50,
             flex: 1,
           },
           containerStyle: { gap: props.containerGap || 20 },
           pinCodeTextStyle: {
             fontFamily: "body_500",
             color: theme[11],
-            fontSize: props.secureTextEntry ? 50 : undefined,
+            fontSize:
+              props.fontSize || (props.secureTextEntry ? 50 : undefined),
             marginTop: props.secureTextEntry
               ? Platform.OS === "web"
                 ? 10
                 : 30
               : undefined,
-            height: 50,
-            lineHeight: 50,
           },
         }}
         {...props}
