@@ -116,7 +116,7 @@ function Content() {
       }}
     >
       <Animated.View entering={FadeIn.delay(300)}>
-        <Text variant="eyebrow">2/4</Text>
+        <Text variant="eyebrow">2/5</Text>
         <Text
           style={[
             styles.title,

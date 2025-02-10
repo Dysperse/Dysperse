@@ -66,7 +66,7 @@ function Customization() {
       }}
     >
       <Animated.View entering={FadeIn.delay(300)}>
-        <Text variant="eyebrow">3/4</Text>
+        <Text variant="eyebrow">3/5</Text>
         <Text
           style={{
             fontFamily: "serifText700",

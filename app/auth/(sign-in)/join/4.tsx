@@ -53,7 +53,7 @@ function Color() {
           }}
           weight={600}
         >
-          Dysperse has 30+ themes—{"\n"}Here's three for now.
+          Dysperse has over 30 themes—{"\n"}Here's three for now.
         </Text>
       </Animated.View>
       <Animated.View

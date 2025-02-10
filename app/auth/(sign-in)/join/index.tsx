@@ -21,7 +21,7 @@ function Intro() {
       }}
     >
       <Animated.View entering={FadeIn.delay(300)}>
-        <Text variant="eyebrow">1/4</Text>
+        <Text variant="eyebrow">1/5</Text>
         <Text
           style={{
             fontFamily: "serifText700",
