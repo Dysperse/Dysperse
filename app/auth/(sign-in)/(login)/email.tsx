@@ -279,7 +279,7 @@ function Email({
           rules={{
             required: true,
           }}
-          render={({ field: { onChange, onBlur, value } }) => (
+          render={({ field: { onChange, onBlur } }) => (
             <TextField
               style={{
                 height: 60,
