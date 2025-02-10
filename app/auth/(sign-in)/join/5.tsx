@@ -112,7 +112,7 @@ function Content() {
             });
           }}
         />
-        <Text style={{ textAlign: "center", opacity: 0.6, marginTop: 20 }}>
+        <Text style={{ textAlign: "center", opacity: 0.7, marginTop: 20 }}>
           By creating an account, you're 13+ and also agree with our{" "}
           <Text
             style={{ color: "#007AFF", textDecorationLine: "underline" }}
@@ -121,7 +121,7 @@ function Content() {
               setHasReadTerms(true);
             }}
           >
-            Terms of Service
+            terms
           </Text>{" "}
           and{" "}
           <Text
@@ -131,7 +131,7 @@ function Content() {
               setHasReadTerms(true);
             }}
           >
-            Privacy Policy
+            privacy policy
           </Text>{" "}
           which nobody ever reads.{" "}
           {hasReadTerms
