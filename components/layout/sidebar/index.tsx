@@ -566,7 +566,7 @@ const TimeZoneModal = () => {
             text={`Make ${dayjs.tz.guess()} my default`}
           />
           <Text style={{ marginTop: 5, opacity: 0.6, fontSize: 12 }}>
-            Your home time zone is {session.user.timeZone}
+            Your home time zone is {session?.user?.timeZone}
           </Text>
         </View>
       </Modal>

@@ -94,6 +94,10 @@ export function ErrorBoundaryComponent() {
             </Button>
             <Button
               onPress={() => {
+                if (Platform.OS === "web") {
+                  localStorage.clear();
+                  window.location.reload();
+                }
                 signOut();
               }}
               variant="filled"
@@ -108,4 +112,3 @@ export function ErrorBoundaryComponent() {
     </ColorThemeProvider>
   );
 }
-
