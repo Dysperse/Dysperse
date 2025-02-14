@@ -95,11 +95,11 @@ export function Actions() {
       </TouchableOpacity>
       <TouchableOpacity
         style={actionStyles.item}
-        onPress={() => handleOpen("Shared with me")}
+        onPress={() => router.push("/friends")}
       >
         <Icon>group</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          Shared with me
+          Friends
         </Text>
         {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
           <View style={[styles.badge, { backgroundColor: theme[9] }]}>
@@ -112,4 +112,3 @@ export function Actions() {
     </View>
   );
 }
-

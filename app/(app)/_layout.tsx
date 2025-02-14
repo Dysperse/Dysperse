@@ -300,6 +300,10 @@ export default function AppLayout() {
             options={arcCard({ theme, breakpoints, maxWidth: 500 })}
           />
           <JsStack.Screen
+            name="home/add-widget"
+            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
+          />
+          <JsStack.Screen
             name="plan"
             options={arcCard({ theme, breakpoints, maxWidth: 500 })}
           />
@@ -529,4 +533,3 @@ export default function AppLayout() {
     </WebAnimationComponent>
   );
 }
-
