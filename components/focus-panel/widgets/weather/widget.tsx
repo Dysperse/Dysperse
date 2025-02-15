@@ -212,20 +212,34 @@ export default function WeatherWidget({
                   >
                     {Math.round(data.current_weather.temperature)}&deg; F
                   </Text>
-                  <Text
+                  <View
                     style={{
-                      fontSize: 15,
-                      color: theme[11],
-                      opacity: 0.6,
-                      fontFamily: "mono",
+                      gap: 5,
+                      flexDirection: "row",
                     }}
                   >
-                    {weatherDescription?.description} &bull; Feels like{" "}
-                    {Math.round(
-                      data.hourly.apparent_temperature[dayjs().hour()]
-                    )}
-                    &deg;
-                  </Text>
+                    <Icon size={15} style={{ verticalAlign: "middle" }}>
+                      {
+                        weatherCodes[data.current_weather.weathercode][
+                          isNight() ? "night" : "day"
+                        ].icon
+                      }
+                    </Icon>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        color: theme[11],
+                        opacity: 0.6,
+                        fontFamily: "mono",
+                      }}
+                    >
+                      {weatherDescription?.description} &bull; Feels like{" "}
+                      {Math.round(
+                        data.hourly.apparent_temperature[dayjs().hour()]
+                      )}
+                      &deg;
+                    </Text>
+                  </View>
                 </View>
               </View>
               <View>
