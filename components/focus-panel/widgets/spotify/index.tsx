@@ -1,4 +1,8 @@
 import { useUser } from "@/context/useUser";
+import { Button } from "@/ui/Button";
+import ConfirmationModal from "@/ui/ConfirmationModal";
+import Icon from "@/ui/Icon";
+import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { Image } from "expo-image";
@@ -7,7 +11,7 @@ import useSWR from "swr";
 import { useFocusPanelContext } from "../../context";
 import { SpotifyPreview } from "./SpotifyPreview";
 
-export default function Spotify({ menuActions, params, navigation }) {
+export default function Spotify({ setParam, widget, navigation }) {
   const theme = useColorTheme();
   const { panelState } = useFocusPanelContext();
   const { data, mutate } = useSWR(["user/currently-playing"], {
@@ -19,8 +23,44 @@ export default function Spotify({ menuActions, params, navigation }) {
     Linking.openURL(url);
   };
 
+  if (widget.params.hideWhenEmpty && !data?.is_playing) return null;
+
   return (
     <Pressable onPress={() => mutate()} onMouseEnter={() => mutate()}>
+      <MenuPopover
+        menuProps={{
+          style: { marginRight: "auto", marginLeft: -10 },
+          rendererProps: { placement: "bottom" },
+        }}
+        containerStyle={{ width: 250, marginLeft: 20, marginTop: -15 }}
+        options={[
+          {
+            renderer: () => (
+              <ConfirmationModal
+                title="Hide when empty?"
+                secondary="You won't be able to see this widget when there are no upcoming tasks."
+                onSuccess={() => setParam("hideWhenEmpty", true)}
+              >
+                <MenuItem>
+                  <Icon>visibility</Icon>
+                  <Text variant="menuItem">Hide when not playing?</Text>
+                </MenuItem>
+              </ConfirmationModal>
+            ),
+          },
+        ]}
+        trigger={
+          <Button
+            dense
+            textProps={{ variant: "eyebrow" }}
+            text="Spotify"
+            icon="expand_more"
+            iconPosition="end"
+            containerStyle={{ marginBottom: 5 }}
+            iconStyle={{ opacity: 0.6 }}
+          />
+        }
+      />
       {data?.error === "AUTHORIZATION_REQUIRED" ? (
         <Pressable
           onPress={handleSpotifyAuthorization}
@@ -56,17 +96,16 @@ export default function Spotify({ menuActions, params, navigation }) {
         <View
           style={{
             padding: 17,
-            paddingVertical: 13,
-            backgroundColor: theme[3],
+            height: 70,
+            backgroundColor: theme[2],
+            borderWidth: 1,
+            borderColor: theme[5],
             borderRadius: 20,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Text
-            style={{ fontSize: 17, lineHeight: 18, opacity: 0.6 }}
-            weight={300}
-          >
+          <Text style={{ color: theme[11], opacity: 0.4 }} weight={300}>
             No music playing
           </Text>
         </View>

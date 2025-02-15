@@ -15,7 +15,7 @@ export default function Layout() {
         gestureResponseDistance: 10000,
         cardStyle: {
           backgroundColor: theme[1],
-          paddingHorizontal: breakpoints.md ? 40 : 10,
+          paddingHorizontal: breakpoints.md ? 40 : 30,
           paddingLeft: breakpoints.md ? 60 : undefined,
         },
         ...TransitionPresets.SlideFromRightIOS,

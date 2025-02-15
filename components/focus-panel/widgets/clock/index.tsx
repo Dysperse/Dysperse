@@ -10,14 +10,13 @@ import ListItemText from "@/ui/ListItemText";
 import MenuPopover from "@/ui/MenuPopover";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { useColor } from "@/ui/color";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import dayjs from "dayjs";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
-import { Platform, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
@@ -34,7 +33,7 @@ const Time = ({
   params?: any;
   navigation?: any;
 }) => {
-  const theme = useColor("orange");
+  const theme = useColorTheme();
   const [time, setTime] = useState(dayjs());
 
   useEffect(() => {
@@ -43,38 +42,43 @@ const Time = ({
   }, []);
 
   return (
-    <View style={{ position: "relative" }}>
+    <View
+      style={{
+        position: "relative",
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 20,
+        gap: 20,
+      }}
+    >
+      <View>
+        <Text
+          style={{
+            fontSize: 30,
+            color: theme[11],
+            fontFamily: "serifText700",
+          }}
+        >
+          {time.format("hh:mm A")}
+        </Text>
+      </View>
       <Text
         style={{
-          marginTop: 10,
-          fontSize: 20,
-          lineHeight: 20,
-          color: theme[11],
-          fontFamily: "mono",
-          paddingTop: Platform.OS === "ios" ? 1 : 0,
-        }}
-      >
-        {time.format("hh:mm")}
-      </Text>
-      <Text
-        style={{
-          marginTop: 5,
           fontSize: 15,
-          paddingTop: Platform.OS === "ios" ? 1 : 0,
-          lineHeight: 15,
+          fontFamily: "mono",
           color: theme[11],
           opacity: 0.6,
         }}
         weight={500}
       >
-        {time.format("MMM Do")}
+        {time.format("dddd [\n]MMM Do, YYYY")}
       </Text>
     </View>
   );
 };
 
 const Stopwatch = ({ params, setParam }) => {
-  const theme = useColor("orange");
+  const theme = useColorTheme();
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
   const { panelState } = useFocusPanelContext();
@@ -191,7 +195,7 @@ const Stopwatch = ({ params, setParam }) => {
 };
 
 const Timer = ({ pomodoro = false }) => {
-  const theme = useColor("orange");
+  const theme = useColorTheme();
   const [duration, setDuration] = useState(1);
   const [paused, setPaused] = useState(true);
   const [time, setTime] = useState(0);
@@ -487,7 +491,7 @@ const Timer = ({ pomodoro = false }) => {
   );
 };
 
-type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
+export type ClockViewType = "Clock" | "Stopwatch" | "Timer" | "Pomodoro";
 
 type timezone = (typeof timezones)[0];
 
@@ -602,8 +606,8 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
   );
 }
 
-export default function Clock({ widget, menuActions, navigation, setParam }) {
-  const theme = useColor("orange");
+export default function Clock({ widget, navigation, setParam }) {
+  const theme = useColorTheme();
   const { setPanelState } = useFocusPanelContext();
   const [view, setView] = useState<ClockViewType>("Clock");
   const timeZoneModalRef = useRef<BottomSheetModal>(null);
@@ -611,12 +615,7 @@ export default function Clock({ widget, menuActions, navigation, setParam }) {
   return (
     <View>
       <MenuPopover
-        menuProps={{
-          style: {
-            marginRight: "auto",
-            marginLeft: -10,
-          },
-        }}
+        menuProps={{ style: { marginRight: "auto", marginLeft: -10 } }}
         options={[
           ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
             text: d,
@@ -631,19 +630,19 @@ export default function Clock({ widget, menuActions, navigation, setParam }) {
                   icon: "explore",
                   callback: () => timeZoneModalRef.current?.present?.(),
                 },
-                { divider: true },
               ]
             : []),
-          ...menuActions,
         ]}
-        containerStyle={{
-          marginTop: -15,
-        }}
         trigger={
-          <Button dense>
-            <Text variant="eyebrow">{view}</Text>
-            <Icon style={{ opacity: 0.6 }}>expand_more</Icon>
-          </Button>
+          <Button
+            dense
+            textProps={{ variant: "eyebrow" }}
+            text={view}
+            icon="expand_more"
+            iconPosition="end"
+            containerStyle={{ marginBottom: 5 }}
+            iconStyle={{ opacity: 0.6 }}
+          />
         }
       />
       <Pressable
@@ -652,8 +651,7 @@ export default function Clock({ widget, menuActions, navigation, setParam }) {
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 20,
-            paddingBottom: 10,
-            backgroundColor: theme[3],
+            backgroundColor: theme[2],
             borderWidth: 1,
             borderColor: theme[5],
           },

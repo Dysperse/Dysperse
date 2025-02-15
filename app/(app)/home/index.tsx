@@ -91,15 +91,22 @@ export const HOME_PATTERNS = [
 ];
 
 const CustomizeButton = () => {
+  const insets = useSafeAreaInsets();
+
   return (
     <Button
       text="Edit"
+      variant="outlined"
       backgroundColors={{
         default: "transparent",
         pressed: "transparent",
         hovered: "transparent",
       }}
-      containerStyle={{ marginHorizontal: "auto", opacity: 0.3 }}
+      containerStyle={{
+        marginHorizontal: "auto",
+        opacity: 0.7,
+        marginBottom: insets.bottom,
+      }}
       onPress={() => router.push("/home/customize")}
     />
   );
@@ -306,7 +313,15 @@ function RenderWidget({ navigation, widget, index }) {
 
   switch (widget.type) {
     case "upcoming":
-      return <UpNext menuActions={menuActions} widget={widget} key={index} />;
+      return (
+        <UpNext
+          menuActions={menuActions}
+          widget={widget}
+          key={index}
+          setParam={setParam}
+          params={widget.params}
+        />
+      );
     case "quotes":
       return <Quotes menuActions={menuActions} widget={widget} key={index} />;
     case "clock":
@@ -358,9 +373,10 @@ function RenderWidget({ navigation, widget, index }) {
     case "music":
       return (
         <Spotify
+          setParam={setParam}
+          widget={widget}
           navigation={navigation}
           menuActions={menuActions}
-          params={widget}
           key={index}
         />
       );
@@ -391,7 +407,7 @@ function RenderWidget({ navigation, widget, index }) {
 function Widgets() {
   const { data } = useSWR(["user/focus-panel"], null);
 
-  return data
+  return (data || [])
     .sort(function (a, b) {
       if (a.order < b.order) return -1;
       if (a.order > b.order) return 1;
@@ -399,7 +415,7 @@ function Widgets() {
     })
     .map((widget, index) => (
       <RenderWidget
-        navigation={navigation}
+        // navigation={navigation}
         key={index}
         index={index}
         widget={widget}
@@ -439,14 +455,14 @@ function Page() {
               maxWidth: breakpoints.md ? 400 : undefined,
               width: "100%",
               paddingHorizontal: 30,
-              gap: 20,
+              gap: 30,
               marginHorizontal: "auto",
             }}
           >
             <View
               style={{
                 alignItems: "center",
-                marginTop: Platform.OS === "web" ? 0 : 50,
+                marginTop: Platform.OS === "web" ? 0 : 110,
               }}
               aria-valuetext="home-logo"
             >

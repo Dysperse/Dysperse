@@ -48,7 +48,7 @@ export default function Layout() {
         style={{
           position: "absolute",
           zIndex: 99,
-          top: 0,
+          top: insets.top,
           right: 0,
           padding: 50,
         }}

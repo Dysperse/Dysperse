@@ -1,7 +1,8 @@
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Avatar } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
-import Icon from "@/ui/Icon";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -10,7 +11,6 @@ import { router } from "expo-router";
 import { memo } from "react";
 import { Platform, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { useContentWrapperContext } from "../layout/content";
 
@@ -73,7 +73,7 @@ const GoalIndicator = ({ completed, goal, name }) => {
 function StreakGoal() {
   const theme = useColorTheme();
   const breakpoints = useResponsiveBreakpoints();
-  const { width, height } = useContentWrapperContext();
+  const { width } = useContentWrapperContext();
 
   const { data, error } = useSWR([
     "user/streaks",
@@ -83,30 +83,33 @@ function StreakGoal() {
     },
   ]);
 
-  const desktop = breakpoints.md && width > 1000;
-
   return (
     <View>
       {error ? (
         <ErrorAlert />
       ) : (
         <>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 10,
-              marginTop: breakpoints.md && Platform.OS !== "ios" ? 0 : 20,
-            }}
-          >
-            <Text variant="eyebrow">Goals</Text>
-            <TouchableOpacity onPress={() => router.push("/settings/tasks")}>
-              <Icon style={{ opacity: 0.6, marginRight: 10 }} size={20}>
-                stylus
-              </Icon>
-            </TouchableOpacity>
-          </View>
+          <MenuPopover
+            menuProps={{ style: { marginRight: "auto", marginLeft: -10 } }}
+            options={[
+              {
+                icon: "settings",
+                text: "Edit goal",
+                callback: () => router.push("/settings/tasks"),
+              },
+            ]}
+            trigger={
+              <Button
+                dense
+                textProps={{ variant: "eyebrow" }}
+                text="Streaks"
+                icon="expand_more"
+                iconPosition="end"
+                containerStyle={{ marginBottom: 5 }}
+                iconStyle={{ opacity: 0.6 }}
+              />
+            }
+          />
           <View
             style={{
               backgroundColor: theme[2],

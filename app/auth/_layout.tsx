@@ -1,6 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
 import { useUser } from "@/context/useUser";
-import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
 import { toastConfig } from "@/ui/toast.config";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -12,8 +11,7 @@ import Toast from "react-native-toast-message";
 
 export default function Layout() {
   const theme = useColorTheme();
-  const breakpoints = useResponsiveBreakpoints();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const { sessionToken } = useUser();
   if (sessionToken) return <Redirect href="/(app)" />;
