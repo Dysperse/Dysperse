@@ -301,6 +301,18 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
           style={{ marginTop: 3, opacity: 0.6 }}
         />
         <View style={{ flexDirection: "row", gap: 10 }}>
+          {time !== 0 && (
+            <Button
+              height={50}
+              text={paused ? (hasNotStarted ? "Resume" : "Start") : "Pause"}
+              onPress={() => setPaused(!paused)}
+              icon={paused ? "play_arrow" : "pause"}
+              iconSize={paused ? 35 : 29}
+              style={{ gap: 2 }}
+              textStyle={{ paddingRight: 5 }}
+              variant="filled"
+            />
+          )}
           {hasNotStarted && (
             <IconButton
               size={50}
@@ -313,18 +325,6 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
               }}
               icon="replay"
               iconProps={{ size: 18 }}
-              variant="filled"
-            />
-          )}
-          {time !== 0 && (
-            <Button
-              height={50}
-              text={paused ? (hasNotStarted ? "Resume" : "Start") : "Pause"}
-              onPress={() => setPaused(!paused)}
-              icon={paused ? "play_arrow" : "pause"}
-              iconSize={paused ? 35 : 29}
-              style={{ gap: 2 }}
-              textStyle={{ paddingRight: 5 }}
               variant="filled"
             />
           )}
