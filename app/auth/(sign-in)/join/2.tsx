@@ -20,7 +20,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "./_layout";
 
-function Weather({ weatherCode, isNight, icon, temp }) {
+export function Weather({ weatherCode, isNight, icon, temp }) {
   const weatherDescription =
     weatherCodes[weatherCode][isNight ? "night" : "day"];
   const theme = useColor(weatherDescription.colorTheme);
@@ -60,6 +60,56 @@ function Weather({ weatherCode, isNight, icon, temp }) {
         {temp}°
       </Text>
     </View>
+  );
+}
+
+export function Location({ planData, locationName }) {
+  const breakpoints = useResponsiveBreakpoints();
+  const gray = useColor("gray");
+  const dark = useDarkMode();
+
+  return (
+    planData.device && (
+      <View
+        style={[
+          styles.title,
+          {
+            backgroundColor: gray[6],
+            paddingHorizontal: 10,
+            height: breakpoints.md ? undefined : 40,
+            borderRadius: 10,
+            alignItems: "center",
+            verticalAlign: "middle",
+            flexDirection: "row",
+            gap: 10,
+          },
+        ]}
+      >
+        <Image
+          source={{ uri: planData?.device?.preview }}
+          style={{
+            borderRadius: 10,
+            width: 30,
+            height: 30,
+            ...(Platform.OS === "web" &&
+              dark && {
+                filter: "invert(5) brightness(2) contrast(0.8)",
+              }),
+            transform: [{ rotate: "-15deg" }],
+          }}
+        />
+        <Text
+          style={{
+            color: gray[11],
+            fontSize: breakpoints.md ? 40 : 30,
+            fontFamily: "serifText700",
+          }}
+          numberOfLines={1}
+        >
+          {locationName}
+        </Text>
+      </View>
+    )
   );
 }
 
@@ -195,47 +245,7 @@ function Content() {
             />
           )}
           {planData?.device && " in "}
-          {planData.device && (
-            <View
-              style={[
-                styles.title,
-                {
-                  backgroundColor: gray[6],
-                  paddingHorizontal: 10,
-                  height: breakpoints.md ? undefined : 40,
-                  borderRadius: 10,
-                  alignItems: "center",
-                  verticalAlign: "middle",
-                  flexDirection: "row",
-                  gap: 10,
-                },
-              ]}
-            >
-              <Image
-                source={{ uri: planData?.device?.preview }}
-                style={{
-                  borderRadius: 10,
-                  width: 30,
-                  height: 30,
-                  ...(Platform.OS === "web" &&
-                    dark && {
-                      filter: "invert(5) brightness(2) contrast(0.8)",
-                    }),
-                  transform: [{ rotate: "-15deg" }],
-                }}
-              />
-              <Text
-                style={{
-                  color: gray[11],
-                  fontSize: breakpoints.md ? 40 : 30,
-                  fontFamily: "serifText700",
-                }}
-                numberOfLines={1}
-              >
-                {locationName}
-              </Text>
-            </View>
-          )}
+          <Location planData={planData} locationName={locationName} />
         </Text>
       </Animated.View>
       <Animated.View entering={FadeIn.delay(900)}>

@@ -34,7 +34,7 @@ function PlanNavbar({
 }) {
   const theme = useColorTheme();
   const handleClose = () =>
-    router.canGoBack() ? router.back() : router.push("/");
+    router.canGoBack() ? router.back() : router.replace("/home");
   const currentSlide = parseInt(route?.name) || 0;
 
   return (
@@ -65,7 +65,7 @@ function PlanNavbar({
         <ConfirmationModal
           height={400}
           onSuccess={() => {
-            if (currentSlide === 0) router.back();
+            if (currentSlide === 0) handleClose();
             // path can either be `/plan` or `/plan/1` until `/plan/4`
             else {
               navigation.replace(
