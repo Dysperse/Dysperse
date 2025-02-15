@@ -30,7 +30,7 @@ import {
   ImageBackground as RNImageBackground,
   View,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -434,7 +434,7 @@ function Page() {
         {(!breakpoints.md || desktopCollapsed) && (
           <MenuButton addInsets={!breakpoints.md} />
         )}
-        <ScrollView
+        <KeyboardAwareScrollView
           centerContent
           onScrollBeginDrag={Keyboard.dismiss}
           style={{ flex: 1 }}
@@ -476,7 +476,7 @@ function Page() {
             <FriendActivity />
             <CustomizeButton />
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </Wrapper>
     </ContentWrapper>
   );

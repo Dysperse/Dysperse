@@ -93,107 +93,59 @@ const Stopwatch = ({ params, setParam }) => {
   }, [running]);
 
   return (
-    <>
-      {panelState !== "COLLAPSED" && (
-        <TextField
-          defaultValue={params.name}
-          onBlur={(e) => setParam("name", e.nativeEvent.text)}
-          placeholder="Set a name..."
-          style={{
-            textAlign: "center",
-            marginTop: -25,
-            marginBottom: 10,
-            borderBottomWidth: 2,
-            paddingVertical: 7,
-            borderBottomColor: theme[5],
-          }}
-        />
-      )}
-      <View
-        style={{
-          position: "relative",
-          height: panelState === "COLLAPSED" ? undefined : 50,
-          width: panelState === "COLLAPSED" ? "100%" : 195,
-          marginHorizontal: "auto",
-        }}
-      >
+    <View style={{ flexDirection: "row", padding: 20 }}>
+      <View style={{ flex: 1 }}>
         <Text
           weight={800}
           style={{
             position: panelState === "COLLAPSED" ? undefined : "absolute",
             top: 0,
             left: 0,
-            fontSize: 40,
-            textAlign: "center",
-            fontFamily: getFontName("jetBrainsMono", 500),
+            fontSize: 30,
+            fontFamily: "serifText700",
             color: theme[11],
           }}
           numberOfLines={panelState === "COLLAPSED" ? undefined : 1}
         >
-          {panelState === "COLLAPSED"
-            ? new Date(time * 1000)
-                .toISOString()
-                .substr(11, 8)
-                .replaceAll("00:", "")
-                .split(":")
-                .join("\n")
-                .replaceAll(" ", "")
-            : new Date(time * 1000).toISOString().substr(11, 8)}
+          {new Date(time * 1000)
+            .toISOString()
+            .split("T")[1]
+            .split(".")[0]
+            .replace("00:", "")
+            .replaceAll(" ", "")}
         </Text>
-        {panelState === "OPEN" && (
-          <Text
-            weight={800}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              fontSize: 40,
-              textAlign: "center",
-              fontFamily: getFontName("jetBrainsMono", 500),
-              color: theme[10],
-              opacity: 0.2,
-            }}
-            numberOfLines={1}
-          >
-            00:00:00
-          </Text>
-        )}
+        <TextField
+          defaultValue={params.name}
+          onBlur={(e) => setParam("name", e.nativeEvent.text)}
+          placeholder="Set a name..."
+          style={{ marginTop: 3, opacity: 0.6 }}
+        />
       </View>
       <View
         style={{
-          flexDirection: panelState === "COLLAPSED" ? "column" : "row",
           justifyContent: "center",
           gap: 10,
-          marginVertical: 5,
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
-        <Button
-          dense
-          onPress={() => setRunning(!running)}
-          style={({ pressed, hovered }) => ({
-            backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-          })}
-        >
-          <Icon>{running ? "pause" : "play_arrow"}</Icon>
-        </Button>
         {time !== 0 && !running && (
-          <Button
-            dense
-            onPress={() => setTime(0)}
-            style={({ pressed, hovered }) => ({
-              gap: 7,
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
-          >
-            <Icon size={20}>replay</Icon>
-          </Button>
+          <IconButton size={50} onPress={() => setTime(0)} icon="replay" />
         )}
+        <IconButton
+          size={50}
+          onPress={() => setRunning(!running)}
+          variant="filled"
+          icon={running ? "pause" : "play_arrow"}
+          iconProps={{ size: running ? 30 : 40 }}
+          iconStyle={{ marginBottom: running ? 0 : -3 }}
+        />
       </View>
-    </>
+    </View>
   );
 };
 
-const Timer = ({ pomodoro = false }) => {
+const Timer = ({ params, setParam, pomodoro = false }) => {
   const theme = useColorTheme();
   const [duration, setDuration] = useState(1);
   const [paused, setPaused] = useState(true);
@@ -237,17 +189,15 @@ const Timer = ({ pomodoro = false }) => {
   const hasNotStarted = (paused && time !== duration * 60) || time === 0;
 
   return (
-    <>
+    <View style={{ flexDirection: "row", width: "100%", padding: 20, gap: 20 }}>
       <View
         style={[
           {
-            alignItems: "center",
+            marginRight: "auto",
             aspectRatio: "1/1",
             borderRadius: 99,
-            width: panelState === "COLLAPSED" ? 70 : 200,
-            height: panelState === "COLLAPSED" ? 70 : 200,
-            marginHorizontal: "auto",
-            marginTop: panelState === "COLLAPSED" ? 10 : -10,
+            width: 110,
+            height: 110,
             justifyContent: "center",
           },
           isCompleted && {
@@ -259,9 +209,7 @@ const Timer = ({ pomodoro = false }) => {
           isPlaying={!paused}
           duration={60 * duration}
           strokeWidth={3}
-          onUpdate={(t) => {
-            setTime(t);
-          }}
+          onUpdate={(t) => setTime(t)}
           key={`${duration}-${restartKey}`}
           rotation="counterclockwise"
           colors={[toHex(theme[isCompleted ? 10 : 11])] as any}
@@ -269,7 +217,7 @@ const Timer = ({ pomodoro = false }) => {
           onComplete={() => {
             playSound();
           }}
-          size={panelState === "COLLAPSED" ? 70 : 200}
+          size={110}
         >
           {({ remainingTime }) => (
             <View style={{ position: "relative" }}>
@@ -322,16 +270,16 @@ const Timer = ({ pomodoro = false }) => {
                   style={[
                     {
                       color: theme[isCompleted ? 12 : 11],
-                      fontSize: panelState === "COLLAPSED" ? 17 : 40,
+                      fontSize: 24,
                       fontFamily: getFontName("jetBrainsMono", 500),
                       textAlign: "center",
-                      width: panelState === "COLLAPSED" ? 50 : 130,
+                      width: 90,
                       borderRadius: 10,
                     },
                     !paused && {
                       pointerEvents: "none",
                     },
-                    { backgroundColor: theme[4] },
+                    { backgroundColor: theme[2] },
                   ]}
                 />
               </Pressable>
@@ -341,52 +289,54 @@ const Timer = ({ pomodoro = false }) => {
       </View>
       <View
         style={{
-          flexDirection: panelState === "COLLAPSED" ? "column" : "row",
           justifyContent: "center",
           gap: 10,
-          marginTop: 10,
-          marginBottom: 10,
+          flex: 1,
         }}
       >
-        {hasNotStarted && (
-          <Button
-            dense
-            onPress={() => {
-              stopSound();
-              setPaused(true);
-              setDuration(duration);
-              setRestartKey((key) => key + 1);
-              setTime(duration);
-            }}
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
-          >
-            <Icon size={18}>replay</Icon>
-          </Button>
-        )}
-        {time !== 0 && (
-          <Button
-            dense
-            onPress={() => setPaused(!paused)}
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
-          >
-            <Icon size={29}>{paused ? "play_arrow" : "pause"}</Icon>
-          </Button>
-        )}
-        {(time === duration * 60 || paused) && time !== 0 && (
-          <Button
-            dense
-            onPress={() => editRef?.current?.focus()}
-            style={({ pressed, hovered }) => ({
-              backgroundColor: theme[pressed ? 7 : hovered ? 6 : 5],
-            })}
-          >
-            <Icon size={22}>edit</Icon>
-          </Button>
-        )}
+        <TextField
+          defaultValue={params.name}
+          onBlur={(e) => setParam("name", e.nativeEvent.text)}
+          placeholder="Set a name..."
+          style={{ marginTop: 3, opacity: 0.6 }}
+        />
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          {hasNotStarted && (
+            <IconButton
+              size={50}
+              onPress={() => {
+                stopSound();
+                setPaused(true);
+                setDuration(duration);
+                setRestartKey((key) => key + 1);
+                setTime(duration);
+              }}
+              icon="replay"
+              iconProps={{ size: 18 }}
+              variant="filled"
+            />
+          )}
+          {time !== 0 && (
+            <Button
+              height={50}
+              text={paused ? (hasNotStarted ? "Resume" : "Start") : "Pause"}
+              onPress={() => setPaused(!paused)}
+              icon={paused ? "play_arrow" : "pause"}
+              iconProps={{ size: 29 }}
+              textStyle={{ paddingRight: 5 }}
+              variant="filled"
+            />
+          )}
+          {time === duration * 60 && paused && time !== 0 && (
+            <IconButton
+              size={50}
+              onPress={() => editRef?.current?.focus()}
+              icon="edit"
+              iconProps={{ size: 22 }}
+              variant="filled"
+            />
+          )}
+        </View>
       </View>
       {panelState !== "COLLAPSED" && (
         <Collapsible collapsed={time !== duration * 60}>
@@ -486,7 +436,7 @@ const Timer = ({ pomodoro = false }) => {
           </ScrollView>
         </Collapsible>
       )}
-    </>
+    </View>
   );
 };
 
@@ -608,8 +558,15 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
 export default function Clock({ widget, navigation, setParam }) {
   const theme = useColorTheme();
   const { setPanelState } = useFocusPanelContext();
-  const [view, setView] = useState<ClockViewType>("Clock");
+  const [view, setView] = useState<ClockViewType>(
+    widget.params?.view || "Clock"
+  );
+
   const timeZoneModalRef = useRef<BottomSheetModal>(null);
+
+  useEffect(() => {
+    setParam("view", view);
+  }, [view, setParam]);
 
   return (
     <View>
@@ -621,7 +578,6 @@ export default function Clock({ widget, navigation, setParam }) {
             callback: () => setView(d as ClockViewType),
             selected: d === view,
           })),
-          { divider: true },
           ...(view === "Clock"
             ? [
                 {
@@ -674,8 +630,12 @@ export default function Clock({ widget, navigation, setParam }) {
           {view === "Stopwatch" && (
             <Stopwatch setParam={setParam} params={widget.params} />
           )}
-          {view === "Timer" && <Timer />}
-          {view === "Pomodoro" && <Timer pomodoro />}
+          {view === "Timer" && (
+            <Timer params={widget.params} setParam={setParam} />
+          )}
+          {view === "Pomodoro" && (
+            <Timer pomodoro params={widget.params} setParam={setParam} />
+          )}
         </ColorThemeProvider>
         {view === "Clock" && (
           <TimeZoneModal
