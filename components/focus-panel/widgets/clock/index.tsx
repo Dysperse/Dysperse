@@ -322,7 +322,8 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
               text={paused ? (hasNotStarted ? "Resume" : "Start") : "Pause"}
               onPress={() => setPaused(!paused)}
               icon={paused ? "play_arrow" : "pause"}
-              iconProps={{ size: 29 }}
+              iconSize={paused ? 35 : 29}
+              style={{ gap: 2 }}
               textStyle={{ paddingRight: 5 }}
               variant="filled"
             />
