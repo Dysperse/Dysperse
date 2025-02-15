@@ -338,8 +338,7 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
             />
           )}
         </View>
-      </View>
-      {panelState !== "COLLAPSED" && (
+
         <Collapsible collapsed={time !== duration * 60}>
           <ScrollView
             horizontal={!pomodoro}
@@ -436,7 +435,7 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
                 ))}
           </ScrollView>
         </Collapsible>
-      )}
+      </View>
     </View>
   );
 };
