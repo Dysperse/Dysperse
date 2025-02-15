@@ -190,7 +190,7 @@ export default function WeatherWidget({
                 borderWidth: 1,
                 borderColor: theme[5],
                 backgroundColor: theme[2],
-                padding: 13,
+                padding: 20,
               },
             ]}
           >
@@ -202,13 +202,12 @@ export default function WeatherWidget({
                   marginBottom: 10,
                 }}
               >
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, gap: 5 }}>
                   <Text
                     style={{
                       fontSize: 30,
                       fontFamily: "serifText700",
                       color: theme[11],
-                      marginTop: 3,
                     }}
                   >
                     {Math.round(data.current_weather.temperature)}&deg; F
@@ -218,7 +217,7 @@ export default function WeatherWidget({
                       fontSize: 15,
                       color: theme[11],
                       opacity: 0.6,
-                      marginTop: -2,
+                      fontFamily: "mono",
                     }}
                   >
                     {weatherDescription?.description} &bull; Feels like{" "}

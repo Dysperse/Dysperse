@@ -45,10 +45,9 @@ const Time = ({
     <View
       style={{
         position: "relative",
-        flexDirection: "row",
-        alignItems: "center",
         padding: 20,
-        gap: 20,
+        gap: 5,
+        width: "100%",
       }}
     >
       <View>
@@ -71,7 +70,7 @@ const Time = ({
         }}
         weight={500}
       >
-        {time.format("dddd [\n]MMM Do, YYYY")}
+        {time.format("dddd MMM Do, YYYY")}
       </Text>
     </View>
   );
