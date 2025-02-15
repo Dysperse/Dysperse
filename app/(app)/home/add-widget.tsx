@@ -19,6 +19,71 @@ import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { MenuButton } from ".";
 
+export const WIDGET_LIST = [
+  {
+    text: "Information",
+    widgets: [
+      {
+        key: "top stocks",
+        text: "Top Stocks",
+        icon: "monitoring",
+        onlyOnce: true,
+      },
+      { key: "weather", text: "Weather", icon: "wb_sunny" },
+      { key: "battery", text: "Battery", icon: "battery_0_bar" },
+      {
+        key: "up next",
+        text: "Upcoming tasks",
+        icon: "home_storage",
+      },
+    ],
+  },
+  {
+    text: "Utilities",
+    widgets: [
+      {
+        key: "clock",
+        text: "Clock",
+        secondary: "Stopwatch, pomodoro & more",
+        icon: "timer",
+      },
+      {
+        key: "randomizer",
+        text: "Randomizer",
+        secondary: "Coin flip & dice",
+        icon: "casino",
+      },
+      { key: "magic 8 ball", text: "Magic 8 Ball", icon: "counter_8" },
+      { key: "counter", text: "Counter", icon: "tag", comingSoon: true },
+    ],
+  },
+  {
+    text: "Inspiration",
+    widgets: [
+      { key: "quotes", text: "Quotes", icon: "format_quote" },
+      {
+        key: "word of the day",
+        text: "Word of the day",
+        icon: "book",
+        secondary: "With Merriam-Webster",
+        onlyOnce: true,
+      },
+    ],
+  },
+  {
+    text: "Fun",
+    widgets: [
+      {
+        key: "music",
+        text: "Spotify Music",
+        icon: "music_note",
+        secondary: "With Spotify",
+        onlyOnce: true,
+      },
+    ],
+  },
+];
+
 function Widgets() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
@@ -57,64 +122,13 @@ function Widgets() {
     }
   };
 
-  const sections = [
-    {
-      text: "Information",
-      widgets: [
-        { text: "Top Stocks", icon: "monitoring", onlyOnce: true },
-        { text: "Weather", icon: "wb_sunny" },
-        { text: "Battery", icon: "battery_0_bar" },
-        {
-          key: "upcoming",
-          text: "Upcoming tasks",
-          icon: "home_storage",
-        },
-      ],
-    },
-    {
-      text: "Utilities",
-      widgets: [
-        {
-          text: "Clock",
-          secondary: "Stopwatch, pomodoro & more",
-          icon: "timer",
-        },
-        { text: "Randomizer", secondary: "Coin flip & dice", icon: "casino" },
-        { text: "Magic 8 Ball", icon: "counter_8" },
-        { text: "Counter", icon: "tag", comingSoon: true },
-      ],
-    },
-    {
-      text: "Inspiration",
-      widgets: [
-        { text: "Quotes", icon: "format_quote" },
-        {
-          text: "Word of the day",
-          icon: "book",
-          secondary: "With Merriam-Webster",
-          onlyOnce: true,
-        },
-      ],
-    },
-    {
-      text: "Fun",
-      widgets: [
-        {
-          text: "Music",
-          icon: "https://cdn.brandfetch.io/id20mQyGeY/theme/dark/idC9Lfpyms.svg?k=bfHSJFAPEG",
-          secondary: "With Spotify",
-          onlyOnce: true,
-        },
-      ],
-    },
-  ]
-    .filter((t) =>
-      t.widgets.some(
-        (w: any) =>
-          w.text.toLowerCase().includes(search.toLowerCase()) ||
-          w.secondary?.toLowerCase().includes(search.toLowerCase())
-      )
+  const sections = WIDGET_LIST.filter((t) =>
+    t.widgets.some(
+      (w: any) =>
+        w.text.toLowerCase().includes(search.toLowerCase()) ||
+        w.secondary?.toLowerCase().includes(search.toLowerCase())
     )
+  )
     .map((t) => [{ header: true, text: t.text }, ...t.widgets])
     .flat();
 
@@ -222,3 +236,4 @@ export default function Page() {
     </ScrollView>
   );
 }
+

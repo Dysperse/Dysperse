@@ -7,6 +7,7 @@ import Icon from "@/ui/Icon";
 import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
+import MenuPopover from "@/ui/MenuPopover";
 import Text, { getFontName } from "@/ui/Text";
 import TextField from "@/ui/TextArea";
 import { useColor } from "@/ui/color";
@@ -34,7 +35,6 @@ const Time = ({
   navigation?: any;
 }) => {
   const theme = useColor("orange");
-
   const [time, setTime] = useState(dayjs());
 
   useEffect(() => {
@@ -43,11 +43,7 @@ const Time = ({
   }, []);
 
   return (
-    <View
-      style={{
-        position: "relative",
-      }}
-    >
+    <View style={{ position: "relative" }}>
       <Text
         style={{
           marginTop: 10,
@@ -614,46 +610,52 @@ export default function Clock({ widget, menuActions, navigation, setParam }) {
 
   return (
     <View>
-      {/* {panelState !== "COLLAPSED" && (
-        <MenuPopover
-          options={[
-            ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
-              text: d,
-              callback: () => setView(d as ClockViewType),
-              selected: d === view,
-            })),
-            { divider: true },
-            ...(view === "Clock"
-              ? [
-                  {
-                    text: "Timezones",
-                    icon: "explore",
-                    callback: () => timeZoneModalRef.current?.present?.(),
-                  },
-                  { divider: true },
-                ]
-              : []),
-            ...menuActions,
-          ]}
-          containerStyle={{ marginTop: -15 }}
-          trigger={
-            <Button style={widgetMenuStyles.button} dense>
-              <ButtonText weight={800} style={widgetMenuStyles.text}>
-                {view}
-              </ButtonText>
-              <Icon style={{ color: userTheme[11] }}>expand_more</Icon>
-            </Button>
-          }
-        />
-      )} */}
+      <MenuPopover
+        menuProps={{
+          style: {
+            marginRight: "auto",
+            marginLeft: -10,
+          },
+        }}
+        options={[
+          ...["Clock", "Stopwatch", "Timer", "Pomodoro"].map((d) => ({
+            text: d,
+            callback: () => setView(d as ClockViewType),
+            selected: d === view,
+          })),
+          { divider: true },
+          ...(view === "Clock"
+            ? [
+                {
+                  text: "Timezones",
+                  icon: "explore",
+                  callback: () => timeZoneModalRef.current?.present?.(),
+                },
+                { divider: true },
+              ]
+            : []),
+          ...menuActions,
+        ]}
+        containerStyle={{
+          marginTop: -15,
+        }}
+        trigger={
+          <Button dense>
+            <Text variant="eyebrow">{view}</Text>
+            <Icon style={{ opacity: 0.6 }}>expand_more</Icon>
+          </Button>
+        }
+      />
       <Pressable
-        style={({ pressed, hovered }) => [
+        style={[
           {
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 20,
             paddingBottom: 10,
-            backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
+            backgroundColor: theme[3],
+            borderWidth: 1,
+            borderColor: theme[5],
           },
           view === "Timer" && {
             paddingHorizontal: 0,

@@ -5,17 +5,20 @@ import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Avatar } from "@/ui/Avatar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
 import { ListItemButton } from "@/ui/ListItemButton";
 import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { LexoRank } from "lexorank";
 import React, { useCallback } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { HOME_PATTERNS, MenuButton } from ".";
+import { WIDGET_LIST } from "./add-widget";
 
 const styles = StyleSheet.create({
   card: {
@@ -35,25 +38,63 @@ function Widgets() {
   const iconStyles = { backgroundColor: theme[3], borderRadius: 10 };
 
   const sections = [
-    { name: "Start", icon: "change_history" },
-    { name: "Goals", icon: "flag" },
-    { name: "Recent activity", icon: "group" },
+    { name: "Start", icon: "change_history", disabled: true },
+    { name: "Goals", icon: "flag", disabled: true },
+    { name: "Recent activity", icon: "group", disabled: true },
+    ...(Array.isArray(data)
+      ? data
+          .map((t) => {
+            const widget = WIDGET_LIST.find((l) =>
+              l.widgets.find((w) => w.key == t.type)
+            )?.widgets.find((w) => w.key == t.type);
+            if (!widget) return null;
+            return {
+              name: widget.text,
+              icon: widget?.icon || "square",
+              disabled: false,
+              order: t.order,
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => {
+            if (!a.order || !b.order) return 0;
+            return LexoRank.parse(a.order).compareTo(LexoRank.parse(b.order));
+          })
+      : []),
   ];
 
   return (
-    <View style={{ marginHorizontal: -10 }}>
-      {JSON.stringify(data)}
+    <View style={{ marginHorizontal: -15 }}>
       {sections.map((section) => (
         <ListItemButton
           disabled
           key={section.name}
-          pressableStyle={{ paddingVertical: 5 }}
+          pressableStyle={{
+            paddingVertical: 5,
+            opacity: section.disabled ? 0.5 : 1,
+          }}
         >
-          <Avatar icon={section.icon} style={iconStyles} disabled />
+          <Avatar
+            image={section.icon.startsWith("https") ? section.icon : undefined}
+            icon={
+              section.icon.startsWith("https")
+                ? undefined
+                : (section.icon as any)
+            }
+            style={iconStyles}
+            disabled
+          />
           <ListItemText
             primaryProps={{ style: { color: theme[11] } }}
             primary={section.name}
           />
+          {section.order && (
+            <View style={{ flexDirection: "row" }}>
+              <IconButton icon="south" />
+              <IconButton icon="north" />
+              <IconButton icon="close" />
+            </View>
+          )}
         </ListItemButton>
       ))}
       <ListItemButton
@@ -220,3 +261,4 @@ export default function Page() {
     </ScrollView>
   );
 }
+

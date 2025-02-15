@@ -25,9 +25,7 @@ import {
 import { ErrorBoundary } from "@sentry/react-native";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
-import { LexoRank } from "lexorank";
 import {
-  lazy,
   memo,
   Suspense,
   useEffect,
@@ -56,17 +54,6 @@ import { FocusPanelSpotify } from "./widgets/spotify/FocusPanelSpotify";
 import TopStocksScreen from "./widgets/top-stocks/screen";
 import { FocusPanelWeather } from "./widgets/weather/modal";
 import { WordOfTheDayScreen } from "./widgets/word-of-the-day/screen";
-
-const Magic8Ball = lazy(() => import("./widgets/magic-8-ball"));
-const Clock = lazy(() => import("./widgets/clock"));
-const Quotes = lazy(() => import("./widgets/quotes"));
-const Spotify = lazy(() => import("./widgets/spotify"));
-const UpNext = lazy(() => import("./widgets/up-next"));
-const BatteryWidget = lazy(() => import("./widgets/battery"));
-const TopStocks = lazy(() => import("./widgets/top-stocks"));
-const WeatherWidget = lazy(() => import("./widgets/weather/widget"));
-const WordOfTheDay = lazy(() => import("./widgets/word-of-the-day"));
-const Randomizer = lazy(() => import("./widgets/randomizer"));
 
 export type Widget =
   | "upcoming"
@@ -98,195 +85,6 @@ export const ImportantChip = () => {
     />
   );
 };
-
-function RenderWidget({ navigation, widget, index }) {
-  const { sessionToken } = useUser();
-  const { data, mutate } = useSWR(["user/focus-panel"], null);
-
-  const setParam = async (key, value) => {
-    mutate(
-      (oldData) =>
-        oldData.map((oldWidget) =>
-          oldWidget.id === widget.id
-            ? {
-                ...widget,
-                params: {
-                  ...widget.params,
-                  [key]: value,
-                },
-              }
-            : oldWidget
-        ),
-      {
-        revalidate: false,
-      }
-    );
-    await sendApiRequest(
-      sessionToken,
-      "PUT",
-      "user/focus-panel",
-      {},
-      {
-        body: JSON.stringify({
-          id: widget.id,
-          params: {
-            ...widget.params,
-            [key]: value,
-          },
-        }),
-      }
-    );
-  };
-
-  const handleWidgetEdit = async (key, value) => {
-    try {
-      mutate(
-        (oldData) =>
-          oldData.map((w) => (w.id === widget.id ? { ...w, [key]: value } : w)),
-        {
-          revalidate: false,
-        }
-      );
-      await sendApiRequest(
-        sessionToken,
-        "PUT",
-        "user/focus-panel",
-        {},
-        {
-          body: JSON.stringify({
-            id: widget.id,
-            [key]: value,
-          }),
-        }
-      );
-    } catch (e) {
-      Toast.show({ type: "error" });
-    }
-  };
-
-  const menuActions = [
-    {
-      icon: "move_up",
-      text: "Move up",
-      disabled: index === 0,
-      callback: () =>
-        handleWidgetEdit(
-          "order",
-          index === 1
-            ? LexoRank.parse(data[0].order).genPrev().toString()
-            : // get 2 ranks before the current widget, and generate the next rank between them
-              LexoRank.parse(data[index - 2].order)
-                .between(LexoRank.parse(data[index - 1].order))
-                .toString()
-        ),
-    },
-    {
-      icon: "move_down",
-      text: "Move down",
-      disabled: index === data.length - 1,
-      callback: () =>
-        handleWidgetEdit(
-          "order",
-          index === data.length - 2
-            ? LexoRank.parse(data[data.length - 1].order)
-                .genNext()
-                .toString()
-            : // get 2 ranks after the current widget, and generate the next rank between them
-              LexoRank.parse(data[index + 1].order)
-                .between(LexoRank.parse(data[index + 2].order))
-                .toString()
-        ),
-    },
-    // {
-    //   icon: "remove_circle",
-    //   text: "Remove",
-    //   callback: handleDelete,
-    // },
-  ] as MenuOption[];
-
-  switch (widget.type) {
-    case "upcoming":
-      return <UpNext menuActions={menuActions} widget={widget} key={index} />;
-    case "quotes":
-      return <Quotes menuActions={menuActions} widget={widget} key={index} />;
-    case "clock":
-      return (
-        <Clock
-          navigation={navigation}
-          setParam={setParam}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
-      );
-    case "top stocks":
-      return (
-        <TopStocks
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
-      );
-    case "weather":
-      return (
-        <WeatherWidget
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
-      );
-    case "magic 8 ball":
-      return (
-        <Magic8Ball
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
-      );
-    case "battery":
-      return (
-        <BatteryWidget
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
-      );
-    case "music":
-      return (
-        <Spotify
-          navigation={navigation}
-          menuActions={menuActions}
-          params={widget}
-          key={index}
-        />
-      );
-    case "word of the day":
-      return (
-        <WordOfTheDay
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
-      );
-    case "randomizer":
-      return (
-        <Randomizer
-          setParam={setParam}
-          navigation={navigation}
-          menuActions={menuActions}
-          widget={widget}
-          key={index}
-        />
-      );
-    default:
-      return null;
-  }
-}
 
 const Stack = createStackNavigator();
 
@@ -708,21 +506,6 @@ function FocusPanelHome({
                 showsHorizontalScrollIndicator={false}
               >
                 <Freeze freeze={shouldSuspendRendering}>
-                  {data
-                    .sort(function (a, b) {
-                      if (a.order < b.order) return -1;
-                      if (a.order > b.order) return 1;
-                      return 0;
-                    })
-                    .map((widget, index) => (
-                      <RenderWidget
-                        navigation={navigation}
-                        key={index}
-                        index={index}
-                        widget={widget}
-                      />
-                    ))}
-
                   <PanelActions />
                 </Freeze>
               </ScrollView>
