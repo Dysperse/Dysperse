@@ -222,7 +222,7 @@ function Insights({ year }) {
                       flex: 1,
                     }}
                   >
-                    <Text variant="eyebrow">
+                    <Text variant="eyebrow" style={{ fontSize: 13 }}>
                       {day === 0 ? "" : day.toString()}
                     </Text>
                   </View>
@@ -283,7 +283,8 @@ function Insights({ year }) {
                     <Text
                       variant="eyebrow"
                       style={{
-                        fontSize: 10,
+                        fontSize:
+                          (index % 12 === 0 ? 12 : index % 12) > 9 ? 7 : 12,
                         fontFamily: "mono",
                         textAlign: "center",
                       }}
@@ -323,25 +324,27 @@ export default function Page() {
   const theme = useColorTheme();
 
   return data ? (
-    <ScrollView
-      contentContainerStyle={{ paddingTop: 50, backgroundColor: theme[2] }}
-    >
-      <MenuButton back />
-      <Text
-        style={{
-          fontFamily: "serifText700",
-          fontSize: 30,
-          textAlign: "center",
-          marginTop: 50,
-        }}
+    <>
+      <MenuButton gradient back />
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 50, backgroundColor: theme[2] }}
       >
-        Insights
-      </Text>
-      {data.years.length > 0 && (
-        <YearSelector years={data.years} year={year} setYear={setYear} />
-      )}
-      <Insights year={year} />
-    </ScrollView>
+        <Text
+          style={{
+            fontFamily: "serifText700",
+            fontSize: 30,
+            textAlign: "center",
+            marginTop: 50,
+          }}
+        >
+          Insights
+        </Text>
+        {data.years.length > 0 && (
+          <YearSelector years={data.years} year={year} setYear={setYear} />
+        )}
+        <Insights year={year} />
+      </ScrollView>
+    </>
   ) : (
     <View style={{ height: "100%", width: "100%" }}>
       <MenuButton gradient addInsets back />
@@ -358,3 +361,4 @@ export default function Page() {
     </View>
   );
 }
+
