@@ -370,6 +370,8 @@ function RenderWidget({ navigation, widget, index }) {
           key={index}
         />
       );
+    case "recent activity":
+      return <FriendActivity />;
     case "music":
       return (
         <Spotify
@@ -473,7 +475,6 @@ function Page() {
             <Actions />
             <StreakGoal />
             <Widgets />
-            <FriendActivity />
             <CustomizeButton />
           </View>
         </KeyboardAwareScrollView>

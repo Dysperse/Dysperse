@@ -1,6 +1,7 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { hslToHex } from "@/helpers/hslToHex";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Avatar } from "@/ui/Avatar";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -40,7 +41,6 @@ function Widgets() {
   const sections = [
     { name: "Start", icon: "change_history", disabled: true },
     { name: "Goals", icon: "flag", disabled: true },
-    { name: "Recent activity", icon: "group", disabled: true },
     ...(Array.isArray(data)
       ? data
           .map((t) => {
@@ -115,6 +115,7 @@ export default function Page() {
   const theme = useColorTheme();
   const { session, sessionToken, mutate } = useUser();
   const selectedPattern = session?.user?.profile?.pattern || "none";
+  const breakpoints = useResponsiveBreakpoints();
 
   useWebStatusBar({
     active: "#000",
@@ -178,87 +179,104 @@ export default function Page() {
   );
 
   return (
-    <ScrollView>
-      <SystemBars style="light" />
+    <>
       <MenuButton gradient back />
-      <View style={{ paddingHorizontal: 30 }}>
-        <Text
-          style={{
-            fontFamily: "serifText800",
-            color: theme[11],
-            fontSize: 35,
-            marginTop: 100,
-            marginBottom: 5,
-          }}
-        >
-          Widgets
-        </Text>
-        <Widgets />
-        <Text
-          style={{
-            fontFamily: "serifText800",
-            color: theme[11],
-            fontSize: 35,
-            marginTop: 50,
-            marginBottom: 20,
-          }}
-        >
-          Background
-        </Text>
+      <ScrollView>
+        <SystemBars style="light" />
+        <View style={{ paddingHorizontal: 30 }}>
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              color: theme[11],
+              fontSize: 35,
+              marginTop: 100,
+              marginBottom: 5,
+            }}
+          >
+            Widgets
+          </Text>
+          <Widgets />
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              color: theme[11],
+              fontSize: 35,
+              marginTop: 50,
+              marginBottom: 20,
+            }}
+          >
+            Background
+          </Text>
 
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}
-        >
-          <View style={{ width: "20%", padding: 5 }}>
-            <Pressable
-              style={[
-                styles.card,
-                { borderColor: theme[selectedPattern === "none" ? 11 : 5] },
-              ]}
-              onPress={() => handlePatternSelect("none")}
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: breakpoints.md ? "20%" : "33.333%",
+                aspectRatio: 1,
+                padding: 5,
+              }}
             >
-              <Text weight={900} style={{ opacity: 0.5, color: theme[11] }}>
-                None
-              </Text>
-            </Pressable>
-          </View>
-          {HOME_PATTERNS.map((pattern, index) => (
-            <View key={index} style={{ width: "20%", padding: 5 }}>
               <Pressable
-                onPress={() => handlePatternSelect(pattern)}
                 style={[
                   styles.card,
-                  { borderColor: theme[selectedPattern === pattern ? 11 : 5] },
+                  { borderColor: theme[selectedPattern === "none" ? 11 : 5] },
                 ]}
+                onPress={() => handlePatternSelect("none")}
               >
-                <Image
-                  source={{ uri: uriCreator(pattern) }}
-                  style={{ width: "100%", height: "100%", borderRadius: 20 }}
-                />
-                {selectedPattern === pattern && (
-                  <Icon
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      right: 0,
-                      margin: 5,
-                    }}
-                    filled
-                    size={40}
-                  >
-                    check_circle
-                  </Icon>
-                )}
+                <Text weight={900} style={{ opacity: 0.5, color: theme[11] }}>
+                  None
+                </Text>
               </Pressable>
             </View>
-          ))}
+            {HOME_PATTERNS.map((pattern, index) => (
+              <View
+                key={index}
+                style={{
+                  width: breakpoints.md ? "20%" : "33.333%",
+                  aspectRatio: 1,
+                  padding: 5,
+                }}
+              >
+                <Pressable
+                  onPress={() => handlePatternSelect(pattern)}
+                  style={[
+                    styles.card,
+                    {
+                      borderColor: theme[selectedPattern === pattern ? 11 : 5],
+                    },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: uriCreator(pattern) }}
+                    style={{ width: "100%", height: "100%", borderRadius: 20 }}
+                  />
+                  {selectedPattern === pattern && (
+                    <Icon
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        margin: 5,
+                      }}
+                      filled
+                      size={40}
+                    >
+                      check_circle
+                    </Icon>
+                  )}
+                </Pressable>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 }
 

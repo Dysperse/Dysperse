@@ -342,10 +342,6 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
         <Collapsible collapsed={time !== duration * 60}>
           <ScrollView
             horizontal={!pomodoro}
-            contentContainerStyle={{
-              gap: pomodoro ? 0 : 10,
-              paddingHorizontal: pomodoro ? 0 : 20,
-            }}
             scrollEnabled={!pomodoro}
             showsHorizontalScrollIndicator={false}
           >
@@ -354,7 +350,7 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
                   { m: 25, text: "Pomodoro" },
                   { m: 5, text: "Short Break" },
                   { m: 15, text: "Long Break" },
-                ].map((time) => (
+                ].map((time, index) => (
                   <Button
                     key={time.m}
                     onPress={() => {
@@ -367,9 +363,11 @@ const Timer = ({ params, setParam, pomodoro = false }) => {
                       backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
                       alignItems: "center",
                       justifyContent: "space-between",
-                      marginTop: 5,
                       paddingHorizontal: 20,
                     })}
+                    containerStyle={{
+                      paddingBottom: index === 2 ? 0 : 5,
+                    }}
                   >
                     <Text
                       style={{ textAlign: "center", color: theme[11] }}

@@ -36,6 +36,11 @@ export const WIDGET_LIST = [
         text: "Upcoming tasks",
         icon: "home_storage",
       },
+      {
+        key: "recent activity",
+        text: "Online friends",
+        icon: "people",
+      },
     ],
   },
   {
