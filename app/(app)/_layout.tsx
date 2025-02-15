@@ -151,23 +151,6 @@ export default function AppLayout() {
     else if (Platform.OS === "ios") SystemUI.setBackgroundColorAsync(theme[2]);
   }, [theme]);
 
-  const drawerLocked =
-    !desktopCollapsed && breakpoints.md
-      ? "locked-open"
-      : pathname.includes("everything/collections/") ||
-        pathname.includes("/customize") ||
-        pathname.includes("friends") ||
-        pathname.includes("insights") ||
-        pathname.includes("everything/labels/") ||
-        (pathname.includes("/map") && Platform.OS !== "ios") ||
-        (pathname.includes("/grid") && Platform.OS !== "ios") ||
-        (pathname.includes("/plan") && !pathname.includes("/planner")) ||
-        pathname.includes("open") ||
-        (pathname.includes("collections") &&
-          (pathname.includes("/search") ||
-            pathname.includes("/reorder") ||
-            pathname.includes("/share")));
-
   const routerTheme = {
     ...DefaultTheme,
     colors: {
@@ -335,6 +318,23 @@ export default function AppLayout() {
       </AppContainer>
     </ThemeProvider>
   );
+
+  const drawerLocked =
+    !desktopCollapsed && breakpoints.md
+      ? "locked-open"
+      : pathname.includes("everything/collections/") ||
+        pathname.includes("/customize") ||
+        pathname.includes("friends") ||
+        pathname.includes("insights") ||
+        pathname.includes("everything/labels/") ||
+        (pathname.includes("/map") && Platform.OS !== "ios") ||
+        (pathname.includes("/grid") && Platform.OS !== "ios") ||
+        (pathname.includes("/plan") && !pathname.includes("/planner")) ||
+        pathname.includes("open") ||
+        (pathname.includes("collections") &&
+          (pathname.includes("/search") ||
+            pathname.includes("/reorder") ||
+            pathname.includes("/share")));
 
   return (
     <WebAnimationComponent>

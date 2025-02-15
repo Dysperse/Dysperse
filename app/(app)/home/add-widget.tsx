@@ -221,24 +221,26 @@ export default function Page() {
   });
 
   return (
-    <ScrollView>
-      <SystemBars style="light" />
+    <>
       <MenuButton gradient icon="arrow_back_ios_new" back />
-      <View style={{ paddingHorizontal: 30 }}>
-        <Text
-          style={{
-            fontFamily: "serifText800",
-            color: theme[11],
-            fontSize: 35,
-            marginTop: 100,
-            marginBottom: 20,
-          }}
-        >
-          Widgets
-        </Text>
-        <Widgets />
-      </View>
-    </ScrollView>
+      <ScrollView>
+        <SystemBars style="light" />
+        <View style={{ paddingHorizontal: 30 }}>
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              color: theme[11],
+              fontSize: 35,
+              marginTop: 100,
+              marginBottom: 20,
+            }}
+          >
+            Widgets
+          </Text>
+          <Widgets />
+        </View>
+      </ScrollView>
+    </>
   );
 }
 
