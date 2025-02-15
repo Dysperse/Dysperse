@@ -437,6 +437,7 @@ function Page() {
           <MenuButton gradient addInsets={!breakpoints.md} />
         )}
         <KeyboardAwareScrollView
+          // refreshControl={<RefreshControl refreshing={false} />}
           centerContent
           onScrollBeginDrag={Keyboard.dismiss}
           style={{ flex: 1 }}
