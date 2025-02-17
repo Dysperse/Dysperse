@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   innerText: {
     fontFamily: "serifText700",
-    fontSize: 17,
+    fontSize: 19,
   },
 });
 
@@ -176,3 +176,4 @@ export function AgendaSelector({ data }) {
     </View>
   );
 }
+

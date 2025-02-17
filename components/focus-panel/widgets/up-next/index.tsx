@@ -1,8 +1,8 @@
+import Task from "@/components/task";
 import { TaskDrawer } from "@/components/task/drawer";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import MenuPopover, { MenuItem } from "@/ui/MenuPopover";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
@@ -106,81 +106,42 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
           />
         }
       />
-      <SafeModal>
-        <IconButton
-          style={{
-            borderRadius: 20,
-            height: "auto",
-            width: "100%",
-            opacity: 1,
-          }}
-          backgroundColors={{
-            default: theme[2],
-            pressed: theme[3],
-            hovered: theme[4],
-          }}
-          disabled={!incomplete[0]}
-          borderColors={{
-            default: theme[5],
-            pressed: theme[5],
-            hovered: theme[5],
-          }}
-          size={80}
-          pressableStyle={{
-            alignItems: "center",
-            padding: 10,
-            borderRadius: 20,
-            justifyContent: "space-between",
-          }}
-        >
-          {incomplete[0]?.pinned && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                opacity: 0.6,
-              }}
-            >
-              <Text style={{ fontSize: 10, color: theme[11] }} weight={900}>
-                URGENT
-              </Text>
-            </View>
-          )}
-
-          <Text
-            weight={incomplete[0] ? 800 : 300}
-            style={[
-              {
-                fontSize: 15,
-                color: theme[11],
-                width: "100%",
-              },
-              !incomplete[0] && { marginVertical: "auto", opacity: 0.5 },
-              incomplete.length === 0 && { textAlign: "center" },
-            ]}
-            numberOfLines={4}
-          >
-            {incomplete[0]
-              ? incomplete[0].name
-              : "You don't have any upcoming tasks  🎉"}
-          </Text>
-
-          {incomplete.length > 1 && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                opacity: 0.6,
-                marginTop: 2,
-              }}
-            >
-              <Text style={{ fontSize: 13, color: theme[11] }}>
+      <View
+        style={{
+          backgroundColor: theme[2],
+          padding: 5,
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: theme[5],
+        }}
+      >
+        {incomplete[0] ? (
+          <>
+            <Task
+              showLabel
+              showRelativeTime
+              onTaskUpdate={() => mutate()}
+              task={incomplete[0]}
+            />
+            {incomplete.length > 0 && (
+              <Text
+                weight={800}
+                style={{
+                  padding: 10,
+                  paddingVertical: 4,
+                  opacity: 0.6,
+                  textAlign: "center",
+                  color: theme[11],
+                }}
+              >
                 +{incomplete.length - 1} more
               </Text>
-            </View>
-          )}
-        </IconButton>
-      </SafeModal>
+            )}
+          </>
+        ) : (
+          <Text>No upcoming tasks!</Text>
+        )}
+      </View>
     </View>
   );
 };

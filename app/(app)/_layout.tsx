@@ -1,8 +1,5 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
-import {
-  FocusPanelProvider,
-  PanelState,
-} from "@/components/focus-panel/context";
+import { FocusPanelProvider } from "@/components/focus-panel/context";
 import FocusPanel from "@/components/focus-panel/panel";
 import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
@@ -127,7 +124,7 @@ export default function AppLayout() {
   const focusPanelFreezerRef = useRef(null);
   const progressValue = useRef(null);
   const focusPanelProgressValue = useRef(null);
-  const [panelState, setPanelState] = useState<PanelState>("COLLAPSED");
+  const [activeWidget, setActiveWidget] = useState<string | null>(null);
 
   const insets = useSafeAreaInsets();
   const focusPanelRef = useRef(null);
@@ -378,8 +375,8 @@ export default function AppLayout() {
                       <CommandPaletteProvider>
                         <ThemeProvider value={routerTheme}>
                           <FocusPanelProvider
-                            panelState={panelState}
-                            setPanelState={setPanelState}
+                            activeWidget={activeWidget}
+                            setActiveWidget={setActiveWidget}
                             drawerRef={focusPanelRef}
                           >
                             <BadgingProvider>
@@ -436,58 +433,7 @@ export default function AppLayout() {
                                   }
                                   renderNavigationView={renderNavigationView}
                                 >
-                                  {/* For focus panel */}
-                                  <View
-                                    style={{
-                                      zIndex:
-                                        desktopCollapsed && breakpoints.md
-                                          ? undefined
-                                          : breakpoints.md
-                                          ? 999999
-                                          : -1,
-                                      flex: 1,
-                                    }}
-                                  >
-                                    <DrawerLayout
-                                      // @ts-expect-error this is patched with patch-package
-                                      defaultDrawerOpen={breakpoints.md}
-                                      onDrawerOpen={() => {
-                                        Keyboard.dismiss();
-                                        focusPanelFreezerRef.current?.setFreeze(
-                                          false
-                                        );
-                                      }}
-                                      onDrawerClose={() => {
-                                        focusPanelFreezerRef.current?.setFreeze(
-                                          true
-                                        );
-                                      }}
-                                      useNativeAnimations={false}
-                                      ref={focusPanelRef}
-                                      keyboardDismissMode="on-drag"
-                                      drawerLockMode={
-                                        drawerLocked || !breakpoints.md
-                                          ? "locked-closed"
-                                          : "unlocked"
-                                      }
-                                      drawerPosition="right"
-                                      drawerType={
-                                        breakpoints.md
-                                          ? desktopCollapsed
-                                            ? "slide"
-                                            : "front"
-                                          : "back"
-                                      }
-                                      overlayColor="transparent"
-                                      drawerWidth={
-                                        panelState === "OPEN" ? 300 : 100
-                                      }
-                                      edgeWidth={desktopCollapsed ? 100 : width}
-                                      renderNavigationView={renderFocusPanel}
-                                    >
-                                      {content}
-                                    </DrawerLayout>
-                                  </View>
+                                  {content}
                                 </DrawerLayout>
                               </View>
                             </BadgingProvider>

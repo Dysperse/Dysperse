@@ -1,9 +1,11 @@
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
 import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
+import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { StackNavigationProp } from "@react-navigation/stack";
 import dayjs from "dayjs";
@@ -18,13 +20,12 @@ import weatherCodes from "./weatherCodes.json";
 export default function WeatherWidget({
   widget,
   navigation,
-  menuActions,
 }: {
   widget: any;
   navigation: StackNavigationProp<any>;
   menuActions: any[];
 }) {
-  const { setPanelState, drawerRef } = useFocusPanelContext();
+  const { setActiveWidget, drawerRef } = useFocusPanelContext();
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
@@ -173,215 +174,206 @@ export default function WeatherWidget({
           </View>
         </Pressable>
       ) : data && airQualityData ? (
-        <Pressable
+        <Button
+          height={205}
           onPress={() => {
-            navigation.push("Weather", { id: widget.id });
-            setPanelState("OPEN");
+            setActiveWidget(widget.id);
             drawerRef.current?.openDrawer();
             InteractionManager.runAfterInteractions(() => {
               drawerRef.current?.openDrawer();
             });
           }}
+          style={{ flexDirection: "column", paddingVertical: 20 }}
+          containerStyle={{ borderRadius: 20 }}
+          variant="outlined"
         >
-          <Pressable
-            style={[
-              widgetStyles.card,
-              {
-                borderWidth: 1,
-                borderColor: theme[5],
-                backgroundColor: theme[2],
-                padding: 20,
-              },
-            ]}
-          >
+          <View style={{ width: "100%" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 5,
+              }}
+            >
+              <View style={{ flex: 1, gap: 5 }}>
+                <Text
+                  style={{
+                    fontSize: 30,
+                    fontFamily: "serifText700",
+                    color: theme[11],
+                  }}
+                >
+                  {Math.round(data.current_weather.temperature)}&deg; F
+                </Text>
+                <View
+                  style={{
+                    gap: 5,
+                    flexDirection: "row",
+                  }}
+                >
+                  <Icon size={15} style={{ verticalAlign: "middle" }}>
+                    {
+                      weatherCodes[data.current_weather.weathercode][
+                        isNight() ? "night" : "day"
+                      ].icon
+                    }
+                  </Icon>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: theme[11],
+                      opacity: 0.6,
+                      fontFamily: "mono",
+                    }}
+                  >
+                    {weatherDescription?.description} &bull; Feels like{" "}
+                    {Math.round(
+                      data.hourly.apparent_temperature[dayjs().hour()]
+                    )}
+                    &deg;
+                  </Text>
+                </View>
+              </View>
+            </View>
             <View>
+              {/* High/low */}
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  marginBottom: 10,
+                  gap: 5,
+                  marginTop: 10,
                 }}
               >
-                <View style={{ flex: 1, gap: 5 }}>
-                  <Text
+                <View style={{ flexDirection: "row", gap: 10, flex: 1 }}>
+                  <Avatar
+                    icon={showSunrise ? "wb_sunny" : "wb_twilight"}
+                    size={35}
                     style={{
-                      fontSize: 30,
-                      fontFamily: "serifText700",
-                      color: theme[11],
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
                     }}
-                  >
-                    {Math.round(data.current_weather.temperature)}&deg; F
-                  </Text>
-                  <View
-                    style={{
-                      gap: 5,
-                      flexDirection: "row",
-                    }}
-                  >
-                    <Icon size={15} style={{ verticalAlign: "middle" }}>
-                      {
-                        weatherCodes[data.current_weather.weathercode][
-                          isNight() ? "night" : "day"
-                        ].icon
-                      }
-                    </Icon>
+                  />
+                  <View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
+                    >
+                      {dayjs(
+                        data.daily[showSunrise ? "sunrise" : "sunset"][0]
+                      ).format("h:mm")}
+                    </Text>
                     <Text
                       style={{
-                        fontSize: 15,
+                        marginTop: -2,
                         color: theme[11],
                         opacity: 0.6,
-                        fontFamily: "mono",
+                        fontSize: 13,
                       }}
                     >
-                      {weatherDescription?.description} &bull; Feels like{" "}
+                      {showSunrise ? "Sunrise" : "Sunset"}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    flex: 1,
+                  }}
+                >
+                  <Avatar
+                    icon="water_drop"
+                    size={35}
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
+                    >
                       {Math.round(
-                        data.hourly.apparent_temperature[dayjs().hour()]
+                        data.hourly.precipitation_probability[dayjs().hour()]
                       )}
-                      &deg;
+                      %
+                    </Text>
+                    <Text
+                      style={{
+                        marginTop: -2,
+                        color: theme[11],
+                        opacity: 0.6,
+                        fontSize: 13,
+                      }}
+                    >
+                      Precipitation
                     </Text>
                   </View>
                 </View>
               </View>
-              <View>
-                {/* High/low */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                    marginTop: 10,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", gap: 10, flex: 1 }}>
-                    <Avatar
-                      icon={showSunrise ? "wb_sunny" : "wb_twilight"}
-                      size={35}
-                      style={{
-                        borderRadius: 10,
-                        backgroundColor: theme[3],
-                      }}
-                    />
-                    <View>
-                      <Text
-                        weight={700}
-                        style={{ color: theme[11], marginTop: -2 }}
-                      >
-                        {dayjs(
-                          data.daily[showSunrise ? "sunrise" : "sunset"][0]
-                        ).format("h:mm a")}
-                      </Text>
-                      <Text
-                        style={{
-                          marginTop: -2,
-                          color: theme[11],
-                          opacity: 0.6,
-                          fontSize: 13,
-                        }}
-                      >
-                        {showSunrise ? "Sunrise" : "Sunset"}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
+              <View style={{ flexDirection: "row", marginTop: 10 }}>
+                <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
+                  <Avatar
+                    icon="south"
+                    size={35}
                     style={{
-                      flexDirection: "row",
-                      gap: 10,
-                      flex: 1,
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
                     }}
-                  >
-                    <Avatar
-                      icon="water_drop"
-                      size={35}
+                  />
+                  <View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
+                    >
+                      {Math.round(data.daily.temperature_2m_min[0])}&deg;
+                    </Text>
+                    <Text
                       style={{
-                        borderRadius: 10,
-                        backgroundColor: theme[3],
+                        marginTop: -2,
+                        color: theme[11],
+                        opacity: 0.6,
+                        fontSize: 13,
                       }}
-                    />
-                    <View>
-                      <Text
-                        weight={700}
-                        style={{ color: theme[11], marginTop: -2 }}
-                      >
-                        {Math.round(
-                          data.hourly.precipitation_probability[dayjs().hour()]
-                        )}
-                        %
-                      </Text>
-                      <Text
-                        style={{
-                          marginTop: -2,
-                          color: theme[11],
-                          opacity: 0.6,
-                          fontSize: 13,
-                        }}
-                      >
-                        Precipitation
-                      </Text>
-                    </View>
+                    >
+                      Low
+                    </Text>
                   </View>
                 </View>
-                <View style={{ flexDirection: "row", marginTop: 10 }}>
-                  <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
-                    <Avatar
-                      icon="south"
-                      size={35}
+                <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
+                  <Avatar
+                    icon="north"
+                    size={35}
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
+                    >
+                      {Math.round(data.daily.temperature_2m_max[0])}&deg;
+                    </Text>
+                    <Text
                       style={{
-                        borderRadius: 10,
-                        backgroundColor: theme[3],
+                        marginTop: -2,
+                        color: theme[11],
+                        opacity: 0.6,
+                        fontSize: 13,
                       }}
-                    />
-                    <View>
-                      <Text
-                        weight={700}
-                        style={{ color: theme[11], marginTop: -2 }}
-                      >
-                        {Math.round(data.daily.temperature_2m_min[0])}&deg;
-                      </Text>
-                      <Text
-                        style={{
-                          marginTop: -2,
-                          color: theme[11],
-                          opacity: 0.6,
-                          fontSize: 13,
-                        }}
-                      >
-                        Low
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
-                    <Avatar
-                      icon="north"
-                      size={35}
-                      style={{
-                        borderRadius: 10,
-                        backgroundColor: theme[3],
-                      }}
-                    />
-                    <View>
-                      <Text
-                        weight={700}
-                        style={{ color: theme[11], marginTop: -2 }}
-                      >
-                        {Math.round(data.daily.temperature_2m_max[0])}&deg;
-                      </Text>
-                      <Text
-                        style={{
-                          marginTop: -2,
-                          color: theme[11],
-                          opacity: 0.6,
-                          fontSize: 13,
-                        }}
-                      >
-                        High
-                      </Text>
-                    </View>
+                    >
+                      High
+                    </Text>
                   </View>
                 </View>
               </View>
             </View>
-          </Pressable>
-        </Pressable>
+          </View>
+        </Button>
       ) : (
         <Pressable style={weatherCardStyles} onPress={onPressHandler}>
           <Icon size={40} style={{ marginLeft: -2 }}>

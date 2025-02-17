@@ -97,87 +97,98 @@ export default function Page() {
     >
       <SystemBars style="light" />
       {!planData ? (
-        <Spinner />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Spinner />
+        </View>
       ) : (
-        <View style={styles.title}>
-          <Text
-            style={[
-              styles.title,
-              {
-                marginTop: 15,
-                marginBottom: 5,
-                marginLeft: -3,
-                fontSize: breakpoints.md ? 40 : 30,
-                lineHeight: breakpoints.md ? 55 : 45,
-                color: theme[11],
-              },
-            ]}
-          >
-            {greeting}, {session.user.profile.name.split(" ")[0]}.{"\n"}
-            {`It's${
-              !planData.weather || !planData.device ? " currently" : ""
-            }`}{" "}
-            <View
+        <>
+          <View style={styles.title}>
+            <Text
               style={[
                 styles.title,
                 {
-                  height: breakpoints.md ? undefined : 40,
-                  backgroundColor: orange[6],
-                  paddingHorizontal: 5,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  borderRadius: 10,
+                  marginTop: 15,
+                  marginBottom: 5,
+                  marginLeft: -3,
+                  fontSize: breakpoints.md ? 40 : 30,
+                  paddingHorizontal: breakpoints.md ? 20 : 0,
+                  lineHeight: breakpoints.md ? 55 : 45,
+                  color: theme[11],
                 },
               ]}
             >
-              <Icon
-                style={{
-                  verticalAlign: "middle",
-                  marginRight: 5,
-                  color: orange[11],
-                }}
-                size={breakpoints.md ? 40 : 24}
-                bold
+              {greeting}, {session.user.profile.name.split(" ")[0]}.{"\n"}
+              {`It's${
+                !planData.weather || !planData.device ? " currently" : ""
+              }`}{" "}
+              <View
+                style={[
+                  styles.title,
+                  {
+                    height: breakpoints.md ? undefined : 40,
+                    backgroundColor: orange[6],
+                    paddingHorizontal: 5,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  },
+                ]}
               >
-                access_time
-              </Icon>
-              <Text
-                style={{
-                  color: orange[11],
-                  fontSize: breakpoints.md ? 40 : 30,
-                  fontFamily: "serifText700",
-                }}
-                numberOfLines={1}
-              >
-                {dayjs().format("h:mm A")}
-              </Text>
-            </View>{" "}
-            and currently{" "}
-            <Weather
-              weatherCode={planData?.weather?.current?.weather_code}
-              isNight={!planData?.weather?.current?.is_day}
-              icon={icon}
-              temp={temp}
-            />{" "}
-            in
-            <Location planData={planData} locationName={locationName} />
+                <Icon
+                  style={{
+                    verticalAlign: "middle",
+                    marginRight: 5,
+                    color: orange[11],
+                  }}
+                  size={breakpoints.md ? 40 : 24}
+                  bold
+                >
+                  access_time
+                </Icon>
+                <Text
+                  style={{
+                    color: orange[11],
+                    fontSize: breakpoints.md ? 40 : 30,
+                    fontFamily: "serifText700",
+                  }}
+                  numberOfLines={1}
+                >
+                  {dayjs().format("h:mm A")}
+                </Text>
+              </View>{" "}
+              and currently{" "}
+              <Weather
+                weatherCode={planData?.weather?.current?.weather_code}
+                isNight={!planData?.weather?.current?.is_day}
+                icon={icon}
+                temp={temp}
+              />{" "}
+              in
+              <Location planData={planData} locationName={locationName} />
+            </Text>
+          </View>
+          <Text
+            style={[
+              styles.subtitle,
+              {
+                marginRight: "auto",
+                paddingHorizontal: 10,
+                marginTop: 5,
+                color: theme[11],
+                fontSize: 25,
+              },
+            ]}
+          >
+            Let's plan out your day!
           </Text>
-        </View>
+        </>
       )}
-      <Text
-        style={[
-          styles.subtitle,
-          {
-            marginRight: "auto",
-            paddingHorizontal: 10,
-            marginTop: 5,
-            color: theme[11],
-            fontSize: 25,
-          },
-        ]}
-      >
-        Let's plan out your day!
-      </Text>
       <View style={styles.buttonContainer}>
         <Button
           onPress={handleNext}

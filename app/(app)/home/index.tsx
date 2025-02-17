@@ -105,7 +105,7 @@ const CustomizeButton = () => {
       containerStyle={{
         marginHorizontal: "auto",
         opacity: 0.7,
-        marginBottom: insets.bottom,
+        marginBottom: insets.bottom + 30,
       }}
       onPress={() => router.push("/home/customize")}
     />

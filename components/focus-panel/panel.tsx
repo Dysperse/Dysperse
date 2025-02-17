@@ -10,17 +10,10 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import {
-  NavigationContainer,
-  NavigationContainerRef,
-  NavigationIndependentTree,
-  useNavigation,
-} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   createStackNavigator,
-  StackNavigationOptions,
   StackNavigationProp,
-  TransitionPresets,
 } from "@react-navigation/stack";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useKeepAwake } from "expo-keep-awake";
@@ -30,8 +23,6 @@ import {
   Suspense,
   useEffect,
   useImperativeHandle,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { Freeze } from "react-freeze";
@@ -48,12 +39,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
 import { useFocusPanelContext } from "./context";
-import ClockScreen from "./widgets/clock/screen";
-import { NewWidget } from "./widgets/new";
-import { FocusPanelSpotify } from "./widgets/spotify/FocusPanelSpotify";
-import TopStocksScreen from "./widgets/top-stocks/screen";
-import { FocusPanelWeather } from "./widgets/weather/modal";
-import { WordOfTheDayScreen } from "./widgets/word-of-the-day/screen";
 
 export type Widget =
   | "upcoming"
@@ -149,7 +134,6 @@ export const Navbar = ({
     >
       <IconButton
         onPress={() => {
-          if (title !== "Focus") setPanelState("COLLAPSED");
           if (title === "Focus") {
             navigation.push("New");
           } else {
@@ -203,41 +187,95 @@ export const UpcomingSvg = () => {};
 
 function PanelContent({ focusPanelFreezerRef }) {
   const theme = useColorTheme();
-  const r = useRef<NavigationContainerRef<any>>(null);
-  const { panelState } = useFocusPanelContext();
+  const { activeWidget } = useFocusPanelContext();
+  const [panelKey, setPanelKey] = useState(0);
+  const [shouldSuspendRendering, setShouldSuspendRendering] = useState(false);
 
-  const screenOptions = useMemo<StackNavigationOptions>(
-    () => ({
-      ...TransitionPresets.ScaleFromCenterAndroid,
-      detachPreviousScreen: false,
-      headerShown: true,
-      animation: "none",
-      freezeOnBlur: true,
-      gestureEnabled: false,
-      headerMode: "screen",
-      cardStyle: {
-        height: "100%",
-        width: panelState === "COLLAPSED" ? 85 : 290,
-        marginVertical: 10,
-        borderRadius: 25,
-      },
-      header: ({ navigation, route }) => null,
-    }),
-    [panelState]
+  const { data, mutate } = useSWR(["user/focus-panel"], null);
+  const widget = data?.find((w) => w.id === activeWidget);
+
+  useEffect(() => {
+    const appState = AppState.currentState;
+
+    const t = (nextAppState) => {
+      setShouldSuspendRendering(
+        nextAppState === "background" || nextAppState === "inactive"
+      );
+      console.log(nextAppState === "background" || nextAppState === "inactive");
+    };
+
+    t(appState);
+
+    const s = AppState.addEventListener("change", t);
+
+    return () => {
+      s.remove();
+    };
+  }, []);
+
+  useImperativeHandle(focusPanelFreezerRef, () => ({
+    setFreeze: (t) => setShouldSuspendRendering(t),
+  }));
+
+  const content = (
+    <View
+      style={{ marginTop: 16, flex: 1, paddingRight: 15, paddingLeft: 5 }}
+    ></View>
   );
 
-  const borderedCardStyle = {
-    cardStyle: {
-      ...(screenOptions.cardStyle as any),
-      borderColor: theme[5],
-      borderWidth: 2,
-    },
-  };
-
-  const [panelKey, setPanelKey] = useState(0);
+  /**
+   *       <Stack.Screen
+                  name="Focus"
+                  options={{ cardStyle: { width: 86 } }}
+                  component={() => <></>}
+                />
+                <Stack.Screen
+                  name="Weather"
+                  component={FocusPanelWeather}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Spotify"
+                  component={FocusPanelSpotify}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Word of the day"
+                  options={borderedCardStyle}
+                  component={WordOfTheDayScreen}
+                />
+                <Stack.Screen
+                  name="Stocks"
+                  options={borderedCardStyle}
+                  component={TopStocksScreen}
+                />
+                <Stack.Screen
+                  name="Clock"
+                  options={borderedCardStyle}
+                  component={ClockScreen}
+                />
+   */
 
   return (
-    <>
+    <Freeze
+      freeze={shouldSuspendRendering}
+      placeholder={
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: theme[2],
+            borderRadius: 30,
+            marginRight: 10,
+            // borderWidth: 2,
+            // borderColor: theme[5],
+          }}
+        >
+          <Spinner />
+        </View>
+      }
+    >
       <Animated.View
         key={panelKey}
         style={[
@@ -277,70 +315,10 @@ function PanelContent({ focusPanelFreezerRef }) {
             </View>
           }
         >
-          <NavigationIndependentTree>
-            <NavigationContainer
-              ref={r}
-              documentTitle={{ enabled: false }}
-              independent={true}
-              theme={{
-                colors: {
-                  background: "transparent",
-                  card: theme[2],
-                  primary: theme[1],
-                  border: theme[6],
-                  text: theme[11],
-                  notification: theme[9],
-                },
-                dark: true,
-              }}
-            >
-              <Stack.Navigator id={undefined} screenOptions={screenOptions}>
-                <Stack.Screen
-                  name="Focus"
-                  options={{ cardStyle: { width: 86 } }}
-                  component={(props) => (
-                    <FocusPanelHome
-                      {...props}
-                      focusPanelFreezerRef={focusPanelFreezerRef}
-                    />
-                  )}
-                />
-                <Stack.Screen
-                  name="Weather"
-                  component={FocusPanelWeather}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="Spotify"
-                  component={FocusPanelSpotify}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="Word of the day"
-                  options={borderedCardStyle}
-                  component={WordOfTheDayScreen}
-                />
-                <Stack.Screen
-                  name="Stocks"
-                  options={borderedCardStyle}
-                  component={TopStocksScreen}
-                />
-                <Stack.Screen
-                  name="Clock"
-                  options={borderedCardStyle}
-                  component={ClockScreen}
-                />
-                <Stack.Screen
-                  name="New"
-                  options={borderedCardStyle}
-                  component={NewWidget}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </NavigationIndependentTree>
+          {content}
         </ErrorBoundary>
       </Animated.View>
-    </>
+    </Freeze>
   );
 }
 
@@ -395,31 +373,6 @@ function FocusPanelHome({
   const insets = useSafeAreaInsets();
   const breakpoints = useResponsiveBreakpoints();
   const { data } = useSWR(["user/focus-panel"], null);
-
-  const [shouldSuspendRendering, setShouldSuspendRendering] = useState(false);
-
-  useEffect(() => {
-    const appState = AppState.currentState;
-
-    const t = (nextAppState) => {
-      setShouldSuspendRendering(
-        nextAppState === "background" || nextAppState === "inactive"
-      );
-      console.log(nextAppState === "background" || nextAppState === "inactive");
-    };
-
-    t(appState);
-
-    const s = AppState.addEventListener("change", t);
-
-    return () => {
-      s.remove();
-    };
-  }, []);
-
-  useImperativeHandle(focusPanelFreezerRef, () => ({
-    setFreeze: (t) => setShouldSuspendRendering(t),
-  }));
 
   return (
     <>
@@ -505,9 +458,7 @@ function FocusPanelHome({
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
-                <Freeze freeze={shouldSuspendRendering}>
-                  <PanelActions />
-                </Freeze>
+                <PanelActions />
               </ScrollView>
             )
           )}

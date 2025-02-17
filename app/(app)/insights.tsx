@@ -11,6 +11,7 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { useState } from "react";
 import { View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { ScrollView } from "react-native-gesture-handler";
 import useSWR from "swr";
 import { MenuButton } from "./home";
@@ -326,6 +327,7 @@ export default function Page() {
   return data ? (
     <>
       <MenuButton gradient back />
+      <SystemBars style="light" />
       <ScrollView
         contentContainerStyle={{ paddingTop: 50, backgroundColor: theme[2] }}
       >

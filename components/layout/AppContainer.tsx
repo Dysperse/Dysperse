@@ -35,11 +35,6 @@ const AppContainer = memo(
       }
     }, [desktopCollapsed, sidebarRef]);
 
-    const combinedValues = Animated.add(
-      progressValue.current,
-      focusPanelProgressValue.current
-    );
-
     const borderStyle = useMemo(
       () => ({
         top: 0,
@@ -48,33 +43,33 @@ const AppContainer = memo(
         bottom: 0,
         zIndex: 99,
         opacity:
-          combinedValues?.interpolate?.({
+          progressValue.current?.interpolate?.({
             inputRange: [0, 1],
             outputRange: [0, 1],
           }) || 0,
         borderWidth: 2,
         borderRadius:
-          combinedValues?.interpolate?.({
+          progressValue.current?.interpolate?.({
             inputRange: [0, 1],
             outputRange: [!breakpoints.md ? 0 : 20, 30],
           }) || 0,
         borderColor: theme[5],
       }),
-      [theme, breakpoints, combinedValues]
+      [theme, breakpoints, progressValue.current]
     );
 
     const animatedStyle = useMemo(
       () => [
         {
           marginBottom:
-            combinedValues?.interpolate?.({
+            progressValue.current?.interpolate?.({
               inputRange: [0, 1],
               outputRange: [0, insets.bottom],
             }) || 0,
         },
         !breakpoints.md && {
           marginTop:
-            combinedValues?.interpolate?.({
+            progressValue.current?.interpolate?.({
               inputRange: [0, 1],
               outputRange: [0, insets.top],
             }) || 0,
@@ -85,7 +80,7 @@ const AppContainer = memo(
                 flex: 1,
                 width: "100%",
                 opacity:
-                  combinedValues?.interpolate?.({
+                  progressValue.current?.interpolate?.({
                     inputRange: [0, 1],
                     outputRange: [1, 0.6],
                   }) || 0,
@@ -93,7 +88,7 @@ const AppContainer = memo(
                 transform: [
                   {
                     scale:
-                      combinedValues?.interpolate?.({
+                      progressValue.current?.interpolate?.({
                         inputRange: [0, 1],
                         outputRange: [1, 0.98],
                       }) || 0,
@@ -108,12 +103,6 @@ const AppContainer = memo(
                   ? SECONDARY_SIDEBAR_WIDTH
                   : ORIGINAL_SIDEBAR_WIDTH,
                 zIndex: 99999999,
-                marginRight:
-                  panelState === "CLOSED"
-                    ? 0
-                    : panelState === "OPEN"
-                    ? 300
-                    : 100,
                 marginBottom: 0,
               }
           : {
@@ -121,7 +110,7 @@ const AppContainer = memo(
               width: "100%",
               height: "100%",
               borderRadius:
-                combinedValues?.interpolate?.({
+                progressValue.current?.interpolate?.({
                   inputRange: [0, 1],
                   outputRange: [!breakpoints.md ? 0 : 20, 30],
                 }) || 0,
@@ -129,14 +118,14 @@ const AppContainer = memo(
               transform: [
                 {
                   scale:
-                    combinedValues?.interpolate?.({
+                    progressValue.current?.interpolate?.({
                       inputRange: [0, 1],
                       outputRange: [1, 0.95],
                     }) || 0,
                 },
                 {
                   translateY:
-                    combinedValues?.interpolate?.({
+                    progressValue.current?.interpolate?.({
                       inputRange: [0, 1],
                       outputRange: [1, 0.95],
                     }) || 0,
@@ -147,7 +136,7 @@ const AppContainer = memo(
       [
         breakpoints,
         insets,
-        combinedValues,
+        progressValue.current,
         desktopCollapsed,
         pathname,
         ORIGINAL_SIDEBAR_WIDTH,
@@ -157,12 +146,12 @@ const AppContainer = memo(
 
     const marginTopStyle = useMemo(
       () => ({
-        marginTop: combinedValues?.interpolate?.({
+        marginTop: progressValue.current?.interpolate?.({
           inputRange: [0, 1],
           outputRange: [0, -insets.top],
         }),
       }),
-      [insets, combinedValues]
+      [insets, progressValue.current]
     );
 
     return (
