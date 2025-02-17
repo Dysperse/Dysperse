@@ -15,7 +15,7 @@ import Text from "@/ui/Text";
 import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import {
   InteractionManager,
   Platform,
@@ -221,6 +221,25 @@ const WebPWAInstallButton = () => {
   );
 };
 
+function FocusPanel() {
+  const theme = useColorTheme();
+  return (
+    <View
+      style={{
+        borderRadius: 10,
+        padding: 10,
+        flexDirection: "row",
+        marginBottom: 10,
+        gap: 20,
+        backgroundColor: theme[3],
+      }}
+    >
+      <Icon>wb_sunny</Icon>
+      <Text>73&deg; &nbsp;Partly cloudy</Text>
+    </View>
+  );
+}
+
 function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
   const { data, error, mutate } = useSWR(["user/tabs"]);
@@ -330,6 +349,7 @@ function OpenTabsList() {
                 />
               </View>
             )}
+            ListHeaderComponent={FocusPanel}
             keyExtractor={(item) => item.id}
           />
           {Platform.OS === "web" && <WebPWAInstallButton />}

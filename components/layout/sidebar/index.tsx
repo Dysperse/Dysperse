@@ -484,7 +484,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
     </>
   );
 });
-const TimeZoneModal = () => {
+export const TimeZoneModal = () => {
   const { session, sessionToken, mutate } = useUser();
 
   const ref = useRef(null);
@@ -1085,3 +1085,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+

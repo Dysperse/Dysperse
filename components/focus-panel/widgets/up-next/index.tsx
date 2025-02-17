@@ -123,7 +123,7 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
               onTaskUpdate={() => mutate()}
               task={incomplete[0]}
             />
-            {incomplete.length > 0 && (
+            {incomplete.length > 1 && (
               <Text
                 weight={800}
                 style={{

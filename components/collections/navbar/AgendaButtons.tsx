@@ -108,13 +108,12 @@ export function AgendaButtons({
     >
       <Text
         numberOfLines={1}
-        weight={900}
+        weight={700}
         style={{ fontSize: 15, paddingTop: 5, color: theme[11] }}
       >
         {dayjs(start).format(titleFormat).split("•")?.[0]}
       </Text>
       <Text
-        weight={300}
         numberOfLines={1}
         style={{ opacity: 0.6, fontSize: 15, paddingTop: 5, color: theme[11] }}
       >
@@ -210,3 +209,4 @@ export function AgendaButtons({
     </SafeView>
   );
 }
+
