@@ -32,6 +32,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Freeze } from "react-freeze";
 import {
   InteractionManager,
   Linking,
@@ -1026,6 +1027,16 @@ const Sidebar = ({
     outputRange: [1, 0],
   });
 
+  const [freezePrimary, setFreezePrimary] = useState(
+    !pathname.includes("everything")
+  );
+
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setFreezePrimary(!pathname.includes("everything"));
+    });
+  }, [pathname]);
+
   return (
     <>
       <SafeView>
@@ -1062,7 +1073,9 @@ const Sidebar = ({
             ]}
           >
             <Animated.View style={primarySidebarStyles}>
-              <PrimarySidebar progressValue={progressValue} />
+              <Freeze freeze={!freezePrimary}>
+                <PrimarySidebar progressValue={progressValue} />
+              </Freeze>
             </Animated.View>
             <Animated.View
               style={[
@@ -1070,7 +1083,9 @@ const Sidebar = ({
                 { height: "100%", width: SECONDARY_SIDEBAR_WIDTH },
               ]}
             >
-              <SecondarySidebar />
+              <Freeze freeze={freezePrimary}>
+                <SecondarySidebar />
+              </Freeze>
             </Animated.View>
           </Animated.View>
         </NativeAnimated.View>
@@ -1085,4 +1100,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-

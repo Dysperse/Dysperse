@@ -12,8 +12,9 @@ import CircularSkeleton from "@/ui/Skeleton/circular";
 import LinearSkeleton from "@/ui/Skeleton/linear";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
 import { memo, useEffect, useState } from "react";
 import {
@@ -223,19 +224,44 @@ const WebPWAInstallButton = () => {
 
 function FocusPanel() {
   const theme = useColorTheme();
+
   return (
-    <View
-      style={{
-        borderRadius: 10,
-        padding: 10,
-        flexDirection: "row",
-        marginBottom: 10,
-        gap: 20,
-        backgroundColor: theme[3],
-      }}
-    >
-      <Icon>wb_sunny</Icon>
-      <Text>73&deg; &nbsp;Partly cloudy</Text>
+    <View>
+      <View
+        style={{
+          backgroundColor: theme[5],
+          height: 10,
+          marginBottom: -6,
+          marginHorizontal: 13,
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
+        }}
+      />
+      <View
+        style={{
+          borderRadius: 15,
+          padding: 10,
+          backgroundColor: theme[4],
+          flex: 1,
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          height: "100%",
+        }}
+      >
+        <Icon>access_time</Icon>
+        <Text
+          weight={800}
+          style={{
+            color: theme[11],
+            fontSize: 18,
+            marginHorizontal: "auto",
+            paddingRight: 20,
+          }}
+        >
+          1:27:53
+        </Text>
+      </View>
     </View>
   );
 }
@@ -324,7 +350,16 @@ function OpenTabsList() {
       }}
     >
       {data && Array.isArray(data) && data.length > 0 ? (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginTop: -10 }}>
+          <LinearGradient
+            colors={[theme[2], addHslAlpha(theme[2], 0)]}
+            style={{
+              height: 20,
+              marginBottom: -20,
+              zIndex: 999,
+              pointerEvents: "none",
+            }}
+          />
           <FlatList
             aria-label="Sidebar"
             refreshControl={
@@ -349,9 +384,10 @@ function OpenTabsList() {
                 />
               </View>
             )}
-            ListHeaderComponent={FocusPanel}
+            contentContainerStyle={{ paddingTop: 10 }}
             keyExtractor={(item) => item.id}
           />
+          <FocusPanel />
           {Platform.OS === "web" && <WebPWAInstallButton />}
           <SpaceStorageAlert />
           {footer}
@@ -430,4 +466,3 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
-
