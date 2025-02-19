@@ -595,6 +595,7 @@ const Header = memo(function Header() {
           style={{ borderRadius: 15, marginRight: -10, flex: 1 }}
           variant="filled"
           size={45}
+          onPress={() => router.push("/everything")}
         >
           <Icon>home_storage</Icon>
         </IconButton>

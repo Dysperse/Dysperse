@@ -364,7 +364,7 @@ function OpenTabsList() {
               <RefreshControl
                 refreshing={false}
                 onRefresh={() => {
-                  setBadgeData(badgingRef.current.data);
+                  badgingRef.current.mutate().then((e) => setBadgeData(e));
                   mutate();
                 }}
               />
