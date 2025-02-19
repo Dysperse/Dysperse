@@ -352,8 +352,8 @@ function OpenTabsList() {
           <LinearGradient
             colors={[theme[2], addHslAlpha(theme[2], 0)]}
             style={{
-              height: 20,
-              marginBottom: -20,
+              height: 10,
+              marginBottom: -10,
               zIndex: 999,
               pointerEvents: "none",
             }}
@@ -397,7 +397,7 @@ function OpenTabsList() {
                 />
               </View>
             )}
-            contentContainerStyle={{ paddingTop: 10 }}
+            contentContainerStyle={{ paddingTop: 5 }}
             keyExtractor={(item) => item.id}
           />
           <FocusPanel />
