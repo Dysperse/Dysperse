@@ -80,6 +80,7 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   const breakpoints = useResponsiveBreakpoints();
 
   const handleHome = useCallback(() => {
+    router.dismissAll();
     router.replace("/home");
     InteractionManager.runAfterInteractions(() => {
       if (!breakpoints.md || desktopCollapsed) sidebarRef.current.closeDrawer();

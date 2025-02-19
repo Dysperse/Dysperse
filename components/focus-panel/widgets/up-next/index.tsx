@@ -1,5 +1,4 @@
 import Task from "@/components/task";
-import { TaskDrawer } from "@/components/task/drawer";
 import { Button } from "@/ui/Button";
 import ConfirmationModal from "@/ui/ConfirmationModal";
 import Icon from "@/ui/Icon";
@@ -62,12 +61,6 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
       return dayjs(a.start).diff(dayjs(b.start));
     });
 
-  const SafeModal = incomplete[0]
-    ? (t) => (
-        <TaskDrawer id={incomplete[0]?.id} mutateList={() => mutate()} {...t} />
-      )
-    : View;
-
   if (params.hideWhenEmpty && incomplete.length === 0) return null;
 
   return (
@@ -123,7 +116,7 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
               onTaskUpdate={() => mutate()}
               task={incomplete[0]}
             />
-            {incomplete.length > 1 && (
+            {Object.values(today.entities).length > 0 && (
               <Text
                 weight={800}
                 style={{
@@ -134,7 +127,7 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
                   color: theme[11],
                 }}
               >
-                +{incomplete.length - 1} more
+                +{Object.values(today.entities).length - 1} more
               </Text>
             )}
           </>

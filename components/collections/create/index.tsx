@@ -439,7 +439,7 @@ function Header({ title }) {
       </Text>
       <IconButton
         icon="close"
-        variant="outlined"
+        variant="filled"
         size={40}
         onPress={() => forceClose({ duration: 1 })}
       />
@@ -450,7 +450,7 @@ function Header({ title }) {
 function AiSlide({ aiPrompt, setSlide }) {
   const theme = useColorTheme();
   const isDark = useDarkMode();
-  const { data, error, mutate } = useSWR(
+  const { data, error } = useSWR(
     [
       "ai/collection-template",
       {},
@@ -624,3 +624,4 @@ export const CreateCollectionModal = forwardRef(
     );
   }
 );
+

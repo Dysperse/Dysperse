@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import { useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import useSWR from "swr";
+import { CreateCollectionModal } from "../collections/create";
 
 const actionStyles = StyleSheet.create({
   title: {
@@ -72,7 +73,7 @@ export function PlanDayPrompt() {
 
 export function Actions() {
   const theme = useColorTheme();
-  const { handleOpen } = useCommandPaletteContext();
+  const createRef = useCommandPaletteContext();
 
   const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
   const hasUnread =
@@ -83,15 +84,14 @@ export function Actions() {
       <Text variant="eyebrow" style={actionStyles.title}>
         Start
       </Text>
-      <TouchableOpacity
-        style={actionStyles.item}
-        onPress={() => router.push("/insights")}
-      >
-        <Icon>note_stack_add</Icon>
-        <Text style={{ color: theme[11] }} numberOfLines={1}>
-          New collection
-        </Text>
-      </TouchableOpacity>
+      <CreateCollectionModal ref={createRef}>
+        <TouchableOpacity style={actionStyles.item}>
+          <Icon>note_stack_add</Icon>
+          <Text style={{ color: theme[11] }} numberOfLines={1}>
+            New collection
+          </Text>
+        </TouchableOpacity>
+      </CreateCollectionModal>
       <PlanDayPrompt />
       <TouchableOpacity
         style={actionStyles.item}

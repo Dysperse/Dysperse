@@ -166,7 +166,8 @@ function Tab({
               badgeData.collections.find((t) => t.id === tab.collectionId) && (
                 <View
                   style={{
-                    width: 17,
+                    minWidth: 17,
+                    paddingHorizontal: 3,
                     height: 17,
                     borderRadius: 7,
                     position: "absolute",
@@ -180,15 +181,20 @@ function Tab({
                   <Text
                     style={{
                       fontSize: 12,
+                      letterSpacing: -1,
                       color: theme[11],
                     }}
                     weight={900}
                   >
-                    {
+                    {Math.min(
                       badgeData.collections.find(
                         (t) => t.id === tab.collectionId
-                      ).total
-                    }
+                      ).total,
+                      9
+                    )}
+                    {badgeData.collections.find(
+                      (t) => t.id === tab.collectionId && t.total > 9
+                    ) && "+"}
                   </Text>
                 </View>
               )}

@@ -397,8 +397,17 @@ function OpenTabsList() {
                 />
               </View>
             )}
-            contentContainerStyle={{ paddingTop: 5 }}
+            contentContainerStyle={{ paddingVertical: 5 }}
             keyExtractor={(item) => item.id}
+          />
+          <LinearGradient
+            colors={[addHslAlpha(theme[2], 0), theme[2]]}
+            style={{
+              height: 10,
+              marginTop: -10,
+              zIndex: 999,
+              pointerEvents: "none",
+            }}
           />
           <FocusPanel />
           {Platform.OS === "web" && <WebPWAInstallButton />}

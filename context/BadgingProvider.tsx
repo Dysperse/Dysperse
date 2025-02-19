@@ -13,13 +13,17 @@ export const BadgingProvider = ({
 }) => {
   const { data, mutate } = useSWR(["user/notifications/badge"]);
 
+  const setBadge = async (count: number) => {
+    if (Platform.OS === "web" && "setAppBadge" in navigator) {
+      navigator.setAppBadge(count);
+    } else if (Platform.OS !== "web") {
+      setBadgeCountAsync(count);
+    }
+  };
+
   useEffect(() => {
     if (data?.count) {
-      if (Platform.OS === "web" && "setAppBadge" in navigator) {
-        navigator.setAppBadge(data.count);
-      } else if (Platform.OS !== "web") {
-        setBadgeCountAsync(data.count);
-      }
+      setBadge(data.count);
     }
 
     // Refresh badge every 5 mins
@@ -33,7 +37,12 @@ export const BadgingProvider = ({
   }, [data, mutate]);
 
   const badgingRef = useRef({
-    mutate: () => mutate(),
+    mutate: () =>
+      mutate().then((t) => {
+        badgingRef.current.data = t;
+        if (t?.count) setBadge(t.count);
+        return t;
+      }),
     data: data,
   });
 
