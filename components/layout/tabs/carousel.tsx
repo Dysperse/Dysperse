@@ -242,11 +242,9 @@ function FocusPanel() {
           borderRadius: 15,
           padding: 10,
           backgroundColor: theme[3],
-          flex: 1,
           alignItems: "center",
           flexDirection: "row",
           justifyContent: "space-between",
-          height: "100%",
         }}
       >
         <Icon>access_time</Icon>
@@ -371,7 +369,7 @@ function OpenTabsList() {
                 }}
               />
             }
-            ListHeaderComponent={() => (
+            ListFooterComponent={() => (
               <Button
                 icon="add"
                 text="New tab"
@@ -381,6 +379,7 @@ function OpenTabsList() {
                   pressed: theme[4],
                 }}
                 height={50}
+                iconStyle={{ marginLeft: 2 }}
                 containerStyle={{ borderRadius: 15 }}
                 style={{ justifyContent: "flex-start", columnGap: 15 }}
               />
@@ -480,3 +479,4 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
+

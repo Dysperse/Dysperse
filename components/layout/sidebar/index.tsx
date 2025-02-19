@@ -92,15 +92,17 @@ const HomeButton = memo(function HomeButton({ isHome }: { isHome: boolean }) {
   return (
     <IconButton
       onPress={handleHome}
-      style={{ borderRadius: 10 }}
+      style={{ borderRadius: 15, flex: 1 }}
       backgroundColors={{
         default: theme[isHome ? 4 : 3],
         pressed: theme[5],
         hovered: theme[4],
       }}
       size={45}
+      pressableStyle={{ flexDirection: "row", gap: 5 }}
     >
       <Icon filled={isHome}>home</Icon>
+      {/* <Text style={{ color: theme[11] }}>Home</Text> */}
     </IconButton>
   );
 });
@@ -333,13 +335,7 @@ export const LogoButton = memo(function LogoButton({
       >
         <IconButton
           size={40}
-          icon={
-            breakpoints.md
-              ? desktopCollapsed
-                ? "close_fullscreen"
-                : "open_in_full"
-              : "dock_to_left"
-          }
+          icon="dock_to_left"
           // variant="outlined"
           style={{ opacity: 0.9 }}
           onPress={toggleHidden}
@@ -415,7 +411,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
         menuRef={menuRef}
         trigger={
           <IconButton
-            style={{ borderRadius: 10, width: "100%" }}
+            style={{ borderRadius: 15, width: "100%" }}
             disabled={isReached}
             variant="filled"
             size={45}
@@ -595,9 +591,8 @@ const Header = memo(function Header() {
         }}
       >
         <HomeButton isHome={isHome} />
-        <QuickCreateButton />
         <IconButton
-          style={{ borderRadius: 10, marginRight: -10 }}
+          style={{ borderRadius: 15, marginRight: -10, flex: 1 }}
           variant="filled"
           size={45}
         >
@@ -1104,3 +1099,4 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
+

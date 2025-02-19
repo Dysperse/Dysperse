@@ -12,8 +12,7 @@ import dayjs from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
+import { Platform, StyleSheet, View } from "react-native";
 import weatherCodes from "../../../components/focus-panel/widgets/weather/weatherCodes.json";
 import { getGreeting } from "../../../components/home/getGreeting";
 
@@ -95,7 +94,6 @@ export default function Page() {
       colors={[theme[2], theme[3], theme[4], theme[3], theme[2]]}
       style={styles.container}
     >
-      <SystemBars style="light" />
       {!planData ? (
         <View
           style={{
@@ -108,7 +106,15 @@ export default function Page() {
         </View>
       ) : (
         <>
-          <View style={styles.title}>
+          <View
+            style={[
+              styles.title,
+              {
+                paddingHorizontal:
+                  breakpoints.md && Platform.OS === "web" ? 10 : 0,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.title,
@@ -117,7 +123,6 @@ export default function Page() {
                   marginBottom: 5,
                   marginLeft: -3,
                   fontSize: breakpoints.md ? 40 : 30,
-                  paddingHorizontal: breakpoints.md ? 20 : 0,
                   lineHeight: breakpoints.md ? 55 : 45,
                   color: theme[11],
                 },
@@ -178,7 +183,7 @@ export default function Page() {
               styles.subtitle,
               {
                 marginRight: "auto",
-                paddingHorizontal: 10,
+                paddingHorizontal: Platform.OS === "web" ? 10 : 20,
                 marginTop: 5,
                 color: theme[11],
                 fontSize: 25,

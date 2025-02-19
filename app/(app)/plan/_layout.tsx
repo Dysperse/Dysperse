@@ -1,6 +1,5 @@
 import { JsStack } from "@/components/layout/_stack";
 import { PlanContextProvider } from "@/context/planContext";
-import { useUser } from "@/context/useUser";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -90,7 +89,6 @@ function PlanNavbar({
 }
 
 export default function Layout() {
-  const { session } = useUser();
   const theme = useColorTheme();
 
   useWebStatusBar({

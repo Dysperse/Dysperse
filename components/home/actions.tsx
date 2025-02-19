@@ -83,6 +83,15 @@ export function Actions() {
       <Text variant="eyebrow" style={actionStyles.title}>
         Start
       </Text>
+      <TouchableOpacity
+        style={actionStyles.item}
+        onPress={() => router.push("/insights")}
+      >
+        <Icon>note_stack_add</Icon>
+        <Text style={{ color: theme[11] }} numberOfLines={1}>
+          New collection
+        </Text>
+      </TouchableOpacity>
       <PlanDayPrompt />
       <TouchableOpacity
         style={actionStyles.item}
@@ -90,7 +99,7 @@ export function Actions() {
       >
         <Icon>emoji_objects</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          My insights
+          Insights
         </Text>
       </TouchableOpacity>
       <TouchableOpacity

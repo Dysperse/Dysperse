@@ -22,9 +22,9 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     flexDirection: "row",
-    columnGap: 10,
+    columnGap: 15,
   },
-  text: { marginTop: -3, fontSize: 12, opacity: 0.6 },
+  text: { fontSize: 12, opacity: 0.6 },
   closeButton: {
     position: "absolute",
     right: 0,
@@ -116,30 +116,12 @@ function Tab({
     [tab, tabData]
   );
 
-  const tabIcon = useMemo(
-    () => (
-      <Avatar
-        disabled
-        size={tab.collection ? 23 : undefined}
-        style={{
-          backgroundColor: tab.collection ? theme[5] : "transparent",
-          marginLeft: tab.collection ? -23 : 0,
-          marginBottom: tab.collection ? -10 : 0,
-          borderRadius: 10,
-        }}
-        iconProps={{
-          size: tab.collection ? 17 : 24,
-          filled: selected,
-          style: { marginTop: -1 },
-        }}
-        icon={
-          typeof tabData?.icon === "function"
-            ? tabData?.icon?.(tab.params)
-            : tabData?.icon
-        }
-      />
-    ),
-    [selected, tab, tabData, theme]
+  const TabIcon = ({ inline }: { inline?: boolean }) => (
+    <Icon size={inline ? 13 : 24} style={inline && { marginTop: -2 }}>
+      {typeof tabData?.icon === "function"
+        ? tabData?.icon?.(tab.params)
+        : tabData?.icon}
+    </Icon>
   );
 
   const closeIcon = useMemo(
@@ -167,57 +149,83 @@ function Tab({
   const tabContent = useMemo(
     () => (
       <>
-        {(tab.collection || tab.label) && (
-          <Avatar
-            disabled
-            style={{
-              backgroundColor: "transparent",
-              marginTop: tab.collection ? -10 : 0,
-              shadowRadius: 0,
-              borderRadius: 0,
-            }}
-            size={23}
-          >
-            <Emoji
+        {tab.collection || tab.label ? (
+          <View style={{ position: "relative" }}>
+            <Avatar
+              disabled
+              style={{
+                backgroundColor: "transparent",
+                shadowRadius: 0,
+                borderRadius: 0,
+              }}
               size={23}
-              emoji={tab.collection?.emoji || tab.label?.emoji}
-            />
-          </Avatar>
+            >
+              <Emoji emoji={tab.collection?.emoji || tab.label?.emoji} />
+            </Avatar>
+            {badgeData &&
+              badgeData.collections.find((t) => t.id === tab.collectionId) && (
+                <View
+                  style={{
+                    width: 17,
+                    height: 17,
+                    borderRadius: 7,
+                    position: "absolute",
+                    right: -3,
+                    bottom: -5,
+                    backgroundColor: theme[5],
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: theme[11],
+                    }}
+                    weight={900}
+                  >
+                    {
+                      badgeData.collections.find(
+                        (t) => t.id === tab.collectionId
+                      ).total
+                    }
+                  </Text>
+                </View>
+              )}
+          </View>
+        ) : (
+          <TabIcon />
         )}
-        {tabIcon}
         <View style={{ flex: 1 }}>
           <Text weight={400} numberOfLines={1} style={{ color: theme[11] }}>
             {tabName}
           </Text>
           {tabData.name(tab.params, tab.slug)[1] && (
-            <Text
-              style={[styles.text, { color: theme[11] }]}
-              numberOfLines={1}
-              weight={400}
-            >
-              {capitalizeFirstLetter(
-                tabData.name(tab.params, tab.slug)[1] || ""
-              )}
-            </Text>
-          )}
-        </View>
-        {badgeData &&
-          !selected &&
-          badgeData.collections.find((t) => t.id === tab.collectionId) && (
             <View
               style={{
-                width: 10,
-                height: 10,
-                marginRight: 5,
-                borderRadius: 5,
-                backgroundColor: theme[9],
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: -2,
+                gap: 3,
               }}
-            />
+            >
+              {(tab.collection || tab.label) && <TabIcon inline />}
+              <Text
+                style={[styles.text, { color: theme[11] }]}
+                numberOfLines={1}
+                weight={400}
+              >
+                {capitalizeFirstLetter(
+                  tabData.name(tab.params, tab.slug)[1] || ""
+                )}
+              </Text>
+            </View>
           )}
+        </View>
         {closeIcon}
       </>
     ),
-    [tab, tabData, theme, tabName, tabIcon, closeIcon, badgeData, selected]
+    [tab, tabData, theme, tabName, closeIcon, badgeData, selected]
   );
 
   const handlePress = useCallback(() => {

@@ -1,9 +1,12 @@
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import { useDarkMode } from "@/ui/color";
 import {
   StackCardInterpolatedStyle,
   StackCardInterpolationProps,
   TransitionPresets,
 } from "@react-navigation/stack";
 import { Animated } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 
 const { add, multiply } = Animated;
 
@@ -120,4 +123,11 @@ export const arcCard = ({ theme, breakpoints, maxWidth, padding = 15 }) =>
         }
       : undefined,
   } as any);
+
+export const ArcSystemBar = () => {
+  const breakpoints = useResponsiveBreakpoints();
+  const isDark = useDarkMode();
+
+  return <SystemBars style={!breakpoints.md || isDark ? "light" : "dark"} />;
+};
 
