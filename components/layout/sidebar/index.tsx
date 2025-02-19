@@ -352,7 +352,6 @@ export const LogoButton = memo(function LogoButton({
 const QuickCreateButton = memo(function QuickCreateButton() {
   const { mutate } = useSWRConfig();
   const { session } = useUser();
-  const theme = useColorTheme();
   const itemRef = useRef<BottomSheetModal>(null);
   const labelRef = useRef<BottomSheetModal>(null);
 
@@ -396,6 +395,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
   const menuRef = useRef(null);
   const createCollectionRef = useRef(null);
   const { isReached } = useStorageContext();
+  const theme = useColorTheme();
 
   return (
     <>
@@ -413,6 +413,19 @@ const QuickCreateButton = memo(function QuickCreateButton() {
 
       <MenuPopover
         menuRef={menuRef}
+        trigger={
+          <IconButton
+            style={{ borderRadius: 10, width: "100%" }}
+            disabled={isReached}
+            variant="filled"
+            size={45}
+            onPress={() => menuRef.current.open()}
+            pressableStyle={{ flexDirection: "row", gap: 5 }}
+          >
+            <Icon>add</Icon>
+            {/* <Text style={{ color: theme[11] }}>New</Text> */}
+          </IconButton>
+        }
         closeOnSelect
         options={[
           {
@@ -425,7 +438,7 @@ const QuickCreateButton = memo(function QuickCreateButton() {
                   }}
                   containerStyle={{ flex: 1 }}
                 >
-                  <Icon>add_circle</Icon>
+                  <Icon>note_stack_add</Icon>
                   <Text variant="menuItem">Task</Text>
                 </MenuItem>
                 {session?.user?.betaTester && (
@@ -462,25 +475,9 @@ const QuickCreateButton = memo(function QuickCreateButton() {
           },
         ]}
         menuProps={{
-          style: { flex: 1, marginRight: -10 },
+          style: { flex: 1 },
           rendererProps: { containerStyle: { marginLeft: 10, width: 200 } },
         }}
-        trigger={
-          <IconButton
-            style={{ borderRadius: 10, width: "100%" }}
-            backgroundColors={{
-              default: theme[3],
-              pressed: theme[5],
-              hovered: theme[4],
-            }}
-            disabled={isReached}
-            size={45}
-            pressableStyle={{ flexDirection: "row", gap: 10 }}
-          >
-            <Icon>note_stack_add</Icon>
-            <Text style={{ color: theme[11] }}>New</Text>
-          </IconButton>
-        }
       />
     </>
   );
@@ -594,11 +591,18 @@ const Header = memo(function Header() {
       <View
         style={{
           flexDirection: "row",
-          gap: 10,
+          gap: 5,
         }}
       >
         <HomeButton isHome={isHome} />
         <QuickCreateButton />
+        <IconButton
+          style={{ borderRadius: 10, marginRight: -10 }}
+          variant="filled"
+          size={45}
+        >
+          <Icon>home_storage</Icon>
+        </IconButton>
       </View>
     </View>
   );

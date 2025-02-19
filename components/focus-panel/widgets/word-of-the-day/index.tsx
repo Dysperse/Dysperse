@@ -35,10 +35,10 @@ export default function WordOfTheDay({ navigation, menuActions, widget }) {
           flexDirection: "column",
           gap: 0,
           borderRadius: 20,
-          padding: 15,
-          paddingHorizontal: 15,
+          padding: 20,
+          paddingHorizontal: 20,
           paddingBottom: 5,
-          alignItems: data ? undefined : "center",
+          alignItems: "flex-start",
         }}
         onPress={() => navigation.navigate("Word of the day")}
       >
@@ -75,4 +75,3 @@ export default function WordOfTheDay({ navigation, menuActions, widget }) {
     </View>
   );
 }
-

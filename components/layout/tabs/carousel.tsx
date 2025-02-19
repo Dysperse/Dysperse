@@ -226,10 +226,10 @@ function FocusPanel() {
   const theme = useColorTheme();
 
   return (
-    <View>
+    <View style={{ marginBottom: 2 }}>
       <View
         style={{
-          backgroundColor: theme[5],
+          backgroundColor: theme[4],
           height: 10,
           marginBottom: -6,
           marginHorizontal: 13,
@@ -241,7 +241,7 @@ function FocusPanel() {
         style={{
           borderRadius: 15,
           padding: 10,
-          backgroundColor: theme[4],
+          backgroundColor: theme[3],
           flex: 1,
           alignItems: "center",
           flexDirection: "row",
@@ -371,6 +371,20 @@ function OpenTabsList() {
                 }}
               />
             }
+            ListHeaderComponent={() => (
+              <Button
+                icon="add"
+                text="New tab"
+                backgroundColors={{
+                  default: theme[2],
+                  hovered: theme[3],
+                  pressed: theme[4],
+                }}
+                height={50}
+                containerStyle={{ borderRadius: 15 }}
+                style={{ justifyContent: "flex-start", columnGap: 15 }}
+              />
+            )}
             data={data}
             getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
             renderItem={({ item }) => (
@@ -390,7 +404,7 @@ function OpenTabsList() {
           <FocusPanel />
           {Platform.OS === "web" && <WebPWAInstallButton />}
           <SpaceStorageAlert />
-          {footer}
+          {/* {footer} */}
         </View>
       ) : (
         <View
