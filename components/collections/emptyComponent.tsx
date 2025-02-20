@@ -126,7 +126,6 @@ const messages = [
   ["1f92b", "Shhh!", "It's quiet here!"],
   ["1f60a", "Enjoy the calm!", "Take a breather"],
   ["1f60c", "Pause and relax!", "No plans, no worries"],
-  ["1fab4", "Positive vibes", "Idea: Free time!"],
   ["1f4ab", "Energize yourself", "Maybe get some sleep?"],
   ["1fae0", "Peaceful moment!", "Savor the tranquility"],
   ["1f44a", "It's quiet here", "Quick stretch or snack?"],
@@ -198,7 +197,7 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
       <View style={[{ alignItems: "center" }]}>
         <Text
           style={{
-            fontSize: dense ? 20 : 30,
+            fontSize: dense ? 20 : 25,
             fontFamily: "serifText800",
             lineHeight: 50,
           }}
@@ -217,4 +216,3 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     </View>
   );
 };
-

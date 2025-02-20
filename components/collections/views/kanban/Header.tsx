@@ -107,7 +107,8 @@ export const KanbanHeader = memo(function KanbanHeader({
           <ColumnMenuTrigger label={label}>
             <IconButton
               size={40}
-              icon="expand_more"
+              icon="more_horiz"
+              iconProps={{ bold: true }}
               iconStyle={{ opacity: 0.7 }}
             />
           </ColumnMenuTrigger>
@@ -172,4 +173,3 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
-

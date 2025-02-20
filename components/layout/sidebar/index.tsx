@@ -786,10 +786,7 @@ function SecondarySidebar() {
       <IconButton
         icon="west"
         onPress={() => {
-          if (router.canGoBack()) router.back();
-          else {
-            router.replace("/home");
-          }
+          router.replace("/home");
           InteractionManager.runAfterInteractions(() => {
             sidebarRef?.current?.openDrawer?.();
           });
@@ -1028,4 +1025,3 @@ const Sidebar = ({
 };
 
 export default memo(Sidebar);
-
