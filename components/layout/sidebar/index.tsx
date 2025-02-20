@@ -786,7 +786,10 @@ function SecondarySidebar() {
       <IconButton
         icon="west"
         onPress={() => {
-          router.replace("/");
+          if (router.canGoBack()) router.back();
+          else {
+            router.replace("/home");
+          }
           InteractionManager.runAfterInteractions(() => {
             sidebarRef?.current?.openDrawer?.();
           });
