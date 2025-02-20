@@ -185,7 +185,7 @@ function FocusPanel() {
   const { widgets, focusPanelFreezerRef } = useFocusPanelContext();
   const sheetRef = useRef(null);
 
-  const [frozen, setFrozen] = useState(false);
+  const [frozen, setFrozen] = useState(Platform.OS === "web");
   useImperativeHandle(focusPanelFreezerRef, () => ({
     freeze: () => setFrozen(true),
     thaw: () => setFrozen(false),
