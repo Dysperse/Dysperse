@@ -29,6 +29,7 @@ import {
   View,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import Animated, { FlipInXUp, FlipOutXDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -182,22 +183,34 @@ const WebPWAInstallButton = () => {
 
 function FocusPanel() {
   const theme = useColorTheme();
-  const { widgets, focusPanelFreezerRef } = useFocusPanelContext();
+  const { widgets, focusPanelFreezerRef, activeStateRef } =
+    useFocusPanelContext();
   const sheetRef = useRef(null);
 
   const [frozen, setFrozen] = useState(Platform.OS === "web");
+
   useImperativeHandle(focusPanelFreezerRef, () => ({
     freeze: () => setFrozen(true),
     thaw: () => setFrozen(false),
   }));
 
   const pinnedWidgets = widgets.filter((i) => i.pinned);
-  const pinnedWidget = pinnedWidgets[0];
+  const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
+  const breakpoints = useResponsiveBreakpoints();
+  const pinnedWidget = pinnedWidgets[activeWidget];
+
+  const changeActiveWidget = () => {
+    setActiveWidget((prev) => {
+      const t = (prev + 1) % pinnedWidgets.length;
+      activeStateRef.current = t;
+      return t;
+    });
+  };
 
   return (
     pinnedWidget && (
       <Freeze
-        freeze={frozen}
+        freeze={frozen && !breakpoints.md}
         placeholder={
           <View
             style={{
@@ -254,22 +267,27 @@ function FocusPanel() {
             paddingVertical: 0,
             paddingHorizontal: 10,
           }}
-          height={pinnedWidgets.length > 1 ? 60 : 50}
-          onPress={() => sheetRef.current?.present()}
+          height={60}
+          onLongPress={() => sheetRef.current?.present()}
+          // @ts-ignore
+          onContextMenu={() => sheetRef.current?.present()}
+          onPress={changeActiveWidget}
         >
-          {pinnedWidgets.length > 1 && (
-            <View
-              style={{
-                backgroundColor: theme[4],
-                height: 10,
-                marginBottom: -6,
-                marginHorizontal: 13,
-                borderTopLeftRadius: 15,
-                borderTopRightRadius: 15,
-              }}
-            />
-          )}
           <View
+            style={{
+              backgroundColor:
+                pinnedWidgets.length > 1 ? theme[4] : "transparent",
+              height: 50,
+              marginBottom: -45,
+              marginHorizontal: 13,
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15,
+            }}
+          />
+          <Animated.View
+            key={activeWidget}
+            entering={FlipInXUp}
+            exiting={FlipOutXDown}
             style={{
               borderRadius: 20,
               padding: 10,
@@ -282,7 +300,7 @@ function FocusPanel() {
             }}
           >
             <RenderWidget small widget={pinnedWidget} />
-          </View>
+          </Animated.View>
         </Button>
       </Freeze>
     )
