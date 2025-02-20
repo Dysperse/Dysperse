@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import useSWR from "swr";
 
-const UpNext = ({ widget, setParam, params, menuActions }) => {
+const UpNext = ({ widget, setParam, params, handlePin, small }) => {
   const theme = useColorTheme();
   const [todayDateString, setTodayDateString] = useState(dayjs().toISOString());
 
@@ -63,7 +63,22 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
 
   if (params.hideWhenEmpty && incomplete.length === 0) return null;
 
-  return (
+  return small ? (
+    <View>
+      {incomplete[0] ? (
+        <>
+          <Text weight={700} style={{ color: theme[11] }}>
+            {incomplete[0].name}
+          </Text>
+          <Text style={{ fontSize: 12, color: theme[11], opacity: 0.6 }}>
+            {dayjs(incomplete[0].start).fromNow()}
+          </Text>
+        </>
+      ) : (
+        <Text>No upcoming tasks!</Text>
+      )}
+    </View>
+  ) : (
     <View>
       <MenuPopover
         menuProps={{
@@ -72,6 +87,12 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
         }}
         containerStyle={{ width: 220, marginLeft: 20, marginTop: -15 }}
         options={[
+          {
+            text: widget.pinned ? "Pinned" : "Pin",
+            icon: "push_pin",
+            callback: handlePin,
+            selected: widget.pinned,
+          },
           {
             renderer: () => (
               <ConfirmationModal
@@ -140,4 +161,3 @@ const UpNext = ({ widget, setParam, params, menuActions }) => {
 };
 
 export default UpNext;
-

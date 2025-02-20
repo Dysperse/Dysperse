@@ -343,7 +343,8 @@ export function RenderWidget({ navigation, widget, index, small }) {
     case "upcoming":
       return (
         <UpNext
-          menuActions={menuActions}
+          handlePin={() => handlePin(widget)}
+          small={small}
           widget={widget}
           key={index}
           setParam={setParam}
