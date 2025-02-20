@@ -8,3 +8,4 @@ export default function Page() {
     </SafeAreaView>
   );
 }
+

@@ -558,7 +558,6 @@ function TimeZoneModal({ timeZoneModalRef, setParam, params }) {
 
 export default function Clock({ widget, navigation, setParam }) {
   const theme = useColorTheme();
-  const { setPanelState } = useFocusPanelContext();
   const [view, setView] = useState<ClockViewType>(
     widget.params?.view || "Clock"
   );
@@ -615,10 +614,6 @@ export default function Clock({ widget, navigation, setParam }) {
             paddingHorizontal: 0,
           },
         ]}
-        onPress={() => {
-          navigation.push("Clock", { id: widget.id });
-          setPanelState("OPEN");
-        }}
       >
         <ColorThemeProvider theme={theme}>
           {view === "Clock" && (

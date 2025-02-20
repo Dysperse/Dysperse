@@ -1,6 +1,5 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
 import { FocusPanelProvider } from "@/components/focus-panel/context";
-import FocusPanel from "@/components/focus-panel/panel";
 import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
 import TabFriendModal from "@/components/layout/TabFriendModal";
@@ -42,7 +41,7 @@ import {
   usePathname,
 } from "expo-router";
 import * as SystemUI from "expo-system-ui";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Animated,
   InteractionManager,
@@ -123,8 +122,6 @@ export default function AppLayout() {
 
   const focusPanelFreezerRef = useRef(null);
   const progressValue = useRef(null);
-  const focusPanelProgressValue = useRef(null);
-  const [activeWidget, setActiveWidget] = useState<string | null>(null);
 
   const insets = useSafeAreaInsets();
   const focusPanelRef = useRef(null);
@@ -201,19 +198,9 @@ export default function AppLayout() {
     return !breakpoints.md ||
       (!pathname.includes("settings/") && !pathname.includes("create")) ? (
       <Pressable style={{ flex: 1 }}>
-        <Sidebar focusPanelRef={focusPanelProgressValue} progressValue={v} />
+        <Sidebar progressValue={v} />
       </Pressable>
     ) : null;
-  };
-
-  const renderFocusPanel = (v: Animated.Value) => {
-    focusPanelProgressValue.current = v;
-    return (
-      <FocusPanel
-        focusPanelFreezerRef={focusPanelFreezerRef}
-        progressValue={v}
-      />
-    );
   };
 
   const content = (
@@ -230,10 +217,7 @@ export default function AppLayout() {
         dark: true,
       }}
     >
-      <AppContainer
-        progressValue={progressValue}
-        focusPanelProgressValue={focusPanelProgressValue}
-      >
+      <AppContainer progressValue={progressValue}>
         <LastStateRestore />
         <SystemBars style={!isDark ? "dark" : "light"} />
         <JsStack
@@ -347,38 +331,37 @@ export default function AppLayout() {
             }}
             key={breakpoints.md ? "desktop" : "mobile"}
           >
-            <BottomSheetModalProvider>
-              <MenuProvider
-                skipInstanceCheck
-                customStyles={{
-                  backdrop: {
-                    flex: 1,
-                    opacity: 1,
-                    ...(Platform.OS === "web" &&
-                      ({ WebkitAppRegion: "no-drag" } as any)),
-                  },
-                }}
-              >
-                <PortalProvider>
-                  <View
-                    style={[
-                      {
-                        flexDirection: "row",
-                        flex: 1,
-                        backgroundColor: theme[2],
-                      },
-                      Platform.OS === "web" &&
-                        ({ WebkitAppRegion: "drag" } as any),
-                    ]}
-                  >
-                    <GlobalTaskContextProvider>
-                      <CommandPaletteProvider>
-                        <ThemeProvider value={routerTheme}>
-                          <FocusPanelProvider
-                            activeWidget={activeWidget}
-                            setActiveWidget={setActiveWidget}
-                            drawerRef={focusPanelRef}
-                          >
+            <FocusPanelProvider
+              drawerRef={focusPanelRef}
+              focusPanelFreezerRef={focusPanelFreezerRef}
+            >
+              <BottomSheetModalProvider>
+                <MenuProvider
+                  skipInstanceCheck
+                  customStyles={{
+                    backdrop: {
+                      flex: 1,
+                      opacity: 1,
+                      ...(Platform.OS === "web" &&
+                        ({ WebkitAppRegion: "no-drag" } as any)),
+                    },
+                  }}
+                >
+                  <PortalProvider>
+                    <View
+                      style={[
+                        {
+                          flexDirection: "row",
+                          flex: 1,
+                          backgroundColor: theme[2],
+                        },
+                        Platform.OS === "web" &&
+                          ({ WebkitAppRegion: "drag" } as any),
+                      ]}
+                    >
+                      <GlobalTaskContextProvider>
+                        <CommandPaletteProvider>
+                          <ThemeProvider value={routerTheme}>
                             <BadgingProvider>
                               <View
                                 style={[
@@ -396,12 +379,19 @@ export default function AppLayout() {
                                 <NotificationsModal />
                                 <TabFriendModal />
                                 <DrawerLayout
+                                  contentContainerStyle={{ marginTop: -1 }}
                                   // @ts-expect-error this is patched with patch-package
                                   defaultDrawerOpen={
                                     !desktopCollapsed && breakpoints.md
                                   }
                                   ref={sidebarRef}
-                                  onDrawerOpen={() => Keyboard.dismiss()}
+                                  onDrawerOpen={() => {
+                                    Keyboard.dismiss();
+                                    focusPanelFreezerRef.current?.thaw();
+                                  }}
+                                  onDrawerClose={() => {
+                                    focusPanelFreezerRef.current?.freeze();
+                                  }}
                                   useNativeAnimations={false}
                                   keyboardDismissMode="on-drag"
                                   drawerLockMode={
@@ -437,15 +427,18 @@ export default function AppLayout() {
                                 </DrawerLayout>
                               </View>
                             </BadgingProvider>
-                          </FocusPanelProvider>
-                        </ThemeProvider>
-                      </CommandPaletteProvider>
-                    </GlobalTaskContextProvider>
-                  </View>
-                </PortalProvider>
-              </MenuProvider>
-              <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
-            </BottomSheetModalProvider>
+                          </ThemeProvider>
+                        </CommandPaletteProvider>
+                      </GlobalTaskContextProvider>
+                    </View>
+                  </PortalProvider>
+                </MenuProvider>
+                <Toast
+                  topOffset={insets.top + 15}
+                  config={toastConfig(theme)}
+                />
+              </BottomSheetModalProvider>
+            </FocusPanelProvider>
           </GestureHandlerRootView>
         </ColorThemeProvider>
       </StorageContextProvider>

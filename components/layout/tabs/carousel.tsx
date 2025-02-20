@@ -1,12 +1,14 @@
+import { RenderWidget, Widgets } from "@/app/(app)/home";
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
 import CircularSkeleton from "@/ui/Skeleton/circular";
 import LinearSkeleton from "@/ui/Skeleton/linear";
@@ -14,9 +16,11 @@ import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { Freeze } from "react-freeze";
 import {
   InteractionManager,
   Platform,
@@ -85,52 +89,6 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
       </Button>
     );
   }
-});
-
-const JumpToButton = memo(function JumpToButton() {
-  const theme = useColorTheme();
-  const { sidebarRef, desktopCollapsed } = useSidebarContext();
-  const breakpoints = useResponsiveBreakpoints();
-  const { handleOpen } = useCommandPaletteContext();
-
-  const onOpen = () => {
-    if (!breakpoints.md || desktopCollapsed) sidebarRef.current?.closeDrawer();
-    if (Platform.OS !== "web")
-      InteractionManager.runAfterInteractions(handleOpen);
-    else handleOpen();
-  };
-
-  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
-    e.preventDefault();
-    onOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/settings/shortcuts");
-  });
-
-  return (
-    <View style={{ borderRadius: 15, overflow: "hidden", flex: 1 }}>
-      <Button
-        backgroundColors={{
-          default: theme[2],
-          hovered: theme[4],
-          pressed: theme[5],
-        }}
-        height={50}
-        onPress={onOpen as any}
-        style={{
-          justifyContent: "flex-start",
-          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        }}
-        android_ripple={{ color: theme[7] }}
-        icon="add"
-        bold
-        text="New tab"
-      />
-    </View>
-  );
 });
 
 const pwaPromptStyles = StyleSheet.create({
@@ -224,43 +182,93 @@ const WebPWAInstallButton = () => {
 
 function FocusPanel() {
   const theme = useColorTheme();
+  const { widgets, focusPanelFreezerRef } = useFocusPanelContext();
+  const sheetRef = useRef(null);
+
+  const [frozen, setFrozen] = useState(false);
+  useImperativeHandle(focusPanelFreezerRef, () => ({
+    freeze: () => setFrozen(true),
+    thaw: () => setFrozen(false),
+  }));
+
+  const pinnedWidget = widgets?.find((i) => i.pinned);
 
   return (
-    <View style={{ marginBottom: 2 }}>
-      <View
-        style={{
-          backgroundColor: theme[4],
-          height: 10,
-          marginBottom: -6,
-          marginHorizontal: 13,
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
-        }}
-      />
-      <View
-        style={{
-          borderRadius: 15,
-          padding: 10,
-          backgroundColor: theme[3],
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
+    pinnedWidget && (
+      <Freeze
+        freeze={frozen}
+        placeholder={
+          <View
+            style={{
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: theme[3],
+              borderRadius: 20,
+              padding: 10,
+              flexDirection: "row",
+              marginBottom: 8,
+            }}
+          />
+        }
       >
-        <Icon>access_time</Icon>
-        <Text
-          weight={800}
-          style={{
-            color: theme[11],
-            fontSize: 18,
-            marginHorizontal: "auto",
-            paddingRight: 20,
-          }}
+        <BottomSheet
+          onClose={() => sheetRef.current.close()}
+          sheetRef={sheetRef}
+          snapPoints={["80%"]}
         >
-          1:27:53
-        </Text>
-      </View>
-    </View>
+          <BottomSheetScrollView
+            contentContainerStyle={{ padding: 20, gap: 20 }}
+          >
+            <Widgets />
+          </BottomSheetScrollView>
+        </BottomSheet>
+        <Button
+          containerStyle={{
+            marginBottom: 8,
+            paddingVertical: 0,
+            borderRadius: 0,
+            flex: 1,
+          }}
+          style={{
+            flex: 1,
+            borderRadius: 0,
+            width: "100%",
+            flexDirection: "column",
+            alignItems: "stretch",
+            gap: 0,
+            paddingVertical: 0,
+            paddingHorizontal: 0,
+          }}
+          height={50}
+          onPress={() => sheetRef.current?.present()}
+        >
+          {/* <View
+          style={{
+            backgroundColor: theme[4],
+            height: 10,
+            marginBottom: -6,
+            marginHorizontal: 13,
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
+          }}
+        /> */}
+          <View
+            style={{
+              borderRadius: 20,
+              padding: 10,
+              backgroundColor: theme[3],
+              alignItems: "center",
+              height: 50,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <RenderWidget small widget={pinnedWidget} />
+          </View>
+        </Button>
+      </Freeze>
+    )
   );
 }
 
@@ -321,20 +329,25 @@ function OpenTabsList() {
   const badgingRef = useBadgingService();
   const [badgeData, setBadgeData] = useState(badgingRef.current.data);
 
-  const footer = (
-    <View style={{ marginBottom: 5, flexDirection: "row" }}>
-      <JumpToButton />
-      <IconButton
-        size={50}
-        style={{
-          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        }}
-        onPress={() => router.push("/everything")}
-      >
-        <Icon bold>home_storage</Icon>
-      </IconButton>
-    </View>
-  );
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
+  const { handleOpen } = useCommandPaletteContext();
+
+  const onOpen = () => {
+    if (!breakpoints.md || desktopCollapsed) sidebarRef.current?.closeDrawer();
+    if (Platform.OS !== "web")
+      InteractionManager.runAfterInteractions(handleOpen);
+    else handleOpen();
+  };
+
+  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
+    e.preventDefault();
+    onOpen();
+  });
+
+  useHotkeys(["ctrl+/"], (e) => {
+    e.preventDefault();
+    router.push("/settings/shortcuts");
+  });
 
   return (
     <View
@@ -359,6 +372,7 @@ function OpenTabsList() {
             }}
           />
           <FlatList
+            showsVerticalScrollIndicator={false}
             aria-label="Sidebar"
             refreshControl={
               <RefreshControl
@@ -373,6 +387,7 @@ function OpenTabsList() {
               <Button
                 icon="add"
                 text="New tab"
+                onPress={onOpen}
                 backgroundColors={{
                   default: theme[2],
                   hovered: theme[3],
@@ -397,7 +412,7 @@ function OpenTabsList() {
                 />
               </View>
             )}
-            contentContainerStyle={{ paddingVertical: 5 }}
+            contentContainerStyle={{ paddingVertical: 10 }}
             keyExtractor={(item) => item.id}
           />
           <LinearGradient

@@ -146,7 +146,8 @@
     "workbox-window": "^7.3.0",
     "y-prosemirror": "^1.2.13",
     "y-protocols": "^1.0.6",
-    "yjs": "^13.6.20"
+    "yjs": "^13.6.20",
+    "expo-haptics": "~14.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",

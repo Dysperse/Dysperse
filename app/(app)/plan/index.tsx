@@ -20,8 +20,6 @@ export const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   title: {
     lineHeight: 55,
@@ -110,8 +108,7 @@ export default function Page() {
             style={[
               styles.title,
               {
-                paddingHorizontal:
-                  breakpoints.md && Platform.OS === "web" ? 10 : 0,
+                paddingHorizontal: 20,
               },
             ]}
           >

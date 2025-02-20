@@ -4,22 +4,18 @@ import { usePathname } from "expo-router";
 import { RefObject, memo, useEffect, useMemo } from "react";
 import { Animated, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useFocusPanelContext } from "../focus-panel/context";
 import { useSidebarContext } from "./sidebar/context";
 
 const AppContainer = memo(
   ({
     progressValue,
-    focusPanelProgressValue,
     children,
   }: {
     progressValue: RefObject<Animated.Value>;
-    focusPanelProgressValue: RefObject<Animated.Value>;
     children: React.ReactNode;
   }) => {
     const theme = useColorTheme();
     const breakpoints = useResponsiveBreakpoints();
-    const { panelState } = useFocusPanelContext();
     const insets = useSafeAreaInsets();
     const pathname = usePathname();
     const {
@@ -172,3 +168,4 @@ const AppContainer = memo(
 );
 
 export default AppContainer;
+

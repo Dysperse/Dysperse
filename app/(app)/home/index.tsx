@@ -206,7 +206,7 @@ const Wrapper = memo((props) => {
   );
 });
 
-function RenderWidget({ navigation, widget, index }) {
+export function RenderWidget({ navigation, widget, index, small }) {
   const { sessionToken } = useUser();
   const { data, mutate } = useSWR(["user/focus-panel"], null);
 
@@ -263,6 +263,34 @@ function RenderWidget({ navigation, widget, index }) {
           body: JSON.stringify({
             id: widget.id,
             [key]: value,
+          }),
+        }
+      );
+    } catch (e) {
+      Toast.show({ type: "error" });
+    }
+  };
+
+  const handlePin = async (widget) => {
+    try {
+      mutate(
+        (oldData) =>
+          oldData.map((w) =>
+            w.id === widget.id ? { ...w, pinned: !w.pinned } : w
+          ),
+        {
+          revalidate: false,
+        }
+      );
+      await sendApiRequest(
+        sessionToken,
+        "PUT",
+        "user/focus-panel",
+        {},
+        {
+          body: JSON.stringify({
+            id: widget.id,
+            pinned: !widget.pinned,
           }),
         }
       );
@@ -346,9 +374,9 @@ function RenderWidget({ navigation, widget, index }) {
     case "weather":
       return (
         <WeatherWidget
-          navigation={navigation}
-          menuActions={menuActions}
+          small={small}
           widget={widget}
+          handlePin={() => handlePin(widget)}
           key={index}
         />
       );
@@ -406,7 +434,7 @@ function RenderWidget({ navigation, widget, index }) {
   }
 }
 
-function Widgets() {
+export function Widgets() {
   const { data } = useSWR(["user/focus-panel"], null);
 
   return (data || [])

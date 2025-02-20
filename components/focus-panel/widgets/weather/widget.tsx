@@ -1,13 +1,12 @@
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
-import { useUser } from "@/context/useUser";
 import { Avatar } from "@/ui/Avatar";
 import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
-import { StackNavigationProp } from "@react-navigation/stack";
 import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -18,14 +17,14 @@ import { useFocusPanelContext } from "../../context";
 import weatherCodes from "./weatherCodes.json";
 
 export default function WeatherWidget({
+  small,
   widget,
-  navigation,
+  handlePin,
 }: {
   widget: any;
-  navigation: StackNavigationProp<any>;
-  menuActions: any[];
+  handlePin: any;
 }) {
-  const { setActiveWidget, drawerRef } = useFocusPanelContext();
+  const { drawerRef } = useFocusPanelContext();
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
@@ -143,8 +142,6 @@ export default function WeatherWidget({
     [data, isNight]
   );
 
-  const { session } = useUser();
-
   const showSunrise = useMemo(() => {
     const sunrise = dayjs(data?.daily.sunrise[0]);
     const sunset = dayjs(data?.daily.sunset[0]);
@@ -152,13 +149,67 @@ export default function WeatherWidget({
     return current.isBefore(sunrise) || current.isAfter(sunset);
   }, [data]);
 
-  return (
-    <View>
-      <Text variant="eyebrow" style={{ marginBottom: 7 }}>
-        Weather
-      </Text>
+  return small ? (
+    <View
+      style={{
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 10,
+        paddingHorizontal: 5,
+        flex: 1,
+      }}
+    >
+      {data && (
+        <>
+          <Icon bold>
+            {
+              weatherCodes[data.current_weather.weathercode][
+                isNight() ? "night" : "day"
+              ].icon
+            }
+          </Icon>
+          <Text style={{ color: theme[11] }} weight={700}>
+            {weatherDescription?.description}
+          </Text>
+          <Text
+            style={{ marginLeft: "auto", color: theme[11], opacity: 0.7 }}
+            weight={700}
+          >
+            {Math.round(data.current_weather.temperature)}&deg;
+          </Text>
+        </>
+      )}
+    </View>
+  ) : (
+    <Pressable style={!data && weatherCardStyles} onPress={onPressHandler}>
+      <MenuPopover
+        menuProps={{
+          rendererProps: { placement: "bottom" },
+          style: { marginRight: "auto", marginLeft: -10 },
+        }}
+        containerStyle={{ marginLeft: 20, marginTop: -10 }}
+        options={[
+          {
+            text: widget.pinned ? "Pinned" : "Pin",
+            icon: "push_pin",
+            callback: handlePin,
+            selected: widget.pinned,
+          },
+        ]}
+        trigger={
+          <Button
+            dense
+            textProps={{ variant: "eyebrow" }}
+            text="Weather"
+            icon="expand_more"
+            iconPosition="end"
+            containerStyle={{ marginBottom: 5 }}
+            iconStyle={{ opacity: 0.6 }}
+          />
+        }
+      />
       {error || permissionStatus === "denied" ? (
-        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
+        <>
           <Icon size={40} style={{ marginLeft: -2 }}>
             error
           </Icon>
@@ -166,18 +217,15 @@ export default function WeatherWidget({
             Error
           </Text>
           <Text>Tap to retry</Text>
-        </Pressable>
+        </>
       ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
-        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
-          <View style={{ alignItems: "center", paddingVertical: 80 }}>
-            <Spinner />
-          </View>
-        </Pressable>
+        <View style={{ alignItems: "center", paddingVertical: 80 }}>
+          <Spinner />
+        </View>
       ) : data && airQualityData ? (
         <Button
           height={205}
           onPress={() => {
-            setActiveWidget(widget.id);
             drawerRef.current?.openDrawer();
             InteractionManager.runAfterInteractions(() => {
               drawerRef.current?.openDrawer();
@@ -375,7 +423,7 @@ export default function WeatherWidget({
           </View>
         </Button>
       ) : (
-        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
+        <>
           <Icon size={40} style={{ marginLeft: -2 }}>
             near_me
           </Icon>
@@ -383,9 +431,9 @@ export default function WeatherWidget({
             Weather
           </Text>
           <Text>Tap to enable</Text>
-        </Pressable>
+        </>
       )}
-    </View>
+    </Pressable>
   );
 }
 

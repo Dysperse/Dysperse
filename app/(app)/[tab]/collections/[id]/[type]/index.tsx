@@ -41,13 +41,7 @@ import {
   usePathname,
 } from "expo-router";
 import { cloneElement, useEffect, useMemo, useRef, useState } from "react";
-import {
-  InteractionManager,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { InteractionManager, Pressable, StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, {
   useAnimatedStyle,
@@ -497,7 +491,7 @@ function PasswordPrompt({ mutate }) {
               textInputProps={{ autoComplete: "off" }}
               secureTextEntry
               numberOfDigits={6}
-              blurOnFilled={Platform.OS === "web"}
+              blurOnFilled
               containerGap={5}
               onTextChange={setCode}
               onFilled={(t) => handleSubmit(t)}

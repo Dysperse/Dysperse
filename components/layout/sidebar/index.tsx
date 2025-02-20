@@ -1,5 +1,4 @@
 import { CreateCollectionModal } from "@/components/collections/create";
-import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { CreateLabelModal } from "@/components/labels/createModal";
 import { useSidebarContext } from "@/components/layout/sidebar/context";
 import CreateTask from "@/components/task/create";
@@ -20,7 +19,6 @@ import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Logo from "@/ui/logo";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Portal } from "@gorhom/portal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import { router, useGlobalSearchParams, usePathname } from "expo-router";
@@ -334,13 +332,14 @@ export const LogoButton = memo(function LogoButton({
           gap: 0.5,
         }}
       >
-        <IconButton
-          size={40}
-          icon="dock_to_left"
-          // variant="outlined"
-          style={{ opacity: 0.9 }}
-          onPress={toggleHidden}
-        />
+        {breakpoints.md && (
+          <IconButton
+            size={40}
+            icon="dock_to_left"
+            style={{ opacity: 0.9 }}
+            onPress={toggleHidden}
+          />
+        )}
       </View>
     </View>
   );
@@ -677,7 +676,6 @@ function PrimarySidebar({ progressValue }) {
     setDesktopCollapsed,
   } = useSidebarContext();
 
-  const { drawerRef, setPanelState } = useFocusPanelContext();
   const breakpoints = useResponsiveBreakpoints();
 
   const transform = progressValue?.interpolate?.({
@@ -705,24 +703,14 @@ function PrimarySidebar({ progressValue }) {
       sidebarRef.current.closeDrawer();
       if (desktopCollapsed) {
         sidebarRef.current.openDrawer();
-        drawerRef.current.openDrawer();
-        setPanelState("COLLAPSED");
       } else {
         sidebarRef.current.closeDrawer();
-        drawerRef.current.closeDrawer();
       }
       AsyncStorage.setItem("desktopCollapsed", (!desktopCollapsed).toString());
     } else {
       sidebarRef.current.closeDrawer();
-      drawerRef.current.openDrawer();
     }
-  }, [
-    desktopCollapsed,
-    setDesktopCollapsed,
-    sidebarRef,
-    drawerRef,
-    breakpoints,
-  ]);
+  }, [desktopCollapsed, setDesktopCollapsed, sidebarRef, breakpoints]);
 
   useHotkeys("`", toggleHidden, {});
 
@@ -771,10 +759,24 @@ function SecondarySidebar() {
         width: SECONDARY_SIDEBAR_WIDTH,
         padding: 15,
         paddingRight: 0,
-        paddingBottom: breakpoints.md ? undefined : 15 + insets.bottom,
+        paddingBottom: breakpoints.md ? undefined : 90 + insets.bottom,
+        paddingTop: insets.top + 30,
         backgroundColor: theme[2],
       }}
     >
+      <IconButton
+        icon="west"
+        onPress={() => {
+          router.replace("/");
+          InteractionManager.runAfterInteractions(() => {
+            sidebarRef?.current?.openDrawer?.();
+          });
+        }}
+        size={50}
+        style={[
+          Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
+        ]}
+      />
       <View
         style={{ flex: 1, width: "100%", justifyContent: "center", gap: 5 }}
       >
@@ -843,98 +845,7 @@ function SecondarySidebar() {
           variant={pathname === "/everything/storage" ? "filled" : "text"}
         />
       </View>
-      <IconButton
-        icon="west"
-        onPress={() => {
-          router.replace("/");
-          InteractionManager.runAfterInteractions(() => {
-            sidebarRef?.current?.openDrawer?.();
-          });
-        }}
-        size={50}
-        style={[
-          Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any),
-        ]}
-      />
     </View>
-  );
-}
-
-function FocusPanelFullscreenTrigger({ sidebarProgressValue, focusPanelRef }) {
-  const { desktopCollapsed } = useSidebarContext();
-  const { drawerRef } = useFocusPanelContext();
-  const { sidebarRef } = useSidebarContext();
-
-  const handleOpen = () => {
-    if (sidebarRef.current.state.drawerOpened) sidebarRef.current.closeDrawer();
-    drawerRef.current[
-      drawerRef.current.state.drawerOpened ? "closeDrawer" : "openDrawer"
-    ]();
-  };
-
-  const handleSidebarOpen = () => {
-    if (drawerRef.current.state.drawerOpened) drawerRef.current.closeDrawer();
-    sidebarRef.current[
-      sidebarRef.current.state.drawerOpened ? "closeDrawer" : "openDrawer"
-    ]();
-  };
-
-  return (
-    desktopCollapsed &&
-    Platform.OS === "web" && (
-      <Portal>
-        <Pressable
-          onPress={handleSidebarOpen}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            height: "100%",
-            justifyContent: "center",
-            zIndex: 999,
-            marginLeft: -7,
-          }}
-        >
-          <NativeAnimated.View
-            style={{
-              opacity: sidebarProgressValue.interpolate({
-                inputRange: [0, 1],
-                outputRange: [1, 0],
-              }),
-            }}
-          >
-            <Icon style={{ opacity: 0.6 }} bold>
-              more_vert
-            </Icon>
-          </NativeAnimated.View>
-        </Pressable>
-        <Pressable
-          onPress={handleOpen}
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            height: "100%",
-            justifyContent: "center",
-            zIndex: 999,
-            marginRight: -7,
-          }}
-        >
-          <NativeAnimated.View
-            style={{
-              opacity: focusPanelRef.current.interpolate({
-                inputRange: [0, 1],
-                outputRange: [1, 0],
-              }),
-            }}
-          >
-            <Icon style={{ opacity: 0.6 }} bold>
-              more_vert
-            </Icon>
-          </NativeAnimated.View>
-        </Pressable>
-      </Portal>
-    )
   );
 }
 
@@ -951,7 +862,6 @@ const Sidebar = ({
     useSidebarContext();
   const theme = useColorTheme();
   const { height } = useWindowDimensions();
-
   const desktopSlide = useSharedValue(0);
 
   const primarySidebarStyles = useAnimatedStyle(() => ({
@@ -1091,11 +1001,6 @@ const Sidebar = ({
           </Animated.View>
         </NativeAnimated.View>
       </SafeView>
-
-      <FocusPanelFullscreenTrigger
-        sidebarProgressValue={progressValue}
-        focusPanelRef={focusPanelRef}
-      />
     </>
   );
 };

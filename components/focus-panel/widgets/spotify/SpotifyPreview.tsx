@@ -8,12 +8,10 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
-import { useFocusPanelContext } from "../../context";
 import { useImageColors } from "./useImageColors";
 
 export const SpotifyPreview = ({ data, navigation, mutate }) => {
   const theme = useColorTheme();
-  const { panelState, setPanelState } = useFocusPanelContext();
   const progress = useSharedValue(data.progress_ms / data.item.duration_ms);
   const colors = useImageColors(data.item.album.images[0].url);
 
@@ -47,17 +45,12 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
   ];
 
   return (
-    <Pressable
-      onPress={() => {
-        navigation.push("Spotify");
-        setPanelState("OPEN");
-      }}
-    >
+    <Pressable>
       {({ pressed, hovered }) => (
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{
-            x: panelState === "COLLAPSED" ? 1 : 0,
+            x: 1,
             y: 1,
           }}
           colors={backgroundColors}
@@ -66,7 +59,7 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
             gap: 20,
             opacity: pressed ? 0.8 : hovered ? 0.9 : 1,
             alignItems: "center",
-            flexDirection: panelState === "COLLAPSED" ? "column" : "row",
+            flexDirection: "row",
             padding: 17,
             backgroundColor: theme[3],
           }}
@@ -78,7 +71,6 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
           <View
             style={{
               flex: 1,
-              width: panelState === "COLLAPSED" ? 60 : undefined,
             }}
           >
             <View
@@ -87,7 +79,7 @@ export const SpotifyPreview = ({ data, navigation, mutate }) => {
                 borderRadius: 5,
                 width: "100%",
                 height: 4,
-                marginTop: panelState === "COLLAPSED" ? -5 : 7,
+                marginTop: 7,
                 backgroundColor: isDark
                   ? "rgba(255, 255, 255, 0.1)"
                   : "rgba(0, 0, 0, 0.1)",

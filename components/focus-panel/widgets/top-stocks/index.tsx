@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import useSWR from "swr";
-import { useFocusPanelContext } from "../../context";
 
 function formatNumber(num, d) {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -68,7 +67,6 @@ export function StockItem({
   widget: any;
 }) {
   const theme = useColorTheme();
-  const { panelState, setPanelState } = useFocusPanelContext();
 
   return (
     <Pressable
@@ -92,30 +90,23 @@ export function StockItem({
         },
       ]}
       onPress={() => {
-        if (panelState !== "OPEN") {
-          navigation.push("Stocks", { id: widget.id });
-          setPanelState("OPEN");
-        } else {
-          Linking.openURL(
-            `https://www.google.com/search?q=${stock.ticker}+stock`
-          );
-        }
+        Linking.openURL(
+          `https://www.google.com/search?q=${stock.ticker}+stock`
+        );
       }}
     >
       <View
         style={{ flexDirection: "row", alignItems: "center", gap: 20, flex: 1 }}
       >
-        {panelState === "OPEN" && (
-          <Image
-            source={{
-              uri: `https://companiesmarketcap.com/img/company-logos/64/${stock.ticker.replace(
-                "GOOGL",
-                "GOOG"
-              )}.webp`,
-            }}
-            style={{ width: 24, height: 24 }}
-          />
-        )}
+        <Image
+          source={{
+            uri: `https://companiesmarketcap.com/img/company-logos/64/${stock.ticker.replace(
+              "GOOGL",
+              "GOOG"
+            )}.webp`,
+          }}
+          style={{ width: 24, height: 24 }}
+        />
         <View style={{ minWidth: 0, overflow: "hidden", flex: 1 }}>
           {large && (
             <ButtonText numberOfLines={1} weight={900}>
@@ -126,13 +117,9 @@ export function StockItem({
             {stock.ticker}
           </ButtonText>
         </View>
-        {panelState === "OPEN" && (
-          <ButtonText
-            style={{ marginLeft: "auto", opacity: 0.6, flexShrink: 0 }}
-          >
-            ${formatNumber(stock.currentPrice, 1)}
-          </ButtonText>
-        )}
+        <ButtonText style={{ marginLeft: "auto", opacity: 0.6, flexShrink: 0 }}>
+          ${formatNumber(stock.currentPrice, 1)}
+        </ButtonText>
       </View>
       {large && (
         <Text style={{ color: theme[11], opacity: 0.5 }} weight={600}>
@@ -191,7 +178,6 @@ export function StockItem({
 
 export default function Widget({ navigation, menuActions, widget }) {
   const theme = useColorTheme();
-  const { panelState } = useFocusPanelContext();
   const { data, error } = useSWR(
     "https://bubble-screener-api.neil-dahiya.workers.dev/api",
     (url) => fetch(url).then((res) => res.json())
@@ -268,3 +254,4 @@ export default function Widget({ navigation, menuActions, widget }) {
     </View>
   );
 }
+

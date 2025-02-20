@@ -1,6 +1,5 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
-import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import Chip from "@/ui/Chip";
 import Icon from "@/ui/Icon";
@@ -11,20 +10,11 @@ import Text from "@/ui/Text";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useNavigation } from "@react-navigation/native";
-import {
-  createStackNavigator,
-  StackNavigationProp,
-} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { ErrorBoundary } from "@sentry/react-native";
 import { useKeepAwake } from "expo-keep-awake";
 import { usePathname } from "expo-router";
-import {
-  memo,
-  Suspense,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { memo, useEffect, useImperativeHandle, useState } from "react";
 import { Freeze } from "react-freeze";
 import {
   AppState,
@@ -33,7 +23,6 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -89,7 +78,6 @@ export const Navbar = ({
   bgcolors?: any;
 }) => {
   const navigation = useNavigation();
-  const { setPanelState } = useFocusPanelContext();
   const breakpoints = useResponsiveBreakpoints();
   const theme = useColorTheme();
   const isDark = useDarkMode();
@@ -103,8 +91,6 @@ export const Navbar = ({
       sendApiRequest(sessionToken, "DELETE", "user/focus-panel", {
         id: widgetId,
       });
-      navigation.goBack();
-      setPanelState("COLLAPSED");
     } catch (e) {
       Toast.show({ type: "error" });
     }
@@ -322,152 +308,6 @@ function PanelContent({ focusPanelFreezerRef }) {
   );
 }
 
-const PanelActions = ({}) => {
-  const { setPanelState, drawerRef } = useFocusPanelContext();
-  const navigation = useNavigation();
-
-  const [open, setOpen] = useState(false);
-
-  return open ? (
-    <View style={{ flexDirection: "row", opacity: 0.5 }}>
-      <IconButton
-        onPress={() => {
-          navigation.push("New");
-          drawerRef.current.openDrawer();
-          setPanelState("OPEN");
-        }}
-        size="auto"
-        style={{ height: 40, flex: 1 }}
-        icon="add"
-      />
-      <IconButton
-        onPress={() => {
-          drawerRef.current.closeDrawer();
-          setPanelState("CLOSED");
-        }}
-        size="auto"
-        style={{ height: 40, flex: 1 }}
-        icon="close"
-      />
-    </View>
-  ) : (
-    <View>
-      <IconButton
-        onPress={() => setOpen(true)}
-        size="100%"
-        style={{ height: 40, flex: 1 }}
-        icon="more_horiz"
-      />
-    </View>
-  );
-};
-function FocusPanelHome({
-  navigation,
-  focusPanelFreezerRef,
-}: {
-  navigation: StackNavigationProp<any>;
-  focusPanelFreezerRef: any;
-}) {
-  const theme = useColorTheme();
-  const { setPanelState } = useFocusPanelContext();
-  const insets = useSafeAreaInsets();
-  const breakpoints = useResponsiveBreakpoints();
-  const { data } = useSWR(["user/focus-panel"], null);
-
-  return (
-    <>
-      <Suspense
-        fallback={
-          <View
-            style={{
-              marginHorizontal: "auto",
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Spinner />
-          </View>
-        }
-      >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={[
-            {
-              flex: 1,
-              padding: 0,
-              paddingTop: 2,
-            },
-          ]}
-          centerContent
-        >
-          {!data ? (
-            <View style={{ marginHorizontal: "auto" }}>
-              <Spinner />
-            </View>
-          ) : data?.length === 0 ? (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                maxWidth: 250,
-                marginHorizontal: "auto",
-                gap: 5,
-                flex: 1,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: 13,
-                }}
-                variant="eyebrow"
-              >
-                This is the focus panel
-              </Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: theme[11],
-                  opacity: 0.45,
-                  fontSize: 12,
-                }}
-              >
-                Add widgets to {"\n"}customize your experience
-              </Text>
-
-              <IconButton
-                variant="filled"
-                onPress={() => {
-                  navigation.push("New");
-                  setPanelState("OPEN");
-                }}
-                icon="add"
-              />
-            </View>
-          ) : (
-            Array.isArray(data) && (
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{
-                  gap: 10,
-                  paddingVertical: 8 + (breakpoints.md ? 0 : insets.bottom),
-                  minHeight: "100%",
-                }}
-                centerContent
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-              >
-                <PanelActions />
-              </ScrollView>
-            )
-          )}
-        </ScrollView>
-      </Suspense>
-    </>
-  );
-}
-
 const FocusPanel = memo(function FocusPanel({
   progressValue,
   focusPanelFreezerRef,
@@ -475,12 +315,6 @@ const FocusPanel = memo(function FocusPanel({
   progressValue: any;
   focusPanelFreezerRef: any;
 }) {
-  const { panelState, setPanelState } = useFocusPanelContext();
-
-  useHotkeys("\\", () =>
-    setPanelState(panelState === "COLLAPSED" ? "CLOSED" : "COLLAPSED")
-  );
-
   const pathname = usePathname();
   const breakpoints = useResponsiveBreakpoints();
   const { width: windowWidth } = useWindowDimensions();

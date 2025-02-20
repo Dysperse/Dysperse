@@ -40,7 +40,6 @@ export default function WordOfTheDay({ navigation, menuActions, widget }) {
           paddingBottom: 5,
           alignItems: "flex-start",
         }}
-        onPress={() => navigation.navigate("Word of the day")}
       >
         {data ? (
           <>
@@ -75,3 +74,4 @@ export default function WordOfTheDay({ navigation, menuActions, widget }) {
     </View>
   );
 }
+

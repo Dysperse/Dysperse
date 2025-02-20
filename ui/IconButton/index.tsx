@@ -108,7 +108,10 @@ const IconButton = forwardRef<typeof Pressable, IconButtonProps>(
           {...props}
           onHoverIn={() => (state.value = 1)}
           onHoverOut={() => (state.value = 0)}
-          onPressIn={() => (state.value = 2)}
+          onPressIn={() => {
+            state.value = 2;
+            // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+          }}
           onPressOut={() => (state.value = 0)}
           ref={ref as any}
           style={({ pressed, hovered }) => [

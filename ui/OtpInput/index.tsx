@@ -42,6 +42,8 @@ const OtpInput = forwardRef(
             marginTop: props.secureTextEntry
               ? Platform.OS === "web"
                 ? 10
+                : Platform.OS === "ios"
+                ? -8
                 : 30
               : undefined,
           },
