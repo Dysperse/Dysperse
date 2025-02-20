@@ -8,7 +8,6 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import useSWR from "swr";
 import { CreateCollectionModal } from "../collections/create";
 
 const actionStyles = StyleSheet.create({
@@ -75,10 +74,6 @@ export function Actions() {
   const theme = useColorTheme();
   const createRef = useCommandPaletteContext();
 
-  const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
-  const hasUnread =
-    Array.isArray(sharedWithMe) && sharedWithMe?.filter((c) => !c.hasSeen);
-
   return (
     <View>
       <Text variant="eyebrow" style={actionStyles.title}>
@@ -110,13 +105,6 @@ export function Actions() {
         <Text style={{ color: theme[11] }} numberOfLines={1}>
           Friends
         </Text>
-        {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
-          <View style={[styles.badge, { backgroundColor: theme[9] }]}>
-            <Text style={styles.sharedText} weight={900}>
-              {sharedWithMe.length}
-            </Text>
-          </View>
-        )}
       </TouchableOpacity>
     </View>
   );

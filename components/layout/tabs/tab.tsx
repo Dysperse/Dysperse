@@ -12,8 +12,9 @@ import Text from "@/ui/Text";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import React, { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { InteractionManager, Platform, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useTabMetadata } from "./useTabMetadata";
@@ -100,7 +101,7 @@ function Tab({
     [mutate, sessionToken, tabs]
   );
 
-  const [isClosedAnimation, setIsClosedAnimation] = React.useState(false);
+  const [isClosedAnimation, setIsClosedAnimation] = useState(false);
   const breakpoints = useResponsiveBreakpoints();
 
   const handleCloseTab = useCallback(
@@ -235,6 +236,7 @@ function Tab({
   );
 
   const handlePress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
     router.replace({
       pathname: tab.slug,
       params: {
@@ -310,5 +312,5 @@ function Tab({
   );
 }
 
-export default React.memo(Tab);
+export default memo(Tab);
 

@@ -73,15 +73,6 @@ export function StockItem({
       key={stock.ticker}
       style={[
         {
-          flexDirection: "column",
-          padding: 10,
-          flex: 1,
-          gap: 10,
-          alignItems: large ? undefined : "center",
-          borderBottomColor: theme[5],
-          paddingHorizontal: 20,
-        },
-        large && {
           borderRadius: 20,
           marginBottom: 10,
           padding: 20,
@@ -205,8 +196,6 @@ export default function Widget({ navigation, menuActions, widget }) {
     return <ErrorAlert />;
   }
 
-  const displayedStocks = data?.slice(currentIndex, currentIndex + 2) || [];
-
   return (
     <View>
       {/* {panelState !== "COLLAPSED" && (
@@ -222,33 +211,39 @@ export default function Widget({ navigation, menuActions, widget }) {
           }
         />
       )} */}
+      <Text variant="eyebrow" style={{ marginBottom: 7 }}>
+        Top stocks
+      </Text>
       <Pressable
         style={{
-          backgroundColor: theme[3],
+          backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: theme[5],
           borderRadius: 20,
         }}
       >
         <View
           style={{
             height: 120,
-            overflow: "hidden",
+            width: "100%",
           }}
         >
-          {displayedStocks.map((stock) => (
-            <Animated.View
-              key={stock.ticker}
-              entering={FadeInRight}
-              exiting={FadeOutLeft}
-              style={{ flex: 1 }}
-            >
-              <StockItem
-                widget={widget}
+          {data &&
+            data.map((stock) => (
+              <Animated.View
                 key={stock.ticker}
-                stock={stock}
-                navigation={navigation}
-              />
-            </Animated.View>
-          ))}
+                entering={FadeInRight}
+                exiting={FadeOutLeft}
+                style={{ flex: 1 }}
+              >
+                <StockItem
+                  widget={widget}
+                  key={stock.ticker}
+                  stock={stock}
+                  navigation={navigation}
+                />
+              </Animated.View>
+            ))}
         </View>
       </Pressable>
     </View>

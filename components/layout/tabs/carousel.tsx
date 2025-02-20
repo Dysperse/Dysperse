@@ -349,6 +349,8 @@ function OpenTabsList() {
     router.push("/settings/shortcuts");
   });
 
+  const { widgets } = useFocusPanelContext();
+
   return (
     <View
       style={{
@@ -383,6 +385,9 @@ function OpenTabsList() {
                 }}
               />
             }
+            ListFooterComponentStyle={{
+              marginTop: "auto",
+            }}
             ListFooterComponent={() => (
               <Button
                 icon="add"
@@ -395,7 +400,9 @@ function OpenTabsList() {
                 }}
                 height={50}
                 iconStyle={{ marginLeft: 2 }}
-                containerStyle={{ borderRadius: 15 }}
+                containerStyle={{
+                  borderRadius: 15,
+                }}
                 style={{ justifyContent: "flex-start", columnGap: 15 }}
               />
             )}
@@ -412,7 +419,10 @@ function OpenTabsList() {
                 />
               </View>
             )}
-            contentContainerStyle={{ paddingVertical: 10 }}
+            contentContainerStyle={{
+              paddingVertical: 10,
+              minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
+            }}
             keyExtractor={(item) => item.id}
           />
           <LinearGradient

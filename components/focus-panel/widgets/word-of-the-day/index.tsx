@@ -8,7 +8,7 @@ import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
 import { View } from "react-native";
 import useSWR from "swr";
 
-export default function WordOfTheDay({ navigation, menuActions, widget }) {
+export default function WordOfTheDay({ handlePin, widget }) {
   const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
   const theme = useColorTheme();
 

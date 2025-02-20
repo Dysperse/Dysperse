@@ -225,6 +225,7 @@ export default function WeatherWidget({
       ) : data && airQualityData ? (
         <Button
           height={205}
+          disabled
           onPress={() => {
             drawerRef.current?.openDrawer();
             InteractionManager.runAfterInteractions(() => {

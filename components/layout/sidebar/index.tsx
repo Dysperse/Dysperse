@@ -48,7 +48,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { useSWRConfig } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import OpenTabsList from "../tabs/carousel";
 
 const styles = StyleSheet.create({
@@ -570,9 +570,14 @@ export const TimeZoneModal = () => {
 
 const Header = memo(function Header() {
   const { session } = useUser();
+  const theme = useColorTheme();
   const isHome = usePathname() === "/home";
 
   const isTimeZoneDifference = session?.user?.timeZone !== dayjs.tz.guess();
+
+  const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
+  const hasUnread =
+    Array.isArray(sharedWithMe) && sharedWithMe?.filter((c) => !c.hasSeen);
 
   return (
     <View
@@ -598,6 +603,20 @@ const Header = memo(function Header() {
           onPress={() => router.push("/everything")}
         >
           <Icon>home_storage</Icon>
+          {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
+            <View
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: 99,
+                backgroundColor: theme[9],
+
+                position: "absolute",
+                top: 5,
+                right: 5,
+              }}
+            />
+          )}
         </IconButton>
       </View>
     </View>
