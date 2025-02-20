@@ -204,4 +204,3 @@ function Root() {
 export default process.env.NODE_ENV === "development"
   ? Root
   : Sentry.wrap(Root);
-

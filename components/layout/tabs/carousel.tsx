@@ -1,21 +1,26 @@
+import { RenderWidget } from "@/app/(app)/home";
 import { useCommandPaletteContext } from "@/components/command-palette/context";
+import { useFocusPanelContext } from "@/components/focus-panel/context";
 import { useBadgingService } from "@/context/BadgingProvider";
 import { useStorageContext } from "@/context/storageContext";
 import { useHotkeys } from "@/helpers/useHotKeys";
 import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
+import BottomSheet from "@/ui/BottomSheet";
 import { Button } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import RefreshControl from "@/ui/RefreshControl";
 import CircularSkeleton from "@/ui/Skeleton/circular";
 import LinearSkeleton from "@/ui/Skeleton/linear";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
+import { addHslAlpha, useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useGlobalSearchParams } from "expo-router";
-import React, { memo, useEffect, useState } from "react";
+import { memo, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { Freeze } from "react-freeze";
 import {
   InteractionManager,
   Platform,
@@ -24,6 +29,7 @@ import {
   View,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import Animated, { FlipInXUp, FlipOutXDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
@@ -84,52 +90,6 @@ const SpaceStorageAlert = memo(function SpaceStorageAlert() {
       </Button>
     );
   }
-});
-
-const JumpToButton = memo(function JumpToButton() {
-  const theme = useColorTheme();
-  const { sidebarRef, desktopCollapsed } = useSidebarContext();
-  const breakpoints = useResponsiveBreakpoints();
-  const { handleOpen } = useCommandPaletteContext();
-
-  const onOpen = () => {
-    if (!breakpoints.md || desktopCollapsed) sidebarRef.current?.closeDrawer();
-    if (Platform.OS !== "web")
-      InteractionManager.runAfterInteractions(handleOpen);
-    else handleOpen();
-  };
-
-  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
-    e.preventDefault();
-    onOpen();
-  });
-
-  useHotkeys(["ctrl+/"], (e) => {
-    e.preventDefault();
-    router.push("/settings/shortcuts");
-  });
-
-  return (
-    <View style={{ borderRadius: 15, overflow: "hidden", flex: 1 }}>
-      <Button
-        backgroundColors={{
-          default: theme[2],
-          hovered: theme[4],
-          pressed: theme[5],
-        }}
-        height={50}
-        onPress={onOpen as any}
-        style={{
-          justifyContent: "flex-start",
-          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        }}
-        android_ripple={{ color: theme[7] }}
-        icon="add"
-        bold
-        text="New tab"
-      />
-    </View>
-  );
 });
 
 const pwaPromptStyles = StyleSheet.create({
@@ -221,6 +181,132 @@ const WebPWAInstallButton = () => {
   );
 };
 
+function FocusPanel() {
+  const theme = useColorTheme();
+  const { widgets, focusPanelFreezerRef, activeStateRef } =
+    useFocusPanelContext();
+  const sheetRef = useRef(null);
+
+  const [frozen, setFrozen] = useState(Platform.OS === "web");
+
+  useImperativeHandle(focusPanelFreezerRef, () => ({
+    freeze: () => setFrozen(true),
+    thaw: () => setFrozen(false),
+  }));
+
+  const pinnedWidgets = widgets.filter((i) => i.pinned);
+  const [activeWidget, setActiveWidget] = useState(activeStateRef.current);
+  const breakpoints = useResponsiveBreakpoints();
+  const pinnedWidget = pinnedWidgets[activeWidget];
+
+  const changeActiveWidget = () => {
+    setActiveWidget((prev) => {
+      const t = (prev + 1) % pinnedWidgets.length;
+      activeStateRef.current = t;
+      return t;
+    });
+  };
+
+  return (
+    pinnedWidget && (
+      <Freeze
+        freeze={frozen && !breakpoints.md}
+        placeholder={
+          <View
+            style={{
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: theme[3],
+              borderRadius: 20,
+              padding: 10,
+              flexDirection: "row",
+              marginBottom: 8,
+            }}
+          />
+        }
+      >
+        <BottomSheet
+          onClose={() => sheetRef.current.close()}
+          sheetRef={sheetRef}
+          snapPoints={["80%"]}
+          maxWidth={400}
+        >
+          <BottomSheetScrollView
+            contentContainerStyle={{ padding: 20, gap: 20 }}
+          >
+            <Text
+              style={{
+                fontFamily: "serifText700",
+                fontSize: 25,
+                marginBottom: -10,
+                color: theme[11],
+              }}
+            >
+              Pinned
+            </Text>
+            {pinnedWidgets.map((w) => (
+              <RenderWidget widget={w} key={w.id} />
+            ))}
+          </BottomSheetScrollView>
+        </BottomSheet>
+        <Button
+          containerStyle={{
+            marginBottom: 8,
+            paddingVertical: 0,
+            borderRadius: 0,
+            flex: 1,
+          }}
+          style={{
+            flex: 1,
+            borderRadius: 0,
+            width: "100%",
+            flexDirection: "column",
+            alignItems: "stretch",
+            gap: 0,
+            paddingVertical: 0,
+            paddingHorizontal: 10,
+          }}
+          height={60}
+          onLongPress={() => sheetRef.current?.present()}
+          // @ts-ignore
+          onContextMenu={() => sheetRef.current?.present()}
+          onPress={changeActiveWidget}
+        >
+          <View
+            style={{
+              backgroundColor:
+                pinnedWidgets.length > 1 ? theme[4] : "transparent",
+              height: 50,
+              marginBottom: -45,
+              marginHorizontal: 13,
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15,
+            }}
+          />
+          <Animated.View
+            key={activeWidget}
+            entering={FlipInXUp}
+            exiting={FlipOutXDown}
+            style={{
+              borderRadius: 20,
+              padding: 10,
+              paddingHorizontal: 20,
+              backgroundColor: theme[3],
+              alignItems: "center",
+              height: 50,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <RenderWidget small widget={pinnedWidget} />
+          </Animated.View>
+        </Button>
+      </Freeze>
+    )
+  );
+}
+
 function OpenTabsList() {
   const { tab } = useGlobalSearchParams();
   const { data, error, mutate } = useSWR(["user/tabs"]);
@@ -278,20 +364,27 @@ function OpenTabsList() {
   const badgingRef = useBadgingService();
   const [badgeData, setBadgeData] = useState(badgingRef.current.data);
 
-  const footer = (
-    <View style={{ marginBottom: 5, flexDirection: "row" }}>
-      <JumpToButton />
-      <IconButton
-        size={50}
-        style={{
-          ...(Platform.OS === "web" && ({ WebkitAppRegion: "no-drag" } as any)),
-        }}
-        onPress={() => router.push("/everything")}
-      >
-        <Icon bold>home_storage</Icon>
-      </IconButton>
-    </View>
-  );
+  const { sidebarRef, desktopCollapsed } = useSidebarContext();
+  const { handleOpen } = useCommandPaletteContext();
+
+  const onOpen = () => {
+    if (!breakpoints.md || desktopCollapsed) sidebarRef.current?.closeDrawer();
+    if (Platform.OS !== "web")
+      InteractionManager.runAfterInteractions(handleOpen);
+    else handleOpen();
+  };
+
+  useHotkeys(["ctrl+k", "ctrl+o", "ctrl+t"], (e) => {
+    e.preventDefault();
+    onOpen();
+  });
+
+  useHotkeys(["ctrl+/"], (e) => {
+    e.preventDefault();
+    router.push("/settings/shortcuts");
+  });
+
+  const { widgets } = useFocusPanelContext();
 
   return (
     <View
@@ -305,18 +398,49 @@ function OpenTabsList() {
       }}
     >
       {data && Array.isArray(data) && data.length > 0 ? (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginTop: -10 }}>
+          <LinearGradient
+            colors={[theme[2], addHslAlpha(theme[2], 0)]}
+            style={{
+              height: 10,
+              marginBottom: -10,
+              zIndex: 999,
+              pointerEvents: "none",
+            }}
+          />
           <FlatList
+            showsVerticalScrollIndicator={false}
             aria-label="Sidebar"
             refreshControl={
               <RefreshControl
                 refreshing={false}
                 onRefresh={() => {
-                  setBadgeData(badgingRef.current.data);
+                  badgingRef.current.mutate().then((e) => setBadgeData(e));
                   mutate();
                 }}
               />
             }
+            ListFooterComponentStyle={{
+              marginTop: "auto",
+            }}
+            ListFooterComponent={() => (
+              <Button
+                icon="add"
+                text="New tab"
+                onPress={onOpen}
+                backgroundColors={{
+                  default: theme[2],
+                  hovered: theme[3],
+                  pressed: theme[4],
+                }}
+                height={50}
+                iconStyle={{ marginLeft: 2 }}
+                containerStyle={{
+                  borderRadius: 15,
+                }}
+                style={{ justifyContent: "flex-start", columnGap: 15 }}
+              />
+            )}
             data={data}
             getItemLayout={(_, index) => ({ length: 52, offset: 52, index })}
             renderItem={({ item }) => (
@@ -330,11 +454,25 @@ function OpenTabsList() {
                 />
               </View>
             )}
+            contentContainerStyle={{
+              paddingVertical: 10,
+              minHeight: widgets.find((i) => i.pinned) ? undefined : "100%",
+            }}
             keyExtractor={(item) => item.id}
           />
+          <LinearGradient
+            colors={[addHslAlpha(theme[2], 0), theme[2]]}
+            style={{
+              height: 10,
+              marginTop: -10,
+              zIndex: 999,
+              pointerEvents: "none",
+            }}
+          />
+          <FocusPanel />
           {Platform.OS === "web" && <WebPWAInstallButton />}
           <SpaceStorageAlert />
-          {footer}
+          {/* {footer} */}
         </View>
       ) : (
         <View
@@ -410,4 +548,3 @@ function OpenTabsList() {
 }
 
 export default memo(OpenTabsList);
-

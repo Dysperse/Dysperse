@@ -272,10 +272,9 @@ export default function ChipInput({
           ),
           isInsertSpaceAfterMention: true,
           textStyle: {
-            fontFamily: "body_900",
+            fontFamily: "serifText700",
             color: theme[11],
             backgroundColor: theme[6],
-            borderRadius: 10,
             overflow: "hidden",
           },
         })),
@@ -283,3 +282,4 @@ export default function ChipInput({
     />
   );
 }
+

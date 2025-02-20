@@ -1,68 +1,114 @@
-import IconButton from "@/ui/IconButton";
-import { useFocusPanelContext } from "../../context";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
+import { Button } from "@/ui/Button";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import ErrorAlert from "@/ui/Error";
+import MenuPopover from "@/ui/MenuPopover";
+import Spinner from "@/ui/Spinner";
+import Text from "@/ui/Text";
+import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import { View } from "react-native";
+import useSWR from "swr";
 
-export default function WordOfTheDay({ navigation, menuActions, widget }) {
-  const { setPanelState } = useFocusPanelContext();
+export default function WordOfTheDay({ small, handlePin, widget }) {
+  const { data, error } = useSWR(["user/focus-panel/word-of-the-day"]);
+  const theme = useColorTheme();
 
-  return (
-    <IconButton
-      size={85}
-      icon="book"
-      onPress={() => {
-        navigation.navigate("Word of the day", { id: widget.id });
-        setPanelState("OPEN");
-      }}
-      variant="filled"
-      style={{ borderRadius: 20 }}
-    />
+  return small ? (
+    !data ? (
+      <Spinner />
+    ) : (
+      <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
+        <View>
+          <Text weight={700} style={{ color: theme[11] }}>
+            {data.word}
+          </Text>
+          <Text
+            style={{
+              fontSize: 11,
+              opacity: 0.6,
+              marginTop: -3,
+              color: theme[11],
+            }}
+          >
+            {data.pronunciation}
+          </Text>
+        </View>
+        <Text style={{ color: theme[11], marginLeft: "auto" }}>
+          {data.partOfSpeech}
+        </Text>
+      </View>
+    )
+  ) : (
+    <View>
+      <MenuPopover
+        menuProps={{
+          rendererProps: { placement: "bottom" },
+          style: { marginRight: "auto", marginLeft: -10 },
+        }}
+        containerStyle={{ marginLeft: 20, marginTop: -10 }}
+        options={[
+          {
+            text: widget.pinned ? "Pinned" : "Pin",
+            icon: "push_pin",
+            callback: handlePin,
+            selected: widget.pinned,
+          },
+        ]}
+        trigger={
+          <Button
+            dense
+            textProps={{ variant: "eyebrow" }}
+            text="Word of the day"
+            icon="expand_more"
+            iconPosition="end"
+            containerStyle={{ marginBottom: 5 }}
+            iconStyle={{ opacity: 0.6 }}
+          />
+        }
+      />
+      <View
+        style={{
+          gap: 0,
+          backgroundColor: theme[2],
+          borderWidth: 1,
+          borderColor: theme[5],
+          borderRadius: 20,
+          padding: 20,
+          paddingHorizontal: 20,
+          paddingBottom: 5,
+          alignItems: "flex-start",
+        }}
+      >
+        {data ? (
+          <>
+            <Text
+              style={{
+                fontFamily: "serifText700",
+                fontSize: 30,
+                color: theme[11],
+              }}
+              numberOfLines={1}
+            >
+              {capitalizeFirstLetter(data.word)}
+            </Text>
+            <Text
+              weight={700}
+              style={{ opacity: 0.7, marginTop: 5, color: theme[11] }}
+              numberOfLines={1}
+            >
+              {data.partOfSpeech} &nbsp;&bull; &nbsp;
+              <Text style={{ color: theme[11] }}>{data.pronunciation}</Text>
+            </Text>
+            <MarkdownRenderer color={theme[11]}>
+              {data.definition}
+            </MarkdownRenderer>
+          </>
+        ) : error ? (
+          <ErrorAlert />
+        ) : (
+          <Spinner />
+        )}
+      </View>
+    </View>
   );
-  // : (
-  //   <View>
-  //     <MenuPopover
-  //       options={menuActions}
-  //       trigger={
-  //         <Button style={widgetMenuStyles.button} dense>
-  //           <ButtonText weight={800} style={widgetMenuStyles.text}>
-  //             Word of the day
-  //           </ButtonText>
-  //           <Icon style={{ color: theme[11] }}>expand_more</Icon>
-  //         </Button>
-  //       }
-  //     />
-  //     <Pressable
-  //       style={({ pressed, hovered }) => ({
-  //         padding: 20,
-  //         backgroundColor: theme[pressed ? 5 : hovered ? 4 : 3],
-  //         borderRadius: 20,
-  //         paddingBottom: data ? 10 : undefined,
-  //         alignItems: data ? undefined : "center",
-  //       })}
-  //       onPress={() => navigation.navigate("Word of the day")}
-  //     >
-  //       {data ? (
-  //         <>
-  //           <Text
-  //             style={{ fontFamily: "serifText800", fontSize: 30 }}
-  //             numberOfLines={1}
-  //           >
-  //             {capitalizeFirstLetter(data.word)}
-  //           </Text>
-  //           <Text
-  //             weight={700}
-  //             style={{ opacity: 0.7, marginTop: 5 }}
-  //             numberOfLines={1}
-  //           >
-  //             {data.partOfSpeech} &nbsp;&bull; &nbsp;
-  //             <Text>{data.pronunciation}</Text>
-  //           </Text>
-  //           <MarkdownRenderer>{data.definition}</MarkdownRenderer>
-  //         </>
-  //       ) : error ? (
-  //         <ErrorAlert />
-  //       ) : (
-  //         <Spinner />
-  //       )}
-  //     </Pressable>
-  //   </View>
-  // );
 }

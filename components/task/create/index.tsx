@@ -27,6 +27,7 @@ import { BottomSheetModal, useBottomSheet } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs, { Dayjs } from "dayjs";
 import { BlurView } from "expo-blur";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { useGlobalSearchParams, usePathname } from "expo-router";
 import {
   ExpoSpeechRecognitionModule,
@@ -1385,6 +1386,7 @@ const BottomSheetContent = forwardRef(
 
     const onSubmit = async (data) => {
       try {
+        impactAsync(ImpactFeedbackStyle.Heavy);
         sendApiRequest(
           sessionToken,
           "POST",

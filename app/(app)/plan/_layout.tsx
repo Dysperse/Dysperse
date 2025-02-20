@@ -1,6 +1,6 @@
 import { JsStack } from "@/components/layout/_stack";
 import { PlanContextProvider } from "@/context/planContext";
-import { useUser } from "@/context/useUser";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import ConfirmationModal from "@/ui/ConfirmationModal";
@@ -12,6 +12,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 
 const styles = StyleSheet.create({
   navbar: {
@@ -34,7 +35,7 @@ function PlanNavbar({
 }) {
   const theme = useColorTheme();
   const handleClose = () =>
-    router.canGoBack() ? router.back() : router.push("/");
+    router.canGoBack() ? router.back() : router.replace("/home");
   const currentSlide = parseInt(route?.name) || 0;
 
   return (
@@ -65,7 +66,7 @@ function PlanNavbar({
         <ConfirmationModal
           height={400}
           onSuccess={() => {
-            if (currentSlide === 0) router.back();
+            if (currentSlide === 0) handleClose();
             // path can either be `/plan` or `/plan/1` until `/plan/4`
             else {
               navigation.replace(
@@ -90,8 +91,8 @@ function PlanNavbar({
 }
 
 export default function Layout() {
-  const { session } = useUser();
   const theme = useColorTheme();
+  const breakpoints = useResponsiveBreakpoints();
 
   useWebStatusBar({
     active: "#000",
@@ -101,6 +102,7 @@ export default function Layout() {
   return (
     <>
       <PlanContextProvider>
+        {!breakpoints.md && <SystemBars style="light" />}
         <JsStack
           screenOptions={{
             ...TransitionPresets.SlideFromRightIOS,

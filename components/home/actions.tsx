@@ -7,8 +7,8 @@ import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useCallback } from "react";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import useSWR from "swr";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { CreateCollectionModal } from "../collections/create";
 
 const actionStyles = StyleSheet.create({
   title: {
@@ -72,17 +72,21 @@ export function PlanDayPrompt() {
 
 export function Actions() {
   const theme = useColorTheme();
-  const { handleOpen } = useCommandPaletteContext();
-
-  const { data: sharedWithMe } = useSWR(["user/collectionAccess"]);
-  const hasUnread =
-    Array.isArray(sharedWithMe) && sharedWithMe?.filter((c) => !c.hasSeen);
+  const createRef = useCommandPaletteContext();
 
   return (
-    <View style={{ marginBottom: Platform.OS === "web" ? 0 : -20 }}>
+    <View>
       <Text variant="eyebrow" style={actionStyles.title}>
         Start
       </Text>
+      <CreateCollectionModal ref={createRef}>
+        <TouchableOpacity style={actionStyles.item}>
+          <Icon>note_stack_add</Icon>
+          <Text style={{ color: theme[11] }} numberOfLines={1}>
+            New collection
+          </Text>
+        </TouchableOpacity>
+      </CreateCollectionModal>
       <PlanDayPrompt />
       <TouchableOpacity
         style={actionStyles.item}
@@ -90,24 +94,17 @@ export function Actions() {
       >
         <Icon>emoji_objects</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          My insights
+          Insights
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={actionStyles.item}
-        onPress={() => handleOpen("Shared with me")}
+        onPress={() => router.push("/friends")}
       >
         <Icon>group</Icon>
         <Text style={{ color: theme[11] }} numberOfLines={1}>
-          Shared with me
+          Friends
         </Text>
-        {Array.isArray(hasUnread) && hasUnread?.length > 0 && (
-          <View style={[styles.badge, { backgroundColor: theme[9] }]}>
-            <Text style={styles.sharedText} weight={900}>
-              {sharedWithMe.length}
-            </Text>
-          </View>
-        )}
       </TouchableOpacity>
     </View>
   );

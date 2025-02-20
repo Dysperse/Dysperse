@@ -13,7 +13,7 @@ import TextField from "@/ui/TextArea";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Linking, View } from "react-native";
+import { Keyboard, Linking, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "./_layout";
@@ -309,9 +309,11 @@ function Content() {
 export default function Page() {
   return (
     <KeyboardAwareScrollView
+      onScrollBeginDrag={Keyboard.dismiss}
       contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
     >
       <Content />
     </KeyboardAwareScrollView>
   );
 }
+

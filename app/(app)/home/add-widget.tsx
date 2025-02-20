@@ -1,5 +1,7 @@
+import { Widget } from "@/components/focus-panel/panel";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useWebStatusBar } from "@/helpers/useWebStatusBar";
 import { Avatar } from "@/ui/Avatar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { ListItemButton } from "@/ui/ListItemButton";
@@ -7,34 +9,93 @@ import ListItemText from "@/ui/ListItemText";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
 import TextField from "@/ui/TextArea";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { router } from "expo-router";
 import { LexoRank } from "lexorank";
-import { useEffect, useRef, useState } from "react";
-import { InteractionManager, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import React, { useRef, useState } from "react";
+import { View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { useFocusPanelContext } from "../../context";
-import { Navbar, UpcomingSvg, Widget } from "../../panel";
+import { MenuButton } from ".";
 
-export function NewWidget({
-  navigation,
-}: {
-  navigation: StackNavigationProp<any>;
-}) {
+export const WIDGET_LIST = [
+  {
+    text: "Information",
+    widgets: [
+      {
+        key: "top stocks",
+        text: "Top Stocks",
+        icon: "monitoring",
+        onlyOnce: true,
+      },
+      { key: "weather", text: "Weather", icon: "wb_sunny" },
+      { key: "battery", text: "Battery", icon: "battery_0_bar" },
+      {
+        key: "up next",
+        text: "Upcoming tasks",
+        icon: "home_storage",
+      },
+      {
+        key: "recent activity",
+        text: "Online friends",
+        icon: "people",
+      },
+    ],
+  },
+  {
+    text: "Utilities",
+    widgets: [
+      {
+        key: "clock",
+        text: "Clock",
+        secondary: "Stopwatch, pomodoro & more",
+        icon: "timer",
+      },
+      {
+        key: "randomizer",
+        text: "Randomizer",
+        secondary: "Coin flip & dice",
+        icon: "casino",
+      },
+      { key: "magic 8 ball", text: "Magic 8 Ball", icon: "counter_8" },
+      { key: "counter", text: "Counter", icon: "tag", comingSoon: true },
+    ],
+  },
+  {
+    text: "Inspiration",
+    widgets: [
+      { key: "quotes", text: "Quotes", icon: "format_quote" },
+      {
+        key: "word of the day",
+        text: "Word of the day",
+        icon: "book",
+        secondary: "With Merriam-Webster",
+        onlyOnce: true,
+      },
+    ],
+  },
+  {
+    text: "Fun",
+    widgets: [
+      {
+        key: "music",
+        text: "Spotify Music",
+        icon: "music_note",
+        secondary: "With Spotify",
+        onlyOnce: true,
+      },
+    ],
+  },
+];
+
+function Widgets() {
   const theme = useColorTheme();
   const { sessionToken } = useUser();
-  const { setPanelState } = useFocusPanelContext();
   const { data, mutate } = useSWR(["user/focus-panel"]);
   const [loading, setLoading] = useState<string | boolean>(false);
   const [search, setSearch] = useState<string>("");
   const inputRef = useRef(null);
-
-  useEffect(() => {
-    InteractionManager.runAfterInteractions(() =>
-      inputRef.current?.focus({ preventScroll: true })
-    );
-  }, []);
 
   const handleWidgetToggle = async (type: Widget) => {
     try {
@@ -55,7 +116,7 @@ export function NewWidget({
         }
       );
       mutate();
-      navigation.goBack();
+      router.back();
     } catch (e) {
       Toast.show({
         text1: "Something went wrong. Please try again later",
@@ -66,84 +127,32 @@ export function NewWidget({
     }
   };
 
-  const sections = [
-    {
-      text: "Information",
-      widgets: [
-        { text: "Top Stocks", icon: "monitoring", onlyOnce: true },
-        { text: "Weather", icon: "wb_sunny" },
-        { text: "Battery", icon: "battery_0_bar" },
-        {
-          key: "upcoming",
-          text: "Upcoming tasks",
-          icon: <UpcomingSvg />,
-        },
-      ],
-    },
-    {
-      text: "Utilities",
-      widgets: [
-        {
-          text: "Clock",
-          secondary: "Stopwatch, pomodoro & more",
-          icon: "timer",
-        },
-        { text: "Randomizer", secondary: "Coin flip & dice", icon: "casino" },
-        { text: "Magic 8 Ball", icon: "counter_8" },
-        { text: "Counter", icon: "tag", comingSoon: true },
-      ],
-    },
-    {
-      text: "Inspiration",
-      widgets: [
-        { text: "Quotes", icon: "format_quote" },
-        {
-          text: "Word of the day",
-          icon: "book",
-          secondary: "With Merriam-Webster",
-          onlyOnce: true,
-        },
-      ],
-    },
-    {
-      text: "Fun",
-      widgets: [
-        {
-          text: "Music",
-          icon: "https://cdn.brandfetch.io/id20mQyGeY/theme/dark/idC9Lfpyms.svg?k=bfHSJFAPEG",
-          secondary: "With Spotify",
-          onlyOnce: true,
-        },
-      ],
-    },
-  ]
-    .filter((t) =>
-      t.widgets.some(
-        (w: any) =>
-          w.text.toLowerCase().includes(search.toLowerCase()) ||
-          w.secondary?.toLowerCase().includes(search.toLowerCase())
-      )
+  const sections = WIDGET_LIST.filter((t) =>
+    t.widgets.some(
+      (w: any) =>
+        w.text.toLowerCase().includes(search.toLowerCase()) ||
+        w.secondary?.toLowerCase().includes(search.toLowerCase())
     )
+  )
     .map((t) => [{ header: true, text: t.text }, ...t.widgets])
     .flat();
 
   return (
     <>
-      <Navbar title="Add widget" />
-      <View style={{ paddingHorizontal: 15, marginTop: 3 }}>
+      <View>
         <TextField
           variant="filled+outlined"
           placeholder="Find your widget..."
           onChangeText={setSearch}
           inputRef={inputRef}
           onKeyPress={(e) => {
-            if (e.nativeEvent.key === "Escape") navigation.goBack();
+            if (e.nativeEvent.key === "Escape") router.back();
           }}
         />
       </View>
       <FlatList
         data={sections}
-        contentContainerStyle={{ padding: 15, paddingTop: 7 }}
+        contentContainerStyle={{ paddingTop: 7 }}
         renderItem={({ item, index }: any) =>
           item.header ? (
             <Text
@@ -173,8 +182,7 @@ export function NewWidget({
                   });
                 }
                 handleWidgetToggle((item.key || item.text) as Widget);
-                navigation.goBack();
-                setPanelState("COLLAPSED");
+                router.back();
               }}
             >
               <Avatar
@@ -200,6 +208,38 @@ export function NewWidget({
           )
         }
       />
+    </>
+  );
+}
+
+export default function Page() {
+  const theme = useColorTheme();
+
+  useWebStatusBar({
+    active: "#000",
+    cleanup: theme[2],
+  });
+
+  return (
+    <>
+      <MenuButton gradient icon="arrow_back_ios_new" back />
+      <ScrollView>
+        <SystemBars style="light" />
+        <View style={{ paddingHorizontal: 30 }}>
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              color: theme[11],
+              fontSize: 35,
+              marginTop: 100,
+              marginBottom: 20,
+            }}
+          >
+            Widgets
+          </Text>
+          <Widgets />
+        </View>
+      </ScrollView>
     </>
   );
 }

@@ -16,7 +16,7 @@ import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { cloneElement, useCallback, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as passkey from "react-native-passkeys";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -260,7 +260,12 @@ function Email({
 
   return (
     <KeyboardAwareScrollView
-      style={{ flex: 1, paddingTop: insets.top + 20 }}
+      onScrollBeginDrag={Keyboard.dismiss}
+      keyboardShouldPersistTaps="handled"
+      style={{
+        flex: 1,
+        paddingTop: insets.top + 20,
+      }}
       contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
     >
       <View style={{ gap: 10 }}>

@@ -1,7 +1,6 @@
 import { Button, ButtonText } from "@/ui/Button";
 import ErrorAlert from "@/ui/Error";
 import Icon from "@/ui/Icon";
-import IconButton from "@/ui/IconButton";
 import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text, { getFontName } from "@/ui/Text";
@@ -10,7 +9,6 @@ import { useState } from "react";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import useSWR from "swr";
-import { useFocusPanelContext } from "../../context";
 import { widgetMenuStyles } from "../../widgetMenuStyles";
 import { widgetStyles } from "../../widgetStyles";
 
@@ -34,17 +32,8 @@ export default function Quotes({ widget, menuActions }) {
   };
 
   const theme = useColorTheme();
-  const { panelState, setPanelState } = useFocusPanelContext();
 
-  return panelState === "COLLAPSED" ? (
-    <IconButton
-      variant="filled"
-      size={80}
-      style={{ borderRadius: 20 }}
-      onPress={() => setPanelState("OPEN")}
-      icon="format_quote"
-    />
-  ) : (
+  return (
     <View>
       <MenuPopover
         options={[

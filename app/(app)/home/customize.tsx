@@ -1,33 +1,131 @@
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
 import { hslToHex } from "@/helpers/hslToHex";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { useWebStatusBar } from "@/helpers/useWebStatusBar";
+import { Avatar } from "@/ui/Avatar";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import Icon from "@/ui/Icon";
+import IconButton from "@/ui/IconButton";
+import { ListItemButton } from "@/ui/ListItemButton";
+import ListItemText from "@/ui/ListItemText";
 import Text from "@/ui/Text";
 import { Image } from "expo-image";
+import { router } from "expo-router";
+import { LexoRank } from "lexorank";
 import React, { useCallback } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
+import useSWR from "swr";
 import { HOME_PATTERNS, MenuButton } from ".";
+import { WIDGET_LIST } from "./add-widget";
 
 const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
     overflow: "hidden",
     borderWidth: 2,
-    width: 150,
-    height: 150,
+    flex: 1,
+    aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
   },
 });
 
+function Widgets() {
+  const theme = useColorTheme();
+  const { sessionToken } = useUser();
+  const { data, mutate } = useSWR(["user/focus-panel"]);
+  const iconStyles = { backgroundColor: theme[3], borderRadius: 10 };
+
+  const handleWidgetDelete = async (id) => {
+    mutate((o) => o.filter((e) => e.id !== id), { revalidate: false });
+    await sendApiRequest(sessionToken, "DELETE", "user/focus-panel", { id });
+  };
+
+  const sections = [
+    { id: "", name: "Start", icon: "change_history", disabled: true },
+    { id: "", name: "Goals", icon: "flag", disabled: true },
+    ...(Array.isArray(data)
+      ? data
+          .map((t) => {
+            const widget = WIDGET_LIST.find((l) =>
+              l.widgets.find((w) => w.key == t.type)
+            )?.widgets.find((w) => w.key == t.type);
+            if (!widget) return null;
+            return {
+              id: t.id,
+              name: widget.text,
+              icon: widget?.icon || "square",
+              disabled: false,
+              order: t.order,
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => {
+            if (!a.order || !b.order) return 0;
+            return LexoRank.parse(a.order).compareTo(LexoRank.parse(b.order));
+          })
+      : []),
+  ];
+
+  return (
+    <View style={{ marginHorizontal: -15 }}>
+      {sections.map((section) => (
+        <ListItemButton
+          disabled
+          key={section.name}
+          pressableStyle={{
+            paddingVertical: 5,
+            opacity: section.disabled ? 0.5 : 1,
+          }}
+        >
+          <Avatar
+            image={section.icon.startsWith("https") ? section.icon : undefined}
+            icon={
+              section.icon.startsWith("https")
+                ? undefined
+                : (section.icon as any)
+            }
+            style={iconStyles}
+            disabled
+          />
+          <ListItemText
+            primaryProps={{ style: { color: theme[11] } }}
+            primary={section.name}
+          />
+          {section.order && (
+            <View style={{ flexDirection: "row" }}>
+              <IconButton icon="south" />
+              <IconButton icon="north" />
+              <IconButton
+                icon="close"
+                onPress={() => handleWidgetDelete(section.id)}
+              />
+            </View>
+          )}
+        </ListItemButton>
+      ))}
+      <ListItemButton
+        pressableStyle={{ paddingVertical: 5 }}
+        onPress={() => router.push("/home/add-widget")}
+      >
+        <Avatar icon="add" style={iconStyles} disabled />
+        <ListItemText
+          primaryProps={{ style: { color: theme[11] } }}
+          primary="Add widget..."
+        />
+      </ListItemButton>
+    </View>
+  );
+}
+
 export default function Page() {
   const theme = useColorTheme();
   const { session, sessionToken, mutate } = useUser();
   const selectedPattern = session?.user?.profile?.pattern || "none";
+  const breakpoints = useResponsiveBreakpoints();
 
   useWebStatusBar({
     active: "#000",
@@ -91,68 +189,104 @@ export default function Page() {
   );
 
   return (
-    <ScrollView>
-      <SystemBars style="light" />
+    <>
       <MenuButton gradient back />
-      <Text
-        style={{
-          fontFamily: "serifText800",
-          color: theme[11],
-          fontSize: 35,
-          textAlign: "center",
-          marginTop: 100,
-          marginBottom: 20,
-        }}
-        aria-valuetext="web-blur"
-      >
-        Customize
-      </Text>
-
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 20,
-          gap: 15,
-        }}
-      >
-        <Pressable style={[styles.card, { borderColor: theme[5] }]}>
-          <Text weight={900} style={{ opacity: 0.5 }}>
-            None
-          </Text>
-        </Pressable>
-        {HOME_PATTERNS.map((pattern, index) => (
-          <Pressable
-            key={index}
-            onPress={() => handlePatternSelect(pattern)}
-            style={[
-              styles.card,
-              { borderColor: theme[selectedPattern === pattern ? 11 : 5] },
-            ]}
+      <ScrollView>
+        <SystemBars style="light" />
+        <View style={{ paddingHorizontal: 30 }}>
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              color: theme[11],
+              fontSize: 35,
+              marginTop: 100,
+              marginBottom: 5,
+            }}
           >
-            <Image
-              source={{ uri: uriCreator(pattern) }}
-              style={{ width: "100%", height: "100%", borderRadius: 20 }}
-            />
-            {selectedPattern === pattern && (
-              <Icon
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  margin: 5,
-                }}
-                filled
-                size={40}
+            Widgets
+          </Text>
+          <Widgets />
+          <Text
+            style={{
+              fontFamily: "serifText800",
+              color: theme[11],
+              fontSize: 35,
+              marginTop: 50,
+              marginBottom: 20,
+            }}
+          >
+            Background
+          </Text>
+
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: 40,
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: breakpoints.md ? "20%" : "33.333%",
+                aspectRatio: 1,
+                padding: 5,
+              }}
+            >
+              <Pressable
+                style={[
+                  styles.card,
+                  { borderColor: theme[selectedPattern === "none" ? 11 : 5] },
+                ]}
+                onPress={() => handlePatternSelect("none")}
               >
-                check_circle
-              </Icon>
-            )}
-          </Pressable>
-        ))}
-      </View>
-    </ScrollView>
+                <Text weight={900} style={{ opacity: 0.5, color: theme[11] }}>
+                  None
+                </Text>
+              </Pressable>
+            </View>
+            {HOME_PATTERNS.map((pattern, index) => (
+              <View
+                key={index}
+                style={{
+                  width: breakpoints.md ? "20%" : "33.333%",
+                  aspectRatio: 1,
+                  padding: 5,
+                }}
+              >
+                <Pressable
+                  onPress={() => handlePatternSelect(pattern)}
+                  style={[
+                    styles.card,
+                    {
+                      borderColor: theme[selectedPattern === pattern ? 11 : 5],
+                    },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: uriCreator(pattern) }}
+                    style={{ width: "100%", height: "100%", borderRadius: 20 }}
+                  />
+                  {selectedPattern === pattern && (
+                    <Icon
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        margin: 5,
+                      }}
+                      filled
+                      size={40}
+                    >
+                      check_circle
+                    </Icon>
+                  )}
+                </Pressable>
+              </View>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+    </>
   );
 }

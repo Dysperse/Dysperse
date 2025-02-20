@@ -7,6 +7,7 @@ import IconButton from "@/ui/IconButton";
 import { addHslAlpha } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React, { cloneElement, memo } from "react";
 import { Platform, Pressable } from "react-native";
 import Animated, {
@@ -44,6 +45,7 @@ function TaskCheckbox({
   const isCompleted = getTaskCompletionStatus(task, task.recurrenceDay);
 
   const handlePress = async () => {
+    impactAsync(ImpactFeedbackStyle.Heavy);
     let newArr = isCompleted ? [] : [...task.completionInstances, true];
     let iteration = null;
     if (task.recurrenceRule) {

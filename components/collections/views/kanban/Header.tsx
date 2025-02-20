@@ -11,7 +11,7 @@ import IconButton from "@/ui/IconButton";
 import Text from "@/ui/Text";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { memo } from "react";
-import { Platform, View } from "react-native";
+import { Platform, StyleProp, View, ViewStyle } from "react-native";
 import { useGridContext } from "../grid/context";
 import { useKanbanContext } from "./context";
 
@@ -20,6 +20,7 @@ export const KanbanHeader = memo(function KanbanHeader({
   grid,
   list,
   hideNavigation,
+  style,
 }: {
   grid?: boolean;
   list?: boolean;
@@ -31,6 +32,7 @@ export const KanbanHeader = memo(function KanbanHeader({
     name: string;
     entitiesLength: number;
   };
+  style?: StyleProp<ViewStyle>;
 }) {
   const breakpoints = useResponsiveBreakpoints();
   const { mutate, access } = useCollectionContext();
@@ -61,6 +63,7 @@ export const KanbanHeader = memo(function KanbanHeader({
               height: 80,
               paddingBottom: 20,
             },
+        style,
       ]}
     >
       {label.emoji && (
@@ -170,4 +173,3 @@ export const KanbanHeader = memo(function KanbanHeader({
     </View>
   );
 });
-

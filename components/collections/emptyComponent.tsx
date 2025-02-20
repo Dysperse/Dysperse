@@ -47,7 +47,7 @@ function InspireMe({ labelId }) {
         containerStyle={{
           opacity: 0.6,
           marginTop: 10,
-          marginBottom: -40,
+          marginBottom: -80,
           zIndex: 9999,
         }}
         iconPosition="end"
@@ -126,7 +126,6 @@ const messages = [
   ["1f92b", "Shhh!", "It's quiet here!"],
   ["1f60a", "Enjoy the calm!", "Take a breather"],
   ["1f60c", "Pause and relax!", "No plans, no worries"],
-  ["1fab4", "Positive vibes", "Idea: Free time!"],
   ["1f4ab", "Energize yourself", "Maybe get some sleep?"],
   ["1fae0", "Peaceful moment!", "Savor the tranquility"],
   ["1f44a", "It's quiet here", "Quick stretch or snack?"],
@@ -177,10 +176,9 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
         style={{
           paddingHorizontal: 20,
           position: "relative",
-          marginBottom: 20,
         }}
       >
-        <Shape color={theme[5]} size={100} />
+        <Shape color={theme[5]} size={80} />
         <View
           style={{
             position: "absolute",
@@ -193,18 +191,21 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
             marginLeft: "auto",
           }}
         >
-          <Emoji emoji={message[0]} size={50} />
+          <Emoji emoji={message[0]} size={40} />
         </View>
       </View>
       <View style={[{ alignItems: "center" }]}>
         <Text
-          weight={dense ? 900 : 300}
-          style={{ fontSize: dense ? 20 : 30 }}
+          style={{
+            fontSize: dense ? 20 : 25,
+            fontFamily: "serifText800",
+            lineHeight: 50,
+          }}
           numberOfLines={1}
         >
           {message[1]}
         </Text>
-        <Text style={{ opacity: 0.6 }} numberOfLines={1}>
+        <Text style={{ opacity: 0.6, zIndex: 99 }} numberOfLines={1}>
           {message[2]}
         </Text>
 
@@ -215,4 +216,3 @@ export const ColumnEmptyComponent = function ColumnEmptyComponent({
     </View>
   );
 };
-

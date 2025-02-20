@@ -28,6 +28,7 @@ interface ChipProps {
   textProps?: TextProps;
   colorTheme?: string;
   textWeight?: number;
+  iconStyle?: StyleProp<TextStyle>;
   onDismiss?: () => void;
 }
 
@@ -55,6 +56,7 @@ export default function Chip({
   textWeight = 400,
   onDismiss,
   textProps = {},
+  iconStyle = {},
 }: ChipProps) {
   const { session } = useUser();
   const colorScheme = useColorTheme();
@@ -99,7 +101,11 @@ export default function Chip({
       {...(onPress && { onPress })}
     >
       {iconPosition === "before" &&
-        (typeof icon === "string" ? <Icon>{icon}</Icon> : icon)}
+        (typeof icon === "string" ? (
+          <Icon style={iconStyle}>{icon}</Icon>
+        ) : (
+          icon
+        ))}
       {typeof label === "string" ? (
         <Text
           style={[

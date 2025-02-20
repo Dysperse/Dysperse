@@ -8,7 +8,7 @@ import Text from "@/ui/Text";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Keyboard, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSignupContext } from "./_layout";
@@ -161,9 +161,11 @@ function Color() {
 export default function Page() {
   return (
     <KeyboardAwareScrollView
+      onScrollBeginDrag={Keyboard.dismiss}
       contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
     >
       <Color />
     </KeyboardAwareScrollView>
   );
 }
+

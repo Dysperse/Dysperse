@@ -1,12 +1,13 @@
 import { widgetStyles } from "@/components/focus-panel/widgetStyles";
-import { useUser } from "@/context/useUser";
+import { Avatar } from "@/ui/Avatar";
+import { Button } from "@/ui/Button";
 import Icon from "@/ui/Icon";
+import MenuPopover from "@/ui/MenuPopover";
 import Spinner from "@/ui/Spinner";
 import Text from "@/ui/Text";
-import { useColor } from "@/ui/color";
-import { ColorThemeProvider, useColorTheme } from "@/ui/color/theme-provider";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { LinearGradient } from "expo-linear-gradient";
+import { addHslAlpha } from "@/ui/color";
+import { useColorTheme } from "@/ui/color/theme-provider";
+import dayjs from "dayjs";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { InteractionManager, Pressable, View } from "react-native";
@@ -16,15 +17,14 @@ import { useFocusPanelContext } from "../../context";
 import weatherCodes from "./weatherCodes.json";
 
 export default function WeatherWidget({
+  small,
   widget,
-  navigation,
-  menuActions,
+  handlePin,
 }: {
   widget: any;
-  navigation: StackNavigationProp<any>;
-  menuActions: any[];
+  handlePin: any;
 }) {
-  const { setPanelState, drawerRef } = useFocusPanelContext();
+  const { drawerRef } = useFocusPanelContext();
   const [location, setLocation] = useState(null);
   const [permissionStatus, setPermissionStatus] =
     useState<Location.PermissionStatus>(null);
@@ -142,15 +142,73 @@ export default function WeatherWidget({
     [data, isNight]
   );
 
-  const { session } = useUser();
-  const weatherColor = useColor(
-    weatherDescription?.colorTheme || session.user.profile.theme
-  );
+  const showSunrise = useMemo(() => {
+    const sunrise = dayjs(data?.daily.sunrise[0]);
+    const sunset = dayjs(data?.daily.sunset[0]);
+    const current = dayjs();
+    return current.isBefore(sunrise) || current.isAfter(sunset);
+  }, [data]);
 
-  return (
-    <View>
+  return small ? (
+    <View
+      style={{
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 10,
+        flex: 1,
+      }}
+    >
+      {data && (
+        <>
+          <Icon bold>
+            {
+              weatherCodes[data.current_weather.weathercode][
+                isNight() ? "night" : "day"
+              ].icon
+            }
+          </Icon>
+          <Text style={{ color: theme[11] }} weight={700}>
+            {weatherDescription?.description}
+          </Text>
+          <Text
+            style={{ marginLeft: "auto", color: theme[11], opacity: 0.7 }}
+            weight={700}
+          >
+            {Math.round(data.current_weather.temperature)}&deg;
+          </Text>
+        </>
+      )}
+    </View>
+  ) : (
+    <Pressable style={!data && weatherCardStyles} onPress={onPressHandler}>
+      <MenuPopover
+        menuProps={{
+          rendererProps: { placement: "bottom" },
+          style: { marginRight: "auto", marginLeft: -10 },
+        }}
+        containerStyle={{ marginLeft: 20, marginTop: -10 }}
+        options={[
+          {
+            text: widget.pinned ? "Pinned" : "Pin",
+            icon: "push_pin",
+            callback: handlePin,
+            selected: widget.pinned,
+          },
+        ]}
+        trigger={
+          <Button
+            dense
+            textProps={{ variant: "eyebrow" }}
+            text="Weather"
+            icon="expand_more"
+            iconPosition="end"
+            containerStyle={{ marginBottom: 5 }}
+            iconStyle={{ opacity: 0.6 }}
+          />
+        }
+      />
       {error || permissionStatus === "denied" ? (
-        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
+        <>
           <Icon size={40} style={{ marginLeft: -2 }}>
             error
           </Icon>
@@ -158,98 +216,214 @@ export default function WeatherWidget({
             Error
           </Text>
           <Text>Tap to retry</Text>
-        </Pressable>
+        </>
       ) : (!location || isLoading) && permissionStatus !== "undetermined" ? (
-        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
-          <View style={{ alignItems: "center", paddingVertical: 80 }}>
-            <Spinner />
-          </View>
-        </Pressable>
+        <View style={{ alignItems: "center", paddingVertical: 80 }}>
+          <Spinner />
+        </View>
       ) : data && airQualityData ? (
-        <ColorThemeProvider theme={weatherColor}>
-          <Pressable
-            onPress={() => {
-              navigation.push("Weather", { id: widget.id });
-              setPanelState("OPEN");
+        <Button
+          height={205}
+          disabled
+          onPress={() => {
+            drawerRef.current?.openDrawer();
+            InteractionManager.runAfterInteractions(() => {
               drawerRef.current?.openDrawer();
-              InteractionManager.runAfterInteractions(() => {
-                drawerRef.current?.openDrawer();
-              });
-            }}
-          >
-            {({ pressed, hovered }) => (
-              <LinearGradient
-                colors={[
-                  weatherColor[pressed ? 6 : hovered ? 5 : 3],
-                  weatherColor[pressed ? 5 : hovered ? 4 : 3],
-                ]}
-                style={[
-                  widgetStyles.card,
-                  {
-                    borderColor: weatherColor[6],
-                    padding: 13,
-                  },
-                ]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <View
+            });
+          }}
+          style={{ flexDirection: "column", paddingVertical: 20 }}
+          containerStyle={{ borderRadius: 20 }}
+          variant="outlined"
+        >
+          <View style={{ width: "100%" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 5,
+              }}
+            >
+              <View style={{ flex: 1, gap: 5 }}>
+                <Text
                   style={{
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    fontSize: 30,
+                    fontFamily: "serifText700",
+                    color: theme[11],
                   }}
                 >
+                  {Math.round(data.current_weather.temperature)}&deg; F
+                </Text>
+                <View
+                  style={{
+                    gap: 5,
+                    flexDirection: "row",
+                  }}
+                >
+                  <Icon size={15} style={{ verticalAlign: "middle" }}>
+                    {
+                      weatherCodes[data.current_weather.weathercode][
+                        isNight() ? "night" : "day"
+                      ].icon
+                    }
+                  </Icon>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: theme[11],
+                      opacity: 0.6,
+                      fontFamily: "mono",
+                    }}
+                  >
+                    {weatherDescription?.description} &bull; Feels like{" "}
+                    {Math.round(
+                      data.hourly.apparent_temperature[dayjs().hour()]
+                    )}
+                    &deg;
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View>
+              {/* High/low */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 5,
+                  marginTop: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", gap: 10, flex: 1 }}>
+                  <Avatar
+                    icon={showSunrise ? "wb_sunny" : "wb_twilight"}
+                    size={35}
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
+                    }}
+                  />
                   <View>
-                    <View
-                      style={{
-                        flexDirection: "row-reverse",
-                        alignItems: "center",
-                        gap: 7,
-                      }}
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
                     >
-                      <Icon bold size={20}>
-                        {
-                          weatherCodes[data.current_weather.weathercode][
-                            isNight() ? "night" : "day"
-                          ].icon
-                        }
-                      </Icon>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: weatherColor[11],
-                          textAlign: "center",
-                        }}
-                        weight={600}
-                      >
-                        {Math.round(data.current_weather.temperature)}&deg;
-                      </Text>
-                    </View>
+                      {dayjs(
+                        data.daily[showSunrise ? "sunrise" : "sunset"][0]
+                      ).format("h:mm")}
+                    </Text>
                     <Text
                       style={{
-                        color: weatherColor[11],
-                        fontSize: 16,
-                        lineHeight: 18,
-                        marginTop: 3,
+                        marginTop: -2,
+                        color: theme[11],
                         opacity: 0.6,
+                        fontSize: 13,
                       }}
-                      weight={400}
                     >
-                      {
-                        weatherCodes[data.current_weather.weathercode][
-                          isNight() ? "night" : "day"
-                        ].description
-                      }
+                      {showSunrise ? "Sunrise" : "Sunset"}
                     </Text>
                   </View>
                 </View>
-              </LinearGradient>
-            )}
-          </Pressable>
-        </ColorThemeProvider>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    flex: 1,
+                  }}
+                >
+                  <Avatar
+                    icon="water_drop"
+                    size={35}
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
+                    >
+                      {Math.round(
+                        data.hourly.precipitation_probability[dayjs().hour()]
+                      )}
+                      %
+                    </Text>
+                    <Text
+                      style={{
+                        marginTop: -2,
+                        color: theme[11],
+                        opacity: 0.6,
+                        fontSize: 13,
+                      }}
+                    >
+                      Precipitation
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <View style={{ flexDirection: "row", marginTop: 10 }}>
+                <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
+                  <Avatar
+                    icon="south"
+                    size={35}
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
+                    >
+                      {Math.round(data.daily.temperature_2m_min[0])}&deg;
+                    </Text>
+                    <Text
+                      style={{
+                        marginTop: -2,
+                        color: theme[11],
+                        opacity: 0.6,
+                        fontSize: 13,
+                      }}
+                    >
+                      Low
+                    </Text>
+                  </View>
+                </View>
+                <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
+                  <Avatar
+                    icon="north"
+                    size={35}
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: addHslAlpha(theme[9], 0.1),
+                    }}
+                  />
+                  <View>
+                    <Text
+                      weight={700}
+                      style={{ color: theme[11], marginTop: -2 }}
+                    >
+                      {Math.round(data.daily.temperature_2m_max[0])}&deg;
+                    </Text>
+                    <Text
+                      style={{
+                        marginTop: -2,
+                        color: theme[11],
+                        opacity: 0.6,
+                        fontSize: 13,
+                      }}
+                    >
+                      High
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Button>
       ) : (
-        <Pressable style={weatherCardStyles} onPress={onPressHandler}>
+        <>
           <Icon size={40} style={{ marginLeft: -2 }}>
             near_me
           </Icon>
@@ -257,9 +431,8 @@ export default function WeatherWidget({
             Weather
           </Text>
           <Text>Tap to enable</Text>
-        </Pressable>
+        </>
       )}
-    </View>
+    </Pressable>
   );
 }
-

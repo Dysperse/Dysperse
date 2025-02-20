@@ -10,6 +10,7 @@ import { useColor } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import { useBottomSheet } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import React from "react";
 import Toast from "react-native-toast-message";
 import { useTaskDrawerContext } from "../context";
@@ -28,6 +29,7 @@ export function TaskCompleteButton() {
 
   const handlePress = async () => {
     try {
+      impactAsync(ImpactFeedbackStyle.Heavy);
       if (task.recurrenceRule && !dateRange) return;
       let newArr = isCompleted ? [] : [...task.completionInstances, true];
 

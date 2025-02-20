@@ -1,9 +1,5 @@
 import { CommandPaletteProvider } from "@/components/command-palette/context";
-import {
-  FocusPanelProvider,
-  PanelState,
-} from "@/components/focus-panel/context";
-import FocusPanel from "@/components/focus-panel/panel";
+import { FocusPanelProvider } from "@/components/focus-panel/context";
 import AppContainer from "@/components/layout/AppContainer";
 import NotificationsModal from "@/components/layout/NotificationsModal";
 import TabFriendModal from "@/components/layout/TabFriendModal";
@@ -45,7 +41,7 @@ import {
   usePathname,
 } from "expo-router";
 import * as SystemUI from "expo-system-ui";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Animated,
   InteractionManager,
@@ -126,8 +122,6 @@ export default function AppLayout() {
 
   const focusPanelFreezerRef = useRef(null);
   const progressValue = useRef(null);
-  const focusPanelProgressValue = useRef(null);
-  const [panelState, setPanelState] = useState<PanelState>("COLLAPSED");
 
   const insets = useSafeAreaInsets();
   const focusPanelRef = useRef(null);
@@ -204,19 +198,9 @@ export default function AppLayout() {
     return !breakpoints.md ||
       (!pathname.includes("settings/") && !pathname.includes("create")) ? (
       <Pressable style={{ flex: 1 }}>
-        <Sidebar focusPanelRef={focusPanelProgressValue} progressValue={v} />
+        <Sidebar progressValue={v} />
       </Pressable>
     ) : null;
-  };
-
-  const renderFocusPanel = (v: Animated.Value) => {
-    focusPanelProgressValue.current = v;
-    return (
-      <FocusPanel
-        focusPanelFreezerRef={focusPanelFreezerRef}
-        progressValue={v}
-      />
-    );
   };
 
   const content = (
@@ -233,10 +217,7 @@ export default function AppLayout() {
         dark: true,
       }}
     >
-      <AppContainer
-        progressValue={progressValue}
-        focusPanelProgressValue={focusPanelProgressValue}
-      >
+      <AppContainer progressValue={progressValue}>
         <LastStateRestore />
         <SystemBars style={!isDark ? "dark" : "light"} />
         <JsStack
@@ -300,6 +281,10 @@ export default function AppLayout() {
             options={arcCard({ theme, breakpoints, maxWidth: 500 })}
           />
           <JsStack.Screen
+            name="home/add-widget"
+            options={arcCard({ theme, breakpoints, maxWidth: 500 })}
+          />
+          <JsStack.Screen
             name="plan"
             options={arcCard({ theme, breakpoints, maxWidth: 500 })}
           />
@@ -315,6 +300,23 @@ export default function AppLayout() {
     </ThemeProvider>
   );
 
+  const drawerLocked =
+    !desktopCollapsed && breakpoints.md
+      ? "locked-open"
+      : pathname.includes("everything/collections/") ||
+        pathname.includes("/customize") ||
+        pathname.includes("friends") ||
+        pathname.includes("insights") ||
+        pathname.includes("everything/labels/") ||
+        (pathname.includes("/map") && Platform.OS !== "ios") ||
+        (pathname.includes("/grid") && Platform.OS !== "ios") ||
+        (pathname.includes("/plan") && !pathname.includes("/planner")) ||
+        pathname.includes("open") ||
+        (pathname.includes("collections") &&
+          (pathname.includes("/search") ||
+            pathname.includes("/reorder") ||
+            pathname.includes("/share")));
+
   return (
     <WebAnimationComponent>
       <StorageContextProvider>
@@ -329,38 +331,37 @@ export default function AppLayout() {
             }}
             key={breakpoints.md ? "desktop" : "mobile"}
           >
-            <BottomSheetModalProvider>
-              <MenuProvider
-                skipInstanceCheck
-                customStyles={{
-                  backdrop: {
-                    flex: 1,
-                    opacity: 1,
-                    ...(Platform.OS === "web" &&
-                      ({ WebkitAppRegion: "no-drag" } as any)),
-                  },
-                }}
-              >
-                <PortalProvider>
-                  <View
-                    style={[
-                      {
-                        flexDirection: "row",
-                        flex: 1,
-                        backgroundColor: theme[2],
-                      },
-                      Platform.OS === "web" &&
-                        ({ WebkitAppRegion: "drag" } as any),
-                    ]}
-                  >
-                    <GlobalTaskContextProvider>
-                      <CommandPaletteProvider>
-                        <ThemeProvider value={routerTheme}>
-                          <FocusPanelProvider
-                            panelState={panelState}
-                            setPanelState={setPanelState}
-                            drawerRef={focusPanelRef}
-                          >
+            <FocusPanelProvider
+              drawerRef={focusPanelRef}
+              focusPanelFreezerRef={focusPanelFreezerRef}
+            >
+              <BottomSheetModalProvider>
+                <MenuProvider
+                  skipInstanceCheck
+                  customStyles={{
+                    backdrop: {
+                      flex: 1,
+                      opacity: 1,
+                      ...(Platform.OS === "web" &&
+                        ({ WebkitAppRegion: "no-drag" } as any)),
+                    },
+                  }}
+                >
+                  <PortalProvider>
+                    <View
+                      style={[
+                        {
+                          flexDirection: "row",
+                          flex: 1,
+                          backgroundColor: theme[2],
+                        },
+                        Platform.OS === "web" &&
+                          ({ WebkitAppRegion: "drag" } as any),
+                      ]}
+                    >
+                      <GlobalTaskContextProvider>
+                        <CommandPaletteProvider>
+                          <ThemeProvider value={routerTheme}>
                             <BadgingProvider>
                               <View
                                 style={[
@@ -378,39 +379,23 @@ export default function AppLayout() {
                                 <NotificationsModal />
                                 <TabFriendModal />
                                 <DrawerLayout
+                                  contentContainerStyle={{ marginTop: -1 }}
                                   // @ts-expect-error this is patched with patch-package
                                   defaultDrawerOpen={
                                     !desktopCollapsed && breakpoints.md
                                   }
                                   ref={sidebarRef}
-                                  onDrawerOpen={() => Keyboard.dismiss()}
+                                  onDrawerOpen={() => {
+                                    Keyboard.dismiss();
+                                    focusPanelFreezerRef.current?.thaw();
+                                  }}
+                                  onDrawerClose={() => {
+                                    focusPanelFreezerRef.current?.freeze();
+                                  }}
                                   useNativeAnimations={false}
                                   keyboardDismissMode="on-drag"
                                   drawerLockMode={
-                                    !desktopCollapsed && breakpoints.md
-                                      ? "locked-open"
-                                      : pathname.includes(
-                                          "everything/collections/"
-                                        ) ||
-                                        pathname.includes("/customize") ||
-                                        pathname.includes("friends") ||
-                                        pathname.includes("insights") ||
-                                        pathname.includes(
-                                          "everything/labels/"
-                                        ) ||
-                                        (pathname.includes("/map") &&
-                                          Platform.OS !== "ios") ||
-                                        (pathname.includes("/grid") &&
-                                          Platform.OS !== "ios") ||
-                                        (pathname.includes("/plan") &&
-                                          !pathname.includes("/planner")) ||
-                                        pathname.includes("open") ||
-                                        (pathname.includes("collections") &&
-                                          (pathname.includes("/search") ||
-                                            pathname.includes("/reorder") ||
-                                            pathname.includes("/share")))
-                                      ? "locked-closed"
-                                      : "unlocked"
+                                    drawerLocked ? "locked-closed" : "unlocked"
                                   }
                                   drawerPosition="left"
                                   drawerType={
@@ -438,91 +423,22 @@ export default function AppLayout() {
                                   }
                                   renderNavigationView={renderNavigationView}
                                 >
-                                  {/* For focus panel */}
-                                  <View
-                                    style={{
-                                      zIndex:
-                                        desktopCollapsed && breakpoints.md
-                                          ? undefined
-                                          : breakpoints.md
-                                          ? 999999
-                                          : -1,
-                                      flex: 1,
-                                    }}
-                                  >
-                                    <DrawerLayout
-                                      // @ts-expect-error this is patched with patch-package
-                                      defaultDrawerOpen={breakpoints.md}
-                                      onDrawerOpen={() => {
-                                        Keyboard.dismiss();
-                                        focusPanelFreezerRef.current?.setFreeze(
-                                          false
-                                        );
-                                      }}
-                                      onDrawerClose={() => {
-                                        focusPanelFreezerRef.current?.setFreeze(
-                                          true
-                                        );
-                                      }}
-                                      useNativeAnimations={false}
-                                      ref={focusPanelRef}
-                                      keyboardDismissMode="on-drag"
-                                      drawerLockMode={
-                                        !desktopCollapsed && breakpoints.md
-                                          ? "locked-open"
-                                          : pathname.includes(
-                                              "everything/collections/"
-                                            ) ||
-                                            pathname.includes("/customize") ||
-                                            pathname.includes("friends") ||
-                                            pathname.includes("insights") ||
-                                            pathname.includes(
-                                              "everything/labels/"
-                                            ) ||
-                                            (pathname.includes("/map") &&
-                                              Platform.OS !== "ios") ||
-                                            (pathname.includes("/grid") &&
-                                              Platform.OS !== "ios") ||
-                                            (pathname.includes("/plan") &&
-                                              !pathname.includes("/planner")) ||
-                                            pathname.includes("open") ||
-                                            (pathname.includes("collections") &&
-                                              (pathname.includes("/search") ||
-                                                pathname.includes("/reorder") ||
-                                                pathname.includes("/share")))
-                                          ? "locked-closed"
-                                          : "unlocked"
-                                      }
-                                      drawerPosition="right"
-                                      drawerType={
-                                        breakpoints.md
-                                          ? desktopCollapsed
-                                            ? "slide"
-                                            : "front"
-                                          : "back"
-                                      }
-                                      overlayColor="transparent"
-                                      drawerWidth={
-                                        panelState === "OPEN" ? 300 : 100
-                                      }
-                                      edgeWidth={desktopCollapsed ? 100 : width}
-                                      renderNavigationView={renderFocusPanel}
-                                    >
-                                      {content}
-                                    </DrawerLayout>
-                                  </View>
+                                  {content}
                                 </DrawerLayout>
                               </View>
                             </BadgingProvider>
-                          </FocusPanelProvider>
-                        </ThemeProvider>
-                      </CommandPaletteProvider>
-                    </GlobalTaskContextProvider>
-                  </View>
-                </PortalProvider>
-              </MenuProvider>
-              <Toast topOffset={insets.top + 15} config={toastConfig(theme)} />
-            </BottomSheetModalProvider>
+                          </ThemeProvider>
+                        </CommandPaletteProvider>
+                      </GlobalTaskContextProvider>
+                    </View>
+                  </PortalProvider>
+                </MenuProvider>
+                <Toast
+                  topOffset={insets.top + 15}
+                  config={toastConfig(theme)}
+                />
+              </BottomSheetModalProvider>
+            </FocusPanelProvider>
           </GestureHandlerRootView>
         </ColorThemeProvider>
       </StorageContextProvider>

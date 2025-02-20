@@ -1,5 +1,7 @@
+import { Location, undefined, Weather } from "@/app/auth/(sign-in)/join/2";
 import { useUser } from "@/context/useUser";
 import { sendApiRequest } from "@/helpers/api";
+import { useResponsiveBreakpoints } from "@/helpers/useResponsiveBreakpoints";
 import { Button, ButtonText } from "@/ui/Button";
 import Icon from "@/ui/Icon";
 import Spinner from "@/ui/Spinner";
@@ -7,12 +9,10 @@ import Text from "@/ui/Text";
 import { useColor, useDarkMode } from "@/ui/color";
 import { useColorTheme } from "@/ui/color/theme-provider";
 import dayjs from "dayjs";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { SystemBars } from "react-native-edge-to-edge";
 import weatherCodes from "../../../components/focus-panel/widgets/weather/weatherCodes.json";
 import { getGreeting } from "../../../components/home/getGreeting";
 
@@ -20,8 +20,6 @@ export const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   title: {
     lineHeight: 55,
@@ -41,33 +39,6 @@ export const styles = StyleSheet.create({
   },
   buttonText: { fontSize: 20 },
 });
-
-function Weather({ weatherCode, isNight, icon, temp }) {
-  const weatherDescription =
-    weatherCodes[weatherCode][isNight ? "night" : "day"];
-  const theme = useColor(weatherDescription.colorTheme);
-
-  return (
-    <Text
-      style={[
-        styles.title,
-        {
-          color: theme[11],
-          fontSize: 40,
-          backgroundColor: theme[6],
-          paddingHorizontal: 5,
-          borderRadius: 10,
-        },
-      ]}
-      numberOfLines={1}
-    >
-      <Icon size={40} style={{ verticalAlign: "middle", color: theme[11] }}>
-        {icon}
-      </Icon>
-      {temp}°
-    </Text>
-  );
-}
 
 export default function Page() {
   const theme = useColorTheme();
@@ -114,111 +85,112 @@ export default function Page() {
       planData?.weather?.current?.is_day ? "day" : "night"
     ]?.icon;
 
+  const breakpoints = useResponsiveBreakpoints();
+
   return (
     <LinearGradient
       colors={[theme[2], theme[3], theme[4], theme[3], theme[2]]}
       style={styles.container}
     >
-      <SystemBars style="light" />
       {!planData ? (
-        <Spinner />
-      ) : (
-        <Text
-          style={[
-            styles.title,
-            {
-              paddingHorizontal: 20,
-              fontSize: 40,
-              color: theme[11],
-            },
-          ]}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          {greeting}, {session.user.profile.name.split(" ")[0]}.{"\n"}It's{" "}
-          <Text
+          <Spinner />
+        </View>
+      ) : (
+        <>
+          <View
             style={[
               styles.title,
               {
-                color: orange[11],
-                fontSize: 40,
-                backgroundColor: orange[6],
-                paddingHorizontal: 5,
-                borderRadius: 10,
+                paddingHorizontal: 20,
               },
             ]}
-            numberOfLines={1}
-          >
-            <Icon
-              style={{
-                verticalAlign: "middle",
-                marginRight: 5,
-                color: orange[11],
-              }}
-              size={40}
-            >
-              access_time
-            </Icon>
-            {dayjs().format("h:mm A")}
-          </Text>{" "}
-          and currently{" "}
-          <Weather
-            weatherCode={planData?.weather?.current?.weather_code}
-            isNight={!planData?.weather?.current?.is_day}
-            icon={icon}
-            temp={temp}
-          />{" "}
-          in
-          <Text
-            style={[
-              styles.title,
-              {
-                color: gray[11],
-                fontSize: 40,
-                backgroundColor: gray[6],
-                paddingHorizontal: 5,
-                borderRadius: 10,
-              },
-            ]}
-            numberOfLines={1}
           >
             <Text
-              style={{
-                verticalAlign: "top",
-                marginLeft: 10,
-                lineHeight: 1,
-                marginRight: 15,
-              }}
+              style={[
+                styles.title,
+                {
+                  marginTop: 15,
+                  marginBottom: 5,
+                  marginLeft: -3,
+                  fontSize: breakpoints.md ? 40 : 30,
+                  lineHeight: breakpoints.md ? 55 : 45,
+                  color: theme[11],
+                },
+              ]}
             >
-              <Image
-                source={{ uri: planData?.device?.preview }}
-                style={{
-                  borderRadius: 10,
-                  width: 30,
-                  height: 30,
-                  ...(Platform.OS === "web" &&
-                    dark && {
-                      filter: "invert(5) brightness(2) contrast(0.8)",
-                    }),
-                  transform: [{ rotate: "-15deg" }, { translateY: 5 }],
-                }}
-              />
+              {greeting}, {session.user.profile.name.split(" ")[0]}.{"\n"}
+              {`It's${
+                !planData.weather || !planData.device ? " currently" : ""
+              }`}{" "}
+              <View
+                style={[
+                  styles.title,
+                  {
+                    height: breakpoints.md ? undefined : 40,
+                    backgroundColor: orange[6],
+                    paddingHorizontal: 5,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    borderRadius: 10,
+                  },
+                ]}
+              >
+                <Icon
+                  style={{
+                    verticalAlign: "middle",
+                    marginRight: 5,
+                    color: orange[11],
+                  }}
+                  size={breakpoints.md ? 40 : 24}
+                  bold
+                >
+                  access_time
+                </Icon>
+                <Text
+                  style={{
+                    color: orange[11],
+                    fontSize: breakpoints.md ? 40 : 30,
+                    fontFamily: "serifText700",
+                  }}
+                  numberOfLines={1}
+                >
+                  {dayjs().format("h:mm A")}
+                </Text>
+              </View>{" "}
+              and currently{" "}
+              <Weather
+                weatherCode={planData?.weather?.current?.weather_code}
+                isNight={!planData?.weather?.current?.is_day}
+                icon={icon}
+                temp={temp}
+              />{" "}
+              in
+              <Location planData={planData} locationName={locationName} />
             </Text>
-            {locationName}
+          </View>
+          <Text
+            style={[
+              styles.subtitle,
+              {
+                marginRight: "auto",
+                paddingHorizontal: Platform.OS === "web" ? 10 : 20,
+                marginTop: 5,
+                color: theme[11],
+                fontSize: 25,
+              },
+            ]}
+          >
+            Let's plan out your day!
           </Text>
-        </Text>
+        </>
       )}
-      <Text
-        style={[
-          styles.subtitle,
-          {
-            marginRight: "auto",
-            paddingHorizontal: 20,
-            marginTop: 20,
-            color: theme[11],
-          },
-        ]}
-      >
-        Let's plan out your day
-      </Text>
       <View style={styles.buttonContainer}>
         <Button
           onPress={handleNext}

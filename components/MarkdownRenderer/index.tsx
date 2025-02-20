@@ -4,7 +4,7 @@ import { getFontName } from "@/ui/Text";
 import Markdown, { MarkdownProps } from "react-native-markdown-display";
 
 export default function MarkdownRenderer(
-  props: MarkdownProps & { children: any }
+  props: MarkdownProps & { children: any; color?: string }
 ) {
   const theme = useColorTheme();
   return (
@@ -13,7 +13,7 @@ export default function MarkdownRenderer(
         body: {
           fontFamily: getFontName("jost", 400),
           fontSize: 15,
-          color: theme[12],
+          color: props.color || theme[12],
           pointerEvents: "none",
         },
         link: { color: blue.blue9, pointerEvents: "auto" },
@@ -52,3 +52,4 @@ export default function MarkdownRenderer(
     />
   );
 }
+

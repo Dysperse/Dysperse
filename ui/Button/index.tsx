@@ -22,7 +22,6 @@ import { useColorTheme } from "../color/theme-provider";
 export interface DButtonProps extends PressableProps {
   buttonClassName?: string;
   variant?: "filled" | "outlined" | "text";
-  buttonStyle?: StyleProp<ViewStyle>;
   isLoading?: boolean;
   dense?: boolean;
   large?: boolean;

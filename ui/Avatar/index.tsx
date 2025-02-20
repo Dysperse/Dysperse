@@ -85,7 +85,7 @@ export const ProfilePicture = function ProfilePicture({
   size,
   style,
   onPress = () => {},
-  disabled = false,
+  disabled = true,
 }: {
   name: string;
   image?: string;
